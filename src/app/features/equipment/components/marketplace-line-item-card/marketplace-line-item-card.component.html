@@ -50,6 +50,16 @@
     </ng-container>
 
     <ng-template #unsoldBadges>
+      <ng-container *ngIf="!!lineItem.reserved">
+        <div
+          [ngbTooltip]="translateService.instant('This listing is reserved')"
+          class="badge rounded-pill bg-danger border border-light"
+          container="body"
+        >
+          <fa-icon icon="handshake"></fa-icon>
+        </div>
+      </ng-container>
+
       <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
         <div
           *ngIf="(currentUserWrapper.user | isMarketplaceModerator) && lineItem.itemPlainText"

@@ -327,15 +327,17 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     componentInstance.listing = this.listing;
 
     modal.closed.subscribe(() => {
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_SUCCESS),
-        filter((action: LoadMarketplaceListingSuccess) => action.payload.listing.id === this.listing.id),
-        map(action => action.payload.listing),
-        take(1)
-      ).subscribe(listing => {
-        this.listing = listing;
-        this._listingUpdated$.next();
-      });
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_SUCCESS),
+          filter((action: LoadMarketplaceListingSuccess) => action.payload.listing.id === this.listing.id),
+          map(action => action.payload.listing),
+          take(1)
+        )
+        .subscribe(listing => {
+          this.listing = listing;
+          this._listingUpdated$.next();
+        });
 
       this.store$.dispatch(new LoadMarketplaceListing({ id: this.listing.id }));
     });
@@ -581,7 +583,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
     componentInstance.message = this.translateService.instant(
-      "Accepting this offer will mark the affected line items as sold, and it constitutes a binding agreement " +
+      "Accepting this offer will mark the affected line items as reserved, and it constitutes a binding agreement " +
       "with the buyer. Failure to deliver the equipment as described may result in negative feedback and " +
       "possible disciplinary action. Are you sure you want to proceed?"
     );
@@ -632,48 +634,65 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   }
 
   onRejectOfferClicked(event: Event, userId: UserInterface["id"]) {
-    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    this.currentUser$.pipe(take(1)).subscribe(currentUser => {
+      const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
 
-    modalRef.closed.subscribe(() => {
-      const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
-
-      this.loadingService.setLoading(true);
-
-      forkJoin(
-        offers.map(offer =>
-          this.actions$.pipe(
-            ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE),
-            filter((action: DeleteMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
-            take(1)
+      if (
+        this.listing.lineItems.filter(lineItem =>
+          lineItem.offers.some(
+            offer => offer.user === currentUser.id && offer.status === MarketplaceOfferStatus.ACCEPTED
           )
         )
-      ).subscribe(() => {
-        this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
-        this.loadingService.setLoading(false);
-      });
+      ) {
+        const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+        componentInstance.message = this.translateService.instant(
+          "Careful! If you reject an offer that you already accepted, and have not reached a mutual " +
+          "agreement with the buyer concerning this, you may risk disciplinary action. Offers are considered binding " +
+          "agreements between buyers and sellers. Are you sure you want to retract your offer?"
+        );
+      }
 
-      forkJoin(
-        offers.map(offer =>
-          this.actions$.pipe(
-            ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS),
-            filter((action: DeleteMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
-            take(1)
+      modalRef.closed.subscribe(() => {
+        const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
+
+        this.loadingService.setLoading(true);
+
+        forkJoin(
+          offers.map(offer =>
+            this.actions$.pipe(
+              ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE),
+              filter((action: DeleteMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
+              take(1)
+            )
           )
-        )
-      )
-        .pipe(
-          switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-          take(1)
-        )
-        .subscribe(listing => {
-          this.listing = listing;
-          this._listingUpdated$.next();
-          this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
+        ).subscribe(() => {
+          this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
           this.loadingService.setLoading(false);
         });
 
-      offers.forEach(offer => {
-        this.store$.dispatch(new DeleteMarketplaceOffer({ offer }));
+        forkJoin(
+          offers.map(offer =>
+            this.actions$.pipe(
+              ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS),
+              filter((action: DeleteMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
+              take(1)
+            )
+          )
+        )
+          .pipe(
+            switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
+            take(1)
+          )
+          .subscribe(listing => {
+            this.listing = listing;
+            this._listingUpdated$.next();
+            this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
+            this.loadingService.setLoading(false);
+          });
+
+        offers.forEach(offer => {
+          this.store$.dispatch(new DeleteMarketplaceOffer({ offer }));
+        });
       });
     });
   }

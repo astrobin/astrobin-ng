@@ -1,5 +1,9 @@
 <ng-container *ngIf="equipmentItem || lineItem.itemPlainText; else noEquipmentItem">
-  <div [class.sold]="!!lineItem.sold" class="card">
+  <div
+    [class.reserved]="!!lineItem.reserved"
+    [class.sold]="!!lineItem.sold"
+    class="card"
+  >
     <div (click)="collapsed = !collapsed" [class.collapsed-body]="collapsed" class="card-header">
       <div class="d-flex align-items-center gap-3">
         <div class="image">

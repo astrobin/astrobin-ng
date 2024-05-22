@@ -20,13 +20,15 @@
     }
   }
 
-  formly-group.sold {
+  formly-group.sold,
+  formly-group.reserved {
     position: relative;
+    opacity: .25;
 
     &:after {
       position: absolute;
       left: 1rem;
-      bottom: 1rem;
+      top: 1rem;
       height: 2px;
       background: var(--lightestGrey);
       content: "";

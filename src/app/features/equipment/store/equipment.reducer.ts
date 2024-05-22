@@ -528,6 +528,8 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
           // Return the lineItem with the updated offers array
           return {
             ...lineItem,
+            reserved: null,
+            reservedTo: null,
             offers: updatedOffers
           };
         });
@@ -576,6 +578,8 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
           // Return the lineItem with the updated offers
           return {
             ...lineItem,
+            reserved: new Date().toISOString(),
+            reservedTo: acceptedOffer.user,
             offers: updatedOffers
           };
         });

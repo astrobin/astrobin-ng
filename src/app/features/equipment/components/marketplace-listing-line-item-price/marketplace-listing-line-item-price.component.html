@@ -1,6 +1,17 @@
-<div *ngIf="!!lineItem.price && !!lineItem.currency; else noPrice" [class.sold]="!!lineItem.sold" class="text-center">
-  <span *ngIf="lineItem.sold" class="badge rounded-pill bg-danger border border-light sold-badge">
+<div
+  *ngIf="!!lineItem.price && !!lineItem.currency; else noPrice"
+  [class.reserved]="!lineItem.sold && !!lineItem.reserved"
+  [class.sold]="!!lineItem.sold"
+  class="text-center"
+>
+  <span *ngIf="!!lineItem.sold" class="badge rounded-pill bg-danger border border-light sold-badge">
     {{ "Sold" | translate }}
+  </span>
+
+  <span
+    *ngIf="!lineItem.sold && !!lineItem.reserved"
+    class="badge rounded-pill bg-warning border border-light reserved-badge">
+    {{ "Reserved" | translate }}
   </span>
 
   <div class="price">

@@ -18,6 +18,9 @@ export class ToggleButtonComponent extends BaseComponentDirective implements OnI
   @Input()
   label: string;
 
+  @Input()
+  disabled = false;
+
   @Output()
   toggle = new EventEmitter<boolean>();
 

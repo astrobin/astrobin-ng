@@ -103,6 +103,16 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
   retractOffer() {
     if (this.equipmentMarketplaceService.listingHasOffers(this.listing)) {
       const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+      const componentInstance = modalRef.componentInstance;
+
+      if (this.listing.lineItems.some(lineItem => lineItem.offers.some(offer => offer.status === MarketplaceOfferStatus.ACCEPTED))) {
+        componentInstance.message = this.translateService.instant(
+          "Careful! If you retract an offer that was accepted by the seller, and have not reached a mutual " +
+          "agreement concerning this, you may risk disciplinary action. Offers are considered binding agreements " +
+          "between buyers and sellers. Are you sure you want to retract your offer?"
+        );
+      }
+
       modalRef.closed.subscribe(() => {
         this._performOfferAction(
           DeleteMarketplaceOffer,
@@ -143,25 +153,28 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     return this.translateService.instant("Make offer");
   }
 
-  hasAnyPendingOffers(): boolean {
+  hasAnyOffers(): boolean {
     return this.listing.lineItems.some(
-      lineItem => lineItem.offers.filter(offer => offer.status === MarketplaceOfferStatus.PENDING).length > 0
+      lineItem => lineItem.offers.length > 0
     );
   }
 
   _initFields() {
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
-      const hasAnyOffers = this.equipmentMarketplaceService.listingHasOffers(this.listing);
+      const listingHasOffers = this.equipmentMarketplaceService.listingHasOffers(this.listing);
+      const listingHasOffersByCurrentUser = this.equipmentMarketplaceService.listingHasOffersByUser(
+        this.listing, currentUser
+      );
 
       this.fields = this.listing.lineItems.map((lineItem, index) => {
-        const hasLineItemOffer = lineItem.offers.some(offer => offer.user === currentUser.id);
-        const offeredAmount = hasLineItemOffer
+        const lineItemHasOfferFromCurrentUser = lineItem.offers.some(offer => offer.user === currentUser.id);
+        const offeredAmount = lineItemHasOfferFromCurrentUser
           ? +lineItem.offers.find(offer => offer.user === currentUser.id).amount
           : 0;
 
         return {
           key: "",
-          fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""}`,
+          fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""} ${!!lineItem.reserved ? "reserved" : ""}`,
           fieldGroup: [
             {
               key: `lineItemId-${lineItem.id}`,
@@ -172,12 +185,12 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               key: `checkbox-${lineItem.id}`,
               type: "toggle",
               wrappers: ["default-wrapper"],
-              defaultValue: hasAnyOffers ? hasLineItemOffer : true,
               expressions: {
                 "hide": () => this.listing.bundleSaleOnly,
                 className: () => this.equipmentMarketplaceService.listingHasOffers(this.listing)
                   ? "hidden"
-                  : "col-1 toggle"
+                  : "col-1 toggle",
+                "props.disabled": () => !!lineItem.sold || !!lineItem.reserved
               },
               props: {
                 label: "&nbsp;",
@@ -186,6 +199,18 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               },
               hooks: {
                 onInit: field => {
+                  let defaultValue;
+
+                  if (!!field.model.sold || !!field.model.reserved) {
+                    defaultValue = false;
+                  } else if (lineItemHasOfferFromCurrentUser) {
+                    defaultValue = true;
+                  } else {
+                    defaultValue = !listingHasOffersByCurrentUser;
+                  }
+
+                  field.formControl.setValue(defaultValue);
+
                   field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
                     const amountControl = this.form.get(`amount-${lineItem.id}`);
 
@@ -211,6 +236,9 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 readonly: true,
                 hideOptionalMarker: true,
                 hideLabel: index > 0
+              },
+              expressions: {
+                "props.disabled": () => !!lineItem.sold || !!lineItem.reserved
               }
             },
             {
@@ -253,9 +281,8 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               wrappers: ["default-wrapper"],
               className: "col-4 offer-amount",
               focus: index === 0,
-              defaultValue: hasAnyOffers ? offeredAmount : +lineItem.price,
               props: {
-                disabled: !!lineItem.sold || (hasAnyOffers ? !hasLineItemOffer : false),
+                disabled: !!lineItem.sold || !!lineItem.reserved || (listingHasOffers ? !lineItemHasOfferFromCurrentUser : false),
                 label: this.translateService.instant("Offer amount"),
                 required: true,
                 type: "number",
@@ -269,6 +296,22 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               },
               hooks: {
                 onInit: field => {
+                  this.currentUser$.pipe(take(1)).subscribe(currentUser => {
+                    let defaultValue;
+
+                    if (lineItem.soldTo != currentUser.id && lineItem.reservedTo != currentUser.id) {
+                      defaultValue = 0;
+                    } else if (lineItemHasOfferFromCurrentUser) {
+                      defaultValue = offeredAmount;
+                    } else if (listingHasOffersByCurrentUser) {
+                      defaultValue = null;
+                    } else {
+                      defaultValue = +lineItem.price;
+                    }
+
+                    field.formControl.setValue(defaultValue);
+                  });
+
                   this.form.get(`amount-${lineItem.id}`).valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
                     this.form.get(`total-${lineItem.id}`).setValue(
                       this.currencyPipe.transform(
@@ -314,65 +357,73 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       | typeof EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_FAILURE
       | typeof EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE
   ) {
-    const lineItems = this.listing.lineItems.filter(lineItem => {
-      const amount = this.form.value[`amount-${lineItem.id}`];
-      return !!amount;
-    });
+    this.currentUser$.pipe(take(1)).subscribe(currentUser => {
+      let lineItems = [];
 
-    const successObservables$ = lineItems.map(lineItem =>
-      this.actions$.pipe(
-        ofType(successActionType),
-        filter(
-          (action: CreateMarketplaceOfferSuccess | UpdateMarketplaceOfferSuccess | DeleteMarketplaceOfferSuccess) =>
-            action.payload.offer.lineItem === lineItem.id
-        ),
-        switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-        take(1)
-      )
-    );
-
-    const failureObservables$ = lineItems.map(lineItem =>
-      this.actions$.pipe(
-        ofType(failureActionType),
-        filter(
-          (action: CreateMarketplaceOfferFailure | UpdateMarketplaceOfferFailure | DeleteMarketplaceOfferFailure) =>
-            action.payload.offer.lineItem === lineItem.id
-        ),
-        take(1)
-      )
-    );
-
-    forkJoin(successObservables$).pipe(
-      take(1),
-      // It's only one listing so we can take the first result.
-      map(result => result[0])
-    ).subscribe(listing => {
-      this.modal.close(listing);
-      this.loadingService.setLoading(false);
-
-      let message: string;
-
-      if (action === CreateMarketplaceOffer) {
-        message = this.translateService.instant("Your offer has been successfully submitted.");
-      } else if (action === UpdateMarketplaceOffer) {
-        message = this.translateService.instant("Your offer has been successfully updated.");
-      } else {
-        message = this.translateService.instant("Your offer has been successfully retracted.");
+      if (action === CreateMarketplaceOffer || action === UpdateMarketplaceOffer) {
+        lineItems = this.listing.lineItems.filter(lineItem => {
+          const amount = this.form.value[`amount-${lineItem.id}`];
+          return !!amount;
+        });
+      } else if (action === DeleteMarketplaceOffer) {
+        lineItems = this.listing.lineItems.filter(lineItem => {
+          return !!lineItem.offers.some(offer => offer.user === currentUser.id);
+        });
       }
 
-      this.popNotificationsService.success(message);
-    });
+      const successObservables$ = lineItems.map(lineItem =>
+        this.actions$.pipe(
+          ofType(successActionType),
+          filter(
+            (action: CreateMarketplaceOfferSuccess | UpdateMarketplaceOfferSuccess | DeleteMarketplaceOfferSuccess) =>
+              action.payload.offer.lineItem === lineItem.id
+          ),
+          switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
+          take(1)
+        )
+      );
 
-    forkJoin(failureObservables$).pipe(
-      take(1)
-    ).subscribe(() => {
-      this.loadingService.setLoading(false);
-      this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForBuyer());
-    });
+      const failureObservables$ = lineItems.map(lineItem =>
+        this.actions$.pipe(
+          ofType(failureActionType),
+          filter(
+            (action: CreateMarketplaceOfferFailure | UpdateMarketplaceOfferFailure | DeleteMarketplaceOfferFailure) =>
+              action.payload.offer.lineItem === lineItem.id
+          ),
+          take(1)
+        )
+      );
 
-    this.loadingService.setLoading(true);
+      forkJoin(successObservables$).pipe(
+        take(1),
+        // It's only one listing so we can take the first result.
+        map(result => result[0])
+      ).subscribe(listing => {
+        this.modal.close(listing);
+        this.loadingService.setLoading(false);
 
-    this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
+        let message: string;
+
+        if (action === CreateMarketplaceOffer) {
+          message = this.translateService.instant("Your offer has been successfully submitted.");
+        } else if (action === UpdateMarketplaceOffer) {
+          message = this.translateService.instant("Your offer has been successfully updated.");
+        } else {
+          message = this.translateService.instant("Your offer has been successfully retracted.");
+        }
+
+        this.popNotificationsService.success(message);
+      });
+
+      forkJoin(failureObservables$).pipe(
+        take(1)
+      ).subscribe(() => {
+        this.loadingService.setLoading(false);
+        this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForBuyer());
+      });
+
+      this.loadingService.setLoading(true);
+
       this.listing.lineItems.forEach(lineItem => {
         const amount = this.form.value[`amount-${lineItem.id}`];
         const offer: MarketplaceOfferInterface = {
@@ -382,9 +433,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
           amount
         };
 
-        if (!!amount) {
-          this.store$.dispatch(new action({ offer }));
-        }
+        this.store$.dispatch(new action({ offer }));
       });
     });
   }

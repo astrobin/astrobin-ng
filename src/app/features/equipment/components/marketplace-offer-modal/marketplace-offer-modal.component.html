@@ -39,7 +39,7 @@
 
   <button
     (click)="retractOffer()"
-    *ngIf="hasAnyPendingOffers()"
+    *ngIf="hasAnyOffers()"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-danger"
     type="button"

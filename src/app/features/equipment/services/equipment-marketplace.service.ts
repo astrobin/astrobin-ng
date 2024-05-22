@@ -144,4 +144,8 @@ export class EquipmentMarketplaceService extends BaseService {
   listingHasOffers(listing: MarketplaceListingInterface): boolean {
     return listing.lineItems.some(lineItem => lineItem.offers.length > 0);
   }
+
+  listingHasOffersByUser(listing: MarketplaceListingInterface, user: UserInterface): boolean {
+    return listing.lineItems.some(lineItem => lineItem.offers.some(offer => offer.user === user.id));
+  }
 }

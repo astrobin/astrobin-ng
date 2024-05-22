@@ -180,10 +180,11 @@
               <button (click)="onAcceptOfferClicked($event, userGroup.userId)" class="btn btn-success d-block w-100">
                 {{ "Accept" | translate }}
               </button>
-              <button (click)="onRejectOfferClicked($event, userGroup.userId)" class="btn btn-danger d-block w-100">
-                {{ "Reject" | translate }}
-              </button>
             </ng-container>
+
+            <button (click)="onRejectOfferClicked($event, userGroup.userId)" class="btn btn-danger d-block w-100">
+              {{ "Reject" | translate }}
+            </button>
 
             <button
               (click)="onMessageProspectBuyerClicked($event, userGroup.userId)"
