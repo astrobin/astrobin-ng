@@ -187,7 +187,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
                 ...usersWithAcceptedOffers,
                 ...usersWithPendingOffers,
                 ...[{
-                  value: null,
+                  value: -1,
                   label: this.translateService.instant("Someone else")
                 }]
               ]

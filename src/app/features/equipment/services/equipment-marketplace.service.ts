@@ -17,7 +17,10 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import {
+  MarketplaceOfferInterface,
+  MarketplaceOfferStatus
+} from "@features/equipment/types/marketplace-offer.interface";
 import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
@@ -143,6 +146,12 @@ export class EquipmentMarketplaceService extends BaseService {
 
   listingHasOffers(listing: MarketplaceListingInterface): boolean {
     return listing.lineItems.some(lineItem => lineItem.offers.length > 0);
+  }
+
+  listingHasPendingOffers(listing: MarketplaceListingInterface): boolean {
+    return listing.lineItems.some(
+      lineItem => lineItem.offers.filter(offer => offer.status === MarketplaceOfferStatus.PENDING).length > 0
+    );
   }
 
   listingHasOffersByUser(listing: MarketplaceListingInterface, user: UserInterface): boolean {

@@ -321,6 +321,14 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   }
 
   markAsSold() {
+    if (this.equipmentMarketplaceService.listingHasPendingOffers(this.listing)) {
+      this.popNotificationsService.error(
+        "You cannot mark a listing as sold if it has pending offers. " +
+        "Please accept or reject all offers before marking this listing as sold."
+      );
+      return;
+    }
+
     const modal: NgbModalRef = this.modalService.open(MarketplaceMarkLineItemsAsSoldModalComponent, { size: "lg" });
     const componentInstance: MarketplaceMarkLineItemsAsSoldModalComponent = modal.componentInstance;
 
