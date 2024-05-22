@@ -11,6 +11,7 @@ import { MarketplaceFeedbackModalComponent } from "@features/equipment/component
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { ActivatedRoute } from "@angular/router";
 import { MarketplaceFeedbackTargetType } from "@features/equipment/types/marketplace-feedback.interface";
+import { selectUser } from "@features/account/store/auth.selectors";
 
 @Component({
   selector: "astrobin-marketplace-feedback-widget",
@@ -41,6 +42,11 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
 
     this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(takeUntil(this.destroyed$)).subscribe(listing => {
       this.listing = listing;
+      this.updateState();
+    });
+
+    this.store$.select(selectUser, this.user.id).pipe(takeUntil(this.destroyed$)).subscribe(user => {
+      this.user = user;
       this.updateState();
     });
   }

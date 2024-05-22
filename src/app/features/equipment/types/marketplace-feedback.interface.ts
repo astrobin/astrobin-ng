@@ -29,4 +29,6 @@ export interface MarketplaceFeedbackInterface {
   value: MarketplaceFeedbackValue;
   category: MarketplaceFeedbackCategory;
   targetType?: MarketplaceFeedbackTargetType;
+  marketplaceFeedbackCount?: number;
+  marketplaceFeedback?: number;
 }
