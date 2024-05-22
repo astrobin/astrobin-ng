@@ -174,16 +174,17 @@
         </div>
         <!-- card-body -->
 
-        <ng-container
-          *ngIf="listing.user === currentUserWrapper.user?.id && userGroup.status === MarketplaceOfferStatus.PENDING"
-        >
+        <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
           <div class="card-footer">
-            <button (click)="onAcceptOfferClicked($event, userGroup.userId)" class="btn btn-success d-block w-100">
-              {{ "Accept" | translate }}
-            </button>
-            <button (click)="onRejectOfferClicked($event, userGroup.userId)" class="btn btn-danger d-block w-100">
-              {{ "Reject" | translate }}
-            </button>
+            <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING">
+              <button (click)="onAcceptOfferClicked($event, userGroup.userId)" class="btn btn-success d-block w-100">
+                {{ "Accept" | translate }}
+              </button>
+              <button (click)="onRejectOfferClicked($event, userGroup.userId)" class="btn btn-danger d-block w-100">
+                {{ "Reject" | translate }}
+              </button>
+            </ng-container>
+
             <button
               (click)="onMessageProspectBuyerClicked($event, userGroup.userId)"
               class="btn btn-secondary d-block w-100"
