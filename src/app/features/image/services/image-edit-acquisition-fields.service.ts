@@ -132,10 +132,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         fieldGroup: [
           {
             key: "iso",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: "ISO",
               required: false,
               step: 1,
@@ -159,10 +158,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "gain",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: "Gain",
               required: false,
               step: 1,
@@ -183,10 +181,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "sensorCooling",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("Cooling"),
               description: this.translateService.instant("The temperature of the chip in Celsius degrees, e.g. -20."),
               required: false,
@@ -209,10 +206,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         fieldGroup: [
           {
             key: "fNumber",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("f-number"),
               description: this.translateService.instant(
                 "If you used a camera lens, please specify the f-number (also known as f-ratio or f-stop) that you " +
@@ -245,10 +241,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         fieldGroup: [
           {
             key: "darks",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("Darks"),
               description: this.translateService.instant("The number of dark frames."),
               required: false,
@@ -261,10 +256,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "flats",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("Flats"),
               description: this.translateService.instant("The number of flat frames."),
               required: false,
@@ -274,10 +268,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "flatDarks",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("Flat darks"),
               description: this.translateService.instant("The number of flat dark frames."),
               required: false,
@@ -290,10 +283,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "bias",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("Bias"),
               description: this.translateService.instant("The number of bias/offset frames."),
               required: false,
@@ -350,10 +342,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "meanSqm",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("Mean mag/arcsec^2"),
               description: this.translateService.instant(
                 "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
@@ -376,10 +367,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "meanFwhm",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("Mean FWHM"),
               description: this.translateService.instant(
                 "Mean Full Width at Half Maximum in arc seconds, a measure of seeing."
@@ -402,10 +392,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "temperature",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("Temperature"),
               description: this.translateService.instant("Ambient temperature in Celsius degrees."),
               required: false,
@@ -513,10 +502,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         fieldGroup: [
           {
             key: "focalLength",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("Focal length") + " mm",
               description: this.translateService.instant(
                 "The focal length of the whole optical train, including barlow lenses or other components."
@@ -539,10 +527,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         fieldGroup: [
           {
             key: "iso",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: "ISO",
               required: false,
               step: 1,
@@ -554,10 +541,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "gain",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: "Gain",
               required: false,
               step: 1,
@@ -637,10 +623,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         fieldGroup: [
           {
             key: "cmi",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("CMI"),
               description: this.translateService.instant("Latitude of the first Central Meridian."),
               required: false,
@@ -662,10 +647,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "cmii",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("CMII"),
               description: this.translateService.instant("Latitude of the second Central Meridian."),
               required: false,
@@ -687,10 +671,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           },
           {
             key: "cmiii",
-            type: "input",
+            type: "custom-number",
             wrappers: ["default-wrapper"],
             props: {
-              type: "number",
               label: this.translateService.instant("CMIII"),
               description: this.translateService.instant("Latitude of the third Central Meridian."),
               required: false,
@@ -829,11 +812,10 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
 
   private _getNumberField(): FormlyFieldConfig {
     return {
-      key: "number",
+      key: "custom-number",
       type: "input",
       wrappers: ["default-wrapper"],
       props: {
-        type: "number",
         label: this.translateService.instant("Number"),
         description: this.translateService.instant("Number of frames."),
         required: true,
@@ -849,10 +831,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   private _getDurationField(): FormlyFieldConfig {
     return {
       key: "duration",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       props: {
-        type: "number",
         label: this.translateService.instant("Duration"),
         description: this.translateService.instant("Duration of each frame in seconds."),
         required: true,
@@ -891,10 +872,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   private _getFramesField(): FormlyFieldConfig {
     return {
       key: "frames",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       props: {
-        type: "number",
         label: this.translateService.instant("Frames"),
         description: this.translateService.instant("Number of frames."),
         required: false,
@@ -910,10 +890,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   private _getFPSField(): FormlyFieldConfig {
     return {
       key: "fps",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       props: {
-        type: "number",
         label: this.translateService.instant("FPS"),
         description: this.translateService.instant("Frames per second."),
         required: false,
@@ -937,10 +916,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   private _getExposurePerFrame(): FormlyFieldConfig {
     return {
       key: "exposurePerFrame",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       props: {
-        type: "number",
         label: this.translateService.instant("Exposure per frame") + " ms",
         required: false,
         step: 1,

@@ -189,11 +189,10 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
       },
       {
         key: "maxDistance",
-        type: "input",
+        type: "custom-number",
         wrappers: ["default-wrapper"],
         defaultValue: params["maxDistance"],
         props: {
-          type: "number",
           label: this.translateService.instant("Max. distance"),
           description: this.translateService.instant("Max. distance from your location."),
           min: 0
@@ -228,11 +227,10 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
       },
       {
         key: "minPrice",
-        type: "input",
+        type: "custom-number",
         wrappers: ["default-wrapper"],
         defaultValue: params["minPrice"],
         props: {
-          type: "number",
           label: this.translateService.instant("Min. price"),
           description: this.translateService.instant("Min. price of the item."),
           min: 0
@@ -240,11 +238,10 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
       },
       {
         key: "maxPrice",
-        type: "input",
+        type: "custom-number",
         wrappers: ["default-wrapper"],
         defaultValue: params["maxPrice"],
         props: {
-          type: "number",
           label: this.translateService.instant("Max. price"),
           description: this.translateService.instant("Max. price of the item."),
           min: 0

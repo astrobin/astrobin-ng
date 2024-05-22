@@ -184,7 +184,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
   private _getApertureField() {
     return {
       key: "aperture",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "telescope-field-aperture",
       hideExpression: () => this.model.type === TelescopeType.CAMERA_LENS,
@@ -192,7 +192,6 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE)
       },
@@ -235,7 +234,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
   private _getFocalLengthField() {
     return {
       key: "focalLength",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "telescope-field-focal-length",
       defaultValue: this.model.minFocalLength === this.model.maxFocalLength ? this.model.minFocalLength : null,
@@ -244,7 +243,6 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH)
       },
@@ -283,7 +281,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         {
           className: "col-12 col-lg-6",
           key: "minFocalLength",
-          type: "input",
+          type: "custom-number",
           wrappers: ["default-wrapper"],
           id: "telescope-field-min-focal-length",
           defaultValue: this.model.minFocalLength,
@@ -293,7 +291,6 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             "props.required": "!model.fixedFocalLength"
           },
           props: {
-            type: "number",
             step: 0.1,
             label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MIN_FOCAL_LENGTH)
           },
@@ -327,7 +324,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         {
           className: "col-12 col-lg-6",
           key: "maxFocalLength",
-          type: "input",
+          type: "custom-number",
           wrappers: ["default-wrapper"],
           id: "telescope-field-max-focal-length",
           defaultValue: this.model.maxFocalLength,
@@ -337,7 +334,6 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             "props.required": "!model.fixedFocalLength"
           },
           props: {
-            type: "number",
             step: 0.1,
             label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MAX_FOCAL_LENGTH)
           },
@@ -384,14 +380,13 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
   private _getWeightField() {
     return {
       key: "weight",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "telescope-field-weight",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT)
       },

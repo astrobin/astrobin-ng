@@ -17,6 +17,7 @@ import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-
 import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
 import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
 import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
+import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -83,6 +84,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       {
         name: "array",
         component: FormlyFieldArrayComponent,
+        wrappers: ["default-wrapper"]
+      },
+      {
+        name: "custom-number",
+        component: FormlyFieldCustomNumberComponent,
         wrappers: ["default-wrapper"]
       }
     ],

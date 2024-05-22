@@ -94,7 +94,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   initialLineItemCountFields: FormlyFieldConfig[] = [
     {
       key: "count",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       props: {
         label: this.translateService.instant("How many items do you want to sell in this listing?"),
@@ -104,8 +104,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           "have a bundle sale or avoid repeating the same information in multiple listings if you're selling " +
           "multiple items. PS: you can always add more line items later."
         ),
-        required: true,
-        type: "number"
+        required: true
       }
     },
     {
@@ -122,8 +121,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             1: "</a>"
           }
         ),
-        required: true,
-        type: "number"
+        required: true
       }
     }
   ];
@@ -544,10 +542,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   },
                   {
                     key: "yearOfPurchase",
-                    type: "input",
+                    type: "custom-number",
                     wrappers: ["default-wrapper"],
                     props: {
-                      type: "number",
                       label: this.translateService.instant("Year of purchase")
                     },
                     validators: {
@@ -586,10 +583,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     fieldGroup: [
                       {
                         key: "price",
-                        type: "input",
+                        type: "custom-number",
                         wrappers: ["default-wrapper"],
                         props: {
-                          type: "number",
                           min: 0,
                           label: this.translateService.instant("Price"),
                           required: true
@@ -597,14 +593,13 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       },
                       {
                         key: "shippingCost",
-                        type: "input",
+                        type: "custom-number",
                         wrappers: ["default-wrapper"],
                         expressions: {
                           hide: () => !this.model.deliveryByShipping
                         },
                         props: {
                           label: this.translateService.instant("Shipping cost"),
-                          type: "number",
                           description: this.translateService.instant("Leave blank for free shipping"),
                           min: 0
                         }

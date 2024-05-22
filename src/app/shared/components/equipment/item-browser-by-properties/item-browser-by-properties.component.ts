@@ -327,12 +327,11 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
         {
           className: "col-12 col-lg-6",
           key: "from",
-          type: "input",
+          type: "custom-number",
           wrappers: ["default-wrapper"],
           props: {
             required: false,
             label: this.translateService.instant("From"),
-            type: "number",
             step: 0.1
           },
           validators: {
@@ -356,12 +355,11 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
         {
           className: "col-12 col-lg-6",
           key: "to",
-          type: "input",
+          type: "custom-number",
           wrappers: ["default-wrapper"],
           props: {
             required: false,
             label: this.translateService.instant("To"),
-            type: "number",
             step: 0.1
           },
           validators: {
@@ -402,12 +400,11 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
         {
           className: "col-12 col-lg-6",
           key: "from",
-          type: "input",
+          type: "custom-number",
           wrappers: ["default-wrapper"],
           props: {
             required: false,
             label: this.translateService.instant("From"),
-            type: "number",
             step: 0.1
           },
           validators: {
@@ -431,12 +428,11 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
         {
           className: "col-12 col-lg-6",
           key: "to",
-          type: "input",
+          type: "custom-number",
           wrappers: ["default-wrapper"],
           props: {
             required: false,
             label: this.translateService.instant("To"),
-            type: "number",
             step: 0.1
           },
           validators: {

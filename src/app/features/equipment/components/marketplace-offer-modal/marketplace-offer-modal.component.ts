@@ -287,7 +287,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             },
             {
               key: `amount-${lineItem.id}`,
-              type: "input",
+              type: "custom-number",
               wrappers: ["default-wrapper"],
               className: "col-4 offer-amount",
               focus: index === 0,
@@ -295,7 +295,6 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 disabled: !!lineItem.sold || !!lineItem.reserved || (listingHasOffers ? !lineItemHasOfferFromCurrentUser : false),
                 label: this.translateService.instant("Offer amount"),
                 required: true,
-                type: "number",
                 min: 0.01,
                 step: 1,
                 addonLeft: {

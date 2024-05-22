@@ -1,0 +1,13 @@
+<input
+  [attr.aria-describedby]="id + '-formly-validation-error'"
+  [attr.aria-invalid]="showError"
+  [class.is-invalid]="showError"
+  [formControl]="formControl"
+  [formlyAttributes]="field"
+  [max]="props.max"
+  [min]="props.min"
+  [step]="props.step"
+  astrobinNoScroll
+  class="form-control"
+  type="number"
+/>

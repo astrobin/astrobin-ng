@@ -145,14 +145,13 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getPixelSizeField() {
     return {
       key: "pixelSize",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-pixel-size",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.translateService.instant("Pixel size (in μm)"),
         description: this.translateService.instant("The size of the individual pixels in μm.")
@@ -180,7 +179,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getPixelWidthField() {
     return {
       key: "pixelWidth",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-pixel-width",
       expressions: {
@@ -188,7 +187,6 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       },
       props: {
         required: true,
-        type: "number",
         step: 1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_WIDTH)
       },
@@ -209,7 +207,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getPixelHeightField() {
     return {
       key: "pixelHeight",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-pixel-height",
       expressions: {
@@ -217,7 +215,6 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       },
       props: {
         required: true,
-        type: "number",
         step: 1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_HEIGHT)
       },
@@ -238,14 +235,13 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getSensorWidthField() {
     return {
       key: "sensorWidth",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-sensor-width",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_WIDTH)
       },
@@ -272,14 +268,13 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getSensorHeightField() {
     return {
       key: "sensorHeight",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-sensor-height",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_HEIGHT)
       },
@@ -306,14 +301,13 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getQuantumEfficiencyField() {
     return {
       key: "quantumEfficiency",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-quantum-efficiency",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY)
       },
@@ -340,14 +334,13 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getFullWellCapacityField() {
     return {
       key: "fullWellCapacity",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-full-well-capacity",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY)
       },
@@ -374,14 +367,13 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getReadNoiseField() {
     return {
       key: "readNoise",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-read-noise",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE)
       },
@@ -408,14 +400,13 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getFrameRateField() {
     return {
       key: "frameRate",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-frame-rate",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE)
       },
@@ -436,14 +427,13 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   private _getAdcField() {
     return {
       key: "adc",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "sensor-field-adc",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC),
         description: this.translateService.instant("Analog to Digital Converter")

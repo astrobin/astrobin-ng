@@ -235,7 +235,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
   private _getBandwidthField() {
     return {
       key: "bandwidth",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "filter-field-bandwidth",
       expressions: {
@@ -243,7 +243,6 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         "props.required": "['H_ALPHA', 'H_BETA', 'SII', 'OIII'].indexOf(model.type) > -1"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH)
       },
