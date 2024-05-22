@@ -32,6 +32,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 
 declare var google: any;
 
@@ -79,6 +80,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         findItemMode: MarketplaceLineItemFindItemMode.PLAIN,
         itemObjectId: null,
         itemContentType: null,
+        itemContentTypeSelector: null,
         images: []
       }
     ]
@@ -379,7 +381,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       value: MarketplaceLineItemFindItemMode.PLAIN
                     },
                     {
-                      label: this.translateService.instant("Search equipment you have used on your images"),
+                      label: this.translateService.instant("Search equipment used on your images"),
                       description: this.translateService.instant(
                         "Associate this listing to an equipment item you have used on your images. Choose this" +
                         " option if you have used this equipment item on your images and want to sell it."
@@ -398,12 +400,52 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 }
               },
               {
+                key: "itemContentType",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "itemContentTypeSelector",
+                type: "ng-select",
+                wrappers: ["default-wrapper"],
+                className: "border-top-0 border-bottom-0 pb-0",
+                expressions: {
+                  hide: config => config.model.findItemMode !== MarketplaceLineItemFindItemMode.PLAIN,
+                  "props.required": config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN
+                },
+                props: {
+                  label: this.translateService.instant("What kind of item are you selling?"),
+                  options: [
+                    EquipmentItemType.CAMERA,
+                    EquipmentItemType.TELESCOPE,
+                    EquipmentItemType.MOUNT,
+                    EquipmentItemType.FILTER,
+                    EquipmentItemType.ACCESSORY,
+                    EquipmentItemType.SOFTWARE
+                  ].map(itemType => ({
+                    label: this.equipmentItemService.humanizeType(itemType),
+                    value: itemType
+                  }))
+                },
+                hooks: {
+                  onInit: field => {
+                    const index = this.model.lineItems.indexOf(field.parent.model);
+                    if (this.model.lineItems[index].itemContentType) {
+                      this._setContentTypeSelectorValue(field, this.model.lineItems[index].itemContentType);
+                    }
+                    field.formControl.valueChanges.subscribe((value: EquipmentItemType) => {
+                      this._setContentTypeValue(field, value);
+                    });
+                  }
+                }
+              },
+              {
                 key: "itemPlainText",
                 type: "input",
                 wrappers: ["default-wrapper"],
                 className: "border-top-0",
                 props: {
-                  label: this.translateService.instant("Item for sale"),
+                  label: this.translateService.instant("What are you selling?"),
                   description: this.translateService.instant(
                     "Enter only one item. If you want to sell multiple items, add them as separate line items " +
                     "using the button below."
@@ -454,34 +496,12 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       const index = this.model.lineItems.indexOf(field.model);
                       field.props.itemType = lineItemMap.get(index);
 
-                      componentInstance.itemTypeChanged.subscribe(itemType => {
-                        const index = this.model.lineItems.indexOf(field.model);
-                        const payload = {
-                          appLabel: "astrobin_apps_equipment",
-                          model: `${itemType.toLowerCase()}`
-                        };
-
-                        this.store$
-                          .select(selectContentType, payload)
-                          .pipe(
-                            filter(contentType => !!contentType),
-                            take(1)
-                          )
-                          .subscribe(contentType => {
-                            this.model.lineItems[index].itemContentType = contentType.id;
-                            this.form.get(`lineItems.${index}`).patchValue({ itemContentType: contentType.id });
-                          });
-
-                        this.store$.dispatch(new LoadContentType(payload));
+                      componentInstance.itemTypeChanged.subscribe((value: EquipmentItemType) => {
+                        this._setContentTypeValue(field, value);
                       });
                     }
                   }
                 }
-              },
-              {
-                key: "itemContentType",
-                type: "input",
-                className: "hidden"
               },
               {
                 key: "images",
@@ -905,6 +925,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             findItemMode: MarketplaceLineItemFindItemMode.PLAIN,
             itemObjectId: null,
             itemContentType: null,
+            itemContentTypeSelector: null,
             images: []
           }));
 
@@ -950,5 +971,43 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           _doInitFields(lineItemMap, initialCurrency);
         }
       });
+  }
+
+  private _setContentTypeValue(field: FormlyFieldConfig, value: EquipmentItemType) {
+    const payload = {
+      appLabel: "astrobin_apps_equipment",
+      model: value.toLowerCase()
+    };
+
+    this.store$.select(selectContentType, payload).pipe(
+      tap(contentType => {
+        if (!contentType) {
+          this.store$.dispatch(new LoadContentType(payload));
+        }
+      }),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      const index = this.model.lineItems.indexOf(field.model);
+      this.model.lineItems[index].itemContentType = contentType.id;
+      this.form.get(`lineItems.${index}`).patchValue({ itemContentType: contentType.id });
+    });
+  }
+
+  private _setContentTypeSelectorValue(field: FormlyFieldConfig, contentTypeId: ContentTypeInterface["id"]) {
+    this.store$.select(selectContentTypeById, { id: contentTypeId }).pipe(
+      tap(contentType => {
+        if (!contentType) {
+          this.store$.dispatch(new LoadContentTypeById({ id: contentTypeId }));
+        }
+      }),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      const index = this.model.lineItems.indexOf(field.model);
+      const value = EquipmentItemType[contentType.model.toUpperCase()];
+      this.model.lineItems[index].itemContentTypeSelector = value;
+      this.form.get(`lineItems.${index}`).patchValue({ itemContentTypeSelector: value });
+    });
   }
 }

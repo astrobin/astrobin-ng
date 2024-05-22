@@ -41,6 +41,7 @@ export interface MarketplaceLineItemInterface {
   findItemMode?: MarketplaceLineItemFindItemMode;
   itemObjectId: number;
   itemContentType: ContentTypeInterface["id"];
+  itemContentTypeSelector?: EquipmentItemType; // Only needed for the form.
   itemPlainText?: string;
   itemName?: string;
   images?: MarketplaceImageInterface[] | { file: File, url: string }[];

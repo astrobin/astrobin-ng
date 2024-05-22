@@ -50,6 +50,16 @@
     </ng-container>
 
     <ng-template #unsoldBadges>
+      <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+        <div
+          *ngIf="(currentUserWrapper.user | isMarketplaceModerator) && lineItem.itemPlainText"
+          [ngbTooltip]="translateService.instant('This listing is not associated to an equipment item')"
+          class="badge rounded-pill bg-danger border border-light"
+          container="body"
+        >
+          <fa-icon icon="exclamation-triangle"></fa-icon>
+        </div>
+      </ng-container>
       <div
         *ngIf="lineItem.offers?.length"
         [ngbTooltip]="translateService.instant('This listing has offers')"
