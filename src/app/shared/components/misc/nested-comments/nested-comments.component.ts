@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -42,6 +42,13 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
 
   @Input()
   noCommentsLabel: string = this.translateService.instant("There are no comments yet.");
+
+  @Input()
+  showCloseButton = false;
+
+  @Output()
+    // eslint-disable-next-line @angular-eslint/no-output-native
+  close = new EventEmitter<void>();
 
   comments$: Observable<NestedCommentInterface[]>;
   loadingComments = true;

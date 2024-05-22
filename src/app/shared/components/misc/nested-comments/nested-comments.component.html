@@ -5,6 +5,7 @@
 
     <div class="actions">
       <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+      <button (click)="close.emit()" *ngIf="showCloseButton" class="btn btn-link ms-2 btn-close"></button>
     </div>
   </div>
 
