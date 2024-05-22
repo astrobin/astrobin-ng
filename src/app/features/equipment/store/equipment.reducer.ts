@@ -16,6 +16,26 @@ import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketpl
 
 export const equipmentFeatureKey = "equipment";
 
+function sortMarketplaceListings(a: MarketplaceListingInterface, b: MarketplaceListingInterface): number {
+  // Check if both 'approved' fields are not null
+  if (a.approved !== null && b.approved !== null) {
+    return new Date(b.approved).getTime() - new Date(a.approved).getTime();
+  }
+
+  // If 'approved' of 'a' is null and 'b' is not null, 'b' should come first
+  if (a.approved === null && b.approved !== null) {
+    return 1;
+  }
+
+  // If 'approved' of 'b' is null and 'a' is not null, 'a' should come first
+  if (a.approved !== null && b.approved === null) {
+    return -1;
+  }
+
+  // If both 'approved' fields are null, sort by 'created' field
+  return new Date(b.updated).getTime() - new Date(a.updated).getTime();
+}
+
 export interface EquipmentState {
   brands: BrandInterface[];
   brandsCount: number;
@@ -305,7 +325,7 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
           listings: UtilsService.arrayUniqueObjects([
             ...state.marketplace.listings || [],
             ...action.payload.listings.results
-          ], "id")
+          ], "id").sort(sortMarketplaceListings)
         }
       };
     }
@@ -322,7 +342,7 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
           listings: [
             ...(state.marketplace.listings?.filter(listing => listing.id !== action.payload.listing.id) || []),
             action.payload.listing
-          ].sort((a, b) => b.id - a.id)
+          ].sort(sortMarketplaceListings)
         }
       };
     }
