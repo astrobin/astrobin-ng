@@ -2,7 +2,7 @@ astrobin-marketplace-listing-form ::ng-deep {
   .main-row {
     > [class*="col"] {
       overflow-y: auto;
-      max-height: calc(100vh - 270px);
+      max-height: calc(100vh - 336px);
 
       &.col-form {
         padding: 0;
@@ -11,6 +11,17 @@ astrobin-marketplace-listing-form ::ng-deep {
       &.col-preview {
         padding: 0 4rem;
       }
+    }
+
+    .form-header {
+      background-color: var(--black);
+      padding: 1rem;
+      display: block;
+      margin-bottom: 1rem;
+      border-radius: var(--bs-border-radius);
+      font-size: 1rem;
+      color: var(--lightstGrey);
+      text-align: center;
     }
   }
 }
