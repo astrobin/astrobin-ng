@@ -33,8 +33,12 @@
     .nav-link,
     &.show > .nav-link {
       border-radius: 0;
-      margin: 0 calc(var(--bs-nav-link-padding-y) * -1);
+      margin: 0 0 0 calc(var(--bs-nav-link-padding-y) * -1);
       padding: var(--bs-nav-link-padding-y) calc(var(--bs-nav-link-padding-x) + 0.5rem);
+
+      @media screen and (min-width: 768px) {
+        margin: 0 calc(var(--bs-nav-link-padding-y) * -1);
+      }
 
       &.nav-pills-header {
         background: none;

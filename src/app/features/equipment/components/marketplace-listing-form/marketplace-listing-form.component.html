@@ -29,8 +29,8 @@
 </div>
 
 <ng-container *ngIf="!!initialLineItemCount && formInitialized">
-  <div class="row main-row">
-    <div class="col-lg-4 col-form">
+  <div class="row main-row d-none d-md-flex">
+    <div class="col-md-6 col-lg-4 col-form">
       <span class="form-header">
         {{ "Form area" | translate }}
       </span>
@@ -42,7 +42,7 @@
     </div>
   </div>
   <div class="row main-row">
-    <div class="col-lg-4 col-form">
+    <div class="col-md-6 col-lg-4 col-form">
       <form [formGroup]="form">
         <formly-form
           [fields]="fields"
@@ -75,7 +75,7 @@
       </form>
     </div>
 
-    <div *ngIf="formInitialized" class="col col-preview">
+    <div *ngIf="formInitialized" class="col col-preview d-none d-md-block">
       <h2 *ngIf="form.value.title">{{ form.value.title }}</h2>
 
       <astrobin-marketplace-listing

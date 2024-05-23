@@ -1,11 +1,11 @@
 <div class="page has-breadcrumb">
-  <h1 class="d-flex justify-content-between align-items-center">
-    <span class="flex-grow-1 me-3">{{ title }}</span>
+  <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row gap-1">
+    <span class="flex-grow-1 me-lg-3 mb-1 mb-lg-0">{{ title }}</span>
 
-    <span class="d-inline-block me-3" ngbDropdown>
+    <span class="d-inline-block mb-0 me-lg-3 pt-0 pb-0" ngbDropdown>
       <button
         [class.loading]="loadingService.loading$ | async"
-        class="btn btn-outline-primary"
+        class="btn btn-outline-primary mb-0"
         id="region-selector"
         ngbDropdownToggle
       >
@@ -32,16 +32,20 @@
       </span>
     </span>
 
-    <a [routerLink]="['/', 'equipment', 'marketplace', 'create']" class="btn btn-primary btn-create-listing me-3">
+    <a [routerLink]="['/', 'equipment', 'marketplace', 'create']" class="btn btn-primary btn-create-listing me-lg-3">
       <fa-icon icon="plus"></fa-icon>
       {{ "Create listing" | translate }}
     </a>
-    <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+
+    <astrobin-refresh-button (click)="refresh()" class="d-none d-lg-block"></astrobin-refresh-button>
   </h1>
 
   <div class="row">
-    <div class="col-12 col-md-3">
-      <astrobin-marketplace-sidebar (filterChange)="refresh($event)"></astrobin-marketplace-sidebar>
+    <div class="col-12 col-md-5 col-lg-3">
+      <astrobin-marketplace-sidebar
+        (filterChange)="refresh($event)"
+        class="d-block mb-3 mb-lg-0"
+      ></astrobin-marketplace-sidebar>
     </div>
 
     <div class="col">

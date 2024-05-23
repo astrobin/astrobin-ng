@@ -505,7 +505,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 key: "images",
                 wrappers: ["default-wrapper"],
                 fieldGroupClassName:
-                  "d-flex flex-wrap flex-column flex-xl-row justify-content-evenly field-group-images",
+                  "d-flex flex-wrap justify-content-evenly field-group-images",
                 props: {
                   label: this.translateService.instant("Images"),
                   description: this.translateService.instant(

@@ -1,15 +1,28 @@
+@import "../../../../../styles/breakpoints";
+
 astrobin-marketplace-listing-form ::ng-deep {
   .main-row {
     > [class*="col"] {
-      overflow-y: auto;
-      max-height: calc(100vh - 336px);
+      @media screen and (min-width: $md-min) {
+        overflow-y: auto;
+        max-height: calc(100vh - 236px);
+      }
+
+      @media screen and (min-width: $lg-min) {
+        overflow-y: auto;
+        max-height: calc(100vh - 336px);
+      }
 
       &.col-form {
         padding: 0;
       }
 
       &.col-preview {
-        padding: 0 4rem;
+        padding: 0 1rem;
+
+        @media screen and (min-width: $lg-min) {
+          padding: 0 4rem;
+        }
       }
     }
 
@@ -22,6 +35,7 @@ astrobin-marketplace-listing-form ::ng-deep {
       font-size: 1rem;
       color: var(--lightstGrey);
       text-align: center;
+      width: calc(100% - 1rem);
     }
   }
 }

@@ -34,6 +34,7 @@ import { forkJoin } from "rxjs";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-marketplace-offer-modal",
@@ -67,7 +68,8 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
   }
@@ -156,6 +158,10 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     return this.listing.lineItems.some(lineItem => lineItem.offers.length > 0);
   }
 
+  displayLabel(index: number): boolean {
+    return this.windowRefService.nativeWindow.innerWidth < 992 || index === 0;
+  }
+
   _initFields() {
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
       const listingHasOffers = this.equipmentMarketplaceService.listingHasOffers(this.listing);
@@ -172,7 +178,8 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
 
         return {
           key: "",
-          fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""} ${!!lineItem.reserved ? "reserved" : ""}`,
+          fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""} ${!!lineItem.reserved ? "reserved" : ""} flex-column flex-lg-row offer-row`,
+          wrappers: ["default-wrapper"],
           fieldGroup: [
             {
               key: `lineItemId-${lineItem.id}`,
@@ -186,13 +193,13 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               expressions: {
                 hide: () => this.listing.bundleSaleOnly,
                 className: () =>
-                  this.equipmentMarketplaceService.listingHasOffers(this.listing) ? "hidden" : "col-1 toggle",
+                  this.equipmentMarketplaceService.listingHasOffers(this.listing) ? "hidden" : "col-12 col-lg-1 pb-4 pb-lg-0 toggle",
                 "props.disabled": () => !!lineItem.sold || !!lineItem.reserved
               },
               props: {
                 label: "&nbsp;",
                 hideOptionalMarker: true,
-                hideLabel: index > 0
+                hideLabel: !this.displayLabel(index)
               },
               hooks: {
                 onInit: field => {
@@ -237,12 +244,12 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               key: `itemName-${lineItem.id}`,
               type: "html",
               wrappers: ["default-wrapper"],
-              className: "col item-name",
+              className: "col-12 col-lg pb-4 pb-lg-0 item-name",
               props: {
                 label: this.translateService.instant("Item"),
                 readonly: true,
                 hideOptionalMarker: true,
-                hideLabel: index > 0
+                hideLabel: !this.displayLabel(index)
               },
               expressions: {
                 "props.disabled": () => !!lineItem.sold || !!lineItem.reserved,
@@ -263,13 +270,13 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               key: `price-${lineItem.id}`,
               type: "input",
               wrappers: ["default-wrapper"],
-              className: "col price",
+              className: "col-12 col-lg pb-4 pb-lg-0 price",
               defaultValue: this.currencyPipe.transform(+lineItem.price, lineItem.currency, "symbol-narrow"),
               props: {
                 label: this.translateService.instant("Ask price"),
                 readonly: true,
                 hideOptionalMarker: true,
-                hideLabel: index > 0
+                hideLabel: !this.displayLabel(index)
               }
             },
             {
@@ -282,7 +289,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               key: `shippingCost-${lineItem.id}`,
               type: "input",
               wrappers: ["default-wrapper"],
-              className: "col shipping-cost",
+              className: "col-12 col-lg pb-4 pb-lg-0 shipping-cost",
               defaultValue: lineItem.shippingCost
                 ? this.currencyPipe.transform(+lineItem.shippingCost, lineItem.currency, "symbol-narrow")
                 : this.translateService.instant("Free"),
@@ -290,14 +297,14 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 label: this.translateService.instant("Shipping cost"),
                 readonly: true,
                 hideOptionalMarker: true,
-                hideLabel: index > 0
+                hideLabel: !this.displayLabel(index)
               }
             },
             {
               key: `amount-${lineItem.id}`,
               type: "custom-number",
               wrappers: ["default-wrapper"],
-              className: "col-4 offer-amount",
+              className: "col-12 col-lg-4 pb-4 pb-lg-0 offer-amount",
               focus: index === 0,
               props: {
                 disabled:
@@ -312,7 +319,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                   text: lineItem.currency
                 },
                 hideRequiredMarker: true,
-                hideLabel: index > 0
+                hideLabel: !this.displayLabel(index)
               },
               hooks: {
                 onInit: field => {
@@ -357,12 +364,12 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               key: `total-${lineItem.id}`,
               type: "input",
               wrappers: ["default-wrapper"],
-              className: "col total",
+              className: "col-12 col-lg total",
               props: {
                 label: this.translateService.instant("Total"),
                 readonly: true,
                 hideOptionalMarker: true,
-                hideLabel: index > 0
+                hideLabel: !this.displayLabel(index)
               },
               hooks: {
                 onInit: field => {

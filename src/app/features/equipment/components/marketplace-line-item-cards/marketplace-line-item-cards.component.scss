@@ -3,14 +3,14 @@
 .listings {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
 
   .line-item {
     width: calc(50% - .75rem);
   }
 
   @media screen and (max-width: $md-max) {
-    gap: .5rem;
+    gap: 1rem;
     .line-item {
       width: 100%;
     }
