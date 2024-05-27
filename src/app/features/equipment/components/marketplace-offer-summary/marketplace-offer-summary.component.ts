@@ -125,7 +125,9 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
               userGroup.offersByLineItem[lineItem.id] = [];
             }
 
-            userGroup.offersByLineItem[lineItem.id].push(offer);
+            if (!userGroup.offersByLineItem[lineItem.id].length) {
+              userGroup.offersByLineItem[lineItem.id].push(offer);
+            }
 
             if (
               lineItem.offers
