@@ -141,7 +141,7 @@ export class EquipmentMarketplaceService extends BaseService {
   }
 
   listingExpired(listing: MarketplaceListingInterface): boolean {
-    return new Date(listing.expiration) < new Date();
+    return new Date(listing.expiration + "Z") < new Date();
   }
 
   listingHasOffers(listing: MarketplaceListingInterface): boolean {

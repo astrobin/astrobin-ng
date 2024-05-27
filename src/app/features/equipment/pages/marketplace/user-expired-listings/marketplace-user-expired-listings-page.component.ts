@@ -25,7 +25,7 @@ export class MarketplaceUserExpiredListingsPageComponent extends MarketplaceUser
     return listing => (
       listing.lineItems.length > 0 &&
       listing.user === this.user.id &&
-      new Date(listing.expiration) < new Date()
+      new Date(listing.expiration + "Z") < new Date()
     );
   }
 
