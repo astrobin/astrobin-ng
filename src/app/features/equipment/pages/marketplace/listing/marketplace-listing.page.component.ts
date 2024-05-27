@@ -238,6 +238,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           message + " " + this.translateService.instant("Find them on the right side of the page")
         );
       }
+    } else if (fragment && fragment === "mark-as-sold") {
+      this.markAsSold();
     }
 
     this._recordHit();
