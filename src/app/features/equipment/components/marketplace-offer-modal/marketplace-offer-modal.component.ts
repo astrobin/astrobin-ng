@@ -509,7 +509,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       const id = lineItem.id;
 
       if (this.form.value[`checkbox-${id}`] || this.listing.bundleSaleOnly) {
-        total += +this.form.value[`amount-${id}`];
+        total += +this.form.value[`amount-${id}`] + (+this.form.value[`shippingCost-raw-${id}`] || 0);
       }
 
       return total;
