@@ -80,6 +80,7 @@ interface UserOfferGroup {
   userDisplayName: string;
   status: MarketplaceOfferStatus;
   offersByLineItem: { [lineItemId: number]: MarketplaceOfferInterface[] };
+  lineItemsWithoutOffers: MarketplaceLineItemInterface[];
 }
 
 @Component({
@@ -214,7 +215,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
                   userId,
                   userDisplayName: offer.userDisplayName,
                   status: MarketplaceOfferStatus.PENDING,
-                  offersByLineItem: {}
+                  offersByLineItem: {},
+                  lineItemsWithoutOffers: []
                 };
                 this.offersGroupedByUser.push(userGroup);
               }
@@ -232,6 +234,10 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
               ) {
                 userGroup.status = MarketplaceOfferStatus.ACCEPTED;
               }
+
+              userGroup.lineItemsWithoutOffers = this.listing.lineItems.filter(
+                lineItem => !Object.keys(userGroup.offersByLineItem).includes(lineItem.id.toString())
+              );
             });
         });
       });

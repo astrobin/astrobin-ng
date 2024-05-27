@@ -35,6 +35,10 @@ astrobin-marketplace-more-from-user {
   .amount {
     font-weight: bold;
     color: var(--successColor);
+
+    &.no-offer {
+      color: var(--dangerColor);
+    }
   }
 
   .shipping {

@@ -169,6 +169,13 @@
               </ng-container>
             </ng-container>
 
+            <ng-container *ngFor="let lineItem of userGroup.lineItemsWithoutOffers">
+              <li>
+                <div class="item-name">{{ lineItem.itemName }}</div>
+                <span class="amount no-offer">{{ "No offer" }}</span>
+              </li>
+            </ng-container>
+
             <astrobin-marketplace-feedback-widget
               [listing]="listing"
               [user]="userGroup.user"

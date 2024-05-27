@@ -469,7 +469,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
 
       this.loadingService.setLoading(true);
 
-      this.listing.lineItems.forEach(lineItem => {
+      lineItems.forEach(lineItem => {
         const amount = this.form.value[`amount-${lineItem.id}`];
         const offer: MarketplaceOfferInterface = {
           listing: this.listing.id,
