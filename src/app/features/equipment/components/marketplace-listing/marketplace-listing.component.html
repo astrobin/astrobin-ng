@@ -84,7 +84,10 @@
   </div>
 </div>
 
-<div class="card description">
+<div
+  *ngIf="listing.lineItems.length > 0 && !!listing.description"
+  class="card description"
+>
   <div class="card-header">{{ "Description" | translate }}</div>
 
   <div class="card-body">
