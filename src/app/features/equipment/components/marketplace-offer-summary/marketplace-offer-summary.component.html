@@ -22,9 +22,9 @@
                   <div class="item-name">{{ lineItem.itemName }}</div>
                   <span class="amount">{{ offer.amount | currency : lineItem.currency }}</span>
                   <span class="shipping">
-                    ({{ "shipping" | translate }}:
+                    + {{ "shipping" | translate }}:
                     <ng-container *ngIf="lineItem.shippingCost">
-                      {{ lineItem.shippingCost | currency : lineItem.currency }})
+                      {{ lineItem.shippingCost | currency : lineItem.currency }}
                     </ng-container>
                     <ng-container *ngIf="!lineItem.shippingCost"> {{ "Free" | translate }}) </ng-container>
                   </span>
