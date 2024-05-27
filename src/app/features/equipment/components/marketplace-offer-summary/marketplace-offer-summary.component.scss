@@ -1,0 +1,35 @@
+ul {
+  padding: 0;
+}
+
+li {
+  margin-bottom: 1rem;
+  list-style: none;
+}
+
+.item-name {
+  font-weight: bold;
+  color: var(--white);
+}
+
+.amount {
+  font-weight: bold;
+  color: var(--successColor);
+
+  &.no-offer {
+    color: var(--dangerColor);
+  }
+}
+
+.shipping {
+  color: var(--lighterGrey);
+  margin-left: .5rem;
+}
+
+.card-header .badge {
+  font-size: 1rem;
+}
+
+.card-footer {
+  justify-content: center;
+}

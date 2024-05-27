@@ -133,82 +133,12 @@
   <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>
 
-<ng-template #offers let-currentUserWrapper="currentUserWrapper">
+<ng-template #offers>
   <div class="offers mt-4">
-    <ng-container *ngFor="let userGroup of offersGroupedByUser">
-      <div class="offer card mb-2">
-        <div class="card-header">
-          <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
-            {{ "Offer by {{0}}" | translate: { "0": userGroup.userDisplayName } }}
-          </ng-container>
-          <ng-container *ngIf="listing.user !== currentUserWrapper.user?.id">
-            {{ "Your offer" | translate }}
-          </ng-container>
-
-          <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.ACCEPTED">
-            <span class="badge bg-success ms-2">{{ "Accepted" | translate }}</span>
-          </ng-container>
-        </div>
-        <div class="card-body">
-          <ul>
-            <ng-container *ngFor="let lineItemId of utilsService.objectKeys(userGroup.offersByLineItem)">
-              <ng-container *ngFor="let offer of userGroup.offersByLineItem[lineItemId]">
-                <ng-container *ngIf="getLineItem(+lineItemId) as lineItem">
-                  <li>
-                    <div class="item-name">{{ lineItem.itemName }}</div>
-                    <span class="amount">{{ offer.amount | currency : lineItem.currency }}</span>
-                    <span class="shipping"
-                    >({{ "shipping" | translate }}:
-                      <ng-container *ngIf="lineItem.shippingCost">
-                        {{ lineItem.shippingCost | currency : lineItem.currency }})
-                      </ng-container>
-                      <ng-container *ngIf="!lineItem.shippingCost"> {{ "Free" | translate }}) </ng-container>
-                    </span>
-                  </li>
-                </ng-container>
-              </ng-container>
-            </ng-container>
-
-            <ng-container *ngFor="let lineItem of userGroup.lineItemsWithoutOffers">
-              <li>
-                <div class="item-name">{{ lineItem.itemName }}</div>
-                <span class="amount no-offer">{{ "No offer" }}</span>
-              </li>
-            </ng-container>
-
-            <astrobin-marketplace-feedback-widget
-              [listing]="listing"
-              [user]="userGroup.user"
-              class="d-block mt-3"
-            ></astrobin-marketplace-feedback-widget>
-          </ul>
-        </div>
-        <!-- card-body -->
-
-        <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
-          <div class="card-footer">
-            <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING">
-              <button (click)="onAcceptOfferClicked($event, userGroup.userId)" class="btn btn-success d-block w-100">
-                {{ "Accept" | translate }}
-              </button>
-            </ng-container>
-
-            <button (click)="onRejectOfferClicked($event, userGroup.userId)" class="btn btn-danger d-block w-100">
-              {{ "Reject" | translate }}
-            </button>
-
-            <button
-              (click)="onMessageProspectBuyerClicked($event, userGroup.userId)"
-              class="btn btn-secondary d-block w-100"
-            >
-              {{ "Message" | translate }}
-            </button>
-          </div>
-          <!-- card-footer -->
-        </ng-container>
-      </div>
-      <!-- offer -->
-    </ng-container>
+    <astrobin-marketplace-offer-summary
+      (startPrivateConversation)="startPrivateConversation($event)"
+      [listing]="listing"
+    ></astrobin-marketplace-offer-summary>
   </div>
   <!-- offers -->
 </ng-template>
@@ -255,7 +185,7 @@
     {{ "Renew" | translate }}
   </button>
 
-  <ng-container [ngTemplateOutletContext]="{ currentUserWrapper }" [ngTemplateOutlet]="offers"></ng-container>
+  <ng-container [ngTemplateOutlet]="offers"></ng-container>
 
   <ng-container *ngIf="privateConversations$ | async as privateConversations">
     <div *ngIf="privateConversations?.length > 0" class="private-conversations card mt-4">
@@ -287,7 +217,7 @@
   let-currentUserWrapper="currentUserWrapper"
   let-listingContentType="listingContentType"
 >
-  <ng-container [ngTemplateOutletContext]="{ currentUserWrapper }" [ngTemplateOutlet]="offers"></ng-container>
+  <ng-container [ngTemplateOutlet]="offers"></ng-container>
 
   <button
     (click)="onMakeAnOfferClicked($event)"

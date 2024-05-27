@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
@@ -11,7 +11,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { forkJoin, merge, Observable, of, ReplaySubject } from "rxjs";
+import { merge, Observable, of } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -19,26 +19,17 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Actions, ofType } from "@ngrx/effects";
 import {
-  AcceptMarketplaceOffer,
-  AcceptMarketplaceOfferFailure,
-  AcceptMarketplaceOfferSuccess,
   ApproveMarketplaceListing,
   ApproveMarketplaceListingSuccess,
   CreateMarketplacePrivateConversation,
   CreateMarketplacePrivateConversationSuccess,
   DeleteMarketplaceListing,
   DeleteMarketplaceListingSuccess,
-  DeleteMarketplaceOffer,
-  DeleteMarketplaceOfferFailure,
-  DeleteMarketplaceOfferSuccess,
   DeleteMarketplacePrivateConversation,
   DeleteMarketplacePrivateConversationSuccess,
   EquipmentActionTypes,
-  LoadMarketplaceListing,
-  LoadMarketplaceListingSuccess,
   LoadMarketplacePrivateConversations,
   RenewMarketplaceListing,
-  RenewMarketplaceListingSuccess,
   UpdateMarketplacePrivateConversation
 } from "@features/equipment/store/equipment.actions";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
@@ -62,26 +53,10 @@ import { environment } from "@env/environment";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
-import {
-  MarketplaceOfferInterface,
-  MarketplaceOfferStatus
-} from "@features/equipment/types/marketplace-offer.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { LoadUser } from "@features/account/store/auth.actions";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { selectUser } from "@features/account/store/auth.selectors";
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
 import { Location } from "@angular/common";
-
-interface UserOfferGroup {
-  user: UserInterface;
-  userId: UserInterface["id"];
-  userDisplayName: string;
-  status: MarketplaceOfferStatus;
-  offersByLineItem: { [lineItemId: number]: MarketplaceOfferInterface[] };
-  lineItemsWithoutOffers: MarketplaceLineItemInterface[];
-}
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -89,8 +64,6 @@ interface UserOfferGroup {
   styleUrls: ["./marketplace-listing.page.component.scss"]
 })
 export class MarketplaceListingPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
-  readonly MarketplaceOfferStatus = MarketplaceOfferStatus;
-
   readonly breadcrumb = new SetBreadcrumb({
     breadcrumb: [
       {
@@ -113,10 +86,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   listingUser$: Observable<UserInterface>;
   privateConversations$: Observable<MarketplacePrivateConversationInterface[]>;
   hasOffered$: Observable<boolean>;
-  offersGroupedByUser: UserOfferGroup[] = [];
 
   private _contentTypePayload = { appLabel: "astrobin_apps_equipment", model: "equipmentitemmarketplacelisting" };
-  private _listingUpdated$ = new ReplaySubject<void>();
 
   constructor(
     public readonly store$: Store<State>,
@@ -144,13 +115,17 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.titleService.setTitle(this.title);
     this.store$.dispatch(this.breadcrumb);
 
-    this.setListing();
+    this.setListing(this.activatedRoute.snapshot.data.listing);
+    this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(listing => {
+      this.setListing(listing);
+    });
 
     this.loadContentType();
     this.loadPrivateConversations();
     this.loadUser();
     this.loadHasOffered();
-    this.loadOffersGroupedByUser();
 
     this.router.events
       .pipe(
@@ -158,25 +133,24 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         takeUntil(this.destroyed$)
       )
       .subscribe(() => {
-        this.setListing();
+        this.setListing(this.activatedRoute.snapshot.data.listing);
         this.windowRefService.scroll({ top: 0 });
       });
   }
 
-  setListing() {
-    this.listing = this.activatedRoute.snapshot.data.listing;
+  setListing(listing: MarketplaceListingInterface) {
+    this.listing = listing;
     this.appendSlugToUrl();
 
     if (!!this.listing.title) {
       this.title = this.listing.title;
       this.titleService.setTitle(this.title);
     }
-
-    this._listingUpdated$.next();
   }
 
   loadHasOffered() {
-    this.hasOffered$ = this._listingUpdated$.pipe(
+    this.hasOffered$ = this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
+      filter(listing => !!listing),
       switchMap(() => this.currentUser$),
       switchMap(user => {
         if (!!user) {
@@ -190,62 +164,9 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     );
   }
 
-  loadOffersGroupedByUser() {
-    this._listingUpdated$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-      this.offersGroupedByUser = [];
-
-      this.listing.lineItems.forEach(lineItem => {
-        lineItem.offers.forEach(offer => {
-          const userId = offer.user;
-
-          this.store$.dispatch(new LoadUser({ id: userId }));
-
-          this.store$
-            .select(selectUser, userId)
-            .pipe(
-              filter(user => !!user),
-              take(1)
-            )
-            .subscribe(user => {
-              let userGroup = this.offersGroupedByUser.find(group => group.userId === userId);
-
-              if (!userGroup) {
-                userGroup = {
-                  user,
-                  userId,
-                  userDisplayName: offer.userDisplayName,
-                  status: MarketplaceOfferStatus.PENDING,
-                  offersByLineItem: {},
-                  lineItemsWithoutOffers: []
-                };
-                this.offersGroupedByUser.push(userGroup);
-              }
-
-              if (!userGroup.offersByLineItem[lineItem.id]) {
-                userGroup.offersByLineItem[lineItem.id] = [];
-              }
-
-              userGroup.offersByLineItem[lineItem.id].push(offer);
-
-              if (
-                lineItem.offers
-                  .filter(offer => offer.user === userId)
-                  .every(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)
-              ) {
-                userGroup.status = MarketplaceOfferStatus.ACCEPTED;
-              }
-
-              userGroup.lineItemsWithoutOffers = this.listing.lineItems.filter(
-                lineItem => !Object.keys(userGroup.offersByLineItem).includes(lineItem.id.toString())
-              );
-            });
-        });
-      });
-    });
-  }
-
   loadUser() {
-    this.listingUser$ = this._listingUpdated$.pipe(
+    this.listingUser$ = this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
+      filter(listing => !!listing),
       switchMap(() => this.equipmentMarketplaceService.getListingUser$(this.listing)),
       filter(user => !!user),
       take(1)
@@ -316,10 +237,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         map(action => action.payload.listing),
         take(1)
       )
-      .subscribe(listing => {
+      .subscribe(() => {
         this.loadingService.setLoading(false);
-        this.listing = listing;
-        this._listingUpdated$.next();
       });
 
     this.loadingService.setLoading(true);
@@ -339,22 +258,6 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     const componentInstance: MarketplaceMarkLineItemsAsSoldModalComponent = modal.componentInstance;
 
     componentInstance.listing = this.listing;
-
-    modal.closed.subscribe(() => {
-      this.actions$
-        .pipe(
-          ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_SUCCESS),
-          filter((action: LoadMarketplaceListingSuccess) => action.payload.listing.id === this.listing.id),
-          map(action => action.payload.listing),
-          take(1)
-        )
-        .subscribe(listing => {
-          this.listing = listing;
-          this._listingUpdated$.next();
-        });
-
-      this.store$.dispatch(new LoadMarketplaceListing({ id: this.listing.id }));
-    });
   }
 
   delete() {
@@ -375,18 +278,6 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   }
 
   renew() {
-    this.actions$
-      .pipe(
-        ofType(EquipmentActionTypes.RENEW_MARKETPLACE_LISTING_SUCCESS),
-        filter((action: RenewMarketplaceListingSuccess) => action.payload.listing.id === this.listing.id),
-        map(action => action.payload.listing),
-        take(1)
-      )
-      .subscribe(listing => {
-        this.listing = listing;
-        this._listingUpdated$.next();
-      });
-
     this.store$.dispatch(new RenewMarketplaceListing({ listing: this.listing }));
   }
 
@@ -403,26 +294,12 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       const component = modalRef.componentInstance;
 
       component.listing = this.listing;
-
-      modalRef.closed
-        .pipe(
-          filter(listing => !!listing),
-          switchMap(listing =>
-            this.store$.select(selectMarketplaceListing, { id: listing.id }).pipe(
-              filter(innerListing => !!innerListing),
-              take(1)
-            )
-          )
-        )
-        .subscribe(listing => {
-          this.listing = listing;
-          this._listingUpdated$.next();
-        });
     });
   }
 
   loadPrivateConversations() {
-    this.privateConversations$ = this._listingUpdated$.pipe(
+    this.privateConversations$ = this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
+      filter(listing => !!listing),
       switchMap(() => this.store$.select(selectMarketplacePrivateConversations(this.listing.id))),
       takeUntil(this.destroyed$)
     );
@@ -586,166 +463,6 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           this.startPrivateConversation(privateConversations[0]);
         }
       });
-  }
-
-  getLineItem(id: MarketplaceLineItemInterface["id"]): MarketplaceLineItemInterface {
-    return this.listing.lineItems.find(lineItem => lineItem.id === id);
-  }
-
-  onAcceptOfferClicked(event: Event, userId: UserInterface["id"]) {
-    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
-    const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
-
-    componentInstance.message = this.translateService.instant(
-      "Accepting this offer will mark the affected line items as reserved, and it constitutes a binding agreement " +
-      "with the buyer. Failure to deliver the equipment as described may result in negative feedback and " +
-      "possible disciplinary action. Are you sure you want to proceed?"
-    );
-
-    modalRef.closed.subscribe(() => {
-      const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
-
-      this.loadingService.setLoading(true);
-
-      forkJoin(
-        offers.map(offer =>
-          this.actions$.pipe(
-            ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_FAILURE),
-            filter((action: AcceptMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
-            take(1)
-          )
-        )
-      ).subscribe(() => {
-        this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
-        this.loadingService.setLoading(false);
-      });
-
-      forkJoin(
-        offers.map(offer =>
-          this.actions$.pipe(
-            ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_SUCCESS),
-            filter((action: AcceptMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
-            take(1),
-            switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-            take(1)
-          )
-        )
-      ).subscribe(listings => {
-        // It's always the same listing, so we can safely assume that the first one is the one we want.
-        this.listing = listings[0];
-        this._listingUpdated$.next();
-
-        this.popNotificationsService.success(
-          this.translateService.instant("The offer has been accepted. The buyer will be notified.")
-        );
-        this.loadingService.setLoading(false);
-      });
-
-      offers.forEach(offer => {
-        this.store$.dispatch(new AcceptMarketplaceOffer({ offer }));
-      });
-    });
-  }
-
-  onRejectOfferClicked(event: Event, userId: UserInterface["id"]) {
-    this.currentUser$.pipe(take(1)).subscribe(currentUser => {
-      const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
-
-      if (
-        this.listing.lineItems.filter(lineItem =>
-          lineItem.offers.some(
-            offer => offer.user === currentUser.id && offer.status === MarketplaceOfferStatus.ACCEPTED
-          )
-        )
-      ) {
-        const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
-        componentInstance.message = this.translateService.instant(
-          "Careful! If you reject an offer that you already accepted, and have not reached a mutual " +
-          "agreement with the buyer concerning this, you may risk disciplinary action. Offers are considered binding " +
-          "agreements between buyers and sellers. Are you sure you want to retract your offer?"
-        );
-      }
-
-      modalRef.closed.subscribe(() => {
-        const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
-
-        this.loadingService.setLoading(true);
-
-        forkJoin(
-          offers.map(offer =>
-            this.actions$.pipe(
-              ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE),
-              filter((action: DeleteMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
-              take(1)
-            )
-          )
-        ).subscribe(() => {
-          this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
-          this.loadingService.setLoading(false);
-        });
-
-        forkJoin(
-          offers.map(offer =>
-            this.actions$.pipe(
-              ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS),
-              filter((action: DeleteMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
-              take(1)
-            )
-          )
-        )
-          .pipe(
-            switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-            take(1)
-          )
-          .subscribe(listing => {
-            this.listing = listing;
-            this._listingUpdated$.next();
-            this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
-            this.loadingService.setLoading(false);
-          });
-
-        offers.forEach(offer => {
-          this.store$.dispatch(new DeleteMarketplaceOffer({ offer }));
-        });
-      });
-    });
-  }
-
-  onMessageProspectBuyerClicked(event: Event, userId: UserInterface["id"]) {
-    event.preventDefault();
-
-    this.loadingService.setLoading(true);
-
-    this.store$
-      .pipe(select(selectMarketplacePrivateConversations(this.listing.id, userId)), take(1))
-      .subscribe(privateConversations => {
-        privateConversations = privateConversations.filter(
-          privateConversation => privateConversation.user === userId
-        );
-
-        if (privateConversations.length === 0) {
-          this.actions$
-            .pipe(
-              ofType(EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
-              filter(
-                (action: CreateMarketplacePrivateConversationSuccess) =>
-                  action.payload.privateConversation.listing === this.listing.id &&
-                  action.payload.privateConversation.user === userId
-              ),
-              map((action: CreateMarketplacePrivateConversationSuccess) => action.payload.privateConversation),
-              take(1)
-            )
-            .subscribe(privateConversation => {
-              this.startPrivateConversation(privateConversation);
-            });
-
-          this.store$.dispatch(new CreateMarketplacePrivateConversation({ listingId: this.listing.id, userId }));
-        } else {
-          this.startPrivateConversation(privateConversations[0]);
-        }
-      });
-
-    this.store$.dispatch(new LoadUser({ id: userId }));
   }
 
   private _recordHit() {
