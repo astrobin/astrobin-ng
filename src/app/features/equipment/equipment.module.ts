@@ -64,8 +64,7 @@ import { MarketplaceUserFollowedListingsPageComponent } from "@features/equipmen
 import { MarketplaceFeedbackModalComponent } from "./components/marketplace-feedback-modal/marketplace-feedback-modal.component";
 import { MarketplacePendingModerationListingsPageComponent } from "@features/equipment/pages/marketplace/pending-moderation-listings/marketplace-pending-moderation-listings-page.component";
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
-import { MarketplaceOfferSummaryModalComponent } from './components/marketplace-offer-summary-modal/marketplace-offer-summary-modal.component';
-import { MarketplaceOfferSummaryComponent } from './components/marketplace-offer-summary/marketplace-offer-summary.component';
+import { MarketplaceOfferSummaryComponent } from "./components/marketplace-offer-summary/marketplace-offer-summary.component";
 
 @NgModule({
   declarations: [
@@ -129,7 +128,6 @@ import { MarketplaceOfferSummaryComponent } from './components/marketplace-offer
     MarketplaceOfferModalComponent,
     MarketplaceFeedbackModalComponent,
     MarketplaceMarkLineItemsAsSoldModalComponent,
-    MarketplaceOfferSummaryModalComponent,
     MarketplaceOfferSummaryComponent
   ],
   imports: [

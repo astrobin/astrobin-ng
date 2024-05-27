@@ -224,6 +224,20 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         });
 
       this.store$.dispatch(new LoadNestedComment({ id: commentId }));
+    } else if (fragment && fragment === "offers") {
+      this.windowRefService.scrollToElement("#offers");
+
+      const message = this.translateService.instant("Your listing has some offers");
+
+      if (this.windowRefService.nativeWindow.innerWidth < 768) {
+        this.popNotificationsService.info(
+          message + " " + this.translateService.instant("Scroll down to see them.")
+        );
+      } else {
+        this.popNotificationsService.info(
+          message + " " + this.translateService.instant("Find them on the right side of the page")
+        );
+      }
     }
 
     this._recordHit();
