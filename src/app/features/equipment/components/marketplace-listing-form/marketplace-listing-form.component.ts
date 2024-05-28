@@ -687,7 +687,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   "only the city and country where the item is located. The location information will be used to " +
                   "find listings within a certain distance from the user's location."
                 ),
-                scrollwheel: false
+                scrollwheel: false,
+                latitude: this.model.latitude,
+                longitude: this.model.longitude
               },
               hooks: {
                 onInit: field => {

@@ -116,6 +116,13 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
         observer.complete();
       };
 
+      if (this.props.latitude && this.props.longitude) {
+        success({
+          latitude: this.props.latitude,
+          longitude: this.props.longitude
+        });
+      }
+
       if (navigator.geolocation) {
         const options = {
           enableHighAccuracy: true,
