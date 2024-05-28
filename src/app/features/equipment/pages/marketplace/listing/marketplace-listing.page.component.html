@@ -101,7 +101,13 @@
               class="d-block mt-5 mt-md-0"
             ></astrobin-marketplace-user-card>
 
-            <ng-container *ngIf="listingUser.id === currentUserWrapper.user?.id">
+            <ng-container
+              *ngIf="listingUser.id === currentUserWrapper.user?.id || currentUserWrapper.user | isMarketplaceModerator"
+            >
+              <div *ngIf="currentUserWrapper.user | isMarketplaceModerator" class="alert alert-warning mt-4">
+                <fa-icon icon="exclamation-triangle"></fa-icon>
+                {{ "You are a marketplace moderator." | translate }}
+              </div>
               <ng-container
                 [ngTemplateOutletContext]="{ currentUserWrapper }"
                 [ngTemplateOutlet]="sidebarOwnerTemplate"
