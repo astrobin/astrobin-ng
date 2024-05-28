@@ -898,8 +898,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           user: user.id,
           lineItems: this.model.lineItems.map(lineItem => ({
             ...lineItem,
-            currency: initialCurrency,
-            condition: MarketplaceListingCondition.USED
+            currency: lineItem.currency || initialCurrency,
+            condition: lineItem.condition || MarketplaceListingCondition.USED
           }))
         };
 
