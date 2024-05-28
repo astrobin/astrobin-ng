@@ -12,7 +12,13 @@
 
   <small>
     <fa-icon icon="calendar"></fa-icon>
-    {{ listing.created | localDate | timeago : true }}
+    <ng-container *ngIf="listing.approved">
+      {{ "Published" }}: {{ listing.approved | localDate | timeago : true }}
+    </ng-container>
+
+    <ng-container *ngIf="!listing.approved">
+      {{ "Created" }}: {{ listing.created | localDate | timeago : true }}
+    </ng-container>
 
     &middot;
 
@@ -39,6 +45,11 @@
       }"
       [translate]="'{{0}} views'"
     ></span>
+
+    &middot;
+
+    <fa-icon icon="clock"></fa-icon>
+    {{ "Expiration" }}: {{ listing.expiration | localDate | timeago : true }}
   </small>
 
   <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">

@@ -746,7 +746,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               key: "",
               type: "ng-select",
               wrappers: ["default-wrapper"],
-              defaultValue: MarketplaceListingExpiration.ONE_WEEK,
+              defaultValue: MarketplaceListingExpiration.ONE_MONTH,
               props: {
                 readonly: this.model.id !== undefined,
                 label: this.translateService.instant("Expiration"),
