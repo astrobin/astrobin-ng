@@ -113,9 +113,10 @@
             ></astrobin-marketplace-user-card>
 
             <ng-container
-              *ngIf="listingUser.id === currentUserWrapper.user?.id || currentUserWrapper.user | isMarketplaceModerator"
+              *ngIf="listingUser.id === currentUserWrapper.user?.id || (currentUserWrapper.user | isMarketplaceModerator)"
             >
-              <div *ngIf="currentUserWrapper.user | isMarketplaceModerator" class="alert alert-warning mt-4">
+              <div *ngIf="currentUserWrapper.user | isMarketplaceModerator"
+                   class="alert alert-warning mt-4">
                 <fa-icon icon="exclamation-triangle"></fa-icon>
                 {{ "You are a marketplace moderator." | translate }}
               </div>
@@ -164,7 +165,7 @@
   <a
     *ngIf="!equipmentMarketplaceService.listingSold(listing)"
     [routerLink]="'edit'"
-    class="btn btn-primary d-block w-100 mt-4"
+    class="btn btn-secondary d-block w-100 mt-4"
   >
     <fa-icon icon="pencil"></fa-icon>
     {{ "Edit" | translate }}
