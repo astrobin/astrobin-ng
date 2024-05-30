@@ -372,9 +372,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   optionTemplate: this.findItemModeOptionTemplate,
                   options: [
                     {
-                      label: this.translateService.instant("Input as plain text"),
+                      label: this.translateService.instant("Simple text"),
                       description: this.translateService.instant(
-                        "Use this option if you want to keep things simple and let a moderator associate your " +
+                        "Keep things simple and let a moderator associate your " +
                         "listing to an equipment item in the AstroBin equipment database."
                       ),
                       value: MarketplaceLineItemFindItemMode.PLAIN
@@ -382,16 +382,14 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     {
                       label: this.translateService.instant("Search equipment used on your images"),
                       description: this.translateService.instant(
-                        "Associate this listing to an equipment item you have used on your images. Choose this" +
-                        " option if you have used this equipment item on your images and want to sell it."
+                        "Associate this listing to an equipment item you have used on your images."
                       ),
                       value: MarketplaceLineItemFindItemMode.USER
                     },
                     {
                       label: this.translateService.instant("Search all equipment available on AstroBin"),
                       description: this.translateService.instant(
-                        "Associate this listing to any equipment item available on AstroBin. Choose this option " +
-                        "if you want to sell an equipment item that you have not used on your images on AstroBin."
+                        "Associate this listing to any equipment item available on AstroBin."
                       ),
                       value: MarketplaceLineItemFindItemMode.ALL
                     }
@@ -503,24 +501,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 }
               },
               {
-                key: "images",
-                wrappers: ["default-wrapper"],
-                fieldGroupClassName:
-                  "d-flex flex-wrap justify-content-evenly field-group-images",
-                props: {
-                  label: this.translateService.instant("Images"),
-                  description: this.translateService.instant(
-                    "You can upload up to {{ maxImages }} images. The first image will be used as the cover " +
-                    "image and is required.",
-                    {
-                      maxImages: this.maxImages
-                    }
-                  ),
-                  required: true
-                },
-                fieldGroup: [...Array(this.maxImages).keys()].map(n => _getImageField(n))
-              },
-              {
                 key: "",
                 fieldGroupClassName: "row",
                 props: {
@@ -531,6 +511,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     key: "condition",
                     type: "ng-select",
                     wrappers: ["default-wrapper"],
+                    className: "col-12 col-lg-6",
                     defaultValue: MarketplaceListingCondition.USED,
                     props: {
                       required: true,
@@ -545,6 +526,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     key: "yearOfPurchase",
                     type: "custom-number",
                     wrappers: ["default-wrapper"],
+                    className: "col-12 col-lg-6",
                     props: {
                       label: this.translateService.instant("Year of purchase")
                     },
@@ -565,7 +547,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                         "Describe the item you are selling. This field refers to this specific equipment item, " +
                         "and down below you can find a Description field that refers to the entire listing."
                       ),
-                      rows: 6,
+                      rows: 4,
                       modelOptions: {
                         updateOn: "blur"
                       }
@@ -581,11 +563,29 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 fieldGroup: [
                   {
                     key: "",
+                    fieldGroupClassName: "row",
                     fieldGroup: [
+                      {
+                        key: "currency",
+                        type: "ng-select",
+                        wrappers: ["default-wrapper"],
+                        defaultValue: initialCurrency,
+                        className: "col-12",
+                        props: {
+                          label: this.translateService.instant("Currency"),
+                          options: Object.keys(Constants.ALL_CURRENCIES).map(code => ({
+                            value: code,
+                            label: `${Constants.ALL_CURRENCIES[code]} (${code})`
+                          })),
+                          required: true,
+                          placeholder: this.translateService.instant("Select a currency")
+                        }
+                      },
                       {
                         key: "price",
                         type: "custom-number",
                         wrappers: ["default-wrapper"],
+                        className: "col-12 col-lg-6",
                         props: {
                           min: 0,
                           label: this.translateService.instant("Price"),
@@ -596,6 +596,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                         key: "shippingCost",
                         type: "custom-number",
                         wrappers: ["default-wrapper"],
+                        className: "col-12 col-lg-6",
                         expressions: {
                           hide: () => !this.model.deliveryByShipping
                         },
@@ -604,23 +605,26 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                           description: this.translateService.instant("Leave blank for free shipping"),
                           min: 0
                         }
-                      },
-                      {
-                        key: "currency",
-                        type: "ng-select",
-                        wrappers: ["default-wrapper"],
-                        defaultValue: initialCurrency,
-                        props: {
-                          label: this.translateService.instant("Currency"),
-                          options: Object.keys(Constants.ALL_CURRENCIES).map(code => ({
-                            value: code,
-                            label: `${Constants.ALL_CURRENCIES[code]} (${code})`
-                          })),
-                          required: true,
-                          placeholder: this.translateService.instant("Select a currency")
-                        }
                       }
                     ]
+                  },
+                  {
+                    key: "images",
+                    wrappers: ["default-wrapper"],
+                    fieldGroupClassName:
+                      "d-flex flex-wrap justify-content-evenly field-group-images",
+                    props: {
+                      label: this.translateService.instant("Images"),
+                      description: this.translateService.instant(
+                        "You can upload up to {{ maxImages }} images. The first image will be used as the cover " +
+                        "image and is required.",
+                        {
+                          maxImages: this.maxImages
+                        }
+                      ),
+                      required: true
+                    },
+                    fieldGroup: [...Array(this.maxImages).keys()].map(n => _getImageField(n))
                   }
                 ]
               }
