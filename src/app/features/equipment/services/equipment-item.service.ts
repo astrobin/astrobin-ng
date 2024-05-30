@@ -125,7 +125,7 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Other");
     }
 
-    return this.translateService.instant("Unknown");
+    return this.translateService.instant("n/a");
   }
 
   getFullDisplayName$(item: EquipmentItem): Observable<string> {

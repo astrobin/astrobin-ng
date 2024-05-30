@@ -30,7 +30,7 @@
 
 <ng-container *ngIf="!!initialLineItemCount && formInitialized">
   <div class="row main-row d-none d-md-flex">
-    <div class="col-md-6 col-lg-4 col-form">
+    <div class="col-md-6 col-lg-5 col-form">
       <span class="form-header">
         {{ "Form area" | translate }}
       </span>
@@ -42,7 +42,7 @@
     </div>
   </div>
   <div class="row main-row">
-    <div class="col-md-6 col-lg-4 col-form">
+    <div class="col-md-6 col-lg-5 col-form">
       <form [formGroup]="form">
         <formly-form
           [fields]="fields"

@@ -21,6 +21,7 @@ import { SlugifyPipe } from "@shared/pipes/slugify.pipe";
 import { Nl2BrPipe } from "@shared/pipes/nl2br.pipe";
 import { IsMarketplaceModeratorPipe } from "@shared/pipes/is-marketplace-moderator.pipe";
 import { IsBetaTesterPipe } from "@shared/pipes/is-beta-tester.pipe";
+import { YesNoIconPipe } from "@shared/pipes/yes-no-icon.pipe";
 
 const pipes = [
   BBCodeToHtmlPipe,
@@ -43,7 +44,8 @@ const pipes = [
   LocalDatePipe,
   YesNoPipe,
   SlugifyPipe,
-  Nl2BrPipe
+  Nl2BrPipe,
+  YesNoIconPipe
 ];
 
 @NgModule({

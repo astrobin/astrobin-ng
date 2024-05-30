@@ -61,19 +61,23 @@
           <tbody>
           <tr>
             <th>{{ "Buyer picks up" | translate }}</th>
-            <td [class]="!!listing.deliveryByBuyerPickUp | json">{{ !!listing.deliveryByBuyerPickUp | yesNo }}</td>
+            <td [class]="!!listing.deliveryByBuyerPickUp | json">
+              <fa-icon [icon]="!!listing.deliveryByBuyerPickUp | yesNoIcon"></fa-icon>
+            </td>
           </tr>
           <tr>
             <th>{{ "Seller delivers in person" | translate }}</th>
             <td [class]="!!listing.deliveryBySellerDelivery | json">
-              {{ !!listing.deliveryBySellerDelivery | yesNo }}
+              <fa-icon [icon]="!!listing.deliveryBySellerDelivery | yesNoIcon"></fa-icon>
             </td>
           </tr>
           <tr>
             <th>{{ "Seller ships" | translate }}</th>
-            <td [class]="!!listing.deliveryByShipping | json">{{ !!listing.deliveryByShipping | yesNo }}</td>
+            <td [class]="!!listing.deliveryByShipping | json">
+              <fa-icon [icon]="!!listing.deliveryByShipping | yesNoIcon"></fa-icon>
+            </td>
           </tr>
-          <tr *ngIf="listing.deliveryByShipping">
+          <tr>
             <th>{{ "Shipping method" | translate }}</th>
             <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
           </tr>

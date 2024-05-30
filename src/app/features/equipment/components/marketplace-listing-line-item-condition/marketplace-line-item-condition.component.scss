@@ -7,16 +7,5 @@ strong {
 }
 
 .condition {
-  &.unopened,
-  &.new {
-    color: var(--successColor);
-  }
-
-  &.used {
-    color: var(--warningColor);
-  }
-
-  &.damaged-or-defective {
-    color: var(--dangerColor);
-  }
+  font-weight: bold;
 }

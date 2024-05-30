@@ -1,4 +1,4 @@
-<ng-container *ngIf="equipmentItem || lineItem.itemPlainText; else noEquipmentItem">
+<ng-container *ngIf="equipmentItem || lineItem.itemPlainText">
   <div
     [class.reserved]="!!lineItem.reserved"
     [class.sold]="!!lineItem.sold"
@@ -141,15 +141,6 @@
     </div>
   </div>
 </ng-container>
-
-<ng-template #noEquipmentItem>
-  <ng-container *ngIf="previewMode; else loadingTemplate">
-    <div class="alert alert-warning">
-      <fa-icon icon="warning"></fa-icon>
-      {{ "Please specify an equipment item." | translate }}
-    </div>
-  </ng-container>
-</ng-template>
 
 <ng-template #loadingTemplate>
   <astrobin-loading-indicator></astrobin-loading-indicator>
