@@ -50,7 +50,11 @@ export class MarketplaceUserSoldListingsPageComponent extends MarketplaceUserLis
             link: "/equipment/explorer"
           },
           {
-            label: this.translateService.instant("Marketplace")
+            label: this.translateService.instant("Marketplace"),
+            link: "/equipment/marketplace"
+          },
+          {
+            label: this.translateService.instant("My interactions")
           },
           {
             label: this.translateService.instant("User listings (sold)")

@@ -28,7 +28,7 @@ export class MarketplaceUserOffersPageComponent extends MarketplaceListingsBaseP
   }
 
   protected _setTitle(user: UserInterface) {
-    this.title = this.translateService.instant("Your offers");
+    this.title = this.translateService.instant("Offers");
     this.titleService.setTitle(this.title);
   }
 
@@ -41,10 +41,14 @@ export class MarketplaceUserOffersPageComponent extends MarketplaceListingsBaseP
             link: "/equipment/explorer"
           },
           {
-            label: this.translateService.instant("Marketplace")
+            label: this.translateService.instant("Marketplace"),
+            link: "/equipment/marketplace"
           },
           {
-            label: this.translateService.instant("Your offers")
+            label: this.translateService.instant("My interactions")
+          },
+          {
+            label: this.translateService.instant("Offers")
           }
         ]
       })

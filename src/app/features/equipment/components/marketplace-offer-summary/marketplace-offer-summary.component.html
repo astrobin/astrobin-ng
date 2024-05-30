@@ -6,7 +6,7 @@
           {{ "Offer by {{0}}" | translate: { "0": userGroup.userDisplayName } }}
         </ng-container>
         <ng-container *ngIf="listing.user !== currentUserWrapper.user?.id">
-          {{ "Your offer" | translate }}
+          {{ "My offer" | translate }}
         </ng-container>
 
         <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.ACCEPTED">

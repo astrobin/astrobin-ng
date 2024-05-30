@@ -30,7 +30,7 @@ export class MarketplaceUserExpiredListingsPageComponent extends MarketplaceUser
   }
 
   protected _setTitle(user: UserInterface) {
-    this.title = this.translateService.instant("Your expired listings");
+    this.title = this.translateService.instant("My expired listings");
     this.titleService.setTitle(this.title);
   }
 
@@ -46,7 +46,7 @@ export class MarketplaceUserExpiredListingsPageComponent extends MarketplaceUser
             label: this.translateService.instant("Marketplace")
           },
           {
-            label: this.translateService.instant("Your expired listings")
+            label: this.translateService.instant("My expired listings")
           }
         ]
       })

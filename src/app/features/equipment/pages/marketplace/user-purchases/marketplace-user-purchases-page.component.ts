@@ -29,7 +29,7 @@ export class MarketplaceUserPurchasesPageComponent extends MarketplaceListingsBa
   }
 
   protected _setTitle(user: UserInterface) {
-    this.title = this.translateService.instant("Your purchases");
+    this.title = this.translateService.instant("Purchases");
     this.titleService.setTitle(this.title);
   }
 
@@ -42,10 +42,14 @@ export class MarketplaceUserPurchasesPageComponent extends MarketplaceListingsBa
             link: "/equipment/explorer"
           },
           {
-            label: this.translateService.instant("Marketplace")
+            label: this.translateService.instant("Marketplace"),
+            link: "/equipment/marketplace"
           },
           {
-            label: this.translateService.instant("Your purchases")
+            label: this.translateService.instant("My interactions")
+          },
+          {
+            label: this.translateService.instant("Purchases")
           }
         ]
       })
