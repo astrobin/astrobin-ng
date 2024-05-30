@@ -25,7 +25,8 @@
         font-size: .9rem;
 
         &.active {
-          color: var(--white);
+          color: var(--accentColor);
+          background: none;
         }
       }
     }

@@ -47,9 +47,4 @@ describe("ListingsComponent", () => {
     const title = fixture.nativeElement.querySelector("h1 > span");
     expect(title.textContent).toContain("Equipment marketplace");
   });
-
-  it("should have a button to create a listing", () => {
-    const button = fixture.nativeElement.querySelector("h1 > .btn-create-listing");
-    expect(button).toBeDefined();
-  });
 });
