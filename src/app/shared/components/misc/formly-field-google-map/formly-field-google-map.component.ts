@@ -5,6 +5,8 @@ import { take } from "rxjs/operators";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 import { google } from "@google/maps";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
@@ -23,7 +25,9 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
   constructor(
     public readonly googleMapsService: GoogleMapsService,
     public readonly utilsService: UtilsService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService
   ) {
     super();
   }
@@ -32,6 +36,14 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
     this.getLocation()
       .pipe(take(1))
       .subscribe(coordinates => {
+        if (!this.googleMapsService.maps) {
+          this.popNotificationsService.error(
+            this.translateService.instant(
+              "Google Maps API could not be loaded. Please make sure you're not blocking it."
+            )
+          );
+          return;
+        }
         const location = new this.googleMapsService.maps.LatLng(coordinates.latitude, coordinates.longitude);
         const mapOptions = {
           center: new this.googleMapsService.maps.LatLng(location.lat(), location.lng()),
@@ -112,6 +124,12 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
       };
 
       const error = () => {
+        this.popNotificationsService.error(
+          this.translateService.instant(
+            "AstroBin could not determine your location, so the location field could not " +
+            "be prefilled."
+          )
+        );
         observer.next({ latitude: 40.78, longitude: -73.96 });
         observer.complete();
       };

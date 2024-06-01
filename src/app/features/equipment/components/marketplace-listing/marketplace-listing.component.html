@@ -30,7 +30,7 @@
 
 <div class="row mt-4">
   <div class="col-md-6">
-    <div class="card map-container">
+    <div *ngIf="googleMapsAvailable" class="card map-container">
       <div class="card-header">
         <ng-container *ngIf="!!listing.country; else loadingCountryTemplate">
           <ng-container *ngIf="!!listing.city"> {{ listing.city }},</ng-container>
@@ -50,6 +50,27 @@
         <div class="form-text mt-1">
           {{ "The location shown above is approximate to protect the seller's privacy." | translate }}
         </div>
+      </div>
+    </div>
+
+    <div *ngIf="!googleMapsAvailable" class="card map-container">
+      <div class="card-header">
+        {{ "Location" | translate }}
+      </div>
+
+      <div class="card-body p-0">
+        <table class="table table-striped mb-0">
+          <tbody>
+          <tr>
+            <th>{{ "Country" | translate }}</th>
+            <td>{{ countryService.getCountryName(listing.country) }}</td>
+          </tr>
+          <tr>
+            <th>{{ "City" | translate }}</th>
+            <td>{{ listing.city }}</td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

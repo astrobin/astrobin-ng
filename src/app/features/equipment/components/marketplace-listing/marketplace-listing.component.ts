@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core";
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -14,7 +14,7 @@ import { EquipmentMarketplaceService } from "@features/equipment/services/equipm
   templateUrl: "./marketplace-listing.component.html",
   styleUrls: ["./marketplace-listing.component.scss"]
 })
-export class MarketplaceListingComponent extends BaseComponentDirective implements OnChanges {
+export class MarketplaceListingComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
   listing: MarketplaceListingInterface;
 
@@ -27,6 +27,7 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
   map: any;
   mapCircle: any;
   mapLoading = true;
+  googleMapsAvailable = false;
 
   constructor(
     public readonly store$: Store<State>,
@@ -37,6 +38,10 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
+  }
+
+  ngOnInit(): void {
+    this.googleMapsAvailable = !!this.googleMapsService.maps;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -57,6 +62,10 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
 
   initMap(latitude: number, longitude: number) {
     if (latitude === undefined || longitude === undefined) {
+      return;
+    }
+
+    if (!this.googleMapsAvailable) {
       return;
     }
 

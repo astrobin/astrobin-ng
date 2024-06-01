@@ -117,6 +117,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.setListing(this.activatedRoute.snapshot.data.listing);
     this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
+      filter(listing => !!listing),
       takeUntil(this.destroyed$)
     ).subscribe(listing => {
       this.setListing(listing);

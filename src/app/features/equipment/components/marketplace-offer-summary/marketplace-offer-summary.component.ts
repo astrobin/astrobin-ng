@@ -82,6 +82,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     super.ngOnInit();
 
     this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
+      filter(listing => !!listing),
       takeUntil(this.destroyed$)
     ).subscribe(listing => {
       this.listing = listing;

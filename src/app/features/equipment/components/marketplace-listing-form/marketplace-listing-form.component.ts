@@ -33,6 +33,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
+import { CountryService } from "@shared/services/country.service";
 
 declare var google: any;
 
@@ -127,6 +129,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   ];
   initialLineItemCount = null;
 
+  googleMapsAvailable = false;
+
   @Output()
   save: EventEmitter<MarketplaceListingInterface> = new EventEmitter<MarketplaceListingInterface>();
 
@@ -142,13 +146,17 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     public readonly modalService: NgbModal,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly googleMapsService: GoogleMapsService,
+    public readonly countryService: CountryService
   ) {
     super(store$);
   }
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.googleMapsAvailable = !!this.googleMapsService.maps;
 
     const providedLineItemCount = this.activatedRoute.snapshot.queryParams.lineItemCount;
 
@@ -261,16 +269,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         },
         {
           key: "longitude",
-          type: "input",
-          className: "hidden"
-        },
-        {
-          key: "country",
-          type: "input",
-          className: "hidden"
-        },
-        {
-          key: "city",
           type: "input",
           className: "hidden"
         },
@@ -680,57 +678,90 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             },
             {
               key: "",
-              type: "google-map",
-              wrappers: ["default-wrapper"],
-              props: {
-                height: 300,
-                label: this.translateService.instant("Location"),
-                required: true,
-                description: this.translateService.instant(
-                  "Drag the map to set the location. AstroBin will not disclose your exact location, but " +
-                  "only the city and country where the item is located. The location information will be used to " +
-                  "find listings within a certain distance from the user's location."
-                ),
-                scrollwheel: false,
-                latitude: this.model.latitude,
-                longitude: this.model.longitude
-              },
-              hooks: {
-                onInit: field => {
-                  const form = field.parent.formControl;
+              fieldGroupClassName: "row",
+              fieldGroup: [
+                {
+                  key: "country",
+                  type: "ng-select",
+                  className: this.googleMapsAvailable ? "hidden" : "col-6 mb-0",
+                  props: {
+                    label: this.translateService.instant("Country"),
+                    options: this.countryService.getCountries(this.translateService.currentLang).map(country => ({
+                      value: country.code,
+                      label: country.name
+                    }))
+                  },
+                  expressions: {
+                    "props.required": () => !this.googleMapsAvailable
+                  }
+                },
+                {
+                  key: "city",
+                  type: "input",
+                  className: this.googleMapsAvailable ? "hidden" : "col-6 mb-0",
+                  props: {
+                    label: this.translateService.instant("City")
+                  },
+                  expressions: {
+                    "props.required": () => !this.googleMapsAvailable
+                  }
+                },
+                {
+                  key: "",
+                  type: "google-map",
+                  wrappers: ["default-wrapper"],
+                  className: this.googleMapsAvailable ? "col-12" : "hidden",
+                  props: {
+                    height: 300,
+                    label: this.translateService.instant("Location"),
+                    required: true,
+                    description: this.translateService.instant(
+                      "Drag the map to set the location. AstroBin will not disclose your exact location, but " +
+                      "only the city and country where the item is located. The location information will be used to " +
+                      "find listings within a certain distance from the user's location."
+                    ),
+                    scrollwheel: false,
+                    latitude: this.model.latitude,
+                    longitude: this.model.longitude
+                  },
+                  hooks: {
+                    onInit: field => {
+                      const form = field.parent.formControl;
 
-                  field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(coordinates => {
-                    if (coordinates) {
-                      const geocoder = new google.maps.Geocoder();
+                      field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(coordinates => {
+                        if (coordinates) {
+                          const geocoder = new google.maps.Geocoder();
 
-                      geocoder.geocode({ location: coordinates }, function(results, status) {
-                        if (status === "OK") {
-                          if (results[0]) {
-                            const addressComponents = results[0].address_components;
-                            const countryComponent = addressComponents.find(component =>
-                              component.types.includes("country")
-                            );
-                            const cityComponent = addressComponents.find(component =>
-                              component.types.includes("locality")
-                            );
+                          geocoder.geocode({ location: coordinates }, function(results, status) {
+                            if (status === "OK") {
+                              if (results[0]) {
+                                const addressComponents = results[0].address_components;
+                                const countryComponent = addressComponents.find(component =>
+                                  component.types.includes("country")
+                                );
+                                const cityComponent = addressComponents.find(component =>
+                                  component.types.includes("locality")
+                                );
 
-                            if (countryComponent) {
-                              form.get("country").setValue(countryComponent.short_name);
+                                if (countryComponent) {
+                                  form.get("country").setValue(countryComponent.short_name);
+                                }
+
+                                if (cityComponent) {
+                                  form.get("city").setValue(cityComponent.long_name);
+                                }
+                              }
                             }
+                          });
 
-                            if (cityComponent) {
-                              form.get("city").setValue(cityComponent.long_name);
-                            }
-                          }
+                          form.get("latitude").setValue(coordinates.lat());
+                          form.get("longitude").setValue(coordinates.lng());
                         }
                       });
-
-                      form.get("latitude").setValue(coordinates.lat());
-                      form.get("longitude").setValue(coordinates.lng());
                     }
-                  });
+                  }
                 }
-              }
+              ]
             },
             {
               key: "bundleSaleOnly",
@@ -900,6 +931,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         this.model = {
           ...this.model,
           user: user.id,
+          country: this.model.country || requestCountry,
           lineItems: this.model.lineItems.map(lineItem => ({
             ...lineItem,
             currency: lineItem.currency || initialCurrency,
