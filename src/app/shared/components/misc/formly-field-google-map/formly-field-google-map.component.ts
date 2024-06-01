@@ -136,9 +136,12 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
 
       if (this.props.latitude && this.props.longitude) {
         success({
-          latitude: this.props.latitude,
-          longitude: this.props.longitude
+          coords: {
+            latitude: this.props.latitude,
+            longitude: this.props.longitude
+          }
         });
+        return;
       }
 
       if (navigator.geolocation) {

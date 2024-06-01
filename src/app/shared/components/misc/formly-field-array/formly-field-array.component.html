@@ -14,7 +14,7 @@
   </div>
 </div>
 
-<button (click)="add()" class="btn btn-link w-100">
+<button (click)="add()" *ngIf="mayAdd()" class="btn btn-link w-100">
   <ng-container *ngIf="props.addLabel; else noAddLabelTemplate">
     {{ props.addLabel }}
   </ng-container>

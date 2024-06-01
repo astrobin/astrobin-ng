@@ -236,7 +236,7 @@
     (click)="onMakeAnOfferClicked($event)"
     *ngIf="hasOffered$ | async; else makeAnOfferButtonTemplate"
     [class.loading]="loadingService.loading$ | async"
-    class="btn btn-primary btn-lg d-block w-100 mt-4"
+    class="btn btn-primary d-block w-100 mt-4"
   >
     <fa-icon icon="handshake"></fa-icon>
     {{ "Modify your offer" | translate }}

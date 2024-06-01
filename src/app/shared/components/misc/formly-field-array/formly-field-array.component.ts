@@ -19,6 +19,12 @@ export class FormlyFieldArrayComponent extends FieldArrayType {
     return false;
   }
 
+  mayAdd() {
+    const mayAddFunction = this.props.mayAdd;
+    const hasMayAddFunction = mayAddFunction && typeof mayAddFunction === "function";
+    return hasMayAddFunction ? mayAddFunction() : true;
+  }
+
   mayRemove(i: number) {
     const mayRemoveFunction = this.field.fieldGroup[i].props.mayRemove;
     const hasMayRemoveFunction = mayRemoveFunction && typeof mayRemoveFunction === "function";

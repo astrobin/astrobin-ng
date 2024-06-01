@@ -1,4 +1,4 @@
-<ng-container *ngIf="equipmentItem || lineItem.itemPlainText">
+<ng-container>
   <div
     [class.reserved]="!!lineItem.reserved"
     [class.sold]="!!lineItem.sold"
@@ -42,7 +42,7 @@
               </a>
             </ng-container>
             <ng-container *ngIf="!equipmentItem">
-              {{ lineItem.itemPlainText || "Unknown" | translate }}
+              {{ lineItem.itemPlainText || "" }}
             </ng-container>
           </div>
 

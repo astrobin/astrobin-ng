@@ -273,7 +273,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               className: "col-12 col-lg pb-4 pb-lg-0 price",
               defaultValue: this.currencyPipe.transform(+lineItem.price, lineItem.currency, "symbol-narrow"),
               props: {
-                label: this.translateService.instant("Ask price"),
+                label: this.translateService.instant("Asking price"),
                 readonly: true,
                 hideOptionalMarker: true,
                 hideLabel: !this.displayLabel(index)

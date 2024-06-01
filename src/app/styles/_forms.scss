@@ -118,6 +118,10 @@ formly-field-checkbox {
   &:not(:last-child) {
     margin-bottom: .5rem;
   }
+
+  label {
+    font-weight: normal;
+  }
 }
 
 .high-contrast .form-check-input:checked[type=checkbox] {

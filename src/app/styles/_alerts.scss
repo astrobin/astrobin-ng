@@ -114,4 +114,15 @@
       }
     }
   }
+
+  &.alert-dark {
+    background: var(--darkerGrey);
+
+    &,
+    fa-icon,
+    h5,
+    > p, & {
+      color: var(--lightestGrey);
+    }
+  }
 }

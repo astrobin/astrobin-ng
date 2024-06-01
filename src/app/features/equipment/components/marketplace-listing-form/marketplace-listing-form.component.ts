@@ -38,6 +38,11 @@ import { CountryService } from "@shared/services/country.service";
 
 declare var google: any;
 
+enum SALE_TYPE {
+  BUNDLE = "bundle",
+  SINGLE = "single"
+}
+
 @Component({
   selector: "astrobin-marketplace-listing-form",
   templateUrl: "./marketplace-listing-form.component.html",
@@ -55,7 +60,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     expiration: null,
     title: null,
     description: null,
-    bundleSaleOnly: false,
+    bundleSaleOnly: true,
     deliveryByBuyerPickUp: true,
     deliveryBySellerDelivery: true,
     deliveryByShipping: true,
@@ -91,22 +96,60 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   formInitialized = false;
   fields: FormlyFieldConfig[];
 
-  initialLineItemCountModel = { count: null };
+  initialLineItemCountModel = { count: 1, saleType: SALE_TYPE.SINGLE };
   initialLineItemCountForm = new FormGroup({});
   initialLineItemCountFields: FormlyFieldConfig[] = [
+    {
+      key: "saleType",
+      type: "radio",
+      wrappers: ["default-wrapper"],
+      defaultValue: SALE_TYPE.SINGLE,
+      props: {
+        required: true,
+        label: this.translateService.instant("How many items do you want to sell?"),
+        options: [
+          {
+            value: SALE_TYPE.SINGLE,
+            label: this.translateService.instant("Just one")
+          },
+          {
+            value: SALE_TYPE.BUNDLE,
+            label: this.translateService.instant("Multiple items in a bundle")
+          }
+        ]
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+            if (value === SALE_TYPE.SINGLE) {
+              this.initialLineItemCountModel.count = 1;
+              this.initialLineItemCountForm.patchValue({ count: 1 });
+            } else {
+              this.initialLineItemCountModel.count = null;
+              this.initialLineItemCountForm.patchValue({ count: null });
+            }
+          });
+        }
+      }
+    },
     {
       key: "count",
       type: "custom-number",
       wrappers: ["default-wrapper"],
+      defaultValue: 1,
       props: {
-        label: this.translateService.instant("How many items do you want to sell in this listing?"),
+        label: this.translateService.instant("How many items in your bundle?"),
         placeholder: this.translateService.instant("Enter a number"),
         description: this.translateService.instant(
           "The AstroBin Marketplace supports multiple line items per listing. This makes it easy for you to " +
           "have a bundle sale or avoid repeating the same information in multiple listings if you're selling " +
           "multiple items. PS: you can always add more line items later."
         ),
-        required: true
+        min: 1
+      },
+      expressions: {
+        className: (config: FormlyFieldConfig) => config.model.saleType === SALE_TYPE.SINGLE ? "hidden" : "",
+        "props.required": config => config.model.saleType === SALE_TYPE.BUNDLE
       }
     },
     {
@@ -279,6 +322,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           fieldArray: {
             props: {
               addLabel: this.translateService.instant("Add another item to this listing"),
+              mayAdd: () => this.initialLineItemCount > 1,
               mayRemove: index => !this.model.lineItems[index].sold
             },
             expressions: {
@@ -767,8 +811,10 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               key: "bundleSaleOnly",
               type: "checkbox",
               wrappers: ["default-wrapper"],
+              className: "hidden",
               expressions: {
-                hide: () => this.model.lineItems.length < 2
+                hide: () => this.model.lineItems.length < 2,
+                defaultValue: () => this.model.lineItems.length > 1
               },
               props: {
                 label: this.translateService.instant("Sell as a bundle only"),
