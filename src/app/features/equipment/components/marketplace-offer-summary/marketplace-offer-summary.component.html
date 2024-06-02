@@ -3,14 +3,33 @@
     <div class="offer card mb-2">
       <div class="card-header">
         <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
-          {{ "Offer by {{0}}" | translate: { "0": userGroup.userDisplayName } }}
+          <h4>
+            <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.ACCEPTED">
+              {{ "Accepted offer" | translate }}
+            </ng-container>
+            <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING">
+              {{ "Pending offer" | translate }}
+            </ng-container>
+            <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.REJECTED">
+              {{ "Rejected offer" | translate }}
+            </ng-container>
+          </h4>
+
+          <h5>
+            <a [href]="classicRoutesService.GALLERY(userGroup.user)">
+              {{ userGroup.userDisplayName }}
+            </a>
+          </h5>
+
+          <astrobin-marketplace-feedback-widget
+            *ngIf="userGroup.userId !== currentUserWrapper.user?.id"
+            [listing]="listing"
+            [user]="userGroup.user"
+            class="d-inline-block ms-2"
+          ></astrobin-marketplace-feedback-widget>
         </ng-container>
         <ng-container *ngIf="listing.user !== currentUserWrapper.user?.id">
           {{ "My offer" | translate }}
-        </ng-container>
-
-        <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.ACCEPTED">
-          <span class="badge bg-success ms-2">{{ "Accepted" | translate }}</span>
         </ng-container>
       </div>
       <div class="card-body">
@@ -35,13 +54,6 @@
               <span class="amount no-offer">{{ "No offer" }}</span>
             </li>
           </ng-container>
-
-          <astrobin-marketplace-feedback-widget
-            *ngIf="userGroup.userId !== currentUserWrapper.user?.id"
-            [listing]="listing"
-            [user]="userGroup.user"
-            class="d-block mt-3"
-          ></astrobin-marketplace-feedback-widget>
         </ul>
       </div>
       <!-- card-body -->
@@ -50,19 +62,19 @@
         <div class="card-footer">
           <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING">
             <button (click)="onAcceptOfferClicked($event, userGroup.userId)" class="btn btn-success d-block w-100">
-              {{ "Accept" | translate }}
+              <fa-icon icon="thumbs-up"></fa-icon>
             </button>
           </ng-container>
 
           <button (click)="onRejectOfferClicked($event, userGroup.userId)" class="btn btn-danger d-block w-100">
-            {{ "Reject" | translate }}
+            <fa-icon icon="thumbs-down"></fa-icon>
           </button>
 
           <button
             (click)="onMessageProspectBuyerClicked($event, userGroup.userId)"
             class="btn btn-secondary d-block w-100"
           >
-            {{ "Message" | translate }}
+            <fa-icon icon="envelope"></fa-icon>
           </button>
         </div>
         <!-- card-footer -->

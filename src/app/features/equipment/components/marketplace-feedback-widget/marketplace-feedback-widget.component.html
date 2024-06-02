@@ -1,12 +1,16 @@
 <ng-container *ngIf="marketplaceService.userHasFeedback(user); else noFeedbackTemplate">
   <div class="feedback">
-    <div class="feedback-container">
-      <div [style.left]="user.marketplaceFeedback + '%'" class="feedback-bar"></div>
+    <div class="stars">
+      <ng-container *ngFor="let star of stars">
+        <fa-icon *ngIf="star === 2" [icon]="['fas', 'star']"></fa-icon>
+        <fa-icon *ngIf="star === 1" [icon]="['fas', 'star-half-stroke']"></fa-icon>
+        <fa-icon *ngIf="star === 0" [icon]="['far', 'star']"></fa-icon>
+      </ng-container>
     </div>
   </div>
 
   <div class="feedback-label">
-    {{ "Feedback" | translate }}: {{ user.marketplaceFeedback|number:"1.0-2" }}%
+    {{ "Current feedback" | translate }}: {{ user.marketplaceFeedback|number:"1.0-2" }}%
   </div>
 </ng-container>
 

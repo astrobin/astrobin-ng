@@ -15,8 +15,16 @@ li {
   color: var(--lighterGrey);
 }
 
-.card-header .badge {
-  font-size: 1rem;
+.card-header {
+  text-align: center;
+
+  .badge {
+    font-size: 1rem;
+  }
+}
+
+.card-body {
+  text-align: center;
 }
 
 .card-footer {

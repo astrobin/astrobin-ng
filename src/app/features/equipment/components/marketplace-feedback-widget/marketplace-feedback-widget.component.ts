@@ -27,6 +27,7 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
 
   leaveFeedback: boolean;
   hasFeedback: boolean;
+  stars: number[] = [0, 0, 0, 0, 0]; // 0: empty, 1: half, 2: full
 
   constructor(
     public readonly store$: Store<State>,
@@ -60,6 +61,8 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   }
 
   updateState(): void {
+    this.calculateStarRating();
+
     this.currentUser$
       .pipe(take(1))
       .subscribe(currentUser => {
@@ -85,6 +88,20 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
           });
         });
       });
+  }
+
+  calculateStarRating(): void {
+    const feedbackPercentage = this.user.marketplaceFeedback;
+    const fullStars = Math.floor(feedbackPercentage / 20);
+    const halfStar = (feedbackPercentage % 20) >= 10 ? 1 : 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      this.stars[i] = 2;
+    }
+
+    if (halfStar && fullStars < 5) {
+      this.stars[fullStars] = 1;
+    }
   }
 
   showFeedbackModal(): void {

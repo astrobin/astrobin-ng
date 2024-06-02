@@ -37,6 +37,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 interface UserOfferGroup {
   user: UserInterface;
@@ -73,7 +74,8 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     public readonly translateService: TranslateService,
     public readonly modalService: NgbModal,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
   }

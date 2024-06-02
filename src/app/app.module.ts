@@ -28,40 +28,8 @@ import { appStateEffects, appStateReducers } from "@app/store/state";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { environment } from "@env/environment";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
-import {
-  faAsterisk,
-  faBarcode,
-  faBars,
-  faBook,
-  faBookmark,
-  faCertificate,
-  faChartBar,
-  faComments,
-  faCreditCard,
-  faEdit,
-  faEnvelope,
-  faEye,
-  faFlag,
-  faGlobe,
-  faHammer,
-  faImage,
-  faImages,
-  faInbox,
-  faInfo,
-  faKey,
-  faListOl,
-  faLock,
-  faQuestion,
-  fas,
-  faSearch,
-  faSignOutAlt,
-  faSortAmountDown,
-  faStar,
-  faTasks,
-  faTrophy,
-  faUpload,
-  faUsers
-} from "@fortawesome/free-solid-svg-icons";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
@@ -105,40 +73,7 @@ registerLocaleData(localeChinese);
 registerLocaleData(localeChineseTraditional);
 
 export function initFontAwesome(iconLibrary: FaIconLibrary) {
-  iconLibrary.addIconPacks(fas);
-  iconLibrary.addIcons(
-    faAsterisk,
-    faBarcode,
-    faBook,
-    faBookmark,
-    faChartBar,
-    faComments,
-    faEdit,
-    faEnvelope,
-    faEye,
-    faFlag,
-    faGlobe,
-    faHammer,
-    faImage,
-    faImages,
-    faInbox,
-    faInfo,
-    faKey,
-    faListOl,
-    faLock,
-    faBars,
-    faQuestion,
-    faSearch,
-    faSignOutAlt,
-    faSortAmountDown,
-    faStar,
-    faTasks,
-    faTrophy,
-    faUpload,
-    faUsers,
-    faCertificate,
-    faCreditCard
-  );
+  iconLibrary.addIconPacks(fas, far);
 }
 
 @NgModule({
