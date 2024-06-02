@@ -21,12 +21,8 @@
                 <li>
                   <div class="item-name">{{ lineItem.itemName }}</div>
                   <span class="amount">{{ offer.amount | currency : lineItem.currency }}</span>
-                  <span class="shipping">
-                    + {{ "shipping" | translate }}:
-                    <ng-container *ngIf="lineItem.shippingCost">
-                      {{ lineItem.shippingCost | currency : lineItem.currency }}
-                    </ng-container>
-                    <ng-container *ngIf="!lineItem.shippingCost"> {{ "Free" | translate }}) </ng-container>
+                  <span *ngIf="!!lineItem.shippingCost" class="shipping">
+                    + {{ "shipping" | translate }}: {{ lineItem.shippingCost | currency : lineItem.currency }}
                   </span>
                 </li>
               </ng-container>
@@ -41,6 +37,7 @@
           </ng-container>
 
           <astrobin-marketplace-feedback-widget
+            *ngIf="userGroup.userId !== currentUserWrapper.user?.id"
             [listing]="listing"
             [user]="userGroup.user"
             class="d-block mt-3"
