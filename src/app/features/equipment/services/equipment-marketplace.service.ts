@@ -34,7 +34,7 @@ import {
   MarketplaceOfferStatus
 } from "@features/equipment/types/marketplace-offer.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Actions, ofType } from "@ngrx/effects";
@@ -178,7 +178,7 @@ export class EquipmentMarketplaceService extends BaseService {
     return listing.lineItems.some(lineItem => lineItem.offers.some(offer => offer.user === user.id));
   }
 
-  makeOffer(listing: MarketplaceListingInterface, form: FormGroup, offerModalRef: NgbModalRef): void {
+  makeOffer(listing: MarketplaceListingInterface, form: FormGroup, offerModalRef: NgbActiveModal): void {
     if (!this._checkOfferFormHasItems(listing, form)) {
       return;
     }
@@ -208,7 +208,7 @@ export class EquipmentMarketplaceService extends BaseService {
     listing: MarketplaceListingInterface,
     user: UserInterface,
     form: FormGroup,
-    offerModalRef: NgbModalRef
+    offerModalRef: NgbActiveModal
   ): void {
     if (this.listingHasOffers(listing)) {
       const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
@@ -256,7 +256,7 @@ export class EquipmentMarketplaceService extends BaseService {
   private _performOfferAction(
     listing: MarketplaceListingInterface,
     form: FormGroup,
-    offerModalRef: NgbModalRef,
+    offerModalRef: NgbActiveModal,
     action: typeof CreateMarketplaceOffer | typeof UpdateMarketplaceOffer | typeof DeleteMarketplaceOffer,
     successActionType:
       | typeof EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS
