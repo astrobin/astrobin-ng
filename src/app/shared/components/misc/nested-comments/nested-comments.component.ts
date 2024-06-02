@@ -46,6 +46,9 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   @Input()
   showCloseButton = false;
 
+  @Input()
+  autoStartIfNoComments = false;
+
   @Output()
     // eslint-disable-next-line @angular-eslint/no-output-native
   close = new EventEmitter<void>();
@@ -62,7 +65,8 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -117,7 +121,9 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   }
 
   onAddCommentClicked(event: Event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
@@ -138,7 +144,12 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         takeUntil(this.destroyed$),
         distinctUntilChangedObj(),
         map(comments => UtilsService.sortParent(comments) as NestedCommentInterface[]),
-        tap(() => this.loadingService.setLoading(false))
+        tap(() => this.loadingService.setLoading(false)),
+        tap(comments => {
+          if (this.autoStartIfNoComments && comments && comments.length === 0 && !this.showTopLevelForm) {
+            this.utilsService.delay(1).subscribe(() => this.onAddCommentClicked(null));
+          }
+        })
       );
   }
 
