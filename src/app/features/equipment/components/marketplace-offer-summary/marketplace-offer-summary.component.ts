@@ -203,17 +203,11 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     });
   }
 
-  onRejectOfferClicked(event: Event, userId: UserInterface["id"]) {
+  onRejectOfferClicked(event: Event, userGroup: UserOfferGroup) {
     this.currentUser$.pipe(take(1)).subscribe(currentUser => {
       const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
 
-      if (
-        this.listing.lineItems.filter(lineItem =>
-          lineItem.offers.some(
-            offer => offer.user === currentUser.id && offer.status === MarketplaceOfferStatus.ACCEPTED
-          )
-        )
-      ) {
+      if (userGroup.status === MarketplaceOfferStatus.ACCEPTED) {
         const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
         componentInstance.message = this.translateService.instant(
           "Careful! If you reject an offer that you already accepted, and have not reached a mutual " +
@@ -223,7 +217,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
       }
 
       modalRef.closed.subscribe(() => {
-        const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
+        const offers = EquipmentMarketplaceService.offersByUser(userGroup.userId, this.listing);
 
         this.loadingService.setLoading(true);
 
