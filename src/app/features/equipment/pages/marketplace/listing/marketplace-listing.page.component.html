@@ -232,54 +232,56 @@
 >
   <ng-container [ngTemplateOutlet]="offers"></ng-container>
 
-  <button
-    (click)="onMakeAnOfferClicked($event)"
-    *ngIf="hasOffered$ | async; else makeAnOfferButtonTemplate"
-    [class.loading]="loadingService.loading$ | async"
-    class="btn btn-primary d-block w-100 mt-4"
-  >
-    <fa-icon icon="handshake"></fa-icon>
-    {{ "Modify your offer" | translate }}
-  </button>
-
-  <ng-template #makeAnOfferButtonTemplate>
+  <div class="mt-4">
     <button
       (click)="onMakeAnOfferClicked($event)"
+      *ngIf="equipmentMarketplaceService.listingHasPendingOffers(listing)"
       [class.loading]="loadingService.loading$ | async"
-      class="btn btn-primary d-block w-100 mt-4"
+      class="btn btn-primary d-block w-100"
     >
       <fa-icon icon="handshake"></fa-icon>
-      {{ "Make an offer" | translate }}
+      {{ "Modify your offer" | translate }}
     </button>
-  </ng-template>
 
-  <astrobin-toggle-property
-    [contentType]="listingContentType.id"
-    [objectId]="listing.id"
-    [userId]="currentUserWrapper.user?.id"
-    btnClass="btn btn-secondary d-block w-100 mt-2"
-    propertyType="follow"
-    setLabel="{{ 'Subscribe to updates' | translate }}"
-    unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
-  ></astrobin-toggle-property>
+    <ng-template #makeAnOfferButtonTemplate>
+      <button
+        (click)="onMakeAnOfferClicked($event)"
+        [class.loading]="loadingService.loading$ | async"
+        class="btn btn-primary d-block w-100 mt-4"
+      >
+        <fa-icon icon="handshake"></fa-icon>
+        {{ "Make an offer" | translate }}
+      </button>
+    </ng-template>
 
-  <button
-    (click)="onMessageSellerClicked($event)"
-    [class.loading]="loadingService.loading$ | async"
-    class="btn btn-secondary d-block w-100 mt-2"
-  >
-    <fa-icon icon="envelope"></fa-icon>
-    {{ "Message seller privately" | translate }}
+    <astrobin-toggle-property
+      [contentType]="listingContentType.id"
+      [objectId]="listing.id"
+      [userId]="currentUserWrapper.user?.id"
+      btnClass="btn btn-secondary d-block w-100 mt-2"
+      propertyType="follow"
+      setLabel="{{ 'Subscribe to updates' | translate }}"
+      unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
+    ></astrobin-toggle-property>
 
-    <ng-container *ngIf="privateConversations$ | async as privateConversations">
-      <ng-container *ngIf="privateConversations?.length === 1">
+    <button
+      (click)="onMessageSellerClicked($event)"
+      [class.loading]="loadingService.loading$ | async"
+      class="btn btn-secondary d-block w-100 mt-2"
+    >
+      <fa-icon icon="envelope"></fa-icon>
+      {{ "Message seller privately" | translate }}
+
+      <ng-container *ngIf="privateConversations$ | async as privateConversations">
+        <ng-container *ngIf="privateConversations?.length === 1">
         <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
           {{ privateConversations[0].unreadMessages }}
         </span>
-        <span *ngIf="privateConversations[0].unreadMessages === 0" class="badge bg-info">
+          <span *ngIf="privateConversations[0].unreadMessages === 0" class="badge bg-info">
           {{ privateConversations[0].totalMessages }}
         </span>
+        </ng-container>
       </ng-container>
-    </ng-container>
-  </button>
+    </button>
+  </div>
 </ng-template>

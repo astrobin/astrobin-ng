@@ -20,12 +20,14 @@
             <fa-icon *ngIf="!!props.image" icon="image"></fa-icon>
             <fa-icon *ngIf="!props.image" icon="file"></fa-icon>
           </div>
-          <span *ngIf="!!props.image">
-            {{ "Choose image" | translate }}
-          </span>
-          <span *ngIf="!props.image">
-            {{ "Choose file" | translate }}
-          </span>
+          <ng-container *ngIf="!props.hideLabel">
+            <span *ngIf="!!props.image">
+              {{ "Choose image" | translate }}
+            </span>
+            <span *ngIf="!props.image">
+              {{ "Choose file" | translate }}
+            </span>
+          </ng-container>
         </div>
       </div>
     </div>

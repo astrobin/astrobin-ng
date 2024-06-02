@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { FormGroup } from "@angular/forms";
@@ -10,27 +10,8 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { CurrencyPipe } from "@angular/common";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
-import {
-  MarketplaceOfferInterface,
-  MarketplaceOfferStatus
-} from "@features/equipment/types/marketplace-offer.interface";
-import { Actions, ofType } from "@ngrx/effects";
-import {
-  CreateMarketplaceOffer,
-  CreateMarketplaceOfferFailure,
-  CreateMarketplaceOfferSuccess,
-  DeleteMarketplaceOffer,
-  DeleteMarketplaceOfferFailure,
-  DeleteMarketplaceOfferSuccess,
-  EquipmentActionTypes,
-  UpdateMarketplaceOffer,
-  UpdateMarketplaceOfferFailure,
-  UpdateMarketplaceOfferSuccess
-} from "@features/equipment/store/equipment.actions";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
-import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { forkJoin } from "rxjs";
+import { Actions } from "@ngrx/effects";
+import { take, takeUntil } from "rxjs/operators";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -83,62 +64,18 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     }
   }
 
-  makeOffer() {
-    if (!this._checkFormHasItems()) {
-      return;
-    }
-
-    if (this.equipmentMarketplaceService.listingHasOffers(this.listing)) {
-      this._performOfferAction(
-        UpdateMarketplaceOffer,
-        EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS,
-        EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_FAILURE
-      );
-    } else {
-      this._performOfferAction(
-        CreateMarketplaceOffer,
-        EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS,
-        EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_FAILURE
-      );
-    }
-  }
-
-  retractOffer() {
-    if (this.equipmentMarketplaceService.listingHasOffers(this.listing)) {
-      const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
-      const componentInstance = modalRef.componentInstance;
-
-      if (
-        this.listing.lineItems.some(lineItem =>
-          lineItem.offers.some(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)
-        )
-      ) {
-        componentInstance.message = this.translateService.instant(
-          "Careful! If you retract an offer that was accepted by the seller, and have not reached a mutual " +
-          "agreement concerning this, you may risk disciplinary action. Offers are considered binding agreements " +
-          "between buyers and sellers. Are you sure you want to retract your offer?"
-        );
-      }
-
-      modalRef.closed.subscribe(() => {
-        this._performOfferAction(
-          DeleteMarketplaceOffer,
-          EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS,
-          EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE
-        );
-      });
-    } else {
-      this.popNotificationsService.error(this.translateService.instant("No offers to retract."));
-    }
-  }
-
   makeOfferLabel(): string {
     const sameCurrency = this.listing.lineItems.every(
       (lineItem, index, array) => lineItem.currency === array[0].currency
     );
 
     if (sameCurrency) {
-      const amount = this.currencyPipe.transform(this._getTotalAmount(), this.listing.lineItems[0].currency);
+      const amount = this.currencyPipe.transform(
+        this.equipmentMarketplaceService.getOfferTotalAmount(
+          this.listing, this.form
+        ),
+        this.listing.lineItems[0].currency
+      );
 
       if (this.listing.deliveryByShipping) {
         return this.translateService.instant("Offer {{0}} incl. shipping", { 0: amount });
@@ -387,133 +324,6 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
         };
       });
     });
-  }
-
-  private _performOfferAction(
-    action: typeof CreateMarketplaceOffer | typeof UpdateMarketplaceOffer | typeof DeleteMarketplaceOffer,
-    successActionType:
-      | typeof EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS
-      | typeof EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS
-      | typeof EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS,
-    failureActionType:
-      | typeof EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_FAILURE
-      | typeof EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_FAILURE
-      | typeof EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE
-  ) {
-    this.currentUser$.pipe(take(1)).subscribe(currentUser => {
-      let lineItems = [];
-
-      if (action === CreateMarketplaceOffer || action === UpdateMarketplaceOffer) {
-        lineItems = this.listing.lineItems.filter(lineItem => {
-          const amount = this.form.value[`amount-${lineItem.id}`];
-          return !!amount;
-        });
-      } else if (action === DeleteMarketplaceOffer) {
-        lineItems = this.listing.lineItems.filter(lineItem => {
-          return !!lineItem.offers.some(offer => offer.user === currentUser.id);
-        });
-      }
-
-      const successObservables$ = lineItems.map(lineItem =>
-        this.actions$.pipe(
-          ofType(successActionType),
-          filter(
-            (action: CreateMarketplaceOfferSuccess | UpdateMarketplaceOfferSuccess | DeleteMarketplaceOfferSuccess) =>
-              action.payload.offer.lineItem === lineItem.id
-          ),
-          switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-          take(1)
-        )
-      );
-
-      const failureObservables$ = lineItems.map(lineItem =>
-        this.actions$.pipe(
-          ofType(failureActionType),
-          filter(
-            (action: CreateMarketplaceOfferFailure | UpdateMarketplaceOfferFailure | DeleteMarketplaceOfferFailure) =>
-              action.payload.offer.lineItem === lineItem.id
-          ),
-          take(1)
-        )
-      );
-
-      forkJoin(successObservables$)
-        .pipe(
-          take(1),
-          // It's only one listing so we can take the first result.
-          map(result => result[0])
-        )
-        .subscribe(listing => {
-          this.modal.close(listing);
-          this.loadingService.setLoading(false);
-
-          let message: string;
-
-          if (action === CreateMarketplaceOffer) {
-            message = this.translateService.instant("Your offer has been successfully submitted.");
-          } else if (action === UpdateMarketplaceOffer) {
-            message = this.translateService.instant("Your offer has been successfully updated.");
-          } else {
-            message = this.translateService.instant("Your offer has been successfully retracted.");
-          }
-
-          this.popNotificationsService.success(message);
-        });
-
-      forkJoin(failureObservables$)
-        .pipe(take(1))
-        .subscribe(() => {
-          this.loadingService.setLoading(false);
-          this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForBuyer());
-        });
-
-      this.loadingService.setLoading(true);
-
-      lineItems.forEach(lineItem => {
-        const amount = this.form.value[`amount-${lineItem.id}`];
-        const offer: MarketplaceOfferInterface = {
-          listing: this.listing.id,
-          lineItem: lineItem.id,
-          id: lineItem.offers.find(offer => offer.user === currentUser.id)?.id,
-          amount
-        };
-
-        this.store$.dispatch(new action({ offer }));
-      });
-    });
-  }
-
-  private _checkFormHasItems() {
-    const total = this._getTotalAmount();
-
-    if (total === 0) {
-      this.popNotificationsService.error(this.translateService.instant("You cannot offer nothing, sorry."));
-    }
-    return total > 0;
-  }
-
-  private _getTotalAmountIncludingShipping(): number {
-    return this.listing.lineItems.reduce((total, lineItem) => {
-      const id = lineItem.id;
-
-      if (this.form.value[`checkbox-${id}`]) {
-        total += +this.form.value[`amount-${id}`] + +this.form.value[`shippingCost-raw-${id}`];
-      }
-
-      return total;
-    }, 0);
-  }
-
-  private _getTotalAmount(): number {
-    return this.listing.lineItems.reduce((total, lineItem) => {
-      const id = lineItem.id;
-
-      if (this.form.value[`checkbox-${id}`] || this.listing.bundleSaleOnly) {
-        total += +this.form.value[`amount-${id}`] + (+this.form.value[`shippingCost-raw-${id}`] || 0);
-      }
-
-      return total;
-    }, 0);
   }
 
   private _getTotalAmountPerLineItem(lineItem: MarketplaceLineItemInterface): number {

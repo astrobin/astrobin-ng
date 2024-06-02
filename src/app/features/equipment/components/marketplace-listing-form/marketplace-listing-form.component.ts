@@ -49,7 +49,7 @@ enum SALE_TYPE {
   styleUrls: ["./marketplace-listing-form.component.scss"]
 })
 export class MarketplaceListingFormComponent extends BaseComponentDirective implements OnInit {
-  readonly maxImages: number = 9;
+  readonly maxImages: number = 10;
 
   @Input()
   model: MarketplaceListingInterface = {
@@ -278,7 +278,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         props: {
           accept: "image/jpeg, image/png",
           image: true,
-          required: n === 0
+          required: n === 0,
+          hideLabel: true
         },
         validators: {
           validation: [{ name: "file-size", options: { max: 1024 * 1024 * 10 } }, { name: "image-or-video-file" }]

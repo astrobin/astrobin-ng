@@ -262,6 +262,15 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     });
   }
 
+  onRetractOfferClicked(event: Event, userGroup: UserOfferGroup) {
+    this.equipmentMarketplaceService.retractOffer(
+      this.listing,
+      userGroup.user,
+      null,
+      null
+    );
+  }
+
   onMessageProspectBuyerClicked(event: Event, userId: UserInterface["id"]) {
     event.preventDefault();
 

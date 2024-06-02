@@ -32,6 +32,9 @@
             </ng-container>
             <ng-container *ngIf="listing.user !== currentUserWrapper.user?.id">
               {{ "My offer" | translate }}
+              <span *ngIf="userGroup.status === MarketplaceOfferStatus.ACCEPTED">({{ "accepted" | translate }})</span>
+              <span *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING">({{ "pending" | translate }})</span>
+              <span *ngIf="userGroup.status === MarketplaceOfferStatus.REJECTED">({{ "rejected" | translate }})</span>
             </ng-container>
           </div>
           <div class="card-body">
@@ -78,6 +81,17 @@
               >
                 <fa-icon icon="envelope"></fa-icon>
               </button>
+            </div>
+            <!-- card-footer -->
+          </ng-container>
+
+          <ng-container *ngIf="userGroup.userId === currentUserWrapper.user?.id">
+            <div class="card-footer">
+              <ng-container *ngIf="userGroup.status !== MarketplaceOfferStatus.REJECTED">
+                <button (click)="onRetractOfferClicked($event, userGroup)" class="btn btn-danger">
+                  {{ "Retract offer" | translate}}
+                </button>
+              </ng-container>
             </div>
             <!-- card-footer -->
           </ng-container>
