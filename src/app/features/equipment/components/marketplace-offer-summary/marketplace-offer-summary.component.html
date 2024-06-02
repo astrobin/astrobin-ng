@@ -1,84 +1,93 @@
-<ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-  <ng-container *ngFor="let userGroup of offersGroupedByUser">
-    <div class="offer card mb-2">
-      <div class="card-header">
-        <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
-          <h4>
-            <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.ACCEPTED">
-              {{ "Accepted offer" | translate }}
-            </ng-container>
-            <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING">
-              {{ "Pending offer" | translate }}
-            </ng-container>
-            <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.REJECTED">
-              {{ "Rejected offer" | translate }}
-            </ng-container>
-          </h4>
+<ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper; else loadingTemplate">
+  <ng-container *ngIf="offersGroupedByUser !== undefined; else loadingTemplate">
+    <ng-container *ngIf="!loadingOffers; else loadingTemplate">
+      <ng-container *ngFor="let userGroup of offersGroupedByUser">
+        <div class="offer card mb-2">
+          <div class="card-header">
+            <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
+              <h4>
+                <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.ACCEPTED">
+                  {{ "Accepted offer" | translate }}
+                </ng-container>
+                <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING">
+                  {{ "Pending offer" | translate }}
+                </ng-container>
+                <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.REJECTED">
+                  {{ "Rejected offer" | translate }}
+                </ng-container>
+              </h4>
 
-          <h5>
-            <a [href]="classicRoutesService.GALLERY(userGroup.user)">
-              {{ userGroup.userDisplayName }}
-            </a>
-          </h5>
+              <h5>
+                <a [href]="classicRoutesService.GALLERY(userGroup.user)">
+                  {{ userGroup.userDisplayName }}
+                </a>
+              </h5>
 
-          <astrobin-marketplace-feedback-widget
-            *ngIf="userGroup.userId !== currentUserWrapper.user?.id"
-            [listing]="listing"
-            [user]="userGroup.user"
-            class="d-inline-block ms-2"
-          ></astrobin-marketplace-feedback-widget>
-        </ng-container>
-        <ng-container *ngIf="listing.user !== currentUserWrapper.user?.id">
-          {{ "My offer" | translate }}
-        </ng-container>
-      </div>
-      <div class="card-body">
-        <ul>
-          <ng-container *ngFor="let lineItemId of utilsService.objectKeys(userGroup.offersByLineItem)">
-            <ng-container *ngFor="let offer of userGroup.offersByLineItem[lineItemId]">
-              <ng-container *ngIf="getLineItem(+lineItemId) as lineItem">
+              <astrobin-marketplace-feedback-widget
+                *ngIf="userGroup.userId !== currentUserWrapper.user?.id"
+                [listing]="listing"
+                [user]="userGroup.user"
+                class="d-inline-block ms-2"
+              ></astrobin-marketplace-feedback-widget>
+            </ng-container>
+            <ng-container *ngIf="listing.user !== currentUserWrapper.user?.id">
+              {{ "My offer" | translate }}
+            </ng-container>
+          </div>
+          <div class="card-body">
+            <ul>
+              <ng-container *ngFor="let lineItemId of utilsService.objectKeys(userGroup.offersByLineItem)">
+                <ng-container *ngFor="let offer of userGroup.offersByLineItem[lineItemId]">
+                  <ng-container *ngIf="getLineItem(+lineItemId) as lineItem">
+                    <li>
+                      <div class="item-name">{{ lineItem.itemName }}</div>
+                      <span class="amount">{{ offer.amount | currency : lineItem.currency }}</span>
+                      <span *ngIf="!!lineItem.shippingCost" class="shipping">
+                      + {{ "shipping" | translate }}: {{ lineItem.shippingCost | currency : lineItem.currency }}
+                    </span>
+                    </li>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngFor="let lineItem of userGroup.lineItemsWithoutOffers">
                 <li>
                   <div class="item-name">{{ lineItem.itemName }}</div>
-                  <span class="amount">{{ offer.amount | currency : lineItem.currency }}</span>
-                  <span *ngIf="!!lineItem.shippingCost" class="shipping">
-                    + {{ "shipping" | translate }}: {{ lineItem.shippingCost | currency : lineItem.currency }}
-                  </span>
+                  <span class="amount no-offer">{{ "No offer" }}</span>
                 </li>
               </ng-container>
-            </ng-container>
+            </ul>
+          </div>
+          <!-- card-body -->
+
+          <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
+            <div class="card-footer">
+              <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING">
+                <button (click)="onAcceptOfferClicked($event, userGroup.userId)" class="btn btn-success d-block w-100">
+                  <fa-icon icon="thumbs-up"></fa-icon>
+                </button>
+              </ng-container>
+
+              <button (click)="onRejectOfferClicked($event, userGroup)" class="btn btn-danger d-block w-100">
+                <fa-icon icon="thumbs-down"></fa-icon>
+              </button>
+
+              <button
+                (click)="onMessageProspectBuyerClicked($event, userGroup.userId)"
+                class="btn btn-secondary d-block w-100"
+              >
+                <fa-icon icon="envelope"></fa-icon>
+              </button>
+            </div>
+            <!-- card-footer -->
           </ng-container>
-
-          <ng-container *ngFor="let lineItem of userGroup.lineItemsWithoutOffers">
-            <li>
-              <div class="item-name">{{ lineItem.itemName }}</div>
-              <span class="amount no-offer">{{ "No offer" }}</span>
-            </li>
-          </ng-container>
-        </ul>
-      </div>
-      <!-- card-body -->
-
-      <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
-        <div class="card-footer">
-          <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING">
-            <button (click)="onAcceptOfferClicked($event, userGroup.userId)" class="btn btn-success d-block w-100">
-              <fa-icon icon="thumbs-up"></fa-icon>
-            </button>
-          </ng-container>
-
-          <button (click)="onRejectOfferClicked($event, userGroup)" class="btn btn-danger d-block w-100">
-            <fa-icon icon="thumbs-down"></fa-icon>
-          </button>
-
-          <button
-            (click)="onMessageProspectBuyerClicked($event, userGroup.userId)"
-            class="btn btn-secondary d-block w-100"
-          >
-            <fa-icon icon="envelope"></fa-icon>
-          </button>
         </div>
-        <!-- card-footer -->
       </ng-container>
-    </div>
+    </ng-container>
   </ng-container>
 </ng-container>
+
+<ng-template #loadingTemplate>
+  <p class="d-block w-100 text-center">{{ "Loading offers..." | translate }}</p>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

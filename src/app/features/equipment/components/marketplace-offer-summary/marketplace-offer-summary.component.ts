@@ -66,6 +66,8 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
   startPrivateConversation: EventEmitter<MarketplacePrivateConversationInterface> =
     new EventEmitter<MarketplacePrivateConversationInterface>();
 
+  loadingOffers = true;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -122,6 +124,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
                 lineItemsWithoutOffers: []
               };
               this.offersGroupedByUser.push(userGroup);
+              this.loadingOffers = false;
             }
 
             if (!userGroup.offersByLineItem[lineItem.id]) {
