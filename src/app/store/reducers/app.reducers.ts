@@ -60,7 +60,7 @@ export interface AppState {
   createLocationAddTag: string;
 
   // All seen nested comments.
-  nestedComments: NestedCommentInterface[];
+  nestedComments: NestedCommentInterface[] | null;
 
   // All seen toggle properties.
   toggleProperties: TogglePropertyInterface[];
@@ -83,7 +83,7 @@ export const initialAppState: AppState = {
   telescopes: [],
   cameras: [],
   createLocationAddTag: null,
-  nestedComments: [],
+  nestedComments: null,
   toggleProperties: []
 };
 
@@ -309,7 +309,7 @@ export function reducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         nestedComments: UtilsService.sortObjectsByProperty(
-          UtilsService.arrayUniqueObjects([...state.nestedComments, ...action.payload.nestedComments], "id"),
+          UtilsService.arrayUniqueObjects([...state.nestedComments || [], ...action.payload.nestedComments], "id"),
           "created"
         )
       };
@@ -320,7 +320,7 @@ export function reducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         nestedComments: UtilsService.sortObjectsByProperty(
-          UtilsService.arrayUniqueObjects([...state.nestedComments, ...[action.payload.nestedComment]], "id"),
+          UtilsService.arrayUniqueObjects([...state.nestedComments || [], ...[action.payload.nestedComment]], "id"),
           "created"
         )
       };

@@ -206,12 +206,17 @@
         {{ "Private conversations" | translate }}
       </div>
       <div class="card-body">
-        <div class="flex flex-wrap justify-content-center">
-          <div *ngFor="let privateConversation of privateConversations" class="avatar-wrapper">
+        <div class="d-flex flex-wrap justify-content-center">
+          <div *ngFor="let privateConversation of privateConversations" class="avatar-wrapper text-center">
             <astrobin-avatar
               (click)="startPrivateConversation(privateConversation, $event)"
               [userId]="privateConversation.user"
             ></astrobin-avatar>
+            <astrobin-username
+              (click)="startPrivateConversation(privateConversation, $event)"
+              [userId]="privateConversation.user"
+              class="mt-2 d-inline-block"
+            ></astrobin-username>
             <span *ngIf="privateConversation.unreadMessages > 0" class="badge bg-danger">
               {{ privateConversation.unreadMessages }}
             </span>

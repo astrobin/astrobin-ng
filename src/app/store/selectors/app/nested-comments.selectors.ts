@@ -14,7 +14,11 @@ export const selectNestedCommentsByContentTypeIdAndObjectId = createSelector(
   (
     nestedComments: NestedCommentInterface[],
     data: { contentTypeId: ContentTypeInterface["id"]; objectId: number }
-  ): NestedCommentInterface[] => {
+  ): NestedCommentInterface[] | null => {
+    if (nestedComments === null || nestedComments === undefined) {
+      return null;
+    }
+
     return nestedComments.filter(
       nestedComment => nestedComment.contentType === data.contentTypeId && nestedComment.objectId === data.objectId
     );
@@ -23,7 +27,11 @@ export const selectNestedCommentsByContentTypeIdAndObjectId = createSelector(
 
 export const selectNestedCommentById = createSelector(
   selectNestedComments,
-  (nestedComments: NestedCommentInterface[], id: NestedCommentInterface["id"]): NestedCommentInterface => {
+  (nestedComments: NestedCommentInterface[], id: NestedCommentInterface["id"]): NestedCommentInterface | null => {
+    if (nestedComments === null || nestedComments === undefined) {
+      return null;
+    }
+
     const matching = nestedComments.filter(nestedComment => nestedComment.id === id);
 
     if (matching && matching.length > 0) {

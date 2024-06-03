@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { CreateNestedComment, LoadNestedComments } from "@app/store/actions/nested-comments.actions";
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
-import { map, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { LoadingService } from "@shared/services/loading.service";
 import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { FormGroup } from "@angular/forms";
@@ -141,15 +141,22 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         objectId: this.objectId
       })
       .pipe(
-        takeUntil(this.destroyed$),
+        filter(comments => comments !== null),
         distinctUntilChangedObj(),
         map(comments => UtilsService.sortParent(comments) as NestedCommentInterface[]),
         tap(() => this.loadingService.setLoading(false)),
         tap(comments => {
-          if (this.autoStartIfNoComments && comments && comments.length === 0 && !this.showTopLevelForm) {
+          if (
+            !this.loadingComments &&
+            this.autoStartIfNoComments &&
+            comments &&
+            comments.length === 0 &&
+            !this.showTopLevelForm
+          ) {
             this.utilsService.delay(1).subscribe(() => this.onAddCommentClicked(null));
           }
-        })
+        }),
+        takeUntil(this.destroyed$)
       );
   }
 

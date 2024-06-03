@@ -1,3 +1,7 @@
+<ng-container *ngIf="loadingComments">
+  <ng-container *ngTemplateOutlet="loadingTpl"></ng-container>
+</ng-container>
+
 <div *ngIf="comments$ | async as comments" class="nested-comments card">
 
   <div class="card-header">

@@ -6,7 +6,7 @@ import { State } from "@app/store/state";
 import { Observable } from "rxjs";
 import { LoadNestedComments } from "@app/store/actions/nested-comments.actions";
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
-import { map, takeUntil, tap } from "rxjs/operators";
+import { filter, map, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-nested-comments-count",
@@ -39,9 +39,10 @@ export class NestedCommentsCountComponent extends BaseComponentDirective impleme
     const data = { contentTypeId: this.contentType.id, objectId: this.objectId };
     this.store$.dispatch(new LoadNestedComments(data));
     this.count$ = this.store$.select(selectNestedCommentsByContentTypeIdAndObjectId, data).pipe(
-      takeUntil(this.destroyed$),
+      filter(nestedComments => nestedComments !== null),
       map(nestedComments => nestedComments.length),
-      tap(count => (this.hide = count === 0 && this.hideZero))
+      tap(count => (this.hide = count === 0 && this.hideZero)),
+      takeUntil(this.destroyed$)
     );
   }
 }
