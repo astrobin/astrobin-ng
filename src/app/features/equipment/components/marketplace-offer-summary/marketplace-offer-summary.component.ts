@@ -99,6 +99,11 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
   loadOffersGroupedByUser() {
     this.offersGroupedByUser = [];
 
+    if (!this.listing.lineItems.some(lineItem => lineItem.offers.length)) {
+      this.loadingOffers = false;
+      return;
+    }
+
     this.listing.lineItems.forEach(lineItem => {
       lineItem.offers.forEach(offer => {
         const userId = offer.user;
