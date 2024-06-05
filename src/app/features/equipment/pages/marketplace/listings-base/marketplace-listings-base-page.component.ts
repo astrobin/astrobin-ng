@@ -25,12 +25,16 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { LocalStorageService } from "@shared/services/localstorage.service";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
   template: ""
 })
 export abstract class MarketplaceListingsBasePageComponent extends BaseComponentDirective implements OnInit {
+  readonly WORLDWIDE = "WORLDWIDE";
+  readonly REGION_LOCAL_STORAGE_KEY = "marketplaceRegion";
+
   title = this.translateService.instant("Equipment marketplace");
   page = 1;
   filterModel: MarketplaceFilterModel | null = null;
@@ -48,7 +52,8 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     public readonly activatedRoute: ActivatedRoute,
     public readonly countryService: CountryService,
     public readonly router: Router,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly localStorageService: LocalStorageService
   ) {
     super(store$);
   }
@@ -56,12 +61,19 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
   ngOnInit(): void {
     super.ngOnInit();
 
+    this.selectedRegion = this.localStorageService.getItem(this.REGION_LOCAL_STORAGE_KEY);
+
     this._refreshOnQueryParamsChange();
     this._updateRequestCountry();
   }
 
-  setRegion(region: string) {
+  setRegion(region: string, refresh = true) {
+    if (region === null) {
+      region = this.WORLDWIDE;
+    }
+
     this.selectedRegion = region;
+    this.localStorageService.setItem(this.REGION_LOCAL_STORAGE_KEY, region);
     this.refresh();
   }
 
@@ -187,6 +199,10 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
 
           this.requestCountryCode = requestCountry;
           this.requestCountryLabel = this.countryService.getCountryName(requestCountry, this.translateService.currentLang);
+
+          if (!this.selectedRegion) {
+            this.setRegion(requestCountry, false);
+          }
         }
       )).subscribe();
   }

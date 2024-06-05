@@ -17,6 +17,7 @@ import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/
 import { CountryService } from "@shared/services/country.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { LocalStorageService } from "@shared/services/localstorage.service";
 
 @Component({
   selector: "astrobin-marketplace-user-listings-base-page",
@@ -39,7 +40,8 @@ export abstract class MarketplaceUserListingsBasePageComponent
     public readonly router: Router,
     public readonly utilsService: UtilsService,
     public readonly location: Location,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly localStorageService: LocalStorageService
   ) {
     super(
       store$,
@@ -50,7 +52,8 @@ export abstract class MarketplaceUserListingsBasePageComponent
       activatedRoute,
       countryService,
       router,
-      utilsService
+      utilsService,
+      localStorageService
     );
   }
 

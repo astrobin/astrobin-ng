@@ -9,18 +9,18 @@
         id="region-selector"
         ngbDropdownToggle
       >
-        <ng-container *ngIf="!!selectedRegion">
+        <ng-container *ngIf="!!selectedRegion && selectedRegion !== WORLDWIDE">
           <fa-icon icon="flag"></fa-icon>
           {{ requestCountryLabel }}
         </ng-container>
-        <ng-container *ngIf="!selectedRegion">
+        <ng-container *ngIf="!selectedRegion || selectedRegion === WORLDWIDE">
           <fa-icon icon="globe"></fa-icon>
           {{ "Worldwide" | translate }}
         </ng-container>
       </button>
 
       <span aria-labelledby="region-selector" ngbDropdownMenu>
-        <button (click)="setRegion(null)" ngbDropdownItem>
+        <button (click)="setRegion(WORLDWIDE)" ngbDropdownItem>
           <fa-icon icon="globe"></fa-icon>
           {{ "Worldwide" | translate }}
         </button>
