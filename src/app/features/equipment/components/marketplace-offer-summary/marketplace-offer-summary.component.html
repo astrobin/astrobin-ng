@@ -85,11 +85,25 @@
             <!-- card-footer -->
           </ng-container>
 
-          <ng-container *ngIf="userGroup.userId === currentUserWrapper.user?.id">
+          <ng-container
+            *ngIf="userGroup.userId === currentUserWrapper.user?.id && userGroup.status !== MarketplaceOfferStatus.REJECTED">
             <div class="card-footer">
+              <button
+                (click)="onModifyOfferClicked($event)"
+                *ngIf="userGroup.status === MarketplaceOfferStatus.PENDING"
+                [class.loading]="loadingService.loading$ | async"
+                class="btn btn-link link-secondary d-block"
+              >
+                <fa-icon icon="edit"></fa-icon>
+                {{ "Modify" | translate }}
+              </button>
+
               <ng-container *ngIf="userGroup.status !== MarketplaceOfferStatus.REJECTED">
-                <button (click)="onRetractOfferClicked($event, userGroup)" class="btn btn-danger">
-                  {{ "Retract offer" | translate}}
+                <button
+                  (click)="onRetractOfferClicked($event, userGroup)"
+                  class="btn btn-link link-danger">
+                  <fa-icon icon="times"></fa-icon>
+                  {{ "Retract" | translate}}
                 </button>
               </ng-container>
             </div>

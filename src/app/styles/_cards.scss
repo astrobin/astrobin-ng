@@ -107,5 +107,17 @@
         margin-right: .5rem;
       }
     }
+
+    .btn-link {
+      border-bottom: 1px dotted;
+      border-radius: 0;
+      padding-bottom: .125rem;
+      font-size: .9rem;
+      margin: .5rem 0;
+
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+    }
   }
 }

@@ -38,6 +38,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
 
 interface UserOfferGroup {
   user: UserInterface;
@@ -265,6 +266,15 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
         });
       });
     });
+  }
+
+  onModifyOfferClicked(event: Event) {
+    event.preventDefault();
+
+    const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "xl" });
+    const component = modalRef.componentInstance;
+
+    component.listing = this.listing;
   }
 
   onRetractOfferClicked(event: Event, userGroup: UserOfferGroup) {

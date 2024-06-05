@@ -36,16 +36,4 @@
   >
     {{ makeOfferLabel() }}
   </button>
-
-  <ng-container *ngIf="currentUser$ | async as currentUser">
-    <button
-      (click)="equipmentMarketplaceService.retractOffer(listing, currentUser, form, modal)"
-      *ngIf="hasAnyOffers()"
-      [class.loading]="loadingService.loading$ | async"
-      class="btn btn-danger"
-      type="button"
-    >
-      {{ "Retract offer" | translate }}
-    </button>
-  </ng-container>
 </div>
