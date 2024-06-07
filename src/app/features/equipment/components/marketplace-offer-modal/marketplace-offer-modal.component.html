@@ -28,12 +28,12 @@
   </button>
 
   <button
-    (click)="onMakeOfferButtonClick($event)"
+    (click)="onMakeOrModifyOfferButtonClick($event)"
     *ngIf="!equipmentMarketplaceService.listingSold(listing)"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-primary"
     type="button"
   >
-    {{ makeOfferLabel() }}
+    {{ makeOrModifyOfferLabel() }}
   </button>
 </div>

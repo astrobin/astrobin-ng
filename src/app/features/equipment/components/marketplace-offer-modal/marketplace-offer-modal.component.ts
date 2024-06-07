@@ -71,7 +71,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     }
   }
 
-  makeOfferLabel(): string {
+  makeOrModifyOfferLabel(): string {
     const sameCurrency = this.listing.lineItems.every(
       (lineItem, index, array) => lineItem.currency === array[0].currency
     );
@@ -100,46 +100,48 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     return this.windowRefService.nativeWindow.innerWidth < 992 || index === 0;
   }
 
-  onMakeOfferButtonClick(event: Event) {
+  onMakeOrModifyOfferButtonClick(event: Event) {
     event.preventDefault();
 
     if (!this._checkOfferFormHasItems()) {
       return;
     }
 
-    if (this.offers.length > 0) {
-      this.equipmentMarketplaceService.modifyOffer(this.listing, this.offers, this.modal);
-    } else {
-      this.currentUser$.pipe(take(1)).subscribe(user => {
-        const data = this.form.value;
-        const offers: MarketplaceOfferInterface[] = [];
-        const lineItemIds = Array.from(new Set(Object.keys(data).map(key => key.substring(key.lastIndexOf("-") + 1))));
-        const listingId = this.listing.id;
-        const userId = user.id;
-        const masterOfferUuid = UtilsService.uuid();
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      const data = this.form.value;
+      const offers: MarketplaceOfferInterface[] = [];
+      const lineItemIds = Array.from(new Set(Object.keys(data).map(key => key.substring(key.lastIndexOf("-") + 1))));
+      const listingId = this.listing.id;
+      const userId = user.id;
 
-        lineItemIds.forEach(lineItemId => {
-          const amountKey = `amount-${lineItemId}`;
+      lineItemIds.forEach(lineItemId => {
+        const amountKey = `amount-${lineItemId}`;
+        const masterOfferUuid = data[`masterOfferUuid-${lineItemId}`] || UtilsService.uuid();
 
-          if (data.hasOwnProperty(amountKey)) {
-            const amount = data[amountKey];
+        if (data.hasOwnProperty(amountKey)) {
+          const id = data[`id-${lineItemId}`];
+          const amount = data[amountKey];
 
-            const offer: MarketplaceOfferInterface = {
-              listing: listingId,
-              lineItem: parseInt(lineItemId, 10),
-              user: userId,
-              amount: amount,
-              status: MarketplaceOfferStatus.PENDING,
-              masterOfferUuid
-            };
+          const offer: MarketplaceOfferInterface = {
+            id: data[`id-${lineItemId}`],
+            listing: listingId,
+            lineItem: parseInt(lineItemId, 10),
+            user: userId,
+            amount: amount,
+            status: MarketplaceOfferStatus.PENDING,
+            masterOfferUuid
+          };
 
-            offers.push(offer);
-          }
-        });
-
-        this.equipmentMarketplaceService.makeOffer(this.listing, offers, this.modal);
+          offers.push(offer);
+        }
       });
-    }
+
+      if (this.offers.length > 0) {
+        this.equipmentMarketplaceService.modifyOffer(this.listing, offers, this.modal);
+      } else {
+        this.equipmentMarketplaceService.makeOffer(this.listing, offers, this.modal);
+      }
+    });
   }
 
   _initFields() {
@@ -149,6 +151,16 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
         fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""} ${!!lineItem.reserved ? "reserved" : ""} flex-column flex-lg-row offer-row`,
         wrappers: ["default-wrapper"],
         fieldGroup: [
+          {
+            key: `id-${lineItem.id}`,
+            type: "input",
+            className: "hidden",
+            hooks: {
+              onInit: field => {
+                field.formControl.setValue(this.offers.find(offer => offer.lineItem === lineItem.id)?.id);
+              }
+            }
+          },
           {
             key: `masterOfferUuid-${lineItem.id}`,
             type: "input",
@@ -169,7 +181,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             type: "toggle",
             wrappers: ["default-wrapper"],
             expressions: {
-              hide: () => this.listing.bundleSaleOnly,
+              hide: () => this.listing.bundleSaleOnly || this.listing.lineItems.length === 1,
               className: () => this.offers.length ? "hidden" : "col-12 col-lg-1 pb-4 pb-lg-0 toggle",
               "props.disabled": () => !!lineItem.sold || !!lineItem.reserved
             },
@@ -380,7 +392,11 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     const offeredAmount = this.form.get(`amount-${lineItemId}`)?.value;
     const shippingCost = this.form.get(`shippingCost-raw-${lineItemId}`)?.value;
 
-    if (this.form.get(`checkbox-${lineItemId}`)?.value || this.listing.bundleSaleOnly) {
+    if (
+      this.form.get(`checkbox-${lineItemId}`)?.value ||
+      this.listing.bundleSaleOnly ||
+      this.listing.lineItems.length === 1
+    ) {
       return +offeredAmount + +shippingCost;
     }
 
@@ -391,7 +407,11 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     return this.listing.lineItems.reduce((total, lineItem) => {
       const id = lineItem.id;
 
-      if (this.form.value[`checkbox-${id}`] || this.listing.bundleSaleOnly) {
+      if (
+        this.form.value[`checkbox-${id}`] ||
+        this.listing.bundleSaleOnly ||
+        this.listing.lineItems.length === 1
+      ) {
         total += +this.form.value[`amount-${id}`] + (+this.form.value[`shippingCost-raw-${id}`] || 0);
       }
 
