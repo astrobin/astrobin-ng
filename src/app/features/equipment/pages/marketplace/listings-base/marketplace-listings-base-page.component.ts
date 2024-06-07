@@ -26,6 +26,8 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LocalStorageService } from "@shared/services/localstorage.service";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -41,6 +43,7 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
   requestCountryCode: string | null;
   requestCountryLabel: string | null;
   selectedRegion: string | null;
+  selectedRegionLabel: string | null;
   listings$: Observable<MarketplaceListingInterface[]>;
 
   constructor(
@@ -53,7 +56,8 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     public readonly countryService: CountryService,
     public readonly router: Router,
     public readonly utilsService: UtilsService,
-    public readonly localStorageService: LocalStorageService
+    public readonly localStorageService: LocalStorageService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -62,19 +66,42 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     super.ngOnInit();
 
     this.selectedRegion = this.localStorageService.getItem(this.REGION_LOCAL_STORAGE_KEY);
+    this.selectedRegionLabel = this.countryService.getCountryName(
+      this.selectedRegion, this.translateService.currentLang
+    );
 
     this._refreshOnQueryParamsChange();
     this._updateRequestCountry();
   }
 
-  setRegion(region: string, refresh = true) {
+  setRegion(event: Event, region: string, refresh = true) {
+    if (event) {
+      event.preventDefault();
+    }
+
     if (region === null) {
       region = this.WORLDWIDE;
     }
 
     this.selectedRegion = region;
+    this.selectedRegionLabel = this.countryService.getCountryName(region, this.translateService.currentLang);
+
     this.localStorageService.setItem(this.REGION_LOCAL_STORAGE_KEY, region);
-    this.refresh();
+
+    if (refresh) {
+      this.refresh();
+    }
+  }
+
+  startOtherCountrySelection(event: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const modal: NgbModalRef = this.modalService.open(CountrySelectionModalComponent);
+    modal.closed.subscribe(country => {
+      this.setRegion(null, country);
+    });
   }
 
   public refresh(filterModel?: MarketplaceFilterModel) {
@@ -179,6 +206,7 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroyed$)).subscribe(params => {
       if (params.region) {
         this.selectedRegion = params.region;
+        this.selectedRegionLabel = this.countryService.getCountryName(params.region, this.translateService.currentLang);
       }
 
       if (params.page) {
@@ -201,7 +229,7 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
           this.requestCountryLabel = this.countryService.getCountryName(requestCountry, this.translateService.currentLang);
 
           if (!this.selectedRegion) {
-            this.setRegion(requestCountry, false);
+            this.setRegion(null, requestCountry, false);
           }
         }
       )).subscribe();

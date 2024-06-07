@@ -111,6 +111,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
 import { PrivateInformationComponent } from "@shared/components/misc/private-information/private-information.component";
 import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
+import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 
 const modules = [
   CommonModule,
@@ -149,6 +150,7 @@ const components = [
   CameraComponent,
   ConfirmationDialogComponent,
   CountDownComponent,
+  CountrySelectionModalComponent,
   CustomToastComponent,
   DataDoesNotUpdateInRealTimeComponent,
   EmptyListComponent,

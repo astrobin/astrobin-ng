@@ -11,7 +11,7 @@
       >
         <ng-container *ngIf="!!selectedRegion && selectedRegion !== WORLDWIDE">
           <fa-icon icon="flag"></fa-icon>
-          {{ requestCountryLabel }}
+          {{ selectedRegionLabel }}
         </ng-container>
         <ng-container *ngIf="!selectedRegion || selectedRegion === WORLDWIDE">
           <fa-icon icon="globe"></fa-icon>
@@ -20,14 +20,19 @@
       </button>
 
       <span aria-labelledby="region-selector" ngbDropdownMenu>
-        <button (click)="setRegion(WORLDWIDE)" ngbDropdownItem>
+        <button (click)="setRegion($event, WORLDWIDE)" ngbDropdownItem>
           <fa-icon icon="globe"></fa-icon>
           {{ "Worldwide" | translate }}
         </button>
 
-        <button (click)="setRegion(requestCountryCode)" *ngIf="!!requestCountryLabel" ngbDropdownItem>
+        <button (click)="setRegion($event, requestCountryCode)" *ngIf="!!requestCountryLabel" ngbDropdownItem>
           <fa-icon icon="flag"></fa-icon>
           {{ requestCountryLabel }}
+        </button>
+
+        <button (click)="startOtherCountrySelection($event)" ngbDropdownItem>
+          <fa-icon icon="arrow-pointer"></fa-icon>
+          {{ "Select" | translate }}
         </button>
       </span>
     </span>

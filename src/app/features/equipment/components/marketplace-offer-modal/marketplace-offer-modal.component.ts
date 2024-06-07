@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { FormGroup } from "@angular/forms";
@@ -54,7 +54,6 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     public readonly currencyPipe: CurrencyPipe,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly loadingService: LoadingService,
-    public readonly modalService: NgbModal,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly windowRefService: WindowRefService

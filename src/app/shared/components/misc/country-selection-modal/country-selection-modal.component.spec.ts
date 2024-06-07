@@ -1,24 +1,21 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { InformationDialogComponent } from "./information-dialog.component";
+
+import { CountrySelectionModalComponent } from "./country-selection-modal.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 
-describe("InformationDialogComponent", () => {
-  let component: InformationDialogComponent;
-  let fixture: ComponentFixture<InformationDialogComponent>;
+describe("CountrySelectionModalComponent", () => {
+  let component: CountrySelectionModalComponent;
+  let fixture: ComponentFixture<CountrySelectionModalComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(InformationDialogComponent, AppModule).provide([
-      NgbActiveModal,
+    await MockBuilder(CountrySelectionModalComponent, AppModule).provide([
       provideMockStore({ initialState })
     ]);
-  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InformationDialogComponent);
+    fixture = TestBed.createComponent(CountrySelectionModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
