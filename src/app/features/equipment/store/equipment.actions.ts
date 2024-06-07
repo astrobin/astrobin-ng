@@ -224,9 +224,12 @@ export enum EquipmentActionTypes {
   UPDATE_MARKETPLACE_OFFER = "[Equipment] Update marketplace offer",
   UPDATE_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Update marketplace offer success",
   UPDATE_MARKETPLACE_OFFER_FAILURE = "[Equipment] Update marketplace offer failure",
-  DELETE_MARKETPLACE_OFFER = "[Equipment] Delete marketplace offer",
-  DELETE_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Delete marketplace offer success",
-  DELETE_MARKETPLACE_OFFER_FAILURE = "[Equipment] Delete marketplace offer failure",
+  REJECT_MARKETPLACE_OFFER = "[Equipment] Reject marketplace offer",
+  REJECT_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Reject marketplace offer success",
+  REJECT_MARKETPLACE_OFFER_FAILURE = "[Equipment] Reject marketplace offer failure",
+  RETRACT_MARKETPLACE_OFFER = "[Equipment] Retract marketplace offer",
+  RETRACT_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Retract marketplace offer success",
+  RETRACT_MARKETPLACE_OFFER_FAILURE = "[Equipment] Retract marketplace offer failure",
   ACCEPT_MARKETPLACE_OFFER = "[Equipment] Accept marketplace offer",
   ACCEPT_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Accept marketplace offer success",
   ACCEPT_MARKETPLACE_OFFER_FAILURE = "[Equipment] Accept marketplace offer failure",
@@ -1290,22 +1293,43 @@ export class UpdateMarketplaceOfferFailure implements PayloadActionInterface {
   }
 }
 
-export class DeleteMarketplaceOffer implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_OFFER;
+export class RejectMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_MARKETPLACE_OFFER;
 
   constructor(public payload: { offer: MarketplaceOfferInterface }) {
   }
 }
 
-export class DeleteMarketplaceOfferSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS;
+export class RejectMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_SUCCESS;
 
   constructor(public payload: { offer: MarketplaceOfferInterface }) {
   }
 }
 
-export class DeleteMarketplaceOfferFailure implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE;
+export class RejectMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
+  }
+}
+
+export class RetractMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class RetractMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class RetractMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_FAILURE;
 
   constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
   }
@@ -1527,9 +1551,12 @@ export type EquipmentActions =
   | MarkMarketplaceLineItemAsSold
   | MarkMarketplaceLineItemAsSoldSuccess
   | MarkMarketplaceLineItemAsSoldFailure
-  | DeleteMarketplaceOffer
-  | DeleteMarketplaceOfferSuccess
-  | DeleteMarketplaceOfferFailure
+  | RejectMarketplaceOffer
+  | RejectMarketplaceOfferSuccess
+  | RejectMarketplaceOfferFailure
+  | RetractMarketplaceOffer
+  | RetractMarketplaceOfferSuccess
+  | RetractMarketplaceOfferFailure
   | AcceptMarketplaceOffer
   | AcceptMarketplaceOfferSuccess
   | AcceptMarketplaceOfferFailure

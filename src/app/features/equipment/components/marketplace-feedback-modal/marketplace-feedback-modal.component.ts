@@ -206,7 +206,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
                 type: "html",
                 wrappers: ["default-wrapper"],
                 className: "col-4 item-name",
-                template: lineItem.itemName,
+                template: lineItem.itemName || lineItem.itemPlainText,
                 props: {
                   label: this.translateService.instant("Item"),
                   readonly: true,

@@ -64,9 +64,6 @@ import {
   DeleteMarketplaceListing,
   DeleteMarketplaceListingFailure,
   DeleteMarketplaceListingSuccess,
-  DeleteMarketplaceOffer,
-  DeleteMarketplaceOfferFailure,
-  DeleteMarketplaceOfferSuccess,
   DeleteMarketplacePrivateConversation,
   DeleteMarketplacePrivateConversationFailure,
   DeleteMarketplacePrivateConversationSuccess,
@@ -120,9 +117,15 @@ import {
   RejectEquipmentItemEditProposal,
   RejectEquipmentItemEditProposalSuccess,
   RejectEquipmentItemSuccess,
+  RejectMarketplaceOffer,
+  RejectMarketplaceOfferFailure,
+  RejectMarketplaceOfferSuccess,
   RenewMarketplaceListing,
   RenewMarketplaceListingFailure,
   RenewMarketplaceListingSuccess,
+  RetractMarketplaceOffer,
+  RetractMarketplaceOfferFailure,
+  RetractMarketplaceOfferSuccess,
   UnapproveEquipmentItem,
   UnapproveEquipmentItemSuccess,
   UnfreezeEquipmentItemAsAmbiguous,
@@ -1334,14 +1337,27 @@ export class EquipmentEffects {
     )
   );
 
-  DeleteMarketplaceOffer: Observable<DeleteMarketplaceOfferSuccess | DeleteMarketplaceOfferFailure> = createEffect(() =>
+  RejectMarketplaceOffer: Observable<RejectMarketplaceOfferSuccess | RejectMarketplaceOfferFailure> = createEffect(() =>
     this.actions$.pipe(
-      ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER),
-      map((action: DeleteMarketplaceOffer) => action.payload),
+      ofType(EquipmentActionTypes.REJECT_MARKETPLACE_OFFER),
+      map((action: RejectMarketplaceOffer) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.deleteMarketplaceOffer(payload.offer).pipe(
-          map(() => new DeleteMarketplaceOfferSuccess({ offer: payload.offer })),
-          catchError(error => of(new DeleteMarketplaceOfferFailure({ offer: payload.offer, error })))
+        this.equipmentApiService.rejectMarketplaceOffer(payload.offer).pipe(
+          map(updatedOffer => new RejectMarketplaceOfferSuccess({ offer: updatedOffer })),
+          catchError(error => of(new RejectMarketplaceOfferFailure({ offer: payload.offer, error })))
+        )
+      )
+    )
+  );
+
+  RetractMarketplaceOffer: Observable<RetractMarketplaceOfferSuccess | RetractMarketplaceOfferFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER),
+      map((action: RetractMarketplaceOffer) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.retractMarketplaceOffer(payload.offer).pipe(
+          map(updatedOffer => new RetractMarketplaceOfferSuccess({ offer: updatedOffer })),
+          catchError(error => of(new RetractMarketplaceOfferFailure({ offer: payload.offer, error })))
         )
       )
     )

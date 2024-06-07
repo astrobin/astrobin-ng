@@ -28,7 +28,7 @@
   </button>
 
   <button
-    (click)="equipmentMarketplaceService.makeOffer(listing, form, modal)"
+    (click)="onMakeOfferButtonClick($event)"
     *ngIf="!equipmentMarketplaceService.listingSold(listing)"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-primary"

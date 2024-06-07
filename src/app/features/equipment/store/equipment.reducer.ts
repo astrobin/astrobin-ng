@@ -525,31 +525,41 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
       };
     }
 
-    case EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS: {
-      const deletedOffer = action.payload.offer;
+
+    case EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_SUCCESS:
+    case EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_SUCCESS: {
+      const updatedOffer = action.payload.offer;
 
       // Create a new updatedListings array with immutability in mind
       const updatedListings = state.marketplace.listings.map(listing => {
-        if (listing.id !== deletedOffer.listing) {
+        if (listing.id !== updatedOffer.listing) {
           // If the listing does not match, return it as is
           return listing;
         }
 
         // Map over lineItems to find the one that matches and update it
         const updatedLineItems = listing.lineItems.map(lineItem => {
-          if (lineItem.id !== deletedOffer.lineItem) {
+          if (lineItem.id !== updatedOffer.lineItem) {
             // If the lineItem does not match, return it as is
             return lineItem;
           }
 
-          // Filter out the deleted offer from the lineItem's offers array
-          const updatedOffers = lineItem.offers.filter(offer => offer.id !== deletedOffer.id);
+          // Map over the offers in the lineItem to update the offer
+          const updatedOffers = lineItem.offers.map(offer => {
+            if (offer.id !== updatedOffer.id) {
+              // If the offer does not match, return it as is
+              return offer;
+            }
 
-          // Return the lineItem with the updated offers array
+            // Return the updated offer
+            return updatedOffer;
+          });
+
+          // Return the lineItem with the updated offers
           return {
             ...lineItem,
-            reserved: null,
-            reservedTo: null,
+            reserved: updatedOffer.user === lineItem.reservedTo ? null : lineItem.reserved,
+            reservedTo: updatedOffer.user === lineItem.reservedTo ? null : lineItem.reservedTo,
             offers: updatedOffers
           };
         });
@@ -590,9 +600,11 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
 
           // Map over the offers in the lineItem to update the offer
           const updatedOffers = lineItem.offers.map(offer => {
-            if (offer.id === acceptedOffer.id) {
-              return acceptedOffer;
+            if (offer.id !== acceptedOffer.id) {
+              return offer;
             }
+
+            return acceptedOffer;
           });
 
           // Return the lineItem with the updated offers

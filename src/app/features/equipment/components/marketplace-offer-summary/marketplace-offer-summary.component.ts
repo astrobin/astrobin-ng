@@ -1,15 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import {
-  MarketplaceOfferInterface,
-  MarketplaceOfferStatus
-} from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { selectUser } from "@features/account/store/auth.selectors";
 import {
   selectMarketplaceListing,
   selectMarketplacePrivateConversations
@@ -28,10 +24,10 @@ import {
   AcceptMarketplaceOfferSuccess,
   CreateMarketplacePrivateConversation,
   CreateMarketplacePrivateConversationSuccess,
-  DeleteMarketplaceOffer,
-  DeleteMarketplaceOfferFailure,
-  DeleteMarketplaceOfferSuccess,
-  EquipmentActionTypes
+  EquipmentActionTypes,
+  RejectMarketplaceOffer,
+  RejectMarketplaceOfferFailure,
+  RejectMarketplaceOfferSuccess
 } from "@features/equipment/store/equipment.actions";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@shared/services/loading.service";
@@ -39,14 +35,12 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import { MarketplaceMasterOfferInterface } from "@features/equipment/types/marketplace-master-offer.interface";
+import { selectUser } from "@features/account/store/auth.selectors";
 
-interface UserOfferGroup {
-  user: UserInterface;
-  userId: UserInterface["id"];
-  userDisplayName: string;
-  status: MarketplaceOfferStatus;
-  offersByLineItem: { [lineItemId: number]: MarketplaceOfferInterface[] };
-  lineItemsWithoutOffers: MarketplaceLineItemInterface[];
+interface OfferGroup {
+  [key: MarketplaceMasterOfferInterface["id"]]: (MarketplaceOfferInterface & { userObj: UserInterface })[];
 }
 
 @Component({
@@ -61,7 +55,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
   listing: MarketplaceListingInterface;
 
   @Input()
-  offersGroupedByUser: UserOfferGroup[];
+  offerGroup: OfferGroup;
 
   @Output()
   startPrivateConversation: EventEmitter<MarketplacePrivateConversationInterface> =
@@ -93,12 +87,10 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
       this.listing = listing;
       this.loadOffersGroupedByUser();
     });
-
-    this.loadOffersGroupedByUser();
   }
 
   loadOffersGroupedByUser() {
-    this.offersGroupedByUser = [];
+    this.offerGroup = {};
 
     if (!this.listing.lineItems.some(lineItem => lineItem.offers.length)) {
       this.loadingOffers = false;
@@ -107,51 +99,18 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
 
     this.listing.lineItems.forEach(lineItem => {
       lineItem.offers.forEach(offer => {
-        const userId = offer.user;
-
-        this.store$.dispatch(new LoadUser({ id: userId }));
+        this.store$.dispatch(new LoadUser({ id: offer.user }));
 
         this.store$
-          .select(selectUser, userId)
+          .select(selectUser, offer.user)
           .pipe(
             filter(user => !!user),
             take(1)
           )
           .subscribe(user => {
-            let userGroup = this.offersGroupedByUser.find(group => group.userId === userId);
-
-            if (!userGroup) {
-              userGroup = {
-                user,
-                userId,
-                userDisplayName: offer.userDisplayName,
-                status: MarketplaceOfferStatus.PENDING,
-                offersByLineItem: {},
-                lineItemsWithoutOffers: []
-              };
-              this.offersGroupedByUser.push(userGroup);
-              this.loadingOffers = false;
-            }
-
-            if (!userGroup.offersByLineItem[lineItem.id]) {
-              userGroup.offersByLineItem[lineItem.id] = [];
-            }
-
-            if (!userGroup.offersByLineItem[lineItem.id].length) {
-              userGroup.offersByLineItem[lineItem.id].push(offer);
-            }
-
-            if (
-              lineItem.offers
-                .filter(offer => offer.user === userId)
-                .every(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)
-            ) {
-              userGroup.status = MarketplaceOfferStatus.ACCEPTED;
-            }
-
-            userGroup.lineItemsWithoutOffers = this.listing.lineItems.filter(
-              lineItem => !Object.keys(userGroup.offersByLineItem).includes(lineItem.id.toString())
-            );
+            this.offerGroup[offer.masterOffer] = this.offerGroup[offer.masterOffer] || [];
+            this.offerGroup[offer.masterOffer].push({ ...offer, userObj: user });
+            this.loadingOffers = false;
           });
       });
     });
@@ -161,7 +120,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     return this.listing.lineItems.find(lineItem => lineItem.id === id);
   }
 
-  onAcceptOfferClicked(event: Event, userId: UserInterface["id"]) {
+  onAcceptOfferClicked(event: Event, offers: (MarketplaceOfferInterface & { userObj: UserInterface })[]) {
     const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
     const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
@@ -172,8 +131,6 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     );
 
     modalRef.closed.subscribe(() => {
-      const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
-
       this.loadingService.setLoading(true);
 
       forkJoin(
@@ -212,77 +169,76 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     });
   }
 
-  onRejectOfferClicked(event: Event, userGroup: UserOfferGroup) {
-    this.currentUser$.pipe(take(1)).subscribe(currentUser => {
-      const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+  onRejectOfferClicked(event: Event, offers: (MarketplaceOfferInterface & { userObj: UserInterface })[]) {
+    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
-      if (userGroup.status === MarketplaceOfferStatus.ACCEPTED) {
-        const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
-        componentInstance.message = this.translateService.instant(
-          "Careful! If you reject an offer that you already accepted, and have not reached a mutual " +
-          "agreement with the buyer concerning this, you may risk disciplinary action. Offers are considered binding " +
-          "agreements between buyers and sellers. Are you sure you want to retract your offer?"
-        );
-      }
+    componentInstance.title = this.translateService.instant("Reject offer");
 
-      modalRef.closed.subscribe(() => {
-        const offers = EquipmentMarketplaceService.offersByUser(userGroup.userId, this.listing);
+    if (offers[0].status === MarketplaceOfferStatus.ACCEPTED) {
+      componentInstance.message = this.translateService.instant(
+        "Careful! If you reject an offer that you already accepted, and have not reached a mutual " +
+        "agreement with the buyer concerning this, you may risk disciplinary action. Offers are considered binding " +
+        "agreements between buyers and sellers. Are you sure you want to retract your offer?"
+      );
+    } else {
+      componentInstance.showMessage = false;
+    }
 
-        this.loadingService.setLoading(true);
+    modalRef.closed.subscribe(() => {
+      this.loadingService.setLoading(true);
 
-        forkJoin(
-          offers.map(offer =>
-            this.actions$.pipe(
-              ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE),
-              filter((action: DeleteMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
-              take(1)
-            )
+      forkJoin(
+        offers.map(offer =>
+          this.actions$.pipe(
+            ofType(EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_FAILURE),
+            filter((action: RejectMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
+            take(1)
           )
-        ).subscribe(() => {
-          this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
+        )
+      ).subscribe(() => {
+        this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
+        this.loadingService.setLoading(false);
+      });
+
+      forkJoin(
+        offers.map(offer =>
+          this.actions$.pipe(
+            ofType(EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_SUCCESS),
+            filter((action: RejectMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
+            take(1)
+          )
+        )
+      )
+        .pipe(
+          switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
+          take(1)
+        )
+        .subscribe(() => {
+          this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
           this.loadingService.setLoading(false);
         });
 
-        forkJoin(
-          offers.map(offer =>
-            this.actions$.pipe(
-              ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS),
-              filter((action: DeleteMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
-              take(1)
-            )
-          )
-        )
-          .pipe(
-            switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-            take(1)
-          )
-          .subscribe(() => {
-            this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
-            this.loadingService.setLoading(false);
-          });
-
-        offers.forEach(offer => {
-          this.store$.dispatch(new DeleteMarketplaceOffer({ offer }));
-        });
+      offers.forEach(offer => {
+        this.store$.dispatch(new RejectMarketplaceOffer({ offer }));
       });
     });
   }
 
-  onModifyOfferClicked(event: Event) {
+  onModifyOfferClicked(event: Event, offers: (MarketplaceOfferInterface & { userObj: UserInterface })[]) {
     event.preventDefault();
 
     const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "xl" });
     const component = modalRef.componentInstance;
 
     component.listing = this.listing;
+    component.offers = offers;
   }
 
-  onRetractOfferClicked(event: Event, userGroup: UserOfferGroup) {
+  onRetractOfferClicked(event: Event, offers: (MarketplaceOfferInterface & { userObj: UserInterface })[]) {
     this.equipmentMarketplaceService.retractOffer(
       this.listing,
-      userGroup.user,
-      null,
-      null
+      offers
     );
   }
 

@@ -17,11 +17,9 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { filter, take } from "rxjs/operators";
 import { forkJoin } from "rxjs";
-import {
-  MarketplaceOfferInterface,
-  MarketplaceOfferStatus
-} from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 
 @Component({
   selector: "astrobin-marketplace-feedback-modal",
