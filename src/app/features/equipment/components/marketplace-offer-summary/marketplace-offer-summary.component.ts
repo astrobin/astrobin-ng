@@ -54,12 +54,16 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
   @Input()
   listing: MarketplaceListingInterface;
 
-  @Input()
-  offerGroup: OfferGroup;
-
   @Output()
   startPrivateConversation: EventEmitter<MarketplacePrivateConversationInterface> =
     new EventEmitter<MarketplacePrivateConversationInterface>();
+
+  pendingOfferGroup: OfferGroup = {};
+  acceptedOfferGroup: OfferGroup = {};
+  rejectedOfferGroup: OfferGroup = {};
+  retractedOfferGroup: OfferGroup = {};
+
+  showRejectedAndRetractedOffers = false;
 
   loadingOffers = true;
 
@@ -90,7 +94,10 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
   }
 
   loadOffersGroupedByUser() {
-    this.offerGroup = {};
+    this.pendingOfferGroup = {};
+    this.acceptedOfferGroup = {};
+    this.rejectedOfferGroup = {};
+    this.retractedOfferGroup = {};
 
     if (!this.listing.lineItems.some(lineItem => lineItem.offers.length)) {
       this.loadingOffers = false;
@@ -108,8 +115,25 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
             take(1)
           )
           .subscribe(user => {
-            this.offerGroup[offer.masterOffer] = this.offerGroup[offer.masterOffer] || [];
-            this.offerGroup[offer.masterOffer].push({ ...offer, userObj: user });
+            for (const group of [
+              "pendingOfferGroup",
+              "acceptedOfferGroup",
+              "rejectedOfferGroup",
+              "retractedOfferGroup"
+            ]) {
+              this[group][offer.masterOffer] = this[group][offer.masterOffer] || [];
+            }
+
+            if (offer.status === MarketplaceOfferStatus.PENDING) {
+              this.pendingOfferGroup[offer.masterOffer].push({ ...offer, userObj: user });
+            } else if (offer.status === MarketplaceOfferStatus.ACCEPTED) {
+              this.acceptedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user });
+            } else if (offer.status === MarketplaceOfferStatus.REJECTED) {
+              this.rejectedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user });
+            } else if (offer.status === MarketplaceOfferStatus.RETRACTED) {
+              this.retractedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user });
+            }
+
             this.loadingOffers = false;
           });
       });
@@ -277,5 +301,18 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
       });
 
     this.store$.dispatch(new LoadUser({ id: userId }));
+  }
+
+  offerGroupHasOffers(offerGroup: OfferGroup): boolean {
+    let hasOffers = false;
+
+    for (const offers of Object.values(offerGroup)) {
+      if (offers.length > 0) {
+        hasOffers = true;
+        break;
+      }
+    }
+
+    return hasOffers;
   }
 }
