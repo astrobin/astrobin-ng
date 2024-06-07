@@ -146,18 +146,21 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         map(comments => UtilsService.sortParent(comments) as NestedCommentInterface[]),
         tap(() => this.loadingService.setLoading(false)),
         tap(comments => {
-          if (
-            !this.loadingComments &&
-            this.autoStartIfNoComments &&
-            comments &&
-            comments.length === 0 &&
-            !this.showTopLevelForm
-          ) {
-            this.utilsService.delay(1).subscribe(() => this.onAddCommentClicked(null));
-          }
+          this._autoStartIfNoComments(comments);
         }),
         takeUntil(this.destroyed$)
       );
+  }
+
+  _autoStartIfNoComments(comments: NestedCommentInterface[]) {
+    if (this.loadingComments) {
+      this.utilsService.delay(50).subscribe(() => this._autoStartIfNoComments(comments));
+      return;
+    }
+
+    if (this.autoStartIfNoComments && comments && comments.length === 0 && !this.showTopLevelForm) {
+      this.onAddCommentClicked(null);
+    }
   }
 
   _initFields() {
