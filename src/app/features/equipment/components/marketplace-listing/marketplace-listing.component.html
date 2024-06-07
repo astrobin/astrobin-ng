@@ -1,22 +1,15 @@
-<div>
-  <div *ngIf="equipmentMarketplaceService.listingSold(listing)" class="alert alert-danger" role="alert">
-    <fa-icon icon="exclamation-triangle"></fa-icon>
-    {{ "All line items in this listings have been sold." | translate }}
-  </div>
-
-  <div
-    *ngFor="let lineItem of listing.lineItems; let lineItemIndex = index"
-    [id]="'line-item-' + lineItem.id"
-    class="line-item-container"
-  >
-    <astrobin-marketplace-listing-line-item
-      [collapsed]="listing.lineItems.length > 1 || !!lineItem.sold"
-      [lineItemIndex]="listing.lineItems.length > 1 ? lineItemIndex : undefined"
-      [lineItem]="lineItem"
-      [listing]="listing"
-      [previewMode]="previewMode"
-    ></astrobin-marketplace-listing-line-item>
-  </div>
+<div
+  *ngFor="let lineItem of listing.lineItems; let lineItemIndex = index"
+  [id]="'line-item-' + lineItem.id"
+  class="line-item-container"
+>
+  <astrobin-marketplace-listing-line-item
+    [collapsed]="listing.lineItems.length > 1 || !!lineItem.sold"
+    [lineItemIndex]="listing.lineItems.length > 1 ? lineItemIndex : undefined"
+    [lineItem]="lineItem"
+    [listing]="listing"
+    [previewMode]="previewMode"
+  ></astrobin-marketplace-listing-line-item>
 </div>
 
 <div

@@ -238,25 +238,27 @@
   <ng-container [ngTemplateOutlet]="offers"></ng-container>
 
   <div class="mt-4">
-    <button
-      (click)="onMakeAnOfferClicked($event)"
-      *ngIf="!equipmentMarketplaceService.listingHasPendingOffers(listing)"
-      [class.loading]="loadingService.loading$ | async"
-      class="btn btn-primary d-block w-100 mt-4"
-    >
-      <fa-icon icon="handshake"></fa-icon>
-      {{ "Make an offer" | translate }}
-    </button>
+    <ng-container *ngIf="!equipmentMarketplaceService.listingSold(listing)">
+      <button
+        (click)="onMakeAnOfferClicked($event)"
+        *ngIf="!equipmentMarketplaceService.listingHasPendingOffers(listing)"
+        [class.loading]="loadingService.loading$ | async"
+        class="btn btn-primary d-block w-100 mt-4"
+      >
+        <fa-icon icon="handshake"></fa-icon>
+        {{ "Make an offer" | translate }}
+      </button>
 
-    <astrobin-toggle-property
-      [contentType]="listingContentType.id"
-      [objectId]="listing.id"
-      [userId]="currentUserWrapper.user?.id"
-      btnClass="btn btn-secondary d-block w-100 mt-2"
-      propertyType="follow"
-      setLabel="{{ 'Subscribe to updates' | translate }}"
-      unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
-    ></astrobin-toggle-property>
+      <astrobin-toggle-property
+        [contentType]="listingContentType.id"
+        [objectId]="listing.id"
+        [userId]="currentUserWrapper.user?.id"
+        btnClass="btn btn-secondary d-block w-100 mt-2"
+        propertyType="follow"
+        setLabel="{{ 'Subscribe to updates' | translate }}"
+        unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
+      ></astrobin-toggle-property>
+    </ng-container>
 
     <button
       (click)="onMessageSellerClicked($event)"
