@@ -163,12 +163,34 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
             wrappers: ["default-wrapper"],
             defaultValue: false,
             expressions: {
-              className: () => ("w-50 mb-2 " + (!!lineItem.sold ? "hidden" : "toggle"))
+              className: () =>
+                !this.listing.bundleSaleOnly && this.listing.lineItems.length > 1
+                  ? "w-50 mb-2 toggle"
+                  : "hidden",
+              disabled: () => lineItem.sold
             },
             props: {
               label: "",
-              toggleLabel: lineItem.itemName,
+              toggleLabel: lineItem.itemName || lineItem.itemPlainText,
               hideOptionalMarker: true
+            }
+          },
+          {
+            key: `itemName-${lineItem.id}`,
+            type: "html",
+            wrappers: ["default-wrapper"],
+            template: lineItem.itemName || lineItem.itemPlainText,
+            expressions: {
+              className: () =>
+                this.listing.bundleSaleOnly ||
+                this.listing.lineItems.length === 1
+                  ? "w-50 mb-0"
+                  : "hidden"
+            },
+            props: {
+              label: this.translateService.instant("Item"),
+              hideOptionalMarker: true,
+              hideLabel: index > 0
             }
           },
           {
@@ -188,7 +210,8 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
                   value: -1,
                   label: this.translateService.instant("Someone else")
                 }]
-              ]
+              ],
+              hideLabel: index > 0
             },
             hooks: {
               onInit: (field: FormlyFieldConfig) => {
