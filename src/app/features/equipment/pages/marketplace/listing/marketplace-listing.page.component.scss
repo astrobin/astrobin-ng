@@ -1,13 +1,42 @@
+@import "../../../../../styles/breakpoints";
+
 .private-conversations {
   .avatar-wrapper {
     position: relative;
     display: block;
-    max-width: calc(33.33% - .5rem);
+
+    @media screen and (max-width: $xl-max) {
+      width: calc(50% - .5rem);
+    }
+
+    @media screen and (max-width: $lg-max) {
+      width: calc(100% - .5rem);
+    }
+
+    @media screen and (max-width: $md-max) {
+      width: calc(50% - .5rem);
+    }
+
+    @media screen and (max-width: $sm-max) {
+      width: calc(25% - .5rem);
+    }
+
+    @media screen and (max-width: $xs-max) {
+      width: calc(25% - .5rem);
+    }
+
+    @media screen and (min-width: $xxl-min) {
+      max-width: calc(50% - .5rem);
+    }
+
+    astrobin-avatar {
+      width: 50%;
+    }
 
     .badge {
       position: absolute;
       top: -.25rem;
-      right: -.25rem;
+      left: calc(50% + 1rem);
     }
   }
 }
