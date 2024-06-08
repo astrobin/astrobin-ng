@@ -75,9 +75,9 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
         } else if (currentUser.id === this.listing.user) {
           // The current user is the seller of this listing. They can leave feedback if the user in this component is a
           // buyer and has some accepted offers.
-          this.leaveFeedback = this.marketplaceService.userIsBuyer(this.user, this.listing);
+          this.leaveFeedback = this.marketplaceService.userIsBuyer(this.user.id, this.listing);
         } else {
-          this.leaveFeedback = this.marketplaceService.userIsBuyer(currentUser, this.listing);
+          this.leaveFeedback = this.marketplaceService.userIsBuyer(currentUser.id, this.listing);
         }
 
         this.listing.lineItems.forEach(lineItem => {

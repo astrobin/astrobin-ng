@@ -215,14 +215,24 @@
               (click)="startPrivateConversation(privateConversation, $event)"
               [userId]="privateConversation.user"
             ></astrobin-avatar>
+
             <astrobin-username
               (click)="startPrivateConversation(privateConversation, $event)"
               [userId]="privateConversation.user"
               class="mt-2 d-inline-block"
             ></astrobin-username>
+
+            <span
+              *ngIf="equipmentMarketplaceService.userIsBuyer(privateConversation.user, listing)"
+              class="buyer"
+            >
+              ({{ "Buyer" | translate }})
+            </span>
+
             <span *ngIf="privateConversation.unreadMessages > 0" class="badge bg-danger">
               {{ privateConversation.unreadMessages }}
             </span>
+
             <span *ngIf="privateConversation.unreadMessages === 0" class="badge bg-info">
               {{ privateConversation.totalMessages }}
             </span>

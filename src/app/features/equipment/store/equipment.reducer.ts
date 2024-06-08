@@ -365,7 +365,13 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
           privateConversations: UtilsService.arrayUniqueObjects(
             [...(state.marketplace.privateConversations || []), ...action.payload.privateConversations],
             "id"
-          ).sort((a, b) => b.id - a.id)
+          ).sort((a, b) => {
+            if (a.lastMessageTimestamp && b.lastMessageTimestamp) {
+              return new Date(b.lastMessageTimestamp).getTime() - new Date(a.lastMessageTimestamp).getTime();
+            }
+
+            return new Date(b.created).getTime() - new Date(a.created).getTime();
+          })
         }
       };
     }

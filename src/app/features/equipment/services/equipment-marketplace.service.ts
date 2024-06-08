@@ -122,8 +122,8 @@ export class EquipmentMarketplaceService extends BaseService {
   }
 
   // Returns whether the user is the buyer of any line item in the listing.
-  userIsBuyer(user: UserInterface, listing: MarketplaceListingInterface): boolean {
-    return listing.lineItems.some(lineItem => lineItem.soldTo === user.id);
+  userIsBuyer(userId: UserInterface["id"], listing: MarketplaceListingInterface): boolean {
+    return listing.lineItems.some(lineItem => lineItem.soldTo === userId);
   }
 
   // This method assumes that `previousListing` has lineItem IDs/ It's used to compare an existing listing to a listing
