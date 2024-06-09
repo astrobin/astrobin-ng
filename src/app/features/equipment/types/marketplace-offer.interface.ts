@@ -10,6 +10,7 @@ export interface MarketplaceOfferInterface {
   lineItem: MarketplaceLineItemInterface["id"];
   linetItemDisplayName?: string;
   user?: UserInterface["id"];
+  username?: string;
   userDisplayName?: string;
   created?: string;
   updated?: string;
