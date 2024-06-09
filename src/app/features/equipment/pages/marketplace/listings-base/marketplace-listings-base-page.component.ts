@@ -192,7 +192,8 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
             link: "/equipment/explorer"
           },
           {
-            label: this.translateService.instant("Marketplace")
+            label: this.translateService.instant("Marketplace"),
+            link: "/equipment/marketplace"
           },
           {
             label: this.translateService.instant("Listings")
