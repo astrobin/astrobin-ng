@@ -6,8 +6,9 @@
     }
 
     .field-group-line-items {
-      &.sold {
-        > formly-field:not(.cannot-edit-because-sold) {
+      &.sold,
+      &.reserved {
+        > formly-field:not(.cannot-edit-because-sold):not(.cannot-edit-because-reserved) {
           opacity: .5;
           pointer-events: none;
         }
@@ -27,7 +28,8 @@
         padding-top: 2rem;
       }
 
-      .cannot-edit-because-sold {
+      .cannot-edit-because-sold,
+      .cannot-edit-because-reserved {
         color: var(--textOnDangerColor);
         background-color: var(--dangerColor);
         padding: .5rem !important;

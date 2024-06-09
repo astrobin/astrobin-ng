@@ -334,8 +334,17 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   ? this.translateService.instant("Equipment item for sale") + ` #${index + 1}`
                   : this.translateService.instant("Equipment item for sale");
               },
-              fieldGroupClassName: config =>
-                config.model.sold ? "field-group-line-items sold" : "field-group-line-items"
+              fieldGroupClassName: config => {
+                let className = "field-group-line-items";
+
+                if (config.model.sold) {
+                  className += " sold";
+                } else if (config.model.reserved) {
+                  className += " reserved";
+                }
+
+                return className;
+              }
             },
             fieldGroup: [
               {
@@ -344,6 +353,14 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 className: "cannot-edit-because-sold",
                 expressions: {
                   hide: config => !config.model.sold
+                }
+              },
+              {
+                type: "html",
+                template: this.translateService.instant("You cannot edit this line item because it's marked as reserved."),
+                className: "cannot-edit-because-reserved",
+                expressions: {
+                  hide: config => !config.model.reserved && !config.model.sold
                 }
               },
               {
