@@ -93,23 +93,28 @@
 
           <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
             <div class="card-footer">
-              <button
-                (click)="onAcceptOfferClicked($event, group.value)"
-                *ngIf="group.value[0].status === MarketplaceOfferStatus.PENDING"
-                [class.loading]="loadingService.loading$ | async"
-                class="btn btn-success"
-              >
-                <fa-icon icon="thumbs-up"></fa-icon>
-              </button>
+              <ng-container *ngIf="!equipmentMarketplaceService.listingSold(listing)">
+                <button
+                  (click)="onAcceptOfferClicked($event, group.value)"
+                  *ngIf="group.value[0].status === MarketplaceOfferStatus.PENDING"
+                  [class.loading]="loadingService.loading$ | async"
+                  class="btn btn-success"
+                >
+                  <fa-icon icon="thumbs-up"></fa-icon>
+                </button>
 
-              <button
-                (click)="onRejectOfferClicked($event, group.value)"
-                *ngIf="group.value[0].status === MarketplaceOfferStatus.PENDING || group.value[0].status === MarketplaceOfferStatus.ACCEPTED"
-                [class.loading]="loadingService.loading$ | async"
-                class="btn btn-danger"
-              >
-                <fa-icon icon="thumbs-down"></fa-icon>
-              </button>
+                <button
+                  (click)="onRejectOfferClicked($event, group.value)"
+                  *ngIf="
+                    group.value[0].status === MarketplaceOfferStatus.PENDING ||
+                    group.value[0].status === MarketplaceOfferStatus.ACCEPTED
+                  "
+                  [class.loading]="loadingService.loading$ | async"
+                  class="btn btn-danger"
+                >
+                  <fa-icon icon="thumbs-down"></fa-icon>
+                </button>
+              </ng-container>
 
               <button
                 (click)="onMessageProspectBuyerClicked($event, group.value[0].user)"
@@ -124,6 +129,7 @@
 
           <ng-container
             *ngIf="
+              !equipmentMarketplaceService.listingSold(listing) &&
               group.value[0].user === currentUserWrapper.user?.id &&
               group.value[0].status !== MarketplaceOfferStatus.REJECTED &&
               group.value[0].status !== MarketplaceOfferStatus.RETRACTED
@@ -140,21 +146,18 @@
                 {{ "Modify" | translate }}
               </button>
 
-              <ng-container
+              <button
+                (click)="onRetractOfferClicked($event, group.value)"
                 *ngIf="
                   group.value[0].status === MarketplaceOfferStatus.ACCEPTED ||
                   group.value[0].status === MarketplaceOfferStatus.PENDING
                 "
+                [class.loading]="loadingService.loading$ | async"
+                class="btn btn-link link-danger"
               >
-                <button
-                  (click)="onRetractOfferClicked($event, group.value)"
-                  [class.loading]="loadingService.loading$ | async"
-                  class="btn btn-link link-danger"
-                >
-                  <fa-icon icon="times"></fa-icon>
-                  {{ "Retract" | translate}}
-                </button>
-              </ng-container>
+                <fa-icon icon="times"></fa-icon>
+                {{ "Retract" | translate}}
+              </button>
             </div>
             <!-- card-footer -->
           </ng-container>
