@@ -25,8 +25,8 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   @Input()
   listing: MarketplaceListingInterface;
 
-  leaveFeedback: boolean;
-  hasFeedback: boolean;
+  showLeaveFeedbackButton: boolean;
+  alreadyHasFeedbackFromCurrentUser: boolean;
   stars: number[] = [0, 0, 0, 0, 0]; // 0: empty, 1: half, 2: full
 
   constructor(
@@ -71,19 +71,19 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
         // - The current user is a buyer with some accepted offers, and the user in this component is the seller
 
         if (currentUser.id === this.user.id) {
-          this.leaveFeedback = false;
+          this.showLeaveFeedbackButton = false;
         } else if (currentUser.id === this.listing.user) {
           // The current user is the seller of this listing. They can leave feedback if the user in this component is a
           // buyer and has some accepted offers.
-          this.leaveFeedback = this.marketplaceService.userIsBuyer(this.user.id, this.listing);
+          this.showLeaveFeedbackButton = this.marketplaceService.userIsBuyer(this.user.id, this.listing);
         } else {
-          this.leaveFeedback = this.marketplaceService.userIsBuyer(currentUser.id, this.listing);
+          this.showLeaveFeedbackButton = this.marketplaceService.userIsBuyer(currentUser.id, this.listing);
         }
 
         this.listing.lineItems.forEach(lineItem => {
           lineItem.feedbacks.forEach(feedback => {
-            if (feedback.user === this.user.id) {
-              this.hasFeedback = true;
+            if (feedback.recipient === this.user.id) {
+              this.alreadyHasFeedbackFromCurrentUser = true;
             }
           });
         });

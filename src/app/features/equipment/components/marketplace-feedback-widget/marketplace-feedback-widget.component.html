@@ -14,13 +14,11 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="leaveFeedback">
-  <div *ngIf="!hasFeedback" class="mt-3 text-center">
-    <button (click)="showFeedbackModal()" class="btn btn-primary">
-      {{ "Leave feedback" | translate }}
-    </button>
-  </div>
-</ng-container>
+<div *ngIf="showLeaveFeedbackButton && !alreadyHasFeedbackFromCurrentUser" class="mt-3 text-center">
+  <button (click)="showFeedbackModal()" class="btn btn-primary">
+    {{ "Leave feedback" | translate }}
+  </button>
+</div>
 
 <ng-template #noFeedbackTemplate>
   <div class="alert alert-info mb-0">
