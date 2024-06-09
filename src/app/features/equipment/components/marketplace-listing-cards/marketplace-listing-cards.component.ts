@@ -6,11 +6,11 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({
-  selector: "astrobin-marketplace-line-item-cards",
-  templateUrl: "./marketplace-line-item-cards.component.html",
-  styleUrls: ["./marketplace-line-item-cards.component.scss"]
+  selector: "astrobin-marketplace-listing-cards",
+  templateUrl: "./marketplace-listing-cards.component.html",
+  styleUrls: ["./marketplace-listing-cards.component.scss"]
 })
-export class MarketplaceLineItemCardsComponent extends BaseComponentDirective implements OnInit {
+export class MarketplaceListingCardsComponent extends BaseComponentDirective implements OnInit {
   @Input()
   listings: MarketplaceListingInterface[];
 

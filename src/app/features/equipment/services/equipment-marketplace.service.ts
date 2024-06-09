@@ -175,6 +175,10 @@ export class EquipmentMarketplaceService extends BaseService {
     return listing.lineItems.every(lineItem => !!lineItem.sold);
   }
 
+  listingReserved(listing: MarketplaceListingInterface): boolean {
+    return listing.lineItems.every(lineItem => !!lineItem.reserved);
+  }
+
   listingExpired(listing: MarketplaceListingInterface): boolean {
     return new Date(listing.expiration + "Z") < new Date();
   }

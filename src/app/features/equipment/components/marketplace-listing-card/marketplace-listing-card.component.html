@@ -8,7 +8,7 @@
       </div>
       <div class="created">
         <fa-icon icon="calendar-alt"></fa-icon>
-        {{ lineItem.created | localDate | timeago : true }}
+        {{ listing.created | localDate | timeago : true }}
         &middot;
         <fa-icon icon="bell"></fa-icon>
         {{ listing.followerCount }}
@@ -17,15 +17,15 @@
         {{ listing.viewCount }}
         &middot;
         <fa-icon icon="camera-alt"></fa-icon>
-        {{ lineItem.images.length }}
+        {{ imagesCount }}
       </div>
     </div>
 
     <div class="card-body">
       <img
-        *ngIf="lineItem.images.length > 0"
+        *ngIf="listing.lineItems[0].images.length > 0"
         [alt]=""
-        [src]="lineItem.images[0].thumbnailFile || lineItem.images[0].imageFile"
+        [src]="listing.lineItems[0].images[0].thumbnailFile || listing.lineItems[0].images[0].imageFile"
       />
     </div>
 
@@ -35,22 +35,22 @@
           <ng-container *ngIf="!!listing.city"> {{ listing.city }},</ng-container>
           {{ countryService.getCountryName(listing.country) }}
         </div>
-        <div class="price">
-          {{ lineItem.price | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+        <div *ngIf="!!totalPrice" class="price">
+          {{ totalPrice | currency : listing.lineItems[0].currency : "symbol" : "1.2-2" : translateService.currentLang }}
         </div>
       </div>
     </div>
   </div>
 
   <div class="card-badges">
-    <ng-container *ngIf="!!lineItem.sold; else unsoldBadges">
+    <ng-container *ngIf="!!equipmentMarketplaceService.listingSold(listing); else unsoldBadges">
       <span class="badge rounded-pill bg-danger border border-light">
         {{ translateService.instant("Sold") }}
       </span>
     </ng-container>
 
     <ng-template #unsoldBadges>
-      <ng-container *ngIf="!!lineItem.reserved">
+      <ng-container *ngIf="!!equipmentMarketplaceService.listingReserved(listing)">
         <div
           [ngbTooltip]="translateService.instant('This listing is reserved')"
           class="badge rounded-pill bg-danger border border-light"
@@ -62,7 +62,7 @@
 
       <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
         <div
-          *ngIf="(currentUserWrapper.user | isMarketplaceModerator) && lineItem.itemPlainText"
+          *ngIf="(currentUserWrapper.user | isMarketplaceModerator) && hasUnassociatedItemss"
           [ngbTooltip]="translateService.instant('This listing is not associated to an equipment item')"
           class="badge rounded-pill bg-danger border border-light"
           container="body"
@@ -72,13 +72,13 @@
       </ng-container>
 
       <div
-        *ngIf="lineItem.offers?.length"
+        *ngIf="offersCount > 0"
         [ngbTooltip]="translateService.instant('This listing has offers')"
         class="badge rounded-pill bg-danger border border-light"
         container="body"
       >
         <fa-icon icon="comment-dollar"></fa-icon>
-        {{ lineItem.offers.length }}
+        {{ offersCount }}
       </div>
 
       <div

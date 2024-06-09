@@ -42,7 +42,7 @@ import { MarketplaceListingLineItemPriceComponent } from "./components/marketpla
 import { MarketplaceLineItemConditionComponent } from "./components/marketplace-listing-line-item-condition/marketplace-line-item-condition.component";
 import { MarketplaceImagesComponent } from "./components/marketplace-listing-line-item-images/marketplace-images.component";
 import { MarketplaceListingPageComponent } from "./pages/marketplace/listing/marketplace-listing.page.component";
-import { MarketplaceLineItemCardComponent } from "./components/marketplace-line-item-card/marketplace-line-item-card.component";
+import { MarketplaceListingCardComponent } from "./components/marketplace-listing-card/marketplace-listing-card.component";
 import { MarketplaceUserCardComponent } from "./components/marketplace-user-card/marketplace-user-card.component";
 import { MarketplaceFeedbackWidgetComponent } from "./components/marketplace-feedback-widget/marketplace-feedback-widget.component";
 import { MarketplaceListingFormComponent } from "./components/marketplace-listing-form/marketplace-listing-form.component";
@@ -52,7 +52,7 @@ import { MarketplaceSidebarComponent } from "./components/marketplace-sidebar/ma
 import { MarketplaceUserListingsPageComponent } from "./pages/marketplace/user-listings/marketplace-user-listings-page.component";
 import { MarketplaceFilterComponent } from "./components/marketplace-filter/marketplace-filter.component";
 import { MarketplaceMoreFromUserComponent } from "./components/marketplace-more-from-user/marketplace-more-from-user.component";
-import { MarketplaceLineItemCardsComponent } from "./components/marketplace-line-item-cards/marketplace-line-item-cards.component";
+import { MarketplaceListingCardsComponent } from "./components/marketplace-listing-cards/marketplace-listing-cards.component";
 import { MarketplaceSearchBarComponent } from "./components/marketplace-search-bar/marketplace-search-bar.component";
 import { MarketplaceOfferModalComponent } from "./components/marketplace-offer-modal/marketplace-offer-modal.component";
 import { MarketplaceUserOffersPageComponent } from "@features/equipment/pages/marketplace/user-offers/marketplace-user-offers-page.component";
@@ -108,7 +108,7 @@ import { MarketplaceOfferSummaryComponent } from "./components/marketplace-offer
     MarketplaceLineItemConditionComponent,
     MarketplaceImagesComponent,
     MarketplaceListingPageComponent,
-    MarketplaceLineItemCardComponent,
+    MarketplaceListingCardComponent,
     MarketplaceUserCardComponent,
     MarketplaceFeedbackWidgetComponent,
     MarketplaceListingFormComponent,
@@ -123,7 +123,7 @@ import { MarketplaceOfferSummaryComponent } from "./components/marketplace-offer
     MarketplaceUserFollowedListingsPageComponent,
     MarketplaceFilterComponent,
     MarketplaceMoreFromUserComponent,
-    MarketplaceLineItemCardsComponent,
+    MarketplaceListingCardsComponent,
     MarketplaceSearchBarComponent,
     MarketplaceOfferModalComponent,
     MarketplaceFeedbackModalComponent,

@@ -13,7 +13,7 @@ import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
 import { MarketplaceSidebarComponent } from "@features/equipment/components/marketplace-sidebar/marketplace-sidebar.component";
 import { MarketplaceSearchBarComponent } from "@features/equipment/components/marketplace-search-bar/marketplace-search-bar.component";
-import { MarketplaceLineItemCardsComponent } from "@features/equipment/components/marketplace-line-item-cards/marketplace-line-item-cards.component";
+import { MarketplaceListingCardsComponent } from "@features/equipment/components/marketplace-listing-cards/marketplace-listing-cards.component";
 
 describe("MarketplaceMyListingsPageComponent", () => {
   let component: MarketplaceUserListingsPageComponent;
@@ -38,7 +38,7 @@ describe("MarketplaceMyListingsPageComponent", () => {
       .replace(HttpClientModule, HttpClientTestingModule)
       .mock(MarketplaceSidebarComponent, { export: true })
       .mock(MarketplaceSearchBarComponent, { export: true })
-      .mock(MarketplaceLineItemCardsComponent, { export: true });
+      .mock(MarketplaceListingCardsComponent, { export: true });
 
     fixture = TestBed.createComponent(MarketplaceUserListingsPageComponent);
     component = fixture.componentInstance;

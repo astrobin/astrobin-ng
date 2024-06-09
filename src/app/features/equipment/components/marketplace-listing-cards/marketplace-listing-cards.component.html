@@ -4,14 +4,12 @@
     <div class="listings">
       <ng-container *ngFor="let listing of listings">
         <a
-          *ngFor="let lineItem of listing.lineItems"
           [routerLink]="['/equipment/marketplace/listing', listing.hash, listing.slug]"
           class="line-item"
         >
-          <astrobin-marketplace-line-item-card
-            [lineItem]="lineItem"
+          <astrobin-marketplace-listing-card
             [listing]="listing"
-          ></astrobin-marketplace-line-item-card>
+          ></astrobin-marketplace-listing-card>
         </a>
       </ng-container>
     </div>

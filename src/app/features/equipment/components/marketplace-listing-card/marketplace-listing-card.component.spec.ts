@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MarketplaceLineItemCardComponent } from "./marketplace-line-item-card.component";
+import { MarketplaceListingCardComponent } from "./marketplace-listing-card.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
@@ -10,17 +10,16 @@ import { CameraGenerator } from "@features/equipment/generators/camera.generator
 import { of } from "rxjs";
 
 describe("MarketplaceListingCardComponent", () => {
-  let component: MarketplaceLineItemCardComponent;
-  let fixture: ComponentFixture<MarketplaceLineItemCardComponent>;
+  let component: MarketplaceListingCardComponent;
+  let fixture: ComponentFixture<MarketplaceListingCardComponent>;
   let camera = CameraGenerator.camera();
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceLineItemCardComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(MarketplaceListingCardComponent, AppModule).provide(provideMockStore({ initialState }));
 
-    fixture = TestBed.createComponent(MarketplaceLineItemCardComponent);
+    fixture = TestBed.createComponent(MarketplaceListingCardComponent);
     component = fixture.componentInstance;
     component.listing = MarketplaceGenerator.listing();
-    component.lineItem = component.listing.lineItems[0];
 
     jest.spyOn(component.equipmentMarketplaceService, "getLineItemEquipmentItem$").mockReturnValue(of(camera));
 
