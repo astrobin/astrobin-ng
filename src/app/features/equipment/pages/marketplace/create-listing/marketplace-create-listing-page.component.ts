@@ -16,6 +16,8 @@ import { Actions, ofType } from "@ngrx/effects";
 import { LoadingService } from "@shared/services/loading.service";
 import { Router } from "@angular/router";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { RouterService } from "@shared/services/router.service";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
@@ -47,7 +49,9 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     public readonly titleService: TitleService,
     public readonly loadingService: LoadingService,
     public readonly router: Router,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly routerService: RouterService
   ) {
     super(store$);
   }
@@ -57,6 +61,12 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
     this.titleService.setTitle(this.title);
     this.store$.dispatch(this.breadcrumb);
+
+    this.userSubscriptionService.canCreateMarketplaceListing$().subscribe(canCreateMarketplaceListing => {
+      if (!canCreateMarketplaceListing) {
+        this.routerService.redirectToPermissionDenied();
+      }
+    });
   }
 
   onCreate(value) {

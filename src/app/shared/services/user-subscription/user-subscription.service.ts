@@ -245,6 +245,29 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     );
   }
 
+  canCreateMarketplaceListing$(): Observable<boolean> {
+    return this.store$.select(selectCurrentUserProfile).pipe(
+      take(1),
+      switchMap(userProfile =>
+        this.hasValidSubscription$(userProfile, [
+          SubscriptionName.ASTROBIN_LITE,
+          SubscriptionName.ASTROBIN_LITE_AUTORENEW,
+          SubscriptionName.ASTROBIN_LITE_2020,
+          SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_PREMIUM,
+          SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+          SubscriptionName.ASTROBIN_PREMIUM_2020,
+          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
+        ])
+      )
+    );
+  }
+
   fileSizeAllowed(size: number): Observable<{ allowed: boolean; max: number }> {
     return this.store$.pipe(
       take(1),

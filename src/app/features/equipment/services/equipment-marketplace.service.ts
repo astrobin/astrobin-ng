@@ -39,6 +39,10 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root"
@@ -50,7 +54,9 @@ export class EquipmentMarketplaceService extends BaseService {
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly modalService: NgbModal,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly router: Router
   ) {
     super(loadingService);
   }
@@ -260,6 +266,21 @@ export class EquipmentMarketplaceService extends BaseService {
     } else {
       this.popNotificationsService.error(this.translateService.instant("No offers to retract."));
     }
+  }
+
+  onCreateListingClicked(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.userSubscriptionService.canCreateMarketplaceListing$().subscribe(canCreate => {
+      if (canCreate) {
+        this.router.navigate(["/equipment/marketplace/create"]);
+      } else {
+        const modalRef: NgbModalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+        const componentInstance: SubscriptionRequiredModalComponent = modalRef.componentInstance;
+        componentInstance.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_LITE;
+      }
+    });
   }
 
   private _performOfferAction(

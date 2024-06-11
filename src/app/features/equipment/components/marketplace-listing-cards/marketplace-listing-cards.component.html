@@ -19,7 +19,8 @@
 <ng-template #noListingsTemplate>
   <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false" class="d-inline-block"></astrobin-nothing-here>
   {{ "Do you want to sell something?" | translate }}
-  <a routerLink="/equipment/marketplace/create">{{ "Create a listing" | translate }}.</a>
+  <a (click)="equipmentMarketplaceService.onCreateListingClicked($event)" href="#">{{ "Create a listing" | translate }}
+    .</a>
 </ng-template>
 
 <ng-template #loadingTemplate>
