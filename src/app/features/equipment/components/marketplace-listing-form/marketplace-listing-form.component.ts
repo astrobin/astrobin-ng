@@ -60,7 +60,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     expiration: null,
     title: null,
     description: null,
-    bundleSaleOnly: true,
     deliveryByBuyerPickUp: true,
     deliveryBySellerDelivery: true,
     deliveryByShipping: true,
@@ -824,22 +823,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   }
                 }
               ]
-            },
-            {
-              key: "bundleSaleOnly",
-              type: "checkbox",
-              wrappers: ["default-wrapper"],
-              className: "hidden",
-              expressions: {
-                hide: () => this.model.lineItems.length < 2,
-                defaultValue: () => this.model.lineItems.length > 1
-              },
-              props: {
-                label: this.translateService.instant("Sell as a bundle only"),
-                description: this.translateService.instant(
-                  "Check this if you want to sell all items together as a single package, not separately."
-                )
-              }
             },
             {
               key: "",

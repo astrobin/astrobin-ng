@@ -176,61 +176,6 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             className: "hidden"
           },
           {
-            key: `checkbox-${lineItem.id}`,
-            type: "toggle",
-            wrappers: ["default-wrapper"],
-            expressions: {
-              hide: () => this.listing.bundleSaleOnly || this.listing.lineItems.length === 1,
-              className: () => this.offers.length ? "hidden" : "col-12 col-lg-1 pb-4 pb-lg-0 toggle",
-              "props.disabled": () => !!lineItem.sold || !!lineItem.reserved
-            },
-            props: {
-              label: "&nbsp;",
-              hideOptionalMarker: true,
-              hideLabel: !this.displayLabel(index)
-            },
-            hooks: {
-              onInit: field => {
-                // The defaultValue should be:
-                // - false if the line item is sold or reserved
-                // - true if we are modifying an offer and the line item has an offer
-                // - false if we are modifying an offer and line item does not have an offer
-                let defaultValue;
-
-                if (!!field.model.sold || !!field.model.reserved) {
-                  defaultValue = false;
-                } else {
-                  defaultValue = this.offers.some(offer => offer.lineItem === lineItem.id);
-                }
-
-                field.formControl.setValue(defaultValue);
-
-                field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                  const amountControl = this.form.get(`amount-${lineItem.id}`);
-
-                  if (value) {
-                    amountControl.enable();
-                    amountControl.setValue(+lineItem.price);
-                  } else {
-                    amountControl.disable();
-                    amountControl.setValue(null);
-                  }
-
-                  this.form
-                    .get(`total-${lineItem.id}`)
-                    .setValue(
-                      this.currencyPipe.transform(
-                        this._getTotalAmountPerLineItem(lineItem),
-                        lineItem.currency,
-                        "symbol-narrow"
-                      )
-                    );
-                  this.form.updateValueAndValidity();
-                });
-              }
-            }
-          },
-          {
             key: `itemName-${lineItem.id}`,
             type: "html",
             wrappers: ["default-wrapper"],
@@ -391,27 +336,17 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     const offeredAmount = this.form.get(`amount-${lineItemId}`)?.value;
     const shippingCost = this.form.get(`shippingCost-raw-${lineItemId}`)?.value;
 
-    if (
-      this.form.get(`checkbox-${lineItemId}`)?.value ||
-      this.listing.bundleSaleOnly ||
-      this.listing.lineItems.length === 1
-    ) {
-      return +offeredAmount + +shippingCost;
-    }
-
-    return 0;
+    return +offeredAmount + +shippingCost;
   }
 
   private _getOfferTotalAmount(): number {
     return this.listing.lineItems.reduce((total, lineItem) => {
       const id = lineItem.id;
+      const amount = this.form.value[`amount-${id}`];
+      const shippingCost = this.form.value[`shippingCost-raw-${id}`] || 0;
 
-      if (
-        this.form.value[`checkbox-${id}`] ||
-        this.listing.bundleSaleOnly ||
-        this.listing.lineItems.length === 1
-      ) {
-        total += +this.form.value[`amount-${id}`] + (+this.form.value[`shippingCost-raw-${id}`] || 0);
+      if (amount) {
+        total += +amount + +shippingCost;
       }
 
       return total;

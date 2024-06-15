@@ -40,8 +40,7 @@ export class MarketplaceGenerator {
       country: source.country || null,
       city: source.city || null,
       lineItems,
-      title: source.title || "Test title",
-      bundleSaleOnly: source.bundleSaleOnly || false
+      title: source.title || "Test title"
     };
   }
 

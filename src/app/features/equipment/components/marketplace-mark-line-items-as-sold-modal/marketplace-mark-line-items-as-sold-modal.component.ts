@@ -135,7 +135,9 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
       return new Date(b.created).getTime() - new Date(a.created).getTime();
     }
 
-    this.fields = this.listing.lineItems.map((lineItem, index) => {
+    this.fields = this.listing.lineItems.filter(
+      lineItem => !lineItem.sold
+    ).map((lineItem, index) => {
       const usersWithAcceptedOffers: { value: UserInterface["id"]; label: string }[] = lineItem.offers
         .filter(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)
         .sort(sortOffers)
@@ -164,7 +166,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
             defaultValue: false,
             expressions: {
               className: () =>
-                !this.listing.bundleSaleOnly && this.listing.lineItems.length > 1
+                this.listing.lineItems.filter(lineItem => !lineItem.sold).length > 1
                   ? "w-50 mb-2 toggle"
                   : "hidden",
               disabled: () => lineItem.sold
@@ -182,8 +184,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
             template: lineItem.itemName || lineItem.itemPlainText,
             expressions: {
               className: () =>
-                this.listing.bundleSaleOnly ||
-                this.listing.lineItems.length === 1
+                this.listing.lineItems.filter(lineItem => !lineItem.sold).length === 1
                   ? "w-50 mb-0"
                   : "hidden"
             },

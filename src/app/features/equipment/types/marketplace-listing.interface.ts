@@ -36,7 +36,6 @@ export interface MarketplaceListingInterface {
   country: string | null;
   city: string | null;
   lineItems?: MarketplaceLineItemInterface[];
-  bundleSaleOnly: boolean;
   followerCount?: number;
   viewCount?: number;
   hitcountPk?: number;
