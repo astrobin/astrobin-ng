@@ -3,16 +3,6 @@
 astrobin-marketplace-listing-form ::ng-deep {
   .main-row {
     > [class*="col"] {
-      @media screen and (min-width: $md-min) {
-        overflow-y: auto;
-        max-height: calc(100vh - 236px);
-      }
-
-      @media screen and (min-width: $lg-min) {
-        overflow-y: auto;
-        max-height: calc(100vh - 336px);
-      }
-
       &.col-form {
         padding: 0;
       }
@@ -24,18 +14,6 @@ astrobin-marketplace-listing-form ::ng-deep {
           padding: 0 4rem;
         }
       }
-    }
-
-    .form-header {
-      padding: 1rem;
-      display: block;
-      margin-bottom: 1rem;
-      border-radius: var(--bs-border-radius);
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: var(--lightstGrey);
-      text-align: center;
-      width: 100%;
     }
   }
 }

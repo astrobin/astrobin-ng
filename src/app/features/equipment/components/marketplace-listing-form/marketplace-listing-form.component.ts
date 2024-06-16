@@ -254,6 +254,16 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     }
   }
 
+  formPreviewClicked(event: Event) {
+    event.stopPropagation();
+
+    this.popNotificationsService.info(
+      this.translateService.instant(
+        "This is a preview of your listing. You can't edit it here. If you want to make changes, please use the form area."
+      )
+    )
+  }
+
   private _initFields() {
     const _preprocessModel = (model: MarketplaceListingInterface): MarketplaceListingInterface => {
       if (!!model.lineItems && model.lineItems.length > 0) {
