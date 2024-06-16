@@ -4,14 +4,49 @@
   [class.sold]="!!lineItem.sold"
   class="text-center"
 >
-  <span *ngIf="!!lineItem.sold" class="badge rounded-pill bg-danger border border-light sold-badge">
-    {{ "Sold" | translate }}
+  <span *ngIf="lineItem.sold" class="badge rounded-pill bg-danger border border-light sold-badge">
+    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+      <ng-container [ngSwitch]="currentUserWrapper.user.id">
+        <ng-container *ngSwitchCase="lineItem.soldTo">
+          {{ "Sold to you" | translate }}
+        </ng-container>
+        <ng-container *ngSwitchCase="lineItem.user">
+          <ng-container *ngIf="soldToUser; else sold">
+            {{ "Sold to {{0}}" | translate: { "0": soldToUser.displayName } }}
+          </ng-container>
+          <ng-template #sold>
+            {{ "Sold" | translate }}
+          </ng-template>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          {{ "Sold" | translate }}
+        </ng-container>
+      </ng-container>
+    </ng-container>
   </span>
 
   <span
-    *ngIf="!lineItem.sold && !!lineItem.reserved"
-    class="badge rounded-pill bg-warning border border-light reserved-badge">
-    {{ "Reserved" | translate }}
+    *ngIf="!lineItem.sold && lineItem.reserved"
+    class="badge rounded-pill bg-warning border border-light reserved-badge"
+  >
+    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+      <ng-container [ngSwitch]="currentUserWrapper.user.id">
+        <ng-container *ngSwitchCase="lineItem.reservedTo">
+          {{ "Reserved to you" | translate }}
+        </ng-container>
+        <ng-container *ngSwitchCase="lineItem.user">
+          <ng-container *ngIf="reservedToUser; else reserved">
+            {{ "Reserved to {{0}}" | translate: { "0": reservedToUser.displayName } }}
+          </ng-container>
+          <ng-template #reserved>
+            {{ "Reserved" | translate }}
+          </ng-template>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          {{ "Reserved" | translate }}
+        </ng-container>
+      </ng-container>
+    </ng-container>
   </span>
 
   <div class="price">

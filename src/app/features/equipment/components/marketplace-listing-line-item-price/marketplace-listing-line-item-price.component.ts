@@ -6,8 +6,11 @@ import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
-import { filter, takeUntil } from "rxjs/operators";
+import { filter, take, takeUntil } from "rxjs/operators";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { selectUser } from "@features/account/store/auth.selectors";
+import { LoadUser } from "@features/account/store/auth.actions";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-price",
@@ -20,6 +23,9 @@ export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirec
 
   @Input()
   lineItem: MarketplaceLineItemInterface;
+
+  soldToUser: UserInterface;
+  reservedToUser: UserInterface;
 
   constructor(
     public readonly store$: Store<State>,
@@ -37,6 +43,24 @@ export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirec
       takeUntil(this.destroyed$)
     ).subscribe(listing => {
       this.listing = listing;
+
+      this.lineItem = listing.lineItems.find(lineItem => lineItem.id === this.lineItem.id);
+
+      if (this.lineItem.soldTo) {
+        this.loadUser(this.lineItem.soldTo, user => this.soldToUser = user);
+      } else if (this.lineItem.reservedTo) {
+        this.loadUser(this.lineItem.reservedTo, user => this.reservedToUser = user);
+      }
+    });
+  }
+
+  private loadUser(userId: UserInterface["id"], callback: (user: UserInterface) => void): void {
+    this.store$.dispatch(new LoadUser({ id: userId }));
+    this.store$.select(selectUser, userId).pipe(
+      filter(user => !!user),
+      take(1)
+    ).subscribe(user => {
+      callback(user);
     });
   }
 }
