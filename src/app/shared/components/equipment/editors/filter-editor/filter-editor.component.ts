@@ -76,7 +76,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       return;
     }
 
-    const filterSetWords = ["filterset", "set", "filter set", "lrgb", "l-r-g-b", "ha-oiii-sii"];
+    const filterSetWords = ["filterset", "set", "filter set", "lrgb", "l-r-g-b", "ha-oiii-sii", "rgb", "r-g-b"];
 
     let hasFilterSet = false;
 
@@ -87,7 +87,11 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       }
     }
 
-    const hasBandwidth = !this.model.bandwidth || value.indexOf(`${this.model.bandwidth}nm`) > -1;
+    const hasBandwidth =
+      !this.model.bandwidth ||
+      value.indexOf(`${this.model.bandwidth}nm`) > -1 ||
+      value.indexOf(`${this.model.bandwidth} nm`) > -1;
+
     const hasSize =
       !this.model.size ||
       this.model.size === FilterSize.OTHER ||
@@ -105,13 +109,6 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       text: this.translateService.instant("Please consider making the name contain the size, to prevent ambiguity.")
     };
 
-    const filterSetMessage: FormlyFieldMessage = {
-      level: FormlyFieldMessageLevel.WARNING,
-      text: this.translateService.instant(
-        "Filter sets should be added one filter at a time, individually, so that they may be added to acquisition sessions."
-      )
-    };
-
     if (!hasBandwidth) {
       this.formlyFieldService.addMessage(field, bandWidthMessage);
     } else {
@@ -125,9 +122,9 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     }
 
     if (hasFilterSet) {
-      this.formlyFieldService.addMessage(field, filterSetMessage);
+      this.form.get("name").setErrors({ "filter-name-is-set": true });
     } else {
-      this.formlyFieldService.removeMessage(field, filterSetMessage);
+      this.form.get("name").setErrors(null);
     }
   }
 

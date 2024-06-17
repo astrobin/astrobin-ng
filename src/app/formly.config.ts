@@ -254,6 +254,15 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         }
       },
       {
+        name: "filter-name-is-set",
+        message(): string {
+          return translateService.instant(
+            "Filter sets should be added one filter at a time, individually, so that they may be added to " +
+            "acquisition sessions."
+          );
+        }
+      },
+      {
         name: "enum-value",
         message(): string {
           return translateService.instant("This value is not valid.");
