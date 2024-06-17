@@ -105,7 +105,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             this._getDIYField(),
             this._getBrandField(),
             this._getNameField(),
-            this._getVariantOfField(EquipmentItemType.TELESCOPE),
+            this._getVariantOfField(EquipmentItemType.TELESCOPE, isModerator),
             this._getTypeField(),
             this._getApertureField(),
             this._getFixedFocalLengthField(),
@@ -114,7 +114,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             this._getWeightField()
           ];
         } else {
-          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.TELESCOPE)];
+          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.TELESCOPE, isModerator)];
 
           if (this.model.type === null || this.model.type === TelescopeType.OTHER) {
             this.fields.push(this._getTypeField());

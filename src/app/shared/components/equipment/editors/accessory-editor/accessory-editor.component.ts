@@ -85,11 +85,11 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
             this._getDIYField(),
             this._getBrandField(),
             this._getNameField(),
-            this._getVariantOfField(EquipmentItemType.ACCESSORY),
+            this._getVariantOfField(EquipmentItemType.ACCESSORY, isModerator),
             this._getTypeField()
           ];
         } else {
-          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.ACCESSORY)];
+          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.ACCESSORY, isModerator)];
 
           if (this.model.type === null || this.model.type === AccessoryType.OTHER) {
             this.fields.push(this._getTypeField());

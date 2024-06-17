@@ -160,7 +160,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           ...this.fields,
           this._getNameField(),
           this._getOverrideNameField(),
-          this._getVariantOfField(EquipmentItemType.FILTER),
+          this._getVariantOfField(EquipmentItemType.FILTER, isModerator),
           this._getImageField(),
           this._getWebsiteField(),
           this._getCommunityNotesField()

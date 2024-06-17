@@ -75,7 +75,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           this.fields = [
             this._getBrandField(),
             this._getNameField(),
-            this._getVariantOfField(EquipmentItemType.SENSOR),
+            this._getVariantOfField(EquipmentItemType.SENSOR, isModerator),
             this._getPixelSizeField(),
             this._getPixelWidthField(),
             this._getPixelHeightField(),
@@ -89,7 +89,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
             this._getColorOrMonoField()
           ];
         } else {
-          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.SENSOR)];
+          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.SENSOR, isModerator)];
 
           if (!this.model.pixelSize) {
             this.fields.push(this._getPixelSizeField());
