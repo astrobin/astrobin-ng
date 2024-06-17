@@ -638,12 +638,13 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     };
   }
 
-  protected _getVariantOfField(itemType: EquipmentItemType) {
+  protected _getVariantOfField(itemType: EquipmentItemType, isModerator: boolean): FormlyFieldConfig {
     return {
       key: "variantOf",
       type: "equipment-item-browser",
       id: "equipment-item-field-variant-of",
       hideExpression: () =>
+        !isModerator ||
         !!this.model.diy ||
         !this.model.brand ||
         (this.model.klass === EquipmentItemType.CAMERA &&

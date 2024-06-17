@@ -76,7 +76,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
             this._getDIYField(),
             this._getBrandField(),
             this._getNameField(),
-            this._getVariantOfField(EquipmentItemType.MOUNT),
+            this._getVariantOfField(EquipmentItemType.MOUNT, isModerator),
             this._getTypeField(),
             this._getWeightField(),
             this._getMaxPayloadField(),
@@ -86,7 +86,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
             this._getSlewSpeedField()
           ];
         } else {
-          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.MOUNT)];
+          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.MOUNT, isModerator)];
 
           if (!this.model.type || this.model.type === MountType.OTHER) {
             this.fields.push(this._getTypeField());
