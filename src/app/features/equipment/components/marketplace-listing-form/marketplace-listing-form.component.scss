@@ -18,12 +18,12 @@
         margin-bottom: 0;
       }
 
-      > formly-field:not(:last-child) {
+      > formly-field:not(.last-visible) {
         border-bottom: 1px solid var(--darkGrey);
         padding-bottom: 2rem;
       }
 
-      > formly-field:not(:first-child) {
+      > formly-field:not(.first-visible) {
         border-top: 1px solid var(--darkestGrey);
         padding-top: 2rem;
       }

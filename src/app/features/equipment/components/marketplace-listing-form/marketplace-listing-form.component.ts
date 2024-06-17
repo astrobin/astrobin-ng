@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import {
   MarketplaceListingExpiration,
@@ -190,7 +190,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     public readonly activatedRoute: ActivatedRoute,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly googleMapsService: GoogleMapsService,
-    public readonly countryService: CountryService
+    public readonly countryService: CountryService,
+    public readonly elementRef: ElementRef,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -209,6 +211,21 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       this.initialLineItemCount = this.model.lineItems.length;
       this._initFields();
     }
+  }
+
+  setFirstFormlyGroupVisible() {
+    this.utilsService.delay(100).subscribe(() => {
+      const lineItemGroups = this.elementRef.nativeElement.querySelectorAll(".field-group-line-items");
+      if (lineItemGroups.length > 0) {
+        lineItemGroups.forEach((group: HTMLElement) => {
+          const elements = group.querySelectorAll(":scope > formly-field:not(.hidden)");
+          if (elements.length > 0) {
+            elements[0].classList.add("first-visible");
+            elements[elements.length - 1].classList.add("last-visible");
+          }
+        });
+      }
+    });
   }
 
   setInitialLineItemCount(event: Event) {
@@ -261,7 +278,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       this.translateService.instant(
         "This is a preview of your listing. You can't edit it here. If you want to make changes, please use the form area."
       )
-    )
+    );
   }
 
   private _initFields() {
@@ -333,7 +350,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             props: {
               addLabel: this.translateService.instant("Add another item to this listing"),
               mayAdd: () => this.initialLineItemCount > 1,
-              mayRemove: index => !this.model.lineItems[index].sold
+              mayRemove: index => !this.model.lineItems[index].sold,
+              collapsible: this.initialLineItemCount > 1
             },
             expressions: {
               "props.label": config => {
@@ -359,17 +377,19 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               {
                 type: "html",
                 template: this.translateService.instant("You cannot edit this line item because it has been sold."),
-                className: "cannot-edit-because-sold",
                 expressions: {
-                  hide: config => !config.model.sold
+                  className: config => "cannot-edit-because-sold" + !config.model.sold ? " hidden" : ""
                 }
               },
               {
                 type: "html",
-                template: this.translateService.instant("You cannot edit this line item because it's marked as reserved."),
+                template: this.translateService.instant(
+                  "You cannot edit this line item because it's marked as reserved."
+                ),
                 className: "cannot-edit-because-reserved",
                 expressions: {
-                  hide: config => !config.model.reserved && !config.model.sold
+                  className: config =>
+                    "cannot-edit-because-reserved" + (!config.model.reserved && !config.model.sold) ? " hidden" : ""
                 }
               },
               {
@@ -965,6 +985,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           }
         }
       ];
+
+      this.setFirstFormlyGroupVisible();
 
       this.formInitialized = true;
     };

@@ -1,15 +1,33 @@
-<div *ngFor="let arrayField of field.fieldGroup; let i = index;" class="card mb-4">
-  <div class="card-header d-flex">
-      <span class="flex-grow-1">
-        {{ arrayField.props.label }}
-      </span>
+<div
+  *ngFor="let arrayField of field.fieldGroup; let i = index;"
+  class="card mb-4"
+>
+  <div
+    (click)="toggleCollapse($event, i)"
+    [class.collapsible]="props.collapsible"
+    class="card-header d-flex"
+  >
+    <span class="flex-grow-1">
+      {{ arrayField.props.label }}
+    </span>
+
+    <button
+      (click)="toggleCollapse($event, i)"
+      *ngIf="props.collapsible"
+      class="btn btn-link me-3 btn-toggle-collapse"
+    >
+      <fa-icon [icon]="collapsedIndexes.includes(i) ? 'angle-down' : 'angle-up'"></fa-icon>
+    </button>
 
     <button (click)="remove(i)" *ngIf="field.fieldGroup.length > 1 && mayRemove(i)" class="btn btn-link btn-remove">
-      <fa-icon [ngbTooltip]="'Remove' | translate" icon="trash"></fa-icon>
+      <fa-icon icon="trash"></fa-icon>
     </button>
   </div>
 
-  <div class="card-body">
+  <div
+    [@collapse]="(props.collapsible && collapsedIndexes.includes(i)) ? 'collapsed' : 'expanded'"
+    class="card-body overflow-auto"
+  >
     <formly-group [field]="arrayField"></formly-group>
   </div>
 </div>
