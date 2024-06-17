@@ -14,6 +14,9 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { switchMap, take } from "rxjs/operators";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-software-editor",
@@ -75,22 +78,24 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
   }
 
   private _initFields() {
-    this.initBrandAndName().subscribe(() => {
-      this.fields = [
-        this._getDIYField(),
-        this._getBrandField(
-          `${this.translateService.instant("Brand")} / ` +
-          `${this.translateService.instant("Company")} / ` +
-          this.translateService.instant("Developer(s)")
-        ),
-        this._getNameField(),
-        this._getVariantOfField(EquipmentItemType.SOFTWARE),
-        this._getWebsiteField(),
-        this._getImageField(),
-        this._getCommunityNotesField()
-      ];
+    this.initBrandAndName()
+      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP))))
+      .subscribe(isModerator => {
+        this.fields = [
+          this._getDIYField(),
+          this._getBrandField(
+            `${this.translateService.instant("Brand")} / ` +
+            `${this.translateService.instant("Company")} / ` +
+            this.translateService.instant("Developer(s)")
+          ),
+          this._getNameField(),
+          this._getVariantOfField(EquipmentItemType.SOFTWARE, isModerator),
+          this._getWebsiteField(),
+          this._getImageField(),
+          this._getCommunityNotesField()
+        ];
 
-      this._addBaseItemEditorFields();
-    });
+        this._addBaseItemEditorFields();
+      });
   }
 }
