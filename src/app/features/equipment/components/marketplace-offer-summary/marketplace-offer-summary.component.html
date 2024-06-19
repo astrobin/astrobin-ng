@@ -92,15 +92,16 @@
           <!-- card-body -->
 
           <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
-            <div class="card-footer">
+            <div class="card-footer d-flex flex-column gap-2">
               <ng-container *ngIf="!equipmentMarketplaceService.listingSold(listing)">
                 <button
                   (click)="onAcceptOfferClicked($event, group.value)"
                   *ngIf="group.value[0].status === MarketplaceOfferStatus.PENDING"
                   [class.loading]="loadingService.loading$ | async"
-                  class="btn btn-success"
+                  class="btn btn-success d-block w-100 m-0"
                 >
                   <fa-icon icon="thumbs-up"></fa-icon>
+                  {{ "Accept" | translate }}
                 </button>
 
                 <button
@@ -110,18 +111,25 @@
                     group.value[0].status === MarketplaceOfferStatus.ACCEPTED
                   "
                   [class.loading]="loadingService.loading$ | async"
-                  class="btn btn-danger"
+                  class="btn btn-danger d-block w-100 m-0"
                 >
                   <fa-icon icon="thumbs-down"></fa-icon>
+                  {{ "Reject" | translate }}
                 </button>
               </ng-container>
 
               <button
                 (click)="onMessageProspectBuyerClicked($event, group.value[0].user)"
                 [class.loading]="loadingService.loading$ | async"
-                class="btn btn-secondary"
+                class="btn btn-secondary d-block w-100 m-0"
               >
                 <fa-icon icon="envelope"></fa-icon>
+                <ng-container *ngIf="group.value[0].status === MarketplaceOfferStatus.ACCEPTED">
+                  {{ "Exchange payment/delivery info" | translate }}
+                </ng-container>
+                <ng-container *ngIf="group.value[0].status !== MarketplaceOfferStatus.ACCEPTED">
+                  {{ "Message" | translate }}
+                </ng-container>
               </button>
             </div>
             <!-- card-footer -->

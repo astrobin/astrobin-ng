@@ -271,6 +271,7 @@
       </button>
 
       <astrobin-toggle-property
+        *ngIf="!equipmentMarketplaceService.listingHasOffers(listing)"
         [contentType]="listingContentType.id"
         [objectId]="listing.id"
         [userId]="currentUserWrapper.user?.id"
@@ -283,14 +284,36 @@
 
     <button
       (click)="onMessageSellerClicked($event)"
+      [class.btn-primary]="
+        equipmentMarketplaceService.listingReserved(listing) ||
+        equipmentMarketplaceService.listingSold(listing)
+      "
+      [class.btn-secondary]="
+        !equipmentMarketplaceService.listingReserved(listing) &&
+        !equipmentMarketplaceService.listingSold(listing)
+      "
       [class.loading]="loadingService.loading$ | async"
-      class="btn btn-secondary d-block w-100 mt-2"
+      class="btn d-block w-100 mt-2"
     >
       <fa-icon icon="envelope"></fa-icon>
-      {{ "Message seller privately" | translate }}
+
+      <ng-container *ngIf="
+        equipmentMarketplaceService.listingReserved(listing) ||
+        equipmentMarketplaceService.listingSold(listing); else messageSeller
+      ">
+        {{ "Exchange payment/delivery info" | translate }}
+      </ng-container>
+
+      <ng-template #messageSeller>
+        {{ "Message seller privately" | translate }}
+      </ng-template>
 
       <ng-container *ngIf="privateConversations$ | async as privateConversations">
-        <ng-container *ngIf="privateConversations?.length === 1">
+        <ng-container *ngIf="
+          privateConversations?.length === 1 &&
+          !equipmentMarketplaceService.listingReserved(listing) &&
+          !equipmentMarketplaceService.listingSold(listing)
+        ">
         <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
           {{ privateConversations[0].unreadMessages }}
         </span>
