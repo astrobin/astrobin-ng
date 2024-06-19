@@ -1,16 +1,16 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { forkJoin, Observable, switchMap } from "rxjs";
+import { merge, Observable, switchMap } from "rxjs";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import { filter, map, take } from "rxjs/operators";
+import { filter, take } from "rxjs/operators";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { selectEquipmentItem, selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import {
   CreateMarketplaceOffer,
   CreateMarketplaceOfferFailure,
@@ -104,17 +104,16 @@ export class EquipmentMarketplaceService extends BaseService {
       filter(contentType => !!contentType),
       take(1),
       switchMap((contentType: ContentTypeInterface) => {
-          const payload = {
-            id: lineItem.itemObjectId,
-            type: EquipmentItemType[contentType.model.toUpperCase()],
-            allowUnapproved: true,
-            allowDIY: true
-          };
+        const payload = {
+          id: lineItem.itemObjectId,
+          type: EquipmentItemType[contentType.model.toUpperCase()],
+          allowUnapproved: true,
+          allowDIY: true
+        };
 
-          this.store$.dispatch(new LoadEquipmentItem(payload));
-          return this.store$.select(selectEquipmentItem, payload);
-        }
-      )
+        this.store$.dispatch(new LoadEquipmentItem(payload));
+        return this.store$.select(selectEquipmentItem, payload);
+      })
     );
   }
 
@@ -163,9 +162,11 @@ export class EquipmentMarketplaceService extends BaseService {
     });
 
     // Check for added line items without an id (they wouldn't be in the Map)
-    updatedListing.lineItems?.filter(item => !item.id).forEach(item => {
-      addedLineItems.push(item);
-    });
+    updatedListing.lineItems
+      ?.filter(item => !item.id)
+      .forEach(item => {
+        addedLineItems.push(item);
+      });
 
     // Check for removed line items
     previousLineItemsMap.forEach((item, id) => {
@@ -195,7 +196,8 @@ export class EquipmentMarketplaceService extends BaseService {
 
   listingHasPendingOffers(listing: MarketplaceListingInterface): boolean {
     return listing.lineItems.some(
-      lineItem => lineItem.offers.filter(offer => !!offer && offer.status === MarketplaceOfferStatus.PENDING).length > 0
+      lineItem =>
+        lineItem.offers.filter(offer => !!offer && offer.status === MarketplaceOfferStatus.PENDING).length > 0
     );
   }
 
@@ -233,10 +235,7 @@ export class EquipmentMarketplaceService extends BaseService {
     );
   }
 
-  retractOffer(
-    listing: MarketplaceListingInterface,
-    offers: MarketplaceOfferInterface[]
-  ): void {
+  retractOffer(listing: MarketplaceListingInterface, offers: MarketplaceOfferInterface[]): void {
     if (this.listingHasOffers(listing)) {
       const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
       const componentInstance = modalRef.componentInstance;
@@ -303,83 +302,89 @@ export class EquipmentMarketplaceService extends BaseService {
       | typeof EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_FAILURE
       | typeof EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_FAILURE
   ) {
-    this.store$.select(selectCurrentUser).pipe(take(1)).subscribe(currentUser => {
-      const successObservables$ = offers.map(offer =>
-        this.actions$.pipe(
-          ofType(successActionType),
-          filter(
-            (
-              action:
-                | CreateMarketplaceOfferSuccess
-                | UpdateMarketplaceOfferSuccess
-                | RejectMarketplaceOfferSuccess
-                | RetractMarketplaceOfferSuccess
-            ) =>
-              action.payload.offer.masterOfferUuid === offer.masterOfferUuid
-          ),
-          switchMap(() => this.store$.select(selectMarketplaceListing, { id: listing.id })),
-          take(1)
-        )
-      );
-
-      const failureObservables$ = offers.map(offer =>
-        this.actions$.pipe(
-          ofType(failureActionType),
-          filter(
-            (
-              action:
-                | CreateMarketplaceOfferFailure
-                | UpdateMarketplaceOfferFailure
-                | RejectMarketplaceOfferFailure
-                | RetractMarketplaceOfferFailure
-            ) =>
-              action.payload.offer.masterOfferUuid === offer.masterOfferUuid
-          ),
-          take(1)
-        )
-      );
-
-      forkJoin(successObservables$)
-        .pipe(
-          take(1),
-          // It's only one listing so we can take the first result.
-          map(result => result[0])
-        )
-        .subscribe(listing => {
-          if (offerModalRef) {
-            offerModalRef.close(listing);
-          }
-          this.loadingService.setLoading(false);
-
-          let message: string;
-
-          if (action === CreateMarketplaceOffer) {
-            message = this.translateService.instant("Your offer has been successfully submitted.");
-          } else if (action === UpdateMarketplaceOffer) {
-            message = this.translateService.instant("Your offer has been successfully updated.");
-          } else if (action === RejectMarketplaceOffer) {
-            message = this.translateService.instant("The offer has been successfully rejected.");
-          } else if (action === RetractMarketplaceOffer) {
-            message = this.translateService.instant("Your offer has been successfully retracted.");
+    this.store$
+      .select(selectCurrentUser)
+      .pipe(take(1))
+      .subscribe(currentUser => {
+        const dispatchSequentially = (index: number) => {
+          if (index >= offers.length) {
+            this.loadingService.setLoading(false);
+            return;
           }
 
-          if (message) {
-            this.popNotificationsService.success(message);
-          }
-        });
+          const offer = offers[index];
+          this.store$.dispatch(new action({ offer }));
 
-      forkJoin(failureObservables$)
-        .pipe(take(1))
-        .subscribe(() => {
-          this.loadingService.setLoading(false);
-          this.popNotificationsService.error(this.offerErrorMessageForBuyer());
-        });
+          const success$ = this.actions$.pipe(
+            ofType(successActionType),
+            filter(
+              (
+                action:
+                  | CreateMarketplaceOfferSuccess
+                  | UpdateMarketplaceOfferSuccess
+                  | RejectMarketplaceOfferSuccess
+                  | RetractMarketplaceOfferSuccess
+              ) => action.payload.offer.masterOfferUuid === offer.masterOfferUuid
+            ),
+            take(1)
+          );
 
-      this.loadingService.setLoading(true);
+          const failure$ = this.actions$.pipe(
+            ofType(failureActionType),
+            filter(
+              (
+                action:
+                  | CreateMarketplaceOfferFailure
+                  | UpdateMarketplaceOfferFailure
+                  | RejectMarketplaceOfferFailure
+                  | RetractMarketplaceOfferFailure
+              ) => action.payload.offer.masterOfferUuid === offer.masterOfferUuid
+            ),
+            take(1)
+          );
 
-      offers.forEach(offer => {
-        this.store$.dispatch(new action({ offer }));
+          merge(success$, failure$)
+            .pipe(take(1))
+            .subscribe({
+              next: result => {
+                if (result.type === successActionType) {
+                  if (index === offers.length - 1) {
+                    if (offerModalRef) {
+                      offerModalRef.close(listing); // Only close if last action is successful
+                    }
+
+                    let message = this._getMessageForOfferActionType(action);
+                    if (message) {
+                      this.popNotificationsService.success(message);
+                    }
+                  }
+                } else {
+                  this.popNotificationsService.error(this.offerErrorMessageForBuyer());
+                }
+              },
+              complete: () => {
+                dispatchSequentially(index + 1);
+              }
+            });
+        };
+
+        dispatchSequentially(0);
+        this.loadingService.setLoading(true);
       });
-    });
+  }
+
+  private _getMessageForOfferActionType(action: any): string {
+    switch (action) {
+      case CreateMarketplaceOffer:
+        return this.translateService.instant("Your offer has been successfully submitted.");
+      case UpdateMarketplaceOffer:
+        return this.translateService.instant("Your offer has been successfully updated.");
+      case RejectMarketplaceOffer:
+        return this.translateService.instant("The offer has been successfully rejected.");
+      case RetractMarketplaceOffer:
+        return this.translateService.instant("Your offer has been successfully retracted.");
+      default:
+        return "";
+    }
   }
 }

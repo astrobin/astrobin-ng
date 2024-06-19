@@ -112,21 +112,19 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       const lineItemIds = Array.from(new Set(Object.keys(data).map(key => key.substring(key.lastIndexOf("-") + 1))));
       const listingId = this.listing.id;
       const userId = user.id;
+      const newMasterOfferUuid = UtilsService.uuid();
 
       lineItemIds.forEach(lineItemId => {
         const amountKey = `amount-${lineItemId}`;
-        const masterOfferUuid = data[`masterOfferUuid-${lineItemId}`] || UtilsService.uuid();
+        const masterOfferUuid = data[`masterOfferUuid-${lineItemId}`] || newMasterOfferUuid;
 
         if (data.hasOwnProperty(amountKey)) {
-          const id = data[`id-${lineItemId}`];
-          const amount = data[amountKey];
-
           const offer: MarketplaceOfferInterface = {
-            id: data[`id-${lineItemId}`],
+            id: parseInt(data[`id-${lineItemId}`], 10),
             listing: listingId,
             lineItem: parseInt(lineItemId, 10),
             user: userId,
-            amount: amount,
+            amount: data[amountKey],
             status: MarketplaceOfferStatus.PENDING,
             masterOfferUuid
           };
