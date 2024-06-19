@@ -39,7 +39,10 @@ import { MarketplaceMasterOfferInterface } from "@features/equipment/types/marke
 import { selectUser } from "@features/account/store/auth.selectors";
 
 interface OfferGroup {
-  [key: MarketplaceMasterOfferInterface["id"]]: (MarketplaceOfferInterface & { userObj: UserInterface })[];
+  [key: MarketplaceMasterOfferInterface["id"]]: (MarketplaceOfferInterface & {
+    userObj: UserInterface,
+    lineItemObj: MarketplaceLineItemInterface
+  })[];
 }
 
 @Component({
@@ -127,13 +130,13 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
             }
 
             if (offer.status === MarketplaceOfferStatus.PENDING) {
-              this.pendingOfferGroup[offer.masterOffer].push({ ...offer, userObj: user });
+              this.pendingOfferGroup[offer.masterOffer].push({ ...offer, userObj: user, lineItemObj: lineItem });
             } else if (offer.status === MarketplaceOfferStatus.ACCEPTED) {
-              this.acceptedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user });
+              this.acceptedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user, lineItemObj: lineItem });
             } else if (offer.status === MarketplaceOfferStatus.REJECTED) {
-              this.rejectedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user });
+              this.rejectedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user, lineItemObj: lineItem });
             } else if (offer.status === MarketplaceOfferStatus.RETRACTED) {
-              this.retractedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user });
+              this.retractedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user, lineItemObj: lineItem });
             }
 
             this.loadingOffers = false;
@@ -146,7 +149,10 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     return this.listing.lineItems.find(lineItem => lineItem.id === id);
   }
 
-  onAcceptOfferClicked(event: Event, offers: (MarketplaceOfferInterface & { userObj: UserInterface })[]) {
+  onAcceptOfferClicked(event: Event, offers: (MarketplaceOfferInterface & {
+    userObj: UserInterface,
+    lineItemObj: MarketplaceLineItemInterface
+  })[]) {
     const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
     const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
@@ -204,7 +210,10 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     });
   }
 
-  onRejectOfferClicked(event: Event, offers: (MarketplaceOfferInterface & { userObj: UserInterface })[]) {
+  onRejectOfferClicked(event: Event, offers: (MarketplaceOfferInterface & {
+    userObj: UserInterface,
+    lineItemObj: MarketplaceLineItemInterface
+  })[]) {
     const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
     const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
@@ -261,7 +270,10 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     });
   }
 
-  onModifyOfferClicked(event: Event, offers: (MarketplaceOfferInterface & { userObj: UserInterface })[]) {
+  onModifyOfferClicked(event: Event, offers: (MarketplaceOfferInterface & {
+    userObj: UserInterface,
+    lineItemObj: MarketplaceLineItemInterface
+  })[]) {
     event.preventDefault();
 
     const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "xl" });
@@ -271,7 +283,10 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     component.offers = offers;
   }
 
-  onRetractOfferClicked(event: Event, offers: (MarketplaceOfferInterface & { userObj: UserInterface })[]) {
+  onRetractOfferClicked(event: Event, offers: (MarketplaceOfferInterface & {
+    userObj: UserInterface,
+    lineItemObj: MarketplaceLineItemInterface
+  })[]) {
     this.equipmentMarketplaceService.retractOffer(this.listing, offers);
   }
 

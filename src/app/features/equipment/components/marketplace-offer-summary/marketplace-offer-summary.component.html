@@ -124,12 +124,17 @@
                 class="btn btn-secondary d-block w-100 m-0"
               >
                 <fa-icon icon="envelope"></fa-icon>
-                <ng-container *ngIf="group.value[0].status === MarketplaceOfferStatus.ACCEPTED">
+                <ng-container *ngIf="
+                  group.value[0].status === MarketplaceOfferStatus.ACCEPTED &&
+                  group.value[0].lineItemObj.reserved &&
+                  group.value[0].lineItemObj.reservedTo === group.value[0].user &&
+                  !group.value[0].lineItemObj.sold; else normalMessageLabel
+                ">
                   {{ "Exchange payment/delivery info" | translate }}
                 </ng-container>
-                <ng-container *ngIf="group.value[0].status !== MarketplaceOfferStatus.ACCEPTED">
+                <ng-template #normalMessageLabel>
                   {{ "Message" | translate }}
-                </ng-container>
+                </ng-template>
               </button>
             </div>
             <!-- card-footer -->
