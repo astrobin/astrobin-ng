@@ -4,7 +4,7 @@ import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { LoadUser } from "@features/account/store/auth.actions";
 import {
   selectMarketplaceListing,
@@ -16,7 +16,6 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
-import { forkJoin } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
 import {
   AcceptMarketplaceOffer,
@@ -84,13 +83,16 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
   ngOnInit() {
     super.ngOnInit();
 
-    this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
-      filter(listing => !!listing),
-      takeUntil(this.destroyed$)
-    ).subscribe(listing => {
-      this.listing = listing;
-      this.loadOffersGroupedByUser();
-    });
+    this.store$
+      .select(selectMarketplaceListing, { id: this.listing.id })
+      .pipe(
+        filter(listing => !!listing),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(listing => {
+        this.listing = listing;
+        this.loadOffersGroupedByUser();
+      });
   }
 
   loadOffersGroupedByUser() {
@@ -157,39 +159,48 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     modalRef.closed.subscribe(() => {
       this.loadingService.setLoading(true);
 
-      forkJoin(
-        offers.map(offer =>
-          this.actions$.pipe(
-            ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_FAILURE),
-            filter((action: AcceptMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
-            take(1)
-          )
-        )
-      ).subscribe(() => {
-        this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
-        this.loadingService.setLoading(false);
-      });
-
-      forkJoin(
-        offers.map(offer =>
-          this.actions$.pipe(
-            ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_SUCCESS),
-            filter((action: AcceptMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
-            take(1),
-            switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-            take(1)
-          )
-        )
-      ).subscribe(() => {
-        this.popNotificationsService.success(
-          this.translateService.instant("The offer has been accepted. The buyer will be notified.")
-        );
-        this.loadingService.setLoading(false);
-      });
-
-      offers.forEach(offer => {
+      const processOffersSequentially = (index: number) => {
+        if (index >= offers.length) {
+          this.loadingService.setLoading(false);
+          return;
+        }
+        const offer = offers[index];
         this.store$.dispatch(new AcceptMarketplaceOffer({ offer }));
-      });
+
+        this.actions$
+          .pipe(
+            ofType(
+              EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_SUCCESS,
+              EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_FAILURE
+            ),
+            filter(
+              (action: AcceptMarketplaceOfferSuccess | AcceptMarketplaceOfferFailure) =>
+                action.payload.offer.id === offer.id
+            ),
+            take(1)
+          )
+          .subscribe({
+            next: action => {
+              if (action.type === EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_SUCCESS) {
+                this.store$
+                  .select(selectMarketplaceListing, { id: this.listing.id })
+                  .pipe(take(1))
+                  .subscribe(() => {
+                    if (index === offers.length - 1) {
+                      this.popNotificationsService.success(
+                        this.translateService.instant("The offer has been accepted. The buyer will be notified.")
+                      );
+                    }
+                  });
+              } else {
+                this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
+              }
+            },
+            complete: () => processOffersSequentially(index + 1)
+          });
+      };
+
+      processOffersSequentially(0);
     });
   }
 
@@ -212,40 +223,41 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     modalRef.closed.subscribe(() => {
       this.loadingService.setLoading(true);
 
-      forkJoin(
-        offers.map(offer =>
-          this.actions$.pipe(
-            ofType(EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_FAILURE),
-            filter((action: RejectMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
-            take(1)
-          )
-        )
-      ).subscribe(() => {
-        this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
-        this.loadingService.setLoading(false);
-      });
-
-      forkJoin(
-        offers.map(offer =>
-          this.actions$.pipe(
-            ofType(EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_SUCCESS),
-            filter((action: RejectMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
-            take(1)
-          )
-        )
-      )
-        .pipe(
-          switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-          take(1)
-        )
-        .subscribe(() => {
-          this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
+      const processOffersSequentially = (index: number) => {
+        if (index >= offers.length) {
           this.loadingService.setLoading(false);
-        });
-
-      offers.forEach(offer => {
+          return;
+        }
+        const offer = offers[index];
         this.store$.dispatch(new RejectMarketplaceOffer({ offer }));
-      });
+
+        this.actions$
+          .pipe(
+            ofType(
+              EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_SUCCESS,
+              EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_FAILURE
+            ),
+            filter(
+              (action: RejectMarketplaceOfferSuccess | RejectMarketplaceOfferFailure) =>
+                action.payload.offer.id === offer.id
+            ),
+            take(1)
+          )
+          .subscribe({
+            next: action => {
+              if (action.type === EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_SUCCESS) {
+                if (index === offers.length - 1) {
+                  this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
+                }
+              } else {
+                this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
+              }
+            },
+            complete: () => processOffersSequentially(index + 1)
+          });
+      };
+
+      processOffersSequentially(0);
     });
   }
 
@@ -260,10 +272,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
   }
 
   onRetractOfferClicked(event: Event, offers: (MarketplaceOfferInterface & { userObj: UserInterface })[]) {
-    this.equipmentMarketplaceService.retractOffer(
-      this.listing,
-      offers
-    );
+    this.equipmentMarketplaceService.retractOffer(this.listing, offers);
   }
 
   onMessageProspectBuyerClicked(event: Event, userId: UserInterface["id"]) {
