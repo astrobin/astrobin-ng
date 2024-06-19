@@ -201,6 +201,13 @@ export class EquipmentMarketplaceService extends BaseService {
     );
   }
 
+  listingHasAcceptedOffers(listing: MarketplaceListingInterface): boolean {
+    return listing.lineItems.some(
+      lineItem =>
+        lineItem.offers.filter(offer => !!offer && offer.status === MarketplaceOfferStatus.ACCEPTED).length > 0
+    );
+  }
+
   listingHasOffersByUser(listing: MarketplaceListingInterface, user: UserInterface): boolean {
     return listing.lineItems.some(lineItem => lineItem.offers.some(offer => offer.user === user.id));
   }
