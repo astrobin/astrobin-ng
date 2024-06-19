@@ -116,6 +116,7 @@ export enum RemoteSource {
   SPI = "Spica",
   SSLLC = "Stellar Skies LLC",
   SKIESAWAY = "SkiesAway Remote Observatories",
+  STARFRONT = "Starfront Observatories",
   TAIYUGE = "TaiYuge Observatory",
   TELI = "Telescope Live",
   TREV = "Trevinca Skies",
