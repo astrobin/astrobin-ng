@@ -190,7 +190,11 @@ export class AuthEffects {
                 userSubscriptions: data.userSubscriptions,
                 redirectUrl: action.payload.redirectUrl
               })),
-              tap(data => this._setLanguage(data.userProfile.language))
+              tap(data => {
+                if (data && data.userProfile && data.userProfile.language) {
+                  this._setLanguage(data.userProfile.language);
+                }
+              })
             )
           ),
           map(payload => new LoginSuccess(payload)),
@@ -207,7 +211,7 @@ export class AuthEffects {
           const token = this.cookieService.get(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
           if (!!token) {
             this._getData$.subscribe(data => {
-              if (!data.user || !data.userProfile || !data.userSubscriptions) {
+              if (!data || !data.user || !data.userProfile || !data.userSubscriptions) {
                 observer.next({ user: null, userProfile: null, userSubscriptions: [] });
                 observer.complete();
                 return;
