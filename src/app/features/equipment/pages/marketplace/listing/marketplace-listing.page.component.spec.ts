@@ -35,7 +35,8 @@ describe("MarketplaceListingPageComponent", () => {
         {
           provide: Router,
           useValue: {
-            events: EMPTY
+            events: EMPTY,
+            url: "/marketplace/123"
           }
         }
       ])
