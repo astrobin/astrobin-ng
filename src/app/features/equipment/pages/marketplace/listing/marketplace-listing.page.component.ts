@@ -184,12 +184,29 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   }
 
   appendSlugToUrl() {
-    const url = this.router.url;
+    const currentUrl = this.router.url;
     const baseUrl = `/equipment/marketplace/listing/${this.listing.hash}`;
     const slugUrl = `${baseUrl}/${this.listing.slug}`;
 
-    if (url !== slugUrl) {
-      this.location.replaceState(slugUrl);
+    // Extracting the query params and fragment
+    const queryParamsIndex = currentUrl.indexOf("?");
+    const fragmentIndex = currentUrl.indexOf("#");
+    let queryParams = "";
+    let fragment = "";
+
+    if (queryParamsIndex !== -1) {
+      queryParams = currentUrl.substring(queryParamsIndex, fragmentIndex !== -1 ? fragmentIndex : undefined);
+    }
+
+    if (fragmentIndex !== -1) {
+      fragment = currentUrl.substring(fragmentIndex);
+    }
+
+    // Append query params and fragment if they exist
+    const finalUrl = `${slugUrl}${queryParams}${fragment}`;
+
+    if (currentUrl !== finalUrl) {
+      this.location.replaceState(finalUrl);
     }
   }
 
