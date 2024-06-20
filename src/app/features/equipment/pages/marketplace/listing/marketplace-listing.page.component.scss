@@ -50,3 +50,19 @@ astrobin-marketplace-more-from-user {
   display: block;
   margin-top: 2rem;
 }
+
+.share-buttons {
+  .btn {
+    vertical-align: middle;
+
+
+    &:hover fa-icon {
+      color: var(--lightestGrey);
+    }
+  }
+
+  fa-icon {
+    font-size: 1.25rem;
+    color: var(--lighterGrey);
+  }
+}

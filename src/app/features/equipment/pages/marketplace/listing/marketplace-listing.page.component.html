@@ -1,8 +1,21 @@
 <div class="page has-breadcrumb">
   <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row gap-1">
-    <div class="flex-grow-1 me-lg-3 mb-1 mb-lg-0">
+    <span class="d-block flex-grow-1 me-lg-3 mb-1 mb-lg-0">
       {{ title }}
-    </div>
+    </span>
+    <span class="share-buttons">
+      <button (click)="shareOnFacebook()" class="btn btn-link btn-no-block">
+        <fa-icon [icon]="['fab', 'facebook']"></fa-icon>
+      </button>
+
+      <button (click)="shareOnX()" class="btn btn-link btn-no-block">
+        <fa-icon [icon]="['fab', 'twitter']"></fa-icon>
+      </button>
+
+      <button (click)="shareOnWhatsApp()" class="btn btn-link btn-no-block">
+        <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
+      </button>
+    </span>
   </h1>
 
   <small>

@@ -263,6 +263,23 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this._recordHit();
   }
 
+  shareOnFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    this.windowRefService.nativeWindow.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
+  }
+
+  shareOnX() {
+    const text = this.title;
+    const url = encodeURIComponent(window.location.href);
+    this.windowRefService.nativeWindow.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, "_blank");
+  }
+
+  shareOnWhatsApp() {
+    const text = `${this.title}: ` + encodeURIComponent(window.location.href);
+    const whatsappUrl = `https://wa.me/?text=${text}`;
+    this.windowRefService.nativeWindow.open(whatsappUrl, "_blank");
+  }
+
   approve() {
     this.actions$
       .pipe(
