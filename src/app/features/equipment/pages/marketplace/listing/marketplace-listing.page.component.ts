@@ -80,7 +80,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     ]
   });
 
-  title = this.translateService.instant("Equipment marketplace listing");
+  title = this.translateService.instant("Marketplace listing");
   listing: MarketplaceListingInterface;
   listingContentType$: Observable<ContentTypeInterface>;
   listingUser$: Observable<UserInterface>;

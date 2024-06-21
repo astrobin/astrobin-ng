@@ -2,7 +2,50 @@
   <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row gap-1">
     <span class="d-block flex-grow-1 me-lg-3 mb-1 mb-lg-0">
       {{ title }}
+
+      <span class="d-block mt-1 listing-info">
+        <fa-icon icon="calendar"></fa-icon>
+        <ng-container *ngIf="listing.approved">
+          {{ "Published" }}: {{ listing.approved | localDate | timeago : true }}
+        </ng-container>
+
+        <ng-container *ngIf="!listing.approved">
+          {{ "Created" }}: {{ listing.created | localDate | timeago : true }}
+        </ng-container>
+
+        &middot;
+
+        <fa-icon icon="bell"></fa-icon>
+        <span *ngIf="listing.followerCount === 0" [translate]="'No followers yet'"></span>
+        <span *ngIf="listing.followerCount === 1" [translate]="'One follower'"></span>
+        <span
+          *ngIf="listing.followerCount > 1"
+          [translateParams]="{
+            '0': listing.followerCount
+          }"
+          [translate]="'{{0}} followers'"
+        ></span>
+
+        &middot;
+
+        <fa-icon icon="eye"></fa-icon>
+        <span *ngIf="listing.viewCount === 0" [translate]="'No views yet'"></span>
+        <span *ngIf="listing.viewCount === 1" [translate]="'One view'"></span>
+        <span
+          *ngIf="listing.viewCount > 1"
+          [translateParams]="{
+            '0': listing.viewCount
+          }"
+          [translate]="'{{0}} views'"
+        ></span>
+
+        &middot;
+
+        <fa-icon icon="clock"></fa-icon>
+        {{ "Expiration" }}: {{ listing.expiration | localDate | timeago : true }}
+      </span>
     </span>
+
     <span class="share-buttons">
       <button (click)="shareOnFacebook()" class="btn btn-link btn-no-block">
         <fa-icon [icon]="['fab', 'facebook']"></fa-icon>
@@ -19,45 +62,13 @@
   </h1>
 
   <small>
-    <fa-icon icon="calendar"></fa-icon>
-    <ng-container *ngIf="listing.approved">
-      {{ "Published" }}: {{ listing.approved | localDate | timeago : true }}
-    </ng-container>
-
-    <ng-container *ngIf="!listing.approved">
-      {{ "Created" }}: {{ listing.created | localDate | timeago : true }}
-    </ng-container>
-
-    &middot;
-
-    <fa-icon icon="bell"></fa-icon>
-    <span *ngIf="listing.followerCount === 0" [translate]="'No followers yet'"></span>
-    <span *ngIf="listing.followerCount === 1" [translate]="'One follower'"></span>
-    <span
-      *ngIf="listing.followerCount > 1"
-      [translateParams]="{
-        '0': listing.followerCount
-      }"
-      [translate]="'{{0}} followers'"
-    ></span>
-
-    &middot;
-
-    <fa-icon icon="eye"></fa-icon>
-    <span *ngIf="listing.viewCount === 0" [translate]="'No views yet'"></span>
-    <span *ngIf="listing.viewCount === 1" [translate]="'One view'"></span>
-    <span
-      *ngIf="listing.viewCount > 1"
-      [translateParams]="{
-        '0': listing.viewCount
-      }"
-      [translate]="'{{0}} views'"
-    ></span>
-
-    &middot;
-
-    <fa-icon icon="clock"></fa-icon>
-    {{ "Expiration" }}: {{ listing.expiration | localDate | timeago : true }}
+    {{
+    "AstroBin is the best place to buy and sell astrophotography equipment. You can find telescopes, cameras, mounts, filters, and much more."
+      | translate
+    }}
+    <a class="learn-more" href="https://welcome.astrobin.com/features/marketplace" target="_blank">
+      {{ "Learn more" }}.
+    </a>
   </small>
 
   <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
@@ -74,7 +85,8 @@
                 class="mt-2 mt-md-0 ms-md-2 d-block d-md-inline-block float-md-end"
               >
                 <button
-                  (click)="approve()" [class.loading]="loadingService.loading$ | async"
+                  (click)="approve()"
+                  [class.loading]="loadingService.loading$ | async"
                   class="btn btn-link btn-no-block"
                 >
                   <fa-icon icon="check"></fa-icon>
@@ -105,7 +117,10 @@
             <astrobin-nested-comments
               [addCommentLabel]="'Ask a question' | translate"
               [contentType]="listingContentType"
-              [info]="'Questions asked here are publicly visible. If you want to contact the seller in a private conversation, use the \'Message seller privately\' button.' | translate"
+              [info]="
+                'Questions asked here are publicly visible. If you want to contact the seller in a private conversation, use the \'Message seller privately\' button.'
+                  | translate
+              "
               [noCommentsLabel]="'There are no questions or discussions yet.'"
               [objectId]="listing.id"
               [title]="'Public questions' | translate"
@@ -124,10 +139,11 @@
             ></astrobin-marketplace-user-card>
 
             <ng-container
-              *ngIf="listingUser.id === currentUserWrapper.user?.id || (currentUserWrapper.user | isMarketplaceModerator)"
+              *ngIf="
+                listingUser.id === currentUserWrapper.user?.id || (currentUserWrapper.user | isMarketplaceModerator)
+              "
             >
-              <div *ngIf="currentUserWrapper.user | isMarketplaceModerator"
-                   class="alert alert-warning mt-4">
+              <div *ngIf="currentUserWrapper.user | isMarketplaceModerator" class="alert alert-warning mt-4">
                 <fa-icon icon="exclamation-triangle"></fa-icon>
                 {{ "You are a marketplace moderator." | translate }}
               </div>
@@ -240,10 +256,7 @@
               class="mt-2 d-inline-block"
             ></astrobin-username>
 
-            <span
-              *ngIf="equipmentMarketplaceService.userIsBuyer(privateConversation.user, listing)"
-              class="buyer"
-            >
+            <span *ngIf="equipmentMarketplaceService.userIsBuyer(privateConversation.user, listing)" class="buyer">
               ({{ "Buyer" | translate }})
             </span>
 
@@ -298,22 +311,22 @@
     <button
       (click)="onMessageSellerClicked($event)"
       [class.btn-primary]="
-        equipmentMarketplaceService.listingReserved(listing) ||
-        equipmentMarketplaceService.listingSold(listing)
+        equipmentMarketplaceService.listingReserved(listing) || equipmentMarketplaceService.listingSold(listing)
       "
       [class.btn-secondary]="
-        !equipmentMarketplaceService.listingReserved(listing) &&
-        !equipmentMarketplaceService.listingSold(listing)
+        !equipmentMarketplaceService.listingReserved(listing) && !equipmentMarketplaceService.listingSold(listing)
       "
       [class.loading]="loadingService.loading$ | async"
       class="btn d-block w-100 mt-2"
     >
       <fa-icon icon="envelope"></fa-icon>
 
-      <ng-container *ngIf="
-        equipmentMarketplaceService.listingReserved(listing) ||
-        equipmentMarketplaceService.listingSold(listing); else messageSeller
-      ">
+      <ng-container
+        *ngIf="
+          equipmentMarketplaceService.listingReserved(listing) || equipmentMarketplaceService.listingSold(listing);
+          else messageSeller
+        "
+      >
         {{ "Exchange payment/delivery info" | translate }}
       </ng-container>
 
@@ -322,17 +335,19 @@
       </ng-template>
 
       <ng-container *ngIf="privateConversations$ | async as privateConversations">
-        <ng-container *ngIf="
-          privateConversations?.length === 1 &&
-          !equipmentMarketplaceService.listingReserved(listing) &&
-          !equipmentMarketplaceService.listingSold(listing)
-        ">
-        <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
-          {{ privateConversations[0].unreadMessages }}
-        </span>
+        <ng-container
+          *ngIf="
+            privateConversations?.length === 1 &&
+            !equipmentMarketplaceService.listingReserved(listing) &&
+            !equipmentMarketplaceService.listingSold(listing)
+          "
+        >
+          <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
+            {{ privateConversations[0].unreadMessages }}
+          </span>
           <span *ngIf="privateConversations[0].unreadMessages === 0" class="badge bg-info">
-          {{ privateConversations[0].totalMessages }}
-        </span>
+            {{ privateConversations[0].totalMessages }}
+          </span>
         </ng-container>
       </ng-container>
     </button>

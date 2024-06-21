@@ -45,6 +45,6 @@ describe("SoldListingsComponent", () => {
 
   it("should have a title", () => {
     const title = fixture.nativeElement.querySelector("h1 > span");
-    expect(title.textContent).toContain("Equipment marketplace");
+    expect(title.textContent).toContain("Marketplace");
   });
 });

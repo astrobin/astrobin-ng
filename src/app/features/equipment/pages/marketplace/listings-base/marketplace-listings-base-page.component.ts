@@ -37,7 +37,7 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
   readonly WORLDWIDE = "WORLDWIDE";
   readonly REGION_LOCAL_STORAGE_KEY = "marketplaceRegion";
 
-  title = this.translateService.instant("Equipment marketplace");
+  title = this.translateService.instant("Marketplace");
   page = 1;
   filterModel: MarketplaceFilterModel | null = null;
   requestCountryCode: string | null;

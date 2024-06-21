@@ -100,7 +100,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       items: {}
     },
     [NotificationCategory.MARKETPLACE]: {
-      label: this.translateService.instant("Equipment marketplace"),
+      label: this.translateService.instant("Marketplace"),
       items: {}
     },
     [NotificationCategory.IOTD_STAFF]: {

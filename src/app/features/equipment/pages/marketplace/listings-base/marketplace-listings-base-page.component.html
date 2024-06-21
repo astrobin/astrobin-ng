@@ -1,8 +1,10 @@
 <div class="page has-breadcrumb">
-  <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row gap-1">
-    <span class="flex-grow-1 me-lg-3 mb-1 mb-lg-0">{{ title }}</span>
+  <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row">
+    <span class="flex-grow-1 me-lg-3 mb-1 mb-lg-0">
+      {{ title }}
+    </span>
 
-    <span class="d-inline-block mb-0 me-lg-3 pt-0 pb-0" ngbDropdown>
+    <span class="d-inline-block mb-2 me-lg-3 pt-0 pb-0" ngbDropdown>
       <button
         [class.loading]="loadingService.loading$ | async"
         class="btn btn-outline-primary mb-0"
@@ -40,6 +42,20 @@
     <astrobin-refresh-button (click)="refresh()" class="d-none d-lg-block"></astrobin-refresh-button>
   </h1>
 
+  <small>
+    {{
+    "AstroBin is the best place to buy and sell astrophotography equipment. You can find telescopes, cameras, mounts, filters, and much more."
+      | translate
+    }}
+    <a
+      class="learn-more"
+      href="https://welcome.astrobin.com/features/marketplace"
+      target="_blank"
+    >
+      {{ "Learn more" }}.
+    </a>
+  </small>
+
   <div class="row">
     <div class="col-12 col-md-5 col-lg-3">
       <astrobin-marketplace-sidebar
@@ -54,9 +70,7 @@
         class="d-block mb-3"
       ></astrobin-marketplace-search-bar>
 
-      <astrobin-marketplace-listing-cards
-        [listings]="listings$ | async"
-      ></astrobin-marketplace-listing-cards>
+      <astrobin-marketplace-listing-cards [listings]="listings$ | async"></astrobin-marketplace-listing-cards>
     </div>
   </div>
 </div>
