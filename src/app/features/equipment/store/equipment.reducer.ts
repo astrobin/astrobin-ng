@@ -45,6 +45,8 @@ export interface EquipmentState {
   mostOftenUsedWithData: EquipmentItemMostOftenUsedWithData | {};
   contributors: ContributorInterface[];
   marketplace: {
+    // As we're not storing a PaginatedApiResponseInterface, we need to store the last paginated request count.
+    lastPaginatedRequestCount: number | null;
     listings: MarketplaceListingInterface[] | null;
     privateConversations: MarketplacePrivateConversationInterface[];
   };
@@ -59,6 +61,7 @@ export const initialEquipmentState: EquipmentState = {
   mostOftenUsedWithData: {},
   contributors: [],
   marketplace: {
+    lastPaginatedRequestCount: null,
     listings: null,
     privateConversations: []
   }
@@ -312,7 +315,8 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         ...state,
         marketplace: {
           ...state.marketplace,
-          listings: []
+          lastPaginatedRequestCount: null,
+          listings: null
         }
       };
     }
@@ -322,6 +326,7 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         ...state,
         marketplace: {
           ...state.marketplace,
+          lastPaginatedRequestCount: action.payload.listings.count,
           listings: UtilsService.arrayUniqueObjects([
             ...state.marketplace.listings || [],
             ...action.payload.listings.results

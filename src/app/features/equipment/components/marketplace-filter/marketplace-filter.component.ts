@@ -38,7 +38,8 @@ export const marketplaceFilterModelKeys: string[] = [
   "expired",
   "excludeListing",
   "itemId",
-  "contentTypeId"
+  "contentTypeId",
+  "page"
 ];
 
 // If you're updating this, make sure to update marketplaceFilterModelKeys above.

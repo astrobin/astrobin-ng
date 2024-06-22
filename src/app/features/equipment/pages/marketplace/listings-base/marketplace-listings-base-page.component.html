@@ -77,6 +77,16 @@
       ></astrobin-marketplace-search-bar>
 
       <astrobin-marketplace-listing-cards [listings]="listings$ | async"></astrobin-marketplace-listing-cards>
+
+      <ng-container *ngIf="lastPaginatedRequestCount$ | async as collectionSize">
+        <ngb-pagination
+          (pageChange)="onPageChange($event)"
+          *ngIf="collectionSize > pageSize"
+          [(page)]="page"
+          [collectionSize]="collectionSize"
+          class="d-flex justify-content-center mt-5"
+        ></ngb-pagination>
+      </ng-container>
     </div>
   </div>
 </div>

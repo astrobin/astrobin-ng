@@ -5,7 +5,7 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
+import { selectMarketplace, selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
 import { map, take, takeUntil, tap } from "rxjs/operators";
 import {
   ClearMarketplaceListings,
@@ -26,8 +26,9 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LocalStorageService } from "@shared/services/localstorage.service";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -39,12 +40,18 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
 
   title = this.translateService.instant("Marketplace");
   page = 1;
+  pageSize = this.paginationConfig.pageSize;
   filterModel: MarketplaceFilterModel | null = null;
   requestCountryCode: string | null;
   requestCountryLabel: string | null;
   selectedRegion: string | null;
   selectedRegionLabel: string | null;
   listings$: Observable<MarketplaceListingInterface[]>;
+  lastPaginatedRequestCount$ = this.store$.select(
+    selectMarketplace
+  ).pipe(
+    map(state => state.lastPaginatedRequestCount || 0)
+  );
 
   constructor(
     public readonly store$: Store<State>,
@@ -57,7 +64,9 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     public readonly router: Router,
     public readonly utilsService: UtilsService,
     public readonly localStorageService: LocalStorageService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly windowRefService: WindowRefService,
+    public readonly paginationConfig: NgbPaginationConfig
   ) {
     super(store$);
   }
@@ -104,8 +113,14 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     });
   }
 
+  onPageChange(page: number) {
+    this.page = page;
+    this.refresh(this.filterModel);
+  }
+
   public refresh(filterModel?: MarketplaceFilterModel) {
     this.loadingService.setLoading(true);
+    this.windowRefService.scroll({ top: 0 });
 
     this.filterModel = {
       ...this.filterModel,
