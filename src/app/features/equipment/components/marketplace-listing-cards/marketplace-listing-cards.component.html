@@ -1,4 +1,4 @@
-<ng-container *ngIf="listings == null" [ngTemplateOutlet]="loadingTemplate"></ng-container>
+<ng-container *ngIf="listings === null" [ngTemplateOutlet]="loadingTemplate"></ng-container>
 <ng-container *ngIf="listings !== null">
   <ng-container *ngIf="listings.length > 0; else noListingsTemplate">
     <div class="listings">
