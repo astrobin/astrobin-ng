@@ -11,6 +11,7 @@ export class EquipmentStateGenerator {
       mostOftenUsedWithData: {},
       contributors: [],
       marketplace: {
+        lastPaginatedRequestCount: null,
         listings: null,
         privateConversations: null
       }
