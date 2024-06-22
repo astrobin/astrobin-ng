@@ -5,13 +5,16 @@ import { Store } from "@ngrx/store";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { take, takeUntil } from "rxjs/operators";
+import { map, take, takeUntil } from "rxjs/operators";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceFeedbackModalComponent } from "@features/equipment/components/marketplace-feedback-modal/marketplace-feedback-modal.component";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { ActivatedRoute } from "@angular/router";
 import { MarketplaceFeedbackTargetType } from "@features/equipment/types/marketplace-feedback.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
+import { Observable } from "rxjs";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-marketplace-feedback-widget",
@@ -33,7 +36,9 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
     public readonly store$: Store<State>,
     public readonly marketplaceService: EquipmentMarketplaceService,
     public readonly modalService: NgbModal,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
@@ -63,31 +68,45 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   updateState(): void {
     this.calculateStarRating();
 
-    this.currentUser$
-      .pipe(take(1))
-      .subscribe(currentUser => {
-        // We allow to leave feedback if:
-        // - The current user is the seller, and the user in this component has some accepted offers
-        // - The current user is a buyer with some accepted offers, and the user in this component is the seller
+    this.allowLeavingFeedback().subscribe(allow => {
+      this.showLeaveFeedbackButton = allow;
+    });
 
-        if (currentUser.id === this.user.id) {
-          this.showLeaveFeedbackButton = false;
-        } else if (currentUser.id === this.listing.user) {
-          // The current user is the seller of this listing. They can leave feedback if the user in this component is a
-          // buyer and has some accepted offers.
-          this.showLeaveFeedbackButton = this.marketplaceService.userIsBuyer(this.user.id, this.listing);
-        } else {
-          this.showLeaveFeedbackButton = this.marketplaceService.userIsBuyer(currentUser.id, this.listing);
-        }
+    this.alreadyHasFeedbackFromCurrentUser = this.alreadyHasFeedback();
+  }
 
-        this.listing.lineItems.forEach(lineItem => {
-          lineItem.feedbacks.forEach(feedback => {
-            if (feedback.recipient === this.user.id) {
-              this.alreadyHasFeedbackFromCurrentUser = true;
-            }
-          });
-        });
+  alreadyHasFeedback(): boolean {
+    // Consider that:
+    // - if the current user is the owner of the listing, then the feedback items coming form the API are only the ones
+    //   that the current user has received, or that users with accepted offers have received.
+    // - if the current user is a buyer, then the feedback items coming from the API are only the ones that the user has
+    //   received.
+    return this.listing.lineItems.some(lineItem => {
+      return lineItem.feedbacks.some(feedback => {
+        return feedback.recipient === this.user.id;
       });
+    });
+  }
+
+  allowLeavingFeedback(): Observable<boolean> {
+    return this.currentUser$
+      .pipe(
+        take(1),
+        map(currentUser => {
+          // We allow to leave feedback if:
+          // - The current user is the seller, and the user in this component has some accepted offers
+          // - The current user is a buyer with some accepted offers, and the user in this component is the seller
+
+          if (currentUser.id === this.user.id) {
+            return false;
+          } else if (currentUser.id === this.listing.user) {
+            // The current user is the seller of this listing. They can leave feedback if the user in this component is a
+            // buyer and has some accepted offers.
+            return this.marketplaceService.userIsBuyer(this.user.id, this.listing);
+          }
+          return this.marketplaceService.userIsBuyer(currentUser.id, this.listing);
+        })
+      );
   }
 
   calculateStarRating(): void {
@@ -105,21 +124,36 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   }
 
   showFeedbackModal(): void {
-    this.currentUser$
-      .pipe(take(1))
-      .subscribe(currentUser => {
-        const targetType = currentUser.id === this.listing.user
-          ? MarketplaceFeedbackTargetType.BUYER
-          : MarketplaceFeedbackTargetType.SELLER;
+    if (this.alreadyHasFeedbackFromCurrentUser) {
+      this.popNotificationsService.error(
+        this.translateService.instant("You have already left feedback for this user.")
+      );
+      return;
+    }
 
-        const modalRef = this.modalService.open(MarketplaceFeedbackModalComponent, {
-          size: targetType === MarketplaceFeedbackTargetType.SELLER ? "xl" : "lg"
-        });
-        const componentInstance: MarketplaceFeedbackModalComponent = modalRef.componentInstance;
+    this.allowLeavingFeedback().subscribe(allow => {
+      if (allow) {
+        this.currentUser$
+          .pipe(take(1))
+          .subscribe(currentUser => {
+            const targetType = currentUser.id === this.listing.user
+              ? MarketplaceFeedbackTargetType.BUYER
+              : MarketplaceFeedbackTargetType.SELLER;
 
-        componentInstance.listing = this.listing;
-        componentInstance.user = this.user;
-        componentInstance.targetType = targetType;
-      });
+            const modalRef = this.modalService.open(MarketplaceFeedbackModalComponent, {
+              size: targetType === MarketplaceFeedbackTargetType.SELLER ? "xl" : "lg"
+            });
+            const componentInstance: MarketplaceFeedbackModalComponent = modalRef.componentInstance;
+
+            componentInstance.listing = this.listing;
+            componentInstance.user = this.user;
+            componentInstance.targetType = targetType;
+          });
+      } else {
+        this.popNotificationsService.error(
+          this.translateService.instant("You can't leave feedback for this user on this page.")
+        );
+      }
+    });
   }
 }

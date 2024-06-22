@@ -44,7 +44,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
 
-  title: string = this.translateService.instant("Provide feedback");
+  title: string = this.translateService.instant("Leave feedback");
 
   rulesText = this.translateService.instant(
     "Please be truthful and honest when providing feedback after a transaction, and make sure you respect the " +
