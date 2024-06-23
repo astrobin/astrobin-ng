@@ -29,7 +29,11 @@ export class NestedCommentsEffects {
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(payload =>
         this.nestedCommentsApiService.getForContentTypeIdAndObjectId(payload.contentTypeId, payload.objectId).pipe(
-          map(nestedComments => new LoadNestedCommentsSuccess({ nestedComments })),
+          map(nestedComments => new LoadNestedCommentsSuccess({
+            contentTypeId: payload.contentTypeId,
+            objectId: payload.objectId,
+            nestedComments
+          })),
           tap(() => this.loadingService.setLoading(false))
         )
       )

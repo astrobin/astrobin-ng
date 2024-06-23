@@ -15,7 +15,11 @@ export class LoadNestedComments implements PayloadActionInterface {
 export class LoadNestedCommentsSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS;
 
-  constructor(public payload: { nestedComments: NestedCommentInterface[] }) {
+  constructor(public payload: {
+    contentTypeId: ContentTypeInterface["id"];
+    objectId: number;
+    nestedComments: NestedCommentInterface[]
+  }) {
   }
 }
 

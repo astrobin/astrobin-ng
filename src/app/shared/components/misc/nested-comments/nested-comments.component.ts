@@ -4,7 +4,11 @@ import { Store } from "@ngrx/store";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { Observable } from "rxjs";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import { CreateNestedComment, LoadNestedComments } from "@app/store/actions/nested-comments.actions";
+import {
+  CreateNestedComment,
+  LoadNestedComments,
+  LoadNestedCommentsSuccess
+} from "@app/store/actions/nested-comments.actions";
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { LoadingService } from "@shared/services/loading.service";
@@ -59,6 +63,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   form = new FormGroup({});
   fields: FormlyFieldConfig[];
   showTopLevelForm = false;
+  _lastFetchedComments: NestedCommentInterface[] = null;
 
   constructor(
     public readonly store$: Store,
@@ -82,8 +87,17 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
 
   refresh() {
     this.actions$
-      .pipe(ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS), take(1))
+      .pipe(
+        ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS),
+        filter((action: LoadNestedCommentsSuccess) =>
+          action.payload.contentTypeId === this.contentType.id &&
+          action.payload.objectId === this.objectId
+        ),
+        take(1)
+      )
       .subscribe(() => (this.loadingComments = false));
+
+    this.loadingComments = true;
     this.store$.dispatch(new LoadNestedComments({ contentTypeId: this.contentType.id, objectId: this.objectId }));
   }
 
@@ -136,27 +150,36 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
 
   _initComments() {
     this.comments$ = this.store$
-      .select(selectNestedCommentsByContentTypeIdAndObjectId, {
-        contentTypeId: this.contentType.id,
-        objectId: this.objectId
-      })
+      .select(selectNestedCommentsByContentTypeIdAndObjectId(
+          this.contentType.id,
+          this.objectId
+        )
+      )
       .pipe(
         filter(comments => comments !== null),
         distinctUntilChangedObj(),
         map(comments => UtilsService.sortParent(comments) as NestedCommentInterface[]),
         tap(() => this.loadingService.setLoading(false)),
         tap(comments => {
-          this._autoStartIfNoComments(comments);
+          this._lastFetchedComments = comments;
+
+          this.utilsService.delay(200).subscribe(() => {
+            this._autoStartIfNoComments();
+          });
         }),
         takeUntil(this.destroyed$)
       );
   }
 
-  _autoStartIfNoComments(comments: NestedCommentInterface[]) {
+  _autoStartIfNoComments() {
     if (this.loadingComments) {
-      this.utilsService.delay(50).subscribe(() => this._autoStartIfNoComments(comments));
+      this.utilsService.delay(200).subscribe(() =>
+        this._autoStartIfNoComments()
+      );
       return;
     }
+
+    const comments = this._lastFetchedComments;
 
     if (this.autoStartIfNoComments && comments && comments.length === 0 && !this.showTopLevelForm) {
       this.onAddCommentClicked(null);

@@ -38,7 +38,9 @@ export class NestedCommentsCountComponent extends BaseComponentDirective impleme
 
     const data = { contentTypeId: this.contentType.id, objectId: this.objectId };
     this.store$.dispatch(new LoadNestedComments(data));
-    this.count$ = this.store$.select(selectNestedCommentsByContentTypeIdAndObjectId, data).pipe(
+    this.count$ = this.store$.select(
+      selectNestedCommentsByContentTypeIdAndObjectId(this.contentType.id, this.objectId)
+    ).pipe(
       filter(nestedComments => nestedComments !== null),
       map(nestedComments => nestedComments.length),
       tap(count => (this.hide = count === 0 && this.hideZero)),
