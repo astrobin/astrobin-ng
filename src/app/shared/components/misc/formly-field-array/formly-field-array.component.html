@@ -29,7 +29,8 @@
 
   <div
     [@collapse]="(props.collapsible && collapsedIndexes.includes(i)) ? 'collapsed' : 'expanded'"
-    class="card-body overflow-auto"
+    [class.overflow-hidden]="(props.collapsible && collapsedIndexes.includes(i))"
+    class="card-body"
   >
     <formly-group [field]="arrayField"></formly-group>
   </div>

@@ -63,9 +63,10 @@ astrobin-marketplace-more-from-user {
 }
 
 .share-buttons {
+  white-space: nowrap;
+
   .btn {
     vertical-align: middle;
-
 
     &:hover fa-icon {
       color: var(--lightestGrey);

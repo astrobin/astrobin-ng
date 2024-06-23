@@ -4,7 +4,7 @@
     [class.sold]="!!lineItem.sold"
     class="card"
   >
-    <div (click)="collapsed = !collapsed" [class.collapsed-body]="collapsed" class="card-header">
+    <div (click)="collapsed = !collapsed" [class.collapsed-body]="!previewMode && collapsed" class="card-header">
       <div class="d-flex align-items-center gap-3">
         <div class="image">
           <img
@@ -95,11 +95,11 @@
           [listing]="listing"
         ></astrobin-marketplace-listing-line-item-price>
 
-        <fa-icon [icon]="collapsed ? 'chevron-down' : 'chevron-up'"></fa-icon>
+        <fa-icon *ngIf="!previewMode" [icon]="collapsed ? 'chevron-down' : 'chevron-up'"></fa-icon>
       </div>
     </div>
 
-    <div *ngIf="!collapsed" class="card-body">
+    <div *ngIf="previewMode || !collapsed" class="card-body">
       <div class="w-100 images">
         <astrobin-marketplace-listing-line-item-images
           [images]="lineItem.images"
