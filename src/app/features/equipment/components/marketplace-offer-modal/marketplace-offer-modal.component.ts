@@ -181,6 +181,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             props: {
               label: this.translateService.instant("Item"),
               readonly: true,
+              tabindex: -1,
               hideOptionalMarker: true,
               hideLabel: !this.displayLabel(index)
             },
@@ -208,6 +209,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             props: {
               label: this.translateService.instant("Asking price"),
               readonly: true,
+              tabindex: -1,
               hideOptionalMarker: true,
               hideLabel: !this.displayLabel(index)
             }
@@ -229,6 +231,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             props: {
               label: this.translateService.instant("Shipping cost"),
               readonly: true,
+              tabindex: -1,
               hideOptionalMarker: true,
               hideLabel: !this.displayLabel(index)
             }
@@ -309,6 +312,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             props: {
               label: this.translateService.instant("Total"),
               readonly: true,
+              tabindex: -1,
               hideOptionalMarker: true,
               hideLabel: !this.displayLabel(index)
             },

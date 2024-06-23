@@ -210,6 +210,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
                 props: {
                   label: this.translateService.instant("Item"),
                   readonly: true,
+                  tabindex: -1,
                   hideOptionalMarker: true,
                   hideLabel: index > 0
                 }
