@@ -317,10 +317,10 @@
     <button
       (click)="onMessageSellerClicked($event)"
       [class.btn-primary]="
-        equipmentMarketplaceService.listingReserved(listing) || !equipmentMarketplaceService.listingSold(listing)
+        equipmentMarketplaceService.listingReserved(listing) && !equipmentMarketplaceService.listingSold(listing)
       "
       [class.btn-secondary]="
-        !equipmentMarketplaceService.listingReserved(listing) && !equipmentMarketplaceService.listingSold(listing)
+        !equipmentMarketplaceService.listingReserved(listing) || equipmentMarketplaceService.listingSold(listing)
       "
       [class.loading]="loadingService.loading$ | async"
       class="btn d-block w-100 mt-2"
