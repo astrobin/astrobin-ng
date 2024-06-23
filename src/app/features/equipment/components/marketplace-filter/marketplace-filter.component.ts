@@ -39,7 +39,11 @@ export const marketplaceFilterModelKeys: string[] = [
   "excludeListing",
   "itemId",
   "contentTypeId",
-  "page"
+  "page",
+  "minPrice",
+  "maxPrice",
+  "currency",
+  "condition"
 ];
 
 // If you're updating this, make sure to update marketplaceFilterModelKeys above.
@@ -61,6 +65,10 @@ export interface MarketplaceFilterModel {
   excludeListing?: MarketplaceListingInterface["hash"] | null;
   itemId?: EquipmentItem["id"] | null;
   contentTypeId?: ContentTypeInterface["id"] | null;
+  minPrice?: number | null;
+  maxPrice?: number | null;
+  currency?: string | null;
+  condition?: MarketplaceListingCondition | null;
 }
 
 @Component({
@@ -167,7 +175,14 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
         defaultValue: params["itemType"],
         props: {
           label: this.translateService.instant("Item type"),
-          options: Object.values(EquipmentItemType).map(itemType => ({
+          options: [
+            EquipmentItemType.CAMERA,
+            EquipmentItemType.TELESCOPE,
+            EquipmentItemType.MOUNT,
+            EquipmentItemType.FILTER,
+            EquipmentItemType.ACCESSORY,
+            EquipmentItemType.SOFTWARE
+          ].map(itemType => ({
             label: this.equipmentItemService.humanizeType(itemType),
             value: itemType
           })),
