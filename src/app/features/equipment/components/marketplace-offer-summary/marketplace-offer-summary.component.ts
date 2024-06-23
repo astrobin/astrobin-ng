@@ -194,7 +194,13 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
                   .subscribe(() => {
                     if (index === offers.length - 1) {
                       this.popNotificationsService.success(
-                        this.translateService.instant("The offer has been accepted. The buyer will be notified.")
+                        this.translateService.instant(
+                          "The offer has been accepted. The buyer will be notified."
+                        ) +
+                        " " +
+                        this.translateService.instant(
+                          "Please use the 'Exchange payment/delivery info' to coordinate with the buyer."
+                        )
                       );
                     }
                   });
