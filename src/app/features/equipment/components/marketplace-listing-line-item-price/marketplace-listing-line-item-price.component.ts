@@ -42,7 +42,7 @@ export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirec
       distinctUntilChangedObj(),
       takeUntil(this.destroyed$)
     ).subscribe(listing => {
-      this.listing = listing;
+      this.listing = { ...listing };
 
       this.lineItem = listing.lineItems.find(lineItem => lineItem.id === this.lineItem.id);
 

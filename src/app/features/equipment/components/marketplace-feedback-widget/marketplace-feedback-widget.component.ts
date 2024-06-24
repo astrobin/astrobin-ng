@@ -47,7 +47,7 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
     super.ngOnInit();
 
     this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(takeUntil(this.destroyed$)).subscribe(listing => {
-      this.listing = listing;
+      this.listing = { ...listing };
       this.updateState();
     });
 

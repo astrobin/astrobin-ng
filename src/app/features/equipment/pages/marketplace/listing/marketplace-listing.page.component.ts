@@ -117,6 +117,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.store$.dispatch(this.breadcrumb);
 
     this.setListing(this.activatedRoute.snapshot.data.listing);
+    this._subscribeToListingChanges();
 
     // If we're navigating to a different listing, update the page.
     this.router.events
@@ -126,19 +127,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       )
       .subscribe(() => {
         this.setListing(this.activatedRoute.snapshot.data.listing);
-
-        // If the listing changes, update the page.
-        if (this._listingUpdatedSubscription) {
-          this._listingUpdatedSubscription.unsubscribe();
-        }
-
-        this._listingUpdatedSubscription = this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
-          filter(listing => !!listing),
-          takeUntil(this.destroyed$)
-        ).subscribe(listing => {
-          this.setListing(listing);
-        });
-
+        this._subscribeToListingChanges();
         this.windowRefService.scroll({ top: 0 });
       });
   }
@@ -549,4 +538,18 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       )
       .subscribe();
   }
+
+  private _subscribeToListingChanges() {
+    if (this._listingUpdatedSubscription) {
+      this._listingUpdatedSubscription.unsubscribe();
+    }
+
+    this._listingUpdatedSubscription = this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
+      filter(listing => !!listing && listing.id === this.listing.id),
+      takeUntil(this.destroyed$)
+    ).subscribe(listing => {
+      this.setListing(listing);
+    });
+  }
 }
+
