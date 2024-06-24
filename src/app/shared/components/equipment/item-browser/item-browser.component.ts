@@ -216,6 +216,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   ngOnChanges(changes: SimpleChanges) {
     let equals = false;
+    let setFieldsAgain = false;
 
     if (
       changes.initialValue &&
@@ -232,8 +233,16 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }
 
       if (!equals) {
-        this._setFields();
+        setFieldsAgain = true;
       }
+    }
+
+    if (changes.required) {
+      setFieldsAgain = true;
+    }
+
+    if (setFieldsAgain) {
+      this._setFields();
     }
 
     if (changes.type && !!this.form && !!this.form.controls.klass) {
