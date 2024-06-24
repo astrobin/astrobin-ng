@@ -253,13 +253,23 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 (this.offers.length && !this.offers.some(offer => offer.lineItem === lineItem.id)),
               label: this.translateService.instant("Offer amount"),
               required: true,
-              min: 0.01,
               step: 1,
               addonLeft: {
                 text: lineItem.currency
               },
               hideRequiredMarker: true,
               hideLabel: !this.displayLabel(index)
+            },
+            validators: {
+              validation: [
+                "number",
+                {
+                  name: "min-value",
+                  options: {
+                    minValue: .01
+                  }
+                }
+              ]
             },
             hooks: {
               onInit: field => {
