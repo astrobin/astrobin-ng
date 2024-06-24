@@ -95,14 +95,14 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   formInitialized = false;
   fields: FormlyFieldConfig[];
 
-  initialLineItemCountModel = { count: 1, saleType: SALE_TYPE.SINGLE };
+  initialLineItemCountModel = { count: 0, saleType: null };
   initialLineItemCountForm = new FormGroup({});
   initialLineItemCountFields: FormlyFieldConfig[] = [
     {
       key: "saleType",
       type: "radio",
       wrappers: ["default-wrapper"],
-      defaultValue: SALE_TYPE.SINGLE,
+      defaultValue: null,
       props: {
         required: true,
         label: this.translateService.instant("How many items do you want to sell?"),
@@ -147,7 +147,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         min: 1
       },
       expressions: {
-        className: (config: FormlyFieldConfig) => config.model.saleType === SALE_TYPE.SINGLE ? "hidden" : "",
+        className: (config: FormlyFieldConfig) =>
+          config.model.saleType === SALE_TYPE.SINGLE || config.model.saleType === null ? "hidden" : "",
         "props.required": config => config.model.saleType === SALE_TYPE.BUNDLE
       }
     },
