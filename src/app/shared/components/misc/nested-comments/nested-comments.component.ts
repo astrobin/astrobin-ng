@@ -64,6 +64,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   fields: FormlyFieldConfig[];
   showTopLevelForm = false;
   _lastFetchedComments: NestedCommentInterface[] = null;
+  _autoStartCommentsRetries = 0;
 
   constructor(
     public readonly store$: Store,
@@ -172,6 +173,12 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   }
 
   _autoStartIfNoComments() {
+    if (this._autoStartCommentsRetries >= 10) {
+      return;
+    }
+
+    this._autoStartCommentsRetries++;
+
     if (this.loadingComments) {
       this.utilsService.delay(200).subscribe(() =>
         this._autoStartIfNoComments()
