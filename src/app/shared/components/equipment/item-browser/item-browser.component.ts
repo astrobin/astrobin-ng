@@ -237,10 +237,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }
     }
 
-    // if (changes.required) {
-    //   setFieldsAgain = true;
-    // }
-
     if (setFieldsAgain) {
       this._setFields();
     }
@@ -717,11 +713,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   expressions: {
                     "props.disabled": config => {
                       return this.options.formState.creationMode || !this.model.klass;
-                    }
+                    },
+                    "props.required": () => this.required
                   },
                   defaultValue: this.model,
                   props: {
-                    required: this.required,
                     clearable: true,
                     label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
                     description: this.description,
