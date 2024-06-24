@@ -5,7 +5,7 @@
     class="card"
   >
     <div (click)="collapsed = !collapsed" [class.collapsed-body]="!previewMode && collapsed" class="card-header">
-      <div class="d-flex align-items-center gap-3">
+      <div class="align-items-center d-flex flex-column flex-md-row gap-3 text-center text-md-start">
         <div class="image">
           <img
             *ngIf="lineItem.images.length > 0"
