@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -37,6 +37,7 @@ import { MarketplaceOfferModalComponent } from "@features/equipment/components/m
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 import { MarketplaceMasterOfferInterface } from "@features/equipment/types/marketplace-master-offer.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
+import { Subscription } from "rxjs";
 
 interface OfferGroup {
   [key: MarketplaceMasterOfferInterface["id"]]: (MarketplaceOfferInterface & {
@@ -50,7 +51,7 @@ interface OfferGroup {
   templateUrl: "./marketplace-offer-summary.component.html",
   styleUrls: ["./marketplace-offer-summary.component.scss"]
 })
-export class MarketplaceOfferSummaryComponent extends BaseComponentDirective implements OnInit {
+export class MarketplaceOfferSummaryComponent extends BaseComponentDirective implements OnChanges {
   readonly MarketplaceOfferStatus = MarketplaceOfferStatus;
 
   @Input()
@@ -69,6 +70,8 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
 
   loadingOffers = true;
 
+  private _listingUpdatedSubscription: Subscription;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -83,17 +86,19 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     super(store$);
   }
 
-  ngOnInit() {
-    super.ngOnInit();
+  ngOnChanges(changes: SimpleChanges) {
+    if (this._listingUpdatedSubscription) {
+      this._listingUpdatedSubscription.unsubscribe();
+    }
 
-    this.store$
+    this._listingUpdatedSubscription = this.store$
       .select(selectMarketplaceListing, { id: this.listing.id })
       .pipe(
         filter(listing => !!listing),
         takeUntil(this.destroyed$)
       )
       .subscribe(listing => {
-        this.listing = listing;
+        this.listing = { ...listing };
         this.loadOffersGroupedByUser();
       });
   }
@@ -111,8 +116,6 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
 
     this.listing.lineItems.forEach(lineItem => {
       lineItem.offers.forEach(offer => {
-        this.store$.dispatch(new LoadUser({ id: offer.user }));
-
         this.store$
           .select(selectUser, offer.user)
           .pipe(
@@ -141,6 +144,8 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
 
             this.loadingOffers = false;
           });
+
+        this.store$.dispatch(new LoadUser({ id: offer.user }));
       });
     });
   }

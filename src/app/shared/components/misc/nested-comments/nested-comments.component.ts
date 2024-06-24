@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -25,7 +25,7 @@ import { RouterService } from "@shared/services/router.service";
   templateUrl: "./nested-comments.component.html",
   styleUrls: ["./nested-comments.component.scss"]
 })
-export class NestedCommentsComponent extends BaseComponentDirective implements OnInit {
+export class NestedCommentsComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   contentType: ContentTypeInterface;
 
@@ -77,9 +77,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     super(store$);
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-
+  ngOnChanges() {
     this._initComments();
     this._initFields();
 

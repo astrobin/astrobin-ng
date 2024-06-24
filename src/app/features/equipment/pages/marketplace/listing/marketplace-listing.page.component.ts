@@ -11,7 +11,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { merge, Observable, of } from "rxjs";
+import { merge, Observable, of, Subscription } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -88,6 +88,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   hasOffered$: Observable<boolean>;
 
   private _contentTypePayload = { appLabel: "astrobin_apps_equipment", model: "equipmentitemmarketplacelisting" };
+  private _listingUpdatedSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<State>,
@@ -116,18 +117,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.store$.dispatch(this.breadcrumb);
 
     this.setListing(this.activatedRoute.snapshot.data.listing);
-    this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
-      filter(listing => !!listing),
-      takeUntil(this.destroyed$)
-    ).subscribe(listing => {
-      this.setListing(listing);
-    });
 
-    this.loadContentType();
-    this.loadPrivateConversations();
-    this.loadUser();
-    this.loadHasOffered();
-
+    // If we're navigating to a different listing, update the page.
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
@@ -135,13 +126,31 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       )
       .subscribe(() => {
         this.setListing(this.activatedRoute.snapshot.data.listing);
+
+        // If the listing changes, update the page.
+        if (this._listingUpdatedSubscription) {
+          this._listingUpdatedSubscription.unsubscribe();
+        }
+
+        this._listingUpdatedSubscription = this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
+          filter(listing => !!listing),
+          takeUntil(this.destroyed$)
+        ).subscribe(listing => {
+          this.setListing(listing);
+        });
+
         this.windowRefService.scroll({ top: 0 });
       });
   }
 
   setListing(listing: MarketplaceListingInterface) {
-    this.listing = listing;
+    this.listing = { ...listing };
+
     this.appendSlugToUrl();
+    this.loadContentType();
+    this.loadPrivateConversations();
+    this.loadUser();
+    this.loadHasOffered();
 
     if (!!this.listing.title) {
       this.title = this.listing.title;

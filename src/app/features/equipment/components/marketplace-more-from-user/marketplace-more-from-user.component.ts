@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -15,7 +15,7 @@ import { LoadingService } from "@shared/services/loading.service";
   templateUrl: "./marketplace-more-from-user.component.html",
   styleUrls: ["./marketplace-more-from-user.component.scss"]
 })
-export class MarketplaceMoreFromUserComponent extends BaseComponentDirective implements OnInit {
+export class MarketplaceMoreFromUserComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   listing: MarketplaceListingInterface;
 
@@ -25,11 +25,7 @@ export class MarketplaceMoreFromUserComponent extends BaseComponentDirective imp
     super(store$);
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-
-    this.store$.dispatch(new LoadUser({ id: this.listing.user }));
-
+  ngOnChanges() {
     this.store$.select(selectUser, this.listing.user).pipe(
       filter(user => !!user),
       take(1)
@@ -46,5 +42,7 @@ export class MarketplaceMoreFromUserComponent extends BaseComponentDirective imp
     ).subscribe(listings => {
       this.otherListings = listings.filter(listing => listing.id !== this.listing.id);
     });
+
+    this.store$.dispatch(new LoadUser({ id: this.listing.user }));
   }
 }

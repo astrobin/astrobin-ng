@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -15,7 +15,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
   templateUrl: "./marketplace-user-card.component.html",
   styleUrls: ["./marketplace-user-card.component.scss"]
 })
-export class MarketplaceUserCardComponent extends BaseComponentDirective implements OnInit {
+export class MarketplaceUserCardComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   listing: MarketplaceListingInterface;
 
@@ -28,9 +28,7 @@ export class MarketplaceUserCardComponent extends BaseComponentDirective impleme
     super(store$);
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-
+  ngOnChanges(): void {
     this.user$ = this.store$.select(selectUser, this.listing.user).pipe(
       filter(user => !!user),
       takeUntil(this.destroyed$)
