@@ -671,6 +671,35 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                           this.setValue(null);
                         }
 
+                        if (this.restrictToUserEquipment) {
+                          this.store$.dispatch(
+                            new FindRecentlyUsedEquipmentItems({
+                              type: this.model.klass,
+                              usageType: null,
+                              includeFrozen: true
+                            })
+                          );
+
+                          this.actions$
+                            .pipe(
+                              ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS),
+                              map((action: FindRecentlyUsedEquipmentItemsSuccess) => action.payload),
+                              take(1),
+                              map(payload => payload.items)
+                            )
+                            .subscribe(items => {
+                              const field = this.fields[0].fieldGroup.find(f => f.key === "value");
+                              field.props = {
+                                ...field.props,
+                                options: of(items.map(item => ({
+                                  value: item.id,
+                                  label: item.name,
+                                  item
+                                })))
+                              };
+                            });
+                        }
+
                         this.itemTypeChanged.emit(value);
                       });
                     }
@@ -686,7 +715,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   id: `${this.id}`,
                   wrappers: ["default-wrapper"],
                   expressions: {
-                    "props.disabled": "formState.creationMode"
+                    "props.disabled": config => {
+                      return this.options.formState.creationMode || !this.model.klass;
+                    }
                   },
                   defaultValue: this.model,
                   props: {
@@ -881,13 +912,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           })
         );
 
-        return this.actions$
-          .pipe(
-            ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS),
-            map((action: FindRecentlyUsedEquipmentItemsSuccess) => action.payload),
-            take(1),
-            map(payload => payload.items)
-          );
+        return this.actions$.pipe(
+          ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS),
+          map((action: FindRecentlyUsedEquipmentItemsSuccess) => action.payload),
+          take(1),
+          map(payload => payload.items)
+        );
       })
     );
   }
@@ -902,12 +932,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       })
     );
 
-    return this.actions$
-      .pipe(
-        ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
-        take(1),
-        map((action: FindAllEquipmentItemsSuccess) => action.payload.items)
-      );
+    return this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
+      take(1),
+      map((action: FindAllEquipmentItemsSuccess) => action.payload.items)
+    );
   }
 
   _onSearch(q: string): Observable<any[]> {
@@ -929,18 +958,17 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }
 
       searchMethod(q).subscribe((items: EquipmentItemBaseInterface[]) => {
-          items = items
-            .filter(item => item.id !== this.excludeId)
-            .map(item => {
-              return this._getNgOptionValue(item);
-            });
+        items = items
+          .filter(item => item.id !== this.excludeId)
+          .map(item => {
+            return this._getNgOptionValue(item);
+          });
 
-          const field = this._getValueField();
-          field.props = { ...field.props, options: of(items) };
-          observer.next(items);
-          observer.complete();
-        }
-      );
+        const field = this._getValueField();
+        field.props = { ...field.props, options: of(items) };
+        observer.next(items);
+        observer.complete();
+      });
     });
   }
 

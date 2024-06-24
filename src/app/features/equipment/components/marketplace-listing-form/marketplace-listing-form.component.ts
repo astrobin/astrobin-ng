@@ -545,6 +545,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               {
                 key: "itemObjectId",
                 type: "equipment-item-browser",
+                wrappers: ["default-wrapper"],
                 props: {
                   showQuickAddRecent: false,
                   showPlaceholderImage: false,
