@@ -837,7 +837,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   private _loadMarketplaceLineItems() {
     this.currentUser$.pipe(filter(user => !!user), take(1)).subscribe(user => {
-      if (this.userService.isInAstroBinGroup(user, Constants.BETA_TESTERS_ASTROBIN_GROUP)) {
+      if (this.selectedItem && this.userService.isInAstroBinGroup(user, Constants.BETA_TESTERS_ASTROBIN_GROUP)) {
         this.store$.dispatch(new LoadMarketplaceListings({
           options: {
             page: 1,
