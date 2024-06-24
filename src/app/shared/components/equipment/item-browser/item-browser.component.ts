@@ -237,9 +237,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }
     }
 
-    if (changes.required) {
-      setFieldsAgain = true;
-    }
+    // if (changes.required) {
+    //   setFieldsAgain = true;
+    // }
 
     if (setFieldsAgain) {
       this._setFields();
