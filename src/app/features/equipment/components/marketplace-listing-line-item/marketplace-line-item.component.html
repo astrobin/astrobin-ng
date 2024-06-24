@@ -1,0 +1,151 @@
+<ng-container>
+  <div
+    [class.reserved]="!!lineItem.reserved"
+    [class.sold]="!!lineItem.sold"
+    class="card"
+  >
+    <div (click)="collapsed = !collapsed" [class.collapsed-body]="!previewMode && collapsed" class="card-header">
+      <div class="d-flex align-items-center gap-3">
+        <div class="image">
+          <img
+            *ngIf="lineItem.images.length > 0"
+            [src]="lineItem.images[0].thumbnailFile"
+            alt="{{ equipmentItemType(equipmentItem) }}"
+            class="type-image"
+          />
+          <img
+            *ngIf="lineItem.images.length === 0 && !!equipmentItem"
+            alt="{{ equipmentItemType(equipmentItem) }}"
+            class="type-image"
+            src="/assets/images/{{ equipmentItem.klass.toLowerCase() }}-placeholder.png?v=2"
+          />
+        </div>
+
+        <div class="flex-grow-1">
+          <div class="display-name">
+            <ng-container *ngIf="!!equipmentItem">
+              <astrobin-equipment-item-display-name
+                [enableBrandLink]="false"
+                [enableNameLink]="false"
+                [item]="equipmentItem"
+                [showFrozenAsAmbiguous]="false"
+                [showItemUnapprovedInfo]="false"
+              ></astrobin-equipment-item-display-name>
+
+              <a
+                [routerLink]="['/equipment/explorer/', equipmentItem.klass.toLowerCase(), equipmentItem.id]"
+                astrobinEventPreventDefault
+                astrobinEventStopPropagation
+                class="line-item-item-link"
+              >
+                <fa-icon icon="info-circle"></fa-icon>
+              </a>
+            </ng-container>
+            <ng-container *ngIf="!equipmentItem">
+              {{ lineItem.itemPlainText || "" }}
+            </ng-container>
+          </div>
+
+          <div *ngIf="!lineItem.sold" class="offers-count">
+            <span
+              *ngIf="lineItem.offers?.length === 1"
+              [translate]="'One offer'"
+            ></span>
+            <span
+              *ngIf="lineItem.offers?.length > 1"
+              [translateParams]="{
+                '0': lineItem.offers.length
+              }"
+              [translate]="'{{0}} offers'"
+            ></span>
+          </div>
+
+          <astrobin-marketplace-listing-line-item-condition
+            [lineItem]="lineItem"
+          ></astrobin-marketplace-listing-line-item-condition>
+
+          <div *ngIf="!previewMode && !!equipmentItem" class="first-added">
+            {{ "First added to an image by the seller" | translate }}:
+            <span class="first-added-date">
+              <ng-container *ngIf="lineItem.firstAddedToAnImage; else noFirstAddedDateTemplate">
+                {{ lineItem.firstAddedToAnImage | date : "mediumDate" }}
+              </ng-container>
+              <ng-template #noFirstAddedDateTemplate>
+                {{ "Unknown" | translate }}
+              </ng-template>
+            </span>
+            <fa-icon
+              [ngbTooltip]="
+                'AstroBin records the dates when users associate equipment items to images. This information can be used to corroborate the legitimacy of the information provided by the seller.'
+                  | translate
+              "
+              icon="question-circle"
+            ></fa-icon>
+          </div>
+
+          <div *ngIf="!previewMode && !!equipmentItem" class="image-counts">
+            <span [innerHTML]="sellerImageCount"></span>
+            &middot;
+            <span [innerHTML]="totalImageCount"></span>
+          </div>
+        </div>
+
+        <astrobin-marketplace-listing-line-item-price
+          [lineItem]="lineItem"
+          [listing]="listing"
+        ></astrobin-marketplace-listing-line-item-price>
+
+        <fa-icon *ngIf="!previewMode" [icon]="collapsed ? 'chevron-down' : 'chevron-up'"></fa-icon>
+      </div>
+    </div>
+
+    <div *ngIf="previewMode || !collapsed" class="card-body">
+      <div class="w-100 images">
+        <astrobin-marketplace-listing-line-item-images
+          [images]="lineItem.images"
+        ></astrobin-marketplace-listing-line-item-images>
+      </div>
+
+      <div
+        *ngIf="!!lineItem.description; else noDescriptionTemplate"
+        [innerHTML]="lineItem.description | nl2br"
+        class="description w-100"
+      ></div>
+
+      <astrobin-image-search
+        #sellerImageSearch
+        *ngIf="!!equipmentItem && lineItem.sellerImageCount > 0"
+        [header]="'Images by the seller' | translate"
+        [itemId]="lineItem.itemObjectId"
+        [itemType]="lineItem.itemKlass"
+        [loadMoreOnScroll]="false"
+        [pageSize]="21"
+        [showSortButton]="false"
+        [showUsageButton]="false"
+        [username]="lineItem.username"
+        ordering="-likes"
+      ></astrobin-image-search>
+
+      <astrobin-image-search
+        #astrobinImageSearch
+        *ngIf="!!equipmentItem && lineItem.totalImageCount > 0"
+        [header]="'Images on AstroBin' | translate"
+        [itemId]="lineItem.itemObjectId"
+        [itemType]="lineItem.itemKlass"
+        [loadMoreOnScroll]="false"
+        [pageSize]="21"
+        [showSortButton]="false"
+        [showUsageButton]="false"
+        ordering="-likes"
+      ></astrobin-image-search>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #noDescriptionTemplate>
+  <p class="text-muted">{{ "No description provided." | translate }}</p>
+</ng-template>

@@ -1,0 +1,99 @@
+@import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
+
+:host ::ng-deep {
+  astrobin-formly-field-toggle {
+    display: block;
+
+    @media screen and (min-width: $lg-max) {
+      margin-top: 5px;
+    }
+  }
+
+  .item-name formly-template > div {
+    margin-top: .375rem;
+  }
+
+  input[readonly] {
+    background-color: transparent !important;
+    padding: 0.375rem 0;
+
+    &:focus {
+      color: var(--white);
+    }
+  }
+
+  .offer-row {
+    @media screen and (max-width: $md-max) {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      @include darker-background-texture;
+
+      &,
+      * {
+        text-align: center;
+      }
+
+      .toggle .form-group > label {
+        display: none;
+      }
+
+      .offer-amount .input-group {
+        justify-content: center;
+        margin-top: .5rem;
+      }
+
+      .total {
+        width: auto;
+
+        input {
+          margin-top: .5rem;
+        }
+      }
+    }
+  }
+
+  formly-field {
+    margin-bottom: 0 !important;
+
+    > formly-group {
+      &.sold,
+      &.reserved {
+        position: relative;
+        opacity: .25;
+
+        &,
+        * {
+          cursor: not-allowed !important;
+        }
+      }
+
+      @media screen and (max-width: $md-max) {
+        label {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    &:not(:first-of-type) {
+      formly-group.row {
+        margin-top: .5rem;
+        padding-top: .5rem;
+      }
+    }
+
+    &.offer-amount .input-group {
+      flex-wrap: nowrap;
+    }
+
+    &.total input {
+      background-color: var(--successColor) !important;
+      font-weight: bold;
+      color: var(--white);
+      padding: .375rem;
+    }
+  }
+}

@@ -1,33 +1,46 @@
-<div class="upload-wrapper">
-  <div class="file-container">
-    <div *ngFor="let item of selectedFiles; let i = index" class="file">
-      <img [src]="item.url" />
-      <span (click)="onDelete(i)">&times;</span>
-    </div>
+<div (click)="openFileInput()" class="upload-container">
+  <div *ngIf="!!selectedFiles && selectedFiles.length > 0; else chooseFileTemplate" class="file">
+    <ng-container *ngFor="let selectedFile of selectedFiles">
+      <img *ngIf="!!props.image; else notImageTemplate" [src]="selectedFile.url" alt="" />
+      <ng-template #notImageTemplate>
+        <div class="file-icon">
+          <i class="fas fa-file"></i>
+        </div>
+      </ng-template>
+
+      <span (click)="onDelete($event)">&times;</span>
+    </ng-container>
   </div>
 
-  <div (click)="openFileInput()" class="upload-container">
-    <div class="mask"></div>
+  <ng-template #chooseFileTemplate>
     <div class="helper-text">
-      <div class="absolute-div">
-        <div *ngIf="!props.multiple">
-          {{ "Choose file" | translate }}
-        </div>
-        <div *ngIf="props.multiple">
-          {{ "Choose files" | translate }}
+      <div class="helper-text-content">
+        <div>
+          <div class="file-icon">
+            <fa-icon *ngIf="!!props.image" icon="image"></fa-icon>
+            <fa-icon *ngIf="!props.image" icon="file"></fa-icon>
+          </div>
+          <ng-container *ngIf="!props.hideLabel">
+            <span *ngIf="!!props.image">
+              {{ "Choose image" | translate }}
+            </span>
+            <span *ngIf="!props.image">
+              {{ "Choose file" | translate }}
+            </span>
+          </ng-container>
         </div>
       </div>
     </div>
+
     <input
       #fileInput
       (change)="onChange($event)"
       [accept]="props.accept || '*'"
-      [formControl]="formControl"
       [formlyAttributes]="field"
-      [multiple]="props.multiple"
+      [multiple]="false"
       id="file-input"
       style="display: none"
       type="file"
     />
-  </div>
+  </ng-template>
 </div>

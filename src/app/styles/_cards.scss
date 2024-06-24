@@ -1,6 +1,20 @@
 @import "mixins";
 @import "breakpoints";
 
+.card-container {
+  position: relative;
+}
+
+.card-badges {
+  position: absolute;
+  top: -.5rem;
+  right: -.5rem;
+
+  .badge:not(:last-child) {
+    margin-right: .25rem;
+  }
+}
+
 .card {
   box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
 
@@ -48,6 +62,8 @@
 
     .actions {
       float: right;
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -63,11 +79,22 @@
     @include darkest-background-texture;
     display: flex;
     justify-content: end;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    gap: .25rem;
 
-    @media screen and (min-width: $sm-min) {
-      flex-direction: row;
+    .middot-separator {
+      &:after {
+        content: "·";
+      }
+    }
+
+    @media screen and (max-width: $md-min) {
+      flex-direction: column;
+
+      .middot-separator {
+        display: none;
+      }
     }
 
     .btn:not(:last-child),
@@ -78,6 +105,18 @@
 
       @media screen and (min-width: $sm-min) {
         margin-right: .5rem;
+      }
+    }
+
+    .btn-link {
+      border-bottom: 1px dotted;
+      border-radius: 0;
+      padding-bottom: .125rem;
+      font-size: .9rem;
+      margin: .5rem 0;
+
+      &:not(:last-child) {
+        margin-right: 1rem;
       }
     }
   }

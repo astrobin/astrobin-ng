@@ -29,6 +29,8 @@ import { environment } from "@env/environment";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { MarketplaceListingShippingMethod } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -66,7 +68,7 @@ export class EquipmentItemService extends BaseService {
     return getEquipmentItemType(item);
   }
 
-  humanizeType(itemType: EquipmentItemType) {
+  humanizeType(itemType: EquipmentItemType): string {
     switch (itemType) {
       case EquipmentItemType.CAMERA:
         return this.translateService.instant("Camera");
@@ -92,6 +94,38 @@ export class EquipmentItemService extends BaseService {
       case EquipmentItemUsageType.GUIDING:
         return this.translateService.instant("Guiding");
     }
+  }
+
+  humanizeCondition(condition: MarketplaceListingCondition) {
+    switch (condition) {
+      case MarketplaceListingCondition.NEW:
+        return this.translateService.instant("New");
+      case MarketplaceListingCondition.USED:
+        return this.translateService.instant("Used");
+      case MarketplaceListingCondition.DAMAGED_OR_DEFECTIVE:
+        return this.translateService.instant("Damaged or defective");
+      case MarketplaceListingCondition.UNOPENED:
+        return this.translateService.instant("Unopened");
+      case MarketplaceListingCondition.OTHER:
+        return this.translateService.instant("Unspecified condition");
+    }
+
+    return this.translateService.instant("Unknown");
+  }
+
+  humanizeShippingMethod(shippingMethod: MarketplaceListingShippingMethod) {
+    switch (shippingMethod) {
+      case MarketplaceListingShippingMethod.STANDARD_MAIL:
+        return this.translateService.instant("Standard mail");
+      case MarketplaceListingShippingMethod.COURIER:
+        return this.translateService.instant("Courier");
+      case MarketplaceListingShippingMethod.ELECTRONIC:
+        return this.translateService.instant("Electronic");
+      case MarketplaceListingShippingMethod.OTHER:
+        return this.translateService.instant("Other");
+    }
+
+    return this.translateService.instant("n/a");
   }
 
   getFullDisplayName$(item: EquipmentItem): Observable<string> {

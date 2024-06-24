@@ -1,0 +1,92 @@
+<div class="page has-breadcrumb">
+  <div class="alert alert-warning">
+    The AstroBin Marketplace is currently in a testing phase. ALL MARKETPLACE DATA WILL BE DELETED BEFORE THE FINAL
+    RELEASE. Please use it to test the functionality and provide feedback. This means that you can sell
+    "pretend objects" and make offers and you don't need to pay or deliver anything. Thank you!
+  </div>
+
+  <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row">
+    <span class="flex-grow-1 me-lg-3 mb-1 mb-lg-0">
+      {{ title }}
+    </span>
+
+    <span class="d-inline-block mb-2 me-lg-3 pt-0 pb-0" ngbDropdown>
+      <button
+        [class.loading]="loadingService.loading$ | async"
+        class="btn btn-outline-primary mb-0"
+        id="region-selector"
+        ngbDropdownToggle
+      >
+        <ng-container *ngIf="!!selectedRegion && selectedRegion !== WORLDWIDE">
+          <fa-icon icon="flag"></fa-icon>
+          {{ selectedRegionLabel }}
+        </ng-container>
+        <ng-container *ngIf="!selectedRegion || selectedRegion === WORLDWIDE">
+          <fa-icon icon="globe"></fa-icon>
+          {{ "Worldwide" | translate }}
+        </ng-container>
+      </button>
+
+      <span aria-labelledby="region-selector" ngbDropdownMenu>
+        <button (click)="setRegion($event, WORLDWIDE)" ngbDropdownItem>
+          <fa-icon icon="globe"></fa-icon>
+          {{ "Worldwide" | translate }}
+        </button>
+
+        <button (click)="setRegion($event, requestCountryCode)" *ngIf="!!requestCountryLabel" ngbDropdownItem>
+          <fa-icon icon="flag"></fa-icon>
+          {{ requestCountryLabel }}
+        </button>
+
+        <button (click)="startOtherCountrySelection($event)" ngbDropdownItem>
+          <fa-icon icon="arrow-pointer"></fa-icon>
+          {{ "Select" | translate }}
+        </button>
+      </span>
+    </span>
+
+    <astrobin-refresh-button (click)="refresh()" class="d-none d-lg-block"></astrobin-refresh-button>
+  </h1>
+
+  <small>
+    {{
+    "AstroBin is the best place to buy and sell astrophotography equipment. You can find telescopes, cameras, mounts, filters, and much more."
+      | translate
+    }}
+    <a
+      class="learn-more"
+      href="https://welcome.astrobin.com/features/marketplace"
+      target="_blank"
+    >
+      {{ "Learn more" }}.
+    </a>
+  </small>
+
+  <div class="row">
+    <div class="col-12 col-md-5 col-lg-3">
+      <astrobin-marketplace-sidebar
+        (filterChange)="refresh($event)"
+        class="d-block mb-3 mb-lg-0"
+      ></astrobin-marketplace-sidebar>
+    </div>
+
+    <div class="col">
+      <astrobin-marketplace-search-bar
+        (search)="refresh($event)"
+        class="d-block mb-3"
+      ></astrobin-marketplace-search-bar>
+
+      <astrobin-marketplace-listing-cards [listings]="listings$ | async"></astrobin-marketplace-listing-cards>
+
+      <ng-container *ngIf="lastPaginatedRequestCount$ | async as collectionSize">
+        <ngb-pagination
+          (pageChange)="onPageChange($event)"
+          *ngIf="collectionSize > pageSize"
+          [(page)]="page"
+          [collectionSize]="collectionSize"
+          class="d-flex justify-content-center mt-5"
+        ></ngb-pagination>
+      </ng-container>
+    </div>
+  </div>
+</div>

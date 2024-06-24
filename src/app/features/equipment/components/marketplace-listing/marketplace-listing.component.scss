@@ -1,0 +1,52 @@
+.line-item-container {
+  &:not(:first-child) {
+    margin-top: 1.5rem;
+  }
+}
+
+.card {
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.map-container {
+  position: relative;
+
+  .map {
+    height: 145px;
+  }
+
+  astrobin-loading-indicator {
+    position: absolute;
+    top: 50%;
+    height: auto;
+  }
+
+  .form-text {
+    margin-top: -.5rem;
+  }
+}
+
+.shipping-options {
+  th {
+    font-weight: normal;
+  }
+
+  td {
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+.expiration {
+  .expiration-value {
+    color: var(--lighterGrey);
+    font-style: italic;
+  }
+
+  astrobin-private-information {
+    color: var(--lightGrey);
+    font-size: .8rem;
+    vertical-align: super;
+  }
+}

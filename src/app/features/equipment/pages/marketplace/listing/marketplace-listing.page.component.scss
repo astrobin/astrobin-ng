@@ -1,0 +1,80 @@
+@import "../../../../../styles/breakpoints";
+
+.private-conversations {
+  .avatar-wrapper {
+    position: relative;
+    display: block;
+
+    @media screen and (max-width: $xl-max) {
+      width: calc(50% - .5rem);
+    }
+
+    @media screen and (max-width: $lg-max) {
+      width: calc(100% - .5rem);
+    }
+
+    @media screen and (max-width: $md-max) {
+      width: calc(50% - .5rem);
+    }
+
+    @media screen and (max-width: $sm-max) {
+      width: calc(25% - .5rem);
+    }
+
+    @media screen and (max-width: $xs-max) {
+      width: calc(25% - .5rem);
+    }
+
+    @media screen and (min-width: $xxl-min) {
+      max-width: calc(50% - .5rem);
+    }
+
+    astrobin-avatar {
+      width: 50%;
+    }
+
+    .badge {
+      position: absolute;
+      top: -.25rem;
+      left: calc(50% + 1rem);
+    }
+
+    .buyer {
+      font-size: .9rem;
+      color: var(--lighterGrey);
+    }
+  }
+}
+
+astrobin-marketplace-more-from-user {
+  display: block;
+  margin-top: 2rem;
+}
+
+.listing-info {
+  font-size: 1rem;
+  text-shadow: none;
+  color: var(--lighterGrey);
+  font-weight: normal;
+
+  fa-icon {
+    margin-right: .25rem;
+  }
+}
+
+.share-buttons {
+  white-space: nowrap;
+
+  .btn {
+    vertical-align: middle;
+
+    &:hover fa-icon {
+      color: var(--lightestGrey);
+    }
+  }
+
+  fa-icon {
+    font-size: 1.25rem;
+    color: var(--lighterGrey);
+  }
+}

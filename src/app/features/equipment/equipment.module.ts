@@ -34,6 +34,37 @@ import { EquipmentCompareComponent } from "./components/equipment-compare/equipm
 import { EquipmentCompareModalComponent } from "./components/equipment-compare-modal/equipment-compare-modal.component";
 import { EquipmentListingsComponent } from "./components/equipment-listings/equipment-listings.component";
 import { FollowedExplorerComponent } from "@features/equipment/pages/followed-explorer/followed-explorer.component";
+import { MarketplaceListingsPageComponent } from "./pages/marketplace/listings/marketplace-listings-page.component";
+import { MarketplaceCreateListingPageComponent } from "./pages/marketplace/create-listing/marketplace-create-listing-page.component";
+import { MarketplaceLineItemComponent } from "./components/marketplace-listing-line-item/marketplace-line-item.component";
+import { MarketplaceListingComponent } from "./components/marketplace-listing/marketplace-listing.component";
+import { MarketplaceListingLineItemPriceComponent } from "./components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component";
+import { MarketplaceLineItemConditionComponent } from "./components/marketplace-listing-line-item-condition/marketplace-line-item-condition.component";
+import { MarketplaceImagesComponent } from "./components/marketplace-listing-line-item-images/marketplace-images.component";
+import { MarketplaceListingPageComponent } from "./pages/marketplace/listing/marketplace-listing.page.component";
+import { MarketplaceListingCardComponent } from "./components/marketplace-listing-card/marketplace-listing-card.component";
+import { MarketplaceUserCardComponent } from "./components/marketplace-user-card/marketplace-user-card.component";
+import { MarketplaceFeedbackWidgetComponent } from "./components/marketplace-feedback-widget/marketplace-feedback-widget.component";
+import { MarketplaceListingFormComponent } from "./components/marketplace-listing-form/marketplace-listing-form.component";
+import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
+import { MarketplaceNavComponent } from "./components/marketplace-nav/marketplace-nav.component";
+import { MarketplaceSidebarComponent } from "./components/marketplace-sidebar/marketplace-sidebar.component";
+import { MarketplaceUserListingsPageComponent } from "./pages/marketplace/user-listings/marketplace-user-listings-page.component";
+import { MarketplaceFilterComponent } from "./components/marketplace-filter/marketplace-filter.component";
+import { MarketplaceMoreFromUserComponent } from "./components/marketplace-more-from-user/marketplace-more-from-user.component";
+import { MarketplaceListingCardsComponent } from "./components/marketplace-listing-cards/marketplace-listing-cards.component";
+import { MarketplaceSearchBarComponent } from "./components/marketplace-search-bar/marketplace-search-bar.component";
+import { MarketplaceOfferModalComponent } from "./components/marketplace-offer-modal/marketplace-offer-modal.component";
+import { MarketplaceUserOffersPageComponent } from "@features/equipment/pages/marketplace/user-offers/marketplace-user-offers-page.component";
+import { MarketplaceSoldListingsPageComponent } from "@features/equipment/pages/marketplace/sold-listings/marketplace-sold-listings-page.component";
+import { MarketplaceUserSoldListingsPageComponent } from "@features/equipment/pages/marketplace/user-sold-listings/marketplace-user-sold-listings-page.component";
+import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment/pages/marketplace/user-expired-listings/marketplace-user-expired-listings-page.component";
+import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages/marketplace/user-purchases/marketplace-user-purchases-page.component";
+import { MarketplaceUserFollowedListingsPageComponent } from "@features/equipment/pages/marketplace/user-followed-listings/marketplace-user-followed-listings-page.component";
+import { MarketplaceFeedbackModalComponent } from "./components/marketplace-feedback-modal/marketplace-feedback-modal.component";
+import { MarketplacePendingModerationListingsPageComponent } from "@features/equipment/pages/marketplace/pending-moderation-listings/marketplace-pending-moderation-listings-page.component";
+import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
+import { MarketplaceOfferSummaryComponent } from "./components/marketplace-offer-summary/marketplace-offer-summary.component";
 
 @NgModule({
   declarations: [
@@ -66,9 +97,44 @@ import { FollowedExplorerComponent } from "@features/equipment/pages/followed-ex
     ContributorsPageComponent,
     EquipmentCompareComponent,
     EquipmentCompareModalComponent,
-    EquipmentListingsComponent
+    EquipmentListingsComponent,
+    MarketplaceListingsPageComponent,
+    MarketplacePendingModerationListingsPageComponent,
+    MarketplaceSoldListingsPageComponent,
+    MarketplaceCreateListingPageComponent,
+    MarketplaceLineItemComponent,
+    MarketplaceListingComponent,
+    MarketplaceListingLineItemPriceComponent,
+    MarketplaceLineItemConditionComponent,
+    MarketplaceImagesComponent,
+    MarketplaceListingPageComponent,
+    MarketplaceListingCardComponent,
+    MarketplaceUserCardComponent,
+    MarketplaceFeedbackWidgetComponent,
+    MarketplaceListingFormComponent,
+    MarketplaceEditListingPageComponent,
+    MarketplaceNavComponent,
+    MarketplaceSidebarComponent,
+    MarketplaceUserListingsPageComponent,
+    MarketplaceUserSoldListingsPageComponent,
+    MarketplaceUserExpiredListingsPageComponent,
+    MarketplaceUserOffersPageComponent,
+    MarketplaceUserPurchasesPageComponent,
+    MarketplaceUserFollowedListingsPageComponent,
+    MarketplaceFilterComponent,
+    MarketplaceMoreFromUserComponent,
+    MarketplaceListingCardsComponent,
+    MarketplaceSearchBarComponent,
+    MarketplaceOfferModalComponent,
+    MarketplaceFeedbackModalComponent,
+    MarketplaceMarkLineItemsAsSoldModalComponent,
+    MarketplaceOfferSummaryComponent
   ],
-  imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
+  imports: [
+    RouterModule.forChild(routes),
+    SharedModule,
+    StoreModule.forFeature(equipmentFeatureKey, reducer)
+  ]
 })
 export class EquipmentModule {
 }

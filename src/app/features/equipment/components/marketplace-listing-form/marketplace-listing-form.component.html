@@ -1,0 +1,93 @@
+<div *ngIf="!initialLineItemCount" class="row">
+  <div class="col-12 col-md-6 mx-auto">
+    <form [formGroup]="initialLineItemCountForm">
+      <formly-form
+        [fields]="initialLineItemCountFields"
+        [form]="initialLineItemCountForm"
+        [model]="initialLineItemCountModel"
+      ></formly-form>
+
+      <div class="mt-4">
+        <button
+          (click)="setInitialLineItemCount($event)"
+          [class.loading]="(loadingService.loading$ | async) || initialLineItemCountForm.pending"
+          class="btn btn-primary"
+        >
+          {{ "Continue" | translate }}
+        </button>
+
+        <button
+          (click)="onCancel($event)"
+          [class.loading]="(loadingService.loading$ | async) || initialLineItemCountForm.pending"
+          class="btn btn-secondary ms-sm-2"
+        >
+          {{ "Cancel" | translate }}
+        </button>
+
+        <a
+          class="btn btn-link mt-4 mt-sm-0 ms-sm-4"
+          href="https://welcome.astrobin.com/features/marketplace#tutorial"
+          target="_blank"
+        >
+          {{ "Tutorial" | translate }}
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<ng-container *ngIf="!!initialLineItemCount && formInitialized">
+  <div class="row main-row">
+    <div class="col-md-6 col-lg-5 col-form">
+      <form [formGroup]="form">
+        <formly-form
+          [fields]="fields"
+          [form]="form"
+          [model]="model"
+        ></formly-form>
+
+        <button
+          (click)="onSave($event)"
+          [class.loading]="(loadingService.loading$ | async) || form.pending"
+          class="btn btn-lg btn-primary w-100 mt-2"
+        >
+          <ng-container *ngIf="!!model?.id; else createButtonLabel">
+            <fa-icon icon="save"></fa-icon>
+            {{ "Save" | translate }}
+          </ng-container>
+          <ng-template #createButtonLabel>
+            <fa-icon icon="plus"></fa-icon>
+            {{ "Create" | translate }}
+          </ng-template>
+        </button>
+
+        <button
+          (click)="onCancel($event)"
+          [class.loading]="(loadingService.loading$ | async) || form.pending"
+          class="btn btn-lg btn-secondary w-100 mt-2"
+        >
+          {{ "Cancel" | translate }}
+        </button>
+      </form>
+    </div>
+
+    <div *ngIf="formInitialized" class="col col-preview d-none d-md-block">
+      <div class="sticky-top">
+        <div (click)="formPreviewClicked($event)" class="form-preview-overlay"></div>
+        <h2 *ngIf="form.value.title">{{ form.value.title }}</h2>
+
+        <astrobin-marketplace-listing
+          [listing]="form.value"
+          [previewMode]="true"
+        ></astrobin-marketplace-listing>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #findItemModeOptionTemplate let-item="item">
+  <div class="option-template">
+    <div class="option-template__title">{{ item.label }}</div>
+    <div class="option-template__description">{{ item.description }}</div>
+  </div>
+</ng-template>

@@ -13,7 +13,7 @@
     {{ itemName }}
     <a
       (click)="openItemUnapprovedInfoModal(item)"
-      *ngIf="showItemUnapprovedInfo"
+      *ngIf="showItemUnapprovedInfo && item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED"
       astrobinEventPreventDefault
       astrobinEventStopPropagation
       href="#"

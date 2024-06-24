@@ -17,7 +17,7 @@ import { filter, map, take } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 
-// PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
+// PLEASE NOTE: due to the usage of the UploadDataService, there can be only one chunked file upload field on a page
 // at any given time.
 
 export class TusPost extends Tus {
@@ -137,6 +137,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       const types = Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS);
       this.uploadOptions.allowedTypes = types.join(",");
       this.uploadDataService.setAllowedTypes(this.uploadOptions.allowedTypes);
+    }
+
+    if (!!this.props.autoUpload) {
+      this.uploadOptions.autoUpload = this.props.autoUpload;
     }
   }
 
@@ -304,7 +308,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
                 "Sorry, but this file is too large. For technical reasons, the largest size that's possible on " +
                 "AstroBin is {{max}}.",
                 {
-                  max: backendConfig.MAX_FILE_SIZE / 1024 / 1024 + " MB"
+                  max: UtilsService.humanFileSize(backendConfig.MAX_FILE_SIZE)
                 }
               )
             );
@@ -322,7 +326,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
                       "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
                       "allowed image size is {{max}}.",
                       {
-                        max: result.max / 1024 / 1024 + " MB"
+                        max: UtilsService.humanFileSize(result.max)
                       }
                     )
                   );

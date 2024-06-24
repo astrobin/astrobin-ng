@@ -1,0 +1,98 @@
+<div class="card-container">
+  <div class="card">
+    <div class="card-header">
+      <div class="name">
+        <ng-container *ngIf="!!displayName; else textLoadingTemplate">
+          {{ displayName }}
+        </ng-container>
+      </div>
+      <div class="created">
+        <fa-icon icon="calendar-alt"></fa-icon>
+        {{ listing.created | localDate | timeago : true }}
+        &middot;
+        <fa-icon icon="bell"></fa-icon>
+        {{ listing.followerCount }}
+        &middot;
+        <fa-icon icon="eye"></fa-icon>
+        {{ listing.viewCount }}
+        &middot;
+        <fa-icon icon="camera-alt"></fa-icon>
+        {{ imagesCount }}
+      </div>
+    </div>
+
+    <div class="card-body">
+      <img
+        *ngIf="listing.lineItems[0].images.length > 0"
+        [alt]=""
+        [src]="listing.lineItems[0].images[0].thumbnailFile || listing.lineItems[0].images[0].imageFile"
+      />
+    </div>
+
+    <div class="card-footer">
+      <div class="d-flex w-100 justify-content-between align-items-center">
+        <div class="location">
+          <ng-container *ngIf="!!listing.city"> {{ listing.city }},</ng-container>
+          {{ countryService.getCountryName(listing.country) }}
+        </div>
+        <div *ngIf="!!totalPrice" class="price">
+          {{ totalPrice | currency : listing.lineItems[0].currency : "symbol" : "1.2-2" : translateService.currentLang }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-badges">
+    <ng-container *ngIf="!!equipmentMarketplaceService.listingSold(listing); else unsoldBadges">
+      <span class="badge rounded-pill bg-danger border border-light">
+        {{ translateService.instant("Sold") }}
+      </span>
+    </ng-container>
+
+    <ng-template #unsoldBadges>
+      <ng-container *ngIf="!!equipmentMarketplaceService.listingReserved(listing)">
+        <div
+          [ngbTooltip]="translateService.instant('This listing is reserved')"
+          class="badge rounded-pill bg-danger border border-light"
+          container="body"
+        >
+          <fa-icon icon="handshake"></fa-icon>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+        <div
+          *ngIf="(currentUserWrapper.user | isMarketplaceModerator) && hasUnassociatedItemss"
+          [ngbTooltip]="translateService.instant('This listing is not associated to an equipment item')"
+          class="badge rounded-pill bg-danger border border-light"
+          container="body"
+        >
+          <fa-icon icon="exclamation-triangle"></fa-icon>
+        </div>
+      </ng-container>
+
+      <div
+        *ngIf="offersCount > 0"
+        [ngbTooltip]="translateService.instant('This listing has offers')"
+        class="badge rounded-pill bg-danger border border-light"
+        container="body"
+      >
+        <fa-icon icon="comment-dollar"></fa-icon>
+        {{ offersCount }}
+      </div>
+
+      <div
+        *ngIf="!listing.approved"
+        [ngbTooltip]="translateService.instant('This listing is pending moderation')"
+        class="badge rounded-pill bg-warning border border-light"
+        container="body"
+      >
+        <fa-icon icon="gavel"></fa-icon>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<ng-template #textLoadingTemplate>
+  <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
+</ng-template>

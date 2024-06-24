@@ -1,8 +1,11 @@
-import { All, AuthActionTypes } from "@features/account/store/auth.actions";
+import { AuthActionTypes } from "@features/account/store/auth.actions";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 
 export interface AuthState {
   initialized: boolean;
@@ -28,7 +31,7 @@ export const initialAuthState: AuthState = {
   userProfiles: []
 };
 
-export function reducer(state = initialAuthState, action: All): AuthState {
+export function reducer(state = initialAuthState, action: PayloadActionInterface): AuthState {
   switch (action.type) {
     case AuthActionTypes.INITIALIZE_SUCCESS:
     case AuthActionTypes.LOGIN_SUCCESS:
@@ -68,6 +71,31 @@ export function reducer(state = initialAuthState, action: All): AuthState {
         ...state,
         userProfiles: UtilsService.arrayUniqueObjects([...state.userProfiles, ...[action.payload.userProfile]], "id")
       };
+    case EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_SUCCESS:
+      const feedback: MarketplaceFeedbackInterface = action.payload.feedback;
+      const userIndex = state.users.findIndex(user => user.id === feedback.recipient);
+
+      if (userIndex === -1) {
+        return state;
+      }
+
+      // Update the user's feedback count
+      const user = state.users[userIndex];
+      const updatedUser = {
+        ...user,
+        marketplaceFeedbackCount: feedback.marketplaceFeedbackCount,
+        marketplaceFeedback: feedback.marketplaceFeedback
+      };
+
+      return {
+        ...state,
+        users: [
+          ...state.users.slice(0, userIndex),
+          updatedUser,
+          ...state.users.slice(userIndex + 1)
+        ]
+      }
+
     default: {
       return state;
     }

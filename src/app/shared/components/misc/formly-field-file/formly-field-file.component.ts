@@ -26,11 +26,13 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
 
   ngOnInit() {
     if (this.formControl.value) {
-      this.loadingService.setLoading(true);
-      UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
-        this._setValueFromFiles([file]);
-        this.loadingService.setLoading(false);
-      });
+      if (UtilsService.isString(this.formControl.value)) {
+        this.loadingService.setLoading(true);
+        UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
+          this._setValueFromFiles([file]);
+          this.loadingService.setLoading(false);
+        });
+      }
     }
   }
 
@@ -38,21 +40,19 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     this.el.nativeElement.click();
   }
 
-  onDelete(index) {
-    this.selectedFiles.splice(index, 1);
-    this.formControl.patchValue(this.selectedFiles);
+  onDelete(event: Event) {
+    event.stopPropagation();
+
+    this.selectedFiles = [];
+    this.formControl.setValue(this.selectedFiles);
     this.formControl.markAsTouched();
     this.formControl.markAsDirty();
   }
 
-  onChange(event) {
-    this._setValueFromFiles(Array.from(event.target.files));
+  onChange(event: any) {
+    this._setValueFromFiles(event.target.files);
     this.formControl.markAsTouched();
     this.formControl.markAsDirty();
-  }
-
-  isImage(file: File): boolean {
-    return /^image\//.test(file.type);
   }
 
   _setValueFromFiles(files: File[]) {
@@ -67,6 +67,7 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
       });
     }
 
+    this.formControl.patchValue(this.selectedFiles);
     this.changeDetectorRef.detectChanges();
   }
 }

@@ -75,7 +75,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
               }
             },
             {
-              type: "input",
+              type: "custom-number",
               id: "altitude",
               key: "altitude",
               wrappers: ["default-wrapper"],
@@ -83,7 +83,6 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
                 required: true,
                 label: this.translateService.instant("Altitude"),
                 description: this.translateService.instant("Meters above sea level"),
-                type: "number",
                 step: 1,
                 min: -10984, // Bottom of Marianna Trench,
                 max: 8848 // Mt. Everest

@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title" id="confirmation-dialog-modal">
-    {{ "Are you sure?" | translate }}
+    {{ title || "Are you sure?" | translate }}
   </h4>
   <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
@@ -8,7 +8,7 @@
 </div>
 
 <div class="modal-body">
-  <p [innerHTML]="message || 'This operation requires an additional confirmation.' | translate"></p>
+  <p *ngIf="showMessage" [innerHTML]="message || 'This operation requires an additional confirmation.' | translate"></p>
   <p>{{ "Are you sure that you want to continue?" | translate }}</p>
 </div>
 

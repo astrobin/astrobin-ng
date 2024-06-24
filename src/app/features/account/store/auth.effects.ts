@@ -5,6 +5,7 @@ import {
   AuthActionTypes,
   InitializeAuthSuccess,
   LoadUser,
+  LoadUserFailure,
   LoadUserProfile,
   LoadUserProfileSuccess,
   LoadUserSuccess,
@@ -30,7 +31,12 @@ import { EMPTY, Observable, of } from "rxjs";
 import { catchError, concatMap, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
+import {
+  selectCurrentUserProfile,
+  selectUser,
+  selectUserByUsername,
+  selectUserProfile
+} from "@features/account/store/auth.selectors";
 
 @Injectable()
 export class AuthEffects {
@@ -86,24 +92,37 @@ export class AuthEffects {
     )
   );
 
-  LoadUser: Observable<LoadUserSuccess> = createEffect(() =>
+  LoadUser: Observable<LoadUserSuccess | LoadUserFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.LOAD_USER),
       map((action: LoadUser) => action.payload),
-      mergeMap(payload =>
-        this.store$.select(selectUser, payload.id).pipe(
+      mergeMap(payload => {
+        let selector;
+        let selectorArgument;
+
+        if (payload.id) {
+          selector = selectUser;
+          selectorArgument = payload.id;
+        } else if (payload.username) {
+          selector = selectUserByUsername;
+          selectorArgument = payload.username;
+        }
+
+        return this.store$.select(selector, selectorArgument).pipe(
           switchMap(userFromStore =>
             userFromStore !== null
               ? of(userFromStore).pipe(map(() => new LoadUserSuccess({ user: userFromStore })))
-              : this.commonApiService.getUser(payload.id).pipe(
+              : this.commonApiService.getUser(payload.id, payload.username).pipe(
                 map(
-                  user => new LoadUserSuccess({ user }),
-                  catchError(error => EMPTY)
+                  user => !!user
+                    ? new LoadUserSuccess({ user })
+                    : new LoadUserFailure(payload),
+                  catchError(error => of(new LoadUserFailure(payload)))
                 )
               )
           )
-        )
-      )
+        );
+      })
     )
   );
 

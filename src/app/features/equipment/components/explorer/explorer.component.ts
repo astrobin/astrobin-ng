@@ -42,6 +42,7 @@ import {
   FreezeEquipmentItemAsAmbiguous,
   FreezeEquipmentItemAsAmbiguousSuccess,
   LoadEquipmentItem,
+  LoadMarketplaceListings,
   UnapproveEquipmentItemSuccess,
   UnfreezeEquipmentItemAsAmbiguous,
   UnfreezeEquipmentItemAsAmbiguousSuccess
@@ -56,7 +57,11 @@ import {
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import {
+  selectEditProposalsForItem,
+  selectEquipmentItem,
+  selectMarketplaceListings
+} from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
@@ -72,12 +77,16 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { Observable, Subscription } from "rxjs";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
 import { ActiveToast } from "ngx-toastr";
 import { CompareService } from "@features/equipment/services/compare.service";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { RouterService } from "@shared/services/router.service";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { UserService } from "@shared/services/user.service";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -158,6 +167,20 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[] | null = null;
   editProposalsCollapsed = true;
 
+  marketplaceListings$: Observable<MarketplaceListingInterface[]> = this.store$.select(selectMarketplaceListings).pipe(
+    map(listings =>
+      listings?.filter(
+        listing => listing.lineItems.some(
+          lineItem =>
+            lineItem.itemObjectId === this.selectedItem.id &&
+            lineItem.itemContentType === this.selectedItem.contentType
+        )
+      )
+    ),
+    distinctUntilChangedObj(),
+    takeUntil(this.destroyed$)
+  );
+
   reviewPendingEditNotification: ActiveToast<any>;
 
   commentsSectionInfoMessage$: Observable<string> = this.currentUser$.pipe(
@@ -193,7 +216,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly modalService: NgbModal,
     public readonly compareService: CompareService,
     public readonly location: Location,
-    @Inject(PLATFORM_ID) public readonly platformId
+    @Inject(PLATFORM_ID) public readonly platformId,
+    public readonly routerService: RouterService,
+    public readonly userService: UserService
   ) {
     super(store$);
   }
@@ -348,34 +373,51 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     return item as unknown as CameraInterface;
   }
 
+  sellInMarketplace() {
+    this.router.navigate(["/equipment/marketplace/create"], {
+      queryParams: {
+        lineItemCount: 1,
+        equipmentItemId: this.selectedItem.id,
+        equipmentItemContentTypeId: this.selectedItem.contentType
+      }
+    });
+  }
+
   startEditMode() {
-    if (!this._verifyCameraVariantCanBeEdited()) {
-      return;
-    }
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!user) {
+        this.routerService.redirectToLogin();
+        return;
+      }
 
-    if (
-      this.editProposals &&
-      this.editProposals.length > 0 &&
-      this.editProposals.filter(editProposal => editProposal.editProposalReviewStatus === null).length > 0
-    ) {
-      this.popNotificationsService.error(
-        this.translateService.instant(
-          "You cannot propose an edit while there is a pending one. Please review the pending edit proposal first, " +
-          "thank you!"
-        )
-      );
-      return;
-    }
+      if (!this._verifyCameraVariantCanBeEdited()) {
+        return;
+      }
 
-    this.loadingService.setLoading(true);
+      if (
+        this.editProposals &&
+        this.editProposals.length > 0 &&
+        this.editProposals.filter(editProposal => editProposal.editProposalReviewStatus === null).length > 0
+      ) {
+        this.popNotificationsService.error(
+          this.translateService.instant(
+            "You cannot propose an edit while there is a pending one. Please review the pending edit proposal first, " +
+            "thank you!"
+          )
+        );
+        return;
+      }
 
-    this.equipmentApiService.acquireEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
-      this.loadingService.setLoading(false);
+      this.loadingService.setLoading(true);
 
-      this.editMode = true;
-      this.editModel = { ...this.selectedItem };
+      this.equipmentApiService.acquireEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+        this.loadingService.setLoading(false);
 
-      this.windowRefService.scrollToElement("#edit-item");
+        this.editMode = true;
+        this.editModel = { ...this.selectedItem };
+
+        this.windowRefService.scrollToElement("#edit-item");
+      });
     });
   }
 
@@ -605,6 +647,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     this._endEditMode();
     this._loadEditProposals();
+    this._loadMarketplaceLineItems();
   }
 
   onCreationModeStarted() {
@@ -619,26 +662,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   proposeEdit() {
     if (this.editForm.invalid) {
       this.editForm.markAllAsTouched();
-      const errorList: string[] = [];
-      this.editor.fields.forEach(field => {
-        if (field.formControl.errors !== null) {
-          errorList.push(`<li>${field.props.label}</li>`);
-        }
-      });
-      this.popNotificationsService.error(
-        `
-        <p>
-          ${this.translateService.instant("The following form fields have errors, please correct them and try again:")}
-        </p>
-        <ul>
-          ${errorList.join("\n")}
-        </ul>
-        `,
-        null,
-        {
-          enableHtml: true
-        }
-      );
+      UtilsService.notifyAboutFieldsWithErrors(this.editor.fields, this.popNotificationsService, this.translateService);
       return;
     }
 
@@ -716,7 +740,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
             this.loadingService.setLoading(false);
           });
       }
-    }
+    };
 
     if (this.editModel.name !== this.selectedItem.name) {
       const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
@@ -809,5 +833,21 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       });
 
     this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
+  }
+
+  private _loadMarketplaceLineItems() {
+    this.currentUser$.pipe(filter(user => !!user), take(1)).subscribe(user => {
+      if (this.userService.isInAstroBinGroup(user, Constants.BETA_TESTERS_ASTROBIN_GROUP)) {
+        this.store$.dispatch(new LoadMarketplaceListings({
+          options: {
+            page: 1,
+            itemId: this.selectedItem.id,
+            contentTypeId: this.selectedItem.contentType,
+            sold: false,
+            pendingModeration: false
+          }
+        }));
+      }
+    });
   }
 }

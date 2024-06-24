@@ -35,7 +35,22 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   itemId: EquipmentItem["id"];
 
   @Input()
+  username: number;
+
+  @Input()
   ordering: string;
+
+  @Input()
+  loadMoreOnScroll = true;
+
+  @Input()
+  showUsageButton = true;
+
+  @Input()
+  showSortButton = true;
+
+  @Input()
+  pageSize: number;
 
   page = 1;
   next: string;
@@ -68,9 +83,9 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.searchUrl = `${this.classicRoutesService.SEARCH}?d=i&sort=${this.ordering}&q="${encodeURIComponent(
-      this.text
-    )}"`;
+    this.searchUrl = `${
+      this.classicRoutesService.SEARCH
+    }?d=i&sort=${this.ordering}&${this.itemType.toLowerCase()}_ids=${this.itemId}`;
     this._loadData(false);
   }
 
@@ -93,15 +108,24 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
       this.initialLoading = true;
     }
 
-    this.imageSearchApiService
-      .search({
-        text: this.text,
-        itemType: this.itemType,
-        itemId: this.itemId,
-        usageType: this.usageType,
-        ordering: this.ordering,
-        page: this.page
-      })
+    const searchOptions = {
+      text: this.text,
+      itemType: this.itemType,
+      itemId: this.itemId,
+      usageType: this.usageType,
+      ordering: this.ordering,
+      page: this.page
+    };
+
+    if (this.username) {
+      Object.assign(searchOptions, { username: this.username });
+    }
+
+    if (this.pageSize) {
+      Object.assign(searchOptions, { pageSize: this.pageSize });
+    }
+
+    this.imageSearchApiService.search(searchOptions)
       .subscribe(response => {
         this.next = response.next;
 
@@ -119,6 +143,10 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
 
   private _onScroll() {
     if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
+    if (!this.loadMoreOnScroll) {
       return;
     }
 

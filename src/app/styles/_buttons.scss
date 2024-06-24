@@ -38,6 +38,10 @@ astrobin-toggle-property {
     }
   }
 
+  .badge {
+    margin-left: .5rem;
+  }
+
   &.disabled {
     opacity: .5;
     cursor: not-allowed;
@@ -79,6 +83,15 @@ astrobin-toggle-property {
     background-size: 1rem !important;
     color: transparent !important;
     text-shadow: none !important;
+
+    fa-icon {
+      color: transparent !important;
+      text-shadow: none !important;
+    }
+
+    .badge {
+      display: none;
+    }
   }
 
   &.success {
@@ -123,6 +136,13 @@ astrobin-toggle-property {
   &.btn-secondary {
     &.loading {
       background: url("/assets/images/black-loader.svg") var(--white) no-repeat center !important;
+      background-size: 1rem !important;
+    }
+  }
+
+  &.btn-warning {
+    &.loading {
+      background: url("/assets/images/black-loader.svg") var(--warningColor) no-repeat center !important;
       background-size: 1rem !important;
     }
   }

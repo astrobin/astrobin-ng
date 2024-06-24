@@ -77,6 +77,15 @@
     }
   }
 
+  &.alert-danger {
+    &,
+    fa-icon,
+    h5,
+    > p, strong, & {
+      color: var(--textOnDangerColor);
+    }
+  }
+
   &.alert-warning {
     background-color: var(--warningColor);
 
@@ -96,6 +105,24 @@
     a {
       border-bottom-color: var(--textOnWarningColor);
       font-weight: bold;
+    }
+
+    .btn-link {
+      &.loading {
+        background: url("/assets/images/black-loader.svg") var(--warningColor) no-repeat center !important;
+        background-size: 1rem !important;
+      }
+    }
+  }
+
+  &.alert-dark {
+    background: var(--darkerGrey);
+
+    &,
+    fa-icon,
+    h5,
+    > p, & {
+      color: var(--lightestGrey);
     }
   }
 }

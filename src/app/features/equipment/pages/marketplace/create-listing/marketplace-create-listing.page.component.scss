@@ -1,0 +1,19 @@
+@import "../../../../../styles/breakpoints";
+
+astrobin-marketplace-listing-form ::ng-deep {
+  .main-row {
+    > [class*="col"] {
+      &.col-form {
+        padding: 0;
+      }
+
+      &.col-preview {
+        padding: 0 1rem;
+
+        @media screen and (min-width: $lg-min) {
+          padding: 0 4rem;
+        }
+      }
+    }
+  }
+}

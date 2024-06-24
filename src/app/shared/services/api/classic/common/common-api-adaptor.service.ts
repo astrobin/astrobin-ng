@@ -7,6 +7,7 @@ import { BaseService } from "@shared/services/base.service";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { GroupInterface } from "@shared/interfaces/group.interface";
 
 export interface BackendPermissionInterface {
   id: number;
@@ -35,7 +36,11 @@ export interface BackendUserInterface {
   is_active: boolean;
   date_joined: string;
   groups: BackendGroupInterface[];
+  astrobin_groups: GroupInterface[];
   user_permissions: BackendPermissionInterface[];
+  marketplace_feedback: number;
+  marketplace_feedback_count: number;
+  marketplace_listing_count: number;
 }
 
 export interface BackendUserProfileInterface {
@@ -139,13 +144,17 @@ export class CommonApiAdaptorService extends BaseService {
       displayName: user.display_name,
       avatar: user.avatar,
       largeAvatar: user.large_avatar,
-      lastLogin: new Date(user.last_login),
-      dateJoined: new Date(user.date_joined),
+      lastLogin: user.last_login,
+      dateJoined: user.date_joined,
       isSuperUser: user.is_superuser,
       isStaff: user.is_staff,
       isActive: user.is_active,
       groups: user.groups.map(group => this.authGroupFromBackend(group)),
-      userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission))
+      astrobinGroups: user.astrobin_groups,
+      userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission)),
+      marketplaceFeedback: user.marketplace_feedback,
+      marketplaceFeedbackCount: user.marketplace_feedback_count,
+      marketplaceListingCount: user.marketplace_listing_count
     };
   }
 

@@ -1,0 +1,25 @@
+astrobin-avatar {
+  display: block;
+  width: 30%;
+  position: absolute;
+  top: -15%;
+  left: 35%;
+}
+
+astrobin-username {
+  display: block;
+  text-align: center;
+  font-size: 1.25rem;
+}
+
+.feedback {
+  display: block;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.card-footer {
+  font-size: .85rem;
+  color: var(--lightGrey);
+  padding: 1rem;
+}

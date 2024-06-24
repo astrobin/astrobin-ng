@@ -151,11 +151,11 @@
           {{ "Close" | translate }}
         </button>
 
-        <ng-container *ngIf="currentUser$ | async as currentUser">
-          <ng-container *ngIf="!!currentUser">
+        <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+          <ng-container *ngIf="!!currentUserWrapper.user">
             <button
               (click)="startEditMode()"
-              *ngIf="!selectedItem.frozenAsAmbiguous || (currentUser | isEquipmentModerator)"
+              *ngIf="!selectedItem.frozenAsAmbiguous || (currentUserWrapper.user | isEquipmentModerator)"
               [class.loading]="loadingService.loading$ | async"
               [disabled]="editMode"
               class="btn btn-secondary"
@@ -169,12 +169,22 @@
               <astrobin-toggle-property
                 [contentType]="contentType.id"
                 [objectId]="selectedItem.id"
-                [userId]="currentUser.id"
+                [userId]="currentUserWrapper.user?.id"
                 propertyType="follow"
               ></astrobin-toggle-property>
             </ng-container>
 
-            <div *ngIf="currentUser | isEquipmentModerator" ngbDropdown>
+            <button
+              (click)="sellInMarketplace()"
+              *ngIf="selectedItem.klass !== 'SENSOR' && (currentUser$ | async) | isBetaTester"
+              class="btn btn-secondary"
+              data-test="sell-in-marketplace"
+            >
+              <fa-icon icon="shopping-cart"></fa-icon>
+              {{ "Sell in the marketplace" | translate }}
+            </button>
+
+            <div *ngIf="currentUserWrapper.user | isEquipmentModerator" ngbDropdown>
               <button
                 [class.loading]="loadingService.loading$ | async"
                 [disabled]="(readOnlyMode$ | async) === true"
@@ -240,10 +250,10 @@
                 </ng-container>
 
                 <ng-container
-                  *ngIf="(!selectedItem.assignee || selectedItem.assignee === currentUser.id)"
+                  *ngIf="(!selectedItem.assignee || selectedItem.assignee === currentUserWrapper.user?.id)"
                 >
                   <ng-container
-                    *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUser.id"
+                    *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUserWrapper.user?.id"
                   >
                     <button
                       (click)="startRejection()"
@@ -273,7 +283,7 @@
                   <ng-container
                     *ngIf="
                       selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
-                      selectedItem.createdBy !== currentUser.id
+                      selectedItem.createdBy !== currentUserWrapper.user?.id
                     "
                   >
                     <button
@@ -466,6 +476,22 @@
             [info]="commentsSectionInfoMessage$ | async"
             [objectId]="selectedItem.id"
           ></astrobin-nested-comments>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="!!selectedItem && isBrowser">
+      <ng-container *ngIf="marketplaceListings$ | async as listings">
+        <div *ngIf="listings?.length > 0" class="card mt-5">
+          <div class="card-header">
+            {{ "Marketplace listings" | translate }}
+          </div>
+
+          <div class="card-body">
+            <astrobin-marketplace-listing-cards
+              [listings]="listings"
+            ></astrobin-marketplace-listing-cards>
+          </div>
         </div>
       </ng-container>
     </ng-container>

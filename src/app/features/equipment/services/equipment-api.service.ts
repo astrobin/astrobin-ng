@@ -11,7 +11,7 @@ import {
   EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { catchError, map, switchMap, take } from "rxjs/operators";
+import { catchError, expand, map, reduce, switchMap, take } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
@@ -36,6 +36,13 @@ import { ContributorInterface } from "@features/equipment/types/contributor.inte
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -52,7 +59,7 @@ export enum EquipmentItemsSortOrder {
   USERS = "users",
   USERS_DESC = "-users",
   IMAGES = "images",
-  IMAGES_DESC = "-images"
+  IMAGES_DESC = "-images",
 }
 
 @Injectable({
@@ -79,12 +86,17 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   getEquipmentItem(
     id: EquipmentItemBaseInterface["id"],
     type: EquipmentItemType,
-    allowUnapproved = false
+    allowUnapproved = false,
+    allowDIY = false
   ): Observable<EquipmentItemBaseInterface> {
     let url = `${this.configUrl}/${type.toLowerCase()}/${id}/`;
 
     if (allowUnapproved) {
       url = UtilsService.addOrUpdateUrlParam(url, "allow-unapproved", "true");
+    }
+
+    if (allowDIY) {
+      url = UtilsService.addOrUpdateUrlParam(url, "allow-DIY", "true");
     }
 
     return this.http.get<EquipmentItemBaseInterface>(url).pipe(map(item => this._parseItem(item)));
@@ -172,9 +184,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     type: EquipmentItemType,
     page = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItem>> {
-    return this.http.get<PaginatedApiResultInterface<EquipmentItem>>(
-      `${this.configUrl}/${type.toLowerCase()}/?followed=true&page=${page}`
-    )
+    return this.http
+      .get<PaginatedApiResultInterface<EquipmentItem>>(
+        `${this.configUrl}/${type.toLowerCase()}/?followed=true&page=${page}`
+      )
       .pipe(
         map(response => ({
           ...response,
@@ -187,12 +200,22 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   findRecentlyUsedEquipmentItems(
     type: EquipmentItemType,
-    usageType: EquipmentItemUsageType
+    usageType: EquipmentItemUsageType,
+    includeFrozen = false,
+    query?: string
   ): Observable<EquipmentItemBaseInterface[]> {
     let url = `${this.configUrl}/${type.toLowerCase()}/recently-used/`;
 
     if (!!usageType) {
-      url += `?usage-type=${usageType.toLowerCase()}`;
+      url = UtilsService.addOrUpdateUrlParam(url, "usage-type", usageType.toLowerCase());
+    }
+
+    if (includeFrozen) {
+      url = UtilsService.addOrUpdateUrlParam(url, "include-frozen", String(includeFrozen));
+    }
+
+    if (query) {
+      url = UtilsService.addOrUpdateUrlParam(url, "q", query);
     }
 
     return this.http
@@ -694,7 +717,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   getMount(id: MountInterface["id"]): Observable<MountInterface> {
-    return this.http.get<MountInterface>(`${this.configUrl}/mount/${id}/`).pipe(map(mount => this._parseMount(mount)));
+    return this.http
+      .get<MountInterface>(`${this.configUrl}/mount/${id}/`)
+      .pipe(map(mount => this._parseMount(mount)));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -758,6 +783,266 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MARKETPLACE API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public loadMarketplaceListings(
+    options: MarketplaceListingQueryOptionsInterface = { page: 1 }
+  ): Observable<PaginatedApiResultInterface<MarketplaceListingInterface>> {
+    let url = `${this.configUrl}/marketplace/listing/`;
+
+    Object.keys(options).forEach(key => {
+      const value = options[key];
+      if (value != null) {
+        const paramKey = UtilsService.camelCaseToSnakeCase(key);
+        let valueStr = value.toString();
+        url = UtilsService.addOrUpdateUrlParam(url, paramKey, valueStr);
+      }
+    });
+
+    // The "sold" parameter needs to be explicit.
+    if (options.sold === undefined) {
+      url = UtilsService.addOrUpdateUrlParam(url, "sold", "false");
+    }
+
+    return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(url);
+  }
+
+  public createMarketplaceListing(
+    listing: Omit<MarketplaceListingInterface, "id">
+  ): Observable<MarketplaceListingInterface> {
+    return this.http.post<MarketplaceListingInterface>(
+      `${this.configUrl}/marketplace/listing/`,
+      (({ lineItems, ...rest }) => rest)(listing)
+    );
+  }
+
+  public loadMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<MarketplaceListingInterface> {
+    return this.http.get<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/`);
+  }
+
+  public loadMarketplaceListingByHash(
+    hash: MarketplaceListingInterface["hash"]
+  ): Observable<MarketplaceListingInterface> {
+    return this.http
+      .get<PaginatedApiResultInterface<MarketplaceListingInterface>>(
+        `${this.configUrl}/marketplace/listing/?hash=${hash}`
+      )
+      .pipe(
+        map((result: PaginatedApiResultInterface<MarketplaceListingInterface>) => {
+          if (result.results.length === 0) {
+            throw new Error(`No marketplace listing found with hash ${hash}`);
+          }
+          return result.results[0];
+        })
+      );
+  }
+
+  public updateMarketplaceListing(listing: MarketplaceListingInterface): Observable<MarketplaceListingInterface> {
+    return this.http.put<MarketplaceListingInterface>(
+      `${this.configUrl}/marketplace/listing/${listing.id}/`,
+      (({ lineItems, ...rest }) => rest)(listing)
+    );
+  }
+
+  public deleteMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<void> {
+    return this.http.delete<void>(`${this.configUrl}/marketplace/listing/${id}/`);
+  }
+
+  public approveMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<MarketplaceListingInterface> {
+    return this.http.put<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/approve/`, {});
+  }
+
+  public renewMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<MarketplaceListingInterface> {
+    return this.http.put<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/renew/`, {});
+  }
+
+  public createMarketplaceLineItem(
+    lineItem: Omit<MarketplaceLineItemInterface, "id">
+  ): Observable<MarketplaceLineItemInterface> {
+    return this.http.post<MarketplaceLineItemInterface>(
+      `${this.configUrl}/marketplace/listing/${lineItem.listing}/line-item/`,
+      (({ images, ...rest }) => rest)(lineItem)
+    );
+  }
+
+  public updateMarketplaceLineItem(lineItem: MarketplaceLineItemInterface) {
+    if (lineItem.sold) {
+      return of(lineItem);
+    }
+
+    return this.http.put<MarketplaceLineItemInterface>(
+      `${this.configUrl}/marketplace/listing/${lineItem.listing}/line-item/${lineItem.id}/`,
+      (({ images, ...rest }) => rest)(lineItem)
+    );
+  }
+
+  public deleteMarketplaceLineItem(
+    listingId: MarketplaceListingInterface["id"],
+    lineItemId: MarketplaceLineItemInterface["id"]
+  ): Observable<void> {
+    return this.http.delete<void>(`${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/`);
+  }
+
+  public markMarketplaceLineItemAsSold(
+    listingId: MarketplaceListingInterface["id"],
+    lineItemId: MarketplaceLineItemInterface["id"],
+    soldTo: UserInterface["id"]
+  ): Observable<MarketplaceLineItemInterface> {
+    return this.http.put<MarketplaceLineItemInterface>(
+      `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/mark-as-sold/`,
+      { soldTo }
+    );
+  }
+
+  public createMarketplaceImage(
+    listingId: MarketplaceListingInterface["id"],
+    lineItemId: MarketplaceLineItemInterface["id"],
+    image: File
+  ): Observable<MarketplaceImageInterface> {
+    const formData: FormData = new FormData();
+    formData.append("image_file", image);
+    formData.append("line_item", lineItemId.toString());
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+        "Content-Type": "__unset__",
+        "Content-Disposition": `form-data; name="image"; filename=${image.name}`
+      })
+    };
+
+    return this.http.post<MarketplaceImageInterface>(
+      `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/image/`,
+      formData,
+      httpOptions
+    );
+  }
+
+  public updateMarketplaceImage(
+    listingId: MarketplaceListingInterface["id"],
+    lineItemId: MarketplaceLineItemInterface["id"],
+    imageId: MarketplaceImageInterface["id"],
+    image: File
+  ): Observable<MarketplaceImageInterface> {
+    const formData: FormData = new FormData();
+    formData.append("image_file", image);
+    formData.append("line_item", lineItemId.toString());
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+        "Content-Type": "__unset__",
+        "Content-Disposition": `form-data; name="image"; filename=${image.name}`
+      })
+    };
+
+    return this.http.put<MarketplaceImageInterface>(
+      `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/image/${imageId}/`,
+      formData,
+      httpOptions
+    );
+  }
+
+  public deleteMarketplaceImage(
+    listingId: MarketplaceListingInterface["id"],
+    lineItemId: MarketplaceLineItemInterface["id"],
+    imageId: MarketplaceImageInterface["id"]
+  ): Observable<void> {
+    return this.http.delete<void>(
+      `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/image/${imageId}/`
+    );
+  }
+
+  public loadMarketplacePrivateConversations(
+    listingId: MarketplaceListingInterface["id"]
+  ): Observable<MarketplacePrivateConversationInterface[]> {
+    const url = `${this.configUrl}/marketplace/listing/${listingId}/private-conversation/`;
+
+    return this.http.get<PaginatedApiResultInterface<MarketplacePrivateConversationInterface>>(url).pipe(
+      expand(response =>
+        response.next
+          ? this.http.get<PaginatedApiResultInterface<MarketplacePrivateConversationInterface>>(response.next)
+          : EMPTY
+      ),
+      map(response => response.results),
+      reduce((acc, results) => acc.concat(results), [] as MarketplacePrivateConversationInterface[])
+    );
+  }
+
+  public createMarketplacePrivateConversation(
+    listingId: MarketplaceListingInterface["id"],
+    userId?: UserInterface["id"]
+  ): Observable<MarketplacePrivateConversationInterface> {
+    let url = `${this.configUrl}/marketplace/listing/${listingId}/private-conversation/`;
+
+    if (userId) {
+      url = UtilsService.addOrUpdateUrlParam(url, "user", userId.toString());
+    }
+
+    return this.http.post<MarketplacePrivateConversationInterface>(url, {});
+  }
+
+  public updateMarketplacePrivateConversation(
+    privateConversation: MarketplacePrivateConversationInterface
+  ): Observable<MarketplacePrivateConversationInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${privateConversation.listing}/private-conversation/${privateConversation.id}/`;
+
+    return this.http.put<MarketplacePrivateConversationInterface>(url, privateConversation);
+  }
+
+  public deleteMarketplacePrivateConversation(
+    listingId: MarketplaceListingInterface["id"],
+    privateConversationId: MarketplacePrivateConversationInterface["id"]
+  ): Observable<void> {
+    const url = `${this.configUrl}/marketplace/listing/${listingId}/private-conversation/${privateConversationId}/`;
+
+    return this.http.delete<void>(url);
+  }
+
+  public createMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/`;
+
+    return this.http.post<MarketplaceOfferInterface>(url, offer);
+  }
+
+  public updateMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/`;
+
+    return this.http.put<MarketplaceOfferInterface>(url, offer);
+  }
+
+  public rejectMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/reject/`;
+
+    return this.http.put<MarketplaceOfferInterface>(url, {});
+  }
+
+  public retractMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/retract/`;
+
+    return this.http.put<MarketplaceOfferInterface>(url, {});
+  }
+
+  public acceptMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/accept/`;
+
+    return this.http.put<MarketplaceOfferInterface>(url, {});
+  }
+
+  public createMarketplaceFeedback(feedback: MarketplaceFeedbackInterface): Observable<MarketplaceFeedbackInterface> {
+    const url = `${this.configUrl}/marketplace/line-item/${feedback.lineItem}/feedback/`;
+
+    return this.http.post<MarketplaceFeedbackInterface>(url, feedback);
+  }
+
+  public getMarketplaceFeedback(lineItemId: MarketplaceLineItemInterface["id"]): Observable<MarketplaceFeedbackInterface[]> {
+    const url = `${this.configUrl}/marketplace/line-item/${lineItemId}/feedback/`;
+
+    return this.http.get<MarketplaceFeedbackInterface[]>(url);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -792,12 +1077,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        pixelSize: item.pixelSize !== null ? parseFloat((item.pixelSize as unknown) as string) : null,
-        sensorWidth: item.sensorWidth !== null ? parseFloat((item.sensorWidth as unknown) as string) : null,
-        sensorHeight: item.sensorHeight !== null ? parseFloat((item.sensorHeight as unknown) as string) : null,
-        readNoise: item.readNoise !== null ? parseFloat((item.readNoise as unknown) as string) : null,
+        pixelSize: item.pixelSize !== null ? parseFloat(item.pixelSize as unknown as string) : null,
+        sensorWidth: item.sensorWidth !== null ? parseFloat(item.sensorWidth as unknown as string) : null,
+        sensorHeight: item.sensorHeight !== null ? parseFloat(item.sensorHeight as unknown as string) : null,
+        readNoise: item.readNoise !== null ? parseFloat(item.readNoise as unknown as string) : null,
         fullWellCapacity:
-          item.fullWellCapacity !== null ? parseFloat((item.fullWellCapacity as unknown) as string) : null
+          item.fullWellCapacity !== null ? parseFloat(item.fullWellCapacity as unknown as string) : null
       }
     };
   }
@@ -806,7 +1091,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        backFocus: item.backFocus !== null ? parseFloat((item.backFocus as unknown) as string) : null
+        backFocus: item.backFocus !== null ? parseFloat(item.backFocus as unknown as string) : null
       }
     };
   }
@@ -815,9 +1100,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        aperture: item.aperture !== null ? parseFloat((item.aperture as unknown) as string) : null,
-        minFocalLength: item.minFocalLength !== null ? parseFloat((item.minFocalLength as unknown) as string) : null,
-        maxFocalLength: item.maxFocalLength !== null ? parseFloat((item.maxFocalLength as unknown) as string) : null
+        aperture: item.aperture !== null ? parseFloat(item.aperture as unknown as string) : null,
+        minFocalLength: item.minFocalLength !== null ? parseFloat(item.minFocalLength as unknown as string) : null,
+        maxFocalLength: item.maxFocalLength !== null ? parseFloat(item.maxFocalLength as unknown as string) : null
       }
     };
   }
@@ -826,8 +1111,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        weight: item.weight !== null ? parseFloat((item.weight as unknown) as string) : null,
-        maxPayload: item.maxPayload !== null ? parseFloat((item.maxPayload as unknown) as string) : null
+        weight: item.weight !== null ? parseFloat(item.weight as unknown as string) : null,
+        maxPayload: item.maxPayload !== null ? parseFloat(item.maxPayload as unknown as string) : null
       }
     };
   }
@@ -836,7 +1121,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        bandwidth: item.bandwidth !== null ? parseFloat((item.bandwidth as unknown) as string) : null
+        bandwidth: item.bandwidth !== null ? parseFloat(item.bandwidth as unknown as string) : null
       }
     };
   }
@@ -944,7 +1229,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
           if (item.image && item.image.length > 0) {
             this._uploadEditProposalImage<T>(
               createdEditProposal.id,
-              UtilsService.isString(item.image) ? item.image : (item.image as File[])[0],
+              UtilsService.isString(item.image) ? item.image : (item.image as any[])[0].file,
               path
             )
               .pipe(

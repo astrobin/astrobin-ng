@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, CurrencyPipe } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -8,7 +8,14 @@ import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { State } from "@app/store/state";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NgbModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbAccordionModule,
+  NgbDropdownModule,
+  NgbModule,
+  NgbPaginationModule,
+  NgbPopoverModule,
+  NgbProgressbarModule
+} from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -56,6 +63,8 @@ import * as Sentry from "@sentry/angular";
 import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
+import { NgImageSliderModule } from "ng-image-slider";
+import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -102,11 +111,14 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     FormlySelectModule,
     ImageCropperModule,
     NgbModule,
+    NgbAccordionModule,
+    NgbDropdownModule,
     NgbPaginationModule,
     NgbPopoverModule,
     NgbProgressbarModule,
     NgSelectModule,
     NgxDatatableModule,
+    NgImageSliderModule,
     NgxFilesizeModule,
     NgWizardModule.forRoot({
       theme: THEME.default,
@@ -161,9 +173,12 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     FormlyBootstrapModule,
     ImageCropperModule,
     NgbModule,
+    NgbAccordionModule,
+    NgbDropdownModule,
     NgbPaginationModule,
     NgbPopoverModule,
     NgbProgressbarModule,
+    NgImageSliderModule,
     NgSelectModule,
     NgxFilesizeModule,
     NgWizardModule,
@@ -180,11 +195,13 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
+        AstroBinGroupGuardService,
         AuthGuardService,
         AuthService,
         ClassicRoutesService,
         CKEditorService,
         CookieService,
+        CurrencyPipe,
         GroupGuardService,
         ImageOwnerGuardService,
         LoadingService,

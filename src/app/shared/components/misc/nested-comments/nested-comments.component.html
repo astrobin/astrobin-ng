@@ -1,17 +1,22 @@
+<ng-container *ngIf="loadingComments">
+  <ng-container *ngTemplateOutlet="loadingTpl"></ng-container>
+</ng-container>
+
 <div *ngIf="comments$ | async as comments" class="nested-comments card">
 
   <div class="card-header">
-    {{ "Comments" | translate }}
+    {{ title }}
 
     <div class="actions">
       <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+      <button (click)="close.emit()" *ngIf="showCloseButton" class="btn btn-link ms-2 btn-close"></button>
     </div>
   </div>
 
   <div class="card-body">
 
-    <p *ngIf="!!info" class="alert alert-info">
-      <fa-icon icon="info-circle"></fa-icon>
+    <p *ngIf="!!info">
+      <fa-icon class="me-2" icon="info-circle"></fa-icon>
       <span [innerHTML]="info"></span>
     </p>
 
@@ -67,9 +72,9 @@
 </ng-template>
 
 <ng-template #addCommentButtonTpl>
-  <button (click)="showTopLevelForm = true" class="btn btn-primary add-comment">
+  <button (click)="onAddCommentClicked($event)" class="btn btn-primary add-comment">
     <fa-icon icon="comment"></fa-icon>
-    {{ "Add a comment" | translate }}
+    {{ addCommentLabel }}
   </button>
 </ng-template>
 
@@ -79,6 +84,6 @@
 
 <ng-template #noCommentsTpl>
   <p data-test="no-comments">
-    {{ "There are no comments yet." | translate }}
+    {{ noCommentsLabel }}
   </p>
 </ng-template>

@@ -1,0 +1,119 @@
+<div
+  *ngFor="let lineItem of listing.lineItems; let lineItemIndex = index"
+  [id]="'line-item-' + lineItem.id"
+  class="line-item-container"
+>
+  <astrobin-marketplace-listing-line-item
+    [collapsed]="listing.lineItems.length > 1 || !!lineItem.sold"
+    [lineItemIndex]="listing.lineItems.length > 1 ? lineItemIndex : undefined"
+    [lineItem]="lineItem"
+    [listing]="listing"
+    [previewMode]="previewMode"
+  ></astrobin-marketplace-listing-line-item>
+</div>
+
+<div
+  *ngIf="listing.lineItems.length > 1"
+  class="alert alert-dark mt-4"
+  role="alert"
+>
+  {{ "This listing is only available as a bundle sale. The seller does not wish to sell individual items separately." | translate }}
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-6">
+    <div *ngIf="googleMapsAvailable" class="card map-container">
+      <div class="card-header">
+        <ng-container *ngIf="!!listing.country; else loadingCountryTemplate">
+          <ng-container *ngIf="!!listing.city"> {{ listing.city }},</ng-container>
+          {{ countryService.getCountryName(listing.country) }}
+        </ng-container>
+        <ng-template #loadingCountryTemplate>
+          <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
+        </ng-template>
+      </div>
+
+      <div class="card-body p-0">
+        <div #map class="map"></div>
+        <astrobin-loading-indicator *ngIf="mapLoading"></astrobin-loading-indicator>
+      </div>
+
+      <div class="card-footer">
+        <div class="form-text mt-1">
+          {{ "The location shown above is approximate to protect the seller's privacy." | translate }}
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!googleMapsAvailable" class="card map-container">
+      <div class="card-header">
+        {{ "Location" | translate }}
+      </div>
+
+      <div class="card-body p-0">
+        <table class="table table-striped mb-0">
+          <tbody>
+          <tr>
+            <th>{{ "Country" | translate }}</th>
+            <td>{{ countryService.getCountryName(listing.country) }}</td>
+          </tr>
+          <tr>
+            <th>{{ "City" | translate }}</th>
+            <td>{{ listing.city }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card shipping-options">
+      <div class="card-header">{{ "Shipping options" | translate }}</div>
+      <div class="card-body">
+        <table class="table table-striped mb-0">
+          <tbody>
+          <tr>
+            <th>{{ "Buyer picks up" | translate }}</th>
+            <td [class]="!!listing.deliveryByBuyerPickUp | json">
+              <fa-icon [icon]="!!listing.deliveryByBuyerPickUp | yesNoIcon"></fa-icon>
+            </td>
+          </tr>
+          <tr>
+            <th>{{ "Seller delivers in person" | translate }}</th>
+            <td [class]="!!listing.deliveryBySellerDelivery | json">
+              <fa-icon [icon]="!!listing.deliveryBySellerDelivery | yesNoIcon"></fa-icon>
+            </td>
+          </tr>
+          <tr>
+            <th>{{ "Seller ships" | translate }}</th>
+            <td [class]="!!listing.deliveryByShipping | json">
+              <fa-icon [icon]="!!listing.deliveryByShipping | yesNoIcon"></fa-icon>
+            </td>
+          </tr>
+          <tr>
+            <th>{{ "Shipping method" | translate }}</th>
+            <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="listing.lineItems.length > 0 && !!listing.description"
+  class="card description"
+>
+  <div class="card-header">{{ "Description" | translate }}</div>
+
+  <div class="card-body">
+    <ng-container *ngIf="!!listing.description; else noDescriptionTemplate">
+      <span [innerHTML]="listing.description | nl2br"></span>
+    </ng-container>
+
+    <ng-template #noDescriptionTemplate>
+      <p class="text-muted">{{ "No description provided." | translate }}</p>
+    </ng-template>
+  </div>
+</div>

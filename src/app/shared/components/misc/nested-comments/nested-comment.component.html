@@ -9,7 +9,6 @@
 
     <span
       *ngIf="comment.likes.length === 1"
-      [translateParams]="{ '0': comment.likes.length }"
       [translate]="'1 like'"
       class="likes"
     >
@@ -18,7 +17,7 @@
     <span
       *ngIf="comment.likes.length > 1"
       [translateParams]="{ '0': comment.likes.length }"
-      [translate]="'{{0}} like'"
+      [translate]="'{{0}} likes'"
       class="likes"
     >
     </span>
@@ -32,7 +31,7 @@
       {{ "Link" | translate }}
     </a>
 
-    <button (click)="showReplyForm = true" [hidden]="showReplyForm" class="btn btn-primary btn-sm reply">
+    <button (click)="onReplyClicked($event)" [hidden]="showReplyForm" class="btn btn-primary btn-sm reply">
       <fa-icon icon="reply"></fa-icon>
       {{ "Reply" | translate }}
     </button>

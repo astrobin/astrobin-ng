@@ -16,7 +16,9 @@ export class GoogleMapsService extends BaseService {
   public constructor(public readonly loadingService: LoadingService, public readonly windowRef: WindowRefService) {
     super(loadingService);
 
-    this._maps = (windowRef.nativeWindow as any).google.maps;
+    if ((windowRef.nativeWindow as any)?.google !== undefined) {
+      this._maps = (windowRef.nativeWindow as any).google.maps;
+    }
   }
 
   get maps(): maps {

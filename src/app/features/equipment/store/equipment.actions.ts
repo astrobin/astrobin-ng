@@ -27,6 +27,12 @@ import {
   EquipmentItemsSortOrder
 } from "@features/equipment/services/equipment-api.service";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -159,7 +165,81 @@ export enum EquipmentActionTypes {
   // Item browser
   ITEM_BROWSER_ADD = "[Equipment] Item browser add",
   ITEM_BROWSER_SET = "[Equipment] Item browser set",
-  ITEM_BROWSER_EXIT_FULLSCREEN = "[Equipment] Item browser exit fullscreen"
+  ITEM_BROWSER_EXIT_FULLSCREEN = "[Equipment] Item browser exit fullscreen",
+
+  // Marketplace
+
+  CLEAR_MARKETPLACE_LISTINGS = "[Equipment] Clear marketplace listings",
+  LOAD_MARKETPLACE_LISTINGS = "[Equipment] Load marketplace listings",
+  LOAD_MARKETPLACE_LISTINGS_SUCCESS = "[Equipment] Load marketplace listings success",
+  LOAD_MARKETPLACE_LISTINGS_FAILURE = "[Equipment] Load marketplace listing failure",
+
+  CREATE_MARKETPLACE_LISTING = "[Equipment] Create marketplace listing",
+  CREATE_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Create marketplace listing success",
+  CREATE_MARKETPLACE_LISTING_FAILURE = "[Equipment] Create marketplace listing failure",
+
+  LOAD_MARKETPLACE_LISTING = "[Equipment] Load marketplace listing",
+  LOAD_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Load marketplace listing success",
+  LOAD_MARKETPLACE_LISTING_FAILURE = "[Equipment] Load marketplace listing failure",
+
+  DELETE_MARKETPLACE_LISTING = "[Equipment] Delete marketplace listing",
+  DELETE_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Delete marketplace listing success",
+  DELETE_MARKETPLACE_LISTING_FAILURE = "[Equipment] Delete marketplace listing failure",
+
+  UPDATE_MARKETPLACE_LISTING = "[Equipment] Update marketplace listing",
+  UPDATE_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Update marketplace listing success",
+  UPDATE_MARKETPLACE_LISTING_FAILURE = "[Equipment] Update marketplace listing failure",
+
+  APPROVE_MARKETPLACE_LISTING = "[Equipment] Approve marketplace listing",
+  APPROVE_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Approve marketplace listing success",
+  APPROVE_MARKETPLACE_LISTING_FAILURE = "[Equipment] Approve marketplace listing failure",
+
+  RENEW_MARKETPLACE_LISTING = "[Equipment] Renew marketplace listing",
+  RENEW_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Renew marketplace listing success",
+  RENEW_MARKETPLACE_LISTING_FAILURE = "[Equipment] Renew marketplace listing failure",
+
+  MARK_MARKETPLACE_LINE_ITEM_AS_SOLD = "[Equipment] Mark marketplace line item as sold",
+  MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_SUCCESS = "[Equipment] Mark marketplace line item as sold success",
+  MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_FAILURE = "[Equipment] Mark marketplace line item as sold failure",
+
+  LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS = "[Equipment] Load marketplace private conversations",
+  LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_SUCCESS = "[Equipment] Load marketplace private conversations success",
+  LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_FAILURE = "[Equipment] Load marketplace private conversations failure",
+
+  CREATE_MARKETPLACE_PRIVATE_CONVERSATION = "[Equipment] Create marketplace private conversation",
+  CREATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS = "[Equipment] Create marketplace private conversation success",
+  CREATE_MARKETPLACE_PRIVATE_CONVERSATION_FAILURE = "[Equipment] Create marketplace private conversation failure",
+
+  UPDATE_MARKETPLACE_PRIVATE_CONVERSATION = "[Equipment] Update marketplace private conversation",
+  UPDATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS = "[Equipment] Update marketplace private conversation success",
+  UPDATE_MARKETPLACE_PRIVATE_CONVERSATION_FAILURE = "[Equipment] Update marketplace private conversation failure",
+
+  DELETE_MARKETPLACE_PRIVATE_CONVERSATION = "[Equipment] Delete marketplace private conversation",
+  DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS = "[Equipment] Delete marketplace private conversation success",
+  DELETE_MARKETPLACE_PRIVATE_CONVERSATION_FAILURE = "[Equipment] Delete marketplace private conversation failure",
+
+  CREATE_MARKETPLACE_OFFER = "[Equipment] Create marketplace offer",
+  CREATE_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Create marketplace offer success",
+  CREATE_MARKETPLACE_OFFER_FAILURE = "[Equipment] Create marketplace offer failure",
+  UPDATE_MARKETPLACE_OFFER = "[Equipment] Update marketplace offer",
+  UPDATE_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Update marketplace offer success",
+  UPDATE_MARKETPLACE_OFFER_FAILURE = "[Equipment] Update marketplace offer failure",
+  REJECT_MARKETPLACE_OFFER = "[Equipment] Reject marketplace offer",
+  REJECT_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Reject marketplace offer success",
+  REJECT_MARKETPLACE_OFFER_FAILURE = "[Equipment] Reject marketplace offer failure",
+  RETRACT_MARKETPLACE_OFFER = "[Equipment] Retract marketplace offer",
+  RETRACT_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Retract marketplace offer success",
+  RETRACT_MARKETPLACE_OFFER_FAILURE = "[Equipment] Retract marketplace offer failure",
+  ACCEPT_MARKETPLACE_OFFER = "[Equipment] Accept marketplace offer",
+  ACCEPT_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Accept marketplace offer success",
+  ACCEPT_MARKETPLACE_OFFER_FAILURE = "[Equipment] Accept marketplace offer failure",
+
+  CREATE_MARKETPLACE_FEEDBACK = "[Equipment] Create marketplace feedback",
+  CREATE_MARKETPLACE_FEEDBACK_SUCCESS = "[Equipment] Create marketplace feedback success",
+  CREATE_MARKETPLACE_FEEDBACK_FAILURE = "[Equipment] Create marketplace feedback failure",
+  GET_MARKETPLACE_FEEDBACK = "[Equipment] Get marketplace feedback",
+  GET_MARKETPLACE_FEEDBACK_SUCCESS = "[Equipment] Get marketplace feedback success",
+  GET_MARKETPLACE_FEEDBACK_FAILURE = "[Equipment] Get marketplace feedback failure",
 }
 
 /**********************************************************************************************************************
@@ -236,6 +316,7 @@ export class LoadEquipmentItem implements PayloadActionInterface {
       id: EquipmentItemBaseInterface["id"];
       type: EquipmentItemType;
       allowUnapproved?: boolean;
+      allowDIY?: boolean;
       item?: EquipmentItem; // The dispatcher already has the item and just wants it added to the store.
     }
   ) {
@@ -252,10 +333,12 @@ export class LoadEquipmentItemSuccess implements PayloadActionInterface {
 export class LoadEquipmentItemFailure implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_FAILURE;
 
-  constructor(public payload: {
-    id: EquipmentItemBaseInterface["id"];
-    klass: EquipmentItemBaseInterface["klass"];
-  }) {
+  constructor(
+    public payload: {
+      id: EquipmentItemBaseInterface["id"];
+      klass: EquipmentItemBaseInterface["klass"];
+    }
+  ) {
   }
 }
 
@@ -281,7 +364,14 @@ export class FindAllEquipmentItemsSuccess implements PayloadActionInterface {
 export class FindRecentlyUsedEquipmentItems implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS;
 
-  constructor(public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType | null }) {
+  constructor(
+    public payload: {
+      type: EquipmentItemType;
+      usageType: EquipmentItemUsageType | null;
+      includeFrozen?: boolean;
+      query?: string;
+    }
+  ) {
   }
 }
 
@@ -865,6 +955,449 @@ export class ItemBrowserExitFullscreen implements Action {
   readonly type = EquipmentActionTypes.ITEM_BROWSER_EXIT_FULLSCREEN;
 }
 
+/**********************************************************************************************************************
+ * Marketplace
+ *********************************************************************************************************************/
+
+export class ClearMarketplaceListings implements Action {
+  readonly type = EquipmentActionTypes.CLEAR_MARKETPLACE_LISTINGS;
+}
+
+export class LoadMarketplaceListings implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS;
+
+  constructor(
+    public payload: {
+      options?: MarketplaceListingQueryOptionsInterface;
+    }
+  ) {
+  }
+}
+
+export class LoadMarketplaceListingsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_SUCCESS;
+
+  constructor(public payload: { listings: PaginatedApiResultInterface<MarketplaceListingInterface> }) {
+  }
+}
+
+export class LoadMarketplaceListingsFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_FAILURE;
+
+  constructor(public payload: { error: string }) {
+  }
+}
+
+export class CreateMarketplaceListing implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_LISTING;
+
+  constructor(public payload: { listing: Omit<MarketplaceListingInterface, "id"> }) {
+  }
+}
+
+export class CreateMarketplaceListingSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class CreateMarketplaceListingFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_FAILURE;
+
+  constructor(public payload: { error: string }) {
+  }
+}
+
+export class LoadMarketplaceListing implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTING;
+
+  constructor(
+    public payload: {
+      id?: MarketplaceListingInterface["id"];
+      hash?: MarketplaceListingInterface["hash"];
+    }
+  ) {
+  }
+}
+
+export class LoadMarketplaceListingSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_SUCCESS;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class LoadMarketplaceListingFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_FAILURE;
+
+  constructor(public payload: { error: string }) {
+  }
+}
+
+export class DeleteMarketplaceListing implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_LISTING;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class DeleteMarketplaceListingSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_SUCCESS;
+
+  constructor(public payload: { id: MarketplaceListingInterface["id"] }) {
+  }
+}
+
+export class DeleteMarketplaceListingFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_FAILURE;
+
+  constructor(public payload: { error: string }) {
+  }
+}
+
+export class UpdateMarketplaceListing implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class UpdateMarketplaceListingSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING_SUCCESS;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class UpdateMarketplaceListingFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING_FAILURE;
+
+  constructor(public payload: { error: string }) {
+  }
+}
+
+export class ApproveMarketplaceListing implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class ApproveMarketplaceListingSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING_SUCCESS;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class ApproveMarketplaceListingFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING_FAILURE;
+
+  constructor(public payload: { listing: MarketplaceListingInterface, error: string }) {
+  }
+}
+
+export class RenewMarketplaceListing implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RENEW_MARKETPLACE_LISTING;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class RenewMarketplaceListingSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RENEW_MARKETPLACE_LISTING_SUCCESS;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class RenewMarketplaceListingFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RENEW_MARKETPLACE_LISTING_FAILURE;
+
+  constructor(public payload: { listing: MarketplaceListingInterface, error: string }) {
+  }
+}
+
+export class MarkMarketplaceLineItemAsSold implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface, soldTo: UserInterface["id"] }) {
+  }
+}
+
+export class MarkMarketplaceLineItemAsSoldSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_SUCCESS;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface }) {
+  }
+}
+
+export class MarkMarketplaceLineItemAsSoldFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_FAILURE;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface; soldTo: UserInterface["id"]; error: string }) {
+  }
+}
+
+export class LoadMarketplacePrivateConversations implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS;
+
+  constructor(public payload: { listingId: MarketplaceListingInterface["id"] }) {
+  }
+}
+
+export class LoadMarketplacePrivateConversationsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_SUCCESS;
+
+  constructor(
+    public payload: {
+      listingId: MarketplaceListingInterface["id"];
+      privateConversations: MarketplacePrivateConversationInterface[];
+    }
+  ) {
+  }
+}
+
+export class LoadMarketplacePrivateConversationsFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_FAILURE;
+
+  constructor(public payload: { listingId: MarketplaceListingInterface["id"]; error: string }) {
+  }
+}
+
+export class CreateMarketplacePrivateConversation implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION;
+
+  constructor(public payload: {
+    listingId: MarketplaceListingInterface["id"];
+    userId?: UserInterface["id"];
+  }) {
+  }
+}
+
+export class CreateMarketplacePrivateConversationSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS;
+
+  constructor(public payload: { privateConversation: MarketplacePrivateConversationInterface }) {
+  }
+}
+
+export class CreateMarketplacePrivateConversationFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION_FAILURE;
+
+  constructor(
+    public payload: {
+      listingId: MarketplaceListingInterface["id"];
+      userId?: UserInterface["id"];
+      error: string;
+    }
+  ) {
+  }
+}
+
+export class UpdateMarketplacePrivateConversation implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_PRIVATE_CONVERSATION;
+
+  constructor(public payload: { privateConversation: MarketplacePrivateConversationInterface }) {
+  }
+}
+
+export class UpdateMarketplacePrivateConversationSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS;
+
+  constructor(public payload: { privateConversation: MarketplacePrivateConversationInterface }) {
+  }
+}
+
+export class UpdateMarketplacePrivateConversationFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_PRIVATE_CONVERSATION_FAILURE;
+
+  constructor(
+    public payload: {
+      privateConversation: MarketplacePrivateConversationInterface;
+      error: string;
+    }
+  ) {
+  }
+}
+
+export class DeleteMarketplacePrivateConversation implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION;
+
+  constructor(public payload: { privateConversation: MarketplacePrivateConversationInterface }) {
+  }
+}
+
+export class DeleteMarketplacePrivateConversationSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS;
+
+  constructor(
+    public payload: {
+      id: MarketplacePrivateConversationInterface["id"];
+      userId: UserInterface["id"];
+      listingId: MarketplaceListingInterface["id"];
+    }
+  ) {
+  }
+}
+
+export class DeleteMarketplacePrivateConversationFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_FAILURE;
+
+  constructor(
+    public payload: { userId: UserInterface["id"]; listingId: MarketplaceListingInterface["id"]; error: string }
+  ) {
+  }
+}
+
+export class CreateMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class CreateMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class CreateMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
+  }
+}
+
+export class UpdateMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class UpdateMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class UpdateMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
+  }
+}
+
+export class RejectMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class RejectMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class RejectMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
+  }
+}
+
+export class RetractMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class RetractMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class RetractMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
+  }
+}
+
+export class AcceptMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class AcceptMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class AcceptMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
+  }
+}
+
+export class CreateMarketplaceFeedback implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK;
+
+  constructor(public payload: { feedback: MarketplaceFeedbackInterface }) {
+  }
+}
+
+export class CreateMarketplaceFeedbackSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_SUCCESS;
+
+  constructor(public payload: { feedback: MarketplaceFeedbackInterface }) {
+  }
+}
+
+export class CreateMarketplaceFeedbackFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_FAILURE;
+
+  constructor(public payload: { feedback: MarketplaceFeedbackInterface; error: string }) {
+  }
+}
+
+export class GetMarketplaceFeedback implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface }) {
+  }
+}
+
+export class GetMarketplaceFeedbackSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK_SUCCESS;
+
+  constructor(public payload: { feedback: MarketplaceFeedbackInterface[] }) {
+  }
+}
+
+export class GetMarketplaceFeedbackFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK_FAILURE;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface; error: string }) {
+  }
+}
+
 export type EquipmentActions =
 // Brands
   | GetAllBrands
@@ -973,4 +1506,63 @@ export type EquipmentActions =
   // Item browser
   | ItemBrowserAdd
   | ItemBrowserSet
-  | ItemBrowserExitFullscreen;
+  | ItemBrowserExitFullscreen
+
+  // Marketplace
+  | LoadMarketplaceListings
+  | LoadMarketplaceListingsSuccess
+  | LoadMarketplaceListingsFailure
+  | CreateMarketplaceListing
+  | CreateMarketplaceListingSuccess
+  | CreateMarketplaceListingFailure
+  | LoadMarketplaceListing
+  | LoadMarketplaceListingSuccess
+  | LoadMarketplaceListingFailure
+  | DeleteMarketplaceListing
+  | DeleteMarketplaceListingSuccess
+  | DeleteMarketplaceListingFailure
+  | UpdateMarketplaceListing
+  | UpdateMarketplaceListingSuccess
+  | UpdateMarketplaceListingFailure
+  | LoadMarketplacePrivateConversations
+  | LoadMarketplacePrivateConversationsSuccess
+  | LoadMarketplacePrivateConversationsFailure
+  | CreateMarketplacePrivateConversation
+  | CreateMarketplacePrivateConversationSuccess
+  | CreateMarketplacePrivateConversationFailure
+  | UpdateMarketplacePrivateConversation
+  | UpdateMarketplacePrivateConversationSuccess
+  | UpdateMarketplacePrivateConversationFailure
+  | DeleteMarketplacePrivateConversation
+  | DeleteMarketplacePrivateConversationSuccess
+  | DeleteMarketplacePrivateConversationFailure
+  | CreateMarketplaceOffer
+  | CreateMarketplaceOfferSuccess
+  | CreateMarketplaceOfferFailure
+  | UpdateMarketplaceOffer
+  | UpdateMarketplaceOfferSuccess
+  | UpdateMarketplaceOfferFailure
+  | ApproveMarketplaceListing
+  | ApproveMarketplaceListingSuccess
+  | ApproveMarketplaceListingFailure
+  | RenewMarketplaceListing
+  | RenewMarketplaceListingSuccess
+  | RenewMarketplaceListingFailure
+  | MarkMarketplaceLineItemAsSold
+  | MarkMarketplaceLineItemAsSoldSuccess
+  | MarkMarketplaceLineItemAsSoldFailure
+  | RejectMarketplaceOffer
+  | RejectMarketplaceOfferSuccess
+  | RejectMarketplaceOfferFailure
+  | RetractMarketplaceOffer
+  | RetractMarketplaceOfferSuccess
+  | RetractMarketplaceOfferFailure
+  | AcceptMarketplaceOffer
+  | AcceptMarketplaceOfferSuccess
+  | AcceptMarketplaceOfferFailure
+  | CreateMarketplaceFeedback
+  | CreateMarketplaceFeedbackSuccess
+  | CreateMarketplaceFeedbackFailure
+  | GetMarketplaceFeedback
+  | GetMarketplaceFeedbackSuccess
+  | GetMarketplaceFeedbackFailure;

@@ -47,3 +47,17 @@ label {
 .footer-template-extra {
   font-size: .85rem;
 }
+
+::ng-deep {
+  .option-template {
+    &__title {
+      font-weight: bold;
+    }
+
+    &__description {
+      margin-top: .5rem;
+      font-size: .9rem;
+      color: var(--mutedAccentColor);
+    }
+  }
+}

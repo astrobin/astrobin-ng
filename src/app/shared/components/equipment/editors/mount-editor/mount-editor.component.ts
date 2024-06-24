@@ -156,14 +156,13 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
   private _getWeightField() {
     return {
       key: "weight",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "mount-field-weight",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 1,
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.WEIGHT)
       },
@@ -190,14 +189,13 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
   private _getMaxPayloadField() {
     return {
       key: "maxPayload",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "mount-field-max-payload",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 1,
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.MAX_PAYLOAD)
       },
@@ -234,7 +232,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
   private _getPeriodicErrorField() {
     return {
       key: "periodicError",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "mount-field-periodic-error",
       hideExpression: () => !this.model.computerized,
@@ -242,7 +240,6 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 1,
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.PERIODIC_ERROR)
       },
@@ -286,7 +283,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
   private _getSlewSpeedField() {
     return {
       key: "slewSpeed",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "mount-field-slew-speed",
       hideExpression: () => !this.model.computerized,
@@ -294,7 +291,6 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.SLEW_SPEED)
       },

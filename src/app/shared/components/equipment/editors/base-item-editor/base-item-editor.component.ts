@@ -725,7 +725,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         required: false,
         label: this.translateService.instant("Image"),
         description: this.translateService.instant("Official (or official looking) product image. Max. 1MB."),
-        accept: "image/jpeg, image/png"
+        accept: "image/jpeg, image/png",
+        image: true
       },
 
       validators: {

@@ -115,6 +115,7 @@ describe("CommonApiAdaptorService", () => {
             ]
           }
         ],
+        astrobin_groups: [],
         user_permissions: [
           {
             id: 1,
@@ -128,7 +129,10 @@ describe("CommonApiAdaptorService", () => {
             codename: "bar2",
             content_type: 2
           }
-        ]
+        ],
+        marketplace_feedback: null,
+        marketplace_feedback_count: 0,
+        marketplace_listing_count: 0
       };
 
       expect(service.userFromBackend(backendUser)).toEqual({
@@ -136,13 +140,13 @@ describe("CommonApiAdaptorService", () => {
         avatar: "/foo/avatar.jpg",
         largeAvatar: "/foo/large-avatar.jpg",
         userProfile: 1,
-        lastLogin: new Date("2020-04-10T19:05:51.400207"),
+        lastLogin: "2020-04-10T19:05:51.400207",
         isSuperUser: true,
         username: "foo",
         firstName: "Foo",
         isStaff: true,
         isActive: true,
-        dateJoined: new Date("2020-04-09T19:45:21.522611"),
+        dateJoined: "2020-04-09T19:45:21.522611",
         displayName: "Foo",
         groups: [
           {
@@ -164,6 +168,7 @@ describe("CommonApiAdaptorService", () => {
             ]
           }
         ],
+        astrobinGroups: [],
         userPermissions: [
           {
             id: 1,
@@ -177,7 +182,10 @@ describe("CommonApiAdaptorService", () => {
             codeName: "bar2",
             contentType: 2
           }
-        ]
+        ],
+        marketplaceFeedback: null,
+        marketplaceFeedbackCount: 0,
+        marketplaceListingCount: 0
       });
     });
   });

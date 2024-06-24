@@ -61,9 +61,7 @@
   }
 
   .nav-link {
-    padding-left: 3rem;
-    border-radius: 2rem;
-    background-image: none;
+    padding-left: 3.5rem;
   }
 
   .count {
@@ -73,26 +71,6 @@
     font-size: .8rem;
     line-height: 1rem;
     opacity: 0.5;
-  }
-
-  .nav-pills {
-    font-size: .85rem;
-    margin-left: 3rem;
-    font-style: italic;
-    padding: 1rem 0 .5rem 0;
-    min-height: initial;
-
-    .nav-link {
-      padding: .5rem 1rem;
-      color: var(--lighterGrey);
-      border-radius: .5rem;
-
-      &.active {
-        background-color: transparent;
-        border-radius: 0;
-        border-bottom: 2px solid #2a9fd6;
-      }
-    }
   }
 }
 

@@ -8,6 +8,7 @@ import { interval, Observable, of } from "rxjs";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { CookieService } from "ngx-cookie";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Injectable({
   providedIn: "root"
@@ -209,6 +210,10 @@ export class UtilsService {
     return obj != null && obj.constructor.name === "Object";
   }
 
+  static isArray(obj): boolean {
+    return obj != null && obj.constructor.name === "Array";
+  }
+
   static isNotEmptyDictionary<T>(variable: T | null | undefined): boolean {
     if (variable === null || variable === undefined) {
       return false;
@@ -330,6 +335,7 @@ export class UtilsService {
       .toString()
       .toLowerCase()
       .replace(/\s+/g, "-") // Replace spaces with -
+      .replace(/_/g, "-") // Replace _ with -
       .replace(/[^\w\-]+/g, "") // Remove all non-word chars
       .replace(/\-\-+/g, "-") // Replace multiple - with single -
       .replace(/^-+/, "") // Trim - from start of text
@@ -403,12 +409,38 @@ export class UtilsService {
     return path;
   }
 
-  static fieldWithErrors(topFields: FormlyFieldConfig[]): FormlyFieldConfig[] {
+  static notifyAboutFieldsWithErrors(
+    topFields: FormlyFieldConfig[],
+    popNotificationsService: PopNotificationsService,
+    translateService: TranslateService) {
+    const errorList: string[] = UtilsService.fieldsWithErrors(topFields).map(
+      field => `<li><strong>${UtilsService.fullFieldPath(field).join(" / ")}</strong>`
+    );
+
+    popNotificationsService.error(
+      `
+        <p>
+          ${translateService.instant("The following form fields have errors, please correct them and try again:")}
+        </p>
+        <ul>
+          ${errorList.join("\n")}
+        </ul>
+        `,
+      null,
+      {
+        enableHtml: true
+      }
+    );
+
+    return;
+  }
+
+  static fieldsWithErrors(topFields: FormlyFieldConfig[]): FormlyFieldConfig[] {
     let errored = [];
 
     topFields.forEach(field => {
       if (field.fieldGroup !== undefined) {
-        errored = [...errored, ...UtilsService.fieldWithErrors(field.fieldGroup)];
+        errored = [...errored, ...UtilsService.fieldsWithErrors(field.fieldGroup)];
       } else {
         if (field.formControl.invalid) {
           errored.push(field);
@@ -487,6 +519,14 @@ export class UtilsService {
     }
 
     return result;
+  }
+
+  static humanFileSize(size: number) {
+    return size / (1024 * 1024) > 1 ? (size / (1024 * 1024)).toFixed(2) + " MB" : (size / 1024).toFixed(2) + " KB";
+  }
+
+  static isValidEnumValue(value: any, enumType: any): boolean {
+    return Object.values(enumType).includes(value);
   }
 
   supportsDateInput() {
@@ -598,6 +638,10 @@ export class UtilsService {
   ): Observable<T> {
     const fromApi: Observable<T> = apiCall.apply(apiContext, [id]);
     return store$.select(selector, id).pipe(switchMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
+  }
+
+  objectKeys(obj: any): string[] {
+    return Object.keys(obj);
   }
 }
 

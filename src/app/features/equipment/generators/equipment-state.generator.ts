@@ -9,7 +9,12 @@ export class EquipmentStateGenerator {
       editProposals: [],
       presets: [],
       mostOftenUsedWithData: {},
-      contributors: []
+      contributors: [],
+      marketplace: {
+        lastPaginatedRequestCount: null,
+        listings: null,
+        privateConversations: null
+      }
     };
   }
 }

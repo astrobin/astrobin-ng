@@ -35,6 +35,8 @@ import {
   EquipmentItemCreationSuccessPayloadInterface,
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
+  FindRecentlyUsedEquipmentItems,
+  FindRecentlyUsedEquipmentItemsSuccess,
   ItemBrowserAdd,
   ItemBrowserExitFullscreen,
   ItemBrowserSet,
@@ -126,10 +128,16 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   enableSelectFrozen = true;
 
   @Input()
+  restrictToUserEquipment = false;
+
+  @Input()
   excludeId: number;
 
   @Input()
   layout: ItemBrowserLayout = ItemBrowserLayout.HORIZONTAL;
+
+  @Input()
+  allowedTypes: EquipmentItemType[] = Object.keys(EquipmentItemType).map(key => EquipmentItemType[key]);
 
   model: { klass: EquipmentItemType; value: TypeUnion } = {
     klass: null,
@@ -367,26 +375,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   createItem() {
     if (!this.creationForm.valid) {
       this.creationForm.markAllAsTouched();
-      const errorList: string[] = [];
-      this.editor.fields.forEach(field => {
-        if (field.formControl.errors !== null) {
-          errorList.push(`<li>${field.props.label}</li>`);
-        }
-      });
-      this.popNotificationsService.error(
-        `
-        <p>
-          ${this.translateService.instant("The following form fields have errors, please correct them and try again:")}
-        </p>
-        <ul>
-          ${errorList.join("\n")}
-        </ul>
-        `,
-        null,
-        {
-          enableHtml: true
-        }
-      );
+      UtilsService.notifyAboutFieldsWithErrors(this.editor.fields, this.popNotificationsService, this.translateService);
       return;
     }
 
@@ -645,6 +634,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   key: "klass",
                   type: "ng-select",
                   id: "klass",
+                  wrappers: ["default-wrapper"],
                   expressions: {
                     "props.disabled": "formState.creationMode"
                   },
@@ -654,9 +644,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     label: this.translateService.instant("Item class"),
                     clearable: false,
                     required: true,
-                    options: Object.keys(EquipmentItemType).map(itemType => ({
-                      value: EquipmentItemType[itemType],
-                      label: this.equipmentItemService.humanizeType(EquipmentItemType[itemType])
+                    options: (
+                      this.allowedTypes || Object.keys(EquipmentItemType).map(key => key as keyof EquipmentItemType)
+                    ).map(itemType => ({
+                      value: itemType,
+                      label: this.equipmentItemService.humanizeType(itemType)
                     }))
                   },
                   hooks: {
@@ -683,6 +675,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   key: "value",
                   type: "ng-select",
                   id: `${this.id}`,
+                  wrappers: ["default-wrapper"],
                   expressions: {
                     "props.disabled": "formState.creationMode"
                   },
@@ -863,6 +856,51 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     );
   }
 
+  _onSearchRestrictedToUserEquipment(q: string): Observable<any[]> {
+    return this.currentUser$.pipe(
+      switchMap(currentUser => {
+        if (!currentUser) {
+          return of([]);
+        }
+
+        this.store$.dispatch(
+          new FindRecentlyUsedEquipmentItems({
+            type: this.model.klass,
+            usageType: null,
+            includeFrozen: true,
+            query: q
+          })
+        );
+
+        return this.actions$
+          .pipe(
+            ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS),
+            map((action: FindRecentlyUsedEquipmentItemsSuccess) => action.payload),
+            take(1),
+            map(payload => payload.items)
+          );
+      })
+    );
+  }
+
+  _onSearchUnrestricted(q: string): Observable<any[]> {
+    this.store$.dispatch(
+      new FindAllEquipmentItems({
+        type: this.type,
+        options: {
+          query: q
+        }
+      })
+    );
+
+    return this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
+        take(1),
+        map((action: FindAllEquipmentItemsSuccess) => action.payload.items)
+      );
+  }
+
   _onSearch(q: string): Observable<any[]> {
     return new Observable<any[]>(observer => {
       if (!q || q.length < 1) {
@@ -873,37 +911,26 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       this.q = q;
 
-      this.actions$
-        .pipe(
-          ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
-          take(1),
-          map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
-          map(items => {
-            if (items.length > 0) {
-              return items
-                .filter(item => item.id !== this.excludeId)
-                .map(item => {
-                  return this._getNgOptionValue(item);
-                });
-            }
+      let searchMethod: (q: string) => Observable<any[]>;
 
-            return [];
-          })
-        )
-        .subscribe(options => {
+      if (this.restrictToUserEquipment) {
+        searchMethod = this._onSearchRestrictedToUserEquipment.bind(this);
+      } else {
+        searchMethod = this._onSearchUnrestricted.bind(this);
+      }
+
+      searchMethod(q).subscribe((items: EquipmentItemBaseInterface[]) => {
+          items = items
+            .filter(item => item.id !== this.excludeId)
+            .map(item => {
+              return this._getNgOptionValue(item);
+            });
+
           const field = this._getValueField();
-          field.props = { ...field.props, options: of(options) };
-          observer.next(options);
+          field.props = { ...field.props, options: of(items) };
+          observer.next(items);
           observer.complete();
-        });
-
-      this.store$.dispatch(
-        new FindAllEquipmentItems({
-          type: this.type,
-          options: {
-            query: q
-          }
-        })
+        }
       );
     });
   }

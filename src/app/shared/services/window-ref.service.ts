@@ -108,7 +108,11 @@ export class WindowRefService extends BaseService {
     this.nativeWindow.location.assign(url);
   }
 
-  routeTo404(fromUrl: string) {
+  routeTo404(fromUrl?: string) {
+    if (!fromUrl) {
+      fromUrl = this.getCurrentUrl().pathname;
+    }
+
     this.router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
       this.location.replaceState(fromUrl);
     });

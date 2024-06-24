@@ -24,6 +24,8 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
   styleUrls: ["./equipment-item-display-name.component.scss"]
 })
 export class EquipmentItemDisplayNameComponent extends BaseComponentDirective implements OnChanges {
+  readonly EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
+
   @Input()
   itemId: EquipmentItem["id"];
 
@@ -48,6 +50,9 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   @Input()
   showFrozenAsAmbiguous = true;
 
+  @Input()
+  showItemUnapprovedInfo = true;
+
   // A part of the name to remove. This is useful if this display-name is shown in a list of variants, to avoid
   // repetitions.
   @Input()
@@ -57,7 +62,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   brandLink: string;
   itemName: string;
   nameLink: string;
-  showItemUnapprovedInfo: boolean;
+
 
   constructor(
     public readonly store$: Store<State>,
@@ -103,8 +108,6 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
         .subscribe(name => (this.itemName = name.replace(this.cut, "")));
 
       this.nameLink = `/equipment/explorer/${this.item.klass.toLowerCase()}/${this.item.id}`;
-
-      this.showItemUnapprovedInfo = this.item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED;
     };
 
     if (!this.item) {

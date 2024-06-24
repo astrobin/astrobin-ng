@@ -1,0 +1,87 @@
+@import "../../../../styles/breakpoints";
+
+.card-header {
+  padding: 1.5rem;
+  cursor: pointer;
+
+  &.collapsed-body {
+    border-radius: var(--bs-card-inner-border-radius);
+  }
+
+  .type-image {
+    width: 4rem;
+    margin-right: 0.75rem;
+  }
+
+  .sold-badge {
+    font-size: 2rem;
+    margin-right: .5rem;
+    display: inline-block;
+    padding: .25rem 1rem;
+  }
+
+  .display-name {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+
+    .line-item-item-link {
+      font-size: 1rem;
+      vertical-align: super;
+    }
+  }
+
+  .first-added {
+    font-weight: normal;
+    color: var(--lightestGrey);
+
+    .first-added-date {
+      font-weight: bold;
+      color: var(--white);
+    }
+  }
+
+  astrobin-marketplace-listing-line-item-condition ::ng-deep {
+    font-weight: normal;
+  }
+
+  .image-counts {
+    font-weight: normal;
+    font-size: 0.9rem;
+    color: var(--lightGrey);
+    margin-top: 0.5rem;
+  }
+}
+
+.card-body {
+  .images {
+    margin-top: 0.5rem;
+  }
+
+  .description {
+    color: var(--lightestGrey);
+    margin-top: 1.5rem;
+  }
+}
+
+astrobin-image-search ::ng-deep {
+  display: block;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  margin-top: 1.5rem;
+
+  .card {
+    box-shadow: none;
+    border: 0;
+
+    .card-header {
+      border-radius: 0;
+      background: var(--darkestGrey);
+    }
+
+    .card-body {
+      .search-results {
+        justify-content: flex-start;
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@
 
     @media screen and (max-width: $md-max) {
       padding: 0;
+      max-width: unset;
     }
   }
 }

@@ -1,0 +1,28 @@
+<ng-container *ngIf="marketplaceService.userHasFeedback(user); else noFeedbackTemplate">
+  <div class="feedback">
+    <div class="stars">
+      <ng-container *ngFor="let star of stars">
+        <fa-icon *ngIf="star === 2" [icon]="['fas', 'star']"></fa-icon>
+        <fa-icon *ngIf="star === 1" [icon]="['fas', 'star-half-stroke']"></fa-icon>
+        <fa-icon *ngIf="star === 0" [icon]="['far', 'star']"></fa-icon>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="feedback-label">
+    {{ "Current feedback" | translate }}: {{ user.marketplaceFeedback|number:"1.0-2" }}%
+  </div>
+</ng-container>
+
+<div *ngIf="showLeaveFeedbackButton && !alreadyHasFeedbackFromCurrentUser" class="mt-3 text-center">
+  <button (click)="showFeedbackModal()" class="btn btn-primary">
+    {{ "Leave feedback" | translate }}
+  </button>
+</div>
+
+<ng-template #noFeedbackTemplate>
+  <div class="alert alert-info mb-0">
+    {{ "This user has no feedback yet." | translate }}
+  </div>
+</ng-template>
+

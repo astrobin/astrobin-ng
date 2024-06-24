@@ -376,7 +376,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   private _getMaxCoolingField() {
     return {
       key: "maxCooling",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "camera-field-max-cooling",
       hideExpression: () => !this.model.cooled,
@@ -384,7 +384,6 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 1,
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING),
         description: this.translateService.instant(
@@ -409,14 +408,13 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   private _getBackFocusField() {
     return {
       key: "backFocus",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "camera-field-back-focus",
       expressions: {
         "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
-        type: "number",
         step: 0.1,
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS),
         description: this.translateService.instant("Camera back focus in mm.")

@@ -1,0 +1,32 @@
+<div class="card mt-4">
+  <div class="card-header">
+    <fa-icon icon="filter"></fa-icon> &nbsp;
+    {{ "Filter" | translate }}
+  </div>
+
+  <div class="card-body">
+    <form [formGroup]="filterForm">
+      <formly-form [fields]="filterFields" [form]="filterForm"></formly-form>
+    </form>
+  </div>
+
+  <div class="card-footer">
+    <button
+      (click)="applyFilters()"
+      [class.loading]="(loadingService.loading$ | async) || filterForm.pending"
+      class="btn btn-primary btn-block w-50"
+    >
+      <fa-icon icon="check"></fa-icon> &nbsp;
+      {{ "Apply" | translate }}
+    </button>
+
+    <button
+      (click)="resetFilters()"
+      [class.loading]="(loadingService.loading$ | async) || filterForm.pending"
+      class="btn btn-secondary btn-block w-50"
+    >
+      <fa-icon icon="undo"></fa-icon> &nbsp;
+      {{ "Reset" | translate }}
+    </button>
+  </div>
+</div>

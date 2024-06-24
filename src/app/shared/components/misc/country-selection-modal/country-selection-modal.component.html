@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="country-selection-modal">
+    {{ "Select a country" | translate }}
+  </h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form"></formly-form>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button
+    (click)="modal.dismiss()"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-outline-secondary"
+    type="button"
+  >
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="modal.close(form.get('country').value)"
+    [class.loading]="loadingService.loading$ | async"
+    [disabled]="!form.valid"
+    class="btn btn-primary"
+    type="button"
+  >
+    {{ "Confirm" | translate }}
+  </button>
+</div>

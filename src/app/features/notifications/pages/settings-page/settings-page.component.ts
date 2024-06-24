@@ -39,7 +39,8 @@ enum NotificationCategory {
   SUBSCRIPTIONS = "SUBSCRIPTIONS",
   USERS = "USERS",
   EQUIPMENT = "EQUIPMENT",
-  EQUIPMENT_MODERATION = "EQUIPMENT_MODERATION"
+  EQUIPMENT_MODERATION = "EQUIPMENT_MODERATION",
+  MARKETPLACE = "MARKETPLACE",
 }
 
 interface NotificationCategoriesInterface {
@@ -96,6 +97,10 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
     },
     [NotificationCategory.EQUIPMENT_MODERATION]: {
       label: this.translateService.instant("Equipment moderation"),
+      items: {}
+    },
+    [NotificationCategory.MARKETPLACE]: {
+      label: this.translateService.instant("Marketplace"),
       items: {}
     },
     [NotificationCategory.IOTD_STAFF]: {
@@ -298,6 +303,29 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "equipment-item-requires-moderation":
       case "equipment-item-assigned":
         return NotificationCategory.EQUIPMENT_MODERATION;
+      case "new_comment_to_marketplace_private_conv":
+      case "new_comment_to_marketplace_private_conv2":
+      case "new_question_to_listing":
+      case "marketplace-offer-created":
+      case "marketplace-offer-created-buyer":
+      case "marketplace-offer-updated":
+      case "marketplace-offer-updated-buyer":
+      case "marketplace-offer-accepted-by-seller":
+      case "marketplace-offer-accepted-by-you":
+      case "marketplace-offer-rejected-by-seller":
+      case "marketplace-offer-retracted":
+      case "marketplace-offer-retracted-buyer":
+      case "marketplace-listing-updated":
+      case "marketplace-listing-deleted":
+      case "marketplace-listing-approved":
+      case "marketplace-listing-expired":
+      case "marketplace-listing-line-item-sold":
+      case "marketplace-listing-by-user-you-follow":
+      case "marketplace-listing-for-item-you-follow":
+      case "marketplace-rate-seller":
+      case "marketplace-rate-buyer":
+      case "marketplace-mark-sold-reminder":
+        return NotificationCategory.MARKETPLACE;
     }
 
     return null;

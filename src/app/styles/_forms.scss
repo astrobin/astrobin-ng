@@ -8,6 +8,10 @@ label {
 formly-field {
   display: block;
 
+  &.hidden {
+    display: none;
+  }
+
   &:not(:last-of-type) {
     margin-bottom: 2rem;
   }
@@ -46,6 +50,11 @@ formly-field-checkbox {
   &[readonly],
   &.readonly {
     background-color: var(--grey);
+    cursor: text;
+
+    &:focus {
+      box-shadow: none;
+    }
   }
 }
 
@@ -55,7 +64,7 @@ formly-field-checkbox {
   }
 
   &:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
   }
 
   &.error,
@@ -109,6 +118,10 @@ formly-field-checkbox {
   &:not(:last-child) {
     margin-bottom: .5rem;
   }
+
+  label {
+    font-weight: normal;
+  }
 }
 
 .high-contrast .form-check-input:checked[type=checkbox] {
@@ -117,4 +130,24 @@ formly-field-checkbox {
 
 ::-webkit-calendar-picker-indicator {
   filter: invert(1) opacity(20%);
+}
+
+.input-group-text {
+  padding: 0.375rem 0.5rem;
+  background: var(--lighterGrey);
+  color: var(--darkerGrey);
+}
+
+.input-group-prepend {
+  .input-group-text {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.input-group-append {
+  .input-group-text {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
 }

@@ -1,9 +1,11 @@
-<div [class.has-error]="showError" class="form-group {{props.fieldGroupClassName}}">
+<div [class.has-error]="showError && !!formControl.errors" class="form-group {{props.fieldGroupClassName}}">
   <label *ngIf="props.label && props.hideLabel !== true" [attr.for]="id">
     <span [innerHTML]="props.label"></span>
-    <span *ngIf="props.required && !props.hideRequiredMarker" class="required-marker">*</span>
+    <span *ngIf="props.required && !props.hideRequiredMarker" class="required-marker">
+      {{ props.requiredMarker || '*'}}
+    </span>
     <span *ngIf="!props.required && !props.hideOptionalMarker" class="optional-marker">
-      {{ "(optional)" | translate }}
+      {{ props.optionalMarker || "(optional)" | translate }}
     </span>
 
     <ng-container *ngIf="!!props.descriptionUnderLabel">
@@ -54,7 +56,7 @@
 </ng-template>
 
 <ng-template #error>
-  <div *ngIf="showError && formControl.touched" [class.mb-2]="props.errorUnderLabel" [style.display]="'block'"
+  <div *ngIf="showError" [class.mb-2]="props.errorUnderLabel" [style.display]="'block'"
        class="invalid-feedback">
     <formly-validation-message [field]="field"></formly-validation-message>
   </div>

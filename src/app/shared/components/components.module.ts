@@ -6,6 +6,7 @@ import { formlyConfig } from "@app/formly.config";
 import { ObjectsInFieldComponent } from "@app/shared/components/misc/objects-in-field/objects-in-field.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
+  NgbAccordionModule,
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalConfig,
@@ -105,14 +106,22 @@ import { TogglePropertyComponent } from "@shared/components/misc/toggle-property
 import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/summaries/item/summary/more-related-items-modal/more-related-items-modal.component";
 import { StockStatusComponent } from "@shared/components/equipment/stock-status/stock-status.component";
 import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
+import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
+import { PrivateInformationComponent } from "@shared/components/misc/private-information/private-information.component";
+import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
+import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 
 const modules = [
   CommonModule,
   DirectivesModule,
   FontAwesomeModule,
   FormsModule,
+  FormlyBootstrapModule,
   FormlySelectModule,
   ImageCropperModule,
+  NgbAccordionModule,
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalModule,
@@ -141,6 +150,7 @@ const components = [
   CameraComponent,
   ConfirmationDialogComponent,
   CountDownComponent,
+  CountrySelectionModalComponent,
   CustomToastComponent,
   DataDoesNotUpdateInRealTimeComponent,
   EmptyListComponent,
@@ -148,6 +158,7 @@ const components = [
   FooterComponent,
   FormlyCardWrapperComponent,
   FormlyEquipmentItemBrowserWrapperComponent,
+  FormlyFieldArrayComponent,
   FormlyFieldButtonComponent,
   FormlyFieldCKEditorComponent,
   FormlyFieldChunkedFileComponent,
@@ -158,6 +169,8 @@ const components = [
   FormlyFieldNgSelectComponent,
   FormlyFieldStepperComponent,
   FormlyFieldTableComponent,
+  FormlyFieldToggleComponent,
+  FormlyFieldCustomNumberComponent,
   FormlyWrapperComponent,
   ForumPreviewComponent,
   FullscreenImageViewerComponent,
@@ -177,6 +190,7 @@ const components = [
   NestedCommentsModalComponent,
   NothingHereComponent,
   ObjectsInFieldComponent,
+  PrivateInformationComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,
   RemoveAdsDialogComponent,

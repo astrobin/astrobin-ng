@@ -1,0 +1,43 @@
+ul {
+  padding: 0;
+}
+
+li {
+  margin-bottom: 1rem;
+  list-style: none;
+}
+
+.amount {
+  font-weight: bold;
+}
+
+.shipping {
+  color: var(--lighterGrey);
+}
+
+.card-header {
+  text-align: center;
+
+  .badge {
+    font-size: 1rem;
+  }
+
+  .offer-info {
+    margin-top: .5rem;
+  }
+
+  p {
+    margin-bottom: 0;
+    font-size: .9rem;
+    font-weight: normal;
+    color: var(--lighterGrey);
+  }
+}
+
+.card-body {
+  text-align: center;
+}
+
+.card-footer {
+  justify-content: center;
+}

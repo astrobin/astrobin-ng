@@ -1,0 +1,22 @@
+@import "../../../../styles/breakpoints";
+
+.listings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+
+  .line-item {
+    width: calc(50% - .75rem);
+  }
+
+  @media screen and (max-width: $md-max) {
+    gap: 1rem;
+    .line-item {
+      width: 100%;
+    }
+  }
+}
+
+astrobin-loading-indicator {
+  height: auto;
+}

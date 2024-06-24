@@ -1,3 +1,9 @@
-<a [href]="classicRoutesService.GALLERY(user)">
-  <img [src]="avatar" [alt]="user.username" />
-</a>
+<ng-container *ngIf="!!user; else loadingTemplate">
+  <a [href]="classicRoutesService.GALLERY(user)">
+    <img [alt]="user.username" [src]="avatarUrl" />
+  </a>
+</ng-container>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

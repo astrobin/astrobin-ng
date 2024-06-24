@@ -183,11 +183,10 @@ export class ImageEditWatermarkFieldsService extends ImageEditFieldsBaseService 
   getWatermarkTextOpacity(): FormlyFieldConfig {
     return {
       key: "watermarkOpacity",
-      type: "input",
+      type: "custom-number",
       wrappers: ["default-wrapper"],
       id: "image-watermark-opacity-field",
       props: {
-        type: "number",
         min: 0,
         max: 100,
         label: this.translateService.instant("Opacity") + " (%)",

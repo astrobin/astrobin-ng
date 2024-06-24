@@ -13,7 +13,13 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 })
 export class ConfirmationDialogComponent extends BaseComponentDirective {
   @Input()
+  title: string;
+
+  @Input()
   message: string;
+
+  @Input()
+  showMessage = true;
 
   constructor(
     public readonly store$: Store<State>,

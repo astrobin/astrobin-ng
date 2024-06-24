@@ -1,0 +1,361 @@
+<div class="page has-breadcrumb">
+  <div class="alert alert-warning">
+    The AstroBin Marketplace is currently in a testing phase. ALL MARKETPLACE DATA WILL BE DELETED BEFORE THE FINAL
+    RELEASE. Please use it to test the functionality and provide feedback. This means that you can sell
+    "pretend objects" and make offers and you don't need to pay or deliver anything. Thank you!
+  </div>
+
+  <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row gap-1">
+    <span class="d-block flex-grow-1 me-lg-3 mb-1 mb-lg-0">
+      {{ title }}
+
+      <span class="d-block mt-1 listing-info">
+        <fa-icon icon="calendar"></fa-icon>
+        <ng-container *ngIf="listing.approved">
+          {{ "Published" }}: {{ listing.approved | localDate | timeago : true }}
+        </ng-container>
+
+        <ng-container *ngIf="!listing.approved">
+          {{ "Created" }}: {{ listing.created | localDate | timeago : true }}
+        </ng-container>
+
+        &middot;
+
+        <fa-icon icon="bell"></fa-icon>
+        <span *ngIf="listing.followerCount === 0" [translate]="'No followers yet'"></span>
+        <span *ngIf="listing.followerCount === 1" [translate]="'One follower'"></span>
+        <span
+          *ngIf="listing.followerCount > 1"
+          [translateParams]="{
+            '0': listing.followerCount
+          }"
+          [translate]="'{{0}} followers'"
+        ></span>
+
+        &middot;
+
+        <fa-icon icon="eye"></fa-icon>
+        <span *ngIf="listing.viewCount === 0" [translate]="'No views yet'"></span>
+        <span *ngIf="listing.viewCount === 1" [translate]="'One view'"></span>
+        <span
+          *ngIf="listing.viewCount > 1"
+          [translateParams]="{
+            '0': listing.viewCount
+          }"
+          [translate]="'{{0}} views'"
+        ></span>
+
+        &middot;
+
+        <fa-icon icon="clock"></fa-icon>
+        {{ "Expiration" }}: {{ listing.expiration | localDate | timeago : true }}
+      </span>
+    </span>
+
+    <span class="share-buttons">
+      <button (click)="shareOnFacebook()" class="btn btn-link btn-no-block">
+        <fa-icon [icon]="['fab', 'facebook']"></fa-icon>
+      </button>
+
+      <button (click)="shareOnX()" class="btn btn-link btn-no-block">
+        <fa-icon [icon]="['fab', 'twitter']"></fa-icon>
+      </button>
+
+      <button (click)="shareOnWhatsApp()" class="btn btn-link btn-no-block">
+        <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
+      </button>
+    </span>
+  </h1>
+
+  <small>
+    {{
+    "AstroBin is the best place to buy and sell astrophotography equipment. You can find telescopes, cameras, mounts, filters, and much more."
+      | translate
+    }}
+    <a class="learn-more" href="https://welcome.astrobin.com/features/marketplace" target="_blank">
+      {{ "Learn more" }}.
+    </a>
+  </small>
+
+  <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+    <ng-container *ngIf="listingContentType$ | async as listingContentType; else loadingTemplate">
+      <ng-container *ngIf="listingUser$ | async as listingUser; else loadingTemplate">
+        <div class="row">
+          <div class="col-md-8 col-lg-9">
+            <div *ngIf="!listing.approved" class="alert alert-warning" role="alert">
+              <fa-icon icon="exclamation-triangle"></fa-icon>
+              {{ "This listing is pending moderation." | translate }}
+
+              <span
+                *ngIf="currentUser$ | async | isMarketplaceModerator"
+                class="mt-2 mt-md-0 ms-md-2 d-block d-md-inline-block float-md-end"
+              >
+                <button
+                  (click)="approve()"
+                  [class.loading]="loadingService.loading$ | async"
+                  class="btn btn-link btn-no-block"
+                >
+                  <fa-icon icon="check"></fa-icon>
+                </button>
+
+                <a
+                  *ngIf="!equipmentMarketplaceService.listingSold(listing)"
+                  [class.loading]="loadingService.loading$ | async"
+                  [routerLink]="'edit'"
+                  class="btn btn-link btn-no-block ms-md-2"
+                >
+                  <fa-icon icon="pencil"></fa-icon>
+                </a>
+
+                <button
+                  (click)="delete()"
+                  *ngIf="!equipmentMarketplaceService.listingSold(listing)"
+                  [class.loading]="loadingService.loading$ | async"
+                  class="btn btn-link btn-no-block ms-md-2"
+                >
+                  <fa-icon icon="trash-alt"></fa-icon>
+                </button>
+              </span>
+            </div>
+
+            <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
+
+            <astrobin-nested-comments
+              [addCommentLabel]="'Ask a question' | translate"
+              [contentType]="listingContentType"
+              [info]="
+                'Questions asked here are publicly visible. If you want to contact the seller in a private conversation, use the \'Message seller privately\' button.'
+                  | translate
+              "
+              [noCommentsLabel]="'There are no questions or discussions yet.'"
+              [objectId]="listing.id"
+              [title]="'Public questions' | translate"
+            ></astrobin-nested-comments>
+
+            <astrobin-marketplace-more-from-user
+              [listing]="listing"
+              class="d-block mt-5"
+            ></astrobin-marketplace-more-from-user>
+          </div>
+
+          <div class="col-md-4 col-lg-3">
+            <astrobin-marketplace-user-card
+              [listing]="listing"
+              class="d-block mt-5 mt-md-0"
+            ></astrobin-marketplace-user-card>
+
+            <ng-container
+              *ngIf="
+                listingUser.id === currentUserWrapper.user?.id || (currentUserWrapper.user | isMarketplaceModerator)
+              "
+            >
+              <div *ngIf="currentUserWrapper.user | isMarketplaceModerator" class="alert alert-warning mt-4">
+                <fa-icon icon="exclamation-triangle"></fa-icon>
+                {{ "You are a marketplace moderator." | translate }}
+              </div>
+              <ng-container
+                [ngTemplateOutletContext]="{ currentUserWrapper }"
+                [ngTemplateOutlet]="sidebarOwnerTemplate"
+              ></ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id">
+              <ng-container
+                [ngTemplateOutletContext]="{ currentUserWrapper, listingContentType }"
+                [ngTemplateOutlet]="sidebarNonOwnerTemplate"
+              ></ng-container>
+            </ng-container>
+          </div>
+          <!-- col -->
+        </div>
+        <!-- row -->
+      </ng-container>
+      <!-- listingUser -->
+    </ng-container>
+    <!-- listingContentType -->
+  </ng-container>
+  <!-- currentUserWrapper -->
+
+  <astrobin-scroll-to-top></astrobin-scroll-to-top>
+</div>
+<!-- page -->
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #offers>
+  <div class="mt-4" id="offers">
+    <astrobin-marketplace-offer-summary
+      (startPrivateConversation)="startPrivateConversation($event)"
+      [listing]="listing"
+    ></astrobin-marketplace-offer-summary>
+  </div>
+  <!-- offers -->
+</ng-template>
+
+<ng-template #sidebarOwnerTemplate let-currentUserWrapper="currentUserWrapper">
+  <div class="owner-buttons mt-4">
+    <a
+      *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)"
+      [routerLink]="'edit'"
+      class="btn btn-secondary d-block w-100"
+    >
+      <fa-icon icon="pencil"></fa-icon>
+      {{ "Edit" | translate }}
+    </a>
+
+    <button
+      (click)="markAsSold()"
+      *ngIf="!equipmentMarketplaceService.listingSold(listing)"
+      class="btn btn-secondary d-block w-100 mt-2"
+    >
+      <fa-icon icon="sack-dollar"></fa-icon>
+      <ng-container *ngIf="listing.lineItems.length > 1">
+        {{ "Mark items as sold" | translate }}
+      </ng-container>
+      <ng-container *ngIf="listing.lineItems.length === 1">
+        {{ "Mark as sold" | translate }}
+      </ng-container>
+    </button>
+
+    <button
+      (click)="delete()"
+      *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)"
+      class="btn btn-danger d-block w-100 mt-2"
+    >
+      <fa-icon icon="trash"></fa-icon>
+      {{ "Delete" | translate }}
+    </button>
+
+    <button
+      (click)="renew()"
+      *ngIf="!equipmentMarketplaceService.listingSold(listing) && equipmentMarketplaceService.listingExpired(listing)"
+      class="btn btn-secondary d-block w-100 mt-2"
+    >
+      <fa-icon icon="redo"></fa-icon>
+      {{ "Renew" | translate }}
+    </button>
+  </div>
+
+  <ng-container [ngTemplateOutlet]="offers"></ng-container>
+
+  <ng-container *ngIf="privateConversations$ | async as privateConversations">
+    <div *ngIf="privateConversations?.length > 0" class="private-conversations card mt-4">
+      <div class="card-header">
+        {{ "Private conversations" | translate }}
+      </div>
+      <div class="card-body pt-4">
+        <div class="d-flex flex-wrap justify-content-around">
+          <div
+            *ngFor="let privateConversation of privateConversations"
+            class="avatar-wrapper text-center d-flex flex-column align-items-center mb-4"
+          >
+            <astrobin-avatar
+              (click)="startPrivateConversation(privateConversation, $event)"
+              [userId]="privateConversation.user"
+            ></astrobin-avatar>
+
+            <astrobin-username
+              (click)="startPrivateConversation(privateConversation, $event)"
+              [userId]="privateConversation.user"
+              class="mt-2 d-inline-block"
+            ></astrobin-username>
+
+            <span *ngIf="equipmentMarketplaceService.userIsBuyer(privateConversation.user, listing)" class="buyer">
+              ({{ "Buyer" | translate }})
+            </span>
+
+            <span *ngIf="privateConversation.unreadMessages > 0" class="badge bg-danger">
+              {{ privateConversation.unreadMessages }}
+            </span>
+
+            <span *ngIf="privateConversation.unreadMessages === 0" class="badge bg-info">
+              {{ privateConversation.totalMessages }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template
+  #sidebarNonOwnerTemplate
+  let-currentUserWrapper="currentUserWrapper"
+  let-listingContentType="listingContentType"
+>
+  <ng-container [ngTemplateOutlet]="offers"></ng-container>
+
+  <div class="mt-4">
+    <ng-container *ngIf="!equipmentMarketplaceService.listingSold(listing)">
+      <button
+        (click)="onMakeAnOfferClicked($event)"
+        *ngIf="
+          !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
+          !equipmentMarketplaceService.listingHasAcceptedOffers(listing)
+        "
+        [class.loading]="loadingService.loading$ | async"
+        class="btn btn-primary d-block w-100 mt-4"
+      >
+        <fa-icon icon="handshake"></fa-icon>
+        {{ "Make an offer" | translate }}
+      </button>
+
+      <astrobin-toggle-property
+        *ngIf="!equipmentMarketplaceService.listingHasOffers(listing)"
+        [contentType]="listingContentType.id"
+        [objectId]="listing.id"
+        [userId]="currentUserWrapper.user?.id"
+        btnClass="btn btn-secondary d-block w-100 mt-2"
+        propertyType="follow"
+        setLabel="{{ 'Subscribe to updates' | translate }}"
+        unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
+      ></astrobin-toggle-property>
+    </ng-container>
+
+    <button
+      (click)="onMessageSellerClicked($event)"
+      [class.btn-primary]="
+        equipmentMarketplaceService.listingReserved(listing) && !equipmentMarketplaceService.listingSold(listing)
+      "
+      [class.btn-secondary]="
+        !equipmentMarketplaceService.listingReserved(listing) || equipmentMarketplaceService.listingSold(listing)
+      "
+      [class.loading]="loadingService.loading$ | async"
+      class="btn d-block w-100 mt-2"
+    >
+      <fa-icon icon="envelope"></fa-icon>
+
+      <ng-container
+        *ngIf="
+          equipmentMarketplaceService.listingReserved(listing) && !equipmentMarketplaceService.listingSold(listing);
+          else messageSeller
+        "
+      >
+        {{ "Exchange payment/delivery info" | translate }}
+      </ng-container>
+
+      <ng-template #messageSeller>
+        {{ "Message seller privately" | translate }}
+      </ng-template>
+
+      <ng-container *ngIf="privateConversations$ | async as privateConversations">
+        <ng-container
+          *ngIf="
+            privateConversations?.length === 1 &&
+            !equipmentMarketplaceService.listingReserved(listing) &&
+            !equipmentMarketplaceService.listingSold(listing)
+          "
+        >
+          <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
+            {{ privateConversations[0].unreadMessages }}
+          </span>
+          <span *ngIf="privateConversations[0].unreadMessages === 0" class="badge bg-info">
+            {{ privateConversations[0].totalMessages }}
+          </span>
+        </ng-container>
+      </ng-container>
+    </button>
+  </div>
+</ng-template>

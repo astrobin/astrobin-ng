@@ -1,0 +1,26 @@
+.price {
+  font-size: 2rem;
+  line-height: 2rem;
+  font-weight: bold;
+}
+
+.shipping-cost {
+  font-size: .9rem;
+  font-weight: normal;
+  font-style: italic;
+  color: var(--lighterGrey);
+}
+
+.sold,
+.reserved {
+  .sold-badge,
+  .reserved-badge {
+    font-size: 1rem;
+    margin-bottom: .5rem;
+  }
+
+  .price,
+  .shipping-cost {
+    text-decoration: line-through;
+  }
+}

@@ -6,7 +6,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 
-describe("ConfirmationDialogComponent", () => {
+describe("InformationDialogComponent", () => {
   let component: InformationDialogComponent;
   let fixture: ComponentFixture<InformationDialogComponent>;
 

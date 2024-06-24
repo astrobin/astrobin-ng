@@ -66,6 +66,7 @@
 
 .toast-error {
   &,
+  p,
   strong {
     color: var(--textOnDangerColor);
   }

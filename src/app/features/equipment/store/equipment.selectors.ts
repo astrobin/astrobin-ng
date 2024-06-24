@@ -14,6 +14,11 @@ import { instanceOfAccessory } from "@features/equipment/types/accessory.interfa
 import { instanceOfSoftware } from "@features/equipment/types/software.interface";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
   if (instanceOfSensor(item)) {
@@ -51,10 +56,9 @@ export function arrayUniqueEquipmentItems(
   array: (EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>)[]
 ): (EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>)[] {
   // The array is reverser because this algorithm prefers to keep the object appearing later in the array.
-  const a: (
-    | EquipmentItemBaseInterface
-    | EditProposalInterface<EquipmentItemBaseInterface>
-    )[] = array.concat().reverse();
+  const a: (EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>)[] = array
+    .concat()
+    .reverse();
 
   for (let i = 0; i < a.length; ++i) {
     for (let j = i + 1; j < a.length; ++j) {
@@ -128,3 +132,69 @@ export const selectMostOftenUsedWithForItem = createSelector(
 );
 
 export const selectEquipmentContributors = createSelector(selectEquipment, state => state.contributors);
+
+export const selectMarketplace = createSelector(selectEquipment, state => state.marketplace);
+
+export const selectMarketplaceListings = createSelector(selectMarketplace, state => state.listings);
+
+export const selectMarketplaceListing = createSelector(
+  selectMarketplaceListings,
+  (listings: MarketplaceListingInterface[], props: { id: MarketplaceListingInterface["id"] }) =>
+    listings?.find(listing => listing.id === props.id) || null
+);
+
+export const selectMarketplaceListingByHash = (hash: MarketplaceListingInterface["hash"]) =>
+  createSelector(selectMarketplaceListings, listings => listings?.find(listing => listing.hash === hash) || null);
+
+export const selectMarketplacePrivateConversations = (
+  listingId: MarketplaceListingInterface["id"],
+  userId?: UserInterface["id"]
+) =>
+  createSelector(selectMarketplace, marketplace =>
+    marketplace.privateConversations.filter(
+      conversation => {
+        let result = conversation.listing === listingId;
+
+        if (userId) {
+          result = result && conversation.user === userId;
+        }
+
+        return result;
+      }
+    )
+  );
+
+export const selectMarketplacePrivateConversation = (conversationId: MarketplacePrivateConversationInterface["id"]) =>
+  createSelector(
+    selectMarketplace,
+    marketplace => marketplace.privateConversations.find(conversation => conversation.id === conversationId) || null
+  );
+
+export const selectMarketplaceOffers = (listingId: MarketplaceListingInterface["id"]) => {
+  return createSelector(selectMarketplace, marketplace => {
+    const listing = marketplace.listings.find(listing => listing.id === listingId);
+
+    if (!!listing) {
+      return listing.lineItems.reduce<MarketplaceOfferInterface[]>((offers, lineItem) => {
+        return offers.concat(lineItem.offers);
+      }, []);
+    }
+
+    return [];
+  });
+};
+
+export const selectMarketplaceOffersByUser = (
+  userId: UserInterface["id"],
+  listingId: MarketplaceListingInterface["id"]
+) => {
+  return createSelector(selectMarketplace, marketplace => {
+    const listing = marketplace.listings.find(listing => listing.id === listingId);
+
+    if (!!listing) {
+      return EquipmentMarketplaceService.offersByUser(userId, listing);
+    }
+
+    return [];
+  });
+};

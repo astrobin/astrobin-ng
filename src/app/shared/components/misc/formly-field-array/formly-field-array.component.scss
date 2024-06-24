@@ -1,0 +1,8 @@
+.btn-remove,
+.btn-toggle-collapse {
+  color: var(--grey);
+
+  &:hover {
+    color: var(--lightGrey);
+  }
+}

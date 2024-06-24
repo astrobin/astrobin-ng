@@ -37,8 +37,11 @@ import {
   CreateNestedComment,
   CreateNestedCommentFailure,
   CreateNestedCommentSuccess,
+  LoadNestedComment,
+  LoadNestedCommentFailure,
   LoadNestedComments,
-  LoadNestedCommentsSuccess
+  LoadNestedCommentsSuccess,
+  LoadNestedCommentSuccess
 } from "@app/store/actions/nested-comments.actions";
 import {
   CreateToggleProperty,
@@ -62,6 +65,7 @@ export enum AppActionTypes {
   HIDE_FULLSCREEN_IMAGE = "[App] Hide full screen image",
 
   LOAD_CONTENT_TYPE = "[App] Load content type",
+  LOAD_CONTENT_TYPE_BY_ID = "[App] Load content type by id",
   LOAD_CONTENT_TYPE_SUCCESS = "[App] Load content type success",
 
   // Emit this to instruct images on a page to check for visibility and possibly autoload, for instance if items were
@@ -108,6 +112,10 @@ export enum AppActionTypes {
 
   LOAD_NESTED_COMMENTS = "[App] Load nested comments",
   LOAD_NESTED_COMMENTS_SUCCESS = "[App] Load nested comments success",
+
+  LOAD_NESTED_COMMENT = "[App] Load nested comment",
+  LOAD_NESTED_COMMENT_SUCCESS = "[App] Load nested comment success",
+  LOAD_NESTED_COMMENT_FAILURE = "[App] Load nested comment failure",
 
   CREATE_NESTED_COMMENT = "[App] Save nested comment",
   CREATE_NESTED_COMMENT_SUCCESS = "[App] Save nested comment success",
@@ -161,6 +169,9 @@ export type All =
   | CreateLocationSuccess
   | LoadNestedComments
   | LoadNestedCommentsSuccess
+  | LoadNestedComment
+  | LoadNestedCommentSuccess
+  | LoadNestedCommentFailure
   | CreateNestedComment
   | CreateNestedCommentSuccess
   | CreateNestedCommentFailure

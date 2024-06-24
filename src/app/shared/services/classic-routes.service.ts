@@ -37,6 +37,7 @@ export class ClassicRoutesService extends BaseService {
   CONTACT = "https://welcome.astrobin.com/contact";
   MODERATE_IMAGE_QUEUE = BASE_URL + "/moderate/images/";
   MODERATE_SPAM_QUEUE = BASE_URL + "/moderate/images/spam/";
+  MARKETPLACE_TERMS = "https://welcome.astrobin.com/marketplace-terms-of-service";
 
   COMMERCIAL_PRODUCTS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/commercial/products/`;
 
@@ -61,4 +62,6 @@ export class ClassicRoutesService extends BaseService {
   EDIT_IMAGE_ACQUISITION = (id: string) => BASE_URL + `/edit/acquisition/${id}/`;
 
   EDIT_IMAGE_REVISION = (id: string) => BASE_URL + `/edit/revision/${id}/`;
+
+  COMPOSE_MESSAGE = (username: string, subject: string) => BASE_URL + `/messages/compose/${username}/?subject=${subject}`;
 }

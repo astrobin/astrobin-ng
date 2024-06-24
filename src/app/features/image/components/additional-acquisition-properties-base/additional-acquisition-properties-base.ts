@@ -24,7 +24,7 @@ export class AdditionalAcquisitionPropertiesBase extends BaseComponentDirective 
   }
 
   close(): void {
-    const fieldsWithErrors: FormlyFieldConfig[] = UtilsService.fieldWithErrors(this.fieldGroup);
+    const fieldsWithErrors: FormlyFieldConfig[] = UtilsService.fieldsWithErrors(this.fieldGroup);
     if (fieldsWithErrors.length > 0) {
       const errorList: string[] = fieldsWithErrors.map(field => `<li>${field.props.label}</li>`);
 

@@ -7,7 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 
 @Component({
-  selector: "astrobin-iotd-comments-modal",
+  selector: "astrobin-nested-comments-modal",
   templateUrl: "./nested-comments-modal.component.html"
 })
 export class NestedCommentsModalComponent extends BaseComponentDirective {
@@ -22,6 +22,15 @@ export class NestedCommentsModalComponent extends BaseComponentDirective {
 
   @Input()
   info: string;
+
+  @Input()
+  title: string = this.translateService.instant("Comments");
+
+  @Input()
+  addCommentLabel: string = this.translateService.instant("Add a comment");
+
+  @Input()
+  noCommentsLabel: string = this.translateService.instant("There are no comments yet.");
 
   constructor(
     public readonly store$: Store<State>,

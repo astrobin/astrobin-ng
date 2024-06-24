@@ -1,0 +1,74 @@
+:host {
+  ::ng-deep {
+    astrobin-toggle-button {
+      float: right;
+      clear: both;
+    }
+
+    .field-group-line-items {
+      &.sold,
+      &.reserved {
+        > formly-field:not(.cannot-edit-because-sold):not(.cannot-edit-because-reserved) {
+          opacity: .5;
+          pointer-events: none;
+        }
+      }
+
+      > formly-field {
+        margin-bottom: 0;
+      }
+
+      > formly-field:not(.last-visible) {
+        border-bottom: 1px solid var(--darkGrey);
+        padding-bottom: 2rem;
+      }
+
+      > formly-field:not(.first-visible) {
+        border-top: 1px solid var(--darkestGrey);
+        padding-top: 2rem;
+      }
+
+      .cannot-edit-because-sold,
+      .cannot-edit-because-reserved {
+        color: var(--textOnDangerColor);
+        background-color: var(--dangerColor);
+        padding: .5rem !important;
+        margin: -1rem -1rem 0;
+      }
+    }
+
+    .field-group-images {
+      formly-field {
+        width: calc(100% / 5);
+        margin-bottom: 0;
+        padding: .25rem;
+
+        .upload-container {
+          height: 5rem;
+        }
+
+        .file {
+          img {
+            height: 5rem;
+          }
+        }
+      }
+    }
+  }
+
+  .col-preview > .sticky-top {
+    top: 2rem;
+  }
+
+  .form-preview-overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    z-index: 1;
+  }
+}

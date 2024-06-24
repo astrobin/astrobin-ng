@@ -15,6 +15,9 @@ import { of } from "rxjs";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-table/formly-field-table.component";
 import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
+import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
+import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
+import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -72,6 +75,21 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         name: "button",
         component: FormlyFieldButtonComponent,
         wrappers: ["default-wrapper"]
+      },
+      {
+        name: "toggle",
+        component: FormlyFieldToggleComponent,
+        wrappers: ["default-wrapper"]
+      },
+      {
+        name: "array",
+        component: FormlyFieldArrayComponent,
+        wrappers: ["default-wrapper"]
+      },
+      {
+        name: "custom-number",
+        component: FormlyFieldCustomNumberComponent,
+        wrappers: ["default-wrapper"]
       }
     ],
     validationMessages: [
@@ -83,9 +101,10 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "file-size",
-        message: () =>
+        message: (options: { max: number }) =>
           translateService.instant(
-            "This file is too large. Please check the size requirement in the field's description."
+            "This file is too large. The maximum allowed size is {{0}}.",
+            { 0: UtilsService.humanFileSize(options.max) }
           )
       },
       {
@@ -323,7 +342,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             value = control.value;
           }
 
-          return !value || UtilsService.isString(value) || value?.size < options.max ? null : { "file-size": true };
+          if (!!value && !!value.file) {
+            value = value.file;
+          }
+
+          return !value || UtilsService.isString(value) || value?.size < options.max ? null : { "file-size": options };
         }
       },
       {
@@ -337,12 +360,16 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             value = control.value;
           }
 
+          if (!!value && !!value.file) {
+            value = value.file;
+          }
+
           return !value ||
           UtilsService.isString(value) ||
           UtilsService.isImage(value.name) ||
           UtilsService.isVideo(value.name)
             ? null
-            : { "image-file": true };
+            : { "image-or-video-file": true };
         }
       },
       {

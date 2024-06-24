@@ -1,3 +1,7 @@
+astrobin-loading-indicator {
+  height: auto;
+}
+
 .top-level-form,
 .add-comment {
   margin-bottom: 2rem;
@@ -16,4 +20,8 @@
   .btn:not(:last-child) {
     margin-right: .25rem;
   }
+}
+
+.btn-close {
+  color: var(--lightGrey);
 }
