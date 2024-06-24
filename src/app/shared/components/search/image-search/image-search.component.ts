@@ -84,9 +84,19 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.itemType) {
+      const urlParams = new URLSearchParams();
+      urlParams.set("d", "i");
+      urlParams.set("sort", this.ordering);
+      urlParams.set(`${this.itemType.toLowerCase()}_ids`, this.itemId.toString());
+
+      if (this.username) {
+        urlParams.set("username", this.username.toString());
+      }
+
       this.searchUrl = `${
         this.classicRoutesService.SEARCH
-      }?d=i&sort=${this.ordering}&${this.itemType.toLowerCase()}_ids=${this.itemId}`;
+      }?${urlParams.toString()}`;
+
       this._loadData(false);
     }
   }
