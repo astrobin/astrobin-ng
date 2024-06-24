@@ -812,7 +812,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
 
   private _getNumberField(): FormlyFieldConfig {
     return {
-      key: "custom-number",
+      key: "number",
       type: "input",
       wrappers: ["default-wrapper"],
       props: {
