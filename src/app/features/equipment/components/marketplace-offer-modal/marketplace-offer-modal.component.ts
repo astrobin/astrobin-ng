@@ -368,7 +368,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
   private _checkOfferFormHasItems(): boolean {
     const total = this._getOfferTotalAmount();
 
-    if (total === 0) {
+    if (total <= 0) {
       this.popNotificationsService.error(this.translateService.instant("You cannot offer nothing, sorry."));
     }
 
