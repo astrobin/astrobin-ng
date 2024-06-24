@@ -10,5 +10,5 @@ phases:
 
   build:
     commands:
-      - bash deploy.sh astrobin-ng-autoscaling-group 180
+      - bash deploy.sh astrobin-ng-autoscaling-group 240
 
