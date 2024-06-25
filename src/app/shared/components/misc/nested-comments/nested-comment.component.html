@@ -36,12 +36,15 @@
         (click)="onReplyClicked($event)"
         *ngIf="
           showReplyButton && (
-            currentUserWrapper.user?.id !== comment.author ||
             (
-              currentUserWrapper.user?.id === comment.author && allowSelfReply
+              currentUserWrapper.user?.id !== comment.author &&
+              (
+                !restrictReplyToUserId ||
+                (restrictReplyToUserId && restrictReplyToUserId === comment.author)
+              )
             ) ||
             (
-                restrictReplyToUserId && restrictReplyToUserId === comment.author
+              currentUserWrapper.user?.id === comment.author && allowSelfReply
             )
           )
         "
