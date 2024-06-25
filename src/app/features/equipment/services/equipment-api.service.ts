@@ -793,7 +793,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     Object.keys(options).forEach(key => {
       const value = options[key];
-      if (value != null) {
+      if (value != null && value !== "" && value !== "undefined") {
         const paramKey = UtilsService.camelCaseToSnakeCase(key);
         let valueStr = value.toString();
         url = UtilsService.addOrUpdateUrlParam(url, paramKey, valueStr);

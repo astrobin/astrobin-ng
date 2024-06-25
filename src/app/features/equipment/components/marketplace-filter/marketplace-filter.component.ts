@@ -92,8 +92,9 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
     public readonly geolocationService: GeolocationService,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
-    public windowRefService: WindowRefService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    public readonly windowRefService: WindowRefService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -158,12 +159,15 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
   resetFilters() {
     Object.keys(this.filterForm.controls).forEach(key => {
       const control = this.filterForm.get(key);
-      control.setValue(null);
+      control.reset();
       control.markAsPristine();
       control.markAsUntouched();
+      control.updateValueAndValidity();
     });
 
-    this.applyFilters();
+    this.utilsService.delay(1).subscribe(() => {
+      this.applyFilters();
+    });
   }
 
   private _initFilterFields(params: Params) {
