@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { LoadingService } from "@shared/services/loading.service";
@@ -20,6 +20,7 @@ import { forkJoin } from "rxjs";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: "astrobin-marketplace-feedback-modal",
@@ -44,6 +45,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly modal: NgbActiveModal,
+    public readonly modalService: NgbModal,
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService
@@ -70,52 +72,69 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
       return;
     }
 
-    const selectedLineItemIds = Object.keys(this.form.value)
-      .filter(key => this.form.value[key])
-      .map(key => key.replace("checkbox-", ""))
-      .map(id => parseInt(id, 10));
+    const confirmationModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const confirmationModalInstance: ConfirmationDialogComponent = confirmationModalRef.componentInstance;
+    confirmationModalInstance.title = this.translateService.instant(
+      "Did you receive payment and deliver the item(s)?"
+    );
+    confirmationModalInstance.message = this.translateService.instant(
+      "AstroBin considers an item as sold when you have received payment and delivered it to the buyer. If you " +
+      "have not completed these steps, please hold off on marking the item as sold. Are you sure you want to " +
+      "proceed?"
+    );
 
-    const selectedLineItems = this.listing.lineItems.filter(lineItem => selectedLineItemIds.includes(lineItem.id));
-
-    const successObservables$ = selectedLineItems.map(lineItem => {
-      return this.actions$.pipe(
-        ofType(EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_SUCCESS),
-        filter((action: MarkMarketplaceLineItemAsSoldSuccess) => action.payload.lineItem.id === lineItem.id),
-        take(1)
-      );
+    confirmationModalRef.dismissed.subscribe(() => {
+      this.modal.close();
     });
 
-    const failureObservables$ = selectedLineItems.map(lineItem => {
-      return this.actions$.pipe(
-        ofType(EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_FAILURE),
-        filter((action: MarkMarketplaceLineItemAsSoldSuccess) => action.payload.lineItem.id === lineItem.id),
-        take(1)
-      );
-    });
+    confirmationModalRef.closed.subscribe(() => {
+      const selectedLineItemIds = Object.keys(this.form.value)
+        .filter(key => this.form.value[key])
+        .map(key => key.replace("checkbox-", ""))
+        .map(id => parseInt(id, 10));
 
-    forkJoin(successObservables$)
-      .pipe(take(1))
-      .subscribe(() => {
-        this.modal.close();
-        this.loadingService.setLoading(false);
-        this.popNotificationsService.success("Line items marked as sold.");
+      const selectedLineItems = this.listing.lineItems.filter(lineItem => selectedLineItemIds.includes(lineItem.id));
+
+      const successObservables$ = selectedLineItems.map(lineItem => {
+        return this.actions$.pipe(
+          ofType(EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_SUCCESS),
+          filter((action: MarkMarketplaceLineItemAsSoldSuccess) => action.payload.lineItem.id === lineItem.id),
+          take(1)
+        );
       });
 
-    forkJoin(failureObservables$)
-      .pipe(take(1))
-      .subscribe(() => {
-        this.modal.close();
-        this.loadingService.setLoading(false);
-        this.popNotificationsService.error("Error while marking line items as sold.");
+      const failureObservables$ = selectedLineItems.map(lineItem => {
+        return this.actions$.pipe(
+          ofType(EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_FAILURE),
+          filter((action: MarkMarketplaceLineItemAsSoldSuccess) => action.payload.lineItem.id === lineItem.id),
+          take(1)
+        );
       });
 
-    this.loadingService.setLoading(true);
+      forkJoin(successObservables$)
+        .pipe(take(1))
+        .subscribe(() => {
+          this.modal.close();
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success("Line items marked as sold.");
+        });
 
-    selectedLineItems.forEach(lineItem => {
-      this.store$.dispatch(new MarkMarketplaceLineItemAsSold({
-        lineItem,
-        soldTo: this.form.get(`soldTo-${lineItem.id}`).value
-      }));
+      forkJoin(failureObservables$)
+        .pipe(take(1))
+        .subscribe(() => {
+          this.modal.close();
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.error("Error while marking line items as sold.");
+        });
+
+      this.loadingService.setLoading(true);
+
+      selectedLineItems.forEach(lineItem => {
+        this.store$.dispatch(new MarkMarketplaceLineItemAsSold({
+          lineItem,
+          soldTo: this.form.get(`soldTo-${lineItem.id}`).value
+        }));
+      });
     });
   }
 
