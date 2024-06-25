@@ -402,9 +402,11 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         componentInstance.objectId = privateConversation.id;
         componentInstance.title =
           currentUser.id === this.listing.user
-            ? this.translateService.instant("Private conversations with a prospective buyer")
+            ? this.translateService.instant("Private conversations with a buyer")
             : this.translateService.instant("Private conversations with the seller");
-        componentInstance.addCommentLabel = this.translateService.instant("Start a new conversation");
+        componentInstance.addCommentLabel = currentUser.id === this.listing.user
+          ? this.translateService.instant("Start a new private conversation with this buyer")
+          : this.translateService.instant("Start a new private conversation with the seller");
         componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
 
         modalRef.shown
