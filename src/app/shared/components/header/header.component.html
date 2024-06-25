@@ -413,9 +413,13 @@
             {{ "Bookmarks" | translate }}
           </a>
 
-          <a [href]="classicRoutes.PLOTS(userWrapper.user)" class="dropdown-item">
-            <fa-icon icon="chart-bar"></fa-icon>
-            {{ "Plots" | translate }}
+          <a
+            *ngIf="(currentUser$ | async) | isBetaTester"
+            [routerLink]="['equipment', 'marketplace', 'users', userWrapper.user.username, 'listings']"
+            class="dropdown-item"
+          >
+            <fa-icon icon="shopping-cart"></fa-icon>
+            {{ "Marketplace listings" | translate }}
           </a>
 
           <div class="dropdown-divider"></div>
