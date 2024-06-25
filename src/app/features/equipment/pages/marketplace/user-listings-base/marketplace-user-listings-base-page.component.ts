@@ -19,6 +19,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LocalStorageService } from "@shared/services/localstorage.service";
 import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { RouterService } from "@shared/services/router.service";
 
 @Component({
   selector: "astrobin-marketplace-user-listings-base-page",
@@ -44,7 +45,8 @@ export abstract class MarketplaceUserListingsBasePageComponent
     public readonly windowRefService: WindowRefService,
     public readonly localStorageService: LocalStorageService,
     public readonly modalService: NgbModal,
-    public readonly paginationConfig: NgbPaginationConfig
+    public readonly paginationConfig: NgbPaginationConfig,
+    public readonly routerService: RouterService
   ) {
     super(
       store$,
@@ -59,7 +61,8 @@ export abstract class MarketplaceUserListingsBasePageComponent
       localStorageService,
       modalService,
       windowRefService,
-      paginationConfig
+      paginationConfig,
+      routerService
     );
   }
 

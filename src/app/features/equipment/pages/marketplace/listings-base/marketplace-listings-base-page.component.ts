@@ -29,6 +29,7 @@ import { LocalStorageService } from "@shared/services/localstorage.service";
 import { NgbModal, NgbModalRef, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { RouterService } from "@shared/services/router.service";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -66,7 +67,8 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     public readonly localStorageService: LocalStorageService,
     public readonly modalService: NgbModal,
     public readonly windowRefService: WindowRefService,
-    public readonly paginationConfig: NgbPaginationConfig
+    public readonly paginationConfig: NgbPaginationConfig,
+    public readonly routerService: RouterService
   ) {
     super(store$);
   }
@@ -154,33 +156,30 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
       }
     }
 
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams
-    }).then(() => {
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_SUCCESS),
-        take(1)
-      ).subscribe(() => {
-        this._initializeListingsStream();
-      });
+    this.routerService.updateQueryParams(queryParams);
 
-      this.utilsService.delay(1).subscribe(() => {
-          this.store$.dispatch(new ClearMarketplaceListings());
-          this.store$.dispatch(new LoadMarketplaceListings(
-            {
-              options: {
-                ...(this.filterModel || {}),
-                page: this.page
-              }
-            }));
-        }
-      );
-
-      this._setTitle();
-      this._setBreadcrumb();
-      this.loadingService.setLoading(false);
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_SUCCESS),
+      take(1)
+    ).subscribe(() => {
+      this._initializeListingsStream();
     });
+
+    this.utilsService.delay(1).subscribe(() => {
+        this.store$.dispatch(new ClearMarketplaceListings());
+        this.store$.dispatch(new LoadMarketplaceListings(
+          {
+            options: {
+              ...(this.filterModel || {}),
+              page: this.page
+            }
+          }));
+      }
+    );
+
+    this._setTitle();
+    this._setBreadcrumb();
+    this.loadingService.setLoading(false);
   }
 
   protected abstract _getListingsFilterPredicate(currentUser: UserInterface | null): (listing: MarketplaceListingInterface) => boolean;
@@ -189,7 +188,15 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     this.listings$ = this.store$.select(selectMarketplaceListings).pipe(
       concatLatestFrom(() => this.currentUser$),
       map(([listings, currentUser]) => !!listings ? listings.filter(this._getListingsFilterPredicate(currentUser)) : []),
-      tap(() => this.loadingService.setLoading(false)),
+      tap(() => {
+        this.utilsService.delay(200).subscribe(() => {
+          if (this.windowRefService.nativeWindow.innerWidth < 768) {
+            this.windowRefService.scrollToElement(".marketplace-navigation");
+          }
+
+          this.loadingService.setLoading(false);
+        });
+      }),
       takeUntil(this.destroyed$)
     );
   }
