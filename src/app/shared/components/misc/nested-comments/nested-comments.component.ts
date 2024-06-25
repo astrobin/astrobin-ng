@@ -197,7 +197,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         key: "topLevelComment",
         type: "ckeditor",
         wrappers: ["default-wrapper"],
-        id: "top-level-comment-field",
+        id: `top-level-comment-field-${this.contentType.id}-${this.objectId}`,
         props: {
           required: true
         }
