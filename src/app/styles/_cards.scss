@@ -116,7 +116,9 @@
       margin: .5rem 0;
 
       &:not(:last-child) {
-        margin-right: 1rem;
+        @media screen and (min-width: $md-min) {
+          margin-right: 1rem;
+        }
       }
     }
   }
