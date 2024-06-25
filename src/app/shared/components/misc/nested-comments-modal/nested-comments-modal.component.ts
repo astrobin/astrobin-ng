@@ -5,6 +5,10 @@ import { State } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import {
+  NestedCommentsAutoStartTopLevelStrategy,
+  NestedCommentsTopLevelFormPlacement
+} from "@shared/components/misc/nested-comments/nested-comments.component";
 
 @Component({
   selector: "astrobin-nested-comments-modal",
@@ -31,6 +35,21 @@ export class NestedCommentsModalComponent extends BaseComponentDirective {
 
   @Input()
   noCommentsLabel: string = this.translateService.instant("There are no comments yet.");
+
+  @Input()
+  showReplyButton = true;
+
+  @Input()
+  showTopLevelButton = true;
+
+  @Input()
+  autoStartTopLevelStrategy: NestedCommentsAutoStartTopLevelStrategy = null;
+
+  @Input()
+  topLevelFormPlacement: NestedCommentsTopLevelFormPlacement = "TOP";
+
+  @Input()
+  topLevelFormHeight: number;
 
   constructor(
     public readonly store$: Store<State>,

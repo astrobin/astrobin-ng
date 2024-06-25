@@ -57,6 +57,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
 import { Location } from "@angular/common";
+import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -408,6 +409,11 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           ? this.translateService.instant("Start a new private conversation with this buyer")
           : this.translateService.instant("Start a new private conversation with the seller");
         componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
+        componentInstance.showReplyButton = false;
+        componentInstance.showTopLevelButton = false;
+        componentInstance.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.ALWAYS;
+        componentInstance.topLevelFormPlacement = "BOTTOM";
+        componentInstance.topLevelFormHeight = 150;
 
         modalRef.shown
           .pipe(

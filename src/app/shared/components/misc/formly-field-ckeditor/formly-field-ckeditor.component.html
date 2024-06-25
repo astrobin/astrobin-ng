@@ -1,5 +1,5 @@
 <div [hidden]="!showEditor">
-  <textarea class="form-control" [attr.id]="field.id" [formControl]="formControl"></textarea>
+  <textarea [attr.id]="field.id" [formControl]="formControl" class="form-control"></textarea>
 
   <div class="form-text text-muted">
     <span [innerHTML]="'Use the <strong>@</strong> sign and start typing to mention any user.' | translate"></span>
@@ -9,4 +9,4 @@
   </div>
 </div>
 
-<astrobin-loading-indicator [hidden]="showEditor"></astrobin-loading-indicator>
+<astrobin-loading-indicator [hidden]="showEditor" class="mt-4"></astrobin-loading-indicator>

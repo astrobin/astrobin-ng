@@ -1,7 +1,3 @@
-<ng-container *ngIf="loadingComments">
-  <ng-container *ngTemplateOutlet="loadingTpl"></ng-container>
-</ng-container>
-
 <div *ngIf="comments$ | async as comments" class="nested-comments card">
 
   <div class="card-header">
@@ -20,9 +16,15 @@
       <span [innerHTML]="info"></span>
     </p>
 
-    <ng-container *ngIf="showTopLevelForm" [ngTemplateOutlet]="topLevelFormTpl"></ng-container>
+    <ng-container
+      *ngIf="showTopLevelForm && topLevelFormPlacement === 'TOP'"
+      [ngTemplateOutlet]="topLevelFormTpl"
+    ></ng-container>
 
-    <ng-container *ngIf="!showTopLevelForm" [ngTemplateOutlet]="addCommentButtonTpl"></ng-container>
+    <ng-container
+      *ngIf="showTopLevelButton && topLevelFormPlacement === 'TOP' && !showTopLevelForm"
+      [ngTemplateOutlet]="addCommentButtonTpl"
+    ></ng-container>
 
     <ng-container *ngIf="!loadingComments; else loadingTpl">
       <ng-container
@@ -33,9 +35,19 @@
       <ng-container *ngIf="comments.length === 0" [ngTemplateOutlet]="noCommentsTpl"></ng-container>
     </ng-container>
 
-  </div>
+    <ng-container
+      *ngIf="showTopLevelForm && topLevelFormPlacement === 'BOTTOM'"
+      [ngTemplateOutlet]="topLevelFormTpl"
+    ></ng-container>
 
-</div>
+    <ng-container
+      *ngIf="showTopLevelButton && topLevelFormPlacement === 'BOTTOM' && !showTopLevelForm"
+      [ngTemplateOutlet]="addCommentButtonTpl"
+    ></ng-container>
+
+  </div> <!-- card-body -->
+
+</div> <!-- card -->
 
 <ng-template #loadingTpl>
   <astrobin-loading-indicator></astrobin-loading-indicator>
@@ -53,8 +65,12 @@
       </form>
 
       <div class="form-actions">
-        <button (click)="cancelTopLevelComment()" [class.loading]="loadingService.loading$ | async"
-                class="btn btn-secondary">
+        <button
+          (click)="cancelTopLevelComment()"
+          *ngIf="autoStartTopLevelStrategy === null"
+          [class.loading]="loadingService.loading$ | async"
+          class="btn btn-sm btn-outline-secondary me-sm-2"
+        >
           {{ "Cancel" | translate }}
         </button>
 
@@ -62,7 +78,7 @@
           (click)="submitTopLevelComment()"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="!form.valid"
-          class="btn btn-primary ms-sm-2"
+          class="btn btn-primary btn-sm"
         >
           {{ "Submit" | translate }}
         </button>
@@ -79,7 +95,13 @@
 </ng-template>
 
 <ng-template #commentsTpl let-comment="comment">
-  <astrobin-nested-comment [comment]="comment" [highlighted]="comment.id === highlightId"></astrobin-nested-comment>
+  <astrobin-nested-comment
+    [allowSelfReply]="allowSelfReply"
+    [comment]="comment"
+    [highlighted]="comment.id === highlightId"
+    [restrictReplyToUserId]="restrictReplyToUserId"
+    [showReplyButton]="showReplyButton"
+  ></astrobin-nested-comment>
 </ng-template>
 
 <ng-template #noCommentsTpl>

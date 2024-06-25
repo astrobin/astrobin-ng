@@ -439,6 +439,7 @@ export class CKEditorService extends BaseService {
       fontSize_sizes: "50%/50%;100%/100%;200%/200%",
       autoGrow_minHeight: 300,
       autoGrow_maxHeight: 1200,
+      autoGrow_onStartup: true,
       autoGrow_bottomSpace: 50,
       codeSnippet_languages: {
         bash: "Bash",

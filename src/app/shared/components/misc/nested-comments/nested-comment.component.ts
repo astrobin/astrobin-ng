@@ -30,6 +30,19 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   @Input()
   highlighted = false;
 
+  // Whether to show the reply button or not. Some usages of this component might prefer flat comments.
+  @Input()
+  showReplyButton = true;
+
+  // Whether to allow the user to reply to their own comments.
+  @Input()
+  allowSelfReply = true;
+
+  // Whether to restrict the reply to a specific user. Useful for question/answer scenarios where you only want to owner
+  // of an object to reply to a comment.
+  @Input()
+  restrictReplyToUserId: UserInterface["id"];
+
   user$: Observable<UserInterface>;
   replyModel: { topLevelComment: string };
   replyForm = new FormGroup({});

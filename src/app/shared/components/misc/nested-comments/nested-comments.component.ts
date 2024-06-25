@@ -19,6 +19,14 @@ import { TranslateService } from "@ngx-translate/core";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { RouterService } from "@shared/services/router.service";
+import { UserInterface } from "@shared/interfaces/user.interface";
+
+export enum NestedCommentsAutoStartTopLevelStrategy {
+  ALWAYS = "ALWAYS",
+  IF_NO_COMMENTS = "IF_NO_COMMENTS"
+}
+
+export type NestedCommentsTopLevelFormPlacement = "TOP" | "BOTTOM";
 
 @Component({
   selector: "astrobin-nested-comments",
@@ -51,7 +59,25 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   showCloseButton = false;
 
   @Input()
-  autoStartIfNoComments = false;
+  showReplyButton = true;
+
+  @Input()
+  allowSelfReply = true;
+
+  @Input()
+  showTopLevelButton = true;
+
+  @Input()
+  restrictReplyToUserId: UserInterface["id"];
+
+  @Input()
+  autoStartTopLevelStrategy: NestedCommentsAutoStartTopLevelStrategy = null;
+
+  @Input()
+  topLevelFormPlacement: NestedCommentsTopLevelFormPlacement = "TOP";
+
+  @Input()
+  topLevelFormHeight: number;
 
   @Output()
     // eslint-disable-next-line @angular-eslint/no-output-native
@@ -64,7 +90,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   fields: FormlyFieldConfig[];
   showTopLevelForm = false;
   _lastFetchedComments: NestedCommentInterface[] = null;
-  _autoStartCommentsRetries = 0;
+  _autoStartTopLevelRetries = 0;
 
   constructor(
     public readonly store$: Store,
@@ -163,30 +189,38 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
           this._lastFetchedComments = comments;
 
           this.utilsService.delay(200).subscribe(() => {
-            this._autoStartIfNoComments();
+            this._autoStartTopLevel();
           });
         }),
         takeUntil(this.destroyed$)
       );
   }
 
-  _autoStartIfNoComments() {
-    if (this._autoStartCommentsRetries >= 10) {
+  _autoStartTopLevel() {
+    if (this._autoStartTopLevelRetries >= 10) {
       return;
     }
 
-    this._autoStartCommentsRetries++;
+    this._autoStartTopLevelRetries++;
 
     if (this.loadingComments) {
       this.utilsService.delay(200).subscribe(() =>
-        this._autoStartIfNoComments()
+        this._autoStartTopLevel()
       );
       return;
     }
 
     const comments = this._lastFetchedComments;
 
-    if (this.autoStartIfNoComments && comments && comments.length === 0 && !this.showTopLevelForm) {
+    if (
+      !this.showTopLevelForm &&
+      this.autoStartTopLevelStrategy === NestedCommentsAutoStartTopLevelStrategy.ALWAYS ||
+      (
+        this.autoStartTopLevelStrategy === NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS &&
+        comments &&
+        comments.length === 0
+      )
+    ) {
       this.onAddCommentClicked(null);
     }
   }
@@ -199,7 +233,8 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         wrappers: ["default-wrapper"],
         id: `top-level-comment-field-${this.contentType.id}-${this.objectId}`,
         props: {
-          required: true
+          required: true,
+          height: this.topLevelFormHeight || 300
         }
       }
     ];

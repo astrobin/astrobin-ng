@@ -122,13 +122,19 @@
 
             <astrobin-nested-comments
               [addCommentLabel]="'Ask a question' | translate"
+              [allowSelfReply]="false"
               [contentType]="listingContentType"
-              [info]="
-                'Questions asked here are publicly visible. If you want to contact the seller in a private conversation, use the \'Message seller privately\' button.'
-                  | translate
+              [info]="currentUserWrapper.user?.id !== listing.user
+                ? (
+                  'Questions asked here are publicly visible. If you want to contact the seller in a private ' +
+                  'conversation, use the \'Message seller privately\' button.' | translate
+                )
+                : null
               "
               [noCommentsLabel]="'There are no questions or discussions yet.'"
               [objectId]="listing.id"
+              [restrictReplyToUserId]="currentUserWrapper.user?.id !== listing.user ? listing.user : null"
+              [showTopLevelButton]="currentUserWrapper.user?.id !== listing.user"
               [title]="'Public questions' | translate"
             ></astrobin-nested-comments>
 

@@ -1,68 +1,85 @@
-<div [class.highlighted]="highlighted" class="nested-comment" id="c{{ comment.id }}"
-     style="margin-left:{{ comment.depth - 1 }}rem">
-  <div class="meta">
-    <astrobin-username [user]="user$ | async"></astrobin-username>
+<ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+  <div [class.highlighted]="highlighted" class="nested-comment" id="c{{ comment.id }}"
+       style="margin-left:{{ comment.depth - 1 }}rem">
+    <div class="meta">
+      <astrobin-username [user]="user$ | async"></astrobin-username>
 
-    <span [attr.data-test-value]="comment.created" class="timestamp">
+      <span [attr.data-test-value]="comment.created" class="timestamp">
       {{ comment.created | localDate | timeago: true }}
     </span>
 
-    <span
-      *ngIf="comment.likes.length === 1"
-      [translate]="'1 like'"
-      class="likes"
-    >
+      <span
+        *ngIf="comment.likes.length === 1"
+        [translate]="'1 like'"
+        class="likes"
+      >
     </span>
 
-    <span
-      *ngIf="comment.likes.length > 1"
-      [translateParams]="{ '0': comment.likes.length }"
-      [translate]="'{{0}} likes'"
-      class="likes"
-    >
+      <span
+        *ngIf="comment.likes.length > 1"
+        [translateParams]="{ '0': comment.likes.length }"
+        [translate]="'{{0}} likes'"
+        class="likes"
+      >
     </span>
-  </div>
+    </div>
 
-  <div #commentText [innerHTML]="comment.html" class="text"></div>
+    <div #commentText [innerHTML]="comment.html" class="text"></div>
 
-  <div class="actions">
-    <a [href]="getLink()" class="link">
-      <fa-icon icon="link"></fa-icon>
-      {{ "Link" | translate }}
-    </a>
-
-    <button (click)="onReplyClicked($event)" [hidden]="showReplyForm" class="btn btn-primary btn-sm btn-no-block reply">
-      <fa-icon icon="reply"></fa-icon>
-      {{ "Reply" | translate }}
-    </button>
-  </div>
-
-  <div *ngIf="showReplyForm" class="reply-form">
-    <astrobin-read-only-mode
-      *ngIf="(readOnlyMode$ | async) === true; else replyFormTemplate"
-    ></astrobin-read-only-mode>
-
-    <ng-template #replyFormTemplate>
-      <form [formGroup]="replyForm">
-        <formly-form [fields]="replyFields" [form]="replyForm" [model]="replyModel"></formly-form>
-      </form>
+    <div class="actions">
+      <a [href]="getLink()" class="link">
+        <fa-icon icon="link"></fa-icon>
+        {{ "Link" | translate }}
+      </a>
 
       <button
-        (click)="cancelReply()"
-        [class.loading]="loadingService.loading$ | async"
-        class="btn btn-secondary"
+        (click)="onReplyClicked($event)"
+        *ngIf="
+          showReplyButton && (
+            currentUserWrapper.user?.id !== comment.author ||
+            (
+              currentUserWrapper.user?.id === comment.author && allowSelfReply
+            ) ||
+            (
+                restrictReplyToUserId && restrictReplyToUserId === comment.author
+            )
+          )
+        "
+        [hidden]="showReplyForm"
+        class="btn btn-primary btn-sm btn-no-block reply"
       >
-        {{ "Cancel" | translate }}
+        <fa-icon icon="reply"></fa-icon>
+        {{ "Reply" | translate }}
       </button>
+    </div>
 
-      <button
-        (click)="submitReply()"
-        [class.loading]="loadingService.loading$ | async"
-        [disabled]="!replyForm.valid"
-        class="btn btn-primary ms-sm-2"
-      >
-        {{ "Submit" | translate }}
-      </button>
-    </ng-template>
+    <div *ngIf="showReplyForm" class="reply-form">
+      <astrobin-read-only-mode
+        *ngIf="(readOnlyMode$ | async) === true; else replyFormTemplate"
+      ></astrobin-read-only-mode>
+
+      <ng-template #replyFormTemplate>
+        <form [formGroup]="replyForm" class="d-block mt-3">
+          <formly-form [fields]="replyFields" [form]="replyForm" [model]="replyModel"></formly-form>
+        </form>
+
+        <button
+          (click)="cancelReply()"
+          [class.loading]="loadingService.loading$ | async"
+          class="btn btn-sm btn-outline-secondary mt-3"
+        >
+          {{ "Cancel" | translate }}
+        </button>
+
+        <button
+          (click)="submitReply()"
+          [class.loading]="loadingService.loading$ | async"
+          [disabled]="!replyForm.valid"
+          class="btn btn-primary btn-sm ms-sm-2 mt-3"
+        >
+          {{ "Submit" | translate }}
+        </button>
+      </ng-template>
+    </div>
   </div>
-</div>
+</ng-container>

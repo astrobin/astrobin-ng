@@ -35,6 +35,7 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
   private _showEditor(): void {
     this.utilsService.delay(100).subscribe(() => {
       if (this.editor?.instanceReady) {
+        this.editor.resize(null, this.props.height || 300);
         this.showEditor = true;
         this.changeDetectorRef.detectChanges();
       } else {
