@@ -9,6 +9,7 @@ import { CountryService } from "@shared/services/country.service";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 
 @Component({
   selector: "astrobin-marketplace-listing-card",
@@ -74,6 +75,8 @@ export class MarketplaceListingCardComponent extends BaseComponentDirective impl
   }
 
   _buildOffersCount() {
-    this.offersCount = this.listing.lineItems.reduce((acc, lineItem) => acc + lineItem.offers.length, 0);
+    this.offersCount = this.listing.lineItems.reduce((acc, lineItem) => {
+      return acc + lineItem.offers.filter(offer => offer.status === MarketplaceOfferStatus.PENDING).length;
+    }, 0);
   }
 }

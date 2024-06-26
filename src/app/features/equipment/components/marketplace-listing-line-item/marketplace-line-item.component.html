@@ -48,13 +48,13 @@
 
           <div *ngIf="!lineItem.sold" class="offers-count">
             <span
-              *ngIf="lineItem.offers?.length === 1"
+              *ngIf="pendingOffers?.length === 1"
               [translate]="'One offer'"
             ></span>
             <span
-              *ngIf="lineItem.offers?.length > 1"
+              *ngIf="pendingOffers?.length > 1"
               [translateParams]="{
-                '0': lineItem.offers.length
+                '0': pendingOffers.length
               }"
               [translate]="'{{0}} offers'"
             ></span>

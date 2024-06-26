@@ -14,6 +14,8 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item",
@@ -52,6 +54,10 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
     public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
+  }
+
+  get pendingOffers(): MarketplaceOfferInterface[] {
+    return this.lineItem.offers.filter(offer => offer.status === MarketplaceOfferStatus.PENDING);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
