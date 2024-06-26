@@ -4,14 +4,29 @@ import { MarketplaceUserFeedbackListComponent } from "./marketplace-user-feedbac
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
+import { AppModule } from "@app/app.module";
+import { ActivatedRoute } from "@angular/router";
 
 describe("MarketplaceUserFeedbackListComponent", () => {
   let component: MarketplaceUserFeedbackListComponent;
   let fixture: ComponentFixture<MarketplaceUserFeedbackListComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceUserFeedbackListComponent).provide([
-      provideMockStore({ initialState })
+    await MockBuilder(MarketplaceUserFeedbackListComponent, AppModule).provide([
+      provideMockStore({ initialState }),
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: {
+            paramMap: {
+              has: jest.fn(),
+              get: jest.fn(),
+              getAll: jest.fn(),
+              keys: []
+            }
+          }
+        }
+      }
     ]);
 
     fixture = TestBed.createComponent(MarketplaceUserFeedbackListComponent);
