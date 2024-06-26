@@ -325,6 +325,8 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "marketplace-rate-seller":
       case "marketplace-rate-buyer":
       case "marketplace-mark-sold-reminder":
+      case "comment-to-marketplace-feedback-received":
+      case "comment-to-marketplace-feedback-left":
         return NotificationCategory.MARKETPLACE;
     }
 
