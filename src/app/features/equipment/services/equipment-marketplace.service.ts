@@ -149,7 +149,7 @@ export class EquipmentMarketplaceService extends BaseService {
     // The current user is not the seller, so they can leave feedback if they have accepted or rejected offers.
     return listing.lineItems.some(lineItem =>
       lineItem.offers.some(offer =>
-        offer.user === targetUserId && (
+        offer.user === currentUserId && (
           offer.status === MarketplaceOfferStatus.ACCEPTED ||
           offer.status === MarketplaceOfferStatus.REJECTED
         )));
