@@ -57,6 +57,10 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
   }
 
   get pendingOffers(): MarketplaceOfferInterface[] {
+    if (!this.lineItem || !this.lineItem.offers) {
+      return [];
+    }
+
     return this.lineItem.offers.filter(offer => offer.status === MarketplaceOfferStatus.PENDING);
   }
 
