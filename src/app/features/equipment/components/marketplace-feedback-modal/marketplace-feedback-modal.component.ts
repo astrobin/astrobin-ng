@@ -11,8 +11,6 @@ import { filter, take, takeUntil } from "rxjs/operators";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import {
-  MarketplaceFeedbackCategory,
-  MarketplaceFeedbackInterface,
   MarketplaceFeedbackTargetType,
   MarketplaceFeedbackValue
 } from "@features/equipment/types/marketplace-feedback.interface";
@@ -20,10 +18,9 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { CreateMarketplaceFeedback, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import { forkJoin } from "rxjs";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-feedback-modal",
@@ -65,7 +62,8 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
   }
@@ -75,52 +73,27 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
   }
 
   saveFeedback(): void {
-    const transformToFeedbackList = (input: { [key: string]: string | undefined }): MarketplaceFeedbackInterface[] => {
-      const feedbackList: MarketplaceFeedbackInterface[] = [];
-
-      // Loop through each key in the input object
-      for (const key in input) {
-        const [categoryKey, lineItemId] = key.split("-"); // Split key to category and ID
-        if (UtilsService.isValidEnumValue(categoryKey.toUpperCase(), MarketplaceFeedbackCategory)) {
-          const feedback: MarketplaceFeedbackInterface = {
-            recipient: this.user.id,
-            lineItem: parseInt(lineItemId),
-            value: MarketplaceFeedbackValue[input[key] as keyof typeof MarketplaceFeedbackValue],
-            category:
-              MarketplaceFeedbackCategory[categoryKey.toUpperCase() as keyof typeof MarketplaceFeedbackCategory]
-          };
-          feedbackList.push(feedback);
-        }
-      }
-
-      return feedbackList;
-    };
-
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       UtilsService.notifyAboutFieldsWithErrors(this.fields, this.popNotificationsService, this.translateService);
       return;
     }
 
-    const feedbackList = transformToFeedbackList(this.form.value);
+    const feedback = this.form.value;
 
-    const successObservables$ = feedbackList.map(feedback =>
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_SUCCESS),
-        filter((action: any) => action.payload.feedback.lineItem === feedback.lineItem),
-        take(1)
-      )
+    const successObservable$ = this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_SUCCESS),
+      filter((action: any) => action.payload.feedback.lineItem === feedback.lineItem),
+      take(1)
     );
 
-    const failureObservables$ = feedbackList.map(feedback =>
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_FAILURE),
-        filter((action: any) => action.payload.feedback.lineItem === feedback.lineItem),
-        take(1)
-      )
+    const failureObservable$ = this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_FAILURE),
+      filter((action: any) => action.payload.feedback.lineItem === feedback.lineItem),
+      take(1)
     );
 
-    forkJoin(successObservables$)
+    successObservable$
       .pipe(take(1))
       .subscribe(() => {
         this.loadingService.setLoading(false);
@@ -128,7 +101,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
         this.popNotificationsService.success(this.translateService.instant("Feedback saved successfully. Thank you!"));
       });
 
-    forkJoin(failureObservables$)
+    failureObservable$
       .pipe(take(1))
       .subscribe(() => {
         this.loadingService.setLoading(false);
@@ -139,37 +112,17 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
 
     this.loadingService.setLoading(true);
 
-    feedbackList.forEach(feedback => {
-      this.store$.dispatch(new CreateMarketplaceFeedback({ feedback }));
-    });
+    this.store$.dispatch(new CreateMarketplaceFeedback({ feedback }));
   }
 
-  private _lineItemFilter(lineItem: MarketplaceLineItemInterface): boolean {
-    if (this.targetType === MarketplaceFeedbackTargetType.SELLER) {
-      // The current user is rating the seller. They can do it for line items for which they have offers in the
-      // accepted or rejected status. This implies that they interacted with the seller.
-      return lineItem.offers.some(offer =>
-        offer.user === this.user.id &&
-        (
-          offer.status === MarketplaceOfferStatus.ACCEPTED ||
-          offer.status === MarketplaceOfferStatus.REJECTED
-        ));
-    } else {
-      // The current user is rating the buyer. They can do it for line items for which they have offers in the
-      // accepted or retracted status. This implies that they interacted with the buyer.
-      return lineItem.offers.some(offer =>
-        offer.user === this.user.id &&
-        (
-          offer.status === MarketplaceOfferStatus.ACCEPTED ||
-          offer.status === MarketplaceOfferStatus.RETRACTED
-        ));
-    }
+  private _lineItemFilter(lineItem: MarketplaceLineItemInterface, currentUser: UserInterface): boolean {
+    return this.equipmentMarketplaceService.allowLeavingFeedbackToLineItem(lineItem, currentUser.id, this.user.id);
   }
 
   private _initFields() {
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
       this.fields = this.listing.lineItems
-        .filter(lineItem => this._lineItemFilter(lineItem))
+        .filter(lineItem => this._lineItemFilter(lineItem, currentUser))
         .map((lineItem, index) => {
           const options = [
             {
@@ -199,7 +152,6 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
               required: true,
               options,
               hideOptionalMarker: true,
-              hideLabel: index > 0,
               clearable: false,
               searchable: false,
               optionTemplate: this.feedbackOptionTemplate
@@ -207,12 +159,20 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
             expressions: {
               "props.description": () => {
                 if (this._feedbackIsTooOld(key)) {
-                  return this.translateService.instant(
-                    "Feedback older than {{0}} days cannot be changed.", { 0: 60 }
-                  );
+                  return this.translateService.instant("Feedback older than {{0}} days cannot be changed.", { 0: 60 });
                 }
               },
               "props.disabled": () => this._feedbackIsTooOld(key)
+            }
+          });
+
+          const messageField = (lineItemId: MarketplaceLineItemInterface["id"]): FormlyFieldConfig => ({
+            key: `message`,
+            type: "textarea",
+            className: "col-12",
+            props: {
+              label: this.translateService.instant("Feedback message"),
+              rows: 3
             }
           });
 
@@ -221,17 +181,22 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
             fieldGroupClassName: "row feedback-line-item",
             fieldGroup: [
               {
-                key: `recipient-${lineItem.id}`,
+                key: "created",
                 type: "input",
                 className: "hidden"
               },
               {
-                key: `lineItemId-${lineItem.id}`,
+                key: `recipient`,
                 type: "input",
                 className: "hidden"
               },
               {
-                key: `itemName-${lineItem.id}`,
+                key: `lineItem`,
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: `itemName`,
                 type: "html",
                 wrappers: ["default-wrapper"],
                 className: "col-4 item-name",
@@ -240,56 +205,34 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
                   label: this.translateService.instant("Item"),
                   readonly: true,
                   tabindex: -1,
-                  hideOptionalMarker: true,
-                  hideLabel: index > 0
+                  hideOptionalMarker: true
                 }
-              },
-              {
-                key: `communicationCreated-${lineItem.id}`,
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: `speedCreated-${lineItem.id}`,
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: `accuracyCreated-${lineItem.id}`,
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: `packagingCreated-${lineItem.id}`,
-                type: "input",
-                className: "hidden"
               }
-
             ]
           };
 
           const communication = feedbackField(
-            `communication-${lineItem.id}`,
+            `communicationValue`,
             this.translateService.instant("Communication"),
             this.targetType === MarketplaceFeedbackTargetType.SELLER ? "col-2" : "col-4"
           );
           const speedOfDelivery = feedbackField(
-            `speed-${lineItem.id}`,
+            `speedValue`,
             this.translateService.instant("Speed of delivery"),
             "col-2"
           );
           const speedOfPayment = feedbackField(
-            `speed-${lineItem.id}`,
+            `speedValue`,
             this.translateService.instant("Speed of payment"),
             "col-4"
           );
           const accuracy = feedbackField(
-            `accuracy-${lineItem.id}`,
+            `accuracyValue`,
             this.translateService.instant("Accuracy of item descriptions"),
             "col-2"
           );
           const packaging = feedbackField(
-            `packaging-${lineItem.id}`,
+            `packagingValue`,
             this.translateService.instant("Packaging quality"),
             "col-2"
           );
@@ -304,6 +247,8 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
             fields.fieldGroup.push(speedOfPayment);
           }
 
+          fields.fieldGroup.push(messageField(lineItem.id));
+
           return fields;
         });
 
@@ -315,28 +260,21 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
     const value = {};
 
     this.listing.lineItems
-      .filter(lineItem => this._lineItemFilter(lineItem))
+      .filter(lineItem => this._lineItemFilter(lineItem, currentUser))
       .forEach(lineItem => {
-        value[`recipient-${lineItem.id}`] = this.user.id;
-        value[`lineItemId-${lineItem.id}`] = lineItem.id;
-        value[`itemName-${lineItem.id}`] = lineItem.itemName || lineItem.itemPlainText;
+        value[`recipient`] = this.user.id;
+        value[`lineItem`] = lineItem.id;
+        value[`itemName`] = lineItem.itemName || lineItem.itemPlainText;
 
         lineItem.feedbacks
           .filter(feedback => feedback.user === currentUser.id)
           .forEach(feedback => {
-            if (feedback.category === MarketplaceFeedbackCategory.COMMUNICATION) {
-              value[`communication-${lineItem.id}`] = feedback.value;
-              value[`communicationCreated-${lineItem.id}`] = feedback.created;
-            } else if (feedback.category === MarketplaceFeedbackCategory.SPEED) {
-              value[`speed-${lineItem.id}`] = feedback.value;
-              value[`speedCreated-${lineItem.id}`] = feedback.created;
-            } else if (feedback.category === MarketplaceFeedbackCategory.ACCURACY) {
-              value[`accuracy-${lineItem.id}`] = feedback.value;
-              value[`accuracyCreated-${lineItem.id}`] = feedback.created;
-            } else if (feedback.category === MarketplaceFeedbackCategory.PACKAGING) {
-              value[`packaging-${lineItem.id}`] = feedback.value;
-              value[`packagingCreated-${lineItem.id}`] = feedback.created;
-            }
+            value[`communicationValue`] = feedback.communicationValue;
+            value[`speedValue`] = feedback.speedValue;
+            value[`accuracyValue`] = feedback.accuracyValue;
+            value[`packagingValue`] = feedback.packagingValue;
+            value[`message`] = feedback.message;
+            value[`createdValue`] = feedback.created;
           });
       });
 
@@ -344,8 +282,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
   }
 
   private _feedbackIsTooOld(key: string): boolean {
-    const [categoryKey, lineItemId] = key.split("-");
-    const created = this.model[`${categoryKey}Created-${lineItemId}`];
+    const created = this.model["created"];
     const sixtyDaysAgo = new Date(new Date().setDate(new Date().getDate() - 60));
 
     return created && new Date(created) < sixtyDaysAgo;

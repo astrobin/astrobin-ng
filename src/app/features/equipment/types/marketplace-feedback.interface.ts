@@ -8,13 +8,6 @@ export enum MarketplaceFeedbackValue {
   POSITIVE = "POSITIVE",
 }
 
-export enum MarketplaceFeedbackCategory {
-  COMMUNICATION = "COMMUNICATION",
-  SPEED = "SPEED",
-  ACCURACY = "ACCURACY",
-  PACKAGING = "PACKAGING",
-}
-
 export enum MarketplaceFeedbackTargetType {
   SELLER = "SELLER",
   BUYER = "BUYER"
@@ -26,8 +19,11 @@ export interface MarketplaceFeedbackInterface {
   recipient?: UserInterface["id"];
   lineItem?: MarketplaceLineItemInterface["id"];
   created?: string;
-  value: MarketplaceFeedbackValue;
-  category: MarketplaceFeedbackCategory;
+  communicationValue: MarketplaceFeedbackValue;
+  speedValue: MarketplaceFeedbackValue;
+  accuracyValue: MarketplaceFeedbackValue;
+  packagingValue: MarketplaceFeedbackValue;
+  message?: string;
   targetType?: MarketplaceFeedbackTargetType;
   marketplaceFeedbackCount?: number;
   marketplaceFeedback?: number;

@@ -94,7 +94,7 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
       .pipe(
         take(1),
         map(currentUser => {
-          return this.equipmentMarketplaceService.allowLeavingFeedback(
+          return this.equipmentMarketplaceService.allowLeavingFeedbackToListing(
             this.listing,
             currentUser.id,
             this.user.id
