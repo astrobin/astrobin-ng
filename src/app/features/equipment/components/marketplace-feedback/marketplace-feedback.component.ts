@@ -14,6 +14,7 @@ import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { filter, take } from "rxjs/operators";
 import { ActivatedRoute } from "@angular/router";
+import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 
 @Component({
   selector: "astrobin-marketplace-feedback",
@@ -74,6 +75,7 @@ export class MarketplaceFeedbackComponent extends BaseComponentDirective impleme
       modalComponent.showReplyButton = user.id === this.feedback.recipient || user.id === this.feedback.user;
       modalComponent.showTopLevelButton = user.id === this.feedback.recipient || user.id === this.feedback.user;
       modalComponent.topLevelFormHeight = 150;
+      modalComponent.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS;
     });
   }
 }
