@@ -1380,7 +1380,7 @@ export class CreateMarketplaceFeedbackFailure implements PayloadActionInterface 
 export class GetMarketplaceFeedback implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK;
 
-  constructor(public payload: { lineItem: MarketplaceLineItemInterface }) {
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
   }
 }
 
@@ -1394,7 +1394,7 @@ export class GetMarketplaceFeedbackSuccess implements PayloadActionInterface {
 export class GetMarketplaceFeedbackFailure implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK_FAILURE;
 
-  constructor(public payload: { lineItem: MarketplaceLineItemInterface; error: string }) {
+  constructor(public payload: { listing: MarketplaceListingInterface; error: string }) {
   }
 }
 

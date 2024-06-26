@@ -646,34 +646,18 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
 
     case EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_SUCCESS: {
       const newFeedback: MarketplaceFeedbackInterface = action.payload.feedback;
-      const lineItemId = newFeedback.lineItem;
-
-      // Find listing that has this line item id.
-      const listing = state.marketplace.listings.find(listing => listing.lineItems.some(lineItem => lineItem.id === lineItemId));
-
-      // Update feedback in line item.
-      const updatedLineItems = listing.lineItems.map(lineItem => {
-        if (lineItem.id !== lineItemId) {
-          return lineItem;
-        }
-
-        const updatedFeedbacks = lineItem.feedbacks.concat(newFeedback);
-
-        return {
-          ...lineItem,
-          feedbacks: updatedFeedbacks
-        };
-      });
 
       // Update state with the updated listing.
       const updatedListings = state.marketplace.listings.map(listing => {
-        if (listing.id !== listing.id) {
+        if (listing.id !== newFeedback.listing) {
           return listing;
         }
 
+        const updatedFeedbacks = listing.feedbacks.concat(newFeedback);
+
         return {
           ...listing,
-          lineItems: updatedLineItems
+          feedbacks: updatedFeedbacks
         };
       });
 

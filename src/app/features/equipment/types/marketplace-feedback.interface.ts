@@ -1,5 +1,5 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 
 export enum MarketplaceFeedbackValue {
@@ -17,7 +17,7 @@ export interface MarketplaceFeedbackInterface {
   id?: number;
   user?: UserInterface["id"];
   recipient?: UserInterface["id"];
-  lineItem?: MarketplaceLineItemInterface["id"];
+  listing?: MarketplaceListingInterface["id"];
   created?: string;
   communicationValue: MarketplaceFeedbackValue;
   speedValue: MarketplaceFeedbackValue;

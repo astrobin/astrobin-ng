@@ -1395,9 +1395,9 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK),
       map((action: GetMarketplaceFeedback) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.getMarketplaceFeedback(payload.lineItem.id).pipe(
+        this.equipmentApiService.getMarketplaceFeedback(payload.listing.id).pipe(
           map(feedback => new GetMarketplaceFeedbackSuccess({ feedback })),
-          catchError(error => of(new GetMarketplaceFeedbackFailure({ lineItem: payload.lineItem, error })))
+          catchError(error => of(new GetMarketplaceFeedbackFailure({ listing: payload.listing, error })))
         )
       )
     )

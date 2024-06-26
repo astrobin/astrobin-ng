@@ -1,5 +1,6 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 
 
 export enum MarketplaceListingShippingMethod {
@@ -40,6 +41,7 @@ export interface MarketplaceListingInterface {
   viewCount?: number;
   hitcountPk?: number;
   slug?: string;
+  feedbacks?: MarketplaceFeedbackInterface[];
   // Whether the current user is following this listing
   followed?: boolean;
 }

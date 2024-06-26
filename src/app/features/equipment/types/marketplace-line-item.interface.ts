@@ -4,7 +4,6 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 
 
 export enum MarketplaceListingCondition {
@@ -52,5 +51,4 @@ export interface MarketplaceLineItemInterface {
   firstAddedToAnImage?: string;
   slug?: string;
   offers?: MarketplaceOfferInterface[];
-  feedbacks?: MarketplaceFeedbackInterface[];
 }

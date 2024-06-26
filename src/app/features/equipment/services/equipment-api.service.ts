@@ -1031,13 +1031,13 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   public createMarketplaceFeedback(feedback: MarketplaceFeedbackInterface): Observable<MarketplaceFeedbackInterface> {
-    const url = `${this.configUrl}/marketplace/line-item/${feedback.lineItem}/feedback/`;
+    const url = `${this.configUrl}/marketplace/listing/${feedback.listing}/feedback/`;
 
     return this.http.post<MarketplaceFeedbackInterface>(url, feedback);
   }
 
-  public getMarketplaceFeedback(lineItemId: MarketplaceLineItemInterface["id"]): Observable<MarketplaceFeedbackInterface[]> {
-    const url = `${this.configUrl}/marketplace/line-item/${lineItemId}/feedback/`;
+  public getMarketplaceFeedback(listingId: MarketplaceListingInterface["id"]): Observable<MarketplaceFeedbackInterface[]> {
+    const url = `${this.configUrl}/marketplace/listing/${listingId}/feedback/`;
 
     return this.http.get<MarketplaceFeedbackInterface[]>(url);
   }
