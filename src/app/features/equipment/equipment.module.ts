@@ -65,6 +65,7 @@ import { MarketplaceFeedbackModalComponent } from "./components/marketplace-feed
 import { MarketplacePendingModerationListingsPageComponent } from "@features/equipment/pages/marketplace/pending-moderation-listings/marketplace-pending-moderation-listings-page.component";
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
 import { MarketplaceOfferSummaryComponent } from "./components/marketplace-offer-summary/marketplace-offer-summary.component";
+import { MarketplaceUserFeedbackListComponent } from "./pages/marketplace/user-feedback-list/marketplace-user-feedback-list.component";
 
 @NgModule({
   declarations: [
@@ -128,7 +129,8 @@ import { MarketplaceOfferSummaryComponent } from "./components/marketplace-offer
     MarketplaceOfferModalComponent,
     MarketplaceFeedbackModalComponent,
     MarketplaceMarkLineItemsAsSoldModalComponent,
-    MarketplaceOfferSummaryComponent
+    MarketplaceOfferSummaryComponent,
+    MarketplaceUserFeedbackListComponent
   ],
   imports: [
     RouterModule.forChild(routes),

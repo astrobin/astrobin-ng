@@ -18,6 +18,7 @@ export enum MarketplaceNavPage {
   USER_OFFERS,
   USER_PURCHASES,
   USER_FOLLOWED,
+  USER_FEEDBACK
 }
 
 @Component({
@@ -69,6 +70,9 @@ export class MarketplaceNavComponent extends BaseComponentDirective implements O
             path = !!user ? [`/equipment/marketplace/users/${user.username}/${this.getPathSuffix(page)}`] : null;
             shouldRedirectToLogin = true;
             break;
+          case MarketplaceNavPage.USER_FEEDBACK:
+            path = !!user ? [`/equipment/marketplace/users/${user.username}/feedback`] : null;
+            break;
           default:
             return { path: [], queryParams: {} };
         }
@@ -105,6 +109,8 @@ export class MarketplaceNavComponent extends BaseComponentDirective implements O
         return "purchases";
       case MarketplaceNavPage.USER_FOLLOWED:
         return "followed";
+      case MarketplaceNavPage.USER_FEEDBACK:
+        return "feedback";
       default:
         return "";
     }

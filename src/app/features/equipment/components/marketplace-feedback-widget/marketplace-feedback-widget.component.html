@@ -10,7 +10,10 @@
   </div>
 
   <div class="feedback-label">
-    {{ "Current feedback" | translate }}: {{ user.marketplaceFeedback|number:"1.0-2" }}%
+    {{ "Current feedback" | translate }}:
+    <a [routerLink]="['/equipment/marketplace/users', user.username, 'feedback']">
+      {{ user.marketplaceFeedback|number:"1.0-2" }}%
+    </a>
   </div>
 </ng-container>
 

@@ -1,0 +1,47 @@
+.feedback-container {
+  &:not(:last-child) {
+    margin-bottom: 2rem;
+  }
+}
+
+.card-header {
+  h5 {
+    font-size: 1rem;
+    line-height: 1.75rem;
+    font-weight: normal;
+  }
+
+  .updated {
+    font-weight: normal;
+    color: var(--lightGrey);
+    font-size: .9rem;
+  }
+}
+
+.card-body {
+  .feedback-value {
+    text-align: center;
+    padding: 1rem;
+
+    fa-icon {
+      font-size: 4rem;
+      color: var(--lighestGrey);
+    }
+
+    span {
+      display: block;
+    }
+  }
+
+  .message {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--grey);
+  }
+}
+
+.card-footer {
+  .badge {
+    color: var(--lightestGrey);
+  }
+}

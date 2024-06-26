@@ -43,6 +43,7 @@ import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subs
 import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Router } from "@angular/router";
+import { MarketplaceFeedbackValue } from "@features/equipment/types/marketplace-feedback.interface";
 
 @Injectable({
   providedIn: "root"
@@ -80,6 +81,32 @@ export class EquipmentMarketplaceService extends BaseService {
         return this.translateService.instant("Pending");
       default:
         return this.translateService.instant("Unknown");
+    }
+  }
+
+  humanizeFeedbackValue(value: MarketplaceFeedbackValue): string {
+    switch (value) {
+      case MarketplaceFeedbackValue.POSITIVE:
+        return this.translateService.instant("Positive");
+      case MarketplaceFeedbackValue.NEUTRAL:
+        return this.translateService.instant("Neutral");
+      case MarketplaceFeedbackValue.NEGATIVE:
+        return this.translateService.instant("Negative");
+      default:
+        return this.translateService.instant("Unknown");
+    }
+  }
+
+  iconizeFeedbackValue(value: MarketplaceFeedbackValue): string {
+    switch (value) {
+      case MarketplaceFeedbackValue.POSITIVE:
+        return "smile";
+      case MarketplaceFeedbackValue.NEUTRAL:
+        return "meh";
+      case MarketplaceFeedbackValue.NEGATIVE:
+        return "frown";
+      default:
+        return "question";
     }
   }
 

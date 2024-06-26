@@ -30,6 +30,7 @@ import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages
 import { MarketplaceUserFollowedListingsPageComponent } from "@features/equipment/pages/marketplace/user-followed-listings/marketplace-user-followed-listings-page.component";
 import { MarketplacePendingModerationListingsPageComponent } from "@features/equipment/pages/marketplace/pending-moderation-listings/marketplace-pending-moderation-listings-page.component";
 import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
+import { MarketplaceUserFeedbackListComponent } from "@features/equipment/pages/marketplace/user-feedback-list/marketplace-user-feedback-list.component";
 
 export const routes: Routes = [
   {
@@ -219,6 +220,10 @@ export const routes: Routes = [
         path: "users/:username/followed",
         component: MarketplaceUserFollowedListingsPageComponent,
         canActivate: [AuthGuardService, UsernameMatchGuard]
+      },
+      {
+        path: "users/:username/feedback",
+        component: MarketplaceUserFeedbackListComponent
       },
       {
         path: "create",

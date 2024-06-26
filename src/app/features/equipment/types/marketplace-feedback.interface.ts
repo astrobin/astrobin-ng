@@ -16,8 +16,11 @@ export enum MarketplaceFeedbackTargetType {
 export interface MarketplaceFeedbackInterface {
   id?: number;
   user?: UserInterface["id"];
+  userDisplayName?: UserInterface["displayName"];
   recipient?: UserInterface["id"];
   listing?: MarketplaceListingInterface["id"];
+  listingHash?: MarketplaceListingInterface["hash"];
+  listingDisplayName?: string;
   created?: string;
   communicationValue: MarketplaceFeedbackValue;
   speedValue: MarketplaceFeedbackValue;

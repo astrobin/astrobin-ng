@@ -123,17 +123,17 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
       {
         value: MarketplaceFeedbackValue.POSITIVE,
         icon: "smile",
-        label: this.translateService.instant("Positive")
+        label: this.equipmentMarketplaceService.humanizeFeedbackValue(MarketplaceFeedbackValue.POSITIVE)
       },
       {
         value: MarketplaceFeedbackValue.NEUTRAL,
         icon: "meh",
-        label: this.translateService.instant("Neutral")
+        label: this.equipmentMarketplaceService.humanizeFeedbackValue(MarketplaceFeedbackValue.NEUTRAL)
       },
       {
         value: MarketplaceFeedbackValue.NEGATIVE,
         icon: "frown",
-        label: this.translateService.instant("Negative")
+        label: this.equipmentMarketplaceService.humanizeFeedbackValue(MarketplaceFeedbackValue.NEGATIVE)
       }
     ];
 

@@ -139,5 +139,18 @@
         {{ "Followed" | translate }}
       </a>
     </li>
+
+    <!-- User feedback -->
+    <li [ngbNavItem]="MarketplaceNavPage.USER_FEEDBACK" class="subnav">
+      <a *ngIf="(getLink$(MarketplaceNavPage.USER_FEEDBACK) | async) as link"
+         [queryParams]="link.queryParams"
+         [routerLinkActiveOptions]="routerLinkActiveOptions"
+         [routerLink]="link.path"
+         ngbNavLink
+         routerLinkActive="active">
+        <fa-icon icon="star"></fa-icon> &nbsp;
+        {{ "Feedback" | translate }}
+      </a>
+    </li>
   </ng-container>
 </ul>
