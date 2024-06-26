@@ -18,10 +18,12 @@ export interface MarketplaceFeedbackInterface {
   user?: UserInterface["id"];
   userDisplayName?: UserInterface["displayName"];
   recipient?: UserInterface["id"];
+  recipientDisplayName?: UserInterface["displayName"];
   listing?: MarketplaceListingInterface["id"];
   listingHash?: MarketplaceListingInterface["hash"];
   listingDisplayName?: string;
   created?: string;
+  updated?: string;
   communicationValue: MarketplaceFeedbackValue;
   speedValue: MarketplaceFeedbackValue;
   accuracyValue: MarketplaceFeedbackValue;

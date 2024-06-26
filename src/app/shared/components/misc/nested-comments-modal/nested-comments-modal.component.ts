@@ -51,6 +51,9 @@ export class NestedCommentsModalComponent extends BaseComponentDirective {
   @Input()
   topLevelFormHeight: number;
 
+  @Input()
+  allowSelfReply = true;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly modal: NgbActiveModal,

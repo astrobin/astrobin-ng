@@ -30,7 +30,8 @@ import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages
 import { MarketplaceUserFollowedListingsPageComponent } from "@features/equipment/pages/marketplace/user-followed-listings/marketplace-user-followed-listings-page.component";
 import { MarketplacePendingModerationListingsPageComponent } from "@features/equipment/pages/marketplace/pending-moderation-listings/marketplace-pending-moderation-listings-page.component";
 import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
-import { MarketplaceUserFeedbackListComponent } from "@features/equipment/pages/marketplace/user-feedback-list/marketplace-user-feedback-list.component";
+import { MarketplaceUserFeedbackListPageComponent } from "@features/equipment/pages/marketplace/user-feedback-list/marketplace-user-feedback-list-page.component";
+import { MarketplaceUserFeedbackPageComponent } from "@features/equipment/pages/marketplace/marketplace-user-feedback/marketplace-user-feedback-page.component";
 
 export const routes: Routes = [
   {
@@ -223,7 +224,11 @@ export const routes: Routes = [
       },
       {
         path: "users/:username/feedback",
-        component: MarketplaceUserFeedbackListComponent
+        component: MarketplaceUserFeedbackListPageComponent
+      },
+      {
+        path: "users/:username/feedback/:id",
+        component: MarketplaceUserFeedbackPageComponent
       },
       {
         path: "create",

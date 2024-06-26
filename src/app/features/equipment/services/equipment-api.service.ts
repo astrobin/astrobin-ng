@@ -1051,6 +1051,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<PaginatedApiResultInterface<MarketplaceFeedbackInterface>>(url);
   }
 
+  public getMarketplaceFeedbackById(
+    feedbackId: MarketplaceFeedbackInterface["id"]
+  ): Observable<MarketplaceFeedbackInterface> {
+    const url = `${this.configUrl}/marketplace/feedback/${feedbackId}/`;
+
+    return this.http.get<MarketplaceFeedbackInterface>(url);
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -44,6 +44,7 @@ import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Router } from "@angular/router";
 import { MarketplaceFeedbackValue } from "@features/equipment/types/marketplace-feedback.interface";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 @Injectable({
   providedIn: "root"
@@ -97,7 +98,7 @@ export class EquipmentMarketplaceService extends BaseService {
     }
   }
 
-  iconizeFeedbackValue(value: MarketplaceFeedbackValue): string {
+  iconizeFeedbackValue(value: MarketplaceFeedbackValue): IconProp {
     switch (value) {
       case MarketplaceFeedbackValue.POSITIVE:
         return "smile";

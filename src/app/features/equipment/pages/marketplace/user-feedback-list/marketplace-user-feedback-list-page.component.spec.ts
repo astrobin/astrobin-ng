@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MarketplaceUserFeedbackListComponent } from "./marketplace-user-feedback-list.component";
+import { MarketplaceUserFeedbackListPageComponent } from "./marketplace-user-feedback-list-page.component";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
 import { ActivatedRoute } from "@angular/router";
 
-describe("MarketplaceUserFeedbackListComponent", () => {
-  let component: MarketplaceUserFeedbackListComponent;
-  let fixture: ComponentFixture<MarketplaceUserFeedbackListComponent>;
+describe("MarketplaceUserFeedbackListPageComponent", () => {
+  let component: MarketplaceUserFeedbackListPageComponent;
+  let fixture: ComponentFixture<MarketplaceUserFeedbackListPageComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceUserFeedbackListComponent, AppModule).provide([
+    await MockBuilder(MarketplaceUserFeedbackListPageComponent, AppModule).provide([
       provideMockStore({ initialState }),
       {
         provide: ActivatedRoute,
@@ -29,7 +29,7 @@ describe("MarketplaceUserFeedbackListComponent", () => {
       }
     ]);
 
-    fixture = TestBed.createComponent(MarketplaceUserFeedbackListComponent);
+    fixture = TestBed.createComponent(MarketplaceUserFeedbackListPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
