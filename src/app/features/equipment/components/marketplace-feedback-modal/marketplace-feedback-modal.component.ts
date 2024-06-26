@@ -22,6 +22,8 @@ import { Actions, ofType } from "@ngrx/effects";
 import { CreateMarketplaceFeedback, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 import { forkJoin } from "rxjs";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 
 @Component({
   selector: "astrobin-marketplace-feedback-modal",
@@ -43,6 +45,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
 
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
+  model: { [key: string]: any } = {};
 
   title: string = this.translateService.instant("Leave feedback");
 
@@ -141,16 +144,32 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
     });
   }
 
-  _initFields() {
+  private _lineItemFilter(lineItem: MarketplaceLineItemInterface): boolean {
+    if (this.targetType === MarketplaceFeedbackTargetType.SELLER) {
+      // The current user is rating the seller. They can do it for line items for which they have offers in the
+      // accepted or rejected status. This implies that they interacted with the seller.
+      return lineItem.offers.some(offer =>
+        offer.user === this.user.id &&
+        (
+          offer.status === MarketplaceOfferStatus.ACCEPTED ||
+          offer.status === MarketplaceOfferStatus.REJECTED
+        ));
+    } else {
+      // The current user is rating the buyer. They can do it for line items for which they have offers in the
+      // accepted or retracted status. This implies that they interacted with the buyer.
+      return lineItem.offers.some(offer =>
+        offer.user === this.user.id &&
+        (
+          offer.status === MarketplaceOfferStatus.ACCEPTED ||
+          offer.status === MarketplaceOfferStatus.RETRACTED
+        ));
+    }
+  }
+
+  private _initFields() {
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
       this.fields = this.listing.lineItems
-        .filter(lineItem => {
-          if (this.targetType === MarketplaceFeedbackTargetType.SELLER) {
-            return lineItem.soldTo === currentUser.id;
-          } else {
-            return lineItem.soldTo === this.user.id;
-          }
-        })
+        .filter(lineItem => this._lineItemFilter(lineItem))
         .map((lineItem, index) => {
           const options = [
             {
@@ -184,6 +203,16 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
               clearable: false,
               searchable: false,
               optionTemplate: this.feedbackOptionTemplate
+            },
+            expressions: {
+              "props.description": () => {
+                if (this._feedbackIsTooOld(key)) {
+                  return this.translateService.instant(
+                    "Feedback older than {{0}} days cannot be changed.", { 0: 60 }
+                  );
+                }
+              },
+              "props.disabled": () => this._feedbackIsTooOld(key)
             }
           });
 
@@ -214,7 +243,28 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
                   hideOptionalMarker: true,
                   hideLabel: index > 0
                 }
+              },
+              {
+                key: `communicationCreated-${lineItem.id}`,
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: `speedCreated-${lineItem.id}`,
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: `accuracyCreated-${lineItem.id}`,
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: `packagingCreated-${lineItem.id}`,
+                type: "input",
+                className: "hidden"
               }
+
             ]
           };
 
@@ -256,6 +306,48 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
 
           return fields;
         });
+
+      this._initializeFormValue(currentUser);
     });
+  }
+
+  private _initializeFormValue(currentUser: UserInterface): void {
+    const value = {};
+
+    this.listing.lineItems
+      .filter(lineItem => this._lineItemFilter(lineItem))
+      .forEach(lineItem => {
+        value[`recipient-${lineItem.id}`] = this.user.id;
+        value[`lineItemId-${lineItem.id}`] = lineItem.id;
+        value[`itemName-${lineItem.id}`] = lineItem.itemName || lineItem.itemPlainText;
+
+        lineItem.feedbacks
+          .filter(feedback => feedback.user === currentUser.id)
+          .forEach(feedback => {
+            if (feedback.category === MarketplaceFeedbackCategory.COMMUNICATION) {
+              value[`communication-${lineItem.id}`] = feedback.value;
+              value[`communicationCreated-${lineItem.id}`] = feedback.created;
+            } else if (feedback.category === MarketplaceFeedbackCategory.SPEED) {
+              value[`speed-${lineItem.id}`] = feedback.value;
+              value[`speedCreated-${lineItem.id}`] = feedback.created;
+            } else if (feedback.category === MarketplaceFeedbackCategory.ACCURACY) {
+              value[`accuracy-${lineItem.id}`] = feedback.value;
+              value[`accuracyCreated-${lineItem.id}`] = feedback.created;
+            } else if (feedback.category === MarketplaceFeedbackCategory.PACKAGING) {
+              value[`packaging-${lineItem.id}`] = feedback.value;
+              value[`packagingCreated-${lineItem.id}`] = feedback.created;
+            }
+          });
+      });
+
+    this.model = value;
+  }
+
+  private _feedbackIsTooOld(key: string): boolean {
+    const [categoryKey, lineItemId] = key.split("-");
+    const created = this.model[`${categoryKey}Created-${lineItemId}`];
+    const sixtyDaysAgo = new Date(new Date().setDate(new Date().getDate() - 60));
+
+    return created && new Date(created) < sixtyDaysAgo;
   }
 }

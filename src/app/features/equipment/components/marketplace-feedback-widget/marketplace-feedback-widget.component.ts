@@ -38,7 +38,8 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
     public readonly modalService: NgbModal,
     public readonly activatedRoute: ActivatedRoute,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
   }
@@ -93,18 +94,11 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
       .pipe(
         take(1),
         map(currentUser => {
-          // We allow to leave feedback if:
-          // - The current user is the seller, and the user in this component has some accepted offers
-          // - The current user is a buyer with some accepted offers, and the user in this component is the seller
-
-          if (currentUser.id === this.user.id) {
-            return false;
-          } else if (currentUser.id === this.listing.user) {
-            // The current user is the seller of this listing. They can leave feedback if the user in this component is a
-            // buyer and has some accepted offers.
-            return this.marketplaceService.userIsBuyer(this.user.id, this.listing);
-          }
-          return this.marketplaceService.userIsBuyer(currentUser.id, this.listing);
+          return this.equipmentMarketplaceService.allowLeavingFeedback(
+            this.listing,
+            currentUser.id,
+            this.user.id
+          );
         })
       );
   }
@@ -124,13 +118,6 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   }
 
   showFeedbackModal(): void {
-    if (this.alreadyHasFeedbackFromCurrentUser) {
-      this.popNotificationsService.error(
-        this.translateService.instant("You have already left feedback for this user.")
-      );
-      return;
-    }
-
     this.allowLeavingFeedback().subscribe(allow => {
       if (allow) {
         this.currentUser$

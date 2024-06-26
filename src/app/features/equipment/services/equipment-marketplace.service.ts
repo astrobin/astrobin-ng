@@ -126,6 +126,35 @@ export class EquipmentMarketplaceService extends BaseService {
     return user.marketplaceFeedbackCount > 0;
   }
 
+  allowLeavingFeedback(
+    listing: MarketplaceListingInterface,
+    currentUserId: UserInterface["id"],
+    targetUserId: UserInterface["id"]
+  ): boolean {
+    if (currentUserId === targetUserId) {
+      // The current user is the target user, so they can't leave feedback for themselves
+      return false;
+    }
+
+    if (currentUserId === listing.user) {
+      // The current user is the seller, and the user in this component has some accepted or retracted offers
+      return listing.lineItems.some(lineItem =>
+        lineItem.offers.some(offer =>
+          offer.user === targetUserId && (
+            offer.status === MarketplaceOfferStatus.ACCEPTED ||
+            offer.status === MarketplaceOfferStatus.RETRACTED
+          )));
+    }
+
+    // The current user is not the seller, so they can leave feedback if they have accepted or rejected offers.
+    return listing.lineItems.some(lineItem =>
+      lineItem.offers.some(offer =>
+        offer.user === targetUserId && (
+          offer.status === MarketplaceOfferStatus.ACCEPTED ||
+          offer.status === MarketplaceOfferStatus.REJECTED
+        )));
+  }
+
   // Returns whether the user is the buyer of any line item in the listing.
   userIsBuyer(userId: UserInterface["id"], listing: MarketplaceListingInterface): boolean {
     return listing.lineItems.some(lineItem => lineItem.soldTo === userId);

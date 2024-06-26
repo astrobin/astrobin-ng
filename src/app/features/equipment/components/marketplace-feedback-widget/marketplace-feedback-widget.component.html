@@ -14,9 +14,14 @@
   </div>
 </ng-container>
 
-<div *ngIf="showLeaveFeedbackButton && !alreadyHasFeedbackFromCurrentUser" class="mt-3 text-center">
+<div *ngIf="showLeaveFeedbackButton" class="mt-3 text-center">
   <button (click)="showFeedbackModal()" class="btn btn-primary">
-    {{ "Leave feedback" | translate }}
+    <ng-container *ngIf="alreadyHasFeedbackFromCurrentUser">
+      {{ "Edit feedback" | translate }}
+    </ng-container>
+    <ng-container *ngIf="!alreadyHasFeedbackFromCurrentUser">
+      {{ "Leave feedback" | translate }}
+    </ng-container>
   </button>
 </div>
 
