@@ -219,7 +219,10 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
             wrappers: ["default-wrapper"],
             expressions: {
               className: () => ("w-50 " + (!!lineItem.sold ? "hidden" : "")),
-              "props.required": () => !lineItem.sold
+              "props.required": config => {
+                return this.listing.lineItems.filter(lineItem => !lineItem.sold).length === 1 ||
+                  !!config.model[`checkbox-${lineItem.id}`];
+              }
             },
             props: {
               label: this.translateService.instant("Buyer"),
