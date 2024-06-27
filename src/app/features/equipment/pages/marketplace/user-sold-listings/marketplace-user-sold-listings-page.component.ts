@@ -1,6 +1,9 @@
 import { Component } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import {
+  MarketplaceFilterModel,
+  MarketplaceRefreshOptions
+} from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceUserListingsBasePageComponent } from "@features/equipment/pages/marketplace/user-listings-base/marketplace-user-listings-base-page.component";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
@@ -11,13 +14,18 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
   styleUrls: ["../listings-base/marketplace-listings-base-page.component.scss"]
 })
 export class MarketplaceUserSoldListingsPageComponent extends MarketplaceUserListingsBasePageComponent {
-  public refresh(filterModel?: MarketplaceFilterModel) {
+  public refresh(
+    filterModel?: MarketplaceFilterModel,
+    options: MarketplaceRefreshOptions = {
+      clear: true
+    }
+  ) {
     const modifiedFilterModel = {
       ...filterModel,
       sold: true
     };
 
-    super.refresh(modifiedFilterModel);
+    super.refresh(modifiedFilterModel, options);
   }
 
   protected _getListingsFilterPredicate(currentUser: UserInterface | null): (listing: MarketplaceListingInterface) => boolean {

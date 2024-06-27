@@ -1,5 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import {
+  MarketplaceFilterModel,
+  MarketplaceRefreshOptions
+} from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
@@ -12,7 +15,12 @@ import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/
   styleUrls: ["../listings-base/marketplace-listings-base-page.component.scss"]
 })
 export class MarketplaceUserPurchasesPageComponent extends MarketplaceListingsBasePageComponent implements OnInit {
-  public refresh(filterModel?: MarketplaceFilterModel) {
+  public refresh(
+    filterModel?: MarketplaceFilterModel,
+    options: MarketplaceRefreshOptions = {
+      clear: true
+    }
+  ) {
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
       if (!currentUser) {
         return;
@@ -24,7 +32,7 @@ export class MarketplaceUserPurchasesPageComponent extends MarketplaceListingsBa
         sold: true
       };
 
-      super.refresh(modifiedFilterModel);
+      super.refresh(modifiedFilterModel, options);
     });
   }
 

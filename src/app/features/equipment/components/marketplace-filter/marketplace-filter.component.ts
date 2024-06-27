@@ -71,6 +71,10 @@ export interface MarketplaceFilterModel {
   condition?: MarketplaceListingCondition | null;
 }
 
+export interface MarketplaceRefreshOptions {
+  clear: boolean;
+}
+
 @Component({
   selector: "astrobin-marketplace-filter",
   templateUrl: "./marketplace-filter.component.html",

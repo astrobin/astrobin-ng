@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -6,7 +6,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { filter, map, take } from "rxjs/operators";
-import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import {
+  MarketplaceFilterModel,
+  MarketplaceRefreshOptions
+} from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AuthActionTypes, LoadUser, LoadUserFailure, LoadUserSuccess } from "@features/account/store/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
@@ -46,7 +49,8 @@ export abstract class MarketplaceUserListingsBasePageComponent
     public readonly localStorageService: LocalStorageService,
     public readonly modalService: NgbModal,
     public readonly paginationConfig: NgbPaginationConfig,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(
       store$,
@@ -62,7 +66,8 @@ export abstract class MarketplaceUserListingsBasePageComponent
       modalService,
       windowRefService,
       paginationConfig,
-      routerService
+      routerService,
+      platformId
     );
   }
 
@@ -71,7 +76,12 @@ export abstract class MarketplaceUserListingsBasePageComponent
     super.ngOnInit();
   }
 
-  public refresh(filterModel?: MarketplaceFilterModel) {
+  public refresh(
+    filterModel?: MarketplaceFilterModel,
+    options: MarketplaceRefreshOptions = {
+      clear: true
+    }
+  ) {
     this.actions$
       .pipe(
         ofType(AuthActionTypes.LOAD_USER_SUCCESS),
@@ -92,7 +102,7 @@ export abstract class MarketplaceUserListingsBasePageComponent
 
         // Call the base class refresh method with additional filter for user
         const userFilterModel = { ...filterModel, user: user.id };
-        super.refresh(userFilterModel);
+        super.refresh(userFilterModel, options);
       });
 
     this.actions$

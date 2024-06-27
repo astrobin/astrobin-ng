@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -6,7 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectMarketplace, selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
-import { map, take, takeUntil, tap } from "rxjs/operators";
+import { debounceTime, filter, map, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import {
   ClearMarketplaceListings,
   EquipmentActionTypes,
@@ -15,12 +15,13 @@ import {
 import { LoadingService } from "@shared/services/loading.service";
 import {
   MarketplaceFilterModel,
-  marketplaceFilterModelKeys
+  marketplaceFilterModelKeys,
+  MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { CountryService } from "@shared/services/country.service";
-import { Observable } from "rxjs";
+import { fromEvent, Observable } from "rxjs";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
@@ -30,12 +31,15 @@ import { NgbModal, NgbModalRef, NgbPaginationConfig } from "@ng-bootstrap/ng-boo
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
   template: ""
 })
-export abstract class MarketplaceListingsBasePageComponent extends BaseComponentDirective implements OnInit {
+export abstract class MarketplaceListingsBasePageComponent
+  extends BaseComponentDirective
+  implements OnInit, AfterViewInit {
   readonly WORLDWIDE = "WORLDWIDE";
   readonly REGION_LOCAL_STORAGE_KEY = "marketplaceRegion";
 
@@ -48,11 +52,9 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
   selectedRegion: string | null;
   selectedRegionLabel: string | null;
   listings$: Observable<MarketplaceListingInterface[]>;
-  lastPaginatedRequestCount$ = this.store$.select(
-    selectMarketplace
-  ).pipe(
-    map(state => state.lastPaginatedRequestCount || 0)
-  );
+  lastPaginatedRequestCount: number;
+
+  @ViewChild("listingCards", { static: false, read: ElementRef }) listingCards: ElementRef;
 
   constructor(
     public readonly store$: Store<State>,
@@ -68,7 +70,8 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     public readonly modalService: NgbModal,
     public readonly windowRefService: WindowRefService,
     public readonly paginationConfig: NgbPaginationConfig,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(store$);
   }
@@ -78,11 +81,56 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
 
     this.selectedRegion = this.localStorageService.getItem(this.REGION_LOCAL_STORAGE_KEY);
     this.selectedRegionLabel = this.countryService.getCountryName(
-      this.selectedRegion, this.translateService.currentLang
+      this.selectedRegion,
+      this.translateService.currentLang
     );
 
     this._refreshOnQueryParamsChange();
     this._updateRequestCountry();
+  }
+
+  ngAfterViewInit() {
+    this.checkAndSetupScrollEvent();
+  }
+
+  checkAndSetupScrollEvent() {
+    if (this.listingCards) {
+      this.setupScrollEvent(this.listingCards);
+    } else {
+      setTimeout(() => this.checkAndSetupScrollEvent(), 50);
+    }
+  }
+
+  setupScrollEvent(element: ElementRef) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.store$
+        .select(selectMarketplace)
+        .pipe(map(state => state.lastPaginatedRequestCount || 0))
+        .subscribe(lastPaginatedRequestCount => {
+          this.lastPaginatedRequestCount = lastPaginatedRequestCount;
+        });
+
+      fromEvent(this.windowRefService.nativeWindow, "scroll")
+        .pipe(
+          debounceTime(50),
+          withLatestFrom(this.loadingService.loading$),
+          map(([event, isLoading]) => {
+            const elementBottom = element.nativeElement.getBoundingClientRect().bottom;
+            const windowHeight = window.innerHeight;
+            return {
+              nearBottom: (elementBottom - windowHeight < 300),
+              isLoading: isLoading
+            };
+          }),
+          filter(({ nearBottom, isLoading }) => nearBottom && !isLoading),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe(() => {
+          if (this.page * this.pageSize < this.lastPaginatedRequestCount) {
+            this.loadNextPage();
+          }
+        });
+    }
   }
 
   setRegion(event: Event, region: string, refresh = true) {
@@ -115,14 +163,18 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     });
   }
 
-  onPageChange(page: number) {
-    this.page = page;
-    this.refresh(this.filterModel);
+  loadNextPage() {
+    this.page++;
+    this.refresh(this.filterModel, { clear: false });
   }
 
-  public refresh(filterModel?: MarketplaceFilterModel) {
+  public refresh(
+    filterModel?: MarketplaceFilterModel,
+    options: MarketplaceRefreshOptions = {
+      clear: true
+    }
+  ) {
     this.loadingService.setLoading(true);
-    this.windowRefService.scroll({ top: 0 });
 
     this.filterModel = {
       ...this.filterModel,
@@ -136,16 +188,8 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     }
 
     // Remove unwanted query params.
-    const {
-      sold,
-      expired,
-      user,
-      offersByUser,
-      soldToUser,
-      followedByUser,
-      pendingModeration,
-      ...queryParams
-    } = this.filterModel;
+    const { sold, expired, user, offersByUser, soldToUser, followedByUser, pendingModeration, ...queryParams } =
+      this.filterModel;
 
     // Remove query parameters that don't belong.
     for (const key of Object.keys(queryParams)) {
@@ -158,31 +202,34 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
 
     this.routerService.updateQueryParams(queryParams);
 
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_SUCCESS),
-      take(1)
-    ).subscribe(() => {
+    this.actions$.pipe(ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_SUCCESS), take(1)).subscribe(() => {
       this._initializeListingsStream();
     });
 
     this.utilsService.delay(1).subscribe(() => {
+      if (options.clear) {
         this.store$.dispatch(new ClearMarketplaceListings());
-        this.store$.dispatch(new LoadMarketplaceListings(
-          {
-            options: {
-              ...(this.filterModel || {}),
-              page: this.page
-            }
-          }));
+        this.windowRefService.scroll({ top: 0 });
+        this.page = 1;
       }
-    );
+      this.store$.dispatch(
+        new LoadMarketplaceListings({
+          options: {
+            ...(this.filterModel || {}),
+            page: this.page
+          }
+        })
+      );
+    });
 
     this._setTitle();
     this._setBreadcrumb();
     this.loadingService.setLoading(false);
   }
 
-  protected abstract _getListingsFilterPredicate(currentUser: UserInterface | null): (listing: MarketplaceListingInterface) => boolean;
+  protected abstract _getListingsFilterPredicate(
+    currentUser: UserInterface | null
+  ): (listing: MarketplaceListingInterface) => boolean;
 
   protected _initializeListingsStream() {
     this.listings$ = this.store$.select(selectMarketplaceListings).pipe(
@@ -243,20 +290,26 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
   }
 
   private _updateRequestCountry() {
-    this.store$.select(selectRequestCountry).pipe(
-      takeUntil(this.destroyed$),
-      map(requestCountry => {
+    this.store$
+      .select(selectRequestCountry)
+      .pipe(
+        takeUntil(this.destroyed$),
+        map(requestCountry => {
           if (!requestCountry || requestCountry === "UNKNOWN") {
             requestCountry = "US";
           }
 
           this.requestCountryCode = requestCountry;
-          this.requestCountryLabel = this.countryService.getCountryName(requestCountry, this.translateService.currentLang);
+          this.requestCountryLabel = this.countryService.getCountryName(
+            requestCountry,
+            this.translateService.currentLang
+          );
 
           if (!this.selectedRegion) {
             this.setRegion(null, requestCountry, false);
           }
-        }
-      )).subscribe();
+        })
+      )
+      .subscribe();
   }
 }
