@@ -134,13 +134,37 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
             }
 
             if (offer.status === MarketplaceOfferStatus.PENDING) {
-              this.pendingOfferGroup[offer.masterOffer].push({ ...offer, userObj: user, lineItemObj: lineItem });
+              this.pendingOfferGroup = {
+                ...this.pendingOfferGroup,
+                [offer.masterOffer]: [
+                  ...this.pendingOfferGroup[offer.masterOffer],
+                  { ...offer, userObj: user, lineItemObj: lineItem }
+                ]
+              };
             } else if (offer.status === MarketplaceOfferStatus.ACCEPTED) {
-              this.acceptedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user, lineItemObj: lineItem });
+              this.acceptedOfferGroup = {
+                ...this.acceptedOfferGroup,
+                [offer.masterOffer]: [
+                  ...this.acceptedOfferGroup[offer.masterOffer],
+                  { ...offer, userObj: user, lineItemObj: lineItem }
+                ]
+              };
             } else if (offer.status === MarketplaceOfferStatus.REJECTED) {
-              this.rejectedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user, lineItemObj: lineItem });
+              this.rejectedOfferGroup = {
+                ...this.rejectedOfferGroup,
+                [offer.masterOffer]: [
+                  ...this.rejectedOfferGroup[offer.masterOffer],
+                  { ...offer, userObj: user, lineItemObj: lineItem }
+                ]
+              };
             } else if (offer.status === MarketplaceOfferStatus.RETRACTED) {
-              this.retractedOfferGroup[offer.masterOffer].push({ ...offer, userObj: user, lineItemObj: lineItem });
+              this.retractedOfferGroup = {
+                ...this.retractedOfferGroup,
+                [offer.masterOffer]: [
+                  ...this.retractedOfferGroup[offer.masterOffer],
+                  { ...offer, userObj: user, lineItemObj: lineItem }
+                ]
+              };
             }
 
             this.loadingOffers = false;

@@ -260,6 +260,10 @@ export class EquipmentMarketplaceService extends BaseService {
     return listing.lineItems.every(lineItem => !!lineItem.reserved);
   }
 
+  listingReservedTo(listing: MarketplaceListingInterface, userId: UserInterface["id"]): boolean {
+    return listing.lineItems.some(lineItem => lineItem.reservedTo === userId);
+  }
+
   listingExpired(listing: MarketplaceListingInterface): boolean {
     return new Date(listing.expiration + "Z") < new Date();
   }

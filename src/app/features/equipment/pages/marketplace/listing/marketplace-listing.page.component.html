@@ -323,10 +323,12 @@
     <button
       (click)="onMessageSellerClicked($event)"
       [class.btn-primary]="
-        equipmentMarketplaceService.listingReserved(listing) && !equipmentMarketplaceService.listingSold(listing)
+        equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
+        !equipmentMarketplaceService.listingSold(listing)
       "
       [class.btn-secondary]="
-        !equipmentMarketplaceService.listingReserved(listing) || equipmentMarketplaceService.listingSold(listing)
+        !equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) ||
+        equipmentMarketplaceService.listingSold(listing)
       "
       [class.loading]="loadingService.loading$ | async"
       class="btn d-block w-100 mt-2"
@@ -335,7 +337,8 @@
 
       <ng-container
         *ngIf="
-          equipmentMarketplaceService.listingReserved(listing) && !equipmentMarketplaceService.listingSold(listing);
+          equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
+          !equipmentMarketplaceService.listingSold(listing);
           else messageSeller
         "
       >
