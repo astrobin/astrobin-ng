@@ -27,6 +27,9 @@ import { EquipmentMarketplaceService } from "@features/equipment/services/equipm
   styleUrls: ["./marketplace-feedback-modal.component.scss"]
 })
 export class MarketplaceFeedbackModalComponent extends BaseComponentDirective implements AfterViewInit {
+  readonly sellerCols = "col-12 col-lg-6";
+  readonly buyerCols = "col-12 col-lg-6";
+
   @Input()
   listing: MarketplaceListingInterface;
 
@@ -175,31 +178,31 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
     const communication = feedbackField(
       `communicationValue`,
       this.translateService.instant("Communication"),
-      this.targetType === MarketplaceFeedbackTargetType.SELLER ? "col-3" : "col-6"
+      this.targetType === MarketplaceFeedbackTargetType.SELLER ? this.sellerCols : this.buyerCols
     );
 
     const speedOfDelivery = feedbackField(
       `speedValue`,
       this.translateService.instant("Speed of delivery"),
-      "col-3"
+      this.sellerCols
     );
 
     const speedOfPayment = feedbackField(
       `speedValue`,
       this.translateService.instant("Speed of payment"),
-      "col-6"
+      this.buyerCols
     );
 
     const accuracy = feedbackField(
       `accuracyValue`,
       this.translateService.instant("Accuracy of item descriptions"),
-      "col-3"
+      this.sellerCols
     );
 
     const packaging = feedbackField(
       `packagingValue`,
       this.translateService.instant("Packaging quality"),
-      "col-3"
+      this.sellerCols
     );
 
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
