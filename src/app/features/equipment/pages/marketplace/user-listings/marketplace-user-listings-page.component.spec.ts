@@ -14,6 +14,7 @@ import { of } from "rxjs";
 import { MarketplaceSidebarComponent } from "@features/equipment/components/marketplace-sidebar/marketplace-sidebar.component";
 import { MarketplaceSearchBarComponent } from "@features/equipment/components/marketplace-search-bar/marketplace-search-bar.component";
 import { MarketplaceListingCardsComponent } from "@features/equipment/components/marketplace-listing-cards/marketplace-listing-cards.component";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("MarketplaceMyListingsPageComponent", () => {
   let component: MarketplaceUserListingsPageComponent;
@@ -22,6 +23,7 @@ describe("MarketplaceMyListingsPageComponent", () => {
   beforeEach(async () => {
     await MockBuilder(MarketplaceUserListingsPageComponent, AppModule)
       .provide([
+        WindowRefService,
         provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,

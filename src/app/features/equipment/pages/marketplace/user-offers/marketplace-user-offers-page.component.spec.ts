@@ -11,6 +11,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("MarketplaceUserOffersPageComponent", () => {
   let component: MarketplaceUserOffersPageComponent;
@@ -19,6 +20,7 @@ describe("MarketplaceUserOffersPageComponent", () => {
   beforeEach(async () => {
     await MockBuilder(MarketplaceUserOffersPageComponent, AppModule)
       .provide([
+        WindowRefService,
         provideMockStore({ initialState }),
         MockProvider(ActivatedRoute, {
           queryParams: of({ region: "us" })

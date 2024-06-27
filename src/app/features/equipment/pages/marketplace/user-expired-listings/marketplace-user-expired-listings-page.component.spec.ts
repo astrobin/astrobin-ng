@@ -11,6 +11,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("MarketplaceUserExpiredListingsPageComponent", () => {
   let component: MarketplaceUserExpiredListingsPageComponent;
@@ -19,6 +20,7 @@ describe("MarketplaceUserExpiredListingsPageComponent", () => {
   beforeEach(async () => {
     await MockBuilder(MarketplaceUserExpiredListingsPageComponent, AppModule)
       .provide([
+        WindowRefService,
         provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
