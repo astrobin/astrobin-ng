@@ -120,10 +120,14 @@ export class MarketplaceFeedbackComponent extends BaseComponentDirective impleme
       modalComponent.contentType = this.contentType;
       modalComponent.objectId = this.feedback.id;
       modalComponent.allowSelfReply = false;
-      modalComponent.showReplyButton = user.id === this.feedback.recipient || user.id === this.feedback.user;
-      modalComponent.showTopLevelButton = user.id === this.feedback.recipient || user.id === this.feedback.user;
+      modalComponent.showReplyButton = false;
+      modalComponent.showTopLevelButton = false;
       modalComponent.topLevelFormHeight = 150;
-      modalComponent.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS;
+      modalComponent.topLevelFormPlacement = "BOTTOM";
+      modalComponent.autoStartTopLevelStrategy =
+        user.id === this.feedback.recipient || user.id === this.feedback.user
+          ? NestedCommentsAutoStartTopLevelStrategy.ALWAYS
+          : null;
     });
   }
 }
