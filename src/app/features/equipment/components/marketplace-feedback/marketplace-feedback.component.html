@@ -47,8 +47,16 @@
     <p *ngIf="feedback.message" [innerHTML]="feedback.message | nl2br" class="message"></p>
   </div>
 
-  <div class="card-footer">
-    <button (click)="openCommentsModal()" class="btn btn-secondary">
+  <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="card-footer">
+    <button
+      (click)="openFeedbackModal($event)"
+      *ngIf="recipient && listing && currentUserWrapper.user.id === feedback.user"
+      class="btn btn-secondary"
+    >
+      {{ "Edit" }}
+    </button>
+
+    <button (click)="openCommentsModal($event)" class="btn btn-secondary">
       {{ "Comments" | translate }}
       <span class="badge rounded-pill bg-dark">
         <astrobin-nested-comments-count

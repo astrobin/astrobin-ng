@@ -653,7 +653,22 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
           return listing;
         }
 
-        const updatedFeedbacks = listing.feedbacks.concat(newFeedback);
+        // Check if feedback is already in the listing
+        const existingFeedback = listing.feedbacks.find(feedback => feedback.id === newFeedback.id);
+        let updatedFeedbacks;
+        if (existingFeedback) {
+          // Update the listing with the new feedback
+          updatedFeedbacks = listing.feedbacks.map(feedback => {
+            if (feedback.id !== newFeedback.id) {
+              return feedback;
+            }
+
+            return newFeedback;
+          });
+        } else {
+          // Add the new feedback to the listing
+          updatedFeedbacks = [...listing.feedbacks, newFeedback];
+        }
 
         return {
           ...listing,
