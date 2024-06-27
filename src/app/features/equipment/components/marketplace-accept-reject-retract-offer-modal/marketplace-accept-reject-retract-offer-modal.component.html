@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="confirmation-dialog-modal">
+    {{ title || "Are you sure?" | translate }}
+  </h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <p *ngIf="showMessage" [innerHTML]="message || 'This operation requires an additional confirmation.' | translate"></p>
+
+  <form [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button
+    (click)="modal.dismiss()"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-outline-secondary"
+    type="button"
+  >
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="close()"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-primary"
+    type="button"
+  >
+    {{ "Yes, continue" | translate }}
+  </button>
+</div>
