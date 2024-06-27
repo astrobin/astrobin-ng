@@ -187,7 +187,9 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
   protected _initializeListingsStream() {
     this.listings$ = this.store$.select(selectMarketplaceListings).pipe(
       concatLatestFrom(() => this.currentUser$),
-      map(([listings, currentUser]) => !!listings ? listings.filter(this._getListingsFilterPredicate(currentUser)) : []),
+      map(([listings, currentUser]) =>
+        !!listings ? listings.filter(this._getListingsFilterPredicate(currentUser)) : null
+      ),
       tap(() => {
         this.utilsService.delay(200).subscribe(() => {
           if (this.windowRefService.nativeWindow.innerWidth < 768) {
