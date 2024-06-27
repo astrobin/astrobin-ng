@@ -119,9 +119,9 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);
 
-        if (isPlatformBrowser(this.platformId)) {
-          this.notificationsService.getUnreadCount().subscribe();
-        }
+        // if (isPlatformBrowser(this.platformId)) {
+        //   this.notificationsService.getUnreadCount().subscribe();
+        // }
       }
     });
   }
