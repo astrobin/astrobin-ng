@@ -298,8 +298,7 @@
       <button
         (click)="onMakeAnOfferClicked($event)"
         *ngIf="
-          !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
-          !equipmentMarketplaceService.listingHasAcceptedOffers(listing)
+          equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing)
         "
         [class.loading]="loadingService.loading$ | async"
         class="btn btn-primary d-block w-100 mt-4"

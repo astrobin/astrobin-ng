@@ -264,6 +264,10 @@ export class EquipmentMarketplaceService extends BaseService {
     return listing.lineItems.some(lineItem => lineItem.reservedTo === userId);
   }
 
+  listingHasNonSoldNonReservedItems(listing: MarketplaceListingInterface): boolean {
+    return listing.lineItems.some(lineItem => !lineItem.sold && !lineItem.reserved);
+  }
+
   listingExpired(listing: MarketplaceListingInterface): boolean {
     return new Date(listing.expiration + "Z") < new Date();
   }
