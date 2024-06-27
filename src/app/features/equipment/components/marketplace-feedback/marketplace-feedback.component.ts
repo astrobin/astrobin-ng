@@ -59,11 +59,17 @@ export class MarketplaceFeedbackComponent extends BaseComponentDirective impleme
     this.store$.dispatch(new LoadMarketplaceListing({ id: this.feedback.listing }));
     this.store$.dispatch(new LoadContentType(contentTypePayload));
 
-    this.store$.select(selectUser, this.feedback.recipient).pipe(takeUntil(this.destroyed$)).subscribe(user => {
+    this.store$.select(selectUser, this.feedback.recipient).pipe(
+      filter(user => !!user),
+      takeUntil(this.destroyed$)
+    ).subscribe(user => {
       this.recipient = user;
     });
 
-    this.store$.select(selectMarketplaceListing, { id: this.feedback.listing }).pipe(takeUntil(this.destroyed$)).subscribe(listing => {
+    this.store$.select(selectMarketplaceListing, { id: this.feedback.listing }).pipe(
+      filter(listing => !!listing),
+      takeUntil(this.destroyed$)
+    ).subscribe(listing => {
       this.listing = { ...listing };
       const feedback = listing.feedbacks.find(f => f.id === this.feedback.id);
       if (feedback) {
