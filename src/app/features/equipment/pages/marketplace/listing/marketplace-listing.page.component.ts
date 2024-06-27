@@ -401,13 +401,16 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
         componentInstance.contentType = contentType;
         componentInstance.objectId = privateConversation.id;
+
         componentInstance.title =
           currentUser.id === this.listing.user
-            ? this.translateService.instant("Private conversations with a buyer")
-            : this.translateService.instant("Private conversations with the seller");
-        componentInstance.addCommentLabel = currentUser.id === this.listing.user
-          ? this.translateService.instant("Start a new private conversation with this buyer")
-          : this.translateService.instant("Start a new private conversation with the seller");
+            ? this.translateService.instant("Private conversation with {{0}}", {
+              0: privateConversation.userDisplayName
+            })
+            : this.translateService.instant("Private conversation with {{0}}", {
+              0: this.listing.userDisplayName
+            });
+
         componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
         componentInstance.showReplyButton = false;
         componentInstance.showTopLevelButton = false;
@@ -560,4 +563,3 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     });
   }
 }
-

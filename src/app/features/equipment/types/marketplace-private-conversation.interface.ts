@@ -6,6 +6,7 @@ export interface MarketplacePrivateConversationInterface {
   created?: string;
   listing?: MarketplaceListingInterface["id"];
   user?: UserInterface["id"];
+  userDisplayName?: string;
   userLastAccessed?: string;
   listingUserLastAccessed?: string;
   totalMessages?: number;

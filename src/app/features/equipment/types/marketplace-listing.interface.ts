@@ -20,6 +20,7 @@ export interface MarketplaceListingInterface {
   id?: number;
   hash?: string;
   user?: UserInterface["id"];
+  userDisplayName?: UserInterface["displayName"];
   created: string;
   updated: string;
   firstApproved?: string | null;
