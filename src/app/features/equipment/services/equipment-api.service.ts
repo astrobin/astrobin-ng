@@ -1012,22 +1012,31 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.put<MarketplaceOfferInterface>(url, offer);
   }
 
-  public rejectMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+  public rejectMarketplaceOffer(
+    offer: MarketplaceOfferInterface,
+    message?: string
+  ): Observable<MarketplaceOfferInterface> {
     const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/reject/`;
 
-    return this.http.put<MarketplaceOfferInterface>(url, {});
+    return this.http.put<MarketplaceOfferInterface>(url, { message });
   }
 
-  public retractMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+  public retractMarketplaceOffer(
+    offer: MarketplaceOfferInterface,
+    message?: string
+  ): Observable<MarketplaceOfferInterface> {
     const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/retract/`;
 
-    return this.http.put<MarketplaceOfferInterface>(url, {});
+    return this.http.put<MarketplaceOfferInterface>(url, { message });
   }
 
-  public acceptMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+  public acceptMarketplaceOffer(
+    offer: MarketplaceOfferInterface,
+    message?: string
+  ): Observable<MarketplaceOfferInterface> {
     const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/accept/`;
 
-    return this.http.put<MarketplaceOfferInterface>(url, {});
+    return this.http.put<MarketplaceOfferInterface>(url, { message });
   }
 
   public createMarketplaceFeedback(feedback: MarketplaceFeedbackInterface): Observable<MarketplaceFeedbackInterface> {

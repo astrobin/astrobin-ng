@@ -35,7 +35,6 @@ import { LoadUser } from "@features/account/store/auth.actions";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
@@ -45,6 +44,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { Router } from "@angular/router";
 import { MarketplaceFeedbackValue } from "@features/equipment/types/marketplace-feedback.interface";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
 
 @Injectable({
   providedIn: "root"
@@ -318,7 +318,7 @@ export class EquipmentMarketplaceService extends BaseService {
 
   retractOffer(listing: MarketplaceListingInterface, offers: MarketplaceOfferInterface[]): void {
     if (this.listingHasOffers(listing)) {
-      const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+      const modalRef: NgbModalRef = this.modalService.open(MarketplaceAcceptRejectRetractOfferModalComponent);
       const componentInstance = modalRef.componentInstance;
 
       if (
@@ -333,14 +333,15 @@ export class EquipmentMarketplaceService extends BaseService {
         );
       }
 
-      modalRef.closed.subscribe(() => {
+      modalRef.closed.subscribe(message => {
         this._performOfferAction(
           listing,
           offers,
           null,
           RetractMarketplaceOffer,
           EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_SUCCESS,
-          EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_FAILURE
+          EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_FAILURE,
+          message
         );
       });
     } else {
@@ -381,7 +382,8 @@ export class EquipmentMarketplaceService extends BaseService {
       | typeof EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_FAILURE
       | typeof EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_FAILURE
       | typeof EquipmentActionTypes.REJECT_MARKETPLACE_OFFER_FAILURE
-      | typeof EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_FAILURE
+      | typeof EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER_FAILURE,
+    message?: string
   ) {
     this.store$
       .select(selectCurrentUser)
@@ -394,7 +396,15 @@ export class EquipmentMarketplaceService extends BaseService {
           }
 
           const offer = offers[index];
-          this.store$.dispatch(new action({ offer }));
+          const data = {
+            offer
+          };
+
+          if (message) {
+            data["message"] = message;
+          }
+
+          this.store$.dispatch(new action(data));
 
           const success$ = this.actions$.pipe(
             ofType(successActionType),

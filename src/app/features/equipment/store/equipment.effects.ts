@@ -1342,7 +1342,7 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.REJECT_MARKETPLACE_OFFER),
       map((action: RejectMarketplaceOffer) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.rejectMarketplaceOffer(payload.offer).pipe(
+        this.equipmentApiService.rejectMarketplaceOffer(payload.offer, payload.message).pipe(
           map(updatedOffer => new RejectMarketplaceOfferSuccess({ offer: updatedOffer })),
           catchError(error => of(new RejectMarketplaceOfferFailure({ offer: payload.offer, error })))
         )
@@ -1355,7 +1355,7 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER),
       map((action: RetractMarketplaceOffer) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.retractMarketplaceOffer(payload.offer).pipe(
+        this.equipmentApiService.retractMarketplaceOffer(payload.offer, payload.message).pipe(
           map(updatedOffer => new RetractMarketplaceOfferSuccess({ offer: updatedOffer })),
           catchError(error => of(new RetractMarketplaceOfferFailure({ offer: payload.offer, error })))
         )
@@ -1368,7 +1368,7 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER),
       map((action: AcceptMarketplaceOffer) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.acceptMarketplaceOffer(payload.offer).pipe(
+        this.equipmentApiService.acceptMarketplaceOffer(payload.offer, payload.message).pipe(
           map(updatedOffer => new AcceptMarketplaceOfferSuccess({ offer: updatedOffer })),
           catchError(error => of(new AcceptMarketplaceOfferFailure({ offer: payload.offer, error })))
         )

@@ -68,6 +68,7 @@ import { MarketplaceOfferSummaryComponent } from "./components/marketplace-offer
 import { MarketplaceUserFeedbackListPageComponent } from "./pages/marketplace/user-feedback-list/marketplace-user-feedback-list-page.component";
 import { MarketplaceUserFeedbackPageComponent } from "./pages/marketplace/marketplace-user-feedback/marketplace-user-feedback-page.component";
 import { MarketplaceFeedbackComponent } from './components/marketplace-feedback/marketplace-feedback.component';
+import { MarketplaceAcceptRejectRetractOfferModalComponent } from './components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component';
 
 @NgModule({
   declarations: [
@@ -134,7 +135,8 @@ import { MarketplaceFeedbackComponent } from './components/marketplace-feedback/
     MarketplaceOfferSummaryComponent,
     MarketplaceUserFeedbackListPageComponent,
     MarketplaceUserFeedbackPageComponent,
-    MarketplaceFeedbackComponent
+    MarketplaceFeedbackComponent,
+    MarketplaceAcceptRejectRetractOfferModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

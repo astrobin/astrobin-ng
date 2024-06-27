@@ -1296,7 +1296,7 @@ export class UpdateMarketplaceOfferFailure implements PayloadActionInterface {
 export class RejectMarketplaceOffer implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.REJECT_MARKETPLACE_OFFER;
 
-  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  constructor(public payload: { offer: MarketplaceOfferInterface, message?: string }) {
   }
 }
 
@@ -1317,7 +1317,7 @@ export class RejectMarketplaceOfferFailure implements PayloadActionInterface {
 export class RetractMarketplaceOffer implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER;
 
-  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  constructor(public payload: { offer: MarketplaceOfferInterface, message?: string }) {
   }
 }
 
@@ -1338,7 +1338,7 @@ export class RetractMarketplaceOfferFailure implements PayloadActionInterface {
 export class AcceptMarketplaceOffer implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER;
 
-  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  constructor(public payload: { offer: MarketplaceOfferInterface, message?: string }) {
   }
 }
 

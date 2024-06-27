@@ -38,6 +38,7 @@ import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-of
 import { MarketplaceMasterOfferInterface } from "@features/equipment/types/marketplace-master-offer.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { Subscription } from "rxjs";
+import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
 
 interface OfferGroup {
   [key: MarketplaceMasterOfferInterface["id"]]: (MarketplaceOfferInterface & {
@@ -158,7 +159,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     userObj: UserInterface,
     lineItemObj: MarketplaceLineItemInterface
   })[]) {
-    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const modalRef: NgbModalRef = this.modalService.open(MarketplaceAcceptRejectRetractOfferModalComponent);
     const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
     componentInstance.message = this.translateService.instant(
@@ -167,7 +168,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
       "possible disciplinary action. Are you sure you want to proceed?"
     );
 
-    modalRef.closed.subscribe(() => {
+    modalRef.closed.subscribe(message => {
       this.loadingService.setLoading(true);
 
       const processOffersSequentially = (index: number) => {
@@ -176,7 +177,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
           return;
         }
         const offer = offers[index];
-        this.store$.dispatch(new AcceptMarketplaceOffer({ offer }));
+        this.store$.dispatch(new AcceptMarketplaceOffer({ offer, message }));
 
         this.actions$
           .pipe(
@@ -225,7 +226,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     userObj: UserInterface,
     lineItemObj: MarketplaceLineItemInterface
   })[]) {
-    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const modalRef: NgbModalRef = this.modalService.open(MarketplaceAcceptRejectRetractOfferModalComponent);
     const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
     componentInstance.title = this.translateService.instant("Reject offer");
@@ -240,7 +241,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
       componentInstance.showMessage = false;
     }
 
-    modalRef.closed.subscribe(() => {
+    modalRef.closed.subscribe(message => {
       this.loadingService.setLoading(true);
 
       const processOffersSequentially = (index: number) => {
@@ -249,7 +250,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
           return;
         }
         const offer = offers[index];
-        this.store$.dispatch(new RejectMarketplaceOffer({ offer }));
+        this.store$.dispatch(new RejectMarketplaceOffer({ offer, message }));
 
         this.actions$
           .pipe(
