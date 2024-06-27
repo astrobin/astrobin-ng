@@ -155,19 +155,39 @@ export class UtilsService {
   }
 
   static addOrUpdateUrlParam(url: string, name: string, value: string): string {
+    // Regular expression to find the parameter in the URL
     let regex = new RegExp(`[&\?]${name}=`);
 
+    // Check if the URL already contains the parameter
     if (regex.test(url)) {
-      regex = new RegExp(`([&\?])${name}=.+?(?=&|$)`);
-      return url.replace(regex, "$1" + name + "=" + value);
+      regex = new RegExp(`([&\?])${name}=[^&]+`);
+      return url.replace(regex, `$1${name}=${value}`);
     }
 
-    if (url.indexOf("?") > -1) {
-      return url + "&" + name + "=" + value;
-    }
+    // Check if the URL contains a fragment identifier
+    const hashIndex = url.indexOf("#");
+    if (hashIndex > -1) {
+      // Split the URL into two parts: before and after the '#'
+      const baseUrl = url.substring(0, hashIndex);
+      const hashUrl = url.substring(hashIndex);
 
-    return url + "?" + name + "=" + value;
+      if (baseUrl.indexOf("?") > -1) {
+        // If there is already a query string, append the new parameter
+        return `${baseUrl}&${name}=${value}${hashUrl}`;
+      } else {
+        // If there is no query string, add one
+        return `${baseUrl}?${name}=${value}${hashUrl}`;
+      }
+    } else {
+      // Handle URLs without a fragment identifier
+      if (url.indexOf("?") > -1) {
+        return `${url}&${name}=${value}`;
+      } else {
+        return `${url}?${name}=${value}`;
+      }
+    }
   }
+
 
   static removeUrlParam(url: string, parameter: string): string {
     const urlParts = url.split("?");

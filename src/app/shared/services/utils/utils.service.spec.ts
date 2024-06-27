@@ -172,6 +172,14 @@ describe("UtilsService", () => {
     it("should not throw away remaining parameters", () => {
       expect(UtilsService.addOrUpdateUrlParam("ab.co?a=b&b=c", "a", "c")).toEqual("ab.co?a=c&b=c");
     });
+
+    it("should work in the case of a fragment", () => {
+      expect(UtilsService.addOrUpdateUrlParam("ab.co#fragment", "a", "b")).toEqual("ab.co?a=b#fragment");
+    });
+
+    it("should work in the case of a fragment and multiple params", () => {
+      expect(UtilsService.addOrUpdateUrlParam("ab.co?a=b#fragment", "c", "d")).toEqual("ab.co?a=b&c=d#fragment");
+    })
   });
 
   describe("removeUrlParam", () => {
