@@ -17,7 +17,7 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
 import { TransferState } from "@angular/platform-browser";
 import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
-import { FormlyConfig } from "@ngx-formly/core";
+import { NotificationsService } from "@features/notifications/services/notifications.service";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -42,7 +42,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     @Inject(DOCUMENT) public document: any,
     public readonly transferState: TransferState,
     @Inject(CLIENT_IP) public readonly clientIp: string,
-    private formlyConfig: FormlyConfig
+    public readonly notificationsService: NotificationsService
   ) {
     super(store$);
 
@@ -118,6 +118,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
       if (event instanceof NavigationEnd) {
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);
+        this.notificationsService.getUnreadCount().subscribe();
       }
     });
   }
