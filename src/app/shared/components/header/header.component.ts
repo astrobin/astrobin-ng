@@ -12,12 +12,13 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { map, take, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { CookieService } from "ngx-cookie";
 import { Theme, ThemeService } from "@shared/services/theme.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { NavigationEnd, Router } from "@angular/router";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -91,7 +92,8 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     public readonly domSanitizer: DomSanitizer,
     public readonly cookieService: CookieService,
     public readonly themeService: ThemeService,
-    public readonly jsonApiService: JsonApiService
+    public readonly jsonApiService: JsonApiService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -155,6 +157,13 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
 
     this.helpWithTranslationsUrl$.pipe(takeUntil(this.destroyed$)).subscribe(url => {
       this.helpWithTranslationsUrl = url;
+    });
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.isCollapsed = true;
     });
   }
 
