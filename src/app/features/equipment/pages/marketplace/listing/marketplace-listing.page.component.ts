@@ -119,6 +119,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.setListing(this.activatedRoute.snapshot.data.listing);
     this._subscribeToListingChanges();
+    this.windowRefService.scroll({ top: 0 });
 
     // If we're navigating to a different listing, update the page.
     this.router.events
