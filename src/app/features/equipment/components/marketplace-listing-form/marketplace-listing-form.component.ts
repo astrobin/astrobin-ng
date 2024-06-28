@@ -1,4 +1,13 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import {
   MarketplaceListingExpiration,
@@ -38,9 +47,20 @@ import { CountryService } from "@shared/services/country.service";
 
 declare var google: any;
 
-enum SALE_TYPE {
-  BUNDLE = "bundle",
+export enum MARKETPLACE_SALE_TYPE {
+  MULTIPLE = "multiple",
   SINGLE = "single"
+}
+
+export enum MARKETPLACE_MULTIPLE_SALE_TYPE {
+  BUNDLE = "bundle",
+  INDIVIDUAL = "individual"
+}
+
+export interface MarketplaceListingFormInitialCountInterface {
+  count?: number;
+  saleType?: MARKETPLACE_SALE_TYPE;
+  multipleSaleType?: MARKETPLACE_MULTIPLE_SALE_TYPE;
 }
 
 @Component({
@@ -48,8 +68,11 @@ enum SALE_TYPE {
   templateUrl: "./marketplace-listing-form.component.html",
   styleUrls: ["./marketplace-listing-form.component.scss"]
 })
-export class MarketplaceListingFormComponent extends BaseComponentDirective implements OnInit {
+export class MarketplaceListingFormComponent extends BaseComponentDirective implements AfterViewInit {
   readonly maxImages: number = 10;
+
+  @ViewChild("multipleSaleOptionTemplate")
+  multipleSaleOptionTemplate: TemplateRef<any>;
 
   @Input()
   model: MarketplaceListingInterface = {
@@ -95,87 +118,19 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   formInitialized = false;
   fields: FormlyFieldConfig[];
 
-  initialLineItemCountModel = { count: 0, saleType: null };
+  initialLineItemCountModel: MarketplaceListingFormInitialCountInterface = {
+    count: 0,
+    saleType: null,
+    multipleSaleType: null
+  };
   initialLineItemCountForm = new FormGroup({});
-  initialLineItemCountFields: FormlyFieldConfig[] = [
-    {
-      key: "saleType",
-      type: "radio",
-      wrappers: ["default-wrapper"],
-      defaultValue: null,
-      props: {
-        required: true,
-        label: this.translateService.instant("How many items do you want to sell?"),
-        options: [
-          {
-            value: SALE_TYPE.SINGLE,
-            label: this.translateService.instant("Just one")
-          },
-          {
-            value: SALE_TYPE.BUNDLE,
-            label: this.translateService.instant("Multiple items in a bundle")
-          }
-        ]
-      },
-      hooks: {
-        onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-            if (value === SALE_TYPE.SINGLE) {
-              this.initialLineItemCountModel.count = 1;
-              this.initialLineItemCountForm.patchValue({ count: 1 });
-            } else {
-              this.initialLineItemCountModel.count = null;
-              this.initialLineItemCountForm.patchValue({ count: null });
-            }
-          });
-        }
-      }
-    },
-    {
-      key: "count",
-      type: "custom-number",
-      wrappers: ["default-wrapper"],
-      defaultValue: 1,
-      props: {
-        label: this.translateService.instant("How many items in your bundle?"),
-        placeholder: this.translateService.instant("Enter a number"),
-        description: this.translateService.instant(
-          "The AstroBin Marketplace supports multiple line items per listing. This makes it easy for you to " +
-          "have a bundle sale or avoid repeating the same information in multiple listings if you're selling " +
-          "multiple items. PS: you can always add more line items later."
-        ),
-        min: 1
-      },
-      expressions: {
-        className: (config: FormlyFieldConfig) =>
-          config.model.saleType === SALE_TYPE.SINGLE || config.model.saleType === null ? "hidden" : "",
-        "props.required": config => config.model.saleType === SALE_TYPE.BUNDLE
-      }
-    },
-    {
-      key: "terms",
-      type: "checkbox",
-      wrappers: ["default-wrapper"],
-      defaultValue: false,
-      props: {
-        label: this.translateService.instant("I agree to the AstroBin Marketplace terms of service"),
-        description: this.translateService.instant(
-          "By creating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
-          {
-            0: `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`,
-            1: "</a>"
-          }
-        ),
-        required: true
-      }
-    }
-  ];
+  initialLineItemCountFields: FormlyFieldConfig[];
   initialLineItemCount = null;
 
   googleMapsAvailable = false;
 
   @Output()
-  save: EventEmitter<MarketplaceListingInterface> = new EventEmitter<MarketplaceListingInterface>();
+  save: EventEmitter<MarketplaceListingInterface & MarketplaceListingFormInitialCountInterface> = new EventEmitter<MarketplaceListingInterface>();
 
   @ViewChild("findItemModeOptionTemplate")
   findItemModeOptionTemplate: TemplateRef<any>;
@@ -198,20 +153,20 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     super(store$);
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-
+  ngAfterViewInit() {
     this.googleMapsAvailable = !!this.googleMapsService.maps;
 
     const providedLineItemCount = this.activatedRoute.snapshot.queryParams.lineItemCount;
 
-    if (providedLineItemCount) {
+    if (providedLineItemCount && providedLineItemCount === "1") {
       this.initialLineItemCount = parseInt(providedLineItemCount, 10);
-      this._initFields();
     } else if (this.model.id) {
       this.initialLineItemCount = this.model.lineItems.length;
-      this._initFields();
+    } else {
+      this._initInitialLineItemCountFields();
     }
+
+    this._initFields();
   }
 
   setFirstFormlyGroupVisible() {
@@ -250,7 +205,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       return;
     }
 
-    this.save.emit(this.form.value);
+    this.save.emit({ ...this.form.value, ...this.initialLineItemCountForm.value });
   }
 
   onCancel(event: Event) {
@@ -280,6 +235,121 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         "This is a preview of your listing. You can't edit it here. If you want to make changes, please use the form area."
       )
     );
+  }
+
+  private _initInitialLineItemCountFields() {
+    this.initialLineItemCountFields = [
+      {
+        key: "saleType",
+        type: "radio",
+        wrappers: ["default-wrapper"],
+        defaultValue: null,
+        props: {
+          required: true,
+          label: this.translateService.instant("How many items do you want to sell?"),
+          options: [
+            {
+              value: MARKETPLACE_SALE_TYPE.SINGLE,
+              label: this.translateService.instant("Just one")
+            },
+            {
+              value: MARKETPLACE_SALE_TYPE.MULTIPLE,
+              label: this.translateService.instant("Multiple items")
+            }
+          ]
+        },
+        hooks: {
+          onInit: (field: FormlyFieldConfig) => {
+            field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+              if (value === MARKETPLACE_SALE_TYPE.SINGLE) {
+                this.initialLineItemCountModel.count = 1;
+                this.initialLineItemCountForm.patchValue({ count: 1 });
+              } else {
+                this.initialLineItemCountModel.count = null;
+                this.initialLineItemCountForm.patchValue({ count: null });
+              }
+            });
+          }
+        }
+      },
+      {
+        key: "count",
+        type: "custom-number",
+        wrappers: ["default-wrapper"],
+        defaultValue: 1,
+        props: {
+          label: this.translateService.instant("How many?"),
+          placeholder: this.translateService.instant("Enter a number"),
+          description: this.translateService.instant(
+            "The AstroBin Marketplace supports multiple line items per listing. This makes it easy for you to " +
+            "have a bundle sale or avoid repeating the same information in multiple listings if you're selling " +
+            "multiple items. PS: you can always add more line items later."
+          ),
+          min: 1
+        },
+        expressions: {
+          className: (config: FormlyFieldConfig) =>
+            config.model.saleType === MARKETPLACE_SALE_TYPE.SINGLE || config.model.saleType === null ? "hidden" : "",
+          "props.required": config => config.model.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE
+        }
+      },
+      {
+        key: "multipleSaleType",
+        type: "ng-select",
+        wrappers: ["default-wrapper"],
+        defaultValue: null,
+        props: {
+          optionTemplate: this.multipleSaleOptionTemplate,
+          label: this.translateService.instant("Do you want to sell your items as a bundle?"),
+          options: [
+            {
+              value: MARKETPLACE_MULTIPLE_SALE_TYPE.BUNDLE,
+              label: this.translateService.instant("Yes, as a bundle"),
+              description: this.translateService.instant(
+                "All items in the bundle will be sold together. Users will not be able to make offers for " +
+                "individual items."
+              )
+            },
+            {
+              value: MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL,
+              label: this.translateService.instant("No, individually"),
+              description: this.translateService.instant(
+                "AstroBin will automatically create multiple listings for each item in the bundle, " +
+                "allowing users to make offers for individual items. All listings will share common " +
+                "information, such as the location of the objects and the shipping method."
+              )
+            }
+          ]
+        },
+        expressions: {
+          "props.required": config => config.model.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE,
+          className: (config: FormlyFieldConfig) =>
+            config.model.saleType === MARKETPLACE_SALE_TYPE.SINGLE ||
+            config.model.saleType === null ||
+            config.model.count === 1 ||
+            config.model.count === null
+              ? "hidden"
+              : ""
+        }
+      },
+      {
+        key: "terms",
+        type: "checkbox",
+        wrappers: ["default-wrapper"],
+        defaultValue: false,
+        props: {
+          label: this.translateService.instant("I agree to the AstroBin Marketplace terms of service"),
+          description: this.translateService.instant(
+            "By creating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
+            {
+              0: `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`,
+              1: "</a>"
+            }
+          ),
+          required: true
+        }
+      }
+    ];
   }
 
   private _initFields() {
@@ -698,26 +768,26 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                         }
                       }
                     ]
-                  },
-                  {
-                    key: "images",
-                    wrappers: ["default-wrapper"],
-                    fieldGroupClassName:
-                      "d-flex flex-wrap justify-content-evenly field-group-images",
-                    props: {
-                      label: this.translateService.instant("Images"),
-                      description: this.translateService.instant(
-                        "You can upload up to {{ maxImages }} images. The first image will be used as the cover " +
-                        "image and is required.",
-                        {
-                          maxImages: this.maxImages
-                        }
-                      ),
-                      required: true
-                    },
-                    fieldGroup: [...Array(this.maxImages).keys()].map(n => _getImageField(n))
                   }
                 ]
+              },
+              {
+                key: "images",
+                wrappers: ["default-wrapper"],
+                fieldGroupClassName:
+                  "d-flex flex-wrap justify-content-evenly field-group-images",
+                props: {
+                  label: this.translateService.instant("Images"),
+                  description: this.translateService.instant(
+                    "You can upload up to {{ maxImages }} images. The first image will be used as the cover " +
+                    "image and is required.",
+                    {
+                      maxImages: this.maxImages
+                    }
+                  ),
+                  required: true
+                },
+                fieldGroup: [...Array(this.maxImages).keys()].map(n => _getImageField(n))
               }
             ]
           }
@@ -734,7 +804,12 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               type: "input",
               wrappers: ["default-wrapper"],
               expressions: {
-                hide: () => this.model.lineItems.length === 1 && !this.model.title
+                hide: () =>
+                  (
+                    this.model.lineItems.length === 1 ||
+                    this.initialLineItemCountModel.multipleSaleType === MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL
+                  ) &&
+                  !this.model.title
               },
               props: {
                 label: this.translateService.instant("Title for the entire listing"),
@@ -753,7 +828,12 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               type: "textarea",
               wrappers: ["default-wrapper"],
               expressions: {
-                hide: () => this.model.lineItems.length === 1 && !this.model.description
+                hide: () =>
+                  (
+                    this.model.lineItems.length === 1 ||
+                    this.initialLineItemCountModel.multipleSaleType === MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL
+                  ) &&
+                  !this.model.description
               },
               props: {
                 label: this.translateService.instant("Description for the entire listing"),

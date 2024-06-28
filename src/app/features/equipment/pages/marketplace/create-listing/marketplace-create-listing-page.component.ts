@@ -18,6 +18,12 @@ import { Router } from "@angular/router";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { RouterService } from "@shared/services/router.service";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MARKETPLACE_MULTIPLE_SALE_TYPE,
+  MARKETPLACE_SALE_TYPE,
+  MarketplaceListingFormInitialCountInterface
+} from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
@@ -69,8 +75,23 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     });
   }
 
-  onCreate(value) {
-    this.loadingService.setLoading(true);
+  onCreate(value: MarketplaceListingInterface & MarketplaceListingFormInitialCountInterface) {
+    let listings: MarketplaceListingInterface[];
+    let listingsProcessed = 0;
+
+    if (
+      value.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE &&
+      value.count > 1 &&
+      value.multipleSaleType === MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL
+    ) {
+      // Create multiple listings, each one gets one of the line items, and all other data is the same.
+      listings = Array.from({ length: value.count }, (_, i) => ({
+        ...value,
+        lineItems: [value.lineItems[i]]
+      }));
+    } else {
+      listings = [value];
+    }
 
     this.actions$
       .pipe(
@@ -78,12 +99,27 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
           EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS,
           EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_FAILURE
         ),
-        take(1),
+        take(listings.length),
         tap((action: CreateMarketplaceListingSuccess | CreateMarketplaceListingFailure) => {
+          listingsProcessed++;
+
           if (action.type === EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS) {
-            this.router.navigateByUrl(`/equipment/marketplace/listing/${action.payload.listing.hash}`).then(() => {
-              this.loadingService.setLoading(false);
-            });
+            if (listings.length === 1) {
+              this.router.navigateByUrl(`/equipment/marketplace/listing/${action.payload.listing.hash}`).then(() => {
+                this.loadingService.setLoading(false);
+              });
+            } else {
+              if (listingsProcessed === listings.length) {
+                this.currentUser$.pipe(take(1)).subscribe(user => {
+                  this.router.navigateByUrl(`/equipment/marketplace/users/${user.username}/listings`).then(() => {
+                    this.popNotificationsService.success(
+                      this.translateService.instant("All listings have been created.")
+                    );
+                    this.loadingService.setLoading(false);
+                  });
+                });
+              }
+            }
           } else {
             this.loadingService.setLoading(false);
           }
@@ -91,6 +127,10 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
       )
       .subscribe();
 
-    this.store$.dispatch(new CreateMarketplaceListing({ listing: value }));
+    this.loadingService.setLoading(true);
+
+    for (const listing of listings) {
+      this.store$.dispatch(new CreateMarketplaceListing({ listing }));
+    }
   }
 }
