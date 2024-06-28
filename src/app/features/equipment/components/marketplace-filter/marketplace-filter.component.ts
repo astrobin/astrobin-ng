@@ -195,7 +195,8 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
             label: this.equipmentItemService.humanizeType(itemType),
             value: itemType
           })),
-          clearable: true
+          clearable: true,
+          searchable: false
         },
         expressions: {
           "props.collapsed": config => {
@@ -316,6 +317,7 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
             props: {
               label: this.translateService.instant("Currency"),
               searchable: false,
+              clearable: true,
               options: Constants.SUPPORTED_CURRENCIES.map(
                 currency => ({
                   label: currency,
@@ -338,6 +340,8 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
         props: {
           collapsible: true,
           label: this.translateService.instant("Condition"),
+          clearable: true,
+          searchable: false,
           options: Object.values(MarketplaceListingCondition).map(condition => ({
             label: this.equipmentItemService.humanizeCondition(condition),
             value: condition
