@@ -1,31 +1,26 @@
-<div class="card mt-4">
-  <div class="card-header">
-    <fa-icon icon="filter"></fa-icon> &nbsp;
-    {{ "Filter" | translate }}
-  </div>
+<div class="mt-5">
+  <h5 class="ps-2">
+    {{ "Filters" | translate }}
+  </h5>
 
-  <div class="card-body">
-    <form [formGroup]="filterForm">
-      <formly-form [fields]="filterFields" [form]="filterForm"></formly-form>
-    </form>
-  </div>
+  <form [formGroup]="filterForm" class="mt-3 mb-3">
+    <formly-form [fields]="filterFields" [form]="filterForm"></formly-form>
+  </form>
 
-  <div class="card-footer">
+  <div class="d-flex justify-content-center gap-2 mb-5 mb-lg-0">
     <button
       (click)="applyFilters()"
       [class.loading]="(loadingService.loading$ | async) || filterForm.pending"
-      class="btn btn-primary btn-block w-50"
+      class="btn btn-primary btn-block mb-0"
     >
-      <fa-icon icon="check"></fa-icon> &nbsp;
       {{ "Apply" | translate }}
     </button>
 
     <button
       (click)="resetFilters()"
       [class.loading]="(loadingService.loading$ | async) || filterForm.pending"
-      class="btn btn-secondary btn-block w-50"
+      class="btn btn-secondary btn-block mb-0"
     >
-      <fa-icon icon="undo"></fa-icon> &nbsp;
       {{ "Reset" | translate }}
     </button>
   </div>

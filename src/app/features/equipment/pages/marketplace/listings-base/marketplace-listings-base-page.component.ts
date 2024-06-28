@@ -193,8 +193,13 @@ export abstract class MarketplaceListingsBasePageComponent
 
     // Remove query parameters that don't belong.
     for (const key of Object.keys(queryParams)) {
-      // Check if key is not in MarketplaceFilterModel as an interface.
-      if (!marketplaceFilterModelKeys.includes(key)) {
+      if (
+        !marketplaceFilterModelKeys.includes(key) ||
+        this.filterModel[key] === null ||
+        this.filterModel[key] === "null" ||
+        this.filterModel[key] === undefined ||
+        this.filterModel[key] === "undefined"
+      ) {
         delete queryParams[key];
         delete this.filterModel[key];
       }

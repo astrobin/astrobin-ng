@@ -179,9 +179,10 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
       {
         key: "itemType",
         type: "ng-select",
-        wrappers: ["default-wrapper"],
+        wrappers: ["card-wrapper"],
         defaultValue: params["itemType"],
         props: {
+          collapsible: true,
           label: this.translateService.instant("Item type"),
           options: [
             EquipmentItemType.CAMERA,
@@ -195,11 +196,13 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
             value: itemType
           })),
           clearable: true
+        },
+        expressions: {
+          "props.collapsed": config => {
+            return config.formControl.value === undefined || config.formControl.value === null;
+          },
+          className: config => config.props.collapsed ? "mb-1" : "mb-4"
         }
-      },
-      {
-        key: "",
-        template: "<hr />"
       },
       {
         key: "latitude",
@@ -212,99 +215,138 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
         className: "hidden"
       },
       {
-        key: "maxDistance",
-        type: "custom-number",
-        wrappers: ["default-wrapper"],
-        defaultValue: params["maxDistance"],
+        key: "",
+        wrappers: ["card-wrapper"],
         props: {
-          label: this.translateService.instant("Max. distance"),
-          description: this.translateService.instant("Max. distance from your location."),
-          min: 0
-        }
-      },
-      {
-        key: "distanceUnit",
-        type: "ng-select",
-        wrappers: ["default-wrapper"],
-        defaultValue: params["distanceUnit"],
-        props: {
-          label: this.translateService.instant("Distance unit"),
-          searchable: false,
-          options: [
-            {
-              label: "km",
-              value: "km"
-            },
-            {
-              label: "mi",
-              value: "mi"
+          collapsible: true,
+          label: this.translateService.instant("Location")
+        },
+        expressions: {
+          "props.collapsed": config => {
+            return (
+              (config.form.get("maxDistance")?.value === null || config.form.get("maxDistance")?.value === undefined) &&
+              (config.form.get("distanceUnit")?.value === null || config.form.get("distanceUnit")?.value === undefined)
+            );
+          },
+          className: config => config.props.collapsed ? "mb-1" : "mb-4"
+        },
+        fieldGroup: [
+          {
+            key: "maxDistance",
+            type: "custom-number",
+            wrappers: ["default-wrapper"],
+            defaultValue: params["maxDistance"],
+            props: {
+              label: this.translateService.instant("Max. distance"),
+              description: this.translateService.instant("Max. distance from your location."),
+              min: 0
             }
-          ]
-        },
-        expressionProperties: {
-          "props.required": "model.maxDistance && model.maxDistance > 0"
-        }
+          },
+          {
+            key: "distanceUnit",
+            type: "ng-select",
+            wrappers: ["default-wrapper"],
+            defaultValue: params["distanceUnit"],
+            props: {
+              label: this.translateService.instant("Distance unit"),
+              searchable: false,
+              clearable: true,
+              options: [
+                {
+                  label: "km",
+                  value: "km"
+                },
+                {
+                  label: "mi",
+                  value: "mi"
+                }
+              ]
+            },
+            expressionProperties: {
+              "props.required": "model.maxDistance && model.maxDistance > 0"
+            }
+          }
+        ]
       },
       {
         key: "",
-        template: "<hr />"
-      },
-      {
-        key: "minPrice",
-        type: "custom-number",
-        wrappers: ["default-wrapper"],
-        defaultValue: params["minPrice"],
+        wrappers: ["card-wrapper"],
         props: {
-          label: this.translateService.instant("Min. price"),
-          description: this.translateService.instant("Min. price of the item."),
-          min: 0
-        }
-      },
-      {
-        key: "maxPrice",
-        type: "custom-number",
-        wrappers: ["default-wrapper"],
-        defaultValue: params["maxPrice"],
-        props: {
-          label: this.translateService.instant("Max. price"),
-          description: this.translateService.instant("Max. price of the item."),
-          min: 0
-        }
-      },
-      {
-        key: "currency",
-        type: "ng-select",
-        wrappers: ["default-wrapper"],
-        defaultValue: params["currency"],
-        props: {
-          label: this.translateService.instant("Currency"),
-          searchable: false,
-          options: Constants.SUPPORTED_CURRENCIES.map(
-            currency => ({
-              label: currency,
-              value: currency
-            })
-          )
+          collapsible: true,
+          label: this.translateService.instant("Price")
         },
-        expressionProperties: {
-          "props.required": "model.minPrice || model.maxPrice"
-        }
-      },
-      {
-        key: "",
-        template: "<hr />"
+        expressions: {
+          "props.collapsed": config => {
+            return (
+              (config.form.get("minPrice")?.value === null || config.form.get("minPrice")?.value === undefined) &&
+              (config.form.get("maxPrice")?.value === null || config.form.get("maxPrice")?.value === undefined) &&
+              (config.form.get("currency")?.value === null || config.form.get("currency")?.value === undefined)
+            );
+          },
+          className: config => config.props.collapsed ? "mb-1" : "mb-4"
+        },
+        fieldGroup: [
+          {
+            key: "minPrice",
+            type: "custom-number",
+            wrappers: ["default-wrapper"],
+            defaultValue: params["minPrice"],
+            props: {
+              label: this.translateService.instant("Min. price"),
+              description: this.translateService.instant("Min. price of the item."),
+              min: 0
+            }
+          },
+          {
+            key: "maxPrice",
+            type: "custom-number",
+            wrappers: ["default-wrapper"],
+            defaultValue: params["maxPrice"],
+            props: {
+              label: this.translateService.instant("Max. price"),
+              description: this.translateService.instant("Max. price of the item."),
+              min: 0
+            }
+          },
+          {
+            key: "currency",
+            type: "ng-select",
+            wrappers: ["default-wrapper"],
+            defaultValue: params["currency"],
+            props: {
+              label: this.translateService.instant("Currency"),
+              searchable: false,
+              options: Constants.SUPPORTED_CURRENCIES.map(
+                currency => ({
+                  label: currency,
+                  value: currency
+                })
+              )
+            },
+            expressionProperties: {
+              "props.required": "model.minPrice || model.maxPrice"
+            }
+          }
+        ]
       },
       {
         key: "condition",
         type: "ng-select",
-        wrappers: ["default-wrapper"],
+        wrappers: ["card-wrapper"],
+        className: "mb-2",
         defaultValue: params["condition"],
         props: {
+          collapsible: true,
           label: this.translateService.instant("Condition"),
           options: Object.values(MarketplaceListingCondition).map(condition => ({
             label: this.equipmentItemService.humanizeCondition(condition),
             value: condition
           }))
+        },
+        expressions: {
+          "props.collapsed": config => {
+            return config.formControl.value === undefined || config.formControl.value === null;
+          }
         }
       },
       {

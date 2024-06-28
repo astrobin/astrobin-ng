@@ -55,6 +55,11 @@
     font-size: 1rem;
     font-weight: bold;
 
+    &.card-collapsible.card-collapsed {
+      border-bottom-left-radius: var(--bs-card-border-radius);
+      border-bottom-right-radius: var(--bs-card-border-radius);
+    }
+
     .btn-link {
       padding: 0;
       font-size: 1rem;
