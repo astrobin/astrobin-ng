@@ -431,7 +431,16 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 type: "html",
                 template: this.translateService.instant("You cannot edit this line item because it has been sold."),
                 expressions: {
-                  className: config => "cannot-edit-because-sold" + !config.model.sold ? " hidden" : ""
+                  className: config => {
+                    let className = "cannot-edit-because-sold";
+
+                    // Add hidden class if this is not a sold item
+                    if (!config.model.sold) {
+                      className += " hidden";
+                    }
+
+                    return className;
+                  }
                 }
               },
               {
@@ -441,8 +450,16 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 ),
                 className: "cannot-edit-because-reserved",
                 expressions: {
-                  className: config =>
-                    "cannot-edit-because-reserved" + (!config.model.reserved && !config.model.sold) ? " hidden" : ""
+                  className: config => {
+                    let className = "cannot-edit-because-reserved";
+
+                    // Add hidden class if this is not a reserved item
+                    if (!config.model.reserved) {
+                      className += " hidden";
+                    }
+
+                    return className;
+                  }
                 }
               },
               {
