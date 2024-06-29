@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-06-01 18:05+0200\n"
+"PO-Revision-Date: 2024-06-29 14:07+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -6543,4 +6543,321 @@ msgstr ""
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/user-listings-base/marketplace-user-listings-base-page.component.ts
 #: loco:66506df312b5e1267f07ee78
 msgid "{{0}}'s marketplace listings"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-file/formly-field-file.component.html
+#: loco:667ff7137e2112a10f0b60b2
+msgid "Add files"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-file/formly-field-file.component.html
+#: loco:667ff7137e2112a10f0b60b3
+msgid "Add images"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60b4
+msgid ""
+"All items in the bundle will be sold together. Users will not be able to "
+"make offers for individual items."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/create-listing/marketplace-create-listing-page.component.ts
+#: loco:667ff7137e2112a10f0b60b5
+msgid "All listings have been created."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
+#: loco:667ff7137e2112a10f0b60b6
+msgid "Asking price"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60b7
+msgid ""
+"Associate this listing to an equipment item you have used on your images."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60b8
+msgid "Associate this listing to any equipment item available on AstroBin."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component.ts
+#: loco:667ff7137e2112a10f0b60b9
+msgid ""
+"AstroBin considers an item as sold when you have received payment and "
+"delivered it to the buyer. If you have not completed these steps, please "
+"hold off on marking the item as sold. Are you sure you want to proceed?"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-google-map/formly-field-google-map.component.ts
+#: loco:667ff7137e2112a10f0b60ba
+msgid ""
+"AstroBin could not determine your location, so the location field could not "
+"be prefilled."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component.html
+#: loco:667ff7137e2112a10f0b60bb
+msgid ""
+"AstroBin is the best place to buy and sell astrophotography equipment. You "
+"can find telescopes, cameras, mounts, filters, and much more."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60bc
+msgid ""
+"AstroBin will automatically create multiple listings for each item in the "
+"bundle, allowing users to make offers for individual items. All listings "
+"will share common information, such as the location of the objects and the "
+"shipping method."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-file/formly-field-file.component.html
+#: loco:667ff7137e2112a10f0b60bd
+msgid "Choose images"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60be
+msgid "City"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/country-selection-modal/country-selection-modal.component.ts
+#: loco:667ff7137e2112a10f0b60bf
+msgid "Country"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-feedback-widget/marketplace-feedback-widget.component.html
+#: loco:667ff7137e2112a10f0b60c0
+msgid "Current feedback"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component.ts
+#: loco:667ff7137e2112a10f0b60c1
+msgid "Did you receive payment and deliver the item(s)?"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60c2
+msgid "Do you want to sell your items as a bundle?"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-feedback-widget/marketplace-feedback-widget.component.html
+#: loco:667ff7137e2112a10f0b60c3
+msgid "Edit feedback"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
+#: loco:667ff7137e2112a10f0b60c4
+msgid "Exchange payment/delivery info"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-feedback-modal/marketplace-feedback-modal.component.ts
+#: loco:667ff7137e2112a10f0b60c5
+msgid "Feedback message"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-feedback-modal/marketplace-feedback-modal.component.ts
+#: loco:667ff7137e2112a10f0b60c6
+msgid "Feedback older than {{0}} days cannot be changed."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/user-feedback-list/marketplace-user-feedback-list-page.component.html
+#: loco:667ff7137e2112a10f0b60c7
+msgid ""
+"Feedback received by this user in the marketplace. Please be kind and "
+"respectful in your comments."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.ts
+#: loco:667ff7137e2112a10f0b60c8
+msgid "Find them on the right side of the page"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-google-map/formly-field-google-map.component.ts
+#: loco:667ff7137e2112a10f0b60c9
+msgid ""
+"Google Maps API could not be loaded. Please make sure you're not blocking it."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
+#: loco:667ff7137e2112a10f0b60ca
+msgid "Hide rejected/retracted offers"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60cb
+msgid "How many items do you want to sell?"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60cc
+msgid "How many?"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60cd
+msgid "Just one"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60ce
+msgid ""
+"Keep things simple and let a moderator associate your listing to an "
+"equipment item in the AstroBin equipment database."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
+#: loco:667ff7137e2112a10f0b60cf
+msgid "Loading offers..."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.ts
+#: loco:667ff7137e2112a10f0b60d0
+msgid "Marketplace listing"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component.ts
+#: loco:667ff7137e2112a10f0b60d1
+msgid "Message for the buyer"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
+#: loco:667ff7137e2112a10f0b60d2
+msgid "Modify"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
+#: loco:667ff7137e2112a10f0b60d3
+msgid "My offer"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60d4
+msgid "No, individually"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
+#: loco:667ff7137e2112a10f0b60d5
+msgid "Offer"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-nav/marketplace-nav.component.html
+#: loco:667ff7137e2112a10f0b60d6
+msgid "Offers"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.ts
+#: loco:667ff7137e2112a10f0b60d7
+msgid ""
+"Please use the 'Exchange payment/delivery info' to coordinate with the buyer."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.ts
+#: loco:667ff7137e2112a10f0b60d8
+msgid "Private conversation with {{0}}"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.ts
+#: loco:667ff7137e2112a10f0b60d9
+msgid "Reject offer"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+#: loco:667ff7137e2112a10f0b60da
+msgid "Reserved to you"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+#: loco:667ff7137e2112a10f0b60db
+msgid "Reserved to {{0}}"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-marketplace.service.ts
+#: loco:667ff7137e2112a10f0b60dc
+msgid "Retracted"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.ts
+#: loco:667ff7137e2112a10f0b60dd
+msgid "Scroll down to see them."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/country-selection-modal/country-selection-modal.component.ts
+#: loco:667ff7137e2112a10f0b60de
+msgid "Select a country"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
+#: loco:667ff7137e2112a10f0b60df
+msgid "Show rejected/retracted offers"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60e0
+msgid "Simple text"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+#: loco:667ff7137e2112a10f0b60e1
+msgid "Sold to you"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+#: loco:667ff7137e2112a10f0b60e2
+msgid "Sold to {{0}}"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-marketplace.service.ts
+#: loco:667ff7137e2112a10f0b60e3
+msgid "The offer has been successfully rejected."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60e4
+msgid ""
+"This is a preview of your listing. You can't edit it here. If you want to "
+"make changes, please use the form area."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/user-feedback-list/marketplace-user-feedback-list-page.component.html
+#: loco:667ff7137e2112a10f0b60e5
+msgid "This user has no marketplace feedback yet."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.html
+#: loco:667ff7137e2112a10f0b60e6
+msgid "Tutorial"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60e7
+msgid "Yes, as a bundle"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
+#: loco:667ff7137e2112a10f0b60e8
+msgid "You are a marketplace moderator."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-file/formly-field-file.component.ts
+#: loco:667ff7137e2112a10f0b60e9
+msgid "You can only upload a maximum of {{maxFiles}} files."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-feedback-widget/marketplace-feedback-widget.component.ts
+#: loco:667ff7137e2112a10f0b60ea
+msgid "You can't leave feedback for this user on this page."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:667ff7137e2112a10f0b60eb
+msgid "You cannot edit this line item because it's marked as reserved."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.ts
+#: loco:667ff7137e2112a10f0b60ec
+msgid "Your listing has some offers"
 msgstr ""
