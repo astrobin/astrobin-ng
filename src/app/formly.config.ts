@@ -340,9 +340,12 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             : [control.value];
 
           if (files.length === 1) {
-            const file = files[0];
+            let file = files[0];
+            if (typeof file.file !== undefined) {
+              file = file.file;
+            }
             // Check for the single file scenario
-            return !file || UtilsService.isString(file) || file?.file.size < options.max ? null : { "file-size": options };
+            return !file || UtilsService.isString(file) || file?.size < options.max ? null : { "file-size": options };
           } else {
             // Multiple file scenario
             const tooLargeFiles = files.filter(f => f && f.file.size >= options.max);
