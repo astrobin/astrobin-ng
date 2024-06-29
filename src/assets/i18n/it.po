@@ -2462,7 +2462,7 @@ msgstr "Multibanda"
 
 #: loco:61b24fc53b045a3393550480
 msgid "Multiple items"
-msgstr "Elementi multipli"
+msgstr "Più articoli"
 
 #: loco:61b24fc53b045a3393550481
 msgid "Name/Model"
