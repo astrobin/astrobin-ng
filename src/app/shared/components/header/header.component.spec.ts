@@ -4,15 +4,24 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
 import { HeaderComponent } from "./header.component";
 import { StateGenerator } from "@app/store/generators/state.generator";
-import { of } from "rxjs";
+import { EMPTY, of } from "rxjs";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { Router } from "@angular/router";
 
 describe("HeaderComponent", () => {
   let fixture: ComponentFixture<HeaderComponent>;
   let component: HeaderComponent;
   const initialState: State = StateGenerator.default();
 
-  beforeEach(() => MockBuilder(HeaderComponent, AppModule).provide(provideMockStore({ initialState })));
+  beforeEach(() => MockBuilder(HeaderComponent, AppModule).provide([
+    provideMockStore({ initialState }),
+    {
+      provide: Router,
+      useValue: {
+        events: EMPTY
+      }
+    }
+  ]));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent);
