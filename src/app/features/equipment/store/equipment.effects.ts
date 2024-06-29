@@ -967,10 +967,14 @@ export class EquipmentEffects {
         map((action: UpdateMarketplaceListing) => action.payload.listing),
         concatLatestFrom(updatedListing => this.store$.select(selectMarketplaceListing, { id: updatedListing.id })),
         switchMap(([updatedListing, previousListing]) => {
-          const [preserved, added, removed] = this.equipmentMarketplaceService.compareLineItems(
+          let [preserved, added, removed] = this.equipmentMarketplaceService.compareLineItems(
             updatedListing,
             previousListing
           );
+
+          // We don't edit or delete sold or reserved line items.
+          preserved = preserved.filter(lineItem => !lineItem.sold && !lineItem.reserved);
+          removed = removed.filter(lineItem => !lineItem.sold && !lineItem.reserved);
 
           const toast = this.popNotificationsService.info(
             this.translateService.instant("Updating listing..."),
@@ -1002,7 +1006,7 @@ export class EquipmentEffects {
           };
 
           const deleteImageOperations$ = preserved.map(lineItem =>
-            previousListing.lineItems.find(previousLineItem => previousLineItem.id = lineItem.id).images.map(image =>
+            previousListing.lineItems.find(previousLineItem => previousLineItem.id === lineItem.id).images.map(image =>
               this.equipmentApiService.deleteMarketplaceImage(updatedListing.id, lineItem.id, image.id)
             )
           );

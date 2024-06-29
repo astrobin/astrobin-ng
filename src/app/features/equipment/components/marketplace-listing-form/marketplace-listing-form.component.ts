@@ -494,6 +494,16 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 className: "hidden"
               },
               {
+                key: "reserved",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "reservedTo",
+                type: "input",
+                className: "hidden"
+              },
+              {
                 key: "sold",
                 type: "input",
                 className: "hidden"
