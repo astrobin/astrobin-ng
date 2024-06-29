@@ -341,7 +341,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
 
           if (files.length === 1) {
             let file = files[0];
-            if (typeof file.file !== undefined) {
+            if (!!file && typeof file.file !== undefined) {
               file = file.file;
             }
             // Check for the single file scenario

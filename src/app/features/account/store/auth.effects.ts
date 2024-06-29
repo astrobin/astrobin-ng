@@ -213,9 +213,9 @@ export class AuthEffects {
           ),
           switchMap(data => {
             if (data && data.userProfile && data.userProfile.language) {
-              return this._setLanguage(data.userProfile.language);
+              return this._setLanguage(data.userProfile.language).pipe(map(() => data));
             } else {
-              return of(null);
+              return of(data);
             }
           }),
           map(payload => new LoginSuccess(payload)),
