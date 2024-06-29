@@ -348,9 +348,13 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             return !file || UtilsService.isString(file) || file?.size < options.max ? null : { "file-size": options };
           } else {
             // Multiple file scenario
-            const tooLargeFiles = files.filter(f => f && f.file.size >= options.max);
+            const tooLargeFiles = files.filter(f => f && !UtilsService.isString(f) && f.file.size >= options.max);
             if (tooLargeFiles.length > 0) {
-              return { "file-size": { max: options.max, files: tooLargeFiles.map(f => f.file.name) } };
+              return {
+                "file-size": {
+                  max: options.max, files: tooLargeFiles.map(f => f.file.name)
+                }
+              };
             }
           }
 
