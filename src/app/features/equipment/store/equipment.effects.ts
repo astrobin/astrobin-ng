@@ -860,7 +860,7 @@ export class EquipmentEffects {
                   of(null).pipe(
                     tap(() => {
                       toast.toastRef.componentInstance.message = this.translateService.instant(
-                        `Creating line item ${index + 1}/${listing.lineItems.length}...`
+                        `Working on equipment items...`
                       );
                     }),
                     mergeMap(() =>
@@ -882,7 +882,7 @@ export class EquipmentEffects {
                                 return of(null).pipe(
                                   tap(() => {
                                     toast.toastRef.componentInstance.message = this.translateService.instant(
-                                      `Uploading image ${+key + 1}/${Object.keys(lineItem.images).length}...`
+                                      `Working on images...`
                                     );
                                   }),
                                   mergeMap(() =>
@@ -995,7 +995,7 @@ export class EquipmentEffects {
                 tap(
                   () =>
                     (toast.toastRef.componentInstance.message = this.translateService.instant(
-                      `Creating line item image ${+index + 1} in line item ${lineItem.hash}...`
+                      `Working on images...`
                     ))
                 ),
                 switchMap(() =>
@@ -1018,7 +1018,7 @@ export class EquipmentEffects {
               tap(
                 () =>
                   (toast.toastRef.componentInstance.message = this.translateService.instant(
-                    `Updating line item ${lineItem.hash}...`
+                    `Working on equipment items...`
                   ))
               ),
               mergeMap(() => this.equipmentApiService.updateMarketplaceLineItem(lineItem))
@@ -1029,7 +1029,7 @@ export class EquipmentEffects {
             of(null).pipe(
               tap(
                 () =>
-                  (toast.toastRef.componentInstance.message = this.translateService.instant("Creating line item..."))
+                  (toast.toastRef.componentInstance.message = this.translateService.instant("Working on equipment items..."))
               ),
               mergeMap(() =>
                 this.equipmentApiService.createMarketplaceLineItem(lineItem).pipe(
@@ -1060,7 +1060,7 @@ export class EquipmentEffects {
               tap(
                 () =>
                   (toast.toastRef.componentInstance.message = this.translateService.instant(
-                    `Deleting line item ${lineItem.hash}...`
+                    `Working on equipment items...`
                   ))
               ),
               switchMap(() =>
