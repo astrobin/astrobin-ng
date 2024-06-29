@@ -18,6 +18,7 @@ import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { SafeUrl } from "@angular/platform-browser";
+import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item",
@@ -104,6 +105,14 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
 
     if (image.hasOwnProperty("url")) {
       return (image as any).url;
+    }
+
+    if (image.hasOwnProperty("thumbnailFile")) {
+      return (image as MarketplaceImageInterface).thumbnailFile;
+    }
+
+    if (image.hasOwnProperty("imageFile")) {
+      return (image as MarketplaceImageInterface).imageFile;
     }
 
     return null;
