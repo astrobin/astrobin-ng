@@ -12,11 +12,11 @@
       <span class="d-block mt-1 listing-info">
         <fa-icon icon="calendar"></fa-icon>
         <ng-container *ngIf="listing.approved">
-          {{ "Published" }}: {{ listing.approved | localDate | timeago : true }}
+          {{ "Published" | translate }}: {{ listing.approved | localDate | timeago : true }}
         </ng-container>
 
         <ng-container *ngIf="!listing.approved">
-          {{ "Created" }}: {{ listing.created | localDate | timeago : true }}
+          {{ "Created" | translate }}: {{ listing.created | localDate | timeago : true }}
         </ng-container>
 
         &middot;
