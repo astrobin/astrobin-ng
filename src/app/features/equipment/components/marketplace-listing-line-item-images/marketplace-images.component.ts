@@ -28,39 +28,27 @@ export class MarketplaceImagesComponent extends BaseComponentDirective implement
       return;
     }
 
-    if (UtilsService.isObject(this.images)) {
-      const keys = Object.keys(this.images);
+    this.sliderImages = this.images.map(image => {
+      let url: string;
+      let thumbnailUrl: string;
 
-      if (keys.length === 0) {
-        this.sliderImages = [];
-        return;
+      if (UtilsService.isString(image)) {
+        url = image;
+        thumbnailUrl = image;
+      } else if (image.hasOwnProperty("imageFile")) {
+        // This is a MarketplaceImageInterface.
+        url = image.imageFile;
+        thumbnailUrl = image.thumbnailFile || url;
+      } else {
+        // This is an image coming from the file uploader.
+        url = image.url.changingThisBreaksApplicationSecurity;
+        thumbnailUrl = url;
       }
 
-      for (const key of Object.keys(this.images)) {
-        if (this.images[key] === undefined || this.images[key] === null || this.images[key].length === 0) {
-          continue;
-        }
-
-        let url: string;
-
-        if (UtilsService.isString(this.images[key])) {
-          // The image is coming from the initialized form.
-          url = this.images[key];
-        } else {
-          // The image is coming from the uploader.
-          url = this.images[key][0].url.changingThisBreaksApplicationSecurity;
-        }
-
-        this.sliderImages.push({
-          image: url,
-          thumbImage: url
-        });
-      }
-    } else if (UtilsService.isArray(this.images)) {
-      this.sliderImages = this.images.map(image => ({
-        image: image.imageFile,
-        thumbImage: image.thumbnailFile || image.imageFile
-      }));
-    }
+      return ({
+        image: url,
+        thumbImage: thumbnailUrl
+      });
+    });
   }
 }

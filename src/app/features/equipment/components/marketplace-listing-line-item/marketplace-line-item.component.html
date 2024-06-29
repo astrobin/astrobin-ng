@@ -9,7 +9,7 @@
         <div class="image">
           <img
             *ngIf="lineItem.images.length > 0"
-            [src]="lineItem.images[0].thumbnailFile"
+            [src]="getFirstImageUrl()"
             alt="{{ equipmentItemType(equipmentItem) }}"
             class="type-image"
           />

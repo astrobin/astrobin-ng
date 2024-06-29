@@ -36,24 +36,6 @@
         margin: -1rem -1rem 0;
       }
     }
-
-    .field-group-images {
-      formly-field {
-        width: calc(100% / 5);
-        margin-bottom: 0;
-        padding: .25rem;
-
-        .upload-container {
-          height: 5rem;
-        }
-
-        .file {
-          img {
-            height: 5rem;
-          }
-        }
-      }
-    }
   }
 
   .col-preview > .sticky-top {

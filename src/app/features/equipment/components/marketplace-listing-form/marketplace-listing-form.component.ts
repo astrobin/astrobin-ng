@@ -69,8 +69,6 @@ export interface MarketplaceListingFormInitialCountInterface {
   styleUrls: ["./marketplace-listing-form.component.scss"]
 })
 export class MarketplaceListingFormComponent extends BaseComponentDirective implements AfterViewInit {
-  readonly maxImages: number = 10;
-
   @ViewChild("multipleSaleOptionTemplate")
   multipleSaleOptionTemplate: TemplateRef<any>;
 
@@ -366,22 +364,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       }
 
       return model;
-    };
-
-    const _getImageField = (n: number): FormlyFieldConfig => {
-      return {
-        key: `${n}`,
-        type: "file",
-        props: {
-          accept: "image/jpeg, image/png",
-          image: true,
-          required: n === 0,
-          hideLabel: true
-        },
-        validators: {
-          validation: [{ name: "file-size", options: { max: 1024 * 1024 * 10 } }, { name: "image-or-video-file" }]
-        }
-      };
     };
 
     const _doInitFields = (lineItemMap: Map<number, EquipmentItemType>, initialCurrency: string) => {
@@ -773,21 +755,26 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               },
               {
                 key: "images",
+                type: "file",
                 wrappers: ["default-wrapper"],
-                fieldGroupClassName:
-                  "d-flex flex-wrap justify-content-evenly field-group-images",
                 props: {
                   label: this.translateService.instant("Images"),
-                  description: this.translateService.instant(
-                    "You can upload up to {{ maxImages }} images. The first image will be used as the cover " +
-                    "image and is required.",
-                    {
-                      maxImages: this.maxImages
-                    }
-                  ),
-                  required: true
+                  accept: "image/jpeg, image/png",
+                  image: true,
+                  required: true,
+                  multiple: true,
+                  maxFiles: 20
                 },
-                fieldGroup: [...Array(this.maxImages).keys()].map(n => _getImageField(n))
+                validators: {
+                  validation: [
+                    {
+                      name: "file-size",
+                      options: { max: 1024 * 1024 * 10 }
+                    }, {
+                      name: "image-or-video-file"
+                    }
+                  ]
+                }
               }
             ]
           }

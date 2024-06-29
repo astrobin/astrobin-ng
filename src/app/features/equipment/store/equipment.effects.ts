@@ -163,7 +163,6 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
-import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 import { LocalDatePipe } from "@shared/pipes/local-date.pipe";
 
 function getFromStoreOrApiByIdAndType<T>(
@@ -983,69 +982,32 @@ export class EquipmentEffects {
           );
 
           const _buildImageOperations = (lineItem: MarketplaceLineItemInterface) => {
-            return Object.keys(lineItem.images).map(key => {
-              const image = lineItem.images[key];
-
+            return lineItem.images.map((image, index) => {
               if (image === undefined || image === null) {
                 return of(null);
               }
 
-              let matchingImage: MarketplaceImageInterface;
-              const matchingListing = previousListing.lineItems.find(
-                previousLineItem => previousLineItem.id === lineItem.id
+              return of(null).pipe(
+                tap(
+                  () =>
+                    (toast.toastRef.componentInstance.message = this.translateService.instant(
+                      `Creating line item image ${+index + 1} in line item ${lineItem.hash}...`
+                    ))
+                ),
+                switchMap(() =>
+                  this.equipmentApiService.createMarketplaceImage(updatedListing.id, lineItem.id, image.file)
+                )
               );
-              if (matchingListing) {
-                matchingImage = matchingListing.images[key];
-              }
-
-              if (matchingImage && matchingImage.id) {
-                if (image.length > 0) {
-                  return of(null).pipe(
-                    tap(
-                      () =>
-                        (toast.toastRef.componentInstance.message = this.translateService.instant(
-                          `Updating line item image ${+key + 1} in line item ${lineItem.hash}...`
-                        ))
-                    ),
-                    mergeMap(() =>
-                      this.equipmentApiService.updateMarketplaceImage(
-                        updatedListing.id,
-                        lineItem.id,
-                        matchingImage.id,
-                        image[0].file
-                      )
-                    )
-                  );
-                } else {
-                  return of(null).pipe(
-                    tap(
-                      () =>
-                        (toast.toastRef.componentInstance.message = this.translateService.instant(
-                          `Deleting line item image ${+key + 1} in line item ${lineItem.hash}...`
-                        ))
-                    ),
-                    mergeMap(() =>
-                      this.equipmentApiService.deleteMarketplaceImage(updatedListing.id, lineItem.id, matchingImage.id)
-                    )
-                  );
-                }
-              } else {
-                return of(null).pipe(
-                  tap(
-                    () =>
-                      (toast.toastRef.componentInstance.message = this.translateService.instant(
-                        `Creating line item image ${+key + 1} in line item ${lineItem.hash}...`
-                      ))
-                  ),
-                  mergeMap(() =>
-                    this.equipmentApiService.createMarketplaceImage(updatedListing.id, lineItem.id, image[0].file)
-                  )
-                );
-              }
             });
           };
 
-          const imageOperations$ = preserved.map(lineItem => _buildImageOperations(lineItem));
+          const deleteImageOperations$ = preserved.map(lineItem =>
+            previousListing.lineItems.find(previousLineItem => previousLineItem.id = lineItem.id).images.map(image =>
+              this.equipmentApiService.deleteMarketplaceImage(updatedListing.id, lineItem.id, image.id)
+            )
+          );
+
+          const createImageOperations$ = preserved.map(lineItem => _buildImageOperations(lineItem));
 
           const updateOperations$ = preserved.map(lineItem =>
             of(null).pipe(
@@ -1097,14 +1059,26 @@ export class EquipmentEffects {
                     `Deleting line item ${lineItem.hash}...`
                   ))
               ),
-              mergeMap(() => this.equipmentApiService.deleteMarketplaceLineItem(updatedListing.id, lineItem.id))
+              switchMap(() =>
+                forkJoin(
+                  lineItem.images.map(image => {
+                    if (image === undefined || image === null) {
+                      return of(null);
+                    }
+
+                    return this.equipmentApiService.deleteMarketplaceImage(updatedListing.id, lineItem.id, image.id);
+                  })
+                )
+              ),
+              switchMap(() => this.equipmentApiService.deleteMarketplaceLineItem(updatedListing.id, lineItem.id))
             )
           );
 
           const updateListingOperation$ = this.equipmentApiService.updateMarketplaceListing(updatedListing);
 
           return concat(
-            ...[].concat(...imageOperations$), // flattens the array
+            ...[].concat(...deleteImageOperations$), // flattens the array
+            ...[].concat(...createImageOperations$), // flattens the array
             ...updateOperations$,
             ...createOperations$,
             ...deleteOperations$,
@@ -1155,17 +1129,18 @@ export class EquipmentEffects {
     { dispatch: false }
   );
 
-  RenewMarketplaceListing: Observable<RenewMarketplaceListingSuccess | RenewMarketplaceListingFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.RENEW_MARKETPLACE_LISTING),
-      map((action: RenewMarketplaceListing) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService.renewMarketplaceListing(payload.listing.id).pipe(
-          map(listing => new RenewMarketplaceListingSuccess({ listing })),
-          catchError(error => of(new RenewMarketplaceListingFailure({ listing: payload.listing, error })))
+  RenewMarketplaceListing: Observable<RenewMarketplaceListingSuccess | RenewMarketplaceListingFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.RENEW_MARKETPLACE_LISTING),
+        map((action: RenewMarketplaceListing) => action.payload),
+        mergeMap(payload =>
+          this.equipmentApiService.renewMarketplaceListing(payload.listing.id).pipe(
+            map(listing => new RenewMarketplaceListingSuccess({ listing })),
+            catchError(error => of(new RenewMarketplaceListingFailure({ listing: payload.listing, error })))
+          )
         )
       )
-    )
   );
 
   RenewMarketplaceListingSuccess: Observable<MarketplaceListingInterface> = createEffect(
@@ -1173,10 +1148,12 @@ export class EquipmentEffects {
       this.actions$.pipe(
         ofType(EquipmentActionTypes.RENEW_MARKETPLACE_LISTING_SUCCESS),
         map((action: RenewMarketplaceListingSuccess) => action.payload.listing),
-        tap(listing => this.popNotificationsService.success(
-          this.translateService.instant("Listing renewed until: {{0}}", {
-            0: this.localDatePipe.transform(listing.expiration)
-          }))
+        tap(listing =>
+          this.popNotificationsService.success(
+            this.translateService.instant("Listing renewed until: {{0}}", {
+              0: this.localDatePipe.transform(listing.expiration)
+            })
+          )
         )
       ),
     { dispatch: false }
@@ -1187,18 +1164,20 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD),
       map((action: MarkMarketplaceLineItemAsSold) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.markMarketplaceLineItemAsSold(
-          payload.lineItem.listing,
-          payload.lineItem.id,
-          payload.soldTo
-        ).pipe(
-          map(lineItem => new MarkMarketplaceLineItemAsSoldSuccess({ lineItem })),
-          catchError(error => of(new MarkMarketplaceLineItemAsSoldFailure({
-            lineItem: payload.lineItem,
-            soldTo: payload.soldTo,
-            error
-          })))
-        )
+        this.equipmentApiService
+          .markMarketplaceLineItemAsSold(payload.lineItem.listing, payload.lineItem.id, payload.soldTo)
+          .pipe(
+            map(lineItem => new MarkMarketplaceLineItemAsSoldSuccess({ lineItem })),
+            catchError(error =>
+              of(
+                new MarkMarketplaceLineItemAsSoldFailure({
+                  lineItem: payload.lineItem,
+                  soldTo: payload.soldTo,
+                  error
+                })
+              )
+            )
+          )
       )
     )
   );
@@ -1350,17 +1329,18 @@ export class EquipmentEffects {
     )
   );
 
-  RetractMarketplaceOffer: Observable<RetractMarketplaceOfferSuccess | RetractMarketplaceOfferFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER),
-      map((action: RetractMarketplaceOffer) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService.retractMarketplaceOffer(payload.offer, payload.message).pipe(
-          map(updatedOffer => new RetractMarketplaceOfferSuccess({ offer: updatedOffer })),
-          catchError(error => of(new RetractMarketplaceOfferFailure({ offer: payload.offer, error })))
+  RetractMarketplaceOffer: Observable<RetractMarketplaceOfferSuccess | RetractMarketplaceOfferFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.RETRACT_MARKETPLACE_OFFER),
+        map((action: RetractMarketplaceOffer) => action.payload),
+        mergeMap(payload =>
+          this.equipmentApiService.retractMarketplaceOffer(payload.offer, payload.message).pipe(
+            map(updatedOffer => new RetractMarketplaceOfferSuccess({ offer: updatedOffer })),
+            catchError(error => of(new RetractMarketplaceOfferFailure({ offer: payload.offer, error })))
+          )
         )
       )
-    )
   );
 
   AcceptMarketplaceOffer: Observable<AcceptMarketplaceOfferSuccess | AcceptMarketplaceOfferFailure> = createEffect(() =>

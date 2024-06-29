@@ -101,11 +101,16 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "file-size",
-        message: (options: { max: number }) =>
-          translateService.instant(
-            "This file is too large. The maximum allowed size is {{0}}.",
-            { 0: UtilsService.humanFileSize(options.max) }
-          )
+        message: (error: { max: number, files?: string[] }) =>
+          error.files && error.files.length > 1
+            ? translateService.instant(
+              "The following file(s) are too large: {{fileNames}}. The maximum allowed size is {{maxSize}}.",
+              { fileNames: error.files.join(", "), maxSize: UtilsService.humanFileSize(error.max) }
+            )
+            : translateService.instant(
+              "This file is too large. The maximum allowed size is {{0}}.",
+              { 0: UtilsService.humanFileSize(error.max) }
+            )
       },
       {
         name: "image-or-video-file",
@@ -329,24 +334,24 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           control: FormControl,
           field: FormlyFieldConfig,
           options: FileSizeValidatorOptionsInterface
-        ): ValidationErrors => {
-          let value;
+        ): ValidationErrors | null => {
+          const files = Array.isArray(control.value) || control.value instanceof FileList
+            ? Array.from(control.value)
+            : [control.value];
 
-          if (typeof FileList === "undefined") {
-            return null;
-          }
-
-          if (Array.isArray(control.value) || control.value instanceof FileList) {
-            value = control.value[0];
+          if (files.length === 1) {
+            const file = files[0];
+            // Check for the single file scenario
+            return !file || UtilsService.isString(file) || file?.file.size < options.max ? null : { "file-size": options };
           } else {
-            value = control.value;
+            // Multiple file scenario
+            const tooLargeFiles = files.filter(f => f && f.file.size >= options.max);
+            if (tooLargeFiles.length > 0) {
+              return { "file-size": { max: options.max, files: tooLargeFiles.map(f => f.file.name) } };
+            }
           }
 
-          if (!!value && !!value.file) {
-            value = value.file;
-          }
-
-          return !value || UtilsService.isString(value) || value?.size < options.max ? null : { "file-size": options };
+          return null;
         }
       },
       {

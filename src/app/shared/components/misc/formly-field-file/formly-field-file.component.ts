@@ -4,6 +4,8 @@ import { FieldType } from "@ngx-formly/core";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-formly-field-file",
@@ -13,24 +15,36 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 export class FormlyFieldFileComponent extends FieldType implements OnInit {
   @ViewChild("fileInput") el: ElementRef;
 
-  selectedFiles: { file: File; url: SafeUrl }[];
+  selectedFiles: { file: File; url: SafeUrl }[] = [];
 
   constructor(
     public readonly sanitizer: DomSanitizer,
     public readonly loadingService: LoadingService,
     public readonly windowRefService: WindowRefService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly translateService: TranslateService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super();
   }
 
   ngOnInit() {
     if (this.formControl.value) {
-      if (UtilsService.isString(this.formControl.value)) {
+      if (UtilsService.isArray(this.formControl.value)) {
         this.loadingService.setLoading(true);
+
+        const promises = (this.formControl.value as string[]).map(file => {
+          return UtilsService.fileFromUrl(file).then((file: File) => {
+            this._setValueFromFiles([file]);
+          });
+        });
+
+        Promise.all(promises).then(() => {
+          this.loadingService.setLoading(false);
+        });
+      } else {
         UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
           this._setValueFromFiles([file]);
-          this.loadingService.setLoading(false);
         });
       }
     }
@@ -40,10 +54,11 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     this.el.nativeElement.click();
   }
 
-  onDelete(event: Event) {
+  onDelete(event: Event, index: number) {
     event.stopPropagation();
 
-    this.selectedFiles = [];
+    this.selectedFiles = this.selectedFiles.filter((_, i) => i !== index);
+
     this.formControl.setValue(this.selectedFiles);
     this.formControl.markAsTouched();
     this.formControl.markAsDirty();
@@ -56,7 +71,25 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
   }
 
   _setValueFromFiles(files: File[]) {
-    this.selectedFiles = [];
+    files = [...files]; // Make sure this is a File[] and not a FileList.
+
+    if (this.props.multiple) {
+      if (this.props.maxFiles) {
+        const currentCount = this.selectedFiles.length;
+        const newCount = files.length;
+
+        if (currentCount + newCount > this.props.maxFiles) {
+          files = files.slice(0, this.props.maxFiles - currentCount);
+          this.popNotificationsService.error(
+            this.translateService.instant(
+              "You can only upload a maximum of {{maxFiles}} files.", { maxFiles: this.props.maxFiles }
+            )
+          );
+        }
+      }
+    } else {
+      this.selectedFiles = [];
+    }
 
     for (const file of files) {
       this.selectedFiles.push({

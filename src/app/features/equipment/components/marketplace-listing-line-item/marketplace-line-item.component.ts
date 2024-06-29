@@ -16,6 +16,8 @@ import { LoadUser } from "@features/account/store/auth.actions";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { SafeUrl } from "@angular/platform-browser";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item",
@@ -91,6 +93,20 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
           });
       }
     }
+  }
+
+  getFirstImageUrl(): SafeUrl {
+    const image = this.lineItem.images[0];
+
+    if (UtilsService.isString(image)) {
+      return image;
+    }
+
+    if (image.hasOwnProperty("url")) {
+      return (image as any).url;
+    }
+
+    return null;
   }
 
   equipmentItemType(equipmentItem: EquipmentItem) {

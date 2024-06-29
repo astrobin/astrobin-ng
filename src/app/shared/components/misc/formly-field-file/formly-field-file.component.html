@@ -1,6 +1,6 @@
 <div (click)="openFileInput()" class="upload-container">
-  <div *ngIf="!!selectedFiles && selectedFiles.length > 0; else chooseFileTemplate" class="file">
-    <ng-container *ngFor="let selectedFile of selectedFiles">
+  <div [class.multiple]="props.multiple" class="files d-flex align-items-center gap-2 flex-wrap">
+    <div *ngFor="let selectedFile of selectedFiles; let i = index" class="file">
       <img *ngIf="!!props.image; else notImageTemplate" [src]="selectedFile.url" alt="" />
       <ng-template #notImageTemplate>
         <div class="file-icon">
@@ -8,39 +8,62 @@
         </div>
       </ng-template>
 
-      <span (click)="onDelete($event)">&times;</span>
-    </ng-container>
+      <span (click)="onDelete($event, i)">&times;</span>
+    </div>
   </div>
 
-  <ng-template #chooseFileTemplate>
-    <div class="helper-text">
-      <div class="helper-text-content">
-        <div>
-          <div class="file-icon">
-            <fa-icon *ngIf="!!props.image" icon="image"></fa-icon>
-            <fa-icon *ngIf="!props.image" icon="file"></fa-icon>
-          </div>
-          <ng-container *ngIf="!props.hideLabel">
-            <span *ngIf="!!props.image">
-              {{ "Choose image" | translate }}
-            </span>
-            <span *ngIf="!props.image">
-              {{ "Choose file" | translate }}
-            </span>
-          </ng-container>
-        </div>
-      </div>
+  <div [class.has-files]="selectedFiles?.length > 0" class="file-chooser d-flex flex-column text-center">
+    <div class="file-icon">
+      <fa-icon *ngIf="!!props.image" icon="image"></fa-icon>
+      <fa-icon *ngIf="!props.image" icon="file"></fa-icon>
     </div>
+    <ng-container *ngIf="!props.hideLabel">
+      <span *ngIf="!!props.image">
+        <ng-container *ngIf="props.multiple">
+          <ng-container *ngIf="selectedFiles?.length > 0">
+            {{ "Add images" | translate }}
+          </ng-container>
+          <ng-container *ngIf="selectedFiles?.length === 0">
+            {{ "Choose images" | translate }}
+          </ng-container>
+          <ng-container *ngTemplateOutlet="maxFilesTemplate"></ng-container>
+        </ng-container>
+        <ng-container *ngIf="!props.multiple">
+          {{ "Choose image" | translate }}
+        </ng-container>
+      </span>
+
+      <span *ngIf="!props.image">
+        <ng-container *ngIf="props.multiple">
+          <ng-container *ngIf="selectedFiles?.length > 0">
+            {{ "Add files" | translate }}
+          </ng-container>
+          <ng-container *ngIf="selectedFiles?.length === 0">
+            {{ "Choose files" | translate }}
+          </ng-container>
+          <ng-container *ngTemplateOutlet="maxFilesTemplate"></ng-container>
+        </ng-container>
+        <ng-container *ngIf="!props.multiple">
+          {{ "Choose file" | translate }}
+        </ng-container>
+      </span>
+    </ng-container>
 
     <input
       #fileInput
       (change)="onChange($event)"
       [accept]="props.accept || '*'"
       [formlyAttributes]="field"
-      [multiple]="false"
+      [multiple]="props.multiple || false"
       id="file-input"
       style="display: none"
       type="file"
     />
-  </ng-template>
+  </div>
 </div>
+
+<ng-template #maxFilesTemplate>
+  <ng-container *ngIf="props.maxFiles">
+    <span class="text-muted">({{selectedFiles.length}}/{{ props.maxFiles }})</span>
+  </ng-container>
+</ng-template>
