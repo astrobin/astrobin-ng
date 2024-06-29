@@ -641,6 +641,12 @@ msgid ""
 "{{0}}terms of service{{1}}."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+msgid ""
+"By updating a listing on the AstroBin Marketplace, you agree to the "
+"{{0}}terms of service{{1}}."
+msgstr ""
+
 msgid "CMI"
 msgstr ""
 
@@ -954,10 +960,6 @@ msgid "Created"
 msgstr ""
 
 msgid "Created by"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/store/equipment.effects.ts
-msgid "Creating line item..."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/store/equipment.effects.ts
@@ -4122,6 +4124,14 @@ msgid "Whether this camera is equipped with a cooling mechanism."
 msgstr ""
 
 msgid "Which remote hosting facility did you use to acquire data for this image?"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/store/equipment.effects.ts
+msgid "Working on equipment items..."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/store/equipment.effects.ts
+msgid "Working on images..."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component.html
