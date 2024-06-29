@@ -208,14 +208,16 @@ export class AuthEffects {
                 userProfile: data.userProfile,
                 userSubscriptions: data.userSubscriptions,
                 redirectUrl: action.payload.redirectUrl
-              })),
-              tap(data => {
-                if (data && data.userProfile && data.userProfile.language) {
-                  this._setLanguage(data.userProfile.language);
-                }
-              })
+              }))
             )
           ),
+          switchMap(data => {
+            if (data && data.userProfile && data.userProfile.language) {
+              return this._setLanguage(data.userProfile.language);
+            } else {
+              return of(null);
+            }
+          }),
           map(payload => new LoginSuccess(payload)),
           catchError(error => of(new LoginFailure({ error })))
         )
@@ -236,16 +238,16 @@ export class AuthEffects {
                 return;
               }
 
-              this._setLanguage(data.userProfile.language);
+              this._setLanguage(data.userProfile.language).subscribe(() => {
+                const successPayload: LoginSuccessInterface = {
+                  user: data.user,
+                  userProfile: data.userProfile,
+                  userSubscriptions: data.userSubscriptions
+                };
 
-              const successPayload: LoginSuccessInterface = {
-                user: data.user,
-                userProfile: data.userProfile,
-                userSubscriptions: data.userSubscriptions
-              };
-
-              observer.next(successPayload);
-              observer.complete();
+                observer.next(successPayload);
+                observer.complete();
+              });
             });
           } else {
             observer.next({ user: null, userProfile: null, userSubscriptions: [] });
