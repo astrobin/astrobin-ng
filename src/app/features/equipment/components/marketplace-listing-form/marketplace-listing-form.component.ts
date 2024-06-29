@@ -1068,16 +1068,30 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         },
         {
           type: "html",
-          template: this.translateService.instant(
-            "By creating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
-            {
-              0: `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`,
-              1: "</a>"
-            }
-          ),
           className: "alert alert-info",
           expressions: {
-            hide: config => !!this.initialLineItemCountForm.get("terms")?.value
+            hide: config => !!this.initialLineItemCountForm.get("terms")?.value,
+            template: config => {
+              const prefix = `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`;
+              const suffix = "</a>";
+
+              if (config.model.id) {
+                return this.translateService.instant(
+                  "By updating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
+                  {
+                    0: prefix,
+                    1: suffix
+                  });
+              } else {
+                return this.translateService.instant(
+                  "By creating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
+                  {
+                    0: prefix,
+                    1: suffix
+                  }
+                );
+              }
+            }
           }
         }
       ];
