@@ -6443,7 +6443,7 @@ msgstr "Il venditore spedisce"
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-nav/marketplace-nav.component.html
 #: loco:66506df312b5e1267f07ee39
 msgid "Selling"
-msgstr "Vendita"
+msgstr "In vendita"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
 #: loco:66506df312b5e1267f07ee3a
