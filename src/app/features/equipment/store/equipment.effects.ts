@@ -889,7 +889,7 @@ export class EquipmentEffects {
                                     this.equipmentApiService.createMarketplaceImage(
                                       createdListing.id,
                                       createdLineItem.id,
-                                      image[0].file
+                                      image.file
                                     )
                                   )
                                 );
@@ -1041,7 +1041,7 @@ export class EquipmentEffects {
                         return this.equipmentApiService.createMarketplaceImage(
                           updatedListing.id,
                           createdLineItem.id,
-                          image[0].file
+                          image.file
                         );
                       })
                     )
