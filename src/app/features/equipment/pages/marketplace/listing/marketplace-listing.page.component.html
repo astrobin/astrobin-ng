@@ -118,7 +118,10 @@
               </span>
             </div>
 
-            <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
+            <astrobin-marketplace-listing
+              [listing]="listing"
+              class="d-block mt-5 mt-md-0"
+            ></astrobin-marketplace-listing>
 
             <astrobin-nested-comments
               [addCommentLabel]="'Ask a question' | translate"
@@ -147,7 +150,7 @@
           <div class="col-md-4 col-lg-3 order-1 order-md-2">
             <astrobin-marketplace-user-card
               [listing]="listing"
-              class="d-block mt-5 mt-md-0"
+              class="d-block"
             ></astrobin-marketplace-user-card>
 
             <ng-container
