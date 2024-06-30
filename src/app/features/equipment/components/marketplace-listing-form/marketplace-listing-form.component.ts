@@ -185,7 +185,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   setInitialLineItemCount(event: Event) {
     event.stopPropagation();
 
-    if (!this.initialLineItemCountForm.get("terms").value) {
+    if (this.initialLineItemCountForm.get("terms") && !this.initialLineItemCountForm.get("terms").value) {
       this.popNotificationsService.error(this.translateService.instant("You must agree to the terms of service."));
       return;
     }
@@ -236,118 +236,123 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   }
 
   private _initInitialLineItemCountFields() {
-    this.initialLineItemCountFields = [
-      {
-        key: "saleType",
-        type: "radio",
-        wrappers: ["default-wrapper"],
-        defaultValue: null,
-        props: {
-          required: true,
-          label: this.translateService.instant("How many items do you want to sell?"),
-          options: [
-            {
-              value: MARKETPLACE_SALE_TYPE.SINGLE,
-              label: this.translateService.instant("Just one")
-            },
-            {
-              value: MARKETPLACE_SALE_TYPE.MULTIPLE,
-              label: this.translateService.instant("Multiple items")
-            }
-          ]
-        },
-        hooks: {
-          onInit: (field: FormlyFieldConfig) => {
-            field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-              if (value === MARKETPLACE_SALE_TYPE.SINGLE) {
-                this.initialLineItemCountModel.count = 1;
-                this.initialLineItemCountForm.patchValue({ count: 1 });
-              } else {
-                this.initialLineItemCountModel.count = null;
-                this.initialLineItemCountForm.patchValue({ count: null });
+    this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
+      this.initialLineItemCountFields = [
+        {
+          key: "saleType",
+          type: "radio",
+          wrappers: ["default-wrapper"],
+          defaultValue: null,
+          props: {
+            required: true,
+            label: this.translateService.instant("How many items do you want to sell?"),
+            options: [
+              {
+                value: MARKETPLACE_SALE_TYPE.SINGLE,
+                label: this.translateService.instant("Just one")
+              },
+              {
+                value: MARKETPLACE_SALE_TYPE.MULTIPLE,
+                label: this.translateService.instant("Multiple items")
               }
-            });
+            ]
+          },
+          hooks: {
+            onInit: (field: FormlyFieldConfig) => {
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+                if (value === MARKETPLACE_SALE_TYPE.SINGLE) {
+                  this.initialLineItemCountModel.count = 1;
+                  this.initialLineItemCountForm.patchValue({ count: 1 });
+                } else {
+                  this.initialLineItemCountModel.count = null;
+                  this.initialLineItemCountForm.patchValue({ count: null });
+                }
+              });
+            }
+          }
+        },
+        {
+          key: "count",
+          type: "custom-number",
+          wrappers: ["default-wrapper"],
+          defaultValue: 1,
+          props: {
+            label: this.translateService.instant("How many?"),
+            placeholder: this.translateService.instant("Enter a number"),
+            description: this.translateService.instant(
+              "The AstroBin Marketplace supports multiple line items per listing. This makes it easy for you to " +
+              "have a bundle sale or avoid repeating the same information in multiple listings if you're selling " +
+              "multiple items. PS: you can always add more line items later."
+            ),
+            min: 1
+          },
+          expressions: {
+            className: (config: FormlyFieldConfig) =>
+              config.model.saleType === MARKETPLACE_SALE_TYPE.SINGLE || config.model.saleType === null ? "hidden" : "",
+            "props.required": config => config.model.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE
+          }
+        },
+        {
+          key: "multipleSaleType",
+          type: "ng-select",
+          wrappers: ["default-wrapper"],
+          defaultValue: null,
+          props: {
+            optionTemplate: this.multipleSaleOptionTemplate,
+            label: this.translateService.instant("Do you want to sell your items as a bundle?"),
+            options: [
+              {
+                value: MARKETPLACE_MULTIPLE_SALE_TYPE.BUNDLE,
+                label: this.translateService.instant("Yes, as a bundle"),
+                description: this.translateService.instant(
+                  "All items in the bundle will be sold together. Users will not be able to make offers for " +
+                  "individual items."
+                )
+              },
+              {
+                value: MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL,
+                label: this.translateService.instant("No, individually"),
+                description: this.translateService.instant(
+                  "AstroBin will automatically create multiple listings for each item in the bundle, " +
+                  "allowing users to make offers for individual items. All listings will share common " +
+                  "information, such as the location of the objects and the shipping method."
+                )
+              }
+            ]
+          },
+          expressions: {
+            "props.required": config => config.model.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE,
+            className: (config: FormlyFieldConfig) =>
+              config.model.saleType === MARKETPLACE_SALE_TYPE.SINGLE ||
+              config.model.saleType === null ||
+              config.model.count === 1 ||
+              config.model.count === null
+                ? "hidden"
+                : ""
+          }
+        },
+        {
+          key: "terms",
+          type: "checkbox",
+          wrappers: ["default-wrapper"],
+          defaultValue: false,
+          props: {
+            label: this.translateService.instant("I agree to the AstroBin Marketplace terms of service"),
+            description: this.translateService.instant(
+              "By creating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
+              {
+                0: `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`,
+                1: "</a>"
+              }
+            ),
+            required: true
+          },
+          expressions: {
+            hide: () => !!userProfile.agreedToMarketplaceTerms
           }
         }
-      },
-      {
-        key: "count",
-        type: "custom-number",
-        wrappers: ["default-wrapper"],
-        defaultValue: 1,
-        props: {
-          label: this.translateService.instant("How many?"),
-          placeholder: this.translateService.instant("Enter a number"),
-          description: this.translateService.instant(
-            "The AstroBin Marketplace supports multiple line items per listing. This makes it easy for you to " +
-            "have a bundle sale or avoid repeating the same information in multiple listings if you're selling " +
-            "multiple items. PS: you can always add more line items later."
-          ),
-          min: 1
-        },
-        expressions: {
-          className: (config: FormlyFieldConfig) =>
-            config.model.saleType === MARKETPLACE_SALE_TYPE.SINGLE || config.model.saleType === null ? "hidden" : "",
-          "props.required": config => config.model.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE
-        }
-      },
-      {
-        key: "multipleSaleType",
-        type: "ng-select",
-        wrappers: ["default-wrapper"],
-        defaultValue: null,
-        props: {
-          optionTemplate: this.multipleSaleOptionTemplate,
-          label: this.translateService.instant("Do you want to sell your items as a bundle?"),
-          options: [
-            {
-              value: MARKETPLACE_MULTIPLE_SALE_TYPE.BUNDLE,
-              label: this.translateService.instant("Yes, as a bundle"),
-              description: this.translateService.instant(
-                "All items in the bundle will be sold together. Users will not be able to make offers for " +
-                "individual items."
-              )
-            },
-            {
-              value: MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL,
-              label: this.translateService.instant("No, individually"),
-              description: this.translateService.instant(
-                "AstroBin will automatically create multiple listings for each item in the bundle, " +
-                "allowing users to make offers for individual items. All listings will share common " +
-                "information, such as the location of the objects and the shipping method."
-              )
-            }
-          ]
-        },
-        expressions: {
-          "props.required": config => config.model.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE,
-          className: (config: FormlyFieldConfig) =>
-            config.model.saleType === MARKETPLACE_SALE_TYPE.SINGLE ||
-            config.model.saleType === null ||
-            config.model.count === 1 ||
-            config.model.count === null
-              ? "hidden"
-              : ""
-        }
-      },
-      {
-        key: "terms",
-        type: "checkbox",
-        wrappers: ["default-wrapper"],
-        defaultValue: false,
-        props: {
-          label: this.translateService.instant("I agree to the AstroBin Marketplace terms of service"),
-          description: this.translateService.instant(
-            "By creating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
-            {
-              0: `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`,
-              1: "</a>"
-            }
-          ),
-          required: true
-        }
-      }
-    ];
+      ];
+    });
   }
 
   private _initFields() {

@@ -102,6 +102,13 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
   onMakeOrModifyOfferButtonClick(event: Event) {
     event.preventDefault();
 
+    if (this.form.get("terms") && !this.form.get("terms").value) {
+      this.popNotificationsService.error(
+        this.translateService.instant("You must agree to the terms of service.")
+      );
+      return;
+    }
+
     if (!this._checkOfferFormHasItems()) {
       return;
     }
@@ -142,204 +149,228 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
   }
 
   _initFields() {
-    this.fields = this.listing.lineItems.map((lineItem, index) => {
-      return {
-        key: "",
-        fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""} ${!!lineItem.reserved ? "reserved" : ""} flex-column flex-lg-row offer-row`,
-        wrappers: ["default-wrapper"],
-        fieldGroup: [
-          {
-            key: `id-${lineItem.id}`,
-            type: "input",
-            className: "hidden",
-            hooks: {
-              onInit: field => {
-                field.formControl.setValue(this.offers.find(offer => offer.lineItem === lineItem.id)?.id);
+    this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
+      this.fields = this.listing.lineItems.map((lineItem, index) => {
+        return {
+          key: "",
+          fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""} ${!!lineItem.reserved ? "reserved" : ""} flex-column flex-lg-row offer-row`,
+          wrappers: ["default-wrapper"],
+          fieldGroup: [
+            {
+              key: `id-${lineItem.id}`,
+              type: "input",
+              className: "hidden",
+              hooks: {
+                onInit: field => {
+                  field.formControl.setValue(this.offers.find(offer => offer.lineItem === lineItem.id)?.id);
+                }
               }
-            }
-          },
-          {
-            key: `masterOfferUuid-${lineItem.id}`,
-            type: "input",
-            className: "hidden",
-            hooks: {
-              onInit: field => {
-                field.formControl.setValue(this.offers.find(offer => offer.lineItem === lineItem.id)?.masterOfferUuid);
-              }
-            }
-          },
-          {
-            key: `lineItemId-${lineItem.id}`,
-            type: "input",
-            className: "hidden"
-          },
-          {
-            key: `itemName-${lineItem.id}`,
-            type: "html",
-            wrappers: ["default-wrapper"],
-            className: "col-12 col-lg pb-4 pb-lg-0 item-name",
-            props: {
-              label: this.translateService.instant("Item"),
-              readonly: true,
-              tabindex: -1,
-              hideOptionalMarker: true,
-              hideLabel: !this.displayLabel(index)
             },
-            expressions: {
-              "props.disabled": () => !!lineItem.sold || !!lineItem.reserved,
-              template: () => {
-                if (lineItem.sold) {
-                  return (lineItem.itemName || lineItem.itemPlainText) + ` (${this.translateService.instant("sold")})`;
+            {
+              key: `masterOfferUuid-${lineItem.id}`,
+              type: "input",
+              className: "hidden",
+              hooks: {
+                onInit: field => {
+                  field.formControl.setValue(this.offers.find(offer => offer.lineItem === lineItem.id)?.masterOfferUuid);
                 }
-
-                if (lineItem.reserved) {
-                  return (lineItem.itemName || lineItem.itemPlainText) + ` (${this.translateService.instant("reserved")})`;
-                }
-
-                return lineItem.itemName || lineItem.itemPlainText;
               }
-            }
-          },
-          {
-            key: `price-${lineItem.id}`,
-            type: "input",
-            wrappers: ["default-wrapper"],
-            className: "col-12 col-lg pb-4 pb-lg-0 price",
-            defaultValue: this.currencyPipe.transform(+lineItem.price, lineItem.currency, "symbol-narrow"),
-            props: {
-              label: this.translateService.instant("Asking price"),
-              readonly: true,
-              tabindex: -1,
-              hideOptionalMarker: true,
-              hideLabel: !this.displayLabel(index)
-            }
-          },
-          {
-            key: `shippingCost-raw-${lineItem.id}`,
-            type: "input",
-            className: "hidden",
-            defaultValue: +lineItem.shippingCost
-          },
-          {
-            key: `shippingCost-${lineItem.id}`,
-            type: "input",
-            wrappers: ["default-wrapper"],
-            className: "col-12 col-lg pb-4 pb-lg-0 shipping-cost",
-            defaultValue: lineItem.shippingCost
-              ? this.currencyPipe.transform(+lineItem.shippingCost, lineItem.currency, "symbol-narrow")
-              : this.translateService.instant("Free"),
-            props: {
-              label: this.translateService.instant("Shipping cost"),
-              readonly: true,
-              tabindex: -1,
-              hideOptionalMarker: true,
-              hideLabel: !this.displayLabel(index)
-            }
-          },
-          {
-            key: `amount-${lineItem.id}`,
-            type: "custom-number",
-            wrappers: ["default-wrapper"],
-            className: "col-12 col-lg-4 pb-4 pb-lg-0 offer-amount",
-            focus: index === 0,
-            props: {
-              // The field should be disabled if:
-              // - the line item is sold
-              // - the line item is reserved
-              // - we're editing offers and the line item does not have an offer
-              disabled:
-                !!lineItem.sold ||
-                !!lineItem.reserved ||
-                (this.offers.length && !this.offers.some(offer => offer.lineItem === lineItem.id)),
-              label: this.translateService.instant("Offer amount"),
-              required: true,
-              step: 1,
-              addonLeft: {
-                text: lineItem.currency
+            },
+            {
+              key: `lineItemId-${lineItem.id}`,
+              type: "input",
+              className: "hidden"
+            },
+            {
+              key: `itemName-${lineItem.id}`,
+              type: "html",
+              wrappers: ["default-wrapper"],
+              className: "col-12 col-lg pb-4 pb-lg-0 item-name",
+              props: {
+                label: this.translateService.instant("Item"),
+                readonly: true,
+                tabindex: -1,
+                hideOptionalMarker: true,
+                hideLabel: !this.displayLabel(index)
               },
-              hideRequiredMarker: true,
-              hideLabel: !this.displayLabel(index)
-            },
-            validators: {
-              validation: [
-                "number",
-                {
-                  name: "min-value",
-                  options: {
-                    minValue: .01
+              expressions: {
+                "props.disabled": () => !!lineItem.sold || !!lineItem.reserved,
+                template: () => {
+                  if (lineItem.sold) {
+                    return (lineItem.itemName || lineItem.itemPlainText) + ` (${this.translateService.instant("sold")})`;
                   }
+
+                  if (lineItem.reserved) {
+                    return (lineItem.itemName || lineItem.itemPlainText) + ` (${this.translateService.instant("reserved")})`;
+                  }
+
+                  return lineItem.itemName || lineItem.itemPlainText;
                 }
-              ]
+              }
             },
-            hooks: {
-              onInit: field => {
-                this.currentUser$.pipe(take(1)).subscribe(currentUser => {
-                  // The defaultValue should be:
-                  // - null if the line item is sold to someone else
-                  // - null if the line item is reserved to someone else
-                  // - the offered amount if the line item has offers
-                  // - the asking price if the line item does not have offers
-
-                  let defaultValue;
-
-                  if (
-                    (!!lineItem.soldTo && lineItem.soldTo != currentUser.id) ||
-                    (!!lineItem.reservedTo && lineItem.reservedTo != currentUser.id)
-                  ) {
-                    defaultValue = null;
-                  } else if (this.offers.length > 0 && this.offers.some(offer => offer.lineItem === lineItem.id)) {
-                    defaultValue = this.offers.find(offer => offer.lineItem === lineItem.id).amount;
-                  } else {
-                    defaultValue = +lineItem.price;
+            {
+              key: `price-${lineItem.id}`,
+              type: "input",
+              wrappers: ["default-wrapper"],
+              className: "col-12 col-lg pb-4 pb-lg-0 price",
+              defaultValue: this.currencyPipe.transform(+lineItem.price, lineItem.currency, "symbol-narrow"),
+              props: {
+                label: this.translateService.instant("Asking price"),
+                readonly: true,
+                tabindex: -1,
+                hideOptionalMarker: true,
+                hideLabel: !this.displayLabel(index)
+              }
+            },
+            {
+              key: `shippingCost-raw-${lineItem.id}`,
+              type: "input",
+              className: "hidden",
+              defaultValue: +lineItem.shippingCost
+            },
+            {
+              key: `shippingCost-${lineItem.id}`,
+              type: "input",
+              wrappers: ["default-wrapper"],
+              className: "col-12 col-lg pb-4 pb-lg-0 shipping-cost",
+              defaultValue: lineItem.shippingCost
+                ? this.currencyPipe.transform(+lineItem.shippingCost, lineItem.currency, "symbol-narrow")
+                : this.translateService.instant("Free"),
+              props: {
+                label: this.translateService.instant("Shipping cost"),
+                readonly: true,
+                tabindex: -1,
+                hideOptionalMarker: true,
+                hideLabel: !this.displayLabel(index)
+              }
+            },
+            {
+              key: `amount-${lineItem.id}`,
+              type: "custom-number",
+              wrappers: ["default-wrapper"],
+              className: "col-12 col-lg-4 pb-4 pb-lg-0 offer-amount",
+              focus: index === 0,
+              props: {
+                // The field should be disabled if:
+                // - the line item is sold
+                // - the line item is reserved
+                // - we're editing offers and the line item does not have an offer
+                disabled:
+                  !!lineItem.sold ||
+                  !!lineItem.reserved ||
+                  (this.offers.length && !this.offers.some(offer => offer.lineItem === lineItem.id)),
+                label: this.translateService.instant("Offer amount"),
+                required: true,
+                step: 1,
+                addonLeft: {
+                  text: lineItem.currency
+                },
+                hideRequiredMarker: true,
+                hideLabel: !this.displayLabel(index)
+              },
+              validators: {
+                validation: [
+                  "number",
+                  {
+                    name: "min-value",
+                    options: {
+                      minValue: .01
+                    }
                   }
+                ]
+              },
+              hooks: {
+                onInit: field => {
+                  this.currentUser$.pipe(take(1)).subscribe(currentUser => {
+                    // The defaultValue should be:
+                    // - null if the line item is sold to someone else
+                    // - null if the line item is reserved to someone else
+                    // - the offered amount if the line item has offers
+                    // - the asking price if the line item does not have offers
 
-                  field.formControl.setValue(defaultValue);
-                });
+                    let defaultValue;
 
-                this.form
-                  .get(`amount-${lineItem.id}`)
-                  .valueChanges.pipe(takeUntil(this.destroyed$))
-                  .subscribe(value => {
-                    this.form
-                      .get(`total-${lineItem.id}`)
-                      .setValue(
-                        this.currencyPipe.transform(
-                          this._getTotalAmountPerLineItem(lineItem),
-                          lineItem.currency,
-                          "symbol-narrow"
-                        )
-                      );
-                    this.form.updateValueAndValidity();
+                    if (
+                      (!!lineItem.soldTo && lineItem.soldTo != currentUser.id) ||
+                      (!!lineItem.reservedTo && lineItem.reservedTo != currentUser.id)
+                    ) {
+                      defaultValue = null;
+                    } else if (this.offers.length > 0 && this.offers.some(offer => offer.lineItem === lineItem.id)) {
+                      defaultValue = this.offers.find(offer => offer.lineItem === lineItem.id).amount;
+                    } else {
+                      defaultValue = +lineItem.price;
+                    }
+
+                    field.formControl.setValue(defaultValue);
                   });
+
+                  this.form
+                    .get(`amount-${lineItem.id}`)
+                    .valueChanges.pipe(takeUntil(this.destroyed$))
+                    .subscribe(value => {
+                      this.form
+                        .get(`total-${lineItem.id}`)
+                        .setValue(
+                          this.currencyPipe.transform(
+                            this._getTotalAmountPerLineItem(lineItem),
+                            lineItem.currency,
+                            "symbol-narrow"
+                          )
+                        );
+                      this.form.updateValueAndValidity();
+                    });
+                }
               }
-            }
-          },
-          {
-            key: `total-${lineItem.id}`,
-            type: "input",
-            wrappers: ["default-wrapper"],
-            className: "col-12 col-lg total",
-            props: {
-              label: this.translateService.instant("Total"),
-              readonly: true,
-              tabindex: -1,
-              hideOptionalMarker: true,
-              hideLabel: !this.displayLabel(index)
             },
-            hooks: {
-              onInit: field => {
-                field.formControl.setValue(
-                  this.currencyPipe.transform(
-                    this._getTotalAmountPerLineItem(lineItem),
-                    lineItem.currency,
-                    "symbol-narrow"
-                  )
-                );
+            {
+              key: `total-${lineItem.id}`,
+              type: "input",
+              wrappers: ["default-wrapper"],
+              className: "col-12 col-lg total",
+              props: {
+                label: this.translateService.instant("Total"),
+                readonly: true,
+                tabindex: -1,
+                hideOptionalMarker: true,
+                hideLabel: !this.displayLabel(index)
+              },
+              hooks: {
+                onInit: field => {
+                  field.formControl.setValue(
+                    this.currencyPipe.transform(
+                      this._getTotalAmountPerLineItem(lineItem),
+                      lineItem.currency,
+                      "symbol-narrow"
+                    )
+                  );
+                }
               }
             }
-          }
-        ]
-      };
+          ]
+        };
+      });
+
+      this.fields.push({
+        key: "terms",
+        type: "checkbox",
+        wrappers: ["default-wrapper"],
+        defaultValue: false,
+        className: "mt-5",
+        props: {
+          label: this.translateService.instant("I agree to the AstroBin Marketplace terms of service"),
+          description: this.translateService.instant(
+            "By making an offer for a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
+            {
+              0: `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`,
+              1: "</a>"
+            }
+          ),
+          required: true
+        },
+        expressions: {
+          hide: () => !!userProfile.agreedToMarketplaceTerms
+        }
+      });
     });
   }
 

@@ -61,4 +61,5 @@ export interface UserProfileInterface {
   locations: LocationInterface[];
   email?: string;
   signUpCountry?: string;
+  agreedToMarketplaceTerms?: string;
 }

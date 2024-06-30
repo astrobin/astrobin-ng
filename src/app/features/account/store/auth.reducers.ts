@@ -94,7 +94,17 @@ export function reducer(state = initialAuthState, action: PayloadActionInterface
           updatedUser,
           ...state.users.slice(userIndex + 1)
         ]
-      }
+      };
+    case EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS:
+    case EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS:
+      return {
+        ...state,
+        userProfile: {
+          ...state.userProfile,
+          agreedToMarketplaceTerms: new Date().toISOString()
+        },
+        userProfiles: UtilsService.arrayUniqueObjects([...state.userProfiles, ...[state.userProfile]], "id")
+      };
 
     default: {
       return state;

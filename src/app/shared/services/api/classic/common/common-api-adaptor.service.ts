@@ -103,6 +103,7 @@ export interface BackendUserProfileInterface {
   locations: LocationInterface[];
   email?: string;
   signup_country?: string;
+  agreed_to_marketplace_terms?: string;
 }
 
 export interface BackendTogglePropertyInterface {
@@ -218,7 +219,8 @@ export class CommonApiAdaptorService extends BaseService {
       premiumCounter: userProfile.premium_counter,
       locations: userProfile.locations,
       email: userProfile.email,
-      signUpCountry: userProfile.signup_country
+      signUpCountry: userProfile.signup_country,
+      agreedToMarketplaceTerms: userProfile.agreed_to_marketplace_terms
     };
   }
 
