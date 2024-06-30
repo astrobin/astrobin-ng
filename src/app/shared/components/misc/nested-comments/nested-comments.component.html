@@ -82,6 +82,14 @@
         >
           {{ "Submit" | translate }}
         </button>
+
+        <button
+          (click)="close.emit()"
+          *ngIf="showCloseButton"
+          class="btn btn-secondary btn-sm ms-md-1"
+        >
+          {{ "Close" | translate }}
+        </button>
       </div>
     </ng-template>
   </div>
