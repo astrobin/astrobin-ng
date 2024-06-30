@@ -31,7 +31,7 @@ import { NgbModal, NgbModalRef, NgbPaginationConfig } from "@ng-bootstrap/ng-boo
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
-import { isPlatformBrowser } from "@angular/common";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -174,6 +174,11 @@ export abstract class MarketplaceListingsBasePageComponent
       clear: true
     }
   ) {
+    if (isPlatformServer(this.platformId)) {
+      // Don't fetch this data on the server, as it can depend on the user's location.
+      return;
+    }
+
     this.loadingService.setLoading(true);
 
     this.filterModel = {
