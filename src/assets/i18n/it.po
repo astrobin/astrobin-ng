@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-06-29 22:40+0200\n"
+"PO-Revision-Date: 2024-06-30 23:54+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -7197,3 +7197,12 @@ msgstr "Sto lavorando agli articoli..."
 #: loco:668070d456dc3f4f9906c3b4
 msgid "Working on images..."
 msgstr "Sto lavorando alle immagini..."
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
+#: loco:6681d3eb62f440819902b467
+msgid ""
+"By making an offer for a listing on the AstroBin Marketplace, you agree to "
+"the {{0}}terms of service{{1}}."
+msgstr ""
+"Facendo un'offerta per un'inserzione sul Mercatino di AstroBin, accetti i "
+"{{0}}Termini di servizio{{1}}."

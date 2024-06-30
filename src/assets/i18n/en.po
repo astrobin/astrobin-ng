@@ -641,6 +641,12 @@ msgid ""
 "{{0}}terms of service{{1}}."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
+msgid ""
+"By making an offer for a listing on the AstroBin Marketplace, you agree to "
+"the {{0}}terms of service{{1}}."
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 msgid ""
 "By updating a listing on the AstroBin Marketplace, you agree to the "
