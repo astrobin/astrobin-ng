@@ -67,16 +67,6 @@
     </span>
   </h1>
 
-  <small>
-    {{
-    "AstroBin is the best place to buy and sell astrophotography equipment. You can find telescopes, cameras, mounts, filters, and much more."
-      | translate
-    }}
-    <a class="learn-more" href="https://welcome.astrobin.com/features/marketplace" target="_blank">
-      {{ "Learn more" }}.
-    </a>
-  </small>
-
   <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
     <ng-container *ngIf="listingContentType$ | async as listingContentType; else loadingTemplate">
       <ng-container *ngIf="listingUser$ | async as listingUser; else loadingTemplate">
