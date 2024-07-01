@@ -335,6 +335,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           field: FormlyFieldConfig,
           options: FileSizeValidatorOptionsInterface
         ): ValidationErrors | null => {
+          // Check if running on the server or if FileList is not defined
+          if (typeof window === 'undefined' || typeof FileList === 'undefined') {
+            return null; // Skip validation on the server
+          }
+
           const files = Array.isArray(control.value) || control.value instanceof FileList
             ? Array.from(control.value)
             : [control.value];
@@ -365,6 +370,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         name: "image-or-video-file",
         validation: (control: FormControl, field: FormlyFieldConfig): ValidationErrors => {
           let value;
+
+          // Check if running on the server or if FileList is not defined
+          if (typeof window === 'undefined' || typeof FileList === 'undefined') {
+            return null; // Skip validation on the server
+          }
 
           if (Array.isArray(control.value) || control.value instanceof FileList) {
             value = control.value[0];
