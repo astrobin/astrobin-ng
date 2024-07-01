@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -56,7 +56,7 @@ import { RouterService } from "@shared/services/router.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
-import { Location } from "@angular/common";
+import { isPlatformBrowser, Location } from "@angular/common";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 
 @Component({
@@ -106,7 +106,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly routerService: RouterService,
     public readonly utilsService: UtilsService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly location: Location
+    public readonly location: Location,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
   }
@@ -260,7 +261,9 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       this.markAsSold();
     }
 
-    this._recordHit();
+    if (isPlatformBrowser(this.platformId)) {
+      this._recordHit();
+    }
   }
 
   shareOnFacebook() {
