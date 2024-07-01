@@ -108,6 +108,10 @@ export class AuthEffects {
           selectorArgument = payload.username;
         }
 
+        if (!selector || !selectorArgument) {
+          return EMPTY;
+        }
+
         return this.store$.select(selector, selectorArgument).pipe(
           switchMap(userFromStore =>
             userFromStore !== null

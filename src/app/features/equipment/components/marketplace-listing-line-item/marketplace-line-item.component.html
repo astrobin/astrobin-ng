@@ -8,13 +8,13 @@
       <div class="align-items-center d-flex flex-column flex-md-row gap-3 text-center text-md-start">
         <div class="image">
           <img
-            *ngIf="lineItem.images.length > 0"
+            *ngIf="lineItem.images?.length > 0"
             [src]="getFirstImageUrl()"
             alt="{{ equipmentItemType(equipmentItem) }}"
             class="type-image"
           />
           <img
-            *ngIf="lineItem.images.length === 0 && !!equipmentItem"
+            *ngIf="lineItem.images?.length === 0 && !!equipmentItem"
             alt="{{ equipmentItemType(equipmentItem) }}"
             class="type-image"
             src="/assets/images/{{ equipmentItem.klass.toLowerCase() }}-placeholder.png?v=2"
