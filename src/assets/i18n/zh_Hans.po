@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-06-30 23:54+0200\n"
+"PO-Revision-Date: 2024-07-01 14:15+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Simplified Chinese\n"
 "Language: zh-Hans\n"
@@ -6584,4 +6584,9 @@ msgstr ""
 msgid ""
 "By making an offer for a listing on the AstroBin Marketplace, you agree to "
 "the {{0}}terms of service{{1}}."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component.ts
+#: loco:66829dc09f9f5ef35007acd2
+msgid "Someone who didn't make an offer on AstroBin"
 msgstr ""

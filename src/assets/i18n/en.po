@@ -3192,6 +3192,10 @@ msgstr ""
 msgid "Someone else"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component.ts
+msgid "Someone who didn't make an offer on AstroBin"
+msgstr ""
+
 msgid "Something went wrong"
 msgstr ""
 

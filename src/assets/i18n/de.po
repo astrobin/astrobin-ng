@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-06-30 23:54+0200\n"
+"PO-Revision-Date: 2024-07-01 14:15+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -7048,26 +7048,28 @@ msgstr ""
 msgid ""
 "Google Maps API could not be loaded. Please make sure you're not blocking it."
 msgstr ""
+"Google Maps API konnte nicht geladen werden. Bitte stellen Sie sicher, dass "
+"Sie es nicht blockieren."
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
 #: loco:667ff7137e2112a10f0b60ca
 msgid "Hide rejected/retracted offers"
-msgstr ""
+msgstr "Abgelehnte/zurückgezogene Angebote ausblenden"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 #: loco:667ff7137e2112a10f0b60cb
 msgid "How many items do you want to sell?"
-msgstr ""
+msgstr "Wie viele Artikel möchten Sie verkaufen?"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 #: loco:667ff7137e2112a10f0b60cc
 msgid "How many?"
-msgstr ""
+msgstr "Wie viele?"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 #: loco:667ff7137e2112a10f0b60cd
 msgid "Just one"
-msgstr ""
+msgstr "Nur einer"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 #: loco:667ff7137e2112a10f0b60ce
@@ -7075,26 +7077,28 @@ msgid ""
 "Keep things simple and let a moderator associate your listing to an "
 "equipment item in the AstroBin equipment database."
 msgstr ""
+"Überlassen Sie es einfach einem Moderator, Ihr Inserat mit einem "
+"Ausrüstungsgegenstand in der AstroBin-Ausrüstungsdatenbank zu verknüpfen."
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
 #: loco:667ff7137e2112a10f0b60cf
 msgid "Loading offers..."
-msgstr ""
+msgstr "Laden der Angebote..."
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.ts
 #: loco:667ff7137e2112a10f0b60d0
 msgid "Marketplace listing"
-msgstr ""
+msgstr "Marktplatz Inserat"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component.ts
 #: loco:667ff7137e2112a10f0b60d1
 msgid "Message for the buyer"
-msgstr ""
+msgstr "Mitteilung an den Käufer"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
 #: loco:667ff7137e2112a10f0b60d2
 msgid "Modify"
-msgstr ""
+msgstr "Ändern"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
 #: loco:667ff7137e2112a10f0b60d3
@@ -7251,4 +7255,9 @@ msgstr ""
 msgid ""
 "By making an offer for a listing on the AstroBin Marketplace, you agree to "
 "the {{0}}terms of service{{1}}."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component.ts
+#: loco:66829dc09f9f5ef35007acd2
+msgid "Someone who didn't make an offer on AstroBin"
 msgstr ""
