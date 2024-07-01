@@ -1,6 +1,28 @@
-<div (click)="openFileInput()" class="upload-container">
-  <div [class.multiple]="props.multiple" class="files d-flex align-items-center gap-2 flex-wrap">
-    <div *ngFor="let selectedFile of selectedFiles; let i = index" class="file">
+<div
+  #dropListContainer
+  [class.has-files]="selectedFiles?.length > 0"
+  [class.multiple]="props.multiple"
+  cdkDropListGroup
+  class="upload-container"
+>
+  <div *ngIf="selectedFiles?.length === 0">
+    <ng-container *ngTemplateOutlet="fileChooserTemplate"></ng-container>
+  </div>
+
+  <div
+    *ngFor="let selectedFile of selectedFiles; let i = index"
+    [cdkDropListData]="i"
+    cdkDropList
+    class="files"
+  >
+    <div
+      (cdkDragDropped)="dragDropped($event)"
+      (cdkDragEntered)="dragEntered($event)"
+      (cdkDragMoved)="dragMoved($event)"
+      [cdkDragData]="i"
+      cdkDrag
+      class="file"
+    >
       <img *ngIf="!!props.image; else notImageTemplate" [src]="selectedFile.url" alt="" />
       <ng-template #notImageTemplate>
         <div class="file-icon">
@@ -8,11 +30,22 @@
         </div>
       </ng-template>
 
-      <span (click)="onDelete($event, i)">&times;</span>
+      <span *ngIf="props.multiple" class="index">{{ i + 1 }}</span>
+      <span (click)="onDelete($event, i)" class="delete">&times;</span>
     </div>
   </div>
+</div>
 
-  <div [class.has-files]="selectedFiles?.length > 0" class="file-chooser d-flex flex-column text-center">
+<div *ngIf="props.multiple && selectedFiles?.length > 0">
+  <ng-container *ngTemplateOutlet="fileChooserTemplate"></ng-container>
+</div>
+
+<ng-template #fileChooserTemplate>
+  <div
+    (click)="openFileInput()"
+    [class.has-files]="selectedFiles?.length > 0"
+    class="file-chooser d-flex flex-column text-center"
+  >
     <div class="file-icon">
       <fa-icon *ngIf="!!props.image" icon="image"></fa-icon>
       <fa-icon *ngIf="!props.image" icon="file"></fa-icon>
@@ -60,10 +93,10 @@
       type="file"
     />
   </div>
-</div>
+</ng-template>
 
 <ng-template #maxFilesTemplate>
   <ng-container *ngIf="props.maxFiles">
-    <span class="text-muted">({{selectedFiles.length}}/{{ props.maxFiles }})</span>
+    <div class="text-muted">({{selectedFiles.length}}/{{ props.maxFiles }})</div>
   </ng-container>
 </ng-template>

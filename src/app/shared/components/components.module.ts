@@ -112,10 +112,12 @@ import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-
 import { PrivateInformationComponent } from "@shared/components/misc/private-information/private-information.component";
 import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 const modules = [
   CommonModule,
   DirectivesModule,
+  DragDropModule,
   FontAwesomeModule,
   FormsModule,
   FormlyBootstrapModule,

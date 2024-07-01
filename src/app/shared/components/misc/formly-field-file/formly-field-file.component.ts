@@ -6,6 +6,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
+import { CdkDragDrop, CdkDragEnter, CdkDragMove, moveItemInArray } from "@angular/cdk/drag-drop";
 
 @Component({
   selector: "astrobin-formly-field-file",
@@ -14,8 +15,16 @@ import { TranslateService } from "@ngx-translate/core";
 })
 export class FormlyFieldFileComponent extends FieldType implements OnInit {
   @ViewChild("fileInput") el: ElementRef;
+  @ViewChild("dropListContainer") dropListContainer?: ElementRef;
 
   selectedFiles: { file: File; url: SafeUrl }[] = [];
+
+  // Drag and drop
+  dropListReceiverElement?: HTMLElement;
+  dragDropInfo?: {
+    dragIndex: number;
+    dropIndex: number;
+  };
 
   constructor(
     public readonly sanitizer: DomSanitizer,
@@ -102,5 +111,56 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
 
     this.formControl.patchValue(this.selectedFiles);
     this.changeDetectorRef.detectChanges();
+  }
+
+  dragEntered(event: CdkDragEnter<number>) {
+    const drag = event.item;
+    const dropList = event.container;
+    const dragIndex = drag.data;
+    const dropIndex = dropList.data;
+
+    this.dragDropInfo = { dragIndex, dropIndex };
+
+    const placeholderContainer = dropList.element.nativeElement;
+    const placeholderElement = placeholderContainer.querySelector(".cdk-drag-placeholder");
+
+    if (placeholderElement) {
+      placeholderContainer.removeChild(placeholderElement);
+      placeholderContainer.parentElement?.insertBefore(placeholderElement, placeholderContainer);
+
+      moveItemInArray(this.selectedFiles, dragIndex, dropIndex);
+      this.formControl.setValue(this.selectedFiles);
+    }
+  }
+
+  dragMoved(event: CdkDragMove<number>) {
+    if (!this.dropListContainer || !this.dragDropInfo) {
+      return;
+    }
+
+    const placeholderElement =
+      this.dropListContainer.nativeElement.querySelector(".cdk-drag-placeholder");
+
+    const receiverElement =
+      this.dragDropInfo.dragIndex > this.dragDropInfo.dropIndex
+        ? placeholderElement?.nextElementSibling
+        : placeholderElement?.previousElementSibling;
+
+    if (!receiverElement) {
+      return;
+    }
+
+    receiverElement.style.display = "none";
+    this.dropListReceiverElement = receiverElement;
+  }
+
+  dragDropped(event: CdkDragDrop<number>) {
+    if (!this.dropListReceiverElement) {
+      return;
+    }
+
+    this.dropListReceiverElement.style.removeProperty("display");
+    this.dropListReceiverElement = undefined;
+    this.dragDropInfo = undefined;
   }
 }

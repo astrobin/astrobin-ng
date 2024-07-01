@@ -872,7 +872,7 @@ export class EquipmentEffects {
                         .pipe(
                           switchMap(createdLineItem =>
                             forkJoin(
-                              Object.keys(lineItem.images).map(key => {
+                              Object.keys(lineItem.images).map((key, index) => {
                                 const image = lineItem.images[key];
 
                                 if (!image) {
@@ -889,7 +889,8 @@ export class EquipmentEffects {
                                     this.equipmentApiService.createMarketplaceImage(
                                       createdListing.id,
                                       createdLineItem.id,
-                                      image.file
+                                      image.file,
+                                      index
                                     )
                                   )
                                 );
@@ -999,7 +1000,7 @@ export class EquipmentEffects {
                     ))
                 ),
                 switchMap(() =>
-                  this.equipmentApiService.createMarketplaceImage(updatedListing.id, lineItem.id, image.file)
+                  this.equipmentApiService.createMarketplaceImage(updatedListing.id, lineItem.id, image.file, index)
                 )
               );
             });
@@ -1035,7 +1036,7 @@ export class EquipmentEffects {
                 this.equipmentApiService.createMarketplaceLineItem(lineItem).pipe(
                   switchMap(createdLineItem =>
                     forkJoin(
-                      Object.keys(lineItem.images).map(key => {
+                      Object.keys(lineItem.images).map((key, index) => {
                         const image = lineItem.images[key];
 
                         if (!image) {
@@ -1045,7 +1046,8 @@ export class EquipmentEffects {
                         return this.equipmentApiService.createMarketplaceImage(
                           updatedListing.id,
                           createdLineItem.id,
-                          image.file
+                          image.file,
+                          index
                         );
                       })
                     )

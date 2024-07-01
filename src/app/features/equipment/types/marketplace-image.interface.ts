@@ -7,6 +7,7 @@ export interface MarketplaceImageInterface {
   user?: UserInterface["id"];
   lineItem: MarketplaceLineItemInterface["id"];
   imageFile: string;
+  position: number;
   w: number;
   h: number;
   thumbnailFile: string;
