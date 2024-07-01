@@ -231,7 +231,9 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
                 ...usersWithPendingOffers,
                 ...[{
                   value: -1,
-                  label: this.translateService.instant("Someone else")
+                  label: usersWithAcceptedOffers.length > 0 || usersWithAcceptedOffers.length > 0
+                    ? this.translateService.instant("Someone else")
+                    : this.translateService.instant("Someone who didn't make an offer on AstroBin")
                 }]
               ],
               hideLabel: index > 0
