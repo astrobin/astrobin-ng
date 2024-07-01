@@ -283,18 +283,18 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 onInit: field => {
                   this.currentUser$.pipe(take(1)).subscribe(currentUser => {
                     // The defaultValue should be:
-                    // - null if the line item is sold to someone else
-                    // - null if the line item is reserved to someone else
+                    // - 0 if the line item is sold to someone else
+                    // - 0 if the line item is reserved to someone else
                     // - the offered amount if the line item has offers
                     // - the asking price if the line item does not have offers
 
                     let defaultValue;
 
                     if (
-                      (!!lineItem.soldTo && lineItem.soldTo != currentUser.id) ||
-                      (!!lineItem.reservedTo && lineItem.reservedTo != currentUser.id)
+                      (!!lineItem.sold && lineItem.soldTo != currentUser.id) ||
+                      (!!lineItem.reserved && lineItem.reservedTo != currentUser.id)
                     ) {
-                      defaultValue = null;
+                      defaultValue = 0;
                     } else if (this.offers.length > 0 && this.offers.some(offer => offer.lineItem === lineItem.id)) {
                       defaultValue = this.offers.find(offer => offer.lineItem === lineItem.id).amount;
                     } else {
@@ -378,6 +378,10 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     const lineItemId = lineItem.id;
     const offeredAmount = this.form.get(`amount-${lineItemId}`)?.value;
     const shippingCost = this.form.get(`shippingCost-raw-${lineItemId}`)?.value;
+
+    if (lineItem.sold || lineItem.reserved) {
+      return 0;
+    }
 
     return +offeredAmount + +shippingCost;
   }
