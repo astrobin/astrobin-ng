@@ -2,11 +2,13 @@ import { Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
+import { catchError } from "rxjs/operators";
+import { EMPTY } from "rxjs";
 
 @Component({
   selector: "astrobin-marketplace-user-feedback-page",
@@ -20,7 +22,8 @@ export class MarketplaceUserFeedbackPageComponent extends BaseComponentDirective
     public readonly store$: Store<State>,
     public readonly route: ActivatedRoute,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -29,7 +32,13 @@ export class MarketplaceUserFeedbackPageComponent extends BaseComponentDirective
     super.ngOnInit();
 
     const feedbackId = this.route.snapshot.params.id;
-    this.equipmentApiService.getMarketplaceFeedbackById(feedbackId).subscribe(response => {
+    this.equipmentApiService.getMarketplaceFeedbackById(feedbackId).pipe(
+      catchError(() => {
+          this.router.navigate(["/404"]);
+          return EMPTY;
+        }
+      )
+    ).subscribe(response => {
       this.feedback = response;
 
       this._setTitle();
