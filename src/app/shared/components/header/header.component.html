@@ -194,7 +194,6 @@
           </a>
 
           <a
-            *ngIf="(currentUser$ | async) | isBetaTester"
             [routerLink]="['equipment', 'marketplace']"
             class="dropdown-item"
           >
@@ -414,7 +413,6 @@
           </a>
 
           <a
-            *ngIf="(currentUser$ | async) | isBetaTester"
             [routerLink]="['equipment', 'marketplace', 'users', userWrapper.user.username, 'listings']"
             class="dropdown-item"
           >

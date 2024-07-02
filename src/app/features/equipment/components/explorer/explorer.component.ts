@@ -86,7 +86,6 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { RouterService } from "@shared/services/router.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { UserService } from "@shared/services/user.service";
-import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -837,7 +836,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   private _loadMarketplaceLineItems() {
     this.currentUser$.pipe(filter(user => !!user), take(1)).subscribe(user => {
-      if (this.selectedItem && this.userService.isInAstroBinGroup(user, Constants.BETA_TESTERS_ASTROBIN_GROUP)) {
+      if (this.selectedItem) {
         this.store$.dispatch(new LoadMarketplaceListings({
           options: {
             page: 1,

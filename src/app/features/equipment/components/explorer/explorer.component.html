@@ -176,7 +176,7 @@
 
             <button
               (click)="sellInMarketplace()"
-              *ngIf="selectedItem.klass !== 'SENSOR' && (currentUser$ | async) | isBetaTester"
+              *ngIf="selectedItem.klass !== 'SENSOR'"
               class="btn btn-secondary"
               data-test="sell-in-marketplace"
             >
