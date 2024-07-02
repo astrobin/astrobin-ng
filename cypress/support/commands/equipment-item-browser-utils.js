@@ -293,6 +293,10 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAllClasses", () => {
     results: []
   }).as("follows");
   cy.route("GET", "**/api/v2/equipment/contributors/", []).as("getContributors");
+
+  cy.route("GET", "**/api/v2/equipment/marketplace/listing/**", {
+    results: []
+  }).as("getMarketplaceListings");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
