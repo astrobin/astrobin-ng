@@ -372,6 +372,21 @@ export class EquipmentMarketplaceService extends BaseService {
     });
   }
 
+  onPostWantedClicked(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.userSubscriptionService.canCreateMarketplaceListing$().subscribe(canCreate => {
+      if (canCreate) {
+        this.router.navigate(["/equipment/marketplace/create"], { queryParams: { wanted: true } });
+      } else {
+        const modalRef: NgbModalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+        const componentInstance: SubscriptionRequiredModalComponent = modalRef.componentInstance;
+        componentInstance.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_LITE;
+      }
+    });
+  }
+
   private _performOfferAction(
     listing: MarketplaceListingInterface,
     offers: MarketplaceOfferInterface[],

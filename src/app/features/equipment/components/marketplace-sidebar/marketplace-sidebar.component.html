@@ -1,13 +1,21 @@
 <div (click)="collapsed=false" [hidden]="!collapsed" class="marketplace-navigation">
   {{ "Marketplace navigation" | translate }}
 </div>
+
 <a
   (click)="equipmentMarketplaceService.onCreateListingClicked($event)"
-  class="btn btn-primary btn-lg w-100 mb-3"
+  class="btn btn-primary btn-lg w-100 mb-2"
 >
-  <fa-icon icon="plus"></fa-icon>
-  {{ "Create listing" | translate }}
+  {{ "Sell something" | translate }}
 </a>
+
+<a
+  (click)="equipmentMarketplaceService.onPostWantedClicked($event)"
+  class="btn btn-secondary btn-lg w-100 mb-3"
+>
+  {{ "Seek something" | translate }}
+</a>
+
 <div [hidden]="collapsed">
   <astrobin-marketplace-nav></astrobin-marketplace-nav>
   <astrobin-marketplace-filter (filterChange)="filterChange.emit($event)"></astrobin-marketplace-filter>

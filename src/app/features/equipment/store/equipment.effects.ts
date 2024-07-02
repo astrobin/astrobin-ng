@@ -871,31 +871,33 @@ export class EquipmentEffects {
                         })
                         .pipe(
                           switchMap(createdLineItem =>
-                            forkJoin(
-                              Object.keys(lineItem.images).map((key, index) => {
-                                const image = lineItem.images[key];
+                            lineItem.images?.length ?
+                              forkJoin(
+                                Object.keys(lineItem.images).map((key, index) => {
+                                  const image = lineItem.images[key];
 
-                                if (!image) {
-                                  return of(null);
-                                }
+                                  if (!image) {
+                                    return of(null);
+                                  }
 
-                                return of(null).pipe(
-                                  tap(() => {
-                                    toast.toastRef.componentInstance.message = this.translateService.instant(
-                                      `Working on images...`
-                                    );
-                                  }),
-                                  mergeMap(() =>
-                                    this.equipmentApiService.createMarketplaceImage(
-                                      createdListing.id,
-                                      createdLineItem.id,
-                                      image.file,
-                                      index
+                                  return of(null).pipe(
+                                    tap(() => {
+                                      toast.toastRef.componentInstance.message = this.translateService.instant(
+                                        `Working on images...`
+                                      );
+                                    }),
+                                    mergeMap(() =>
+                                      this.equipmentApiService.createMarketplaceImage(
+                                        createdListing.id,
+                                        createdLineItem.id,
+                                        image.file,
+                                        index
+                                      )
                                     )
-                                  )
-                                );
-                              })
-                            )
+                                  );
+                                })
+                              )
+                              : of([null])
                           )
                         )
                     )

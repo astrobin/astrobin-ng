@@ -24,6 +24,12 @@
     font-size: 2rem;
     margin-bottom: 0.25rem;
 
+    .wanted {
+      margin-right: .5rem;
+      text-transform: uppercase;
+      color: var(--lighterGrey);
+    }
+
     .line-item-item-link {
       font-size: 1rem;
       vertical-align: super;
