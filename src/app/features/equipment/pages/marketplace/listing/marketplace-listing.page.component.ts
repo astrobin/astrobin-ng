@@ -488,11 +488,15 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.currentUser$
       .pipe(
-        switchMap(currentUser =>
-          this.store$
-            .select(selectMarketplacePrivateConversations(this.listing.id, currentUser.id))
-            .pipe(map(privateConversations => [privateConversations, currentUser]))
-        ),
+        switchMap(currentUser => {
+          if (currentUser) {
+            return this.store$
+              .select(selectMarketplacePrivateConversations(this.listing.id, currentUser.id))
+              .pipe(map(privateConversations => [privateConversations, currentUser]));
+          } else {
+            return of([[], null]);
+          }
+        }),
         take(1)
       )
       .subscribe((data: [MarketplacePrivateConversationInterface[], UserInterface]) => {

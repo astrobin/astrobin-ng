@@ -311,10 +311,12 @@
     <button
       (click)="onMessageSellerClicked($event)"
       [class.btn-primary]="
+        currentUserWrapper.user &&
         equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
         !equipmentMarketplaceService.listingSold(listing)
       "
       [class.btn-secondary]="
+        !currentUserWrapper.user ||
         !equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) ||
         equipmentMarketplaceService.listingSold(listing)
       "
@@ -325,6 +327,7 @@
 
       <ng-container
         *ngIf="
+          currentUserWrapper.user &&
           equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
           !equipmentMarketplaceService.listingSold(listing);
           else messageSeller
