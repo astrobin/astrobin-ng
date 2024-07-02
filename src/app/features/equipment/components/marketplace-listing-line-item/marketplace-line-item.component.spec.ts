@@ -14,10 +14,10 @@ describe("MarketplaceListingLineItemComponent", () => {
   beforeEach(async () => {
     await MockBuilder(MarketplaceLineItemComponent, AppModule).provide(provideMockStore({ initialState }));
 
-
     fixture = TestBed.createComponent(MarketplaceLineItemComponent);
     component = fixture.componentInstance;
     component.lineItem = MarketplaceGenerator.lineItem();
+    component.listing = MarketplaceGenerator.listing({ lineItems: [component.lineItem] });
     fixture.detectChanges();
   });
 
