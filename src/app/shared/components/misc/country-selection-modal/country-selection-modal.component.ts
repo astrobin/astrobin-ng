@@ -43,7 +43,7 @@ export class CountrySelectionModalComponent extends BaseComponentDirective imple
           options: this.countryService.getCountries(this.translateService.currentLang).map(country => ({
             value: country.code,
             label: country.name
-          }))
+          })).sort((a, b) => a.label.localeCompare(b.label))
         }
       }
     ];
