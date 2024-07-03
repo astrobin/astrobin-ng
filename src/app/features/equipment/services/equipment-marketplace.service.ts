@@ -29,7 +29,10 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import { selectCurrentUser, selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
@@ -68,6 +71,17 @@ export class EquipmentMarketplaceService extends BaseService {
       const userOffers = lineItem.offers.filter(offer => offer.user === userId);
       return acc.concat(userOffers);
     }, []);
+  }
+
+  humanizeListingType(type: MarketplaceListingType): string {
+    switch (type) {
+      case MarketplaceListingType.FOR_SALE:
+        return this.translateService.instant("For sale");
+      case MarketplaceListingType.WANTED:
+        return this.translateService.instant("Wanted");
+      default:
+        return this.translateService.instant("Unknown");
+    }
   }
 
   humanizeOfferStatus(status: MarketplaceOfferStatus): string {

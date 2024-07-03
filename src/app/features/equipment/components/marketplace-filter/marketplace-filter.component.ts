@@ -17,13 +17,18 @@ import { MarketplaceListingCondition } from "@features/equipment/types/marketpla
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { take } from "rxjs/operators";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 export const marketplaceFilterModelKeys: string[] = [
+  "listingType",
   "itemType",
   "maxDistance",
   "distanceUnit",
@@ -50,6 +55,7 @@ export const marketplaceFilterModelKeys: string[] = [
 
 // If you're updating this, make sure to update marketplaceFilterModelKeys above.
 export interface MarketplaceFilterModel {
+  listingType?: MarketplaceListingType | null;
   itemType?: EquipmentItemType | null;
   maxDistance?: number | null;
   distanceUnit?: string | null;
@@ -100,7 +106,8 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
     public readonly popNotificationsService: PopNotificationsService,
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
   }
@@ -187,6 +194,31 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
       }
 
       this.filterFields = [
+        {
+          key: "listingType",
+          type: "ng-select",
+          wrappers: ["card-wrapper"],
+          defaultValue: params["listingType"],
+          props: {
+            collapsible: true,
+            label: this.translateService.instant("Listing type"),
+            options: [
+              MarketplaceListingType.FOR_SALE,
+              MarketplaceListingType.WANTED
+            ].map(listingType => ({
+              label: this.equipmentMarketplaceService.humanizeListingType(listingType),
+              value: listingType
+            })),
+            clearable: true,
+            searchable: false
+          },
+          expressions: {
+            "props.collapsed": config => {
+              return config.formControl.value === undefined || config.formControl.value === null;
+            },
+            className: config => config.props.collapsed ? "mb-1" : "mb-4"
+          }
+        },
         {
           key: "itemType",
           type: "ng-select",
