@@ -925,7 +925,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 expressions: {
                   className: () => {
                     const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
-                    return isWanted ? "hidden" : "col-12 col-lg-6";
+                    return isWanted ? "hidden" : "col-12";
                   },
                   "props.required": () => {
                     const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
