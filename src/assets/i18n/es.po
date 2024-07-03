@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-07-03 17:06+0200\n"
+"PO-Revision-Date: 2024-07-03 22:20+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -6677,4 +6677,12 @@ msgstr ""
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
 #: loco:668568f1ce3b945d4c0a5f73
 msgid "Images from the AstroBin community"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.ts
+#: loco:6685b246eec93276aa0fd952
+msgid ""
+"For your safety, keep all communications on AstroBin. Off-platform "
+"conversations pose risks. Messages here are permanent and can be used as "
+"evidence if needed."
 msgstr ""
