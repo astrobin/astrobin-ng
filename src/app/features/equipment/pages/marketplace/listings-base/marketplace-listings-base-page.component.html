@@ -27,8 +27,22 @@
           {{ "Worldwide" | translate }}
         </button>
 
+        <button (click)="setRegion($event, requestContinent)" *ngIf="!!requestContinent" ngbDropdownItem>
+          <ng-container *ngTemplateOutlet="continentFlagTemplate"></ng-container>
+          {{ requestContinent }}
+        </button>
+
+        <button
+          (click)="setRegion($event, 'EU')"
+          *ngIf="!!requestCountryCode && UtilsService.isEUCountry(requestCountryCode)"
+          ngbDropdownItem
+        >
+          <fa-icon icon="euro-sign"></fa-icon>
+          {{ "European Union" | translate }}
+        </button>
+
         <button (click)="setRegion($event, requestCountryCode)" *ngIf="!!requestCountryLabel" ngbDropdownItem>
-          <fa-icon icon="flag"></fa-icon>
+          <ng-container *ngTemplateOutlet="countryFlagTemplate"></ng-container>
           {{ requestCountryLabel }}
         </button>
 
@@ -77,3 +91,17 @@
     </div>
   </div>
 </div>
+
+<ng-template #countryFlagTemplate>
+  <fa-icon *ngIf="requestCountryCode === 'US'" icon="flag-usa"></fa-icon>
+  <fa-icon *ngIf="requestCountryCode !== 'US'" icon="flag"></fa-icon>
+</ng-template>
+
+<ng-template #continentFlagTemplate>
+  <fa-icon *ngIf="requestContinent === 'Americas'" icon="earth-americas"></fa-icon>
+  <fa-icon *ngIf="requestContinent === 'Europe'" icon="earth-europe"></fa-icon>
+  <fa-icon *ngIf="requestContinent === 'Asia'" icon="earth-asia"></fa-icon>
+  <fa-icon *ngIf="requestContinent === 'Africa'" icon="earth-africa"></fa-icon>
+  <fa-icon *ngIf="requestContinent === 'Oceania'" icon="earth-oceania"></fa-icon>
+  <fa-icon *ngIf="requestContinent === 'Antarctica'" icon="globe"></fa-icon>
+</ng-template>

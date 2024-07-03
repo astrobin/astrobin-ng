@@ -487,6 +487,38 @@ export class UtilsService {
     return count;
   }
 
+  static isEUCountry(countryCode: string): boolean {
+    return [
+      "AT",
+      "BE",
+      "BG",
+      "HR",
+      "CY",
+      "CZ",
+      "DK",
+      "EE",
+      "FI",
+      "FR",
+      "DE",
+      "GR",
+      "HU",
+      "IE",
+      "IT",
+      "LV",
+      "LT",
+      "LU",
+      "MT",
+      "NL",
+      "PL",
+      "PT",
+      "RO",
+      "SK",
+      "SI",
+      "ES",
+      "SE"
+    ].includes(countryCode.toUpperCase());
+  }
+
   static isGDPRCountry(countryCode: string): boolean {
     return [
       "AT", // Austria

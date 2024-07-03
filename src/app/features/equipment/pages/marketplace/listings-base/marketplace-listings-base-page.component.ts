@@ -32,6 +32,7 @@ import { CountrySelectionModalComponent } from "@shared/components/misc/country-
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -42,6 +43,7 @@ export abstract class MarketplaceListingsBasePageComponent
   implements OnInit, AfterViewInit {
   readonly WORLDWIDE = "WORLDWIDE";
   readonly REGION_LOCAL_STORAGE_KEY = "marketplaceRegion";
+  readonly UtilsService = UtilsService;
 
   title = this.translateService.instant("Marketplace");
   page = 1;
@@ -49,6 +51,7 @@ export abstract class MarketplaceListingsBasePageComponent
   filterModel: MarketplaceFilterModel | null = null;
   requestCountryCode: string | null;
   requestCountryLabel: string | null;
+  requestContinent: string | null;
   selectedRegion: string | null;
   selectedRegionLabel: string | null;
   listings$: Observable<MarketplaceListingInterface[]>;
@@ -71,7 +74,8 @@ export abstract class MarketplaceListingsBasePageComponent
     public readonly windowRefService: WindowRefService,
     public readonly paginationConfig: NgbPaginationConfig,
     public readonly routerService: RouterService,
-    @Inject(PLATFORM_ID) public readonly platformId: object
+    @Inject(PLATFORM_ID) public readonly platformId: object,
+    public readonly http: HttpClient
   ) {
     super(store$);
   }
@@ -80,10 +84,16 @@ export abstract class MarketplaceListingsBasePageComponent
     super.ngOnInit();
 
     this.selectedRegion = this.localStorageService.getItem(this.REGION_LOCAL_STORAGE_KEY);
-    this.selectedRegionLabel = this.countryService.getCountryName(
-      this.selectedRegion,
-      this.translateService.currentLang
-    );
+    if (this.selectedRegion && this.selectedRegion !== this.WORLDWIDE) {
+      this.selectedRegionLabel = this.countryService.getCountryName(
+        this.selectedRegion,
+        this.translateService.currentLang
+      );
+
+      if (this.selectedRegionLabel === undefined) {
+        this.selectedRegionLabel = this.selectedRegion;
+      }
+    }
 
     this._refreshOnQueryParamsChange();
     this._updateRequestCountry();
@@ -144,6 +154,10 @@ export abstract class MarketplaceListingsBasePageComponent
 
     this.selectedRegion = region;
     this.selectedRegionLabel = this.countryService.getCountryName(region, this.translateService.currentLang);
+
+    if (this.selectedRegionLabel === undefined) {
+      this.selectedRegionLabel = this.selectedRegion;
+    }
 
     this.localStorageService.setItem(this.REGION_LOCAL_STORAGE_KEY, region);
 
@@ -289,6 +303,9 @@ export abstract class MarketplaceListingsBasePageComponent
       if (params.region) {
         this.selectedRegion = params.region;
         this.selectedRegionLabel = this.countryService.getCountryName(params.region, this.translateService.currentLang);
+        if (this.selectedRegionLabel === undefined) {
+          this.selectedRegionLabel = this.selectedRegion;
+        }
       }
 
       if (params.page) {
@@ -297,6 +314,10 @@ export abstract class MarketplaceListingsBasePageComponent
 
       this.refresh(params);
     });
+  }
+
+  private _getCountryDetails(code: string): Observable<any> {
+    return this.http.get(`https://restcountries.com/v3.1/alpha/${code}`);
   }
 
   private _updateRequestCountry() {
@@ -315,8 +336,16 @@ export abstract class MarketplaceListingsBasePageComponent
             this.translateService.currentLang
           );
 
+          this._getCountryDetails(requestCountry).subscribe((country: any) => {
+            this.requestContinent = country[0].region;
+          });
+
           if (!this.selectedRegion) {
-            this.setRegion(null, requestCountry, false);
+            if (UtilsService.isEUCountry(requestCountry)) {
+              this.setRegion(null, "EU", false);
+            } else {
+              this.setRegion(null, requestCountry, false);
+            }
           }
         })
       )
