@@ -1740,12 +1740,12 @@ msgstr ""
 msgid "Images by the seller"
 msgstr ""
 
-msgid "Images in common"
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
+msgid "Images from the AstroBin community"
 msgstr ""
 
-#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
-#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
-msgid "Images on AstroBin"
+msgid "Images in common"
 msgstr ""
 
 msgid "Imaging"
