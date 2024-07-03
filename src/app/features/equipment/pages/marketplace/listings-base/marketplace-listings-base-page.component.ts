@@ -263,7 +263,7 @@ export abstract class MarketplaceListingsBasePageComponent
       ),
       tap(() => {
         this.utilsService.delay(200).subscribe(() => {
-          if (this.windowRefService.nativeWindow.innerWidth < 768) {
+          if (this.page === 1 && this.windowRefService.nativeWindow.innerWidth < 768) {
             this.windowRefService.scrollToElement(".marketplace-navigation");
           }
 
