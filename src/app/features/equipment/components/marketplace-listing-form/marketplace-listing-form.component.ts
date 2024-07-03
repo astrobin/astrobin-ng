@@ -1067,7 +1067,10 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                                   component.types.includes("country")
                                 );
                                 const cityComponent = addressComponents.find(component =>
-                                  component.types.includes("locality")
+                                  component.types.includes("locality") ||
+                                  component.types.includes("postal_town") ||
+                                  component.types.includes("administrative_area_level_1") ||
+                                  component.types.includes("administrative_area_level_2")
                                 );
 
                                 if (countryComponent) {
