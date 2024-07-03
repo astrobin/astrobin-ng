@@ -21,7 +21,7 @@
 </div>
 
 <div class="row mt-4">
-  <div class="col-md-6">
+  <div [class]="listing.listingType === MarketplaceListingType.FOR_SALE ? 'col-md-6' : 'col-12'">
     <div *ngIf="googleMapsAvailable" class="card map-container">
       <div class="card-header">
         <ng-container *ngIf="!!listing.country; else loadingCountryTemplate">
@@ -40,7 +40,7 @@
 
       <div class="card-footer">
         <div class="form-text mt-1">
-          {{ "The location shown above is approximate to protect the seller's privacy." | translate }}
+          {{ "The location shown above is approximate to protect the user's privacy." | translate }}
         </div>
       </div>
     </div>
@@ -66,7 +66,8 @@
       </div>
     </div>
   </div>
-  <div class="col-md-6">
+
+  <div *ngIf="listing.listingType === MarketplaceListingType.FOR_SALE" class="col-md-6">
     <div class="card shipping-options">
       <div class="card-header">{{ "Shipping options" | translate }}</div>
       <div class="card-body">

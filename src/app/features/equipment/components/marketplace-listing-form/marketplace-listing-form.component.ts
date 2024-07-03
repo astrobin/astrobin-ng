@@ -12,7 +12,8 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import {
   MarketplaceListingExpiration,
   MarketplaceListingInterface,
-  MarketplaceListingShippingMethod
+  MarketplaceListingShippingMethod,
+  MarketplaceListingType
 } from "@features/equipment/types/marketplace-listing.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -74,6 +75,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
 
   @Input()
   model: MarketplaceListingInterface = {
+    listingType: MarketplaceListingType.FOR_SALE,
     created: null,
     updated: null,
     approved: null,
@@ -155,8 +157,15 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     this.googleMapsAvailable = !!this.googleMapsService.maps;
 
     const providedLineItemCount = this.activatedRoute.snapshot.queryParams.lineItemCount;
+    const isWanted = this.activatedRoute.snapshot.queryParams.wanted === "true";
 
-    if (providedLineItemCount && providedLineItemCount === "1") {
+    if (isWanted) {
+      this.model.listingType = MarketplaceListingType.WANTED;
+      this.initialLineItemCountModel.saleType = MARKETPLACE_SALE_TYPE.SINGLE;
+      this.initialLineItemCountModel.count = 1;
+      this.initialLineItemCountModel.multipleSaleType = MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL;
+      this.initialLineItemCount = 1;
+    } else if (providedLineItemCount && providedLineItemCount === "1") {
       this.initialLineItemCount = parseInt(providedLineItemCount, 10);
     } else if (this.model.id) {
       this.initialLineItemCount = this.model.lineItems.length;
@@ -401,6 +410,11 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           className: "hidden"
         },
         {
+          key: "listingType",
+          type: "input",
+          className: "hidden"
+        },
+        {
           key: "lineItems",
           type: "array",
           wrappers: ["default-wrapper"],
@@ -414,6 +428,11 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             expressions: {
               "props.label": config => {
                 const index = this.model.lineItems.indexOf(config.model);
+                const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+
+                if (isWanted) {
+                  return this.translateService.instant("Equipment item wanted");
+                }
 
                 return this.initialLineItemCount > 1
                   ? this.translateService.instant("Equipment item for sale") + ` #${index + 1}`
@@ -568,6 +587,42 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       value: MarketplaceLineItemFindItemMode.ALL
                     }
                   ]
+                },
+                expressions: {
+                  "props.options": () => {
+                    const simpleTextOption = {
+                      label: this.translateService.instant("Simple text"),
+                      description: this.translateService.instant(
+                        "Keep things simple and let a moderator associate your " +
+                        "listing to an equipment item in the AstroBin equipment database."
+                      ),
+                      value: MarketplaceLineItemFindItemMode.PLAIN
+                    };
+
+                    const userOption = {
+                      label: this.translateService.instant("Search equipment used on your images"),
+                      description: this.translateService.instant(
+                        "Associate this listing to an equipment item you have used on your images."
+                      ),
+                      value: MarketplaceLineItemFindItemMode.USER
+                    };
+
+                    const allOption = {
+                      label: this.translateService.instant("Search all equipment available on AstroBin"),
+                      description: this.translateService.instant(
+                        "Associate this listing to any equipment item available on AstroBin."
+                      ),
+                      value: MarketplaceLineItemFindItemMode.ALL
+                    };
+
+                    const isWanting = this.model.listingType === MarketplaceListingType.WANTED;
+
+                    if (isWanting) {
+                      return [simpleTextOption, allOption];
+                    }
+
+                    return [simpleTextOption, userOption, allOption];
+                  }
                 }
               },
               {
@@ -582,10 +637,15 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 className: "border-top-0 border-bottom-0 pb-0",
                 expressions: {
                   hide: config => config.model.findItemMode !== MarketplaceLineItemFindItemMode.PLAIN,
-                  "props.required": config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN
+                  "props.required": config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN,
+                  "props.label": () => {
+                    const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+                    return isWanted
+                      ? this.translateService.instant("What kind of item are you looking for?")
+                      : this.translateService.instant("What kind of item are you selling?");
+                  }
                 },
                 props: {
-                  label: this.translateService.instant("What kind of item are you selling?"),
                   options: [
                     EquipmentItemType.CAMERA,
                     EquipmentItemType.TELESCOPE,
@@ -624,7 +684,29 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 },
                 expressions: {
                   hide: config => config.model.findItemMode !== MarketplaceLineItemFindItemMode.PLAIN,
-                  "props.required": config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN
+                  "props.required": config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN,
+                  "props.label": () => {
+                    const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+                    return isWanted
+                      ? this.translateService.instant("What are you looking for?")
+                      : this.translateService.instant("What are you selling?");
+                  },
+                  "props.description": () => {
+                    const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+
+                    if (isWanted) {
+                      return null;
+                    }
+
+                    if (this.initialLineItemCount > 1) {
+                      return this.translateService.instant(
+                        "Enter only one item. If you want to sell multiple items, add them as separate line items " +
+                        "using the button below."
+                      );
+                    }
+
+                    return null;
+                  }
                 }
               },
               {
@@ -686,7 +768,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     key: "condition",
                     type: "ng-select",
                     wrappers: ["default-wrapper"],
-                    className: "col-12 col-lg-6",
                     defaultValue: MarketplaceListingCondition.USED,
                     props: {
                       required: true,
@@ -695,15 +776,26 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                         value: key,
                         label: this.equipmentItemService.humanizeCondition(MarketplaceListingCondition[key])
                       }))
+                    },
+                    expressions: {
+                      className: () => {
+                        const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+                        return isWanted ? "hidden" : "col-12 col-lg-6";
+                      }
                     }
                   },
                   {
                     key: "yearOfPurchase",
                     type: "custom-number",
                     wrappers: ["default-wrapper"],
-                    className: "col-12 col-lg-6",
                     props: {
                       label: this.translateService.instant("Year of purchase")
+                    },
+                    expressions: {
+                      className: () => {
+                        const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+                        return isWanted ? "hidden" : "col-12 col-lg-6";
+                      }
                     },
                     validators: {
                       validation: [
@@ -725,6 +817,24 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       rows: 4,
                       modelOptions: {
                         updateOn: "blur"
+                      }
+                    },
+                    expressions: {
+                      "props.description": () => {
+                        const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+
+                        if (isWanted) {
+                          return this.translateService.instant("Describe the item you are looking for.");
+                        }
+
+                        if (this.initialLineItemCount === 1) {
+                          return this.translateService.instant("Describe the item you are selling.");
+                        }
+
+                        return this.translateService.instant(
+                          "Describe the item you are selling. This field refers to this specific equipment item, " +
+                          "and down below you can find a Description field that refers to the entire listing."
+                        );
                       }
                     }
                   }
@@ -752,8 +862,13 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                             value: code,
                             label: `${Constants.ALL_CURRENCIES[code]} (${code})`
                           })),
-                          required: true,
                           placeholder: this.translateService.instant("Select a currency")
+                        },
+                        expressions: {
+                          "props.required": () => {
+                            const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+                            return !isWanted;
+                          }
                         }
                       },
                       {
@@ -763,8 +878,13 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                         className: "col-12 col-lg-6",
                         props: {
                           min: 0,
-                          label: this.translateService.instant("Price"),
-                          required: true
+                          label: this.translateService.instant("Price")
+                        },
+                        expressions: {
+                          "props.required": () => {
+                            const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+                            return !isWanted;
+                          }
                         }
                       },
                       {
@@ -783,7 +903,13 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       }
                     ]
                   }
-                ]
+                ],
+                expressions: {
+                  className: () => {
+                    const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+                    return isWanted ? "hidden" : "";
+                  }
+                }
               },
               {
                 key: "images",
@@ -793,9 +919,18 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   label: this.translateService.instant("Images"),
                   accept: "image/jpeg, image/png",
                   image: true,
-                  required: true,
                   multiple: true,
                   maxFiles: 20
+                },
+                expressions: {
+                  className: () => {
+                    const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+                    return isWanted ? "hidden" : "col-12 col-lg-6";
+                  },
+                  "props.required": () => {
+                    const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+                    return !isWanted;
+                  }
                 },
                 validators: {
                   validation: [
@@ -1059,7 +1194,15 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               wrappers: ["default-wrapper"],
               expressions: {
                 hide: "!model.deliveryByShipping",
-                "props.required": "!!model.deliveryByShipping"
+                "props.required": () => {
+                  const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+
+                  if (isWanted) {
+                    return false;
+                  }
+
+                  return !!this.model.deliveryByShipping;
+                }
               },
               props: {
                 label: this.translateService.instant("Shipping method"),
@@ -1069,7 +1212,13 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 }))
               }
             }
-          ]
+          ],
+          expressions: {
+            className: () => {
+              const isWanted = this.model.listingType === MarketplaceListingType.WANTED;
+              return isWanted ? "hidden" : "";
+            }
+          }
         },
         {
           type: "html",

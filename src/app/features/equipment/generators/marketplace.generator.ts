@@ -1,4 +1,7 @@
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import {
   MarketplaceLineItemInterface,
   MarketplaceListingCondition
@@ -25,6 +28,7 @@ export class MarketplaceGenerator {
 
     return {
       id: source.id || 1,
+      listingType: MarketplaceListingType.FOR_SALE,
       user,
       hash: source.hash || "abc123",
       created: source.created || "1970-01-01",

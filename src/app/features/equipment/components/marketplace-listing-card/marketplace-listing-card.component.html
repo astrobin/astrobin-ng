@@ -3,6 +3,9 @@
     <div class="card-header">
       <div class="name">
         <ng-container *ngIf="!!displayName; else textLoadingTemplate">
+          <span *ngIf="listing.listingType === MarketplaceListingType.WANTED" class="wanted">
+            [{{ "Wanted" | translate}}]
+          </span>
           {{ displayName }}
         </ng-container>
       </div>
@@ -26,6 +29,13 @@
         *ngIf="listing.lineItems[0].images.length > 0"
         [alt]=""
         [src]="listing.lineItems[0].images[0].thumbnailFile || listing.lineItems[0].images[0].imageFile"
+      />
+
+      <img
+        *ngIf="listing.lineItems[0].images?.length === 0 && listing.lineItems[0].itemKlass"
+        alt="{{ equipmentItemService.humanizeType(listing.lineItems[0].itemKlass) }}"
+        class="type-image"
+        src="/assets/images/{{ listing.lineItems[0].itemKlass.toLowerCase() }}-placeholder.png?v=2"
       />
     </div>
 

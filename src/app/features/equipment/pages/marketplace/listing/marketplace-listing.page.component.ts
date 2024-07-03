@@ -3,7 +3,10 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
@@ -65,6 +68,8 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
   styleUrls: ["./marketplace-listing.page.component.scss"]
 })
 export class MarketplaceListingPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+  readonly MarketplaceListingType = MarketplaceListingType;
+
   readonly breadcrumb = new SetBreadcrumb({
     breadcrumb: [
       {
@@ -300,6 +305,10 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   }
 
   markAsSold() {
+    if (this.listing.listingType === MarketplaceListingType.WANTED) {
+      return;
+    }
+
     if (this.equipmentMarketplaceService.listingHasPendingOffers(this.listing)) {
       this.popNotificationsService.error(
         "You cannot mark a listing as sold if it has pending offers. " +
@@ -337,6 +346,10 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
   onMakeAnOfferClicked(event: Event) {
     event.preventDefault();
+
+    if (this.listing.listingType === MarketplaceListingType.WANTED) {
+      return;
+    }
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
@@ -481,7 +494,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.store$.dispatch(new LoadContentType(contentTypePayload));
   }
 
-  onMessageSellerClicked(event: Event) {
+  onMessageUserClicked(event: Event) {
     event.preventDefault();
 
     this.loadingService.setLoading(true);

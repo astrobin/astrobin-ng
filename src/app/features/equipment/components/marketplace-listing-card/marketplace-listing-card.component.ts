@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
@@ -17,6 +20,8 @@ import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-of
   styleUrls: ["./marketplace-listing-card.component.scss"]
 })
 export class MarketplaceListingCardComponent extends BaseComponentDirective implements OnInit {
+  readonly MarketplaceListingType = MarketplaceListingType;
+
   @Input()
   listing: MarketplaceListingInterface;
 

@@ -6,7 +6,7 @@
   >
     <div (click)="collapsed = !collapsed" [class.collapsed-body]="!previewMode && collapsed" class="card-header">
       <div class="align-items-center d-flex flex-column flex-md-row gap-3 text-center text-md-start">
-        <div class="image">
+        <div *ngIf="listing.listingType !== MarketplaceListingType.WANTED" class="image">
           <img
             *ngIf="lineItem.images?.length > 0"
             [src]="getFirstImageUrl()"
@@ -14,15 +14,19 @@
             class="type-image"
           />
           <img
-            *ngIf="lineItem.images?.length === 0 && !!equipmentItem"
-            alt="{{ equipmentItemType(equipmentItem) }}"
+            *ngIf="lineItem.images?.length === 0 && lineItem.itemKlass"
+            alt="{{ equipmentItemService.humanizeType(lineItem.itemKlass) }}"
             class="type-image"
-            src="/assets/images/{{ equipmentItem.klass.toLowerCase() }}-placeholder.png?v=2"
+            src="/assets/images/{{ lineItem.itemKlass.toLowerCase() }}-placeholder.png?v=2"
           />
         </div>
 
         <div class="flex-grow-1">
           <div class="display-name">
+            <span *ngIf="listing.listingType === MarketplaceListingType.WANTED" class="wanted">
+              [{{ "Wanted" | translate }}]
+            </span>
+
             <ng-container *ngIf="!!equipmentItem">
               <astrobin-equipment-item-display-name
                 [enableBrandLink]="false"
@@ -61,10 +65,14 @@
           </div>
 
           <astrobin-marketplace-listing-line-item-condition
+            *ngIf="listing.listingType === MarketplaceListingType.FOR_SALE"
             [lineItem]="lineItem"
           ></astrobin-marketplace-listing-line-item-condition>
 
-          <div *ngIf="!previewMode && !!equipmentItem" class="first-added">
+          <div
+            *ngIf="!previewMode && !!equipmentItem && listing.listingType === MarketplaceListingType.FOR_SALE"
+            class="first-added"
+          >
             {{ "First added to an image by the seller" | translate }}:
             <span class="first-added-date">
               <ng-container *ngIf="lineItem.firstAddedToAnImage; else noFirstAddedDateTemplate">
@@ -83,7 +91,10 @@
             ></fa-icon>
           </div>
 
-          <div *ngIf="!previewMode && !!equipmentItem" class="image-counts">
+          <div
+            *ngIf="!previewMode && !!equipmentItem && listing.listingType === MarketplaceListingType.FOR_SALE"
+            class="image-counts"
+          >
             <span [innerHTML]="sellerImageCount"></span>
             &middot;
             <span [innerHTML]="totalImageCount"></span>
@@ -91,6 +102,7 @@
         </div>
 
         <astrobin-marketplace-listing-line-item-price
+          *ngIf="listing.listingType === MarketplaceListingType.FOR_SALE"
           [lineItem]="lineItem"
           [listing]="listing"
         ></astrobin-marketplace-listing-line-item-price>
@@ -114,7 +126,11 @@
 
       <astrobin-image-search
         #sellerImageSearch
-        *ngIf="!!equipmentItem && lineItem.sellerImageCount > 0"
+        *ngIf="
+          !!equipmentItem &&
+          lineItem.sellerImageCount > 0 &&
+          listing.listingType === MarketplaceListingType.FOR_SALE
+        "
         [header]="'Images by the seller' | translate"
         [itemId]="lineItem.itemObjectId"
         [itemType]="lineItem.itemKlass"
@@ -128,7 +144,11 @@
 
       <astrobin-image-search
         #astrobinImageSearch
-        *ngIf="!!equipmentItem && lineItem.totalImageCount > 0"
+        *ngIf="
+          !!equipmentItem &&
+          lineItem.totalImageCount > 0 &&
+          listing.listingType === MarketplaceListingType.FOR_SALE
+        "
         [header]="'Images on AstroBin' | translate"
         [itemId]="lineItem.itemObjectId"
         [itemType]="lineItem.itemKlass"

@@ -13,7 +13,10 @@ import { filter, take, withLatestFrom } from "rxjs/operators";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -26,6 +29,8 @@ import { MarketplaceImageInterface } from "@features/equipment/types/marketplace
   styleUrls: ["./marketplace-line-item.component.scss"]
 })
 export class MarketplaceLineItemComponent extends BaseComponentDirective implements OnChanges {
+  readonly MarketplaceListingType = MarketplaceListingType;
+
   @Input()
   listing: MarketplaceListingInterface;
 

@@ -2,6 +2,10 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 
+export enum MarketplaceListingType {
+  FOR_SALE = "FOR_SALE",
+  WANTED = "WANTED",
+}
 
 export enum MarketplaceListingShippingMethod {
   STANDARD_MAIL = "STANDARD_MAIL",
@@ -19,6 +23,7 @@ export enum MarketplaceListingExpiration {
 export interface MarketplaceListingInterface {
   id?: number;
   hash?: string;
+  listingType: MarketplaceListingType;
   user?: UserInterface["id"];
   userDisplayName?: UserInterface["displayName"];
   created: string;

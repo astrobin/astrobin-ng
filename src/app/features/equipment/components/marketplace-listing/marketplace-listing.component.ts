@@ -2,7 +2,10 @@ import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChi
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingType
+} from "@features/equipment/types/marketplace-listing.interface";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 import { CountryService } from "@shared/services/country.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -15,6 +18,8 @@ import { EquipmentMarketplaceService } from "@features/equipment/services/equipm
   styleUrls: ["./marketplace-listing.component.scss"]
 })
 export class MarketplaceListingComponent extends BaseComponentDirective implements OnInit, OnChanges {
+  readonly MarketplaceListingType = MarketplaceListingType;
+
   @Input()
   listing: MarketplaceListingInterface;
 
