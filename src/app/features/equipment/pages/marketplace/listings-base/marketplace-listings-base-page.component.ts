@@ -128,7 +128,7 @@ export abstract class MarketplaceListingsBasePageComponent
             const elementBottom = element.nativeElement.getBoundingClientRect().bottom;
             const windowHeight = window.innerHeight;
             return {
-              nearBottom: (elementBottom - windowHeight < 300),
+              nearBottom: (elementBottom - windowHeight < 900),
               isLoading: isLoading
             };
           }),
