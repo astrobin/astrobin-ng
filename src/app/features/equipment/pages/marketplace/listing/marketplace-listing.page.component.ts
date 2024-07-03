@@ -428,6 +428,12 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
               0: this.listing.userDisplayName
             });
 
+        componentInstance.info = this.translateService.instant(
+            "For your safety, keep all communications on AstroBin. Off-platform conversations pose risks. " +
+            "Messages here are permanent and can be used as evidence if needed."
+          ) + ` <a href="https://welcome.astrobin.com/features/marketplace#faq-safety-tips" target="_blank">` +
+          this.translateService.instant("Learn more") + `</a>`;
+
         componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
         componentInstance.showReplyButton = false;
         componentInstance.showTopLevelButton = false;
