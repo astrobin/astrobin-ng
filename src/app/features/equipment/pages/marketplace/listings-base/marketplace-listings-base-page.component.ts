@@ -47,7 +47,7 @@ export abstract class MarketplaceListingsBasePageComponent
 
   title = this.translateService.instant("Marketplace");
   page = 1;
-  pageSize = this.paginationConfig.pageSize;
+  pageSize = 20;
   filterModel: MarketplaceFilterModel | null = null;
   requestCountryCode: string | null;
   requestCountryLabel: string | null;
