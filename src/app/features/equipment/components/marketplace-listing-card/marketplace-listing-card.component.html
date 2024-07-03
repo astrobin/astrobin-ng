@@ -12,15 +12,21 @@
       <div class="created">
         <fa-icon icon="calendar-alt"></fa-icon>
         {{ listing.created | localDate | timeago : true }}
-        &middot;
-        <fa-icon icon="bell"></fa-icon>
-        {{ listing.followerCount }}
-        &middot;
-        <fa-icon icon="eye"></fa-icon>
-        {{ listing.viewCount }}
-        &middot;
-        <fa-icon icon="camera-alt"></fa-icon>
-        {{ imagesCount }}
+        <ng-container *ngIf="!!listing.followerCount">
+          &middot;
+          <fa-icon icon="bell"></fa-icon>
+          {{ listing.followerCount }}
+        </ng-container>
+        <ng-container *ngIf="!!listing.viewCount">
+          &middot;
+          <fa-icon icon="eye"></fa-icon>
+          {{ listing.viewCount }}
+        </ng-container>
+        <ng-container *ngIf="!!listing.viewCount">
+          &middot;
+          <fa-icon icon="camera-alt"></fa-icon>
+          {{ imagesCount }}
+        </ng-container>
       </div>
     </div>
 
