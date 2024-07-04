@@ -1,9 +1,15 @@
+@import "../../../../styles/breakpoints";
+
 astrobin-avatar {
   display: block;
   width: 30%;
-  position: absolute;
-  top: -15%;
-  left: 35%;
+  margin: 0 auto;
+
+  @media screen and (min-width: $md-min) {
+    position: absolute;
+    top: -15%;
+    left: 35%;
+  }
 }
 
 astrobin-username {

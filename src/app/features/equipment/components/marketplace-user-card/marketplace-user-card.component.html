@@ -1,7 +1,7 @@
 <ng-container *ngIf="user$ | async as user; else loadingTemplate">
   <div class="card">
     <div class="card-body">
-      <astrobin-avatar [user]="user" class="d-none d-md-block"></astrobin-avatar>
+      <astrobin-avatar [user]="user"></astrobin-avatar>
       <astrobin-username [user]="user" class="mt-2 mt-md-5 mt-lg-3 mt-xl-5"></astrobin-username>
       <astrobin-marketplace-feedback-widget
         [listing]="listing"
