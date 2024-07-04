@@ -81,20 +81,22 @@ export abstract class MarketplaceListingsBasePageComponent
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.selectedRegion = this.localStorageService.getItem(this.REGION_LOCAL_STORAGE_KEY);
-    if (this.selectedRegion && this.selectedRegion !== this.WORLDWIDE) {
-      this.selectedRegionLabel = this.countryService.getCountryName(
-        this.selectedRegion,
-        this.translateService.currentLang
-      );
+    if (isPlatformBrowser(this.platformId)) {
+      this.selectedRegion = this.localStorageService.getItem(this.REGION_LOCAL_STORAGE_KEY);
+      if (this.selectedRegion && this.selectedRegion !== this.WORLDWIDE) {
+        this.selectedRegionLabel = this.countryService.getCountryName(
+          this.selectedRegion,
+          this.translateService.currentLang
+        );
 
-      if (this.selectedRegionLabel === undefined) {
-        this.selectedRegionLabel = this.selectedRegion;
+        if (this.selectedRegionLabel === undefined) {
+          this.selectedRegionLabel = this.selectedRegion;
+        }
       }
-    }
 
-    this._refreshOnQueryParamsChange();
-    this._updateRequestCountry();
+      this._refreshOnQueryParamsChange();
+      this._updateRequestCountry();
+    }
   }
 
   ngAfterViewInit() {
@@ -330,8 +332,8 @@ export abstract class MarketplaceListingsBasePageComponent
             this.translateService.currentLang
           );
 
-          this.countryService.getCountryContinent(requestCountry).subscribe((country: any) => {
-            this.requestContinent = country[0].region;
+          this.countryService.getCountryContinent(requestCountry).subscribe(continent => {
+            this.requestContinent = continent;
           });
 
           if (!this.selectedRegion) {

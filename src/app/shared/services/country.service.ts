@@ -21,7 +21,7 @@ import { BaseService } from "@shared/services/base.service";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { LoadingService } from "@shared/services/loading.service";
 
 countries.registerLocale(english);
@@ -65,7 +65,11 @@ export class CountryService extends BaseService {
       return of(continent);
     }
 
-    return this.http.get(`https://restcountries.com/v3.1/alpha/${countryCode}`).pipe(
+    return this.http.get(
+      `https://restcountries.com/v3.1/alpha/${countryCode}`, {
+        headers: new HttpHeaders({ timeout: `${500}` })
+      }
+    ).pipe(
       map((response: any) => {
         if (response != null && response[0] != null && response[0].region != null) {
           const continent = response[0].region;
