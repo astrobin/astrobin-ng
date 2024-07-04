@@ -1,7 +1,14 @@
 <div class="page has-breadcrumb">
   <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row gap-1">
     <span class="d-block flex-grow-1 me-lg-3 mb-1 mb-lg-0">
-      {{ title }}
+      <span class="d-block mb-0 mb-lg-2">
+        {{ title }}
+      </span>
+
+      <a [routerLink]="['/', 'equipment', 'marketplace']" class="d-block d-lg-none mb-3 back-to-marketplace">
+        <fa-icon icon="arrow-left"></fa-icon>
+        {{ "Back to marketplace" | translate }}
+      </a>
 
       <span class="d-block mt-1 listing-info">
         <fa-icon icon="calendar"></fa-icon>
