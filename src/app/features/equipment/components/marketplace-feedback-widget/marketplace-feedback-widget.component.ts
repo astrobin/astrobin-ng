@@ -94,7 +94,7 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
         map(currentUser => {
           return this.equipmentMarketplaceService.allowLeavingFeedbackToListing(
             this.listing,
-            currentUser.id,
+            currentUser?.id,
             this.user.id
           );
         })

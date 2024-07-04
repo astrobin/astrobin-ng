@@ -199,6 +199,10 @@ export class EquipmentMarketplaceService extends BaseService {
     currentUserId: UserInterface["id"],
     targetUserId: UserInterface["id"]
   ): boolean {
+    if (currentUserId === null || currentUserId === undefined) {
+      return false;
+    }
+
     if (currentUserId === targetUserId) {
       return false;
     }

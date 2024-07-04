@@ -6,7 +6,7 @@
 >
   <span *ngIf="lineItem.sold" class="badge rounded-pill bg-danger border border-light sold-badge">
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <ng-container [ngSwitch]="currentUserWrapper.user.id">
+      <ng-container [ngSwitch]="currentUserWrapper.user?.id">
         <ng-container *ngSwitchCase="lineItem.soldTo">
           {{ "Sold to you" | translate }}
         </ng-container>
