@@ -6,22 +6,27 @@
 >
   <span *ngIf="lineItem.sold" class="badge rounded-pill bg-danger border border-light sold-badge">
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <ng-container [ngSwitch]="currentUserWrapper.user?.id">
-        <ng-container *ngSwitchCase="lineItem.soldTo">
-          {{ "Sold to you" | translate }}
-        </ng-container>
-        <ng-container *ngSwitchCase="lineItem.user">
-          <ng-container *ngIf="soldToUser; else sold">
-            {{ "Sold to {{0}}" | translate: { "0": soldToUser.displayName } }}
-          </ng-container>
-          <ng-template #sold>
-            {{ "Sold" | translate }}
-          </ng-template>
-        </ng-container>
-        <ng-container *ngSwitchDefault>
-          {{ "Sold" | translate }}
-        </ng-container>
+      <ng-container *ngIf="lineItem.soldTo === null; else soldToSomeone" [ngTemplateOutlet]="sold">
       </ng-container>
+
+      <ng-template #soldToSomeone>
+        <ng-container *ngIf="currentUserWrapper.user; else sold">
+          <ng-container [ngSwitch]="currentUserWrapper.user.id">
+            <ng-container *ngSwitchCase="lineItem.soldTo">
+              {{ "Sold to you" | translate }}
+            </ng-container>
+            <ng-container *ngSwitchCase="lineItem.user">
+              <ng-container *ngIf="soldToUser; else sold">
+                {{ "Sold to {{0}}" | translate: { "0": soldToUser.displayName } }}
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+
+      <ng-template #sold>
+        {{ "Sold" | translate }}
+      </ng-template>
     </ng-container>
   </span>
 
