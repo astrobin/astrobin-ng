@@ -90,6 +90,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     latitude: null,
     longitude: null,
     country: null,
+    areaLevel1: null,
     city: null,
     lineItems: [
       {
@@ -1023,6 +1024,38 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   }
                 },
                 {
+                  key: "areaLevel1",
+                  type: "input",
+                  className: this.googleMapsAvailable ? "hidden" : "col-6 mb-0",
+                  props: {
+                    label: this.translateService.instant("Country")
+                  },
+                  expressions: {
+                    "props.required": () => !this.googleMapsAvailable,
+                    "props.label": () => {
+                      const regionLabels = {
+                        US: "State",
+                        IT: "Regione",
+                        CH: "Canton",
+                        CA: "Province",
+                        AU: "State",
+                        DE: "Bundesland",
+                        FR: "Région",
+                        ES: "Comunidad Autónoma",
+                        GB: "Country",
+                        BR: "Estado",
+                        MX: "Estado",
+                        JP: "Prefecture",
+                        CN: "Province",
+                        IN: "State",
+                        RU: "Oblast"
+                      };
+
+                      return regionLabels[this.model.country] || this.translateService.instant("State/Region");
+                    }
+                  }
+                },
+                {
                   key: "city",
                   type: "input",
                   className: this.googleMapsAvailable ? "hidden" : "col-6 mb-0",
@@ -1059,26 +1092,24 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                         if (coordinates) {
                           const geocoder = new google.maps.Geocoder();
 
-                          geocoder.geocode({ location: coordinates }, function(results, status) {
+                          geocoder.geocode({ location: coordinates }, (results, status) => {
                             if (status === "OK") {
                               if (results[0]) {
                                 const addressComponents = results[0].address_components;
-                                const countryComponent = addressComponents.find(component =>
-                                  component.types.includes("country")
-                                );
-                                const cityComponent = addressComponents.find(component =>
-                                  component.types.includes("locality") ||
-                                  component.types.includes("postal_town") ||
-                                  component.types.includes("administrative_area_level_1") ||
-                                  component.types.includes("administrative_area_level_2")
-                                );
+                                const country = this.googleMapsService.getCountryFromAddressComponent(addressComponents);
+                                const region = this.googleMapsService.getRegionFromAddressComponent(addressComponents);
+                                const city = this.googleMapsService.getCityFromAddressComponent(addressComponents);
 
-                                if (countryComponent) {
-                                  form.get("country").setValue(countryComponent.short_name);
+                                if (country) {
+                                  form.get("country").setValue(country);
                                 }
 
-                                if (cityComponent) {
-                                  form.get("city").setValue(cityComponent.long_name);
+                                if (region) {
+                                  form.get("areaLevel1").setValue(region);
+                                }
+
+                                if (city) {
+                                  form.get("city").setValue(city);
                                 }
                               }
                             }

@@ -26,6 +26,7 @@
       <div class="card-header">
         <ng-container *ngIf="!!listing.country; else loadingCountryTemplate">
           <ng-container *ngIf="!!listing.city"> {{ listing.city }},</ng-container>
+          <ng-container *ngIf="!!listing.areaLevel1"> {{ listing.areaLevel1 }},</ng-container>
           {{ countryService.getCountryName(listing.country) }}
         </ng-container>
         <ng-template #loadingCountryTemplate>
@@ -56,6 +57,10 @@
           <tr>
             <th>{{ "Country" | translate }}</th>
             <td>{{ countryService.getCountryName(listing.country) }}</td>
+          </tr>
+          <tr>
+            <th>{{ "State/Region" | translate }}</th>
+            <td>{{ listing.areaLevel1 }}</td>
           </tr>
           <tr>
             <th>{{ "City" | translate }}</th>

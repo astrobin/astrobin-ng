@@ -49,6 +49,7 @@
       <div class="d-flex w-100 justify-content-between align-items-center">
         <div class="location">
           <ng-container *ngIf="!!listing.city"> {{ listing.city }},</ng-container>
+          <ng-container *ngIf="!!listing.areaLevel1"> {{ listing.areaLevel1 }},</ng-container>
           {{ countryService.getCountryName(listing.country) }}
         </div>
         <div *ngIf="!!totalPrice" class="price">

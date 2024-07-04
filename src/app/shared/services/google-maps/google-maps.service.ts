@@ -28,4 +28,59 @@ export class GoogleMapsService extends BaseService {
   createGeocoder(): google.maps.Geocoder {
     return new this.maps.Geocoder();
   }
+
+
+  getCityFromAddressComponent(addressComponents: any): string {
+    for (let component of addressComponents) {
+      if (component.types.includes("locality")) {
+        return component.long_name;
+      }
+    }
+
+    for (let component of addressComponents) {
+      if (component.types.includes("postal_town")) {
+        return component.long_name;
+      }
+    }
+
+    for (let component of addressComponents) {
+      if (component.types.includes("administrative_area_level_2")) {
+        return component.long_name;
+      }
+    }
+
+    for (let component of addressComponents) {
+      if (component.types.includes("sublocality")) {
+        return component.long_name;
+      }
+    }
+
+    return null;
+  }
+
+  getRegionFromAddressComponent(addressComponents: any): string {
+    for (let component of addressComponents) {
+      if (component.types.includes("administrative_area_level_1")) {
+        return component.short_name;
+      }
+    }
+
+    for (let component of addressComponents) {
+      if (component.types.includes("administrative_area_level_2")) {
+        return component.short_name;
+      }
+    }
+
+    return null;
+  }
+
+  getCountryFromAddressComponent(addressComponents: any): string {
+    for (let component of addressComponents) {
+      if (component.types.includes("country")) {
+        return component.short_name;
+      }
+    }
+
+    return null;
+  }
 }
