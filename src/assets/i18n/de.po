@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-07-03 22:20+0200\n"
+"PO-Revision-Date: 2024-07-04 11:02+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -7342,6 +7342,8 @@ msgstr "Verkaufen"
 #: loco:6685065e28743ee9eb095ecb
 msgid "The location shown above is approximate to protect the user's privacy."
 msgstr ""
+"Der oben angegebene Standort ist ein ungefährer Wert, um die Privatsphäre "
+"des Nutzers zu schützen."
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-marketplace.service.ts
 #: loco:6685065e28743ee9eb095ecc
@@ -7362,7 +7364,7 @@ msgstr "Was für einen Artikel suchen Sie?"
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
 #: loco:668568f1ce3b945d4c0a5f73
 msgid "Images from the AstroBin community"
-msgstr ""
+msgstr "Bilder aus der AstroBin-Community"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.ts
 #: loco:6685b246eec93276aa0fd952
@@ -7370,4 +7372,13 @@ msgid ""
 "For your safety, keep all communications on AstroBin. Off-platform "
 "conversations pose risks. Messages here are permanent and can be used as "
 "evidence if needed."
+msgstr ""
+"Zu Ihrer Sicherheit sollten Sie die gesamte Kommunikation auf AstroBin "
+"führen. Unterhaltungen außerhalb der Plattform bergen Risiken. Die "
+"Nachrichten hier sind dauerhaft und können bei Bedarf als Beweismittel "
+"verwendet werden."
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
+#: loco:6686651141fbc04803019638
+msgid "Back to marketplace"
 msgstr ""

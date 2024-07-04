@@ -532,6 +532,10 @@ msgstr ""
 msgid "Back ordered"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
+msgid "Back to marketplace"
+msgstr ""
+
 msgid "Backyard"
 msgstr ""
 
