@@ -52,7 +52,7 @@ export class CountryService extends BaseService {
     locale = this._simplifyLocale(locale);
 
     const countryCodes = countries.getAlpha2Codes();
-    const countryNames = countries.getNames(locale);
+    const countryNames = countries.getNames(locale, { select: "alias" });
 
     return Object.keys(countryCodes).map(code => ({
       code: code,
