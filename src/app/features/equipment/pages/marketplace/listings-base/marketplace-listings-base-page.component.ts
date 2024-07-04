@@ -32,7 +32,6 @@ import { CountrySelectionModalComponent } from "@shared/components/misc/country-
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -74,8 +73,7 @@ export abstract class MarketplaceListingsBasePageComponent
     public readonly windowRefService: WindowRefService,
     public readonly paginationConfig: NgbPaginationConfig,
     public readonly routerService: RouterService,
-    @Inject(PLATFORM_ID) public readonly platformId: object,
-    public readonly http: HttpClient
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(store$);
   }
@@ -316,10 +314,6 @@ export abstract class MarketplaceListingsBasePageComponent
     });
   }
 
-  private _getCountryDetails(code: string): Observable<any> {
-    return this.http.get(`https://restcountries.com/v3.1/alpha/${code}`);
-  }
-
   private _updateRequestCountry() {
     this.store$
       .select(selectRequestCountry)
@@ -336,7 +330,7 @@ export abstract class MarketplaceListingsBasePageComponent
             this.translateService.currentLang
           );
 
-          this._getCountryDetails(requestCountry).subscribe((country: any) => {
+          this.countryService.getCountryContinent(requestCountry).subscribe((country: any) => {
             this.requestContinent = country[0].region;
           });
 

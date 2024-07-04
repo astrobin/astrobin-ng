@@ -23,7 +23,6 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { LocalStorageService } from "@shared/services/localstorage.service";
 import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { RouterService } from "@shared/services/router.service";
-import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "astrobin-marketplace-user-listings-base-page",
@@ -51,8 +50,7 @@ export abstract class MarketplaceUserListingsBasePageComponent
     public readonly modalService: NgbModal,
     public readonly paginationConfig: NgbPaginationConfig,
     public readonly routerService: RouterService,
-    @Inject(PLATFORM_ID) public readonly platformId: object,
-    public readonly http: HttpClient
+    @Inject(PLATFORM_ID) public readonly platformId: object
   ) {
     super(
       store$,
@@ -69,8 +67,7 @@ export abstract class MarketplaceUserListingsBasePageComponent
       windowRefService,
       paginationConfig,
       routerService,
-      platformId,
-      http
+      platformId
     );
   }
 
