@@ -45,7 +45,7 @@ countries.registerLocale(turkish);
 export class CountryService extends BaseService {
   getCountryName(countryCode: string, locale: string = "en"): string {
     locale = this._simplifyLocale(locale);
-    return countries.getName(countryCode, locale);
+    return countries.getName(countryCode, locale, { select: "alias" });
   }
 
   getCountries(locale: string = "en"): { code: string, name: string }[] {
