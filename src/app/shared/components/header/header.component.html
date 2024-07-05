@@ -173,6 +173,139 @@
     </li>
     <!-- ./Forum menu -->
 
+    <!-- Marketplace menu -->
+    <li class="nav-item">
+      <div class="d-inline-block" ngbDropdown>
+        <button class="btn btn-link" id="marketplaceDropdown" ngbDropdownToggle translate>
+          Marketplace
+        </button>
+        <div aria-labelledby="marketplaceDropdown" ngbDropdownMenu>
+          <a
+            [routerLink]="['equipment', 'marketplace', 'create']"
+            class="dropdown-item"
+          >
+            <fa-icon icon="plus"></fa-icon>
+            {{ "Sell" | translate }}
+          </a>
+          <a
+            [queryParams]="{ wanted: true }"
+            [routerLink]="['equipment', 'marketplace', 'create']"
+            class="dropdown-item"
+          >
+            <fa-icon icon="plus"></fa-icon>
+            {{ "Seek" | translate }}
+          </a>
+
+          <div class="dropdown-divider"></div>
+
+          <h6 class="dropdown-header">
+            <fa-icon icon="search"></fa-icon> &nbsp;
+            {{ "Browse" | translate }}
+          </h6>
+
+          <a
+            [routerLink]="['equipment', 'marketplace']"
+            class="dropdown-item"
+          >
+            <fa-icon icon="grip"></fa-icon> &nbsp;
+            {{ "Active listings" | translate }}
+          </a>
+
+          <a
+            *ngIf="(currentUser$ | async) | isMarketplaceModerator"
+            [routerLink]="['equipment', 'marketplace']"
+            class="dropdown-item"
+          >
+            <fa-icon icon="gavel"></fa-icon> &nbsp;
+            {{ "Pending moderation" | translate }}
+          </a>
+
+          <a
+            [routerLink]="['equipment', 'marketplace', 'sold']"
+            class="dropdown-item"
+          >
+            <fa-icon icon="handshake"></fa-icon> &nbsp;
+            {{ "Sold archive" | translate }}
+          </a>
+
+          <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+            <ng-container *ngIf="currentUserWrapper.user">
+              <div class="dropdown-divider"></div>
+
+              <h6 class="dropdown-header">
+                <fa-icon icon="user"></fa-icon> &nbsp;
+                {{ "My listings" | translate }}
+              </h6>
+
+              <a
+                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'listings']"
+                class="dropdown-item"
+              >
+                <fa-icon icon="store"></fa-icon> &nbsp;
+                {{ "Selling" | translate }}
+              </a>
+
+              <a
+                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'sold']"
+                class="dropdown-item"
+              >
+                <fa-icon icon="sack-dollar"></fa-icon> &nbsp;
+                {{ "Sold" | translate }}
+              </a>
+
+              <a
+                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'expired']"
+                class="dropdown-item"
+              >
+                <fa-icon icon="calendar-xmark"></fa-icon> &nbsp;
+                {{ "Expired" | translate }}
+              </a>
+
+              <div class="dropdown-divider"></div>
+
+              <h6 class="dropdown-header">
+                <fa-icon icon="circle-check"></fa-icon> &nbsp;
+                {{ "My interactions" | translate }}
+              </h6>
+
+              <a
+                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'offers']"
+                class="dropdown-item"
+              >
+                <fa-icon icon="comment-dollar"></fa-icon> &nbsp;
+                {{ "Offers" | translate }}
+              </a>
+
+              <a
+                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'purchases']"
+                class="dropdown-item"
+              >
+                <fa-icon icon="receipt"></fa-icon> &nbsp;
+                {{ "Purchases" | translate }}
+              </a>
+
+              <a
+                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'followed']"
+                class="dropdown-item"
+              >
+                <fa-icon icon="bell"></fa-icon> &nbsp;
+                {{ "Followed" | translate }}
+              </a>
+
+              <a
+                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'feedback']"
+                class="dropdown-item"
+              >
+                <fa-icon icon="star"></fa-icon> &nbsp;
+                {{ "Feedback" | translate }}
+              </a>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </li>
+    <!-- ./Marketplace menu -->
+
     <!-- Explore menu -->
     <li class="nav-item">
       <div class="d-inline-block" ngbDropdown>
@@ -191,14 +324,6 @@
           >
             <fa-icon icon="camera-retro"></fa-icon>
             {{ "Equipment" | translate }}
-          </a>
-
-          <a
-            [routerLink]="['equipment', 'marketplace']"
-            class="dropdown-item"
-          >
-            <fa-icon icon="shopping-cart"></fa-icon>
-            {{ "Marketplace" | translate }}
           </a>
 
           <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
@@ -410,14 +535,6 @@
           <a [href]="classicRoutes.BOOKMARKS(userWrapper.user)" class="dropdown-item">
             <fa-icon icon="bookmark"></fa-icon>
             {{ "Bookmarks" | translate }}
-          </a>
-
-          <a
-            [routerLink]="['equipment', 'marketplace', 'users', userWrapper.user.username, 'listings']"
-            class="dropdown-item"
-          >
-            <fa-icon icon="shopping-cart"></fa-icon>
-            {{ "Marketplace listings" | translate }}
           </a>
 
           <div class="dropdown-divider"></div>
