@@ -384,6 +384,10 @@ export abstract class MarketplaceListingsBasePageComponent
       return;
     }
 
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     this.selectRegionTooltipText = text;
     this.changeDetectorRef.detectChanges();
 
