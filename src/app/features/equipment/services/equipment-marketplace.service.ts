@@ -53,6 +53,8 @@ import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equ
   providedIn: "root"
 })
 export class EquipmentMarketplaceService extends BaseService {
+  selectRegionTooltipAlreadyShown = false;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,

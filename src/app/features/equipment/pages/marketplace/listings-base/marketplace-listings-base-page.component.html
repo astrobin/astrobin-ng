@@ -6,10 +6,16 @@
 
     <span class="d-inline-block mb-2 me-lg-3 pt-0 pb-0" ngbDropdown>
       <button
+        #selectRegionTooltip="ngbTooltip"
         [class.loading]="loadingService.loading$ | async"
+        [ngbTooltip]="selectRegionTooltipText"
         class="btn btn-outline-primary mb-0"
+        container="body"
         id="region-selector"
         ngbDropdownToggle
+        placement="start"
+        tooltipClass="tooltip-warning"
+        triggers="manual"
       >
         <ng-container *ngIf="!!selectedRegion && selectedRegion !== WORLDWIDE">
           <fa-icon icon="flag"></fa-icon>

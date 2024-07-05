@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -23,6 +23,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { LocalStorageService } from "@shared/services/localstorage.service";
 import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { RouterService } from "@shared/services/router.service";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-user-listings-base-page",
@@ -50,7 +51,9 @@ export abstract class MarketplaceUserListingsBasePageComponent
     public readonly modalService: NgbModal,
     public readonly paginationConfig: NgbPaginationConfig,
     public readonly routerService: RouterService,
-    @Inject(PLATFORM_ID) public readonly platformId: object
+    @Inject(PLATFORM_ID) public readonly platformId: object,
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(
       store$,
@@ -67,7 +70,9 @@ export abstract class MarketplaceUserListingsBasePageComponent
       windowRefService,
       paginationConfig,
       routerService,
-      platformId
+      platformId,
+      changeDetectorRef,
+      equipmentMarketplaceService
     );
   }
 

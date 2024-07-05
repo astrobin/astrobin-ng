@@ -1,3 +1,17 @@
-ngb-tooltip-window > div {
-  box-shadow: 0 0 1rem black;
+.tooltip {
+  .tooltip-inner {
+    box-shadow: 0 0 1rem black;
+  }
+
+  &.tooltip-warning {
+    .tooltip-inner {
+      background-color: var(--warningColor);
+      color: var(--textOnWarningColor);
+    }
+
+    &.bs-tooltip-start .tooltip-arrow::before,
+    .bs-tooltip-auto[data-popper-placement^=left] .tooltip-arrow::before {
+      border-left-color: var(--warningColor);
+    }
+  }
 }

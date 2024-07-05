@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  ViewChild
+} from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -27,11 +36,12 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LocalStorageService } from "@shared/services/localstorage.service";
-import { NgbModal, NgbModalRef, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbPaginationConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -55,8 +65,13 @@ export abstract class MarketplaceListingsBasePageComponent
   selectedRegionLabel: string | null;
   listings$: Observable<MarketplaceListingInterface[]>;
   lastPaginatedRequestCount: number;
+  selectRegionTooltipText: string;
 
-  @ViewChild("listingCards", { static: false, read: ElementRef }) listingCards: ElementRef;
+  @ViewChild("listingCards", { static: false, read: ElementRef })
+  listingCards: ElementRef;
+
+  @ViewChild("selectRegionTooltip")
+  selectRegionTooltip: NgbTooltip;
 
   constructor(
     public readonly store$: Store<State>,
@@ -73,7 +88,9 @@ export abstract class MarketplaceListingsBasePageComponent
     public readonly windowRefService: WindowRefService,
     public readonly paginationConfig: NgbPaginationConfig,
     public readonly routerService: RouterService,
-    @Inject(PLATFORM_ID) public readonly platformId: object
+    @Inject(PLATFORM_ID) public readonly platformId: object,
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
   }
@@ -95,12 +112,12 @@ export abstract class MarketplaceListingsBasePageComponent
       }
 
       this._refreshOnQueryParamsChange();
-      this._updateRequestCountry();
     }
   }
 
   ngAfterViewInit() {
     this.checkAndSetupScrollEvent();
+    this._updateRequestCountry();
   }
 
   checkAndSetupScrollEvent() {
@@ -182,7 +199,7 @@ export abstract class MarketplaceListingsBasePageComponent
     this.refresh(this.filterModel, { clear: false });
   }
 
-  public refresh(
+  refresh(
     filterModel?: MarketplaceFilterModel,
     options: MarketplaceRefreshOptions = {
       clear: true
@@ -301,6 +318,14 @@ export abstract class MarketplaceListingsBasePageComponent
   private _refreshOnQueryParamsChange() {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroyed$)).subscribe(params => {
       if (params.region) {
+        if (this.localStorageService.getItem(this.REGION_LOCAL_STORAGE_KEY) !== params.region) {
+          this._openSelectRegionTooltip(
+            this.translateService.instant(
+              "AstroBin selected your region. You can change it at any time."
+            )
+          );
+        }
+
         this.selectedRegion = params.region;
         this.selectedRegionLabel = this.countryService.getCountryName(params.region, this.translateService.currentLang);
         if (this.selectedRegionLabel === undefined) {
@@ -342,9 +367,32 @@ export abstract class MarketplaceListingsBasePageComponent
             } else {
               this.setRegion(null, requestCountry, false);
             }
+
+            this._openSelectRegionTooltip(
+              this.translateService.instant(
+                "AstroBin automatically selects the region based on your location. You can change it at any time."
+              )
+            );
           }
         })
       )
       .subscribe();
+  }
+
+  private _openSelectRegionTooltip(text: string) {
+    if (this.equipmentMarketplaceService.selectRegionTooltipAlreadyShown) {
+      return;
+    }
+
+    this.selectRegionTooltipText = text;
+    this.changeDetectorRef.detectChanges();
+
+    this.utilsService.delay(500).subscribe(() => {
+      if (this.selectRegionTooltip) {
+        this.selectRegionTooltip.close();
+        this.selectRegionTooltip.open();
+        this.equipmentMarketplaceService.selectRegionTooltipAlreadyShown = true;
+      }
+    });
   }
 }
