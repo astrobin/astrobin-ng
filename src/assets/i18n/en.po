@@ -360,6 +360,12 @@ msgstr ""
 msgid "Associate this listing to any equipment item available on AstroBin."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component.ts
+msgid ""
+"AstroBin automatically selects the region based on your location. You can "
+"change it at any time."
+msgstr ""
+
 msgid ""
 "AstroBin automatically sets the name of a filter from its properties, to "
 "keep a consistent naming convention strategy. If your filter has a specific "
@@ -457,6 +463,10 @@ msgid ""
 "AstroBin records the dates when users associate equipment items to images. "
 "This information can be used to corroborate the legitimacy of the "
 "information provided by the seller."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component.ts
+msgid "AstroBin selected your region. You can change it at any time."
 msgstr ""
 
 msgid "AstroBin sponsors that sell {{0}}"
@@ -3306,6 +3316,10 @@ msgid "Star trails"
 msgstr ""
 
 msgid "Start typing in the text box to show the dropdown suggestions."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+msgid "State/Region"
 msgstr ""
 
 msgid "Status"

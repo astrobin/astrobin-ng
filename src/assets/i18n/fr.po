@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-07-04 11:02+0200\n"
+"PO-Revision-Date: 2024-07-06 00:25+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -7218,4 +7218,21 @@ msgstr ""
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
 #: loco:6686651141fbc04803019638
 msgid "Back to marketplace"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component.ts
+#: loco:6688729ce1c3b60f850d6ed2
+msgid ""
+"AstroBin automatically selects the region based on your location. You can "
+"change it at any time."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component.ts
+#: loco:6688729ce1c3b60f850d6ed3
+msgid "AstroBin selected your region. You can change it at any time."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:6688729ce1c3b60f850d6ed4
+msgid "State/Region"
 msgstr ""
