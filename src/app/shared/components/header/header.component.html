@@ -181,126 +181,36 @@
         </button>
         <div aria-labelledby="marketplaceDropdown" ngbDropdownMenu>
           <a
-            [routerLink]="['equipment', 'marketplace', 'create']"
+            [routerLink]="['equipment', 'marketplace']"
             class="dropdown-item"
           >
-            <fa-icon icon="plus"></fa-icon>
-            {{ "Sell" | translate }}
-          </a>
-          <a
-            [queryParams]="{ wanted: true }"
-            [routerLink]="['equipment', 'marketplace', 'create']"
-            class="dropdown-item"
-          >
-            <fa-icon icon="plus"></fa-icon>
-            {{ "Seek" | translate }}
+            <fa-icon icon="shopping-cart"></fa-icon>
+            {{ "Browse Marketplace" | translate }}
           </a>
 
           <div class="dropdown-divider"></div>
 
           <h6 class="dropdown-header">
-            <fa-icon icon="search"></fa-icon> &nbsp;
-            {{ "Browse" | translate }}
+            <fa-icon icon="plus"></fa-icon> &nbsp;
+            {{ "Post listing" | translate }}
           </h6>
 
           <a
-            [routerLink]="['equipment', 'marketplace']"
+            [routerLink]="['equipment', 'marketplace', 'create']"
             class="dropdown-item"
           >
-            <fa-icon icon="grip"></fa-icon> &nbsp;
-            {{ "Active listings" | translate }}
+            <fa-icon icon="money-bill"></fa-icon>
+            {{ "Sell" | translate }}
           </a>
 
           <a
-            *ngIf="(currentUser$ | async) | isMarketplaceModerator"
-            [routerLink]="['equipment', 'marketplace']"
+            [queryParams]="{ wanted: true }"
+            [routerLink]="['equipment', 'marketplace', 'create']"
             class="dropdown-item"
           >
-            <fa-icon icon="gavel"></fa-icon> &nbsp;
-            {{ "Pending moderation" | translate }}
+            <fa-icon icon="search"></fa-icon>
+            {{ "Seek" | translate }}
           </a>
-
-          <a
-            [routerLink]="['equipment', 'marketplace', 'sold']"
-            class="dropdown-item"
-          >
-            <fa-icon icon="handshake"></fa-icon> &nbsp;
-            {{ "Sold archive" | translate }}
-          </a>
-
-          <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-            <ng-container *ngIf="currentUserWrapper.user">
-              <div class="dropdown-divider"></div>
-
-              <h6 class="dropdown-header">
-                <fa-icon icon="user"></fa-icon> &nbsp;
-                {{ "My listings" | translate }}
-              </h6>
-
-              <a
-                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'listings']"
-                class="dropdown-item"
-              >
-                <fa-icon icon="store"></fa-icon> &nbsp;
-                {{ "Selling" | translate }}
-              </a>
-
-              <a
-                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'sold']"
-                class="dropdown-item"
-              >
-                <fa-icon icon="sack-dollar"></fa-icon> &nbsp;
-                {{ "Sold" | translate }}
-              </a>
-
-              <a
-                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'expired']"
-                class="dropdown-item"
-              >
-                <fa-icon icon="calendar-xmark"></fa-icon> &nbsp;
-                {{ "Expired" | translate }}
-              </a>
-
-              <div class="dropdown-divider"></div>
-
-              <h6 class="dropdown-header">
-                <fa-icon icon="circle-check"></fa-icon> &nbsp;
-                {{ "My interactions" | translate }}
-              </h6>
-
-              <a
-                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'offers']"
-                class="dropdown-item"
-              >
-                <fa-icon icon="comment-dollar"></fa-icon> &nbsp;
-                {{ "Offers" | translate }}
-              </a>
-
-              <a
-                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'purchases']"
-                class="dropdown-item"
-              >
-                <fa-icon icon="receipt"></fa-icon> &nbsp;
-                {{ "Purchases" | translate }}
-              </a>
-
-              <a
-                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'followed']"
-                class="dropdown-item"
-              >
-                <fa-icon icon="bell"></fa-icon> &nbsp;
-                {{ "Followed" | translate }}
-              </a>
-
-              <a
-                [routerLink]="['equipment', 'marketplace', 'users', currentUserWrapper.user.username, 'feedback']"
-                class="dropdown-item"
-              >
-                <fa-icon icon="star"></fa-icon> &nbsp;
-                {{ "Feedback" | translate }}
-              </a>
-            </ng-container>
-          </ng-container>
         </div>
       </div>
     </li>

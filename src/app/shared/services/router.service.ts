@@ -42,6 +42,10 @@ export class RouterService extends BaseService {
     return this.router.navigateByUrl(this.getPermissionDeniedUrlTree());
   }
 
+  redirectToUrl(url: string): void {
+    this.windowRefService.nativeWindow.window.location.href = url;
+  }
+
   updateQueryParams(queryParams: { [key: string]: any }): void {
     const url = this.location.path();
     const newUrl = url.split("?")[0] + "?" + new URLSearchParams(queryParams).toString();

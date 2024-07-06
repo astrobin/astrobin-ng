@@ -24,6 +24,7 @@ import {
   MARKETPLACE_SALE_TYPE,
   MarketplaceListingFormInitialCountInterface
 } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
@@ -57,7 +58,8 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     public readonly router: Router,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
   }
@@ -70,7 +72,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
     this.userSubscriptionService.canCreateMarketplaceListing$().subscribe(canCreateMarketplaceListing => {
       if (!canCreateMarketplaceListing) {
-        this.routerService.redirectToPermissionDenied();
+        this.routerService.redirectToUrl(this.classicRoutesService.PRICING);
       }
     });
   }
