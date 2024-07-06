@@ -632,6 +632,10 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
+msgid "Browse Marketplace"
+msgstr ""
+
 msgid "Browse by brand and properties"
 msgstr ""
 
@@ -2758,6 +2762,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-feedback-modal/marketplace-feedback-modal.component.ts
 msgid "Positive"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
+msgid "Post listing"
 msgstr ""
 
 msgid "Power distribution"
