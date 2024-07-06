@@ -10,8 +10,13 @@
     }
 
     &.bs-tooltip-start .tooltip-arrow::before,
-    .bs-tooltip-auto[data-popper-placement^=left] .tooltip-arrow::before {
+    &.bs-tooltip-auto[data-popper-placement^=left] .tooltip-arrow::before {
       border-left-color: var(--warningColor);
+    }
+
+    &.bs-tooltip-bottom .tooltip-arrow::before,
+    &.bs-tooltip-auto[data-popper-placement^=bottom] .tooltip-arrow::before {
+      border-bottom-color: var(--warningColor);
     }
   }
 }

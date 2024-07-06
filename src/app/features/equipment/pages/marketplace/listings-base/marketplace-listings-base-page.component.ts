@@ -389,6 +389,9 @@ export abstract class MarketplaceListingsBasePageComponent
     }
 
     this.selectRegionTooltipText = text;
+    if (this.windowRefService.nativeWindow.innerWidth < 768) {
+      this.selectRegionTooltip.placement = "bottom";
+    }
     this.changeDetectorRef.detectChanges();
 
     this.utilsService.delay(500).subscribe(() => {
