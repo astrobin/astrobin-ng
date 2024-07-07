@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 :host {
   display: block;
   cursor: pointer;
@@ -5,10 +7,13 @@
 
 .card-header {
   .name {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
     font-size: 1.1rem;
+
+    @media screen and (min-width: $lg-min) {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
 
     .wanted {
       margin-right: .5rem;
