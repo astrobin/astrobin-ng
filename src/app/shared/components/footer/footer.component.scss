@@ -14,3 +14,37 @@
     text-align: right;
   }
 }
+
+.mobile-navigation {
+  @include darkest-background-texture;
+  box-shadow: 0 -0.25rem 0.5rem rgba(0, 0, 0, 0.75);
+
+  a {
+    display: block;
+    padding: .75rem;
+    font-size: 1.2rem;
+  }
+
+  fa-icon {
+    color: var(--lightestGrey);
+  }
+
+  .notifications {
+    position: relative;
+
+    .badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: .75rem;
+    }
+  }
+
+  .user-dropup {
+    width: 2.5rem;
+  }
+
+  .dropdown-toggle::after {
+    display: none;
+  }
+}

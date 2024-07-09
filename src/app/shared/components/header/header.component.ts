@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { State } from "@app/store/state";
 import { Logout } from "@features/account/store/auth.actions";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
@@ -19,6 +19,7 @@ import { CookieService } from "ngx-cookie";
 import { Theme, ThemeService } from "@shared/services/theme.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { NavigationEnd, Router } from "@angular/router";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -31,8 +32,11 @@ interface AvailableLanguageInterface {
   styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent extends BaseComponentDirective implements OnInit {
-  isCollapsed = true;
+  menubarIsCollapsed = true;
+  userMenubarIsCollapsed = true;
   helpWithTranslationsUrl: string;
+  user: UserInterface;
+  userProfile: UserProfileInterface;
 
   languages: AvailableLanguageInterface[] = [
     { code: "en", label: "English (US)" },
@@ -80,10 +84,13 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     { code: "tr", label: "TR" }
   ];
 
+  @ViewChild("sidebar") sidebar: ElementRef;
+  @ViewChild("userSidebar") userSidebar: ElementRef;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly modalService: NgbModal,
-    public readonly classicRoutes: ClassicRoutesService,
+    public readonly classicRoutesService: ClassicRoutesService,
     public readonly authService: AuthService,
     public readonly notificationsService: NotificationsService,
     public readonly loadingService: LoadingService,
@@ -115,7 +122,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   get helpWithTranslationsUrl$(): Observable<string> {
     return this.store$.select(selectCurrentUser).pipe(
       map((user: UserInterface) => {
-        let path = `${this.classicRoutes.CONTACT}?subject=Help%20with%20translations`;
+        let path = `${this.classicRoutesService.CONTACT}?subject=Help%20with%20translations`;
 
         if (!!user) {
           path += `&username=${user.username}`;
@@ -163,7 +170,13 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.isCollapsed = true;
+      this.closeSidebarMenu();
+      this.closeUserSidebarMenu();
+    });
+
+    this.currentUserWrapper$.pipe(takeUntil(this.destroyed$)).subscribe(wrapper => {
+      this.user = wrapper.user;
+      this.userProfile = wrapper.userProfile;
     });
   }
 
@@ -172,7 +185,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
       languageCode = "zh-hans";
     }
 
-    return this.classicRoutes.SET_LANGUAGE(languageCode, this.windowRefService.nativeWindow.location.href);
+    return this.classicRoutesService.SET_LANGUAGE(languageCode, this.windowRefService.nativeWindow.location.href);
   }
 
   logout($event) {
@@ -191,5 +204,23 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
       .subscribe(() => {
         this.themeService.setTheme();
       });
+  }
+
+  openSidebarMenu() {
+    this.menubarIsCollapsed = false;
+    this.sidebar.nativeElement.scrollTop = 0;
+  }
+
+  closeSidebarMenu() {
+    this.menubarIsCollapsed = true;
+  }
+
+  openUserSidebarMenu() {
+    this.userMenubarIsCollapsed = false;
+    this.userSidebar.nativeElement.scrollTop = 0;
+  }
+
+  closeUserSidebarMenu() {
+    this.userMenubarIsCollapsed = true;
   }
 }

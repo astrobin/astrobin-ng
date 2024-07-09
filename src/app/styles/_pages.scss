@@ -24,8 +24,7 @@
   color: var(--white);
 
   @media screen and (max-width: $md-max) {
-    margin-top: .5rem;
-    padding: .5rem;
+    padding: 2rem .5rem;
   }
 
   @media screen and (min-width: $lg-min) {

@@ -1,7 +1,18 @@
 <ng-container *ngIf="!!user; else loadingTemplate">
-  <a [href]="classicRoutesService.GALLERY(user)">
+  <ng-container *ngIf="link; else noLinkTemplate">
+    <a [href]="classicRoutesService.GALLERY(user)">
+      <ng-container [ngTemplateOutlet]="imageTemplate"></ng-container>
+    </a>
+  </ng-container>
+
+  <ng-template #noLinkTemplate>
+    <ng-container [ngTemplateOutlet]="imageTemplate"></ng-container>
+  </ng-template>
+
+  <ng-template #imageTemplate>
     <img [alt]="user.username" [src]="avatarUrl" />
-  </a>
+  </ng-template>
+
 </ng-container>
 
 <ng-template #loadingTemplate>

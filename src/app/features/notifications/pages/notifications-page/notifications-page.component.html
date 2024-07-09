@@ -2,8 +2,11 @@
   <h1 class="d-sm-flex justify-content-between align-items-center">
     <span class="flex-fill">
       {{ pageTitle }}
-      <span *ngIf="notificationsService.unreadCount$ | async as unreadCount" class="badge bg-danger badge-pill"
-        id="unread-notifications-count">
+      <span
+        *ngIf="notificationsService.unreadCount$ | async as unreadCount"
+        class="badge bg-danger badge-pill rounded-pill border border-light d-none d-lg-inline"
+        id="unread-notifications-count"
+      >
         {{ unreadCount }}
       </span>
     </span>
@@ -16,25 +19,25 @@
       </ngb-pagination>
 
       <div class="notifications">
-        <div class="notification row"
-             *ngFor="let notification of notifications.results"
+        <div *ngFor="let notification of notifications.results"
+             class="notification row"
              id="notification-{{notification.id}}">
 
-          <div class="col-2 col-md-1 read-indicator" [class.read]="notification.read"
-               [class.unread]="!notification.read">
+          <div [class.read]="notification.read" [class.unread]="!notification.read"
+               class="col-2 col-md-1 read-indicator">
             <fa-icon (click)="toggleRead(notification)" class="read-icon" icon="eye">
             </fa-icon>
           </div>
 
-          <div class="col-10 col-md-11 col-lg-7 message" (click)="notificationClicked(notification)">
-              <span [innerHTML]="notification.message | normalizeNotificationLink"></span>
+          <div (click)="notificationClicked(notification)" class="col-10 col-md-11 col-lg-7 message">
+            <span [innerHTML]="notification.message | normalizeNotificationLink"></span>
           </div>
 
-          <div class="col-12 col-lg-4 offset-2 offset-md-1 offset-lg-0 created text-lg-right">
-              <abbr [attr.title]="notification.created | localDate">
-                {{ notification.created | localDate | timeago:true}}
-              </abbr>
-            </div>
+          <div class="col-10 col-lg-4 offset-2 offset-md-1 offset-lg-0 created text-lg-right">
+            <abbr [attr.title]="notification.created | localDate">
+              {{ notification.created | localDate | timeago:true}}
+            </abbr>
+          </div>
         </div>
       </div>
 
@@ -53,7 +56,7 @@
 
   <div class="buttons-area">
     <ng-container [ngTemplateOutlet]="markAllAsReadButton"></ng-container>
-    <a routerLink="/notifications/settings" class="btn btn-secondary">
+    <a class="btn btn-secondary" routerLink="/notifications/settings">
       {{"Settings"|translate}}
     </a>
   </div>
@@ -66,6 +69,6 @@
     [disabled]="(notificationsService.unreadCount$ | async) === 0"
     class="btn btn-primary"
     id="mark-all-as-read">
-  {{"Mark all as read" | translate}}
+    {{"Mark all as read" | translate}}
   </button>
 </ng-template>

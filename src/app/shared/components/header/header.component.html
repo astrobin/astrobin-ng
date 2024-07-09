@@ -1,337 +1,95 @@
-<div [class.loading]="loadingService.loading$ | async" class="global-loading-indicator">
+<div [class.loading]="loadingService.loading$ | async" class="global-loading-indicator"
+     xmlns="http://www.w3.org/1999/html">
   <div class="background"></div>
 </div>
 
-<nav class="navbar navbar-expand-lg">
-  <div class="container">
-    <a [href]="classicRoutes.HOME" class="navbar-brand">
-      <img alt="AstroBin" src="assets/images/nav-logo.png?v=2" />
-    </a>
-
-    <div class="d-lg-none flex-grow-1 mobile-search">
-      <ng-container [ngTemplateOutlet]="quickSearch"></ng-container>
+<nav
+  [class.active]="!menubarIsCollapsed"
+  class="navbar navbar-expand-lg navbar-dark fixed-top"
+>
+  <div class="container justify-content-lg-start">
+    <div [class.active]="!menubarIsCollapsed" class="main-navigation order-0 order-lg-1">
+      <ng-container [ngTemplateOutlet]="menubarTemplate"></ng-container>
     </div>
 
-    <div class="search-link">
-      <a [href]="classicRoutes.SEARCH">
-        <fa-icon icon="search"></fa-icon>
-      </a>
+    <div class="order-1 order-lg-0">
+      <ng-container [ngTemplateOutlet]="astrobinLogoTemplate"></ng-container>
     </div>
 
-    <button
-      (click)="isCollapsed = !isCollapsed"
-      [attr.aria-expanded]="!isCollapsed"
-      aria-controls="navbarSupportedContent"
-      aria-label="Toggle navigation"
-      class="navbar-toggler"
-      data-target="#navbarSupportedContent"
-      data-toggle="collapse"
-      type="button"
-    >
-      <fa-icon icon="bars"></fa-icon>
-    </button>
-
-    <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ng-container [ngTemplateOutlet]="mainMenu"></ng-container>
-      <div class="d-none d-lg-inline-block flex-grow-1">
-        <ng-container [ngTemplateOutlet]="quickSearch"></ng-container>
-      </div>
-
-      <ul *ngIf="(currentUser$ | async) !== null; else loginAndRegister" class="navbar-nav">
-        <ng-container [ngTemplateOutlet]="languageSelector"></ng-container>
-        <ng-container [ngTemplateOutlet]="notificationsButton"></ng-container>
-        <ng-container [ngTemplateOutlet]="userMenu"></ng-container>
-        <ng-container [ngTemplateOutlet]="uploadButton"></ng-container>
-      </ul>
+    <div [class.active]="!userMenubarIsCollapsed" class="user-navigation order-2 d-block d-lg-none">
+      <ng-container [ngTemplateOutlet]="userMenubarTemplate"></ng-container>
     </div>
   </div>
-  <!-- ./container -->
 </nav>
 
-<ng-template #quickSearch>
-  <ul class="navbar-nav">
-    <!-- Quick search form -->
-    <li class="nav-item quick-search">
-      <form [action]="classicRoutes.SEARCH" method="get" ngNoForm>
-        <label>
-          <input
-            autocomplete="off"
-            class="form-control"
-            name="q"
-            placeholder="{{ 'Quick search' | translate }}"
-            type="text"
-          />
-        </label>
-        <input name="d" type="hidden" value="i" />
-      </form>
-    </li>
-    <!-- ./Quick search form -->
-  </ul>
+<ng-template #astrobinLogoTemplate>
+  <a [href]="classicRoutesService.HOME" class="navbar-brand p-0 d-inline-block mr-lg-3 mt-lg-1">
+    <img alt="AstroBin" class="d-none d-lg-block" src="assets/images/nav-logo.png?v=2" />
+    <span class="d-inline-block d-lg-none">AstroBin</span>
+  </a>
 </ng-template>
 
-<ng-template #mainMenu>
-  <ul class="navbar-nav mt-2 mt-lg-0">
-    <!-- Moderate menu -->
-    <ng-container *ngIf="currentUser$ | async as user">
-      <li *ngIf="user | isContentModerator" class="nav-item">
-        <div class="d-inline-block" ngbDropdown>
-          <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>
-            Moderate
-          </button>
-          <div aria-labelledby="moderateDropdown" ngbDropdownMenu>
-            <h6 class="dropdown-header" translate>Images</h6>
-
-            <a *ngIf="user | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE" class="dropdown-item">
-              <fa-icon icon="images"></fa-icon>
-              {{ "Image queue" | translate }}
-            </a>
-
-            <a
-              *ngIf="(user | isImageModerator) && (user | isSuperUser)"
-              [href]="classicRoutes.MODERATE_SPAM_QUEUE"
-              class="dropdown-item"
-            >
-              <fa-icon icon="flag"></fa-icon>
-              {{ "Spam list" | translate }}
-            </a>
-
-            <ng-container *ngIf="user | isIotdStaff">
-              <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header" translate>Image of the day</h6>
-
-              <a
-                (click)="isCollapsed = true"
-                *ngIf="user | isIotdSubmitter"
-                class="dropdown-item"
-                routerLink="/iotd/submission-queue"
-              >
-                <fa-icon icon="upload"></fa-icon>
-                {{ "Submission queue" | translate }}
-              </a>
-
-              <a
-                (click)="isCollapsed = true"
-                *ngIf="user | isIotdReviewer"
-                class="dropdown-item"
-                routerLink="/iotd/review-queue"
-              >
-                <fa-icon icon="star"></fa-icon>
-                {{ "Review queue" | translate }}
-              </a>
-
-              <a
-                (click)="isCollapsed = true"
-                *ngIf="user | isIotdJudge"
-                class="dropdown-item"
-                routerLink="/iotd/judgement-queue"
-              >
-                <fa-icon icon="hammer"></fa-icon>
-                {{ "Judgement queue" | translate }}
-              </a>
-            </ng-container>
-
-            <ng-container *ngIf="user | isEquipmentModerator">
-              <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header">
-                Equipment
-              </h6>
-
-              <a (click)="isCollapsed = true" class="dropdown-item" routerLink="/equipment/migration-tool">
-                <fa-icon icon="arrow-right"></fa-icon>
-                Migration tool
-              </a>
-            </ng-container>
-          </div>
-        </div>
-      </li>
-    </ng-container>
-    <!-- ./Moderate menu -->
-
-    <!-- Forum menu -->
-    <li class="nav-item">
-      <div class="d-inline-block" ngbDropdown>
-        <button class="btn btn-link" id="forumDropdown" ngbDropdownToggle translate>
-          Forum
-        </button>
-        <div aria-labelledby="forumDropdown" ngbDropdownMenu>
-          <a [href]="classicRoutes.FORUM_HOME" class="dropdown-item">
-            <fa-icon icon="comments"></fa-icon>
-            {{ "Home" | translate }}
-          </a>
-
-          <a [href]="classicRoutes.FORUM_LATEST" class="dropdown-item">
-            <fa-icon icon="sort-amount-down"></fa-icon>
-            {{ "Latest topics" | translate }}
-          </a>
-
-          <a [href]="classicRoutes.FORUM_SUBSCRIBED" class="dropdown-item">
-            <fa-icon icon="eye"></fa-icon>
-            {{ "Subscribed topics" | translate }}
-          </a>
-        </div>
-      </div>
-    </li>
-    <!-- ./Forum menu -->
-
-    <!-- Marketplace menu -->
-    <li class="nav-item">
-      <div class="d-inline-block" ngbDropdown>
-        <button class="btn btn-link" id="marketplaceDropdown" ngbDropdownToggle translate>
-          Marketplace
-        </button>
-        <div aria-labelledby="marketplaceDropdown" ngbDropdownMenu>
-          <a
-            [routerLink]="['equipment', 'marketplace']"
-            class="dropdown-item"
-          >
-            <fa-icon icon="shopping-cart"></fa-icon>
-            {{ "Browse Marketplace" | translate }}
-          </a>
-
-          <div class="dropdown-divider"></div>
-
-          <h6 class="dropdown-header">
-            <fa-icon icon="plus"></fa-icon> &nbsp;
-            {{ "Post listing" | translate }}
-          </h6>
-
-          <a
-            [routerLink]="['equipment', 'marketplace', 'create']"
-            class="dropdown-item"
-          >
-            <fa-icon icon="money-bill"></fa-icon>
-            {{ "Sell" | translate }}
-          </a>
-
-          <a
-            [queryParams]="{ wanted: true }"
-            [routerLink]="['equipment', 'marketplace', 'create']"
-            class="dropdown-item"
-          >
-            <fa-icon icon="search"></fa-icon>
-            {{ "Seek" | translate }}
-          </a>
-        </div>
-      </div>
-    </li>
-    <!-- ./Marketplace menu -->
-
-    <!-- Explore menu -->
-    <li class="nav-item">
-      <div class="d-inline-block" ngbDropdown>
-        <button class="btn btn-link" id="exploreDropdown" ngbDropdownToggle translate>
-          Explore
-        </button>
-        <div aria-labelledby="exploreDropdown" ngbDropdownMenu>
-          <a [href]="classicRoutes.SEARCH + '?d=i'" class="dropdown-item">
-            <fa-icon icon="search"></fa-icon>
-            {{ "Advanced search" | translate }}
-          </a>
-
-          <a
-            [routerLink]="['equipment', 'explorer']"
-            class="dropdown-item"
-          >
-            <fa-icon icon="camera-retro"></fa-icon>
-            {{ "Equipment" | translate }}
-          </a>
-
-          <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
-            <fa-icon icon="star"></fa-icon>
-            {{ "Constellations" | translate }}
-          </a>
-
-          <div class="dropdown-divider"></div>
-
-          <a [href]="classicRoutes.TOP_PICK_NOMINATIONS" class="dropdown-item">
-            <fa-icon icon="arrow-up"></fa-icon>
-            {{ "Top pick nominations" | translate }}
-          </a>
-
-          <a [href]="classicRoutes.TOP_PICKS" class="dropdown-item">
-            <fa-icon icon="star"></fa-icon>
-            {{ "Top picks" | translate }}
-          </a>
-
-          <a [href]="classicRoutes.IOTD" class="dropdown-item">
-            <fa-icon icon="trophy"></fa-icon>
-            {{ "Image of the day" | translate }}
-          </a>
-
-          <div class="dropdown-divider"></div>
-
-          <a [href]="classicRoutes.GROUPS" class="dropdown-item">
-            <fa-icon icon="users"></fa-icon>
-            {{ "Groups" | translate }}
-          </a>
-
-          <a [href]="classicRoutes.REMOTE_ASTROPHOTOGRAPHY" class="dropdown-item">
-            <fa-icon icon="laptop"></fa-icon>
-            {{ "Remote astrophotography" | translate }}
-          </a>
-
-          <div class="dropdown-divider"></div>
-
-          <a [href]="classicRoutes.ASTROPHOTOGRAPHERS_LIST" class="dropdown-item">
-            <fa-icon icon="star"></fa-icon>
-            {{ "Astrophotographers list" | translate }}
-          </a>
-
-          <a [href]="classicRoutes.CONTRIBUTORS_LIST" class="dropdown-item">
-            <fa-icon icon="file-alt"></fa-icon>
-            {{ "Contributors list" | translate }} <em>(beta)</em>
-          </a>
-        </div>
-      </div>
-    </li>
-    <!-- ./Explore menu -->
-
-    <!-- Help menu -->
-    <li class="nav-item">
-      <div class="d-inline-block" ngbDropdown>
-        <button class="btn btn-link" id="helpDropdown" ngbDropdownToggle translate>
-          Help
-        </button>
-        <div aria-labelledby="helpDropdown" ngbDropdownMenu>
-          <a [href]="classicRoutes.ABOUT" class="dropdown-item">
-            <fa-icon icon="info"></fa-icon>
-            {{ "What is this site?" | translate }}
-          </a>
-
-          <div class="dropdown-divider"></div>
-
-          <a [href]="classicRoutes.FAQ" class="dropdown-item">
-            <fa-icon icon="question"></fa-icon>
-            {{ "FAQ" | translate }}
-          </a>
-
-          <div class="dropdown-divider"></div>
-
-          <a [href]="classicRoutes.HELP_API" class="dropdown-item">
-            <fa-icon icon="key"></fa-icon>
-            API
-          </a>
-
-          <a [href]="classicRoutes.SPONSORS" class="dropdown-item">
-            <fa-icon icon="users"></fa-icon>
-            {{ "Sponsors & Partners" | translate }}
-          </a>
-
-          <a [href]="classicRoutes.CONTACT" class="dropdown-item">
-            <fa-icon icon="envelope"></fa-icon>
-            {{ "Contact" | translate }}
-          </a>
-        </div>
-      </div>
-    </li>
-    <!-- ./Help menu -->
-  </ul>
+<ng-template #quickSearchTemplate>
+  <!-- Quick search form -->
+  <form [action]="classicRoutesService.SEARCH" class="flex-grow-1 px-0 px-lg-4 order-0 order-lg-1" method="get"
+        ngNoForm>
+    <label class="w-100">
+      <input
+        autocomplete="off"
+        class="form-control"
+        name="q"
+        placeholder="{{ 'Quick search' | translate }}"
+        type="text"
+      />
+    </label>
+    <input name="d" type="hidden" value="i" />
+  </form>
+  <!-- ./Quick search form -->
 </ng-template>
 
-<ng-template #languageSelector>
+<ng-template #menubarTemplate>
+  <button
+    (click)="openSidebarMenu()"
+    [attr.aria-expanded]="!menubarIsCollapsed"
+    aria-controls="navbarSupportedContent"
+    aria-label="Toggle navigation"
+    class="navbar-toggler"
+    data-target="#navbarSupportedContent"
+    data-toggle="collapse"
+    type="button"
+  >
+    <fa-icon icon="bars"></fa-icon>
+  </button>
+
+  <div (click)="closeSidebarMenu()" class="overlay d-flex d-lg-none"></div>
+  <ng-container [ngTemplateOutlet]="sidebarTemplate"></ng-container>
+</ng-template>
+
+<ng-template #userMenubarTemplate>
+  <ng-container *ngIf="!!user">
+    <a
+      (click)="openUserSidebarMenu()"
+      [attr.aria-expanded]="!userMenubarIsCollapsed"
+      aria-controls="userNavbarSupportedContent"
+      aria-label="Toggle navigation"
+      data-target="#userNavbarSupportedContent"
+      data-toggle="collapse"
+    >
+      <astrobin-avatar
+        [link]="false"
+        [user]="user"
+      ></astrobin-avatar>
+    </a>
+
+    <div (click)="closeUserSidebarMenu()" class="overlay d-flex d-lg-none"></div>
+    <ng-container [ngTemplateOutlet]="userSidebarTemplate"></ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #languageSelectorTemplate>
   <!-- Language selector -->
   <li class="nav-item">
-    <div class="d-inline-block" ngbDropdown>
+    <div ngbDropdown>
       <button class="btn btn-link no-triangle d-none d-lg-block" id="languageDropdown" ngbDropdownToggle>
         {{ currentLanguageCodeDisplay }}
       </button>
@@ -358,14 +116,14 @@
   <!-- ./Language selector -->
 </ng-template>
 
-<ng-template #notificationsButton>
+<ng-template #notificationsButtonTemplate>
   <!-- Notifications -->
-  <li class="nav-item notifications-list-item">
-    <a (click)="isCollapsed = true" class="btn btn-link nav-link" routerLink="/notifications">
+  <li class="nav-item notifications-list-item d-none d-lg-block">
+    <a class="btn btn-link nav-link position-relative" routerLink="/notifications">
       <fa-icon class="d-none d-lg-block" icon="bell"></fa-icon>
       <span class="d-lg-none">{{ "Notifications" | translate }}</span>
       <ng-container *ngIf="notificationsService.unreadCount$ | async as unreadCount">
-        <span class="badge bg-danger badge-pill">
+        <span class="badge bg-danger badge-pill rounded-pill border border-light">
           {{ unreadCount }}
         </span>
       </ng-container>
@@ -374,7 +132,128 @@
   <!-- ./Notifications -->
 </ng-template>
 
-<ng-template #indexesPopoverContent>
+<ng-template #userMenuTemplate>
+  <!-- User menu -->
+  <li *ngIf="user && userProfile" class="nav-item d-none d-lg-inline">
+    <div ngbDropdown>
+      <button class="btn btn-primary user-dropdown-toggle mt-2" id="user-dropdown" ngbDropdownToggle>
+        <astrobin-username [user]="user"></astrobin-username>
+        <span
+          *ngIf="!userProfile?.excludeFromCompetition"
+          [ngbPopover]="indexesPopoverContentTemplate"
+          class="indexes"
+          triggers="mouseenter:click"
+        >
+            <span class="image-index index">
+              {{ userProfile?.astroBinIndex | number: "1.2-2" }}
+              &middot;
+            </span>
+            <span class="contribution-index index">
+              {{ userProfile?.contributionIndex | number: "1.2-2" }}
+            </span>
+          </span>
+      </button>
+
+      <div aria-labelledby="user-dropdown" ngbDropdownMenu>
+        <a class="dropdown-item" routerLink="/subscriptions/options">
+          <fa-icon icon="asterisk"></fa-icon>
+          {{ "Subscription plans" | translate }}
+        </a>
+
+        <a class="dropdown-item" routerLink="/uploader">
+          <fa-icon icon="upload"></fa-icon>
+          {{ "Upload" | translate }}
+        </a>
+
+        <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header">{{ "My places" | translate }}</h6>
+
+        <a
+          *ngIf="user | isProducer"
+          [href]="classicRoutesService.COMMERCIAL_PRODUCTS(user)"
+          class="dropdown-item"
+        >
+          <fa-icon icon="barcode"></fa-icon>
+          {{ "Commercial products" | translate }}
+        </a>
+
+        <a [href]="classicRoutesService.GALLERY(user)" class="dropdown-item">
+          <fa-icon icon="image"></fa-icon>
+          {{ "Public Gallery" | translate }}
+        </a>
+
+        <a [href]="classicRoutesService.STAGING_GALLERY(user)" class="dropdown-item">
+          <fa-icon icon="lock"></fa-icon>
+          {{ "Staging Area" | translate }}
+        </a>
+
+        <a [href]="classicRoutesService.BOOKMARKS(user)" class="dropdown-item">
+          <fa-icon icon="bookmark"></fa-icon>
+          {{ "Bookmarks" | translate }}
+        </a>
+
+        <div class="dropdown-divider"></div>
+
+        <a [href]="classicRoutesService.INBOX" class="dropdown-item">
+          <fa-icon icon="inbox"></fa-icon>
+          {{ "My messages" | translate }}
+        </a>
+
+        <a [href]="classicRoutesService.API_KEYS(user)" class="dropdown-item">
+          <fa-icon icon="key"></fa-icon>
+          {{ "API Keys" | translate }}
+        </a>
+
+        <a [href]="classicRoutesService.SETTINGS" class="dropdown-item">
+          <fa-icon icon="edit"></fa-icon>
+          {{ "My settings" | translate }}
+        </a>
+
+        <a (click)="toggleHighContrastTheme()" class="dropdown-item">
+          <fa-icon icon="adjust"></fa-icon>
+
+          <ng-container *ngIf="!useHighContrastTheme(); else highContrastThemeEnabled">
+            {{ "Enable high contrast theme" | translate }}
+          </ng-container>
+
+          <ng-template #highContrastThemeEnabled>
+            {{ "Disable high contrast theme" | translate }}
+          </ng-template>
+        </a>
+
+        <div class="dropdown-divider"></div>
+
+        <a (click)="logout($event)" class="dropdown-item" href="">
+          <fa-icon icon="sign-out-alt"></fa-icon>
+          {{ "Logout" | translate }}
+        </a>
+      </div>
+    </div>
+  </li>
+  <!-- ./User menu -->
+</ng-template>
+
+<ng-template #uploadButtonTemplate>
+  <!-- Upload button -->
+  <li class="nav-item d-none d-lg-inline">
+    <a class="btn btn-link nav-link d-inline-block ms-2" routerLink="/uploader">
+      <fa-icon icon="upload"></fa-icon>
+    </a>
+  </li>
+  <!-- ./Upload button -->
+</ng-template>
+
+<ng-template #loginAndRegisterTemplate>
+  <li class="nav-item">
+    <a [href]="authService.getLoginUrl()" class="nav-link">{{ "Log in" | translate }}</a>
+  </li>
+  <li class="nav-item">
+    <a [href]="classicRoutesService.REGISTER" class="nav-link">{{ "Register" | translate }}</a>
+  </li>
+</ng-template>
+
+
+<ng-template #indexesPopoverContentTemplate>
   <ng-container *ngIf="currentUserProfile$ | async as userProfile">
     <h4>{{ "Image Index" | translate }}: {{ userProfile.astroBinIndex | number: "1.2-2" }}</h4>
     <div [innerHTML]="imageIndexPopoverInfo"></div>
@@ -386,126 +265,386 @@
   </ng-container>
 </ng-template>
 
-<ng-template #userMenu>
-  <!-- User menu -->
-  <ng-container *ngIf="currentUserWrapper$ | async as userWrapper">
-    <li *ngIf="userWrapper.user && userWrapper.userProfile" class="nav-item">
-      <div class="d-inline-block" ngbDropdown>
-        <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
-          <astrobin-username [user]="userWrapper.user"></astrobin-username>
-          <span
-            *ngIf="!userWrapper.userProfile?.excludeFromCompetition"
-            [ngbPopover]="indexesPopoverContent"
-            class="indexes"
-            triggers="mouseenter:click"
-          >
-            <span class="image-index index">
-              {{ userWrapper.userProfile?.astroBinIndex | number: "1.2-2" }}
-              &middot;
-            </span>
-            <span class="contribution-index index">
-              {{ userWrapper.userProfile?.contributionIndex | number: "1.2-2" }}
-            </span>
-          </span>
-        </button>
+<ng-template #sidebarTemplate>
+  <div
+    #sidebar
+    class="
+            order-lg-2
+            w-100
+            d-flex
+            flex-row
+            flex-wrap
+            flex-lg-nowrap
+            align-content-between
+            sidebar
+            p-3
+            p-lg-0
+          "
+  >
 
-        <div aria-labelledby="user-dropdown" ngbDropdownMenu>
-          <a (click)="isCollapsed = true" class="dropdown-item" routerLink="/subscriptions/options">
-            <fa-icon icon="asterisk"></fa-icon>
-            {{ "Subscription plans" | translate }}
-          </a>
+    <ul
+      class="navbar-nav mr-lg-auto mb-0 order-1 order-lg-0 justify-content-center"
+    >
+      <!-- Moderate menu -->
+      <li *ngIf="user | isContentModerator" class="nav-item">
+        <div ngbDropdown>
+          <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>
+            Moderate
+          </button>
+          <div aria-labelledby="moderateDropdown" ngbDropdownMenu>
+            <h6 class="dropdown-header" translate>Images</h6>
 
-          <a (click)="isCollapsed = true" class="dropdown-item" routerLink="/uploader">
-            <fa-icon icon="upload"></fa-icon>
-            {{ "Upload" | translate }}
-          </a>
+            <a *ngIf="user | isImageModerator" [href]="classicRoutesService.MODERATE_IMAGE_QUEUE" class="dropdown-item">
+              <fa-icon icon="images"></fa-icon>
+              {{ "Image queue" | translate }}
+            </a>
 
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">{{ "My places" | translate }}</h6>
+            <a
+              *ngIf="(user | isImageModerator) && (user | isSuperUser)"
+              [href]="classicRoutesService.MODERATE_SPAM_QUEUE"
+              class="dropdown-item"
+            >
+              <fa-icon icon="flag"></fa-icon>
+              {{ "Spam list" | translate }}
+            </a>
 
-          <a
-            *ngIf="userWrapper.user | isProducer"
-            [href]="classicRoutes.COMMERCIAL_PRODUCTS(userWrapper.user)"
-            class="dropdown-item"
-          >
-            <fa-icon icon="barcode"></fa-icon>
-            {{ "Commercial products" | translate }}
-          </a>
+            <ng-container *ngIf="user | isIotdStaff">
+              <div class="dropdown-divider"></div>
+              <h6 class="dropdown-header" translate>Image of the day</h6>
 
-          <a [href]="classicRoutes.GALLERY(userWrapper.user)" class="dropdown-item">
-            <fa-icon icon="image"></fa-icon>
-            {{ "Public Gallery" | translate }}
-          </a>
+              <a
 
-          <a [href]="classicRoutes.STAGING_GALLERY(userWrapper.user)" class="dropdown-item">
-            <fa-icon icon="lock"></fa-icon>
-            {{ "Staging Area" | translate }}
-          </a>
+                *ngIf="user | isIotdSubmitter"
+                class="dropdown-item"
+                routerLink="/iotd/submission-queue"
+              >
+                <fa-icon icon="upload"></fa-icon>
+                {{ "Submission queue" | translate }}
+              </a>
 
-          <a [href]="classicRoutes.BOOKMARKS(userWrapper.user)" class="dropdown-item">
-            <fa-icon icon="bookmark"></fa-icon>
-            {{ "Bookmarks" | translate }}
-          </a>
+              <a
 
-          <div class="dropdown-divider"></div>
+                *ngIf="user | isIotdReviewer"
+                class="dropdown-item"
+                routerLink="/iotd/review-queue"
+              >
+                <fa-icon icon="star"></fa-icon>
+                {{ "Review queue" | translate }}
+              </a>
 
-          <a [href]="classicRoutes.INBOX" class="dropdown-item">
-            <fa-icon icon="inbox"></fa-icon>
-            {{ "My messages" | translate }}
-          </a>
+              <a
 
-          <a [href]="classicRoutes.API_KEYS(userWrapper.user)" class="dropdown-item">
-            <fa-icon icon="key"></fa-icon>
-            {{ "API Keys" | translate }}
-          </a>
-
-          <a [href]="classicRoutes.SETTINGS" class="dropdown-item">
-            <fa-icon icon="edit"></fa-icon>
-            {{ "My settings" | translate }}
-          </a>
-
-          <a (click)="toggleHighContrastTheme()" class="dropdown-item">
-            <fa-icon icon="adjust"></fa-icon>
-
-            <ng-container *ngIf="!useHighContrastTheme(); else highContrastThemeEnabled">
-              {{ "Enable high contrast theme" | translate }}
+                *ngIf="user | isIotdJudge"
+                class="dropdown-item"
+                routerLink="/iotd/judgement-queue"
+              >
+                <fa-icon icon="hammer"></fa-icon>
+                {{ "Judgement queue" | translate }}
+              </a>
             </ng-container>
 
-            <ng-template #highContrastThemeEnabled>
-              {{ "Disable high contrast theme" | translate }}
-            </ng-template>
-          </a>
+            <ng-container *ngIf="user | isEquipmentModerator">
+              <div class="dropdown-divider"></div>
+              <h6 class="dropdown-header">
+                Equipment
+              </h6>
 
-          <div class="dropdown-divider"></div>
-
-          <a (click)="logout($event)" class="dropdown-item" href="">
-            <fa-icon icon="sign-out-alt"></fa-icon>
-            {{ "Logout" | translate }}
-          </a>
+              <a class="dropdown-item" routerLink="/equipment/migration-tool">
+                <fa-icon icon="arrow-right"></fa-icon>
+                Migration tool
+              </a>
+            </ng-container>
+          </div>
         </div>
-      </div>
-    </li>
-  </ng-container>
-  <!-- ./User menu -->
+      </li>
+      <!-- ./Moderate menu -->
+
+      <!-- Forum menu -->
+      <li class="nav-item">
+        <div ngbDropdown>
+          <button class="btn btn-link" id="forumDropdown" ngbDropdownToggle translate>
+            Forum
+          </button>
+          <div aria-labelledby="forumDropdown" ngbDropdownMenu>
+            <a [href]="classicRoutesService.FORUM_HOME" class="dropdown-item">
+              <fa-icon icon="comments"></fa-icon>
+              {{ "Home" | translate }}
+            </a>
+
+            <a [href]="classicRoutesService.FORUM_LATEST" class="dropdown-item">
+              <fa-icon icon="sort-amount-down"></fa-icon>
+              {{ "Latest topics" | translate }}
+            </a>
+
+            <a [href]="classicRoutesService.FORUM_SUBSCRIBED" class="dropdown-item">
+              <fa-icon icon="eye"></fa-icon>
+              {{ "Subscribed topics" | translate }}
+            </a>
+          </div>
+        </div>
+      </li>
+      <!-- ./Forum menu -->
+
+      <!-- Marketplace menu -->
+      <li class="nav-item">
+        <div ngbDropdown>
+          <button class="btn btn-link" id="marketplaceDropdown" ngbDropdownToggle translate>
+            Marketplace
+          </button>
+          <div aria-labelledby="marketplaceDropdown" ngbDropdownMenu>
+            <a
+              [routerLink]="['equipment', 'marketplace']"
+              class="dropdown-item"
+            >
+              <fa-icon icon="shopping-cart"></fa-icon>
+              {{ "Browse Marketplace" | translate }}
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <h6 class="dropdown-header">
+              <fa-icon icon="plus"></fa-icon> &nbsp;
+              {{ "Post listing" | translate }}
+            </h6>
+
+            <a
+              [routerLink]="['equipment', 'marketplace', 'create']"
+              class="dropdown-item"
+            >
+              <fa-icon icon="money-bill"></fa-icon>
+              {{ "Sell" | translate }}
+            </a>
+
+            <a
+              [queryParams]="{ wanted: true }"
+              [routerLink]="['equipment', 'marketplace', 'create']"
+              class="dropdown-item"
+            >
+              <fa-icon icon="search"></fa-icon>
+              {{ "Seek" | translate }}
+            </a>
+          </div>
+        </div>
+      </li>
+      <!-- ./Marketplace menu -->
+
+      <!-- Explore menu -->
+      <li class="nav-item">
+        <div ngbDropdown>
+          <button class="btn btn-link" id="exploreDropdown" ngbDropdownToggle translate>
+            Explore
+          </button>
+          <div aria-labelledby="exploreDropdown" ngbDropdownMenu>
+            <a [href]="classicRoutesService.SEARCH + '?d=i'" class="dropdown-item">
+              <fa-icon icon="search"></fa-icon>
+              {{ "Advanced search" | translate }}
+            </a>
+
+            <a
+              [routerLink]="['equipment', 'explorer']"
+              class="dropdown-item"
+            >
+              <fa-icon icon="camera-retro"></fa-icon>
+              {{ "Equipment" | translate }}
+            </a>
+
+            <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
+              <fa-icon icon="star"></fa-icon>
+              {{ "Constellations" | translate }}
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <a [href]="classicRoutesService.TOP_PICK_NOMINATIONS" class="dropdown-item">
+              <fa-icon icon="arrow-up"></fa-icon>
+              {{ "Top pick nominations" | translate }}
+            </a>
+
+            <a [href]="classicRoutesService.TOP_PICKS" class="dropdown-item">
+              <fa-icon icon="star"></fa-icon>
+              {{ "Top picks" | translate }}
+            </a>
+
+            <a [href]="classicRoutesService.IOTD" class="dropdown-item">
+              <fa-icon icon="trophy"></fa-icon>
+              {{ "Image of the day" | translate }}
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <a [href]="classicRoutesService.GROUPS" class="dropdown-item">
+              <fa-icon icon="users"></fa-icon>
+              {{ "Groups" | translate }}
+            </a>
+
+            <a [href]="classicRoutesService.REMOTE_ASTROPHOTOGRAPHY" class="dropdown-item">
+              <fa-icon icon="laptop"></fa-icon>
+              {{ "Remote astrophotography" | translate }}
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <a [href]="classicRoutesService.ASTROPHOTOGRAPHERS_LIST" class="dropdown-item">
+              <fa-icon icon="star"></fa-icon>
+              {{ "Astrophotographers list" | translate }}
+            </a>
+
+            <a [href]="classicRoutesService.CONTRIBUTORS_LIST" class="dropdown-item">
+              <fa-icon icon="file-alt"></fa-icon>
+              {{ "Contributors list" | translate }} <em>(beta)</em>
+            </a>
+          </div>
+        </div>
+      </li>
+      <!-- ./Explore menu -->
+
+      <!-- Help menu -->
+      <li class="nav-item">
+        <div ngbDropdown>
+          <button class="btn btn-link" id="helpDropdown" ngbDropdownToggle translate>
+            Help
+          </button>
+          <div aria-labelledby="helpDropdown" ngbDropdownMenu>
+            <a [href]="classicRoutesService.ABOUT" class="dropdown-item">
+              <fa-icon icon="info"></fa-icon>
+              {{ "What is this site?" | translate }}
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <a [href]="classicRoutesService.FAQ" class="dropdown-item">
+              <fa-icon icon="question"></fa-icon>
+              {{ "FAQ" | translate }}
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <a [href]="classicRoutesService.HELP_API" class="dropdown-item">
+              <fa-icon icon="key"></fa-icon>
+              API
+            </a>
+
+            <a [href]="classicRoutesService.SPONSORS" class="dropdown-item">
+              <fa-icon icon="users"></fa-icon>
+              {{ "Sponsors & Partners" | translate }}
+            </a>
+
+            <a [href]="classicRoutesService.CONTACT" class="dropdown-item">
+              <fa-icon icon="envelope"></fa-icon>
+              {{ "Contact" | translate }}
+            </a>
+          </div>
+        </div>
+      </li>
+      <!-- ./Help menu -->
+    </ul>
+
+    <ng-container [ngTemplateOutlet]="quickSearchTemplate"></ng-container>
+
+    <ul class="navbar-nav mr-lg-auto mb-0 order-2">
+      <ng-container [ngTemplateOutlet]="languageSelectorTemplate"></ng-container>
+
+      <ng-container *ngIf="(currentUser$ | async) !== null; else loginAndRegisterTemplate">
+        <ng-container [ngTemplateOutlet]="notificationsButtonTemplate"></ng-container>
+        <ng-container [ngTemplateOutlet]="userMenuTemplate"></ng-container>
+        <ng-container [ngTemplateOutlet]="uploadButtonTemplate"></ng-container>
+      </ng-container>
+    </ul>
+  </div>
 </ng-template>
 
-<ng-template #uploadButton>
-  <!-- Upload button -->
-  <li class="nav-item d-none d-lg-block">
-    <a class="btn btn-link nav-link" routerLink="/uploader">
-      <fa-icon icon="upload"></fa-icon>
-    </a>
-  </li>
-  <!-- ./Upload button -->
-</ng-template>
+<ng-template #userSidebarTemplate>
+  <div
+    #userSidebar
+    class="
+            order-lg-2
+            w-100
+            d-flex
+            flex-row
+            flex-wrap
+            sidebar
+            user-sidebar
+            p-3
+            p-lg-0
+          "
+  >
 
-<ng-template #loginAndRegister>
-  <ul class="navbar-nav">
-    <li class="nav-item">
-      <a [href]="authService.getLoginUrl()" class="nav-link">{{ "Log in" | translate }}</a>
-    </li>
-    <li class="nav-item">
-      <a [href]="classicRoutes.REGISTER" class="nav-link">{{ "Register" | translate }}</a>
-    </li>
-  </ul>
+    <ul
+      class="navbar-nav mr-lg-auto mb-0 order-1 order-lg-0 justify-content-center"
+    >
+      <li class="nav-item">
+        <h5>{{ user.displayName }}</h5>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/subscriptions/options">
+          {{ "Subscription plans" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/uploader">
+          {{ "Upload" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item divider"></li>
+
+      <li class="nav-item">
+        <a
+          *ngIf="user | isProducer"
+          [href]="classicRoutesService.COMMERCIAL_PRODUCTS(user)"
+          class="nav-link"
+        >
+          {{ "Commercial products" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a [href]="classicRoutesService.GALLERY(user)" class="nav-link">
+          {{ "Public Gallery" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a [href]="classicRoutesService.STAGING_GALLERY(user)" class="nav-link">
+          {{ "Staging Area" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a [href]="classicRoutesService.BOOKMARKS(user)" class="nav-link">
+          {{ "Bookmarks" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item divider"></li>
+
+      <li class="nav-item">
+        <a [href]="classicRoutesService.INBOX" class="nav-link">
+          {{ "My messages" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a [href]="classicRoutesService.API_KEYS(user)" class="nav-link">
+          {{ "API Keys" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item divider"></li>
+
+      <li class="nav-item">
+        <a [href]="classicRoutesService.SETTINGS" class="nav-link">
+          {{ "My settings" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a (click)="logout($event)" class="nav-link" href="">
+          {{ "Logout" | translate }}
+        </a>
+      </li>
+    </ul>
+  </div>
 </ng-template>

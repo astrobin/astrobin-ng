@@ -44,11 +44,103 @@
   }
 }
 
+.sidebar,
+.user-sidebar,
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+}
+
+.sidebar {
+  left: -100%;
+  max-width: 300px;
+  transition: all ease 0.25s;
+  overflow-y: auto;
+  z-index: 1032;
+
+  @media (max-width: $md-max) {
+    padding-bottom: 4rem !important;
+  }
+
+  &.user-sidebar {
+    left: unset;
+    right: -100%;
+  }
+}
+
+.overlay {
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  visibility: hidden;
+  z-index: 1031;
+}
+
+.main-navigation {
+  @media (min-width: $lg-min) {
+    width: 100%;
+  }
+
+  &.active {
+    .sidebar {
+      left: 0;
+    }
+
+    .overlay {
+      visibility: visible;
+    }
+  }
+}
+
+.user-navigation {
+  &.active {
+    .sidebar {
+      right: 0;
+    }
+
+    .overlay {
+      visibility: visible;
+    }
+  }
+}
+
+@media (max-width: $md-max) {
+  .sidebar,
+  .user-sidebar {
+    @include darkest-background-texture;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.75);
+  }
+}
+
+@media (min-width: $lg-min) {
+  .sidebar {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    flex-direction: row;
+    align-items: end;
+    max-width: 100%;
+    transform: none;
+    transition: none;
+    overflow-y: visible;
+    z-index: auto;
+  }
+}
+
 .navbar {
   @include darkest-background-texture;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.75);
   font-size: 0.9rem;
   top: .3rem;
+  padding: 0;
+
+  @media (max-width: $md-max) {
+    padding: .75rem 0;
+  }
 
   @media (max-width: $md-min) {
     text-align: center;
@@ -75,7 +167,26 @@
   color: var(--white);
 }
 
+.navbar-nav {
+  @media (max-width: $md-max) {
+    width: 100%;
+  }
+}
+
 .nav-item {
+  &.divider {
+    margin-top: .75rem;
+    margin-bottom: .75rem;
+    height: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+  }
+
+  .dropdown-toggle:not(.user-dropdown-toggle)::after {
+    @media (max-width: $md-max) {
+      display: none;
+    }
+  }
+
   .dropdown-toggle:not(.user-dropdown-toggle) {
     margin: 0;
     padding: 1rem 0.5rem;
@@ -90,8 +201,6 @@
   }
 
   .user-dropdown-toggle {
-    margin: 0.75rem 0.5rem;
-
     astrobin-username {
       margin-right: .25rem;
 
@@ -119,14 +228,7 @@
       }
     }
 
-    @media screen and (max-width: 991px) {
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-      margin-left: 0;
-      background: none;
-      border: 0;
-      color: var(--accentColor);
-
+    @media screen and (max-width: $md-max) {
       .indexes {
         color: var(--darkerAccentColor);
 
@@ -170,6 +272,11 @@
 .show > .dropdown-menu {
   opacity: 1;
   z-index: 1021;
+
+  @media (max-width: $md-max) {
+    position: relative !important;
+    transform: none !important;
+  }
 }
 
 .dropdown-menu {
@@ -193,15 +300,14 @@
   position: relative;
 
   .badge {
-    padding: 2px 4px;
-    box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.66);
-
-    @media screen and (min-width: $lg-min) {
-      z-index: 1;
-      position: absolute;
-      top: 10px;
-      left: 15px;
-    }
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }
 
+astrobin-avatar {
+  display: block;
+  width: 2rem;
+}

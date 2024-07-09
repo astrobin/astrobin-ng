@@ -4,6 +4,8 @@ import { LoadingService } from "@shared/services/loading.service";
 import { DOCUMENT, isPlatformBrowser, Location } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Router } from "@angular/router";
+import { BehaviorSubject, fromEvent } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 
 // @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -12,6 +14,8 @@ export interface CustomWindowInterface extends Window {
 
 @Injectable()
 export class WindowRefService extends BaseService {
+  private _isMobile = new BehaviorSubject<boolean>(false);
+
   constructor(
     public readonly loadingService: LoadingService,
     @Inject(DOCUMENT) private _doc: Document,
@@ -21,10 +25,26 @@ export class WindowRefService extends BaseService {
     @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(loadingService);
+
+    if (isPlatformBrowser(this.platformId)) {
+      fromEvent(this.nativeWindow, "resize")
+        .pipe(
+          debounceTime(300)
+        )
+        .subscribe(() => {
+          this.checkDevice(window.innerWidth);
+        });
+
+      this.checkDevice(this.nativeWindow.innerWidth);
+    }
   }
 
   get nativeWindow(): CustomWindowInterface {
     return this._doc.defaultView;
+  }
+
+  get isMobile$() {
+    return this._isMobile.asObservable();
   }
 
   scroll(options: any) {
@@ -116,5 +136,9 @@ export class WindowRefService extends BaseService {
     this.router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
       this.location.replaceState(fromUrl);
     });
+  }
+
+  checkDevice(width: number) {
+    this._isMobile.next(width < 768);
   }
 }
