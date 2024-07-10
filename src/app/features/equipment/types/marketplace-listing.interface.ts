@@ -26,6 +26,8 @@ export interface MarketplaceListingInterface {
   listingType: MarketplaceListingType;
   user?: UserInterface["id"];
   userDisplayName?: UserInterface["displayName"];
+  userSignupCountry?: string;
+  userLastSeenInCountry?: string;
   created: string;
   updated: string;
   firstApproved?: string | null;
