@@ -428,16 +428,21 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
               0: this.listing.userDisplayName
             });
 
-        componentInstance.info = this.translateService.instant(
-            "For your safety, keep all communications on AstroBin. Off-platform conversations pose risks. " +
-            "Messages here are permanent and can be used as evidence if needed."
-          ) + ` <a href="https://welcome.astrobin.com/features/marketplace#faq-safety-tips" target="_blank">` +
-          this.translateService.instant("Learn more") + `</a>`;
+        if (currentUser.id === this.listing.user || currentUser.id === privateConversation.user) {
+          componentInstance.info = this.translateService.instant(
+              "For your safety, keep all communications on AstroBin. Off-platform conversations pose risks. " +
+              "Messages here are permanent and can be used as evidence if needed."
+            ) + ` <a href="https://welcome.astrobin.com/features/marketplace#faq-safety-tips" target="_blank">` +
+            this.translateService.instant("Learn more") + `</a>`;
+        }
 
         componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
         componentInstance.showReplyButton = false;
         componentInstance.showTopLevelButton = false;
-        componentInstance.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.ALWAYS;
+        componentInstance.autoStartTopLevelStrategy =
+          currentUser.id === this.listing.user || currentUser.id === privateConversation.user
+            ? NestedCommentsAutoStartTopLevelStrategy.ALWAYS
+            : null;
         componentInstance.topLevelFormPlacement = "BOTTOM";
         componentInstance.topLevelFormHeight = 150;
 
@@ -457,18 +462,20 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
             take(1)
           )
           .subscribe(nestedComments => {
-            const currentTime = new Date().toISOString();
-            const updatedPrivateConversation = {
-              ...privateConversation,
-              userLastAccessed:
-                currentUser.id !== this.listing.user ? currentTime : privateConversation.userLastAccessed,
-              listingUserLastAccessed:
-                currentUser.id === this.listing.user ? currentTime : privateConversation.listingUserLastAccessed
-            };
+            if (currentUser.id === this.listing.user || currentUser.id === privateConversation.user) {
+              const currentTime = new Date().toISOString();
+              const updatedPrivateConversation = {
+                ...privateConversation,
+                userLastAccessed:
+                  currentUser.id !== this.listing.user ? currentTime : privateConversation.userLastAccessed,
+                listingUserLastAccessed:
+                  currentUser.id === this.listing.user ? currentTime : privateConversation.listingUserLastAccessed
+              };
 
-            this.store$.dispatch(
-              new UpdateMarketplacePrivateConversation({ privateConversation: updatedPrivateConversation })
-            );
+              this.store$.dispatch(
+                new UpdateMarketplacePrivateConversation({ privateConversation: updatedPrivateConversation })
+              );
+            }
 
             this.loadingService.setLoading(false);
           });
