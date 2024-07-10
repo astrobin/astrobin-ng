@@ -146,6 +146,10 @@
     text-align: center;
   }
 
+  .navbar-brand img {
+    width: 30px;
+  }
+
   .mobile-search {
     @media screen and (max-width: 340px) {
       display: none;
@@ -201,6 +205,9 @@
   }
 
   .user-dropdown-toggle {
+    margin-top: .5rem;
+    height: 2rem;
+
     astrobin-username {
       margin-right: .25rem;
 
@@ -235,6 +242,17 @@
         .index {
           border-bottom-color: var(--darkerAccentColor);
         }
+      }
+    }
+
+    .dropdown-toggle {
+      margin-top: 0 !important;
+      padding: .5rem;
+
+      &::after {
+        margin-left: 4px;
+        margin-right: 4px;
+        padding-bottom: 2px;
       }
     }
   }
@@ -302,8 +320,9 @@
   .badge {
     z-index: 1;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 5px;
+    right: 2px;
+    padding: 4px;
   }
 }
 

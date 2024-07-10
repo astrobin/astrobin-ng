@@ -23,8 +23,8 @@
 </nav>
 
 <ng-template #astrobinLogoTemplate>
-  <a [href]="classicRoutesService.HOME" class="navbar-brand p-0 d-inline-block mr-lg-3 mt-lg-1">
-    <img alt="AstroBin" class="d-none d-lg-block" src="assets/images/nav-logo.png?v=2" />
+  <a [href]="classicRoutesService.HOME" class="navbar-brand p-0 d-inline-block mr-lg-3">
+    <img alt="AstroBin" class="d-none d-lg-block" src="assets/images/nav-logo.png?v=3" />
     <span class="d-inline-block d-lg-none">AstroBin</span>
   </a>
 </ng-template>
@@ -33,7 +33,7 @@
   <!-- Quick search form -->
   <form [action]="classicRoutesService.SEARCH" class="flex-grow-1 px-0 px-lg-4 order-0 order-lg-1" method="get"
         ngNoForm>
-    <label class="w-100">
+    <label class="w-100 mb-0">
       <input
         autocomplete="off"
         class="form-control"
@@ -123,7 +123,7 @@
       <fa-icon class="d-none d-lg-block" icon="bell"></fa-icon>
       <span class="d-lg-none">{{ "Notifications" | translate }}</span>
       <ng-container *ngIf="notificationsService.unreadCount$ | async as unreadCount">
-        <span class="badge bg-danger badge-pill rounded-pill border border-light">
+        <span class="badge bg-danger badge-pill rounded-pill">
           {{ unreadCount }}
         </span>
       </ng-container>
@@ -135,8 +135,8 @@
 <ng-template #userMenuTemplate>
   <!-- User menu -->
   <li *ngIf="user && userProfile" class="nav-item d-none d-lg-inline">
-    <div ngbDropdown>
-      <button class="btn btn-primary user-dropdown-toggle mt-2" id="user-dropdown" ngbDropdownToggle>
+    <div class="btn-group user-dropdown-toggle " ngbDropdown>
+      <button class="btn btn-primary">
         <astrobin-username [user]="user"></astrobin-username>
         <span
           *ngIf="!userProfile?.excludeFromCompetition"
@@ -153,81 +153,82 @@
             </span>
           </span>
       </button>
+      <button class="btn btn-primary mt-2" id="user-dropdown" ngbDropdownToggle>
+        <span aria-labelledby="user-dropdown" ngbDropdownMenu>
+          <a class="dropdown-item" routerLink="/subscriptions/options">
+            <fa-icon icon="asterisk"></fa-icon>
+            {{ "Subscription plans" | translate }}
+          </a>
 
-      <div aria-labelledby="user-dropdown" ngbDropdownMenu>
-        <a class="dropdown-item" routerLink="/subscriptions/options">
-          <fa-icon icon="asterisk"></fa-icon>
-          {{ "Subscription plans" | translate }}
-        </a>
+          <a class="dropdown-item" routerLink="/uploader">
+            <fa-icon icon="upload"></fa-icon>
+            {{ "Upload" | translate }}
+          </a>
 
-        <a class="dropdown-item" routerLink="/uploader">
-          <fa-icon icon="upload"></fa-icon>
-          {{ "Upload" | translate }}
-        </a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">{{ "My places" | translate }}</h6>
 
-        <div class="dropdown-divider"></div>
-        <h6 class="dropdown-header">{{ "My places" | translate }}</h6>
+          <a
+            *ngIf="user | isProducer"
+            [href]="classicRoutesService.COMMERCIAL_PRODUCTS(user)"
+            class="dropdown-item"
+          >
+            <fa-icon icon="barcode"></fa-icon>
+            {{ "Commercial products" | translate }}
+          </a>
 
-        <a
-          *ngIf="user | isProducer"
-          [href]="classicRoutesService.COMMERCIAL_PRODUCTS(user)"
-          class="dropdown-item"
-        >
-          <fa-icon icon="barcode"></fa-icon>
-          {{ "Commercial products" | translate }}
-        </a>
+          <a [href]="classicRoutesService.GALLERY(user)" class="dropdown-item">
+            <fa-icon icon="image"></fa-icon>
+            {{ "Public Gallery" | translate }}
+          </a>
 
-        <a [href]="classicRoutesService.GALLERY(user)" class="dropdown-item">
-          <fa-icon icon="image"></fa-icon>
-          {{ "Public Gallery" | translate }}
-        </a>
+          <a [href]="classicRoutesService.STAGING_GALLERY(user)" class="dropdown-item">
+            <fa-icon icon="lock"></fa-icon>
+            {{ "Staging Area" | translate }}
+          </a>
 
-        <a [href]="classicRoutesService.STAGING_GALLERY(user)" class="dropdown-item">
-          <fa-icon icon="lock"></fa-icon>
-          {{ "Staging Area" | translate }}
-        </a>
+          <a [href]="classicRoutesService.BOOKMARKS(user)" class="dropdown-item">
+            <fa-icon icon="bookmark"></fa-icon>
+            {{ "Bookmarks" | translate }}
+          </a>
 
-        <a [href]="classicRoutesService.BOOKMARKS(user)" class="dropdown-item">
-          <fa-icon icon="bookmark"></fa-icon>
-          {{ "Bookmarks" | translate }}
-        </a>
+          <div class="dropdown-divider"></div>
 
-        <div class="dropdown-divider"></div>
+          <a [href]="classicRoutesService.INBOX" class="dropdown-item">
+            <fa-icon icon="inbox"></fa-icon>
+            {{ "My messages" | translate }}
+          </a>
 
-        <a [href]="classicRoutesService.INBOX" class="dropdown-item">
-          <fa-icon icon="inbox"></fa-icon>
-          {{ "My messages" | translate }}
-        </a>
+          <a [href]="classicRoutesService.API_KEYS(user)" class="dropdown-item">
+            <fa-icon icon="key"></fa-icon>
+            {{ "API Keys" | translate }}
+          </a>
 
-        <a [href]="classicRoutesService.API_KEYS(user)" class="dropdown-item">
-          <fa-icon icon="key"></fa-icon>
-          {{ "API Keys" | translate }}
-        </a>
+          <a [href]="classicRoutesService.SETTINGS" class="dropdown-item">
+            <fa-icon icon="edit"></fa-icon>
+            {{ "My settings" | translate }}
+          </a>
 
-        <a [href]="classicRoutesService.SETTINGS" class="dropdown-item">
-          <fa-icon icon="edit"></fa-icon>
-          {{ "My settings" | translate }}
-        </a>
+          <a (click)="toggleHighContrastTheme()" class="dropdown-item">
+            <fa-icon icon="adjust"></fa-icon>
 
-        <a (click)="toggleHighContrastTheme()" class="dropdown-item">
-          <fa-icon icon="adjust"></fa-icon>
+            <ng-container *ngIf="!useHighContrastTheme(); else highContrastThemeEnabled">
+              {{ "Enable high contrast theme" | translate }}
+            </ng-container>
 
-          <ng-container *ngIf="!useHighContrastTheme(); else highContrastThemeEnabled">
-            {{ "Enable high contrast theme" | translate }}
-          </ng-container>
+            <ng-template #highContrastThemeEnabled>
+              {{ "Disable high contrast theme" | translate }}
+            </ng-template>
+          </a>
 
-          <ng-template #highContrastThemeEnabled>
-            {{ "Disable high contrast theme" | translate }}
-          </ng-template>
-        </a>
+          <div class="dropdown-divider"></div>
 
-        <div class="dropdown-divider"></div>
-
-        <a (click)="logout($event)" class="dropdown-item" href="">
-          <fa-icon icon="sign-out-alt"></fa-icon>
-          {{ "Logout" | translate }}
-        </a>
-      </div>
+          <a (click)="logout($event)" class="dropdown-item" href="">
+            <fa-icon icon="sign-out-alt"></fa-icon>
+            {{ "Logout" | translate }}
+          </a>
+        </span>
+      </button>
     </div>
   </li>
   <!-- ./User menu -->
@@ -275,6 +276,7 @@
             flex-row
             flex-wrap
             flex-lg-nowrap
+            align-items-center
             align-content-between
             sidebar
             p-3
