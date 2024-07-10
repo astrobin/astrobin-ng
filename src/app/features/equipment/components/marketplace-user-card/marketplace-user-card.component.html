@@ -24,7 +24,7 @@
       </div>
 
       <div class="last-seen-in-country">
-        <strong>{{ "Last seen in country" | translate }}:</strong>&nbsp;
+        <strong>{{ "Last seen in" | translate }}:</strong>&nbsp;
         <ng-container *ngIf="listing.userLastSeenInCountry; else unknownTemplate">
           {{ countryService.getCountryName(listing.userLastSeenInCountry, translateService.currentLang) }}
         </ng-container>
