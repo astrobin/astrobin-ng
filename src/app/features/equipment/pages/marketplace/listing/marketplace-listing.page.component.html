@@ -295,7 +295,8 @@
           listing.listingType === MarketplaceListingType.FOR_SALE &&
           equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing) &&
           !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
-          !equipmentMarketplaceService.listingHasAcceptedOffers(listing)
+          !equipmentMarketplaceService.listingHasAcceptedOffers(listing) &&
+          listing.approved
         "
         [class.loading]="loadingService.loading$ | async"
         class="btn btn-primary d-block w-100 mt-4"
@@ -319,6 +320,7 @@
 
     <button
       (click)="onMessageUserClicked($event)"
+      *ngIf="listing.approved"
       [class.btn-primary]="
         currentUserWrapper.user &&
         equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
