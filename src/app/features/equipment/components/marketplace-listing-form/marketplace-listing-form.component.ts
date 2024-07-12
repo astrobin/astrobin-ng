@@ -45,6 +45,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 import { CountryService } from "@shared/services/country.service";
+import { UserService } from "@shared/services/user.service";
 
 declare var google: any;
 
@@ -149,7 +150,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     public readonly googleMapsService: GoogleMapsService,
     public readonly countryService: CountryService,
     public readonly elementRef: ElementRef,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly userService: UserService
   ) {
     super(store$);
   }
@@ -381,7 +383,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       return model;
     };
 
-    const _doInitFields = (lineItemMap: Map<number, EquipmentItemType>, initialCurrency: string) => {
+    const _doInitFields = (lineItemMap: Map<number, EquipmentItemType>, initialCurrency: string, isModerator: boolean) => {
       this.model = _preprocessModel(this.model);
 
       this.fields = [
@@ -964,7 +966,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     this.model.lineItems.length === 1 ||
                     this.initialLineItemCountModel.multipleSaleType === MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL
                   ) &&
-                  !this.model.title
+                  !this.model.title &&
+                  !isModerator
               },
               props: {
                 label: this.translateService.instant("Title for the entire listing"),
@@ -1372,15 +1375,22 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 tap(itemType => lineItemMap.set(index, itemType))
               )
             )
-          ).subscribe(() => {
-            _doInitFields(lineItemMap, initialCurrency);
+          ).pipe(
+            switchMap(() => this.currentUser$),
+            take(1)
+          ).subscribe(user => {
+            const isModerator = user && this.userService.isInGroup(user, Constants.MARKETPLACE_MODERATORS_GROUP);
+            _doInitFields(lineItemMap, initialCurrency, isModerator);
           });
 
           this.model.lineItems.forEach(lineItem => {
             this.store$.dispatch(new LoadContentTypeById({ id: lineItem.itemContentType }));
           });
         } else {
-          _doInitFields(lineItemMap, initialCurrency);
+          this.currentUser$.pipe(take(1)).subscribe(user => {
+            const isModerator = user && this.userService.isInGroup(user, Constants.MARKETPLACE_MODERATORS_GROUP);
+            _doInitFields(lineItemMap, initialCurrency, isModerator);
+          });
         }
       });
   }

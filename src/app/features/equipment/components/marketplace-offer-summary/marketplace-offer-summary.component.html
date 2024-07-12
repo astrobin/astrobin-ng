@@ -40,7 +40,7 @@
       <ng-container *ngFor="let group of offerGroup | keys">
         <div *ngIf="group.value.length > 0" class="offer card mb-4">
           <div class="card-header">
-            <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
+            <ng-container *ngIf="group.value[0].user !== currentUserWrapper.user?.id">
               <h4>
                 {{ "Offer" | translate }}
               </h4>
@@ -59,7 +59,7 @@
               ></astrobin-marketplace-feedback-widget>
             </ng-container>
 
-            <ng-container *ngIf="listing.user !== currentUserWrapper.user?.id">
+            <ng-container *ngIf="group.value[0].user === currentUserWrapper.user?.id">
               {{ "My offer" | translate }}
             </ng-container>
 

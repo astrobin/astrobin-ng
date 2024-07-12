@@ -9,6 +9,8 @@ import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, takeUntil } from "rxjs/operators";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { CountryService } from "@shared/services/country.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-marketplace-user-card",
@@ -23,7 +25,9 @@ export class MarketplaceUserCardComponent extends BaseComponentDirective impleme
 
   constructor(
     public readonly store$: Store<State>,
-    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
+    public readonly countryService: CountryService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
