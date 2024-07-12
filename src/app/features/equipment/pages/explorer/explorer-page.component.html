@@ -1,4 +1,4 @@
-<div *ngIf="activeType" [class.compare-component-visible]="compareComponentVisible" class="page">
+<div *ngIf="activeType" [class.compare-component-visible]="compareComponentVisible" class="page has-breadcrumb">
   <h1>{{ title }}</h1>
   <small>
     {{
@@ -68,22 +68,22 @@
             </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of items.results; trackBy: equipmentItemService.trackBy" data-id="{{ item.id }}">
-                <td class="item-name">
-                  <a
-                    astrobinEventPreventDefault
-                    [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
-                    (click)="viewItem(item)"
+            <tr *ngFor="let item of items.results; trackBy: equipmentItemService.trackBy" data-id="{{ item.id }}">
+              <td class="item-name">
+                <a
+                  (click)="viewItem(item)"
+                  [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
+                  astrobinEventPreventDefault
+                >
+                  <astrobin-equipment-item-display-name
+                    [item]="item"
+                    [showFrozenAsAmbiguous]="item.variants.length === 0"
+                  ></astrobin-equipment-item-display-name>
+                  <span
+                    *ngIf="item.variants?.length > 0"
+                    [innerHTML]="'+ {{numVariants}} variants' | translate:{numVariants: item.variants.length}"
+                    class="variant-count"
                   >
-                    <astrobin-equipment-item-display-name
-                      [item]="item"
-                      [showFrozenAsAmbiguous]="item.variants.length === 0"
-                    ></astrobin-equipment-item-display-name>
-                    <span
-                      *ngIf="item.variants?.length > 0"
-                      [innerHTML]="'+ {{numVariants}} variants' | translate:{numVariants: item.variants.length}"
-                      class="variant-count"
-                    >
                     </span>
                 </a>
                 <a
@@ -97,16 +97,16 @@
                         EquipmentItemType.MOUNT
                       ].indexOf(activeType) > -1
                     "
-                  href="#"
-                  class="add-to-compare"
                   astrobinEventPreventDefault
-                  >
-                    <fa-icon icon="list-alt" [ngbTooltip]="'Add to comparison list' | translate"></fa-icon>
-                  </a>
-                </td>
-                <td>{{ item.userCount }}</td>
-                <td>{{ item.imageCount }}</td>
-              </tr>
+                  class="add-to-compare"
+                  href="#"
+                >
+                  <fa-icon [ngbTooltip]="'Add to comparison list' | translate" icon="list-alt"></fa-icon>
+                </a>
+              </td>
+              <td>{{ item.userCount }}</td>
+              <td>{{ item.imageCount }}</td>
+            </tr>
             </tbody>
           </table>
 
