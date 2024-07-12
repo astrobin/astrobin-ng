@@ -1056,6 +1056,11 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     latitude: this.model.latitude,
                     longitude: this.model.longitude
                   },
+                  validators: {
+                    validation: [
+                      "valid-coordinates"
+                    ]
+                  },
                   hooks: {
                     onInit: field => {
                       const form = field.parent.formControl;

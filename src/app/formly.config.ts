@@ -331,6 +331,12 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             }
           );
         }
+      },
+      {
+        name: "valid-coordinates",
+        message(): string {
+          return translateService.instant("This is not a valid set of coordinates.");
+        }
       }
     ],
     validators: [
@@ -616,6 +622,34 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           }
 
           return null;
+        }
+      },
+      {
+        name: "valid-coordinates",
+        validation: (control: FormControl, field: FormlyFieldConfig) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          const latitude = control.value.lat();
+          const longitude = control.value.lng();
+
+          if (
+            latitude === null ||
+            latitude === undefined ||
+            longitude === null ||
+            longitude === undefined ||
+            (
+              latitude === 0 &&
+              longitude === 0
+            )
+          ) {
+            return { "valid-coordinates": true };
+          }
+
+          return latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180
+            ? null
+            : { "valid-coordinates": true };
         }
       }
     ]
