@@ -50,19 +50,14 @@ import { UserService } from "@shared/services/user.service";
 declare var google: any;
 
 export enum MARKETPLACE_SALE_TYPE {
-  MULTIPLE = "multiple",
+  MULTIPLE_IN_A_BUNDLE = "multiple-in-a-bundle",
+  MULTIPLE_SEPARATELY = "multiple-separately",
   SINGLE = "single"
-}
-
-export enum MARKETPLACE_MULTIPLE_SALE_TYPE {
-  BUNDLE = "bundle",
-  INDIVIDUAL = "individual"
 }
 
 export interface MarketplaceListingFormInitialCountInterface {
   count?: number;
   saleType?: MARKETPLACE_SALE_TYPE;
-  multipleSaleType?: MARKETPLACE_MULTIPLE_SALE_TYPE;
 }
 
 @Component({
@@ -122,8 +117,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
 
   initialLineItemCountModel: MarketplaceListingFormInitialCountInterface = {
     count: 0,
-    saleType: null,
-    multipleSaleType: null
+    saleType: null
   };
   initialLineItemCountForm = new FormGroup({});
   initialLineItemCountFields: FormlyFieldConfig[];
@@ -166,7 +160,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       this.model.listingType = MarketplaceListingType.WANTED;
       this.initialLineItemCountModel.saleType = MARKETPLACE_SALE_TYPE.SINGLE;
       this.initialLineItemCountModel.count = 1;
-      this.initialLineItemCountModel.multipleSaleType = MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL;
       this.initialLineItemCount = 1;
     } else if (providedLineItemCount && providedLineItemCount === "1") {
       this.initialLineItemCount = parseInt(providedLineItemCount, 10);
@@ -252,7 +245,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       this.initialLineItemCountFields = [
         {
           key: "saleType",
-          type: "radio",
+          type: "custom-radio",
           wrappers: ["default-wrapper"],
           defaultValue: null,
           props: {
@@ -261,11 +254,27 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             options: [
               {
                 value: MARKETPLACE_SALE_TYPE.SINGLE,
-                label: this.translateService.instant("Just one")
+                label: this.translateService.instant("Just one"),
+                description: this.translateService.instant(
+                  "Create a listing for a single item."
+                )
               },
               {
-                value: MARKETPLACE_SALE_TYPE.MULTIPLE,
-                label: this.translateService.instant("Multiple items")
+                value: MARKETPLACE_SALE_TYPE.MULTIPLE_IN_A_BUNDLE,
+                label: this.translateService.instant("Multiple items in a bundle"),
+                description: this.translateService.instant(
+                  "All items in the bundle will be sold together. Users will not be able to make offers for " +
+                  "individual items."
+                )
+              },
+              {
+                value: MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY,
+                label: this.translateService.instant("Multiple items separately"),
+                description: this.translateService.instant(
+                  "AstroBin will automatically create multiple listings for each item in the bundle, " +
+                  "allowing users to make offers for individual items. All listings will share common " +
+                  "information, such as the location of the objects and the shipping method."
+                )
               }
             ]
           },
@@ -301,46 +310,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           expressions: {
             className: (config: FormlyFieldConfig) =>
               config.model.saleType === MARKETPLACE_SALE_TYPE.SINGLE || config.model.saleType === null ? "hidden" : "",
-            "props.required": config => config.model.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE
-          }
-        },
-        {
-          key: "multipleSaleType",
-          type: "ng-select",
-          wrappers: ["default-wrapper"],
-          defaultValue: null,
-          props: {
-            optionTemplate: this.multipleSaleOptionTemplate,
-            label: this.translateService.instant("Do you want to sell your items as a bundle?"),
-            options: [
-              {
-                value: MARKETPLACE_MULTIPLE_SALE_TYPE.BUNDLE,
-                label: this.translateService.instant("Yes, as a bundle"),
-                description: this.translateService.instant(
-                  "All items in the bundle will be sold together. Users will not be able to make offers for " +
-                  "individual items."
-                )
-              },
-              {
-                value: MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL,
-                label: this.translateService.instant("No, individually"),
-                description: this.translateService.instant(
-                  "AstroBin will automatically create multiple listings for each item in the bundle, " +
-                  "allowing users to make offers for individual items. All listings will share common " +
-                  "information, such as the location of the objects and the shipping method."
-                )
-              }
-            ]
-          },
-          expressions: {
-            "props.required": config => config.model.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE,
-            className: (config: FormlyFieldConfig) =>
-              config.model.saleType === MARKETPLACE_SALE_TYPE.SINGLE ||
-              config.model.saleType === null ||
-              config.model.count === 1 ||
-              config.model.count === null
-                ? "hidden"
-                : ""
+            "props.required": config => config.model.saleType !== MARKETPLACE_SALE_TYPE.SINGLE
           }
         },
         {
@@ -964,8 +934,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 hide: () =>
                   (
                     this.model.lineItems.length === 1 ||
-                    this.initialLineItemCountModel.multipleSaleType === MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL
-                  ) &&
+                    this.initialLineItemCountModel.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY) &&
                   !this.model.title &&
                   !isModerator
               },
@@ -989,7 +958,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 hide: () =>
                   (
                     this.model.lineItems.length === 1 ||
-                    this.initialLineItemCountModel.multipleSaleType === MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL
+                    this.initialLineItemCountModel.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY
                   ) &&
                   !this.model.description
               },
