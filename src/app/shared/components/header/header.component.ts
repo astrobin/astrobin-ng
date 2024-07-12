@@ -197,7 +197,9 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     return this.themeService.preferredTheme() === Theme.HIGH_CONTRAST;
   }
 
-  toggleHighContrastTheme(): void {
+  toggleHighContrastTheme(event: Event): void {
+    event.preventDefault();
+
     this.jsonApiService
       .toggleUseHighContrastThemeCookie()
       .pipe(take(1))
