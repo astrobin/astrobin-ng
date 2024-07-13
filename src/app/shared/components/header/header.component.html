@@ -151,7 +151,7 @@
         <ng-container [ngTemplateOutlet]="userMenubarTemplate"></ng-container>
       </ul>
 
-      <span aria-labelledby="user-dropdown" ngbDropdownMenu>
+      <div aria-labelledby="user-dropdown" ngbDropdownMenu>
         <a class="dropdown-item" routerLink="/subscriptions/options">
           <fa-icon icon="asterisk"></fa-icon>
           {{ "Subscription plans" | translate }}
@@ -220,7 +220,7 @@
           <fa-icon icon="sign-out-alt"></fa-icon>
           {{ "Logout" | translate }}
         </a>
-      </span>
+      </div>
     </div>
   </li>
   <!-- ./User menu -->
@@ -531,7 +531,7 @@
 
             <a [href]="classicRoutesService.CONTACT" class="dropdown-item">
               <fa-icon icon="envelope"></fa-icon>
-              {{ "Contact" | translate }}
+              {{ "Support" | translate }}
             </a>
           </div>
         </div>
@@ -541,7 +541,7 @@
 
     <ng-container [ngTemplateOutlet]="quickSearchTemplate"></ng-container>
 
-    <ul class="navbar-nav mr-lg-auto mb-0 order-2">
+    <ul class="navbar-nav mr-lg-auto mb-0 order-2 align-items-center">
       <ng-container [ngTemplateOutlet]="languageSelectorTemplate"></ng-container>
 
       <ng-container *ngIf="user; else loginAndRegisterTemplate">

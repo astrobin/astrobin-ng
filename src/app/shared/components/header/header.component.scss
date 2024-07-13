@@ -187,8 +187,17 @@
     text-align: center;
   }
 
-  .navbar-brand img {
-    width: 30px;
+  .navbar-brand {
+    img {
+      width: 30px;
+    }
+
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 
   .mobile-search {
@@ -226,13 +235,13 @@
     border-bottom: 1px solid rgba(255, 255, 255, .1);
   }
 
-  .dropdown-toggle:not(.user-dropdown-toggle)::after {
+  .dropdown-toggle:not(#user-dropdown)::after {
     @media (max-width: $lg-max) {
       display: none;
     }
   }
 
-  .dropdown-toggle:not(.user-dropdown-toggle) {
+  .dropdown-toggle:not(#user-dropdown) {
     margin: 0;
     padding: 1rem 0.5rem;
 
@@ -247,7 +256,6 @@
   }
 
   .user-dropdown-toggle {
-    margin-top: .5rem;
     height: 2rem;
 
     astrobin-username {
