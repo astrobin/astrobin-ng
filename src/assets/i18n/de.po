@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-07-06 13:21+0200\n"
+"PO-Revision-Date: 2024-07-13 09:24+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -7410,4 +7410,29 @@ msgstr ""
 #: Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
 #: loco:66892878aba965b8ed01c8b3
 msgid "Post listing"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:66922b5611b20c09160f0772
+msgid "Create a listing for a single item."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-user-card/marketplace-user-card.component.html
+#: loco:66922b5611b20c09160f0773
+msgid "Last seen in"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:66922b5611b20c09160f0774
+msgid "Multiple items in a bundle"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:66922b5611b20c09160f0775
+msgid "Multiple items separately"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-user-card/marketplace-user-card.component.html
+#: loco:66922b5611b20c09160f0776
+msgid "Sign-up country"
 msgstr ""

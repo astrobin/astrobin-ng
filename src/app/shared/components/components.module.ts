@@ -113,6 +113,7 @@ import { PrivateInformationComponent } from "@shared/components/misc/private-inf
 import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-field-custom-radio/formly-field-custom-radio.component";
 
 const modules = [
   CommonModule,
@@ -173,6 +174,7 @@ const components = [
   FormlyFieldTableComponent,
   FormlyFieldToggleComponent,
   FormlyFieldCustomNumberComponent,
+  FormlyFieldCustomRadioComponent,
   FormlyWrapperComponent,
   ForumPreviewComponent,
   FullscreenImageViewerComponent,

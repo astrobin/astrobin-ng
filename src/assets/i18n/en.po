@@ -961,6 +961,10 @@ msgstr ""
 msgid "Create a listing"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+msgid "Create a listing for a single item."
+msgstr ""
+
 msgid "Create a new item"
 msgstr ""
 
@@ -1108,10 +1112,6 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-line-item-cards/marketplace-line-item-cards.component.html
 msgid "Do you want to sell something?"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
-msgid "Do you want to sell your items as a bundle?"
 msgstr ""
 
 msgid "Dobsonian"
@@ -1909,6 +1909,10 @@ msgstr ""
 msgid "Large"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-user-card/marketplace-user-card.component.html
+msgid "Last seen in"
+msgstr ""
+
 msgid "Last update"
 msgstr ""
 
@@ -2297,6 +2301,14 @@ msgstr ""
 msgid "Multiple items"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+msgid "Multiple items in a bundle"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+msgid "Multiple items separately"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-nav/marketplace-nav.component.html
 msgid "My interactions"
 msgstr ""
@@ -2398,10 +2410,6 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
 msgid "No views yet"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
-msgid "No, individually"
 msgstr ""
 
 msgid "No, thanks"
@@ -3146,10 +3154,6 @@ msgstr ""
 msgid "Seller ships"
 msgstr ""
 
-#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-nav/marketplace-nav.component.html
-msgid "Selling"
-msgstr ""
-
 msgid "Sensor"
 msgstr ""
 
@@ -3199,6 +3203,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
 msgid "Show rejected/retracted offers"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-user-card/marketplace-user-card.component.html
+msgid "Sign-up country"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
@@ -4242,10 +4250,6 @@ msgid "Yearly"
 msgstr ""
 
 msgid "Yes"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
-msgid "Yes, as a bundle"
 msgstr ""
 
 msgid "Yes, continue"

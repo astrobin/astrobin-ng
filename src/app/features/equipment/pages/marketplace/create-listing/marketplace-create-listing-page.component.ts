@@ -20,7 +20,6 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { RouterService } from "@shared/services/router.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import {
-  MARKETPLACE_MULTIPLE_SALE_TYPE,
   MARKETPLACE_SALE_TYPE,
   MarketplaceListingFormInitialCountInterface
 } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
@@ -82,9 +81,8 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     let listingsProcessed = 0;
 
     if (
-      value.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE &&
-      value.count > 1 &&
-      value.multipleSaleType === MARKETPLACE_MULTIPLE_SALE_TYPE.INDIVIDUAL
+      value.saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_SEPARATELY &&
+      value.count > 1
     ) {
       // Create multiple listings, each one gets one of the line items, and all other data is the same.
       listings = Array.from({ length: value.count }, (_, i) => ({

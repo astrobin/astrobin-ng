@@ -1,0 +1,25 @@
+<ng-template #fieldTypeTemplate>
+  <div
+    *ngFor="let option of props.options; let i = index"
+    [class.form-check-inline]="props.formCheck === 'inline'"
+    class="form-check"
+  >
+    <input
+      [attr.aria-describedby]="id + '-formly-validation-error'"
+      [attr.aria-invalid]="showError"
+      [attr.value]="option.value"
+      [class.is-invalid]="showError"
+      [formControl]="option.disabled ? disabledControl : formControl"
+      [formlyAttributes]="field"
+      [id]="id + '_' + i"
+      [name]="field.name || id"
+      [value]="option.value"
+      class="form-check-input"
+      type="radio"
+    />
+    <label [for]="id + '_' + i" class="form-check-label">
+      {{ option.label }}
+      <span *ngIf="option.description" class="form-text">{{ option.description }}</span>
+    </label>
+  </div>
+</ng-template>

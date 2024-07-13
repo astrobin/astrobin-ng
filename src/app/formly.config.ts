@@ -18,6 +18,7 @@ import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field
 import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
 import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
 import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
+import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-field-custom-radio/formly-field-custom-radio.component";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -89,6 +90,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       {
         name: "custom-number",
         component: FormlyFieldCustomNumberComponent,
+        wrappers: ["default-wrapper"]
+      },
+      {
+        name: "custom-radio",
+        component: FormlyFieldCustomRadioComponent,
         wrappers: ["default-wrapper"]
       }
     ],
@@ -325,6 +331,12 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             }
           );
         }
+      },
+      {
+        name: "valid-coordinates",
+        message(): string {
+          return translateService.instant("This is not a valid set of coordinates.");
+        }
       }
     ],
     validators: [
@@ -336,7 +348,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           options: FileSizeValidatorOptionsInterface
         ): ValidationErrors | null => {
           // Check if running on the server or if FileList is not defined
-          if (typeof window === 'undefined' || typeof FileList === 'undefined') {
+          if (typeof window === "undefined" || typeof FileList === "undefined") {
             return null; // Skip validation on the server
           }
 
@@ -372,7 +384,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           let value;
 
           // Check if running on the server or if FileList is not defined
-          if (typeof window === 'undefined' || typeof FileList === 'undefined') {
+          if (typeof window === "undefined" || typeof FileList === "undefined") {
             return null; // Skip validation on the server
           }
 
@@ -607,6 +619,32 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           const unexpectedHeaders = findUnexpectedHeaders(header, options.allowedHeaders);
           if (unexpectedHeaders.length > 0) {
             return { "invalid-csv-unexpected-header": { unexpectedHeaders } };
+          }
+
+          return null;
+        }
+      },
+      {
+        name: "valid-coordinates",
+        validation: (control: FormControl, field: FormlyFieldConfig) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          const latitude = control.value.lat();
+          const longitude = control.value.lng();
+
+          if (
+            latitude === null ||
+            latitude === undefined ||
+            longitude === null ||
+            longitude === undefined ||
+            (
+              latitude === 0 &&
+              longitude === 0
+            )
+          ) {
+            return { "valid-coordinates": true };
           }
 
           return null;

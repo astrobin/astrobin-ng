@@ -126,11 +126,10 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
       const error = () => {
         this.popNotificationsService.error(
           this.translateService.instant(
-            "AstroBin could not determine your location, so the location field could not " +
-            "be prefilled."
+            "AstroBin could not determine your location, so the location field could not be prefilled."
           )
         );
-        observer.next({ latitude: 40.78, longitude: -73.96 });
+        observer.next({ latitude: null, longitude: null });
         observer.complete();
       };
 
