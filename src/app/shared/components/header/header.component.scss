@@ -76,10 +76,6 @@
   transition: all ease 0.25s;
   overflow-y: auto;
   z-index: 1032;
-
-  @media (max-width: $md-max) {
-    padding-bottom: 4rem !important;
-  }
 }
 
 .user-sidebar {
@@ -96,8 +92,6 @@
 }
 
 .main-navigation {
-  padding: .25rem 0;
-
   @media (min-width: $lg-min) {
     width: 100%;
   }
@@ -248,6 +242,7 @@
 
     &[aria-expanded="true"] {
       background: var(--darkerGrey);
+      color: var(--lightestGrey);
     }
   }
 
@@ -322,7 +317,7 @@
     color: var(--accentColor);
     display: inline-block;
     margin: 0;
-    padding: 1rem 0.5rem;
+    padding: 1.25rem 0.5rem;
   }
 
   .no-triangle::after {

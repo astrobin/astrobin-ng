@@ -99,11 +99,8 @@
   <!-- Language selector -->
   <li class="nav-item">
     <div ngbDropdown>
-      <button class="btn btn-link no-triangle d-none d-lg-block" id="languageDropdown" ngbDropdownToggle>
+      <button class="btn btn-link no-triangle" id="languageDropdown" ngbDropdownToggle>
         {{ currentLanguageCodeDisplay }}
-      </button>
-      <button class="btn btn-link d-lg-none" id="languageDropdownMobile" ngbDropdownToggle>
-        {{ "Language" | translate }}
       </button>
       <div aria-labelledby="languageDropdown" ngbDropdownMenu>
         <ng-container *ngFor="let language of languages">
@@ -282,6 +279,12 @@
     <ul
       class="navbar-nav mr-lg-auto mb-0 order-1 order-lg-0 justify-content-center"
     >
+      <li class="nav-item">
+        <a [href]="classicRoutesService.HOME" class="nav-link d-lg-none">
+          {{ "Home" | translate }}
+        </a>
+      </li>
+
       <!-- Moderate menu -->
       <li *ngIf="user | isContentModerator" class="nav-item">
         <div ngbDropdown>
