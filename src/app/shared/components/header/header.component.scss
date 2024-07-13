@@ -123,6 +123,13 @@
       visibility: visible;
     }
   }
+
+  > .nav-item .nav-link {
+    @media (max-width: $md-max) {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+  }
 }
 
 @media (max-width: $md-max) {
@@ -357,12 +364,26 @@
 .notifications-list-item {
   position: relative;
 
+  fa-icon {
+    @media (max-width: $md-max) {
+      font-size: 1.5rem;
+      line-height: 2rem;
+      margin-right: 1rem;
+      color: var(--lighterGrey);
+    }
+  }
+
   .badge {
     z-index: 1;
     position: absolute;
     top: 5px;
     right: 2px;
     padding: 4px;
+
+    @media (max-width: $md-max) {
+      top: -.5rem;
+      right: .5rem;
+    }
   }
 }
 

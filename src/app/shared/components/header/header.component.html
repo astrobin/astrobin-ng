@@ -16,9 +16,10 @@
       <ng-container [ngTemplateOutlet]="astrobinLogoTemplate"></ng-container>
     </div>
 
-    <div [class.active]="!userMenubarIsCollapsed" class="user-navigation order-2 d-block d-lg-none">
+    <ul [class.active]="!userMenubarIsCollapsed"
+        class="nav user-navigation order-2 d-flex d-lg-none align-items-center">
       <ng-container [ngTemplateOutlet]="userMenubarTemplate"></ng-container>
-    </div>
+    </ul>
   </div>
 </nav>
 
@@ -66,21 +67,28 @@
 </ng-template>
 
 <ng-template #userMenubarTemplate>
-  <ng-container *ngIf="!!user">
-    <a
-      (click)="openUserSidebarMenu()"
-      [attr.aria-expanded]="!userMenubarIsCollapsed"
-      aria-controls="userNavbarSupportedContent"
-      aria-label="Toggle navigation"
-      class="d-lg-block ms-lg-2"
-      data-target="#userNavbarSupportedContent"
-      data-toggle="collapse"
-    >
-      <astrobin-avatar
-        [link]="false"
-        [user]="user"
-      ></astrobin-avatar>
-    </a>
+  <ng-container *ngIf="!!user; else loginAndRegisterTemplate">
+    <li class="nav-item notifications-list-item d-block d-lg-none">
+      <ng-container [ngTemplateOutlet]="notificationsButtonTemplate"></ng-container>
+    </li>
+
+
+    <li class="nav-item">
+      <a
+        (click)="openUserSidebarMenu()"
+        [attr.aria-expanded]="!userMenubarIsCollapsed"
+        aria-controls="userNavbarSupportedContent"
+        aria-label="Toggle navigation"
+        class="d-lg-block ms-lg-2"
+        data-target="#userNavbarSupportedContent"
+        data-toggle="collapse"
+      >
+        <astrobin-avatar
+          [link]="false"
+          [user]="user"
+        ></astrobin-avatar>
+      </a>
+    </li>
 
     <div (click)="closeUserSidebarMenu()" class="overlay d-flex d-xl-none"></div>
     <ng-container [ngTemplateOutlet]="userSidebarTemplate"></ng-container>
@@ -119,24 +127,21 @@
 
 <ng-template #notificationsButtonTemplate>
   <!-- Notifications -->
-  <li class="nav-item notifications-list-item d-none d-lg-block">
-    <a class="btn btn-link nav-link position-relative" routerLink="/notifications">
-      <fa-icon class="d-none d-lg-block" icon="bell"></fa-icon>
-      <span class="d-lg-none">{{ "Notifications" | translate }}</span>
-      <ng-container *ngIf="notificationsService.unreadCount$ | async as unreadCount">
-        <span class="badge bg-danger badge-pill rounded-pill">
-          {{ unreadCount }}
-        </span>
-      </ng-container>
-    </a>
-  </li>
+  <a class="btn btn-link nav-link position-relative" routerLink="/notifications">
+    <fa-icon icon="bell"></fa-icon>
+    <ng-container *ngIf="notificationsService.unreadCount$ | async as unreadCount">
+      <span class="badge bg-danger badge-pill rounded-pill">
+        {{ unreadCount }}
+      </span>
+    </ng-container>
+  </a>
   <!-- ./Notifications -->
 </ng-template>
 
 <ng-template #userMenuTemplate>
   <!-- User menu -->
   <li *ngIf="user && userProfile" class="nav-item d-none d-lg-inline">
-    <div class="btn-group user-dropdown-toggle " ngbDropdown>
+    <div class="btn-group user-dropdown-toggle" ngbDropdown>
       <button class="btn btn-primary d-none d-xl-inline-block">
         <astrobin-username [user]="user"></astrobin-username>
         <ng-container [ngTemplateOutlet]="astrobinIndexTemplate"></ng-container>
@@ -145,9 +150,9 @@
       <button class="btn btn-primary mt-2 d-none d-xl-inline-block" id="user-dropdown" ngbDropdownToggle>
       </button>
 
-      <div [class.active]="!userMenubarIsCollapsed" class="user-navigation d-block d-xl-none">
+      <ul [class.active]="!userMenubarIsCollapsed" class="nav user-navigation d-block d-xl-none">
         <ng-container [ngTemplateOutlet]="userMenubarTemplate"></ng-container>
-      </div>
+      </ul>
 
       <span aria-labelledby="user-dropdown" ngbDropdownMenu>
         <a class="dropdown-item" routerLink="/subscriptions/options">
@@ -245,7 +250,7 @@
 
 
 <ng-template #indexesPopoverContentTemplate>
-  <ng-container *ngIf="currentUserProfile$ | async as userProfile">
+  <ng-container *ngIf="userProfile">
     <h4>{{ "Image Index" | translate }}: {{ userProfile.astroBinIndex | number: "1.2-2" }}</h4>
     <div [innerHTML]="imageIndexPopoverInfo"></div>
 
@@ -536,8 +541,10 @@
     <ul class="navbar-nav mr-lg-auto mb-0 order-2">
       <ng-container [ngTemplateOutlet]="languageSelectorTemplate"></ng-container>
 
-      <ng-container *ngIf="(currentUser$ | async) !== null; else loginAndRegisterTemplate">
-        <ng-container [ngTemplateOutlet]="notificationsButtonTemplate"></ng-container>
+      <ng-container *ngIf="user; else loginAndRegisterTemplate">
+        <li class="nav-item notifications-list-item d-none d-lg-block">
+          <ng-container [ngTemplateOutlet]="notificationsButtonTemplate"></ng-container>
+        </li>
         <ng-container [ngTemplateOutlet]="userMenuTemplate"></ng-container>
         <ng-container [ngTemplateOutlet]="uploadButtonTemplate"></ng-container>
       </ng-container>

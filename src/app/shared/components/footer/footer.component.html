@@ -12,31 +12,22 @@
   </div>
 </footer>
 
-<div
-  *ngIf="currentUserWrapper$ | async as currentUserWrapper"
-  class="d-block d-lg-none mobile-navigation fixed-bottom"
->
-  <div class="d-flex justify-content-around align-items-center text-center">
-    <a [href]="classicRoutesService.HOME">
-      <fa-icon icon="home"></fa-icon>
-    </a>
+<!--<div-->
+<!--  *ngIf="currentUserWrapper$ | async as currentUserWrapper"-->
+<!--  class="d-block d-lg-none mobile-navigation fixed-bottom"-->
+<!--&gt;-->
+<!--  <div class="d-flex justify-content-around align-items-center text-center">-->
+<!--    <a [href]="classicRoutesService.HOME">-->
+<!--      <fa-icon icon="home"></fa-icon>-->
+<!--    </a>-->
 
-    <a [href]="classicRoutesService.FORUM_HOME">
-      <fa-icon icon="comments"></fa-icon>
-    </a>
+<!--    <a [href]="classicRoutesService.FORUM_HOME">-->
+<!--      <fa-icon icon="comments"></fa-icon>-->
+<!--    </a>-->
 
-    <a [routerLink]="['/equipment/marketplace']">
-      <fa-icon icon="shop"></fa-icon>
-    </a>
-
-    <a *ngIf="currentUserWrapper.user" [routerLink]="['/', 'notifications']" class="notifications">
-      <fa-icon icon="bell"></fa-icon>
-      <ng-container *ngIf="notificationsService.unreadCount$ | async as unreadCount">
-        <span class="badge bg-danger badge-pill rounded-pill border border-light">
-          {{ unreadCount }}
-        </span>
-      </ng-container>
-    </a>
-  </div>
-</div>
+<!--    <a [routerLink]="['/equipment/marketplace']">-->
+<!--      <fa-icon icon="shop"></fa-icon>-->
+<!--    </a>-->
+<!--  </div>-->
+<!--</div>-->
 
