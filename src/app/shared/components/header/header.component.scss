@@ -175,16 +175,16 @@
 .navbar {
   @include darkest-background-texture;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.75);
-  font-size: 0.9rem;
   top: .3rem;
   padding: 0;
 
   @media (max-width: $md-max) {
     padding: .75rem 0;
+    text-align: center;
   }
 
-  @media (max-width: $lg-min) {
-    text-align: center;
+  @media (min-width: $lg-min) {
+    font-size: 0.9rem;
   }
 
   .navbar-brand {

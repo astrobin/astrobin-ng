@@ -16,13 +16,16 @@
 }
 
 .dropdown-menu {
-  font-size: 0.9rem;
   box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.9);
   border: 0;
 
   @media (max-width: $xs-max) {
     margin-top: .25rem;
     width: 100%;
+  }
+
+  @media (min-width: $lg-min) {
+    font-size: 0.9rem;
   }
 
   .dropdown-item {
