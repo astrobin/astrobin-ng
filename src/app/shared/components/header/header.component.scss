@@ -382,6 +382,7 @@
     top: 5px;
     right: 2px;
     padding: 4px;
+    background-color: red !important;
 
     @media (max-width: $md-max) {
       top: -.5rem;
