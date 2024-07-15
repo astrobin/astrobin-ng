@@ -72,7 +72,6 @@
       <ng-container [ngTemplateOutlet]="notificationsButtonTemplate"></ng-container>
     </li>
 
-
     <li class="nav-item">
       <a
         (click)="openUserSidebarMenu()"
@@ -236,11 +235,11 @@
   <!-- ./Upload button -->
 </ng-template>
 
-<ng-template #loginAndRegisterTemplate>
-  <li class="nav-item">
+<ng-template #loginAndRegisterTemplate let-liClasses="liClasses">
+  <li [classList]="'nav-item ' + liClasses">
     <a [href]="authService.getLoginUrl()" class="nav-link">{{ "Log in" | translate }}</a>
   </li>
-  <li class="nav-item">
+  <li [classList]="'nav-item ' + liClasses">
     <a [href]="classicRoutesService.REGISTER" class="nav-link">{{ "Register" | translate }}</a>
   </li>
 </ng-template>
@@ -544,13 +543,20 @@
     <ul class="navbar-nav mr-lg-auto mb-0 order-2 align-items-center">
       <ng-container [ngTemplateOutlet]="languageSelectorTemplate"></ng-container>
 
-      <ng-container *ngIf="user; else loginAndRegisterTemplate">
+      <ng-container *ngIf="user; else loginAndRegisterMenubarTemplate">
         <li class="nav-item notifications-list-item d-none d-lg-block">
           <ng-container [ngTemplateOutlet]="notificationsButtonTemplate"></ng-container>
         </li>
         <ng-container [ngTemplateOutlet]="userMenuTemplate"></ng-container>
         <ng-container [ngTemplateOutlet]="uploadButtonTemplate"></ng-container>
       </ng-container>
+
+      <ng-template #loginAndRegisterMenubarTemplate>
+        <ng-container
+          [ngTemplateOutletContext]="{ liClasses: 'd-none d-lg-block' }"
+          [ngTemplateOutlet]="loginAndRegisterTemplate"
+        ></ng-container>
+      </ng-template>
     </ul>
   </div>
 </ng-template>
