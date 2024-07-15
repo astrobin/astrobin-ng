@@ -5,13 +5,14 @@ import { MockBuilder } from "ng-mocks";
 import { initialState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { AppModule } from "@app/app.module";
 
 describe("MarketplaceUserCardComponent", () => {
   let component: MarketplaceUserCardComponent;
   let fixture: ComponentFixture<MarketplaceUserCardComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceUserCardComponent).provide(provideMockStore({ initialState }));
+    await MockBuilder(MarketplaceUserCardComponent, AppModule).provide(provideMockStore({ initialState }));
 
     fixture = TestBed.createComponent(MarketplaceUserCardComponent);
     component = fixture.componentInstance;

@@ -75,7 +75,7 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
           // 0.25 seconds after the center of the map has changed, set the marker position again.
           this.utilsService.delay(250).subscribe(() => {
             const center = this.map.getCenter();
-            if (this.lastCenter && this.calculateDistance(this.lastCenter, center) < 0.1) {
+            if (this.lastCenter && this.calculateDistance(this.lastCenter, center) < 0.5) {
               return;
             }
             this.lastCenter = center;
