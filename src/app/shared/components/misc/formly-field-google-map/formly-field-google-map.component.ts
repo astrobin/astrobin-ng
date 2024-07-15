@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
-import { Observable } from "rxjs";
-import { take } from "rxjs/operators";
+import { Observable, Subject } from "rxjs";
+import { debounceTime, take } from "rxjs/operators";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 import { google } from "@google/maps";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -19,8 +19,11 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
   search: string;
 
   map: google.maps.Map;
-
+  geocoder: google.maps.Geocoder;
+  lastCenter: google.maps.LatLng;
   tilesLoaded = false;
+  private updateSearchSubject = new Subject<void>();
+  private geocodeCache = new Map<string, string>();
 
   constructor(
     public readonly googleMapsService: GoogleMapsService,
@@ -30,6 +33,12 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
     public readonly translateService: TranslateService
   ) {
     super();
+
+    this.updateSearchSubject.pipe(
+      debounceTime(1000)
+    ).subscribe(() => {
+      this.updateSearch();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -66,9 +75,13 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
           // 0.25 seconds after the center of the map has changed, set the marker position again.
           this.utilsService.delay(250).subscribe(() => {
             const center = this.map.getCenter();
+            if (this.lastCenter && this.calculateDistance(this.lastCenter, center) < 0.1) {
+              return;
+            }
+            this.lastCenter = center;
             marker.setPosition(center);
             this.formControl.setValue(center);
-            this.updateSearch();
+            this.updateSearchSubject.next();
           });
         });
 
@@ -81,12 +94,11 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
         });
 
         this.formControl.setValue(this.map.getCenter());
-        this.updateSearch();
+        this.updateSearchSubject.next();
       });
   }
 
   updateSearch() {
-    const geocoder = this.googleMapsService.createGeocoder();
     const lat = this.formControl.value.lat();
     const lng = this.formControl.value.lng();
 
@@ -95,10 +107,23 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
     }
 
     const location = { lat: parseFloat(lat), lng: parseFloat(lng) };
+    const cacheKey = `${location.lat},${location.lng}`;
 
-    geocoder.geocode({ location }, (results, status) => {
+    if (this.geocodeCache.has(cacheKey)) {
+      this.search = this.geocodeCache.get(cacheKey);
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
+    if (!this.geocoder) {
+      this.geocoder = this.googleMapsService.createGeocoder();
+    }
+
+    this.geocoder.geocode({ location }, (results, status) => {
       if (status === "OK") {
-        this.search = results[0].formatted_address;
+        const address = results[0].formatted_address;
+        this.search = address;
+        this.geocodeCache.set(cacheKey, address);
         this.changeDetectorRef.detectChanges();
       }
     });
@@ -107,8 +132,11 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
   searchChanged(event: Event) {
     event.stopPropagation();
 
-    const geocoder = this.googleMapsService.createGeocoder();
-    geocoder.geocode({ address: this.search }, (results, status) => {
+    if (!this.geocoder) {
+      this.geocoder = this.googleMapsService.createGeocoder();
+    }
+
+    this.geocoder.geocode({ address: this.search }, (results, status) => {
       if (status === "OK") {
         this.map.setCenter(results[0].geometry.location);
         this.formControl.setValue(results[0].geometry.location);
@@ -155,5 +183,26 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
         error();
       }
     });
+  }
+
+  calculateDistance(center1, center2) {
+    const lat1 = center1.lat();
+    const lng1 = center1.lng();
+    const lat2 = center2.lat();
+    const lng2 = center2.lng();
+    const R = 6371; // Radius of the Earth in km
+    const dLat = this.deg2rad(lat2 - lat1);
+    const dLng = this.deg2rad(lng2 - lng1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    // Distance in km
+    return R * c;
+  }
+
+  deg2rad(deg) {
+    return deg * (Math.PI / 180);
   }
 }
