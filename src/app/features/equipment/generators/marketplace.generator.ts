@@ -42,6 +42,7 @@ export class MarketplaceGenerator {
       latitude: source.latitude || null,
       longitude: source.longitude || null,
       country: source.country || null,
+      areaLevel1: source.areaLevel1 || null,
       city: source.city || null,
       lineItems,
       title: source.title || "Test title"
