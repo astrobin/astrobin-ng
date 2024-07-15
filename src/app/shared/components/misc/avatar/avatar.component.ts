@@ -22,6 +22,9 @@ export class AvatarComponent extends BaseComponentDirective implements OnInit {
   @Input()
   userId: UserInterface["id"];
 
+  @Input()
+  link = true;
+
   constructor(public readonly store$: Store<State>, public readonly classicRoutesService: ClassicRoutesService) {
     super(store$);
   }
@@ -44,9 +47,9 @@ export class AvatarComponent extends BaseComponentDirective implements OnInit {
 
   private _setAvatar(): void {
     if (
-      this.user.hasOwnProperty('largeAvatar') &&
-      typeof this.user.largeAvatar === 'string'
-      && this.user.largeAvatar.indexOf("astrobin-default-avatar") > -1
+      this.user.hasOwnProperty("largeAvatar") &&
+      typeof this.user.largeAvatar === "string"
+      && this.user.largeAvatar.indexOf("default-avatar") > -1
     ) {
       this.avatarUrl = "/assets/images/default-avatar.jpeg?v=2";
     } else {

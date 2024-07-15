@@ -8,6 +8,7 @@ html {
 
 body {
   @include main-background-texture;
+  font-family: "Noto Sans", Helvetica, Arial, sans-serif;
 }
 
 .app-loading {

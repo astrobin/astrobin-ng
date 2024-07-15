@@ -7,10 +7,12 @@
 
   > .container {
     flex: 1;
+    margin-top: 3.5rem; // For the fixed navigation header
 
     @media screen and (max-width: $md-max) {
       padding: 0;
       max-width: unset;
+      margin-bottom: 3rem; // For the fixed mobile navigation footer
     }
   }
 }
