@@ -313,16 +313,6 @@
     margin-top: -4px;
   }
 
-  &.quick-search {
-    padding: 0.5rem;
-    width: 100%;
-
-    label {
-      margin: 0;
-      width: 100%;
-    }
-  }
-
   .nav-link {
     color: var(--accentColor);
     display: inline-block;
@@ -396,4 +386,8 @@
 astrobin-avatar {
   display: block;
   width: 2rem;
+}
+
+.form-control::placeholder {
+  color: var(--lighterGrey) !important;
 }
