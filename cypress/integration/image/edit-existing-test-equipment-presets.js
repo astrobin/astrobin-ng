@@ -260,5 +260,7 @@ context("Image edit (existing), test equipment presets", () => {
     cy.get(".btn").contains("Yes, continue").click();
 
     cy.get(".form-check label").contains("Test preset 2").should("not.exist");
+
+    cy.get(".btn").contains("Cancel").click();
   });
 });
