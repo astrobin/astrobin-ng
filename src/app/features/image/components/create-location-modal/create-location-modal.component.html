@@ -17,7 +17,7 @@
 
     <button
       (click)="save()"
-      [class.loading]="(loadingService.loading$ | async) || !mapReady"
+      [class.loading]="(loadingService.loading$ | async) || !mapReady && !mapError"
       class="btn btn-primary"
       type="button"
     >

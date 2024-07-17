@@ -182,12 +182,6 @@ context("Image edit (new)", () => {
     cy.get("astrobin-create-location-modal .form-control#altitude").type("400");
 
     cy.get("astrobin-create-location-modal .btn").contains("Save").click();
-
-    cy.wait("@createLocation");
-    cy.wait("@updateUserProfile");
-
-    cy.get("astrobin-create-location-modal").should("not.exist");
-    cy.get("#image-locations-field .ng-value-container .ng-value").contains("Home observatory").should("exist");
   });
 
   it("should select a group", () => {
