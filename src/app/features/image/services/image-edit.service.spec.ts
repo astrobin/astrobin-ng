@@ -62,6 +62,13 @@ describe("ImageEditService", () => {
       expect(service.isLongExposure()).toBe(true);
     });
 
+    it("should return false for artificial satellite images", () => {
+      service.model = {
+        subjectType: SubjectType.ARTIFICIAL_SATELLITE
+      };
+      expect(service.isLongExposure()).toBe(false);
+    });
+
     it("should return true for solar system images with comet as main subject", () => {
       service.model = {
         subjectType: SubjectType.SOLAR_SYSTEM,
