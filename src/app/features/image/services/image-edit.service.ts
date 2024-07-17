@@ -142,6 +142,8 @@ export class ImageEditService extends BaseService {
         return this.translateService.instant("Noctilucent clouds");
       case SubjectType.LANDSCAPE:
         return this.translateService.instant("Landscape");
+      case SubjectType.ARTIFICIAL_SATELLITE:
+        return this.translateService.instant("Artificial satellite");
       case SubjectType.GEAR:
         return this.translateService.instant("Equipment");
       case SubjectType.OTHER:
