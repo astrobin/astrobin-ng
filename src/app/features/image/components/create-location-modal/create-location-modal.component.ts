@@ -26,6 +26,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
   fields: FormlyFieldConfig[];
   model = {};
   mapReady = false;
+  mapError = false;
   geocoder = this.googleMapsService.createGeocoder();
 
   constructor(
@@ -71,6 +72,9 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
                 mapReady: () => {
                   this.mapReady = true;
                 },
+                mapError: () => {
+                  this.mapError = true;
+                },
                 description: this.translateService.instant("Move the map until the marker points at right location")
               }
             },
@@ -106,6 +110,12 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
     const longitude = (this.form.get("google-map").value as any).lng();
 
     this.getGeolocation(latitude, longitude).subscribe(result => {
+      if (result === null) {
+        this.modal.close(null);
+        this.loadingService.setLoading(false);
+        return;
+      }
+
       const location = this.buildLocationObject(
         (this.form.value as any).name,
         latitude,
@@ -188,6 +198,12 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
   getGeolocation(latitude: number, longitude: number): Observable<{ city; state; country }> {
     return new Observable<{ city; state; country }>(observer => {
       const latLng = new this.googleMapsService.maps.LatLng(latitude, longitude);
+      if (this.mapError) {
+        observer.next(null);
+        observer.complete();
+        return;
+      }
+
       this.geocoder.geocode({ latLng } as any, (results, status) => {
         if (status === this.googleMapsService.maps.GeocoderStatus.OK) {
           if (results[1]) {

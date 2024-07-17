@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, take } from "rxjs/operators";
@@ -7,13 +7,15 @@ import { google } from "@google/maps";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
   templateUrl: "./formly-field-google-map.component.html",
   styleUrls: ["./formly-field-google-map.component.scss"]
 })
-export class FormlyFieldGoogleMapComponent extends FieldType implements AfterViewInit {
+export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, AfterViewInit {
   @ViewChild("map") mapElement: any;
 
   search: string;
@@ -22,6 +24,9 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
   geocoder: google.maps.Geocoder;
   lastCenter: google.maps.LatLng;
   tilesLoaded = false;
+  isCypress = false; // Cypress doesn't support Google Maps due to RefererNotAllowedMapError
+  isLocalhost = false; // Same as above
+
   private updateSearchSubject = new Subject<void>();
   private geocodeCache = new Map<string, string>();
 
@@ -30,7 +35,9 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
     public readonly utilsService: UtilsService,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly windowRefService: WindowRefService,
+    @Inject(PLATFORM_ID) public readonly platformId: any
   ) {
     super();
 
@@ -39,6 +46,11 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
     ).subscribe(() => {
       this.updateSearch();
     });
+  }
+
+  ngOnInit(): void {
+    this.isCypress = isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") > -1;
+    this.isLocalhost = isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.location.hostname === "localhost";
   }
 
   ngAfterViewInit(): void {
@@ -65,6 +77,11 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
         };
 
         this.map = new this.googleMapsService.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+        if ((this.isCypress || this.isLocalhost) && this.props.mapError !== undefined) {
+          this.props.mapError();
+          this.changeDetectorRef.detectChanges();
+        }
 
         const marker = new this.googleMapsService.maps.Marker({
           position: location,
@@ -99,8 +116,14 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
   }
 
   updateSearch() {
-    const lat = this.formControl.value.lat();
-    const lng = this.formControl.value.lng();
+    const value = this.formControl.value;
+
+    if (!value) {
+      return;
+    }
+
+    const lat = value.lat();
+    const lng = value.lng();
 
     if (!lat || !lng) {
       return;

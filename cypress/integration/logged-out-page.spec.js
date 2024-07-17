@@ -9,8 +9,8 @@ context("logging-out-page", () => {
   });
 
   it("should redirect to the logged out page", () => {
-    cy.get("#user-dropdown").click("right");
-    cy.get(".navbar .dropdown-item")
+    cy.get(".user-dropdown-toggle").click();
+    cy.get(".user-sidebar .nav-link")
       .contains("Logout")
       .click();
     cy.url().should("equal", "http://localhost:4400/account/logging-out");

@@ -57,13 +57,13 @@ context("login-page", () => {
     cy.wait(3000);
     cy.url().should("equal", "http://localhost:4400/");
 
-    cy.get("#user-dropdown astrobin-username .username")
-      .contains("AstroBin Dev")
-      .should("exist");
+    cy.get(".user-dropdown-toggle astrobin-avatar")
+      .should("exist")
+      .click();
 
-    cy.get("#user-dropdown .indexes .image-index").should("contain.text", "1.23");
-    cy.get("#user-dropdown .indexes .image-index").should("not.contain.text", "1.234");
-    cy.get("#user-dropdown .indexes .contribution-index").should("contain.text", "0.00");
+    cy.get(".user-sidebar .image-index").should("contain.text", "1.23");
+    cy.get(".user-sidebar .image-index").should("not.contain.text", "1.234");
+    cy.get(".user-sidebar .contribution-index").should("contain.text", "0.00");
   });
 
   it("should redirect to front page in case of success (account via enter key)", () => {
