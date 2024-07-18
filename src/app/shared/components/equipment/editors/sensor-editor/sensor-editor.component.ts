@@ -21,6 +21,7 @@ import { switchMap, take, takeUntil } from "rxjs/operators";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { of } from "rxjs";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -68,20 +69,6 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
     this._initFields();
   }
 
-  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
-    const hasColorOrMonoLabel: boolean =
-      !!value && (
-        value.toLowerCase().indexOf("(mono)") > -1 ||
-        value.toLowerCase().indexOf("(color)") > -1
-      );
-
-    if (!hasColorOrMonoLabel) {
-      field.formControl.setErrors({ "sensor-needs-color-or-mono-label": true });
-      field.formControl.markAsTouched();
-      field.formControl.markAsDirty();
-    }
-  }
-
   private _initFields() {
     this.initBrandAndName()
       .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP))))
@@ -89,7 +76,19 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
           this.fields = [
             this._getBrandField(),
-            this._getNameField(),
+            this._getNameField({
+              sensorNameContainsColorOrMono: {
+                expression: control => {
+                  return of(
+                    control.value.toLowerCase().indexOf("(mono)") > -1 ||
+                    control.value.toLowerCase().indexOf("(color)") > -1
+                  );
+                },
+                message: this.translateService.instant(
+                  "For disambiguation purposes, please make sure that the sensor's name ends with \"(color)\" or \"(mono)\"."
+                )
+              }
+            }),
             this._getVariantOfField(EquipmentItemType.SENSOR, isModerator),
             this._getPixelSizeField(),
             this._getPixelWidthField(),

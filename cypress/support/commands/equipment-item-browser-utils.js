@@ -1,3 +1,5 @@
+import { ColorOrMono } from "../../../src/app/features/equipment/types/sensor.interface";
+
 export const testBrand = {
   id: 1,
   deleted: null,
@@ -19,7 +21,7 @@ export const testSensor = {
   reviewerComment: null,
   created: "2021-09-14T10:56:10.388669",
   updated: "2021-09-14T10:56:10.388688",
-  name: "Test sensor",
+  name: "Test sensor (color)",
   image: null,
   quantumEfficiency: null,
   pixelSize: null,
@@ -31,7 +33,7 @@ export const testSensor = {
   readNoise: null,
   frameRate: null,
   adc: null,
-  colorOrMono: null,
+  colorOrMono: ColorOrMono.C,
   createdBy: 1,
   reviewedBy: null,
   brand: 1,

@@ -44,7 +44,7 @@ context("Equipment", () => {
       });
 
       it("should create a sensor", () => {
-        cy.equipmentItemBrowserCreate("#camera-field-sensor", "Test sensor", "@findSensors");
+        cy.equipmentItemBrowserCreate("#camera-field-sensor", "Test sensor (color)", "@findSensors");
         cy.equipmentItemBrowserCreateBrand(
           "#create-new-item #create-new-item #equipment-item-field-brand",
           "Test Brand",
@@ -55,7 +55,7 @@ context("Equipment", () => {
         cy.get("#sensor-field-pixel-width").type(2000);
         cy.get("#sensor-field-pixel-height").type(1000);
 
-        cy.get("#create-new-item #create-new-item #equipment-item-field-name").should("have.value", "Test sensor");
+        cy.get("#create-new-item #create-new-item #equipment-item-field-name").should("have.value", "Test sensor (color)");
 
         cy.route("post", "**/api/v2/equipment/sensor/", testSensor).as("createSensor");
         cy.route("get", "**/api/v2/equipment/sensor/find-similar-in-brand/*", []).as("findSimilarSensorsInBrand");
@@ -73,7 +73,7 @@ context("Equipment", () => {
 
         cy.wait("@createSensor");
 
-        cy.ngSelectValueShouldContain("#camera-field-sensor", "Test sensor");
+        cy.ngSelectValueShouldContain("#camera-field-sensor", "Test sensor (color)");
       });
 
       it("should show 'Max cooling' only if 'Cooled'", () => {

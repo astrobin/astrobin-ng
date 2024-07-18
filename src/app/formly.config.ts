@@ -337,14 +337,6 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         message(): string {
           return translateService.instant("This is not a valid set of coordinates.");
         }
-      },
-      {
-        name: "sensor-needs-color-or-mono-label",
-        message(): string {
-          return translateService.instant(
-            "For disambiguation purposes, please make sure that the sensor's name ends with \"(color)\" or \"(mono)\"."
-          );
-        }
       }
     ],
     validators: [
