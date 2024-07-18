@@ -17,9 +17,10 @@ import { SensorDisplayProperty, SensorService } from "@features/equipment/servic
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { switchMap, take } from "rxjs/operators";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -65,6 +66,20 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
 
     this.model.klass = EquipmentItemType.SENSOR;
     this._initFields();
+  }
+
+  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
+    const hasColorOrMonoLabel: boolean =
+      !!value && (
+        value.toLowerCase().indexOf("(mono)") > -1 ||
+        value.toLowerCase().indexOf("(color)") > -1
+      );
+
+    if (!hasColorOrMonoLabel) {
+      field.formControl.setErrors({ "sensor-needs-color-or-mono-label": true });
+      field.formControl.markAsTouched();
+      field.formControl.markAsDirty();
+    }
   }
 
   private _initFields() {
@@ -472,6 +487,27 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
             value: ColorOrMono.M
           }
         ]
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.pipe(
+            takeUntil(this.destroyed$)
+          ).subscribe((value: ColorOrMono) => {
+            const name = this.model.name;
+
+            if (value === ColorOrMono.C) {
+              if (name && !name.includes("(color")) {
+                this.model.name = `${name.replace("(mono)", "").trim()} (color)`;
+                this.form.patchValue({ name: this.model.name });
+              }
+            } else if (value === ColorOrMono.M) {
+              if (name && !name.includes("(mono")) {
+                this.model.name = `${name.replace("(color)", "").trim()} (mono)`;
+                this.form.patchValue({ name: this.model.name });
+              }
+            }
+          });
+        }
       }
     };
   }
