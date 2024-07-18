@@ -11,6 +11,7 @@ import { CountryService } from "@shared/services/country.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { MARKETPLACE_SALE_TYPE } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
 
 @Component({
   selector: "astrobin-marketplace-listing",
@@ -19,9 +20,13 @@ import { EquipmentMarketplaceService } from "@features/equipment/services/equipm
 })
 export class MarketplaceListingComponent extends BaseComponentDirective implements OnInit, OnChanges {
   readonly MarketplaceListingType = MarketplaceListingType;
+  readonly MARKETPLACE_SALE_TYPE = MARKETPLACE_SALE_TYPE;
 
   @Input()
   listing: MarketplaceListingInterface;
+
+  @Input()
+  saleType: MARKETPLACE_SALE_TYPE;
 
   @Input()
   previewMode = false;

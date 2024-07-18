@@ -13,7 +13,7 @@
 </div>
 
 <div
-  *ngIf="listing.lineItems.length > 1"
+  *ngIf="listing.lineItems.length > 1 && saleType === MARKETPLACE_SALE_TYPE.MULTIPLE_IN_A_BUNDLE"
   class="alert alert-dark mt-4"
   role="alert"
 >
