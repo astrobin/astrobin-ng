@@ -1,4 +1,4 @@
-import { testBrand, testCamera, testSensor } from "../../../support/commands/equipment-item-browser-utils";
+import { testBrand, testSensor } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
@@ -21,7 +21,14 @@ context("Equipment", () => {
       });
 
       it("should create a sensor", () => {
-        cy.equipmentItemBrowserCreate("#camera-field-sensor", "Test sensor", "@findSensors");
+        cy.route("GET", "**/api/v2/equipment/sensor/?page=*", {
+          count: 0,
+          next: null,
+          previous: null,
+          results: []
+        }).as("findSensors");
+
+        cy.equipmentItemBrowserCreate("#camera-field-sensor", "Test sensor (color)", "@findSensors");
 
         cy.route("get", "**/api/v2/equipment/sensor/find-similar-in-brand/*", [testSensor]).as("findSimilarSensors");
 
@@ -31,15 +38,9 @@ context("Equipment", () => {
           testBrand
         );
 
-        cy.get("astrobin-sensor-editor #equipment-item-field-name").clear();
-        cy.get("astrobin-sensor-editor #equipment-item-field-name").type("Test sensor");
-
-        cy.wait("@findSimilarSensors");
-
-        cy.get("astrobin-similar-items-suggestion").should("be.visible");
         cy.get("astrobin-similar-items-suggestion .btn").click();
 
-        cy.equipmentItemBrowserShouldContain("#camera-field-sensor", "Test Brand", "Test sensor");
+        cy.equipmentItemBrowserShouldContain("#camera-field-sensor", "Test Brand", "Test sensor (color)");
       });
     });
   });

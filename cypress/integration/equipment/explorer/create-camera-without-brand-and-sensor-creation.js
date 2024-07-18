@@ -43,7 +43,7 @@ context("Equipment", () => {
       });
 
       it("should select a sensor", () => {
-        cy.equipmentItemBrowserSelectFirstSensor("#camera-field-sensor", "Test sensor", testSensor);
+        cy.equipmentItemBrowserSelectFirstSensor("#camera-field-sensor", "Test sensor (color)", testSensor);
       });
 
       it("should show 'Max cooling' only if 'Cooled'", () => {

@@ -63,6 +63,15 @@ export enum EquipmentItemEditorMode {
   EDIT_PROPOSAL = "EDIT_PROPOSAL"
 }
 
+export type AsyncValidator = {
+  expression: (control: FormControl) => Promise<boolean> | Observable<boolean>;
+  message: string | ((error: any, field: FormlyFieldConfig) => string);
+};
+
+export type AsyncValidatorsMap = {
+  [key: string]: AsyncValidator;
+};
+
 const DIY_PROHIBITED_WORDS = [
   "diy",
   "self-made",
@@ -477,7 +486,105 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     };
   }
 
-  protected _getNameField() {
+  protected _getNameField(additionalAsyncValidators?: AsyncValidatorsMap): FormlyFieldConfig {
+    const defaultAsyncValidators: AsyncValidatorsMap = {
+      brandInName: {
+        expression: (control: FormControl) => {
+          const brandControl: AbstractControl = this.form.get("brand");
+
+          if (!control.value || !brandControl?.value) {
+            return of(true);
+          }
+
+          this.store$.dispatch(new LoadBrand({ id: brandControl.value }));
+
+          return this.store$.select(selectBrand, brandControl.value).pipe(
+            filter(brand => !!brand),
+            take(1),
+            map((brand: BrandInterface) => control.value.toLowerCase().indexOf(brand.name.toLowerCase()) === -1)
+          );
+        },
+        message: this.translateService.instant("Do not repeat the brand's name in the item's name.")
+      },
+      uniqueForBrand: {
+        expression: (control: FormControl) => {
+          const type: EquipmentItemType = this.equipmentItemService.getType({
+            ...this.model,
+            ...this.form.value
+          } as EquipmentItemBaseInterface);
+
+          if (!this.model.brand || !control.value) {
+            return of(true);
+          }
+
+          return this.equipmentApiService.getByBrandAndName(type, this.model.brand, control.value).pipe(
+            map(item => {
+              if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+                return !item;
+              }
+
+              return !item || item.name === this.model.name;
+            })
+          );
+        },
+        message: this.translateService.instant("An item of the same class, brand, and name already exists.")
+      },
+      prohibitedWords: {
+        expression: (control: FormControl) => {
+          if (!control.value) {
+            return of(true);
+          }
+
+          for (const word of DIY_PROHIBITED_WORDS) {
+            if (new RegExp(`\\b${word}\\b`).test(control.value.toLowerCase())) {
+              return of(false);
+            }
+          }
+
+          for (const word of OWN_INSTANCE_PROHIBITED_WORDS) {
+            if (new RegExp(`\\b${word}\\b`).test(control.value.toLowerCase())) {
+              return of(false);
+            }
+          }
+
+          return of(true);
+        },
+        message: (error, field: FormlyFieldConfig) => {
+          for (const word of OWN_INSTANCE_PROHIBITED_WORDS) {
+            if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
+              return this.translateService.instant(
+                `Your usage of the word "{{0}}" suggests that you are using this field to specify a property ` +
+                "of this item that is only relevant to your own copy. Remember that here you are creating or editing " +
+                "the generic instance that will be shared by all owners on AstroBin.",
+                {
+                  "0": word
+                }
+              );
+            }
+          }
+
+          for (const word of DIY_PROHIBITED_WORDS) {
+            if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
+              const label = this.translateService.instant("Self-made / non-commercial (no brand)");
+              return this.translateService.instant(
+                `You don't need to use the word "{{0}}", as this meaning is already conveyed by clicking on ` +
+                `the checkbox above: "{{1}}".`,
+                {
+                  "0": word,
+                  "1": label
+                }
+              );
+            }
+          }
+        }
+      }
+    }
+
+    const asyncValidators = {
+      ...defaultAsyncValidators,
+      ...additionalAsyncValidators
+    }
+
     return {
       key: "name",
       type: "input",
@@ -526,98 +633,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             .subscribe();
         }
       },
-      asyncValidators: {
-        brandInName: {
-          expression: (control: FormControl) => {
-            const brandControl: AbstractControl = this.form.get("brand");
-
-            if (!control.value || !brandControl?.value) {
-              return of(true);
-            }
-
-            this.store$.dispatch(new LoadBrand({ id: brandControl.value }));
-
-            return this.store$.select(selectBrand, brandControl.value).pipe(
-              filter(brand => !!brand),
-              take(1),
-              map((brand: BrandInterface) => control.value.toLowerCase().indexOf(brand.name.toLowerCase()) === -1)
-            );
-          },
-          message: this.translateService.instant("Do not repeat the brand's name in the item's name.")
-        },
-        uniqueForBrand: {
-          expression: (control: FormControl) => {
-            const type: EquipmentItemType = this.equipmentItemService.getType({
-              ...this.model,
-              ...this.form.value
-            } as EquipmentItemBaseInterface);
-
-            if (!this.model.brand || !control.value) {
-              return of(true);
-            }
-
-            return this.equipmentApiService.getByBrandAndName(type, this.model.brand, control.value).pipe(
-              map(item => {
-                if (this.editorMode === EquipmentItemEditorMode.CREATION) {
-                  return !item;
-                }
-
-                return !item || item.name === this.model.name;
-              })
-            );
-          },
-          message: this.translateService.instant("An item of the same class, brand, and name already exists.")
-        },
-        prohibitedWords: {
-          expression: (control: FormControl) => {
-            if (!control.value) {
-              return of(true);
-            }
-
-            for (const word of DIY_PROHIBITED_WORDS) {
-              if (new RegExp(`\\b${word}\\b`).test(control.value.toLowerCase())) {
-                return of(false);
-              }
-            }
-
-            for (const word of OWN_INSTANCE_PROHIBITED_WORDS) {
-              if (new RegExp(`\\b${word}\\b`).test(control.value.toLowerCase())) {
-                return of(false);
-              }
-            }
-
-            return of(true);
-          },
-          message: (error, field: FormlyFieldConfig) => {
-            for (const word of OWN_INSTANCE_PROHIBITED_WORDS) {
-              if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
-                return this.translateService.instant(
-                  `Your usage of the word "{{0}}" suggests that you are using this field to specify a property ` +
-                  "of this item that is only relevant to your own copy. Remember that here you are creating or editing " +
-                  "the generic instance that will be shared by all owners on AstroBin.",
-                  {
-                    "0": word
-                  }
-                );
-              }
-            }
-
-            for (const word of DIY_PROHIBITED_WORDS) {
-              if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
-                const label = this.translateService.instant("Self-made / non-commercial (no brand)");
-                return this.translateService.instant(
-                  `You don't need to use the word "{{0}}", as this meaning is already conveyed by clicking on ` +
-                  `the checkbox above: "{{1}}".`,
-                  {
-                    "0": word,
-                    "1": label
-                  }
-                );
-              }
-            }
-          }
-        }
-      }
+      asyncValidators
     };
   }
 
