@@ -307,28 +307,37 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
     results: [testCamera]
   }).as("findCameras");
 
-  cy.intercept({
-    method: "get",
-    path: /.*\/api\/v2\/equipment\/camera\/find-similar-in-brand\/.*/
-  }, {
-    body: []
-  });
-
-  cy.intercept({
-    method: "get",
-    path: /.*\/api\/v2\/equipment\/camera\/others-in-brand\/.*/
-  }, {
-    body: []
-  }).as("otherCamerasInBrand");
-
-  cy.intercept({ method: "get", path: "**/api/v2/equipment/camera/?brand=*" }, {
-    body: {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
+  cy.intercept(
+    {
+      method: "get",
+      path: /.*\/api\/v2\/equipment\/camera\/find-similar-in-brand\/.*/
+    },
+    {
+      body: []
     }
-  }).as("findCamerasByName");
+  );
+
+  cy.intercept(
+    {
+      method: "get",
+      path: /.*\/api\/v2\/equipment\/camera\/others-in-brand\/.*/
+    },
+    {
+      body: []
+    }
+  ).as("otherCamerasInBrand");
+
+  cy.intercept(
+    { method: "get", path: "**/api/v2/equipment/camera/?brand=*" },
+    {
+      body: {
+        count: 0,
+        next: null,
+        previous: null,
+        results: []
+      }
+    }
+  ).as("findCamerasByName");
 
   cy.route("GET", "**/api/v2/equipment/camera/?pending_review=true&page=*", {
     count: 0,
@@ -395,19 +404,25 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
 
   cy.intercept({ method: "get", path: "**/api/v2/equipment/telescope/find-similar-in-brand/*" }, { body: [] });
 
-  cy.intercept({
-    method: "get",
-    path: /.*\/api\/v2\/equipment\/telescope\/others-in-brand\/.*/
-  }, { body: [] }).as("otherTelescopessInBrand");
+  cy.intercept(
+    {
+      method: "get",
+      path: /.*\/api\/v2\/equipment\/telescope\/others-in-brand\/.*/
+    },
+    { body: [] }
+  ).as("otherTelescopessInBrand");
 
-  cy.intercept({ method: "get", path: "**/api/v2/equipment/telescope/?brand=*" }, {
-    body: {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
+  cy.intercept(
+    { method: "get", path: "**/api/v2/equipment/telescope/?brand=*" },
+    {
+      body: {
+        count: 0,
+        next: null,
+        previous: null,
+        results: []
+      }
     }
-  }).as("findTelescopesByName");
+  ).as("findTelescopesByName");
 
   cy.route("GET", "**/api/v2/equipment/telescope/?pending_review=true&page=*", {
     count: 0,
@@ -453,19 +468,25 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
 
   cy.intercept({ method: "get", path: "**/api/v2/equipment/mount/find-similar-in-brand/*" }, { body: [] });
 
-  cy.intercept({
-    method: "get",
-    path: /.*\/api\/v2\/equipment\/mount\/others-in-brand\/.*/
-  }, { body: [] }).as("otherMountsInBrand");
+  cy.intercept(
+    {
+      method: "get",
+      path: /.*\/api\/v2\/equipment\/mount\/others-in-brand\/.*/
+    },
+    { body: [] }
+  ).as("otherMountsInBrand");
 
-  cy.intercept({ method: "get", path: "**/api/v2/equipment/mount/?brand=*" }, {
-    body: {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
+  cy.intercept(
+    { method: "get", path: "**/api/v2/equipment/mount/?brand=*" },
+    {
+      body: {
+        count: 0,
+        next: null,
+        previous: null,
+        results: []
+      }
     }
-  }).as("findMountsByName");
+  ).as("findMountsByName");
 
   cy.route("GET", "**/api/v2/equipment/mount/?followed=true&page=*", {
     count: 0,
@@ -511,19 +532,25 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
 
   cy.intercept({ method: "get", path: "**/api/v2/equipment/filter/find-similar-in-brand/*" }, { body: [] });
 
-  cy.intercept({
-    method: "get",
-    path: /.*\/api\/v2\/equipment\/filter\/others-in-brand\/.*/
-  }, { body: [] }).as("otherFiltersInBrand");
+  cy.intercept(
+    {
+      method: "get",
+      path: /.*\/api\/v2\/equipment\/filter\/others-in-brand\/.*/
+    },
+    { body: [] }
+  ).as("otherFiltersInBrand");
 
-  cy.intercept({ method: "get", path: "**/api/v2/equipment/filter/?brand=*" }, {
-    body: {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
+  cy.intercept(
+    { method: "get", path: "**/api/v2/equipment/filter/?brand=*" },
+    {
+      body: {
+        count: 0,
+        next: null,
+        previous: null,
+        results: []
+      }
     }
-  }).as("findFiltersByName");
+  ).as("findFiltersByName");
 
   cy.route("GET", "**/api/v2/equipment/filter/?pending_review=true&page=*", {
     count: 0,
@@ -569,19 +596,25 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
 
   cy.intercept({ method: "get", path: "**/api/v2/equipment/accessory/find-similar-in-brand/*" }, { body: [] });
 
-  cy.intercept({
-    method: "get",
-    path: /.*\/api\/v2\/equipment\/accessory\/others-in-brand\/.*/
-  }, { body: [] }).as("otherAccessoriesInBrand");
+  cy.intercept(
+    {
+      method: "get",
+      path: /.*\/api\/v2\/equipment\/accessory\/others-in-brand\/.*/
+    },
+    { body: [] }
+  ).as("otherAccessoriesInBrand");
 
-  cy.intercept({ method: "get", path: "**/api/v2/equipment/accessory/?brand=*" }, {
-    body: {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
+  cy.intercept(
+    { method: "get", path: "**/api/v2/equipment/accessory/?brand=*" },
+    {
+      body: {
+        count: 0,
+        next: null,
+        previous: null,
+        results: []
+      }
     }
-  }).as("findAccessoriesByName");
+  ).as("findAccessoriesByName");
 
   cy.route("GET", "**/api/v2/equipment/accessory/?pending_review=true&page=*", {
     count: 0,
@@ -627,19 +660,25 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForSoftware", () => {
 
   cy.intercept({ method: "get", path: "**/api/v2/equipment/software/find-similar-in-brand/*" }, { body: [] });
 
-  cy.intercept({
-    method: "get",
-    path: /.*\/api\/v2\/equipment\/software\/others-in-brand\/.*/
-  }, { body: [] }).as("otherSoftwareItemsInBrand");
+  cy.intercept(
+    {
+      method: "get",
+      path: /.*\/api\/v2\/equipment\/software\/others-in-brand\/.*/
+    },
+    { body: [] }
+  ).as("otherSoftwareItemsInBrand");
 
-  cy.intercept({ method: "get", path: "**/api/v2/equipment/software/?brand=*" }, {
-    body: {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
+  cy.intercept(
+    { method: "get", path: "**/api/v2/equipment/software/?brand=*" },
+    {
+      body: {
+        count: 0,
+        next: null,
+        previous: null,
+        results: []
+      }
     }
-  }).as("findSoftwareItemsByName");
+  ).as("findSoftwareItemsByName");
 
   cy.route("GET", "**/api/v2/equipment/software/?pending_review=true&page=*", {
     count: 0,
@@ -753,7 +792,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstBrand", (selector, brandNam
     results: [brandObject]
   }).as("findBrands");
 
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  cy.get(`${selector} + .toggle-enable-fullscreen`).scrollIntoView().click();
 
   cy.ngSelectType(selector, brandName);
 
