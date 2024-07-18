@@ -6,5 +6,6 @@
     "openMode": 0
   },
   "viewportWidth": 1024,
-  "viewportHeight": 768
+  "viewportHeight": 768,
+  "scrollBehavior": "center"
 }
