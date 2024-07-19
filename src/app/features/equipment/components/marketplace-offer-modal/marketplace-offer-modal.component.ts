@@ -13,7 +13,10 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Actions } from "@ngrx/effects";
 import { take, takeUntil } from "rxjs/operators";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import {
+  MarketplaceLineItemInterface,
+  MarketplaceShippingCostType
+} from "@features/equipment/types/marketplace-line-item.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
@@ -233,15 +236,33 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               type: "input",
               wrappers: ["default-wrapper"],
               className: "col-12 col-lg pb-4 pb-lg-0 shipping-cost",
-              defaultValue: lineItem.shippingCost
-                ? this.currencyPipe.transform(+lineItem.shippingCost, lineItem.currency, "symbol-narrow")
-                : this.translateService.instant("Free"),
               props: {
                 label: this.translateService.instant("Shipping cost"),
                 readonly: true,
                 tabindex: -1,
                 hideOptionalMarker: true,
                 hideLabel: !this.displayLabel(index)
+              },
+              hooks: {
+                onInit: field => {
+                  const defaultValue = () => {
+                    switch (lineItem.shippingCostType) {
+                      case MarketplaceShippingCostType.NO_SHIPPING:
+                        return this.translateService.instant("n/a");
+                      case MarketplaceShippingCostType.COVERED_BY_SELLER:
+                        return this.translateService.instant("Covered by seller");
+                      case MarketplaceShippingCostType.FIXED:
+                        if (!!lineItem.shippingCost) {
+                          return this.currencyPipe.transform(+lineItem.shippingCost, lineItem.currency, "symbol-narrow");
+                        }
+                        return this.translateService.instant("Free");
+                      case MarketplaceShippingCostType.TO_BE_AGREED:
+                        return this.translateService.instant("To be agreed");
+                    }
+                  };
+
+                  field.formControl.setValue(defaultValue());
+                }
               }
             },
             {

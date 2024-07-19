@@ -1,16 +1,19 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import {
+  MarketplaceLineItemInterface,
+  MarketplaceShippingCostType
+} from "@features/equipment/types/marketplace-line-item.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { TranslateService } from "@ngx-translate/core";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { filter, take, takeUntil } from "rxjs/operators";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
+import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
+import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-price",
@@ -18,6 +21,8 @@ import { LoadUser } from "@features/account/store/auth.actions";
   styleUrls: ["./marketplace-listing-line-item-price.component.scss"]
 })
 export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirective implements OnInit {
+  readonly MarketplaceShippingCostType = MarketplaceShippingCostType;
+
   @Input()
   listing: MarketplaceListingInterface;
 
@@ -41,16 +46,16 @@ export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirec
       filter(listing => !!listing),
       distinctUntilChangedObj(),
       takeUntil(this.destroyed$)
-    ).subscribe(listing => {
-      this.listing = { ...listing };
+    ).subscribe(listingFormStore => {
+      this.listing.lineItems.forEach((lineItem: MarketplaceLineItemInterface) => {
+        const lineItemFromStore = listingFormStore.lineItems.find(item => item.id === lineItem.id);
 
-      this.lineItem = listing.lineItems.find(lineItem => lineItem.id === this.lineItem.id);
-
-      if (this.lineItem.soldTo) {
-        this.loadUser(this.lineItem.soldTo, user => this.soldToUser = user);
-      } else if (this.lineItem.reservedTo) {
-        this.loadUser(this.lineItem.reservedTo, user => this.reservedToUser = user);
-      }
+        if (lineItemFromStore.soldTo) {
+          this.loadUser(lineItemFromStore.soldTo, user => this.soldToUser = user);
+        } else if (lineItemFromStore.reservedTo) {
+          this.loadUser(lineItemFromStore.reservedTo, user => this.reservedToUser = user);
+        }
+      });
     });
   }
 

@@ -58,16 +58,29 @@
     {{ lineItem.price | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
   </div>
 
-  <div *ngIf="!!lineItem.shippingCost; else freeShippingTemplate" class="shipping-cost">
-    {{ "+ shipping" | translate }}:
-    {{ lineItem.shippingCost | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
-  </div>
+  <div class="shipping-cost">
+    <ng-container *ngIf="lineItem.shippingCostType === MarketplaceShippingCostType.NO_SHIPPING">
+      <!-- leave it empty -->
+    </ng-container>
 
-  <ng-template #freeShippingTemplate>
-    <div *ngIf="listing.deliveryByShipping" class="shipping-cost">
-      {{ "free shipping" | translate }}
-    </div>
-  </ng-template>
+    <ng-container *ngIf="lineItem.shippingCostType === MarketplaceShippingCostType.COVERED_BY_SELLER">
+      {{ "Seller pays for shipping" | translate }}
+    </ng-container>
+
+    <ng-container *ngIf="lineItem.shippingCostType === MarketplaceShippingCostType.FIXED">
+      <ng-container *ngIf="!!lineItem.shippingCost; else freeShippingTemplate">
+        {{ "+ shipping" | translate }}:
+        {{ lineItem.shippingCost | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+      </ng-container>
+      <ng-template #freeShippingTemplate>
+        {{ "Free Shipping" | translate }}
+      </ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="lineItem.shippingCostType === MarketplaceShippingCostType.TO_BE_AGREED">
+      {{ "Shipping cost to be agreed" | translate }}
+    </ng-container>
+  </div>
 </div>
 
 <ng-template #noPrice>
