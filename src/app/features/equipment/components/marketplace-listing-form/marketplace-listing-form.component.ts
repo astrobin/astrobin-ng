@@ -24,7 +24,8 @@ import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import {
   MarketplaceLineItemFindItemMode,
-  MarketplaceListingCondition
+  MarketplaceListingCondition,
+  MarketplaceShippingCostType
 } from "@features/equipment/types/marketplace-line-item.interface";
 import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
@@ -101,6 +102,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         currency: null,
         condition: null,
         yearOfPurchase: null,
+        shippingCostType: MarketplaceShippingCostType.FIXED,
         shippingCost: null,
         description: null,
         findItemMode: MarketplaceLineItemFindItemMode.PLAIN,
@@ -511,21 +513,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 className: "hidden"
               },
               {
-                key: "firstApproved",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "approved",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "approvedBy",
-                type: "input",
-                className: "hidden"
-              },
-              {
                 key: "findItemMode",
                 type: "ng-select",
                 wrappers: ["default-wrapper"],
@@ -848,7 +835,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                         key: "price",
                         type: "custom-number",
                         wrappers: ["default-wrapper"],
-                        className: "col-12 col-lg-6",
+                        className: "col-12",
                         props: {
                           min: 0,
                           label: this.translateService.instant("Price")
@@ -861,12 +848,70 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                         }
                       },
                       {
+                        key: "shippingCostType",
+                        type: "ng-select",
+                        wrappers: ["default-wrapper"],
+                        className: "col-12",
+                        props: {
+                          required: true,
+                          label: this.translateService.instant("Shipping cost type"),
+                          options: Object.keys(MarketplaceShippingCostType).map(key => ({
+                            value: key,
+                            label: this.equipmentItemService.humanizeShippingCostType(MarketplaceShippingCostType[key])
+                          }))
+                        },
+                        hooks: {
+                          onInit: (field: FormlyFieldConfig) => {
+                            field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe((value: MarketplaceShippingCostType) => {
+                              const listing = this.model;
+                              const index = listing.lineItems.indexOf(field.model);
+                              const lineItem = listing.lineItems[index];
+
+                              if (value === MarketplaceShippingCostType.NO_SHIPPING) {
+                                lineItem.shippingCost = null;
+                                this.form.get(`lineItems.${index}`).patchValue({ shippingCost: null });
+                              } else if (value === MarketplaceShippingCostType.COVERED_BY_SELLER) {
+                                listing.deliveryByShipping = true;
+                                this.form.get("deliveryByShipping").patchValue(true);
+                                lineItem.shippingCost = 0;
+                                this.form.get(`lineItems.${index}`).patchValue({ shippingCost: 0 });
+                              } else if (value === MarketplaceShippingCostType.FIXED) {
+                                listing.deliveryByShipping = true;
+                                this.form.get("deliveryByShipping").patchValue(true);
+                              } else if (value === MarketplaceShippingCostType.TO_BE_AGREED) {
+                                listing.deliveryByShipping = true;
+                                this.form.get("deliveryByShipping").patchValue(true);
+                                lineItem.shippingCost = null;
+                                this.form.get(`lineItems.${index}`).patchValue({ shippingCost: null });
+                              }
+
+                              // If all line items have NO_SHIPPING, set deliveryByShipping to false and shippingMethod to null
+                              if (listing.lineItems.every(item => item.shippingCostType === MarketplaceShippingCostType.NO_SHIPPING)) {
+                                listing.deliveryByShipping = false;
+                                this.form.get("deliveryByShipping").patchValue(false);
+                                listing.shippingMethod = null;
+                                this.form.get("shippingMethod").patchValue(null);
+                              }
+
+                              this.model = { ...listing, lineItems: [...listing.lineItems] };
+                            });
+                          }
+                        }
+                      },
+                      {
                         key: "shippingCost",
                         type: "custom-number",
                         wrappers: ["default-wrapper"],
-                        className: "col-12 col-lg-6",
+                        className: "col-12",
                         expressions: {
-                          hide: () => !this.model.deliveryByShipping
+                          hide: field => {
+                            const index = this.model.lineItems.indexOf(field.model);
+                            const lineItem = this.model.lineItems[index];
+                            return (
+                              !this.model.deliveryByShipping ||
+                              lineItem.shippingCostType !== MarketplaceShippingCostType.FIXED
+                            );
+                          }
                         },
                         props: {
                           label: this.translateService.instant("Shipping cost"),
@@ -1197,6 +1242,31 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               defaultValue: this.model.deliveryByShipping !== undefined ? this.model.deliveryByShipping : true,
               props: {
                 label: this.translateService.instant("Seller ships")
+              },
+              hooks: {
+                onInit: field => {
+                  field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+                    if (!value) {
+                      this.model.shippingMethod = null;
+                      this.form.get("shippingMethod").setValue(null);
+
+                      this.model.lineItems.forEach(lineItem => {
+                        lineItem.shippingCostType = MarketplaceShippingCostType.NO_SHIPPING;
+                        lineItem.shippingCost = null;
+
+                        this.form.get(`lineItems.${lineItem.id}`).patchValue({
+                          shippingCostType: MarketplaceShippingCostType.NO_SHIPPING,
+                          shippingCost: null
+                        });
+                      });
+                    }
+
+                    this.model = {
+                      ...this.model,
+                      lineItems: this.model.lineItems
+                    };
+                  });
+                }
               }
             },
             {
@@ -1309,6 +1379,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             currency: initialCurrency,
             condition: MarketplaceListingCondition.USED,
             yearOfPurchase: null,
+            shippingCostType: MarketplaceShippingCostType.FIXED,
             shippingCost: null,
             description: null,
             findItemMode: MarketplaceLineItemFindItemMode.PLAIN,

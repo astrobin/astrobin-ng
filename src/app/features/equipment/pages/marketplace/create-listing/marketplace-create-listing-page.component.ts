@@ -24,6 +24,7 @@ import {
   MarketplaceListingFormInitialCountInterface
 } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
@@ -87,6 +88,8 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
       // Create multiple listings, each one gets one of the line items, and all other data is the same.
       listings = Array.from({ length: value.count }, (_, i) => ({
         ...value,
+        shippingMethod: value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING ? value.shippingMethod : null,
+        deliveryByShipping: value.lineItems[i].shippingCostType !== MarketplaceShippingCostType.NO_SHIPPING ? value.deliveryByShipping : false,
         lineItems: [value.lineItems[i]]
       }));
     } else {

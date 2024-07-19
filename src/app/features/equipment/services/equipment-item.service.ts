@@ -30,7 +30,10 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { MarketplaceListingShippingMethod } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
+import {
+  MarketplaceListingCondition,
+  MarketplaceShippingCostType
+} from "@features/equipment/types/marketplace-line-item.interface";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -108,6 +111,21 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Unopened");
       case MarketplaceListingCondition.OTHER:
         return this.translateService.instant("Unspecified condition");
+    }
+
+    return this.translateService.instant("Unknown");
+  }
+
+  humanizeShippingCostType(shippingCostType: MarketplaceShippingCostType) {
+    switch (shippingCostType) {
+      case MarketplaceShippingCostType.NO_SHIPPING:
+        return this.translateService.instant("I will not ship this item");
+      case MarketplaceShippingCostType.COVERED_BY_SELLER:
+        return this.translateService.instant("I will cover the shipping cost");
+      case MarketplaceShippingCostType.FIXED:
+        return this.translateService.instant("The shipping cost is fixed");
+      case MarketplaceShippingCostType.TO_BE_AGREED:
+        return this.translateService.instant("The shipping cost will be agreed upon");
     }
 
     return this.translateService.instant("Unknown");

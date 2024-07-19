@@ -20,6 +20,13 @@ export enum MarketplaceLineItemFindItemMode {
   PLAIN = "PLAIN"
 }
 
+export enum MarketplaceShippingCostType {
+  NO_SHIPPING = "NO_SHIPPING",
+  COVERED_BY_SELLER = "COVERED_BY_SELLER",
+  FIXED = "FIXED",
+  TO_BE_AGREED = "TO_BE_AGREED",
+}
+
 export interface MarketplaceLineItemInterface {
   id?: number;
   hash?: string;
@@ -35,6 +42,7 @@ export interface MarketplaceLineItemInterface {
   currency: string;
   condition: MarketplaceListingCondition;
   yearOfPurchase: number | null;
+  shippingCostType: MarketplaceShippingCostType | null;
   shippingCost: number | null;
   description: string | null;
   findItemMode?: MarketplaceLineItemFindItemMode;

@@ -4,7 +4,8 @@ import {
 } from "@features/equipment/types/marketplace-listing.interface";
 import {
   MarketplaceLineItemInterface,
-  MarketplaceListingCondition
+  MarketplaceListingCondition,
+  MarketplaceShippingCostType
 } from "@features/equipment/types/marketplace-line-item.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserGenerator } from "@shared/generators/user.generator";
@@ -65,6 +66,7 @@ export class MarketplaceGenerator {
       currency: source.currency || "USD",
       condition: source.condition || MarketplaceListingCondition.NEW,
       yearOfPurchase: source.yearOfPurchase || null,
+      shippingCostType: source.shippingCostType || MarketplaceShippingCostType.FIXED,
       shippingCost: source.shippingCost || null,
       description: source.description || null,
       itemObjectId: source.itemObjectId || 1,
