@@ -325,6 +325,10 @@ msgstr ""
 msgid "Are you sure?"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit.service.ts
+msgid "Artificial satellite"
+msgstr ""
+
 msgid ""
 "As a member of the {{0}}AstroBin Beta Testers{{1}} group, you are currently "
 "on the beta version of this app. To learn why a beta version is currently "
@@ -906,9 +910,6 @@ msgstr ""
 msgid "Constellations"
 msgstr ""
 
-msgid "Contact"
-msgstr ""
-
 msgid "Content"
 msgstr ""
 
@@ -952,6 +953,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
 msgid "Courier"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
+msgid "Covered by seller"
 msgstr ""
 
 msgid "Create"
@@ -1449,6 +1454,12 @@ msgstr ""
 msgid "Followed equipment"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/editors/sensor-editor/sensor-editor.component.ts
+msgid ""
+"For disambiguation purposes, please make sure that the sensor's name ends "
+"with \"(color)\" or \"(mono)\"."
+msgstr ""
+
 msgid ""
 "For more information about this and other subscription plans, please visit "
 "the {{0}}pricing{{1}} page."
@@ -1499,6 +1510,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
 msgid "Free"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+msgid "Free Shipping"
 msgstr ""
 
 msgid "Freeze"
@@ -1647,6 +1662,14 @@ msgstr ""
 msgid ""
 "I have not included information that pertains to my personal item (e.g. "
 "sold/broken/refurbished...) and this is the general description of a product"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
+msgid "I will cover the shipping cost"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
+msgid "I will not ship this item"
 msgstr ""
 
 msgid "IOTD"
@@ -1901,9 +1924,6 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit.service.ts
 msgid "Landscape"
-msgstr ""
-
-msgid "Language"
 msgstr ""
 
 msgid "Large"
@@ -3150,6 +3170,10 @@ msgstr ""
 msgid "Seller delivers in person"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+msgid "Seller pays for shipping"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 msgid "Seller ships"
 msgstr ""
@@ -3180,6 +3204,14 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
 msgid "Shipping cost"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+msgid "Shipping cost to be agreed"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+msgid "Shipping cost type"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
@@ -3408,6 +3440,10 @@ msgstr ""
 msgid "Superseded"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
+msgid "Support"
+msgstr ""
+
 msgid "Synthetic channel"
 msgstr ""
 
@@ -3610,6 +3646,14 @@ msgstr ""
 msgid ""
 "The revision's title will be shown as an addendum to the original image's "
 "title."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
+msgid "The shipping cost is fixed"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
+msgid "The shipping cost will be agreed upon"
 msgstr ""
 
 msgid "The size of the individual pixels in μm."
@@ -3880,6 +3924,10 @@ msgid "To"
 msgstr ""
 
 msgid "To add more, go back to the Equipment step."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
+msgid "To be agreed"
 msgstr ""
 
 msgid ""
@@ -4554,10 +4602,6 @@ msgid "e.g. 'Home observatory'"
 msgstr ""
 
 msgid "f-number"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
-msgid "free shipping"
 msgstr ""
 
 msgid "modified"

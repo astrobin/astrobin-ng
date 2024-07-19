@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-07-13 09:24+0200\n"
+"PO-Revision-Date: 2024-07-19 18:17+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -7405,34 +7405,101 @@ msgstr "Staat/Region"
 #: Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
 #: loco:66892878aba965b8ed01c8b2
 msgid "Browse Marketplace"
-msgstr ""
+msgstr "Marktplatz durchsuchen"
 
 #: Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
 #: loco:66892878aba965b8ed01c8b3
 msgid "Post listing"
-msgstr ""
+msgstr "Inserat aufgeben"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 #: loco:66922b5611b20c09160f0772
 msgid "Create a listing for a single item."
-msgstr ""
+msgstr "Erstellen Sie ein Inserat für einen einzelnen Artikel."
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-user-card/marketplace-user-card.component.html
 #: loco:66922b5611b20c09160f0773
 msgid "Last seen in"
-msgstr ""
+msgstr "Zuletzt gesehen in"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 #: loco:66922b5611b20c09160f0774
 msgid "Multiple items in a bundle"
-msgstr ""
+msgstr "Mehrere Artikel in einem Bündel"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 #: loco:66922b5611b20c09160f0775
 msgid "Multiple items separately"
-msgstr ""
+msgstr "Mehrere Artikel getrennt"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-user-card/marketplace-user-card.component.html
 #: loco:66922b5611b20c09160f0776
 msgid "Sign-up country"
+msgstr "Land der Registrierung"
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit.service.ts
+#: loco:669a9163bac3f67aba0b85d2
+msgid "Artificial satellite"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
+#: loco:669a9163bac3f67aba0b85d3
+msgid "Covered by seller"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/editors/sensor-editor/sensor-editor.component.ts
+#: loco:669a9163bac3f67aba0b85d4
+msgid ""
+"For disambiguation purposes, please make sure that the sensor's name ends "
+"with \"(color)\" or \"(mono)\"."
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+#: loco:669a9163bac3f67aba0b85d5
+msgid "Free Shipping"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
+#: loco:669a9163bac3f67aba0b85d6
+msgid "I will cover the shipping cost"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
+#: loco:669a9163bac3f67aba0b85d7
+msgid "I will not ship this item"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+#: loco:669a9163bac3f67aba0b85d8
+msgid "Seller pays for shipping"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component.html
+#: loco:669a9163bac3f67aba0b85d9
+msgid "Shipping cost to be agreed"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
+#: loco:669a9163bac3f67aba0b85da
+msgid "Shipping cost type"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
+#: loco:669a9163bac3f67aba0b85db
+msgid "Support"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
+#: loco:669a9163bac3f67aba0b85dc
+msgid "The shipping cost is fixed"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
+#: loco:669a9163bac3f67aba0b85dd
+msgid "The shipping cost will be agreed upon"
+msgstr ""
+
+#: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component.ts
+#: loco:669a9163bac3f67aba0b85de
+msgid "To be agreed"
 msgstr ""
