@@ -233,6 +233,8 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "your_image_is_tpn":
       case "your_image_is_tp":
       case "your_image_is_iotd":
+      case "your_image_might_become_tpn":
+      case "your_image_might_become_tp":
       case "iotd_tp_submission_deadline":
         return NotificationCategory.IOTD;
       case "new_forum_post_mention":
