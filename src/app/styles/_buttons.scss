@@ -196,13 +196,13 @@ astrobin-toggle-property {
     align-items: center;
     justify-content: space-between;
     padding: 1rem .5rem;
-    background-color: var(--black);
-    box-shadow: 0 -.25rem 0.5rem rgba(0, 0, 0, .75);
+    background: var(--darkestGrey);
+    border-top: 1px solid var(--lightGrey);
+    z-index: 1001;
 
     .btn,
     astrobin-toggle-property {
       margin: 0 !important;
-      padding: .5rem .25rem;
 
       &:not(:first-child),
       &:not(:last-child) {

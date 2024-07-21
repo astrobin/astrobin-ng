@@ -1,5 +1,5 @@
-<form *ngIf="isPlatformBrowser(platformId); else loading" [formGroup]="form" class="d-flex align-items-end">
-  <formly-form [fields]="fields" [form]="form" [model]="model" [options]="options" class="flex-grow-1"></formly-form>
+<form *ngIf="isPlatformBrowser(platformId); else loading" [formGroup]="form">
+  <formly-form [fields]="fields" [form]="form" [model]="model" [options]="options"></formly-form>
 </form>
 
 <ng-template #equipmentItemLabelTemplate let-object="item">
