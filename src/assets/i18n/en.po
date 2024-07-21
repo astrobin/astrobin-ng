@@ -93,7 +93,7 @@ msgid "<strong>{{0}}</strong> images by the seller"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.ts
-msgid "<strong>{{0}}</strong> total images on AstorBin"
+msgid "<strong>{{0}}</strong> total images on AstroBin"
 msgstr ""
 
 msgid "A brand with this name already exists."

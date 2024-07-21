@@ -82,7 +82,7 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
         0: lineItem.sellerImageCount
       });
 
-      this.totalImageCount = this.translateService.instant("<strong>{{0}}</strong> total images on AstorBin", {
+      this.totalImageCount = this.translateService.instant("<strong>{{0}}</strong> total images on AstroBin", {
         0: lineItem.totalImageCount
       });
 
