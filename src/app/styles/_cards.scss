@@ -10,6 +10,10 @@
   top: -.5rem;
   right: -.5rem;
 
+  @media (max-width: $sm-max) {
+    right: 0;
+  }
+
   .badge:not(:last-child) {
     margin-right: .25rem;
   }
@@ -124,6 +128,14 @@
         @media screen and (min-width: $md-min) {
           margin-right: 1rem;
         }
+      }
+    }
+  }
+
+  &.flex-row.flex-md-column {
+    @media (max-width: $sm-max) {
+      .card-footer {
+        border-radius: 0 var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0;
       }
     }
   }

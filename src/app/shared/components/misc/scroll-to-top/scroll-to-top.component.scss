@@ -1,6 +1,17 @@
+@import "../../../../styles/breakpoints";
+
 :host {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
   z-index: 9998;
+
+  @media (max-width: $md-max) {
+    bottom: 5rem;
+    right: 1rem;
+  }
+
+  .btn {
+    box-shadow: 0 0 .75rem rgba(0, 0, 0, .75);
+  }
 }

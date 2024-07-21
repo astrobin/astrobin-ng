@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 .line-item-container {
   &:not(:first-child) {
     margin-top: 1.5rem;
@@ -7,6 +9,10 @@
 .card {
   display: block;
   margin-bottom: 2rem;
+
+  @media (max-width: $sm-max) {
+    margin-bottom: 1.5rem;
+  }
 }
 
 .map-container {
