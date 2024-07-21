@@ -175,7 +175,7 @@
   </ng-container>
   <!-- currentUserWrapper -->
 
-  <astrobin-scroll-to-top></astrobin-scroll-to-top>
+  <astrobin-scroll-to-top position="left"></astrobin-scroll-to-top>
 </div>
 <!-- page -->
 
@@ -243,7 +243,7 @@
         <div class="d-flex flex-wrap justify-content-around">
           <div
             *ngFor="let privateConversation of privateConversations"
-            class="avatar-wrapper text-center d-flex flex-column align-items-center mb-4"
+            class="avatar-wrapper text-center d-flex flex-column align-items-center"
           >
             <astrobin-avatar
               (click)="startPrivateConversation(privateConversation, $event)"

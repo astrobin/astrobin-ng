@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { Component, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -15,10 +15,13 @@ import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 export class ScrollToTopComponent extends BaseComponentDirective implements OnInit {
   offset = 0;
 
+  @Input()
+  position: "left" | "right" = "right";
+
   constructor(
     public readonly store$: Store<State>,
     public windowRefService: WindowRefService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
   }
