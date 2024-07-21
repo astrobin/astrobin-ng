@@ -2,22 +2,23 @@
   {{ "Marketplace navigation" | translate }}
 </div>
 
-<a
-  (click)="equipmentMarketplaceService.onCreateListingClicked($event)"
-  class="btn btn-primary btn-lg w-100 mb-2"
->
-  {{ "Sell" | translate }}
-</a>
+<div class="fixed-mobile-buttons">
+  <a
+    (click)="equipmentMarketplaceService.onCreateListingClicked($event)"
+    class="btn btn-primary btn-lg w-100 mb-2"
+  >
+    {{ "Sell" | translate }}
+  </a>
 
-<a
-  (click)="equipmentMarketplaceService.onPostWantedClicked($event)"
-  class="btn btn-secondary btn-lg w-100 mb-3"
->
-  {{ "Seek" | translate }}
-</a>
+  <a
+    (click)="equipmentMarketplaceService.onPostWantedClicked($event)"
+    class="btn btn-secondary btn-lg w-100 mb-3"
+  >
+    {{ "Seek" | translate }}
+  </a>
+</div>
 
 <div [hidden]="collapsed">
   <astrobin-marketplace-nav></astrobin-marketplace-nav>
   <astrobin-marketplace-filter (filterChange)="filterChange.emit($event)"></astrobin-marketplace-filter>
 </div>
-
