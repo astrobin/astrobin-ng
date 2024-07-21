@@ -84,3 +84,17 @@ astrobin-marketplace-more-from-user {
     color: var(--lighterGrey);
   }
 }
+
+.btn-follow,
+.btn-message,
+.btn-edit,
+.btn-delete,
+.btn-mark-as-sold,
+.btn-renew {
+  flex-basis: 25%;
+}
+
+.btn-make-offer,
+.btn-edit {
+  flex-basis: 50%;
+}

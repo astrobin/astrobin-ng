@@ -8,12 +8,12 @@
   >
     <ng-container *ngIf="!!context.toggleProperty">
       <fa-icon [icon]="unsetTogglePropertyIcon"></fa-icon>
-      {{ unsetTogglePropertyLabel }}
+      <span class="btn-text">{{ unsetTogglePropertyLabel }}</span>
     </ng-container>
 
     <ng-container *ngIf="context.toggleProperty === null">
       <fa-icon [icon]="setTogglePropertyIcon"></fa-icon>
-      {{ setTogglePropertyLabel }}
+      <span class="btn-text">{{ setTogglePropertyLabel }}</span>
     </ng-container>
   </button>
 </ng-container>

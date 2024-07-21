@@ -190,6 +190,8 @@ astrobin-toggle-property {
   @media (max-width: $sm-max) {
     position: fixed;
     display: flex;
+    flex-direction: row;
+    gap: .25rem;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -203,15 +205,29 @@ astrobin-toggle-property {
     .btn,
     astrobin-toggle-property {
       margin: 0 !important;
+      width: auto;
+    }
 
-      &:not(:first-child),
-      &:not(:last-child) {
-        margin: 0 .25rem !important;
-        white-space: nowrap;
+    &.no-icons {
+      .btn,
+      astrobin-toggle-property {
+        fa-icon {
+          display: none;
+        }
       }
+    }
 
-      fa-icon {
-        display: none;
+    &.no-text {
+      .btn,
+      astrobin-toggle-property {
+        fa-icon {
+          font-size: 1rem;
+          margin-right: 0;
+        }
+
+        .btn-text {
+          display: none;
+        }
       }
     }
   }

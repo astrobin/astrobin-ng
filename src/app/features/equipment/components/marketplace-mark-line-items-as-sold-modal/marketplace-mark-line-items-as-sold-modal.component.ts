@@ -34,7 +34,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
 
-  title: string = this.translateService.instant("Mark line items as sold");
+  title: string = this.translateService.instant("Mark as sold");
 
   helpText: string = this.translateService.instant(
     "Select the items that you have sold. AstroBin considers an item as sold when you have received payment and " +
