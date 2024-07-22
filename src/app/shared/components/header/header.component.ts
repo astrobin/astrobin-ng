@@ -37,6 +37,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   helpWithTranslationsUrl: string;
   user: UserInterface;
   userProfile: UserProfileInterface;
+  showMobileSearch = false;
 
   languages: AvailableLanguageInterface[] = [
     { code: "en", label: "English (US)" },
