@@ -2029,7 +2029,7 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
-"This item will be part of AstorBin's equipment database, and it's very "
+"This item will be part of AstroBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr ""
@@ -2828,11 +2828,11 @@ msgstr ""
 
 #: loco:61b24fc53b045a33935504c9
 msgid ""
-"This item will be part of AstorBin's equipment database, and it's very "
+"This item will be part of AstroBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another."
 msgstr ""
-"Dieser Artikel wird in die AstorBin-Gerätedatenbank aufgenommen, und es ist "
+"Dieser Artikel wird in die AstroBin-Gerätedatenbank aufgenommen, und es ist "
 "sehr wichtig, dass die Informationen korrekt sind und dieser Artikel nicht "
 "das Duplikat eines anderen ist."
 
@@ -5488,8 +5488,8 @@ msgstr "<strong>{{0}}</strong> Bilder des Verkäufers"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.ts
 #: loco:66506df312b5e1267f07ed89
-msgid "<strong>{{0}}</strong> total images on AstorBin"
-msgstr "<strong>{{0}}</strong> Bilder insgesamt auf AstorBin"
+msgid "<strong>{{0}}</strong> total images on AstroBin"
+msgstr "<strong>{{0}}</strong> Bilder insgesamt auf AstroBin"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
 #: loco:66506df312b5e1267f07ed8a

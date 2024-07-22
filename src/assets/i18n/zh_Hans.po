@@ -1895,7 +1895,7 @@ msgstr "AstroBin的数据库中已存在品牌下的 <strong>{{0}}</strong> 个�
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
-"This item will be part of AstorBin's equipment database, and it's very "
+"This item will be part of AstroBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr "该项目将成为AstroBin设备数据库的一部分，项目信息准确性、唯一性（不是其他某个项目的副本）是非常重要的。"
@@ -2637,7 +2637,7 @@ msgstr "此项目尚未被审核，因此无法与图像关联。"
 
 #: loco:61b24fc53b045a33935504c9
 msgid ""
-"This item will be part of AstorBin's equipment database, and it's very "
+"This item will be part of AstroBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another."
 msgstr "该项目将成为AstrobBin数据库的一部分，确保信息准确、无重复是非常重要的。"
@@ -4939,7 +4939,7 @@ msgstr ""
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.ts
 #: loco:66506df312b5e1267f07ed89
-msgid "<strong>{{0}}</strong> total images on AstorBin"
+msgid "<strong>{{0}}</strong> total images on AstroBin"
 msgstr ""
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
