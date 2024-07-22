@@ -10,6 +10,7 @@
   .avatar-wrapper {
     position: relative;
     display: block;
+    margin-bottom: 1.5rem;
 
     @media screen and (max-width: $xl-max) {
       width: calc(50% - .5rem);
@@ -23,20 +24,8 @@
       width: calc(50% - .5rem);
     }
 
-    @media screen and (max-width: $sm-max) {
-      width: calc(25% - .5rem);
-    }
-
-    @media screen and (max-width: $xs-max) {
-      width: calc(25% - .5rem);
-    }
-
-    @media screen and (min-width: $xxl-min) {
-      max-width: calc(50% - .5rem);
-    }
-
     astrobin-avatar {
-      width: 50%;
+      width: 80px
     }
 
     .badge {
@@ -48,6 +37,49 @@
     .buyer {
       font-size: .9rem;
       color: var(--lighterGrey);
+    }
+  }
+
+  @media (max-width: $sm-max) {
+    height: 0;
+    border: 0;
+
+    .card-header {
+      display: none;
+    }
+
+    .card-body {
+      margin: 0;
+
+      > div {
+        position: fixed;
+        bottom: 5rem;
+        right: 0.75rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        z-index: 1;
+        max-height: calc(100vh - 5.5rem);
+        overflow-y: auto;
+        flex-wrap: nowrap !important;
+        padding: .5rem 0;
+
+        .avatar-wrapper {
+          margin: 0;
+        }
+
+        astrobin-avatar {
+          width: 80px;
+
+          img {
+            box-shadow: 0 0 2rem var(--black);
+          }
+        }
+
+        astrobin-username {
+          display: none !important;
+        }
+      }
     }
   }
 }
@@ -83,4 +115,18 @@ astrobin-marketplace-more-from-user {
     font-size: 1.25rem;
     color: var(--lighterGrey);
   }
+}
+
+.btn-follow,
+.btn-message,
+.btn-edit,
+.btn-delete,
+.btn-mark-as-sold,
+.btn-renew {
+  flex-basis: 25%;
+}
+
+.btn-make-offer,
+.btn-edit {
+  flex-basis: 50%;
 }

@@ -111,7 +111,6 @@
 
             <astrobin-marketplace-listing
               [listing]="listing"
-              class="d-block mt-5 mt-md-0"
             ></astrobin-marketplace-listing>
 
             <astrobin-nested-comments
@@ -176,7 +175,7 @@
   </ng-container>
   <!-- currentUserWrapper -->
 
-  <astrobin-scroll-to-top></astrobin-scroll-to-top>
+  <astrobin-scroll-to-top position="left"></astrobin-scroll-to-top>
 </div>
 <!-- page -->
 
@@ -195,46 +194,41 @@
 </ng-template>
 
 <ng-template #sidebarOwnerTemplate let-currentUserWrapper="currentUserWrapper">
-  <div class="owner-buttons mt-4">
+  <div class="owner-buttons fixed-mobile-buttons no-text mt-0 mt-md-4">
     <a
       *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)"
       [routerLink]="'edit'"
-      class="btn btn-secondary d-block w-100"
+      class="btn btn-secondary btn-edit d-block w-100"
     >
       <fa-icon icon="pencil"></fa-icon>
-      {{ "Edit" | translate }}
+      <span class="btn-text">{{ "Edit" | translate }}</span>
     </a>
 
     <button
       (click)="markAsSold()"
       *ngIf="!equipmentMarketplaceService.listingSold(listing) && listing.listingType === MarketplaceListingType.FOR_SALE"
-      class="btn btn-secondary d-block w-100 mt-2"
+      class="btn btn-secondary btn-mark-as-sold d-block w-100 mt-2"
     >
       <fa-icon icon="sack-dollar"></fa-icon>
-      <ng-container *ngIf="listing.lineItems.length > 1">
-        {{ "Mark items as sold" | translate }}
-      </ng-container>
-      <ng-container *ngIf="listing.lineItems.length === 1">
-        {{ "Mark as sold" | translate }}
-      </ng-container>
+      <span class="btn-text">{{ "Mark as sold" | translate }}</span>
     </button>
 
     <button
       (click)="delete()"
       *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)"
-      class="btn btn-danger d-block w-100 mt-2"
+      class="btn btn-danger btn-delete d-block w-100 mt-2"
     >
       <fa-icon icon="trash"></fa-icon>
-      {{ "Delete" | translate }}
+      <span class="btn-text">{{ "Delete" | translate }}</span>
     </button>
 
     <button
       (click)="renew()"
       *ngIf="!equipmentMarketplaceService.listingSold(listing) && equipmentMarketplaceService.listingExpired(listing)"
-      class="btn btn-secondary d-block w-100 mt-2"
+      class="btn btn-secondary btn-renew d-block w-100 mt-2"
     >
       <fa-icon icon="redo"></fa-icon>
-      {{ "Renew" | translate }}
+      <span class="btn-text">{{ "Renew" | translate }}</span>
     </button>
   </div>
 
@@ -249,7 +243,7 @@
         <div class="d-flex flex-wrap justify-content-around">
           <div
             *ngFor="let privateConversation of privateConversations"
-            class="avatar-wrapper text-center d-flex flex-column align-items-center mb-4"
+            class="avatar-wrapper text-center d-flex flex-column align-items-center"
           >
             <astrobin-avatar
               (click)="startPrivateConversation(privateConversation, $event)"
@@ -287,34 +281,16 @@
 >
   <ng-container [ngTemplateOutlet]="offers"></ng-container>
 
-  <div class="mt-4">
+  <div class="fixed-mobile-buttons no-text">
     <ng-container *ngIf="!equipmentMarketplaceService.listingSold(listing)">
-      <button
-        (click)="onMakeAnOfferClicked($event)"
-        *ngIf="
-          listing.listingType === MarketplaceListingType.FOR_SALE &&
-          equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing) &&
-          !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
-          !equipmentMarketplaceService.listingHasAcceptedOffers(listing) &&
-          listing.approved
-        "
-        [class.loading]="loadingService.loading$ | async"
-        class="btn btn-primary d-block w-100 mt-4"
-      >
-        <fa-icon icon="handshake"></fa-icon>
-        {{ "Make an offer" | translate }}
-      </button>
-
       <astrobin-toggle-property
         *ngIf="!equipmentMarketplaceService.listingHasOffers(listing)"
         [contentType]="listingContentType.id"
         [objectId]="listing.id"
         [userId]="currentUserWrapper.user?.id"
-        btnClass="btn btn-secondary d-block w-100 mt-2"
-        class="p-0"
+        btnClass="btn btn-secondary  w-100"
+        class="btn-follow p-0 mt-md-4"
         propertyType="follow"
-        setLabel="{{ 'Subscribe to updates' | translate }}"
-        unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
       ></astrobin-toggle-property>
     </ng-container>
 
@@ -332,7 +308,7 @@
         equipmentMarketplaceService.listingSold(listing)
       "
       [class.loading]="loadingService.loading$ | async"
-      class="btn d-block w-100 mt-2"
+      class="btn btn-message mt-md-2 w-100"
     >
       <fa-icon icon="envelope"></fa-icon>
 
@@ -344,11 +320,11 @@
           else messageUser
         "
       >
-        {{ "Exchange payment/delivery info" | translate }}
+        <span class="btn-text">{{ "Exchange payment/delivery info" | translate }}</span>
       </ng-container>
 
       <ng-template #messageUser>
-        {{ "Message user privately" | translate }}
+        <span class="btn-text">{{ "Message user privately" | translate }}</span>
       </ng-template>
 
       <ng-container *ngIf="privateConversations$ | async as privateConversations">
@@ -367,6 +343,22 @@
           </span>
         </ng-container>
       </ng-container>
+    </button>
+
+    <button
+      (click)="onMakeAnOfferClicked($event)"
+      *ngIf="
+          listing.listingType === MarketplaceListingType.FOR_SALE &&
+          equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing) &&
+          !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
+          !equipmentMarketplaceService.listingHasAcceptedOffers(listing) &&
+          listing.approved
+        "
+      [class.loading]="loadingService.loading$ | async"
+      class="btn btn-primary btn-make-offer mt-md-2 w-100"
+    >
+      <fa-icon icon="dollar"></fa-icon>
+      <span class="btn-text">{{ "Make an offer" | translate }}</span>
     </button>
   </div>
 </ng-template>

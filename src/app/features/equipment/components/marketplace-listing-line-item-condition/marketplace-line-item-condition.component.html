@@ -1,4 +1,4 @@
-<div>
+<div class="d-block d-md-inline">
   {{ "Condition" | translate }}:
   <span
     class="condition {{ lineItem.condition ? (lineItem.condition.toLowerCase() | slugify) : '' }}"
@@ -6,7 +6,7 @@
     {{ equipmentItemService.humanizeCondition(lineItem.condition) }}
   </span>
   &middot;
-  <span class="year-of-purchase">
+  <span class="year-of-purchase d-block d-md-inline">
     {{ "Year of purchase" }}: <strong>{{ lineItem.yearOfPurchase || "Unspecified" | translate }}</strong>
   </span>
 </div>

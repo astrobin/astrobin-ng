@@ -1,8 +1,8 @@
 <ng-container *ngIf="user$ | async as user; else loadingTemplate">
-  <div class="card">
-    <div class="card-body">
+  <div class="card flex-row flex-md-column">
+    <div class="card-body d-flex flex-column justify-content-center">
       <astrobin-avatar [user]="user"></astrobin-avatar>
-      <astrobin-username [user]="user" class="mt-2 mt-md-5 mt-lg-3 mt-xl-5"></astrobin-username>
+      <astrobin-username [user]="user"></astrobin-username>
       <astrobin-marketplace-feedback-widget
         [listing]="listing"
         [user]="user"
@@ -10,29 +10,33 @@
       ></astrobin-marketplace-feedback-widget>
     </div>
 
-    <div class="card-footer flex-column align-items-start">
+    <div class="card-footer flex-column align-items-start justify-content-evenly">
       <div class="joined-astrobin">
-        <strong>{{ "Joined AstroBin" | translate }}:</strong>&nbsp;
-        {{ user.dateJoined | localDate | timeago }}
+        <strong class="d-block d-md-inline">{{ "Joined AstroBin" | translate }}:</strong>
+        <span>{{ user.dateJoined | localDate | timeago }}</span>
       </div>
 
       <div class="signup-country">
-        <strong>{{ "Sign-up country" | translate }}:</strong>&nbsp;
-        <ng-container *ngIf="listing.userSignupCountry; else unknownTemplate">
-          {{ countryService.getCountryName(listing.userSignupCountry, translateService.currentLang) }}
-        </ng-container>
+        <strong class="d-block d-md-inline">{{ "Sign-up country" | translate }}:</strong>
+        <span>
+          <ng-container *ngIf="listing.userSignupCountry; else unknownTemplate">
+            {{ countryService.getCountryName(listing.userSignupCountry, translateService.currentLang) }}
+          </ng-container>
+        </span>
       </div>
 
       <div class="last-seen-in-country">
-        <strong>{{ "Last seen in" | translate }}:</strong>&nbsp;
-        <ng-container *ngIf="listing.userLastSeenInCountry; else unknownTemplate">
-          {{ countryService.getCountryName(listing.userLastSeenInCountry, translateService.currentLang) }}
-        </ng-container>
+        <strong class="d-block d-md-inline">{{ "Last seen in" | translate }}:</strong>
+        <span>
+          <ng-container *ngIf="listing.userLastSeenInCountry; else unknownTemplate">
+            {{ countryService.getCountryName(listing.userLastSeenInCountry, translateService.currentLang) }}
+          </ng-container>
+        </span>
       </div>
 
       <div class="listing-count">
-        <strong>{{ "Total marketplace listings" | translate }}:</strong>
-        {{ user.marketplaceListingCount }}
+        <strong class="d-block d-md-inline">{{ "Marketplace listings" | translate }}:</strong>
+        <span>{{ user.marketplaceListingCount }}</span>
       </div>
     </div>
   </div>

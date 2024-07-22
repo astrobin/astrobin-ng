@@ -4,18 +4,13 @@ astrobin-avatar {
   display: block;
   width: 30%;
   margin: 0 auto;
-
-  @media screen and (min-width: $md-min) {
-    position: absolute;
-    top: -15%;
-    left: 35%;
-  }
 }
 
 astrobin-username {
   display: block;
   text-align: center;
   font-size: 1.25rem;
+  margin-top: .5rem;
 }
 
 .feedback {
@@ -28,4 +23,10 @@ astrobin-username {
   font-size: .85rem;
   color: var(--lightGrey);
   padding: 1rem;
+
+  > div > span {
+    @media (min-width: $md-min) {
+      margin-left: .25rem;
+    }
+  }
 }
