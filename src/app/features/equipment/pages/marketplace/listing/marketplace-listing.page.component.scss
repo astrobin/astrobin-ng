@@ -53,12 +53,16 @@
 
       > div {
         position: fixed;
-        bottom: 5.5rem;
-        right: .75rem;
+        bottom: 5rem;
+        right: 0.75rem;
         flex-direction: column;
         align-items: center;
         gap: 1rem;
         z-index: 1;
+        max-height: calc(100vh - 5.5rem);
+        overflow-y: auto;
+        flex-wrap: nowrap !important;
+        padding: .5rem 0;
 
         .avatar-wrapper {
           margin: 0;
