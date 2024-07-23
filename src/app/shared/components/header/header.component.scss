@@ -356,15 +356,26 @@
   }
 }
 
+.toggle-mobile-search {
+  fa-icon {
+    @media (max-width: $md-max) {
+      font-size: 1.25rem;
+      line-height: 2rem;
+      margin-right: .5rem;
+      color: var(--lightestGrey);
+    }
+  }
+}
+
 .notifications-list-item {
   position: relative;
 
   fa-icon {
     @media (max-width: $md-max) {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       line-height: 2rem;
       margin-right: 1rem;
-      color: var(--lighterGrey);
+      color: var(--lightestGrey);
     }
   }
 
