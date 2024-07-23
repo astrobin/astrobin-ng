@@ -143,15 +143,16 @@
               class="d-block"
             ></astrobin-marketplace-user-card>
 
+            <div *ngIf="currentUserWrapper.user | isMarketplaceModerator" class="alert alert-warning mt-4">
+              <fa-icon icon="exclamation-triangle"></fa-icon>
+              {{ "You are a marketplace moderator." | translate }}
+            </div>
+
             <ng-container
               *ngIf="
                 listingUser.id === currentUserWrapper.user?.id || (currentUserWrapper.user | isMarketplaceModerator)
               "
             >
-              <div *ngIf="currentUserWrapper.user | isMarketplaceModerator" class="alert alert-warning mt-4">
-                <fa-icon icon="exclamation-triangle"></fa-icon>
-                {{ "You are a marketplace moderator." | translate }}
-              </div>
               <ng-container
                 [ngTemplateOutletContext]="{ currentUserWrapper }"
                 [ngTemplateOutlet]="sidebarOwnerTemplate"
@@ -288,8 +289,8 @@
         [contentType]="listingContentType.id"
         [objectId]="listing.id"
         [userId]="currentUserWrapper.user?.id"
-        btnClass="btn btn-secondary  w-100"
-        class="btn-follow p-0 mt-md-4"
+        btnClass="btn btn-secondary w-100"
+        class="btn-follow p-0 mt-md-4 w-100"
         propertyType="follow"
       ></astrobin-toggle-property>
     </ng-container>
