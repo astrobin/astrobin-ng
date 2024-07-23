@@ -61,6 +61,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -112,7 +113,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly utilsService: UtilsService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly location: Location,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
   }
@@ -361,6 +363,24 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       const component = modalRef.componentInstance;
 
       component.listing = this.listing;
+    });
+  }
+
+  onReportListingClicked(event: Event) {
+    event.preventDefault();
+
+    this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
+      const url = this.classicRoutesService.REPORT_MARKETPLACE_LISTING_FROM;
+      let email = "";
+
+      if (userProfile && userProfile.email) {
+        email = userProfile.email;
+      }
+
+      this.windowRefService.nativeWindow.open(
+        `${url}?email=${email}&listingUrl=${window.location.href}`,
+        "_blank"
+      );
     });
   }
 

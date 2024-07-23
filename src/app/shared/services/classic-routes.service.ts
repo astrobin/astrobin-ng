@@ -38,6 +38,7 @@ export class ClassicRoutesService extends BaseService {
   MODERATE_IMAGE_QUEUE = BASE_URL + "/moderate/images/";
   MODERATE_SPAM_QUEUE = BASE_URL + "/moderate/images/spam/";
   MARKETPLACE_TERMS = "https://welcome.astrobin.com/marketplace-terms-of-service";
+  REPORT_MARKETPLACE_LISTING_FROM = "https://welcome.astrobin.com/forms/marketplace-listing-report-form";
 
   COMMERCIAL_PRODUCTS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/commercial/products/`;
 

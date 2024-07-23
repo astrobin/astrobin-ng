@@ -195,7 +195,7 @@
 </ng-template>
 
 <ng-template #sidebarOwnerTemplate let-currentUserWrapper="currentUserWrapper">
-  <div class="owner-buttons fixed-mobile-buttons no-text mt-0 mt-md-4">
+  <div class="owner-buttons fixed-mobile-buttons no-text text-center mt-0 mt-md-4">
     <a
       *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)"
       [routerLink]="'edit'"
@@ -282,7 +282,7 @@
 >
   <ng-container [ngTemplateOutlet]="offers"></ng-container>
 
-  <div class="fixed-mobile-buttons no-text">
+  <div class="fixed-mobile-buttons no-text text-center">
     <ng-container *ngIf="!equipmentMarketplaceService.listingSold(listing)">
       <astrobin-toggle-property
         *ngIf="!equipmentMarketplaceService.listingHasOffers(listing)"
@@ -360,6 +360,16 @@
     >
       <fa-icon icon="dollar"></fa-icon>
       <span class="btn-text">{{ "Make an offer" | translate }}</span>
+    </button>
+
+    <button
+      (click)="onReportListingClicked($event)"
+      *ngIf="listing.approved"
+      [class.loading]="loadingService.loading$ | async"
+      class="btn btn-link btn-report link-secondary mt-md-3 px-4 px-lg-2"
+    >
+      <fa-icon icon="flag"></fa-icon>
+      <span class="btn-text">{{ "Report listing" | translate }}</span>
     </button>
   </div>
 </ng-template>
