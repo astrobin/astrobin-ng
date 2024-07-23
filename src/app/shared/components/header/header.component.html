@@ -24,21 +24,30 @@
 </nav>
 
 <ng-template #astrobinLogoTemplate>
-  <a [href]="classicRoutesService.HOME" class="navbar-brand p-0 ps-3 pe-2 w-100 d-inline-block me-0 me-lg-3">
+  <a
+    *ngIf="!showMobileSearch"
+    [href]="classicRoutesService.HOME"
+    class="navbar-brand p-0 ps-3 pe-2 w-100 d-inline-block me-0 me-lg-3"
+  >
     <img alt="AstroBin" class="d-none d-lg-block" src="assets/images/nav-logo.png?v=3" />
-    <h4 *ngIf="!showMobileSearch" class="d-inline-block d-lg-none m-0 fw-bold">AstroBin</h4>
-    <ng-container *ngIf="showMobileSearch">
-      <ng-container [ngTemplateOutlet]="quickSearchTemplate"></ng-container>
-    </ng-container>
+    <h4 class="d-inline-block d-lg-none m-0 fw-bold">AstroBin</h4>
   </a>
+  <ng-container *ngIf="showMobileSearch">
+    <ng-container [ngTemplateOutlet]="quickSearchTemplate"></ng-container>
+  </ng-container>
 </ng-template>
 
 <ng-template #quickSearchTemplate>
   <!-- Quick search form -->
-  <form [action]="classicRoutesService.SEARCH" class="flex-grow-1 px-0 px-lg-4 order-0 order-lg-1" method="get"
-        ngNoForm>
+  <form
+    [action]="classicRoutesService.SEARCH"
+    class="ps-3 pe-2 px-lg-4"
+    method="get"
+    ngNoForm
+  >
     <label class="w-100 mb-0">
       <input
+        #quickSearchInput
         autocomplete="off"
         class="form-control"
         name="q"
@@ -129,7 +138,7 @@
 </ng-template>
 
 <ng-template #mobileSearchToggleTemplate>
-  <a (click)="showMobileSearch = true" class="nav-link toggle-mobile-search d-lg-none">
+  <a (click)="onShowMobileSearchClick($event)" class="nav-link toggle-mobile-search d-lg-none">
     <fa-icon icon="search"></fa-icon>
   </a>
 </ng-template>

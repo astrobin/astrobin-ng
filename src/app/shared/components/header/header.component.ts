@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { State } from "@app/store/state";
 import { Logout } from "@features/account/store/auth.actions";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
@@ -20,6 +20,7 @@ import { Theme, ThemeService } from "@shared/services/theme.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { NavigationEnd, Router } from "@angular/router";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -87,6 +88,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
 
   @ViewChild("sidebar") sidebar: ElementRef;
   @ViewChild("userSidebar") userSidebar: ElementRef;
+  @ViewChildren("quickSearchInput") quickSearchInputs: QueryList<ElementRef>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -101,7 +103,8 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     public readonly cookieService: CookieService,
     public readonly themeService: ThemeService,
     public readonly jsonApiService: JsonApiService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -178,6 +181,18 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     this.currentUserWrapper$.pipe(takeUntil(this.destroyed$)).subscribe(wrapper => {
       this.user = wrapper.user;
       this.userProfile = wrapper.userProfile;
+    });
+  }
+
+  onShowMobileSearchClick(event: Event) {
+    event.preventDefault();
+    this.showMobileSearch = true;
+    this.utilsService.delay(1).subscribe(() => {
+      this.quickSearchInputs.forEach((input: ElementRef) => {
+        if (input.nativeElement.offsetParent !== null) {
+          input.nativeElement.focus();
+        }
+      });
     });
   }
 
