@@ -137,7 +137,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     const window = this.windowRefService.nativeWindow;
     const rect = this.elementRef.nativeElement.getBoundingClientRect();
 
-    if (!this.loading && !!this.next && rect.bottom < window.innerHeight + 600) {
+    if (!this.loading && !!this.next && rect.bottom < window.innerHeight + 1200) {
       this.model = { ...this.model, page: this.model.page + 1 };
       this.loadData();
     }
