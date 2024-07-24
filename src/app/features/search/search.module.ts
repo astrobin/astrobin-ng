@@ -4,10 +4,13 @@ import { RouterModule } from "@angular/router";
 import { SharedModule } from "@shared/shared.module";
 import { searchRoutes } from "@features/search/search.routing";
 import { searchFeatureKey, searchReducer } from "@features/search/state/state.reducer";
+import { SearchPageComponent } from "./pages/search/search.page.component";
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    SearchPageComponent
+  ],
   imports: [
     RouterModule.forChild(searchRoutes),
     SharedModule,
