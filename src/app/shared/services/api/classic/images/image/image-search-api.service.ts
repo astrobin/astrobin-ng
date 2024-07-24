@@ -9,19 +9,7 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-
-// TODO: unify with src/app/features/search/interfaces/search-model.interface.ts
-export interface ImageSearchOptions {
-  text?: string;
-  itemType?: EquipmentItemType;
-  itemId?: EquipmentItem["id"];
-  usageType?: EquipmentItemUsageType;
-  ordering?: string;
-  pageSize?: number;
-  username?: string;
-  page: number;
-}
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 
 @Injectable({
   providedIn: "root"
@@ -37,7 +25,7 @@ export class ImageSearchApiService extends BaseClassicApiService {
     super(loadingService);
   }
 
-  search(options: ImageSearchOptions): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
+  search(options: SearchModelInterface): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
     let url = `${this.configUrl}/`;
 
     url = UtilsService.addOrUpdateUrlParam(url, "page", (options.page || 1).toString());

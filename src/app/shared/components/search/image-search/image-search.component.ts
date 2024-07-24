@@ -26,20 +26,13 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   model: SearchModelInterface;
 
   @Input()
-  ordering: string;
-
-  @Input()
   loadMoreOnScroll = true;
-
-  @Input()
-  pageSize: number;
 
   next: string;
   initialLoading = true;
   loading = true;
   images: ImageSearchInterface[] = [];
   searchUrl: string;
-  usageType: EquipmentItemUsageType;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -67,7 +60,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     if (this.model) {
       const urlParams = new URLSearchParams();
       urlParams.set("d", "i");
-      urlParams.set("sort", this.ordering);
+      urlParams.set("sort", this.model.ordering);
 
       if (this.model.itemType) {
         urlParams.set(`${this.model.itemType.toLowerCase()}_ids`, this.model.itemId.toString());
@@ -92,26 +85,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
       this.initialLoading = true;
     }
 
-    // TODO: just use model when all params are there.
-    const searchOptions = {
-      text: this.model.text,
-      itemType: this.model.itemType,
-      itemId: this.model.itemId,
-      usageType: this.usageType,
-      ordering: this.ordering,
-      page: this.model.page,
-      pageSize: 100
-    };
-
-    if (this.model.username) {
-      Object.assign(searchOptions, { username: this.model.username });
-    }
-
-    if (this.pageSize) {
-      Object.assign(searchOptions, { pageSize: this.pageSize });
-    }
-
-    this.imageSearchApiService.search(searchOptions)
+    this.imageSearchApiService.search({ ...this.model, pageSize: 100 })
       .subscribe(response => {
         this.next = response.next;
 

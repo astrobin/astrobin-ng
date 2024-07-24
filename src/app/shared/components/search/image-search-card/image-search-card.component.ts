@@ -30,9 +30,6 @@ export class ImageSearchCardComponent extends BaseComponentDirective {
   model: SearchModelInterface;
 
   @Input()
-  ordering: string;
-
-  @Input()
   loadMoreOnScroll = true;
 
   @Input()
@@ -41,14 +38,11 @@ export class ImageSearchCardComponent extends BaseComponentDirective {
   @Input()
   showSortButton = true;
 
-  @Input()
-  pageSize: number;
   next: string;
   initialLoading = true;
   loading = true;
   images: ImageSearchInterface[] = [];
   searchUrl: string;
-  usageType: EquipmentItemUsageType;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -63,17 +57,10 @@ export class ImageSearchCardComponent extends BaseComponentDirective {
   }
 
   sortBy(ordering: string): void {
-    this.ordering = ordering;
-    this._loadData();
+    this.model = { ...this.model, ordering, page: 1 };
   }
 
   setUsageType(usageType: EquipmentItemUsageType): void {
-    this.usageType = usageType;
-    this._loadData();
-  }
-
-  private _loadData(): void {
-    this.model = { ...this.model, page: 1 };
-    this.imageSearchComponent.loadData(false);
+    this.model = { ...this.model, usageType, page: 1 };
   }
 }
