@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, PLATFORM_ID, ViewChild } from "@angular/core";
+import { Component, ElementRef, Inject, Input, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -16,7 +16,7 @@ import { ImageSearchComponent } from "@shared/components/search/image-search/ima
   templateUrl: "./image-search-card.component.html",
   styleUrls: ["./image-search-card.component.scss"]
 })
-export class ImageSearchCardComponent extends BaseComponentDirective {
+export class ImageSearchCardComponent extends BaseComponentDirective implements OnChanges {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
 
@@ -54,6 +54,24 @@ export class ImageSearchCardComponent extends BaseComponentDirective {
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
   ) {
     super(store$);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.model) {
+      const urlParams = new URLSearchParams();
+      urlParams.set("d", "i");
+      urlParams.set("sort", this.model.ordering);
+
+      if (this.model.itemType) {
+        urlParams.set(`${this.model.itemType.toLowerCase()}_ids`, this.model.itemId.toString());
+      }
+
+      if (this.model.username) {
+        urlParams.set("username", this.model.username.toString());
+      }
+
+      this.searchUrl = `${this.classicRoutesService.SEARCH}?${urlParams.toString()}`;
+    }
   }
 
   sortBy(ordering: string): void {

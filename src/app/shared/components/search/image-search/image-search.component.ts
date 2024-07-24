@@ -32,7 +32,6 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   initialLoading = true;
   loading = true;
   images: ImageSearchInterface[] = [];
-  searchUrl: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -57,23 +56,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.model) {
-      const urlParams = new URLSearchParams();
-      urlParams.set("d", "i");
-      urlParams.set("sort", this.model.ordering);
-
-      if (this.model.itemType) {
-        urlParams.set(`${this.model.itemType.toLowerCase()}_ids`, this.model.itemId.toString());
-      }
-
-      if (this.model.username) {
-        urlParams.set("username", this.model.username.toString());
-      }
-
-      this.searchUrl = `${
-        this.classicRoutesService.SEARCH
-      }?${urlParams.toString()}`;
-
+    if (changes.model) {
       this.loadData(false);
     }
   }
@@ -112,7 +95,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     const rect = this.elementRef.nativeElement.getBoundingClientRect();
 
     if (!this.loading && !!this.next && rect.bottom < window.innerHeight + 1200) {
-      this.model = { ...this.model, page: this.model.page + 1 };
+      this.model = { ...this.model, page: (this.model.page || 1) + 1 };
       this.loadData();
     }
   }

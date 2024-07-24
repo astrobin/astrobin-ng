@@ -39,6 +39,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
   }
 
   updateUrl(): void {
-    this.location.go(`/search?${UtilsService.toQueryString(this.model)}`);
+    const { page, pageSize, ...model } = this.model;
+    this.location.go(`/search?${UtilsService.toQueryString(model)}`);
   }
 }
