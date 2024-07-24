@@ -5,6 +5,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { ActivatedRoute } from "@angular/router";
 
 describe("SearchPageComponent", () => {
   let component: SearchPageComponent;
@@ -12,7 +13,15 @@ describe("SearchPageComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(SearchPageComponent, AppModule).provide([
-      provideMockStore({ initialState: initialMainState })
+      provideMockStore({ initialState: initialMainState }),
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: {
+            queryParams: {}
+          }
+        }
+      }
     ]);
     fixture = TestBed.createComponent(SearchPageComponent);
     component = fixture.componentInstance;

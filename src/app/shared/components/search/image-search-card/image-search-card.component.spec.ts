@@ -18,6 +18,7 @@ describe("ImageSearchComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ImageSearchCardComponent);
     component = fixture.componentInstance;
+    component.model = {};
     fixture.detectChanges();
   });
 
