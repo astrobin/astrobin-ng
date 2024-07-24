@@ -4,14 +4,14 @@ import { PriceComponent } from "./price.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("PriceComponent", () => {
   let component: PriceComponent;
   let fixture: ComponentFixture<PriceComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(PriceComponent, AppModule).provide([provideMockStore({ initialState })]);
+    await MockBuilder(PriceComponent, AppModule).provide([provideMockStore({ initialState: initialMainState })]);
 
     fixture = TestBed.createComponent(PriceComponent);
     component = fixture.componentInstance;

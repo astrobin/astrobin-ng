@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
@@ -53,7 +53,7 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly modal: NgbActiveModal,
     public readonly loadingService: LoadingService,

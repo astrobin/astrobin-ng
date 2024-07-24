@@ -3,7 +3,7 @@ import { NotificationsPageComponent } from "@features/notifications/pages/notifi
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { SettingsPageComponent } from "@features/notifications/pages/settings-page/settings-page.component";
 
-export const routes: Routes = [
+export const notificationRoutes: Routes = [
   {
     path: "",
     component: NotificationsPageComponent,

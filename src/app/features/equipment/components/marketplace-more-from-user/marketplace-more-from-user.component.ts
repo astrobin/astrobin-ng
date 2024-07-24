@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
@@ -21,7 +21,7 @@ export class MarketplaceMoreFromUserComponent extends BaseComponentDirective imp
 
   otherListings: MarketplaceListingInterface[];
 
-  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
+  constructor(public readonly store$: Store<MainState>, public readonly loadingService: LoadingService) {
     super(store$);
   }
 

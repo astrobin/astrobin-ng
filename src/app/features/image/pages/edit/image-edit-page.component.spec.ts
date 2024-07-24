@@ -7,7 +7,7 @@ import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
 import { ImageEditPageComponent } from "./image-edit-page.component";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageEditBasicFieldsService } from "@features/image/services/image-edit-basic-fields.service";
 import { ImageEditContentFieldsService } from "@features/image/services/image-edit-content-fields.service";
@@ -33,7 +33,7 @@ describe("EditComponent", () => {
       ImageEditEquipmentFieldsService,
       ImageEditAcquisitionFieldsService,
       ImageEditSettingsFieldsService,
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       {
         provide: ActivatedRoute,
         useValue: {

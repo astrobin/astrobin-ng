@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { TranslateService } from "@ngx-translate/core";
@@ -50,7 +50,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly modal: NgbActiveModal,
     public readonly translateService: TranslateService,

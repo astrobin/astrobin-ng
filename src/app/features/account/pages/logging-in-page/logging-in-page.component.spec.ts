@@ -3,12 +3,12 @@ import { MockBuilder, MockInstance, MockRender, MockService } from "ng-mocks";
 import { LoggingInPageComponent } from "./logging-in-page.component";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("LoggingInPageComponent", () => {
   let component: LoggingInPageComponent;
 
-  beforeEach(() => MockBuilder(LoggingInPageComponent, AppModule).provide(provideMockStore({ initialState })));
+  beforeEach(() => MockBuilder(LoggingInPageComponent, AppModule).provide(provideMockStore({ initialState: initialMainState })));
 
   beforeEach(() =>
     MockInstance(ActivatedRoute, () => ({

@@ -4,13 +4,13 @@ import { ToggleButtonComponent } from "./toggle-button.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("ToggleButtonComponent", () => {
   let component: ToggleButtonComponent;
   let fixture: ComponentFixture<ToggleButtonComponent>;
 
-  beforeEach(async () => MockBuilder(ToggleButtonComponent, AppModule).provide(provideMockStore({ initialState })));
+  beforeEach(async () => MockBuilder(ToggleButtonComponent, AppModule).provide(provideMockStore({ initialState: initialMainState })));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ToggleButtonComponent);

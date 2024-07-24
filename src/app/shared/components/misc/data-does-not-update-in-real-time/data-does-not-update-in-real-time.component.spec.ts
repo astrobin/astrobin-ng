@@ -4,14 +4,14 @@ import { DataDoesNotUpdateInRealTimeComponent } from "./data-does-not-update-in-
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("DataDoesNotUpdateInRealtimeComponent", () => {
   let component: DataDoesNotUpdateInRealTimeComponent;
   let fixture: ComponentFixture<DataDoesNotUpdateInRealTimeComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(DataDoesNotUpdateInRealTimeComponent, AppModule).provide([provideMockStore({ initialState })]);
+    await MockBuilder(DataDoesNotUpdateInRealTimeComponent, AppModule).provide([provideMockStore({ initialState: initialMainState })]);
   });
 
   beforeEach(() => {

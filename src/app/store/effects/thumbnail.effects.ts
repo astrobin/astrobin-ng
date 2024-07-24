@@ -4,7 +4,7 @@ import { LoadImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail, LoadThumbnailCanceled, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectLoadingThumbnail, selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -88,7 +88,7 @@ export class ThumbnailEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly imageApiService: ImageApiService
   ) {

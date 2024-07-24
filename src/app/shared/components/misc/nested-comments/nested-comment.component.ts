@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { Observable } from "rxjs";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -53,7 +53,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   private _commentText: ElementRef;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,

@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -30,7 +30,7 @@ export class ImageSearchApiService extends BaseClassicApiService {
 
   constructor(
     public readonly loadingService: LoadingService,
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly http: HttpClient
   ) {
     super(loadingService);

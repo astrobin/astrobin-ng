@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { select, Store } from "@ngrx/store";
 import { filter, map, switchMap, take } from "rxjs/operators";
 import { selectAuth, selectCurrentUser } from "@features/account/store/auth.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { RouterService } from "@shared/services/router.service";
 import { Actions } from "@ngrx/effects";
 
@@ -13,7 +13,7 @@ import { Actions } from "@ngrx/effects";
 })
 export class UsernameMatchGuard implements CanActivate {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly router: Router,
     public readonly routerService: RouterService

@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
@@ -27,7 +27,7 @@ export class PriceComponent extends BaseComponentDirective {
   showRecurringUnit = true;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly modalService: NgbModal
   ) {

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MarketplaceUserFeedbackListPageComponent } from "./marketplace-user-feedback-list-page.component";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
 import { ActivatedRoute } from "@angular/router";
 
@@ -13,7 +13,7 @@ describe("MarketplaceUserFeedbackListPageComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceUserFeedbackListPageComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       {
         provide: ActivatedRoute,
         useValue: {

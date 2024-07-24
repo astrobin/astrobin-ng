@@ -144,7 +144,7 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { catchError, filter, map, mergeMap, switchMap, tap } from "rxjs/operators";
@@ -166,7 +166,7 @@ import { MarketplaceLineItemInterface } from "@features/equipment/types/marketpl
 import { LocalDatePipe } from "@shared/pipes/local-date.pipe";
 
 function getFromStoreOrApiByIdAndType<T>(
-  store$: Store<State>,
+  store$: Store<MainState>,
   id: number,
   type: EquipmentItemType,
   allowUnapproved: boolean,
@@ -1392,7 +1392,7 @@ export class EquipmentEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly utilsService: UtilsService,

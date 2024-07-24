@@ -87,7 +87,7 @@ export const initialAppState: AppState = {
   toggleProperties: []
 };
 
-export function reducer(state = initialAppState, action: All): AppState {
+export function appReducer(state = initialAppState, action: All): AppState {
   switch (action.type) {
     case AppActionTypes.INITIALIZE_SUCCESS: {
       return {

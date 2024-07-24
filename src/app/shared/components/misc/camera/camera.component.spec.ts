@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
 import { CameraComponent } from "./camera.component";
@@ -11,7 +11,7 @@ describe("CameraComponent", () => {
   let fixture: ComponentFixture<CameraComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(CameraComponent, AppModule).provide([provideMockStore({ initialState }), UtilsService]);
+    await MockBuilder(CameraComponent, AppModule).provide([provideMockStore({ initialState: initialMainState }), UtilsService]);
   });
 
   beforeEach(() => {

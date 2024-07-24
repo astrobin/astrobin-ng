@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import {
   BasePromotionSlotsComponent,
   SlotType
@@ -24,7 +24,7 @@ export class SubmissionSlotsComponent extends BasePromotionSlotsComponent implem
   slotsCount$: Observable<number> = this.store$.pipe(select(selectIotdMaxSubmissionsPerDay));
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modalService: NgbModal,
     public readonly translateService: TranslateService,
     public readonly activatedRoute: ActivatedRoute,

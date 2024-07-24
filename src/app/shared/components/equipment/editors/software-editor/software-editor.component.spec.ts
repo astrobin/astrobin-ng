@@ -4,7 +4,7 @@ import { SoftwareEditorComponent } from "./software-editor.component";
 import { MockBuilder } from "ng-mocks";
 import { EquipmentModule } from "@features/equipment/equipment.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
@@ -18,7 +18,7 @@ describe("SoftwareEditorComponent", () => {
   beforeEach(async () => {
     await MockBuilder(SoftwareEditorComponent, EquipmentModule)
       .mock(AppModule, { export: true })
-      .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>()), UtilsService])
+      .provide([provideMockStore({ initialState: initialMainState }), provideMockActions(() => new ReplaySubject<any>()), UtilsService])
       .mock(BrandEditorCardComponent);
   });
 

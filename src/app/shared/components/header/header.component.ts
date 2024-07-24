@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Logout } from "@features/account/store/auth.actions";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -91,7 +91,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   @ViewChildren("quickSearchInput") quickSearchInputs: QueryList<ElementRef>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modalService: NgbModal,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly authService: AuthService,

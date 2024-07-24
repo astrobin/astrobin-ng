@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { AppModule } from "@app/app.module";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockInstance, MockService } from "ng-mocks";
 import { ReviewQueueComponent } from "./review-queue.component";
@@ -16,7 +16,7 @@ describe("ReviewQueueComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(ReviewQueueComponent, AppModule)
-      .provide(provideMockStore({ initialState }))
+      .provide(provideMockStore({ initialState: initialMainState }))
       .mock(QueueSortButtonComponent, { export: true })
       .mock(ReviewEntryComponent, { export: true })
       .mock(ReviewSlotsComponent, { export: true });

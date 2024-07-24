@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -23,7 +23,7 @@ export class SimilarItemsSuggestionComponent extends BaseComponentDirective impl
   itemSelected = new EventEmitter<EquipmentItemBaseInterface | BrandInterface>();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly equipmentItemService: EquipmentItemService
   ) {

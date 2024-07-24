@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
@@ -35,7 +35,7 @@ export class SubscriptionsOptionsPageComponent extends BaseComponentDirective im
     this.store$.select(selectAvailableSubscriptions);
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly subscriptionsService: SubscriptionsService,
     public readonly translate: TranslateService,

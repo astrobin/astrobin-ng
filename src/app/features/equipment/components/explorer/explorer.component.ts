@@ -12,7 +12,7 @@ import {
   ViewChild
 } from "@angular/core";
 import { Action, Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -201,7 +201,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   private _itemBrowser: ItemBrowserComponent;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,

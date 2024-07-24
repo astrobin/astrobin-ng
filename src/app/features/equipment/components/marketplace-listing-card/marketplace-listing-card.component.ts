@@ -5,7 +5,7 @@ import {
   MarketplaceListingType
 } from "@features/equipment/types/marketplace-listing.interface";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CountryService } from "@shared/services/country.service";
@@ -32,7 +32,7 @@ export class MarketplaceListingCardComponent extends BaseComponentDirective impl
   offersCount: number;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly countryService: CountryService,

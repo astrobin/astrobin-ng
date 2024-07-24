@@ -114,6 +114,7 @@ import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-field-custom-radio/formly-field-custom-radio.component";
+import { ImageSearchCardComponent } from "@shared/components/search/image-search-card/image-search-card.component";
 
 const modules = [
   CommonModule,
@@ -181,6 +182,7 @@ const components = [
   HeaderComponent,
   HrComponent,
   ImageComponent,
+  ImageSearchCardComponent,
   ImageSearchComponent,
   InformationDialogComponent,
   LoadingIndicatorComponent,

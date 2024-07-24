@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Location } from "@angular/common";
 import { Constants } from "@shared/constants";
 
@@ -15,7 +15,7 @@ export class MigrationNavComponent extends BaseComponentDirective implements OnI
 
   activeId = "migration";
 
-  constructor(public readonly store$: Store<State>, public readonly location: Location) {
+  constructor(public readonly store$: Store<MainState>, public readonly location: Location) {
     super(store$);
   }
 

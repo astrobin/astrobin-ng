@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
@@ -13,7 +13,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 })
 export class SubscriptionsCancelledPageComponent extends BaseComponentDirective implements OnInit {
   constructor(
-    public store$: Store<State>,
+    public store$: Store<MainState>,
     public readonly titleService: TitleService,
     public readonly translate: TranslateService
   ) {

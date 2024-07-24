@@ -4,7 +4,7 @@ import { FormGroup } from "@angular/forms";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
@@ -30,7 +30,7 @@ export class RejectReviewGearRenamingProposalsModalComponent extends BaseCompone
   editProposal: EditProposalInterface<EquipmentItemBaseInterface>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,

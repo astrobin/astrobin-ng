@@ -4,7 +4,7 @@ import { MarketplaceUserFollowedListingsPageComponent } from "./marketplace-user
 import { MockBuilder, MockProvider } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { appStateEffects, appStateReducers, initialState } from "@app/store/state";
+import { mainStateEffects, mainStateReducers, initialMainState } from "@app/store/state";
 import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
 import { HttpClientModule } from "@angular/common/http";
@@ -21,13 +21,13 @@ describe("MarketplaceUserFollowedListingsPageComponent", () => {
     await MockBuilder(MarketplaceUserFollowedListingsPageComponent, AppModule)
       .provide([
         WindowRefService,
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialMainState }),
         MockProvider(ActivatedRoute, {
           queryParams: of({ region: "us" })
         })
       ])
-      .keep(StoreModule.forRoot(appStateReducers))
-      .keep(EffectsModule.forRoot(appStateEffects))
+      .keep(StoreModule.forRoot(mainStateReducers))
+      .keep(EffectsModule.forRoot(mainStateEffects))
       .replace(HttpClientModule, HttpClientTestingModule);
 
     fixture = TestBed.createComponent(MarketplaceUserFollowedListingsPageComponent);

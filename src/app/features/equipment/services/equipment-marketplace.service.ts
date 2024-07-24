@@ -3,7 +3,7 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { merge, Observable, switchMap } from "rxjs";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
@@ -56,7 +56,7 @@ export class EquipmentMarketplaceService extends BaseService {
   selectRegionTooltipAlreadyShown = false;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,

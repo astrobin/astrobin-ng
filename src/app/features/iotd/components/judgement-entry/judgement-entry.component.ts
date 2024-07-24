@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { selectFutureIotdForImage, selectJudgementQueueEntry } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -28,7 +28,7 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
   showDismissButton = false;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,

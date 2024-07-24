@@ -2,7 +2,7 @@ import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from "@angular/router";
 import { SetImage } from "@app/store/actions/image.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { EMPTY, Observable } from "rxjs";
@@ -17,7 +17,7 @@ export class ImageResolver implements Resolve<ImageInterface> {
     private readonly service: ImageApiService,
     private readonly router: Router,
     private readonly location: Location,
-    private readonly store$: Store<State>
+    private readonly store$: Store<MainState>
   ) {
   }
 

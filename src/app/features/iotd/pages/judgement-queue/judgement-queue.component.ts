@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
 import { IotdApiService, IotdInterface } from "@features/iotd/services/iotd-api.service";
 import { ClearJudgementQueue, LoadFutureIods, LoadJudgementQueue } from "@features/iotd/store/iotd.actions";
@@ -35,7 +35,7 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
   nextAvailableSelectionTime: string;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,

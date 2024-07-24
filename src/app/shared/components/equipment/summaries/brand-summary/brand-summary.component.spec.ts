@@ -5,14 +5,14 @@ import { MockBuilder } from "ng-mocks";
 import { EquipmentModule } from "@features/equipment/equipment.module";
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("BrandSummaryComponent", () => {
   let component: BrandSummaryComponent;
   let fixture: ComponentFixture<BrandSummaryComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(BrandSummaryComponent, EquipmentModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(BrandSummaryComponent, EquipmentModule).provide(provideMockStore({ initialState: initialMainState }));
   });
 
   beforeEach(() => {

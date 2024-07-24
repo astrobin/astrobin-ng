@@ -4,7 +4,7 @@ import { EquipmentItemDisplayNameComponent } from "./equipment-item-display-name
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { of } from "rxjs";
 
@@ -13,7 +13,7 @@ describe("EquipmentItemDisplayNameComponent", () => {
   let fixture: ComponentFixture<EquipmentItemDisplayNameComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(EquipmentItemDisplayNameComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(EquipmentItemDisplayNameComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
   });
 
   beforeEach(() => {

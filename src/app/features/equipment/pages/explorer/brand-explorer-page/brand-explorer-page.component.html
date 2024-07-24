@@ -112,9 +112,9 @@
                 <tr *ngFor="let item of itemsInBrand; trackBy: equipmentItemService.trackBy">
                   <td class="item-name">
                     <a
-                      astrobinEventPreventDefault
-                      [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
                       (click)="viewItem(item)"
+                      [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
+                      astrobinEventPreventDefault
                     >
                       <astrobin-equipment-item-display-name
                         [item]="item"
@@ -135,12 +135,12 @@
                 </tbody>
               </table>
 
-              <astrobin-image-search
+              <astrobin-image-search-card
                 [header]="'Acquired with this brand' | translate"
-                [text]="activeBrand.name"
+                [model]="{ text: activeBrand.name }"
                 class="mt-5 d-block"
                 ordering="-likes"
-              ></astrobin-image-search>
+              ></astrobin-image-search-card>
             </ng-container>
 
             <ng-container *ngIf="!activeBrand">
@@ -181,9 +181,9 @@
                   <tr *ngFor="let brand of brands" data-id="{{ brand.id }}">
                     <td>
                       <a
-                        astrobinEventPreventDefault
-                        [href]="'/equipment/explorer/brand/' + brand.id + '/' + UtilsService.slugify(brand.name)"
                         (click)="viewBrand(brand)"
+                        [href]="'/equipment/explorer/brand/' + brand.id + '/' + UtilsService.slugify(brand.name)"
+                        astrobinEventPreventDefault
                       >
                         {{ brand.name }}
                       </a>

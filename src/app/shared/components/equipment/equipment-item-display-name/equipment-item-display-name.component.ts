@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerDecision,
@@ -65,7 +65,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
 
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly modalService: NgbModal

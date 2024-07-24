@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
 import { MockBuilder, MockReset, MockService } from "ng-mocks";
@@ -16,7 +16,7 @@ describe("AstroBinGroupGuardService", () => {
   afterEach(MockReset);
 
   beforeEach(async () => {
-    await MockBuilder(AstroBinGroupGuardService, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(AstroBinGroupGuardService, AppModule).provide(provideMockStore({ initialState: initialMainState }));
 
     store = TestBed.inject(MockStore);
     service = TestBed.inject(AstroBinGroupGuardService);
@@ -44,7 +44,7 @@ describe("AstroBinGroupGuardService", () => {
 
   it("should pass if user is in the group", done => {
     const user = UserGenerator.user();
-    const state = { ...initialState };
+    const state = { ...initialMainState };
     state.auth.user = user;
     store.setState(state);
 

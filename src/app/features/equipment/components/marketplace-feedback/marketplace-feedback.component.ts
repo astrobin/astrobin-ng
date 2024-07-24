@@ -5,7 +5,7 @@ import {
   MarketplaceFeedbackTargetType
 } from "@features/equipment/types/marketplace-feedback.interface";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
@@ -39,7 +39,7 @@ export class MarketplaceFeedbackComponent extends BaseComponentDirective impleme
   contentType: ContentTypeInterface;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly modalService: NgbModal,
     public readonly route: ActivatedRoute

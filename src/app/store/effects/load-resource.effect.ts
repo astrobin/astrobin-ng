@@ -3,14 +3,14 @@ import { select, Store } from "@ngrx/store";
 import { finalize, Observable, of, timer } from "rxjs";
 import { LoadingService } from "@shared/services/loading.service";
 import { catchError, map, mergeMap, switchMap, take, takeUntil } from "rxjs/operators";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 
 export function loadResourceEffect<T, K>(
   actions$: Actions,
-  store$: Store<State>,
+  store$: Store<MainState>,
   actionType: string,
   resourceIdSelector: (action: any) => K, // Function to extract resource ID from action
-  resourceSelector: (state: State, id: K) => T, // Selector function for the resource
+  resourceSelector: (state: MainState, id: K) => T, // Selector function for the resource
   apiCall: (id: K) => Observable<T>, // API call function
   successActionCreator: (resource: T) => any, // Success action creator
   failureActionCreator: (error: any) => any, // Failure action creator

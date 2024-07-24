@@ -4,7 +4,7 @@ import { MarketplaceMoreFromUserComponent } from "./marketplace-more-from-user.c
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 
 describe("MarketplaceMmoreFromUserComponent", () => {
@@ -13,7 +13,7 @@ describe("MarketplaceMmoreFromUserComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceMoreFromUserComponent, AppModule).provide([
-      provideMockStore({ initialState })
+      provideMockStore({ initialState: initialMainState })
     ]);
 
     fixture = TestBed.createComponent(MarketplaceMoreFromUserComponent);

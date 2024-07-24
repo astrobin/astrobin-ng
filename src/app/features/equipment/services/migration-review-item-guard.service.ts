@@ -8,7 +8,7 @@ import { catchError, map, switchMap } from "rxjs/operators";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
 import { Location } from "@angular/common";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 
@@ -18,7 +18,7 @@ import { GearMigrationStrategyApiService } from "@shared/services/api/classic/as
 export class MigrationReviewItemGuardService extends BaseService implements CanActivate {
   constructor(
     public readonly loadingService: LoadingService,
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly migrationStrategyApiService: GearMigrationStrategyApiService,
     public readonly legacyGearApi: GearApiService,
     public readonly router: Router,

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { LoadingService } from "@shared/services/loading.service";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -41,7 +41,7 @@ export class AssignEditProposalModalComponent extends BaseComponentDirective imp
   loadingAssignees = true;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly modal: NgbActiveModal,

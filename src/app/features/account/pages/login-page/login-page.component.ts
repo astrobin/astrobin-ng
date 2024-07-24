@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
@@ -21,7 +21,7 @@ export class LoginPageComponent extends BaseComponentDirective implements OnInit
   @ViewChild("loginForm") loginForm: LoginFormComponent;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly route: ActivatedRoute,
     public readonly translate: TranslateService,

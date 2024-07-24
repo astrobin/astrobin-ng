@@ -3,7 +3,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { Subscription } from "rxjs";
@@ -19,7 +19,7 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
   private _getGuidingCamerasSubscription: Subscription;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly imageEditService: ImageEditService

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { CameraEditorComponent } from "./camera-editor.component";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
@@ -16,7 +16,7 @@ describe("CameraEditorComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(CameraEditorComponent, AppModule)
-      .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>()), UtilsService])
+      .provide([provideMockStore({ initialState: initialMainState }), provideMockActions(() => new ReplaySubject<any>()), UtilsService])
       .mock(BrandEditorCardComponent);
   });
 

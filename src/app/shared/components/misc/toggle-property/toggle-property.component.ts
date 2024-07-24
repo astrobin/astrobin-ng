@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
@@ -54,7 +54,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   buttonState: "default" | "success" = "default";
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,

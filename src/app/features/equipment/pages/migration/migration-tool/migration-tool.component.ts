@@ -21,7 +21,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { GearService } from "@shared/services/gear/gear.service";
 import {
@@ -89,7 +89,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   allStrategies$: Observable<PaginatedApiResultInterface<any>>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,

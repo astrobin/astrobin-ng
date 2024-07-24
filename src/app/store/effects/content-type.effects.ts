@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadContentTypeById, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
@@ -55,7 +55,7 @@ export class ContentTypeEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly commonApiService: CommonApiService
   ) {

@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { routes } from "@features/subscriptions/subscriptions.routing";
+import { subscriptionRoutes } from "@features/subscriptions/subscriptions.routing";
 import { SharedModule } from "@shared/shared.module";
 import { SubscriptionsBuyPageComponent } from "./pages/buy/subscriptions-buy-page.component";
 import { SubscriptionsCancelledPageComponent } from "./pages/cancelled-page/subscriptions-cancelled-page.component";
@@ -22,7 +22,7 @@ import { PriceComponent } from './components/price/price.component';
     SubscriptionsOptionsPageComponent,
     PriceComponent
   ],
-  imports: [RouterModule.forChild(routes), SharedModule]
+  imports: [RouterModule.forChild(subscriptionRoutes), SharedModule]
 })
 export class SubscriptionsModule {
 }

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MarketplaceFilterComponent } from "./marketplace-filter.component";
 import { MockBuilder, MockProvider } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
 import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
@@ -14,7 +14,7 @@ describe("MarketplaceFilterComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceFilterComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       MockProvider(ActivatedRoute, {
         queryParams: of({ itemType: "TELESCOPE" })
       })

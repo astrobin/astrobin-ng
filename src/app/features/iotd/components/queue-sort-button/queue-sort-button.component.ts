@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { selectStaffMemberSettings } from "@features/iotd/store/iotd.selectors";
@@ -17,7 +17,7 @@ export class QueueSortButtonComponent extends BaseComponentDirective {
   @Output()
   queueSortOrderChanged = new EventEmitter<"newest" | "oldest">();
 
-  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
+  constructor(public readonly store$: Store<MainState>, public readonly loadingService: LoadingService) {
     super(store$);
   }
 

@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -15,7 +15,7 @@ export class InformationDialogComponent extends BaseComponentDirective {
   message: string;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,
     public readonly loadingService: LoadingService
   ) {

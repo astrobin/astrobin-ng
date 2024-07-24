@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -14,7 +14,7 @@ export class OthersInBrandComponent extends BaseComponentDirective {
   @Input()
   items: EquipmentItemBaseInterface[];
 
-  constructor(public readonly store$: Store<State>, public readonly translateService: TranslateService) {
+  constructor(public readonly store$: Store<MainState>, public readonly translateService: TranslateService) {
     super(store$);
   }
 

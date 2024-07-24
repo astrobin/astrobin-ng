@@ -7,7 +7,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { fakeAsync, flush } from "@angular/core/testing";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("NotificationsPageComponent", () => {
   let component: NotificationsPageComponent;
@@ -16,7 +16,7 @@ describe("NotificationsPageComponent", () => {
     MockBuilder(NotificationsPageComponent, NotificationsModule)
       .mock(AppModule, { export: true })
       .provide([
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialMainState }),
         {
           provide: DomSanitizer,
           useValue: {

@@ -31,7 +31,7 @@ export const initialAuthState: AuthState = {
   userProfiles: []
 };
 
-export function reducer(state = initialAuthState, action: PayloadActionInterface): AuthState {
+export function authReducer(state = initialAuthState, action: PayloadActionInterface): AuthState {
   switch (action.type) {
     case AuthActionTypes.INITIALIZE_SUCCESS:
     case AuthActionTypes.LOGIN_SUCCESS:

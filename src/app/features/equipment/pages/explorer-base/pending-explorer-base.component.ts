@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Actions } from "@ngrx/effects";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
@@ -22,7 +22,7 @@ export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
   pendingType: PendingType;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,

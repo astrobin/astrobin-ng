@@ -16,7 +16,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
@@ -57,7 +57,7 @@ export class CompareService extends BaseService {
   public changes = this._changesSubject.asObservable();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
     public readonly equipmentItemService: EquipmentItemService,

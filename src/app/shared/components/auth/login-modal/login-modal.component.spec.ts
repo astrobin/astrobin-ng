@@ -4,7 +4,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { MockBuilder, MockRender } from "ng-mocks";
 import { LoginModalComponent } from "./login-modal.component";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("LoginModalComponent", () => {
   let component: LoginModalComponent;
@@ -12,7 +12,7 @@ describe("LoginModalComponent", () => {
   beforeEach(() =>
     MockBuilder(LoginModalComponent, AppModule).provide([
       NgbActiveModal,
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       {
         provide: DomSanitizer,
         useValue: {

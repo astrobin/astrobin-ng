@@ -4,7 +4,7 @@ import { MarketplaceFeedbackComponent } from "./marketplace-feedback.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("MarketplaceFeedbackComponent", () => {
   let component: MarketplaceFeedbackComponent;
@@ -12,7 +12,7 @@ describe("MarketplaceFeedbackComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceFeedbackComponent, AppModule).provide([
-      provideMockStore({ initialState })
+      provideMockStore({ initialState: initialMainState })
     ]);
 
     fixture = TestBed.createComponent(MarketplaceFeedbackComponent);

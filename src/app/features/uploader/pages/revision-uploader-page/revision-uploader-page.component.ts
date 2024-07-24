@@ -3,7 +3,7 @@ import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -125,7 +125,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
   revisionCount: number;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly translate: TranslateService,
     public readonly uploaderService: UploadxService,

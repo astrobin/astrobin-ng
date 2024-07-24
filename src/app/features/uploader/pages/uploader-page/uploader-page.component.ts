@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -66,7 +66,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   uploadAllowed$ = this.userSubscriptionService.uploadAllowed$();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly translate: TranslateService,
     public readonly uploaderService: UploadxService,
     public readonly uploadDataService: UploadDataService,

@@ -4,7 +4,7 @@ import { MostOftenUsedWithModalComponent } from "./most-often-used-with-modal.co
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TelescopeGenerator } from "@features/equipment/generators/telescope.generator";
 
@@ -14,7 +14,7 @@ describe("MostOftenUsedWithModalComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MostOftenUsedWithModalComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       NgbActiveModal
     ]);
   });

@@ -8,7 +8,7 @@ import {
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
@@ -29,7 +29,7 @@ import { Constants } from "@shared/constants";
 })
 export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeInterface, null> implements OnInit {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,

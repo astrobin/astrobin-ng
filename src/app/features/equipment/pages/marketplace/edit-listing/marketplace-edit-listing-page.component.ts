@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -46,7 +46,7 @@ export class MarketplaceEditListingPageComponent extends BaseComponentDirective 
   listing: MarketplaceListingInterface;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,

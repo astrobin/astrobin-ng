@@ -5,7 +5,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 
 @Component({
   selector: "astrobin-login-modal",
@@ -16,7 +16,7 @@ export class LoginModalComponent extends BaseComponentDirective {
   @ViewChild("loginForm") loginForm: LoginFormComponent;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly activeModal: NgbActiveModal,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly loadingService: LoadingService

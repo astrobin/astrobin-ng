@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -20,7 +20,7 @@ export class FullscreenImageEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly windowRef: WindowRefService
   ) {

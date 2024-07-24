@@ -1,6 +1,6 @@
 import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { RevisionUploaderPageComponent } from "@features/uploader/pages/revision-uploader-page/revision-uploader-page.component";
 import { UploaderModule } from "@features/uploader/uploader.module";
 import { provideMockStore } from "@ngrx/store/testing";
@@ -27,7 +27,7 @@ describe("RevisionUploader.PageComponent", () => {
           }
         }
       ])
-      .provide(provideMockStore({ initialState }))
+      .provide(provideMockStore({ initialState: initialMainState }))
   );
 
   beforeEach(() => {

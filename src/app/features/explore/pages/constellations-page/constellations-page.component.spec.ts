@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ConstellationsPageComponent } from "./constellations-page.component";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
 
 describe("ConstellationsPageComponent", () => {
@@ -10,7 +10,7 @@ describe("ConstellationsPageComponent", () => {
   let fixture: ComponentFixture<ConstellationsPageComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ConstellationsPageComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(ConstellationsPageComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
   });
 
   beforeEach(() => {

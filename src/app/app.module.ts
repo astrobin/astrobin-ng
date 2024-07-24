@@ -24,7 +24,7 @@ import { ErrorHandler, NgModule } from "@angular/core";
 import { BrowserModule, BrowserTransferStateModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
-import { appStateEffects, appStateReducers } from "@app/store/state";
+import { mainStateEffects, mainStateReducers } from "@app/store/state";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { environment } from "@env/environment";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
@@ -87,7 +87,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     CookieModule.forRoot(),
 
     // Dependencies.
-    StoreModule.forRoot(appStateReducers,
+    StoreModule.forRoot(mainStateReducers,
       {
         runtimeChecks: {
           strictStateImmutability: false,
@@ -98,7 +98,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       maxAge: 25, // Retains last 25 states
       logOnly: environment.production // Restrict extension to log-only mode
     }),
-    EffectsModule.forRoot(appStateEffects),
+    EffectsModule.forRoot(mainStateEffects),
 
     TimeagoModule.forRoot({
       intl: TimeagoIntl,

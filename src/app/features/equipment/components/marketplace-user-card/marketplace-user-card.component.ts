@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
@@ -24,7 +24,7 @@ export class MarketplaceUserCardComponent extends BaseComponentDirective impleme
   user$: Observable<UserInterface>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly countryService: CountryService,
     public readonly translateService: TranslateService

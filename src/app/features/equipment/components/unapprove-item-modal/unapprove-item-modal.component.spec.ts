@@ -5,7 +5,7 @@ import { AppModule } from "@app/app.module";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 
@@ -16,7 +16,7 @@ describe("ApproveItemModalComponent", () => {
   beforeEach(async () => {
     await MockBuilder(UnapproveItemModalComponent, AppModule).provide([
       NgbActiveModal,
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       provideMockActions(() => new ReplaySubject<any>())
     ]);
   });

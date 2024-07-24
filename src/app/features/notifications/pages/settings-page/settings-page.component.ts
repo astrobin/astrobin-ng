@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -169,7 +169,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
   accordion: NgbAccordion;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly utilsService: UtilsService,

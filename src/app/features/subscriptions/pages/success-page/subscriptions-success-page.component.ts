@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -17,7 +17,7 @@ declare const gtag: any;
 })
 export class SubscriptionsSuccessPageComponent extends BaseComponentDirective implements OnInit {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly titleService: TitleService,
     public readonly translate: TranslateService,
     public readonly activatedRoute: ActivatedRoute,

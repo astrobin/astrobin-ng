@@ -1,0 +1,10 @@
+<div class="page">
+  <astrobin-search-bar
+    (modelChanged)="updateModel($event)"
+  ></astrobin-search-bar>
+
+  <astrobin-image-search
+    [model]="model"
+    class="d-block mt-4"
+  ></astrobin-image-search>
+</div>

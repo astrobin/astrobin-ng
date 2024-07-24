@@ -3,7 +3,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { selectEquipmentItems } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
@@ -30,7 +30,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   private _subjectTypeChangesSubscription: Subscription;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly imageEditService: ImageEditService,

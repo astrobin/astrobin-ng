@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, switchMap, take, tap } from "rxjs/operators";
@@ -31,7 +31,7 @@ export class UsernameComponent extends BaseComponentDirective implements OnInit,
   username: string;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly usernameService: UsernameService,
     public readonly classicRoutesService: ClassicRoutesService
   ) {

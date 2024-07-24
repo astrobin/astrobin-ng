@@ -4,7 +4,7 @@ import { ItemBrowserByPropertiesComponent } from "./item-browser-by-properties.c
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { of, ReplaySubject } from "rxjs";
 
@@ -14,7 +14,7 @@ describe("ItemBrowserByPropertiesModalComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(ItemBrowserByPropertiesComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       provideMockActions(() => new ReplaySubject<any>())
     ]);
   });

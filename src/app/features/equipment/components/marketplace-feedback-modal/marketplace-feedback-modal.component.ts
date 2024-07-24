@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, TemplateRef, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -58,7 +58,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly modal: NgbActiveModal,
     public readonly translateService: TranslateService,

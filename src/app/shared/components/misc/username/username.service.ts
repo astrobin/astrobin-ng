@@ -5,14 +5,14 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { LoadUserProfile } from "@features/account/store/auth.actions";
 import { selectUserProfile } from "@features/account/store/auth.selectors";
 import { map } from "rxjs/operators";
 
 @Injectable()
 export class UsernameService extends BaseService implements UsernameServiceInterface {
-  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
+  constructor(public readonly store$: Store<MainState>, public readonly loadingService: LoadingService) {
     super(loadingService);
   }
 

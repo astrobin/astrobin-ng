@@ -1,6 +1,6 @@
 import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { appStateEffects, appStateReducers, State } from "@app/store/state";
+import { mainStateEffects, mainStateReducers, MainState } from "@app/store/state";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { provideMockStore } from "@ngrx/store/testing";
@@ -12,12 +12,12 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("SuccessPageComponent", () => {
   let component: SubscriptionsSuccessPageComponent;
-  const initialState: State = StateGenerator.default();
+  const initialState: MainState = StateGenerator.default();
 
   beforeEach(() =>
     MockBuilder(SubscriptionsSuccessPageComponent, AppModule)
-      .keep(StoreModule.forRoot(appStateReducers))
-      .keep(EffectsModule.forRoot(appStateEffects))
+      .keep(StoreModule.forRoot(mainStateReducers))
+      .keep(EffectsModule.forRoot(mainStateEffects))
       .replace(HttpClientModule, HttpClientTestingModule)
       .provide(provideMockStore({ initialState }))
       .provide(

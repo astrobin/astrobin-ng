@@ -4,13 +4,13 @@ import { ImageEditBasicFieldsService } from "./image-edit-basic-fields.service";
 import { MockBuilder } from "ng-mocks";
 import { ImageModule } from "@features/image/image.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("ImageEditBasicFieldsService", () => {
   let service: ImageEditBasicFieldsService;
 
   beforeEach(async () => {
-    await MockBuilder(ImageEditBasicFieldsService, ImageModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(ImageEditBasicFieldsService, ImageModule).provide(provideMockStore({ initialState: initialMainState }));
     service = TestBed.inject(ImageEditBasicFieldsService);
   });
 

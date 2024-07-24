@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { LoadTelescope } from "@app/store/actions/telescope.actions";
 import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
@@ -24,7 +24,7 @@ export class TelescopeComponent extends BaseComponentDirective implements OnInit
   loadDelay = 0;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly gearService: GearService,
     public readonly utilsService: UtilsService
   ) {

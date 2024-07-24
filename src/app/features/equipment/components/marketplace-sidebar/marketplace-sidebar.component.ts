@@ -2,7 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Inject, Output, PLATFORM_ID } f
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
@@ -19,7 +19,7 @@ export class MarketplaceSidebarComponent extends BaseComponentDirective implemen
   filterChange = new EventEmitter<MarketplaceFilterModel>();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) public readonly platformId: any

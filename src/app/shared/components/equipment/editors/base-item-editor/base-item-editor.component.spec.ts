@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { BaseItemEditorComponent } from "./base-item-editor.component";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
@@ -17,7 +17,7 @@ describe("BaseEquipmentItemEditorComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(BaseItemEditorComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       provideMockActions(() => new ReplaySubject<any>()),
       UtilsService
     ]);

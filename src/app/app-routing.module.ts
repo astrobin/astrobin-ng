@@ -36,6 +36,10 @@ const routes: Routes = [
       import("@features/permission-denied/permission-denied.module").then(m => m.PermissionDeniedModule)
   },
   {
+    path: "search",
+    loadChildren: () => import("@features/search/search.module").then(m => m.SearchModule)
+  },
+  {
     path: "subscriptions",
     loadChildren: () => import("@features/subscriptions/subscriptions.module").then(m => m.SubscriptionsModule)
   },

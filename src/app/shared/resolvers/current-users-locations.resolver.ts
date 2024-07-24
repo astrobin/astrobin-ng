@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { filter, first, map, switchMap } from "rxjs/operators";
@@ -14,7 +14,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   providedIn: "root"
 })
 export class CurrentUsersLocationsResolver implements Resolve<LocationInterface[]> {
-  constructor(private readonly store$: Store<State>, private readonly locationsApiService: UsersLocationsApiService) {
+  constructor(private readonly store$: Store<MainState>, private readonly locationsApiService: UsersLocationsApiService) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {

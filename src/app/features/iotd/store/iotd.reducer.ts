@@ -50,7 +50,7 @@ export const initialIotdState: IotdState = {
   futureIotds: []
 };
 
-export function reducer(state = initialIotdState, action: IotdActions): IotdState {
+export function iotdReducer(state = initialIotdState, action: IotdActions): IotdState {
   switch (action.type) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // GENERIC

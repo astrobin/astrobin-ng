@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ExplorerPageComponent } from "./explorer-page.component";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EMPTY, of, ReplaySubject } from "rxjs";
@@ -25,7 +25,7 @@ describe("ExplorerComponent", () => {
       .mock(EquipmentCompareComponent, { export: true })
       .mock(ExplorerFiltersComponent, { export: true })
       .provide([
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialMainState }),
         provideMockActions(() => new ReplaySubject<any>()),
         UtilsService,
         {

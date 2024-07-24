@@ -5,7 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { GeolocationService } from "@shared/services/geolocation.service";
@@ -96,7 +96,7 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
   filterChange = new EventEmitter<MarketplaceFilterModel>();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly router: Router,

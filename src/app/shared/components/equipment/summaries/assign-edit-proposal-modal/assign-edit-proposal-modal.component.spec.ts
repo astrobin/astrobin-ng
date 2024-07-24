@@ -4,7 +4,7 @@ import { AssignEditProposalModalComponent } from "./assign-edit-proposal-modal.c
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { of, ReplaySubject } from "rxjs";
@@ -16,7 +16,7 @@ describe("AssignEditProposalModalComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(AssignEditProposalModalComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       provideMockActions(() => new ReplaySubject<any>()),
       NgbActiveModal
     ]);

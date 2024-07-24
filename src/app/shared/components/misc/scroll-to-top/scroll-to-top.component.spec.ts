@@ -4,14 +4,14 @@ import { ScrollToTopComponent } from "./scroll-to-top.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("ScrollToTopComponent", () => {
   let component: ScrollToTopComponent;
   let fixture: ComponentFixture<ScrollToTopComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ScrollToTopComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(ScrollToTopComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
   });
 
   beforeEach(() => {

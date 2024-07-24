@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
@@ -16,7 +16,7 @@ export class SubscriptionsViewPaymentsPageComponent extends BaseComponentDirecti
   payments$;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly commonApiService: CommonApiService,
     public readonly translate: TranslateService,
     public readonly titleService: TitleService

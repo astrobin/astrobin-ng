@@ -32,7 +32,7 @@ import { MarketplacePendingModerationListingsPageComponent } from "@features/equ
 import { MarketplaceUserFeedbackListPageComponent } from "@features/equipment/pages/marketplace/user-feedback-list/marketplace-user-feedback-list-page.component";
 import { MarketplaceUserFeedbackPageComponent } from "@features/equipment/pages/marketplace/marketplace-user-feedback/marketplace-user-feedback-page.component";
 
-export const routes: Routes = [
+export const equipmentRoutes: Routes = [
   {
     path: "review-gear-renaming-proposals/:itemType",
     component: ReviewGearRenamingProposalsComponent

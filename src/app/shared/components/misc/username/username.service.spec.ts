@@ -5,14 +5,14 @@ import { UserGenerator } from "@shared/generators/user.generator";
 import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
 import { UsernameService } from "./username.service";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { StateGenerator } from "@app/store/generators/state.generator";
 import { TestBed } from "@angular/core/testing";
 
 describe("UsernameService", () => {
   let service: UsernameService;
   let store: MockStore;
-  const initialState: State = StateGenerator.default();
+  const initialState: MainState = StateGenerator.default();
 
   beforeEach(async () => {
     await MockBuilder(UsernameService, AppModule).provide([provideMockStore({ initialState })]);

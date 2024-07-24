@@ -6,7 +6,7 @@ import { UserServiceInterface } from "@shared/services/user.service-interface";
 import { Observable } from "rxjs";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { LoadingService } from "@shared/services/loading.service";
 import { GroupInterface } from "@shared/interfaces/group.interface";
 
@@ -14,7 +14,7 @@ import { GroupInterface } from "@shared/interfaces/group.interface";
   providedIn: "root"
 })
 export class UserService extends BaseService implements UserServiceInterface {
-  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
+  constructor(public readonly store$: Store<MainState>, public readonly loadingService: LoadingService) {
     super(loadingService);
   }
 

@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { selectEquipmentItem, selectMostOftenUsedWithForItem } from "@features/equipment/store/equipment.selectors";
@@ -20,7 +20,7 @@ export class MostOftenUsedWithModalComponent extends BaseComponentDirective impl
 
   mostOftenUsedWith: { item: EquipmentItem; matches: number }[];
 
-  constructor(public readonly store$: Store<State>, public readonly modal: NgbActiveModal) {
+  constructor(public readonly store$: Store<MainState>, public readonly modal: NgbActiveModal) {
     super(store$);
   }
 

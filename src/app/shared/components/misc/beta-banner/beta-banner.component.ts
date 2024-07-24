@@ -1,6 +1,6 @@
 import { Component, HostBinding, Inject, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformServer } from "@angular/common";
@@ -24,7 +24,7 @@ export class BetaBannerComponent extends BaseComponentDirective {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly translateService: TranslateService

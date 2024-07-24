@@ -1,10 +1,10 @@
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { AuthState } from "@features/account/store/auth.reducers";
 import { createSelector } from "@ngrx/store";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
-export const selectAuth = (state: State): AuthState => state.auth;
+export const selectAuth = (state: MainState): AuthState => state.auth;
 
 export const selectCurrentUser = createSelector(selectAuth, state => state.user);
 

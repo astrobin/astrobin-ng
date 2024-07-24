@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { interval } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { isPlatformBrowser } from "@angular/common";
@@ -31,7 +31,7 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
   hoursToTargetDate;
   daysToTargetDate;
 
-  constructor(public readonly store$: Store<State>, @Inject(PLATFORM_ID) public readonly platformId) {
+  constructor(public readonly store$: Store<MainState>, @Inject(PLATFORM_ID) public readonly platformId) {
     super(store$);
   }
 

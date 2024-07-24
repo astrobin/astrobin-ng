@@ -5,7 +5,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { CookieService } from "ngx-cookie";
 import { Observable, of } from "rxjs";
 import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -18,7 +18,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
   static CLASSIC_AUTH_TOKEN_COOKIE = "classic-auth-token";
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly authClassicApi: AuthClassicApiService,
     public readonly cookieService: CookieService,

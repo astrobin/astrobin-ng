@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import {
   MarketplaceListingInterface,
   MarketplaceListingType
@@ -40,7 +40,7 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
   googleMapsAvailable = false;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly googleMapsService: GoogleMapsService,
     public readonly countryService: CountryService,
     public readonly equipmentItemService: EquipmentItemService,

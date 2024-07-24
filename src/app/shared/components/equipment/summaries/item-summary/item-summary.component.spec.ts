@@ -5,7 +5,7 @@ import { EquipmentModule } from "@features/equipment/equipment.module";
 import { AppModule } from "@app/app.module";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("EquipmentItemSummaryComponent", () => {
   let component: ItemSummaryComponent;
@@ -14,7 +14,7 @@ describe("EquipmentItemSummaryComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ItemSummaryComponent, EquipmentModule)
       .mock(AppModule, { export: true })
-      .provide(provideMockStore({ initialState }));
+      .provide(provideMockStore({ initialState: initialMainState }));
   });
 
   beforeEach(() => {

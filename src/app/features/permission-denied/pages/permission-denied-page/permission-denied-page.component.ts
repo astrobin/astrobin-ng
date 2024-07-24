@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -13,7 +13,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 })
 export class PermissionDeniedPageComponent extends BaseComponentDirective implements OnInit {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly classicRoutes: ClassicRoutesService,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService

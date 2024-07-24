@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
@@ -21,7 +21,7 @@ export class ConstellationsPageComponent extends BaseComponentDirective implemen
   constellations: ConstellationInterface[] = [];
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly constellationsService: ConstellationsService,

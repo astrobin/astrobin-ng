@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -55,7 +55,7 @@ export class NestedCommentsModalComponent extends BaseComponentDirective {
   allowSelfReply = true;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,
     public readonly translateService: TranslateService
   ) {

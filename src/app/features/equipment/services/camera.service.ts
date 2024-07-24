@@ -7,7 +7,7 @@ import { CameraInterface, CameraType } from "@features/equipment/types/camera.in
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
@@ -29,7 +29,7 @@ export enum CameraDisplayProperty {
 })
 export class CameraService extends BaseService implements EquipmentItemServiceInterface {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly utilsService: UtilsService,
     public readonly translateService: TranslateService

@@ -44,7 +44,7 @@ import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import {
@@ -203,7 +203,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
   };
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,

@@ -6,7 +6,7 @@ import { MockBuilder } from "ng-mocks";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
 describe("CopyAcquisitionSessionsFromAnotherImageModalComponent", () => {
@@ -18,7 +18,7 @@ describe("CopyAcquisitionSessionsFromAnotherImageModalComponent", () => {
       NgbActiveModal,
       ImageEditService,
       UtilsService,
-      provideMockStore({ initialState })
+      provideMockStore({ initialState: initialMainState })
     ]);
   });
 

@@ -4,7 +4,7 @@ import { MarketplaceLineItemConditionComponent } from "./marketplace-line-item-c
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 
 describe("MarketplaceListingLineItemConditionComponent", () => {
@@ -12,7 +12,7 @@ describe("MarketplaceListingLineItemConditionComponent", () => {
   let fixture: ComponentFixture<MarketplaceLineItemConditionComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceLineItemConditionComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(MarketplaceLineItemConditionComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
 
 
     fixture = TestBed.createComponent(MarketplaceLineItemConditionComponent);

@@ -124,7 +124,7 @@
         class="description w-100"
       ></div>
 
-      <astrobin-image-search
+      <astrobin-image-search-card
         #sellerImageSearch
         *ngIf="
           !!equipmentItem &&
@@ -132,17 +132,15 @@
           listing.listingType === MarketplaceListingType.FOR_SALE
         "
         [header]="'Images by the seller' | translate"
-        [itemId]="lineItem.itemObjectId"
-        [itemType]="lineItem.itemKlass"
         [loadMoreOnScroll]="false"
+        [model]="{ itemId: lineItem.itemObjectId, itemType: lineItem.itemKlass, username: lineItem.username }"
         [pageSize]="21"
         [showSortButton]="false"
         [showUsageButton]="false"
-        [username]="lineItem.username"
         ordering="-likes"
-      ></astrobin-image-search>
+      ></astrobin-image-search-card>
 
-      <astrobin-image-search
+      <astrobin-image-search-card
         #astrobinImageSearch
         *ngIf="
           !!equipmentItem &&
@@ -150,14 +148,13 @@
           listing.listingType === MarketplaceListingType.FOR_SALE
         "
         [header]="'Images from the AstroBin community' | translate"
-        [itemId]="lineItem.itemObjectId"
-        [itemType]="lineItem.itemKlass"
         [loadMoreOnScroll]="false"
+        [model]="{ itemId: lineItem.itemObjectId, itemType: lineItem.itemKlass }"
         [pageSize]="21"
         [showSortButton]="false"
         [showUsageButton]="false"
         ordering="-likes"
-      ></astrobin-image-search>
+      ></astrobin-image-search-card>
     </div>
   </div>
 </ng-container>

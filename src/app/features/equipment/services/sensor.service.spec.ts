@@ -7,7 +7,7 @@ import { CameraGenerator } from "@features/equipment/generators/camera.generator
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { of } from "rxjs";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("SensorService", () => {
   let service: SensorService;
@@ -17,7 +17,7 @@ describe("SensorService", () => {
   let camera2 = CameraGenerator.camera({ id: 2, name: "Camera 2" });
 
   beforeEach(async () => {
-    await MockBuilder(SensorService, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(SensorService, AppModule).provide(provideMockStore({ initialState: initialMainState }));
     service = TestBed.inject(SensorService);
     store = TestBed.inject(MockStore);
     jest.spyOn(service.translateService, "instant").mockImplementation(s => s);
@@ -107,7 +107,7 @@ describe("SensorService", () => {
     });
 
     it("should work for cameras'", done => {
-      const state = { ...initialState };
+      const state = { ...initialMainState };
       state.equipment.equipmentItems = [camera1, camera2];
       store.setState(state);
 

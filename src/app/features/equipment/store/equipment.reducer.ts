@@ -69,7 +69,7 @@ function editProposalCompareFunction(
   return 0;
 }
 
-export function reducer(state = initialEquipmentState, action: PayloadActionInterface): EquipmentState {
+export function equipmentReducer(state = initialEquipmentState, action: PayloadActionInterface): EquipmentState {
   switch (action.type) {
     case EquipmentActionTypes.GET_ALL_BRANDS_SUCCESS:
       return {

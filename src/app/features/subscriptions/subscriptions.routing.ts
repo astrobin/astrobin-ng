@@ -8,7 +8,7 @@ import { SubscriptionsViewSubscriptionsPageComponent } from "@features/subscript
 import { SubscriptionsSuccessPageComponent } from "@features/subscriptions/pages/success-page/subscriptions-success-page.component";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 
-export const routes: Routes = [
+export const subscriptionRoutes: Routes = [
   {
     path: "",
     component: SubscriptionsRouterPageComponent,

@@ -1,8 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { routes } from "@features/image/image.routing";
+import { imageRoutes } from "@features/image/image.routing";
 import { ImageEffects } from "@features/image/store/image.effects";
-import * as fromImage from "@features/image/store/image.reducer";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { SharedModule } from "@shared/shared.module";
@@ -23,6 +22,7 @@ import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@featu
 import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
 import { OverrideAcquisitionFormModalComponent } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
+import { imageFeatureKey, imageReducer } from "@features/image/store/image.reducer";
 
 @NgModule({
   declarations: [
@@ -37,9 +37,9 @@ import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/com
     ImportAcquisitionsFromCsvFormModalComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    RouterModule.forChild(imageRoutes),
     SharedModule,
-    StoreModule.forFeature(fromImage.imageFeatureKey, fromImage.reducer),
+    StoreModule.forFeature(imageFeatureKey, imageReducer),
     EffectsModule.forFeature([ImageEffects])
   ],
   providers: [

@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ForumInterface } from "@shared/interfaces/forums/forum.interface";
 import { TopicInterface } from "@shared/interfaces/forums/topic.interface";
 import { ForumApiService } from "@shared/services/api/forum/forum-api.service";
@@ -41,7 +41,7 @@ export class ForumPreviewComponent extends BaseComponentDirective implements OnI
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly forumApiService: ForumApiService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly translateService: TranslateService

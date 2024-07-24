@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { MarketplaceOfferSummaryComponent } from "./marketplace-offer-summary.component";
 import { MockBuilder } from "ng-mocks";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { AppModule } from "@app/app.module";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
@@ -13,7 +13,7 @@ describe("MarketplaceOfferSummaryComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceOfferSummaryComponent, AppModule).provide([
-      provideMockStore({ initialState })
+      provideMockStore({ initialState: initialMainState })
     ]);
 
     fixture = TestBed.createComponent(MarketplaceOfferSummaryComponent);

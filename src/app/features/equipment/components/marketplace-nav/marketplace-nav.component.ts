@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { IsActiveMatchOptions, Router } from "@angular/router";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Location } from "@angular/common";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -36,7 +36,7 @@ export class MarketplaceNavComponent extends BaseComponentDirective implements O
   };
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly router: Router,
     public readonly location: Location,
     @Inject(PLATFORM_ID) public readonly platformId: Object,

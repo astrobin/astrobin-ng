@@ -2,8 +2,8 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { SharedModule } from "@shared/shared.module";
 import { StoreModule } from "@ngrx/store";
-import { equipmentFeatureKey, reducer } from "@features/equipment/store/equipment.reducer";
-import { routes } from "@features/equipment/equipment.routing";
+import { equipmentFeatureKey, equipmentReducer } from "@features/equipment/store/equipment.reducer";
+import { equipmentRoutes } from "@features/equipment/equipment.routing";
 import { MigrationToolComponent } from "./pages/migration/migration-tool/migration-tool.component";
 import { MigrationReviewComponent } from "./pages/migration/migration-review/migration-review.component";
 import { MigrationReviewItemComponent } from "./pages/migration/migration-review-item/migration-review-item.component";
@@ -67,8 +67,8 @@ import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipmen
 import { MarketplaceOfferSummaryComponent } from "./components/marketplace-offer-summary/marketplace-offer-summary.component";
 import { MarketplaceUserFeedbackListPageComponent } from "./pages/marketplace/user-feedback-list/marketplace-user-feedback-list-page.component";
 import { MarketplaceUserFeedbackPageComponent } from "./pages/marketplace/marketplace-user-feedback/marketplace-user-feedback-page.component";
-import { MarketplaceFeedbackComponent } from './components/marketplace-feedback/marketplace-feedback.component';
-import { MarketplaceAcceptRejectRetractOfferModalComponent } from './components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component';
+import { MarketplaceFeedbackComponent } from "./components/marketplace-feedback/marketplace-feedback.component";
+import { MarketplaceAcceptRejectRetractOfferModalComponent } from "./components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
 
 @NgModule({
   declarations: [
@@ -139,9 +139,9 @@ import { MarketplaceAcceptRejectRetractOfferModalComponent } from './components/
     MarketplaceAcceptRejectRetractOfferModalComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    RouterModule.forChild(equipmentRoutes),
     SharedModule,
-    StoreModule.forFeature(equipmentFeatureKey, reducer)
+    StoreModule.forFeature(equipmentFeatureKey, equipmentReducer)
   ]
 })
 export class EquipmentModule {

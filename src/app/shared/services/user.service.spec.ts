@@ -5,13 +5,13 @@ import { MockBuilder } from "ng-mocks";
 
 import { UserService } from "./user.service";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("UserService", () => {
   let service: UserService;
 
   beforeEach(async () => {
-    await MockBuilder(UserService).provide(provideMockStore({ initialState }));
+    await MockBuilder(UserService).provide(provideMockStore({ initialState: initialMainState }));
     service = TestBed.inject(UserService);
   });
 

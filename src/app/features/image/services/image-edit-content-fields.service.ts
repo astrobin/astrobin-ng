@@ -16,7 +16,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
@@ -28,7 +28,7 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
   private _dataSourceValueChangesSubscription: Subscription;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly imageEditService: ImageEditService,

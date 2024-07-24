@@ -2,7 +2,7 @@ import { Component, Input } from "@angular/core";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
 import { map, switchMap, take } from "rxjs/operators";
@@ -24,7 +24,7 @@ export class UnapproveItemModalComponent extends BaseComponentDirective {
   othersInBrand: EquipmentItem[] = [];
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly modal: NgbActiveModal,

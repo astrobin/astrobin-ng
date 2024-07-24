@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { FormGroup } from "@angular/forms";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { LoadingService } from "@shared/services/loading.service";
@@ -31,7 +31,7 @@ export class BrandEditorCardComponent extends BaseComponentDirective {
   brand = new EventEmitter<BrandInterface>();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService
   ) {

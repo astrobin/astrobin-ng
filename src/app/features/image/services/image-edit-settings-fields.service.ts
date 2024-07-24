@@ -10,7 +10,7 @@ import {
 import { ImageEditService, KeyValueTagsValidator } from "@features/image/services/image-edit.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
 import { map, tap } from "rxjs/operators";
 import { LoadImageRevisions } from "@app/store/actions/image.actions";
@@ -23,7 +23,7 @@ import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-
 })
 export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly imageEditService: ImageEditService

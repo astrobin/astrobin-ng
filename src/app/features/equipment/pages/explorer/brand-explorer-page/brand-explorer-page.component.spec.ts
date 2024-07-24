@@ -4,7 +4,7 @@ import { BrandExplorerPageComponent } from "./brand-explorer-page.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EMPTY, ReplaySubject } from "rxjs";
@@ -21,7 +21,7 @@ describe("BrandExplorerPageComponent", () => {
       .mock(AppModule, { export: true })
       .provide([
         WindowRefService,
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialMainState }),
         provideMockActions(() => new ReplaySubject<any>()),
         {
           provide: ActivatedRoute,

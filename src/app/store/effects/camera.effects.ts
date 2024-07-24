@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { selectCamera } from "@app/store/selectors/app/camera.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { CameraApiService } from "@shared/services/api/classic/gear/camera/camera-api.service";
@@ -33,7 +33,7 @@ export class CameraEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly cameraApiService: CameraApiService
   ) {

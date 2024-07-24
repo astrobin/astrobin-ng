@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, PLATFORM_ID } from "@angular/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteVote, PostVote } from "@features/iotd/store/iotd.actions";
 import { selectReviewForImage, selectReviewQueueEntry, selectReviews } from "@features/iotd/store/iotd.selectors";
@@ -25,7 +25,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 })
 export class ReviewEntryComponent extends BasePromotionEntryComponent {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,

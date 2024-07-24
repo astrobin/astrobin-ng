@@ -504,14 +504,16 @@
       >
       </astrobin-forum-preview>
 
-      <astrobin-image-search
+      <astrobin-image-search-card
         [header]="'Acquired with this item' | translate"
-        [itemId]="selectedItem.id"
-        [itemType]="activeType"
-        [text]="equipmentItemService.getFullDisplayName$(selectedItem) | async"
+        [model]="{
+          itemId: selectedItem.id,
+          itemType: activeType,
+          text: equipmentItemService.getFullDisplayName$(selectedItem) | async
+        }"
         class="mt-5 d-block"
         ordering="-likes"
-      ></astrobin-image-search>
+      ></astrobin-image-search-card>
     </ng-container>
   </div>
   <!-- main pane -->

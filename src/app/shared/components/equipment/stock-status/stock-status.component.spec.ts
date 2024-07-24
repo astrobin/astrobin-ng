@@ -6,14 +6,14 @@ import { AppModule } from "@app/app.module";
 import { StockStatus } from "@features/equipment/types/stock-status.type";
 import { EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("StockStatusComponent", () => {
   let component: StockStatusComponent;
   let fixture: ComponentFixture<StockStatusComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(StockStatusComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(StockStatusComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
     fixture = TestBed.createComponent(StockStatusComponent);
     component = fixture.componentInstance;
     component.listing = {

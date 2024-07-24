@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -19,7 +19,7 @@ export class MarketplaceUserFeedbackPageComponent extends BaseComponentDirective
   feedback: MarketplaceFeedbackInterface;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly route: ActivatedRoute,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly translateService: TranslateService,
