@@ -11,6 +11,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
+// TODO: unify with src/app/features/search/interfaces/search-model.interface.ts
 export interface ImageSearchOptions {
   text?: string;
   itemType?: EquipmentItemType;
@@ -39,7 +40,7 @@ export class ImageSearchApiService extends BaseClassicApiService {
   search(options: ImageSearchOptions): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
     let url = `${this.configUrl}/`;
 
-    url = UtilsService.addOrUpdateUrlParam(url, "page", options.page.toString());
+    url = UtilsService.addOrUpdateUrlParam(url, "page", (options.page || 1).toString());
 
     if (!!options.ordering) {
       url = UtilsService.addOrUpdateUrlParam(url, "ordering", options.ordering);

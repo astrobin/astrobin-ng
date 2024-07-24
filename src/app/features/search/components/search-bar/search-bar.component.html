@@ -1,15 +1,18 @@
 <div class="search-bar-wrapper">
-  <input
-    (keyup.enter)="onSearch()"
-    [(ngModel)]="model.text"
-    class="search-bar-input form-control"
-    placeholder="{{ 'Search' | translate }}"
-    type="text"
-  />
+  <div class="search-bar-input-container form-control">
+    <input
+      (keyup.enter)="onSearch(model)"
+      [(ngModel)]="model.text"
+      [formControl]="searchControl"
+      class="search-bar-input form-control"
+      placeholder="{{ 'Search' | translate }}"
+      type="text"
+    />
+  </div>
 
   <div class="search-bar-icons">
     <fa-icon
-      (click)="onSearch()"
+      (click)="onSearch(model)"
       class="search-bar-search-icon"
       icon="search"
     ></fa-icon>
