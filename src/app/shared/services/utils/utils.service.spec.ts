@@ -179,7 +179,7 @@ describe("UtilsService", () => {
 
     it("should work in the case of a fragment and multiple params", () => {
       expect(UtilsService.addOrUpdateUrlParam("ab.co?a=b#fragment", "c", "d")).toEqual("ab.co?a=b&c=d#fragment");
-    })
+    });
   });
 
   describe("removeUrlParam", () => {
@@ -215,6 +215,138 @@ describe("UtilsService", () => {
 
     it("should work when there is such param as non-first element", () => {
       expect(UtilsService.getUrlParam("https://app.astrobin.com/foo/bar/?a=b&test=1", "test")).toEqual("1");
+    });
+  });
+
+  describe("toQueryString", () => {
+    it("should convert a simple object to a query string", () => {
+      const params = { name: "John Doe", age: 30 };
+      expect(UtilsService.toQueryString(params)).toBe("name=John%20Doe&age=30");
+    });
+
+    it("should handle special characters in keys and values", () => {
+      const params = { "na me": "John & Doe", "a&g#e": 30 };
+      expect(UtilsService.toQueryString(params)).toBe("na%20me=John%20%26%20Doe&a%26g%23e=30");
+    });
+
+    it("should handle array values", () => {
+      const params = { interests: ["coding", "music"] };
+      expect(UtilsService.toQueryString(params)).toBe("interests=coding&interests=music");
+    });
+
+    it("should handle empty objects", () => {
+      const params = {};
+      expect(UtilsService.toQueryString(params)).toBe("");
+    });
+
+    it("should handle null and undefined values", () => {
+      const params = { name: "John Doe", age: undefined, city: null };
+      expect(UtilsService.toQueryString(params)).toBe("name=John%20Doe");
+    });
+
+    it("should handle nested objects (serialize as [object Object])", () => {
+      const params = { user: { name: "John", age: 30 } };
+      expect(UtilsService.toQueryString(params)).toBe("user=%5Bobject%20Object%5D");
+    });
+
+    it("should handle boolean values", () => {
+      const params = { isActive: true, isAdmin: false };
+      expect(UtilsService.toQueryString(params)).toBe("isActive=true&isAdmin=false");
+    });
+
+    it("should handle number values", () => {
+      const params = { age: 30, height: 5.9 };
+      expect(UtilsService.toQueryString(params)).toBe("age=30&height=5.9");
+    });
+
+    it("should handle mixed types", () => {
+      const params = { name: "John", age: 30, isActive: true, hobbies: ["coding", "music"] };
+      expect(UtilsService.toQueryString(params)).toBe("name=John&age=30&isActive=true&hobbies=coding&hobbies=music");
+    });
+
+    it("should handle empty string values", () => {
+      const params = { name: "" };
+      expect(UtilsService.toQueryString(params)).toBe("name=");
+    });
+
+    it("should handle objects with prototype properties", () => {
+      const params = Object.create({ prototypeProp: "value" });
+      params.name = "John";
+      expect(UtilsService.toQueryString(params)).toBe("name=John");
+    });
+
+    it("should not include properties from the prototype chain", () => {
+      const params = Object.create({ prototypeProp: "value" });
+      params.name = "John";
+      expect(UtilsService.toQueryString(params)).not.toContain("prototypeProp");
+    });
+  });
+
+  describe("parseQueryString", () => {
+    it("should parse a simple query string", () => {
+      const queryString = "?name=John%20Doe&age=30";
+      const expected = { name: "John Doe", age: "30" };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle special characters in keys and values", () => {
+      const queryString = "?na%20me=John%20%26%20Doe&a%26g%23e=30";
+      const expected = { "na me": "John & Doe", "a&g#e": "30" };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle array values", () => {
+      const queryString = "?interests=coding&interests=music";
+      const expected = { interests: ["coding", "music"] };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle empty query strings", () => {
+      const queryString = "";
+      const expected = {};
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle null and undefined values", () => {
+      const queryString = "?name=John%20Doe&age";
+      const expected = { name: "John Doe", age: null };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle boolean values as strings", () => {
+      const queryString = "?isActive=true&isAdmin=false";
+      const expected = { isActive: "true", isAdmin: "false" };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle number values as strings", () => {
+      const queryString = "?age=30&height=5.9";
+      const expected = { age: "30", height: "5.9" };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle mixed types", () => {
+      const queryString = "?name=John&age=30&isActive=true&hobbies=coding&hobbies=music";
+      const expected = { name: "John", age: "30", isActive: "true", hobbies: ["coding", "music"] };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle empty string values", () => {
+      const queryString = "?name=";
+      const expected = { name: "" };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle multiple keys with the same name", () => {
+      const queryString = "?name=John&name=Doe";
+      const expected = { name: ["John", "Doe"] };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
+    });
+
+    it("should handle keys without values", () => {
+      const queryString = "?name&age=30";
+      const expected = { name: null, age: "30" };
+      expect(UtilsService.parseQueryString(queryString)).toEqual(expected);
     });
   });
 

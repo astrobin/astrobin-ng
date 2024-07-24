@@ -214,6 +214,56 @@ export class UtilsService {
     return queryString.get(parameter);
   }
 
+  static toQueryString(params: { [key: string]: any }): string {
+    return Object.keys(params)
+      .map(key => {
+        const value = params[key];
+        if (value === null || value === undefined) {
+          return "";
+        }
+        if (Array.isArray(value)) {
+          return value
+            .map(val => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`)
+            .join("&");
+        }
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      })
+      .filter(param => param !== "")
+      .join("&");
+  }
+
+  static parseQueryString(queryString: string): { [key: string]: any } {
+    const params: { [key: string]: any } = {};
+    if (!queryString) {
+      return params;
+    }
+
+    const pairs = queryString[0] === "?" ? queryString.substring(1) : queryString;
+
+    pairs.split("&").forEach(pair => {
+      if (!pair) {
+        return;
+      } // Skip empty pairs
+
+      const [key, value] = pair.split("=");
+      const decodedKey = decodeURIComponent(key);
+      const decodedValue = value !== undefined ? decodeURIComponent(value) : null;
+
+      // Handle array values
+      if (params[decodedKey]) {
+        if (Array.isArray(params[decodedKey])) {
+          params[decodedKey].push(decodedValue);
+        } else {
+          params[decodedKey] = [params[decodedKey], decodedValue];
+        }
+      } else {
+        params[decodedKey] = decodedValue;
+      }
+    });
+
+    return params;
+  }
+
   static isNumeric(s: string): boolean {
     return !!s && /^[-+]?\d+\.\d+$|^[-+]?\d+$/.test(s);
   }

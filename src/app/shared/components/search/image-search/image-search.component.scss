@@ -1,30 +1,41 @@
-.card-header {
-  .buttons {
-    .usage-menu,
-    .sort-menu {
-      .not-selected {
-        display: inline-block;
-        width: 1.25rem;
-      }
-    }
-  }
-}
+@import "../../../../styles/breakpoints";
+
 
 .search-results {
+  $gap: .5rem;
+
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  gap: $gap;
 
   > a {
     display: block;
-    padding: .25rem;
-    width: calc(100% / 5);
-    max-width: 125px;
-    min-width: 95px;
+    width: calc(100% / 10 - #{$gap});
+
+    @media (max-width: $lg-max) {
+      width: calc(100% / 9 - #{$gap});
+    }
+
+    @media (max-width: $md-max) {
+      width: calc(100% / 8 - #{$gap});
+    }
+
+    @media (max-width: $sm-max) {
+      width: calc(100% / 6 - #{$gap});
+    }
+
+    @media (max-width: $xs-max) {
+      width: calc(100% / 5 - #{$gap});
+    }
+
+    @media (max-width: $xxs-max) {
+      width: calc(100% / 4 - #{$gap});
+    }
 
     &:hover {
       > img {
-        transform: scale(1.05);
+        transform: scale(1.1);
       }
     }
 

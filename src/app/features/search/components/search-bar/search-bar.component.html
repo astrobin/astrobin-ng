@@ -1,0 +1,17 @@
+<div class="search-bar-wrapper">
+  <input
+    (keyup.enter)="onSearch()"
+    [(ngModel)]="model.text"
+    class="search-bar-input form-control"
+    placeholder="{{ 'Search' | translate }}"
+    type="text"
+  />
+
+  <div class="search-bar-icons">
+    <fa-icon
+      (click)="onSearch()"
+      class="search-bar-search-icon"
+      icon="search"
+    ></fa-icon>
+  </div>
+</div>

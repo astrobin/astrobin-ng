@@ -14,13 +14,16 @@ import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 
 @Component({
-  selector: "astrobin-image-search",
-  templateUrl: "./image-search.component.html",
-  styleUrls: ["./image-search.component.scss"]
+  selector: "astrobin-image-search-card",
+  templateUrl: "./image-search-card.component.html",
+  styleUrls: ["./image-search-card.component.scss"]
 })
-export class ImageSearchComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class ImageSearchCardComponent extends BaseComponentDirective implements OnInit, OnChanges {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
+
+  @Input()
+  header = this.translateService.instant("Search results");
 
   @Input()
   model: SearchModelInterface;
@@ -32,8 +35,13 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   loadMoreOnScroll = true;
 
   @Input()
-  pageSize: number;
+  showUsageButton = true;
 
+  @Input()
+  showSortButton = true;
+
+  @Input()
+  pageSize: number;
   next: string;
   initialLoading = true;
   loading = true;
@@ -83,6 +91,18 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
 
       this._loadData(false);
     }
+  }
+
+  sortBy(ordering: string): void {
+    this.ordering = ordering;
+    this.model.page = 1;
+    this._loadData(false);
+  }
+
+  setUsageType(usageType: EquipmentItemUsageType): void {
+    this.usageType = usageType;
+    this.model.page = 1;
+    this._loadData(false);
   }
 
   private _loadData(cumulative = true): void {
