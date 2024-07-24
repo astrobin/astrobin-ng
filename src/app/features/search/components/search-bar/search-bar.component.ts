@@ -4,6 +4,20 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { SearchService } from "@features/search/services/search.service";
+import { FormControl } from "@angular/forms";
+import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
+
+enum AutoCompleteType {
+  SUBJECT = "subject",
+  TELESCOPE = "telescope",
+  CAMERA = "camera"
+}
+
+interface AutoCompleteItem {
+  type: AutoCompleteType;
+  value: string;
+  label: string;
+}
 
 @Component({
   selector: "astrobin-search-bar",
@@ -11,7 +25,11 @@ import { SearchService } from "@features/search/services/search.service";
   styleUrls: ["./search-bar.component.scss"]
 })
 export class SearchBarComponent extends BaseComponentDirective implements OnInit {
-  model: SearchModelInterface = {};
+  model: SearchModelInterface = {
+    page: 1
+  };
+  searchControl = new FormControl();
+  autoCompleteItems: AutoCompleteItem[] = [];
 
   @Output()
   modelChanged = new EventEmitter<SearchModelInterface>();
@@ -25,9 +43,20 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    this.searchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(value => {
+
+    });
   }
 
-  onSearch(): void {
-    this.modelChanged.emit(this.model);
+  onSearch(model: SearchModelInterface): void {
+    this.modelChanged.emit(model);
+  }
+
+  onAutoCompleteItemClicked(item: AutoCompleteItem): void {
   }
 }

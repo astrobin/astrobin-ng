@@ -1,26 +1,27 @@
-import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
+import { Component, ElementRef, Inject, Input, PLATFORM_ID, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { fromEvent } from "rxjs";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
 
 @Component({
   selector: "astrobin-image-search-card",
   templateUrl: "./image-search-card.component.html",
   styleUrls: ["./image-search-card.component.scss"]
 })
-export class ImageSearchCardComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class ImageSearchCardComponent extends BaseComponentDirective {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
+
+  @ViewChild("imageSearchComponent", { read: ImageSearchComponent })
+  imageSearchComponent: ImageSearchComponent;
 
   @Input()
   header = this.translateService.instant("Search results");
@@ -61,108 +62,18 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
     super(store$);
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-
-    if (isPlatformBrowser(this.platformId)) {
-      fromEvent(this.windowRefService.nativeWindow, "scroll")
-        .pipe(takeUntil(this.destroyed$), debounceTime(200), distinctUntilChanged())
-        .subscribe(() => this._onScroll());
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.model) {
-      const urlParams = new URLSearchParams();
-      urlParams.set("d", "i");
-      urlParams.set("sort", this.ordering);
-
-      if (this.model.itemType) {
-        urlParams.set(`${this.model.itemType.toLowerCase()}_ids`, this.model.itemId.toString());
-      }
-
-      if (this.model.username) {
-        urlParams.set("username", this.model.username.toString());
-      }
-
-      this.searchUrl = `${
-        this.classicRoutesService.SEARCH
-      }?${urlParams.toString()}`;
-
-      this._loadData(false);
-    }
-  }
-
   sortBy(ordering: string): void {
     this.ordering = ordering;
-    this.model.page = 1;
-    this._loadData(false);
+    this._loadData();
   }
 
   setUsageType(usageType: EquipmentItemUsageType): void {
     this.usageType = usageType;
-    this.model.page = 1;
-    this._loadData(false);
+    this._loadData();
   }
 
-  private _loadData(cumulative = true): void {
-    this.loading = true;
-
-    if (!this.model.page) {
-      this.model.page = 1;
-    }
-
-    if (this.model.page === 1) {
-      this.initialLoading = true;
-    }
-
-    // TODO: just use model when all params are there.
-    const searchOptions = {
-      text: this.model.text,
-      itemType: this.model.itemType,
-      itemId: this.model.itemId,
-      usageType: this.usageType,
-      ordering: this.ordering,
-      page: this.model.page
-    };
-
-    if (this.model.username) {
-      Object.assign(searchOptions, { username: this.model.username });
-    }
-
-    if (this.pageSize) {
-      Object.assign(searchOptions, { pageSize: this.pageSize });
-    }
-
-    this.imageSearchApiService.search(searchOptions)
-      .subscribe(response => {
-        this.next = response.next;
-
-        if (!cumulative) {
-          this.images = [];
-        }
-
-        this.images = [...this.images, ...response.results.filter(image => !!image.galleryThumbnail)];
-        this.loading = false;
-        this.initialLoading = false;
-      });
-  }
-
-  private _onScroll() {
-    if (isPlatformServer(this.platformId)) {
-      return;
-    }
-
-    if (!this.loadMoreOnScroll) {
-      return;
-    }
-
-    const window = this.windowRefService.nativeWindow;
-    const rect = this.elementRef.nativeElement.getBoundingClientRect();
-
-    if (!this.loading && !!this.next && rect.bottom < window.innerHeight + 600) {
-      this.model.page += 1;
-      this._loadData();
-    }
+  private _loadData(): void {
+    this.model = { ...this.model, page: 1 };
+    this.imageSearchComponent.loadData(false);
   }
 }

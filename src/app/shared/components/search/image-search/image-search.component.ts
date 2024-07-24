@@ -81,16 +81,12 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
         this.classicRoutesService.SEARCH
       }?${urlParams.toString()}`;
 
-      this._loadData(false);
+      this.loadData(false);
     }
   }
 
-  private _loadData(cumulative = true): void {
+  loadData(cumulative = true): void {
     this.loading = true;
-
-    if (!this.model.page) {
-      this.model.page = 1;
-    }
 
     if (this.model.page === 1) {
       this.initialLoading = true;
@@ -103,7 +99,8 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
       itemId: this.model.itemId,
       usageType: this.usageType,
       ordering: this.ordering,
-      page: this.model.page
+      page: this.model.page,
+      pageSize: 100
     };
 
     if (this.model.username) {
@@ -141,8 +138,8 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     const rect = this.elementRef.nativeElement.getBoundingClientRect();
 
     if (!this.loading && !!this.next && rect.bottom < window.innerHeight + 600) {
-      this.model.page += 1;
-      this._loadData();
+      this.model = { ...this.model, page: this.model.page + 1 };
+      this.loadData();
     }
   }
 }
