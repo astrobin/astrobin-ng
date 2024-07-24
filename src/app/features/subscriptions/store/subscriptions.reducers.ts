@@ -24,7 +24,7 @@ export const initialSubscriptionsState: SubscriptionsState = {
   }
 };
 
-export function reducer(state = initialSubscriptionsState, action: All): SubscriptionsState {
+export function subscriptionsReducer(state = initialSubscriptionsState, action: All): SubscriptionsState {
   switch (action.type) {
     case SubscriptionsActionTypes.GET_AVAILABLE_SUBSCRIPTIONS_SUCCESS:
       return {

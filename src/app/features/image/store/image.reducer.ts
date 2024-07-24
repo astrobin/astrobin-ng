@@ -15,7 +15,7 @@ export const initialImageState: ImageState = {
   }
 };
 
-export function reducer(state = initialImageState, action: ImageActions): ImageState {
+export function imageReducer(state = initialImageState, action: ImageActions): ImageState {
   switch (action.type) {
     case ImageActionTypes.SET_CROPPER_SHOWN:
       const editor = {

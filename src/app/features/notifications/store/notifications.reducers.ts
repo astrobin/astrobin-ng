@@ -12,7 +12,7 @@ export const initialNotificationsState: NotificationsState = {
   settings: null
 };
 
-export function reducer(state = initialNotificationsState, action: All): NotificationsState {
+export function notificationsReducer(state = initialNotificationsState, action: All): NotificationsState {
   switch (action.type) {
     case NotificationsActionTypes.LOAD_TYPES_SUCCESS:
       return {

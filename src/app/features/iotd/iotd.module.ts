@@ -13,7 +13,7 @@ import { SharedModule } from "@shared/shared.module";
 import { ConfirmDismissModalComponent } from "./components/confirm-dismiss-modal/confirm-dismiss-modal.component";
 import { SubmissionQueueComponent } from "./pages/submission-queue/submission-queue.component";
 import { IotdEffects } from "./store/iotd.effects";
-import * as fromIotd from "./store/iotd.reducer";
+import { iotdFeatureKey, iotdReducer } from "./store/iotd.reducer";
 import { QueueSortButtonComponent } from "./components/queue-sort-button/queue-sort-button.component";
 import { JudgementQueueComponent } from "@features/iotd/pages/judgement-queue/judgement-queue.component";
 import { FutureIotdSlotsComponent } from "@features/iotd/components/future-iotd-slots/future-iotd-slots.component";
@@ -39,7 +39,7 @@ import { JudgementEntryComponent } from "@features/iotd/components/judgement-ent
   imports: [
     RouterModule.forChild(iotdRoutes),
     SharedModule,
-    StoreModule.forFeature(fromIotd.iotdFeatureKey, fromIotd.reducer),
+    StoreModule.forFeature(iotdFeatureKey, iotdReducer),
     EffectsModule.forFeature([IotdEffects])
   ],
   providers: [IotdApiService],
