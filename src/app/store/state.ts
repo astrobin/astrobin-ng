@@ -26,12 +26,15 @@ import {
 } from "@features/subscriptions/store/subscriptions.reducers";
 import { SubscriptionsEffects } from "@features/subscriptions/store/subscriptions.effects";
 import { TogglePropertyEffects } from "@app/store/effects/toggle-property.effects";
+import { initialSearchState, searchReducer, SearchState } from "@features/search/state/state.reducer";
+import { SearchEffects } from "@features/search/state/search.effects";
 
 export interface State {
   app: AppState;
   auth: AuthState;
   equipment: EquipmentState;
   notifications: NotificationsState;
+  search: SearchState;
   subscriptions: SubscriptionsState;
 }
 
@@ -40,6 +43,7 @@ export const initialState: State = {
   auth: initialAuthState,
   equipment: initialEquipmentState,
   notifications: initialNotificationsState,
+  search: initialSearchState,
   subscriptions: initialSubscriptionsState
 };
 
@@ -48,6 +52,7 @@ export const appStateReducers = {
   auth: authReducer,
   equipment: equipmentReducer,
   notifications: notificationsReducer,
+  search: searchReducer,
   subscriptions: subscriptionsReducer
 };
 
@@ -55,16 +60,17 @@ export const appStateEffects = [
   AuthEffects,
   CameraEffects,
   ContentTypeEffects,
+  EquipmentEffects,
   FullscreenImageEffects,
-  InitializeAppEffects,
   ImageEffects,
+  InitializeAppEffects,
   LocationEffects,
   NestedCommentsEffects,
   NotificationsEffects,
+  SearchEffects,
   SolutionEffects,
-  ThumbnailEffects,
-  TelescopeEffects,
-  EquipmentEffects,
   SubscriptionsEffects,
+  TelescopeEffects,
+  ThumbnailEffects,
   TogglePropertyEffects
 ];
