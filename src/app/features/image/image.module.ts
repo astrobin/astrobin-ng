@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { routes } from "@features/image/image.routing";
+import { imageRoutes } from "@features/image/image.routing";
 import { ImageEffects } from "@features/image/store/image.effects";
 import * as fromImage from "@features/image/store/image.reducer";
 import { EffectsModule } from "@ngrx/effects";
@@ -37,7 +37,7 @@ import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/com
     ImportAcquisitionsFromCsvFormModalComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    RouterModule.forChild(imageRoutes),
     SharedModule,
     StoreModule.forFeature(fromImage.imageFeatureKey, fromImage.reducer),
     EffectsModule.forFeature([ImageEffects])

@@ -4,7 +4,7 @@ import { ReviewEntryComponent } from "@features/iotd/components/review-entry/rev
 import { ReviewSlotsComponent } from "@features/iotd/components/review-slots/review-slots.component";
 import { SubmissionEntryComponent } from "@features/iotd/components/submission-entry/submission-entry.component";
 import { SubmissionSlotsComponent } from "@features/iotd/components/submission-slots/submission-slots.component";
-import { routes } from "@features/iotd/iotd.routing";
+import { iotdRoutes } from "@features/iotd/iotd.routing";
 import { ReviewQueueComponent } from "@features/iotd/pages/review-queue/review-queue.component";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { EffectsModule } from "@ngrx/effects";
@@ -37,7 +37,7 @@ import { JudgementEntryComponent } from "@features/iotd/components/judgement-ent
     QueueSortButtonComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    RouterModule.forChild(iotdRoutes),
     SharedModule,
     StoreModule.forFeature(fromIotd.iotdFeatureKey, fromIotd.reducer),
     EffectsModule.forFeature([IotdEffects])

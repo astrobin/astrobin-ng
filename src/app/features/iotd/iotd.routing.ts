@@ -5,7 +5,7 @@ import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { GroupGuardService } from "@shared/services/guards/group-guard.service";
 import { JudgementQueueComponent } from "@features/iotd/pages/judgement-queue/judgement-queue.component";
 
-export const routes: Routes = [
+export const iotdRoutes: Routes = [
   {
     path: "submission-queue",
     component: SubmissionQueueComponent,

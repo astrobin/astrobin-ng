@@ -7,7 +7,7 @@ import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guar
 import { RevisionUploaderPageComponent } from "./pages/revision-uploader-page/revision-uploader-page.component";
 import { UncompressedSourceUploaderPageComponent } from "./pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component";
 
-export const routes: Routes = [
+export const uploaderRoutes: Routes = [
   {
     path: "",
     canActivate: [AuthGuardService],

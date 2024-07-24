@@ -8,7 +8,7 @@ import { CurrentUsersLocationsResolver } from "@shared/resolvers/current-users-l
 import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
 import { CurrentUsersCollectionsResolver } from "@shared/resolvers/current-users-collections.resolver";
 
-export const routes: Routes = [
+export const imageRoutes: Routes = [
   {
     path: ":imageId/edit",
     component: ImageEditPageComponent,

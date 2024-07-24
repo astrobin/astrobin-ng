@@ -3,7 +3,7 @@ import { RouterModule } from "@angular/router";
 import { SharedModule } from "@shared/shared.module";
 import { StoreModule } from "@ngrx/store";
 import { equipmentFeatureKey, reducer } from "@features/equipment/store/equipment.reducer";
-import { routes } from "@features/equipment/equipment.routing";
+import { equipmentRoutes } from "@features/equipment/equipment.routing";
 import { MigrationToolComponent } from "./pages/migration/migration-tool/migration-tool.component";
 import { MigrationReviewComponent } from "./pages/migration/migration-review/migration-review.component";
 import { MigrationReviewItemComponent } from "./pages/migration/migration-review-item/migration-review-item.component";
@@ -139,7 +139,7 @@ import { MarketplaceAcceptRejectRetractOfferModalComponent } from './components/
     MarketplaceAcceptRejectRetractOfferModalComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    RouterModule.forChild(equipmentRoutes),
     SharedModule,
     StoreModule.forFeature(equipmentFeatureKey, reducer)
   ]
