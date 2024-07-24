@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
@@ -24,7 +24,7 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
   pageTitle = this.translate.instant("Notifications");
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly notificationsService: NotificationsService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly titleService: TitleService,

@@ -3,14 +3,14 @@ import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { RefreshButtonComponent } from "./refresh-button.component";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("RefreshButtonComponent", () => {
   let component: RefreshButtonComponent;
   let fixture: ComponentFixture<RefreshButtonComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(RefreshButtonComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(RefreshButtonComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
   });
 
   beforeEach(() => {

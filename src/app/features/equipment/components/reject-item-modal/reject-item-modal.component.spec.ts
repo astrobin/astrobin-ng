@@ -6,7 +6,7 @@ import { MockBuilder } from "ng-mocks";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("RejectItemModalComponent", () => {
   let component: RejectItemModalComponent;
@@ -15,7 +15,7 @@ describe("RejectItemModalComponent", () => {
   beforeEach(async () => {
     await MockBuilder(RejectItemModalComponent, AppModule).provide([
       NgbActiveModal,
-      provideMockStore({ initialState })
+      provideMockStore({ initialState: initialMainState })
     ]);
   });
 

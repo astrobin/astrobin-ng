@@ -27,7 +27,7 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { fromEvent, Observable } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentActionTypes, LoadSensor, LoadSensorSuccess } from "@features/equipment/store/equipment.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
@@ -88,7 +88,7 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
   private _resultsScrollable: QueryList<ElementRef>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,

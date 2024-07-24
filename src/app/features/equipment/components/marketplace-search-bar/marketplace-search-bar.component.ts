@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ActivatedRoute } from "@angular/router";
 
 @Component({
@@ -17,7 +17,7 @@ export class MarketplaceSearchBarComponent extends BaseComponentDirective implem
   query: string;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);

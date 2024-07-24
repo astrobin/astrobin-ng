@@ -4,7 +4,7 @@ import { CountrySelectionModalComponent } from "./country-selection-modal.compon
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 describe("CountrySelectionModalComponent", () => {
@@ -13,7 +13,7 @@ describe("CountrySelectionModalComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(CountrySelectionModalComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       NgbActiveModal
     ]);
 

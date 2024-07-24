@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TitleService } from "@shared/services/title/title.service";
@@ -58,7 +58,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   goBackOnClose = false;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,

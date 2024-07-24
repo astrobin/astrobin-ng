@@ -5,7 +5,7 @@ import { UploaderModule } from "@features/uploader/uploader.module";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder, MockRender } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("UncompressedSourceUploader.PageComponent", () => {
   let component: UncompressedSourceUploaderPageComponent;
@@ -14,7 +14,7 @@ describe("UncompressedSourceUploader.PageComponent", () => {
     MockBuilder(UncompressedSourceUploaderPageComponent, UploaderModule)
       .mock(AppModule, { export: true })
       .provide([
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialMainState }),
         {
           provide: ActivatedRoute,
           useValue: {

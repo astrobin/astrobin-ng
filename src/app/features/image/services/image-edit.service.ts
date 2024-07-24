@@ -10,7 +10,7 @@ import { LocationInterface } from "@shared/interfaces/location.interface";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { Observable } from "rxjs";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
 import { map } from "rxjs/operators";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
@@ -76,7 +76,7 @@ export class ImageEditService extends BaseService {
   remoteSourceOptionTemplate: TemplateRef<any>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService
   ) {

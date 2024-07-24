@@ -5,7 +5,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { AuthActionTypes, UpdateCurrentUserProfileSuccess } from "@features/account/store/auth.actions";
 import { map, take, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
@@ -30,7 +30,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
   geocoder = this.googleMapsService.createGeocoder();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly modal: NgbActiveModal,
     public readonly translateService: TranslateService,

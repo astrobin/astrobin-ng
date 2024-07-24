@@ -3,7 +3,7 @@ import { Component, Inject, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
@@ -77,7 +77,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   activeUserSubscription$: Observable<UserSubscriptionInterface | null>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
     public readonly userSubscriptionService: UserSubscriptionService,

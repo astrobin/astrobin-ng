@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { EMPTY, Observable, of } from "rxjs";
 import {
@@ -69,7 +69,7 @@ export class NotificationsEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly notificationsApiService: NotificationsApiService
   ) {

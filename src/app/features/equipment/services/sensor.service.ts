@@ -9,7 +9,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { combineLatest, Observable, of } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 
@@ -35,7 +35,7 @@ export enum SensorDisplayProperty {
 })
 export class SensorService extends BaseService implements EquipmentItemServiceInterface {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly modalService: NgbModal

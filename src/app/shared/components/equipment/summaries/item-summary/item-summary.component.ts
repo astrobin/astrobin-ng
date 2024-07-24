@@ -6,7 +6,7 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { CameraInterface, CameraType, instanceOfCamera } from "@features/equipment/types/camera.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { distinctUntilKeyChangedOrNull, UtilsService } from "@shared/services/utils/utils.service";
 import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
@@ -121,7 +121,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   mostOftenUsedWith$: Observable<{ item$: Observable<EquipmentItem>; matches: number }[]>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly translateService: TranslateService,
     public readonly utilsService: UtilsService,

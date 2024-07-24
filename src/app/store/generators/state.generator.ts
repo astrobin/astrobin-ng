@@ -1,4 +1,4 @@
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { AppStateGenerator } from "@app/store/generators/app-state.generator";
 import { AuthStateGenerator } from "@features/account/generators/auth-state.generator";
 import { NotificationStateGenerator } from "@features/notifications/generators/notification-state.generator";
@@ -6,7 +6,7 @@ import { EquipmentStateGenerator } from "@features/equipment/generators/equipmen
 import { SubscriptionsStateGenerator } from "@features/subscriptions/generators/subscription-state.generator";
 
 export class StateGenerator {
-  static default(): State {
+  static default(): MainState {
     return {
       app: AppStateGenerator.default(),
       auth: AuthStateGenerator.default(),

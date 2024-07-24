@@ -1,5 +1,5 @@
 import { AppModule } from "@app/app.module";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
 import { HeaderComponent } from "./header.component";
@@ -11,7 +11,7 @@ import { Router } from "@angular/router";
 describe("HeaderComponent", () => {
   let fixture: ComponentFixture<HeaderComponent>;
   let component: HeaderComponent;
-  const initialState: State = StateGenerator.default();
+  const initialState: MainState = StateGenerator.default();
 
   beforeEach(() => MockBuilder(HeaderComponent, AppModule).provide([
     provideMockStore({ initialState }),

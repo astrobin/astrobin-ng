@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { UserSubscriptionGenerator } from "@shared/generators/user-subscription.generator";
 import { TestConstants } from "@shared/test-constants";
@@ -12,7 +12,7 @@ import { StateGenerator } from "@app/store/generators/state.generator";
 describe("UserSubscriptionService", () => {
   let service: UserSubscriptionService;
   let store: MockStore;
-  const initialState: State = StateGenerator.default();
+  const initialState: MainState = StateGenerator.default();
 
   beforeEach(async () => {
     await MockBuilder(UserSubscriptionService, AppModule).provide(provideMockStore({ initialState }));

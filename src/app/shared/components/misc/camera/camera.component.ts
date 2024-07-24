@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { LoadCamera } from "@app/store/actions/camera.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { CameraInterface } from "@shared/interfaces/camera.interface";
@@ -23,7 +23,7 @@ export class CameraComponent extends BaseComponentDirective implements OnInit, A
   loadDelay = 0;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly gearService: GearService,
     public readonly utilsService: UtilsService
   ) {

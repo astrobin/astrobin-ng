@@ -1,5 +1,5 @@
 import { EquipmentState } from "@features/equipment/store/equipment.reducer";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { createSelector } from "@ngrx/store";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -71,7 +71,7 @@ export function arrayUniqueEquipmentItems(
   return a;
 }
 
-export const selectEquipment = (state: State): EquipmentState => state.equipment;
+export const selectEquipment = (state: MainState): EquipmentState => state.equipment;
 
 export const selectBrands = createSelector(selectEquipment, state => state.brands);
 

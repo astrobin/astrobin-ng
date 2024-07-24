@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MarketplaceFeedbackWidgetComponent } from "./marketplace-feedback-widget.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
@@ -15,7 +15,7 @@ describe("MarketplaceFeedbackWidgetComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceFeedbackWidgetComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       {
         provide: ActivatedRoute,
         useValue: {

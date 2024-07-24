@@ -8,7 +8,7 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { filter, map, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { FormControl } from "@angular/forms";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
@@ -18,7 +18,7 @@ import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-
 })
 export class ImageEditBasicFieldsService extends ImageEditFieldsBaseService {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly imageEditService: ImageEditService,

@@ -1,6 +1,6 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot } from "@angular/router";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { EMPTY, Observable } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
@@ -13,7 +13,7 @@ export const MarketplaceListingResolver: ResolveFn<MarketplaceListingInterface> 
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,
   equipmentApiService = inject(EquipmentApiService),
-  store$ = inject(Store<State>),
+  store$ = inject(Store<MainState>),
   windowRefService = inject(WindowRefService)
 ): Observable<MarketplaceListingInterface> => {
   const hash: string = route.paramMap.get("hash");

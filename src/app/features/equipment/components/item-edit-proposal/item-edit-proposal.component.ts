@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import {
   EditProposalChange,
   EditProposalInterface,
@@ -56,7 +56,7 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
   changes: EditProposalChange[] = [];
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly equipmentApiService: EquipmentApiService,

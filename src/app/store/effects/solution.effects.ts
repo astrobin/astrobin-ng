@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadSolutionFailure, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { selectSolution } from "@app/store/selectors/app/solution.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { SolutionApiService } from "@shared/services/api/classic/platesolving/solution/solution-api.service";
@@ -45,7 +45,7 @@ export class SolutionEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly solutionApiService: SolutionApiService
   ) {

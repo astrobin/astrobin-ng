@@ -9,7 +9,7 @@ import {
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
@@ -49,7 +49,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   ];
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,

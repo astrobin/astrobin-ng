@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { catchError, filter, first, map, switchMap } from "rxjs/operators";
@@ -13,7 +13,7 @@ import { GroupInterface } from "@shared/interfaces/group.interface";
   providedIn: "root"
 })
 export class CurrentUsersGroupsResolver implements Resolve<GroupInterface[]> {
-  constructor(private readonly store$: Store<State>, private readonly groupApiService: GroupApiService) {
+  constructor(private readonly store$: Store<MainState>, private readonly groupApiService: GroupApiService) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -13,7 +13,7 @@ import { AdditionalAcquisitionPropertiesBase } from "@features/image/components/
 })
 export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends AdditionalAcquisitionPropertiesBase implements OnInit {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService

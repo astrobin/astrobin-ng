@@ -10,7 +10,7 @@ import {
   selectMarketplaceListing,
   selectMarketplacePrivateConversations
 } from "@features/equipment/store/equipment.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -74,7 +74,7 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
   private _listingUpdatedSubscription: Subscription;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly utilsService: UtilsService,

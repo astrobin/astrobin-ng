@@ -8,7 +8,7 @@ import {
   SaveImageFailure,
   SaveImageSuccess
 } from "@app/store/actions/image.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -102,7 +102,7 @@ export class ImageEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions<All>,
     public readonly imageApiService: ImageApiService,
     public readonly loadingService: LoadingService,

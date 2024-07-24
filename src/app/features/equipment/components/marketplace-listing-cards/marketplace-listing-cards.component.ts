@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
@@ -15,7 +15,7 @@ export class MarketplaceListingCardsComponent extends BaseComponentDirective imp
   listings: MarketplaceListingInterface[];
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);

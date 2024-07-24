@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ThemeService } from "@shared/services/theme.service";
@@ -29,7 +29,7 @@ declare var gtag: any;
 })
 export class AppComponent extends BaseComponentDirective implements OnInit {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly router: Router,
     public readonly paginationConfig: NgbPaginationConfig,
     public readonly themeService: ThemeService,

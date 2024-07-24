@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
 import { LoadUser } from "@features/account/store/auth.actions";
@@ -26,7 +26,7 @@ export class MarketplaceUserFeedbackListPageComponent extends BaseComponentDirec
   feedback: PaginatedApiResultInterface<MarketplaceFeedbackInterface>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly classicRoutesService: ClassicRoutesService,

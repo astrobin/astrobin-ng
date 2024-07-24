@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompareService, ComparisonInterface } from "@features/equipment/services/compare.service";
 import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
@@ -22,7 +22,7 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
   public data: ComparisonInterface;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,
     public readonly compareService: CompareService,
     public readonly windowRefService: WindowRefService,

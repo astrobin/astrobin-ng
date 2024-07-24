@@ -4,7 +4,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 
 describe("CreateLocationModalComponent", () => {
@@ -34,7 +34,7 @@ describe("CreateLocationModalComponent", () => {
   beforeEach(async () => {
     await MockBuilder(CreateLocationModalComponent, AppModule).provide([
       NgbActiveModal,
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       {
         provide: GoogleMapsService,
         useValue: {

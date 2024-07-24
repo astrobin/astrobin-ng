@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockReset, MockService } from "ng-mocks";
 import { of, ReplaySubject } from "rxjs";
@@ -18,7 +18,7 @@ describe("ImageOwnerGuardService", () => {
   let store: MockStore;
   const actions: ReplaySubject<any> = new ReplaySubject<any>();
 
-  const initialState: State = StateGenerator.default();
+  const initialState: MainState = StateGenerator.default();
 
   beforeEach(async () => {
     await MockBuilder(ImageOwnerGuardService, AppModule).provide([

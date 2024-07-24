@@ -3,7 +3,7 @@ import { AppModule } from "@app/app.module";
 import { MockBuilder, MockInstance, MockRender, MockReset, MockService } from "ng-mocks";
 import { LoginPageComponent } from "./login-page.component";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("LoginPageComponent", () => {
   let component: LoginPageComponent;
@@ -23,7 +23,7 @@ describe("LoginPageComponent", () => {
 
   afterEach(MockReset);
 
-  beforeEach(() => MockBuilder(LoginPageComponent, AppModule).provide(provideMockStore({ initialState })));
+  beforeEach(() => MockBuilder(LoginPageComponent, AppModule).provide(provideMockStore({ initialState: initialMainState })));
   beforeEach(() => (component = MockRender(LoginPageComponent).point.componentInstance));
 
   it("should create", () => {

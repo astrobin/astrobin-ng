@@ -20,7 +20,7 @@ import { LoadImage, LoadImageRevisions } from "@app/store/actions/image.actions"
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -79,7 +79,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   autoLoadSubscription: Subscription;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly imageApiService: ImageApiService,
     public readonly imageService: ImageService,

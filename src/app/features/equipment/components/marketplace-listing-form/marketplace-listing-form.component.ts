@@ -18,7 +18,7 @@ import {
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { LoadingService } from "@shared/services/loading.service";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
@@ -134,7 +134,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   findItemModeOptionTemplate: TemplateRef<any>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly equipmentItemService: EquipmentItemService,

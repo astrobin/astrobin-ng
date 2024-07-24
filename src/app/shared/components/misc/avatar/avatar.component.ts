@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadUser } from "@features/account/store/auth.actions";
@@ -25,7 +25,7 @@ export class AvatarComponent extends BaseComponentDirective implements OnInit {
   @Input()
   link = true;
 
-  constructor(public readonly store$: Store<State>, public readonly classicRoutesService: ClassicRoutesService) {
+  constructor(public readonly store$: Store<MainState>, public readonly classicRoutesService: ClassicRoutesService) {
     super(store$);
   }
 

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FollowedExplorerComponent } from "./followed-explorer.component";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EMPTY, of, ReplaySubject } from "rxjs";
@@ -20,7 +20,7 @@ describe("FollowedExplorerComponent", () => {
       .mock(ItemTypeNavComponent, { export: true })
       .mock(ItemBrowserComponent)
       .provide([
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialMainState }),
         provideMockActions(() => new ReplaySubject<any>()),
         {
           provide: ActivatedRoute,

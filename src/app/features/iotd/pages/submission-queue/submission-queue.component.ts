@@ -9,7 +9,7 @@ import {
   ViewChildren
 } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
 import { SubmissionInterface, SubmitterSeenImage } from "@features/iotd/services/iotd-api.service";
 import {
@@ -67,7 +67,7 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
   submissionEntryComponents: QueryList<SubmissionEntryComponent>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,

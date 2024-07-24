@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostBinding, Input, OnInit, ViewChild } from "@angular/core";
 import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import {
   ConfirmDismissModalComponent,
   DISMISSAL_NOTICE_COOKIE
@@ -90,7 +90,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   showDismissButton = true;
 
   protected constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly elementRef: ElementRef,
     public readonly modalService: NgbModal,

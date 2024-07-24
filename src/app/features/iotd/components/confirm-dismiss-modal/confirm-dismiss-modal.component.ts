@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Observable } from "rxjs";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { filter, map, takeUntil } from "rxjs/operators";
@@ -39,7 +39,7 @@ export class ConfirmDismissModalComponent extends BaseComponentDirective impleme
   fields: FormlyFieldConfig[];
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,
     public readonly translateService: TranslateService,
     public readonly cookieService: CookieService

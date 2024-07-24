@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { AppModule } from "@app/app.module";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockInstance, MockService } from "ng-mocks";
 import { JudgementQueueComponent } from "./judgement-queue.component";
@@ -21,7 +21,7 @@ describe("JudgementQueueComponent", () => {
   beforeEach(async () => {
     await MockBuilder(JudgementQueueComponent, AppModule)
       .replace(HttpClientModule, HttpClientTestingModule)
-      .provide([IotdApiService, provideMockStore({ initialState })])
+      .provide([IotdApiService, provideMockStore({ initialState: initialMainState })])
       .mock(QueueSortButtonComponent, { export: true })
       .mock(FutureIotdSlotsComponent, { export: true })
       .mock(JudgementEntryComponent, { export: true });

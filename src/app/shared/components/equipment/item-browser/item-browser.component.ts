@@ -12,7 +12,7 @@ import {
   ViewChild
 } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Action, Store } from "@ngrx/store";
 import {
   EquipmentItemBaseInterface,
@@ -195,7 +195,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   valueChanged = new EventEmitter<EquipmentItemBaseInterface | EquipmentItemBaseInterface[] | null>();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,

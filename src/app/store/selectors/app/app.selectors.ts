@@ -1,9 +1,9 @@
 import { AppState } from "@app/store/reducers/app.reducers";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { createSelector } from "@ngrx/store";
 import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
 
-export const selectApp = (state: State): AppState => state.app;
+export const selectApp = (state: MainState): AppState => state.app;
 
 export const selectBreadcrumb = createSelector(selectApp, state => state.breadcrumb);
 

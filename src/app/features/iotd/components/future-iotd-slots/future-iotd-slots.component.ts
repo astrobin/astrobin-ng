@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { selectIotdMaxFutureIotds } from "@app/store/selectors/app/app.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import {
   BasePromotionSlotsComponent,
   SlotType
@@ -24,7 +24,7 @@ export class FutureIotdSlotsComponent extends BasePromotionSlotsComponent implem
   slotsCount$: Observable<number> = this.store$.pipe(select(selectIotdMaxFutureIotds));
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modalService: NgbModal,
     public readonly translateService: TranslateService,
     public readonly activatedRoute: ActivatedRoute,

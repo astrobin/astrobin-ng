@@ -3,7 +3,7 @@ import { AuthService } from "@shared/services/auth.service";
 import { Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Observable } from "rxjs";
 import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
 import { selectAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.selectors";
@@ -23,7 +23,7 @@ export class SubscriptionsRouterPageComponent extends BaseComponentDirective imp
     this.store$.select(selectAvailableSubscriptions);
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly authService: AuthService,
     public readonly location: Location,
     public readonly subscriptionService: SubscriptionsService,

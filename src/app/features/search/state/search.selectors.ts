@@ -1,4 +1,4 @@
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { SearchState } from "@features/search/state/state.reducer";
 
-export const selectSearch = (state: State): SearchState => state.search;
+export const selectSearch = (state: MainState): SearchState => state.search;

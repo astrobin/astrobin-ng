@@ -4,7 +4,7 @@ import { MarketplaceSoldListingsPageComponent } from "./marketplace-sold-listing
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
-import { appStateEffects, appStateReducers, initialState } from "@app/store/state";
+import { mainStateEffects, mainStateReducers, initialMainState } from "@app/store/state";
 import { EffectsModule } from "@ngrx/effects";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { HttpClientModule } from "@angular/common/http";
@@ -22,7 +22,7 @@ describe("SoldListingsComponent", () => {
     await MockBuilder(MarketplaceSoldListingsPageComponent, AppModule)
       .provide([
         WindowRefService,
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialMainState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -30,8 +30,8 @@ describe("SoldListingsComponent", () => {
           }
         }
       ])
-      .keep(StoreModule.forRoot(appStateReducers))
-      .keep(EffectsModule.forRoot(appStateEffects))
+      .keep(StoreModule.forRoot(mainStateReducers))
+      .keep(EffectsModule.forRoot(mainStateEffects))
       .replace(HttpClientModule, HttpClientTestingModule);
 
     store = TestBed.inject(MockStore);

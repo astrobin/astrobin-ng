@@ -4,7 +4,7 @@ import { EquipmentCompareModalComponent } from "./equipment-compare-modal.compon
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompareService } from "@features/equipment/services/compare.service";
 
@@ -14,7 +14,7 @@ describe("EquipmentCompareModalComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(EquipmentCompareModalComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       NgbActiveModal,
       CompareService
     ]);

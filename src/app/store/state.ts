@@ -29,7 +29,7 @@ import { TogglePropertyEffects } from "@app/store/effects/toggle-property.effect
 import { initialSearchState, searchReducer, SearchState } from "@features/search/state/state.reducer";
 import { SearchEffects } from "@features/search/state/search.effects";
 
-export interface State {
+export interface MainState {
   app: AppState;
   auth: AuthState;
   equipment: EquipmentState;
@@ -38,7 +38,7 @@ export interface State {
   subscriptions: SubscriptionsState;
 }
 
-export const initialState: State = {
+export const initialMainState: MainState = {
   app: initialAppState,
   auth: initialAuthState,
   equipment: initialEquipmentState,
@@ -47,7 +47,7 @@ export const initialState: State = {
   subscriptions: initialSubscriptionsState
 };
 
-export const appStateReducers = {
+export const mainStateReducers = {
   app: appReducer,
   auth: authReducer,
   equipment: equipmentReducer,
@@ -56,7 +56,7 @@ export const appStateReducers = {
   subscriptions: subscriptionsReducer
 };
 
-export const appStateEffects = [
+export const mainStateEffects = [
   AuthEffects,
   CameraEffects,
   ContentTypeEffects,

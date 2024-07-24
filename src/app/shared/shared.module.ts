@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { formlyConfig } from "@app/formly.config";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeApp } from "@app/store/actions/initialize-app.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
@@ -66,7 +66,7 @@ import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-
 import { NgImageSliderModule } from "ng-image-slider";
 import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
 
-export function appInitializer(store: Store<State>, actions$: Actions) {
+export function appInitializer(store: Store<MainState>, actions$: Actions) {
   return () =>
     new Promise<void>(resolve => {
       store.dispatch(new InitializeApp());

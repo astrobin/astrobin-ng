@@ -2,7 +2,7 @@ import { Component, HostBinding, Input, OnChanges } from "@angular/core";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Observable } from "rxjs";
 import { LoadNestedComments } from "@app/store/actions/nested-comments.actions";
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
@@ -27,7 +27,7 @@ export class NestedCommentsCountComponent extends BaseComponentDirective impleme
 
   count$: Observable<number>;
 
-  constructor(public readonly store$: Store<State>) {
+  constructor(public readonly store$: Store<MainState>) {
     super(store$);
   }
 

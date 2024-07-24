@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { AuthActionTypes, Login } from "@features/account/store/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -19,7 +19,7 @@ export class LoginFormComponent extends BaseComponentDirective {
   @Output() loginSuccessful = new EventEmitter();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly formBuilder: FormBuilder,
     public readonly actions$: Actions
   ) {

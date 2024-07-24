@@ -4,7 +4,7 @@ import { ConfirmItemCreationModalComponent } from "./confirm-item-creation-modal
 import { MockBuilder } from "ng-mocks";
 import { EquipmentModule } from "@features/equipment/equipment.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -17,7 +17,7 @@ describe("ConfirmItemCreationModalComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ConfirmItemCreationModalComponent, EquipmentModule).provide([
       NgbActiveModal,
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       provideMockActions(() => new ReplaySubject<any>())
     ]);
   });

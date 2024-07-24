@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import {
   HiddenImage,
   IotdInterface,
@@ -64,7 +64,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   private _initialPromotionSlotsTopOffset: number;
 
   protected constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,

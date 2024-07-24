@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
@@ -38,7 +38,7 @@ export class SubscriptionsService {
   currency$: Observable<string> = this._currencySubject.asObservable();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly translate: TranslateService,
     public readonly paymentsApiService: PaymentsApiService,
     public readonly utilsService: UtilsService

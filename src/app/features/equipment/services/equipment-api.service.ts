@@ -34,7 +34,7 @@ import { ExplorerFilterInterface } from "@features/equipment/pages/explorer/expl
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
@@ -69,7 +69,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   configUrl = this.baseUrl + "/equipment";
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly http: HttpClient,
     public readonly commonApiService: CommonApiService,

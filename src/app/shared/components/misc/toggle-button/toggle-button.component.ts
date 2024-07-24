@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Theme, ThemeService } from "@shared/services/theme.service";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 
 @Component({
   selector: "astrobin-toggle-button",
@@ -27,7 +27,7 @@ export class ToggleButtonComponent extends BaseComponentDirective implements OnI
   color: { checked: string, unchecked: string };
   switchColor: { checked: string, unchecked: string };
 
-  constructor(public readonly store$: Store<State>, public readonly themeService: ThemeService) {
+  constructor(public readonly store$: Store<MainState>, public readonly themeService: ThemeService) {
     super(store$);
   }
 

@@ -4,7 +4,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("ConfirmationDialogComponent", () => {
   let component: RemoveAdsDialogComponent;
@@ -13,7 +13,7 @@ describe("ConfirmationDialogComponent", () => {
   beforeEach(async () => {
     await MockBuilder(RemoveAdsDialogComponent, AppModule).provide([
       NgbActiveModal,
-      provideMockStore({ initialState })
+      provideMockStore({ initialState: initialMainState })
     ]);
   });
 

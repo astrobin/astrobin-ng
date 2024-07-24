@@ -4,7 +4,7 @@ import { SubscriptionRequiredModalComponent } from "./subscription-required-moda
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 describe("SubscriptionRequiredModalComponent", () => {
@@ -13,7 +13,7 @@ describe("SubscriptionRequiredModalComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(SubscriptionRequiredModalComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       NgbActiveModal
     ]);
   });

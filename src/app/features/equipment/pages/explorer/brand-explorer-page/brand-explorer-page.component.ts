@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import {
   EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE,
   ExplorerBaseComponent
@@ -51,7 +51,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   listings: EquipmentListingsInterface = null;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,

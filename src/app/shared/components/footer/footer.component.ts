@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { environment } from "@env/environment";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { Logout } from "@features/account/store/auth.actions";
 
@@ -14,7 +14,7 @@ import { Logout } from "@features/account/store/auth.actions";
 })
 export class FooterComponent extends BaseComponentDirective {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly notificationsService: NotificationsService
   ) {

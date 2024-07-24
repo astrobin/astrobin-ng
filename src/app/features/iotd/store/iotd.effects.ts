@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -660,7 +660,7 @@ export class IotdEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions<IotdActions>,
     public readonly iotdApiService: IotdApiService,
     public readonly loadingService: LoadingService,

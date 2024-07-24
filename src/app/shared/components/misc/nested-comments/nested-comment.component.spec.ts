@@ -5,14 +5,14 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { NestedCommentGenerator } from "@shared/generators/nested-comment.generator";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("NestedCommentComponent", () => {
   let component: NestedCommentComponent;
   let fixture: ComponentFixture<NestedCommentComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(NestedCommentComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(NestedCommentComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
   });
 
   beforeEach(() => {

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EMPTY, Observable, of } from "rxjs";
 import { catchError, map, mergeMap } from "rxjs/operators";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
@@ -56,7 +56,7 @@ export class SubscriptionsEffects {
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly paymentsApiService: PaymentsApiService,
     public readonly subscriptionsService: SubscriptionsService

@@ -5,7 +5,7 @@ import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { ActivatedRoute } from "@angular/router";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 
@@ -17,7 +17,7 @@ describe("ReviewGearRenamingProposalsComponent", () => {
     await MockBuilder(ReviewGearRenamingProposalsComponent, AppModule)
       .replace(HttpClientModule, HttpClientTestingModule)
       .provide([
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialMainState }),
         {
           provide: ActivatedRoute,
           useValue: {

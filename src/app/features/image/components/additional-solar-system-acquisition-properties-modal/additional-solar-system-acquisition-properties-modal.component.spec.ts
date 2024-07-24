@@ -4,7 +4,7 @@ import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "./addi
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 
@@ -14,7 +14,7 @@ describe("AdditionalsolarSystemAcquisitionPropertiesModalComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(AdditionalSolarSystemAcquisitionPropertiesModalComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       NgbActiveModal,
       ImageEditService
     ]);

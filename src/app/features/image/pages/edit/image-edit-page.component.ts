@@ -13,7 +13,7 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { SaveImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -97,7 +97,7 @@ export class ImageEditPageComponent
   editingExistingImage: boolean;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly route: ActivatedRoute,
     public readonly router: Router,

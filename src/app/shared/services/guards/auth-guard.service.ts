@@ -5,7 +5,7 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { filter, switchMap } from "rxjs/operators";
 import { RouterService } from "@shared/services/router.service";
@@ -13,7 +13,7 @@ import { RouterService } from "@shared/services/router.service";
 @Injectable()
 export class AuthGuardService extends BaseService implements CanActivate {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly authService: AuthService,
     public readonly routerService: RouterService

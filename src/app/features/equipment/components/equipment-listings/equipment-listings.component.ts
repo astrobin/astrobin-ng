@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import {
   EquipmentBrandListingInterface,
@@ -72,7 +72,7 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
   private _cardBodyBrandListingsLiteTemplate: TemplateRef<any>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly translateService: TranslateService,

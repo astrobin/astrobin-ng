@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostBinding, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { CompareService } from "@features/equipment/services/compare.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
@@ -24,7 +24,7 @@ export class EquipmentCompareComponent extends BaseComponentDirective implements
   visibilityChanged = new EventEmitter<boolean>();
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly compareService: CompareService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly windowRefService: WindowRefService,

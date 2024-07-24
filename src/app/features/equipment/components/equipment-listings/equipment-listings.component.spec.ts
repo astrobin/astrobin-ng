@@ -4,7 +4,7 @@ import { EquipmentListingsComponent } from "./equipment-listings.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { TelescopeGenerator } from "@features/equipment/generators/telescope.generator";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
@@ -14,7 +14,7 @@ describe("EquipmentListingsComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(EquipmentListingsComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       UtilsService
     ]);
   });

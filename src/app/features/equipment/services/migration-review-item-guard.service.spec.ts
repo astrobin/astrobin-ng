@@ -3,7 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { MigrationReviewItemGuardService } from "./migration-review-item-guard.service";
 import { MockBuilder, MockReset, MockService } from "ng-mocks";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
@@ -18,7 +18,7 @@ describe("MigrationReviewItemGuardService", () => {
 
   beforeEach(async () => {
     await MockBuilder(MigrationReviewItemGuardService, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       RouterTestingModule
     ]);
 
@@ -41,7 +41,7 @@ describe("MigrationReviewItemGuardService", () => {
   });
 
   it("should not pass if the user is the moderator for this item", done => {
-    const state = { ...initialState };
+    const state = { ...initialMainState };
     state.auth.user = UserGenerator.user();
     store.setState(state);
 
@@ -66,7 +66,7 @@ describe("MigrationReviewItemGuardService", () => {
   });
 
   it("should not pass if the item is locked for review", done => {
-    const state = { ...initialState };
+    const state = { ...initialMainState };
     state.auth.user = UserGenerator.user();
     store.setState(state);
 
@@ -92,7 +92,7 @@ describe("MigrationReviewItemGuardService", () => {
   });
 
   it("should not pass if the item is already reviewed", done => {
-    const state = { ...initialState };
+    const state = { ...initialMainState };
     state.auth.user = UserGenerator.user();
     store.setState(state);
 
@@ -118,7 +118,7 @@ describe("MigrationReviewItemGuardService", () => {
   });
 
   it("should pass if the user is not the moderator and the item is not locked for review", done => {
-    const state = { ...initialState };
+    const state = { ...initialMainState };
     state.auth.user = UserGenerator.user();
     store.setState(state);
 
@@ -143,7 +143,7 @@ describe("MigrationReviewItemGuardService", () => {
   });
 
   it("should pass if the user is not the moderator and the item is locked for review by the user", done => {
-    const state = { ...initialState };
+    const state = { ...initialMainState };
     state.auth.user = UserGenerator.user();
     store.setState(state);
 
@@ -169,7 +169,7 @@ describe("MigrationReviewItemGuardService", () => {
   });
 
   it("should not pass if the item is not reviewable", done => {
-    const state = { ...initialState };
+    const state = { ...initialMainState };
     state.auth.user = UserGenerator.user();
     store.setState(state);
 

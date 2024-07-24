@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
@@ -27,7 +27,7 @@ export class SubscriptionsViewSubscriptionsPageComponent extends BaseComponentDi
   );
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly translate: TranslateService,
     public readonly titleService: TitleService

@@ -2,7 +2,7 @@ import { Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { SelectorWithProps } from "@ngrx/store/src/models";
 import { interval, Observable, of } from "rxjs";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
@@ -15,7 +15,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 })
 export class UtilsService {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly cookieService: CookieService,
     @Inject(PLATFORM_ID) public readonly platformId
@@ -682,7 +682,7 @@ export class UtilsService {
 
   // Gets an object by id, first looking in the store via the provided selector, then using the provided API call.
   getFromStoreOrApiById<T>(
-    store$: Store<State>,
+    store$: Store<MainState>,
     id: number,
     selector: SelectorWithProps<any, number, T>,
     apiCall: (number) => Observable<T>,

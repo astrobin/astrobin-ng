@@ -3,7 +3,7 @@ import { AvatarComponent } from "./avatar.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { UserGenerator } from "@shared/generators/user.generator";
 
 describe("AvatarComponent", () => {
@@ -11,7 +11,7 @@ describe("AvatarComponent", () => {
   let fixture: ComponentFixture<AvatarComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(AvatarComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(AvatarComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
   });
 
   beforeEach(() => {

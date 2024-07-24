@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 
 import { AppModule } from "@app/app.module";
-import { appStateEffects, appStateReducers, State } from "@app/store/state";
+import { mainStateEffects, mainStateReducers, MainState } from "@app/store/state";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
@@ -14,12 +14,12 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 describe("SubscriptionsService", () => {
   let service: SubscriptionsService;
   let store: MockStore;
-  const initialState: State = StateGenerator.default();
+  const initialState: MainState = StateGenerator.default();
 
   beforeEach(async () => {
     await MockBuilder(SubscriptionsService, AppModule)
-      .keep(StoreModule.forRoot(appStateReducers))
-      .keep(EffectsModule.forRoot(appStateEffects))
+      .keep(StoreModule.forRoot(mainStateReducers))
+      .keep(EffectsModule.forRoot(mainStateEffects))
       .replace(HttpClientModule, HttpClientTestingModule)
       .provide(provideMockStore({ initialState }));
 

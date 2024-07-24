@@ -19,7 +19,7 @@ import { EquipmentItemServiceFactory } from "@features/equipment/services/equipm
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { filter, map, switchMap, take } from "rxjs/operators";
@@ -49,7 +49,7 @@ export enum EquipmentItemDisplayProperty {
 })
 export class EquipmentItemService extends BaseService {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly utilsService: UtilsService,
     public readonly translateService: TranslateService,

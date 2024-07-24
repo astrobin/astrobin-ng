@@ -4,7 +4,7 @@ import { MarketplaceOfferModalComponent } from "./marketplace-offer-modal.compon
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 
@@ -14,7 +14,7 @@ describe("MarketplaceOfferModalComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceOfferModalComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       NgbActiveModal
     ]);
 

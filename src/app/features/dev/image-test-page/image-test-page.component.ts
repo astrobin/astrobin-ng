@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 
@@ -12,7 +12,7 @@ export class ImageTestPageComponent implements OnInit {
   readonly id = 1;
   readonly alias = ImageAlias.REGULAR;
 
-  constructor(public readonly store$: Store<State>) {
+  constructor(public readonly store$: Store<MainState>) {
   }
 
   ngOnInit() {

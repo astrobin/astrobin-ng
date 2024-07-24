@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { IotdInterface, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -59,7 +59,7 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
   iotdContentType$: Observable<ContentTypeInterface>;
 
   protected constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modalService: NgbModal,
     public readonly translateService: TranslateService,
     public readonly activatedRoute: ActivatedRoute,

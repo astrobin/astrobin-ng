@@ -3,7 +3,7 @@ import { ExplorerFiltersComponent } from "./explorer-filters.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
@@ -14,7 +14,7 @@ describe("ExplorerFiltersComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ExplorerFiltersComponent, AppModule).provide([
       WindowRefService,
-      provideMockStore({ initialState })
+      provideMockStore({ initialState: initialMainState })
     ]);
   });
 

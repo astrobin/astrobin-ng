@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -87,7 +87,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   private _allowedTypesChangesSubscription: Subscription;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly authService: AuthService,
     public readonly uploaderService: UploadxService,
     public readonly uploadDataService: UploadDataService,

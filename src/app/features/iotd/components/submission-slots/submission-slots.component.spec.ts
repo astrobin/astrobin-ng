@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { IotdModule } from "@features/iotd/iotd.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
@@ -21,7 +21,7 @@ describe("SubmissionSlotsComponent", () => {
             fragment: of("")
           }
         },
-        provideMockStore({ initialState })
+        provideMockStore({ initialState: initialMainState })
       ])
   );
 

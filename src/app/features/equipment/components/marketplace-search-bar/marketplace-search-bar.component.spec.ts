@@ -4,7 +4,7 @@ import { MarketplaceSearchBarComponent } from "./marketplace-search-bar.componen
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
 
@@ -14,7 +14,7 @@ describe("MarketplaceSearchBarComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceSearchBarComponent, AppModule).provide([
-      provideMockStore({ initialState }),
+      provideMockStore({ initialState: initialMainState }),
       {
         provide: ActivatedRoute,
         useValue: {

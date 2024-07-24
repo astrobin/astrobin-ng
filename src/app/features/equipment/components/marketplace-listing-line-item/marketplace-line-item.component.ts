@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
@@ -54,7 +54,7 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
   private _sellerImageSearch: ElementRef;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly commonApiService: CommonApiService,
     public readonly translateService: TranslateService,
     public readonly equipmentItemService: EquipmentItemService,

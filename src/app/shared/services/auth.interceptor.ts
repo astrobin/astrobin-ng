@@ -7,7 +7,7 @@ import {
   HttpRequest
 } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Logout } from "@features/account/store/auth.actions";
 import { Store } from "@ngrx/store";
@@ -20,7 +20,7 @@ import { AuthService } from "./auth.service";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly authService: AuthService,
     public readonly translate: TranslateService

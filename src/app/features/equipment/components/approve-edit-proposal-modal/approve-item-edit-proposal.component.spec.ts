@@ -5,7 +5,7 @@ import { ApproveEditProposalModalComponent } from "./approve-edit-proposal-modal
 import { MockBuilder } from "ng-mocks";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("ApproveItemModalComponent", () => {
   let component: ApproveEditProposalModalComponent;
@@ -14,7 +14,7 @@ describe("ApproveItemModalComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ApproveEditProposalModalComponent, AppModule).provide([
       NgbActiveModal,
-      provideMockStore({ initialState })
+      provideMockStore({ initialState: initialMainState })
     ]);
   });
 

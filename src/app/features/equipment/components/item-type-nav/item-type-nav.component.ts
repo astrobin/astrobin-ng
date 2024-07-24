@@ -13,7 +13,7 @@ import {
 } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Actions, ofType } from "@ngrx/effects";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { fromEvent, Observable, of } from "rxjs";
@@ -127,7 +127,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   collapsed: boolean = false;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,

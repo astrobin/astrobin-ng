@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
@@ -33,7 +33,7 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   stars: number[] = [0, 0, 0, 0, 0]; // 0: empty, 1: half, 2: full
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly marketplaceService: EquipmentMarketplaceService,
     public readonly modalService: NgbModal,
     public readonly activatedRoute: ActivatedRoute,

@@ -8,7 +8,7 @@ import { combineLatest, forkJoin, Observable, of } from "rxjs";
 import { map, switchMap, tap } from "rxjs/operators";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { UserService } from "@shared/services/user.service";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { Router } from "@angular/router";
@@ -26,7 +26,7 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
   legacyItems = {};
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly legacyGearApi: GearApiService,

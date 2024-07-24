@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, PLATFORM_ID } from "@angular/core";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { selectImageEditorState } from "@features/image/store/image.selectors";
 import { Store } from "@ngrx/store";
@@ -41,7 +41,7 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   private readonly _resizeEventSubscription: Subscription;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationService: PopNotificationsService,
     public readonly utilsService: UtilsService,

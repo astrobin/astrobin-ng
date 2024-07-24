@@ -1,5 +1,5 @@
 import { AppModule } from "@app/app.module";
-import { appStateEffects, appStateReducers, initialState } from "@app/store/state";
+import { mainStateEffects, mainStateReducers, initialMainState } from "@app/store/state";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { provideMockStore } from "@ngrx/store/testing";
@@ -13,10 +13,10 @@ describe("LoginFormComponent", () => {
 
   beforeEach(() =>
     MockBuilder(LoginFormComponent, AppModule)
-      .keep(StoreModule.forRoot(appStateReducers))
-      .keep(EffectsModule.forRoot(appStateEffects))
+      .keep(StoreModule.forRoot(mainStateReducers))
+      .keep(EffectsModule.forRoot(mainStateEffects))
       .replace(HttpClientModule, HttpClientTestingModule)
-      .provide(provideMockStore({ initialState }))
+      .provide(provideMockStore({ initialState: initialMainState }))
   );
 
   beforeEach(() => {

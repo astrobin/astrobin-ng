@@ -19,7 +19,7 @@ import {
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -83,7 +83,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
   similarItemsTemplate: TemplateRef<any>;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly windowRefService: WindowRefService,

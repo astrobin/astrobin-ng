@@ -4,14 +4,14 @@ import { HrComponent } from "./hr.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 
 describe("HrComponent", () => {
   let component: HrComponent;
   let fixture: ComponentFixture<HrComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(HrComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(HrComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
   });
 
   beforeEach(() => {

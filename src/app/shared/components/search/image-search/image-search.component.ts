@@ -1,7 +1,7 @@
 import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -61,7 +61,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   usageType: EquipmentItemUsageType;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly imageSearchApiService: ImageSearchApiService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly windowRefService: WindowRefService,

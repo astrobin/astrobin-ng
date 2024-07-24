@@ -4,7 +4,7 @@ import { ExplorerComponent } from "./explorer.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { initialState } from "@app/store/state";
+import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
@@ -17,7 +17,7 @@ describe("ExplorerComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(ExplorerComponent, AppModule)
-      .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>())])
+      .provide([provideMockStore({ initialState: initialMainState }), provideMockActions(() => new ReplaySubject<any>())])
       .mock(ItemTypeNavComponent, { export: true })
       .mock(ItemBrowserComponent)
       .mock(ItemEditProposalComponent, { export: true });

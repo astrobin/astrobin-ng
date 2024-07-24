@@ -2,7 +2,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Store } from "@ngrx/store";
-import { State } from "@app/store/state";
+import { MainState } from "@app/store/state";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -15,7 +15,7 @@ export class AdditionalAcquisitionPropertiesBase extends BaseComponentDirective 
   index: number;
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService
