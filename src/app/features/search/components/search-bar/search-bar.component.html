@@ -1,20 +1,64 @@
 <div class="search-bar-wrapper">
-  <div class="search-bar-input-container form-control">
+  <div
+    [class.has-auto-complete-items]="autoCompleteItems?.length > 0"
+    class="search-bar-input-container form-control"
+  >
+    <ng-container #filterContainer></ng-container>
+
     <input
-      (keyup.enter)="onSearch(model)"
+      #searchInput
+      (keydown.backspace)="onBackspace()"
+      (keyup.arrowDown)="selectNextAutoCompleteItem()"
+      (keyup.arrowUp)="selectPreviousAutoCompleteItem()"
+      (keyup.enter)="onEnter()"
+      (keyup.escape)="resetAutoCompleteItems()"
       [(ngModel)]="model.text"
       [formControl]="searchControl"
+      autofocus
       class="search-bar-input form-control"
       placeholder="{{ 'Search' | translate }}"
       type="text"
     />
   </div>
 
+  <div
+    *ngIf="autoCompleteItems.length > 0"
+    class="search-bar-autocomplete-items"
+  >
+    <div
+      #autoCompleteItem
+      *ngFor="let item of autoCompleteItems; let i = index"
+      class="search-bar-autocomplete-item"
+    >
+      <h4
+        *ngIf="i === 0 || item.type !== autoCompleteItems[i - 1].type"
+        class="search-bar-autocomplete-title"
+      >
+        {{ searchService.humanizeSearchAutoCompleteType(item.type) }}
+      </h4>
+
+      <span
+        (click)="onAutoCompleteItemClicked(item)"
+        (mouseenter)="selectedAutoCompleteItemIndex = i"
+        [class.selected]="i === selectedAutoCompleteItemIndex">
+        {{ item.label }}
+      </span>
+    </div>
+  </div>
+
   <div class="search-bar-icons">
-    <fa-icon
-      (click)="onSearch(model)"
-      class="search-bar-search-icon"
-      icon="search"
-    ></fa-icon>
+    <ng-container *ngIf="autoCompleteItems.length > 0; else iconsTemplate">
+      <fa-icon
+        (click)="resetAutoCompleteItems()"
+        icon="times"
+      ></fa-icon>
+    </ng-container>
+
+    <ng-template #iconsTemplate>
+      <fa-icon
+        (click)="onSearch(model)"
+        icon="search"
+      ></fa-icon>
+    </ng-template>
   </div>
 </div>

@@ -133,8 +133,12 @@
         "
         [header]="'Images by the seller' | translate"
         [loadMoreOnScroll]="false"
-        [model]="{ itemId: lineItem.itemObjectId, itemType: lineItem.itemKlass, username: lineItem.username }"
-        [pageSize]="21"
+        [model]="{
+          itemId: lineItem.itemObjectId,
+          itemType: lineItem.itemKlass,
+          username: lineItem.username,
+          pageSize: 21
+        }"
         [showSortButton]="false"
         [showUsageButton]="false"
         ordering="-likes"
@@ -149,8 +153,7 @@
         "
         [header]="'Images from the AstroBin community' | translate"
         [loadMoreOnScroll]="false"
-        [model]="{ itemId: lineItem.itemObjectId, itemType: lineItem.itemKlass }"
-        [pageSize]="21"
+        [model]="{ itemId: lineItem.itemObjectId, itemType: lineItem.itemKlass, pageSize: 21 }"
         [showSortButton]="false"
         [showUsageButton]="false"
         ordering="-likes"

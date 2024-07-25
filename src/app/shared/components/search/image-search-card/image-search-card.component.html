@@ -20,17 +20,26 @@
 
         <div aria-labelledby="sort-search-results" ngbDropdownMenu>
           <button (click)="setUsageType(null)" ngbDropdownItem>
-            <fa-icon *ngIf="!usageType; else notSelected" icon="check"></fa-icon>
+            <fa-icon
+              *ngIf="!model.usageType; else notSelected"
+              icon="check"
+            ></fa-icon>
             {{ "Any" | translate }}
           </button>
 
           <button (click)="setUsageType(EquipmentItemUsageType.IMAGING)" ngbDropdownItem>
-            <fa-icon *ngIf="usageType === EquipmentItemUsageType.IMAGING; else notSelected" icon="check"></fa-icon>
+            <fa-icon
+              *ngIf="model.usageType === EquipmentItemUsageType.IMAGING; else notSelected"
+              icon="check"
+            ></fa-icon>
             {{ "Imaging" | translate }}
           </button>
 
           <button (click)="setUsageType(EquipmentItemUsageType.GUIDING)" ngbDropdownItem>
-            <fa-icon *ngIf="usageType === EquipmentItemUsageType.GUIDING; else notSelected" icon="check"></fa-icon>
+            <fa-icon
+              *ngIf="model.usageType === EquipmentItemUsageType.GUIDING; else notSelected"
+              icon="check"
+            ></fa-icon>
             {{ "Guiding" | translate }}
           </button>
         </div>
@@ -46,12 +55,12 @@
 
         <div aria-labelledby="sort-search-results" ngbDropdownMenu>
           <button (click)="sortBy('-likes')" ngbDropdownItem>
-            <fa-icon *ngIf="ordering === '-likes'; else notSelected" icon="check"></fa-icon>
+            <fa-icon *ngIf="model.ordering === '-likes'; else notSelected" icon="check"></fa-icon>
             {{ "Most liked" | translate }}
           </button>
 
           <button (click)="sortBy('-published')" ngbDropdownItem>
-            <fa-icon *ngIf="ordering === '-published'; else notSelected" icon="check"></fa-icon>
+            <fa-icon *ngIf="model.ordering === '-published'; else notSelected" icon="check"></fa-icon>
             {{ "Most recent" | translate }}
           </button>
         </div>
@@ -68,8 +77,6 @@
       #imageSearchComponent
       [loadMoreOnScroll]="loadMoreOnScroll"
       [model]="model"
-      [ordering]="ordering"
-      [pageSize]="pageSize"
     ></astrobin-image-search>
   </div>
 </div>

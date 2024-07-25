@@ -26,20 +26,12 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   model: SearchModelInterface;
 
   @Input()
-  ordering: string;
-
-  @Input()
   loadMoreOnScroll = true;
-
-  @Input()
-  pageSize: number;
 
   next: string;
   initialLoading = true;
   loading = true;
   images: ImageSearchInterface[] = [];
-  searchUrl: string;
-  usageType: EquipmentItemUsageType;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -64,23 +56,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.model) {
-      const urlParams = new URLSearchParams();
-      urlParams.set("d", "i");
-      urlParams.set("sort", this.ordering);
-
-      if (this.model.itemType) {
-        urlParams.set(`${this.model.itemType.toLowerCase()}_ids`, this.model.itemId.toString());
-      }
-
-      if (this.model.username) {
-        urlParams.set("username", this.model.username.toString());
-      }
-
-      this.searchUrl = `${
-        this.classicRoutesService.SEARCH
-      }?${urlParams.toString()}`;
-
+    if (changes.model) {
       this.loadData(false);
     }
   }
@@ -92,26 +68,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
       this.initialLoading = true;
     }
 
-    // TODO: just use model when all params are there.
-    const searchOptions = {
-      text: this.model.text,
-      itemType: this.model.itemType,
-      itemId: this.model.itemId,
-      usageType: this.usageType,
-      ordering: this.ordering,
-      page: this.model.page,
-      pageSize: 100
-    };
-
-    if (this.model.username) {
-      Object.assign(searchOptions, { username: this.model.username });
-    }
-
-    if (this.pageSize) {
-      Object.assign(searchOptions, { pageSize: this.pageSize });
-    }
-
-    this.imageSearchApiService.search(searchOptions)
+    this.imageSearchApiService.search({ ...this.model, pageSize: 100 })
       .subscribe(response => {
         this.next = response.next;
 
@@ -138,7 +95,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     const rect = this.elementRef.nativeElement.getBoundingClientRect();
 
     if (!this.loading && !!this.next && rect.bottom < window.innerHeight + 1200) {
-      this.model = { ...this.model, page: this.model.page + 1 };
+      this.model = { ...this.model, page: (this.model.page || 1) + 1 };
       this.loadData();
     }
   }
