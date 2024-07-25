@@ -3,10 +3,14 @@
     [class.has-auto-complete-items]="autoCompleteItems?.length > 0"
     class="search-bar-input-container form-control"
   >
+    <ng-container #filterContainer></ng-container>
+
     <input
+      #searchInput
+      (keydown.backspace)="onBackspace()"
       (keyup.arrowDown)="selectNextAutoCompleteItem()"
       (keyup.arrowUp)="selectPreviousAutoCompleteItem()"
-      (keyup.enter)="onSearch(model)"
+      (keyup.enter)="onEnter(model)"
       (keyup.escape)="resetAutoCompleteItems()"
       [(ngModel)]="model.text"
       [formControl]="searchControl"

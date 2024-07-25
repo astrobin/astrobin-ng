@@ -16,6 +16,7 @@ import { SearchModelInterface } from "@features/search/interfaces/search-model.i
 })
 export class ImageSearchApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/images/image-search";
+  function;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -25,72 +26,65 @@ export class ImageSearchApiService extends BaseClassicApiService {
     super(loadingService);
   }
 
+  getFilterParamName(itemType: EquipmentItemType, usageType?: EquipmentItemUsageType): string | null {
+    if (itemType === EquipmentItemType.SENSOR) {
+      if (usageType === EquipmentItemUsageType.GUIDING) {
+        return "guiding_sensors_id";
+      } else if (usageType === EquipmentItemUsageType.IMAGING) {
+        return "imaging_sensors_id";
+      } else {
+        return "all_sensors_id";
+      }
+    } else if (itemType === EquipmentItemType.CAMERA) {
+      if (usageType === EquipmentItemUsageType.GUIDING) {
+        return "guiding_cameras_2_id";
+      } else if (usageType === EquipmentItemUsageType.IMAGING) {
+        return "imaging_cameras_2_id";
+      } else {
+        return "all_cameras_2_id";
+      }
+    } else if (itemType === EquipmentItemType.TELESCOPE) {
+      if (usageType === EquipmentItemUsageType.GUIDING) {
+        return "guiding_telescopes_2_id";
+      } else if (usageType === EquipmentItemUsageType.IMAGING) {
+        return "imaging_telescopes_2_id";
+      } else {
+        return "all_telescopes_2_id";
+      }
+    } else if (itemType === EquipmentItemType.MOUNT) {
+      return "mounts_2_id";
+    } else if (itemType === EquipmentItemType.FILTER) {
+      return "filters_2_id";
+    } else if (itemType === EquipmentItemType.ACCESSORY) {
+      return "accessories_2_id";
+    } else if (itemType === EquipmentItemType.SOFTWARE) {
+      return "software_2_id";
+    } else {
+      return null;
+    }
+  }
+
+
   search(options: SearchModelInterface): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
     let url = `${this.configUrl}/`;
 
-    url = UtilsService.addOrUpdateUrlParam(url, "page", (options.page || 1).toString());
+    // Add or update the dynamic parameters
+    Object.keys(options).forEach(key => {
+      let value = (options as any)[key];
+      if (value !== undefined && value !== null && value !== "") {
+        let paramName: string | null = key;
 
-    if (!!options.ordering) {
-      url = UtilsService.addOrUpdateUrlParam(url, "ordering", options.ordering);
-    }
-
-    if (!!options.pageSize) {
-      url = UtilsService.addOrUpdateUrlParam(url, "page_size", options.pageSize.toString());
-    }
-
-    let prop: string;
-
-    switch (options.itemType) {
-      case EquipmentItemType.SENSOR:
-        if (options.usageType === EquipmentItemUsageType.GUIDING) {
-          prop = "guiding_sensors_id";
-        } else if (options.usageType === EquipmentItemUsageType.IMAGING) {
-          prop = "imaging_sensors_id";
-        } else {
-          prop = "all_sensors_id";
+        // Handle special cases for property names
+        if (key === "itemType" && options.itemType !== undefined) {
+          paramName = this.getFilterParamName(options.itemType, options.usageType);
+          value = options.itemId; // Use itemId for the value in these special cases
         }
-        break;
-      case EquipmentItemType.CAMERA:
-        if (options.usageType === EquipmentItemUsageType.GUIDING) {
-          prop = "guiding_cameras_2_id";
-        } else if (options.usageType === EquipmentItemUsageType.IMAGING) {
-          prop = "imaging_cameras_2_id";
-        } else {
-          prop = "all_cameras_2_id";
-        }
-        break;
-      case EquipmentItemType.TELESCOPE:
-        if (options.usageType === EquipmentItemUsageType.GUIDING) {
-          prop = "guiding_telescopes_2_id";
-        } else if (options.usageType === EquipmentItemUsageType.IMAGING) {
-          prop = "imaging_telescopes_2_id";
-        } else {
-          prop = "all_telescopes_2_id";
-        }
-        break;
-      case EquipmentItemType.MOUNT:
-        prop = "mounts_2_id";
-        break;
-      case EquipmentItemType.FILTER:
-        prop = "filters_2_id";
-        break;
-      case EquipmentItemType.ACCESSORY:
-        prop = "accessories_2_id";
-        break;
-      case EquipmentItemType.SOFTWARE:
-        prop = "software_2_id";
-        break;
-    }
 
-    if (!!prop) {
-      url = UtilsService.addOrUpdateUrlParam(url, prop, options.itemId.toString());
-    } else if (!!options.text) {
-      url = UtilsService.addOrUpdateUrlParam(url, "text", options.text);
-    }
-
-    if (!!options.username) {
-      url = UtilsService.addOrUpdateUrlParam(url, "username", options.username);
-    }
+        if (paramName) {
+          url = UtilsService.addOrUpdateUrlParam(url, UtilsService.camelCaseToSnakeCase(paramName), value.toString());
+        }
+      }
+    });
 
     return this.http.get<PaginatedApiResultInterface<ImageSearchInterface>>(url);
   }

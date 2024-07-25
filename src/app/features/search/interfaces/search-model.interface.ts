@@ -7,8 +7,9 @@ export interface SearchModelInterface {
   itemType?: EquipmentItemType;
   itemId?: EquipmentItem["id"];
   usageType?: EquipmentItemUsageType;
+  username?: UserInterface["username"];
+  subject?: string;
   ordering?: string;
   pageSize?: number;
-  username?: UserInterface["username"];
   page?: number;
 }

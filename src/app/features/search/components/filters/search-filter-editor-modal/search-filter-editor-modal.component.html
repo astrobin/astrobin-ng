@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    {{ "Edit search filter" }}
+  </h4>
+
+  <button (click)="modal.dismiss()" aria-label="Close" class="close" data-dismiss="modal" type="button">
+    <span aria-hidden="true">
+      &times;
+    </span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form (ngSubmit)="modal.close(model)">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-secondary" data-dismiss="modal" type="button">
+    {{ "Close" }}
+  </button>
+
+  <button (click)="modal.close(model)" class="btn btn-primary" type="submit">
+    {{ "Save" }}
+  </button>
+</div>

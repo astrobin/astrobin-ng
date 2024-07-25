@@ -26,7 +26,10 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
   ngOnInit() {
     super.ngOnInit();
 
-    this.model = this.activatedRoute.snapshot.queryParams as SearchModelInterface;
+    this.model = {
+      ...this.activatedRoute.snapshot.queryParams as SearchModelInterface,
+      page: 1
+    };
   }
 
   updateModel(model: SearchModelInterface): void {
