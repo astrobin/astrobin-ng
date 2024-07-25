@@ -10,7 +10,7 @@
       (keydown.backspace)="onBackspace()"
       (keyup.arrowDown)="selectNextAutoCompleteItem()"
       (keyup.arrowUp)="selectPreviousAutoCompleteItem()"
-      (keyup.enter)="onEnter(model)"
+      (keyup.enter)="onEnter()"
       (keyup.escape)="resetAutoCompleteItems()"
       [(ngModel)]="model.text"
       [formControl]="searchControl"
