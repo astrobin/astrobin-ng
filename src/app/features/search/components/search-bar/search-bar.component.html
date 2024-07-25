@@ -12,8 +12,8 @@
       (keyup.arrowUp)="selectPreviousAutoCompleteItem()"
       (keyup.enter)="onEnter()"
       (keyup.escape)="resetAutoCompleteItems()"
+      (ngModelChange)="onModelChangeDebounced($event)"
       [(ngModel)]="model.text"
-      [formControl]="searchControl"
       autofocus
       class="search-bar-input form-control"
       placeholder="{{ 'Search' | translate }}"

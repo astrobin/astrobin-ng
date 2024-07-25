@@ -14,8 +14,8 @@ import { SearchFilterEditorModalComponent } from "@features/search/components/fi
   template: ""
 })
 export abstract class SearchBaseFilterComponent extends BaseComponentDirective implements OnInit {
+  static key: string;
   abstract title: string;
-
   editForm: FormGroup = new FormGroup({});
   abstract editFields: FormlyFieldConfig[];
 
@@ -25,7 +25,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
 
   // Value to be used in the search model.
   @Input()
-  value: { [key: string]: any } = {};
+  value: any;
 
   @Output()
   valueChanges = new EventEmitter<any>();
@@ -55,13 +55,13 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
   edit(): void {
     const modalRef: NgbModalRef = this.modalService.open(SearchFilterEditorModalComponent);
     const instance: SearchFilterEditorModalComponent = modalRef.componentInstance;
-
+    const key = (this.constructor as any).key;
     instance.fields = this.editFields;
-    instance.model = this.value;
+    instance.model = { [key]: this.value };
     instance.form = this.editForm;
 
-    modalRef.closed.subscribe(value => {
-      this.value = value;
+    modalRef.closed.subscribe(keyValue => {
+      this.value = keyValue[key];
       this.valueChanges.emit(this.value);
     });
   }

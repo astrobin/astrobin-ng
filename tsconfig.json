@@ -4,8 +4,8 @@
     "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
     "declaration": false,
-    "target": "es6",
-    "module": "commonjs",
+    "target": "es2020",
+    "module": "esnext",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
@@ -15,7 +15,7 @@
       "./node_modules/@types"
     ],
     "lib": [
-      "es2018",
+      "es2020",
       "dom"
     ],
     "types": [

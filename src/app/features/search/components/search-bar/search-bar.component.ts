@@ -8,6 +8,7 @@ import {
   OnInit,
   Output,
   QueryList,
+  Type,
   ViewChild,
   ViewChildren,
   ViewContainerRef
@@ -17,12 +18,12 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { SearchAutoCompleteItem, SearchService } from "@features/search/services/search.service";
-import { FormControl } from "@angular/forms";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
-import { forkJoin, Observable } from "rxjs";
+import { forkJoin, Observable, Subject } from "rxjs";
 import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
 import { SearchSubjectFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subject-filter.component";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
+import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
 
 @Component({
   selector: "astrobin-search-bar",
@@ -30,7 +31,6 @@ import { SearchBaseFilterComponent } from "@features/search/components/filters/s
   styleUrls: ["./search-bar.component.scss"]
 })
 export class SearchBarComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
-  searchControl = new FormControl();
   autoCompleteItems: SearchAutoCompleteItem[] = [];
   selectedAutoCompleteItemIndex = -1;
 
@@ -49,6 +49,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   @Output()
   modelChanged = new EventEmitter<SearchModelInterface>();
 
+  private _modelChanged: Subject<string> = new Subject<string>();
   private _filterComponentRefs: ComponentRef<SearchBaseFilterComponent>[] = [];
 
   constructor(
@@ -62,7 +63,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.searchControl.valueChanges.pipe(
+    this._modelChanged.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       takeUntil(this.destroyed$)
@@ -72,11 +73,12 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       if (value && value.length > 0) {
         let observables$: Observable<SearchAutoCompleteItem[]>[] = [];
 
-        // Only allow one instance of this filter.
-        if (!this.model.hasOwnProperty("subject")) {
-          observables$ = [
-            ...observables$, this.searchService.autoCompleteSubjects$(this.searchControl.value)
-          ];
+        if (!this.model.hasOwnProperty(SearchSubjectFilterComponent.key)) {
+          observables$.push(this.searchService.autoCompleteSubjects$(this.model.text));
+        }
+
+        if (!this.model.hasOwnProperty(SearchTelescopeFilterComponent.key)) {
+          observables$.push(this.searchService.autoCompleteTelescopes$(this.model.text));
         }
 
         forkJoin(observables$).subscribe(results => {
@@ -92,11 +94,15 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.initializeFilters();
   }
 
+  onModelChangeDebounced(value: string): void {
+    this._modelChanged.next(value);
+  }
+
   initializeFilters(): void {
     Object.keys(this.model).forEach(key => {
       const filterComponent = this.getFilterComponent(key);
       if (filterComponent) {
-        this.addFilter(key, this.model[key], filterComponent);
+        this.addFilter(key, filterComponent.label, this.model[key], filterComponent);
       }
     });
   }
@@ -140,14 +146,14 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       const selectedItem = this.autoCompleteItems[this.selectedAutoCompleteItemIndex];
       if (selectedItem) {
         this.onAutoCompleteItemClicked(selectedItem);
+        return;
       }
-    } else {
-      this.onSearch(this.model);
     }
+    this.onSearch(this.model);
   }
 
   onBackspace(): void {
-    if (this.searchControl.value === "") {
+    if (this.model.text === "") {
       const lastFilterRef = this._filterComponentRefs.pop();
       if (lastFilterRef) {
         this.removeFilter(lastFilterRef);
@@ -165,24 +171,25 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   onAutoCompleteItemClicked(item: SearchAutoCompleteItem): void {
-    this.addFilter(item.type, item.label, this.getFilterComponent(item.type));
+    this.addFilter(item.type, item.label, item.value, this.getFilterComponent(item.type));
   }
 
   getFilterComponent(key: string): any {
     const filterComponents = [
-      SearchSubjectFilterComponent
+      SearchSubjectFilterComponent,
+      SearchTelescopeFilterComponent
       // Add more filters here
     ];
 
-    return filterComponents.find(component => component.keys.includes(key));
+    return filterComponents.find(component => component.key === key);
   }
 
-  addFilter(key: string, value: string, component: any): void {
-    const componentRef = this.dynamicSearchFilterLoaderService.loadComponent(
+  addFilter(key: string, label: string, value: any, component: Type<SearchBaseFilterComponent>): void {
+    const componentRef: ComponentRef<SearchBaseFilterComponent> = this.dynamicSearchFilterLoaderService.loadComponent(
       this.filterContainer,
       component,
-      value,
-      { [key]: value }
+      label,
+      value
     );
 
     this._filterComponentRefs.push(componentRef);
@@ -190,7 +197,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     componentRef.instance.valueChanges.subscribe(filterValue => {
       this.model = {
         ...this.model,
-        ...filterValue
+        ...{
+          [key]: filterValue
+        }
       };
       this.onSearch(this.model);
     });
@@ -199,7 +208,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       this.removeFilter(componentRef);
     });
 
-    this.searchControl.setValue("");
+    this.model = {
+      ...this.model,
+      text: ""
+    };
     this.resetAutoCompleteItems();
     this.searchInput.nativeElement.focus();
   }
@@ -210,12 +222,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       this._filterComponentRefs.splice(index, 1);
     }
 
-    Object.keys(componentRef.instance.value).forEach(key => {
-      delete this.model[key];
-    });
+    const key = (componentRef.instance.constructor as any).key;
+    delete this.model[key];
 
     componentRef.destroy();
     this.onSearch(this.model);
   }
-
 }

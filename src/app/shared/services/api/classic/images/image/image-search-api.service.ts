@@ -68,23 +68,37 @@ export class ImageSearchApiService extends BaseClassicApiService {
   search(options: SearchModelInterface): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
     let url = `${this.configUrl}/`;
 
-    // Add or update the dynamic parameters
+    // Handle special cases for property names before serialization
+    if (options.itemType !== undefined) {
+      const paramName = this.getFilterParamName(options.itemType, options.usageType);
+      if (paramName) {
+        options[paramName] = options.itemId; // Use itemId for the value in these special cases
+        delete options.itemType;
+        delete options.usageType;
+        delete options.itemId;
+      }
+    }
+
+    // Convert keys in options to snake_case
     Object.keys(options).forEach(key => {
-      let value = (options as any)[key];
-      if (value !== undefined && value !== null && value !== "") {
-        let paramName: string | null = key;
-
-        // Handle special cases for property names
-        if (key === "itemType" && options.itemType !== undefined) {
-          paramName = this.getFilterParamName(options.itemType, options.usageType);
-          value = options.itemId; // Use itemId for the value in these special cases
-        }
-
-        if (paramName) {
-          url = UtilsService.addOrUpdateUrlParam(url, UtilsService.camelCaseToSnakeCase(paramName), value.toString());
-        }
+      const snakeCaseKey = UtilsService.camelCaseToSnakeCase(key);
+      if (key !== snakeCaseKey) {
+        options[snakeCaseKey] = options[key];
+        delete options[key];
       }
     });
+
+    // Convert options to query string
+    const queryString = UtilsService.toQueryString(options);
+
+    // Compress query string
+    const compressedQueryString = UtilsService.compressQueryString(queryString);
+
+    // Encode query string
+    const encodedQueryString = encodeURIComponent(compressedQueryString);
+
+    // Convert options to query string
+    url += `?params=${encodedQueryString}`;
 
     return this.http.get<PaginatedApiResultInterface<ImageSearchInterface>>(url);
   }

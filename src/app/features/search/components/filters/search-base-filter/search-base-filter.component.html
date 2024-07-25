@@ -5,7 +5,7 @@
   </span>
 
   <span class="search-filter__icons">
-    <fa-icon (click)="edit()" icon="pencil-alt"></fa-icon>
+    <fa-icon (click)="edit()" *ngIf="editFields?.length" icon="pencil-alt"></fa-icon>
     <fa-icon (click)="remove.emit()" icon="remove"></fa-icon>
   </span>
 </div>

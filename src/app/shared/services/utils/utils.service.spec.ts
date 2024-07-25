@@ -231,7 +231,7 @@ describe("UtilsService", () => {
 
     it("should handle array values", () => {
       const params = { interests: ["coding", "music"] };
-      expect(UtilsService.toQueryString(params)).toBe("interests=coding&interests=music");
+      expect(UtilsService.toQueryString(params)).toBe("interests=%5B%22coding%22%2C%22music%22%5D");
     });
 
     it("should handle empty objects", () => {
@@ -244,9 +244,9 @@ describe("UtilsService", () => {
       expect(UtilsService.toQueryString(params)).toBe("name=John%20Doe");
     });
 
-    it("should handle nested objects (serialize as [object Object])", () => {
+    it("should handle nested objects (serialize as JSON)", () => {
       const params = { user: { name: "John", age: 30 } };
-      expect(UtilsService.toQueryString(params)).toBe("user=%5Bobject%20Object%5D");
+      expect(UtilsService.toQueryString(params)).toBe("user=%7B%22name%22%3A%22John%22%2C%22age%22%3A30%7D");
     });
 
     it("should handle boolean values", () => {
@@ -261,7 +261,7 @@ describe("UtilsService", () => {
 
     it("should handle mixed types", () => {
       const params = { name: "John", age: 30, isActive: true, hobbies: ["coding", "music"] };
-      expect(UtilsService.toQueryString(params)).toBe("name=John&age=30&isActive=true&hobbies=coding&hobbies=music");
+      expect(UtilsService.toQueryString(params)).toBe("name=John&age=30&isActive=true&hobbies=%5B%22coding%22%2C%22music%22%5D");
     });
 
     it("should handle empty string values", () => {
@@ -279,6 +279,90 @@ describe("UtilsService", () => {
       const params = Object.create({ prototypeProp: "value" });
       params.name = "John";
       expect(UtilsService.toQueryString(params)).not.toContain("prototypeProp");
+    });
+
+    it("should handle nested arrays and objects", () => {
+      const params = { data: { items: ["item1", "item2"], details: { price: 10, available: true } } };
+      expect(UtilsService.toQueryString(params)).toBe("data=%7B%22items%22%3A%5B%22item1%22%2C%22item2%22%5D%2C%22details%22%3A%7B%22price%22%3A10%2C%22available%22%3Atrue%7D%7D");
+    });
+  });
+
+  describe("compressQueryString", () => {
+    it("should compress a simple query string", () => {
+      const queryString = "name=JohnDoe&age=30";
+      const compressed = UtilsService.compressQueryString(queryString);
+      expect(compressed).toBeDefined();
+      expect(typeof compressed).toBe("string");
+    });
+
+    it("should compress a query string with special characters", () => {
+      const queryString = "name=John%20Doe&age=30&city=New%20York";
+      const compressed = UtilsService.compressQueryString(queryString);
+      expect(compressed).toBeDefined();
+      expect(typeof compressed).toBe("string");
+    });
+
+    it("should compress an empty query string", () => {
+      const queryString = "";
+      const compressed = UtilsService.compressQueryString(queryString);
+      expect(compressed).toBeDefined();
+      expect(typeof compressed).toBe("string");
+    });
+
+    it("should handle very long query strings", () => {
+      const queryString = "name=" + "a".repeat(1000);
+      const compressed = UtilsService.compressQueryString(queryString);
+      expect(compressed).toBeDefined();
+      expect(typeof compressed).toBe("string");
+    });
+
+    it("should throw an error for non-string inputs", () => {
+      expect(() => UtilsService.compressQueryString(null as any)).toThrow();
+      expect(() => UtilsService.compressQueryString(undefined as any)).toThrow();
+      expect(() => UtilsService.compressQueryString({} as any)).toThrow();
+    });
+  });
+
+  describe("decompressQueryString", () => {
+    it("should decompress a previously compressed query string", () => {
+      const queryString = "name=JohnDoe&age=30";
+      const compressed = UtilsService.compressQueryString(queryString);
+      const decompressed = UtilsService.decompressQueryString(compressed);
+      expect(decompressed).toBe(queryString);
+    });
+
+    it("should decompress a query string with special characters", () => {
+      const queryString = "name=John%20Doe&age=30&city=New%20York";
+      const compressed = UtilsService.compressQueryString(queryString);
+      const decompressed = UtilsService.decompressQueryString(compressed);
+      expect(decompressed).toBe(queryString);
+    });
+
+    it("should decompress an empty query string", () => {
+      const queryString = "";
+      const compressed = UtilsService.compressQueryString(queryString);
+      const decompressed = UtilsService.decompressQueryString(compressed);
+      expect(decompressed).toBe(queryString);
+    });
+
+    it("should handle very long query strings", () => {
+      const queryString = "name=" + "a".repeat(1000);
+      const compressed = UtilsService.compressQueryString(queryString);
+      const decompressed = UtilsService.decompressQueryString(compressed);
+      expect(decompressed).toBe(queryString);
+    });
+
+    it("should throw an error for invalid compressed strings", () => {
+      const invalidCompressed = "invalidBase64String";
+      expect(() => UtilsService.decompressQueryString(invalidCompressed)).toThrow();
+    });
+
+    it("should decompress a string with padding issues", () => {
+      const queryString = "name=JohnDoe&age=30";
+      const compressed = UtilsService.compressQueryString(queryString);
+      const compressedWithPaddingIssue = compressed.slice(0, -2); // Remove padding characters
+      const decompressed = UtilsService.decompressQueryString(compressedWithPaddingIssue + "==");
+      expect(decompressed).toBe(queryString);
     });
   });
 
