@@ -54,18 +54,18 @@
     border-bottom-right-radius: var(--bs-border-radius);
     border-bottom: 1px solid var(--darkGrey);
 
-    .search-bar-autocomplete-title {
-      font-size: 1rem;
-      padding: .5rem 1rem;
-      color: var(--lightestGrey);
-      border-bottom: 1px solid var(--grey);
-      pointer-events: none;
-    }
-
     .search-bar-autocomplete-item {
       margin-left: -.5rem;
       margin-right: -.5rem;
       color: var(--lighterGrey);
+
+      .search-bar-autocomplete-title {
+        font-size: 1rem;
+        padding: .5rem 1rem;
+        color: var(--lightestGrey);
+        border-bottom: 1px solid var(--grey);
+        pointer-events: none;
+      }
 
       > span {
         display: block;
@@ -75,6 +75,12 @@
         &.selected,
         &:hover {
           background-color: var(--darkerGrey);
+        }
+      }
+
+      &:not(:first-child) {
+        .search-bar-autocomplete-title {
+          margin-top: 1rem;
         }
       }
     }

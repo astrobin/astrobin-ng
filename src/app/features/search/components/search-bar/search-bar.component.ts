@@ -24,6 +24,7 @@ import { DynamicSearchFilterLoaderService } from "@features/search/services/dyna
 import { SearchSubjectFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subject-filter.component";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
+import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
 
 @Component({
   selector: "astrobin-search-bar",
@@ -73,12 +74,16 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       if (value && value.length > 0) {
         let observables$: Observable<SearchAutoCompleteItem[]>[] = [];
 
-        if (!this.model.hasOwnProperty(SearchSubjectFilterComponent.key)) {
-          observables$.push(this.searchService.autoCompleteSubjects$(this.model.text));
-        }
-
         if (!this.model.hasOwnProperty(SearchTelescopeFilterComponent.key)) {
           observables$.push(this.searchService.autoCompleteTelescopes$(this.model.text));
+        }
+
+        if (!this.model.hasOwnProperty(SearchCameraFilterComponent.key)) {
+          observables$.push(this.searchService.autoCompleteCameras$(this.model.text));
+        }
+
+        if (!this.model.hasOwnProperty(SearchSubjectFilterComponent.key)) {
+          observables$.push(this.searchService.autoCompleteSubjects$(this.model.text));
         }
 
         forkJoin(observables$).subscribe(results => {
@@ -177,7 +182,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   getFilterComponent(key: string): any {
     const filterComponents = [
       SearchSubjectFilterComponent,
-      SearchTelescopeFilterComponent
+      SearchTelescopeFilterComponent,
+      SearchCameraFilterComponent
       // Add more filters here
     ];
 

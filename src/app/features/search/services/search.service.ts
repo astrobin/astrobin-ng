@@ -8,6 +8,7 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { map } from "rxjs/operators";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 
 export enum SearchAutoCompleteType {
   SUBJECT = "subject",
@@ -209,7 +210,7 @@ export class SearchService extends BaseService {
   autoCompleteTelescopes$(query: string): Observable<SearchAutoCompleteItem[]> {
     return this.equipmentApiService.findAllEquipmentItems(
       EquipmentItemType.TELESCOPE,
-      { query }
+      { query, limit: 10 }
     ).pipe(
       map((response: PaginatedApiResultInterface<TelescopeInterface>) => {
         return response.results.map(telescope => {
@@ -221,6 +222,29 @@ export class SearchService extends BaseService {
 
           return {
             type: SearchAutoCompleteType.TELESCOPE,
+            label,
+            value
+          };
+        });
+      })
+    );
+  }
+
+  autoCompleteCameras$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return this.equipmentApiService.findAllEquipmentItems(
+      EquipmentItemType.CAMERA,
+      { query, limit: 10 }
+    ).pipe(
+      map((response: PaginatedApiResultInterface<CameraInterface>) => {
+        return response.results.map(camera => {
+          const label = `${camera.brandName || this.translateService.instant("(DIY)")} ${camera.name}`;
+          const value = {
+            id: camera.id,
+            name: label
+          };
+
+          return {
+            type: SearchAutoCompleteType.CAMERA,
             label,
             value
           };
