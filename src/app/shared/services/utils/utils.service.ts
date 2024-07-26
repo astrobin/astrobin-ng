@@ -9,6 +9,9 @@ import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { CookieService } from "ngx-cookie";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { Buffer } from "buffer";
+import msgpack from "msgpack-lite";
+import pako from "pako";
 
 @Injectable({
   providedIn: "root"
@@ -221,15 +224,29 @@ export class UtilsService {
         if (value === null || value === undefined) {
           return "";
         }
-        if (Array.isArray(value)) {
-          return value
-            .map(val => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`)
-            .join("&");
+        if (UtilsService.isArray(value) || UtilsService.isObject(value)) {
+          return `${encodeURIComponent(key)}=${encodeURIComponent(JSON.stringify(value))}`;
         }
         return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
       })
       .filter(param => param !== "")
       .join("&");
+  }
+
+  static compressQueryString(queryString: string): string {
+    if (typeof queryString !== "string") {
+      throw new TypeError("Input must be a string");
+    }
+
+    const buffer = msgpack.encode(queryString);
+    const compressed = pako.deflate(buffer);
+    return Buffer.from(compressed).toString("base64");
+  }
+
+  static decompressQueryString(compressedParams: string): string {
+    const compressed = Buffer.from(compressedParams, "base64");
+    const decompressed = pako.inflate(compressed);
+    return msgpack.decode(decompressed);
   }
 
   static parseQueryString(queryString: string): { [key: string]: any } {

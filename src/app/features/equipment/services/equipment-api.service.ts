@@ -51,6 +51,7 @@ export interface AllEquipmentItemsOptionsInterface {
   filters?: ExplorerFilterInterface[];
   page?: number;
   includeVariants?: boolean;
+  limit?: number;
 }
 
 export enum EquipmentItemsSortOrder {
@@ -107,6 +108,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     options: AllEquipmentItemsOptionsInterface
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
     let url = `${this.configUrl}/${type.toLowerCase()}/`;
+
+    if (!!options.limit) {
+      url = UtilsService.addOrUpdateUrlParam(url, "limit", String(options.limit));
+    }
 
     url = UtilsService.addOrUpdateUrlParam(url, "page", String(options.page || 1));
     url = UtilsService.addOrUpdateUrlParam(url, "sort", options.sortOrder || EquipmentItemsSortOrder.AZ);

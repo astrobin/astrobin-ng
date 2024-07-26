@@ -3,6 +3,12 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { map } from "rxjs/operators";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 
 export enum SearchAutoCompleteType {
   SUBJECT = "subject",
@@ -13,7 +19,7 @@ export enum SearchAutoCompleteType {
 export interface SearchAutoCompleteItem {
   type: SearchAutoCompleteType;
   label: string;
-  value?: string;
+  value?: any;
 }
 
 @Injectable({
@@ -22,7 +28,8 @@ export interface SearchAutoCompleteItem {
 export class SearchService extends BaseService {
   constructor(
     public readonly loadingService: LoadingService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly equipmentApiService: EquipmentApiService
   ) {
     super(loadingService);
   }
@@ -192,9 +199,57 @@ export class SearchService extends BaseService {
       const normalizedQuery = query.replace(/\s+/g, "").toLowerCase();
       const filteredSubjects = subjects.filter(subject =>
         subject.label.replace(/\s+/g, "").toLowerCase().includes(normalizedQuery)
-      );
+      ).map(subjects => (
+        { ...subjects, value: subjects.label }
+      ));
       subscriber.next(filteredSubjects);
       subscriber.complete();
     });
+  }
+
+  autoCompleteTelescopes$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return this.equipmentApiService.findAllEquipmentItems(
+      EquipmentItemType.TELESCOPE,
+      { query, limit: 10 }
+    ).pipe(
+      map((response: PaginatedApiResultInterface<TelescopeInterface>) => {
+        return response.results.map(telescope => {
+          const label = `${telescope.brandName || this.translateService.instant("(DIY)")} ${telescope.name}`;
+          const value = {
+            id: telescope.id,
+            name: label
+          };
+
+          return {
+            type: SearchAutoCompleteType.TELESCOPE,
+            label,
+            value
+          };
+        });
+      })
+    );
+  }
+
+  autoCompleteCameras$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return this.equipmentApiService.findAllEquipmentItems(
+      EquipmentItemType.CAMERA,
+      { query, limit: 10 }
+    ).pipe(
+      map((response: PaginatedApiResultInterface<CameraInterface>) => {
+        return response.results.map(camera => {
+          const label = `${camera.brandName || this.translateService.instant("(DIY)")} ${camera.name}`;
+          const value = {
+            id: camera.id,
+            name: label
+          };
+
+          return {
+            type: SearchAutoCompleteType.CAMERA,
+            label,
+            value
+          };
+        });
+      })
+    );
   }
 }

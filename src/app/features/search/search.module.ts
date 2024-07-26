@@ -7,7 +7,9 @@ import { searchFeatureKey, searchReducer } from "@features/search/state/state.re
 import { SearchPageComponent } from "./pages/search/search.page.component";
 import { SearchBarComponent } from "./components/search-bar/search-bar.component";
 import { SearchSubjectFilterComponent } from "./components/filters/search-subject-filter/search-subject-filter.component";
-import { SearchFilterEditorModalComponent } from './components/filters/search-filter-editor-modal/search-filter-editor-modal.component';
+import { SearchFilterEditorModalComponent } from "./components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
+import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
+import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
 
 
 @NgModule({
@@ -15,6 +17,8 @@ import { SearchFilterEditorModalComponent } from './components/filters/search-fi
     SearchPageComponent,
     SearchBarComponent,
     SearchSubjectFilterComponent,
+    SearchTelescopeFilterComponent,
+    SearchCameraFilterComponent,
     SearchFilterEditorModalComponent
   ],
   imports: [

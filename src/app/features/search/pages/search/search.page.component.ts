@@ -26,10 +26,33 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
   ngOnInit() {
     super.ngOnInit();
 
-    this.model = {
-      ...this.activatedRoute.snapshot.queryParams as SearchModelInterface,
-      page: 1
-    };
+    const params = this.activatedRoute.snapshot.queryParams["p"];
+    if (params) {
+      try {
+        const decompressedParams = UtilsService.decompressQueryString(params);
+        const parsedParams = UtilsService.parseQueryString(decodeURIComponent(decompressedParams));
+
+        // Convert JSON strings back to objects where applicable
+        Object.keys(parsedParams).forEach(key => {
+          if (typeof parsedParams[key] === "string") {
+            try {
+              parsedParams[key] = JSON.parse(parsedParams[key]);
+            } catch (error) {
+              // If JSON parsing fails, keep the value as string
+            }
+          }
+        });
+
+        this.model = {
+          ...parsedParams,
+          page: 1
+        };
+      } catch (e) {
+        this.model = {
+          page: 1
+        };
+      }
+    }
   }
 
   updateModel(model: SearchModelInterface): void {
@@ -43,6 +66,10 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
 
   updateUrl(): void {
     const { page, pageSize, ...model } = this.model;
-    this.location.go(`/search?${UtilsService.toQueryString(model)}`);
+    const queryString = UtilsService.toQueryString(model);
+    const compressedQueryString = UtilsService.compressQueryString(queryString);
+    const encodedQueryString = encodeURIComponent(compressedQueryString);
+
+    this.location.go(`/search?p=${encodedQueryString}`);
   }
 }

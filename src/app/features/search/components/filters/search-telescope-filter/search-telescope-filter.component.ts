@@ -7,26 +7,15 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-  selector: "astrobin-search-subject-filter",
+  selector: "astrobin-search-telescope-filter",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
-  static key = "subject";
+export class SearchTelescopeFilterComponent extends SearchBaseFilterComponent {
+  static key = "telescope";
 
-  title = this.translateService.instant("Subject");
-  editFields = [
-    {
-      key: SearchSubjectFilterComponent.key,
-      type: "input",
-      wrappers: ["default-wrapper"],
-      props: {
-        label: this.title,
-        type: "text",
-        hideOptionalMarker: true
-      }
-    }
-  ];
+  title = this.translateService.instant("Telescope");
+  editFields = [];
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -38,6 +27,6 @@ export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
   }
 
   render(): SafeHtml {
-    return this.value;
+    return this.value?.name;
   }
 }
