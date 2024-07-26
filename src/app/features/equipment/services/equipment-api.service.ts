@@ -109,7 +109,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
     let url = `${this.configUrl}/${type.toLowerCase()}/`;
 
-    url = UtilsService.addOrUpdateUrlParam(url, "limit", String(options.limit || 10));
+    if (!!options.limit) {
+      url = UtilsService.addOrUpdateUrlParam(url, "limit", String(options.limit));
+    }
+
     url = UtilsService.addOrUpdateUrlParam(url, "page", String(options.page || 1));
     url = UtilsService.addOrUpdateUrlParam(url, "sort", options.sortOrder || EquipmentItemsSortOrder.AZ);
     url = UtilsService.addOrUpdateUrlParam(url, "q", options.query || "");
