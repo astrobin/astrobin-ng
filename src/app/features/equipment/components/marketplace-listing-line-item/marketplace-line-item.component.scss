@@ -69,13 +69,10 @@
   }
 }
 
-astrobin-image-search ::ng-deep {
-  display: block;
-  margin-left: -1rem;
-  margin-right: -1rem;
-  margin-top: 1.5rem;
-
+astrobin-image-search-card ::ng-deep {
   .card {
+    margin-left: -1rem;
+    margin-right: -1rem;
     box-shadow: none;
     border: 0;
 
