@@ -14,7 +14,7 @@ import { SearchService } from "@features/search/services/search.service";
 })
 export class SearchTelescopeFilterComponent extends SearchBaseFilterComponent {
   static key = "telescope";
-
+  label = this.translateService.instant("Telescope");
   editFields = [];
 
   constructor(

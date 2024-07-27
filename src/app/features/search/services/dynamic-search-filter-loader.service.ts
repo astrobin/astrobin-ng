@@ -1,18 +1,16 @@
 import { Injectable, Type, ViewContainerRef } from "@angular/core";
-import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
+import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 
 @Injectable({
   providedIn: "root"
 })
 export class DynamicSearchFilterLoaderService {
   loadComponent(
-    viewContainerRef: ViewContainerRef,
-    component: Type<SearchBaseFilterComponent>,
-    label: string,
-    value: any
+    component: Type<SearchFilterComponentInterface>,
+    value: any,
+    viewContainerRef: ViewContainerRef
   ) {
     const componentRef = viewContainerRef.createComponent(component);
-    componentRef.instance.label = label;
     componentRef.instance.value = value;
     return componentRef;
   }

@@ -19,10 +19,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
   static key: string;
   editForm: FormGroup = new FormGroup({});
   abstract editFields: FormlyFieldConfig[];
-
-  // Rendered label.
-  @Input()
-  label: string;
+  abstract label: string;
 
   // Value to be used in the search model.
   @Input()
@@ -57,10 +54,9 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
   edit(): void {
     const modalRef: NgbModalRef = this.modalService.open(SearchFilterEditorModalComponent);
     const instance: SearchFilterEditorModalComponent = modalRef.componentInstance;
-    const key = (this.constructor as any).key;
+    const key = this.searchService.getKeyByFilterComponentInstance(this);
     instance.fields = this.editFields;
     instance.model = { [key]: this.value };
-    // instance.label = this.searchService.getLabelForFilterType()
     instance.form = this.editForm;
 
     modalRef.closed.subscribe(keyValue => {

@@ -20,13 +20,13 @@ import { SearchModelInterface } from "@features/search/interfaces/search-model.i
 import { SearchAutoCompleteItem, SearchService } from "@features/search/services/search.service";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { forkJoin, Observable, Subject } from "rxjs";
-import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
 import { SearchSubjectFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subject-filter.component";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
 import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
 import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-bar",
@@ -43,6 +43,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   @ViewChild("filterContainer", { read: ViewContainerRef })
   filterContainer: ViewContainerRef;
 
+  @ViewChild("temporaryFilterContainer", { read: ViewContainerRef })
+  temporaryFilterContainer: ViewContainerRef;
+
   @ViewChildren("autoCompleteItem")
   autoCompleteItemsRefs!: QueryList<ElementRef>;
 
@@ -53,12 +56,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   modelChanged = new EventEmitter<SearchModelInterface>();
 
   private _modelChanged: Subject<string> = new Subject<string>();
-  private _filterComponentRefs: ComponentRef<SearchBaseFilterComponent>[] = [];
+  private _filterComponentRefs: ComponentRef<SearchFilterComponentInterface>[] = [];
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
-    public readonly dynamicSearchFilterLoaderService: DynamicSearchFilterLoaderService,
     public readonly modalService: NgbModal
   ) {
     super(store$);
@@ -67,35 +69,33 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
 
-    this._modelChanged.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroyed$)
-    ).subscribe(value => {
-      this.selectedAutoCompleteItemIndex = -1;
+    this._modelChanged
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
+      .subscribe(value => {
+        this.selectedAutoCompleteItemIndex = -1;
 
-      if (value && value.length > 0) {
-        let observables$: Observable<SearchAutoCompleteItem[]>[] = [];
+        if (value && value.length > 0) {
+          let observables$: Observable<SearchAutoCompleteItem[]>[] = [];
 
-        if (!this.model.hasOwnProperty(SearchTelescopeFilterComponent.key)) {
-          observables$.push(this.searchService.autoCompleteTelescopes$(this.model.text));
+          if (!this.model.hasOwnProperty(SearchTelescopeFilterComponent.key)) {
+            observables$.push(this.searchService.autoCompleteTelescopes$(this.model.text));
+          }
+
+          if (!this.model.hasOwnProperty(SearchCameraFilterComponent.key)) {
+            observables$.push(this.searchService.autoCompleteCameras$(this.model.text));
+          }
+
+          if (!this.model.hasOwnProperty(SearchSubjectFilterComponent.key)) {
+            observables$.push(this.searchService.autoCompleteSubjects$(this.model.text));
+          }
+
+          forkJoin(observables$).subscribe(results => {
+            this.autoCompleteItems = [].concat(...results);
+          });
+        } else {
+          this.autoCompleteItems = [];
         }
-
-        if (!this.model.hasOwnProperty(SearchCameraFilterComponent.key)) {
-          observables$.push(this.searchService.autoCompleteCameras$(this.model.text));
-        }
-
-        if (!this.model.hasOwnProperty(SearchSubjectFilterComponent.key)) {
-          observables$.push(this.searchService.autoCompleteSubjects$(this.model.text));
-        }
-
-        forkJoin(observables$).subscribe(results => {
-          this.autoCompleteItems = [].concat(...results);
-        });
-      } else {
-        this.autoCompleteItems = [];
-      }
-    });
+      });
   }
 
   ngAfterViewInit(): void {
@@ -108,9 +108,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   initializeFilters(): void {
     Object.keys(this.model).forEach(key => {
-      const filterComponent = this.getFilterComponent(key);
-      if (filterComponent) {
-        this.addFilter(key, this.model[key], filterComponent);
+      const filterComponentType = this.searchService.getFilterComponentTypeByKey(key);
+      if (filterComponentType) {
+        this.addFilter(filterComponentType, this.model[key]);
       }
     });
   }
@@ -130,9 +130,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       return;
     }
 
-    this.selectedAutoCompleteItemIndex = this.selectedAutoCompleteItemIndex === -1
-      ? 0
-      : (this.selectedAutoCompleteItemIndex + 1) % this.autoCompleteItems.length;
+    this.selectedAutoCompleteItemIndex =
+      this.selectedAutoCompleteItemIndex === -1
+        ? 0
+        : (this.selectedAutoCompleteItemIndex + 1) % this.autoCompleteItems.length;
 
     this.scrollToSelectedItem();
   }
@@ -142,9 +143,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       return;
     }
 
-    this.selectedAutoCompleteItemIndex = this.selectedAutoCompleteItemIndex === -1
-      ? this.autoCompleteItems.length - 1
-      : (this.selectedAutoCompleteItemIndex - 1 + this.autoCompleteItems.length) % this.autoCompleteItems.length;
+    this.selectedAutoCompleteItemIndex =
+      this.selectedAutoCompleteItemIndex === -1
+        ? this.autoCompleteItems.length - 1
+        : (this.selectedAutoCompleteItemIndex - 1 + this.autoCompleteItems.length) % this.autoCompleteItems.length;
 
     this.scrollToSelectedItem();
   }
@@ -178,30 +180,13 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     }
   }
 
-  onAutoCompleteItemClicked(item: SearchAutoCompleteItem): void {
-    this.addFilter(item.type, item.value, this.getFilterComponent(item.type));
+  onAutoCompleteItemClicked(autoCompleteItem: SearchAutoCompleteItem): void {
+    this.addFilter(this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type), autoCompleteItem.value);
   }
 
-  getFilterComponent(key: string): any {
-    return Object.values(this.searchService.allFilters).find(componentType => {
-      const componentClass = componentType as unknown as typeof SearchBaseFilterComponent;
-      return componentClass.key === key;
-    });
-  }
-
-  instantiateFilterComponent(
-    key: string, value: any, componentType: Type<SearchBaseFilterComponent>
-  ): ComponentRef<SearchBaseFilterComponent> {
-    return this.dynamicSearchFilterLoaderService.loadComponent(
-      this.filterContainer,
-      componentType,
-      this.searchService.getLabelForFilterType(componentType),
-      value
-    );
-  }
-
-  addFilter(key: string, value: any, componentType: Type<SearchBaseFilterComponent>): void {
-    const componentRef = this.instantiateFilterComponent(key, value, componentType);
+  addFilter(filterComponentType: Type<SearchFilterComponentInterface>, value: any): void {
+    const componentRef = this.searchService.instantiateFilterComponent(filterComponentType, value, this.filterContainer);
+    const key = this.searchService.getKeyByFilterComponentType(componentRef.componentType);
 
     this._filterComponentRefs.push(componentRef);
 
@@ -227,13 +212,13 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.searchInput.nativeElement.focus();
   }
 
-  removeFilter(componentRef: ComponentRef<SearchBaseFilterComponent>): void {
+  removeFilter(componentRef: ComponentRef<SearchFilterComponentInterface>): void {
     const index = this._filterComponentRefs.indexOf(componentRef);
     if (index !== -1) {
       this._filterComponentRefs.splice(index, 1);
     }
 
-    const key = (componentRef.instance.constructor as any).key;
+    const key = this.searchService.getKeyByFilterComponentType(componentRef.componentType);
     delete this.model[key];
 
     componentRef.destroy();
@@ -245,23 +230,27 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     const modalRef = this.modalService.open(SearchFilterSelectionModalComponent);
     modalRef.closed.subscribe((componentType: Type<SearchBaseFilterComponent>) => {
-      const componentClass = componentType as unknown as typeof SearchBaseFilterComponent;
-      const key = componentClass.key;
+      const key: string = this.searchService.getKeyByFilterComponentType(componentType);
+      let componentRef: ComponentRef<any> = this._filterComponentRefs.find(
+        componentRef => this.searchService.getKeyByFilterComponentType(componentRef.componentType) === key
+      );
+      const alreadyPresent: boolean = !!componentRef;
 
-      if (
-        this._filterComponentRefs.filter(
-          componentRef => (componentRef.instance.constructor as any).key === key
-        ).length
-      ) {
-        return;
+      if (!alreadyPresent) {
+        componentRef = this.searchService.instantiateFilterComponent(
+          componentType,
+          null,
+          this.temporaryFilterContainer
+        );
       }
 
-      const componentRef = this.instantiateFilterComponent(key, null, componentType);
       componentRef.instance.edit();
       componentRef.instance.valueChanges.subscribe(value => {
         if (value) {
-          componentRef.destroy();
-          this.addFilter(key, value, componentType);
+          if (!alreadyPresent) {
+            componentRef.destroy();
+            this.addFilter(componentType, value);
+          }
         }
       });
     });

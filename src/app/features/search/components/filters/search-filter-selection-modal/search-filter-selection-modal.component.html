@@ -3,6 +3,7 @@
     <input
       (click)="click$.next($any($event).target.value)"
       (focus)="focus$.next($any($event).target.value)"
+      (keydown.escape)="modal.dismiss()"
       (ngModelChange)="onSelect($event)"
       [(ngModel)]="model"
       [editable]="false"
@@ -11,5 +12,7 @@
       placeholder="{{ translateService.instant('Search') }}"
       type="text"
     />
+
+    <ng-container #filterContainer></ng-container>
   </div>
 </div>

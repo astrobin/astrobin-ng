@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { SearchService } from "@features/search/services/search.service";
-import { merge, Observable, Subject } from "rxjs";
+import { merge, Observable, of, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
 
 @Component({
@@ -13,13 +13,17 @@ import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
   templateUrl: "./search-filter-selection-modal.component.html",
   styleUrls: ["./search-filter-selection-modal.component.scss"]
 })
-export class SearchFilterSelectionModalComponent extends BaseComponentDirective implements OnInit {
+export class SearchFilterSelectionModalComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   public model: string;
-  public options = Object.entries(this.searchService.allFilters)
-    .filter(([_, value]) => !this.searchService.autoCompleteOnlyFilters.includes(value))
-    .map(([label, value]) => ({ label, value }));
+  public labels: string[];
+  public keys: string[];
   public focus$ = new Subject<string>();
   public click$ = new Subject<string>();
+
+  @ViewChild("filterContainer", { read: ViewContainerRef })
+  filterContainer: ViewContainerRef;
+
+  public search: (text$: Observable<string>) => Observable<string[]>;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -34,21 +38,52 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
     super.ngOnInit();
   }
 
-  search = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+  ngAfterViewInit(): void {
+    this.initializeSearch();
+  }
 
-    return merge(debouncedText$, this.focus$, this.click$).pipe(
-      map(term =>
-        term === ""
-          ? this.options
-          : this.options.filter(v => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
-      ),
-      map(options => options.map(option => option.label))
-    );
-  };
+  initializeSearch(): void {
+    this.search = (text$: Observable<string>): Observable<string[]> => {
+      if (!this.filterContainer) {
+        return of([]);
+      }
+
+      const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+
+      // We only search for the filters that are possible to be selected here.
+      const possibleFilters = this.searchService.allFiltersTypes.filter(
+        filterType => !this.searchService.autoCompleteOnlyFiltersTypes.includes(filterType)
+      );
+
+      // In order to get the labels of filters that can be used, we need to instantiate them.
+      const componentRefs = possibleFilters.map(filterType => {
+        return this.searchService.instantiateFilterComponent(
+          filterType,
+          null,
+          this.filterContainer
+        );
+      });
+
+      this.labels = componentRefs.map(componentRef => componentRef.instance.label);
+      this.keys = componentRefs.map(
+        componentRefs => this.searchService.getKeyByFilterComponentType(componentRefs.componentType)
+      );
+
+      // Now that we have the labels, we don't need these anymore.
+      componentRefs.forEach(componentRefs => componentRefs.destroy());
+
+      return merge(debouncedText$, this.focus$, this.click$).pipe(
+        map(term =>
+          term === "" ? this.labels : this.labels.filter(label => label.toLowerCase().indexOf(term.toLowerCase()) > -1)
+        )
+      );
+    };
+  }
 
   onSelect(label: string) {
-    const selectedOption = this.options.find(option => option.label === label);
-    this.modal.close(selectedOption.value);
+    const index = this.labels.indexOf(label);
+    const key = this.keys[index];
+    const componentType = this.searchService.getFilterComponentTypeByKey(key);
+    this.modal.close(componentType);
   }
 }

@@ -14,15 +14,14 @@ import { SearchService } from "@features/search/services/search.service";
 })
 export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
   static key = "subject";
-
+  label = this.translateService.instant("Subject");
   editFields = [
     {
       key: SearchSubjectFilterComponent.key,
       type: "input",
       wrappers: ["default-wrapper"],
       props: {
-        label: this.title,
-        placeholder: this.title,
+        placeholder: this.label,
         type: "text",
         hideOptionalMarker: true
       }

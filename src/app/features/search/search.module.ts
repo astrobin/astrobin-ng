@@ -16,7 +16,6 @@ import {
   SEARCH_FILTERS_TOKEN
 } from "@features/search/injection-tokens/search-filter.tokens";
 import { SearchService } from "@features/search/services/search.service";
-import { TranslateService } from "@ngx-translate/core";
 
 
 @NgModule({
@@ -38,12 +37,11 @@ import { TranslateService } from "@ngx-translate/core";
     SearchService,
     {
       provide: SEARCH_FILTERS_TOKEN,
-      useFactory: (translateService: TranslateService) => ({
-        [translateService.instant("Subject")]: SearchSubjectFilterComponent,
-        [translateService.instant("Telescope")]: SearchTelescopeFilterComponent,
-        [translateService.instant("Camera")]: SearchCameraFilterComponent
-      }),
-      deps: [TranslateService]
+      useValue: [
+        SearchSubjectFilterComponent,
+        SearchTelescopeFilterComponent,
+        SearchCameraFilterComponent
+      ]
     },
     {
       provide: AUTO_COMPLETE_ONLY_FILTERS_TOKEN,

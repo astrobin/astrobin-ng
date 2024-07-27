@@ -14,7 +14,7 @@ import { SearchService } from "@features/search/services/search.service";
 })
 export class SearchCameraFilterComponent extends SearchBaseFilterComponent {
   static key = "camera";
-
+  label = this.translateService.instant("Camera");
   editFields = [];
 
   constructor(
