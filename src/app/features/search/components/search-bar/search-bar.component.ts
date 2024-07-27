@@ -25,6 +25,8 @@ import { SearchSubjectFilterComponent } from "@features/search/components/filter
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
 import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
+import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-search-bar",
@@ -56,7 +58,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
-    public readonly dynamicSearchFilterLoaderService: DynamicSearchFilterLoaderService
+    public readonly dynamicSearchFilterLoaderService: DynamicSearchFilterLoaderService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -107,7 +110,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     Object.keys(this.model).forEach(key => {
       const filterComponent = this.getFilterComponent(key);
       if (filterComponent) {
-        this.addFilter(key, filterComponent.label, this.model[key], filterComponent);
+        this.addFilter(key, this.model[key], filterComponent);
       }
     });
   }
@@ -176,27 +179,29 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   onAutoCompleteItemClicked(item: SearchAutoCompleteItem): void {
-    this.addFilter(item.type, item.label, item.value, this.getFilterComponent(item.type));
+    this.addFilter(item.type, item.value, this.getFilterComponent(item.type));
   }
 
   getFilterComponent(key: string): any {
-    const filterComponents = [
-      SearchSubjectFilterComponent,
-      SearchTelescopeFilterComponent,
-      SearchCameraFilterComponent
-      // Add more filters here
-    ];
-
-    return filterComponents.find(component => component.key === key);
+    return Object.values(this.searchService.allFilters).find(componentType => {
+      const componentClass = componentType as unknown as typeof SearchBaseFilterComponent;
+      return componentClass.key === key;
+    });
   }
 
-  addFilter(key: string, label: string, value: any, component: Type<SearchBaseFilterComponent>): void {
-    const componentRef: ComponentRef<SearchBaseFilterComponent> = this.dynamicSearchFilterLoaderService.loadComponent(
+  instantiateFilterComponent(
+    key: string, value: any, componentType: Type<SearchBaseFilterComponent>
+  ): ComponentRef<SearchBaseFilterComponent> {
+    return this.dynamicSearchFilterLoaderService.loadComponent(
       this.filterContainer,
-      component,
-      label,
+      componentType,
+      this.searchService.getLabelForFilterType(componentType),
       value
     );
+  }
+
+  addFilter(key: string, value: any, componentType: Type<SearchBaseFilterComponent>): void {
+    const componentRef = this.instantiateFilterComponent(key, value, componentType);
 
     this._filterComponentRefs.push(componentRef);
 
@@ -233,5 +238,32 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     componentRef.destroy();
     this.onSearch(this.model);
+  }
+
+  onFilterSelectionClicked(event: Event): void {
+    event.preventDefault();
+
+    const modalRef = this.modalService.open(SearchFilterSelectionModalComponent);
+    modalRef.closed.subscribe((componentType: Type<SearchBaseFilterComponent>) => {
+      const componentClass = componentType as unknown as typeof SearchBaseFilterComponent;
+      const key = componentClass.key;
+
+      if (
+        this._filterComponentRefs.filter(
+          componentRef => (componentRef.instance.constructor as any).key === key
+        ).length
+      ) {
+        return;
+      }
+
+      const componentRef = this.instantiateFilterComponent(key, null, componentType);
+      componentRef.instance.edit();
+      componentRef.instance.valueChanges.subscribe(value => {
+        if (value) {
+          componentRef.destroy();
+          this.addFilter(key, value, componentType);
+        }
+      });
+    });
   }
 }

@@ -56,6 +56,12 @@
 
     <ng-template #iconsTemplate>
       <fa-icon
+        (click)="onFilterSelectionClicked($event)"
+        icon="sliders"
+      >
+      </fa-icon>
+
+      <fa-icon
         (click)="onSearch(model)"
         icon="search"
       ></fa-icon>

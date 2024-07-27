@@ -5,6 +5,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-search-telescope-filter",
@@ -14,16 +15,16 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 export class SearchTelescopeFilterComponent extends SearchBaseFilterComponent {
   static key = "telescope";
 
-  title = this.translateService.instant("Telescope");
   editFields = [];
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly searchService: SearchService
   ) {
-    super(store$, translateService, domSanitizer, modalService);
+    super(store$, translateService, domSanitizer, modalService, searchService);
   }
 
   render(): SafeHtml {

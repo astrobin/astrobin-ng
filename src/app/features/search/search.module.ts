@@ -10,6 +10,13 @@ import { SearchSubjectFilterComponent } from "./components/filters/search-subjec
 import { SearchFilterEditorModalComponent } from "./components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
 import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
+import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
+import {
+  AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
+  SEARCH_FILTERS_TOKEN
+} from "@features/search/injection-tokens/search-filter.tokens";
+import { SearchService } from "@features/search/services/search.service";
+import { TranslateService } from "@ngx-translate/core";
 
 
 @NgModule({
@@ -19,12 +26,32 @@ import { SearchCameraFilterComponent } from "@features/search/components/filters
     SearchSubjectFilterComponent,
     SearchTelescopeFilterComponent,
     SearchCameraFilterComponent,
-    SearchFilterEditorModalComponent
+    SearchFilterEditorModalComponent,
+    SearchFilterSelectionModalComponent
   ],
   imports: [
     RouterModule.forChild(searchRoutes),
     SharedModule,
     StoreModule.forFeature(searchFeatureKey, searchReducer)
+  ],
+  providers: [
+    SearchService,
+    {
+      provide: SEARCH_FILTERS_TOKEN,
+      useFactory: (translateService: TranslateService) => ({
+        [translateService.instant("Subject")]: SearchSubjectFilterComponent,
+        [translateService.instant("Telescope")]: SearchTelescopeFilterComponent,
+        [translateService.instant("Camera")]: SearchCameraFilterComponent
+      }),
+      deps: [TranslateService]
+    },
+    {
+      provide: AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
+      useValue: [
+        SearchCameraFilterComponent,
+        SearchTelescopeFilterComponent
+      ]
+    }
   ]
 })
 export class SearchModule {

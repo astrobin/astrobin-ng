@@ -8,14 +8,15 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
+import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-search-filter-base",
   template: ""
 })
-export abstract class SearchBaseFilterComponent extends BaseComponentDirective implements OnInit {
+export abstract class SearchBaseFilterComponent extends BaseComponentDirective implements SearchFilterComponentInterface, OnInit {
   static key: string;
-  abstract title: string;
   editForm: FormGroup = new FormGroup({});
   abstract editFields: FormlyFieldConfig[];
 
@@ -37,7 +38,8 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly searchService: SearchService
   ) {
     super(store$);
   }
@@ -58,6 +60,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
     const key = (this.constructor as any).key;
     instance.fields = this.editFields;
     instance.model = { [key]: this.value };
+    // instance.label = this.searchService.getLabelForFilterType()
     instance.form = this.editForm;
 
     modalRef.closed.subscribe(keyValue => {

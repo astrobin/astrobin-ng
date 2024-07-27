@@ -5,6 +5,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-search-subject-filter",
@@ -14,7 +15,6 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
   static key = "subject";
 
-  title = this.translateService.instant("Subject");
   editFields = [
     {
       key: SearchSubjectFilterComponent.key,
@@ -22,6 +22,7 @@ export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
       wrappers: ["default-wrapper"],
       props: {
         label: this.title,
+        placeholder: this.title,
         type: "text",
         hideOptionalMarker: true
       }
@@ -32,9 +33,10 @@ export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly searchService: SearchService
   ) {
-    super(store$, translateService, domSanitizer, modalService);
+    super(store$, translateService, domSanitizer, modalService, searchService);
   }
 
   render(): SafeHtml {

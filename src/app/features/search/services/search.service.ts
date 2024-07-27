@@ -1,6 +1,6 @@
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, Type } from "@angular/core";
 import { Observable } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -9,6 +9,11 @@ import { TelescopeInterface } from "@features/equipment/types/telescope.interfac
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { map } from "rxjs/operators";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
+import {
+  AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
+  SEARCH_FILTERS_TOKEN
+} from "@features/search/injection-tokens/search-filter.tokens";
 
 export enum SearchAutoCompleteType {
   SUBJECT = "subject",
@@ -29,9 +34,15 @@ export class SearchService extends BaseService {
   constructor(
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    @Inject(SEARCH_FILTERS_TOKEN) public readonly allFilters: { [key: string]: Type<SearchFilterComponentInterface> },
+    @Inject(AUTO_COMPLETE_ONLY_FILTERS_TOKEN) public readonly autoCompleteOnlyFilters: Type<SearchFilterComponentInterface>[]
   ) {
     super(loadingService);
+  }
+
+  getLabelForFilterType(componentType: Type<SearchFilterComponentInterface>) {
+    return Object.entries(this.allFilters).find(([_, value]) => value === componentType)[0];
   }
 
   humanizeSearchAutoCompleteType(type: SearchAutoCompleteType): string {

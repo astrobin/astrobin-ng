@@ -1,0 +1,15 @@
+<div class="modal-body">
+  <div class="form-group">
+    <input
+      (click)="click$.next($any($event).target.value)"
+      (focus)="focus$.next($any($event).target.value)"
+      (ngModelChange)="onSelect($event)"
+      [(ngModel)]="model"
+      [editable]="false"
+      [ngbTypeahead]="search"
+      class="form-control"
+      placeholder="{{ translateService.instant('Search') }}"
+      type="text"
+    />
+  </div>
+</div>

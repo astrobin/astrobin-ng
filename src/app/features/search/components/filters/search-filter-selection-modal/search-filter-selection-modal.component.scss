@@ -1,0 +1,28 @@
+:host {
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+
+  ::ng-deep {
+    .dropdown-menu {
+      position: unset !important;
+      inset: unset !important;
+      transform: unset !important;
+      margin-top: 1rem !important;
+      box-shadow: none;
+      background-color: unset;
+
+      .dropdown-item {
+        padding: .75rem .5rem;
+
+        &.active {
+          background: unset;
+        }
+
+        &:hover {
+          background: var(--lightestGrey);
+          color: var(--darkestGrey);
+        }
+      }
+    }
+  }
+}
