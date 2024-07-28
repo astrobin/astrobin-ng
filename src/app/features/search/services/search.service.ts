@@ -71,11 +71,11 @@ export class SearchService extends BaseService {
   humanizeSearchAutoCompleteType(type: SearchAutoCompleteType): string {
     switch (type) {
       case SearchAutoCompleteType.SUBJECT:
-        return this.translateService.instant("Subject");
+        return this.translateService.instant("Subjects");
       case SearchAutoCompleteType.TELESCOPE:
-        return this.translateService.instant("Telescope");
+        return this.translateService.instant("Telescopes & lenses");
       case SearchAutoCompleteType.CAMERA:
-        return this.translateService.instant("Camera");
+        return this.translateService.instant("Cameras");
     }
   }
 

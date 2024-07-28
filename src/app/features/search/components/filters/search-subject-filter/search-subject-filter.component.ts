@@ -8,13 +8,13 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchService } from "@features/search/services/search.service";
 
 @Component({
-  selector: "astrobin-search-subject-filter",
+  selector: "astrobin-search-subject-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
 export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
   static key = "subject";
-  label = this.translateService.instant("Subject");
+  label = this.translateService.instant("Subjects");
   editFields = [
     {
       key: SearchSubjectFilterComponent.key,

@@ -1,18 +1,20 @@
 .search-filter {
-  background-color: var(--lightestGrey);
-  border: 1px solid var(--darkestGrey);
+  background-color: var(--white);
+  border: 1px solid var(--black);
   color: var(--darkestGrey);
-  padding: .25rem .5rem;
+  padding: .125rem .5rem;
   white-space: nowrap;
-  height: 2rem;
   border-radius: var(--bs-border-radius);
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   &__title {
-    font-weight: bold;
     margin-right: .5rem;
+  }
+
+  &__value {
+    font-weight: bold;
   }
 
   &__icons {
@@ -30,7 +32,7 @@
       font-size: .8rem;
 
       &:hover {
-        color: var(--darkestGrey);
+        color: var(--black);
       }
     }
 

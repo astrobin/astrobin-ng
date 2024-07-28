@@ -1,6 +1,6 @@
-<div class="search-bar-wrapper">
+<div [class.has-filters]="filterComponentRefs?.length > 0" class="search-bar-wrapper">
   <div
-    [class.has-auto-complete-items]="autoCompleteItems?.length > 0"
+    [class.has-auto-complete-items]="hasAutoCompleteItems()"
     class="search-bar-input-container form-control"
   >
     <ng-container #filterContainer></ng-container>
@@ -8,9 +8,6 @@
     <input
       #searchInput
       (keydown.backspace)="onBackspace()"
-      (keyup.arrowDown)="selectNextAutoCompleteItem()"
-      (keyup.arrowUp)="selectPreviousAutoCompleteItem()"
-      (keyup.enter)="onEnter()"
       (keyup.escape)="resetAutoCompleteItems()"
       (ngModelChange)="onModelChangeDebounced($event)"
       [(ngModel)]="model.text"
@@ -22,32 +19,31 @@
   </div>
 
   <div
-    *ngIf="autoCompleteItems.length > 0"
+    *ngIf="hasAutoCompleteItems()"
     class="search-bar-autocomplete-items"
   >
     <div
-      #autoCompleteItem
-      *ngFor="let item of autoCompleteItems; let i = index"
-      class="search-bar-autocomplete-item"
+      *ngFor="let group of autoCompleteGroups|keys"
+      class="search-bar-autocomplete-group"
     >
-      <h4
-        *ngIf="i === 0 || item.type !== autoCompleteItems[i - 1].type"
-        class="search-bar-autocomplete-title"
-      >
-        {{ searchService.humanizeSearchAutoCompleteType(item.type) }}
+      <h4 class="search-bar-autocomplete-title">
+        {{ searchService.humanizeSearchAutoCompleteType(group.key) }}
       </h4>
 
-      <span
+      <div
+        #autoCompleteItem
         (click)="onAutoCompleteItemClicked(item)"
         (mouseenter)="selectedAutoCompleteItemIndex = i"
-        [class.selected]="i === selectedAutoCompleteItemIndex">
+        *ngFor="let item of group.value; let i = index"
+        [class.selected]="item.type === selectedAutoCompleteGroup && i === selectedAutoCompleteItemIndex"
+        class="search-bar-autocomplete-item">
         {{ item.label }}
-      </span>
+      </div>
     </div>
   </div>
 
   <div class="search-bar-icons">
-    <ng-container *ngIf="autoCompleteItems.length > 0; else iconsTemplate">
+    <ng-container *ngIf="hasAutoCompleteItems(); else iconsTemplate">
       <fa-icon
         (click)="resetAutoCompleteItems()"
         icon="times"
