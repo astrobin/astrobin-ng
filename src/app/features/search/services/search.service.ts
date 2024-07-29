@@ -20,7 +20,8 @@ import { CameraService } from "@features/equipment/services/camera.service";
 import { DateService } from "@shared/services/date.service";
 import { Month } from "@shared/enums/month.enum";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import { RemoteSource } from "@shared/interfaces/image.interface";
+import { RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import { ImageService } from "@shared/services/image/image.service";
 
 export enum SearchAutoCompleteType {
   SUBJECT = "subject",
@@ -29,7 +30,8 @@ export enum SearchAutoCompleteType {
   TELESCOPE_TYPE = "telescope_type",
   CAMERA_TYPE = "camera_type",
   ACQUISITION_MONTHS = "acquisition_months",
-  REMOTE_SOURCE = "remote_source"
+  REMOTE_SOURCE = "remote_source",
+  SUBJECT_TYPE = "subject_type"
 }
 
 export interface SearchAutoCompleteItem {
@@ -52,7 +54,8 @@ export class SearchService extends BaseService {
     public readonly autoCompleteOnlyFiltersTypes: Type<SearchFilterComponentInterface>[],
     public readonly telescopeService: TelescopeService,
     public readonly cameraService: CameraService,
-    public readonly dateService: DateService
+    public readonly dateService: DateService,
+    public readonly imageService: ImageService
   ) {
     super(loadingService);
   }
@@ -97,6 +100,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Acquisition months");
       case SearchAutoCompleteType.REMOTE_SOURCE:
         return this.translateService.instant("Remote hosting");
+      case SearchAutoCompleteType.SUBJECT_TYPE:
+        return this.translateService.instant("Subject types");
     }
   }
 
@@ -364,5 +369,37 @@ export class SearchService extends BaseService {
         label: humanized,
         value: source
       })));
+  }
+
+  autoCompleteSubjectTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
+    // Process SubjectType entries
+    const subjectTypeItems = Object.values(SubjectType)
+      .map(type => ({
+        type,
+        humanized: this.imageService.humanizeSubjectType(type)
+      }))
+      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+      .map(item => ({
+        type: SearchAutoCompleteType.SUBJECT_TYPE,
+        label: item.humanized,
+        value: item.type
+      }));
+
+    // Process SolarSystemSubjectType entries
+    const solarSystemSubjectTypeItems = Object.values(SolarSystemSubjectType)
+      .map(type => ({
+        type,
+        humanized: this.imageService.humanizeSolarSystemSubjectType(type)
+      }))
+      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+      .map(item => ({
+        type: SearchAutoCompleteType.SUBJECT_TYPE,
+        label: item.humanized,
+        value: item.type
+      }));
+
+    // Concatenate both arrays and return as an observable
+    const autoCompleteItems = [...subjectTypeItems, ...solarSystemSubjectTypeItems];
+    return of(autoCompleteItems);
   }
 }

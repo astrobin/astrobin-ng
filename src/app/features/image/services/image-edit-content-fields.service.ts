@@ -20,6 +20,7 @@ import { MainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Injectable({
   providedIn: null
@@ -31,6 +32,7 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
     public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
+    public readonly imageService: ImageService,
     public readonly imageEditService: ImageEditService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService
@@ -92,7 +94,7 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
         label: this.translateService.instant("Subject type"),
         options: Object.keys(SubjectType).map((subjectType: SubjectType) => ({
           value: subjectType,
-          label: this.imageEditService.humanizeSubjectType(subjectType)
+          label: this.imageService.humanizeSubjectType(subjectType)
         })),
         changeConfirmationCondition: (currentValue: SubjectType, newValue: SubjectType): boolean => {
           if (
@@ -158,46 +160,10 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
       },
       props: {
         label: this.translateService.instant("Main solar system subject"),
-        options: [
-          { value: SolarSystemSubjectType.SUN, label: this.translateService.instant("Sun") },
-          { value: SolarSystemSubjectType.MOON, label: this.translateService.instant("Earth's Moon") },
-          { value: SolarSystemSubjectType.MERCURY, label: this.translateService.instant("Mercury") },
-          { value: SolarSystemSubjectType.VENUS, label: this.translateService.instant("Venus") },
-          { value: SolarSystemSubjectType.MARS, label: this.translateService.instant("Mars") },
-          { value: SolarSystemSubjectType.JUPITER, label: this.translateService.instant("Jupiter") },
-          { value: SolarSystemSubjectType.SATURN, label: this.translateService.instant("Saturn") },
-          { value: SolarSystemSubjectType.URANUS, label: this.translateService.instant("Uranus") },
-          { value: SolarSystemSubjectType.NEPTUNE, label: this.translateService.instant("Neptune") },
-          { value: SolarSystemSubjectType.MINOR_PLANET, label: this.translateService.instant("Minor planet") },
-          { value: SolarSystemSubjectType.COMET, label: this.translateService.instant("Comet") },
-          { value: SolarSystemSubjectType.OCCULTATION, label: this.translateService.instant("Occultation") },
-          { value: SolarSystemSubjectType.CONJUNCTION, label: this.translateService.instant("Conjunction") },
-          {
-            value: SolarSystemSubjectType.PARTIAL_LUNAR_ECLIPSE,
-            label: this.translateService.instant("Partial lunar eclipse")
-          },
-          {
-            value: SolarSystemSubjectType.TOTAL_LUNAR_ECLIPSE,
-            label: this.translateService.instant("Total lunar eclipse")
-          },
-          {
-            value: SolarSystemSubjectType.PARTIAL_SOLAR_ECLIPSE,
-            label: this.translateService.instant("Partial solar eclipse")
-          },
-          {
-            value: SolarSystemSubjectType.ANULAR_SOLAR_ECLIPSE,
-            label: this.translateService.instant("Anular solar eclipse")
-          },
-          {
-            value: SolarSystemSubjectType.TOTAL_SOLAR_ECLIPSE,
-            label: this.translateService.instant("Total solar eclipse")
-          },
-          {
-            value: SolarSystemSubjectType.METEOR_SHOWER,
-            label: this.translateService.instant("Meteor shower")
-          },
-          { value: SolarSystemSubjectType.OTHER, label: this.translateService.instant("Other") }
-        ]
+        options: Object.values(SolarSystemSubjectType).map(type => ({
+          value: type,
+          label: this.imageService.humanizeSolarSystemSubjectType(type)
+        }))
       },
       validators: {
         validation: [{ name: "enum-value", options: { allowedValues: Object.values(SolarSystemSubjectType) } }]

@@ -20,6 +20,7 @@ import { SearchTelescopeTypeFilterComponent } from "@features/search/components/
 import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
+import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { SearchRemoteSourceFilterComponent } from "@features/search/components/f
     SearchTelescopeTypeFilterComponent,
     SearchCameraTypeFilterComponent,
     SearchAcquisitionMonthsFilterComponent,
-    SearchRemoteSourceFilterComponent
+    SearchRemoteSourceFilterComponent,
+    SearchSubjectTypeFilterComponent
   ],
   imports: [
     RouterModule.forChild(searchRoutes),
@@ -52,7 +54,8 @@ import { SearchRemoteSourceFilterComponent } from "@features/search/components/f
         SearchTelescopeTypeFilterComponent,
         SearchCameraTypeFilterComponent,
         SearchAcquisitionMonthsFilterComponent,
-        SearchRemoteSourceFilterComponent
+        SearchRemoteSourceFilterComponent,
+        SearchSubjectTypeFilterComponent
       ]
     },
     {

@@ -3,6 +3,8 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
+import { SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
   providedIn: "root"
@@ -11,8 +13,81 @@ export class ImageService extends BaseService {
   public constructor(
     public readonly loadingService: LoadingService,
     public readonly windowRef: WindowRefService,
-    public readonly zone: NgZone) {
+    public readonly zone: NgZone,
+    public readonly translateService: TranslateService) {
     super(loadingService);
+  }
+
+  public humanizeSubjectType(value: SubjectType): string {
+    switch (value) {
+      case SubjectType.DEEP_SKY:
+        return this.translateService.instant("Deep sky object or field");
+      case SubjectType.SOLAR_SYSTEM:
+        return this.translateService.instant("Solar system body or event");
+      case SubjectType.WIDE_FIELD:
+        return this.translateService.instant("Extremely wide field");
+      case SubjectType.STAR_TRAILS:
+        return this.translateService.instant("Star trails");
+      case SubjectType.NORTHERN_LIGHTS:
+        return this.translateService.instant("Northern lights");
+      case SubjectType.NOCTILUCENT_CLOUDS:
+        return this.translateService.instant("Noctilucent clouds");
+      case SubjectType.LANDSCAPE:
+        return this.translateService.instant("Landscape");
+      case SubjectType.ARTIFICIAL_SATELLITE:
+        return this.translateService.instant("Artificial satellite");
+      case SubjectType.GEAR:
+        return this.translateService.instant("Equipment");
+      case SubjectType.OTHER:
+        return this.translateService.instant("Other");
+    }
+  }
+
+  humanizeSolarSystemSubjectType(value: SolarSystemSubjectType): string {
+    switch (value) {
+      case SolarSystemSubjectType.SUN:
+        return this.translateService.instant("Sun");
+      case SolarSystemSubjectType.MOON:
+        return this.translateService.instant("Earth's Moon");
+      case SolarSystemSubjectType.MERCURY:
+        return this.translateService.instant("Mercury");
+      case SolarSystemSubjectType.VENUS:
+        return this.translateService.instant("Venus");
+      case SolarSystemSubjectType.MARS:
+        return this.translateService.instant("Mars");
+      case SolarSystemSubjectType.JUPITER:
+        return this.translateService.instant("Jupiter");
+      case SolarSystemSubjectType.SATURN:
+        return this.translateService.instant("Saturn");
+      case SolarSystemSubjectType.URANUS:
+        return this.translateService.instant("Uranus");
+      case SolarSystemSubjectType.NEPTUNE:
+        return this.translateService.instant("Neptune");
+      case SolarSystemSubjectType.MINOR_PLANET:
+        return this.translateService.instant("Minor planet");
+      case SolarSystemSubjectType.COMET:
+        return this.translateService.instant("Comet");
+      case SolarSystemSubjectType.OCCULTATION:
+        return this.translateService.instant("Occultation");
+      case SolarSystemSubjectType.CONJUNCTION:
+        return this.translateService.instant("Conjunction");
+      case SolarSystemSubjectType.PARTIAL_LUNAR_ECLIPSE:
+        return this.translateService.instant("Partial lunar eclipse");
+      case SolarSystemSubjectType.TOTAL_LUNAR_ECLIPSE:
+        return this.translateService.instant("Total lunar eclipse");
+      case SolarSystemSubjectType.PARTIAL_SOLAR_ECLIPSE:
+        return this.translateService.instant("Partial solar eclipse");
+      case SolarSystemSubjectType.ANULAR_SOLAR_ECLIPSE:
+        return this.translateService.instant("Anular solar eclipse");
+      case SolarSystemSubjectType.TOTAL_SOLAR_ECLIPSE:
+        return this.translateService.instant("Total solar eclipse");
+      case SolarSystemSubjectType.METEOR_SHOWER:
+        return this.translateService.instant("Meteor shower");
+      case SolarSystemSubjectType.OTHER:
+        return this.translateService.instant("Other");
+      default:
+        return value;
+    }
   }
 
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
