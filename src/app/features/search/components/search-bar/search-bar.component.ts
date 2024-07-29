@@ -39,6 +39,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { SearchTelescopeTypeFilterComponent } from "@features/search/components/filters/search-telescope-type-filter/search-telescope-type-filter.component";
 import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
+import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -122,6 +123,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               {
                 key: SearchAcquisitionMonthsFilterComponent.key,
                 method: this.searchService.autoCompleteMonths$(query)
+              },
+              {
+                key: SearchRemoteSourceFilterComponent.key,
+                method: this.searchService.autoCompleteRemoteSources$(query)
               }
             ]
               .filter(filter => !this.model.hasOwnProperty(filter.key))

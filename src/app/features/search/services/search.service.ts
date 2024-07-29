@@ -20,6 +20,7 @@ import { CameraService } from "@features/equipment/services/camera.service";
 import { DateService } from "@shared/services/date.service";
 import { Month } from "@shared/enums/month.enum";
 import { MatchType } from "@features/search/enums/match-type.enum";
+import { RemoteSource } from "@shared/interfaces/image.interface";
 
 export enum SearchAutoCompleteType {
   SUBJECT = "subject",
@@ -27,7 +28,8 @@ export enum SearchAutoCompleteType {
   CAMERA = "camera",
   TELESCOPE_TYPE = "telescope_type",
   CAMERA_TYPE = "camera_type",
-  ACQUISITION_MONTHS = "acquisition_months"
+  ACQUISITION_MONTHS = "acquisition_months",
+  REMOTE_SOURCE = "remote_source"
 }
 
 export interface SearchAutoCompleteItem {
@@ -93,6 +95,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Camera types");
       case SearchAutoCompleteType.ACQUISITION_MONTHS:
         return this.translateService.instant("Acquisition months");
+      case SearchAutoCompleteType.REMOTE_SOURCE:
+        return this.translateService.instant("Remote hosting");
     }
   }
 
@@ -308,62 +312,57 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteTelescopeTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
-    const humanizedTypes = Object.values(TelescopeType).map(type => ({
-      type,
-      humanized: this.telescopeService.humanizeType(type)
-    }));
-
-    const filteredTypes = humanizedTypes.filter(item =>
-      item.humanized.toLowerCase().includes(query.toLowerCase())
-    );
-
-    const autoCompleteItems = filteredTypes.map(item => ({
-      type: SearchAutoCompleteType.TELESCOPE_TYPE,
-      label: item.humanized,
-      value: item.type
-    }));
-
-    return of(autoCompleteItems);
+    return of(Object.values(TelescopeType)
+      .map(type => ({
+        type,
+        humanized: this.telescopeService.humanizeType(type)
+      }))
+      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+      .map(item => ({
+        type: SearchAutoCompleteType.TELESCOPE_TYPE,
+        label: item.humanized,
+        value: item.type
+      })));
   }
 
   autoCompleteCameraTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
-    const humanizedTypes = Object.values(CameraType).map(type => ({
-      type,
-      humanized: this.cameraService.humanizeType(type)
-    }));
-
-    const filteredTypes = humanizedTypes.filter(item =>
-      item.humanized.toLowerCase().includes(query.toLowerCase())
-    );
-
-    const autoCompleteItems = filteredTypes.map(item => ({
-      type: SearchAutoCompleteType.CAMERA_TYPE,
-      label: item.humanized,
-      value: item.type
-    }));
-
-    return of(autoCompleteItems);
+    return of(Object.values(CameraType)
+      .map(type => ({
+        type,
+        humanized: this.cameraService.humanizeType(type)
+      }))
+      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+      .map(item => ({
+        type: SearchAutoCompleteType.CAMERA_TYPE,
+        label: item.humanized,
+        value: item.type
+      })));
   }
 
   autoCompleteMonths$(query: string): Observable<SearchAutoCompleteItem[]> {
-    const humanizedMonths = Object.values(Month).map(month => ({
-      month,
-      humanized: this.dateService.humanizeMonth(month)
-    }));
+    return of(Object.values(Month)
+      .map(month => ({
+        month,
+        humanized: this.dateService.humanizeMonth(month)
+      }))
+      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+      .map(item => ({
+        type: SearchAutoCompleteType.ACQUISITION_MONTHS,
+        label: item.humanized,
+        value: {
+          months: [item.month],
+          matchType: null
+        }
+      })));
+  }
 
-    const filteredMonths = humanizedMonths.filter(item =>
-      item.humanized.toLowerCase().includes(query.toLowerCase())
-    );
-
-    const autoCompleteItems = filteredMonths.map(item => ({
-      type: SearchAutoCompleteType.ACQUISITION_MONTHS,
-      label: item.humanized,
-      value: {
-        months: [item.month],
-        matchType: null
-      }
-    }));
-
-    return of(autoCompleteItems);
+  autoCompleteRemoteSources$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(Object.entries(RemoteSource)
+      .filter(([_, humanized]) => humanized.toLowerCase().includes(query.toLowerCase()))
+      .map(([source, humanized]) => ({
+        type: SearchAutoCompleteType.REMOTE_SOURCE,
+        label: humanized,
+        value: source
+      })));
   }
 }
