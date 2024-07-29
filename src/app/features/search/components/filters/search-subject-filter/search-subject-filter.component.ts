@@ -3,9 +3,9 @@ import { SearchBaseFilterComponent } from "@features/search/components/filters/s
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-search-subject-filter.search-filter-component",
@@ -13,8 +13,8 @@ import { SearchService } from "@features/search/services/search.service";
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
 export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
-  static key = "subject";
-  label = this.translateService.instant("Subjects");
+  static key = SearchAutoCompleteType.SUBJECT;
+  label = this.searchService.humanizeSearchAutoCompleteType(SearchSubjectFilterComponent.key);
   editFields = [
     {
       key: SearchSubjectFilterComponent.key,
@@ -36,9 +36,5 @@ export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
     public readonly searchService: SearchService
   ) {
     super(store$, translateService, domSanitizer, modalService, searchService);
-  }
-
-  render(): SafeHtml {
-    return this.value;
   }
 }

@@ -1,25 +1,29 @@
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { ComponentRef, Inject, Injectable, Type, ViewContainerRef } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { map } from "rxjs/operators";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import {
   AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
   SEARCH_FILTERS_TOKEN
 } from "@features/search/injection-tokens/search-filter.tokens";
 import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
+import { TelescopeService } from "@features/equipment/services/telescope.service";
+import { CameraService } from "@features/equipment/services/camera.service";
 
 export enum SearchAutoCompleteType {
   SUBJECT = "subject",
   TELESCOPE = "telescope",
   CAMERA = "camera",
+  TELESCOPE_TYPE = "telescope_type",
+  CAMERA_TYPE = "camera_type"
 }
 
 export interface SearchAutoCompleteItem {
@@ -39,7 +43,9 @@ export class SearchService extends BaseService {
     public readonly dynamicSearchFilterLoaderService: DynamicSearchFilterLoaderService,
     @Inject(SEARCH_FILTERS_TOKEN) public readonly allFiltersTypes: Type<SearchFilterComponentInterface>[],
     @Inject(AUTO_COMPLETE_ONLY_FILTERS_TOKEN)
-    public readonly autoCompleteOnlyFiltersTypes: Type<SearchFilterComponentInterface>[]
+    public readonly autoCompleteOnlyFiltersTypes: Type<SearchFilterComponentInterface>[],
+    public readonly telescopeService: TelescopeService,
+    public readonly cameraService: CameraService
   ) {
     super(loadingService);
   }
@@ -76,6 +82,10 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Telescopes & lenses");
       case SearchAutoCompleteType.CAMERA:
         return this.translateService.instant("Cameras");
+      case SearchAutoCompleteType.TELESCOPE_TYPE:
+        return this.translateService.instant("Telescope types");
+      case SearchAutoCompleteType.CAMERA_TYPE:
+        return this.translateService.instant("Camera types");
     }
   }
 
@@ -279,5 +289,43 @@ export class SearchService extends BaseService {
         });
       })
     );
+  }
+
+  autoCompleteTelescopeTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
+    const humanizedTypes = Object.values(TelescopeType).map(type => ({
+      type,
+      humanized: this.telescopeService.humanizeType(type)
+    }));
+
+    const filteredTypes = humanizedTypes.filter(item =>
+      item.humanized.toLowerCase().includes(query.toLowerCase())
+    );
+
+    const autoCompleteItems = filteredTypes.map(item => ({
+      type: SearchAutoCompleteType.TELESCOPE_TYPE,
+      label: item.humanized,
+      value: item.type
+    }));
+
+    return of(autoCompleteItems);
+  }
+
+  autoCompleteCameraTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
+    const humanizedTypes = Object.values(CameraType).map(type => ({
+      type,
+      humanized: this.cameraService.humanizeType(type)
+    }));
+
+    const filteredTypes = humanizedTypes.filter(item =>
+      item.humanized.toLowerCase().includes(query.toLowerCase())
+    );
+
+    const autoCompleteItems = filteredTypes.map(item => ({
+      type: SearchAutoCompleteType.CAMERA_TYPE,
+      label: item.humanized,
+      value: item.type
+    }));
+
+    return of(autoCompleteItems);
   }
 }

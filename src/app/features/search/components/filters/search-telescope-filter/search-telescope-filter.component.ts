@@ -5,7 +5,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-search-telescope-filter.search-filter-component",
@@ -13,8 +13,8 @@ import { SearchService } from "@features/search/services/search.service";
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
 export class SearchTelescopeFilterComponent extends SearchBaseFilterComponent {
-  static key = "telescope";
-  label = this.translateService.instant("Telescopes & lenses");
+  static key = SearchAutoCompleteType.TELESCOPE;
+  label = this.searchService.humanizeSearchAutoCompleteType(SearchTelescopeFilterComponent.key);
   editFields = [];
 
   constructor(
@@ -28,6 +28,6 @@ export class SearchTelescopeFilterComponent extends SearchBaseFilterComponent {
   }
 
   render(): SafeHtml {
-    return this.value?.name;
+    return this.domSanitizer.bypassSecurityTrustHtml(this.value?.name);
   }
 }

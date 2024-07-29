@@ -9,14 +9,16 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
 import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-search-filter-base",
   template: ""
 })
 export abstract class SearchBaseFilterComponent extends BaseComponentDirective implements SearchFilterComponentInterface, OnInit {
-  static key: string;
+  // This is the attribute that ends up in the search query.
+  static key: SearchAutoCompleteType;
+
   editForm: FormGroup = new FormGroup({});
   abstract editFields: FormlyFieldConfig[];
   abstract label: string;
@@ -48,7 +50,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
   }
 
   render(): SafeHtml {
-    return this.domSanitizer.bypassSecurityTrustHtml(this.label);
+    return this.domSanitizer.bypassSecurityTrustHtml(this.value);
   }
 
   edit(): void {

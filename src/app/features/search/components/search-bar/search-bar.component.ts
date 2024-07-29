@@ -26,7 +26,7 @@ import {
   SearchService
 } from "@features/search/services/search.service";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
-import { forkJoin, Observable, Subject } from "rxjs";
+import { forkJoin, Subject } from "rxjs";
 import { SearchSubjectFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subject-filter.component";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
@@ -36,10 +36,12 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { SearchTelescopeTypeFilterComponent } from "@features/search/components/filters/search-telescope-type-filter/search-telescope-type-filter.component";
+import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
-}
+};
 
 @Component({
   selector: "astrobin-search-bar",
@@ -92,21 +94,34 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         this.selectedAutoCompleteItemIndex = -1;
 
         if (value && value.length > 0) {
-          let observables$: Observable<SearchAutoCompleteItem[]>[] = [];
+          const query = this.model.text;
 
-          if (!this.model.hasOwnProperty(SearchTelescopeFilterComponent.key)) {
-            observables$.push(this.searchService.autoCompleteTelescopes$(this.model.text));
-          }
-
-          if (!this.model.hasOwnProperty(SearchCameraFilterComponent.key)) {
-            observables$.push(this.searchService.autoCompleteCameras$(this.model.text));
-          }
-
-          if (!this.model.hasOwnProperty(SearchSubjectFilterComponent.key)) {
-            observables$.push(this.searchService.autoCompleteSubjects$(this.model.text));
-          }
-
-          forkJoin(observables$).subscribe((results: SearchAutoCompleteItem[][]) => {
+          forkJoin(
+            [
+              {
+                key: SearchTelescopeFilterComponent.key,
+                method: this.searchService.autoCompleteTelescopes$(query)
+              },
+              {
+                key: SearchCameraFilterComponent.key,
+                method: this.searchService.autoCompleteCameras$(query)
+              },
+              {
+                key: SearchSubjectFilterComponent.key,
+                method: this.searchService.autoCompleteSubjects$(query)
+              },
+              {
+                key: SearchTelescopeTypeFilterComponent.key,
+                method: this.searchService.autoCompleteTelescopeTypes$(query)
+              },
+              {
+                key: SearchCameraTypeFilterComponent.key,
+                method: this.searchService.autoCompleteCameraTypes$(query)
+              }
+            ]
+              .filter(filter => !this.model.hasOwnProperty(filter.key))
+              .map(filter => filter.method)
+          ).subscribe((results: SearchAutoCompleteItem[][]) => {
             const newAutoCompleteGroups: SearchAutoCompleteGroups = {};
 
             // Populate newAutoCompleteGroups with non-empty groups
@@ -286,9 +301,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       const autoCompleteItemsArray = this.autoCompleteItemsRefs.toArray();
       return autoCompleteItemsArray.find((elementRef, index) => {
         const item = this.autoCompleteGroups[this.selectedAutoCompleteGroup][index];
-        return this.selectedAutoCompleteGroup !== null &&
+        return (
+          this.selectedAutoCompleteGroup !== null &&
           item.type === this.selectedAutoCompleteGroup &&
-          index === this.selectedAutoCompleteItemIndex;
+          index === this.selectedAutoCompleteItemIndex
+        );
       });
     }
     return undefined;
@@ -306,7 +323,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   addFilter(filterComponentType: Type<SearchFilterComponentInterface>, value: any): void {
-    const componentRef = this.searchService.instantiateFilterComponent(filterComponentType, value, this.filterContainer);
+    const componentRef = this.searchService.instantiateFilterComponent(
+      filterComponentType,
+      value,
+      this.filterContainer
+    );
     const key = this.searchService.getKeyByFilterComponentType(componentRef.componentType);
 
     this.filterComponentRefs.push(componentRef);

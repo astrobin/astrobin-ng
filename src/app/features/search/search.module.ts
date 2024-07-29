@@ -16,17 +16,21 @@ import {
   SEARCH_FILTERS_TOKEN
 } from "@features/search/injection-tokens/search-filter.tokens";
 import { SearchService } from "@features/search/services/search.service";
+import { SearchTelescopeTypeFilterComponent } from "@features/search/components/filters/search-telescope-type-filter/search-telescope-type-filter.component";
+import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
 
 
 @NgModule({
   declarations: [
     SearchPageComponent,
     SearchBarComponent,
+    SearchFilterEditorModalComponent,
+    SearchFilterSelectionModalComponent,
     SearchSubjectFilterComponent,
     SearchTelescopeFilterComponent,
     SearchCameraFilterComponent,
-    SearchFilterEditorModalComponent,
-    SearchFilterSelectionModalComponent
+    SearchTelescopeTypeFilterComponent,
+    SearchCameraTypeFilterComponent
   ],
   imports: [
     RouterModule.forChild(searchRoutes),
@@ -40,7 +44,9 @@ import { SearchService } from "@features/search/services/search.service";
       useValue: [
         SearchSubjectFilterComponent,
         SearchTelescopeFilterComponent,
-        SearchCameraFilterComponent
+        SearchCameraFilterComponent,
+        SearchTelescopeTypeFilterComponent,
+        SearchCameraTypeFilterComponent
       ]
     },
     {
