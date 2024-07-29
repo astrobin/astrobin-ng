@@ -126,31 +126,6 @@ export class ImageEditService extends BaseService {
     return [SubjectType.SOLAR_SYSTEM].indexOf(subjectType) > -1;
   }
 
-  public humanizeSubjectType(value: SubjectType): string {
-    switch (value) {
-      case SubjectType.DEEP_SKY:
-        return this.translateService.instant("Deep sky object or field");
-      case SubjectType.SOLAR_SYSTEM:
-        return this.translateService.instant("Solar system body or event");
-      case SubjectType.WIDE_FIELD:
-        return this.translateService.instant("Extremely wide field");
-      case SubjectType.STAR_TRAILS:
-        return this.translateService.instant("Star trails");
-      case SubjectType.NORTHERN_LIGHTS:
-        return this.translateService.instant("Northern lights");
-      case SubjectType.NOCTILUCENT_CLOUDS:
-        return this.translateService.instant("Noctilucent clouds");
-      case SubjectType.LANDSCAPE:
-        return this.translateService.instant("Landscape");
-      case SubjectType.ARTIFICIAL_SATELLITE:
-        return this.translateService.instant("Artificial satellite");
-      case SubjectType.GEAR:
-        return this.translateService.instant("Equipment");
-      case SubjectType.OTHER:
-        return this.translateService.instant("Other");
-    }
-  }
-
   public isSponsor(code: string): boolean {
     return (
       this.remoteSourceAffiliates.filter(affiliate => {

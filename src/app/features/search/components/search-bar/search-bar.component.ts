@@ -40,6 +40,7 @@ import { SearchTelescopeTypeFilterComponent } from "@features/search/components/
 import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
+import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -95,7 +96,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         this.selectedAutoCompleteGroup = null;
         this.selectedAutoCompleteItemIndex = -1;
 
-        if (value && value.length > 0) {
+        if (value && value.length >= 2) {
           const query = this.model.text;
 
           forkJoin(
@@ -127,6 +128,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               {
                 key: SearchRemoteSourceFilterComponent.key,
                 method: this.searchService.autoCompleteRemoteSources$(query)
+              },
+              {
+                key: SearchSubjectTypeFilterComponent.key,
+                method: this.searchService.autoCompleteSubjectTypes$(query)
               }
             ]
               .filter(filter => !this.model.hasOwnProperty(filter.key))

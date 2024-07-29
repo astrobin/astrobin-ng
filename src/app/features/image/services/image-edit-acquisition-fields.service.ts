@@ -18,6 +18,7 @@ import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@featu
 import { SeeingScale, TransparencyScale } from "@shared/interfaces/solar-system-acquisition.interface";
 import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Injectable({
   providedIn: null
@@ -33,6 +34,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
     public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
+    public readonly imageService: ImageService,
     public readonly imageEditService: ImageEditService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService
@@ -699,7 +701,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   }
 
   getUnsupportedSubjectTypeFields(): FormlyFieldConfig[] {
-    const subjectType: string = this.imageEditService.humanizeSubjectType(this.imageEditService.model.subjectType);
+    const subjectType: string = this.imageService.humanizeSubjectType(this.imageEditService.model.subjectType);
     const message: string = this.translateService.instant(
       "The subject type \"{{0}}\" does not support acquisition sessions.",
       {
@@ -721,7 +723,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   }
 
   private _getUnsupportedSubjectTypeForAcquisitionsTemplate(subjectType: SubjectType): string {
-    const value: string = this.imageEditService.humanizeSubjectType(subjectType);
+    const value: string = this.imageService.humanizeSubjectType(subjectType);
     const message: string = this.translateService.instant(
       "The subject type \"{{0}}\" does not support acquisition sessions.",
       {
