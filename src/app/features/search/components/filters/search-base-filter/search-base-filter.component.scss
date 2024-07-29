@@ -17,6 +17,23 @@
     font-weight: bold;
   }
 
+  &__match-type {
+    font-size: .8rem;
+    color: var(--grey);
+    margin-left: .5rem;
+    padding-left: .5rem;
+    border-left: 1px solid var(--lighterGrey);
+    cursor: pointer;
+
+    [icon] {
+      font-size: .75rem;
+    }
+
+    &:hover {
+      color: var(--black);
+    }
+  }
+
   &__icons {
     display: flex;
     align-items: center;

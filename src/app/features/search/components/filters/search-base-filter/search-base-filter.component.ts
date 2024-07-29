@@ -10,6 +10,8 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
 import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
+import { MatchType } from "@features/search/enums/match-type.enum";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-search-filter-base",
@@ -65,5 +67,44 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
       this.value = keyValue[key];
       this.valueChanges.emit(this.value);
     });
+  }
+
+  getMatchTypeField(listKey: string): FormlyFieldConfig {
+    return {
+      key: `matchType`,
+      type: "ng-select",
+      wrappers: ["default-wrapper"],
+      expressions: {
+        className: () => {
+          const value = this.editForm.get(listKey).value;
+          return !value || value.length <= 1 ? "d-none" : "";
+        }
+      },
+      props: {
+        label: this.translateService.instant("Match type"),
+        hideOptionalMarker: true,
+        options: [
+          {
+            value: MatchType.ALL,
+            label: this.searchService.humanizeMatchType(MatchType.ALL)
+          },
+          {
+            value: MatchType.ANY,
+            label: this.searchService.humanizeMatchType(MatchType.ANY)
+          }
+        ]
+      },
+      hooks: {
+        onInit: field => {
+          this.editForm.get(listKey).valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+            if (!value || value.length <= 1) {
+              field.formControl.setValue(null);
+            } else if (field.formControl.value === null) {
+              field.formControl.setValue(MatchType.ANY);
+            }
+          });
+        }
+      }
+    };
   }
 }

@@ -17,13 +17,17 @@ import {
 import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
 import { CameraService } from "@features/equipment/services/camera.service";
+import { DateService } from "@shared/services/date.service";
+import { Month } from "@shared/enums/month.enum";
+import { MatchType } from "@features/search/enums/match-type.enum";
 
 export enum SearchAutoCompleteType {
   SUBJECT = "subject",
   TELESCOPE = "telescope",
   CAMERA = "camera",
   TELESCOPE_TYPE = "telescope_type",
-  CAMERA_TYPE = "camera_type"
+  CAMERA_TYPE = "camera_type",
+  ACQUISITION_MONTHS = "acquisition_months"
 }
 
 export interface SearchAutoCompleteItem {
@@ -45,7 +49,8 @@ export class SearchService extends BaseService {
     @Inject(AUTO_COMPLETE_ONLY_FILTERS_TOKEN)
     public readonly autoCompleteOnlyFiltersTypes: Type<SearchFilterComponentInterface>[],
     public readonly telescopeService: TelescopeService,
-    public readonly cameraService: CameraService
+    public readonly cameraService: CameraService,
+    public readonly dateService: DateService
   ) {
     super(loadingService);
   }
@@ -86,6 +91,17 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Telescope types");
       case SearchAutoCompleteType.CAMERA_TYPE:
         return this.translateService.instant("Camera types");
+      case SearchAutoCompleteType.ACQUISITION_MONTHS:
+        return this.translateService.instant("Acquisition months");
+    }
+  }
+
+  humanizeMatchType(type: MatchType): string {
+    switch (type) {
+      case MatchType.ALL:
+        return this.translateService.instant("All");
+      case MatchType.ANY:
+        return this.translateService.instant("Any");
     }
   }
 
@@ -324,6 +340,28 @@ export class SearchService extends BaseService {
       type: SearchAutoCompleteType.CAMERA_TYPE,
       label: item.humanized,
       value: item.type
+    }));
+
+    return of(autoCompleteItems);
+  }
+
+  autoCompleteMonths$(query: string): Observable<SearchAutoCompleteItem[]> {
+    const humanizedMonths = Object.values(Month).map(month => ({
+      month,
+      humanized: this.dateService.humanizeMonth(month)
+    }));
+
+    const filteredMonths = humanizedMonths.filter(item =>
+      item.humanized.toLowerCase().includes(query.toLowerCase())
+    );
+
+    const autoCompleteItems = filteredMonths.map(item => ({
+      type: SearchAutoCompleteType.ACQUISITION_MONTHS,
+      label: item.humanized,
+      value: {
+        months: [item.month],
+        matchType: null
+      }
     }));
 
     return of(autoCompleteItems);

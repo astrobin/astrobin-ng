@@ -4,6 +4,16 @@
     <span [innerHTML]="render()" class="search-filter__value"></span>
   </span>
 
+  <span
+    (click)="edit()"
+    *ngIf="value?.matchType"
+    [ngbTooltip]="'Match type' | translate"
+    class="search-filter__match-type"
+  >
+    <fa-icon icon="equals"></fa-icon>
+    <span>{{ value.matchType }}</span>
+  </span>
+
   <span class="search-filter__icons">
     <fa-icon (click)="edit()" *ngIf="editFields?.length" icon="pencil-alt"></fa-icon>
     <fa-icon (click)="remove.emit()" icon="remove"></fa-icon>
