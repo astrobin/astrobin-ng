@@ -8,20 +8,18 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
+import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-search-filter-base",
   template: ""
 })
-export abstract class SearchBaseFilterComponent extends BaseComponentDirective implements OnInit {
+export abstract class SearchBaseFilterComponent extends BaseComponentDirective implements SearchFilterComponentInterface, OnInit {
   static key: string;
-  abstract title: string;
   editForm: FormGroup = new FormGroup({});
   abstract editFields: FormlyFieldConfig[];
-
-  // Rendered label.
-  @Input()
-  label: string;
+  abstract label: string;
 
   // Value to be used in the search model.
   @Input()
@@ -37,7 +35,8 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly searchService: SearchService
   ) {
     super(store$);
   }
@@ -55,7 +54,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
   edit(): void {
     const modalRef: NgbModalRef = this.modalService.open(SearchFilterEditorModalComponent);
     const instance: SearchFilterEditorModalComponent = modalRef.componentInstance;
-    const key = (this.constructor as any).key;
+    const key = this.searchService.getKeyByFilterComponentInstance(this);
     instance.fields = this.editFields;
     instance.model = { [key]: this.value };
     instance.form = this.editForm;

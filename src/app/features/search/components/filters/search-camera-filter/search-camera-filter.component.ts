@@ -5,25 +5,26 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { SearchService } from "@features/search/services/search.service";
 
 @Component({
-  selector: "astrobin-search-telescope-filter",
+  selector: "astrobin-search-camera-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
 export class SearchCameraFilterComponent extends SearchBaseFilterComponent {
   static key = "camera";
-
-  title = this.translateService.instant("Camera");
+  label = this.translateService.instant("Cameras");
   editFields = [];
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly searchService: SearchService
   ) {
-    super(store$, translateService, domSanitizer, modalService);
+    super(store$, translateService, domSanitizer, modalService, searchService);
   }
 
   render(): SafeHtml {

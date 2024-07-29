@@ -1,6 +1,6 @@
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Injectable } from "@angular/core";
+import { ComponentRef, Inject, Injectable, Type, ViewContainerRef } from "@angular/core";
 import { Observable } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -9,11 +9,17 @@ import { TelescopeInterface } from "@features/equipment/types/telescope.interfac
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { map } from "rxjs/operators";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
+import {
+  AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
+  SEARCH_FILTERS_TOKEN
+} from "@features/search/injection-tokens/search-filter.tokens";
+import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
 
 export enum SearchAutoCompleteType {
   SUBJECT = "subject",
   TELESCOPE = "telescope",
-  CAMERA = "camera"
+  CAMERA = "camera",
 }
 
 export interface SearchAutoCompleteItem {
@@ -29,19 +35,47 @@ export class SearchService extends BaseService {
   constructor(
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly dynamicSearchFilterLoaderService: DynamicSearchFilterLoaderService,
+    @Inject(SEARCH_FILTERS_TOKEN) public readonly allFiltersTypes: Type<SearchFilterComponentInterface>[],
+    @Inject(AUTO_COMPLETE_ONLY_FILTERS_TOKEN)
+    public readonly autoCompleteOnlyFiltersTypes: Type<SearchFilterComponentInterface>[]
   ) {
     super(loadingService);
+  }
+
+  instantiateFilterComponent(
+    componentType: Type<SearchFilterComponentInterface>,
+    value: any,
+    filterContainer: ViewContainerRef
+  ): ComponentRef<SearchFilterComponentInterface> {
+    return this.dynamicSearchFilterLoaderService.loadComponent(
+      componentType,
+      value,
+      filterContainer
+    );
+  }
+
+  getFilterComponentTypeByKey(key: string): Type<SearchFilterComponentInterface> {
+    return this.allFiltersTypes.find(filterType => ((filterType as any).key === key));
+  }
+
+  getKeyByFilterComponentType(componentType: Type<SearchFilterComponentInterface>): string {
+    return (componentType as any).key;
+  }
+
+  getKeyByFilterComponentInstance(componentInstance: SearchFilterComponentInterface): string {
+    return (componentInstance.constructor as any).key;
   }
 
   humanizeSearchAutoCompleteType(type: SearchAutoCompleteType): string {
     switch (type) {
       case SearchAutoCompleteType.SUBJECT:
-        return this.translateService.instant("Subject");
+        return this.translateService.instant("Subjects");
       case SearchAutoCompleteType.TELESCOPE:
-        return this.translateService.instant("Telescope");
+        return this.translateService.instant("Telescopes & lenses");
       case SearchAutoCompleteType.CAMERA:
-        return this.translateService.instant("Camera");
+        return this.translateService.instant("Cameras");
     }
   }
 
@@ -190,28 +224,25 @@ export class SearchService extends BaseService {
       "Omega Nebula"
     ];
 
-    subjects.push(...commonSubjects.map(label => ({
-      type: SearchAutoCompleteType.SUBJECT,
-      label
-    })));
+    subjects.push(
+      ...commonSubjects.map(label => ({
+        type: SearchAutoCompleteType.SUBJECT,
+        label
+      }))
+    );
 
     return new Observable<SearchAutoCompleteItem[]>(subscriber => {
       const normalizedQuery = query.replace(/\s+/g, "").toLowerCase();
-      const filteredSubjects = subjects.filter(subject =>
-        subject.label.replace(/\s+/g, "").toLowerCase().includes(normalizedQuery)
-      ).map(subjects => (
-        { ...subjects, value: subjects.label }
-      ));
+      const filteredSubjects = subjects
+        .filter(subject => subject.label.replace(/\s+/g, "").toLowerCase().includes(normalizedQuery))
+        .map(subjects => ({ ...subjects, value: subjects.label }));
       subscriber.next(filteredSubjects);
       subscriber.complete();
     });
   }
 
   autoCompleteTelescopes$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return this.equipmentApiService.findAllEquipmentItems(
-      EquipmentItemType.TELESCOPE,
-      { query, limit: 10 }
-    ).pipe(
+    return this.equipmentApiService.findAllEquipmentItems(EquipmentItemType.TELESCOPE, { query, limit: 10 }).pipe(
       map((response: PaginatedApiResultInterface<TelescopeInterface>) => {
         return response.results.map(telescope => {
           const label = `${telescope.brandName || this.translateService.instant("(DIY)")} ${telescope.name}`;
@@ -231,10 +262,7 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteCameras$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return this.equipmentApiService.findAllEquipmentItems(
-      EquipmentItemType.CAMERA,
-      { query, limit: 10 }
-    ).pipe(
+    return this.equipmentApiService.findAllEquipmentItems(EquipmentItemType.CAMERA, { query, limit: 10 }).pipe(
       map((response: PaginatedApiResultInterface<CameraInterface>) => {
         return response.results.map(camera => {
           const label = `${camera.brandName || this.translateService.instant("(DIY)")} ${camera.name}`;
