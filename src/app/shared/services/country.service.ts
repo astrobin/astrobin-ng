@@ -72,7 +72,12 @@ export class CountryService extends BaseService {
     ).pipe(
       map((response: any) => {
         if (response != null && response[0] != null && response[0].region != null) {
-          const continent = response[0].region;
+          let continent = response[0].region;
+
+          if (continent === "Americas") {
+            continent = response[0].subregion;
+          }
+
           this.cachedContinentsMap.set(countryCode, continent);
           return continent;
         }

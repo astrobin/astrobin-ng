@@ -363,9 +363,21 @@ export abstract class MarketplaceListingsBasePageComponent
 
           if (!this.selectedRegion) {
             if (UtilsService.isEUCountry(requestCountry)) {
-              this.setRegion(null, "EU", false);
+              this.setRegion(null, "EU", true);
+            } else if (UtilsService.isEuropeanCountry(requestCountry)) {
+              this.setRegion(null, "Europe", true);
+            } else if (UtilsService.isNorthAmericanCountry(requestCountry)) {
+              this.setRegion(null, "North America", true);
+            } else if (UtilsService.isSouthAmericanCountry(requestCountry)) {
+              this.setRegion(null, "South America", true);
+            } else if (UtilsService.isAsianCountry(requestCountry)) {
+              this.setRegion(null, "Asia", true);
+            } else if (UtilsService.isAfricanCountry(requestCountry)) {
+              this.setRegion(null, "Africa", true);
+            } else if (UtilsService.isOceaniaCountry(requestCountry)) {
+              this.setRegion(null, "Oceania", true);
             } else {
-              this.setRegion(null, requestCountry, false);
+              this.setRegion(null, requestCountry, true);
             }
 
             this._openSelectRegionTooltip(
