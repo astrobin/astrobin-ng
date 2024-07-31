@@ -54,6 +54,7 @@ type SearchAutoCompleteGroups = {
 export class SearchBarComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   autoCompleteGroups: SearchAutoCompleteGroups = {};
   selectedAutoCompleteGroup: SearchAutoCompleteType = null;
+  loadingAutoCompleteItems = false;
   selectedAutoCompleteItemIndex = -1;
   filterComponentRefs: ComponentRef<SearchFilterComponentInterface>[] = [];
 
@@ -98,6 +99,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
         if (value && value.length >= 2) {
           const query = this.model.text;
+          this.loadingAutoCompleteItems = true;
 
           forkJoin(
             [
@@ -163,6 +165,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
             // Trigger change detection
             this.autoCompleteGroups = { ...this.autoCompleteGroups };
+
+            this.loadingAutoCompleteItems = false;
           });
         }
       });

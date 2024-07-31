@@ -43,12 +43,22 @@
   </div>
 
   <div class="search-bar-icons">
-    <ng-container *ngIf="hasAutoCompleteItems(); else iconsTemplate">
+    <ng-container *ngIf="loadingAutoCompleteItems; else resetAutoCompleteTemplate">
       <fa-icon
-        (click)="resetAutoCompleteItems()"
-        icon="times"
+        animation="spin"
+        class="search-bar-loading-icon"
+        icon="spinner"
       ></fa-icon>
     </ng-container>
+
+    <ng-template #resetAutoCompleteTemplate>
+      <ng-container *ngIf="hasAutoCompleteItems(); else iconsTemplate">
+        <fa-icon
+          (click)="resetAutoCompleteItems()"
+          icon="times"
+        ></fa-icon>
+      </ng-container>
+    </ng-template>
 
     <ng-template #iconsTemplate>
       <fa-icon
