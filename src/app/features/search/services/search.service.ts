@@ -45,7 +45,7 @@ export interface SearchAutoCompleteItem {
   providedIn: "root"
 })
 export class SearchService extends BaseService {
-  private _limit = 10;
+  private _autoCompleteItemsLimit = 15;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -130,7 +130,8 @@ export class SearchService extends BaseService {
             label: this.humanizeSearchAutoCompleteType((filterType as any).key),
             value: (filterType as any).key
           };
-        }).slice(0, this._limit)
+        })
+        .slice(0, this._autoCompleteItemsLimit)
     );
   }
 
@@ -290,53 +291,61 @@ export class SearchService extends BaseService {
       const normalizedQuery = query.replace(/\s+/g, "").toLowerCase();
       const filteredSubjects = subjects
         .filter(subject => subject.label.replace(/\s+/g, "").toLowerCase().includes(normalizedQuery))
-        .map(subjects => ({ ...subjects, value: subjects.label })).slice(0, this._limit);
+        .map(subjects => ({ ...subjects, value: subjects.label }))
+        .slice(0, this._autoCompleteItemsLimit);
       subscriber.next(filteredSubjects);
       subscriber.complete();
     });
   }
 
   autoCompleteTelescopes$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return this.equipmentApiService.findAllEquipmentItems(EquipmentItemType.TELESCOPE, {
-      query,
-      limit: this._limit
-    }).pipe(
-      map((response: PaginatedApiResultInterface<TelescopeInterface>) => {
-        return response.results.map(telescope => {
-          const label = `${telescope.brandName || this.translateService.instant("(DIY)")} ${telescope.name}`;
-          const value = {
-            id: telescope.id,
-            name: label
-          };
-
-          return {
-            type: SearchAutoCompleteType.TELESCOPE,
-            label,
-            value
-          };
-        });
+    return this.equipmentApiService
+      .findAllEquipmentItems(EquipmentItemType.TELESCOPE, {
+        query,
+        limit: this._autoCompleteItemsLimit
       })
-    );
+      .pipe(
+        map((response: PaginatedApiResultInterface<TelescopeInterface>) => {
+          return response.results.map(telescope => {
+            const label = `${telescope.brandName || this.translateService.instant("(DIY)")} ${telescope.name}`;
+            const value = {
+              id: telescope.id,
+              name: label
+            };
+
+            return {
+              type: SearchAutoCompleteType.TELESCOPE,
+              label,
+              value
+            };
+          });
+        })
+      );
   }
 
   autoCompleteCameras$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return this.equipmentApiService.findAllEquipmentItems(EquipmentItemType.CAMERA, { query, limit: this._limit }).pipe(
-      map((response: PaginatedApiResultInterface<CameraInterface>) => {
-        return response.results.map(camera => {
-          const label = `${camera.brandName || this.translateService.instant("(DIY)")} ${camera.name}`;
-          const value = {
-            id: camera.id,
-            name: label
-          };
-
-          return {
-            type: SearchAutoCompleteType.CAMERA,
-            label,
-            value
-          };
-        });
+    return this.equipmentApiService
+      .findAllEquipmentItems(EquipmentItemType.CAMERA, {
+        query,
+        limit: this._autoCompleteItemsLimit
       })
-    );
+      .pipe(
+        map((response: PaginatedApiResultInterface<CameraInterface>) => {
+          return response.results.map(camera => {
+            const label = `${camera.brandName || this.translateService.instant("(DIY)")} ${camera.name}`;
+            const value = {
+              id: camera.id,
+              name: label
+            };
+
+            return {
+              type: SearchAutoCompleteType.CAMERA,
+              label,
+              value
+            };
+          });
+        })
+      );
   }
 
   autoCompleteTelescopeTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
@@ -351,7 +360,8 @@ export class SearchService extends BaseService {
           type: SearchAutoCompleteType.TELESCOPE_TYPE,
           label: item.humanized,
           value: item.type
-        })).slice(0, this._limit)
+        }))
+        .slice(0, this._autoCompleteItemsLimit)
     );
   }
 
@@ -367,7 +377,8 @@ export class SearchService extends BaseService {
           type: SearchAutoCompleteType.CAMERA_TYPE,
           label: item.humanized,
           value: item.type
-        })).slice(0, this._limit)
+        }))
+        .slice(0, this._autoCompleteItemsLimit)
     );
   }
 
@@ -386,7 +397,8 @@ export class SearchService extends BaseService {
             months: [item.month],
             matchType: null
           }
-        })).slice(0, this._limit)
+        }))
+        .slice(0, this._autoCompleteItemsLimit)
     );
   }
 
@@ -398,7 +410,8 @@ export class SearchService extends BaseService {
           type: SearchAutoCompleteType.REMOTE_SOURCE,
           label: humanized,
           value: source
-        })).slice(0, this._limit)
+        }))
+        .slice(0, this._autoCompleteItemsLimit)
     );
   }
 
@@ -430,7 +443,10 @@ export class SearchService extends BaseService {
       }));
 
     // Concatenate both arrays and return as an observable
-    const autoCompleteItems = [...subjectTypeItems, ...solarSystemSubjectTypeItems].slice(0, this._limit);
+    const autoCompleteItems = [...subjectTypeItems, ...solarSystemSubjectTypeItems].slice(
+      0,
+      this._autoCompleteItemsLimit
+    );
     return of(autoCompleteItems);
   }
 }

@@ -79,6 +79,7 @@
       color: var(--lighterGrey);
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
       position: relative;
 
       @media (max-width: $sm-max) {
