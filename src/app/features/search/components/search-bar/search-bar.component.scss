@@ -61,19 +61,6 @@
     border-bottom: 1px solid var(--darkGrey);
     box-shadow: 0 1rem 1rem var(--black);
 
-    @media (min-width: $md-min) {
-      &::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 100px; /* Width of the fading area */
-        background: linear-gradient(to right, rgba(30, 30, 30, 0) 0%, rgba(30, 30, 30, 1) 100%);
-        pointer-events: none;
-      }
-    }
-
     .search-bar-autocomplete-group {
       overflow: hidden;
       color: var(--lighterGrey);
