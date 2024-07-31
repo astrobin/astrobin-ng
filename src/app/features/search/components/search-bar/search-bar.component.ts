@@ -102,6 +102,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
           forkJoin(
             [
               {
+                key: SearchAutoCompleteType.SEARCH_FILTER,
+                method: this.searchService.autoCompleteSearchFilters$(query)
+              },
+              {
                 key: SearchTelescopeFilterComponent.key,
                 method: this.searchService.autoCompleteTelescopes$(query)
               },
@@ -334,7 +338,15 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   onAutoCompleteItemClicked(autoCompleteItem: SearchAutoCompleteItem): void {
-    this.addFilter(this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type), autoCompleteItem.value);
+    let filterComponentType: Type<SearchFilterComponentInterface>;
+
+    if (autoCompleteItem.type === SearchAutoCompleteType.SEARCH_FILTER) {
+      filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.value);
+      this.createAndEditFilter(filterComponentType);
+    } else {
+      filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
+      this.addFilter(filterComponentType, autoCompleteItem.value);
+    }
   }
 
   addFilter(filterComponentType: Type<SearchFilterComponentInterface>, value: any): void {
@@ -382,34 +394,38 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.onSearch(this.model);
   }
 
+  createAndEditFilter(filterComponentType: Type<SearchFilterComponentInterface>): void {
+    const key: string = this.searchService.getKeyByFilterComponentType(filterComponentType);
+    let componentRef: ComponentRef<any> = this.filterComponentRefs.find(
+      componentRef => this.searchService.getKeyByFilterComponentType(componentRef.componentType) === key
+    );
+    const alreadyPresent: boolean = !!componentRef;
+
+    if (!alreadyPresent) {
+      componentRef = this.searchService.instantiateFilterComponent(
+        filterComponentType,
+        null,
+        this.temporaryFilterContainer
+      );
+    }
+
+    componentRef.instance.edit();
+    componentRef.instance.valueChanges.subscribe(value => {
+      if (value) {
+        if (!alreadyPresent) {
+          componentRef.destroy();
+          this.addFilter(filterComponentType, value);
+        }
+      }
+    });
+  }
+
   onFilterSelectionClicked(event: Event): void {
     event.preventDefault();
 
     const modalRef = this.modalService.open(SearchFilterSelectionModalComponent);
     modalRef.closed.subscribe((componentType: Type<SearchBaseFilterComponent>) => {
-      const key: string = this.searchService.getKeyByFilterComponentType(componentType);
-      let componentRef: ComponentRef<any> = this.filterComponentRefs.find(
-        componentRef => this.searchService.getKeyByFilterComponentType(componentRef.componentType) === key
-      );
-      const alreadyPresent: boolean = !!componentRef;
-
-      if (!alreadyPresent) {
-        componentRef = this.searchService.instantiateFilterComponent(
-          componentType,
-          null,
-          this.temporaryFilterContainer
-        );
-      }
-
-      componentRef.instance.edit();
-      componentRef.instance.valueChanges.subscribe(value => {
-        if (value) {
-          if (!alreadyPresent) {
-            componentRef.destroy();
-            this.addFilter(componentType, value);
-          }
-        }
-      });
+      this.createAndEditFilter(componentType);
     });
   }
 }

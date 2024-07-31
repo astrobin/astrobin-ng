@@ -24,6 +24,7 @@ import { RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/inter
 import { ImageService } from "@shared/services/image/image.service";
 
 export enum SearchAutoCompleteType {
+  SEARCH_FILTER = "search_filter",
   SUBJECT = "subject",
   TELESCOPE = "telescope",
   CAMERA = "camera",
@@ -31,7 +32,7 @@ export enum SearchAutoCompleteType {
   CAMERA_TYPE = "camera_type",
   ACQUISITION_MONTHS = "acquisition_months",
   REMOTE_SOURCE = "remote_source",
-  SUBJECT_TYPE = "subject_type"
+  SUBJECT_TYPE = "subject_type",
 }
 
 export interface SearchAutoCompleteItem {
@@ -65,15 +66,11 @@ export class SearchService extends BaseService {
     value: any,
     filterContainer: ViewContainerRef
   ): ComponentRef<SearchFilterComponentInterface> {
-    return this.dynamicSearchFilterLoaderService.loadComponent(
-      componentType,
-      value,
-      filterContainer
-    );
+    return this.dynamicSearchFilterLoaderService.loadComponent(componentType, value, filterContainer);
   }
 
   getFilterComponentTypeByKey(key: string): Type<SearchFilterComponentInterface> {
-    return this.allFiltersTypes.find(filterType => ((filterType as any).key === key));
+    return this.allFiltersTypes.find(filterType => (filterType as any).key === key);
   }
 
   getKeyByFilterComponentType(componentType: Type<SearchFilterComponentInterface>): string {
@@ -86,8 +83,12 @@ export class SearchService extends BaseService {
 
   humanizeSearchAutoCompleteType(type: SearchAutoCompleteType): string {
     switch (type) {
+      case SearchAutoCompleteType.SEARCH_FILTER:
+        return this.translateService.instant("Search filters");
       case SearchAutoCompleteType.SUBJECT:
         return this.translateService.instant("Subjects");
+      case SearchAutoCompleteType.SUBJECT_TYPE:
+        return this.translateService.instant("Subject types");
       case SearchAutoCompleteType.TELESCOPE:
         return this.translateService.instant("Telescopes & lenses");
       case SearchAutoCompleteType.CAMERA:
@@ -100,8 +101,6 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Acquisition months");
       case SearchAutoCompleteType.REMOTE_SOURCE:
         return this.translateService.instant("Remote hosting");
-      case SearchAutoCompleteType.SUBJECT_TYPE:
-        return this.translateService.instant("Subject types");
     }
   }
 
@@ -112,6 +111,25 @@ export class SearchService extends BaseService {
       case MatchType.ANY:
         return this.translateService.instant("Any");
     }
+  }
+
+  autoCompleteSearchFilters$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      this.allFiltersTypes
+        .filter(filterType => !this.autoCompleteOnlyFiltersTypes.includes(filterType))
+        .filter(filterType =>
+          this.humanizeSearchAutoCompleteType((filterType as any).key)
+            .toLowerCase()
+            .includes(query.toLowerCase())
+        )
+        .map(filterType => {
+          return {
+            type: SearchAutoCompleteType.SEARCH_FILTER,
+            label: this.humanizeSearchAutoCompleteType((filterType as any).key),
+            value: (filterType as any).key
+          };
+        })
+    );
   }
 
   autoCompleteSubjects$(query: string): Observable<SearchAutoCompleteItem[]> {
@@ -317,58 +335,66 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteTelescopeTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return of(Object.values(TelescopeType)
-      .map(type => ({
-        type,
-        humanized: this.telescopeService.humanizeType(type)
-      }))
-      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
-      .map(item => ({
-        type: SearchAutoCompleteType.TELESCOPE_TYPE,
-        label: item.humanized,
-        value: item.type
-      })));
+    return of(
+      Object.values(TelescopeType)
+        .map(type => ({
+          type,
+          humanized: this.telescopeService.humanizeType(type)
+        }))
+        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(item => ({
+          type: SearchAutoCompleteType.TELESCOPE_TYPE,
+          label: item.humanized,
+          value: item.type
+        }))
+    );
   }
 
   autoCompleteCameraTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return of(Object.values(CameraType)
-      .map(type => ({
-        type,
-        humanized: this.cameraService.humanizeType(type)
-      }))
-      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
-      .map(item => ({
-        type: SearchAutoCompleteType.CAMERA_TYPE,
-        label: item.humanized,
-        value: item.type
-      })));
+    return of(
+      Object.values(CameraType)
+        .map(type => ({
+          type,
+          humanized: this.cameraService.humanizeType(type)
+        }))
+        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(item => ({
+          type: SearchAutoCompleteType.CAMERA_TYPE,
+          label: item.humanized,
+          value: item.type
+        }))
+    );
   }
 
   autoCompleteMonths$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return of(Object.values(Month)
-      .map(month => ({
-        month,
-        humanized: this.dateService.humanizeMonth(month)
-      }))
-      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
-      .map(item => ({
-        type: SearchAutoCompleteType.ACQUISITION_MONTHS,
-        label: item.humanized,
-        value: {
-          months: [item.month],
-          matchType: null
-        }
-      })));
+    return of(
+      Object.values(Month)
+        .map(month => ({
+          month,
+          humanized: this.dateService.humanizeMonth(month)
+        }))
+        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(item => ({
+          type: SearchAutoCompleteType.ACQUISITION_MONTHS,
+          label: item.humanized,
+          value: {
+            months: [item.month],
+            matchType: null
+          }
+        }))
+    );
   }
 
   autoCompleteRemoteSources$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return of(Object.entries(RemoteSource)
-      .filter(([_, humanized]) => humanized.toLowerCase().includes(query.toLowerCase()))
-      .map(([source, humanized]) => ({
-        type: SearchAutoCompleteType.REMOTE_SOURCE,
-        label: humanized,
-        value: source
-      })));
+    return of(
+      Object.entries(RemoteSource)
+        .filter(([_, humanized]) => humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(([source, humanized]) => ({
+          type: SearchAutoCompleteType.REMOTE_SOURCE,
+          label: humanized,
+          value: source
+        }))
+    );
   }
 
   autoCompleteSubjectTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
