@@ -48,10 +48,11 @@
     top: 3.75rem;
     left: 0;
     display: flex;
-    gap: 1.5rem;
+    flex-direction: column;
+    gap: .25rem;
     padding: .5rem;
     width: 100%;
-    max-height: 50vh;
+    max-height: calc(100vh - 170px);
     overflow-y: auto;
     z-index: 1;
     background-color: var(--darkestGrey);
@@ -60,31 +61,59 @@
     border-bottom: 1px solid var(--darkGrey);
     box-shadow: 0 1rem 1rem var(--black);
 
-    @media (max-width: $sm-max) {
-      flex-direction: column;
+    @media (min-width: $md-min) {
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100px; /* Width of the fading area */
+        background: linear-gradient(to right, rgba(30, 30, 30, 0) 0%, rgba(30, 30, 30, 1) 100%);
+        pointer-events: none;
+      }
     }
 
     .search-bar-autocomplete-group {
-      margin-left: -.5rem;
-      margin-right: -.5rem;
+      overflow: hidden;
       color: var(--lighterGrey);
+      display: flex;
+      flex-direction: row;
+      position: relative;
+
+      @media (max-width: $sm-max) {
+        flex-direction: column;
+        overflow: visible;
+      }
 
       > .search-bar-autocomplete-title {
-        font-size: 1rem;
-        padding: .5rem 1rem;
-        color: var(--lightestGrey);
-        border-bottom: 1px solid var(--grey);
+        padding: .25rem .75rem;
+        border: 1px solid var(--grey);
+        background-color: var(--lightGrey);
+        border-radius: var(--bs-border-radius);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         pointer-events: none;
+        margin: 0;
+        color: var(--white);
+        font-size: 1rem;
+        white-space: nowrap;
       }
 
       > .search-bar-autocomplete-item {
         display: block;
-        padding: .5rem 1rem;
+        padding: .25rem .75rem;
         cursor: pointer;
+        white-space: nowrap;
 
         &.selected,
         &:hover {
           background-color: var(--darkerGrey);
+        }
+
+        ::ng-deep > .highlight {
+          color: var(--white);
         }
       }
     }
