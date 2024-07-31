@@ -22,7 +22,21 @@ import { SearchAcquisitionMonthsFilterComponent } from "@features/search/compone
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
 import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 import { SearchColorOrMonoFilterComponent } from "@features/search/components/filters/search-color-or-mono-filter/search-color-or-mono-filter.component";
+import { SearchModifiedCameraFilterComponent } from "@features/search/components/filters/search-modified-camera-filter/search-modified-camera-filter.component";
 
+
+const allFilterComponents = [
+  SearchSubjectFilterComponent,
+  SearchTelescopeFilterComponent,
+  SearchCameraFilterComponent,
+  SearchTelescopeTypeFilterComponent,
+  SearchCameraTypeFilterComponent,
+  SearchAcquisitionMonthsFilterComponent,
+  SearchRemoteSourceFilterComponent,
+  SearchSubjectTypeFilterComponent,
+  SearchColorOrMonoFilterComponent,
+  SearchModifiedCameraFilterComponent
+];
 
 @NgModule({
   declarations: [
@@ -30,15 +44,7 @@ import { SearchColorOrMonoFilterComponent } from "@features/search/components/fi
     SearchBarComponent,
     SearchFilterEditorModalComponent,
     SearchFilterSelectionModalComponent,
-    SearchSubjectFilterComponent,
-    SearchTelescopeFilterComponent,
-    SearchCameraFilterComponent,
-    SearchTelescopeTypeFilterComponent,
-    SearchCameraTypeFilterComponent,
-    SearchAcquisitionMonthsFilterComponent,
-    SearchRemoteSourceFilterComponent,
-    SearchSubjectTypeFilterComponent,
-    SearchColorOrMonoFilterComponent
+    ...allFilterComponents
   ],
   imports: [
     RouterModule.forChild(searchRoutes),
@@ -49,17 +55,7 @@ import { SearchColorOrMonoFilterComponent } from "@features/search/components/fi
     SearchService,
     {
       provide: SEARCH_FILTERS_TOKEN,
-      useValue: [
-        SearchSubjectFilterComponent,
-        SearchTelescopeFilterComponent,
-        SearchCameraFilterComponent,
-        SearchTelescopeTypeFilterComponent,
-        SearchCameraTypeFilterComponent,
-        SearchAcquisitionMonthsFilterComponent,
-        SearchRemoteSourceFilterComponent,
-        SearchSubjectTypeFilterComponent,
-        SearchColorOrMonoFilterComponent
-      ]
+      useValue: allFilterComponents
     },
     {
       provide: AUTO_COMPLETE_ONLY_FILTERS_TOKEN,

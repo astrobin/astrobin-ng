@@ -36,6 +36,7 @@ export enum SearchAutoCompleteType {
   REMOTE_SOURCE = "remote_source",
   SUBJECT_TYPE = "subject_type",
   COLOR_OR_MONO = "color_or_mono",
+  MODIFIED_CAMERA = "modified_camera",
 }
 
 export interface SearchAutoCompleteItem {
@@ -109,6 +110,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Remote hosting");
       case SearchAutoCompleteType.COLOR_OR_MONO:
         return this.translateService.instant("Color or mono cameras");
+      case SearchAutoCompleteType.MODIFIED_CAMERA:
+        return this.translateService.instant("Modified cameras");
     }
   }
 
@@ -472,7 +475,21 @@ export class SearchService extends BaseService {
             matchType: null
           }
         }))
-        .slice(0, this._autoCompleteItemsLimit)
+    );
+  }
+
+  autoCompleteModifiedCamera$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(Object.values(["Y", "N"])
+      .map(type => ({
+        type,
+        humanized: type === "Y" ? this.translateService.instant("Yes") : this.translateService.instant("No")
+      }))
+      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+      .map(item => ({
+        type: SearchAutoCompleteType.MODIFIED_CAMERA,
+        label: item.humanized,
+        value: item.type === "Y"
+      }))
     );
   }
 }
