@@ -24,6 +24,7 @@ export class SearchTelescopeTypeFilterComponent extends SearchBaseFilterComponen
       wrappers: ["default-wrapper"],
       props: {
         hideOptionalMarker: true,
+        label: this.label,
         options: Object.keys(TelescopeType).map(telescopeType => ({
           value: telescopeType,
           label: this.telescopeService.humanizeType(telescopeType as TelescopeType)

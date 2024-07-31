@@ -23,6 +23,7 @@ export class SearchRemoteSourceFilterComponent extends SearchBaseFilterComponent
       wrappers: ["default-wrapper"],
       props: {
         hideOptionalMarker: true,
+        label: this.label,
         options: Object.entries(RemoteSource).map(remoteSource => ({
           value: remoteSource[0],
           label: remoteSource[1]

@@ -21,6 +21,7 @@ import { SearchCameraTypeFilterComponent } from "@features/search/components/fil
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
 import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
+import { SearchColorOrMonoFilterComponent } from "@features/search/components/filters/search-color-or-mono-filter/search-color-or-mono-filter.component";
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { SearchSubjectTypeFilterComponent } from "@features/search/components/fi
     SearchCameraTypeFilterComponent,
     SearchAcquisitionMonthsFilterComponent,
     SearchRemoteSourceFilterComponent,
-    SearchSubjectTypeFilterComponent
+    SearchSubjectTypeFilterComponent,
+    SearchColorOrMonoFilterComponent
   ],
   imports: [
     RouterModule.forChild(searchRoutes),
@@ -55,7 +57,8 @@ import { SearchSubjectTypeFilterComponent } from "@features/search/components/fi
         SearchCameraTypeFilterComponent,
         SearchAcquisitionMonthsFilterComponent,
         SearchRemoteSourceFilterComponent,
-        SearchSubjectTypeFilterComponent
+        SearchSubjectTypeFilterComponent,
+        SearchColorOrMonoFilterComponent
       ]
     },
     {

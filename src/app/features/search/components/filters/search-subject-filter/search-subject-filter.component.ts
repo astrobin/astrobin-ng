@@ -21,7 +21,8 @@ export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
       type: "input",
       wrappers: ["default-wrapper"],
       props: {
-        placeholder: this.label,
+        placeholder: "M 31, NGC 1955, Sh2-142, ...",
+        label: this.label,
         type: "text",
         hideOptionalMarker: true
       }

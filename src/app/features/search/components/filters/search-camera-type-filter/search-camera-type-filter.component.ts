@@ -24,6 +24,7 @@ export class SearchCameraTypeFilterComponent extends SearchBaseFilterComponent {
       wrappers: ["default-wrapper"],
       props: {
         hideOptionalMarker: true,
+        label: this.label,
         options: Object.keys(CameraType).map(cameraType => ({
           value: cameraType,
           label: this.cameraService.humanizeType(cameraType as CameraType)

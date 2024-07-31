@@ -41,6 +41,7 @@ import { SearchCameraTypeFilterComponent } from "@features/search/components/fil
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
 import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
+import { SearchColorOrMonoFilterComponent } from "@features/search/components/filters/search-color-or-mono-filter/search-color-or-mono-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -138,6 +139,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               {
                 key: SearchSubjectTypeFilterComponent.key,
                 method: this.searchService.autoCompleteSubjectTypes$(query)
+              },
+              {
+                key: SearchColorOrMonoFilterComponent.key,
+                method: this.searchService.autoCompleteColorOrMono$(query)
               }
             ]
               .filter(filter => !this.model.hasOwnProperty(filter.key))
