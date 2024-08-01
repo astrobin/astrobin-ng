@@ -37,6 +37,7 @@ export enum SearchAutoCompleteType {
   SUBJECT_TYPE = "subject_type",
   COLOR_OR_MONO = "color_or_mono",
   MODIFIED_CAMERA = "modified_camera",
+  ANIMATED = "animated",
 }
 
 export interface SearchAutoCompleteItem {
@@ -112,6 +113,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Color or mono cameras");
       case SearchAutoCompleteType.MODIFIED_CAMERA:
         return this.translateService.instant("Modified cameras");
+      case SearchAutoCompleteType.ANIMATED:
+        return this.translateService.instant("Animated images");
     }
   }
 
@@ -479,6 +482,14 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteModifiedCamera$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.MODIFIED_CAMERA);
+  }
+
+  autoCompleteAnimated$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.ANIMATED);
+  }
+
+  _autoCompleteYesNo$(query: string, type: SearchAutoCompleteType): Observable<SearchAutoCompleteItem[]> {
     return of(Object.values(["Y", "N"])
       .map(type => ({
         type,
@@ -486,7 +497,7 @@ export class SearchService extends BaseService {
       }))
       .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
       .map(item => ({
-        type: SearchAutoCompleteType.MODIFIED_CAMERA,
+        type,
         label: item.humanized,
         value: item.type === "Y"
       }))
