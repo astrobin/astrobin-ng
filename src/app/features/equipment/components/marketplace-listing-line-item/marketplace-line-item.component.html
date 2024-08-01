@@ -121,7 +121,7 @@
       <div
         *ngIf="!!lineItem.description; else noDescriptionTemplate"
         [innerHTML]="lineItem.description | nl2br"
-        class="description w-100"
+        class="description mt-4 w-100"
       ></div>
 
       <astrobin-image-search-card
@@ -152,11 +152,13 @@
           lineItem.totalImageCount > 0 &&
           listing.listingType === MarketplaceListingType.FOR_SALE
         "
+        [class.mt-5]="!lineItem.sellerImageCount"
         [header]="'Images from the AstroBin community' | translate"
         [loadMoreOnScroll]="false"
         [model]="{ itemId: lineItem.itemObjectId, itemType: lineItem.itemKlass, pageSize: 21 }"
         [showSortButton]="false"
         [showUsageButton]="false"
+        class="d-block"
         ordering="-likes"
       ></astrobin-image-search-card>
     </div>
@@ -168,5 +170,5 @@
 </ng-template>
 
 <ng-template #noDescriptionTemplate>
-  <p class="text-muted">{{ "No description provided." | translate }}</p>
+  <p class="text-muted mt-4">{{ "No description provided." | translate }}</p>
 </ng-template>
