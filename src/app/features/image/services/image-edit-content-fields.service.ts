@@ -184,50 +184,51 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
         options: [
           {
             value: DataSource.BACKYARD,
-            label: this.translateService.instant("Backyard"),
+            label: this.imageService.humanizeDataSource(DataSource.BACKYARD),
             group: this.translateService.instant("Self acquired")
           },
           {
             value: DataSource.TRAVELLER,
-            label: this.translateService.instant("Traveller"),
+            label: this.imageService.humanizeDataSource(DataSource.TRAVELLER),
             group: this.translateService.instant("Self acquired")
           },
           {
             value: DataSource.OWN_REMOTE,
-            label: this.translateService.instant("Own remote observatory"),
+            label: this.imageService.humanizeDataSource(DataSource.OWN_REMOTE),
             group: this.translateService.instant("Self acquired")
           },
           {
             value: DataSource.AMATEUR_HOSTING,
-            label: this.translateService.instant("Amateur hosting facility"),
+            label: this.imageService.humanizeDataSource(DataSource.AMATEUR_HOSTING),
             group: this.translateService.instant("Downloaded")
           },
           {
             value: DataSource.PUBLIC_AMATEUR_DATA,
-            label: this.translateService.instant("Public amateur data"),
+            label: this.imageService.humanizeDataSource(DataSource.PUBLIC_AMATEUR_DATA),
             group: this.translateService.instant("Downloaded")
           },
           {
             value: DataSource.PRO_DATA,
-            label: this.translateService.instant("Professional, scientific grade data"),
+            label: this.imageService.humanizeDataSource(DataSource.PRO_DATA),
             group: this.translateService.instant("Downloaded")
           },
           {
             value: DataSource.MIX,
-            label: this.translateService.instant("Mix of multiple sources"),
+            label: this.imageService.humanizeDataSource(DataSource.MIX),
             group: this.translateService.instant("Other")
           },
           {
             value: DataSource.OTHER,
-            label: this.translateService.instant("None of the above"),
+            label: this.imageService.humanizeDataSource(DataSource.OTHER),
             group: this.translateService.instant("Other")
           },
           {
             value: DataSource.UNKNOWN,
-            label: this.translateService.instant("Unknown"),
+            label: this.imageService.humanizeDataSource(DataSource.UNKNOWN),
             group: this.translateService.instant("Other")
           }
         ]
+
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -309,7 +310,7 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
             label: location.name
           }))
         ),
-        onSearch: (term: string): Observable<void> => {
+        onSearch: (): Observable<void> => {
           return of(void 0);
         },
         addTag: name => {

@@ -3,7 +3,7 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
-import { SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import { DataSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
@@ -89,6 +89,32 @@ export class ImageService extends BaseService {
         return value;
     }
   }
+
+  humanizeDataSource(value: DataSource): string {
+    switch (value) {
+      case DataSource.BACKYARD:
+        return this.translateService.instant("Backyard");
+      case DataSource.TRAVELLER:
+        return this.translateService.instant("Traveller");
+      case DataSource.OWN_REMOTE:
+        return this.translateService.instant("Own remote observatory");
+      case DataSource.AMATEUR_HOSTING:
+        return this.translateService.instant("Amateur hosting facility");
+      case DataSource.PUBLIC_AMATEUR_DATA:
+        return this.translateService.instant("Public amateur data");
+      case DataSource.PRO_DATA:
+        return this.translateService.instant("Professional, scientific grade data");
+      case DataSource.MIX:
+        return this.translateService.instant("Mix of multiple sources");
+      case DataSource.OTHER:
+        return this.translateService.instant("None of the above");
+      case DataSource.UNKNOWN:
+        return this.translateService.instant("Unknown");
+      default:
+        return this.translateService.instant("Unknown");
+    }
+  }
+
 
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
     return new Observable<string>(observer => {

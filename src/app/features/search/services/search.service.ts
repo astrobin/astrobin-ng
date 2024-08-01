@@ -20,7 +20,7 @@ import { CameraService } from "@features/equipment/services/camera.service";
 import { DateService } from "@shared/services/date.service";
 import { Month } from "@shared/enums/month.enum";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import { RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import { DataSource, RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
@@ -42,6 +42,7 @@ export enum SearchAutoCompleteType {
   VIDEO = "video",
   AWARD = "award",
   COUNTRY = "country",
+  DATA_SOURCE = "data_source"
 }
 
 export interface SearchAutoCompleteItem {
@@ -126,6 +127,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("IOTD/TP award");
       case SearchAutoCompleteType.COUNTRY:
         return this.translateService.instant("User country");
+      case SearchAutoCompleteType.DATA_SOURCE:
+        return this.translateService.instant("Data source");
     }
   }
 
@@ -530,6 +533,22 @@ export class SearchService extends BaseService {
           type: SearchAutoCompleteType.COUNTRY,
           label: country.name,
           value: country.code
+        }))
+    );
+  }
+
+  autoCompleteDataSources$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      Object.values(DataSource)
+        .map(source => ({
+          source,
+          humanized: this.imageService.humanizeDataSource(source)
+        }))
+        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(item => ({
+          type: SearchAutoCompleteType.DATA_SOURCE,
+          label: item.humanized,
+          value: item.source
         }))
     );
   }

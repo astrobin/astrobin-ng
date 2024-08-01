@@ -48,6 +48,7 @@ import { SearchVideoFilterComponent } from "@features/search/components/filters/
 import { SearchAwardFilterComponent } from "@features/search/components/filters/search-award-filter/search-award-filter.component";
 import { SearchCountryFilterComponent } from "@features/search/components/filters/search-country-filter/search-country-filter.component";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { SearchDataSourceFilterComponent } from "@features/search/components/filters/search-data-source-filter/search-data-source-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -170,6 +171,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               {
                 key: SearchCountryFilterComponent.key,
                 method: this.searchService.autoCompleteCountries$(query)
+              },
+              {
+                key: SearchDataSourceFilterComponent.key,
+                method: this.searchService.autoCompleteDataSources$(query)
               }
             ]
               .filter(filter => !this.model.hasOwnProperty(filter.key))
