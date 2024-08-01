@@ -25,6 +25,7 @@ export class SearchSubjectTypeFilterComponent extends SearchBaseFilterComponent 
       props: {
         hideOptionalMarker: true,
         label: this.label,
+        description: this.translateService.instant("Only show images of a specific subject type"),
         options: Object.keys(SubjectType).map(subjectType => ({
           value: subjectType,
           label: this.imageService.humanizeSubjectType(subjectType as SubjectType)

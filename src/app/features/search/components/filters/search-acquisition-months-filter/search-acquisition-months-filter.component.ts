@@ -36,6 +36,7 @@ export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComp
             hideOptionalMarker: true,
             multiple: true,
             label: this.label,
+            description: this.translateService.instant("Only show images acquired in specific months of any year"),
             options: Object.keys(Month).map(month => ({
               value: month,
               label: this.dateService.humanizeMonth(month as Month)

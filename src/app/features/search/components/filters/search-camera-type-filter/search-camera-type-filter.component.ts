@@ -25,6 +25,7 @@ export class SearchCameraTypeFilterComponent extends SearchBaseFilterComponent {
       props: {
         hideOptionalMarker: true,
         label: this.label,
+        description: this.translateService.instant("Only show images acquired with a specific camera type"),
         options: Object.keys(CameraType).map(cameraType => ({
           value: cameraType,
           label: this.cameraService.humanizeType(cameraType as CameraType)

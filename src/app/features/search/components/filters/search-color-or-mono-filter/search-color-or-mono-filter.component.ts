@@ -36,6 +36,7 @@ export class SearchColorOrMonoFilterComponent extends SearchBaseFilterComponent 
             hideOptionalMarker: true,
             multiple: true,
             label: this.label,
+            description: this.translateService.instant("Only show images acquired with color or monochrome sensors"),
             options: Object.keys(ColorOrMono).map(value => ({
               value: value,
               label: this.sensorService.humanizeColorOrMono(value as ColorOrMono)
