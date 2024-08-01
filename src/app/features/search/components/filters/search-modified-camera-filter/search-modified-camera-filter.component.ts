@@ -22,7 +22,6 @@ export class SearchModifiedCameraFilterComponent extends SearchBaseFilterCompone
       key: SearchModifiedCameraFilterComponent.key,
       type: "checkbox",
       wrappers: ["default-wrapper"],
-      defaultValue: false,
       props: {
         hideOptionalMarker: true,
         label: this.label,

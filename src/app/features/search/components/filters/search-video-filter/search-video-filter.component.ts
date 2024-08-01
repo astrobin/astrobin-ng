@@ -22,7 +22,6 @@ export class SearchVideoFilterComponent extends SearchBaseFilterComponent {
       key: SearchVideoFilterComponent.key,
       type: "checkbox",
       wrappers: ["default-wrapper"],
-      defaultValue: false,
       props: {
         hideOptionalMarker: true,
         label: this.label,

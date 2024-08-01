@@ -7,31 +7,32 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
+import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
 
 @Component({
-  selector: "astrobin-search-award-filter.search-filter-component",
+  selector: "astrobin-search-minimum-data-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchAwardFilterComponent extends SearchBaseFilterComponent {
-  static key = SearchAutoCompleteType.AWARD;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchAwardFilterComponent.key as SearchAutoCompleteType);
+export class SearchMinimumDataFilterComponent extends SearchBaseFilterComponent {
+  static key = SearchAutoCompleteType.MINIMUM_DATA;
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchMinimumDataFilterComponent.key as SearchAutoCompleteType);
   readonly values: { [key: string]: string } = {
-    [SearchAwardFilterValue.IOTD]: this.translateService.instant("Image of the day"),
-    [SearchAwardFilterValue.TOP_PICK]: this.translateService.instant("Top Pick"),
-    [SearchAwardFilterValue.TOP_PICK_NOMINATION]: this.translateService.instant("Top Pick Nomination")
+    [SearchMinimumDataFilterValue.TELESCOPES]: this.translateService.instant("Imaging telescopes or lenses"),
+    [SearchMinimumDataFilterValue.CAMERAS]: this.translateService.instant("Imaging cameras"),
+    [SearchMinimumDataFilterValue.ACQUISITION_DETAILS]: this.translateService.instant("Acquisition details"),
+    [SearchMinimumDataFilterValue.ASTROMETRY]: this.translateService.instant("Astrometry")
   };
   readonly editFields = [
     {
-      key: SearchAwardFilterComponent.key,
+      key: SearchMinimumDataFilterComponent.key,
       type: "ng-select",
       wrappers: ["default-wrapper"],
       props: {
         hideOptionalMarker: true,
         label: this.label,
         multiple: true,
-        description: this.translateService.instant("Only show images that won any of the selected IOTD/TP awards"),
+        description: this.translateService.instant("Only show images meeting a minimum data requirement"),
         options: Object.keys(this.values).map(key => ({
           value: key,
           label: this.values[key]
@@ -41,9 +42,9 @@ export class SearchAwardFilterComponent extends SearchBaseFilterComponent {
         onInit: (field: FormlyFieldConfig) => {
           if (this.value === null) {
             field.formControl.setValue([
-              SearchAwardFilterValue.IOTD,
-              SearchAwardFilterValue.TOP_PICK,
-              SearchAwardFilterValue.TOP_PICK_NOMINATION
+              SearchMinimumDataFilterValue.TELESCOPES,
+              SearchMinimumDataFilterValue.CAMERAS,
+              SearchMinimumDataFilterValue.ACQUISITION_DETAILS
             ]);
           }
         }

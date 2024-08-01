@@ -49,6 +49,7 @@ import { SearchAwardFilterComponent } from "@features/search/components/filters/
 import { SearchCountryFilterComponent } from "@features/search/components/filters/search-country-filter/search-country-filter.component";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { SearchDataSourceFilterComponent } from "@features/search/components/filters/search-data-source-filter/search-data-source-filter.component";
+import { SearchMinimumDataFilterComponent } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -175,6 +176,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               {
                 key: SearchDataSourceFilterComponent.key,
                 method: this.searchService.autoCompleteDataSources$(query)
+              },
+              {
+                key: SearchMinimumDataFilterComponent.key,
+                method: this.searchService.autoCompleteMinimumData$(query)
               }
             ]
               .filter(filter => !this.model.hasOwnProperty(filter.key))
