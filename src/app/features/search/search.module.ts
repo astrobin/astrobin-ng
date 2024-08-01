@@ -25,6 +25,7 @@ import { SearchColorOrMonoFilterComponent } from "@features/search/components/fi
 import { SearchModifiedCameraFilterComponent } from "@features/search/components/filters/search-modified-camera-filter/search-modified-camera-filter.component";
 import { SearchAnimatedFilterComponent } from "@features/search/components/filters/search-animated-filter/search-animated-filter.component";
 import { SearchVideoFilterComponent } from "@features/search/components/filters/search-video-filter/search-video-filter.component";
+import { SearchAwardFilterComponent } from "@features/search/components/filters/search-award-filter/search-award-filter.component";
 
 
 const allFilterComponents = [
@@ -39,7 +40,8 @@ const allFilterComponents = [
   SearchColorOrMonoFilterComponent,
   SearchModifiedCameraFilterComponent,
   SearchAnimatedFilterComponent,
-  SearchVideoFilterComponent
+  SearchVideoFilterComponent,
+  SearchAwardFilterComponent
 ];
 
 @NgModule({

@@ -45,6 +45,7 @@ import { SearchColorOrMonoFilterComponent } from "@features/search/components/fi
 import { SearchModifiedCameraFilterComponent } from "@features/search/components/filters/search-modified-camera-filter/search-modified-camera-filter.component";
 import { SearchAnimatedFilterComponent } from "@features/search/components/filters/search-animated-filter/search-animated-filter.component";
 import { SearchVideoFilterComponent } from "@features/search/components/filters/search-video-filter/search-video-filter.component";
+import { SearchAwardFilterComponent } from "@features/search/components/filters/search-award-filter/search-award-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -158,6 +159,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               {
                 key: SearchVideoFilterComponent.key,
                 method: this.searchService.autoCompleteVideos$(query)
+              },
+              {
+                key: SearchAwardFilterComponent.key,
+                method: this.searchService.autoCompleteAward$(query)
               }
             ]
               .filter(filter => !this.model.hasOwnProperty(filter.key))

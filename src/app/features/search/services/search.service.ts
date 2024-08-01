@@ -39,6 +39,7 @@ export enum SearchAutoCompleteType {
   MODIFIED_CAMERA = "modified_camera",
   ANIMATED = "animated",
   VIDEO = "video",
+  AWARD = "award",
 }
 
 export interface SearchAutoCompleteItem {
@@ -118,6 +119,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Animated images (GIF)");
       case SearchAutoCompleteType.VIDEO:
         return this.translateService.instant("Videos");
+      case SearchAutoCompleteType.AWARD:
+        return this.translateService.instant("IOTD/TP award");
     }
   }
 
@@ -494,6 +497,24 @@ export class SearchService extends BaseService {
 
   autoCompleteVideos$(query: string): Observable<SearchAutoCompleteItem[]> {
     return this._autoCompleteYesNo$(query, SearchAutoCompleteType.VIDEO);
+  }
+
+  autoCompleteAward$(query: string): Observable<SearchAutoCompleteItem[]> {
+    const awardTypes: { [key: string]: string[] } = {
+      "iotd": ["IOTD", this.translateService.instant("Image of the day")],
+      "top-pick": ["TP", this.translateService.instant("Top Pick")],
+      "top-pick-nomination": ["TPN", this.translateService.instant("Top Pick Nomination")]
+    };
+
+    return of(
+      Object.entries(awardTypes)
+        .filter(([_, humanized]) => humanized.some(x => x.toLowerCase().includes(query.toLowerCase())))
+        .map(([award, humanized]) => ({
+          type: SearchAutoCompleteType.AWARD,
+          label: humanized[1],
+          value: [award]
+        }))
+    );
   }
 
   _autoCompleteYesNo$(query: string, type: SearchAutoCompleteType): Observable<SearchAutoCompleteItem[]> {
