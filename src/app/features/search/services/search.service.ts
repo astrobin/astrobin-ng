@@ -38,6 +38,7 @@ export enum SearchAutoCompleteType {
   COLOR_OR_MONO = "color_or_mono",
   MODIFIED_CAMERA = "modified_camera",
   ANIMATED = "animated",
+  VIDEO = "video",
 }
 
 export interface SearchAutoCompleteItem {
@@ -115,6 +116,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Modified cameras");
       case SearchAutoCompleteType.ANIMATED:
         return this.translateService.instant("Animated images");
+      case SearchAutoCompleteType.VIDEO:
+        return this.translateService.instant("Videos");
     }
   }
 
@@ -487,6 +490,10 @@ export class SearchService extends BaseService {
 
   autoCompleteAnimated$(query: string): Observable<SearchAutoCompleteItem[]> {
     return this._autoCompleteYesNo$(query, SearchAutoCompleteType.ANIMATED);
+  }
+
+  autoCompleteVideos$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.VIDEO);
   }
 
   _autoCompleteYesNo$(query: string, type: SearchAutoCompleteType): Observable<SearchAutoCompleteItem[]> {
