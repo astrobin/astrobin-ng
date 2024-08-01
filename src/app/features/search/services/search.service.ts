@@ -22,6 +22,8 @@ import { Month } from "@shared/enums/month.enum";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
+import { ColorOrMono } from "@features/equipment/types/sensor.interface";
+import { SensorService } from "@features/equipment/services/sensor.service";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -33,6 +35,8 @@ export enum SearchAutoCompleteType {
   ACQUISITION_MONTHS = "acquisition_months",
   REMOTE_SOURCE = "remote_source",
   SUBJECT_TYPE = "subject_type",
+  COLOR_OR_MONO = "color_or_mono",
+  MODIFIED_CAMERA = "modified_camera",
 }
 
 export interface SearchAutoCompleteItem {
@@ -58,7 +62,8 @@ export class SearchService extends BaseService {
     public readonly telescopeService: TelescopeService,
     public readonly cameraService: CameraService,
     public readonly dateService: DateService,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly sensorService: SensorService
   ) {
     super(loadingService);
   }
@@ -103,6 +108,10 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Acquisition months");
       case SearchAutoCompleteType.REMOTE_SOURCE:
         return this.translateService.instant("Remote hosting");
+      case SearchAutoCompleteType.COLOR_OR_MONO:
+        return this.translateService.instant("Color or mono cameras");
+      case SearchAutoCompleteType.MODIFIED_CAMERA:
+        return this.translateService.instant("Modified cameras");
     }
   }
 
@@ -448,5 +457,39 @@ export class SearchService extends BaseService {
       this._autoCompleteItemsLimit
     );
     return of(autoCompleteItems);
+  }
+
+  autoCompleteColorOrMono$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      Object.values(ColorOrMono)
+        .map(type => ({
+          type,
+          humanized: this.sensorService.humanizeColorOrMono(type)
+        }))
+        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(item => ({
+          type: SearchAutoCompleteType.COLOR_OR_MONO,
+          label: item.humanized,
+          value: {
+            value: [item.type],
+            matchType: null
+          }
+        }))
+    );
+  }
+
+  autoCompleteModifiedCamera$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(Object.values(["Y", "N"])
+      .map(type => ({
+        type,
+        humanized: type === "Y" ? this.translateService.instant("Yes") : this.translateService.instant("No")
+      }))
+      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+      .map(item => ({
+        type: SearchAutoCompleteType.MODIFIED_CAMERA,
+        label: item.humanized,
+        value: item.type === "Y"
+      }))
+    );
   }
 }

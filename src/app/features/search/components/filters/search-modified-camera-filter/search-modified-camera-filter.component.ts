@@ -3,28 +3,36 @@ import { SearchBaseFilterComponent } from "@features/search/components/filters/s
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
+import { YesNoPipe } from "@shared/pipes/yes-no.pipe";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
-  selector: "astrobin-search-subject-filter.search-filter-component",
+  selector: "astrobin-modified-camera-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
-  static key = SearchAutoCompleteType.SUBJECT;
-  label = this.searchService.humanizeSearchAutoCompleteType(SearchSubjectFilterComponent.key);
+export class SearchModifiedCameraFilterComponent extends SearchBaseFilterComponent {
+  static key = SearchAutoCompleteType.MODIFIED_CAMERA;
+  label = this.searchService.humanizeSearchAutoCompleteType(SearchModifiedCameraFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {
-      key: SearchSubjectFilterComponent.key,
-      type: "input",
+      key: SearchModifiedCameraFilterComponent.key,
+      type: "checkbox",
       wrappers: ["default-wrapper"],
+      defaultValue: false,
       props: {
-        placeholder: "M 31, NGC 1955, Sh2-142, ...",
-        label: this.label,
-        type: "text",
-        hideOptionalMarker: true
+        hideOptionalMarker: true,
+        label: this.label
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          if (this.value === null) {
+            field.formControl.setValue(true);
+          }
+        }
       }
     }
   ];
@@ -37,5 +45,11 @@ export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
     public readonly searchService: SearchService
   ) {
     super(store$, translateService, domSanitizer, modalService, searchService);
+  }
+
+  render(): SafeHtml {
+    return this.domSanitizer.bypassSecurityTrustHtml(
+      this.translateService.instant(new YesNoPipe().transform(this.value))
+    );
   }
 }

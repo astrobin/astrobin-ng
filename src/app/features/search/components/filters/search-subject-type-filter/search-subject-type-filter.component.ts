@@ -24,6 +24,7 @@ export class SearchSubjectTypeFilterComponent extends SearchBaseFilterComponent 
       wrappers: ["default-wrapper"],
       props: {
         hideOptionalMarker: true,
+        label: this.label,
         options: Object.keys(SubjectType).map(subjectType => ({
           value: subjectType,
           label: this.imageService.humanizeSubjectType(subjectType as SubjectType)

@@ -6,43 +6,43 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
-import { Month } from "@shared/enums/month.enum";
-import { DateService } from "@shared/services/date.service";
+import { ColorOrMono } from "@features/equipment/types/sensor.interface";
+import { SensorService } from "@features/equipment/services/sensor.service";
 
 @Component({
-  selector: "astrobin-search-acquisition-months-filter.search-filter-component",
+  selector: "astrobin-search-color-or-mono-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComponent {
-  static key = SearchAutoCompleteType.ACQUISITION_MONTHS;
+export class SearchColorOrMonoFilterComponent extends SearchBaseFilterComponent {
+  static key = SearchAutoCompleteType.COLOR_OR_MONO;
   label = this.searchService.humanizeSearchAutoCompleteType(
-    SearchAcquisitionMonthsFilterComponent.key as SearchAutoCompleteType
+    SearchColorOrMonoFilterComponent.key as SearchAutoCompleteType
   );
   editFields = [
     {
-      key: SearchAcquisitionMonthsFilterComponent.key,
+      key: SearchColorOrMonoFilterComponent.key,
       fieldGroup: [
         {
-          key: "months",
+          key: "value",
           type: "ng-select",
           wrappers: ["default-wrapper"],
           expressions: {
             className: () => {
-              return this.value?.months?.length <= 1 ? "mb-0" : "";
+              return this.value?.value?.length <= 1 ? "mb-0" : "";
             }
           },
           props: {
             hideOptionalMarker: true,
             multiple: true,
             label: this.label,
-            options: Object.keys(Month).map(month => ({
-              value: month,
-              label: this.dateService.humanizeMonth(month as Month)
+            options: Object.keys(ColorOrMono).map(value => ({
+              value: value,
+              label: this.sensorService.humanizeColorOrMono(value as ColorOrMono)
             }))
           }
         },
-        this.getMatchTypeField(`${SearchAcquisitionMonthsFilterComponent.key}.months`)
+        this.getMatchTypeField(`${SearchColorOrMonoFilterComponent.key}.value`)
       ]
     }
   ];
@@ -53,7 +53,7 @@ export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComp
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
     public readonly searchService: SearchService,
-    public readonly dateService: DateService
+    public readonly sensorService: SensorService
   ) {
     super(store$, translateService, domSanitizer, modalService, searchService);
   }
@@ -63,14 +63,14 @@ export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComp
       return "";
     }
 
-    const months = this.value.months as Month[];
+    const value = this.value.value as ColorOrMono[];
     let renderedValue;
 
-    if (months.length === 1) {
-      renderedValue = this.dateService.humanizeMonth(months[0]);
+    if (value.length === 1) {
+      renderedValue = this.sensorService.humanizeColorOrMono(value[0]);
     } else {
-      renderedValue = months
-        .map(month => this.dateService.humanizeMonth(month))
+      renderedValue = value
+        .map(x => this.sensorService.humanizeColorOrMono(x))
         .join(", ");
     }
 
