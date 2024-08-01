@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -6,14 +6,15 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { SearchService } from "@features/search/services/search.service";
 import { merge, Observable, of, Subject } from "rxjs";
-import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, map, startWith } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-search-filter-selection-modal",
   templateUrl: "./search-filter-selection-modal.component.html",
   styleUrls: ["./search-filter-selection-modal.component.scss"]
 })
-export class SearchFilterSelectionModalComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class SearchFilterSelectionModalComponent extends BaseComponentDirective implements OnInit {
   public model: string;
   public labels: string[];
   public keys: string[];
@@ -29,17 +30,17 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
     public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,
     public readonly translateService: TranslateService,
-    public readonly searchService: SearchService
+    public readonly searchService: SearchService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
-  }
-
-  ngAfterViewInit(): void {
-    this.initializeSearch();
+    this.utilsService.delay(1).subscribe(() => {
+      this.initializeSearch();
+    });
   }
 
   initializeSearch(): void {
@@ -73,6 +74,7 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
       componentRefs.forEach(componentRefs => componentRefs.destroy());
 
       return merge(debouncedText$, this.focus$, this.click$).pipe(
+        startWith(""),
         map(term =>
           term === "" ? this.labels : this.labels.filter(label => label.toLowerCase().indexOf(term.toLowerCase()) > -1)
         )

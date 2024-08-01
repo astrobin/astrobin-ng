@@ -47,6 +47,7 @@ import { SearchAnimatedFilterComponent } from "@features/search/components/filte
 import { SearchVideoFilterComponent } from "@features/search/components/filters/search-video-filter/search-video-filter.component";
 import { SearchAwardFilterComponent } from "@features/search/components/filters/search-award-filter/search-award-filter.component";
 import { SearchCountryFilterComponent } from "@features/search/components/filters/search-country-filter/search-country-filter.component";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -89,7 +90,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     public readonly searchService: SearchService,
     public readonly modalService: NgbModal,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -227,7 +229,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     return Object.keys(this.autoCompleteGroups).length > 0;
   }
 
-  @HostListener("window:keyup.arrowDown", ["$event"])
+  @HostListener("window:keyup.arrowRight", ["$event"])
   selectNextAutoCompleteItem(event: KeyboardEvent) {
     if (isPlatformBrowser(this.platformId) && event) {
       event.preventDefault();
@@ -250,7 +252,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     }
   }
 
-  @HostListener("window:keyup.arrowUp", ["$event"])
+  @HostListener("window:keyup.arrowLeft", ["$event"])
   selectPreviousAutoCompleteItem(event: KeyboardEvent) {
     if (isPlatformBrowser(this.platformId) && event) {
       event.preventDefault();
@@ -272,7 +274,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     }
   }
 
-  @HostListener("window:keyup.arrowLeft", ["$event"])
+  @HostListener("window:keyup.arrowUp", ["$event"])
   selectPreviousAutoCompleteGroup(event: KeyboardEvent) {
     if (isPlatformBrowser(this.platformId) && event && !this.isMobileDevice()) {
       event.preventDefault();
@@ -288,7 +290,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     }
   }
 
-  @HostListener("window:keyup.arrowRight", ["$event"])
+  @HostListener("window:keyup.arrowDown", ["$event"])
   selectNextAutoCompleteGroup(event: KeyboardEvent) {
     if (isPlatformBrowser(this.platformId) && event && !this.isMobileDevice()) {
       event.preventDefault();
@@ -305,7 +307,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   @HostListener("window:keyup.enter", ["$event"])
-  onEnter(): void {
+  onEnter(event: KeyboardEvent): void {
+    if (event.target !== this.searchInput.nativeElement) {
+      return;
+    }
+
     if (this.selectedAutoCompleteGroup && this.selectedAutoCompleteItemIndex > -1) {
       const selectedItem = this.autoCompleteGroups[this.selectedAutoCompleteGroup][this.selectedAutoCompleteItemIndex];
       if (selectedItem) {
@@ -384,73 +390,79 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   addFilter(filterComponentType: Type<SearchFilterComponentInterface>, value: any): void {
-    const componentRef = this.searchService.instantiateFilterComponent(
-      filterComponentType,
-      value,
-      this.filterContainer
-    );
-    const key = this.searchService.getKeyByFilterComponentType(componentRef.componentType);
+    this.utilsService.delay(1).subscribe(() => {
+      const componentRef = this.searchService.instantiateFilterComponent(
+        filterComponentType,
+        value,
+        this.filterContainer
+      );
+      const key = this.searchService.getKeyByFilterComponentType(componentRef.componentType);
 
-    this.filterComponentRefs.push(componentRef);
+      this.filterComponentRefs.push(componentRef);
 
-    componentRef.instance.valueChanges.subscribe(filterValue => {
+      componentRef.instance.valueChanges.subscribe(filterValue => {
+        this.model = {
+          ...this.model,
+          ...{
+            [key]: filterValue
+          }
+        };
+        this.onSearch(this.model);
+      });
+
+      componentRef.instance.remove.subscribe(() => {
+        this.removeFilter(componentRef);
+      });
+
       this.model = {
         ...this.model,
-        ...{
-          [key]: filterValue
-        }
+        text: ""
       };
-      this.onSearch(this.model);
+      this.resetAutoCompleteItems();
+      this.searchInput.nativeElement.focus();
     });
-
-    componentRef.instance.remove.subscribe(() => {
-      this.removeFilter(componentRef);
-    });
-
-    this.model = {
-      ...this.model,
-      text: ""
-    };
-    this.resetAutoCompleteItems();
-    this.searchInput.nativeElement.focus();
   }
 
   removeFilter(componentRef: ComponentRef<SearchFilterComponentInterface>): void {
-    const index = this.filterComponentRefs.indexOf(componentRef);
-    if (index !== -1) {
-      this.filterComponentRefs.splice(index, 1);
-    }
+    this.utilsService.delay(1).subscribe(() => {
+      const index = this.filterComponentRefs.indexOf(componentRef);
+      if (index !== -1) {
+        this.filterComponentRefs.splice(index, 1);
+      }
 
-    const key = this.searchService.getKeyByFilterComponentType(componentRef.componentType);
-    delete this.model[key];
+      const key = this.searchService.getKeyByFilterComponentType(componentRef.componentType);
+      delete this.model[key];
 
-    componentRef.destroy();
-    this.onSearch(this.model);
+      componentRef.destroy();
+      this.onSearch(this.model);
+    });
   }
 
   createAndEditFilter(filterComponentType: Type<SearchFilterComponentInterface>): void {
-    const key: string = this.searchService.getKeyByFilterComponentType(filterComponentType);
-    let componentRef: ComponentRef<any> = this.filterComponentRefs.find(
-      componentRef => this.searchService.getKeyByFilterComponentType(componentRef.componentType) === key
-    );
-    const alreadyPresent: boolean = !!componentRef;
-
-    if (!alreadyPresent) {
-      componentRef = this.searchService.instantiateFilterComponent(
-        filterComponentType,
-        null,
-        this.temporaryFilterContainer
+    this.utilsService.delay(1).subscribe(() => {
+      const key: string = this.searchService.getKeyByFilterComponentType(filterComponentType);
+      let componentRef: ComponentRef<any> = this.filterComponentRefs.find(
+        componentRef => this.searchService.getKeyByFilterComponentType(componentRef.componentType) === key
       );
-    }
+      const alreadyPresent: boolean = !!componentRef;
 
-    componentRef.instance.edit();
-    componentRef.instance.valueChanges.subscribe(value => {
-      if (value) {
-        if (!alreadyPresent) {
-          componentRef.destroy();
-          this.addFilter(filterComponentType, value);
-        }
+      if (!alreadyPresent) {
+        componentRef = this.searchService.instantiateFilterComponent(
+          filterComponentType,
+          null,
+          this.temporaryFilterContainer
+        );
       }
+
+      componentRef.instance.edit();
+      componentRef.instance.valueChanges.subscribe(value => {
+        if (value) {
+          if (!alreadyPresent) {
+            componentRef.destroy();
+            this.addFilter(filterComponentType, value);
+          }
+        }
+      });
     });
   }
 
