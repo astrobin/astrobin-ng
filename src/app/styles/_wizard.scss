@@ -134,6 +134,12 @@
   }
 }
 
+@media (max-width: $md-max) {
+  .ng-wizard-main {
+    margin-top: -2rem;
+  }
+}
+
 @media (max-width: $xs-max) {
   .ng-wizard-btn-group {
     display: block;

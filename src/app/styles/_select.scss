@@ -267,12 +267,6 @@
     white-space: normal !important;
     line-height: 1.15rem !important;
 
-    @media screen and (max-width: $sm-max) {
-      padding: .25rem .5rem !important;
-      font-size: .9rem !important;
-      line-height: 1rem !important;
-    }
-
     &.ng-option-child {
       padding-left: 1.5rem !important;
     }
