@@ -115,7 +115,7 @@ export class SearchService extends BaseService {
       case SearchAutoCompleteType.MODIFIED_CAMERA:
         return this.translateService.instant("Modified cameras");
       case SearchAutoCompleteType.ANIMATED:
-        return this.translateService.instant("Animated images");
+        return this.translateService.instant("Animated images (GIF)");
       case SearchAutoCompleteType.VIDEO:
         return this.translateService.instant("Videos");
     }
