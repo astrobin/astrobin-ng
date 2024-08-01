@@ -6,33 +6,28 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
+import { CountryService } from "@shared/services/country.service";
 
 @Component({
-  selector: "astrobin-search-award-filter.search-filter-component",
+  selector: "astrobin-country-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchAwardFilterComponent extends SearchBaseFilterComponent {
-  static key = SearchAutoCompleteType.AWARD;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchAwardFilterComponent.key as SearchAutoCompleteType);
-  readonly values: { [key: string]: string } = {
-    iotd: this.translateService.instant("Image of the day"),
-    "top-pick": this.translateService.instant("Top Pick"),
-    "top-pick-nomination": this.translateService.instant("Top Pick Nomination")
-  };
-  readonly editFields = [
+export class SearchCountryFilterComponent extends SearchBaseFilterComponent {
+  static key = SearchAutoCompleteType.COUNTRY;
+  label = this.searchService.humanizeSearchAutoCompleteType(SearchCountryFilterComponent.key as SearchAutoCompleteType);
+  editFields = [
     {
-      key: SearchAwardFilterComponent.key,
+      key: SearchCountryFilterComponent.key,
       type: "ng-select",
       wrappers: ["default-wrapper"],
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        multiple: true,
-        description: this.translateService.instant("Only show images that won any of the selected IOTD/TP awards"),
-        options: Object.keys(this.values).map(key => ({
-          value: key,
-          label: this.values[key]
+        description: this.translateService.instant("Only show images acquired by users from a specific country"),
+        options: this.countryService.getCountries(this.translateService.currentLang).map(country => ({
+          value: country.code,
+          label: country.name
         }))
       }
     }
@@ -43,24 +38,19 @@ export class SearchAwardFilterComponent extends SearchBaseFilterComponent {
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService
+    public readonly searchService: SearchService,
+    public readonly countryService: CountryService
   ) {
     super(store$, translateService, domSanitizer, modalService, searchService);
   }
 
   render(): SafeHtml {
-    let rendered: string;
-
     if (!this.value) {
       return this.domSanitizer.bypassSecurityTrustHtml("");
     }
 
-    if (this.value.length === 1) {
-      rendered = this.values[this.value[0]];
-    } else {
-      rendered = this.value.map(v => this.values[v]).join(", ");
-    }
-
-    return this.domSanitizer.bypassSecurityTrustHtml(rendered);
+    return this.domSanitizer.bypassSecurityTrustHtml(
+      this.countryService.getCountryName(this.value, this.translateService.currentLang)
+    );
   }
 }

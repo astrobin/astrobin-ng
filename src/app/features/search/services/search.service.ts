@@ -24,6 +24,7 @@ import { RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/inter
 import { ImageService } from "@shared/services/image/image.service";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
+import { CountryService } from "@shared/services/country.service";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -40,6 +41,7 @@ export enum SearchAutoCompleteType {
   ANIMATED = "animated",
   VIDEO = "video",
   AWARD = "award",
+  COUNTRY = "country",
 }
 
 export interface SearchAutoCompleteItem {
@@ -66,7 +68,8 @@ export class SearchService extends BaseService {
     public readonly cameraService: CameraService,
     public readonly dateService: DateService,
     public readonly imageService: ImageService,
-    public readonly sensorService: SensorService
+    public readonly sensorService: SensorService,
+    public readonly countryService: CountryService
   ) {
     super(loadingService);
   }
@@ -121,6 +124,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Videos");
       case SearchAutoCompleteType.AWARD:
         return this.translateService.instant("IOTD/TP award");
+      case SearchAutoCompleteType.COUNTRY:
+        return this.translateService.instant("User country");
     }
   }
 
@@ -513,6 +518,18 @@ export class SearchService extends BaseService {
           type: SearchAutoCompleteType.AWARD,
           label: humanized[1],
           value: [award]
+        }))
+    );
+  }
+
+  autoCompleteCountries$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      this.countryService.getCountries(this.translateService.currentLang)
+        .filter(country => country.name.toLowerCase().includes(query.toLowerCase()))
+        .map(country => ({
+          type: SearchAutoCompleteType.COUNTRY,
+          label: country.name,
+          value: country.code
         }))
     );
   }

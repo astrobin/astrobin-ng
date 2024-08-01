@@ -82,6 +82,11 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
 
   onSelect(label: string) {
     const index = this.labels.indexOf(label);
+
+    if (index === -1) {
+      return;
+    }
+
     const key = this.keys[index];
     const componentType = this.searchService.getFilterComponentTypeByKey(key);
     this.modal.close(componentType);
