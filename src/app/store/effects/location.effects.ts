@@ -4,11 +4,11 @@ import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
-import { map, switchMap, take } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { CreateLocationSuccess } from "@app/store/actions/location.actions";
 import { LocationApiService } from "@shared/services/api/classic/astrobin/location/location-api.service";
-import { UpdateCurrentUserProfile } from "@features/account/store/auth.actions";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { LoadUser, LoadUserProfile, UpdateUserProfile } from "@features/account/store/auth.actions";
+import { selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable()
 export class LocationEffects {
@@ -20,23 +20,33 @@ export class LocationEffects {
     )
   );
 
-  CreateLocationSuccess: Observable<UpdateCurrentUserProfile> = createEffect(() =>
+  CreateLocationSuccess: Observable<UpdateUserProfile> = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.CREATE_LOCATION_SUCCESS),
       map(action => action.payload),
+      tap(location => this.store$.dispatch(new LoadUser({ id: location.user }))),
       switchMap(location =>
-        this.store$.select(selectCurrentUserProfile).pipe(
+        this.store$.select(selectUser, location.user).pipe(
+          filter(user => !!user),
+          take(1),
+          tap(user => this.store$.dispatch(new LoadUserProfile({ id: user.userProfile }))),
+          switchMap(user => this.store$.select(selectUserProfile, user.userProfile)),
+          filter(userProfile => !!userProfile),
           take(1),
           map(userProfile => ({
-            currentLocations: userProfile.locations,
+            userProfile,
             newLocation: location
           }))
         )
       ),
       map(
-        ({ currentLocations, newLocation }) =>
-          new UpdateCurrentUserProfile({
-            locations: [...currentLocations, ...[newLocation]]
+        ({ userProfile, newLocation }) =>
+          new UpdateUserProfile({
+            ...userProfile,
+            locations: [
+              ...userProfile.locations,
+              ...[newLocation]
+            ]
           })
       )
     )

@@ -315,6 +315,8 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
         addTag: name => {
           this.store$.dispatch(new CreateLocationAddTag(name));
           const modalRef = this.modalService.open(CreateLocationModalComponent);
+          const componentInstance: CreateLocationModalComponent = modalRef.componentInstance;
+          componentInstance.userId = this.imageEditService.model.user;
           modalRef.result.then(result => {
             if (result === null) {
               return;

@@ -57,12 +57,11 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
 
         combineLatest([
           this.store$.select(selectCurrentUser).pipe(
-            filter(user => !!user),
-            map(user => user.id)
+            filter(user => !!user)
           ),
           this.store$.select(selectImage, imageId).pipe(filter(image => !!image))
         ])
-          .pipe(map(result => result[0] === result[1].user))
+          .pipe(map(([currentUser, image]) => currentUser.id === image.user || currentUser.isSuperUser))
           .subscribe(canActivate => {
             if (canActivate) {
               onSuccess(observer);

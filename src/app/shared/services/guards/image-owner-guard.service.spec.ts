@@ -144,4 +144,50 @@ describe("ImageOwnerGuardService", () => {
       done();
     });
   });
+
+  it("should pass if user is a super user", done => {
+    const user = UserGenerator.user();
+    user.id = 99;
+
+    const superUser = UserGenerator.user();
+    superUser.id = 100;
+    superUser.isSuperUser = true;
+
+    const image = ImageGenerator.image();
+    image.user = 99;
+
+    store.setState({
+      ...initialState,
+      ...{
+        auth: {
+          ...initialState.auth,
+          ...{
+            user
+          }
+        },
+        app: {
+          ...initialState.app,
+          ...{
+            images: [image],
+            users: [
+              user,
+              superUser
+            ]
+          }
+        }
+      }
+    });
+
+    route = MockService(ActivatedRouteSnapshot, {
+      params: { imageId: 1 }
+    });
+
+    jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(true));
+    jest.spyOn(service.imageApiService, "getImage").mockReturnValue(of(image));
+
+    service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
+      expect(result).toBe(true);
+      done();
+    });
+  });
 });

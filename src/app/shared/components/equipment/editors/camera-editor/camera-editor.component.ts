@@ -341,7 +341,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       props: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
         itemType: EquipmentItemType.SENSOR,
-        showQuickAddRecent: false,
+        quickAddRecentFromUserId: null,
         showPlaceholderImage: false,
         required: false,
         multiple: false,
