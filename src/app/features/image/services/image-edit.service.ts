@@ -24,7 +24,6 @@ import { AcquisitionForm } from "@features/image/components/override-acquisition
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 
 export type ImageEditModelInterface = Partial<Omit<ImageInterface,
-  | "user"
   | "imagingTelescopes2"
   | "imagingCameras2"
   | "mounts2"

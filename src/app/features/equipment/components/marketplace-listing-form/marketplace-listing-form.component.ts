@@ -674,7 +674,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 type: "equipment-item-browser",
                 wrappers: ["default-wrapper"],
                 props: {
-                  showQuickAddRecent: false,
+                  quickAddRecentFromUserId: null,
                   showPlaceholderImage: false,
                   multiple: false,
                   enableCreation: false,

@@ -207,7 +207,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     type: EquipmentItemType,
     usageType: EquipmentItemUsageType,
     includeFrozen = false,
-    query?: string
+    query?: string,
+    userId?: number
   ): Observable<EquipmentItemBaseInterface[]> {
     let url = `${this.configUrl}/${type.toLowerCase()}/recently-used/`;
 
@@ -221,6 +222,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     if (query) {
       url = UtilsService.addOrUpdateUrlParam(url, "q", query);
+    }
+
+    if (userId) {
+      url = UtilsService.addOrUpdateUrlParam(url, "user", userId.toString());
     }
 
     return this.http

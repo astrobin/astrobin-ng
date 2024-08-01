@@ -13,8 +13,8 @@ import {
   LoginFailure,
   LoginSuccess,
   LogoutSuccess,
-  UpdateCurrentUserProfile,
-  UpdateCurrentUserProfileSuccess
+  UpdateUserProfile,
+  UpdateUserProfileSuccess
 } from "@features/account/store/auth.actions";
 import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
@@ -28,15 +28,10 @@ import { LoadingService } from "@shared/services/loading.service";
 import { CookieService } from "ngx-cookie";
 import { TimeagoIntl } from "ngx-timeago";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, concatMap, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
+import { catchError, concatMap, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import {
-  selectCurrentUserProfile,
-  selectUser,
-  selectUserByUsername,
-  selectUserProfile
-} from "@features/account/store/auth.selectors";
+import { selectUser, selectUserByUsername, selectUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable()
 export class AuthEffects {
@@ -71,23 +66,14 @@ export class AuthEffects {
     )
   );
 
-  UpdateCurrentUserProfile: Observable<UpdateCurrentUserProfileSuccess> = createEffect(() =>
+  UpdateUserProfile: Observable<UpdateUserProfileSuccess> = createEffect(() =>
     this.actions$.pipe(
-      ofType(AuthActionTypes.UPDATE_CURRENT_USER_PROFILE),
-      map((action: UpdateCurrentUserProfile) => action.payload),
+      ofType(AuthActionTypes.UPDATE_USER_PROFILE),
+      map((action: UpdateUserProfile) => action.payload),
       switchMap(payload =>
-        this.store$.select(selectCurrentUserProfile).pipe(
-          take(1),
-          map(userProfile => ({
-            userProfileId: userProfile.id,
-            payload
-          }))
-        )
-      ),
-      switchMap(({ userProfileId, payload }) =>
         this.commonApiService
-          .updateUserProfile(userProfileId, payload)
-          .pipe(map(result => new UpdateCurrentUserProfileSuccess(result)))
+          .updateUserProfile(payload.id, payload)
+          .pipe(map(result => new UpdateUserProfileSuccess(result)))
       )
     )
   );

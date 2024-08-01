@@ -123,11 +123,12 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   }
 
   _loadRecent(): void {
-    if (this.props.showQuickAddRecent) {
+    if (this.props.quickAddRecentFromUserId) {
       this.store$.dispatch(
         new FindRecentlyUsedEquipmentItems({
           type: this.props.itemType,
-          usageType: this.props.usageType
+          usageType: this.props.usageType,
+          userId: this.props.quickAddRecentFromUserId
         })
       );
       this.actions$

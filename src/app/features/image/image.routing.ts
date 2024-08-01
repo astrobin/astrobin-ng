@@ -3,10 +3,10 @@ import { ImageEditPageComponent } from "@features/image/pages/edit/image-edit-pa
 import { ImageResolver } from "@shared/resolvers/image.resolver";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guard.service";
-import { CurrentUsersGroupsResolver } from "@shared/resolvers/current-users-groups.resolver";
+import { ImageUserGroupsResolver } from "@shared/resolvers/image-user-groups.resolver";
 import { CurrentUsersLocationsResolver } from "@shared/resolvers/current-users-locations.resolver";
 import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
-import { CurrentUsersCollectionsResolver } from "@shared/resolvers/current-users-collections.resolver";
+import { ImageUserCollectionsResolver } from "@shared/resolvers/image-user-collections-resolver.service";
 
 export const imageRoutes: Routes = [
   {
@@ -16,8 +16,8 @@ export const imageRoutes: Routes = [
     canDeactivate: [PendingChangesGuard],
     resolve: {
       image: ImageResolver,
-      groups: CurrentUsersGroupsResolver,
-      collections: CurrentUsersCollectionsResolver,
+      groups: ImageUserGroupsResolver,
+      collections: ImageUserCollectionsResolver,
       locations: CurrentUsersLocationsResolver
     },
     data: {

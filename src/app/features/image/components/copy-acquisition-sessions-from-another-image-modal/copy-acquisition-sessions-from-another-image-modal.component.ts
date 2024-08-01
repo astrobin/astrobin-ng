@@ -19,6 +19,7 @@ import { ImageEditService } from "@features/image/services/image-edit.service";
 import { ItemBrowserAdd, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectUser } from "@features/account/store/auth.selectors";
 
 @Component({
   selector: "astrobin-copy-acquisition-sessions-from-another-image-modal",
@@ -258,7 +259,7 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
 
               const field = this.fields.find(f => f.key === "image");
 
-              this.currentUser$
+              this.store$.select(selectUser, this.imageEditService.model.user)
                 .pipe(
                   take(1),
                   switchMap(user => this.imageApiService.findImages({

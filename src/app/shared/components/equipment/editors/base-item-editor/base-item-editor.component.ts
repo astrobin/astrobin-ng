@@ -578,12 +578,12 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           }
         }
       }
-    }
+    };
 
     const asyncValidators = {
       ...defaultAsyncValidators,
       ...additionalAsyncValidators
-    }
+    };
 
     return {
       key: "name",
@@ -676,7 +676,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           "versions...) and AstroBin will use this information to group certain pieces of data (e.g. search results)."
         ),
         itemType,
-        showQuickAddRecent: false,
+        quickAddRecentFromUserId: null,
         showPlaceholderImage: false,
         required: false,
         multiple: false,

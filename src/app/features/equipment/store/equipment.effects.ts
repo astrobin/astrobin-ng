@@ -299,14 +299,23 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS),
       map((action: FindRecentlyUsedEquipmentItems) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService
-          .findRecentlyUsedEquipmentItems(payload.type, payload.usageType, payload.includeFrozen, payload.query)
-          .pipe(
-            map(
-              items =>
-                new FindRecentlyUsedEquipmentItemsSuccess({ type: payload.type, usageType: payload.usageType, items })
-            )
+        this.equipmentApiService.findRecentlyUsedEquipmentItems(
+          payload.type,
+          payload.usageType,
+          payload.includeFrozen,
+          payload.query,
+          payload.userId
+        ).pipe(
+          map(
+            items =>
+              new FindRecentlyUsedEquipmentItemsSuccess({
+                type: payload.type,
+                usageType: payload.usageType,
+                userId: payload.userId,
+                items
+              })
           )
+        )
       )
     )
   );

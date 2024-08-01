@@ -289,7 +289,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
       props: {
         label: this.translateService.instant("Duplicate of"),
         itemType: this.equipmentItemService.getType(this.equipmentItem),
-        showQuickAddRecent: false,
+        quickAddRecentFromUserId: null,
         showPlaceholderImage: false,
         multiple: false,
         enableCreation: false

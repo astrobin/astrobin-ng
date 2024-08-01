@@ -6,7 +6,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { AuthActionTypes, UpdateCurrentUserProfileSuccess } from "@features/account/store/auth.actions";
+import { AuthActionTypes, UpdateUserProfileSuccess } from "@features/account/store/auth.actions";
 import { map, take, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { CreateLocation } from "@app/store/actions/location.actions";
@@ -15,6 +15,7 @@ import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 @Component({
   selector: "astrobin-create-location-modal",
@@ -28,6 +29,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
   mapReady = false;
   mapError = false;
   geocoder = this.googleMapsService.createGeocoder();
+  userId: UserInterface["id"];
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -123,16 +125,17 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
         (this.form.value as any).aititude,
         result.city,
         result.state,
-        result.country
+        result.country,
+        this.userId
       );
 
       this.store$.dispatch(new CreateLocation(location));
 
       this.actions$
         .pipe(
-          ofType(AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS),
+          ofType(AuthActionTypes.UPDATE_USER_PROFILE_SUCCESS),
           take(1),
-          map((action: UpdateCurrentUserProfileSuccess) => action.payload),
+          map((action: UpdateUserProfileSuccess) => action.payload),
           tap(userProfile => {
             this.modal.close(userProfile.locations[userProfile.locations.length - 1]);
             this.loadingService.setLoading(false);
@@ -149,7 +152,8 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
     altitude: number,
     city: string,
     state: string,
-    country: string
+    country: string,
+    user: UserInterface["id"]
   ): Omit<LocationInterface, "id"> {
     const latitudeDms = this.convertToDms(latitude, "latitude");
     const longitudeDms = this.convertToDms(longitude, "longitude");
@@ -167,7 +171,8 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
       altitude,
       city,
       state,
-      country
+      country,
+      user
     };
   }
 

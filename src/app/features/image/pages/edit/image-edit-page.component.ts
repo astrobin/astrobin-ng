@@ -34,7 +34,7 @@ import { ImageEditWatermarkFieldsService } from "@features/image/services/image-
 import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
 import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
-import { forkJoin, Observable, of } from "rxjs";
+import { forkJoin, Observable, of, switchMap } from "rxjs";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
 import { filter, map, take, takeUntil } from "rxjs/operators";
@@ -67,6 +67,8 @@ import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/com
 import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
 import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system-acquisition.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { LoadUser } from "@features/account/store/auth.actions";
+import { selectUser } from "@features/account/store/auth.selectors";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -185,6 +187,10 @@ export class ImageEditPageComponent
     this.titleService.setTitle("Edit image");
 
     this._initBreadcrumb();
+
+    this.store$.dispatch(
+      new LoadUser({ id: this.imageEditService.model.user })
+    );
 
     this.store$.dispatch(
       new LoadThumbnail({
@@ -552,12 +558,13 @@ export class ImageEditPageComponent
   }
 
   private _initFields(): void {
-    this.currentUser$
+    this.store$.select(selectUser, this.imageEditService.model.user)
       .pipe(
         filter(user => !!user),
-        take(1)
+        take(1),
+        switchMap(user => this.currentUser$.pipe(take(1), map(currentUser => ({ user, currentUser }))))
       )
-      .subscribe(user => {
+      .subscribe(({ user, currentUser }) => {
         const basic = {
           id: "image-stepper-basic-information",
           props: { label: this.translateService.instant("Basic information") },
@@ -578,12 +585,18 @@ export class ImageEditPageComponent
             this.imageEditContentFieldsService.getSubjectTypeField(),
             this.imageEditContentFieldsService.getSolarSystemMainSubjectField(),
             this.imageEditContentFieldsService.getDataSourceField(),
-            this.imageEditContentFieldsService.getRemoteSourceField(),
-            this.imageEditContentFieldsService.getLocationsField(),
-            this.imageEditContentFieldsService.getGroupsField(),
-            this.imageEditContentFieldsService.getCollectionsField()
+            this.imageEditContentFieldsService.getRemoteSourceField()
           ]
         };
+
+        if (this.imageEditService.model.user === currentUser.id) {
+          content.fieldGroup.push(this.imageEditContentFieldsService.getLocationsField());
+        }
+
+        content.fieldGroup.push(
+          this.imageEditContentFieldsService.getGroupsField(),
+          this.imageEditContentFieldsService.getCollectionsField()
+        );
 
         const thumbnail = {
           id: "image-stepper-thumbnail",

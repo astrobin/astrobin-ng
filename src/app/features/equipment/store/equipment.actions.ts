@@ -370,6 +370,7 @@ export class FindRecentlyUsedEquipmentItems implements PayloadActionInterface {
       usageType: EquipmentItemUsageType | null;
       includeFrozen?: boolean;
       query?: string;
+      userId?: UserInterface["id"];
     }
   ) {
   }
@@ -382,6 +383,7 @@ export class FindRecentlyUsedEquipmentItemsSuccess implements PayloadActionInter
     public payload: {
       type: EquipmentItemType;
       usageType: EquipmentItemUsageType | null;
+      userId: UserInterface["id"];
       items: EquipmentItemBaseInterface[];
     }
   ) {

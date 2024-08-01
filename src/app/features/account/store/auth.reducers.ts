@@ -56,7 +56,7 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
         userProfile: null,
         userSubscriptions: []
       };
-    case AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS:
+    case AuthActionTypes.UPDATE_USER_PROFILE_SUCCESS:
       return {
         ...state,
         userProfile: action.payload

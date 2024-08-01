@@ -19,8 +19,8 @@ export enum AuthActionTypes {
   LOGIN_FAILURE = "[Auth] Login failure",
   LOGOUT = "[Auth] Logout",
   LOGOUT_SUCCESS = "[Auth] Logout success",
-  UPDATE_CURRENT_USER_PROFILE = "[Auth] Update current user profile",
-  UPDATE_CURRENT_USER_PROFILE_SUCCESS = "[Auth] Update current user profile success",
+  UPDATE_USER_PROFILE = "[Auth] Update current user profile",
+  UPDATE_USER_PROFILE_SUCCESS = "[Auth] Update current user profile success",
   LOAD_USER = "[Auth] Load user",
   LOAD_USER_SUCCESS = "[Auth] Load user success",
   LOAD_USER_FAILURE = "[Auth] Load user failure",
@@ -68,15 +68,15 @@ export class LogoutSuccess implements Action {
   readonly type = AuthActionTypes.LOGOUT_SUCCESS;
 }
 
-export class UpdateCurrentUserProfile implements PayloadActionInterface {
-  readonly type = AuthActionTypes.UPDATE_CURRENT_USER_PROFILE;
+export class UpdateUserProfile implements PayloadActionInterface {
+  readonly type = AuthActionTypes.UPDATE_USER_PROFILE;
 
   constructor(public payload: Partial<UserProfileInterface>) {
   }
 }
 
-export class UpdateCurrentUserProfileSuccess implements PayloadActionInterface {
-  readonly type = AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS;
+export class UpdateUserProfileSuccess implements PayloadActionInterface {
+  readonly type = AuthActionTypes.UPDATE_USER_PROFILE_SUCCESS;
 
   constructor(public payload: UserProfileInterface) {
   }
@@ -131,8 +131,8 @@ export type All =
   | LoginFailure
   | Logout
   | LogoutSuccess
-  | UpdateCurrentUserProfile
-  | UpdateCurrentUserProfileSuccess
+  | UpdateUserProfile
+  | UpdateUserProfileSuccess
   | LoadUser
   | LoadUserSuccess
   | LoadUserProfile

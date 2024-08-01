@@ -10,7 +10,7 @@ import { filter, map, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FormControl } from "@angular/forms";
-import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { selectUser } from "@features/account/store/auth.selectors";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 
 @Injectable({
@@ -131,7 +131,7 @@ export class ImageEditBasicFieldsService extends ImageEditFieldsBaseService {
       asyncValidators: {
         notIncludeSelf: {
           expression: (control: FormControl) => {
-            return this.store$.select(selectCurrentUser).pipe(
+            return this.store$.select(selectUser, this.imageEditService.model.user).pipe(
               filter(user => !!user),
               take(1),
               map(user => !control.value || control.value.indexOf(user.id) === -1)
