@@ -575,7 +575,7 @@ export class SearchService extends BaseService {
         type: SearchAutoCompleteType.MINIMUM_DATA,
         label: Object.values(item)[0],
         value: Object.keys(item)[0]
-      }))
+      })).filter(item => item.label.toLowerCase().includes(query.toLowerCase()))
     );
   }
 
