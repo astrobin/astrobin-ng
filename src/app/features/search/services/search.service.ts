@@ -59,6 +59,7 @@ export enum SearchAutoCompleteType {
   LICENSES = "licenses",
   CAMERA_PIXEL_SIZE = "camera_pixel_size",
   FIELD_RADIUS = "field_radius",
+  PIXEL_SCALE = "pixel_scale",
 }
 
 export interface SearchAutoCompleteItem {
@@ -158,6 +159,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Camera pixel size");
       case SearchAutoCompleteType.FIELD_RADIUS:
         return this.translateService.instant("Field radius");
+      case SearchAutoCompleteType.PIXEL_SCALE:
+        return this.translateService.instant("Pixel scale");
     }
   }
 
