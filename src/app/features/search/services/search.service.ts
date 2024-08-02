@@ -58,6 +58,7 @@ export enum SearchAutoCompleteType {
   BORTLE_SCALE = "bortle_scale",
   LICENSES = "licenses",
   CAMERA_PIXEL_SIZE = "camera_pixel_size",
+  FIELD_RADIUS = "field_radius",
 }
 
 export interface SearchAutoCompleteItem {
@@ -155,6 +156,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Licenses");
       case SearchAutoCompleteType.CAMERA_PIXEL_SIZE:
         return this.translateService.instant("Camera pixel size");
+      case SearchAutoCompleteType.FIELD_RADIUS:
+        return this.translateService.instant("Field radius");
     }
   }
 

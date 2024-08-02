@@ -3,7 +3,7 @@ import { SearchBaseFilterComponent } from "@features/search/components/filters/s
 import { SafeHtml } from "@angular/platform-browser";
 import { SearchAutoCompleteType } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { LabelType } from "@angular-slider/ngx-slider";
+import { LabelType, Options } from "@angular-slider/ngx-slider";
 
 @Component({
   selector: "astrobin-base-slider-size-filter.search-filter-component",
@@ -14,7 +14,7 @@ export abstract class SearchBaseSliderFilterComponent extends SearchBaseFilterCo
   abstract unit: string;
   editFields: FormlyFieldConfig[];
 
-  initFields(key: SearchAutoCompleteType, floor: number, ceil: number): void {
+  initFields(key: SearchAutoCompleteType, options: Options = {}): void {
     this.editFields = [
       {
         key,
@@ -24,8 +24,6 @@ export abstract class SearchBaseSliderFilterComponent extends SearchBaseFilterCo
           label: this.label,
           required: true,
           sliderOptions: {
-            floor,
-            ceil,
             translate: (value: number, label: LabelType): string => {
               switch (label) {
                 case LabelType.Low:
@@ -35,15 +33,16 @@ export abstract class SearchBaseSliderFilterComponent extends SearchBaseFilterCo
                 default:
                   return `${value} ${this.unit}`;
               }
-            }
+            },
+            ...options
           }
         },
         hooks: {
           onInit: (field: FormlyFieldConfig) => {
             if (!this.editModel[key]) {
               field.formControl.setValue({
-                min: floor,
-                max: ceil
+                min: options.floor,
+                max: options.ceil
               });
             }
           }
