@@ -105,15 +105,15 @@ export class SearchService extends BaseService {
       case SearchAutoCompleteType.SUBJECT:
         return this.translateService.instant("Subjects");
       case SearchAutoCompleteType.SUBJECT_TYPE:
-        return this.translateService.instant("Subject types");
+        return this.translateService.instant("Subject type");
       case SearchAutoCompleteType.TELESCOPE:
-        return this.translateService.instant("Telescopes & lenses");
+        return this.translateService.instant("Telescopes or lens");
       case SearchAutoCompleteType.CAMERA:
-        return this.translateService.instant("Cameras");
+        return this.translateService.instant("Camera");
       case SearchAutoCompleteType.TELESCOPE_TYPE:
-        return this.translateService.instant("Telescope types");
+        return this.translateService.instant("Telescope type");
       case SearchAutoCompleteType.CAMERA_TYPE:
-        return this.translateService.instant("Camera types");
+        return this.translateService.instant("Camera type");
       case SearchAutoCompleteType.ACQUISITION_MONTHS:
         return this.translateService.instant("Acquisition months");
       case SearchAutoCompleteType.REMOTE_SOURCE:
