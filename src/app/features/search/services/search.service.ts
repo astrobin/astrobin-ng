@@ -64,6 +64,7 @@ export enum SearchAutoCompleteType {
   TELESCOPE_WEIGHT = "telescope_weight",
   MOUNT_WEIGHT = "mount_weight",
   MOUNT_MAX_PAYLOAD = "mount_max_payload",
+  TELESCOPE_FOCAL_LENGTH = "telescope_focal_length",
 }
 
 export interface SearchAutoCompleteItem {
@@ -173,6 +174,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Mount weight");
       case SearchAutoCompleteType.MOUNT_MAX_PAYLOAD:
         return this.translateService.instant("Mount max. payload");
+      case SearchAutoCompleteType.TELESCOPE_FOCAL_LENGTH:
+        return this.translateService.instant("Telescope focal length");
     }
   }
 
