@@ -8,15 +8,15 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-  selector: "astrobin-pixel-scale-filter.search-filter-component",
+  selector: "astrobin-telescope-diameter-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchPixelScaleFilterComponent extends SearchBaseSliderFilterComponent {
-  static key = SearchAutoCompleteType.PIXEL_SCALE;
-  unit = "\"/px";
+export class SearchTelescopeDiameterFilterComponent extends SearchBaseSliderFilterComponent {
+  static key = SearchAutoCompleteType.TELESCOPE_DIAMETER;
+  unit = "mm";
   label = this.searchService.humanizeSearchAutoCompleteType(
-    SearchPixelScaleFilterComponent.key as SearchAutoCompleteType
+    SearchTelescopeDiameterFilterComponent.key as SearchAutoCompleteType
   );
 
   constructor(
@@ -28,6 +28,6 @@ export class SearchPixelScaleFilterComponent extends SearchBaseSliderFilterCompo
   ) {
     super(store$, translateService, domSanitizer, modalService, searchService);
 
-    this.initFields(SearchPixelScaleFilterComponent.key, { floor: 0, ceil: 10, step: .1 });
+    this.initFields(SearchTelescopeDiameterFilterComponent.key, { floor: 0, ceil: 1000, step: 1 });
   }
 }

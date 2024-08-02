@@ -35,6 +35,7 @@ import { SearchLicenseFilterComponent } from "@features/search/components/filter
 import { SearchCameraPixelSizeFilterComponent } from "@features/search/components/filters/search-camera-pixel-size-filter/search-camera-pixel-size-filter.component";
 import { SearchFieldRadiusFilterComponent } from "@features/search/components/filters/search-field-radius-filter/search-field-radius-filter.component";
 import { SearchPixelScaleFilterComponent } from "@features/search/components/filters/search-pixel-scale-filter/search-pixel-scale-filter.component";
+import { SearchTelescopeDiameterFilterComponent } from "@features/search/components/filters/search-telescope-diameter-filter/search-telescope-diameter-filter.component";
 
 
 const allFilterComponents = [
@@ -59,7 +60,8 @@ const allFilterComponents = [
   SearchLicenseFilterComponent,
   SearchCameraPixelSizeFilterComponent,
   SearchFieldRadiusFilterComponent,
-  SearchPixelScaleFilterComponent
+  SearchPixelScaleFilterComponent,
+  SearchTelescopeDiameterFilterComponent
 ];
 
 @NgModule({
