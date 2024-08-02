@@ -25,7 +25,7 @@ export class SearchAnimatedFilterComponent extends SearchBaseFilterComponent {
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show GIF animations")
+        description: this.translateService.instant("Only show GIF animations.")
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

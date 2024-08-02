@@ -32,7 +32,7 @@ export class SearchMinimumDataFilterComponent extends SearchBaseFilterComponent 
         hideOptionalMarker: true,
         label: this.label,
         multiple: true,
-        description: this.translateService.instant("Only show images meeting a minimum data requirement"),
+        description: this.translateService.instant("Only show images meeting a minimum data requirement."),
         options: Object.keys(this.values).map(key => ({
           value: key,
           label: this.values[key]

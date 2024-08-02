@@ -25,7 +25,7 @@ export class SearchVideoFilterComponent extends SearchBaseFilterComponent {
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show videos")
+        description: this.translateService.instant("Only show videos.")
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

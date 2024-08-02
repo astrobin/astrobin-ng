@@ -26,7 +26,7 @@ export class SearchRemoteSourceFilterComponent extends SearchBaseFilterComponent
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show images acquired at a specific remote hosting facility"),
+        description: this.translateService.instant("Only show images acquired at a specific remote hosting facility."),
         options: Object.entries(RemoteSource).map(remoteSource => ({
           value: remoteSource[0],
           label: remoteSource[1]

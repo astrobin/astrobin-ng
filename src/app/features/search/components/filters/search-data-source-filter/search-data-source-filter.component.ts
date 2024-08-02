@@ -27,7 +27,7 @@ export class SearchDataSourceFilterComponent extends SearchBaseFilterComponent {
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show images with data from a specific source"),
+        description: this.translateService.instant("Only show images with data from a specific source."),
         options: Object.keys(DataSource).map(dataSource => ({
           value: dataSource,
           label: this.imageService.humanizeDataSource(dataSource as DataSource)

@@ -25,7 +25,7 @@ export class SearchTelescopeTypeFilterComponent extends SearchBaseFilterComponen
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show images acquired with a specific telescope type"),
+        description: this.translateService.instant("Only show images acquired with a specific telescope type."),
         options: Object.keys(TelescopeType).map(telescopeType => ({
           value: telescopeType,
           label: this.telescopeService.humanizeType(telescopeType as TelescopeType)

@@ -6,28 +6,29 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
-import { CountryService } from "@shared/services/country.service";
+import { ConstellationsService } from "@features/explore/services/constellations.service";
 
 @Component({
-  selector: "astrobin-country-filter.search-filter-component",
+  selector: "astrobin-constellation-source-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchCountryFilterComponent extends SearchBaseFilterComponent {
-  static key = SearchAutoCompleteType.COUNTRY;
-  label = this.searchService.humanizeSearchAutoCompleteType(SearchCountryFilterComponent.key as SearchAutoCompleteType);
+export class SearchConstellationFilterComponent extends SearchBaseFilterComponent {
+  static key = SearchAutoCompleteType.CONSTELLATION;
+  label = this.searchService.humanizeSearchAutoCompleteType(SearchConstellationFilterComponent.key as SearchAutoCompleteType);
+  readonly constellations = this.constellationService.getConstellations(this.translateService.currentLang);
   editFields = [
     {
-      key: SearchCountryFilterComponent.key,
+      key: SearchConstellationFilterComponent.key,
       type: "ng-select",
       wrappers: ["default-wrapper"],
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show images acquired by users from a specific country."),
-        options: this.countryService.getCountries(this.translateService.currentLang).map(country => ({
-          value: country.code,
-          label: country.name
+        description: this.translateService.instant("Only show images in a specific constellation."),
+        options: this.constellations.map(constellation => ({
+          value: constellation.id,
+          label: constellation.name
         }))
       }
     }
@@ -39,7 +40,7 @@ export class SearchCountryFilterComponent extends SearchBaseFilterComponent {
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
     public readonly searchService: SearchService,
-    public readonly countryService: CountryService
+    public readonly constellationService: ConstellationsService
   ) {
     super(store$, translateService, domSanitizer, modalService, searchService);
   }
@@ -49,8 +50,7 @@ export class SearchCountryFilterComponent extends SearchBaseFilterComponent {
       return this.domSanitizer.bypassSecurityTrustHtml("");
     }
 
-    return this.domSanitizer.bypassSecurityTrustHtml(
-      this.countryService.getCountryName(this.value, this.translateService.currentLang)
-    );
+    const constellation = this.constellations.find(constellation => constellation.id === this.value);
+    return this.domSanitizer.bypassSecurityTrustHtml(constellation.name);
   }
 }

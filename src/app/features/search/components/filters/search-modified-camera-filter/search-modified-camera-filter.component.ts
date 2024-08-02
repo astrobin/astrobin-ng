@@ -25,7 +25,7 @@ export class SearchModifiedCameraFilterComponent extends SearchBaseFilterCompone
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show images acquired with modified cameras")
+        description: this.translateService.instant("Only show images acquired with modified cameras.")
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

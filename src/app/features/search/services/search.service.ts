@@ -27,6 +27,7 @@ import { SensorService } from "@features/equipment/services/sensor.service";
 import { CountryService } from "@shared/services/country.service";
 import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
+import { ConstellationsService } from "@features/explore/services/constellations.service";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -45,7 +46,8 @@ export enum SearchAutoCompleteType {
   AWARD = "award",
   COUNTRY = "country",
   DATA_SOURCE = "data_source",
-  MINIMUM_DATA = "minimum_data"
+  MINIMUM_DATA = "minimum_data",
+  CONSTELLATION = "constellation",
 }
 
 export interface SearchAutoCompleteItem {
@@ -73,7 +75,8 @@ export class SearchService extends BaseService {
     public readonly dateService: DateService,
     public readonly imageService: ImageService,
     public readonly sensorService: SensorService,
-    public readonly countryService: CountryService
+    public readonly countryService: CountryService,
+    public readonly constellationService: ConstellationsService
   ) {
     super(loadingService);
   }
@@ -134,6 +137,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Data source");
       case SearchAutoCompleteType.MINIMUM_DATA:
         return this.translateService.instant("Minimum data");
+      case SearchAutoCompleteType.CONSTELLATION:
+        return this.translateService.instant("Constellation");
     }
   }
 
@@ -571,6 +576,18 @@ export class SearchService extends BaseService {
         label: Object.values(item)[0],
         value: Object.keys(item)[0]
       }))
+    );
+  }
+
+  autoCompleteConstellations$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      this.constellationService.getConstellations(this.translateService.currentLang)
+        .filter(constellation => constellation.name.toLowerCase().includes(query.toLowerCase()))
+        .map(constellation => ({
+          type: SearchAutoCompleteType.CONSTELLATION,
+          label: constellation.name,
+          value: constellation.id
+        }))
     );
   }
 

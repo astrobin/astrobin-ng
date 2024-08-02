@@ -31,7 +31,7 @@ export class SearchAwardFilterComponent extends SearchBaseFilterComponent {
         hideOptionalMarker: true,
         label: this.label,
         multiple: true,
-        description: this.translateService.instant("Only show images that won any of the selected IOTD/TP awards"),
+        description: this.translateService.instant("Only show images that won any of the selected IOTD/TP awards."),
         options: Object.keys(this.values).map(key => ({
           value: key,
           label: this.values[key]

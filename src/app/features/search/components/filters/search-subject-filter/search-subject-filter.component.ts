@@ -23,7 +23,7 @@ export class SearchSubjectFilterComponent extends SearchBaseFilterComponent {
       props: {
         placeholder: "M 31, NGC 1955, Sh2-142, ...",
         label: this.label,
-        description: this.translateService.instant("Only show images featuring specific celestial subjects"),
+        description: this.translateService.instant("Only show images featuring specific celestial subjects."),
         type: "text",
         hideOptionalMarker: true
       }
