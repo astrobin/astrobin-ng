@@ -1,0 +1,24 @@
+@import "../../../../styles/breakpoints";
+
+astrobin-search-bar {
+  position: sticky;
+  top: 61px;
+  display: block;
+  margin-top: -2rem;
+  margin-left: -.5rem;
+  margin-right: -.5rem;
+  z-index: 1;
+
+  @media (min-width: $lg-min) {
+    top: 63px;
+    margin-left: -2rem;
+    margin-right: -2rem;
+  }
+
+  ::ng-deep {
+    .search-bar-input-container {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
