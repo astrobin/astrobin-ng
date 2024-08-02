@@ -56,7 +56,8 @@ export enum SearchAutoCompleteType {
   MINIMUM_DATA = "minimum_data",
   CONSTELLATION = "constellation",
   BORTLE_SCALE = "bortle_scale",
-  LICENSES = "licenses"
+  LICENSES = "licenses",
+  CAMERA_PIXEL_SIZE = "camera_pixel_size",
 }
 
 export interface SearchAutoCompleteItem {
@@ -152,6 +153,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Bortle scale");
       case SearchAutoCompleteType.LICENSES:
         return this.translateService.instant("Licenses");
+      case SearchAutoCompleteType.CAMERA_PIXEL_SIZE:
+        return this.translateService.instant("Camera pixel size");
     }
   }
 

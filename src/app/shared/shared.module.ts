@@ -65,6 +65,7 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 import { NgImageSliderModule } from "ng-image-slider";
 import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
+import { NgxSliderModule } from "@angular-slider/ngx-slider";
 
 export function appInitializer(store: Store<MainState>, actions$: Actions) {
   return () =>
@@ -119,6 +120,7 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
     NgSelectModule,
     NgxDatatableModule,
     NgImageSliderModule,
+    NgxSliderModule,
     NgxFilesizeModule,
     NgWizardModule.forRoot({
       theme: THEME.default,
@@ -180,6 +182,7 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
     NgbProgressbarModule,
     NgImageSliderModule,
     NgSelectModule,
+    NgxSliderModule,
     NgxFilesizeModule,
     NgWizardModule,
     ToastrModule,

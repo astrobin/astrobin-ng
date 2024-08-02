@@ -19,6 +19,7 @@ import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field
 import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
 import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
 import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-field-custom-radio/formly-field-custom-radio.component";
+import { FormlyFieldSliderComponent } from "@shared/components/misc/formly-field-slider/formly-field-slider.component";
 
 function getNestedValue(obj: any, path: string): any {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -99,6 +100,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       {
         name: "custom-radio",
         component: FormlyFieldCustomRadioComponent,
+        wrappers: ["default-wrapper"]
+      },
+      {
+        name: "slider",
+        component: FormlyFieldSliderComponent,
         wrappers: ["default-wrapper"]
       }
     ],

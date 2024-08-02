@@ -115,6 +115,8 @@ import { CountrySelectionModalComponent } from "@shared/components/misc/country-
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-field-custom-radio/formly-field-custom-radio.component";
 import { ImageSearchCardComponent } from "@shared/components/search/image-search-card/image-search-card.component";
+import { FormlyFieldSliderComponent } from "@shared/components/misc/formly-field-slider/formly-field-slider.component";
+import { NgxSliderModule } from "@angular-slider/ngx-slider";
 
 const modules = [
   CommonModule,
@@ -137,6 +139,7 @@ const modules = [
   NgxFilesizeModule,
   NgxDatatableModule,
   NgxImageZoomModule,
+  NgxSliderModule,
   NgWizardModule,
   PipesModule,
   ReactiveFormsModule,
@@ -176,6 +179,7 @@ const components = [
   FormlyFieldToggleComponent,
   FormlyFieldCustomNumberComponent,
   FormlyFieldCustomRadioComponent,
+  FormlyFieldSliderComponent,
   FormlyWrapperComponent,
   ForumPreviewComponent,
   FullscreenImageViewerComponent,

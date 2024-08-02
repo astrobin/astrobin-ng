@@ -32,6 +32,7 @@ import { SearchMinimumDataFilterComponent } from "@features/search/components/fi
 import { SearchConstellationFilterComponent } from "@features/search/components/filters/search-constellation-filter/search-constellation-filter.component";
 import { SearchBortleScaleFilterComponent } from "@features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component";
 import { SearchLicenseFilterComponent } from "@features/search/components/filters/search-license-filter/search-license-filter.component";
+import { SearchCameraPixelSizeFilterComponent } from "@features/search/components/filters/search-camera-pixel-size-filter/search-camera-pixel-size-filter.component";
 
 
 const allFilterComponents = [
@@ -53,7 +54,8 @@ const allFilterComponents = [
   SearchMinimumDataFilterComponent,
   SearchConstellationFilterComponent,
   SearchBortleScaleFilterComponent,
-  SearchLicenseFilterComponent
+  SearchLicenseFilterComponent,
+  SearchCameraPixelSizeFilterComponent
 ];
 
 @NgModule({
