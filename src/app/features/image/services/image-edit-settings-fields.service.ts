@@ -17,6 +17,7 @@ import { LoadImageRevisions } from "@app/store/actions/image.actions";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Injectable({
   providedIn: null
@@ -26,6 +27,7 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
     public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
+    public readonly imageService: ImageService,
     public readonly imageEditService: ImageEditService
   ) {
     super(loadingService);
@@ -55,31 +57,31 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
         options: [
           {
             value: LicenseOptions.ALL_RIGHTS_RESERVED,
-            label: this.translateService.instant("None (All rights reserved)")
+            label: this.imageService.humanizeLicenseOption(LicenseOptions.ALL_RIGHTS_RESERVED)
           },
           {
             value: LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE,
-            label: this.translateService.instant("Attribution-NonCommercial-ShareAlike Creative Commons")
+            label: this.imageService.humanizeLicenseOption(LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE)
           },
           {
             value: LicenseOptions.ATTRIBUTION_NON_COMMERCIAL,
-            label: this.translateService.instant("Attribution-NonCommercial Creative Commons")
+            label: this.imageService.humanizeLicenseOption(LicenseOptions.ATTRIBUTION_NON_COMMERCIAL)
           },
           {
             value: LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_NO_DERIVS,
-            label: this.translateService.instant("Attribution-NonCommercial-NoDerivs Creative Commons")
+            label: this.imageService.humanizeLicenseOption(LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_NO_DERIVS)
           },
           {
             value: LicenseOptions.ATTRIBUTION,
-            label: this.translateService.instant("Attribution Creative Commons")
+            label: this.imageService.humanizeLicenseOption(LicenseOptions.ATTRIBUTION)
           },
           {
             value: LicenseOptions.ATTRIBUTION_SHARE_ALIKE,
-            label: this.translateService.instant("Attribution-ShareAlike Creative Commons")
+            label: this.imageService.humanizeLicenseOption(LicenseOptions.ATTRIBUTION_SHARE_ALIKE)
           },
           {
             value: LicenseOptions.ATTRIBUTION_NO_DERIVS,
-            label: this.translateService.instant("Attribution-NoDerivs Creative Commons")
+            label: this.imageService.humanizeLicenseOption(LicenseOptions.ATTRIBUTION_NO_DERIVS)
           }
         ]
       },

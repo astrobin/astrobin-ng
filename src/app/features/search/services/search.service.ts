@@ -20,7 +20,13 @@ import { CameraService } from "@features/equipment/services/camera.service";
 import { DateService } from "@shared/services/date.service";
 import { Month } from "@shared/enums/month.enum";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import { DataSource, RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import {
+  DataSource,
+  LicenseOptions,
+  RemoteSource,
+  SolarSystemSubjectType,
+  SubjectType
+} from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
@@ -49,7 +55,8 @@ export enum SearchAutoCompleteType {
   DATA_SOURCE = "data_source",
   MINIMUM_DATA = "minimum_data",
   CONSTELLATION = "constellation",
-  BORTLE_SCALE = "bortle_scale"
+  BORTLE_SCALE = "bortle_scale",
+  LICENSES = "licenses"
 }
 
 export interface SearchAutoCompleteItem {
@@ -143,6 +150,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Constellation");
       case SearchAutoCompleteType.BORTLE_SCALE:
         return this.translateService.instant("Bortle scale");
+      case SearchAutoCompleteType.LICENSES:
+        return this.translateService.instant("Licenses");
     }
   }
 
@@ -612,6 +621,23 @@ export class SearchService extends BaseService {
             max: BortleScale.NINE
           }
         }))
+    );
+  }
+
+  autoCompleteLicenseOptions$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      Object.values(LicenseOptions)
+        .map(option => ({
+          option,
+          humanized: this.imageService.humanizeLicenseOption(option)
+        }))
+        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(item => ({
+          type: SearchAutoCompleteType.LICENSES,
+          label: item.humanized,
+          value: [item.option]
+        }))
+        .slice(0, this._autoCompleteItemsLimit)
     );
   }
 

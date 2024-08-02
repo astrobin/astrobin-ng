@@ -3,7 +3,7 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
-import { DataSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import { DataSource, LicenseOptions, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
 
@@ -138,6 +138,27 @@ export class ImageService extends BaseService {
         return this.translateService.instant("8 - City sky (WHITE)");
       case BortleScale.NINE:
         return this.translateService.instant("9 - Inner city sky (WHITE)");
+      default:
+        return this.translateService.instant("Unknown");
+    }
+  }
+
+  humanizeLicenseOption(value: LicenseOptions): string {
+    switch (value) {
+      case LicenseOptions.ALL_RIGHTS_RESERVED:
+        return this.translateService.instant("None (All rights reserved)");
+      case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE:
+        return this.translateService.instant("Attribution-NonCommercial-ShareAlike Creative Commons");
+      case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL:
+        return this.translateService.instant("Attribution-NonCommercial Creative Commons");
+      case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_NO_DERIVS:
+        return this.translateService.instant("Attribution-NonCommercial-NoDerivs Creative Commons");
+      case LicenseOptions.ATTRIBUTION:
+        return this.translateService.instant("Attribution Creative Commons");
+      case LicenseOptions.ATTRIBUTION_SHARE_ALIKE:
+        return this.translateService.instant("Attribution-ShareAlike Creative Commons");
+      case LicenseOptions.ATTRIBUTION_NO_DERIVS:
+        return this.translateService.instant("Attribution-NoDerivs Creative Commons");
       default:
         return this.translateService.instant("Unknown");
     }

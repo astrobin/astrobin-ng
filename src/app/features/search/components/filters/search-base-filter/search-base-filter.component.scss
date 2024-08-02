@@ -1,11 +1,11 @@
 @import "../../../../../styles/breakpoints";
 
 .search-filter {
+  font-size: .9rem;
   background-color: var(--white);
   border: 1px solid var(--black);
   color: var(--darkestGrey);
   padding: .125rem .5rem;
-  white-space: nowrap;
   border-radius: var(--bs-border-radius);
   display: flex;
   align-items: center;
@@ -58,9 +58,5 @@
     [icon="remove"]:hover {
       color: var(--dangerColor);
     }
-  }
-
-  @media (max-width: $md-max) {
-    white-space: normal;
   }
 }

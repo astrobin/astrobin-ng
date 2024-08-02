@@ -52,6 +52,7 @@ import { SearchDataSourceFilterComponent } from "@features/search/components/fil
 import { SearchMinimumDataFilterComponent } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component";
 import { SearchConstellationFilterComponent } from "@features/search/components/filters/search-constellation-filter/search-constellation-filter.component";
 import { SearchBortleScaleFilterComponent } from "@features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component";
+import { SearchLicenseFilterComponent } from "@features/search/components/filters/search-license-filter/search-license-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -190,6 +191,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               {
                 key: SearchBortleScaleFilterComponent.key,
                 method: this.searchService.autoCompleteBortleScale$(query)
+              },
+              {
+                key: SearchLicenseFilterComponent.key,
+                method: this.searchService.autoCompleteLicenseOptions$(query)
               }
             ]
               .filter(filter => !this.model.hasOwnProperty(filter.key))

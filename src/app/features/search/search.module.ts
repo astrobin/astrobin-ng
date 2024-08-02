@@ -31,6 +31,7 @@ import { SearchDataSourceFilterComponent } from "@features/search/components/fil
 import { SearchMinimumDataFilterComponent } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component";
 import { SearchConstellationFilterComponent } from "@features/search/components/filters/search-constellation-filter/search-constellation-filter.component";
 import { SearchBortleScaleFilterComponent } from "@features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component";
+import { SearchLicenseFilterComponent } from "@features/search/components/filters/search-license-filter/search-license-filter.component";
 
 
 const allFilterComponents = [
@@ -51,7 +52,8 @@ const allFilterComponents = [
   SearchDataSourceFilterComponent,
   SearchMinimumDataFilterComponent,
   SearchConstellationFilterComponent,
-  SearchBortleScaleFilterComponent
+  SearchBortleScaleFilterComponent,
+  SearchLicenseFilterComponent
 ];
 
 @NgModule({
