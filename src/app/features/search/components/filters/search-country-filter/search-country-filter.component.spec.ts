@@ -5,6 +5,7 @@ import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { CountryService } from "@shared/services/country.service";
 
 describe("CountryFilterComponent", () => {
   let component: SearchCountryFilterComponent;
@@ -12,7 +13,15 @@ describe("CountryFilterComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(SearchCountryFilterComponent, AppModule).provide([
-      provideMockStore({ initialState: initialMainState })
+      provideMockStore({ initialState: initialMainState }),
+      {
+        provide: CountryService,
+        useValue: {
+          getCountries: jest.fn().mockReturnValue([
+            { code: "US", name: "United States" }
+          ])
+        }
+      }
     ]);
 
     fixture = TestBed.createComponent(SearchCountryFilterComponent);

@@ -25,6 +25,8 @@ import { ImageService } from "@shared/services/image/image.service";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
 import { CountryService } from "@shared/services/country.service";
+import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
+import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -42,7 +44,8 @@ export enum SearchAutoCompleteType {
   VIDEO = "video",
   AWARD = "award",
   COUNTRY = "country",
-  DATA_SOURCE = "data_source"
+  DATA_SOURCE = "data_source",
+  MINIMUM_DATA = "minimum_data"
 }
 
 export interface SearchAutoCompleteItem {
@@ -129,6 +132,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("User country");
       case SearchAutoCompleteType.DATA_SOURCE:
         return this.translateService.instant("Data source");
+      case SearchAutoCompleteType.MINIMUM_DATA:
+        return this.translateService.instant("Minimum data");
     }
   }
 
@@ -509,9 +514,9 @@ export class SearchService extends BaseService {
 
   autoCompleteAward$(query: string): Observable<SearchAutoCompleteItem[]> {
     const awardTypes: { [key: string]: string[] } = {
-      "iotd": ["IOTD", this.translateService.instant("Image of the day")],
-      "top-pick": ["TP", this.translateService.instant("Top Pick")],
-      "top-pick-nomination": ["TPN", this.translateService.instant("Top Pick Nomination")]
+      [SearchAwardFilterValue.IOTD]: ["IOTD", this.translateService.instant("Image of the day")],
+      [SearchAwardFilterValue.TOP_PICK]: ["TP", this.translateService.instant("Top Pick")],
+      [SearchAwardFilterValue.TOP_PICK_NOMINATION]: ["TPN", this.translateService.instant("Top Pick Nomination")]
     };
 
     return of(
@@ -550,6 +555,22 @@ export class SearchService extends BaseService {
           label: item.humanized,
           value: item.source
         }))
+    );
+  }
+
+  autoCompleteMinimumData$(query: string): Observable<SearchAutoCompleteItem[]> {
+    const values = [
+      { [SearchMinimumDataFilterValue.TELESCOPES]: this.translateService.instant("Imaging telescopes or lenses") },
+      { [SearchMinimumDataFilterValue.CAMERAS]: this.translateService.instant("Imaging cameras") },
+      { [SearchMinimumDataFilterValue.ACQUISITION_DETAILS]: this.translateService.instant("Acquisition details") },
+      { [SearchMinimumDataFilterValue.ASTROMETRY]: this.translateService.instant("Astrometry") }
+    ];
+
+    return of(values.map(item => ({
+        type: SearchAutoCompleteType.MINIMUM_DATA,
+        label: Object.values(item)[0],
+        value: Object.keys(item)[0]
+      }))
     );
   }
 

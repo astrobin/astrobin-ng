@@ -22,7 +22,6 @@ export class SearchAnimatedFilterComponent extends SearchBaseFilterComponent {
       key: SearchAnimatedFilterComponent.key,
       type: "checkbox",
       wrappers: ["default-wrapper"],
-      defaultValue: false,
       props: {
         hideOptionalMarker: true,
         label: this.label,
