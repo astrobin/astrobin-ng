@@ -7,8 +7,7 @@ import { LabelType, Options } from "@angular-slider/ngx-slider";
 
 @Component({
   selector: "astrobin-base-slider-size-filter.search-filter-component",
-  templateUrl: "../search-base-filter/search-base-filter.component.html",
-  styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
+  template: ""
 })
 export abstract class SearchBaseSliderFilterComponent extends SearchBaseFilterComponent {
   abstract unit: string;
