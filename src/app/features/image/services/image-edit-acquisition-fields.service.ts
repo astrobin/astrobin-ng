@@ -318,25 +318,46 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               ),
               required: false,
               options: [
-                { value: BortleScale.ONE, label: this.translateService.instant("1 - Excellent dark-site sky (BLACK)") },
-                { value: BortleScale.TWO, label: this.translateService.instant("2 - Typical truly dark site (GRAY)") },
-                { value: BortleScale.THREE, label: this.translateService.instant("3 - Rural sky (BLUE)") },
+                {
+                  value: BortleScale.ONE,
+                  label: this.imageService.humanizeBortleScale(BortleScale.ONE)
+                },
+                {
+                  value: BortleScale.TWO,
+                  label: this.imageService.humanizeBortleScale(BortleScale.TWO)
+                },
+                {
+                  value: BortleScale.THREE,
+                  label: this.imageService.humanizeBortleScale(BortleScale.THREE)
+                },
                 {
                   value: BortleScale.FOUR,
-                  label: this.translateService.instant("4 - Rural/suburban transition (GREEN/YELLOW)")
+                  label: this.imageService.humanizeBortleScale(BortleScale.FOUR)
                 },
                 {
                   value: BortleScale.FOUR_POINT_FIVE,
-                  label: this.translateService.instant("4.5 - Semi-Suburban/Transition sky (YELLOW)")
+                  label: this.imageService.humanizeBortleScale(BortleScale.FOUR_POINT_FIVE)
                 },
-                { value: BortleScale.FIVE, label: this.translateService.instant("5 - Suburban sky (ORANGE)") },
-                { value: BortleScale.SIX, label: this.translateService.instant("6 - Bright suburban sky (RED)") },
+                {
+                  value: BortleScale.FIVE,
+                  label: this.imageService.humanizeBortleScale(BortleScale.FIVE)
+                },
+                {
+                  value: BortleScale.SIX,
+                  label: this.imageService.humanizeBortleScale(BortleScale.SIX)
+                },
                 {
                   value: BortleScale.SEVEN,
-                  label: this.translateService.instant("7 - Suburban/urban transition or Full Moon (RED)")
+                  label: this.imageService.humanizeBortleScale(BortleScale.SEVEN)
                 },
-                { value: BortleScale.EIGHT, label: this.translateService.instant("8 - City sky (WHITE)") },
-                { value: BortleScale.NINE, label: this.translateService.instant("9 - Inner city sky (WHITE)") }
+                {
+                  value: BortleScale.EIGHT,
+                  label: this.imageService.humanizeBortleScale(BortleScale.EIGHT)
+                },
+                {
+                  value: BortleScale.NINE,
+                  label: this.imageService.humanizeBortleScale(BortleScale.NINE)
+                }
               ],
               searchable: false,
               clearable: true

@@ -22,6 +22,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
   static key: SearchAutoCompleteType;
 
   editForm: FormGroup = new FormGroup({});
+  editModel: any = {};
   abstract editFields: FormlyFieldConfig[];
   abstract label: string;
 
@@ -61,6 +62,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
     const key = this.searchService.getKeyByFilterComponentInstance(this);
     instance.fields = this.editFields;
     instance.model = { [key]: this.value };
+    this.editModel = instance.model;
     instance.form = this.editForm;
 
     modalRef.closed.subscribe(keyValue => {

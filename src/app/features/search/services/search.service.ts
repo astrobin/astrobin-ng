@@ -28,6 +28,7 @@ import { CountryService } from "@shared/services/country.service";
 import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 import { ConstellationsService } from "@features/explore/services/constellations.service";
+import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -48,6 +49,7 @@ export enum SearchAutoCompleteType {
   DATA_SOURCE = "data_source",
   MINIMUM_DATA = "minimum_data",
   CONSTELLATION = "constellation",
+  BORTLE_SCALE = "bortle_scale"
 }
 
 export interface SearchAutoCompleteItem {
@@ -139,6 +141,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Minimum data");
       case SearchAutoCompleteType.CONSTELLATION:
         return this.translateService.instant("Constellation");
+      case SearchAutoCompleteType.BORTLE_SCALE:
+        return this.translateService.instant("Bortle scale");
     }
   }
 
@@ -587,6 +591,26 @@ export class SearchService extends BaseService {
           type: SearchAutoCompleteType.CONSTELLATION,
           label: constellation.name,
           value: constellation.id
+        }))
+        .slice(0, this._autoCompleteItemsLimit)
+    );
+  }
+
+  autoCompleteBortleScale$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      Object.values(BortleScale)
+        .map(scale => ({
+          scale,
+          humanized: this.imageService.humanizeBortleScale(scale as BortleScale)
+        }))
+        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(item => ({
+          type: SearchAutoCompleteType.BORTLE_SCALE,
+          label: item.humanized,
+          value: {
+            min: item.scale,
+            max: BortleScale.NINE
+          }
         }))
     );
   }

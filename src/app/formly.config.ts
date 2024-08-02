@@ -20,6 +20,10 @@ import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-
 import { FormlyFieldCustomNumberComponent } from "@shared/components/misc/formly-field-custom-number/formly-field-custom-number.component";
 import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-field-custom-radio/formly-field-custom-radio.component";
 
+function getNestedValue(obj: any, path: string): any {
+  return path.split(".").reduce((acc, part) => acc && acc[part], obj);
+}
+
 export interface FileSizeValidatorOptionsInterface {
   max: number;
 }
@@ -129,6 +133,15 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       {
         name: "url-is-available",
         message: () => translateService.instant("AstroBin could not connect to this server.")
+      },
+      {
+        name: "min-less-than-max",
+        message(options: { minLabel: string; maxLabel: string }) {
+          return translateService.instant(`"{{0}}" cannot be larger than "{{1}}".`, {
+            0: options.minLabel,
+            1: options.maxLabel
+          });
+        }
       },
       {
         name: "max-greater-equal-than-min",
@@ -433,22 +446,77 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         }
       },
       {
-        name: "max-greater-equal-than-min",
+        name: "min-less-than-max",
         validation: (
           control: FormControl,
           field: FormlyFieldConfig,
-          options: { model: any; minValueKey: string; minLabel: string; maxLabel: string }
+          options: {
+            model: any;
+            maxValueKey: string;
+            minLabel: string;
+            maxLabel: string,
+            compareFunction?: (value: any, maxValue: any) => boolean
+          }
         ): ValidationErrors => {
           if (
             !options.model ||
-            !options.minValueKey ||
-            options.model[options.minValueKey] === null ||
-            options.model[options.minValueKey] === undefined
+            !options.maxValueKey
           ) {
             return null;
           }
 
-          if (control.value < options.model[options.minValueKey]) {
+          const maxValue = getNestedValue(options.model, options.maxValueKey);
+          const minValue = control.value;
+
+          if (maxValue === null || maxValue === undefined) {
+            return null;
+          }
+
+          const isInvalid = options.compareFunction
+            ? options.compareFunction(minValue, maxValue)
+            : minValue > maxValue;
+
+          if (isInvalid) {
+            return {
+              "min-less-than-max": { minLabel: options.minLabel, maxLabel: options.maxLabel }
+            };
+          }
+
+          return null;
+        }
+      },
+      {
+        name: "max-greater-equal-than-min",
+        validation: (
+          control: FormControl,
+          field: FormlyFieldConfig,
+          options: {
+            model: any;
+            minValueKey: string;
+            minLabel: string;
+            maxLabel: string,
+            compareFunction?: (value: any, minValue: any) => boolean
+          }
+        ): ValidationErrors => {
+          if (
+            !options.model ||
+            !options.minValueKey
+          ) {
+            return null;
+          }
+
+          const minValue = getNestedValue(options.model, options.minValueKey);
+          const maxValue = control.value;
+
+          if (minValue === null || minValue === undefined) {
+            return null;
+          }
+
+          const isInvalid = options.compareFunction
+            ? options.compareFunction(maxValue, minValue)
+            : maxValue < minValue;
+
+          if (isInvalid) {
             return {
               "max-greater-equal-than-min": { minLabel: options.minLabel, maxLabel: options.maxLabel }
             };

@@ -5,6 +5,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { DataSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { TranslateService } from "@ngx-translate/core";
+import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
 
 @Injectable({
   providedIn: "root"
@@ -115,6 +116,32 @@ export class ImageService extends BaseService {
     }
   }
 
+  humanizeBortleScale(value: BortleScale): string {
+    switch (value) {
+      case BortleScale.ONE:
+        return this.translateService.instant("1 - Excellent dark-site sky (BLACK)");
+      case BortleScale.TWO:
+        return this.translateService.instant("2 - Typical truly dark site (GRAY)");
+      case BortleScale.THREE:
+        return this.translateService.instant("3 - Rural sky (BLUE)");
+      case BortleScale.FOUR:
+        return this.translateService.instant("4 - Rural/suburban transition (GREEN/YELLOW)");
+      case BortleScale.FOUR_POINT_FIVE:
+        return this.translateService.instant("4.5 - Semi-Suburban/Transition sky (YELLOW)");
+      case BortleScale.FIVE:
+        return this.translateService.instant("5 - Suburban sky (ORANGE)");
+      case BortleScale.SIX:
+        return this.translateService.instant("6 - Bright suburban sky (RED)");
+      case BortleScale.SEVEN:
+        return this.translateService.instant("7 - Suburban/urban transition or Full Moon (RED)");
+      case BortleScale.EIGHT:
+        return this.translateService.instant("8 - City sky (WHITE)");
+      case BortleScale.NINE:
+        return this.translateService.instant("9 - Inner city sky (WHITE)");
+      default:
+        return this.translateService.instant("Unknown");
+    }
+  }
 
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
     return new Observable<string>(observer => {

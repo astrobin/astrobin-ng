@@ -30,6 +30,7 @@ import { SearchCountryFilterComponent } from "@features/search/components/filter
 import { SearchDataSourceFilterComponent } from "@features/search/components/filters/search-data-source-filter/search-data-source-filter.component";
 import { SearchMinimumDataFilterComponent } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component";
 import { SearchConstellationFilterComponent } from "@features/search/components/filters/search-constellation-filter/search-constellation-filter.component";
+import { SearchBortleScaleFilterComponent } from "@features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component";
 
 
 const allFilterComponents = [
@@ -49,7 +50,8 @@ const allFilterComponents = [
   SearchCountryFilterComponent,
   SearchDataSourceFilterComponent,
   SearchMinimumDataFilterComponent,
-  SearchConstellationFilterComponent
+  SearchConstellationFilterComponent,
+  SearchBortleScaleFilterComponent
 ];
 
 @NgModule({

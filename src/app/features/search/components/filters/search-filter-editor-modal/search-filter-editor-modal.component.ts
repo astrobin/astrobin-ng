@@ -29,4 +29,14 @@ export class SearchFilterEditorModalComponent extends BaseComponentDirective {
   ) {
     super(store$);
   }
+
+  onSearch(event: Event) {
+    event.preventDefault();
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+    } else {
+      this.modal.close(this.model);
+    }
+  }
 }
