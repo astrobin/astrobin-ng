@@ -40,6 +40,7 @@ import { SearchTelescopeWeightFilterComponent } from "@features/search/component
 import { SearchMountWeightFilterComponent } from "@features/search/components/filters/search-mount-weight-filter/search-mount-weight-filter.component";
 import { SearchMountMaxPayloadFilterComponent } from "@features/search/components/filters/search-mount-max-payload-filter/search-mount-max-payload-filter.component";
 import { SearchTelescopeFocalLengthFilterComponent } from "@features/search/components/filters/search-telescope-focal-length-filter/search-telescope-focal-length-filter.component";
+import { SearchIntegrationTimeFilterComponent } from "@features/search/components/filters/search-integration-time-filter/search-integration-time-filter.component";
 
 
 const allFilterComponents = [
@@ -69,7 +70,8 @@ const allFilterComponents = [
   SearchTelescopeWeightFilterComponent,
   SearchMountWeightFilterComponent,
   SearchMountMaxPayloadFilterComponent,
-  SearchTelescopeFocalLengthFilterComponent
+  SearchTelescopeFocalLengthFilterComponent,
+  SearchIntegrationTimeFilterComponent
 ];
 
 @NgModule({
