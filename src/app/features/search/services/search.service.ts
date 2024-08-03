@@ -69,6 +69,7 @@ export enum SearchAutoCompleteType {
   TELESCOPE_FOCAL_LENGTH = "telescope_focal_length",
   INTEGRATION_TIME = "integration_time",
   FILTER_TYPES = "filter_types",
+  SIZE = "size",
 }
 
 export interface SearchAutoCompleteItem {
@@ -185,6 +186,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Integration time");
       case SearchAutoCompleteType.FILTER_TYPES:
         return this.translateService.instant("Filter types");
+      case SearchAutoCompleteType.SIZE:
+        return this.translateService.instant("File size");
     }
   }
 

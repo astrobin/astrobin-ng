@@ -42,6 +42,7 @@ import { SearchMountMaxPayloadFilterComponent } from "@features/search/component
 import { SearchTelescopeFocalLengthFilterComponent } from "@features/search/components/filters/search-telescope-focal-length-filter/search-telescope-focal-length-filter.component";
 import { SearchIntegrationTimeFilterComponent } from "@features/search/components/filters/search-integration-time-filter/search-integration-time-filter.component";
 import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
+import { SearchSizeFilterComponent } from "@features/search/components/filters/search-size-filter/search-size-filter.component";
 
 
 const allFilterComponents = [
@@ -73,7 +74,8 @@ const allFilterComponents = [
   SearchMountMaxPayloadFilterComponent,
   SearchTelescopeFocalLengthFilterComponent,
   SearchIntegrationTimeFilterComponent,
-  SearchFilterTypesFilterComponent
+  SearchFilterTypesFilterComponent,
+  SearchSizeFilterComponent
 ];
 
 @NgModule({
