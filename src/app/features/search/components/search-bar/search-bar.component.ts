@@ -459,6 +459,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       delete this.model[key];
 
       componentRef.destroy();
+      this.searchInput.nativeElement.focus();
       this.onSearch(this.model);
     });
   }
