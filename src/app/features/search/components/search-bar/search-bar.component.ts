@@ -54,6 +54,7 @@ import { SearchConstellationFilterComponent } from "@features/search/components/
 import { SearchBortleScaleFilterComponent } from "@features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component";
 import { SearchLicenseFilterComponent } from "@features/search/components/filters/search-license-filter/search-license-filter.component";
 import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
+import { DeviceService } from "@shared/services/device.service";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -97,7 +98,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     public readonly modalService: NgbModal,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly windowRefService: WindowRefService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
   }
@@ -236,7 +238,12 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   ngAfterViewInit(): void {
     this.initializeFilters();
-    this.searchInput.nativeElement.focus();
+
+    if (this.deviceService.isTouchEnabled()) {
+      this.searchInput.nativeElement.blur();
+    } else {
+      this.searchInput.nativeElement.focus();
+    }
   }
 
   getGroupOrder(): SearchAutoCompleteType[] {
@@ -247,14 +254,6 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     return this.autoCompleteGroups[group]?.length || 0;
   }
 
-  isMobileDevice(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
-      const window = this.windowRefService.nativeWindow;
-      return window.innerWidth < 768;
-    }
-
-    return false;
-  }
 
   hasAutoCompleteItems(): boolean {
     return Object.keys(this.autoCompleteGroups).length > 0;
@@ -307,7 +306,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   @HostListener("window:keyup.arrowUp", ["$event"])
   selectPreviousAutoCompleteGroup(event: KeyboardEvent) {
-    if (isPlatformBrowser(this.platformId) && event && !this.isMobileDevice()) {
+    if (isPlatformBrowser(this.platformId) && event && !this.deviceService.isMobileDevice()) {
       event.preventDefault();
       const groupOrder = this.getGroupOrder();
       const currentGroupIndex = groupOrder.indexOf(this.selectedAutoCompleteGroup);
@@ -323,7 +322,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   @HostListener("window:keyup.arrowDown", ["$event"])
   selectNextAutoCompleteGroup(event: KeyboardEvent) {
-    if (isPlatformBrowser(this.platformId) && event && !this.isMobileDevice()) {
+    if (isPlatformBrowser(this.platformId) && event && !this.deviceService.isMobileDevice()) {
       event.preventDefault();
       const groupOrder = this.getGroupOrder();
       const currentGroupIndex = groupOrder.indexOf(this.selectedAutoCompleteGroup);

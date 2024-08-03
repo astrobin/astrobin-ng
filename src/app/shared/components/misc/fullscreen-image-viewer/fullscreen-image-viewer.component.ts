@@ -27,6 +27,7 @@ import { distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } fr
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -74,7 +75,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly imageService: ImageService,
     public readonly domSanitizer: DomSanitizer,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId
+    @Inject(PLATFORM_ID) public readonly platformId,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
 
@@ -94,10 +96,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this._setZoomLensSize();
 
-    const document = this.windowRef.nativeWindow.document;
-    if (document && "ontouchend" in document) {
-      this.isTouchDevice = true;
-    }
+    this.isTouchDevice = this.deviceService.isTouchEnabled();
 
     this.hdThumbnail$ = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
       takeUntil(this.destroyed$),
