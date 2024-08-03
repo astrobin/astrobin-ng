@@ -66,10 +66,22 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
 
   updateUrl(): void {
     const { page, pageSize, ...model } = this.model;
-    const queryString = UtilsService.toQueryString(model);
-    const compressedQueryString = UtilsService.compressQueryString(queryString);
-    const encodedQueryString = encodeURIComponent(compressedQueryString);
 
-    this.location.go(`/search?p=${encodedQueryString}`);
+    if (
+      Object.keys(model).filter(key => key !== "text").length > 0 ||
+      (
+        Object.keys(model).length === 1 &&
+        model.hasOwnProperty("text") &&
+        model.text !== ""
+      )
+    ) {
+      const queryString = UtilsService.toQueryString(model);
+      const compressedQueryString = UtilsService.compressQueryString(queryString);
+      const encodedQueryString = encodeURIComponent(compressedQueryString);
+
+      this.location.go(`/search?p=${encodedQueryString}`);
+    } else {
+      this.location.go("/search");
+    }
   }
 }
