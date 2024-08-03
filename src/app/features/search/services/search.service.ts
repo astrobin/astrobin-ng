@@ -35,6 +35,8 @@ import { SearchMinimumDataFilterValue } from "@features/search/components/filter
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 import { ConstellationsService } from "@features/explore/services/constellations.service";
 import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
+import { FilterType } from "@features/equipment/types/filter.interface";
+import { FilterService } from "@features/equipment/services/filter.service";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -66,6 +68,7 @@ export enum SearchAutoCompleteType {
   MOUNT_MAX_PAYLOAD = "mount_max_payload",
   TELESCOPE_FOCAL_LENGTH = "telescope_focal_length",
   INTEGRATION_TIME = "integration_time",
+  FILTER_TYPES = "filter_types",
 }
 
 export interface SearchAutoCompleteItem {
@@ -94,7 +97,8 @@ export class SearchService extends BaseService {
     public readonly imageService: ImageService,
     public readonly sensorService: SensorService,
     public readonly countryService: CountryService,
-    public readonly constellationService: ConstellationsService
+    public readonly constellationService: ConstellationsService,
+    public readonly filterService: FilterService
   ) {
     super(loadingService);
   }
@@ -179,6 +183,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Telescope focal length");
       case SearchAutoCompleteType.INTEGRATION_TIME:
         return this.translateService.instant("Integration time");
+      case SearchAutoCompleteType.FILTER_TYPES:
+        return this.translateService.instant("Filter types");
     }
   }
 
@@ -470,7 +476,7 @@ export class SearchService extends BaseService {
           type: SearchAutoCompleteType.ACQUISITION_MONTHS,
           label: item.humanized,
           value: {
-            months: [item.month],
+            value: [item.month],
             matchType: null
           }
         }))
@@ -663,6 +669,26 @@ export class SearchService extends BaseService {
           type: SearchAutoCompleteType.LICENSES,
           label: item.humanized,
           value: [item.option]
+        }))
+        .slice(0, this._autoCompleteItemsLimit)
+    );
+  }
+
+  autoCompleteFilterTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      Object.values(FilterType)
+        .map(type => ({
+          type,
+          humanized: this.filterService.humanizeType(type)
+        }))
+        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(item => ({
+          type: SearchAutoCompleteType.FILTER_TYPES,
+          label: item.humanized,
+          value: {
+            value: [item.type],
+            matchType: null
+          }
         }))
         .slice(0, this._autoCompleteItemsLimit)
     );

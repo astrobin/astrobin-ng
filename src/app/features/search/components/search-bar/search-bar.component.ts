@@ -53,6 +53,7 @@ import { SearchMinimumDataFilterComponent } from "@features/search/components/fi
 import { SearchConstellationFilterComponent } from "@features/search/components/filters/search-constellation-filter/search-constellation-filter.component";
 import { SearchBortleScaleFilterComponent } from "@features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component";
 import { SearchLicenseFilterComponent } from "@features/search/components/filters/search-license-filter/search-license-filter.component";
+import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -195,6 +196,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               {
                 key: SearchLicenseFilterComponent.key,
                 method: this.searchService.autoCompleteLicenseOptions$(query)
+              },
+              {
+                key: SearchFilterTypesFilterComponent.key,
+                method: this.searchService.autoCompleteFilterTypes$(query)
               }
             ]
               .filter(filter => !this.model.hasOwnProperty(filter.key))

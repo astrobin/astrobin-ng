@@ -6,22 +6,22 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
-import { Month } from "@shared/enums/month.enum";
-import { DateService } from "@shared/services/date.service";
+import { FilterType } from "@features/equipment/types/filter.interface";
+import { FilterService } from "@features/equipment/services/filter.service";
 
 @Component({
-  selector: "astrobin-search-acquisition-months-filter.search-filter-component",
+  selector: "astrobin-search-filter-types-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComponent {
-  static key = SearchAutoCompleteType.ACQUISITION_MONTHS;
+export class SearchFilterTypesFilterComponent extends SearchBaseFilterComponent {
+  static key = SearchAutoCompleteType.FILTER_TYPES;
   label = this.searchService.humanizeSearchAutoCompleteType(
-    SearchAcquisitionMonthsFilterComponent.key as SearchAutoCompleteType
+    SearchFilterTypesFilterComponent.key as SearchAutoCompleteType
   );
   editFields = [
     {
-      key: SearchAcquisitionMonthsFilterComponent.key,
+      key: SearchFilterTypesFilterComponent.key,
       fieldGroup: [
         {
           key: "value",
@@ -36,14 +36,14 @@ export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComp
             hideOptionalMarker: true,
             multiple: true,
             label: this.label,
-            description: this.translateService.instant("Only show images acquired in specific months of any year."),
-            options: Object.keys(Month).map(month => ({
-              value: month,
-              label: this.dateService.humanizeMonth(month as Month)
+            description: this.translateService.instant("Only show images acquired with certain filter types."),
+            options: Object.keys(FilterType).map(key => ({
+              value: key,
+              label: this.filterService.humanizeType(key as FilterType)
             }))
           }
         },
-        this.getMatchTypeField(`${SearchAcquisitionMonthsFilterComponent.key}.value`)
+        this.getMatchTypeField(`${SearchFilterTypesFilterComponent.key}.value`)
       ]
     }
   ];
@@ -54,7 +54,7 @@ export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComp
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
     public readonly searchService: SearchService,
-    public readonly dateService: DateService
+    public readonly filterService: FilterService
   ) {
     super(store$, translateService, domSanitizer, modalService, searchService);
   }
@@ -64,14 +64,14 @@ export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComp
       return "";
     }
 
-    const months = this.value.value as Month[];
+    const filterTypes = this.value.value as FilterType[];
     let renderedValue;
 
-    if (months.length === 1) {
-      renderedValue = this.dateService.humanizeMonth(months[0]);
+    if (filterTypes.length === 1) {
+      renderedValue = this.filterService.humanizeType(filterTypes[0]);
     } else {
-      renderedValue = months
-        .map(month => this.dateService.humanizeMonth(month))
+      renderedValue = filterTypes
+        .map(filterType => this.filterService.humanizeType(filterType))
         .join(", ");
     }
 
