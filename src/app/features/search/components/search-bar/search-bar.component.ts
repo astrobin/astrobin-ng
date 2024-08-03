@@ -236,6 +236,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   ngAfterViewInit(): void {
     this.initializeFilters();
+    this.searchInput.nativeElement.focus();
   }
 
   getGroupOrder(): SearchAutoCompleteType[] {
