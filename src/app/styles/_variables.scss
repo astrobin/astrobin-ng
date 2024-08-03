@@ -27,7 +27,9 @@ $darkest-grey: $dark;
 $black: #101010;
 
 // ... other colors
-$gold: gold;
+$gold: #f3bb46;
+$silver: #c0c0c0;
+$bronze: #cd7f32;
 
 $text-on-info: $white;
 $info-light: lighten($info, 5%);
@@ -94,6 +96,8 @@ $ng-select-value-font-size: 0.9em;
   --black: #{$black};
 
   --gold: #{$gold};
+  --silver: #{$silver};
+  --bronze: #{$bronze};
 
   --infoColor: #{$info};
   --textOnInfoColor: #{$text-on-info};

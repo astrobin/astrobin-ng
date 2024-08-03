@@ -4,6 +4,12 @@
       <a *ngFor="let image of images" [href]="classicRoutesService.IMAGE(image.hash || image.objectId.toString())">
         <img [alt]="image.title" [src]="image.galleryThumbnail" />
         <fa-icon *ngIf="image.video || image.animated" icon="play"></fa-icon>
+
+        <div class="badges">
+          <fa-icon *ngIf="image.isIotd" class="iotd" icon="trophy"></fa-icon>
+          <fa-icon *ngIf="image.isTopPick" class="top-pick" icon="star"></fa-icon>
+          <fa-icon *ngIf="image.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
+        </div>
       </a>
     </ng-container>
   </ng-container>

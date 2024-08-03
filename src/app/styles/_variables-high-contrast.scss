@@ -28,6 +28,8 @@ $black: #000;
 
 // ... other colors
 $gold: #fff;
+$silver: #ccc;
+$bronze: #aaa;
 
 $info: $info;
 $text-on-info: $light;
@@ -94,6 +96,8 @@ $ng-select-value-font-size: 0.9em;
   --black: #{$black};
 
   --gold: #{$gold};
+  --silver: #{$silver};
+  --bronze: #{$bronze};
 
   --infoColor: #{$info};
   --textOnInfoColor: #{$text-on-info};

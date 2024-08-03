@@ -39,4 +39,10 @@ export interface ImageSearchInterface {
   w: number;
   h: number;
   galleryThumbnail: string;
+
+  video: boolean;
+  animated: boolean;
+  isIotd: boolean;
+  isTopPick: boolean;
+  isTopPickNomination: boolean;
 }
