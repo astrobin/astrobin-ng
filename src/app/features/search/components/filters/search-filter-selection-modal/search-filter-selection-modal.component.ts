@@ -63,6 +63,8 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
           null,
           this.filterContainer
         );
+      }).sort((a, b) => {
+        return a.instance.label.localeCompare(b.instance.label);
       });
 
       this.labels = componentRefs.map(componentRef => componentRef.instance.label);
