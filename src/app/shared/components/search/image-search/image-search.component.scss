@@ -11,6 +11,7 @@
 
   > a {
     display: block;
+    position: relative;
     width: calc(100% / 10 - #{$gap});
 
     @media (max-width: $lg-max) {
@@ -42,6 +43,16 @@
     > img {
       width: 100%;
       transition: all .1s ease-in-out;
+    }
+
+    > [icon="play"] {
+      position: absolute;
+      font-size: 2rem;
+      line-height: 1rem;
+      color: var(--lightestGrey);
+      top: calc(50% - 1rem);
+      left: calc(50% - .75rem);
+      opacity: .75;
     }
   }
 
