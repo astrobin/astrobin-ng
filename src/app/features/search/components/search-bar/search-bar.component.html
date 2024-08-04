@@ -1,10 +1,8 @@
-<div [class.has-filters]="filterComponentRefs?.length > 0" class="search-bar-wrapper">
+<div class="search-bar-wrapper">
   <div
     [class.has-auto-complete-items]="hasAutoCompleteItems()"
     class="search-bar-input-container form-control"
   >
-    <ng-container #filterContainer></ng-container>
-
     <input
       #searchInput
       (keydown.backspace)="onBackspace()"
@@ -73,6 +71,10 @@
       ></fa-icon>
     </ng-template>
   </div>
+</div>
+
+<div class="filters">
+  <ng-container #filterContainer></ng-container>
 </div>
 
 <div class="d-none">

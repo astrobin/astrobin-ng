@@ -29,6 +29,7 @@ export class SearchMinimumDataFilterComponent extends SearchBaseFilterComponent 
       type: "ng-select",
       wrappers: ["default-wrapper"],
       props: {
+        closeOnSelect: true,
         hideOptionalMarker: true,
         label: this.label,
         multiple: true,

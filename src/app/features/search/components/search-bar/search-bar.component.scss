@@ -65,7 +65,6 @@
       box-shadow: 0 1rem 1rem var(--black);
 
       .search-bar-autocomplete-group {
-        overflow: hidden;
         color: var(--lighterGrey);
         display: flex;
         flex-direction: row;
@@ -132,26 +131,12 @@
         }
       }
     }
+  }
 
-    &.has-filters {
-      .search-bar-input-container {
-        @media (max-width: $xs-max) {
-          padding-right: 4.25rem;
-        }
-
-        .search-bar-input {
-          @media (min-width: $sm-min) {
-            margin-left: .5rem;
-          }
-        }
-      }
-
-      .search-bar-icons {
-        @media (max-width: $xs-max) {
-          flex-direction: column;
-          justify-content: center;
-        }
-      }
-    }
+  .filters {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+    padding: .75rem 1rem;
   }
 }

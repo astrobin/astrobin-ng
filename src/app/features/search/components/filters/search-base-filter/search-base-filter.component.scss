@@ -1,11 +1,16 @@
 @import "../../../../../styles/breakpoints";
 
+:host {
+  @media (max-width: $sm-max) {
+    width: 100%;
+  }
+}
+
 .search-filter {
   font-size: .9rem;
-  background-color: var(--white);
-  border: 1px solid var(--black);
-  color: var(--darkestGrey);
-  padding: .125rem .5rem;
+  border: 1px solid var(--lightGrey);
+  color: var(--lighterGrey);
+  padding: 0.125rem .5rem;
   border-radius: var(--bs-border-radius);
   display: flex;
   align-items: center;
@@ -13,18 +18,20 @@
 
   &__title {
     margin-right: .5rem;
+    pointer-events: none;
   }
 
   &__value {
-    font-weight: bold;
+    color: var(--white);
+    pointer-events: none;
   }
 
   &__match-type {
     font-size: .8rem;
-    color: var(--grey);
+    color: var(--lighterGrey);
     margin-left: .5rem;
     padding-left: .5rem;
-    border-left: 1px solid var(--lighterGrey);
+    border-left: 1px solid var(--lightGrey);
     cursor: pointer;
 
     [icon] {
@@ -32,7 +39,7 @@
     }
 
     &:hover {
-      color: var(--black);
+      color: var(--accentColor);
     }
   }
 
@@ -42,16 +49,16 @@
     justify-content: space-around;
     margin-left: .5rem;
     padding-left: .5rem;
-    border-left: 1px solid var(--lighterGrey);
+    border-left: 1px solid var(--lightGrey);
 
     [icon] {
       padding: .375rem;
       cursor: pointer;
-      color: var(--grey);
+      color: var(--lighterGrey);
       font-size: .8rem;
 
       &:hover {
-        color: var(--black);
+        color: var(--accentColor);
       }
     }
 

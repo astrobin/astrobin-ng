@@ -33,6 +33,7 @@ export class SearchColorOrMonoFilterComponent extends SearchBaseFilterComponent 
             }
           },
           props: {
+            closeOnSelect: true,
             hideOptionalMarker: true,
             multiple: true,
             label: this.label,
