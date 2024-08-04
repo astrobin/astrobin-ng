@@ -21,6 +21,7 @@ import { DateService } from "@shared/services/date.service";
 import { Month } from "@shared/enums/month.enum";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import {
+  AcquisitionType,
   DataSource,
   LicenseOptions,
   RemoteSource,
@@ -71,7 +72,8 @@ export enum SearchAutoCompleteType {
   FILTER_TYPES = "filter_types",
   SIZE = "size",
   DATE_PUBLISHED = "date_published",
-  DATE_ACQUIRED = "date_acquired"
+  DATE_ACQUIRED = "date_acquired",
+  ACQUISITION_TYPE = "acquisition_type"
 }
 
 export interface SearchAutoCompleteItem {
@@ -197,6 +199,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Date published");
       case SearchAutoCompleteType.DATE_ACQUIRED:
         return this.translateService.instant("Date acquired");
+      case SearchAutoCompleteType.ACQUISITION_TYPE:
+        return this.translateService.instant("Acquisition type");
     }
   }
 
@@ -722,6 +726,22 @@ export class SearchService extends BaseService {
           }
         }))
         .slice(0, this._autoCompleteItemsLimit)
+    );
+  }
+
+  autoCompleteAcquisitionTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      Object.values(AcquisitionType)
+        .map(type => ({
+          type,
+          humanized: this.imageService.humanizeAcquisitionType(type)
+        }))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
+        .map(item => ({
+          type: SearchAutoCompleteType.ACQUISITION_TYPE,
+          label: item.humanized,
+          value: item.type
+        }))
     );
   }
 

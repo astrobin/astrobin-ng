@@ -6,31 +6,31 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
-import { SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import { AcquisitionType } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
-  selector: "astrobin-subject-type-source-filter.search-filter-component",
+  selector: "astrobin-acquisition-type-source-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchSubjectTypeFilterComponent extends SearchBaseFilterComponent {
-  static key = SearchAutoCompleteType.SUBJECT_TYPE;
+export class SearchAcquisitionTypeFilterComponent extends SearchBaseFilterComponent {
+  static key = SearchAutoCompleteType.ACQUISITION_TYPE;
   label = this.searchService.humanizeSearchAutoCompleteType(
-    SearchSubjectTypeFilterComponent.key as SearchAutoCompleteType
+    SearchAcquisitionTypeFilterComponent.key as SearchAutoCompleteType
   );
   editFields = [
     {
-      key: SearchSubjectTypeFilterComponent.key,
+      key: SearchAcquisitionTypeFilterComponent.key,
       type: "ng-select",
       wrappers: ["default-wrapper"],
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show images of a specific subject type."),
-        options: Object.keys(SubjectType).map(subjectType => ({
-          value: subjectType,
-          label: this.imageService.humanizeSubjectType(subjectType as SubjectType)
+        description: this.translateService.instant("Only show images acquired with a certain acquisition technique."),
+        options: Object.keys(AcquisitionType).map(type => ({
+          value: type,
+          label: this.imageService.humanizeAcquisitionType(type as AcquisitionType)
         }))
       }
     }
@@ -48,16 +48,11 @@ export class SearchSubjectTypeFilterComponent extends SearchBaseFilterComponent 
   }
 
   render(): SafeHtml {
-    let humanizedValue: string;
-
-    if (Object.values(SubjectType).includes(this.value as SubjectType)) {
-      humanizedValue = this.imageService.humanizeSubjectType(this.value as SubjectType);
-    } else if (Object.values(SolarSystemSubjectType).includes(this.value as SolarSystemSubjectType)) {
-      humanizedValue = this.imageService.humanizeSolarSystemSubjectType(this.value as SolarSystemSubjectType);
-    } else {
-      humanizedValue = "";
+    if (!this.value) {
+      return "";
     }
 
+    const humanizedValue = this.imageService.humanizeAcquisitionType(this.value as AcquisitionType);
     return this.domSanitizer.bypassSecurityTrustHtml(humanizedValue);
   }
 }
