@@ -70,6 +70,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   placeholder = this.translateService.instant("Type here to search");
   autoCompleteGroups: SearchAutoCompleteGroups = {};
   selectedAutoCompleteGroup: SearchAutoCompleteType = null;
+  abortAutoComplete = false;
   loadingAutoCompleteItems = false;
   selectedAutoCompleteItemIndex = -1;
   filterComponentRefs: ComponentRef<SearchFilterComponentInterface>[] = [];
@@ -115,6 +116,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       .subscribe(value => {
         this.selectedAutoCompleteGroup = null;
         this.selectedAutoCompleteItemIndex = -1;
+        this.abortAutoComplete = false;
 
         if (value && value.length >= 2) {
           const query = this.model.text;
@@ -210,6 +212,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               .filter(filter => !this.model.hasOwnProperty(filter.key))
               .map(filter => filter.method)
           ).subscribe((results: SearchAutoCompleteItem[][]) => {
+            if (this.abortAutoComplete) {
+              return;
+            }
+
             const newAutoCompleteGroups: SearchAutoCompleteGroups = {};
 
             // Populate newAutoCompleteGroups with non-empty groups
@@ -381,6 +387,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.autoCompleteGroups = {};
     this.selectedAutoCompleteGroup = null;
     this.selectedAutoCompleteItemIndex = -1;
+    this.abortAutoComplete = true;
   }
 
   onSearch(model: SearchModelInterface): void {
