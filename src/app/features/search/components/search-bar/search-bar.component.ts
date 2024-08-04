@@ -40,7 +40,7 @@ import { SearchTelescopeTypeFilterComponent } from "@features/search/components/
 import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
-import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
+import { SearchAcquisitionTypeFilterComponent } from "@features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component";
 import { SearchColorOrMonoFilterComponent } from "@features/search/components/filters/search-color-or-mono-filter/search-color-or-mono-filter.component";
 import { SearchModifiedCameraFilterComponent } from "@features/search/components/filters/search-modified-camera-filter/search-modified-camera-filter.component";
 import { SearchAnimatedFilterComponent } from "@features/search/components/filters/search-animated-filter/search-animated-filter.component";
@@ -56,6 +56,7 @@ import { SearchLicenseFilterComponent } from "@features/search/components/filter
 import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
 import { DeviceService } from "@shared/services/device.service";
 import { TranslateService } from "@ngx-translate/core";
+import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -179,6 +180,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       {
         key: SearchFilterTypesFilterComponent.key,
         method: this.searchService.autoCompleteFilterTypes$(query)
+      },
+      {
+        key: SearchAcquisitionTypeFilterComponent.key,
+        method: this.searchService.autoCompleteAcquisitionTypes$(query)
       }
     ];
   };
@@ -252,7 +257,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     if (this.deviceService.isTouchEnabled()) {
       this.searchInput.nativeElement.blur();
-    } else {
+    }
+ else {
       this.searchInput.nativeElement.focus();
     }
   }
@@ -281,9 +287,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       if (this.selectedAutoCompleteGroup === null) {
         this.selectedAutoCompleteGroup = groupOrder[0];
         this.selectedAutoCompleteItemIndex = 0;
-      } else if (this.selectedAutoCompleteItemIndex < currentItemCount - 1) {
+      }
+ else if (this.selectedAutoCompleteItemIndex < currentItemCount - 1) {
         this.selectedAutoCompleteItemIndex++;
-      } else if (currentGroupIndex < groupOrder.length - 1) {
+      }
+ else if (currentGroupIndex < groupOrder.length - 1) {
         const nextGroupIndex = (currentGroupIndex + 1) % groupOrder.length;
         this.selectedAutoCompleteGroup = groupOrder[nextGroupIndex];
         this.selectedAutoCompleteItemIndex = 0;
@@ -302,9 +310,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       if (this.selectedAutoCompleteGroup === null) {
         this.selectedAutoCompleteGroup = groupOrder[0];
         this.selectedAutoCompleteItemIndex = this.getItemCountInGroup(groupOrder[0]) - 1;
-      } else if (this.selectedAutoCompleteItemIndex > 0) {
+      }
+ else if (this.selectedAutoCompleteItemIndex > 0) {
         this.selectedAutoCompleteItemIndex--;
-      } else if (currentGroupIndex > 0) {
+      }
+ else if (currentGroupIndex > 0) {
         const previousGroupIndex = (currentGroupIndex - 1 + groupOrder.length) % groupOrder.length;
         const previousGroup = groupOrder[previousGroupIndex];
         this.selectedAutoCompleteGroup = previousGroup;
@@ -443,7 +453,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     if (autoCompleteItem.type === SearchAutoCompleteType.SEARCH_FILTER) {
       filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.value);
       this.createAndEditFilter(filterComponentType);
-    } else {
+    }
+ else {
       filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
       this.addFilter(filterComponentType, autoCompleteItem.value);
     }

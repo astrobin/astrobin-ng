@@ -11,16 +11,13 @@ import { SearchFilterEditorModalComponent } from "./components/filters/search-fi
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
 import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
 import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
-import {
-  AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
-  SEARCH_FILTERS_TOKEN
-} from "@features/search/injection-tokens/search-filter.tokens";
+import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@features/search/injection-tokens/search-filter.tokens";
 import { SearchService } from "@features/search/services/search.service";
 import { SearchTelescopeTypeFilterComponent } from "@features/search/components/filters/search-telescope-type-filter/search-telescope-type-filter.component";
 import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
-import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
+import { SearchAcquisitionTypeFilterComponent } from "@features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component";
 import { SearchColorOrMonoFilterComponent } from "@features/search/components/filters/search-color-or-mono-filter/search-color-or-mono-filter.component";
 import { SearchModifiedCameraFilterComponent } from "@features/search/components/filters/search-modified-camera-filter/search-modified-camera-filter.component";
 import { SearchAnimatedFilterComponent } from "@features/search/components/filters/search-animated-filter/search-animated-filter.component";
@@ -44,7 +41,6 @@ import { SearchIntegrationTimeFilterComponent } from "@features/search/component
 import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
 import { SearchSizeFilterComponent } from "@features/search/components/filters/search-size-filter/search-size-filter.component";
 
-
 const allFilterComponents = [
   SearchSubjectFilterComponent,
   SearchTelescopeFilterComponent,
@@ -53,7 +49,7 @@ const allFilterComponents = [
   SearchCameraTypeFilterComponent,
   SearchAcquisitionMonthsFilterComponent,
   SearchRemoteSourceFilterComponent,
-  SearchSubjectTypeFilterComponent,
+  SearchAcquisitionTypeFilterComponent,
   SearchColorOrMonoFilterComponent,
   SearchModifiedCameraFilterComponent,
   SearchAnimatedFilterComponent,
@@ -86,11 +82,7 @@ const allFilterComponents = [
     SearchFilterSelectionModalComponent,
     ...allFilterComponents
   ],
-  imports: [
-    RouterModule.forChild(searchRoutes),
-    SharedModule,
-    StoreModule.forFeature(searchFeatureKey, searchReducer)
-  ],
+  imports: [RouterModule.forChild(searchRoutes), SharedModule, StoreModule.forFeature(searchFeatureKey, searchReducer)],
   providers: [
     SearchService,
     {
@@ -99,10 +91,7 @@ const allFilterComponents = [
     },
     {
       provide: AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
-      useValue: [
-        SearchCameraFilterComponent,
-        SearchTelescopeFilterComponent
-      ]
+      useValue: [SearchCameraFilterComponent, SearchTelescopeFilterComponent]
     }
   ]
 })

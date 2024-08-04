@@ -1,12 +1,6 @@
 import { Injectable } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
-import {
-  AcquisitionType,
-  DataSource,
-  RemoteSource,
-  SolarSystemSubjectType,
-  SubjectType
-} from "@shared/interfaces/image.interface";
+import { AcquisitionType, DataSource, RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Observable, of, Subscription } from "rxjs";
 import { CreateLocationAddTag } from "@app/store/actions/location.actions";
@@ -55,25 +49,23 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
         options: [
           {
             value: AcquisitionType.REGULAR,
-            label: this.translateService.instant("Regular (e.g. medium/long exposure with a CCD or DSLR)")
+            label: this.imageService.humanizeAcquisitionType(AcquisitionType.REGULAR)
           },
           {
             value: AcquisitionType.EAA,
-            label: this.translateService.instant(
-              "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
-            )
+            label: this.imageService.humanizeAcquisitionType(AcquisitionType.EAA)
           },
           {
             value: AcquisitionType.LUCKY,
-            label: this.translateService.instant("Lucky imaging")
+            label: this.imageService.humanizeAcquisitionType(AcquisitionType.LUCKY)
           },
           {
             value: AcquisitionType.DRAWING,
-            label: this.translateService.instant("Drawing/Sketch")
+            label: this.imageService.humanizeAcquisitionType(AcquisitionType.DRAWING)
           },
           {
             value: AcquisitionType.OTHER,
-            label: this.translateService.instant("Other/Unknown")
+            label: this.imageService.humanizeAcquisitionType(AcquisitionType.OTHER)
           }
         ]
       },
@@ -370,7 +362,8 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
     if (this.imageEditService.groups.length === 0) {
       const reason = this.translateService.instant("This field is disabled because you haven't joined any groups yet.");
       description += ` <strong>${reason}</strong>`;
-    } else if (this.imageEditService.model.isWip) {
+    }
+ else if (this.imageEditService.model.isWip) {
       const publicationInfo = this.translateService.instant(
         "This setting will take affect after the image will be moved to your public area."
       );

@@ -3,7 +3,13 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
-import { DataSource, LicenseOptions, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import {
+  AcquisitionType,
+  DataSource,
+  LicenseOptions,
+  SolarSystemSubjectType,
+  SubjectType
+} from "@shared/interfaces/image.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
 
@@ -15,7 +21,8 @@ export class ImageService extends BaseService {
     public readonly loadingService: LoadingService,
     public readonly windowRef: WindowRefService,
     public readonly zone: NgZone,
-    public readonly translateService: TranslateService) {
+    public readonly translateService: TranslateService
+  ) {
     super(loadingService);
   }
 
@@ -161,6 +168,23 @@ export class ImageService extends BaseService {
         return this.translateService.instant("Attribution-NoDerivs Creative Commons");
       default:
         return this.translateService.instant("Unknown");
+    }
+  }
+
+  humanizeAcquisitionType(value: AcquisitionType): string {
+    switch (value) {
+      case AcquisitionType.REGULAR:
+        return this.translateService.instant("Regular (e.g. medium/long exposure with a CCD or DSLR)");
+      case AcquisitionType.EAA:
+        return this.translateService.instant(
+          "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
+        );
+      case AcquisitionType.LUCKY:
+        return this.translateService.instant("Lucky imaging (e.g. based on short exposures)");
+      case AcquisitionType.DRAWING:
+        return this.translateService.instant("Drawing/Sketch");
+      case AcquisitionType.OTHER:
+        return this.translateService.instant("Other/Unknown");
     }
   }
 
