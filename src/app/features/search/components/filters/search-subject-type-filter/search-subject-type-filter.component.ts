@@ -16,7 +16,9 @@ import { ImageService } from "@shared/services/image/image.service";
 })
 export class SearchSubjectTypeFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.SUBJECT_TYPE;
-  label = this.searchService.humanizeSearchAutoCompleteType(SearchSubjectTypeFilterComponent.key as SearchAutoCompleteType);
+  label = this.searchService.humanizeSearchAutoCompleteType(
+    SearchSubjectTypeFilterComponent.key as SearchAutoCompleteType
+  );
   editFields = [
     {
       key: SearchSubjectTypeFilterComponent.key,

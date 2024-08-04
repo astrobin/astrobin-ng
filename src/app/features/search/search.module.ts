@@ -40,6 +40,7 @@ import { SearchTelescopeFocalLengthFilterComponent } from "@features/search/comp
 import { SearchIntegrationTimeFilterComponent } from "@features/search/components/filters/search-integration-time-filter/search-integration-time-filter.component";
 import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
 import { SearchSizeFilterComponent } from "@features/search/components/filters/search-size-filter/search-size-filter.component";
+import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 
 const allFilterComponents = [
   SearchSubjectFilterComponent,
@@ -49,7 +50,7 @@ const allFilterComponents = [
   SearchCameraTypeFilterComponent,
   SearchAcquisitionMonthsFilterComponent,
   SearchRemoteSourceFilterComponent,
-  SearchAcquisitionTypeFilterComponent,
+  SearchSubjectTypeFilterComponent,
   SearchColorOrMonoFilterComponent,
   SearchModifiedCameraFilterComponent,
   SearchAnimatedFilterComponent,
@@ -71,7 +72,8 @@ const allFilterComponents = [
   SearchTelescopeFocalLengthFilterComponent,
   SearchIntegrationTimeFilterComponent,
   SearchFilterTypesFilterComponent,
-  SearchSizeFilterComponent
+  SearchSizeFilterComponent,
+  SearchAcquisitionTypeFilterComponent
 ];
 
 @NgModule({

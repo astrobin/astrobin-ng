@@ -38,18 +38,6 @@
         "arrow-parens": [
           "error",
           "as-needed"
-        ],
-        "brace-style": ["error", "stroustrup"],
-        "max-len": [
-          "error",
-          {
-            "code": 120,
-            "ignorePattern": "^import\\s.+\\sfrom\\s.+;$",
-            "ignoreUrls": true,
-            "ignoreStrings": true,
-            "ignoreTemplateLiterals": true,
-            "ignoreRegExpLiterals": true
-          }
         ]
       }
     },
