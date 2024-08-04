@@ -11,9 +11,9 @@
       (keyup.escape)="resetAutoCompleteItems()"
       (ngModelChange)="onModelChangeDebounced($event)"
       [(ngModel)]="model.text"
+      [placeholder]="placeholder"
       autofocus
       class="search-bar-input form-control"
-      placeholder="{{ 'Search' | translate }}"
       type="text"
     />
   </div>

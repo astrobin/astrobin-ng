@@ -55,6 +55,7 @@ import { SearchBortleScaleFilterComponent } from "@features/search/components/fi
 import { SearchLicenseFilterComponent } from "@features/search/components/filters/search-license-filter/search-license-filter.component";
 import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
 import { DeviceService } from "@shared/services/device.service";
+import { TranslateService } from "@ngx-translate/core";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -66,6 +67,7 @@ type SearchAutoCompleteGroups = {
   styleUrls: ["./search-bar.component.scss"]
 })
 export class SearchBarComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+  placeholder = this.translateService.instant("Type here to search");
   autoCompleteGroups: SearchAutoCompleteGroups = {};
   selectedAutoCompleteGroup: SearchAutoCompleteType = null;
   loadingAutoCompleteItems = false;
@@ -99,7 +101,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly windowRefService: WindowRefService,
     public readonly utilsService: UtilsService,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
