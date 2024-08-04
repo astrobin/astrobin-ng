@@ -7,7 +7,7 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import {
@@ -69,7 +69,7 @@ export enum SearchAutoCompleteType {
   TELESCOPE_FOCAL_LENGTH = "telescope_focal_length",
   INTEGRATION_TIME = "integration_time",
   FILTER_TYPES = "filter_types",
-  SIZE = "size",
+  SIZE = "size"
 }
 
 export interface SearchAutoCompleteItem {
@@ -83,6 +83,9 @@ export interface SearchAutoCompleteItem {
 })
 export class SearchService extends BaseService {
   private _autoCompleteItemsLimit = 15;
+
+  private _autoCompleteTelescopeCache: { [query: string]: SearchAutoCompleteItem[] } = {};
+  private _autoCompleteCameraCache: { [query: string]: SearchAutoCompleteItem[] } = {};
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -384,6 +387,10 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteTelescopes$(query: string): Observable<SearchAutoCompleteItem[]> {
+    if (this._autoCompleteTelescopeCache[query]) {
+      return of(this._autoCompleteTelescopeCache[query]);
+    }
+
     return this.equipmentApiService
       .findAllEquipmentItems(EquipmentItemType.TELESCOPE, {
         query,
@@ -404,11 +411,18 @@ export class SearchService extends BaseService {
               value
             };
           });
+        }),
+        tap(items => {
+          this._autoCompleteTelescopeCache[query] = items;
         })
       );
   }
 
   autoCompleteCameras$(query: string): Observable<SearchAutoCompleteItem[]> {
+    if (this._autoCompleteCameraCache[query]) {
+      return of(this._autoCompleteCameraCache[query]);
+    }
+
     return this.equipmentApiService
       .findAllEquipmentItems(EquipmentItemType.CAMERA, {
         query,
@@ -429,6 +443,9 @@ export class SearchService extends BaseService {
               value
             };
           });
+        }),
+        tap(items => {
+          this._autoCompleteCameraCache[query] = items;
         })
       );
   }
@@ -586,7 +603,8 @@ export class SearchService extends BaseService {
 
   autoCompleteCountries$(query: string): Observable<SearchAutoCompleteItem[]> {
     return of(
-      this.countryService.getCountries(this.translateService.currentLang)
+      this.countryService
+        .getCountries(this.translateService.currentLang)
         .filter(country => country.name.toLowerCase().includes(query.toLowerCase()))
         .map(country => ({
           type: SearchAutoCompleteType.COUNTRY,
@@ -620,17 +638,21 @@ export class SearchService extends BaseService {
       { [SearchMinimumDataFilterValue.ASTROMETRY]: this.translateService.instant("Astrometry") }
     ];
 
-    return of(values.map(item => ({
-        type: SearchAutoCompleteType.MINIMUM_DATA,
-        label: Object.values(item)[0],
-        value: Object.keys(item)[0]
-      })).filter(item => item.label.toLowerCase().includes(query.toLowerCase()))
+    return of(
+      values
+        .map(item => ({
+          type: SearchAutoCompleteType.MINIMUM_DATA,
+          label: Object.values(item)[0],
+          value: Object.keys(item)[0]
+        }))
+        .filter(item => item.label.toLowerCase().includes(query.toLowerCase()))
     );
   }
 
   autoCompleteConstellations$(query: string): Observable<SearchAutoCompleteItem[]> {
     return of(
-      this.constellationService.getConstellations(this.translateService.currentLang)
+      this.constellationService
+        .getConstellations(this.translateService.currentLang)
         .filter(constellation => constellation.name.toLowerCase().includes(query.toLowerCase()))
         .map(constellation => ({
           type: SearchAutoCompleteType.CONSTELLATION,
@@ -698,17 +720,18 @@ export class SearchService extends BaseService {
   }
 
   _autoCompleteYesNo$(query: string, type: SearchAutoCompleteType): Observable<SearchAutoCompleteItem[]> {
-    return of(Object.values(["Y", "N"])
-      .map(type => ({
-        type,
-        humanized: type === "Y" ? this.translateService.instant("Yes") : this.translateService.instant("No")
-      }))
-      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
-      .map(item => ({
-        type,
-        label: item.humanized,
-        value: item.type === "Y"
-      }))
+    return of(
+      Object.values(["Y", "N"])
+        .map(type => ({
+          type,
+          humanized: type === "Y" ? this.translateService.instant("Yes") : this.translateService.instant("No")
+        }))
+        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .map(item => ({
+          type,
+          label: item.humanized,
+          value: item.type === "Y"
+        }))
     );
   }
 }

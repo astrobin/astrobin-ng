@@ -94,6 +94,94 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   modelChanged = new EventEmitter<SearchModelInterface>();
 
   private _modelChanged: Subject<string> = new Subject<string>();
+  private _autoCompleteMethods = (query: string) => {
+    return [
+      {
+        key: SearchAutoCompleteType.SEARCH_FILTER,
+        method: this.searchService.autoCompleteSearchFilters$(query)
+      },
+      {
+        key: SearchTelescopeFilterComponent.key,
+        method: this.searchService.autoCompleteTelescopes$(query)
+      },
+      {
+        key: SearchCameraFilterComponent.key,
+        method: this.searchService.autoCompleteCameras$(query)
+      },
+      {
+        key: SearchSubjectFilterComponent.key,
+        method: this.searchService.autoCompleteSubjects$(query)
+      },
+      {
+        key: SearchTelescopeTypeFilterComponent.key,
+        method: this.searchService.autoCompleteTelescopeTypes$(query)
+      },
+      {
+        key: SearchCameraTypeFilterComponent.key,
+        method: this.searchService.autoCompleteCameraTypes$(query)
+      },
+      {
+        key: SearchAcquisitionMonthsFilterComponent.key,
+        method: this.searchService.autoCompleteMonths$(query)
+      },
+      {
+        key: SearchRemoteSourceFilterComponent.key,
+        method: this.searchService.autoCompleteRemoteSources$(query)
+      },
+      {
+        key: SearchSubjectTypeFilterComponent.key,
+        method: this.searchService.autoCompleteSubjectTypes$(query)
+      },
+      {
+        key: SearchColorOrMonoFilterComponent.key,
+        method: this.searchService.autoCompleteColorOrMono$(query)
+      },
+      {
+        key: SearchModifiedCameraFilterComponent.key,
+        method: this.searchService.autoCompleteModifiedCamera$(query)
+      },
+      {
+        key: SearchAnimatedFilterComponent.key,
+        method: this.searchService.autoCompleteAnimated$(query)
+      },
+      {
+        key: SearchVideoFilterComponent.key,
+        method: this.searchService.autoCompleteVideos$(query)
+      },
+      {
+        key: SearchAwardFilterComponent.key,
+        method: this.searchService.autoCompleteAward$(query)
+      },
+      {
+        key: SearchCountryFilterComponent.key,
+        method: this.searchService.autoCompleteCountries$(query)
+      },
+      {
+        key: SearchDataSourceFilterComponent.key,
+        method: this.searchService.autoCompleteDataSources$(query)
+      },
+      {
+        key: SearchMinimumDataFilterComponent.key,
+        method: this.searchService.autoCompleteMinimumData$(query)
+      },
+      {
+        key: SearchConstellationFilterComponent.key,
+        method: this.searchService.autoCompleteConstellations$(query)
+      },
+      {
+        key: SearchBortleScaleFilterComponent.key,
+        method: this.searchService.autoCompleteBortleScale$(query)
+      },
+      {
+        key: SearchLicenseFilterComponent.key,
+        method: this.searchService.autoCompleteLicenseOptions$(query)
+      },
+      {
+        key: SearchFilterTypesFilterComponent.key,
+        method: this.searchService.autoCompleteFilterTypes$(query)
+      }
+    ];
+  };
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -111,138 +199,51 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
 
-    this._modelChanged
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
-      .subscribe(value => {
-        this.selectedAutoCompleteGroup = null;
-        this.selectedAutoCompleteItemIndex = -1;
-        this.abortAutoComplete = false;
+    this._modelChanged.pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$)).subscribe(value => {
+      this.selectedAutoCompleteGroup = null;
+      this.selectedAutoCompleteItemIndex = -1;
+      this.abortAutoComplete = false;
 
-        if (value && value.length >= 2) {
-          const query = this.model.text;
-          this.loadingAutoCompleteItems = true;
+      if (value && value.length >= 2) {
+        const query = this.model.text;
+        this.loadingAutoCompleteItems = true;
 
-          forkJoin(
-            [
-              {
-                key: SearchAutoCompleteType.SEARCH_FILTER,
-                method: this.searchService.autoCompleteSearchFilters$(query)
-              },
-              {
-                key: SearchTelescopeFilterComponent.key,
-                method: this.searchService.autoCompleteTelescopes$(query)
-              },
-              {
-                key: SearchCameraFilterComponent.key,
-                method: this.searchService.autoCompleteCameras$(query)
-              },
-              {
-                key: SearchSubjectFilterComponent.key,
-                method: this.searchService.autoCompleteSubjects$(query)
-              },
-              {
-                key: SearchTelescopeTypeFilterComponent.key,
-                method: this.searchService.autoCompleteTelescopeTypes$(query)
-              },
-              {
-                key: SearchCameraTypeFilterComponent.key,
-                method: this.searchService.autoCompleteCameraTypes$(query)
-              },
-              {
-                key: SearchAcquisitionMonthsFilterComponent.key,
-                method: this.searchService.autoCompleteMonths$(query)
-              },
-              {
-                key: SearchRemoteSourceFilterComponent.key,
-                method: this.searchService.autoCompleteRemoteSources$(query)
-              },
-              {
-                key: SearchSubjectTypeFilterComponent.key,
-                method: this.searchService.autoCompleteSubjectTypes$(query)
-              },
-              {
-                key: SearchColorOrMonoFilterComponent.key,
-                method: this.searchService.autoCompleteColorOrMono$(query)
-              },
-              {
-                key: SearchModifiedCameraFilterComponent.key,
-                method: this.searchService.autoCompleteModifiedCamera$(query)
-              },
-              {
-                key: SearchAnimatedFilterComponent.key,
-                method: this.searchService.autoCompleteAnimated$(query)
-              },
-              {
-                key: SearchVideoFilterComponent.key,
-                method: this.searchService.autoCompleteVideos$(query)
-              },
-              {
-                key: SearchAwardFilterComponent.key,
-                method: this.searchService.autoCompleteAward$(query)
-              },
-              {
-                key: SearchCountryFilterComponent.key,
-                method: this.searchService.autoCompleteCountries$(query)
-              },
-              {
-                key: SearchDataSourceFilterComponent.key,
-                method: this.searchService.autoCompleteDataSources$(query)
-              },
-              {
-                key: SearchMinimumDataFilterComponent.key,
-                method: this.searchService.autoCompleteMinimumData$(query)
-              },
-              {
-                key: SearchConstellationFilterComponent.key,
-                method: this.searchService.autoCompleteConstellations$(query)
-              },
-              {
-                key: SearchBortleScaleFilterComponent.key,
-                method: this.searchService.autoCompleteBortleScale$(query)
-              },
-              {
-                key: SearchLicenseFilterComponent.key,
-                method: this.searchService.autoCompleteLicenseOptions$(query)
-              },
-              {
-                key: SearchFilterTypesFilterComponent.key,
-                method: this.searchService.autoCompleteFilterTypes$(query)
-              }
-            ]
-              .filter(filter => !this.model.hasOwnProperty(filter.key))
-              .map(filter => filter.method)
-          ).subscribe((results: SearchAutoCompleteItem[][]) => {
-            if (this.abortAutoComplete) {
-              return;
+        forkJoin(
+          this._autoCompleteMethods(query)
+            .filter(filter => !this.model.hasOwnProperty(filter.key))
+            .map(filter => filter.method)
+        ).subscribe((results: SearchAutoCompleteItem[][]) => {
+          if (this.abortAutoComplete) {
+            return;
+          }
+
+          const newAutoCompleteGroups: SearchAutoCompleteGroups = {};
+
+          // Populate newAutoCompleteGroups with non-empty groups
+          results.forEach(group => {
+            if (group.length) {
+              const type = group[0].type;
+              newAutoCompleteGroups[type] = group;
             }
-
-            const newAutoCompleteGroups: SearchAutoCompleteGroups = {};
-
-            // Populate newAutoCompleteGroups with non-empty groups
-            results.forEach(group => {
-              if (group.length) {
-                const type = group[0].type;
-                newAutoCompleteGroups[type] = group;
-              }
-            });
-
-            // Remove keys that are no longer present
-            for (const key in this.autoCompleteGroups) {
-              if (!(key in newAutoCompleteGroups)) {
-                delete this.autoCompleteGroups[key];
-              }
-            }
-
-            // Update autoCompleteGroups with new groups
-            Object.assign(this.autoCompleteGroups, newAutoCompleteGroups);
-
-            // Trigger change detection
-            this.autoCompleteGroups = { ...this.autoCompleteGroups };
-
-            this.loadingAutoCompleteItems = false;
           });
-        }
-      });
+
+          // Remove keys that are no longer present
+          for (const key in this.autoCompleteGroups) {
+            if (!(key in newAutoCompleteGroups)) {
+              delete this.autoCompleteGroups[key];
+            }
+          }
+
+          // Update autoCompleteGroups with new groups
+          Object.assign(this.autoCompleteGroups, newAutoCompleteGroups);
+
+          // Trigger change detection
+          this.autoCompleteGroups = { ...this.autoCompleteGroups };
+
+          this.loadingAutoCompleteItems = false;
+        });
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -262,7 +263,6 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   getItemCountInGroup(group: SearchAutoCompleteType): number {
     return this.autoCompleteGroups[group]?.length || 0;
   }
-
 
   hasAutoCompleteItems(): boolean {
     return Object.keys(this.autoCompleteGroups).length > 0;
@@ -392,6 +392,22 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   onSearch(model: SearchModelInterface): void {
     this.resetAutoCompleteItems();
+
+    forkJoin(
+      this._autoCompleteMethods(model.text)
+        .filter(filter => !this.model.hasOwnProperty(filter.key))
+        .map(filter => filter.method)
+    ).subscribe((results: SearchAutoCompleteItem[][]) => {
+      results.forEach(group => {
+        group.forEach(item => {
+          if (item.label.toLowerCase() === model.text.trim().toLowerCase()) {
+            this.onAutoCompleteItemClicked(item);
+            return;
+          }
+        });
+      });
+    });
+
     this.modelChanged.emit(model);
   }
 
