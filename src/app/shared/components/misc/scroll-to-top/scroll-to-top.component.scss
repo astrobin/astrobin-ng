@@ -18,14 +18,20 @@
   }
 
   @media (max-width: $md-max) {
-    bottom: 5.5rem;
-
     &.position-left {
       left: .75rem;
     }
 
     &.position-right {
       right: .75rem;
+    }
+  }
+}
+
+:host-context(.page.has-mobile-buttons-bar) {
+  @media (max-width: $md-max) {
+    .btn {
+      bottom: 5.5rem;
     }
   }
 }
