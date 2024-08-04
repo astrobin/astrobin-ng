@@ -40,6 +40,8 @@ import { SearchTelescopeFocalLengthFilterComponent } from "@features/search/comp
 import { SearchIntegrationTimeFilterComponent } from "@features/search/components/filters/search-integration-time-filter/search-integration-time-filter.component";
 import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
 import { SearchSizeFilterComponent } from "@features/search/components/filters/search-size-filter/search-size-filter.component";
+import { SearchDatePublishedFilterComponent } from "@features/search/components/filters/search-date-published-filter/search-date-published-filter.component";
+import { SearchDateAcquiredFilterComponent } from "@features/search/components/filters/search-date-acquired-filter/search-date-acquired-filter.component";
 import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 
 const allFilterComponents = [
@@ -73,6 +75,8 @@ const allFilterComponents = [
   SearchIntegrationTimeFilterComponent,
   SearchFilterTypesFilterComponent,
   SearchSizeFilterComponent,
+  SearchDatePublishedFilterComponent,
+  SearchDateAcquiredFilterComponent,
   SearchAcquisitionTypeFilterComponent
 ];
 
@@ -97,5 +101,4 @@ const allFilterComponents = [
     }
   ]
 })
-export class SearchModule {
-}
+export class SearchModule {}

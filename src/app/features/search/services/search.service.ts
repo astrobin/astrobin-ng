@@ -71,6 +71,8 @@ export enum SearchAutoCompleteType {
   INTEGRATION_TIME = "integration_time",
   FILTER_TYPES = "filter_types",
   SIZE = "size",
+  DATE_PUBLISHED = "date_published",
+  DATE_ACQUIRED = "date_acquired",
   ACQUISITION_TYPE = "acquisition_type"
 }
 
@@ -193,6 +195,10 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Filter types");
       case SearchAutoCompleteType.SIZE:
         return this.translateService.instant("File size");
+      case SearchAutoCompleteType.DATE_PUBLISHED:
+        return this.translateService.instant("Date published");
+      case SearchAutoCompleteType.DATE_ACQUIRED:
+        return this.translateService.instant("Date acquired");
       case SearchAutoCompleteType.ACQUISITION_TYPE:
         return this.translateService.instant("Acquisition type");
     }

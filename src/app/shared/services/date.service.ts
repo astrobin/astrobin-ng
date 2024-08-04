@@ -8,11 +8,13 @@ import { Injectable } from "@angular/core";
   providedIn: "root"
 })
 export class DateService extends BaseService {
-  constructor(
-    public readonly loadingService: LoadingService,
-    public readonly translateService: TranslateService
-  ) {
+  constructor(public readonly loadingService: LoadingService, public readonly translateService: TranslateService) {
     super(loadingService);
+  }
+
+  todayISODate() {
+    // Returns today's date in YYYY-MM-DD format.
+    return new Date().toISOString().split("T")[0];
   }
 
   humanizeMonth(month: Month): string {
