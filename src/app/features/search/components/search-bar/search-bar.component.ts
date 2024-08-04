@@ -392,6 +392,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   onSearch(model: SearchModelInterface): void {
+    const normalizedQuery = model.text.toLowerCase().replace(/\s/g, "");
+
     this.resetAutoCompleteItems();
 
     forkJoin(
@@ -401,7 +403,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     ).subscribe((results: SearchAutoCompleteItem[][]) => {
       results.forEach(group => {
         group.forEach(item => {
-          if (item.label.toLowerCase() === model.text.trim().toLowerCase()) {
+          const normalizedLabel = item.label.toLowerCase().replace(/\s/g, "");
+          if (normalizedLabel === normalizedQuery) {
             this.onAutoCompleteItemClicked(item);
             return;
           }

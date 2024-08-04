@@ -457,7 +457,7 @@ export class SearchService extends BaseService {
           type,
           humanized: this.telescopeService.humanizeType(type)
         }))
-        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
           type: SearchAutoCompleteType.TELESCOPE_TYPE,
           label: item.humanized,
@@ -474,7 +474,7 @@ export class SearchService extends BaseService {
           type,
           humanized: this.cameraService.humanizeType(type)
         }))
-        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
           type: SearchAutoCompleteType.CAMERA_TYPE,
           label: item.humanized,
@@ -491,7 +491,7 @@ export class SearchService extends BaseService {
           month,
           humanized: this.dateService.humanizeMonth(month)
         }))
-        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
           type: SearchAutoCompleteType.ACQUISITION_MONTHS,
           label: item.humanized,
@@ -507,7 +507,7 @@ export class SearchService extends BaseService {
   autoCompleteRemoteSources$(query: string): Observable<SearchAutoCompleteItem[]> {
     return of(
       Object.entries(RemoteSource)
-        .filter(([_, humanized]) => humanized.toLowerCase().includes(query.toLowerCase()))
+        .filter(([_, humanized]) => this._autoCompleteMatch(query, humanized))
         .map(([source, humanized]) => ({
           type: SearchAutoCompleteType.REMOTE_SOURCE,
           label: humanized,
@@ -524,7 +524,7 @@ export class SearchService extends BaseService {
         type,
         humanized: this.imageService.humanizeSubjectType(type)
       }))
-      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+      .filter(item => this._autoCompleteMatch(query, item.humanized))
       .map(item => ({
         type: SearchAutoCompleteType.SUBJECT_TYPE,
         label: item.humanized,
@@ -537,7 +537,7 @@ export class SearchService extends BaseService {
         type,
         humanized: this.imageService.humanizeSolarSystemSubjectType(type)
       }))
-      .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+      .filter(item => this._autoCompleteMatch(query, item.humanized))
       .map(item => ({
         type: SearchAutoCompleteType.SUBJECT_TYPE,
         label: item.humanized,
@@ -559,7 +559,7 @@ export class SearchService extends BaseService {
           type,
           humanized: this.sensorService.humanizeColorOrMono(type)
         }))
-        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
           type: SearchAutoCompleteType.COLOR_OR_MONO,
           label: item.humanized,
@@ -592,7 +592,7 @@ export class SearchService extends BaseService {
 
     return of(
       Object.entries(awardTypes)
-        .filter(([_, humanized]) => humanized.some(x => x.toLowerCase().includes(query.toLowerCase())))
+        .filter(([_, humanized]) => humanized.some(x => this._autoCompleteMatch(query, x)))
         .map(([award, humanized]) => ({
           type: SearchAutoCompleteType.AWARD,
           label: humanized[1],
@@ -605,7 +605,7 @@ export class SearchService extends BaseService {
     return of(
       this.countryService
         .getCountries(this.translateService.currentLang)
-        .filter(country => country.name.toLowerCase().includes(query.toLowerCase()))
+        .filter(country => this._autoCompleteMatch(query, country.name))
         .map(country => ({
           type: SearchAutoCompleteType.COUNTRY,
           label: country.name,
@@ -621,7 +621,7 @@ export class SearchService extends BaseService {
           source,
           humanized: this.imageService.humanizeDataSource(source)
         }))
-        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
           type: SearchAutoCompleteType.DATA_SOURCE,
           label: item.humanized,
@@ -645,7 +645,7 @@ export class SearchService extends BaseService {
           label: Object.values(item)[0],
           value: Object.keys(item)[0]
         }))
-        .filter(item => item.label.toLowerCase().includes(query.toLowerCase()))
+        .filter(item => this._autoCompleteMatch(query, item.label))
     );
   }
 
@@ -653,7 +653,7 @@ export class SearchService extends BaseService {
     return of(
       this.constellationService
         .getConstellations(this.translateService.currentLang)
-        .filter(constellation => constellation.name.toLowerCase().includes(query.toLowerCase()))
+        .filter(constellation => this._autoCompleteMatch(query, constellation.name))
         .map(constellation => ({
           type: SearchAutoCompleteType.CONSTELLATION,
           label: constellation.name,
@@ -670,7 +670,7 @@ export class SearchService extends BaseService {
           scale,
           humanized: this.imageService.humanizeBortleScale(scale as BortleScale)
         }))
-        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
           type: SearchAutoCompleteType.BORTLE_SCALE,
           label: item.humanized,
@@ -689,7 +689,7 @@ export class SearchService extends BaseService {
           option,
           humanized: this.imageService.humanizeLicenseOption(option)
         }))
-        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
           type: SearchAutoCompleteType.LICENSES,
           label: item.humanized,
@@ -706,7 +706,7 @@ export class SearchService extends BaseService {
           type,
           humanized: this.filterService.humanizeType(type)
         }))
-        .filter(item => item.humanized.toLowerCase().includes(query.toLowerCase()))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
           type: SearchAutoCompleteType.FILTER_TYPES,
           label: item.humanized,
@@ -719,7 +719,14 @@ export class SearchService extends BaseService {
     );
   }
 
-  _autoCompleteYesNo$(query: string, type: SearchAutoCompleteType): Observable<SearchAutoCompleteItem[]> {
+  private _autoCompleteMatch(query: string, candidate: string): boolean {
+    const normalizationFunction = (value: string) => value.replace(/\s+/g, "").toLowerCase();
+    const normalizedQuery = normalizationFunction(query);
+    const normalizedCandidate = normalizationFunction(candidate);
+    return normalizedCandidate.includes(normalizedQuery);
+  }
+
+  private _autoCompleteYesNo$(query: string, type: SearchAutoCompleteType): Observable<SearchAutoCompleteItem[]> {
     return of(
       Object.values(["Y", "N"])
         .map(type => ({
