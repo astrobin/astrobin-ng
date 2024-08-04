@@ -1,148 +1,156 @@
 @import "../../../../styles/breakpoints";
 @import "../../../../styles/mixins";
 
-.search-bar-wrapper {
-  position: relative;
+:host {
+  .search-bar-wrapper {
+    position: relative;
 
-  .search-bar-input-container {
-    padding: .75rem 6.75rem .75rem 1rem;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: start;
-    gap: .25rem;
-
-    @media (max-width: $xs-max) {
-      flex-direction: column;
-
-      ::ng-deep > * {
-        width: 100%;
-      }
-    }
-
-    .search-bar-input {
-      background: none;
-      border: 0;
-      outline: none;
-      box-shadow: none;
-      padding-left: 0;
-      padding-right: 0;
-      width: auto;
-      flex-grow: 1;
-
-      @media (max-width: $sm-max) {
-        padding-left: .5rem;
-        padding-right: .5rem;
-      }
-    }
-
-    &.has-auto-complete-items {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-  }
-
-  .search-bar-autocomplete-items {
-    @include darkest-background-texture();
-    position: absolute;
-    top: 3.75rem;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    gap: .25rem;
-    padding: .5rem;
-    width: 100%;
-    max-height: calc(100vh - 170px);
-    overflow-y: auto;
-    z-index: 1;
-    background-color: var(--darkestGrey);
-    border-bottom-left-radius: var(--bs-border-radius);
-    border-bottom-right-radius: var(--bs-border-radius);
-    border-bottom: 1px solid var(--darkGrey);
-    box-shadow: 0 1rem 1rem var(--black);
-
-    .search-bar-autocomplete-group {
-      overflow: hidden;
-      color: var(--lighterGrey);
+    .search-bar-input-container {
+      padding: .75rem 6.75rem .75rem 1rem;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      position: relative;
+      justify-content: start;
+      gap: .25rem;
 
-      @media (max-width: $sm-max) {
-        flex-direction: column;
-        overflow: visible;
-      }
-
-      > .search-bar-autocomplete-title {
-        padding: .25rem .75rem;
-        border: 1px solid var(--grey);
-        background-color: var(--lightGrey);
-        border-radius: var(--bs-border-radius);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        pointer-events: none;
-        margin: 0;
-        color: var(--white);
-        font-size: 1rem;
-        white-space: nowrap;
-      }
-
-      > .search-bar-autocomplete-item {
-        display: block;
-        padding: .25rem .75rem;
-        cursor: pointer;
-        white-space: nowrap;
-
-        &.selected,
-        &:hover {
-          background-color: var(--darkerGrey);
-        }
-
-        ::ng-deep > .highlight {
-          color: var(--white);
-        }
-      }
-    }
-  }
-
-  .search-bar-icons {
-    position: absolute;
-    top: 0;
-    right: 1rem;
-    height: 100%;
-    display: flex;
-    align-items: center;
-
-    [icon] {
-      padding: 6px 12px;
-      cursor: pointer;
-      color: var(--lightestGrey);
-
-      &:hover {
-        color: var(--white);
-      }
-    }
-  }
-
-  &.has-filters {
-    .search-bar-input-container {
       @media (max-width: $xs-max) {
-        padding-right: 4.25rem;
+        flex-direction: column;
+
+        ::ng-deep > * {
+          width: 100%;
+        }
       }
 
       .search-bar-input {
-        @media (min-width: $sm-min) {
-          margin-left: .5rem;
+        background: none;
+        border: 0;
+        outline: none;
+        box-shadow: none;
+        padding-left: 0;
+        padding-right: 0;
+        width: auto;
+        flex-grow: 1;
+
+        @media (max-width: $sm-max) {
+          padding-left: .5rem;
+          padding-right: .5rem;
+        }
+      }
+
+      &.has-auto-complete-items {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+
+    .search-bar-autocomplete-items {
+      @include darkest-background-texture();
+      position: absolute;
+      top: unset;
+      bottom: unset;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+      padding: .5rem;
+      width: 100%;
+      max-height: calc(100vh - 170px);
+      overflow-y: auto;
+      z-index: 1;
+      background-color: var(--darkestGrey);
+      border-bottom-left-radius: var(--bs-border-radius);
+      border-bottom-right-radius: var(--bs-border-radius);
+      border-bottom: 1px solid var(--darkGrey);
+      box-shadow: 0 1rem 1rem var(--black);
+
+      .search-bar-autocomplete-group {
+        overflow: hidden;
+        color: var(--lighterGrey);
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        position: relative;
+
+        @media (max-width: $sm-max) {
+          flex-direction: column;
+          overflow: visible;
+        }
+
+        > .search-bar-autocomplete-title {
+          padding: .25rem .75rem;
+          border: 1px solid var(--grey);
+          background-color: var(--lightGrey);
+          border-radius: var(--bs-border-radius);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          pointer-events: none;
+          margin: 0;
+          color: var(--white);
+          font-size: 1rem;
+          white-space: nowrap;
+        }
+
+        > .search-bar-autocomplete-item {
+          display: block;
+          padding: .25rem .75rem;
+          cursor: pointer;
+          white-space: nowrap;
+
+          &.selected,
+          &:hover {
+            background-color: var(--darkerGrey);
+          }
+
+          ::ng-deep > .highlight {
+            color: var(--white);
+          }
+
+          @media (max-width: $sm-max) {
+            padding: .5rem;
+          }
         }
       }
     }
 
     .search-bar-icons {
-      @media (max-width: $xs-max) {
-        flex-direction: column;
-        justify-content: center;
+      position: absolute;
+      top: 0;
+      right: 1rem;
+      height: 100%;
+      display: flex;
+      align-items: center;
+
+      [icon] {
+        padding: 6px 12px;
+        cursor: pointer;
+        color: var(--lightestGrey);
+
+        &:hover {
+          color: var(--white);
+        }
+      }
+    }
+
+    &.has-filters {
+      .search-bar-input-container {
+        @media (max-width: $xs-max) {
+          padding-right: 4.25rem;
+        }
+
+        .search-bar-input {
+          @media (min-width: $sm-min) {
+            margin-left: .5rem;
+          }
+        }
+      }
+
+      .search-bar-icons {
+        @media (max-width: $xs-max) {
+          flex-direction: column;
+          justify-content: center;
+        }
       }
     }
   }
