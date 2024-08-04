@@ -13,7 +13,7 @@ export abstract class SearchBaseSliderFilterComponent extends SearchBaseFilterCo
   abstract unit: string;
   editFields: FormlyFieldConfig[];
 
-  initFields(key: SearchAutoCompleteType, options: Options = {}): void {
+  protected initFields(key: SearchAutoCompleteType, options: Options = {}): void {
     this.editFields = [
       {
         key,
