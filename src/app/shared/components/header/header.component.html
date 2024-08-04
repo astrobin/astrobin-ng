@@ -40,6 +40,7 @@
 <ng-template #quickSearchTemplate>
   <!-- Quick search form -->
   <form
+    *ngIf="!isSearchPage"
     [action]="classicRoutesService.SEARCH"
     class="ps-3 pe-2 px-lg-4"
     method="get"
@@ -138,7 +139,11 @@
 </ng-template>
 
 <ng-template #mobileSearchToggleTemplate>
-  <a (click)="onShowMobileSearchClick($event)" class="nav-link toggle-mobile-search d-lg-none">
+  <a
+    *ngIf="!isSearchPage"
+    (click)="onShowMobileSearchClick($event)"
+    class="nav-link toggle-mobile-search d-lg-none"
+  >
     <fa-icon icon="search"></fa-icon>
   </a>
 </ng-template>

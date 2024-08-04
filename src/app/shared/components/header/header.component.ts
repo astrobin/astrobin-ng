@@ -39,6 +39,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   user: UserInterface;
   userProfile: UserProfileInterface;
   showMobileSearch = false;
+  isSearchPage = false;
 
   languages: AvailableLanguageInterface[] = [
     { code: "en", label: "English (US)" },
@@ -170,13 +171,16 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
       this.helpWithTranslationsUrl = url;
     });
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.closeSidebarMenu();
-      this.closeUserSidebarMenu();
-    });
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this.isSearchPage = this.router.url.startsWith("/search");
+        this.closeSidebarMenu();
+        this.closeUserSidebarMenu();
+      });
 
     this.currentUserWrapper$.pipe(takeUntil(this.destroyed$)).subscribe(wrapper => {
       this.user = wrapper.user;
