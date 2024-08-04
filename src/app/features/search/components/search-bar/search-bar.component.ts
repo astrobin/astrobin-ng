@@ -214,6 +214,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
             .map(filter => filter.method)
         ).subscribe((results: SearchAutoCompleteItem[][]) => {
           if (this.abortAutoComplete) {
+            this.loadingAutoCompleteItems = false;
             return;
           }
 
