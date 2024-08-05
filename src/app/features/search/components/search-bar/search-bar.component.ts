@@ -402,25 +402,29 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   onSearch(model: SearchModelInterface): void {
-    const normalizedQuery = model.text.toLowerCase().replace(/\s/g, "");
+    const normalizedQuery = model.text
+      ? model.text.toLowerCase().replace(/\s/g, "")
+      : null;
 
     this.resetAutoCompleteItems();
 
-    forkJoin(
-      this._autoCompleteMethods(model.text)
-        .filter(filter => !this.model.hasOwnProperty(filter.key))
-        .map(filter => filter.method)
-    ).subscribe((results: SearchAutoCompleteItem[][]) => {
-      results.forEach(group => {
-        group.forEach(item => {
-          const normalizedLabel = item.label.toLowerCase().replace(/\s/g, "");
-          if (normalizedLabel === normalizedQuery) {
-            this.onAutoCompleteItemClicked(item);
-            return;
-          }
+    if (normalizedQuery) {
+      forkJoin(
+        this._autoCompleteMethods(model.text)
+          .filter(filter => !this.model.hasOwnProperty(filter.key))
+          .map(filter => filter.method)
+      ).subscribe((results: SearchAutoCompleteItem[][]) => {
+        results.forEach(group => {
+          group.forEach(item => {
+            const normalizedLabel = item.label.toLowerCase().replace(/\s/g, "");
+            if (normalizedLabel === normalizedQuery) {
+              this.onAutoCompleteItemClicked(item);
+              return;
+            }
+          });
         });
       });
-    });
+    }
 
     this.modelChanged.emit(model);
   }
