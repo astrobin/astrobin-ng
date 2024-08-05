@@ -6,6 +6,7 @@ import { MainState } from "@app/store/state";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ActivatedRoute } from "@angular/router";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-search-page",
@@ -18,7 +19,8 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
   constructor(
     public readonly store$: Store<MainState>,
     public readonly location: Location,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
   }
@@ -62,6 +64,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     };
 
     this.updateUrl();
+    this.windowRefService.scroll({ top: 0 });
   }
 
   updateUrl(): void {
