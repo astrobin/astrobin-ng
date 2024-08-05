@@ -7,64 +7,58 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
 
 @Component({
-  selector: "astrobin-coords-filter.search-filter-component",
+  selector: "astrobin-image-size-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchCoordsFilterComponent extends SearchBaseFilterComponent {
-  static key = SearchAutoCompleteType.COORDS;
+export class SearchImageSizeFilterComponent extends SearchBaseFilterComponent {
+  static key = SearchAutoCompleteType.IMAGE_SIZE;
   readonly label = this.searchService.humanizeSearchAutoCompleteType(
-    SearchCoordsFilterComponent.key as SearchAutoCompleteType
+    SearchImageSizeFilterComponent.key as SearchAutoCompleteType
   );
-  readonly raLabel = this.translateService.instant("Right ascension");
-  readonly decLabel = this.translateService.instant("Declination");
+  readonly widthLabel = this.translateService.instant("Width");
+  readonly heightLabel = this.translateService.instant("Height");
+  readonly unit = "px";
 
   editFields = [
     {
-      key: SearchCoordsFilterComponent.key,
+      key: SearchImageSizeFilterComponent.key,
       fieldGroup: [
         {
-          key: "ra",
+          key: "w",
           type: "slider",
           wrappers: ["default-wrapper"],
           props: {
-            label: this.raLabel,
+            label: this.widthLabel,
             required: true,
-            showInputs: false,
             sliderOptions: {
-              floor: 0,
-              ceil: 1440,  // 24 hours * 60 minutes
-              step: 1,
-              translate: (value: number): string => this.astroUtilsService.formatRa(value)
+              floor: 1,
+              ceil: 16536
             }
           }
         },
         {
-          key: "dec",
+          key: "h",
           type: "slider",
           wrappers: ["default-wrapper"],
           props: {
-            label: this.decLabel,
+            label: this.heightLabel,
             required: true,
-            showInputs: false,
             sliderOptions: {
-              floor: -90,
-              ceil: 90,
-              step: .1,
-              translate: (value: number): string => this.astroUtilsService.formatDec(value)
+              floor: 1,
+              ceil: 16536
             }
           }
         }
       ],
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          if (!this.editModel[SearchCoordsFilterComponent.key]) {
+          if (!this.editModel[SearchImageSizeFilterComponent.key]) {
             field.formControl.setValue({
-              ra: { min: 0, max: 1440 },
-              dec: { min: -90, max: 90 }
+              w: { min: 1, max: 16536 },
+              h: { min: 1, max: 16536 }
             });
           }
         }
@@ -78,7 +72,6 @@ export class SearchCoordsFilterComponent extends SearchBaseFilterComponent {
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
     public readonly searchService: SearchService,
-    public readonly astroUtilsService: AstroUtilsService
   ) {
     super(store$, translateService, domSanitizer, modalService, searchService);
   }
@@ -88,11 +81,11 @@ export class SearchCoordsFilterComponent extends SearchBaseFilterComponent {
       return "";
     }
 
-    const minRa = this.astroUtilsService.formatRa(this.value.ra.min);
-    const maxRa = this.astroUtilsService.formatRa(this.value.ra.max);
-    const minDec = this.value.dec.min;
-    const maxDec = this.value.dec.max
+    const minW = this.value.w.min;
+    const maxW = this.value.w.max;
+    const minH = this.value.h.min;
+    const maxH = this.value.h.max;
 
-    return this.domSanitizer.bypassSecurityTrustHtml(`RA: ${minRa} - ${maxRa}, Dec: ${minDec} - ${maxDec}`);
+    return this.domSanitizer.bypassSecurityTrustHtml(`${minW} - ${maxW} ${this.unit} x ${minH} - ${maxH} ${this.unit}`);
   }
 }

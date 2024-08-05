@@ -32,7 +32,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-slider/ngx-slider": "15.0.0",
+    "@angular-slider/ngx-slider": "15.0.1",
     "@angular/animations": "15.2.1",
     "@angular/cdk": "15.2.9",
     "@angular/common": "15.2.1",

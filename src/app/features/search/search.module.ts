@@ -45,6 +45,7 @@ import { SearchDateAcquiredFilterComponent } from "@features/search/components/f
 import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 import { SearchMoonPhaseFilterComponent } from "@features/search/components/filters/search-moon-phase-filter/search-moon-phase-filter.component";
 import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
+import { SearchImageSizeFilterComponent } from "@features/search/components/filters/search-image-size-filter/search-image-size-filter.component";
 
 const allFilterComponents = [
   SearchSubjectFilterComponent,
@@ -81,7 +82,8 @@ const allFilterComponents = [
   SearchDateAcquiredFilterComponent,
   SearchAcquisitionTypeFilterComponent,
   SearchMoonPhaseFilterComponent,
-  SearchCoordsFilterComponent
+  SearchCoordsFilterComponent,
+  SearchImageSizeFilterComponent
 ];
 
 @NgModule({
