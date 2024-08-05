@@ -7,7 +7,7 @@
   [options]="props.sliderOptions"
 ></ngx-slider>
 
-<div class="inputs d-flex gap-4 justify-content-between align-content-center mt-4">
+<div *ngIf="props.showInputs" class="inputs d-flex gap-4 justify-content-between align-content-center mt-4">
   <div class="form-group mb-0">
     <label [for]="props.id + '-min'">{{ "Min" | translate }}</label>
     <input

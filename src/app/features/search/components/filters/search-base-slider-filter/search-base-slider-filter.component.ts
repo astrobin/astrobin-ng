@@ -22,6 +22,7 @@ export abstract class SearchBaseSliderFilterComponent extends SearchBaseFilterCo
         props: {
           label: this.label,
           required: true,
+          showInputs: true,
           sliderOptions: {
             translate: (value: number, label: LabelType): string => {
               switch (label) {

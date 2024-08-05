@@ -44,6 +44,7 @@ import { SearchDatePublishedFilterComponent } from "@features/search/components/
 import { SearchDateAcquiredFilterComponent } from "@features/search/components/filters/search-date-acquired-filter/search-date-acquired-filter.component";
 import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 import { SearchMoonPhaseFilterComponent } from "@features/search/components/filters/search-moon-phase-filter/search-moon-phase-filter.component";
+import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
 
 const allFilterComponents = [
   SearchSubjectFilterComponent,
@@ -79,7 +80,8 @@ const allFilterComponents = [
   SearchDatePublishedFilterComponent,
   SearchDateAcquiredFilterComponent,
   SearchAcquisitionTypeFilterComponent,
-  SearchMoonPhaseFilterComponent
+  SearchMoonPhaseFilterComponent,
+  SearchCoordsFilterComponent
 ];
 
 @NgModule({

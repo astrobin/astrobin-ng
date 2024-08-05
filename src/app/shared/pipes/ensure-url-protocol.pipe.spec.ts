@@ -12,7 +12,7 @@ describe("EnsureUrlProtocolPipe", () => {
     expect(pipe).toBeTruthy();
   });
 
-  it("should delegate to UtilsService", () => {
+  it("should delegate to AstroUtilsService", () => {
     jest.spyOn(UtilsService, "ensureUrlProtocol");
 
     pipe.transform("foo");
