@@ -76,7 +76,8 @@ export enum SearchAutoCompleteType {
   ACQUISITION_TYPE = "acquisition_type",
   MOON_PHASE = "moon_phase",
   COORDS = "coords",
-  IMAGE_SIZE = "image_size"
+  IMAGE_SIZE = "image_size",
+  GROUPS = "groups"
 }
 
 export interface SearchAutoCompleteItem {
@@ -210,6 +211,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("RA/Dec coordinates");
       case SearchAutoCompleteType.IMAGE_SIZE:
         return this.translateService.instant("Width and height");
+      case SearchAutoCompleteType.GROUPS:
+        return this.translateService.instant("In groups");
     }
   }
 
