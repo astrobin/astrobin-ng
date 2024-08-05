@@ -471,13 +471,24 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
       this.filterComponentRefs.push(componentRef);
 
-      componentRef.instance.valueChanges.subscribe(filterValue => {
-        this.model = {
-          ...this.model,
-          ...{
-            [key]: filterValue
-          }
-        };
+      componentRef.instance.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(filterValue => {
+        if (componentRef.instance.hasValue()) {
+          this.model = {
+            ...this.model,
+            ...{
+              [key]: filterValue
+            }
+          };
+        } else {
+          // this.model = {
+          //   ...this.model,
+          //   ...{
+          //     [key]: null
+          //   }
+          // };
+          this.removeFilter(componentRef);
+        }
+
         this.onSearch(this.model);
       });
 
@@ -527,12 +538,14 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       }
 
       componentRef.instance.edit();
-      componentRef.instance.valueChanges.subscribe(value => {
-        if (value) {
-          if (!alreadyPresent) {
-            componentRef.destroy();
-            this.addFilter(filterComponentType, value);
-          }
+      componentRef.instance.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe((value: any) => {
+        const hasValue = componentRef.instance.hasValue();
+
+        if (hasValue && !alreadyPresent) {
+          componentRef.destroy();
+          this.addFilter(filterComponentType, value);
+        } else if (!hasValue && alreadyPresent) {
+          this.removeFilter(componentRef);
         }
       });
     });

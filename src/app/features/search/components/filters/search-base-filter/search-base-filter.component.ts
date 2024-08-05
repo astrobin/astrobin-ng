@@ -12,6 +12,7 @@ import { SearchFilterComponentInterface } from "@features/search/interfaces/sear
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { takeUntil } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-search-filter-base",
@@ -69,6 +70,28 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
       this.value = keyValue[key];
       this.valueChanges.emit(this.value);
     });
+  }
+
+  hasValue(value?: any): boolean {
+    if (!value) {
+      value = this.value;
+    }
+
+    if (!value) {
+      return false;
+    }
+
+    if (UtilsService.isArray(value)) {
+      return value.length > 0;
+    }
+
+    if (UtilsService.isObject(value)) {
+      if (value.hasOwnProperty("value")) {
+        return this.hasValue(value.value);
+      }
+    }
+
+    return true;
   }
 
   getMatchTypeField(listKey: string): FormlyFieldConfig {
