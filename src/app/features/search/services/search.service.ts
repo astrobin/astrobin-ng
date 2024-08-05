@@ -73,7 +73,8 @@ export enum SearchAutoCompleteType {
   SIZE = "size",
   DATE_PUBLISHED = "date_published",
   DATE_ACQUIRED = "date_acquired",
-  ACQUISITION_TYPE = "acquisition_type"
+  ACQUISITION_TYPE = "acquisition_type",
+  MOON_PHASE = "moon_phase"
 }
 
 export interface SearchAutoCompleteItem {
@@ -201,6 +202,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Date acquired");
       case SearchAutoCompleteType.ACQUISITION_TYPE:
         return this.translateService.instant("Acquisition type");
+      case SearchAutoCompleteType.MOON_PHASE:
+        return this.translateService.instant("Moon illumination");
     }
   }
 
