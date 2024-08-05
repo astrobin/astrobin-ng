@@ -106,6 +106,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
         }
       },
       props: {
+        searchable: false,
         label: this.translateService.instant("Match type"),
         hideOptionalMarker: true,
         options: [

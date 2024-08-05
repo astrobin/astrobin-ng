@@ -25,6 +25,7 @@ export class SearchDataSourceFilterComponent extends SearchBaseFilterComponent {
       type: "ng-select",
       wrappers: ["default-wrapper"],
       props: {
+        searchable: false,
         hideOptionalMarker: true,
         label: this.label,
         description: this.translateService.instant("Only show images with data from a specific source."),

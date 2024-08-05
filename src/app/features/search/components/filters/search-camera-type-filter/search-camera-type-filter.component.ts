@@ -23,6 +23,7 @@ export class SearchCameraTypeFilterComponent extends SearchBaseFilterComponent {
       type: "ng-select",
       wrappers: ["default-wrapper"],
       props: {
+        searchable: false,
         hideOptionalMarker: true,
         label: this.label,
         description: this.translateService.instant("Only show images acquired with a specific camera type."),

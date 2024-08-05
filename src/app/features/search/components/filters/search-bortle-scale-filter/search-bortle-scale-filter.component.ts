@@ -47,6 +47,7 @@ export class SearchBortleScaleFilterComponent extends SearchBaseFilterComponent 
           type: "ng-select",
           wrappers: ["default-wrapper"],
           props: {
+            searchable: false,
             required: true,
             label: this.minLabel,
             options: this.options
@@ -79,6 +80,7 @@ export class SearchBortleScaleFilterComponent extends SearchBaseFilterComponent 
           type: "ng-select",
           wrappers: ["default-wrapper"],
           props: {
+            searchable: false,
             required: true,
             label: this.maxLabel,
             options: this.options

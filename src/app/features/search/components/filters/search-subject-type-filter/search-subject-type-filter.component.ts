@@ -25,6 +25,7 @@ export class SearchSubjectTypeFilterComponent extends SearchBaseFilterComponent 
       type: "ng-select",
       wrappers: ["default-wrapper"],
       props: {
+        searchable: false,
         hideOptionalMarker: true,
         label: this.label,
         description: this.translateService.instant("Only show images of a specific subject type."),

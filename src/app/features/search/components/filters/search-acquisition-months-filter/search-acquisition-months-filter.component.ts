@@ -33,6 +33,7 @@ export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComp
             }
           },
           props: {
+            searchable: false,
             closeOnSelect: true,
             hideOptionalMarker: true,
             multiple: true,
