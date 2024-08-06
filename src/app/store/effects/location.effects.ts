@@ -24,28 +24,19 @@ export class LocationEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.CREATE_LOCATION_SUCCESS),
       map(action => action.payload),
-      tap(location => this.store$.dispatch(new LoadUser({ id: location.user }))),
-      switchMap(location =>
-        this.store$.select(selectUser, location.user).pipe(
-          filter(user => !!user),
-          take(1),
-          tap(user => this.store$.dispatch(new LoadUserProfile({ id: user.userProfile }))),
-          switchMap(user => this.store$.select(selectUserProfile, user.userProfile)),
-          filter(userProfile => !!userProfile),
-          take(1),
-          map(userProfile => ({
-            userProfile,
-            newLocation: location
-          }))
-        )
-      ),
+      tap(location => this.store$.dispatch(new LoadUserProfile({ id: location.user }))),
+      switchMap(location => this.store$.select(selectUserProfile, location.user).pipe(
+        filter(userProfile => !!userProfile),
+        take(1),
+        map(userProfile => ({ userProfile, location }))
+      )),
       map(
-        ({ userProfile, newLocation }) =>
+        ({ userProfile, location }) =>
           new UpdateUserProfile({
             ...userProfile,
             locations: [
               ...userProfile.locations,
-              ...[newLocation]
+              ...[location]
             ]
           })
       )

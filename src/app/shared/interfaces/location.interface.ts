@@ -1,4 +1,4 @@
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 export interface LocationInterface {
   id: number;
@@ -15,5 +15,5 @@ export interface LocationInterface {
   lon_sec?: number;
   lon_side: "E" | "W";
   altitude?: number;
-  user?: UserInterface["id"];
+  user?: UserProfileInterface["id"];
 }
