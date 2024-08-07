@@ -731,4 +731,55 @@ describe("UtilsService", () => {
       expect(UtilsService.sortObjectsByProperty([{ a: 2 }, { a: 1 }], "a")).toEqual([{ a: 1 }, { a: 2 }]);
     });
   });
+
+  describe('cloneValue', () => {
+    it('should clone a primitive value', () => {
+      expect(UtilsService.cloneValue(42)).toBe(42);
+      expect(UtilsService.cloneValue('test')).toBe('test');
+      expect(UtilsService.cloneValue(true)).toBe(true);
+    });
+
+    it('should clone null and undefined', () => {
+      expect(UtilsService.cloneValue(null)).toBeNull();
+      expect(UtilsService.cloneValue(undefined)).toBeUndefined();
+    });
+
+    it('should clone an array of primitives', () => {
+      const array = [1, 'test', true];
+      const clonedArray = UtilsService.cloneValue(array);
+      expect(clonedArray).toEqual(array);
+      expect(clonedArray).not.toBe(array);
+    });
+
+    it('should clone an array of objects', () => {
+      const array = [{ a: 1 }, { b: 2 }];
+      const clonedArray = UtilsService.cloneValue(array);
+      expect(clonedArray).toEqual(array);
+      expect(clonedArray).not.toBe(array);
+      expect(clonedArray[0]).not.toBe(array[0]);
+    });
+
+    it('should clone a plain object', () => {
+      const obj = { a: 1, b: 'test' };
+      const clonedObj = UtilsService.cloneValue(obj);
+      expect(clonedObj).toEqual(obj);
+      expect(clonedObj).not.toBe(obj);
+    });
+
+    it('should clone a nested object', () => {
+      const obj = { a: { b: 2 }, c: 3 };
+      const clonedObj = UtilsService.cloneValue(obj);
+      expect(clonedObj).toEqual(obj);
+      expect(clonedObj).not.toBe(obj);
+      expect(clonedObj.a).not.toBe(obj.a);
+    });
+
+    it('should clone an array with nested objects', () => {
+      const array = [{ a: { b: 2 } }, { c: 3 }];
+      const clonedArray = UtilsService.cloneValue(array);
+      expect(clonedArray).toEqual(array);
+      expect(clonedArray).not.toBe(array);
+      expect(clonedArray[0].a).not.toBe(array[0].a);
+    });
+  });
 });

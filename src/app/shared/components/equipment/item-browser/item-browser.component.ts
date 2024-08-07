@@ -204,7 +204,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     public readonly equipmentItemService: EquipmentItemService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
   }
@@ -854,6 +854,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       const value: Type[] = this.model.value as Type[];
 
       if (!value || value.length === 0) {
+        return of([]);
+      }
+
+      // Detect if value[0] is an integer.
+      if (!Number.isInteger(value[0])) {
         return of([]);
       }
 

@@ -1,30 +1,9 @@
-import {
-  AfterViewInit,
-  Component,
-  ComponentRef,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  Inject,
-  Input,
-  OnInit,
-  Output,
-  PLATFORM_ID,
-  QueryList,
-  Type,
-  ViewChild,
-  ViewChildren,
-  ViewContainerRef
-} from "@angular/core";
+import { AfterViewInit, Component, ComponentRef, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, QueryList, Type, ViewChild, ViewChildren, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import {
-  SearchAutoCompleteItem,
-  SearchAutoCompleteType,
-  SearchService
-} from "@features/search/services/search.service";
+import { SearchAutoCompleteItem, SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { forkJoin, Subject } from "rxjs";
 import { SearchSubjectFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subject-filter.component";
@@ -257,8 +236,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     if (this.deviceService.isTouchEnabled()) {
       this.searchInput.nativeElement.blur();
-    }
- else {
+    } else {
       this.searchInput.nativeElement.focus();
     }
   }
@@ -287,11 +265,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       if (this.selectedAutoCompleteGroup === null) {
         this.selectedAutoCompleteGroup = groupOrder[0];
         this.selectedAutoCompleteItemIndex = 0;
-      }
- else if (this.selectedAutoCompleteItemIndex < currentItemCount - 1) {
+      } else if (this.selectedAutoCompleteItemIndex < currentItemCount - 1) {
         this.selectedAutoCompleteItemIndex++;
-      }
- else if (currentGroupIndex < groupOrder.length - 1) {
+      } else if (currentGroupIndex < groupOrder.length - 1) {
         const nextGroupIndex = (currentGroupIndex + 1) % groupOrder.length;
         this.selectedAutoCompleteGroup = groupOrder[nextGroupIndex];
         this.selectedAutoCompleteItemIndex = 0;
@@ -310,11 +286,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       if (this.selectedAutoCompleteGroup === null) {
         this.selectedAutoCompleteGroup = groupOrder[0];
         this.selectedAutoCompleteItemIndex = this.getItemCountInGroup(groupOrder[0]) - 1;
-      }
- else if (this.selectedAutoCompleteItemIndex > 0) {
+      } else if (this.selectedAutoCompleteItemIndex > 0) {
         this.selectedAutoCompleteItemIndex--;
-      }
- else if (currentGroupIndex > 0) {
+      } else if (currentGroupIndex > 0) {
         const previousGroupIndex = (currentGroupIndex - 1 + groupOrder.length) % groupOrder.length;
         const previousGroup = groupOrder[previousGroupIndex];
         this.selectedAutoCompleteGroup = previousGroup;
@@ -457,8 +431,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     if (autoCompleteItem.type === SearchAutoCompleteType.SEARCH_FILTER) {
       filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.value);
       this.createAndEditFilter(filterComponentType);
-    }
- else {
+    } else {
       filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
       this.addFilter(filterComponentType, autoCompleteItem.value);
     }
@@ -484,12 +457,6 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
             }
           };
         } else {
-          // this.model = {
-          //   ...this.model,
-          //   ...{
-          //     [key]: null
-          //   }
-          // };
           this.removeFilter(componentRef);
         }
 

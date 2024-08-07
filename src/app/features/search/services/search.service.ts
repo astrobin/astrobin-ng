@@ -430,7 +430,10 @@ export class SearchService extends BaseService {
             return {
               type: SearchAutoCompleteType.TELESCOPE,
               label,
-              value
+              value: {
+                value: [value],
+                matchType: null
+              }
             };
           });
         }),
@@ -462,7 +465,10 @@ export class SearchService extends BaseService {
             return {
               type: SearchAutoCompleteType.CAMERA,
               label,
-              value
+              value: {
+                value: [value],
+                matchType: null
+              }
             };
           });
         }),

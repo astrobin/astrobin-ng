@@ -13,6 +13,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { isObservable, Subscription } from "rxjs";
 
 @Component({
   selector: "astrobin-search-filter-base",
@@ -24,6 +25,8 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
 
   editForm: FormGroup = new FormGroup({});
   editModel: any = {};
+  valueTransformer: (value: any) => any = value => value;
+
   abstract editFields: FormlyFieldConfig[];
   abstract label: string;
 
@@ -61,14 +64,25 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
     const modalRef: NgbModalRef = this.modalService.open(SearchFilterEditorModalComponent);
     const instance: SearchFilterEditorModalComponent = modalRef.componentInstance;
     const key = this.searchService.getKeyByFilterComponentInstance(this);
-    instance.fields = this.editFields;
-    instance.model = { [key]: this.value };
-    this.editModel = instance.model;
+    instance.fields = [...this.editFields];
+    instance.model = { [key]: UtilsService.cloneValue(this.value) };
+    this.editModel = { ...instance.model };
     instance.form = this.editForm;
 
-    modalRef.closed.subscribe(keyValue => {
-      this.value = keyValue[key];
+    const applyValue = (value: any) => {
+      this.value = value;
       this.valueChanges.emit(this.value);
+    }
+
+    modalRef.closed.subscribe(keyValue => {
+      const transformedValue = this.valueTransformer(keyValue[key]);
+      if (isObservable(transformedValue)) {
+        transformedValue.subscribe(value => {
+          applyValue(value);
+        });
+      } else {
+        applyValue(transformedValue);
+      }
     });
   }
 

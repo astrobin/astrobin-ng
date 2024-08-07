@@ -905,6 +905,29 @@ export class UtilsService {
     return Object.values(enumType).includes(value);
   }
 
+  static cloneValue(value: any): any {
+    if (value === null || value === undefined) {
+      return value;
+    }
+
+    if (typeof value === 'object') {
+      if (Array.isArray(value)) {
+        return value.map(UtilsService.cloneValue);
+      } else {
+        const clonedObj = {};
+        for (const key in value) {
+          if (value.hasOwnProperty(key)) {
+            clonedObj[key] = UtilsService.cloneValue(value[key]);
+          }
+        }
+        return clonedObj;
+      }
+    }
+
+    // For primitive types (string, number, boolean)
+    return value;
+  }
+
   supportsDateInput() {
     if (isPlatformServer(this.platformId)) {
       return false;
