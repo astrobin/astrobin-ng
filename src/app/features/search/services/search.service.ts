@@ -617,25 +617,36 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteModifiedCamera$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.MODIFIED_CAMERA);
+    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.MODIFIED_CAMERA).pipe(
+      map(value => (
+        value.map(item => ({
+          ...item,
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.MODIFIED_CAMERA)
+        })
+      )
+    ))) as Observable<SearchAutoCompleteItem[]>;
   }
 
   autoCompleteAnimated$(query: string): Observable<SearchAutoCompleteItem[]> {
     return this._autoCompleteYesNo$(query, SearchAutoCompleteType.ANIMATED).pipe(
-      map(value => ({
-        ...value,
-        minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.ANIMATED)
-      }))
-    );
+      map(value => (
+        value.map(item => ({
+            ...item,
+            minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.ANIMATED)
+          })
+        )
+      ))) as Observable<SearchAutoCompleteItem[]>;
   }
 
   autoCompleteVideos$(query: string): Observable<SearchAutoCompleteItem[]> {
     return this._autoCompleteYesNo$(query, SearchAutoCompleteType.VIDEO).pipe(
-      map(value => ({
-        ...value,
-        minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.VIDEO)
-      }))
-    );
+      map(value => (
+        value.map(item => ({
+            ...item,
+            minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.VIDEO)
+          })
+        )
+      ))) as Observable<SearchAutoCompleteItem[]>;
   }
 
   autoCompleteAward$(query: string): Observable<SearchAutoCompleteItem[]> {
