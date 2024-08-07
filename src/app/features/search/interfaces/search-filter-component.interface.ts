@@ -5,6 +5,7 @@ export interface SearchFilterComponentInterface {
   value: any;
   valueChanges: EventEmitter<any>;
   hasValue: () => boolean;
+  valueTransformer?: (value: any) => any;
   remove: EventEmitter<void>;
   edit: () => void;
 }
