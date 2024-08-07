@@ -450,7 +450,8 @@ export class SearchService extends BaseService {
               value: {
                 value: [value],
                 matchType: null
-              }
+              },
+              minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.TELESCOPE)
             };
           });
         }),
@@ -485,7 +486,8 @@ export class SearchService extends BaseService {
               value: {
                 value: [value],
                 matchType: null
-              }
+              },
+              minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.CAMERA)
             };
           });
         }),
