@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchBaseDateRangeFilterComponent } from "@features/search/components/filters/search-base-date-range-filter/search-base-date-range-filter.component";
 import { DateService } from "@shared/services/date.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-search-date-published-filter.search-filter-component",
@@ -16,6 +17,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 })
 export class SearchDatePublishedFilterComponent extends SearchBaseDateRangeFilterComponent {
   static key = SearchAutoCompleteType.DATE_PUBLISHED;
+  static minimumSubscription = PayableProductInterface.LITE;
+
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchDatePublishedFilterComponent.key as SearchAutoCompleteType
   );

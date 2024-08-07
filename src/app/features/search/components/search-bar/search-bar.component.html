@@ -34,8 +34,12 @@
         (mouseenter)="selectedAutoCompleteItemIndex = i"
         *ngFor="let item of group.value; let i = index"
         [class.selected]="item.type === selectedAutoCompleteGroup && i === selectedAutoCompleteItemIndex"
-        [innerHTML]="item.label | highlight: model.text"
-        class="search-bar-autocomplete-item">
+        class="search-bar-autocomplete-item"
+      >
+        <span [innerHTML]="item.label | highlight: model.text"></span>
+        <ng-container *ngIf="(searchService.allowFilter$(item.minimumSubscription) | async) === false">
+          <fa-icon icon="lock" class="ms-2"></fa-icon>
+        </ng-container>
       </div>
     </div>
   </div>

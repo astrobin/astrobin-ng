@@ -7,6 +7,7 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { CountryService } from "@shared/services/country.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-country-filter.search-filter-component",
@@ -15,6 +16,8 @@ import { CountryService } from "@shared/services/country.service";
 })
 export class SearchCountryFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.COUNTRY;
+  static minimumSubscription = PayableProductInterface.LITE;
+
   label = this.searchService.humanizeSearchAutoCompleteType(SearchCountryFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {

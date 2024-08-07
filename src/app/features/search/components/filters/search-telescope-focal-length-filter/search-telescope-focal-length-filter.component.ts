@@ -6,6 +6,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-telescope-focal-length-filter.search-filter-component",
@@ -14,6 +15,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class SearchTelescopeFocalLengthFilterComponent extends SearchBaseSliderFilterComponent {
   static key = SearchAutoCompleteType.TELESCOPE_FOCAL_LENGTH;
+  static minimumSubscription = PayableProductInterface.ULTIMATE;
+
   unit = "mm";
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchTelescopeFocalLengthFilterComponent.key as SearchAutoCompleteType

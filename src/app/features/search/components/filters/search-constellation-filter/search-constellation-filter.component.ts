@@ -7,6 +7,7 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { ConstellationsService } from "@features/explore/services/constellations.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-constellation-source-filter.search-filter-component",
@@ -15,6 +16,8 @@ import { ConstellationsService } from "@features/explore/services/constellations
 })
 export class SearchConstellationFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.CONSTELLATION;
+  static minimumSubscription = PayableProductInterface.LITE;
+
   label = this.searchService.humanizeSearchAutoCompleteType(SearchConstellationFilterComponent.key as SearchAutoCompleteType);
   readonly constellations = this.constellationService.getConstellations(this.translateService.currentLang);
   editFields = [

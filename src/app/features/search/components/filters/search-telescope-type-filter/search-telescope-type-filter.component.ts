@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { TelescopeType } from "@features/equipment/types/telescope.interface";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-search-telescope-type-filter.search-filter-component",
@@ -16,6 +17,8 @@ import { TelescopeService } from "@features/equipment/services/telescope.service
 })
 export class SearchTelescopeTypeFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.TELESCOPE_TYPE;
+  static minimumSubscription = PayableProductInterface.LITE;
+
   label = this.searchService.humanizeSearchAutoCompleteType(SearchTelescopeTypeFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {

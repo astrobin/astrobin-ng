@@ -6,6 +6,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-mount-max-payload-filter.search-filter-component",
@@ -14,6 +15,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class SearchMountMaxPayloadFilterComponent extends SearchBaseSliderFilterComponent {
   static key = SearchAutoCompleteType.MOUNT_MAX_PAYLOAD;
+  static minimumSubscription = PayableProductInterface.ULTIMATE;
+
   unit = "kg";
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchMountMaxPayloadFilterComponent.key as SearchAutoCompleteType

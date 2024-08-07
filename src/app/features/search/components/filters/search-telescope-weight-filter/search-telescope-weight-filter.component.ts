@@ -6,6 +6,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-telescope-weight-filter.search-filter-component",
@@ -14,6 +15,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class SearchTelescopeWeightFilterComponent extends SearchBaseSliderFilterComponent {
   static key = SearchAutoCompleteType.TELESCOPE_WEIGHT;
+  static minimumSubscription = PayableProductInterface.ULTIMATE;
+
   unit = "kg";
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchTelescopeWeightFilterComponent.key as SearchAutoCompleteType

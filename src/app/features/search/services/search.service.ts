@@ -1,7 +1,7 @@
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { ComponentRef, Inject, Injectable, Type, ViewContainerRef } from "@angular/core";
-import { Observable, of } from "rxjs";
+import { forkJoin, Observable, of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
@@ -10,24 +10,14 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { map, tap } from "rxjs/operators";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
-import {
-  AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
-  SEARCH_FILTERS_TOKEN
-} from "@features/search/injection-tokens/search-filter.tokens";
+import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@features/search/injection-tokens/search-filter.tokens";
 import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
 import { CameraService } from "@features/equipment/services/camera.service";
 import { DateService } from "@shared/services/date.service";
 import { Month } from "@shared/enums/month.enum";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import {
-  AcquisitionType,
-  DataSource,
-  LicenseOptions,
-  RemoteSource,
-  SolarSystemSubjectType,
-  SubjectType
-} from "@shared/interfaces/image.interface";
+import { AcquisitionType, DataSource, LicenseOptions, RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
@@ -38,6 +28,8 @@ import { ConstellationsService } from "@features/explore/services/constellations
 import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
 import { FilterType } from "@features/equipment/types/filter.interface";
 import { FilterService } from "@features/equipment/services/filter.service";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -84,6 +76,7 @@ export interface SearchAutoCompleteItem {
   type: SearchAutoCompleteType;
   label: string;
   value?: any;
+  minimumSubscription?: PayableProductInterface;
 }
 
 @Injectable({
@@ -110,7 +103,8 @@ export class SearchService extends BaseService {
     public readonly sensorService: SensorService,
     public readonly countryService: CountryService,
     public readonly constellationService: ConstellationsService,
-    public readonly filterService: FilterService
+    public readonly filterService: FilterService,
+    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(loadingService);
   }
@@ -225,6 +219,28 @@ export class SearchService extends BaseService {
     }
   }
 
+  allowFilter$(minimumSubscription: PayableProductInterface): Observable<boolean> {
+    return forkJoin([
+      this.userSubscriptionService.isLite$(),
+      this.userSubscriptionService.isPremium$(),
+      this.userSubscriptionService.isUltimate$()
+    ]).pipe(
+      map(([isLite, isPremium, isUltimate]) => ({
+        isLite,
+        isPremium,
+        isUltimate
+      })),
+      map(({ isLite, isPremium, isUltimate }) => {
+        return (
+          (minimumSubscription === null || minimumSubscription === undefined) ||
+          (minimumSubscription === PayableProductInterface.LITE && (isLite || isPremium || isUltimate)) ||
+          (minimumSubscription === PayableProductInterface.PREMIUM && (isPremium || isUltimate)) ||
+          (minimumSubscription === PayableProductInterface.ULTIMATE && isUltimate)
+        );
+      })
+    );
+  }
+
   autoCompleteSearchFilters$(query: string): Observable<SearchAutoCompleteItem[]> {
     return of(
       this.allFiltersTypes
@@ -238,7 +254,8 @@ export class SearchService extends BaseService {
           return {
             type: SearchAutoCompleteType.SEARCH_FILTER,
             label: this.humanizeSearchAutoCompleteType((filterType as any).key),
-            value: (filterType as any).key
+            value: (filterType as any).key,
+            minimumSubscription: (filterType as any).minimumSubscription
           };
         })
         .slice(0, this._autoCompleteItemsLimit)
@@ -604,11 +621,21 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteAnimated$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.ANIMATED);
+    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.ANIMATED).pipe(
+      map(value => ({
+        ...value,
+        minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.ANIMATED)
+      }))
+    );
   }
 
   autoCompleteVideos$(query: string): Observable<SearchAutoCompleteItem[]> {
-    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.VIDEO);
+    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.VIDEO).pipe(
+      map(value => ({
+        ...value,
+        minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.VIDEO)
+      }))
+    );
   }
 
   autoCompleteAward$(query: string): Observable<SearchAutoCompleteItem[]> {
@@ -624,7 +651,8 @@ export class SearchService extends BaseService {
         .map(([award, humanized]) => ({
           type: SearchAutoCompleteType.AWARD,
           label: humanized[1],
-          value: [award]
+          value: [award],
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.AWARD)
         }))
     );
   }
@@ -637,7 +665,8 @@ export class SearchService extends BaseService {
         .map(country => ({
           type: SearchAutoCompleteType.COUNTRY,
           label: country.name,
-          value: country.code
+          value: country.code,
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.COUNTRY)
         }))
     );
   }
@@ -653,7 +682,8 @@ export class SearchService extends BaseService {
         .map(item => ({
           type: SearchAutoCompleteType.DATA_SOURCE,
           label: item.humanized,
-          value: item.source
+          value: item.source,
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.DATA_SOURCE)
         }))
     );
   }
@@ -671,7 +701,8 @@ export class SearchService extends BaseService {
         .map(item => ({
           type: SearchAutoCompleteType.MINIMUM_DATA,
           label: Object.values(item)[0],
-          value: Object.keys(item)[0]
+          value: Object.keys(item)[0],
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.MINIMUM_DATA)
         }))
         .filter(item => this._autoCompleteMatch(query, item.label))
     );
@@ -685,7 +716,8 @@ export class SearchService extends BaseService {
         .map(constellation => ({
           type: SearchAutoCompleteType.CONSTELLATION,
           label: constellation.name,
-          value: constellation.id
+          value: constellation.id,
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.CONSTELLATION)
         }))
         .slice(0, this._autoCompleteItemsLimit)
     );
@@ -705,7 +737,8 @@ export class SearchService extends BaseService {
           value: {
             min: item.scale,
             max: BortleScale.NINE
-          }
+          },
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.BORTLE_SCALE)
         }))
     );
   }
@@ -721,7 +754,8 @@ export class SearchService extends BaseService {
         .map(item => ({
           type: SearchAutoCompleteType.LICENSES,
           label: item.humanized,
-          value: [item.option]
+          value: [item.option],
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.LICENSES)
         }))
         .slice(0, this._autoCompleteItemsLimit)
     );
@@ -741,7 +775,8 @@ export class SearchService extends BaseService {
           value: {
             value: [item.type],
             matchType: null
-          }
+          },
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.FILTER_TYPES)
         }))
         .slice(0, this._autoCompleteItemsLimit)
     );
@@ -758,7 +793,8 @@ export class SearchService extends BaseService {
         .map(item => ({
           type: SearchAutoCompleteType.ACQUISITION_TYPE,
           label: item.humanized,
-          value: item.type
+          value: item.type,
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.ACQUISITION_TYPE)
         }))
     );
   }
@@ -784,5 +820,11 @@ export class SearchService extends BaseService {
           value: item.type === "Y"
         }))
     );
+  }
+
+  private _getMinimumSubscription(key: SearchAutoCompleteType): PayableProductInterface {
+    return (
+      this.allFiltersTypes.find(filterType => (filterType as any).key === key) as any
+    ).minimumSubscription;
   }
 }

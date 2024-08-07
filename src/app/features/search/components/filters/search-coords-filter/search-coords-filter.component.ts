@@ -8,6 +8,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-coords-filter.search-filter-component",
@@ -16,6 +17,8 @@ import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.serv
 })
 export class SearchCoordsFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.COORDS;
+  static minimumSubscription = PayableProductInterface.ULTIMATE;
+
   readonly label = this.searchService.humanizeSearchAutoCompleteType(
     SearchCoordsFilterComponent.key as SearchAutoCompleteType
   );

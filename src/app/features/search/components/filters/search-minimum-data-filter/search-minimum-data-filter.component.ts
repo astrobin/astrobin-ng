@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-search-minimum-data-filter.search-filter-component",
@@ -16,6 +17,8 @@ import { SearchMinimumDataFilterValue } from "@features/search/components/filter
 })
 export class SearchMinimumDataFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.MINIMUM_DATA;
+  static minimumSubscription = PayableProductInterface.ULTIMATE;
+
   readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchMinimumDataFilterComponent.key as SearchAutoCompleteType);
   readonly values: { [key: string]: string } = {
     [SearchMinimumDataFilterValue.TELESCOPES]: this.translateService.instant("Imaging telescopes or lenses"),

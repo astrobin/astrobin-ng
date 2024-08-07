@@ -8,6 +8,7 @@
       [(ngModel)]="model"
       [editable]="false"
       [ngbTypeahead]="search"
+      [resultTemplate]="resultTemplate"
       class="form-control"
       placeholder="{{ translateService.instant('Search') }}"
       type="text"
@@ -16,3 +17,16 @@
     <ng-container #filterContainer></ng-container>
   </div>
 </div>
+
+<ng-template #resultTemplate let-result="result" let-term="term">
+  <div class="search-filter-result d-flex justify-content-between align-items-center">
+    <div class="search-filter-result-label flex-grow-1">
+      <ngb-highlight [result]="result.label" [term]="term"></ngb-highlight>
+    </div>
+    <div class="allow">
+      <ng-container *ngIf="(result.allow$ | async) === false">
+        <fa-icon icon="lock"></fa-icon>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>

@@ -7,6 +7,7 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { RemoteSource } from "@shared/interfaces/image.interface";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-search-remote-source-filter.search-filter-component",
@@ -15,6 +16,8 @@ import { RemoteSource } from "@shared/interfaces/image.interface";
 })
 export class SearchRemoteSourceFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.REMOTE_SOURCE;
+  static minimumSubscription = PayableProductInterface.ULTIMATE;
+
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchRemoteSourceFilterComponent.key as SearchAutoCompleteType
   );

@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-subject-type-source-filter.search-filter-component",
@@ -16,6 +17,8 @@ import { ImageService } from "@shared/services/image/image.service";
 })
 export class SearchSubjectTypeFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.SUBJECT_TYPE;
+  static minimumSubscription = PayableProductInterface.LITE;
+
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchSubjectTypeFilterComponent.key as SearchAutoCompleteType
   );

@@ -36,6 +36,9 @@ import { SearchFilterTypesFilterComponent } from "@features/search/components/fi
 import { DeviceService } from "@shared/services/device.service";
 import { TranslateService } from "@ngx-translate/core";
 import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -74,98 +77,6 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   modelChanged = new EventEmitter<SearchModelInterface>();
 
   private _modelChanged: Subject<string> = new Subject<string>();
-  private _autoCompleteMethods = (query: string) => {
-    return [
-      {
-        key: SearchAutoCompleteType.SEARCH_FILTER,
-        method: this.searchService.autoCompleteSearchFilters$(query)
-      },
-      {
-        key: SearchTelescopeFilterComponent.key,
-        method: this.searchService.autoCompleteTelescopes$(query)
-      },
-      {
-        key: SearchCameraFilterComponent.key,
-        method: this.searchService.autoCompleteCameras$(query)
-      },
-      {
-        key: SearchSubjectFilterComponent.key,
-        method: this.searchService.autoCompleteSubjects$(query)
-      },
-      {
-        key: SearchTelescopeTypeFilterComponent.key,
-        method: this.searchService.autoCompleteTelescopeTypes$(query)
-      },
-      {
-        key: SearchCameraTypeFilterComponent.key,
-        method: this.searchService.autoCompleteCameraTypes$(query)
-      },
-      {
-        key: SearchAcquisitionMonthsFilterComponent.key,
-        method: this.searchService.autoCompleteMonths$(query)
-      },
-      {
-        key: SearchRemoteSourceFilterComponent.key,
-        method: this.searchService.autoCompleteRemoteSources$(query)
-      },
-      {
-        key: SearchSubjectTypeFilterComponent.key,
-        method: this.searchService.autoCompleteSubjectTypes$(query)
-      },
-      {
-        key: SearchColorOrMonoFilterComponent.key,
-        method: this.searchService.autoCompleteColorOrMono$(query)
-      },
-      {
-        key: SearchModifiedCameraFilterComponent.key,
-        method: this.searchService.autoCompleteModifiedCamera$(query)
-      },
-      {
-        key: SearchAnimatedFilterComponent.key,
-        method: this.searchService.autoCompleteAnimated$(query)
-      },
-      {
-        key: SearchVideoFilterComponent.key,
-        method: this.searchService.autoCompleteVideos$(query)
-      },
-      {
-        key: SearchAwardFilterComponent.key,
-        method: this.searchService.autoCompleteAward$(query)
-      },
-      {
-        key: SearchCountryFilterComponent.key,
-        method: this.searchService.autoCompleteCountries$(query)
-      },
-      {
-        key: SearchDataSourceFilterComponent.key,
-        method: this.searchService.autoCompleteDataSources$(query)
-      },
-      {
-        key: SearchMinimumDataFilterComponent.key,
-        method: this.searchService.autoCompleteMinimumData$(query)
-      },
-      {
-        key: SearchConstellationFilterComponent.key,
-        method: this.searchService.autoCompleteConstellations$(query)
-      },
-      {
-        key: SearchBortleScaleFilterComponent.key,
-        method: this.searchService.autoCompleteBortleScale$(query)
-      },
-      {
-        key: SearchLicenseFilterComponent.key,
-        method: this.searchService.autoCompleteLicenseOptions$(query)
-      },
-      {
-        key: SearchFilterTypesFilterComponent.key,
-        method: this.searchService.autoCompleteFilterTypes$(query)
-      },
-      {
-        key: SearchAcquisitionTypeFilterComponent.key,
-        method: this.searchService.autoCompleteAcquisitionTypes$(query)
-      }
-    ];
-  };
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -426,15 +337,38 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   onAutoCompleteItemClicked(autoCompleteItem: SearchAutoCompleteItem): void {
-    let filterComponentType: Type<SearchFilterComponentInterface>;
+    this.searchService.allowFilter$(autoCompleteItem.minimumSubscription).subscribe(allow => {
+      if (!allow) {
+        const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+        let requiredSubscription: SimplifiedSubscriptionName;
 
-    if (autoCompleteItem.type === SearchAutoCompleteType.SEARCH_FILTER) {
-      filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.value);
-      this.createAndEditFilter(filterComponentType);
-    } else {
-      filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
-      this.addFilter(filterComponentType, autoCompleteItem.value);
-    }
+        switch (autoCompleteItem.minimumSubscription) {
+          case PayableProductInterface.LITE:
+            requiredSubscription = SimplifiedSubscriptionName.ASTROBIN_LITE;
+            break;
+          case PayableProductInterface.PREMIUM:
+            requiredSubscription = SimplifiedSubscriptionName.ASTROBIN_PREMIUM;
+            break;
+          case PayableProductInterface.ULTIMATE:
+            requiredSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
+            break;
+        }
+
+        modalRef.componentInstance.requiredSubscription = requiredSubscription;
+
+        return;
+      }
+
+      let filterComponentType: Type<SearchFilterComponentInterface>;
+
+      if (autoCompleteItem.type === SearchAutoCompleteType.SEARCH_FILTER) {
+        filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.value);
+        this.createAndEditFilter(filterComponentType);
+      } else {
+        filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
+        this.addFilter(filterComponentType, autoCompleteItem.value);
+      }
+    })
   }
 
   addFilter(filterComponentType: Type<SearchFilterComponentInterface>, value: any): void {
@@ -530,4 +464,97 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       this.createAndEditFilter(componentType);
     });
   }
+
+  private _autoCompleteMethods = (query: string) => {
+    return [
+      {
+        key: SearchAutoCompleteType.SEARCH_FILTER,
+        method: this.searchService.autoCompleteSearchFilters$(query)
+      },
+      {
+        key: SearchTelescopeFilterComponent.key,
+        method: this.searchService.autoCompleteTelescopes$(query)
+      },
+      {
+        key: SearchCameraFilterComponent.key,
+        method: this.searchService.autoCompleteCameras$(query)
+      },
+      {
+        key: SearchSubjectFilterComponent.key,
+        method: this.searchService.autoCompleteSubjects$(query)
+      },
+      {
+        key: SearchTelescopeTypeFilterComponent.key,
+        method: this.searchService.autoCompleteTelescopeTypes$(query)
+      },
+      {
+        key: SearchCameraTypeFilterComponent.key,
+        method: this.searchService.autoCompleteCameraTypes$(query)
+      },
+      {
+        key: SearchAcquisitionMonthsFilterComponent.key,
+        method: this.searchService.autoCompleteMonths$(query)
+      },
+      {
+        key: SearchRemoteSourceFilterComponent.key,
+        method: this.searchService.autoCompleteRemoteSources$(query)
+      },
+      {
+        key: SearchSubjectTypeFilterComponent.key,
+        method: this.searchService.autoCompleteSubjectTypes$(query)
+      },
+      {
+        key: SearchColorOrMonoFilterComponent.key,
+        method: this.searchService.autoCompleteColorOrMono$(query)
+      },
+      {
+        key: SearchModifiedCameraFilterComponent.key,
+        method: this.searchService.autoCompleteModifiedCamera$(query)
+      },
+      {
+        key: SearchAnimatedFilterComponent.key,
+        method: this.searchService.autoCompleteAnimated$(query)
+      },
+      {
+        key: SearchVideoFilterComponent.key,
+        method: this.searchService.autoCompleteVideos$(query)
+      },
+      {
+        key: SearchAwardFilterComponent.key,
+        method: this.searchService.autoCompleteAward$(query)
+      },
+      {
+        key: SearchCountryFilterComponent.key,
+        method: this.searchService.autoCompleteCountries$(query)
+      },
+      {
+        key: SearchDataSourceFilterComponent.key,
+        method: this.searchService.autoCompleteDataSources$(query)
+      },
+      {
+        key: SearchMinimumDataFilterComponent.key,
+        method: this.searchService.autoCompleteMinimumData$(query)
+      },
+      {
+        key: SearchConstellationFilterComponent.key,
+        method: this.searchService.autoCompleteConstellations$(query)
+      },
+      {
+        key: SearchBortleScaleFilterComponent.key,
+        method: this.searchService.autoCompleteBortleScale$(query)
+      },
+      {
+        key: SearchLicenseFilterComponent.key,
+        method: this.searchService.autoCompleteLicenseOptions$(query)
+      },
+      {
+        key: SearchFilterTypesFilterComponent.key,
+        method: this.searchService.autoCompleteFilterTypes$(query)
+      },
+      {
+        key: SearchAcquisitionTypeFilterComponent.key,
+        method: this.searchService.autoCompleteAcquisitionTypes$(query)
+      }
+    ];
+  };
 }

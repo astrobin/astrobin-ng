@@ -345,4 +345,32 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
       })
     );
   }
+
+  isLite$(): Observable<boolean> {
+    return this.hasValidSubscription$(null, [
+      SubscriptionName.ASTROBIN_LITE,
+      SubscriptionName.ASTROBIN_LITE_AUTORENEW,
+      SubscriptionName.ASTROBIN_LITE_2020,
+      SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+      SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY
+    ]);
+  }
+
+  isPremium$(): Observable<boolean> {
+    return this.hasValidSubscription$(null, [
+      SubscriptionName.ASTROBIN_PREMIUM,
+      SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+      SubscriptionName.ASTROBIN_PREMIUM_2020,
+      SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+      SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY
+    ]);
+  }
+
+  isUltimate$(): Observable<boolean> {
+    return this.hasValidSubscription$(null, [
+      SubscriptionName.ASTROBIN_ULTIMATE_2020,
+      SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+      SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
+    ]);
+  }
 }

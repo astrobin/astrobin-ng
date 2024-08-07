@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { YesNoPipe } from "@shared/pipes/yes-no.pipe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-animated-filter.search-filter-component",
@@ -16,6 +17,8 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 })
 export class SearchAnimatedFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.ANIMATED;
+  static minimumSubscription = PayableProductInterface.LITE;
+
   label = this.searchService.humanizeSearchAutoCompleteType(SearchAnimatedFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {

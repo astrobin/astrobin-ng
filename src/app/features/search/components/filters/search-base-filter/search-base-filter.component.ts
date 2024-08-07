@@ -13,7 +13,8 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { isObservable, Subscription } from "rxjs";
+import { isObservable } from "rxjs";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-search-filter-base",
@@ -22,6 +23,7 @@ import { isObservable, Subscription } from "rxjs";
 export abstract class SearchBaseFilterComponent extends BaseComponentDirective implements SearchFilterComponentInterface, OnInit {
   // This is the attribute that ends up in the search query.
   static key: SearchAutoCompleteType;
+  static minimumSubscription: PayableProductInterface = null;
 
   editForm: FormGroup = new FormGroup({});
   editModel: any = {};

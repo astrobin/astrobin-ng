@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { YesNoPipe } from "@shared/pipes/yes-no.pipe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-modified-camera-filter.search-filter-component",
@@ -16,6 +17,8 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 })
 export class SearchModifiedCameraFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.MODIFIED_CAMERA;
+  static minimumSubscription = PayableProductInterface.ULTIMATE;
+
   label = this.searchService.humanizeSearchAutoCompleteType(SearchModifiedCameraFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {

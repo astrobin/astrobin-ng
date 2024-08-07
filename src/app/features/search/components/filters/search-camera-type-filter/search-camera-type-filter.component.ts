@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { CameraType } from "@features/equipment/types/camera.interface";
 import { CameraService } from "@features/equipment/services/camera.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-search-camera-type-filter.search-filter-component",
@@ -16,6 +17,8 @@ import { CameraService } from "@features/equipment/services/camera.service";
 })
 export class SearchCameraTypeFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.CAMERA_TYPE;
+  static minimumSubscription = PayableProductInterface.LITE;
+
   label = this.searchService.humanizeSearchAutoCompleteType(SearchCameraTypeFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {

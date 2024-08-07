@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { AcquisitionType } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-acquisition-type-source-filter.search-filter-component",
@@ -16,6 +17,7 @@ import { ImageService } from "@shared/services/image/image.service";
 })
 export class SearchAcquisitionTypeFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.ACQUISITION_TYPE;
+  static minimumSubscription = PayableProductInterface.LITE;
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchAcquisitionTypeFilterComponent.key as SearchAutoCompleteType
   );

@@ -6,6 +6,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-search-field-radius-filter.search-filter-component",
@@ -14,6 +15,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class SearchFieldRadiusFilterComponent extends SearchBaseSliderFilterComponent {
   static key = SearchAutoCompleteType.FIELD_RADIUS;
+  static minimumSubscription = PayableProductInterface.ULTIMATE;
+
   unit = "&deg;";
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchFieldRadiusFilterComponent.key as SearchAutoCompleteType

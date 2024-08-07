@@ -6,6 +6,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-search-camera-pixel-size-filter.search-filter-component",
@@ -14,6 +15,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class SearchCameraPixelSizeFilterComponent extends SearchBaseSliderFilterComponent {
   static key = SearchAutoCompleteType.CAMERA_PIXEL_SIZE;
+  static minimumSubscription = PayableProductInterface.ULTIMATE;
+
   unit = "µm";
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchCameraPixelSizeFilterComponent.key as SearchAutoCompleteType

@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Component({
   selector: "astrobin-search-award-filter.search-filter-component",
@@ -16,6 +17,8 @@ import { SearchAwardFilterValue } from "@features/search/components/filters/sear
 })
 export class SearchAwardFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.AWARD;
+  static minimumSubscription = PayableProductInterface.LITE;
+
   readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchAwardFilterComponent.key as SearchAutoCompleteType);
   readonly values: { [key: string]: string } = {
     [SearchAwardFilterValue.IOTD]: this.translateService.instant("Image of the day"),
