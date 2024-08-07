@@ -13,6 +13,14 @@
       }
     }
   }
+
+  .dropdown-toggle {
+    &.no-toggle {
+      &::after {
+        display: none;
+      }
+    }
+  }
 }
 
 .dropdown-menu {

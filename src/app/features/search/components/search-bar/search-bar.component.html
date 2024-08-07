@@ -69,6 +69,117 @@
       >
       </fa-icon>
 
+      <div ngbDropdown>
+        <button
+          class="btn btn-link no-toggle"
+          ngbDropdownToggle
+          type="button"
+          id="ordering-button"
+        >
+          <fa-icon icon="sort"></fa-icon>
+        </button>
+
+        <div aria-labelledby="ordering-button" ngbDropdownMenu class="ordering-menu">
+          <div class="dropdown-header">
+            {{ "Sort by" | translate }}
+          </div>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('relevance')"
+          >
+            <fa-icon icon="dot-circle"></fa-icon>
+            <span>{{ "Relevance" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === 'relevance' || model.ordering === undefined"></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-published')"
+          >
+            <fa-icon icon="calendar"></fa-icon>
+            <span>{{ "Publication" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-published'"></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-likes')"
+          >
+            <fa-icon icon="thumbs-up"></fa-icon>
+            <span>{{ "Likes" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-likes'"></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-bookmarks')"
+          >
+            <fa-icon icon="bookmark"></fa-icon>
+            <span>{{ "Bookmarks" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-bookmarks'"></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-integration')"
+          >
+            <fa-icon icon="clock"></fa-icon>
+            <span>{{ "Integration" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-integration'"></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-views')"
+          >
+            <fa-icon icon="eye"></fa-icon>
+            <span>{{ "Views" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-views'"></fa-icon>
+          </button>
+
+          <hr />
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-field_radius')"
+          >
+            <fa-icon icon="circle"></fa-icon>
+            <span>{{ "Field radius (large first)" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-field_radius'"></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('field_radius')"
+          >
+            <fa-icon icon="circle"></fa-icon>
+            <span>{{ "Field radius (small first)" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === 'field_radius'"></fa-icon>
+          </button>
+
+          <hr />
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-pixel_scale')"
+          >
+            <fa-icon icon="dot-circle"></fa-icon>
+            <span>{{ "Pixel scale (large first)" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-pixel_scale'"></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('pixel_scale')"
+          >
+            <fa-icon icon="dot-circle"></fa-icon>
+            <span>{{ "Pixel scale (small first)" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === 'pixel_scale'"></fa-icon>
+          </button>
+        </div>
+      </div>
+
       <fa-icon
         (click)="onSearch(model)"
         icon="search"

@@ -39,6 +39,7 @@ import { SearchSubjectTypeFilterComponent } from "@features/search/components/fi
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -86,7 +87,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     public readonly windowRefService: WindowRefService,
     public readonly utilsService: UtilsService,
     public readonly deviceService: DeviceService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$);
   }
@@ -291,6 +293,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       ? model.text.toLowerCase().replace(/\s/g, "")
       : null;
 
+    if (model.text === "" && this.filterComponentRefs.length === 0) {
+      model.ordering = null;
+    }
+
     this.resetAutoCompleteItems();
 
     if (normalizedQuery) {
@@ -462,6 +468,23 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     const modalRef = this.modalService.open(SearchFilterSelectionModalComponent);
     modalRef.closed.subscribe((componentType: Type<SearchBaseFilterComponent>) => {
       this.createAndEditFilter(componentType);
+    });
+  }
+
+  onOrderingChanged(ordering: string): void {
+    this.userSubscriptionService.isFree$().subscribe(isFree => {
+      if (isFree) {
+        const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+        const instance: SubscriptionRequiredModalComponent = modalRef.componentInstance;
+        instance.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_LITE;
+      } else {
+        this.model = {
+          ...this.model,
+          ordering
+        };
+
+        this.onSearch(this.model);
+      }
     });
   }
 

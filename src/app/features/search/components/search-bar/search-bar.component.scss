@@ -123,9 +123,31 @@
         padding: 6px 12px;
         cursor: pointer;
         color: var(--lightestGrey);
+        margin-right: 0;
 
         &:hover {
           color: var(--white);
+        }
+      }
+
+      .ordering-menu {
+        .dropdown-item {
+          display: flex;
+          justify-content: start;
+          align-items: center;
+
+          [icon] {
+            padding: 0;
+            margin-right: .25rem;
+          }
+
+          [icon="check"] {
+            margin: 0;
+          }
+
+          > span {
+            flex-grow: 1;
+          }
         }
       }
     }

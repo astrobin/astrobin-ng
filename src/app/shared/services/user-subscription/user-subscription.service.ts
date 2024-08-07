@@ -8,7 +8,7 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UserSubscriptionServiceInterface } from "@shared/services/user-subscription/user-subscription.service-interface";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
-import { combineLatest, Observable, zip } from "rxjs";
+import { combineLatest, forkJoin, Observable, zip } from "rxjs";
 import { map, switchMap, take } from "rxjs/operators";
 import { selectAuth, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
@@ -372,5 +372,15 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
       SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
       SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
     ]);
+  }
+
+  isFree$(): Observable<boolean> {
+    return forkJoin([
+      this.isLite$(),
+      this.isPremium$(),
+      this.isUltimate$()
+    ]).pipe(
+      map(([isLite, isPremium, isUltimate]) => !isLite && !isPremium && !isUltimate)
+    );
   }
 }

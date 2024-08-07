@@ -96,7 +96,11 @@ const allFilterComponents = [
     SearchFilterSelectionModalComponent,
     ...allFilterComponents
   ],
-  imports: [RouterModule.forChild(searchRoutes), SharedModule, StoreModule.forFeature(searchFeatureKey, searchReducer)],
+  imports: [
+    RouterModule.forChild(searchRoutes),
+    SharedModule,
+    StoreModule.forFeature(searchFeatureKey, searchReducer)
+  ],
   providers: [
     SearchService,
     {

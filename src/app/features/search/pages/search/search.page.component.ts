@@ -71,11 +71,16 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     const { page, pageSize, ...model } = this.model;
 
     if (
-      Object.keys(model).filter(key => key !== "text").length > 0 ||
+      Object.keys(model).filter(key => key !== "text" && key !== "ordering").length > 0 ||
       (
         Object.keys(model).length === 1 &&
         model.hasOwnProperty("text") &&
         model.text !== ""
+      ) ||
+      (
+        model.hasOwnProperty("ordering") &&
+        model.ordering !== null &&
+        model.ordering !== "relevance"
       )
     ) {
       const queryString = UtilsService.toQueryString(model);
