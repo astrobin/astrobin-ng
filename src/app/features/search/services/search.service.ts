@@ -30,6 +30,7 @@ import { FilterType } from "@features/equipment/types/filter.interface";
 import { FilterService } from "@features/equipment/services/filter.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -69,7 +70,8 @@ export enum SearchAutoCompleteType {
   MOON_PHASE = "moon_phase",
   COORDS = "coords",
   IMAGE_SIZE = "image_size",
-  GROUPS = "groups"
+  GROUPS = "groups",
+  PERSONAL_FILTERS = "personal_filters"
 }
 
 export interface SearchAutoCompleteItem {
@@ -207,6 +209,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Width and height");
       case SearchAutoCompleteType.GROUPS:
         return this.translateService.instant("In groups");
+      case SearchAutoCompleteType.PERSONAL_FILTERS:
+        return this.translateService.instant("Personal filters");
     }
   }
 
@@ -216,6 +220,19 @@ export class SearchService extends BaseService {
         return this.translateService.instant("All");
       case MatchType.ANY:
         return this.translateService.instant("Any");
+    }
+  }
+
+  humanizePersonalFilter(value: SearchPersonalFiltersFilterValue): string {
+    switch (value) {
+      case SearchPersonalFiltersFilterValue.MY_IMAGES:
+        return this.translateService.instant("My images");
+      case SearchPersonalFiltersFilterValue.MY_LIKES:
+        return this.translateService.instant("My likes");
+      case SearchPersonalFiltersFilterValue.MY_BOOKMARKS:
+        return this.translateService.instant("My bookmarks");
+      case SearchPersonalFiltersFilterValue.MY_FOLLOWED_USERS:
+        return this.translateService.instant("My followed users");
     }
   }
 
@@ -809,6 +826,26 @@ export class SearchService extends BaseService {
           value: item.type,
           minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.ACQUISITION_TYPE)
         }))
+    );
+  }
+
+  autoCompletePersonalFilters$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of(
+      Object.values(SearchPersonalFiltersFilterValue)
+        .map(type => ({
+          type,
+          humanized: this.humanizePersonalFilter(type)
+        }))
+        .filter(item => this._autoCompleteMatch(query, item.humanized))
+        .map(item => ({
+          type: SearchAutoCompleteType.PERSONAL_FILTERS,
+          label: item.humanized,
+          value: {
+            value: [item.type],
+            matchType: null
+          }
+        }))
+        .slice(0, this._autoCompleteItemsLimit)
     );
   }
 

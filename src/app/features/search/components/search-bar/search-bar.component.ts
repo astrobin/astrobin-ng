@@ -41,6 +41,7 @@ import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -609,6 +610,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       {
         key: SearchAcquisitionTypeFilterComponent.key,
         method: this.searchService.autoCompleteAcquisitionTypes$(query)
+      },
+      {
+        key: SearchPersonalFiltersFilterComponent.key,
+        method: this.searchService.autoCompletePersonalFilters$(query)
       }
     ];
   };
