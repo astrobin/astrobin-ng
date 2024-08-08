@@ -10,6 +10,7 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { NestedCommentSearchInterface } from "@shared/interfaces/nestedcomment-search.interface";
 import { NestedCommentsSearchApiService } from "@shared/services/api/classic/nested-comments/nested-comments-search-api.service";
+import { environment } from "@env/environment";
 
 @Component({
   selector: "astrobin-nested-comment-search",
@@ -37,10 +38,18 @@ export class NestedCommentSearchComponent extends ScrollableSearchResultsBaseCom
   }
 
   openComment(comment: NestedCommentSearchInterface) {
-    const commentId = comment.id.replace("nested_comments.nested_comment.", "");
-    this.windowRefService.nativeWindow.open(
-      `${comment.contentObjectUrl}#c${commentId}`,
-      "_self"
-    );
+    const commentId = comment.id.replace("nested_comments.nestedcomment.", "");
+
+    if (comment.className === "Image") {
+      this.windowRefService.nativeWindow.open(
+        environment.classicBaseUrl  + comment.contentObjectUrl + `#c${commentId}`,
+        "_self"
+      );
+    } else {
+      this.windowRefService.nativeWindow.open(
+        `${comment.contentObjectUrl}#c${commentId}`,
+        "_self"
+      );
+    }
   }
 }

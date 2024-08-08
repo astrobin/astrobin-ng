@@ -8,4 +8,5 @@ export interface NestedCommentSearchInterface {
   userAvatar: string;
   contentObjectTitle: string;
   contentObjectUrl: string;
+  className: string;
 }
