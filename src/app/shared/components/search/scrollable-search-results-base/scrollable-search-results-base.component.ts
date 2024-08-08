@@ -19,7 +19,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   page = 1;
   next: string | null = null;
   results: T[] = [];
-  pageSize = 5;
+  pageSize = 100;
 
   @Input()
   model: SearchModelInterface;
