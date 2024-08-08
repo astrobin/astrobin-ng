@@ -7,6 +7,13 @@
     &:not(:last-child) {
       margin-bottom: 2rem;
     }
+
+    ::ng-deep .highlight {
+      background-color: var(--gold);
+      color: var(--black);
+      padding: .125rem;
+      border-radius: .125rem;
+    }
   }
 
   .card-header {
@@ -41,13 +48,6 @@
         max-width: 10rem;
         border: .25rem var(--white);
         margin: 1rem;
-      }
-
-      .highlight {
-        background-color: var(--gold);
-        color: var(--black);
-        padding: .125rem;
-        border-radius: .125rem;
       }
     }
   }
