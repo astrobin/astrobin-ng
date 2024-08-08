@@ -39,7 +39,7 @@ export class ForumPostSearchComponent extends ScrollableSearchResultsBaseCompone
   openPost(post: ForumPostSearchInterface) {
     this.windowRefService.nativeWindow.open(
       this.classicRoutesService.FORUM_POST(
-        parseInt(post.id.toString().replace("pybb.post.", ""))),
+        post.id.replace("pybb.post.", "")),
       "_self"
     );
   }

@@ -1,5 +1,5 @@
 export interface NestedCommentSearchInterface {
-  id: number;
+  id: string;
   text: string;
   created: string;
   updated: string;

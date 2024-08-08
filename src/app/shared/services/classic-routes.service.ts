@@ -66,5 +66,5 @@ export class ClassicRoutesService extends BaseService {
 
   COMPOSE_MESSAGE = (username: string, subject: string) => BASE_URL + `/messages/compose/${username}/?subject=${subject}`;
 
-  FORUM_POST = (id: number) => BASE_URL + `/forum/post/${id}/`;
+  FORUM_POST = (id: string) => BASE_URL + `/forum/post/${id}/`;
 }

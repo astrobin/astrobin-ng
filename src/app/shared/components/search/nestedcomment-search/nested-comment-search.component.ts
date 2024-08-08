@@ -37,8 +37,9 @@ export class NestedCommentSearchComponent extends ScrollableSearchResultsBaseCom
   }
 
   openComment(comment: NestedCommentSearchInterface) {
+    const commentId = comment.id.replace("nested_comments.nested_comment.", "");
     this.windowRefService.nativeWindow.open(
-      `${comment.contentObjectUrl}#c${comment.id}`,
+      `${comment.contentObjectUrl}#c${commentId}`,
       "_self"
     );
   }
