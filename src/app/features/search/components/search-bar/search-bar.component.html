@@ -221,6 +221,18 @@
               *ngIf="model.searchType === SearchType.FORUM"
             ></fa-icon>
           </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onSearchTypeChanged(SearchType.COMMENTS)"
+          >
+            <fa-icon [icon]="getSearchTypeIcon(SearchType.COMMENTS)"></fa-icon>
+            <span>{{ "Comments" | translate }}</span>
+            <fa-icon
+              icon="check"
+              *ngIf="model.searchType === SearchType.COMMENTS"
+            ></fa-icon>
+          </button>
         </div>
       </div>
 

@@ -16,5 +16,11 @@
     class="d-block mt-3"
   ></astrobin-forum-post-search>
 
+  <astrobin-nested-comment-search
+    *ngIf="model.searchType === SearchType.COMMENTS"
+    [model]="model"
+    class="d-block mt-3"
+  ></astrobin-nested-comment-search>
+
   <astrobin-scroll-to-top></astrobin-scroll-to-top>
 </div>

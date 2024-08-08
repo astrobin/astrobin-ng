@@ -500,6 +500,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         return "image";
       case SearchType.FORUM:
         return "comments";
+      case SearchType.COMMENTS:
+        return "comment-alt";
       default:
         return "image";
     }

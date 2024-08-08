@@ -1,0 +1,65 @@
+@import "../../../../styles/breakpoints";
+
+.search-results {
+  .card {
+    cursor: pointer;
+
+    &:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .card-header {
+    h4 {
+      font-size: 1.25rem;
+    }
+
+    small {
+      font-size: small;
+      font-weight: normal;
+
+      .username {
+        color: var(--lightestGrey);
+      }
+
+      .created {
+        color: var(--lightGrey);
+      }
+    }
+
+    .image-thumbnail {
+      width: 5rem;
+      height: 5rem;
+      margin-right: 1rem;
+    }
+
+    .user-avatar {
+      height: 4rem;
+      width: 4rem;
+      border-radius: 50%;
+      border: 2px solid var(--white);
+    }
+  }
+
+  .card-body {
+    ::ng-deep {
+      img {
+        max-width: 10rem;
+        border: .25rem var(--white);
+        margin: 1rem;
+      }
+
+      .highlight {
+        background-color: var(--gold);
+        color: var(--black);
+        padding: .125rem;
+        border-radius: .125rem;
+      }
+    }
+  }
+
+  .loading {
+    width: 100%;
+    margin: 2rem 0;
+  }
+}

@@ -4,7 +4,8 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 
 export enum SearchType {
   IMAGE = "image",
-  FORUM = "forums"
+  FORUM = "forums",
+  COMMENTS = "comments"
 }
 
 export interface SearchModelInterface {
