@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ComponentRef, ElementRef, EventEmitter, HostL
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { SearchModelInterface, SearchType } from "@features/search/interfaces/search-model.interface";
 import { SearchAutoCompleteItem, SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { forkJoin, Subject } from "rxjs";
@@ -40,6 +40,7 @@ import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subs
 import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -51,7 +52,8 @@ type SearchAutoCompleteGroups = {
   styleUrls: ["./search-bar.component.scss"]
 })
 export class SearchBarComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
-  placeholder = this.translateService.instant("Type here to search");
+  readonly SearchType = SearchType;
+  readonly placeholder = this.translateService.instant("Type here to search");
   autoCompleteGroups: SearchAutoCompleteGroups = {};
   selectedAutoCompleteGroup: SearchAutoCompleteType = null;
   abortAutoComplete = false;
@@ -97,6 +99,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     super.ngOnInit();
 
     this._modelChanged.pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$)).subscribe(value => {
+      if (this.model.searchType !== SearchType.IMAGE && this.model.searchType !== undefined) {
+        return;
+      }
+
       this.selectedAutoCompleteGroup = null;
       this.selectedAutoCompleteItemIndex = -1;
       this.abortAutoComplete = false;
@@ -299,7 +305,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     this.resetAutoCompleteItems();
 
-    if (normalizedQuery) {
+    if (normalizedQuery && (model.searchType === SearchType.IMAGE || model.searchType === undefined)) {
       forkJoin(
         this._autoCompleteMethods(model.text)
           .filter(filter => !this.model.hasOwnProperty(filter.key))
@@ -374,7 +380,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
         this.addFilter(filterComponentType, autoCompleteItem.value);
       }
-    })
+    });
   }
 
   addFilter(filterComponentType: Type<SearchFilterComponentInterface>, value: any): void {
@@ -486,6 +492,30 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         this.onSearch(this.model);
       }
     });
+  }
+
+  getSearchTypeIcon(searchType: SearchType): IconProp {
+    switch (searchType) {
+      case SearchType.IMAGE:
+        return "image";
+      case SearchType.FORUM:
+        return "comments";
+      default:
+        return "image";
+    }
+  }
+
+  onSearchTypeChanged(searchType: SearchType): void {
+    this.model = {
+      text: this.model.text,
+      searchType,
+      ordering: null,
+      page: 1
+    };
+
+    this.resetAutoCompleteItems();
+    this.filterComponentRefs.forEach(componentRef => componentRef.destroy());
+    this.onSearch(this.model);
   }
 
   private _autoCompleteMethods = (query: string) => {

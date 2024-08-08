@@ -55,7 +55,7 @@ export class BBCodeToHtmlPipe implements PipeTransform {
             delete element.attributes.bbcode;
           }
         },
-        ol(element) {
+        ol: element => {
           if (element.attributes.listType) {
             if (element.attributes.listType !== "decimal") {
               element.attributes.style = "list-style-type:" + element.attributes.listType;
@@ -66,12 +66,12 @@ export class BBCodeToHtmlPipe implements PipeTransform {
 
           delete element.attributes.listType;
         },
-        a(element) {
+        a: element => {
           if (!element.attributes.href) {
             element.attributes.href = element.children[0].value;
           }
         },
-        smiley(element) {
+        smiley: element => {
           element.name = "img";
 
           const editorConfig = this.ckEditorService.options(null);

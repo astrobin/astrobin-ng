@@ -1,0 +1,40 @@
+<div class="search-results">
+  <ng-container *ngIf="!initialLoading; else loadingTemplate">
+    <ng-container *ngIf="results.length > 0; else noResultsTemplate">
+      <div
+        (click)="openPost(post)"
+        *ngFor="let post of results" class="card"
+      >
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div class="flex-grow-1">
+            <h4>{{ post.topicName }}</h4>
+            <small>
+              <span class="username">{{ post.userDisplayName }}</span>
+              &middot;
+              <span class="created">{{ post.created | localDate | timeago: true }}</span>
+            </small>
+          </div>
+          <img *ngIf="post.userAvatar" [src]="post.userAvatar" [alt]="post.userDisplayName "/>
+        </div>
+
+        <div
+          [innerHTML]="post.text | BBCodeToHtml | removeBr | highlight:model.text"
+          class="card-body"
+        >
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <div *ngIf="loading && !initialLoading" class="loading">
+    <astrobin-loading-indicator></astrobin-loading-indicator>
+  </div>
+</div>
+
+<ng-template #noResultsTemplate>
+  <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

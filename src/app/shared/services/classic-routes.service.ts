@@ -42,7 +42,7 @@ export class ClassicRoutesService extends BaseService {
 
   COMMERCIAL_PRODUCTS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/commercial/products/`;
 
-  GALLERY = (user: UserInterface) => BASE_URL + `/users/${user?.username}/`;
+  GALLERY = (username: UserInterface["username"]) => BASE_URL + `/users/${username}/`;
 
   STAGING_GALLERY = (user: UserInterface) => BASE_URL + `/users/${user?.username}/?staging`;
 
@@ -65,4 +65,6 @@ export class ClassicRoutesService extends BaseService {
   EDIT_IMAGE_REVISION = (id: string) => BASE_URL + `/edit/revision/${id}/`;
 
   COMPOSE_MESSAGE = (username: string, subject: string) => BASE_URL + `/messages/compose/${username}/?subject=${subject}`;
+
+  FORUM_POST = (id: number) => BASE_URL + `/forum/post/${id}/`;
 }

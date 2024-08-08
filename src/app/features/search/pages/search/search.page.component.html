@@ -5,9 +5,16 @@
   ></astrobin-search-bar>
 
   <astrobin-image-search
+    *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
     [model]="model"
     class="d-block mt-3"
   ></astrobin-image-search>
+
+  <astrobin-forum-post-search
+    *ngIf="model.searchType === SearchType.FORUM"
+    [model]="model"
+    class="d-block mt-3"
+  ></astrobin-forum-post-search>
 
   <astrobin-scroll-to-top></astrobin-scroll-to-top>
 </div>

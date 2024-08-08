@@ -200,7 +200,7 @@
           {{ "Commercial products" | translate }}
         </a>
 
-        <a [href]="classicRoutesService.GALLERY(user)" class="dropdown-item">
+        <a [href]="classicRoutesService.GALLERY(user.username)" class="dropdown-item">
           <fa-icon icon="image"></fa-icon>
           {{ "Public Gallery" | translate }}
         </a>
@@ -639,7 +639,7 @@
       </li>
 
       <li class="nav-item">
-        <a [href]="classicRoutesService.GALLERY(user)" class="nav-link">
+        <a [href]="classicRoutesService.GALLERY(user.username)" class="nav-link">
           {{ "Public Gallery" | translate }}
         </a>
       </li>

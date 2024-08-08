@@ -64,12 +64,13 @@
 
     <ng-template #iconsTemplate>
       <fa-icon
+        *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
         (click)="onFilterSelectionClicked($event)"
         icon="sliders"
       >
       </fa-icon>
 
-      <div ngbDropdown>
+      <div *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined" ngbDropdown>
         <button
           class="btn btn-link no-toggle"
           ngbDropdownToggle
@@ -179,6 +180,50 @@
           </button>
         </div>
       </div>
+
+      <div ngbDropdown>
+        <button
+          class="btn btn-link no-toggle"
+          ngbDropdownToggle
+          type="button"
+          id="search-type-button"
+        >
+          <fa-icon
+            [icon]="getSearchTypeIcon(model.searchType)"
+          ></fa-icon>
+        </button>
+
+        <div aria-labelledby="search-type-button" ngbDropdownMenu class="search-type-menu">
+          <div class="dropdown-header">
+            {{ "Search type" | translate }}
+          </div>
+
+          <button
+            ngbDropdownItem
+            (click)="onSearchTypeChanged(SearchType.IMAGE)"
+          >
+            <fa-icon [icon]="getSearchTypeIcon(SearchType.IMAGE)"></fa-icon>
+            <span>{{ "Images" | translate }}</span>
+            <fa-icon
+              icon="check"
+              *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
+            ></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onSearchTypeChanged(SearchType.FORUM)"
+          >
+            <fa-icon [icon]="getSearchTypeIcon(SearchType.FORUM)"></fa-icon>
+            <span>{{ "Forums" | translate }}</span>
+            <fa-icon
+              icon="check"
+              *ngIf="model.searchType === SearchType.FORUM"
+            ></fa-icon>
+          </button>
+        </div>
+      </div>
+
 
       <fa-icon
         (click)="onSearch(model)"

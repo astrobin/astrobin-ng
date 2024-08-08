@@ -3,7 +3,7 @@ import { Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { SearchModelInterface, SearchType } from "@features/search/interfaces/search-model.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ActivatedRoute } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -14,6 +14,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   styleUrls: ["./search.page.component.scss"]
 })
 export class SearchPageComponent extends BaseComponentDirective implements OnInit {
+  readonly SearchType = SearchType;
+
   model: SearchModelInterface = {};
 
   constructor(
@@ -71,7 +73,11 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     const { page, pageSize, ...model } = this.model;
 
     if (
-      Object.keys(model).filter(key => key !== "text" && key !== "ordering").length > 0 ||
+      Object.keys(model).filter(key =>
+        key !== "text" &&
+        key !== "ordering" &&
+        key !== "searchType"
+      ).length > 0 ||
       (
         Object.keys(model).length === 1 &&
         model.hasOwnProperty("text") &&
@@ -81,6 +87,11 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
         model.hasOwnProperty("ordering") &&
         model.ordering !== null &&
         model.ordering !== "relevance"
+      ) ||
+      (
+        model.hasOwnProperty("searchType") &&
+        model.searchType !== null &&
+        model.searchType !== SearchType.IMAGE
       )
     ) {
       const queryString = UtilsService.toQueryString(model);

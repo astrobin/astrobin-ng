@@ -16,7 +16,6 @@ import { SearchModelInterface } from "@features/search/interfaces/search-model.i
 })
 export class ImageSearchApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/images/image-search";
-  function;
 
   constructor(
     public readonly loadingService: LoadingService,

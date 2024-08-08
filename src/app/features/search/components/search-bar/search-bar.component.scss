@@ -120,7 +120,7 @@
       display: flex;
       align-items: center;
 
-      [icon] {
+      .ng-fa-icon {
         padding: 6px 12px;
         cursor: pointer;
         color: var(--lightestGrey);
@@ -131,13 +131,14 @@
         }
       }
 
-      .ordering-menu {
+      .ordering-menu,
+      .search-type-menu {
         .dropdown-item {
           display: flex;
           justify-content: start;
           align-items: center;
 
-          [icon] {
+          .ng-fa-icon {
             padding: 0;
             margin-right: .25rem;
           }

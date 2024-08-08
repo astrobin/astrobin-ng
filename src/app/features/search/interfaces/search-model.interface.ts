@@ -2,10 +2,16 @@ import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/t
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { UserInterface } from "@shared/interfaces/user.interface";
 
+export enum SearchType {
+  IMAGE = "image",
+  FORUM = "forums"
+}
+
 export interface SearchModelInterface {
   pageSize?: number;
   page?: number;
 
+  searchType?: SearchType;
   ordering?: string;
 
   // Model fields.

@@ -117,6 +117,7 @@ import { FormlyFieldCustomRadioComponent } from "@shared/components/misc/formly-
 import { ImageSearchCardComponent } from "@shared/components/search/image-search-card/image-search-card.component";
 import { FormlyFieldSliderComponent } from "@shared/components/misc/formly-field-slider/formly-field-slider.component";
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
+import { ForumPostSearchComponent } from "@shared/components/search/forum-post-search/forum-post-search.component";
 
 const modules = [
   CommonModule,
@@ -188,6 +189,7 @@ const components = [
   ImageComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,
+  ForumPostSearchComponent,
   InformationDialogComponent,
   LoadingIndicatorComponent,
   LoginFormComponent,

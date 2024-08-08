@@ -1,7 +1,7 @@
 <div class="search-results">
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
-    <ng-container *ngIf="images.length > 0; else noImagesTemplate">
-      <a *ngFor="let image of images" [href]="classicRoutesService.IMAGE(image.hash || image.objectId.toString())">
+    <ng-container *ngIf="results.length > 0; else noImagesTemplate">
+      <a *ngFor="let image of results" [href]="classicRoutesService.IMAGE(image.hash || image.objectId.toString())">
         <img [alt]="image.title" [src]="image.galleryThumbnail" />
         <fa-icon *ngIf="image.video || image.animated" icon="play"></fa-icon>
 

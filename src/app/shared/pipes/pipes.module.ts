@@ -24,6 +24,7 @@ import { IsBetaTesterPipe } from "@shared/pipes/is-beta-tester.pipe";
 import { YesNoIconPipe } from "@shared/pipes/yes-no-icon.pipe";
 import { KeysPipe } from "@shared/pipes/keys.pipe";
 import { HighlightPipe } from "@shared/pipes/highlight.pipe";
+import { RemoveBrPipe } from "@shared/pipes/remove-br.pipe";
 
 const pipes = [
   BBCodeToHtmlPipe,
@@ -49,7 +50,8 @@ const pipes = [
   Nl2BrPipe,
   YesNoIconPipe,
   KeysPipe,
-  HighlightPipe
+  HighlightPipe,
+  RemoveBrPipe
 ];
 
 @NgModule({
