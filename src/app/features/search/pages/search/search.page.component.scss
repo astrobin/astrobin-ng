@@ -3,12 +3,19 @@
 astrobin-search-bar ::ng-deep {
   .search-bar-wrapper {
     position: sticky;
-    top: 61px;
+    top: 60px;
     display: block;
     margin-top: -2rem;
     margin-left: -.5rem;
     margin-right: -.5rem;
     z-index: 1;
+
+    ::ng-deep {
+      .search-bar-input-container {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
 
     @media (min-width: $lg-min) {
       top: 63px;
@@ -16,10 +23,12 @@ astrobin-search-bar ::ng-deep {
       margin-right: -2rem;
     }
 
-    ::ng-deep {
-      .search-bar-input-container {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+    @media (max-width: $sm-max) {
+      ::ng-deep {
+        .search-bar-input-container {
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
+        }
       }
     }
   }
