@@ -1,20 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  HostBinding,
-  Inject,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  PLATFORM_ID,
-  Renderer2,
-  SimpleChanges,
-  ViewChild
-} from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { LoadImage, LoadImageRevisions } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
@@ -25,7 +9,6 @@ import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -50,6 +33,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   id: number;
 
   @Input()
+  image: ImageInterface;
+
+  @Input()
   revision = "final";
 
   @Input()
@@ -61,27 +47,29 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   @Input()
   autoLoadRevisions = true;
 
+  @Input()
+  showTitle = false;
+
   @Output()
   loaded = new EventEmitter();
 
   @HostBinding("class.loading")
   loading = false;
 
-  @ViewChild("videoPlayer", { static: false })
-  videoPlayer: ElementRef;
+  @ViewChild("videoPlayerElement", { static: false })
+  videoPlayerElement: ElementRef;
 
-  image: ImageInterface;
   thumbnailUrl: SafeUrl;
   width: number;
   height: number;
   progress = 0;
   videoJsReady = false;
+  videoJsPlayer: any;
   autoLoadSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
-    public readonly imageApiService: ImageApiService,
     public readonly imageService: ImageService,
     public readonly elementRef: ElementRef,
     public readonly utilsService: UtilsService,
@@ -106,11 +94,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   ngOnInit() {
     super.ngOnInit();
 
-    if (this.id === null) {
-      throw new Error("Attribute 'id' is required");
+    if (!this.id && !this.image) {
+      throw new Error("Attribute 'id' or 'image' is required");
     }
 
-    if (this.alias === null) {
+    if (!this.alias) {
       throw new Error("Attribute 'alias' is required");
     }
 
@@ -118,7 +106,19 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.load();
+    this.thumbnailUrl = null;
+
+    if (changes.image && changes.image.currentValue) {
+      this.id = this.image.pk;
+      this._loadThumbnail();
+      this._disposeVideoJsPlayer();
+
+      if (!!this.image.videoFile) {
+        this._insertVideoJs();
+      }
+    }
+
+    this.load(0);
   }
 
   ngOnDestroy(): void {
@@ -130,19 +130,22 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       this.autoLoadSubscription.unsubscribe();
       this.autoLoadSubscription = null;
     }
+
+    this._disposeVideoJsPlayer();
   }
 
-  load() {
+  load(delay = null) {
     const noNeedToLoad = () => !!this.thumbnailUrl ||
       !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement);
 
     if (noNeedToLoad()) {
+      console.log("No need to load");
       return;
     }
 
     // 0-200 ms
     this.utilsService
-      .delay(Math.floor(Math.random() * 200))
+      .delay(delay !== null ? delay : Math.floor(Math.random() * 200))
       .pipe(take(1))
       .subscribe(() => {
         if (noNeedToLoad()) {
@@ -166,6 +169,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
           )
           .subscribe(({ image, revision }) => {
             this.image = image;
+            this.id = image.pk;
             const w = !!revision ? revision.w : image.w;
             const h = !!revision ? revision.h : image.h;
             this._setWidthAndHeight(w, h);
@@ -292,30 +296,43 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         this.videoJsReady = true;
         this.changeDetectorRef.detectChanges();
 
-        if (!!this.videoPlayer) {
-          const player = videojs(this.videoPlayer.nativeElement, {});
-          player.on("fullscreenchange", function() {
-            const isFullscreen = player.isFullscreen();
-            const el = player.el().firstChild;
-
-            if (isFullscreen) {
-              el.style.maxWidth = `${player.videoWidth()}px`;
-              el.style.maxHeight = `${player.videoHeight()}px`;
-              el.style.top = `50%`;
-              el.style.left = `50%`;
-              el.style.transform = `translate(-50%, -50%)`;
-              el.style.margin = "auto";
-            } else {
-              el.style.maxWidth = "";
-              el.style.maxHeight = "";
-              el.style.top = "";
-              el.style.left = "";
-              el.style.transform = "";
-              el.style.margin = "";
-            }
-          });
-        }
+        this.utilsService.delay(200).subscribe(() => {
+          if (!!this.videoPlayerElement) {
+            this._createVideoJsPlayer();
+          }
+        });
       });
     });
+  }
+
+  private _createVideoJsPlayer() {
+    this.videoJsPlayer = videojs(this.videoPlayerElement.nativeElement, {});
+    this.videoJsPlayer.on("fullscreenchange", () => {
+      const isFullscreen = this.videoJsPlayer.isFullscreen();
+      const el = this.videoJsPlayer.el().firstChild;
+
+      if (isFullscreen) {
+        el.style.maxWidth = `${this.videoJsPlayer.videoWidth()}px`;
+        el.style.maxHeight = `${this.videoJsPlayer.videoHeight()}px`;
+        el.style.top = `50%`;
+        el.style.left = `50%`;
+        el.style.transform = `translate(-50%, -50%)`;
+        el.style.margin = "auto";
+      } else {
+        el.style.maxWidth = "";
+        el.style.maxHeight = "";
+        el.style.top = "";
+        el.style.left = "";
+        el.style.transform = "";
+        el.style.margin = "";
+      }
+    });
+  }
+
+  private _disposeVideoJsPlayer() {
+    if (this.videoJsPlayer) {
+      this.videoJsPlayer.dispose();
+      this.videoJsPlayer = null;
+    }
   }
 }

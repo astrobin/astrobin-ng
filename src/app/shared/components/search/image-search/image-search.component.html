@@ -1,7 +1,7 @@
 <div class="search-results">
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
     <ng-container *ngIf="results.length > 0; else noImagesTemplate">
-      <a *ngFor="let image of results" [href]="classicRoutesService.IMAGE(image.hash || image.objectId.toString())">
+      <a *ngFor="let image of results" (click)="openImage(image)">
         <img [alt]="image.title" [src]="image.galleryThumbnail" />
         <fa-icon *ngIf="image.video || image.animated" icon="play"></fa-icon>
 
@@ -18,6 +18,8 @@
     <astrobin-loading-indicator></astrobin-loading-indicator>
   </div>
 </div>
+
+<ng-container #imageViewerContainer></ng-container>
 
 <ng-template #noImagesTemplate>
   <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>

@@ -1,4 +1,4 @@
-<div *ngIf="progress !== undefined && progress > 0; else noProgress">
+<div *ngIf="progress !== undefined && progress > 0 && progress < 100; else noProgress">
   <ngb-progressbar type="secondary" [value]="progress"></ngb-progressbar>
 </div>
 

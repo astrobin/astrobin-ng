@@ -1,0 +1,42 @@
+<div class="image-viewer-overlay">
+  <button class="close-button" (click)="close()">
+    <fa-icon icon="times"></fa-icon>
+  </button>
+
+  <button
+    *ngIf="currentIndex > 0"
+    (click)="onPreviousClicked()"
+    class="previous-button"
+  >
+    <fa-icon icon="chevron-left"></fa-icon>
+  </button>
+  <button
+    *ngIf="currentIndex < navigationContext?.length - 1"
+    (click)="onNextClicked()"
+    class="next-button"
+  >
+    <fa-icon icon="chevron-right"></fa-icon>
+  </button>
+
+  <div class="image-container">
+    <ng-container *ngIf="!!image; else loadingTemplate">
+      <div class="row">
+        <div class="col-12 col-lg-8">
+          <div class="image-container">
+            <astrobin-image
+              [alias]="alias"
+              [image]="image"
+              [showTitle]="true"
+            ></astrobin-image>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

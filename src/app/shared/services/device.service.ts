@@ -4,6 +4,14 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 
+enum Breakpoint {
+  XXS = 474,
+  XS = 576,
+  SM = 768,
+  MD = 992,
+  LG = 1200,
+  XL = 1400
+}
 @Injectable({
   providedIn: "root"
 })
@@ -19,10 +27,46 @@ export class DeviceService extends BaseService {
     this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  isMobileDevice(): boolean {
+  smMax(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;
-      return window.innerWidth < 768;
+      return window.innerWidth <= Breakpoint.SM;
+    }
+
+    return false;
+  }
+
+  mdMax(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth <= Breakpoint.MD;
+    }
+
+    return false;
+  }
+
+  lgMax(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth <= Breakpoint.LG;
+    }
+
+    return false;
+  }
+
+  xlMax(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth <= Breakpoint.XL;
+    }
+
+    return false;
+  }
+
+  xlMin(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth > Breakpoint.XL;
     }
 
     return false;

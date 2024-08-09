@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, PLATFORM_ID } from "@angular/core";
+import { Component, ComponentRef, ElementRef, Inject, PLATFORM_ID, ViewChild, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
@@ -10,6 +10,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { ImageViewerService } from "@shared/services/image-viewer.service";
 
 @Component({
   selector: "astrobin-image-search",
@@ -27,12 +28,22 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
-    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
+    public readonly viewContainerRef: ViewContainerRef,
+    public readonly imageViewerService: ImageViewerService
   ) {
     super(store$, windowRefService, elementRef, platformId);
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
     return this.imageSearchApiService.search({ ...this.model, pageSize: this.pageSize });
+  }
+
+  openImage(image: ImageSearchInterface): void {
+    this.imageViewerService.openImageViewer(
+      image.hash || image.objectId,
+      this.results.map(result => result.hash || result.objectId),
+      this.viewContainerRef
+    );
   }
 }

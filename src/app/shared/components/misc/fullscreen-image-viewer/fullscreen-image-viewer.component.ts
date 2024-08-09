@@ -28,6 +28,7 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
 import { DeviceService } from "@shared/services/device.service";
+import { ActiveToast } from "ngx-toastr";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -59,7 +60,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   hdThumbnailLoading = false;
   realThumbnailLoading = false;
 
-  private _zoomReadyNotification;
+  private _zoomReadyNotification: ActiveToast<any>;
   private _zoomPosition: Coord;
   private _zoomScroll = 1;
   private _zoomIndicatorTimeout: number;
@@ -75,7 +76,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly imageService: ImageService,
     public readonly domSanitizer: DomSanitizer,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId,
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly deviceService: DeviceService
   ) {
     super(store$);
@@ -157,7 +158,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           });
         } else {
           if (this._zoomReadyNotification) {
-            this.popNotificationsService.clear(this._zoomReadyNotification.id);
+            this.popNotificationsService.clear(this._zoomReadyNotification.toastId);
           }
 
           this.utilsService.delay(1).subscribe(() => {
