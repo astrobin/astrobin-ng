@@ -31,6 +31,8 @@ import { FilterService } from "@features/equipment/services/filter.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -109,6 +111,30 @@ export class SearchService extends BaseService {
     public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(loadingService);
+  }
+
+  modelToParams(model: SearchModelInterface): string {
+    const queryString = UtilsService.toQueryString(model);
+    const compressedQueryString = UtilsService.compressQueryString(queryString);
+    return encodeURIComponent(compressedQueryString);
+  }
+
+  paramsToModel(params: string): SearchModelInterface {
+    const decompressedParams = UtilsService.decompressQueryString(params);
+    const parsedParams = UtilsService.parseQueryString(decodeURIComponent(decompressedParams));
+
+    // Convert JSON strings back to objects where applicable
+    Object.keys(parsedParams).forEach(key => {
+      if (typeof parsedParams[key] === "string") {
+        try {
+          parsedParams[key] = JSON.parse(parsedParams[key]);
+        } catch (error) {
+          // If JSON parsing fails, keep the value as string
+        }
+      }
+    });
+
+    return parsedParams;
   }
 
   instantiateFilterComponent(

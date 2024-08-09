@@ -11,7 +11,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   NgbAccordionModule,
   NgbDropdownModule,
-  NgbModule,
+  NgbModule, NgbNavModule,
   NgbPaginationModule,
   NgbPopoverModule,
   NgbProgressbarModule
@@ -114,6 +114,7 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
     NgbModule,
     NgbAccordionModule,
     NgbDropdownModule,
+    NgbNavModule,
     NgbPaginationModule,
     NgbPopoverModule,
     NgbProgressbarModule,
@@ -177,6 +178,7 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
     NgbModule,
     NgbAccordionModule,
     NgbDropdownModule,
+    NgbNavModule,
     NgbPaginationModule,
     NgbPopoverModule,
     NgbProgressbarModule,

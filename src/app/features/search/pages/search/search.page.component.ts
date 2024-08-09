@@ -4,9 +4,9 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { SearchModelInterface, SearchType } from "@features/search/interfaces/search-model.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
 import { ActivatedRoute } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-search-page",
@@ -22,7 +22,8 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly store$: Store<MainState>,
     public readonly location: Location,
     public readonly activatedRoute: ActivatedRoute,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly searchService: SearchService
   ) {
     super(store$);
   }
@@ -33,19 +34,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     const params = this.activatedRoute.snapshot.queryParams["p"];
     if (params) {
       try {
-        const decompressedParams = UtilsService.decompressQueryString(params);
-        const parsedParams = UtilsService.parseQueryString(decodeURIComponent(decompressedParams));
-
-        // Convert JSON strings back to objects where applicable
-        Object.keys(parsedParams).forEach(key => {
-          if (typeof parsedParams[key] === "string") {
-            try {
-              parsedParams[key] = JSON.parse(parsedParams[key]);
-            } catch (error) {
-              // If JSON parsing fails, keep the value as string
-            }
-          }
-        });
+        const parsedParams = this.searchService.paramsToModel(params);
 
         this.model = {
           ...parsedParams,
@@ -94,11 +83,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
         model.searchType !== SearchType.IMAGE
       )
     ) {
-      const queryString = UtilsService.toQueryString(model);
-      const compressedQueryString = UtilsService.compressQueryString(queryString);
-      const encodedQueryString = encodeURIComponent(compressedQueryString);
-
-      this.location.go(`/search?p=${encodedQueryString}`);
+      this.location.go(`/search?p=${this.searchService.modelToParams(model)}`);
     } else {
       this.location.go("/search");
     }

@@ -42,6 +42,7 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
+import { LoadSaveSearchModalComponent } from "@features/search/components/filters/load-save-search-modal/load-save-search-modal.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -475,6 +476,24 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     const modalRef = this.modalService.open(SearchFilterSelectionModalComponent);
     modalRef.closed.subscribe((componentType: Type<SearchBaseFilterComponent>) => {
       this.createAndEditFilter(componentType);
+    });
+  }
+
+  onLoadSaveClicked(event: Event): void {
+    event.preventDefault();
+
+    const modalRef = this.modalService.open(LoadSaveSearchModalComponent);
+    const instance: LoadSaveSearchModalComponent = modalRef.componentInstance;
+    instance.saveModel = {
+      name: null,
+      params: this.searchService.modelToParams(this.model)
+    };
+    modalRef.closed.subscribe((params: string) => {
+      if (params) {
+        this.model = this.searchService.paramsToModel(params);
+        this.initializeFilters();
+        this.onSearch(this.model);
+      }
     });
   }
 

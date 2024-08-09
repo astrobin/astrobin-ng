@@ -1,0 +1,86 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="load-save-search-modal">
+    {{ "Load/Save search" | translate }}
+  </h4>
+
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+    <li [ngbNavItem]="1">
+      <a ngbNavLink>{{ "Load saved search" | translate }}</a>
+      <ng-template ngbNavContent>
+        <div *ngIf="savedSearches !== null; else loadingTemplate" class="py-4">
+          <ul class="list-group" *ngIf="savedSearches.length > 0; else noSavedSearchesTemplate">
+            <li
+              *ngFor="let search of savedSearches"
+              class="list-group-item d-flex justify-content-between align-items-center py-2">
+              <div class="search-name">
+                {{ search.name }}
+              </div>
+              <div class="no-wrap d-flex align-items-center">
+                <button
+                  class="btn btn-sm btn-no-block btn-outline-secondary me-3"
+                  (click)="onLoadSearch(search)"
+                >{{ 'Load' | translate }}
+                </button>
+
+                <button
+                  class="btn btn-link btn-no-block link-danger"
+                  (click)="onDeleteSearch(search.id)"
+                >
+                  <fa-icon icon="trash-alt"></fa-icon>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </ng-template>
+    </li>
+
+    <li [ngbNavItem]="2">
+      <a ngbNavLink>{{ "Save new search" | translate }}</a>
+      <ng-template ngbNavContent>
+        <div class="px-3 py-4">
+          <form [formGroup]="saveForm">
+            <formly-form [fields]="saveFields" [form]="saveForm" [model]="saveModel"></formly-form>
+            <div class="buttons-area">
+              <button
+                (click)="onSaveSearch($event)"
+                [class.loading]="(loadingService.loading$ | async) || saveForm.pending"
+                class="btn btn-primary"
+                type="button"
+              >
+                {{ "Save" | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </ng-template>
+    </li>
+  </ul>
+
+  <div [ngbNavOutlet]="nav" class="mt-2"></div>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+    {{ "Close" | translate }}
+  </button>
+</div>
+
+<ng-template #noSavedSearchesTemplate>
+  <astrobin-nothing-here
+    class="d-block px-3"
+    [message]="'No saved searches found.' | translate"
+    [withAlert]="false"
+    [withInfoSign]="false"
+  ></astrobin-nothing-here>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

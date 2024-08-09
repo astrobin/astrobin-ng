@@ -48,6 +48,7 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
 import { SearchImageSizeFilterComponent } from "@features/search/components/filters/search-image-size-filter/search-image-size-filter.component";
 import { SearchGroupsFilterComponent } from "@features/search/components/filters/search-groups-filter/search-groups-filter.component";
 import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
+import { LoadSaveSearchModalComponent } from './components/filters/load-save-search-modal/load-save-search-modal.component';
 
 const allFilterComponents = [
   SearchSubjectFilterComponent,
@@ -96,7 +97,8 @@ const allFilterComponents = [
     SearchBarComponent,
     SearchFilterEditorModalComponent,
     SearchFilterSelectionModalComponent,
-    ...allFilterComponents
+    ...allFilterComponents,
+    LoadSaveSearchModalComponent
   ],
   imports: [
     RouterModule.forChild(searchRoutes),

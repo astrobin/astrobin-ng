@@ -11,4 +11,7 @@ export class NothingHereComponent {
 
   @Input()
   withInfoSign = true;
+
+  @Input()
+  message: string;
 }
