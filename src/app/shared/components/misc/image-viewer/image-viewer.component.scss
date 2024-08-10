@@ -49,7 +49,6 @@
       }
     }
 
-
     .close-button {
       top: .75rem;
       left: .75rem;
@@ -251,9 +250,8 @@
       .bookmark,
       .comment {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: flex-end;
+        gap: .75rem;
 
         ::ng-deep {
           .ng-fa-icon {
@@ -269,6 +267,7 @@
         > .count {
           font-size: .85rem;
           color: var(--lightGrey);
+          line-height: 1.25rem;
         }
       }
     }
