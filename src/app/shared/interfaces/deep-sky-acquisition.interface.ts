@@ -23,7 +23,7 @@ export interface DeepSkyAcquisitionInterface {
   filter2: FilterInterface["id"] | null;
   binning: number | null;
   number: number | null;
-  duration: number | null;
+  duration: string | null;
   iso: number | null;
   gain: number | null;
   fNumber: number | null;

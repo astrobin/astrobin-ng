@@ -114,6 +114,18 @@ export class SearchService extends BaseService {
   }
 
   modelToParams(model: SearchModelInterface): string {
+    if (model.page === undefined) {
+      model = { ...model, page: 1 };
+    }
+
+    if (model.pageSize === undefined) {
+      model = { ...model, pageSize: 100 };
+    }
+
+    if (model.text === undefined) {
+      model = { ...model, text: "" };
+    }
+
     const queryString = UtilsService.toQueryString(model);
     const compressedQueryString = UtilsService.compressQueryString(queryString);
     return encodeURIComponent(compressedQueryString);

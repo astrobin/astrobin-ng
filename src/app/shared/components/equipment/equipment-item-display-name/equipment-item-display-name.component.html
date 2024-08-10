@@ -1,3 +1,7 @@
+<ng-container *ngIf="enableKlassIcon">
+  <img class="klass-icon" src="/assets/images/{{ item.klass.toLowerCase() }}-{{ klassIconColor }}.png?v=1" alt="" />
+</ng-container>
+
 <ng-container *ngIf="showBrand">
   <span *ngIf="!!brandName; else loading" class="brand">
     <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>

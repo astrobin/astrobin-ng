@@ -175,9 +175,17 @@ export enum DownloadLimitationOptions {
   ME_ONLY = "ME"
 }
 
+export enum CelestialHemisphere {
+  NORTHERN = "N",
+  SOUTHERN = "S"
+}
+
 export interface ImageInterface {
   pk: number;
   user: UserInterface["id"];
+  username: UserInterface["username"];
+  userDisplayName: UserInterface["displayName"];
+  userAvatar: UserInterface["avatar"];
   pendingCollaborators: UserInterface["id"][] | null;
   collaborators: UserInterface["id"][] | null;
   hash: string;
@@ -207,6 +215,7 @@ export interface ImageInterface {
   accessories2: AccessoryInterface2[];
   software2: SoftwareInterface2[];
   published: string;
+  uploaded: string;
   license: string;
   description?: string;
   descriptionBbcode?: string;
@@ -237,6 +246,8 @@ export interface ImageInterface {
   solarSystemAcquisitions: SolarSystemAcquisitionInterface[];
   solution: SolutionInterface | null;
   revisions: ImageRevisionInterface[];
+  constellation: string;
+  isFinal: boolean;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;
@@ -256,4 +267,8 @@ export interface ImageRevisionInterface {
   h: number;
   uploaderInProgress: boolean;
   solution: SolutionInterface | null;
+  constellation: string;
 }
+
+export const ORIGINAL_REVISION_LABEL = "0";
+export const FINAL_REVISION_LABEL = "final";

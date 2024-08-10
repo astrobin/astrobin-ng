@@ -42,6 +42,7 @@ export class ImageViewerService extends BaseService {
       this._activeImageViewer.instance.image = image;
       this._activeImageViewer.instance.navigationContext = navigationContext;
       this._activeImageViewer.instance.updateNavigationContextInformation();
+      this._activeImageViewer.instance.updateImageInformation();
     });
 
     this._activeImageViewer.instance.closeViewer.subscribe(() => {

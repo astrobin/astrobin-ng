@@ -1,10 +1,10 @@
 <div class="image-viewer-overlay">
-  <button class="close-button" (click)="close()">
-    <fa-icon icon="times-circle"></fa-icon>
-  </button>
-
   <ng-container *ngIf="!!image; else loadingTemplate">
     <div class="image-area">
+      <button class="close-button" (click)="close()">
+        <fa-icon icon="times-circle"></fa-icon>
+      </button>
+
       <button
         *ngIf="currentIndex > 0"
         (click)="onPreviousClicked()"
@@ -31,6 +31,113 @@
       <h2 class="title">
         {{ image.title }}
       </h2>
+
+      <div class="photographers d-flex align-items-center">
+        <div class="avatars">
+          <a
+            *ngIf="image.collaborators?.length === 0"
+            [href]="classicRoutesService.GALLERY(image.username)"
+            target="_blank"
+            class="me-2"
+          >
+            <img [src]="image.userAvatar" alt="" />
+          </a>
+          <fa-icon *ngIf="image.collaborators?.length > 0" icon="user-group" class="me-2"></fa-icon>
+        </div>
+
+        <div class="name flex-grow-1 d-flex gap-2">
+          <a
+            [href]="classicRoutesService.GALLERY(image.username)"
+            target="_blank"
+            class="display-name"
+          >
+            {{ image.userDisplayName }}
+          </a>
+
+          <div *ngIf="image.collaborators?.length > 0" class="plus-others">
+            <span class="badge rounded-pill bg-danger border border-light">
+              +{{ image.collaborators?.length }}
+            </span>
+          </div>
+        </div>
+
+        <div *ngIf="publicationDate" class="flex-grow-1 text-end">
+          <fa-icon icon="calendar" class="me-2"></fa-icon>
+          {{ publicationDate | localDate | timeago:true }}
+        </div>
+      </div>
+
+      <div class="basic-data d-flex justify-content-between gap-3">
+        <div *ngIf="subjectType" class="basic-data-item subject-type">
+          <img
+            [src]="'/assets/images/' + subjectTypeIcon"
+            [alt]="subjectType"
+          />
+          <span class="value no-wrap" [innerHTML]="subjectType"></span>
+        </div>
+
+        <div *ngIf="integration" class="basic-data-item integration">
+          <fa-icon icon="clock"></fa-icon>
+          <span class="value no-wrap" [innerHTML]="integration"></span>
+        </div>
+
+        <div *ngIf="bortleScale" class="basic-data-item bortle-scale">
+          <span>Bortle</span>
+          <span
+            class="value no-wrap"
+            [innerHTML]="bortleScale.toFixed(2).replace('.00', '')"
+          ></span>
+        </div>
+
+        <div *ngIf="hemisphere" class="basic-data-item hemisphere">
+          <fa-icon icon="globe"></fa-icon>
+          <span class="value" [innerHTML]="hemisphere"></span>
+        </div>
+
+        <div *ngIf="constellation" class="basic-data-item constellation">
+          <img
+            src="/assets/images/subject-types/constellation-white.png?v=1"
+            [alt]="subjectType"
+          />
+          <a href="#" class="value" (click)="constellationClicked($event)" [innerHTML]="constellation"></a>
+        </div>
+
+        <div *ngIf="coordinates" class="basic-data-item coordinates">
+          <fa-icon icon="crosshairs"></fa-icon>
+          <span class="value no-wrap" [innerHTML]="coordinates"></span>
+        </div>
+      </div>
+
+      <div *ngIf="objectsInField?.length > 0" class="objects-in-field">
+        <fa-icon icon="binoculars"></fa-icon>
+        <a
+          *ngFor="let item of objectsInField; let last = last"
+          (click)="objectInFieldClicked($event, item)"
+          href="#"
+          class="value"
+        >
+          <span class="value" [innerHTML]="item"></span>
+          <span *ngIf="!last" class="separator">&middot;</span>
+        </a>
+      </div>
+
+      <div *ngIf="equipmentItems?.length > 0" class="equipment">
+        <a
+          *ngFor="let item of equipmentItems"
+          [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]"
+          class="value"
+        >
+          <astrobin-equipment-item-display-name
+            [item]="item"
+            [enableKlassIcon]="true"
+            [enableBrandLink]="false"
+            [enableNameLink]="false"
+            [enableSummaryModal]="false"
+            [showFrozenAsAmbiguous]="false"
+            [showItemUnapprovedInfo]="false"
+          ></astrobin-equipment-item-display-name>
+        </a>
+      </div>
     </div>
   </ng-container>
 </div>

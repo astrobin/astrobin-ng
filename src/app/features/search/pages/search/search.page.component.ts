@@ -4,9 +4,11 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { SearchModelInterface, SearchType } from "@features/search/interfaces/search-model.interface";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SearchService } from "@features/search/services/search.service";
+import { filter, map, startWith, takeUntil } from "rxjs/operators";
+import { merge } from "rxjs";
 
 @Component({
   selector: "astrobin-search-page",
@@ -23,7 +25,8 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly location: Location,
     public readonly activatedRoute: ActivatedRoute,
     public readonly windowRefService: WindowRefService,
-    public readonly searchService: SearchService
+    public readonly searchService: SearchService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -31,7 +34,21 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
   ngOnInit() {
     super.ngOnInit();
 
-    const params = this.activatedRoute.snapshot.queryParams["p"];
+    merge(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => this.activatedRoute.snapshot.queryParams)
+      ),
+      this.activatedRoute.queryParams.pipe(
+        startWith(this.activatedRoute.snapshot.queryParams)
+      )
+    ).pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe((queryParams: Record<string, string>) => this.loadModel(queryParams));
+  }
+
+  loadModel(queryParams: Record<string, string> = {}): void {
+    const params = queryParams["p"];
     if (params) {
       try {
         const parsedParams = this.searchService.paramsToModel(params);

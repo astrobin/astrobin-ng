@@ -36,6 +36,12 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   item: EquipmentItem;
 
   @Input()
+  enableKlassIcon = false;
+
+  @Input()
+  klassIconColor = "white";
+
+  @Input()
   enableSummaryModal = false;
 
   @Input()

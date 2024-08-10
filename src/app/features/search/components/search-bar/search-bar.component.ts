@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentRef, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, QueryList, Type, ViewChild, ViewChildren, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, Component, ComponentRef, ElementRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, QueryList, SimpleChanges, Type, ViewChild, ViewChildren, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -53,7 +53,7 @@ type SearchAutoCompleteGroups = {
   templateUrl: "./search-bar.component.html",
   styleUrls: ["./search-bar.component.scss"]
 })
-export class SearchBarComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class SearchBarComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewInit {
   readonly SearchType = SearchType;
   readonly placeholder = this.translateService.instant("Type here to search");
   autoCompleteGroups: SearchAutoCompleteGroups = {};
@@ -152,9 +152,18 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     });
   }
 
-  ngAfterViewInit(): void {
-    this.initializeFilters();
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes.model &&
+      changes.model.currentValue &&
+      JSON.stringify(changes.model.currentValue) !== JSON.stringify(changes.model.previousValue)
+    ) {
+      this.clearFilters();
+      this.initializeFilters();
+    }
+  }
 
+  ngAfterViewInit(): void {
     if (this.deviceService.isTouchEnabled()) {
       this.searchInput.nativeElement.blur();
     } else {
@@ -424,6 +433,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     });
   }
 
+  clearFilters(): void {
+    this.filterComponentRefs.forEach(componentRef => componentRef.destroy());
+    this.filterComponentRefs = [];
+  }
+
   removeFilter(componentRef: ComponentRef<SearchFilterComponentInterface>): void {
     this.utilsService.delay(1).subscribe(() => {
       const index = this.filterComponentRefs.indexOf(componentRef);
@@ -491,6 +505,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     modalRef.closed.subscribe((params: string) => {
       if (params) {
         this.model = this.searchService.paramsToModel(params);
+        this.clearFilters();
         this.initializeFilters();
         this.onSearch(this.model);
       }

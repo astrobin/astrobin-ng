@@ -23,4 +23,5 @@ export interface SearchModelInterface {
   username?: UserInterface["username"];
   subject?: string;
   telescope?: string | number;
+  constellation?: string;
 }
