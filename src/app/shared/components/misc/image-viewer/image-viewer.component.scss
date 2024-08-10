@@ -1,212 +1,232 @@
 @import "../../../../styles/breakpoints";
 @import "../../../../styles/mixins";
 
-.image-viewer-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1030;
-
-  @media (max-width: $md-max) {
-    flex-direction: column;
-  }
-}
-
-.image-area {
-  position: relative;
-  width: 50%;
-  height: 100%;
-
-  @media (max-width: $md-max) {
-    width: 100%;
-    height: 50%;
-  }
-
-  .close-button {
-    position: absolute;
-    top: .75rem;
-    right: .75rem;
-    background: transparent;
-    border: none;
-    color: var(--white);
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 1031;
-  }
-
-  .next-button,
-  .previous-button {
-    position: absolute;
-    top: 50%;
-    padding: 1rem;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    color: var(--white);
-    font-size: 2rem;
-    cursor: pointer;
-    z-index: 1031;
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.3s ease-in-out;
-
-    :focus-visible {
-      outline: none !important;
-    }
-  }
-
-  .next-button {
-    right: 0;
-
-    &:hover {
-      transform: translateX(0.125rem) translateY(-50%);
-    }
-  }
-
-  .previous-button {
+:host {
+  .image-viewer-overlay {
+    position: fixed;
+    top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1030;
 
-    &:hover {
-      transform: translateX(-0.125rem) translateY(-50%);
+    @media (max-width: $md-max) {
+      flex-direction: column;
     }
   }
 
-  ::ng-deep astrobin-image {
-    img,
-    .video-js {
+  .image-area {
+    position: relative;
+    width: 50%;
+    height: 100%;
+
+    @media (max-width: $md-max) {
       width: 100%;
-      height: 100%;
-      max-height: 100vh;
-      object-fit: contain;
+      height: 50%;
     }
-  }
 
-  &:hover {
+    .close-button {
+      position: absolute;
+      top: .75rem;
+      right: .75rem;
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1031;
+    }
+
     .next-button,
     .previous-button {
-      opacity: 1;
+      position: absolute;
+      top: 50%;
+      padding: 1rem;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-size: 2rem;
+      cursor: pointer;
+      z-index: 1031;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s ease-in-out;
+
+      :focus-visible {
+        outline: none !important;
+      }
+    }
+
+    .next-button {
+      right: 0;
+
+      &:hover {
+        transform: translateX(0.125rem) translateY(-50%);
+      }
+    }
+
+    .previous-button {
+      left: 0;
+
+      &:hover {
+        transform: translateX(-0.125rem) translateY(-50%);
+      }
+    }
+
+    ::ng-deep astrobin-image {
+      img,
+      .video-js {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        object-fit: contain;
+      }
+    }
+
+    &:hover {
+      .next-button,
+      .previous-button {
+        opacity: 1;
+      }
     }
   }
-}
 
-.data-area {
-  @include darkest-background-texture;
-  position: relative;
-  width: 50%;
-  height: 100%;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: .75rem;
+  .data-area {
+    @include darkest-background-texture;
+    position: relative;
+    width: 50%;
+    height: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    overflow-y: auto;
 
-  .title {
-    display: block;
-    padding-bottom: .5rem;
-    margin-bottom: 0;
-    font-size: 1.5rem;
-    border-bottom: 1px solid var(--grey);
-  }
+    .data-area-section {
+      padding-bottom: .5rem;
+      border-bottom: 1px solid var(--grey);
+    }
 
-  .photographers {
-    border-bottom: 1px solid var(--grey);
-    padding-bottom: .75rem;
-  }
+    .title {
+      display: block;
+      margin-bottom: 0;
+      font-size: 1.5rem;
+    }
 
-  .basic-data {
-    border-bottom: 1px solid var(--grey);
-    padding-bottom: .75rem;
+    .photographers {
+      padding-bottom: .75rem;
 
-    .basic-data-item {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-
-      .value:not(a) {
-        color: var(--white);
-      }
-
-      &.subject-type,
-      &.constellation {
+      .avatars {
         img {
-          height: 1rem;
-          margin: .25rem 0;
+          border-radius: 50%;
         }
       }
+    }
 
-      &.coordinates {
-        ::ng-deep {
-          .ra,
-          .dec {
-            white-space: nowrap;
-          }
+    .basic-data {
+      padding-bottom: .75rem;
 
-          .separator {
-            display: inline-block;
-            margin: 0 .25rem;
-          }
-        }
-      }
-
-      @media (min-width: $xs-min) and (max-width: $sm-max), (min-width: $lg-min) and (max-width: $xl-max) {
-        flex-direction: column;
+      .basic-data-item {
+        display: flex;
         align-items: center;
+        gap: .5rem;
+
+        .value:not(a) {
+          color: var(--white);
+        }
+
+        &.subject-type,
+        &.constellation {
+          img {
+            height: 1rem;
+            margin: .25rem 0;
+          }
+        }
 
         &.coordinates {
           ::ng-deep {
             .ra,
             .dec {
-              .seconds {
-                display: none;
+              white-space: nowrap;
+            }
+
+            .separator {
+              display: inline-block;
+              margin: 0 .25rem;
+            }
+          }
+        }
+
+        @media (min-width: $xs-min) and (max-width: $sm-max), (min-width: $lg-min) and (max-width: $xl-max) {
+          flex-direction: column;
+          align-items: center;
+
+          &.coordinates {
+            ::ng-deep {
+              .ra,
+              .dec {
+                .seconds {
+                  display: none;
+                }
               }
             }
           }
         }
       }
-    }
 
-    @media (max-width: $xxs-max) {
-      flex-direction: column;
-    }
-  }
-
-  .objects-in-field {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
-
-    .separator {
-      display: inline-block;
-      margin-left: .5rem;
-      color: var(--lighterGrey);
-    }
-  }
-
-  .equipment {
-    padding: .5rem 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
-
-    a.value {
-      background: var(--darkGrey);
-      padding: .25rem .5rem;
-      border-radius: .5rem;
-      color: var(--lightestGrey);
-      border: 1px solid var(--lightGrey);
-
-      astrobin-equipment-item-display-name {
-        white-space: nowrap;
+      @media (max-width: $xxs-max) {
+        flex-direction: column;
       }
     }
-  }
 
-  @media (max-width: $md-max) {
-    width: 100%;
-    height: 50%;
+    .objects-in-field {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+
+      .separator {
+        display: inline-block;
+        margin-left: .5rem;
+        color: var(--lighterGrey);
+      }
+    }
+
+    .equipment {
+      padding: .5rem 0 1rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+
+      a.value {
+        background: var(--darkGrey);
+        padding: .25rem .5rem;
+        border-radius: .5rem;
+        color: var(--lightestGrey);
+        border: 1px solid var(--lightGrey);
+
+        astrobin-equipment-item-display-name {
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .description {
+      ::ng-deep {
+        img {
+          max-width: 100%;
+          height: auto;
+        }
+      }
+    }
+
+    @media (max-width: $md-max) {
+      width: 100%;
+      height: 50%;
+      padding: 1rem;
+    }
   }
 }

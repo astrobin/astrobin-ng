@@ -28,11 +28,11 @@
     </div>
 
     <div class="data-area">
-      <h2 class="title">
+      <h2 class="title data-area-section">
         {{ image.title }}
       </h2>
 
-      <div class="photographers d-flex align-items-center">
+      <div class="photographers data-area-section d-flex align-items-center">
         <div class="avatars">
           <a
             *ngIf="image.collaborators?.length === 0"
@@ -67,7 +67,7 @@
         </div>
       </div>
 
-      <div class="basic-data d-flex justify-content-between gap-3">
+      <div class="basic-data data-area-section d-flex justify-content-between gap-3">
         <div *ngIf="subjectType" class="basic-data-item subject-type">
           <img
             [src]="'/assets/images/' + subjectTypeIcon"
@@ -108,7 +108,7 @@
         </div>
       </div>
 
-      <div *ngIf="objectsInField?.length > 0" class="objects-in-field">
+      <div *ngIf="objectsInField?.length > 0" class="objects-in-field data-area-section">
         <fa-icon icon="binoculars"></fa-icon>
         <a
           *ngFor="let item of objectsInField; let last = last"
@@ -121,7 +121,7 @@
         </a>
       </div>
 
-      <div *ngIf="equipmentItems?.length > 0" class="equipment">
+      <div *ngIf="equipmentItems?.length > 0" class="equipment data-area-section">
         <a
           *ngFor="let item of equipmentItems"
           [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]"
@@ -137,6 +137,14 @@
             [showItemUnapprovedInfo]="false"
           ></astrobin-equipment-item-display-name>
         </a>
+      </div>
+
+      <div *ngIf="image.descriptionBbcode" class="description data-area-section">
+        <div class="value" [innerHTML]="image.descriptionBbcode | BBCodeToHtml"></div>
+      </div>
+
+      <div *ngId="image.description && !image.descriptionBbcode" class="description data-area-section">
+        <div class="value" [innerHTML]="image.description"></div>
       </div>
     </div>
   </ng-container>
