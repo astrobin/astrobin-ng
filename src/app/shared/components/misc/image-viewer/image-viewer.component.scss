@@ -8,7 +8,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.95);
+    background-color: var(--black);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -29,24 +29,11 @@
       height: 40%;
     }
 
-    .close-button {
-      position: absolute;
-      top: .75rem;
-      right: .75rem;
-      background: transparent;
-      border: none;
-      color: var(--white);
-      font-size: 1.5rem;
-      cursor: pointer;
-      z-index: 1031;
-    }
-
+    .close-button,
+    .fullscreen-button,
     .next-button,
     .previous-button {
       position: absolute;
-      top: 50%;
-      padding: 1rem;
-      transform: translateY(-50%);
       background: transparent;
       border: none;
       color: var(--white);
@@ -54,11 +41,29 @@
       cursor: pointer;
       z-index: 1031;
       opacity: 0;
+      padding: .5rem;
       transition: opacity 0.3s, transform 0.3s ease-in-out;
 
       :focus-visible {
         outline: none !important;
       }
+    }
+
+
+    .close-button {
+      top: .75rem;
+      left: .75rem;
+    }
+
+    .fullscreen-button {
+      top: .75rem;
+      right: .75rem;
+    }
+
+    .next-button,
+    .previous-button {
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     .next-button {
@@ -88,6 +93,8 @@
     }
 
     &:hover {
+      .close-button,
+      .fullscreen-button,
       .next-button,
       .previous-button {
         opacity: 1;
@@ -232,6 +239,7 @@
 
     .buttons-area {
       background: var(--black);
+      border-top: 1px solid var(--grey);
       width: 100%;
       padding: 1rem;
       display: flex;

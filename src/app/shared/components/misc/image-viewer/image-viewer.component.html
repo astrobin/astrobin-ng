@@ -5,6 +5,10 @@
         <fa-icon icon="times-circle"></fa-icon>
       </button>
 
+      <button *ngIf="!image.videoFile" class="fullscreen-button" (click)="openFullscreen($event)">
+        <fa-icon icon="expand"></fa-icon>
+      </button>
+
       <button
         *ngIf="currentIndex > 0"
         (click)="onPreviousClicked()"
@@ -12,6 +16,10 @@
       >
         <fa-icon icon="chevron-circle-left"></fa-icon>
       </button>
+
+      <astrobin-fullscreen-image-viewer
+        [id]="image.pk"
+      ></astrobin-fullscreen-image-viewer>
 
       <astrobin-image
         [alias]="alias"

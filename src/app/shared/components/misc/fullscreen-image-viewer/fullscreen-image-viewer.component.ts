@@ -189,8 +189,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return this._zoomScroll;
   }
 
-  @HostListener("document:keyup.escape", ["$event"])
-  hide(): void {
+  @HostListener("window:keyup.escape", ["$event"])
+  hide(event: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     this.store$
       .select(selectApp)
       .pipe(

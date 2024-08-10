@@ -20,6 +20,8 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
+import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 
 @Component({
   selector: "astrobin-image-viewer",
@@ -34,6 +36,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   hasOtherImages = false;
   currentIndex = null;
   imageContentType: ContentTypeInterface;
+  fullscreen = false;
 
   subjectTypeIcon: string = null;
   subjectType: string = null;
@@ -96,6 +99,11 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @HostListener("document:keydown.escape", ["$event"])
   handleEscapeKey(event: KeyboardEvent) {
+    if (this.fullscreen) {
+      this.closeFullscreen();
+      return;
+    }
+
     this.close();
   }
 
@@ -243,7 +251,22 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     instance.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS;
   }
 
+  openFullscreen(event: MouseEvent): void {
+    event.preventDefault();
+
+    if (!this.image.videoFile) {
+      this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
+      this.fullscreen = true;
+    }
+  }
+
+  closeFullscreen(): void {
+    this.store$.dispatch(new HideFullscreenImage());
+    this.fullscreen = false;
+  }
+
   close(): void {
+    this.closeFullscreen();
     this.closeViewer.emit();
   }
 }
