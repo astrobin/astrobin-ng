@@ -8,6 +8,7 @@ import { Observable } from "rxjs";
 import { BaseClassicApiService } from "../base-classic-api.service";
 import { map } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 
 @Injectable({
   providedIn: "root"
@@ -47,5 +48,12 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
     return this.http
       .get<{ country: string }>(`${this.configUrl}/common/request-country/`)
       .pipe(map(response => response.country));
+  }
+
+  recordHit(contentTypeId: ContentTypeInterface["id"], objectId: number): Observable<void> {
+    return this.http.post<void>(`${this.configUrl}/common/record-hit/`, {
+      content_type_id: contentTypeId,
+      object_id: objectId
+    });
   }
 }

@@ -62,6 +62,7 @@ import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipmen
 import { isPlatformBrowser, Location } from "@angular/common";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -107,7 +108,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly modalService: NgbModal,
     public readonly router: Router,
-    public readonly http: HttpClient,
+    public readonly jsonApiService: JsonApiService,
     public readonly windowRefService: WindowRefService,
     public readonly routerService: RouterService,
     public readonly utilsService: UtilsService,
@@ -591,10 +592,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         ),
         switchMap(([user, contentType]) => {
           if (!user || user.id !== this.listing.user) {
-            return this.http.post(`${environment.classicBaseUrl}/json-api/common/record-hit/`, {
-              content_type_id: contentType.id,
-              object_id: this.listing.id
-            });
+            return this.jsonApiService.recordHit(contentType.id, this.listing.id);
           }
 
           return of(null);

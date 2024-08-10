@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -7,7 +7,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { DeviceService } from "@shared/services/device.service";
 import { LoadImage } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { filter, take } from "rxjs/operators";
+import { filter, map, switchMap, take } from "rxjs/operators";
 import { ImageService } from "@shared/services/image/image.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { SearchService } from "@features/search/services/search.service";
@@ -20,8 +20,10 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
-import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { of } from "rxjs";
+import { isPlatformServer } from "@angular/common";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
 @Component({
   selector: "astrobin-image-viewer",
@@ -69,7 +71,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly searchService: SearchService,
     public readonly router: Router,
     public readonly solutionService: SolutionService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly jsonApiService: JsonApiService,
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
   ) {
     super(store$);
   }
@@ -139,6 +143,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.objectsInField = this.solutionService.getObjectsInField(
       this.imageService.getFinalRevision(this.image).solution
     );
+
+    this._recordHit();
   }
 
   updateNavigationContextInformation(): void {
@@ -268,5 +274,37 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   close(): void {
     this.closeFullscreen();
     this.closeViewer.emit();
+  }
+
+  private _recordHit() {
+    const contentTypePayload = {
+      appLabel: "astrobin",
+      model: "image"
+    };
+
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
+    // No need to dispatch this because it's already done.
+    this.currentUser$
+      .pipe(
+        switchMap(user =>
+          this.store$.select(selectContentType, contentTypePayload).pipe(
+            filter(contentType => !!contentType),
+            take(1),
+            map(contentType => [user, contentType])
+          )
+        ),
+        switchMap(([user, contentType]) => {
+          if (!user || user.id !== this.image.user) {
+            return this.jsonApiService.recordHit(contentType.id, this.image.pk);
+          }
+
+          return of(null);
+        }),
+        take(1)
+      )
+      .subscribe();
   }
 }
