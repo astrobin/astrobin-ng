@@ -187,7 +187,12 @@
             >
               <fa-icon icon="comments"></fa-icon>
             </button>
-            <span class="count">{{ image.commentCount }}</span>
+            <span class="count">
+              <astrobin-nested-comments-count
+                [contentType]="imageContentType"
+                [objectId]="image.pk"
+              ></astrobin-nested-comments-count>
+            </span>
           </div>
         </ng-container>
       </div> <!-- buttons-area -->
