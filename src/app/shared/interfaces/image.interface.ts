@@ -251,6 +251,7 @@ export interface ImageInterface {
   likeCount: number;
   bookmarkCount: number;
   commentCount: number;
+  userFollowerCount: number;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;

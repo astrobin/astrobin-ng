@@ -164,7 +164,7 @@
 
       <div class="buttons-area">
         <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-          <div class="like">
+          <div *ngIf="currentUserWrapper.user?.id !== image.user" class="like">
             <astrobin-toggle-property
               [contentType]="imageContentType.id"
               [objectId]="image.pk"
@@ -188,6 +188,19 @@
             <span class="count">{{ image.bookmarkCount }}</span>
           </div>
 
+          <div *ngIf="currentUserWrapper.user?.id !== image.user" class="follow">
+            <astrobin-toggle-property
+              [contentType]="userContentType.id"
+              [objectId]="image.user"
+              [userId]="currentUserWrapper.user?.id"
+              [showLabel]="false"
+              [setLabel]="'Follow user' | translate"
+              [unsetLabel]="'Unfollow user' | translate"
+              btnClass="btn btn-link link-secondary"
+              propertyType="follow"
+            ></astrobin-toggle-property>
+            <span class="count">{{ image.userFollowerCount }}</span>
+          </div>
           <div class="comment">
             <button
               (click)="openCommentsModal($event)"

@@ -1,3 +1,7 @@
-.btn-link.toggled .ng-fa-icon {
-  color: var(--accentColor);
+:host {
+  display: flex;
+
+  .btn-link.toggled .ng-fa-icon {
+    color: var(--accentColor);
+  }
 }

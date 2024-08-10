@@ -4,6 +4,8 @@
     [class.loading]="(loadingService.loading$ | async) === true"
     [class.toggled]="!!context.toggleProperty"
     [class]="btnClass"
+    [ngbTooltip]="context.toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel"
+    container="body"
   >
     <ng-container *ngIf="!!context.toggleProperty">
       <fa-icon

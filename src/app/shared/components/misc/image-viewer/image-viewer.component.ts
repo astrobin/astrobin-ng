@@ -38,6 +38,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   hasOtherImages = false;
   currentIndex = null;
   imageContentType: ContentTypeInterface;
+  userContentType: ContentTypeInterface;
   fullscreen = false;
 
   subjectTypeIcon: string = null;
@@ -93,9 +94,22 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       this.imageContentType = contentType;
     });
 
+    this.store$.pipe(
+      select(selectContentType, { appLabel: "auth", model: "user" }),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      this.userContentType = contentType;
+    });
+
     this.store$.dispatch(new LoadContentType({
       appLabel: "astrobin",
       model: "image"
+    }));
+
+    this.store$.dispatch(new LoadContentType({
+      appLabel: "auth",
+      model: "user"
     }));
 
     this.initialized.emit();
