@@ -195,6 +195,17 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  subjectTypeClicked(event: MouseEvent): void {
+    event.preventDefault();
+
+    const params = this.searchService.modelToParams({
+      subject_type: this.image.solarSystemMainSubject || this.image.subjectType
+    });
+    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
+      this.close();
+    });
+  }
+
   constellationClicked(event: MouseEvent): void {
     event.preventDefault();
 

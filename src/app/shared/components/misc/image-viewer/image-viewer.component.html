@@ -74,7 +74,11 @@
               [src]="'/assets/images/' + subjectTypeIcon"
               [alt]="subjectType"
             />
-            <span class="value no-wrap" [innerHTML]="subjectType"></span>
+            <a
+              (click)="subjectTypeClicked($event)"
+              [innerHTML]="subjectType"
+              class="value no-wrap"
+            ></a>
           </div>
 
           <div *ngIf="integration" class="basic-data-item integration">
