@@ -215,6 +215,40 @@ export class ImageService extends BaseService {
     }
   }
 
+  getDataSourceIcon(value: DataSource, color: "white" | "black"): string {
+    let icon: string = null;
+
+    switch (value) {
+      case DataSource.BACKYARD:
+        icon = "backyard";
+        break;
+      case DataSource.TRAVELLER:
+        icon = "traveller";
+        break;
+      case DataSource.OWN_REMOTE:
+        icon = "own-remote";
+        break;
+      case DataSource.AMATEUR_HOSTING:
+        icon = "amateur-hosting";
+        break;
+      case DataSource.PUBLIC_AMATEUR_DATA:
+        icon = "public-amateur-data";
+        break;
+      case DataSource.PRO_DATA:
+        icon = "pro-data";
+        break;
+      case DataSource.MIX:
+        icon = "mix";
+        break;
+    }
+
+    if (icon) {
+      return `data-sources/${icon}-${color}.png?v=1`;
+    }
+
+    return null;
+  }
+
   humanizeDataSource(value: DataSource): string {
     switch (value) {
       case DataSource.BACKYARD:

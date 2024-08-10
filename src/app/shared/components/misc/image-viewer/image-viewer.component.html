@@ -77,6 +77,18 @@
         </div>
 
         <div class="basic-data data-area-section d-flex justify-content-between gap-3 flex-wrap">
+          <div *ngIf="dataSource" class="basic-data-item data-source">
+            <img
+              [src]="'/assets/images/' + dataSourceIcon"
+              [alt]="dataSource"
+            />
+            <a
+              (click)="dataSourceClicked($event)"
+              [innerHTML]="dataSource"
+              class="value no-wrap"
+            ></a>
+          </div>
+
           <div *ngIf="subjectType" class="basic-data-item subject-type">
             <img
               [src]="'/assets/images/' + subjectTypeIcon"

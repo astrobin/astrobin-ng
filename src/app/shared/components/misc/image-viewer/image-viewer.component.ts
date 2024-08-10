@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
-import { FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@shared/interfaces/image.interface";
+import { DataSource, FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
@@ -41,6 +41,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   userContentType: ContentTypeInterface;
   fullscreen = false;
 
+  dataSourceIcon: string = null;
+  dataSource: string = null;
   subjectTypeIcon: string = null;
   subjectType: string = null;
   hemisphere: string = null;
@@ -127,6 +129,15 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   updateImageInformation(): void {
     // TODO: if looking at a revision...
+
+    if (
+      this.image.dataSource !== DataSource.OTHER &&
+      this.image.dataSource !== DataSource.UNKNOWN &&
+      this.image.dataSource !== null
+    ) {
+      this.dataSourceIcon = this.imageService.getDataSourceIcon(this.image.dataSource, "white");
+      this.dataSource = this.imageService.humanizeDataSource(this.image.dataSource);
+    }
 
     this.subjectTypeIcon = this.imageService.getSubjectTypeIcon(
       this.image.subjectType,
@@ -221,6 +232,15 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         this.updateImageInformation();
       });
     }
+  }
+
+  dataSourceClicked(event: MouseEvent): void {
+    event.preventDefault();
+
+    const params = this.searchService.modelToParams({ data_source: this.image.dataSource });
+    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
+      this.close();
+    });
   }
 
   subjectTypeClicked(event: MouseEvent): void {
