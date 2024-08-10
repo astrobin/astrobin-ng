@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { LoadImage, LoadImageRevisions } from "@app/store/actions/image.actions";
+import { LoadImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
@@ -8,13 +8,12 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
-import { fromEvent, merge, Observable, of, Subscription } from "rxjs";
-import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
+import { fromEvent, merge, Subscription } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { isPlatformBrowser } from "@angular/common";
@@ -43,12 +42,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   @Input()
   autoHeight = true;
-
-  @Input()
-  autoLoadRevisions = true;
-
-  @Input()
-  showTitle = false;
 
   @Output()
   loaded = new EventEmitter();
@@ -109,7 +102,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this.thumbnailUrl = null;
 
     if (changes.image && changes.image.currentValue) {
-      this.id = this.image.pk;
+      this.id = changes.image.currentValue.pk;
       this._loadThumbnail();
       this._disposeVideoJsPlayer();
 
@@ -158,16 +151,13 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
           .select(selectImage, this.id)
           .pipe(
             filter(image => !!image),
-            take(1),
-            switchMap(image =>
-              this.store$.select(selectImageRevisionsForImage, this.id).pipe(
-                take(1),
-                map(() => image)
-              )
-            ),
-            switchMap(image => this._loadRevision(image).pipe(map(revision => ({ image, revision }))))
+            take(1)
           )
-          .subscribe(({ image, revision }) => {
+          .subscribe(image => {
+            const revision = image.revisions.find(
+              revision => (revision.isFinal && this.revision === "final") || revision.label === this.revision
+            );
+
             this.image = image;
             this.id = image.pk;
             const w = !!revision ? revision.w : image.w;
@@ -181,10 +171,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
           });
 
         this.store$.dispatch(new LoadImage({ imageId: this.id }));
-
-        if (this.autoLoadRevisions) {
-          this.store$.dispatch(new LoadImageRevisions({ imageId: this.id }));
-        }
       });
   }
 
@@ -195,27 +181,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     }
 
     this.loaded.emit();
-  }
-
-  private _loadRevision(image: ImageInterface): Observable<ImageRevisionInterface> {
-    if (this.revision === "0") {
-      return of(null);
-    }
-
-    return this.store$.select(selectImageRevisionsForImage, image.pk).pipe(
-      take(1),
-      map(imageRevisions => {
-        const matchingRevisions = imageRevisions.filter(
-          imageRevision => (imageRevision.isFinal && this.revision === "final") || imageRevision.label === this.revision
-        );
-
-        if (matchingRevisions.length > 0) {
-          return imageRevisions[0];
-        }
-
-        return null;
-      })
-    );
   }
 
   private _loadThumbnail() {

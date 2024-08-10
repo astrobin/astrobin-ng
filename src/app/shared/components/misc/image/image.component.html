@@ -29,10 +29,6 @@
     class="astrobin-image"
     id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revision }}-{{ alias }}"
   >
-
-  <div *ngIf="showTitle && !!image.title" class="image-title">
-    {{ image.title }}
-  </div>
 </ng-template>
 
 <ng-template #loadingTemplate>

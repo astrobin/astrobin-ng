@@ -38,9 +38,6 @@ export interface AppState {
   // All seen images.
   images: ImageInterface[];
 
-  // All seen image revisions.
-  imageRevisions: ImageRevisionInterface[];
-
   // All seen thumbnails.
   thumbnails: ImageThumbnailInterface[];
 
@@ -76,7 +73,6 @@ export const initialAppState: AppState = {
   requestCountry: null,
   contentTypes: [],
   images: [],
-  imageRevisions: [],
   thumbnails: [],
   loadingThumbnails: [],
   solutions: [],
@@ -221,16 +217,6 @@ export function appReducer(state = initialAppState, action: All): AppState {
         loadingThumbnails,
         telescopes,
         cameras
-      };
-    }
-
-    case AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS: {
-      return {
-        ...state,
-        imageRevisions: UtilsService.arrayUniqueObjects(
-          [...state.imageRevisions, ...action.payload.imageRevisions.results],
-          "pk"
-        )
       };
     }
 

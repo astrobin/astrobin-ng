@@ -21,8 +21,6 @@ import { Observable } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
-import { LoadImageRevisions } from "@app/store/actions/image.actions";
-import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
 import { Actions } from "@ngrx/effects";
 
 @Component({
@@ -370,11 +368,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
   }
 
   private _setRevisionCount() {
-    this.store$.dispatch(new LoadImageRevisions({ imageId: this.image.pk }));
-    this.store$
-      .select(selectImageRevisionsForImage, this.image.pk)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(imageRevisions => (this.revisionCount = imageRevisions.length));
+    this.revisionCount = this.image.revisions.length;
   }
 
   private _onTitleChange() {

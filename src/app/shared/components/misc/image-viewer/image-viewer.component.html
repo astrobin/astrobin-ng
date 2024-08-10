@@ -1,40 +1,38 @@
 <div class="image-viewer-overlay">
   <button class="close-button" (click)="close()">
-    <fa-icon icon="times"></fa-icon>
+    <fa-icon icon="times-circle"></fa-icon>
   </button>
 
-  <button
-    *ngIf="currentIndex > 0"
-    (click)="onPreviousClicked()"
-    class="previous-button"
-  >
-    <fa-icon icon="chevron-left"></fa-icon>
-  </button>
-  <button
-    *ngIf="currentIndex < navigationContext?.length - 1"
-    (click)="onNextClicked()"
-    class="next-button"
-  >
-    <fa-icon icon="chevron-right"></fa-icon>
-  </button>
+  <ng-container *ngIf="!!image; else loadingTemplate">
+    <div class="image-area">
+      <button
+        *ngIf="currentIndex > 0"
+        (click)="onPreviousClicked()"
+        class="previous-button"
+      >
+        <fa-icon icon="chevron-circle-left"></fa-icon>
+      </button>
 
-  <div class="image-container">
-    <ng-container *ngIf="!!image; else loadingTemplate">
-      <div class="row">
-        <div class="col-12 col-lg-8">
-          <div class="image-container">
-            <astrobin-image
-              [alias]="alias"
-              [image]="image"
-              [showTitle]="true"
-            ></astrobin-image>
-          </div>
-        </div>
-        <div class="col-12 col-lg-4">
-        </div>
-      </div>
-    </ng-container>
-  </div>
+      <astrobin-image
+        [alias]="alias"
+        [image]="image"
+      ></astrobin-image>
+
+      <button
+        *ngIf="currentIndex < navigationContext?.length - 1"
+        (click)="onNextClicked()"
+        class="next-button"
+      >
+        <fa-icon icon="chevron-circle-right"></fa-icon>
+      </button>
+    </div>
+
+    <div class="data-area">
+      <h2 class="title">
+        {{ image.title }}
+      </h2>
+    </div>
+  </ng-container>
 </div>
 
 <ng-template #loadingTemplate>

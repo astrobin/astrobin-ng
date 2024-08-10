@@ -33,16 +33,12 @@
 //       cy.route("get", "**/000001/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
 //       cy.route("get", "**/000001/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
 //
-//       cy.route("get", "**/api/v2/images/image-revision/?image=*", { results: [] }).as("getImageRevisions");
-//
 //       cy.route("get", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_3.json").as(
 //         "getCurrentUserProfile"
 //       );
 //       cy.route("get", "**/common/users/*", "fixture:api/common/users_3_iotd_submitter.json").as("getUser");
 //
 //       cy.route("get", "**/iotd/staff-member-settings/", { user: 1, queueSortOrder: "OLDEST" });
-//
-//       cy.route("get", "**/api/v2/images/image-revision/?image=1", { results: [] }).as("getImageRevisions");
 //     });
 //
 //     it("should render page elements", () => {

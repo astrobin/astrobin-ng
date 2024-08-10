@@ -1,3 +1,6 @@
+@import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
+
 .image-viewer-overlay {
   position: fixed;
   top: 0;
@@ -11,10 +14,46 @@
   z-index: 1030;
 }
 
-.image-container {
+.image-area {
   position: relative;
-  width: calc(100% - 8rem);
+  width: 65%;
   height: 100%;
+
+  .next-button,
+  .previous-button {
+    position: absolute;
+    top: 50%;
+    padding: 1rem;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 1031;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s ease-in-out;
+
+    :focus-visible {
+      outline: none !important;
+    }
+  }
+
+  .next-button {
+    right: 0;
+
+    &:hover {
+      transform: translateX(0.125rem) translateY(-50%);
+    }
+  }
+
+  .previous-button {
+    left: 0;
+
+    &:hover {
+      transform: translateX(-0.125rem) translateY(-50%);
+    }
+  }
 
   ::ng-deep astrobin-image {
     height: 100vh;
@@ -27,43 +66,38 @@
       object-fit: contain;
     }
   }
+
+  &:hover {
+    .next-button,
+    .previous-button {
+      opacity: 1;
+    }
+  }
+}
+
+.data-area {
+  position: relative;
+  width: 35%;
+  height: 100%;
+  @include darkest-background-texture;
+
+  .title {
+    display: block;
+    margin: 1rem 4rem 1rem 1rem;
+    padding-bottom: .5rem;
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--lightGrey);
+  }
 }
 
 .close-button {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: .75rem;
+  right: .75rem;
   background: transparent;
   border: none;
   color: var(--white);
   font-size: 1.5rem;
   cursor: pointer;
   z-index: 1031;
-}
-
-.next-button,
-.previous-button {
-  position: absolute;
-  top: 50%;
-  padding: 1rem;
-  height: 100%;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  color: var(--white);
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 1031;
-
-  :focus-visible {
-    outline: none !important;
-  }
-}
-
-.next-button {
-  right: 0;
-}
-
-.previous-button {
-  left: 0;
 }
