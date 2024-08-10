@@ -46,6 +46,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   @Input()
   btnClass: string = "btn btn-secondary";
 
+  @Input()
+  showLabel = true;
+
   toggleProperty$: Observable<TogglePropertyInterface | null>;
 
   // We keep a local "loading" state because we don't want to freeze the whole app.
@@ -79,17 +82,6 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     }
   }
 
-  get unsetTogglePropertyIcon(): IconProp {
-    switch (this.propertyType) {
-      case "like":
-        return "thumbs-down";
-      case "bookmark":
-        return "bookmark-slash";
-      case "follow":
-        return "bell-slash";
-    }
-  }
-
   get setTogglePropertyLabel(): string {
     if (this.setLabel) {
       return this.setLabel;
@@ -105,7 +97,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     }
   }
 
-  get setTogglePropertyIcon(): IconProp {
+  get togglePropertyIcon(): IconProp {
     switch (this.propertyType) {
       case "like":
         return "thumbs-up";

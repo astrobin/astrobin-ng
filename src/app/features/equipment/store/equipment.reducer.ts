@@ -255,7 +255,9 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
       const objectId = action.payload.toggleProperty.objectId;
       const propertyType = action.payload.toggleProperty.propertyType;
 
-      const item = state.equipmentItems.find(item => item.id == objectId && item.contentType === contentType);
+      const item = state.equipmentItems.find(
+        item => item.id == objectId && item.contentType === contentType
+      );
 
       if (propertyType === "follow" && !!item) {
         return {

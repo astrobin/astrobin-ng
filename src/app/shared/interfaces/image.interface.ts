@@ -248,6 +248,9 @@ export interface ImageInterface {
   revisions: ImageRevisionInterface[];
   constellation: string;
   isFinal: boolean;
+  likeCount: number;
+  bookmarkCount: number;
+  commentCount: number;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;

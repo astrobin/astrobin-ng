@@ -26,7 +26,7 @@
 
     @media (max-width: $md-max) {
       width: 100%;
-      height: 50%;
+      height: 40%;
     }
 
     .close-button {
@@ -95,137 +95,179 @@
     }
   }
 
-  .data-area {
-    @include darkest-background-texture;
+  .data-area-container {
     position: relative;
     width: 50%;
     height: 100%;
-    padding: 2rem;
     display: flex;
     flex-direction: column;
-    gap: .75rem;
-    overflow-y: auto;
+    justify-content: flex-start;
 
-    .data-area-section {
-      padding-bottom: .5rem;
-      border-bottom: 1px solid var(--grey);
-    }
+    .data-area {
+      @include darkest-background-texture;
+      height: 100%;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      overflow-y: auto;
 
-    .title {
-      display: block;
-      margin-bottom: 0;
-      font-size: 1.5rem;
-    }
+      .data-area-section {
+        padding-bottom: .5rem;
+        border-bottom: 1px solid var(--grey);
+      }
 
-    .photographers {
-      padding-bottom: .75rem;
+      .title {
+        display: block;
+        margin-bottom: 0;
+        font-size: 1.5rem;
+      }
 
-      .avatars {
-        img {
-          border-radius: 50%;
+      .photographers {
+        padding-bottom: .75rem;
+
+        .avatars {
+          img {
+            border-radius: 50%;
+          }
         }
       }
-    }
 
-    .basic-data {
-      padding-bottom: .75rem;
+      .basic-data {
+        padding-bottom: .75rem;
 
-      .basic-data-item {
-        display: flex;
-        align-items: center;
-        gap: .5rem;
-
-        .value:not(a) {
-          color: var(--white);
-        }
-
-        &.subject-type,
-        &.constellation {
-          img {
-            height: 1rem;
-            margin: .25rem 0;
-          }
-        }
-
-        &.coordinates {
-          ::ng-deep {
-            .ra,
-            .dec {
-              white-space: nowrap;
-            }
-
-            .separator {
-              display: inline-block;
-              margin: 0 .25rem;
-            }
-          }
-        }
-
-        @media (min-width: $xs-min) and (max-width: $sm-max), (min-width: $lg-min) and (max-width: $xl-max) {
-          flex-direction: column;
+        .basic-data-item {
+          display: flex;
           align-items: center;
+          gap: .5rem;
+
+          .value:not(a) {
+            color: var(--white);
+          }
+
+          &.subject-type,
+          &.constellation {
+            img {
+              height: 1rem;
+              margin: .25rem 0;
+            }
+          }
 
           &.coordinates {
             ::ng-deep {
               .ra,
               .dec {
-                .seconds {
-                  display: none;
+                white-space: nowrap;
+              }
+
+              .separator {
+                display: inline-block;
+                margin: 0 .25rem;
+              }
+            }
+          }
+
+          @media (min-width: $xs-min) and (max-width: $sm-max), (min-width: $lg-min) and (max-width: $xl-max) {
+            flex-direction: column;
+            align-items: center;
+
+            &.coordinates {
+              ::ng-deep {
+                .ra,
+                .dec {
+                  .seconds {
+                    display: none;
+                  }
                 }
               }
             }
           }
         }
+
+        @media (max-width: $xxs-max) {
+          flex-direction: column;
+        }
       }
 
-      @media (max-width: $xxs-max) {
-        flex-direction: column;
+      .objects-in-field {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+
+        .separator {
+          display: inline-block;
+          margin-left: .5rem;
+          color: var(--lighterGrey);
+        }
       }
-    }
 
-    .objects-in-field {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .5rem;
+      .equipment {
+        padding: .5rem 0 1rem 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
 
-      .separator {
-        display: inline-block;
-        margin-left: .5rem;
-        color: var(--lighterGrey);
+        a.value {
+          background: var(--darkGrey);
+          padding: .25rem .5rem;
+          border-radius: .5rem;
+          color: var(--lightestGrey);
+          border: 1px solid var(--lightGrey);
+
+          astrobin-equipment-item-display-name {
+            white-space: nowrap;
+          }
+        }
       }
-    }
 
-    .equipment {
-      padding: .5rem 0 1rem 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: .5rem;
-
-      a.value {
-        background: var(--darkGrey);
-        padding: .25rem .5rem;
-        border-radius: .5rem;
-        color: var(--lightestGrey);
-        border: 1px solid var(--lightGrey);
-
-        astrobin-equipment-item-display-name {
-          white-space: nowrap;
+      .description {
+        ::ng-deep {
+          img {
+            max-width: 100%;
+            height: auto;
+          }
         }
       }
     }
 
-    .description {
-      ::ng-deep {
-        img {
-          max-width: 100%;
-          height: auto;
+    .buttons-area {
+      background: var(--black);
+      width: 100%;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-around;
+      gap: 1rem;
+      font-size: 1.5rem;
+
+      .like,
+      .bookmark,
+      .comment {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+
+        ::ng-deep {
+          .ng-fa-icon {
+            margin-right: 0;
+          }
+        }
+
+        > astrobin-toggle-property,
+        > .btn {
+          height: 2.25rem;
+        }
+
+        > .count {
+          font-size: .85rem;
+          color: var(--lightGrey);
         }
       }
     }
 
     @media (max-width: $md-max) {
       width: 100%;
-      height: 50%;
+      height: 60%;
       padding: 1rem;
     }
   }

@@ -1,5 +1,4 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from "@angular/core";
-import { Location } from "@angular/common";
 import { FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -15,6 +14,12 @@ import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { SolutionService } from "@shared/services/solution/solution.service";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
+import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 
 @Component({
   selector: "astrobin-image-viewer",
@@ -28,6 +33,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   alias: ImageAlias;
   hasOtherImages = false;
   currentIndex = null;
+  imageContentType: ContentTypeInterface;
 
   subjectTypeIcon: string = null;
   subjectType: string = null;
@@ -58,9 +64,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly imageService: ImageService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly searchService: SearchService,
-    public readonly location: Location,
     public readonly router: Router,
-    public readonly solutionService: SolutionService
+    public readonly solutionService: SolutionService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -71,6 +77,19 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     } else if (this.deviceService.xlMin()) {
       this.alias = ImageAlias.QHD;
     }
+
+    this.store$.pipe(
+      select(selectContentType, { appLabel: "astrobin", model: "image" }),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      this.imageContentType = contentType;
+    });
+
+    this.store$.dispatch(new LoadContentType({
+      appLabel: "astrobin",
+      model: "image"
+    }));
 
     this.initialized.emit();
   }
@@ -192,6 +211,25 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.router.navigateByUrl(`/search?p=${params}`).then(() => {
       this.close();
     });
+  }
+
+  equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {
+    event.preventDefault();
+
+    this.router.navigateByUrl(`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`).then(() => {
+      this.close();
+    });
+  }
+
+  openCommentsModal(event: MouseEvent): void {
+    event.preventDefault();
+
+    const modalRef = this.modalService.open(NestedCommentsModalComponent, { size: "lg" });
+    const instance: NestedCommentsModalComponent = modalRef.componentInstance;
+
+    instance.contentType = this.imageContentType;
+    instance.objectId = this.image.pk;
+    instance.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS;
   }
 
   close(): void {
