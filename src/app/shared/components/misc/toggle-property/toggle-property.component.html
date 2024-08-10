@@ -4,7 +4,12 @@
     [class.loading]="(loadingService.loading$ | async) === true"
     [class.toggled]="!!context.toggleProperty"
     [class]="btnClass"
-    [ngbTooltip]="context.toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel"
+    [ngbTooltip]="
+      !showLabel ? (context.toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel) : ''
+    "
+    [attr.aria-label]="
+      !showLabel ? (context.toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null
+    "
     container="body"
   >
     <ng-container *ngIf="!!context.toggleProperty">
