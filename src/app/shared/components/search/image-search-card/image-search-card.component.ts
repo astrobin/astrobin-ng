@@ -39,14 +39,12 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
   showSortButton = true;
 
   next: string;
-  initialLoading = true;
   loading = true;
   images: ImageSearchInterface[] = [];
   searchUrl: string;
 
   constructor(
     public readonly store$: Store<MainState>,
-    public readonly imageSearchApiService: ImageSearchApiService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
@@ -60,7 +58,7 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
     if (changes.model) {
       const urlParams = new URLSearchParams();
       urlParams.set("d", "i");
-      urlParams.set("sort", this.model.ordering);
+      urlParams.set("sort", this.model.ordering || '-likes');
 
       if (this.model.itemType) {
         urlParams.set(`${this.model.itemType.toLowerCase()}_ids`, this.model.itemId.toString());
