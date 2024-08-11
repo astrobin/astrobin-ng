@@ -1,238 +1,268 @@
 <div class="image-viewer-overlay">
   <ng-container *ngIf="!!image; else loadingTemplate">
-    <div class="image-area">
-      <button class="close-button" (click)="close()">
-        <fa-icon icon="times-circle"></fa-icon>
-      </button>
-
-      <button *ngIf="!image.videoFile" class="fullscreen-button" (click)="openFullscreen($event)">
-        <fa-icon icon="expand"></fa-icon>
-      </button>
-
-      <button
-        *ngIf="currentIndex > 0"
-        (click)="onPreviousClicked()"
-        class="previous-button"
-      >
-        <fa-icon icon="chevron-circle-left"></fa-icon>
-      </button>
-
-      <astrobin-fullscreen-image-viewer
-        [id]="image.pk"
-      ></astrobin-fullscreen-image-viewer>
-
-      <astrobin-image
-        [alias]="alias"
-        [image]="image"
-      ></astrobin-image>
-
-      <button
-        *ngIf="currentIndex < navigationContext?.length - 1"
-        (click)="onNextClicked()"
-        class="next-button"
-      >
-        <fa-icon icon="chevron-circle-right"></fa-icon>
-      </button>
-    </div>
+    <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
 
     <div class="data-area-container">
-      <div class="data-area">
-        <h2 class="title data-area-section">
-          {{ image.title }}
-        </h2>
-
-        <div class="photographers data-area-section d-flex align-items-center">
-          <div class="avatars">
-            <a
-              *ngIf="image.collaborators?.length === 0"
-              [href]="classicRoutesService.GALLERY(image.username)"
-              target="_blank"
-              class="me-2"
-            >
-              <img [src]="image.userAvatar" alt="" />
-            </a>
-            <fa-icon *ngIf="image.collaborators?.length > 0" icon="user-group" class="me-2"></fa-icon>
-          </div>
-
-          <div class="name flex-grow-1 d-flex gap-2">
-            <a
-              [href]="classicRoutesService.GALLERY(image.username)"
-              target="_blank"
-              class="display-name"
-            >
-              {{ image.userDisplayName }}
-            </a>
-
-            <div *ngIf="image.collaborators?.length > 0" class="plus-others">
-            <span class="badge rounded-pill bg-danger border border-light">
-              +{{ image.collaborators?.length }}
-            </span>
-            </div>
-          </div>
-
-          <div *ngIf="publicationDate" class="flex-grow-1 text-end">
-            <fa-icon icon="calendar" class="me-2"></fa-icon>
-            {{ publicationDate | localDate | timeago:true }}
-          </div>
-        </div>
-
-        <div class="basic-data data-area-section d-flex justify-content-between gap-3 flex-wrap">
-          <div *ngIf="dataSource" class="basic-data-item data-source">
-            <img
-              [src]="'/assets/images/' + dataSourceIcon"
-              [alt]="dataSource"
-            />
-            <a
-              (click)="dataSourceClicked($event)"
-              [innerHTML]="dataSource"
-              class="value no-wrap"
-            ></a>
-          </div>
-
-          <div *ngIf="subjectType" class="basic-data-item subject-type">
-            <img
-              [src]="'/assets/images/' + subjectTypeIcon"
-              [alt]="subjectType"
-            />
-            <a
-              (click)="subjectTypeClicked($event)"
-              [innerHTML]="subjectType"
-              class="value no-wrap"
-            ></a>
-          </div>
-
-          <div *ngIf="integration" class="basic-data-item integration">
-            <fa-icon icon="clock"></fa-icon>
-            <span class="value no-wrap" [innerHTML]="integration"></span>
-          </div>
-
-          <div *ngIf="bortleScale" class="basic-data-item bortle-scale">
-            <span>Bortle</span>
-            <span
-              class="value no-wrap"
-              [innerHTML]="bortleScale.toFixed(2).replace('.00', '')"
-            ></span>
-          </div>
-
-          <div *ngIf="hemisphere" class="basic-data-item hemisphere">
-            <fa-icon icon="globe"></fa-icon>
-            <span class="value" [innerHTML]="hemisphere"></span>
-          </div>
-
-          <div *ngIf="constellation" class="basic-data-item constellation">
-            <img
-              src="/assets/images/subject-types/constellation-white.png?v=1"
-              [alt]="subjectType"
-            />
-            <a href="#" class="value" (click)="constellationClicked($event)" [innerHTML]="constellation"></a>
-          </div>
-
-          <div *ngIf="coordinates" class="basic-data-item coordinates">
-            <fa-icon icon="crosshairs"></fa-icon>
-            <span class="value no-wrap" [innerHTML]="coordinates"></span>
-          </div>
-        </div>
-
-        <div *ngIf="objectsInField?.length > 0" class="objects-in-field data-area-section">
-          <fa-icon icon="binoculars"></fa-icon>
-          <a
-            *ngFor="let item of objectsInField; let last = last"
-            (click)="objectInFieldClicked($event, item)"
-            href="#"
-            class="value"
-          >
-            <span class="value" [innerHTML]="item"></span>
-            <span *ngIf="!last" class="separator">&middot;</span>
-          </a>
-        </div>
-
-        <div *ngIf="equipmentItems?.length > 0" class="equipment data-area-section">
-          <a
-            *ngFor="let item of equipmentItems"
-            href="#"
-            (click)="equipmentItemClicked($event, item)"
-            class="value"
-          >
-            <astrobin-equipment-item-display-name
-              [item]="item"
-              [enableKlassIcon]="true"
-              [enableBrandLink]="false"
-              [enableNameLink]="false"
-              [enableSummaryModal]="false"
-              [showFrozenAsAmbiguous]="false"
-              [showItemUnapprovedInfo]="false"
-            ></astrobin-equipment-item-display-name>
-          </a>
-        </div>
-
-        <div *ngIf="image.descriptionBbcode" class="description data-area-section">
-          <div class="value" [innerHTML]="image.descriptionBbcode | BBCodeToHtml"></div>
-        </div>
-
-        <div *ngIf="image.description && !image.descriptionBbcode" class="description data-area-section">
-          <div class="value" [innerHTML]="image.description"></div>
-        </div>
-      </div> <!-- data-area -->
-
-      <div class="buttons-area">
-        <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-          <div *ngIf="currentUserWrapper.user?.id !== image.user" class="like">
-            <astrobin-toggle-property
-              [contentType]="imageContentType.id"
-              [objectId]="image.pk"
-              [userId]="currentUserWrapper.user?.id"
-              [showLabel]="false"
-              btnClass="btn btn-link link-secondary"
-              propertyType="like"
-            ></astrobin-toggle-property>
-            <span class="count">{{ image.likeCount }}</span>
-          </div>
-
-          <div class="bookmark">
-            <astrobin-toggle-property
-              [contentType]="imageContentType.id"
-              [objectId]="image.pk"
-              [userId]="currentUserWrapper.user?.id"
-              [showLabel]="false"
-              btnClass="btn btn-link link-secondary"
-              propertyType="bookmark"
-            ></astrobin-toggle-property>
-            <span class="count">{{ image.bookmarkCount }}</span>
-          </div>
-
-          <div *ngIf="currentUserWrapper.user?.id !== image.user" class="follow">
-            <astrobin-toggle-property
-              [contentType]="userContentType.id"
-              [objectId]="image.user"
-              [userId]="currentUserWrapper.user?.id"
-              [showLabel]="false"
-              [setLabel]="'Follow user' | translate"
-              [unsetLabel]="'Unfollow user' | translate"
-              btnClass="btn btn-link link-secondary"
-              propertyType="follow"
-            ></astrobin-toggle-property>
-            <span class="count">{{ image.userFollowerCount }}</span>
-          </div>
-          <div class="comment">
-            <button
-              (click)="openCommentsModal($event)"
-              class="btn btn-link link-secondary"
-            >
-              <fa-icon icon="comments"></fa-icon>
-            </button>
-            <span class="count">
-              <astrobin-nested-comments-count
-                [contentType]="imageContentType"
-                [objectId]="image.pk"
-              ></astrobin-nested-comments-count>
-            </span>
-          </div>
-        </ng-container>
-      </div> <!-- buttons-area -->
+      <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
+      <ng-container [ngTemplateOutlet]="buttonsAreaTemplate"></ng-container>
     </div> <!-- data-area-container -->
   </ng-container>
 </div>
 
 <ng-template #loadingTemplate>
   <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #imageAreaTemplate>
+  <div class="image-area">
+    <button class="close-button" (click)="close()">
+      <fa-icon icon="times-circle"></fa-icon>
+    </button>
+
+    <button *ngIf="!image.videoFile" class="fullscreen-button" (click)="openFullscreen($event)">
+      <fa-icon icon="expand"></fa-icon>
+    </button>
+
+    <button
+      *ngIf="currentIndex > 0"
+      (click)="onPreviousClicked()"
+      class="previous-button"
+    >
+      <fa-icon icon="chevron-circle-left"></fa-icon>
+    </button>
+
+    <astrobin-fullscreen-image-viewer
+      [id]="image.pk"
+    ></astrobin-fullscreen-image-viewer>
+
+    <astrobin-image
+      [alias]="alias"
+      [image]="image"
+    ></astrobin-image>
+
+    <button
+      *ngIf="currentIndex < navigationContext?.length - 1"
+      (click)="onNextClicked()"
+      class="next-button"
+    >
+      <fa-icon icon="chevron-circle-right"></fa-icon>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #titleTemplate>
+  <h2 class="title data-area-section">
+    {{ image.title }}
+  </h2>
+</ng-template>
+
+<ng-template #photographersTemplate>
+  <div class="photographers data-area-section d-flex align-items-center">
+    <div class="avatars">
+      <a
+        *ngIf="image.collaborators?.length === 0"
+        [href]="classicRoutesService.GALLERY(image.username)"
+        target="_blank"
+        class="me-2"
+      >
+        <img [src]="image.userAvatar" alt="" />
+      </a>
+      <fa-icon *ngIf="image.collaborators?.length > 0" icon="user-group" class="me-2"></fa-icon>
+    </div>
+
+    <div class="name flex-grow-1 d-flex gap-2">
+      <a
+        [href]="classicRoutesService.GALLERY(image.username)"
+        target="_blank"
+        class="display-name"
+      >
+        {{ image.userDisplayName }}
+      </a>
+
+      <div *ngIf="image.collaborators?.length > 0" class="plus-others">
+            <span class="badge rounded-pill bg-danger border border-light">
+              +{{ image.collaborators?.length }}
+            </span>
+      </div>
+    </div>
+
+    <div *ngIf="publicationDate" class="flex-grow-1 text-end">
+      <fa-icon icon="calendar" class="me-2"></fa-icon>
+      {{ publicationDate | localDate | timeago:true }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #basicDataTemplate>
+  <div class="basic-data data-area-section d-flex justify-content-between gap-3 flex-wrap">
+    <div *ngIf="dataSource" class="basic-data-item data-source">
+      <img
+        [src]="'/assets/images/' + dataSourceIcon"
+        [alt]="dataSource"
+      />
+      <a
+        (click)="dataSourceClicked($event)"
+        [innerHTML]="dataSource"
+        class="value no-wrap"
+      ></a>
+    </div>
+
+    <div *ngIf="subjectType" class="basic-data-item subject-type">
+      <img
+        [src]="'/assets/images/' + subjectTypeIcon"
+        [alt]="subjectType"
+      />
+      <a
+        (click)="subjectTypeClicked($event)"
+        [innerHTML]="subjectType"
+        class="value no-wrap"
+      ></a>
+    </div>
+
+    <div *ngIf="integration" class="basic-data-item integration">
+      <fa-icon icon="clock"></fa-icon>
+      <span class="value no-wrap" [innerHTML]="integration"></span>
+    </div>
+
+    <div *ngIf="bortleScale" class="basic-data-item bortle-scale">
+      <span>Bortle</span>
+      <span
+        class="value no-wrap"
+        [innerHTML]="bortleScale.toFixed(2).replace('.00', '')"
+      ></span>
+    </div>
+
+    <div *ngIf="hemisphere" class="basic-data-item hemisphere">
+      <fa-icon icon="globe"></fa-icon>
+      <span class="value" [innerHTML]="hemisphere"></span>
+    </div>
+
+    <div *ngIf="constellation" class="basic-data-item constellation">
+      <img
+        src="/assets/images/subject-types/constellation-white.png?v=1"
+        [alt]="subjectType"
+      />
+      <a href="#" class="value" (click)="constellationClicked($event)" [innerHTML]="constellation"></a>
+    </div>
+
+    <div *ngIf="coordinates" class="basic-data-item coordinates">
+      <fa-icon icon="crosshairs"></fa-icon>
+      <span class="value no-wrap" [innerHTML]="coordinates"></span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #objectsInFieldTemplate>
+  <div *ngIf="objectsInField?.length > 0" class="objects-in-field data-area-section">
+    <fa-icon icon="binoculars"></fa-icon>
+    <a
+      *ngFor="let item of objectsInField; let last = last"
+      (click)="objectInFieldClicked($event, item)"
+      href="#"
+      class="value"
+    >
+      <span class="value" [innerHTML]="item"></span>
+      <span *ngIf="!last" class="separator">&middot;</span>
+    </a>
+  </div>
+</ng-template>
+
+<ng-template #equipmentTemplate>
+  <div *ngIf="equipmentItems?.length > 0" class="equipment data-area-section">
+    <a
+      *ngFor="let item of equipmentItems"
+      href="#"
+      (click)="equipmentItemClicked($event, item)"
+      class="value"
+    >
+      <astrobin-equipment-item-display-name
+        [item]="item"
+        [enableKlassIcon]="true"
+        [enableBrandLink]="false"
+        [enableNameLink]="false"
+        [enableSummaryModal]="false"
+        [showFrozenAsAmbiguous]="false"
+        [showItemUnapprovedInfo]="false"
+      ></astrobin-equipment-item-display-name>
+    </a>
+  </div>
+</ng-template>
+
+<ng-template #descriptionTemplate>
+  <div *ngIf="image.descriptionBbcode" class="description data-area-section">
+    <div class="value" [innerHTML]="image.descriptionBbcode | BBCodeToHtml"></div>
+  </div>
+
+  <div *ngIf="image.description && !image.descriptionBbcode" class="description data-area-section">
+    <div class="value" [innerHTML]="image.description"></div>
+  </div>
+</ng-template>
+
+<ng-template #dataAreaTemplate>
+  <div class="data-area">
+    <ng-container [ngTemplateOutlet]="titleTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="photographersTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="basicDataTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="objectsInFieldTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="equipmentTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+  </div> <!-- data-area -->
+</ng-template>
+
+<ng-template #buttonsAreaTemplate>
+  <div class="buttons-area">
+    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+      <div *ngIf="currentUserWrapper.user?.id !== image.user" class="like">
+        <astrobin-toggle-property
+          [contentType]="imageContentType.id"
+          [objectId]="image.pk"
+          [userId]="currentUserWrapper.user?.id"
+          [showLabel]="false"
+          btnClass="btn btn-link link-secondary"
+          propertyType="like"
+        ></astrobin-toggle-property>
+        <span class="count">{{ image.likeCount }}</span>
+      </div>
+
+      <div class="bookmark">
+        <astrobin-toggle-property
+          [contentType]="imageContentType.id"
+          [objectId]="image.pk"
+          [userId]="currentUserWrapper.user?.id"
+          [showLabel]="false"
+          btnClass="btn btn-link link-secondary"
+          propertyType="bookmark"
+        ></astrobin-toggle-property>
+        <span class="count">{{ image.bookmarkCount }}</span>
+      </div>
+
+      <div *ngIf="currentUserWrapper.user?.id !== image.user" class="follow">
+        <astrobin-toggle-property
+          [contentType]="userContentType.id"
+          [objectId]="image.user"
+          [userId]="currentUserWrapper.user?.id"
+          [showLabel]="false"
+          [setLabel]="'Follow user' | translate"
+          [unsetLabel]="'Unfollow user' | translate"
+          btnClass="btn btn-link link-secondary"
+          propertyType="follow"
+        ></astrobin-toggle-property>
+        <span class="count">{{ image.userFollowerCount }}</span>
+      </div>
+      <div class="comment">
+        <button
+          (click)="openCommentsModal($event)"
+          class="btn btn-link link-secondary"
+        >
+          <fa-icon icon="comments"></fa-icon>
+        </button>
+        <span class="count">
+              <astrobin-nested-comments-count
+                [contentType]="imageContentType"
+                [objectId]="image.pk"
+              ></astrobin-nested-comments-count>
+            </span>
+      </div>
+    </ng-container>
+  </div> <!-- buttons-area -->
 </ng-template>
