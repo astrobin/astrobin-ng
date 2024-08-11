@@ -6,6 +6,8 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-image-viewer-acquisition",
@@ -19,6 +21,14 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
           <astrobin-image-viewer-acquisition-dates [dates]="dates"></astrobin-image-viewer-acquisition-dates>
         </div>
       </div>
+
+      <div *ngIf="image.deepSkyAcquisitions?.length" class="metadata-item">
+        <div class="metadata-icon">
+          <fa-icon icon="clock"></fa-icon>
+        </div>
+        <div class="metadata-label" [innerHTML]="deepSkyIntegrationTime">
+        </div>
+      </div>
     </div>
   `,
   styles: [`
@@ -26,12 +36,14 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 })
 export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   dates: string[];
+  deepSkyIntegrationTime: string;
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
     public readonly router: Router,
-    public readonly imageViewerService: ImageViewerService
+    public readonly imageViewerService: ImageViewerService,
+    public readonly imageService: ImageService
   ) {
     super(store$, searchService, router, imageViewerService);
   }
@@ -43,10 +55,15 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
       const solarSystemDates = image.solarSystemAcquisitions.map(acquisition => acquisition.date);
 
       this.setDates([...deepSkyDates, ...solarSystemDates].filter(date => !!date));
+      this.setDeepSkyIntegrationTime(image);
     }
   }
 
   setDates(dates: string[]) {
     this.dates = dates;
+  }
+
+  setDeepSkyIntegrationTime(image: ImageInterface) {
+    this.deepSkyIntegrationTime = this.imageService.getDeepSkyIntegration(image);
   }
 }

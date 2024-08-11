@@ -26,6 +26,10 @@
 
         .metadata-label {
           color: var(--white);
+
+          .symbol {
+            color: var(--lighterGrey);
+          }
         }
 
         .metadata-link {

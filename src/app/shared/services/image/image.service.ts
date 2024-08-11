@@ -398,9 +398,9 @@ export class ImageService extends BaseService {
       const minutes = Math.floor(integration / 60) % 60;
       const hours = Math.floor(integration / 3600);
 
-      const hourSymbol = "h";
-      const minuteSymbol = "&prime;";
-      const secondSymbol = "&Prime;";
+      const hourSymbol = "<span class='symbol'>h</span>";
+      const minuteSymbol = "<span class='symbol'>&prime;</span>";
+      const secondSymbol = "<span class='symbol'>&Prime;</span>";
 
       if (hours > 0) {
         return `${hours}${hourSymbol} ${minutes}${minuteSymbol} ${seconds}${secondSymbol}`;
@@ -461,9 +461,9 @@ export class ImageService extends BaseService {
     const seconds = Math.round(((ra % 15) * 4 - minutes) * 60);
 
     return `
-      <span class="hours">${hours}h</span>
-      <span class="minutes">${minutes}&prime;</span>
-      <span class="seconds">${seconds}&Prime;</span>
+      <span class="symbol hours">${hours}h</span>
+      <span class="symbol minutes">${minutes}&prime;</span>
+      <span class="symbol seconds">${seconds}&Prime;</span>
     `;
   }
 
@@ -473,9 +473,9 @@ export class ImageService extends BaseService {
     const seconds = Math.round(((dec - degrees) * 60 - minutes) * 60);
 
     return `
-      <span class="degrees">${degrees}&deg;</span>
-      <span class="minutes">${minutes}&prime;</span>
-      <span class="seconds">${seconds}&Prime;</span>
+      <span class="symbol degrees">${degrees}&deg;</span>
+      <span class="symbol minutes">${minutes}&prime;</span>
+      <span class="symbol seconds">${seconds}&Prime;</span>
     `;
   }
 
