@@ -1,6 +1,5 @@
 import { Component, OnChanges, SimpleChanges } from "@angular/core";
 import { DataSource, ImageInterface, RemoteSource } from "@shared/interfaces/image.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
@@ -61,7 +60,6 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
     public readonly router: Router,
-    public readonly classicRoutesService: ClassicRoutesService,
     public readonly imageService: ImageService,
     public readonly imageViewerService: ImageViewerService
   ) {
