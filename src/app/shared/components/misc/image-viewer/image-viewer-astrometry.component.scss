@@ -1,0 +1,58 @@
+@import "../../../../styles/breakpoints";
+
+:host {
+  .coordinates {
+    ::ng-deep {
+      .ra,
+      .dec {
+        white-space: nowrap;
+      }
+
+      .separator {
+        display: inline-block;
+        margin: 0 .25rem;
+      }
+    }
+  }
+
+  @media (min-width: $xs-min) and (max-width: $sm-max), (min-width: $lg-min) and (max-width: $xl-max) {
+    .coordinates {
+      ::ng-deep {
+        .ra,
+        .dec {
+          .seconds {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .metadata-item.objects-in-field {
+    flex-direction: row;
+    align-items: flex-start;
+
+    .metadata-icon {
+      padding-top: calc(.125rem + 1px);
+    }
+
+    .metadata-label {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .375rem;
+
+      .value {
+        color: var(--lightestGrey);
+        background: var(--grey);
+        padding: .125rem .25rem;
+        border-radius: .5rem;
+        border: 1px solid var(--lightGrey);
+        cursor: pointer;
+
+        &:hover {
+          background: var(--lightGrey);
+        }
+      }
+    }
+  }
+}

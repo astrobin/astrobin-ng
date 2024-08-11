@@ -125,6 +125,7 @@ import { ImageViewerDataSourceComponent } from "@shared/components/misc/image-vi
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { ImageViewerAcquisitionComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition.component";
 import { ImageViewerAcquisitionDatesComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition-dates.component";
+import { ImageViewerAstrometryComponent } from "@shared/components/misc/image-viewer/image-viewer-astrometry.component";
 
 const modules = [
   CommonModule,
@@ -203,6 +204,7 @@ const components = [
   ImageViewerDataSourceComponent,
   ImageViewerAcquisitionComponent,
   ImageViewerAcquisitionDatesComponent,
+  ImageViewerAstrometryComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,

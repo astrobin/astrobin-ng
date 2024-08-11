@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
-import { DataSource, FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
@@ -41,10 +41,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   userContentType: ContentTypeInterface;
   fullscreen = false;
 
-  hemisphere: string = null;
-  constellation: string = null;
-  integration: string = null;
-  coordinates: string = null;
   equipmentItems: EquipmentItem[] = null;
   objectsInField: string[] = null;
 
@@ -122,12 +118,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   updateImageInformation(): void {
-    // TODO: if looking at a revision...
-
-    this.hemisphere = this.imageService.getCelestialHemisphere(this.image, FINAL_REVISION_LABEL);
-    this.constellation = this.imageService.getConstellation(this.image, FINAL_REVISION_LABEL);
-    this.integration = this.imageService.getIntegration(this.image);
-    this.coordinates = this.imageService.getCoordinates(this.image, FINAL_REVISION_LABEL);
     this.equipmentItems = [
       ...this.image.imagingTelescopes2,
       ...this.image.imagingCameras2,
@@ -136,9 +126,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       ...this.image.accessories2,
       ...this.image.software2
     ];
-    this.objectsInField = this.solutionService.getObjectsInField(
-      this.imageService.getFinalRevision(this.image).solution
-    );
 
     this._recordHit();
   }
@@ -203,44 +190,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         this.updateImageInformation();
       });
     }
-  }
-
-  dataSourceClicked(event: MouseEvent): void {
-    event.preventDefault();
-
-    const params = this.searchService.modelToParams({ data_source: this.image.dataSource });
-    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-      this.close();
-    });
-  }
-
-  subjectTypeClicked(event: MouseEvent): void {
-    event.preventDefault();
-
-    const params = this.searchService.modelToParams({
-      subject_type: this.image.solarSystemMainSubject || this.image.subjectType
-    });
-    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-      this.close();
-    });
-  }
-
-  constellationClicked(event: MouseEvent): void {
-    event.preventDefault();
-
-    const params = this.searchService.modelToParams({ constellation: this.constellation });
-    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-      this.close();
-    });
-  }
-
-  objectInFieldClicked(event: MouseEvent, name: string): void {
-    event.preventDefault();
-
-    const params = this.searchService.modelToParams({ subject: name });
-    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-      this.close();
-    });
   }
 
   equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {

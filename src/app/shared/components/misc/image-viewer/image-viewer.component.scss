@@ -19,6 +19,7 @@
         .metadata-icon {
           .ng-fa-icon,
           img {
+            opacity: .7; // Try to match the light grey of the icons, as images are white.
             width: 1rem;
             height: 1rem;
           }
@@ -170,62 +171,6 @@
         display: block;
         margin-bottom: 0;
         font-size: 1.5rem;
-      }
-
-      .basic-data {
-        padding-bottom: .75rem;
-
-        .basic-data-item {
-          display: flex;
-          align-items: center;
-          gap: .5rem;
-
-          &.coordinates {
-            ::ng-deep {
-              .ra,
-              .dec {
-                white-space: nowrap;
-              }
-
-              .separator {
-                display: inline-block;
-                margin: 0 .25rem;
-              }
-            }
-          }
-
-          @media (min-width: $xs-min) and (max-width: $sm-max), (min-width: $lg-min) and (max-width: $xl-max) {
-            flex-direction: column;
-            align-items: center;
-
-            &.coordinates {
-              ::ng-deep {
-                .ra,
-                .dec {
-                  .seconds {
-                    display: none;
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        @media (max-width: $xxs-max) {
-          flex-direction: column;
-        }
-      }
-
-      .objects-in-field {
-        display: flex;
-        flex-wrap: wrap;
-        gap: .5rem;
-
-        .separator {
-          display: inline-block;
-          margin-left: .5rem;
-          color: var(--lighterGrey);
-        }
       }
 
       .equipment {

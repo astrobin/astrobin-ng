@@ -461,9 +461,9 @@ export class ImageService extends BaseService {
     const seconds = Math.round(((ra % 15) * 4 - minutes) * 60);
 
     return `
-      <span class="symbol hours">${hours}h</span>
-      <span class="symbol minutes">${minutes}&prime;</span>
-      <span class="symbol seconds">${seconds}&Prime;</span>
+      <span class="hours">${hours}<span class="symbol">h</span></span>
+      <span class="minutes">${minutes}<span class="symbol">&prime;</span></span>
+      <span class="seconds">${seconds}<span class="symbol">&Prime;</span></span>
     `;
   }
 
@@ -473,10 +473,36 @@ export class ImageService extends BaseService {
     const seconds = Math.round(((dec - degrees) * 60 - minutes) * 60);
 
     return `
-      <span class="symbol degrees">${degrees}&deg;</span>
-      <span class="symbol minutes">${minutes}&prime;</span>
-      <span class="symbol seconds">${seconds}&Prime;</span>
+      <span class="degrees">${degrees}<span class="symbol">&deg;</span></span>
+      <span class="minutes">${minutes}<span class="symbol">&prime;</span></span>
+      <span class="seconds">${seconds}<span class="symbol">&Prime;</span></span>
     `;
+  }
+
+  getPixelScale(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+
+    if (!revision.solution || !revision.solution.pixscale) {
+      return null;
+    }
+
+    const symbol = "<span class='symbol'>&Prime;/px</span>";
+    const value = parseFloat((revision.solution.advancedPixscale || revision.solution.pixscale)).toFixed(2);
+
+    return `${value}${symbol}`;
+  }
+
+  getFieldRadius(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+
+    if (!revision.solution || !revision.solution.radius) {
+      return null;
+    }
+
+    const symbol = "<span class='symbol'>&deg;</span>";
+    const value = parseFloat(revision.solution.radius).toFixed(2);
+
+    return `${value}${symbol}`;
   }
 
   getRevision(image: ImageInterface, revisionLabel: string): ImageInterface | ImageRevisionInterface {
