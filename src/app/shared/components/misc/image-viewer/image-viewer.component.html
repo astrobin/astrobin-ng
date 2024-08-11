@@ -50,108 +50,6 @@
   </div>
 </ng-template>
 
-<ng-template #titleTemplate>
-  <h2 class="title data-area-section">
-    {{ image.title }}
-  </h2>
-</ng-template>
-
-<ng-template #photographersTemplate>
-  <div class="photographers data-area-section d-flex align-items-center">
-    <div class="avatars">
-      <a
-        *ngIf="image.collaborators?.length === 0"
-        [href]="classicRoutesService.GALLERY(image.username)"
-        target="_blank"
-        class="me-2"
-      >
-        <img [src]="image.userAvatar" alt="" />
-      </a>
-      <fa-icon *ngIf="image.collaborators?.length > 0" icon="user-group" class="me-2"></fa-icon>
-    </div>
-
-    <div class="name flex-grow-1 d-flex gap-2">
-      <a
-        [href]="classicRoutesService.GALLERY(image.username)"
-        target="_blank"
-        class="display-name"
-      >
-        {{ image.userDisplayName }}
-      </a>
-
-      <div *ngIf="image.collaborators?.length > 0" class="plus-others">
-            <span class="badge rounded-pill bg-danger border border-light">
-              +{{ image.collaborators?.length }}
-            </span>
-      </div>
-    </div>
-
-    <div *ngIf="publicationDate" class="flex-grow-1 text-end">
-      <fa-icon icon="calendar" class="me-2"></fa-icon>
-      {{ publicationDate | localDate | timeago:true }}
-    </div>
-  </div>
-</ng-template>
-
-<ng-template #basicDataTemplate>
-  <div class="basic-data data-area-section d-flex justify-content-between gap-3 flex-wrap">
-    <div *ngIf="dataSource" class="basic-data-item data-source">
-      <img
-        [src]="'/assets/images/' + dataSourceIcon"
-        [alt]="dataSource"
-      />
-      <a
-        (click)="dataSourceClicked($event)"
-        [innerHTML]="dataSource"
-        class="value no-wrap"
-      ></a>
-    </div>
-
-    <div *ngIf="subjectType" class="basic-data-item subject-type">
-      <img
-        [src]="'/assets/images/' + subjectTypeIcon"
-        [alt]="subjectType"
-      />
-      <a
-        (click)="subjectTypeClicked($event)"
-        [innerHTML]="subjectType"
-        class="value no-wrap"
-      ></a>
-    </div>
-
-    <div *ngIf="integration" class="basic-data-item integration">
-      <fa-icon icon="clock"></fa-icon>
-      <span class="value no-wrap" [innerHTML]="integration"></span>
-    </div>
-
-    <div *ngIf="bortleScale" class="basic-data-item bortle-scale">
-      <span>Bortle</span>
-      <span
-        class="value no-wrap"
-        [innerHTML]="bortleScale.toFixed(2).replace('.00', '')"
-      ></span>
-    </div>
-
-    <div *ngIf="hemisphere" class="basic-data-item hemisphere">
-      <fa-icon icon="globe"></fa-icon>
-      <span class="value" [innerHTML]="hemisphere"></span>
-    </div>
-
-    <div *ngIf="constellation" class="basic-data-item constellation">
-      <img
-        src="/assets/images/subject-types/constellation-white.png?v=1"
-        [alt]="subjectType"
-      />
-      <a href="#" class="value" (click)="constellationClicked($event)" [innerHTML]="constellation"></a>
-    </div>
-
-    <div *ngIf="coordinates" class="basic-data-item coordinates">
-      <fa-icon icon="crosshairs"></fa-icon>
-      <span class="value no-wrap" [innerHTML]="coordinates"></span>
-    </div>
-  </div>
-</ng-template>
-
 <ng-template #objectsInFieldTemplate>
   <div *ngIf="objectsInField?.length > 0" class="objects-in-field data-area-section">
     <fa-icon icon="binoculars"></fa-icon>
@@ -200,9 +98,10 @@
 
 <ng-template #dataAreaTemplate>
   <div class="data-area">
-    <ng-container [ngTemplateOutlet]="titleTemplate"></ng-container>
-    <ng-container [ngTemplateOutlet]="photographersTemplate"></ng-container>
-    <ng-container [ngTemplateOutlet]="basicDataTemplate"></ng-container>
+    <astrobin-image-viewer-title [image]="image"></astrobin-image-viewer-title>
+    <astrobin-image-viewer-photographers [image]="image"></astrobin-image-viewer-photographers>
+    <astrobin-image-viewer-data-source [image]="image"></astrobin-image-viewer-data-source>
+
     <ng-container [ngTemplateOutlet]="objectsInFieldTemplate"></ng-container>
     <ng-container [ngTemplateOutlet]="equipmentTemplate"></ng-container>
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>

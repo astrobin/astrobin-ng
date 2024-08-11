@@ -11,6 +11,7 @@ import { filter, switchMap, take } from "rxjs/operators";
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 
 @Injectable({
   providedIn: "root"
@@ -71,6 +72,7 @@ export class ImageViewerService extends BaseService {
 
   closeActiveImageViewer() {
     if (this._activeImageViewer) {
+      this.store$.dispatch(new HideFullscreenImage());
       this._activeImageViewer.destroy();
       this._activeImageViewer = undefined;
       this._resumeBodyScrolling();

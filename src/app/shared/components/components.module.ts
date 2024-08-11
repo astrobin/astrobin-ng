@@ -118,8 +118,11 @@ import { FormlyFieldSliderComponent } from "@shared/components/misc/formly-field
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { ForumPostSearchComponent } from "@shared/components/search/forum-post-search/forum-post-search.component";
 import { NestedCommentSearchComponent } from "@shared/components/search/nestedcomment-search/nested-comment-search.component";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
+import { ImageViewerTitleComponent } from "@shared/components/misc/image-viewer/image-viewer-title.component";
+import { ImageViewerPhotographersComponent } from "@shared/components/misc/image-viewer/image-viewer-photographers.component";
+import { ImageViewerDataSourceComponent } from "@shared/components/misc/image-viewer/image-viewer-data-source.component";
+import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 
 const modules = [
   CommonModule,
@@ -193,6 +196,9 @@ const components = [
   ImageSearchCardComponent,
   ImageSearchComponent,
   ImageViewerComponent,
+  ImageViewerTitleComponent,
+  ImageViewerPhotographersComponent,
+  ImageViewerDataSourceComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,

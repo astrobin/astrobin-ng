@@ -17,6 +17,7 @@ import { GroupInterface } from "@shared/interfaces/group.interface";
 import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
 import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system-acquisition.interface";
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
+import { LocationInterface } from "@shared/interfaces/location.interface";
 
 export enum AcquisitionType {
   REGULAR = "REGULAR",
@@ -238,6 +239,7 @@ export interface ImageInterface {
   sharpenThumbnails: boolean;
   keyValueTags: string;
   locations: number[];
+  locationObjects: LocationInterface[];
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
   downloadLimitation: DownloadLimitationOptions;
   thumbnails: ImageThumbnailInterface[];

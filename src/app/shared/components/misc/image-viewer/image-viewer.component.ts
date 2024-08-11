@@ -41,15 +41,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   userContentType: ContentTypeInterface;
   fullscreen = false;
 
-  dataSourceIcon: string = null;
-  dataSource: string = null;
-  subjectTypeIcon: string = null;
-  subjectType: string = null;
   hemisphere: string = null;
   constellation: string = null;
   integration: string = null;
-  bortleScale: number = null;
-  publicationDate: string = null;
   coordinates: string = null;
   equipmentItems: EquipmentItem[] = null;
   objectsInField: string[] = null;
@@ -130,32 +124,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   updateImageInformation(): void {
     // TODO: if looking at a revision...
 
-    if (
-      this.image.dataSource !== DataSource.OTHER &&
-      this.image.dataSource !== DataSource.UNKNOWN &&
-      this.image.dataSource !== null
-    ) {
-      this.dataSourceIcon = this.imageService.getDataSourceIcon(this.image.dataSource, "white");
-      this.dataSource = this.imageService.humanizeDataSource(this.image.dataSource);
-    }
-
-    this.subjectTypeIcon = this.imageService.getSubjectTypeIcon(
-      this.image.subjectType,
-      this.image.solarSystemMainSubject,
-      "white"
-    );
-
-    if (this.image.subjectType === SubjectType.SOLAR_SYSTEM && this.image.solarSystemMainSubject) {
-      this.subjectType = this.imageService.humanizeSolarSystemSubjectType(this.image.solarSystemMainSubject);
-    } else {
-      this.subjectType = this.imageService.humanizeSubjectTypeShort(this.image.subjectType);
-    }
-
     this.hemisphere = this.imageService.getCelestialHemisphere(this.image, FINAL_REVISION_LABEL);
     this.constellation = this.imageService.getConstellation(this.image, FINAL_REVISION_LABEL);
     this.integration = this.imageService.getIntegration(this.image);
-    this.bortleScale = this.imageService.getAverageBortleScale(this.image);
-    this.publicationDate = this.imageService.getPublicationDate(this.image);
     this.coordinates = this.imageService.getCoordinates(this.image, FINAL_REVISION_LABEL);
     this.equipmentItems = [
       ...this.image.imagingTelescopes2,

@@ -1,7 +1,46 @@
-@import "../../../../styles/breakpoints";
-@import "../../../../styles/mixins";
+@import "breakpoints";
+@import "mixins";
 
 :host {
+  ::ng-deep {
+    .metadata-section {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: .5rem;
+      border-bottom: 1px solid var(--grey);
+
+      .metadata-item {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+
+        .metadata-icon {
+          .ng-fa-icon,
+          img {
+            width: 1rem;
+            height: 1rem;
+          }
+        }
+
+        .metadata-label {
+          color: var(--white);
+        }
+
+        .metadata-link {
+          color: var(--accentColor);
+          cursor: pointer;
+        }
+
+        @media (min-width: $xs-min) and (max-width: $sm-max), (min-width: $lg-min) and (max-width: $xl-max) {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    }
+  }
+
   .image-viewer-overlay {
     position: fixed;
     top: 0;
@@ -129,16 +168,6 @@
         font-size: 1.5rem;
       }
 
-      .photographers {
-        padding-bottom: .75rem;
-
-        .avatars {
-          img {
-            border-radius: 50%;
-          }
-        }
-      }
-
       .basic-data {
         padding-bottom: .75rem;
 
@@ -146,19 +175,6 @@
           display: flex;
           align-items: center;
           gap: .5rem;
-
-          .value:not(a) {
-            color: var(--white);
-          }
-
-          &.data-source,
-          &.subject-type,
-          &.constellation {
-            img {
-              height: 1rem;
-              margin: .25rem 0;
-            }
-          }
 
           &.coordinates {
             ::ng-deep {
