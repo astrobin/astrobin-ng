@@ -6,6 +6,11 @@
       .ra,
       .dec {
         white-space: nowrap;
+
+        .hours .symbol {
+          vertical-align: .25rem;
+          font-size: .75rem;
+        }
       }
 
       .separator {
@@ -44,7 +49,7 @@
       .value {
         color: var(--lightestGrey);
         background: var(--grey);
-        padding: .125rem .25rem;
+        padding: .125rem .375rem;
         border-radius: .5rem;
         border: 1px solid var(--lightGrey);
         cursor: pointer;
