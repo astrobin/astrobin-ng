@@ -10,6 +10,7 @@ import { Router } from "@angular/router";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 
 @Component({
   selector: "astrobin-image-viewer-photographers",
@@ -26,15 +27,29 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
         </a>
       </div>
 
-      <div *ngIf="users?.length === 1" class="metadata-item flex-grow-1 text-start">
+      <div *ngIf="users?.length === 1" class="metadata-item flex-grow-1 text-start no-wrap">
         <a
           *ngFor="let user of users"
           [href]="classicRoutesService.GALLERY(user.username)"
           target="_blank"
-          class="d-block w-100"
+          class="d-block"
         >
           {{ user.displayName }}
         </a>
+
+        <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+          <astrobin-toggle-property
+            *ngIf="currentUserWrapper.user?.id !== image.user"
+            [contentType]="userContentType.id"
+            [objectId]="image.user"
+            [userId]="currentUserWrapper.user?.id"
+            [showLabel]="false"
+            [setLabel]="'Follow user' | translate"
+            [unsetLabel]="'Unfollow user' | translate"
+            btnClass="btn btn-link btn-no-block link-secondary"
+            propertyType="follow"
+          ></astrobin-toggle-property>
+        </ng-container>
       </div>
 
       <div *ngIf="publicationDate" class="metadata-item text-end flex-row">
@@ -48,6 +63,9 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   @Input()
   image: ImageInterface;
+
+  @Input()
+  userContentType: ContentTypeInterface;
 
   avatars: {
     url: string;
