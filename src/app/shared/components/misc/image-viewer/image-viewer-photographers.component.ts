@@ -8,64 +8,56 @@ import { MainState } from "@app/store/state";
 import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-image-viewer-photographers",
   template: `
-    <div class="avatars">
-      <a
-        *ngIf="image.collaborators?.length === 0"
-        [href]="classicRoutesService.GALLERY(image.username)"
-        target="_blank"
-        class="me-2"
-      >
-        <img [src]="image.userAvatar" alt="" />
-      </a>
+    <div class="metadata-section">
+      <div class="metadata-item avatars">
+        <a
+          *ngFor="let avatar of avatars"
+          [href]="classicRoutesService.GALLERY(avatar.username)"
+          target="_blank"
+          class="me-1"
+        >
+          <img [src]="avatar.url" alt="" />
+        </a>
+      </div>
 
-      <fa-icon
-        *ngIf="image.collaborators?.length > 0"
-        icon="user-group"
-        class="me-2"
-      ></fa-icon>
-    </div>
+      <div *ngIf="users?.length === 1" class="metadata-item flex-grow-1 text-start">
+        <a
+          *ngFor="let user of users"
+          [href]="classicRoutesService.GALLERY(user.username)"
+          target="_blank"
+          class="d-block w-100"
+        >
+          {{ user.displayName }}
+        </a>
+      </div>
 
-    <div class="name flex-grow-1 d-flex gap-2">
-      <a
-        [href]="classicRoutesService.GALLERY(image.username)"
-        target="_blank"
-        class="display-name"
-      >
-        {{ image.userDisplayName }}
-      </a>
-
-      <div
-        *ngIf="image.collaborators?.length > 0"
-        class="plus-others"
-      >
-        <span class="badge rounded-pill bg-danger border border-light">
-          +{{ image.collaborators?.length }}
-        </span>
+      <div *ngIf="publicationDate" class="metadata-item text-end flex-row">
+        <fa-icon icon="calendar"></fa-icon>
+        {{ publicationDate | localDate | timeago:true }}
       </div>
     </div>
-
-    <div *ngIf="publicationDate" class="flex-grow-1 text-end">
-      <fa-icon icon="calendar" class="me-2"></fa-icon>
-      {{ publicationDate | localDate | timeago:true }}
-    </div>
   `,
-  styles: [`
-    :host {
-      .avatars {
-        img {
-          border-radius: 50%;
-        }
-      }
-    }
-  `]
+  styleUrls: ["./image-viewer-photographers.component.scss"]
 })
 export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   @Input()
   image: ImageInterface;
+
+  avatars: {
+    url: string;
+    username: UserInterface["username"];
+  }[];
+
+  users: {
+    username: UserInterface["username"];
+    displayName: UserProfileInterface["realName"];
+  }[];
 
   publicationDate: string;
 
@@ -83,6 +75,37 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue) {
       this.publicationDate = this.imageService.getPublicationDate(changes.image.currentValue);
+      this.setAvatarUrls(changes.image.currentValue);
+      this.setUsers(changes.image.currentValue);
     }
+  }
+
+  setAvatarUrls(image: ImageInterface): void {
+    this.avatars = [
+      {
+        url: image.userAvatar,
+        username: image.username
+      },
+      ...image.collaborators.map(collaborator => ({
+        url: collaborator.avatar,
+        username: collaborator.username
+      }))
+    ].map(avatar => ({
+      url: avatar.url.indexOf("default-avatar") > -1 ? "/assets/images/default-avatar.jpeg?v=2" : avatar.url,
+      username: avatar.username
+    }));
+  }
+
+  setUsers(image: ImageInterface): void {
+    this.users = [
+      {
+        username: image.username,
+        displayName: image.userDisplayName
+      },
+      ...image.collaborators.map(collaborator => ({
+        username: collaborator.username,
+        displayName: collaborator.displayName
+      }))
+    ];
   }
 }

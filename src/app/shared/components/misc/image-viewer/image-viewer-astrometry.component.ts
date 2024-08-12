@@ -55,7 +55,7 @@ import { SolutionService } from "@shared/services/solution/solution.service";
       </div>
     </div>
 
-    <div *ngIf="objectsInField?.length > 0" class="metadata-section pt-2">
+    <div *ngIf="objectsInField?.length > 0" class="metadata-section">
       <div class="metadata-item objects-in-field">
         <div class="metadata-icon">
           <fa-icon icon="binoculars"></fa-icon>

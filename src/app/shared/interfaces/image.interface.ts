@@ -188,7 +188,7 @@ export interface ImageInterface {
   userDisplayName: UserInterface["displayName"];
   userAvatar: UserInterface["avatar"];
   pendingCollaborators: UserInterface["id"][] | null;
-  collaborators: UserInterface["id"][] | null;
+  collaborators: UserInterface[] | null;
   hash: string;
   title: string;
   imageFile: string | null;

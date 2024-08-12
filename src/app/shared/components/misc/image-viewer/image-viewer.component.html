@@ -51,12 +51,12 @@
 </ng-template>
 
 <ng-template #descriptionTemplate>
-  <div *ngIf="image.descriptionBbcode" class="description data-area-section">
-    <div class="value" [innerHTML]="image.descriptionBbcode | BBCodeToHtml"></div>
+  <div *ngIf="image.descriptionBbcode" class="metadata-section">
+    <div class="metadata-item description" [innerHTML]="image.descriptionBbcode | BBCodeToHtml"></div>
   </div>
 
-  <div *ngIf="image.description && !image.descriptionBbcode" class="description data-area-section">
-    <div class="value" [innerHTML]="image.description"></div>
+  <div *ngIf="image.description && !image.descriptionBbcode" class="metadata-section">
+    <div class="metadata-item description" [innerHTML]="image.description"></div>
   </div>
 </ng-template>
 

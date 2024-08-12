@@ -8,8 +8,9 @@
         white-space: nowrap;
 
         .hours .symbol {
-          vertical-align: .25rem;
-          font-size: .75rem;
+          vertical-align: .375rem;
+          font-size: .65rem;
+          line-height: 0;
         }
       }
 
@@ -38,7 +39,7 @@
     align-items: flex-start;
 
     .metadata-icon {
-      padding-top: calc(.125rem + 1px);
+      padding-top: calc(.5rem + 1px);
     }
 
     .metadata-label {
