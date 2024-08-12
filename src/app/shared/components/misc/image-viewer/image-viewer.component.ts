@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -28,7 +28,7 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
   templateUrl: "./image-viewer.component.html",
   styleUrls: ["./image-viewer.component.scss"]
 })
-export class ImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class ImageViewerComponent extends BaseComponentDirective implements OnInit {
   readonly ImageAlias = ImageAlias;
 
   loading = false;
@@ -107,10 +107,17 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.initialized.emit();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.image || changes.revisionLabel) {
-      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-    }
+  setImage(
+    image: ImageInterface,
+    revisionLabel: ImageRevisionInterface["label"],
+    navigationContext: (ImageInterface["pk"] | ImageInterface["hash"])[]
+  ): void {
+    this.image = image;
+    this.revisionLabel = revisionLabel;
+    this.navigationContext = [...navigationContext];
+    this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+    this._updateNavigationContextInformation();
+    this._recordHit();
   }
 
   @HostListener("document:keydown.escape", ["$event"])
@@ -121,17 +128,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
 
     this.close();
-  }
-
-  updateImageInformation(): void {
-    this._recordHit();
-  }
-
-  updateNavigationContextInformation(): void {
-    this.hasOtherImages = this.navigationContext.filter(id => id !== this.image.hash && id !== this.image.pk).length > 0;
-    this.updateCurrentImageIndexInNavigationContext();
-    this.loadNextImages(5);
-    this.loadPreviousImages(5);
   }
 
   updateCurrentImageIndexInNavigationContext(): void {
@@ -167,10 +163,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         filter(image => !!image),
         take(1)
       ).subscribe((image: ImageInterface) => {
-        this.image = image;
-        this.revisionLabel = FINAL_REVISION_LABEL;
-        this.updateNavigationContextInformation();
-        this.updateImageInformation();
+        this.setImage(image, FINAL_REVISION_LABEL, this.navigationContext);
       });
     }
   }
@@ -183,10 +176,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         filter(image => !!image),
         take(1)
       ).subscribe((image: ImageInterface) => {
-        this.image = image;
-        this.revisionLabel = FINAL_REVISION_LABEL;
-        this.updateNavigationContextInformation();
-        this.updateImageInformation();
+        this.setImage(image, FINAL_REVISION_LABEL, this.navigationContext);
       });
     }
   }
@@ -219,6 +209,13 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   close(): void {
     this.closeFullscreen();
     this.closeViewer.emit();
+  }
+
+  private _updateNavigationContextInformation(): void {
+    this.hasOtherImages = this.navigationContext.filter(id => id !== this.image.hash && id !== this.image.pk).length > 0;
+    this.updateCurrentImageIndexInNavigationContext();
+    this.loadNextImages(5);
+    this.loadPreviousImages(5);
   }
 
   private _recordHit() {

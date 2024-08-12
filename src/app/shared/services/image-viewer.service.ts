@@ -1,5 +1,5 @@
 import { ComponentRef, Inject, Injectable, PLATFORM_ID, ViewContainerRef } from "@angular/core";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { select, Store } from "@ngrx/store";
@@ -40,10 +40,7 @@ export class ImageViewerService extends BaseService {
     this._activeImageViewer.instance.initialized.pipe(
       switchMap(() => this.loadImage(imageId)),
     ).subscribe(image => {
-      this._activeImageViewer.instance.image = image;
-      this._activeImageViewer.instance.navigationContext = navigationContext;
-      this._activeImageViewer.instance.updateNavigationContextInformation();
-      this._activeImageViewer.instance.updateImageInformation();
+      this._activeImageViewer.instance.setImage(image, FINAL_REVISION_LABEL, navigationContext);
     });
 
     this._activeImageViewer.instance.closeViewer.subscribe(() => {
