@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, Input, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageService } from "@shared/services/image/image.service";
@@ -9,8 +9,9 @@ import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-image-viewer-photographers",
@@ -18,12 +19,11 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
     <div class="metadata-section">
       <div class="metadata-item avatars">
         <a
-          *ngFor="let avatar of avatars"
-          [href]="classicRoutesService.GALLERY(avatar.username)"
-          target="_blank"
-          class="me-1"
+          *ngFor="let user of users"
+          (click)="avatarClicked($event, user)"
+          [href]="classicRoutesService.GALLERY(user.username)"
         >
-          <img [src]="avatar.url" alt="" />
+          <img [src]="user.avatar" alt="" />
         </a>
       </div>
 
@@ -31,7 +31,6 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
         <a
           *ngFor="let user of users"
           [href]="classicRoutesService.GALLERY(user.username)"
-          target="_blank"
           class="d-block"
         >
           {{ user.displayName }}
@@ -46,6 +45,7 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
             [showLabel]="false"
             [setLabel]="'Follow user' | translate"
             [unsetLabel]="'Unfollow user' | translate"
+            class="w-auto"
             btnClass="btn btn-link btn-no-block link-secondary"
             propertyType="follow"
           ></astrobin-toggle-property>
@@ -57,6 +57,47 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
         {{ publicationDate | localDate | timeago:true }}
       </div>
     </div>
+
+    <ng-template #collaboratorsTemplate let-offcanvas>
+      <div class="offcanvas-header">
+        <h4 class="offcanvas-title">{{ "Collaborators" | translate }}</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+      </div>
+      <div class="offcanvas-body offcanvas-users">
+        <div class="users">
+          <div
+            *ngFor="let user of users"
+            class="user"
+          >
+            <a [href]="classicRoutesService.GALLERY(user.username)">
+              <img [src]="user.avatar" alt="" />
+            </a>
+
+            <a
+              [href]="classicRoutesService.GALLERY(user.username)"
+              class="d-block flex-grow-1 text-start no-wrap"
+            >
+              {{ user.displayName }}
+            </a>
+
+            <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+              <astrobin-toggle-property
+                *ngIf="currentUserWrapper.user?.id !== user.id"
+                [contentType]="userContentType.id"
+                [objectId]="user.id"
+                [userId]="currentUserWrapper.user?.id"
+                [showLabel]="false"
+                [setLabel]="'Follow user' | translate"
+                [unsetLabel]="'Unfollow user' | translate"
+                class="w-auto"
+                btnClass="btn btn-link btn-no-block link-secondary"
+                propertyType="follow"
+              ></astrobin-toggle-property>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-template>
   `,
   styleUrls: ["./image-viewer-photographers.component.scss"]
 })
@@ -67,15 +108,10 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   @Input()
   userContentType: ContentTypeInterface;
 
-  avatars: {
-    url: string;
-    username: UserInterface["username"];
-  }[];
+  @ViewChild("collaboratorsTemplate")
+  collaboratorsTemplate: TemplateRef<any>;
 
-  users: {
-    username: UserInterface["username"];
-    displayName: UserProfileInterface["realName"];
-  }[];
+  users: Partial<UserInterface>[];
 
   publicationDate: string;
 
@@ -85,7 +121,9 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly deviceService: DeviceService
   ) {
     super(store$, searchService, router, imageViewerService);
   }
@@ -93,37 +131,39 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue) {
       this.publicationDate = this.imageService.getPublicationDate(changes.image.currentValue);
-      this.setAvatarUrls(changes.image.currentValue);
       this.setUsers(changes.image.currentValue);
     }
-  }
-
-  setAvatarUrls(image: ImageInterface): void {
-    this.avatars = [
-      {
-        url: image.userAvatar,
-        username: image.username
-      },
-      ...image.collaborators.map(collaborator => ({
-        url: collaborator.avatar,
-        username: collaborator.username
-      }))
-    ].map(avatar => ({
-      url: avatar.url.indexOf("default-avatar") > -1 ? "/assets/images/default-avatar.jpeg?v=2" : avatar.url,
-      username: avatar.username
-    }));
   }
 
   setUsers(image: ImageInterface): void {
     this.users = [
       {
+        id: image.user,
+        avatar: image.userAvatar,
         username: image.username,
         displayName: image.userDisplayName
       },
       ...image.collaborators.map(collaborator => ({
+        id: collaborator.id,
+        avatar: collaborator.avatar,
         username: collaborator.username,
         displayName: collaborator.displayName
       }))
     ];
+  }
+
+  avatarClicked(event: MouseEvent, user: Partial<UserInterface>): void {
+    if (this.users.length > 1) {
+      event.preventDefault();
+      this.openCollaboratorsOffcanvas();
+    }
+  }
+
+  openCollaboratorsOffcanvas(): void {
+    const position = this.deviceService.smMax() ? "bottom" : "end";
+    this.offcanvasService.open(this.collaboratorsTemplate, {
+      panelClass: "offcanvas-collaborators",
+      position
+    });
   }
 }

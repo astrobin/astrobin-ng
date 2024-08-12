@@ -18,3 +18,26 @@
     }
   }
 }
+
+::ng-deep {
+  .offcanvas-collaborators {
+    .users {
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+    }
+
+    .user {
+      display: flex;
+      gap: .5rem;
+      justify-content: space-between;
+      align-items: center;
+
+      img {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+      }
+    }
+  }
+}

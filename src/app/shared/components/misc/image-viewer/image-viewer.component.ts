@@ -15,7 +15,7 @@ import { Router } from "@angular/router";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
@@ -66,7 +66,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly router: Router,
     public readonly modalService: NgbModal,
     public readonly jsonApiService: JsonApiService,
-    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(store$);
   }
@@ -124,6 +125,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   handleEscapeKey(event: KeyboardEvent) {
     if (this.fullscreen) {
       this.closeFullscreen();
+      return;
+    }
+
+    if (this.offcanvasService.hasOpenOffcanvas()) {
       return;
     }
 

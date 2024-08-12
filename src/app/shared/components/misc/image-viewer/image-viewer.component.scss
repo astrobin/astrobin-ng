@@ -185,6 +185,10 @@
           height: auto;
         }
       }
+
+      @media (max-width: $sm-max) {
+        padding: 1rem .75rem;
+      }
     }
 
     .buttons-area {

@@ -9,7 +9,7 @@ import {
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalConfig,
-  NgbModalModule, NgbNavModule,
+  NgbModalModule, NgbNavModule, NgbOffcanvasModule,
   NgbPopoverModule,
   NgbProgressbarModule,
   NgbTooltipModule
@@ -141,6 +141,7 @@ const modules = [
   NgbDropdownModule,
   NgbNavModule,
   NgbModalModule,
+  NgbOffcanvasModule,
   NgbPopoverModule,
   NgbProgressbarModule,
   NgbTooltipModule,

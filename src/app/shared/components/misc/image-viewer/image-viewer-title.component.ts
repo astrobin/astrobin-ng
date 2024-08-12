@@ -14,8 +14,8 @@ import { ImageViewerService } from "@shared/services/image-viewer.service";
   styles: [`
     h2 {
       font-size: 1.33rem;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: .75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .1);
     }
   `]
 })
