@@ -12,6 +12,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 @Component({
   selector: "astrobin-image-viewer-photographers",
@@ -53,7 +54,9 @@ import { DeviceService } from "@shared/services/device.service";
       </div>
 
       <div *ngIf="publicationDate" class="metadata-item text-end flex-row">
-        <fa-icon icon="calendar"></fa-icon>
+        <ng-container *ngIf="licenseIcon && licenseTooltip">
+          <fa-icon [icon]="licenseIcon" [ngbTooltip]="licenseTooltip"></fa-icon>
+        </ng-container>
         {{ publicationDate | localDate | timeago:true }}
       </div>
     </div>
@@ -114,6 +117,8 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   users: Partial<UserInterface>[];
 
   publicationDate: string;
+  licenseIcon: IconProp;
+  licenseTooltip: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -130,8 +135,9 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue) {
-      this.publicationDate = this.imageService.getPublicationDate(changes.image.currentValue);
       this.setUsers(changes.image.currentValue);
+      this.setPublicationDate(changes.image.currentValue);
+      this.setLicenseIconAndTooltip(changes.image.currentValue);
     }
   }
 
@@ -150,6 +156,14 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
         displayName: collaborator.displayName
       }))
     ];
+  }
+
+  setPublicationDate(image: ImageInterface): void {
+    this.publicationDate = this.imageService.getPublicationDate(image);
+  }
+  setLicenseIconAndTooltip(image: ImageInterface): void {
+    this.licenseIcon = this.imageService.getLicenseIcon(image.license);
+    this.licenseTooltip = this.imageService.humanizeLicenseOption(image.license);
   }
 
   avatarClicked(event: MouseEvent, user: Partial<UserInterface>): void {

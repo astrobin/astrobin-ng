@@ -217,7 +217,7 @@ export interface ImageInterface {
   software2: SoftwareInterface2[];
   published: string;
   uploaded: string;
-  license: string;
+  license: LicenseOptions;
   description?: string;
   descriptionBbcode?: string;
   link?: string;

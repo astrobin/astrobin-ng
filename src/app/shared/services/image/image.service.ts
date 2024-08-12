@@ -6,6 +6,7 @@ import { Observable } from "rxjs";
 import { AcquisitionType, CelestialHemisphere, DataSource, FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, LicenseOptions, ORIGINAL_REVISION_LABEL, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { BortleScale, DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 @Injectable({
   providedIn: "root"
@@ -67,6 +68,27 @@ export class ImageService extends BaseService {
         return this.translateService.instant("Equipment");
       case SubjectType.OTHER:
         return this.translateService.instant("Other");
+    }
+  }
+
+  getLicenseIcon(value: LicenseOptions): IconProp {
+    switch (value) {
+      case LicenseOptions.ALL_RIGHTS_RESERVED:
+        return ["far", "copyright"];
+      case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE:
+        return ["fab", "creative-commons-sa"];
+      case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL:
+        return ["fab", "creative-commons-nc"];
+      case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_NO_DERIVS:
+        return ["fab", "creative-commons-nd"];
+      case LicenseOptions.ATTRIBUTION:
+        return ["fab", "creative-commons"];
+      case LicenseOptions.ATTRIBUTION_SHARE_ALIKE:
+        return ["fab", "creative-commons-sa"];
+      case LicenseOptions.ATTRIBUTION_NO_DERIVS:
+        return ["fab", "creative-commons-nd"];
+      default:
+        return "copyright";
     }
   }
 

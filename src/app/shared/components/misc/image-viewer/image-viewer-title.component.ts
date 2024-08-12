@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnChanges, SimpleChanges } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -19,7 +19,7 @@ import { ImageViewerService } from "@shared/services/image-viewer.service";
     }
   `]
 })
-export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent {
+export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   public constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
@@ -27,5 +27,10 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent {
     public readonly imageViewerService: ImageViewerService
   ) {
     super(store$, searchService, router, imageViewerService);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.image && changes.image.currentValue) {
+    }
   }
 }
