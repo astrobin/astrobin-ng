@@ -254,6 +254,7 @@ export interface ImageInterface {
   bookmarkCount: number;
   commentCount: number;
   userFollowerCount: number;
+  uploaderUploadLength?: number;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;
@@ -275,6 +276,7 @@ export interface ImageRevisionInterface {
   w: number;
   h: number;
   uploaderInProgress: boolean;
+  uploaderUploadLength?: number;
   solution: SolutionInterface | null;
   constellation: string;
 }
