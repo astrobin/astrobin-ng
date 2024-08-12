@@ -533,6 +533,19 @@ export class ImageService extends BaseService {
     return image;
   }
 
+  hasEquipment(image: ImageInterface): boolean {
+    return (
+      image.imagingTelescopes2?.length > 0 ||
+      image.imagingCameras2?.length > 0 ||
+      image.mounts2?.length > 0 ||
+      image.filters2?.length > 0 ||
+      image.accessories2?.length > 0 ||
+      image.software2?.length > 0 ||
+      image.guidingTelescopes2?.length > 0 ||
+      image.guidingCameras2?.length > 0
+    );
+  }
+
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
     return new Observable<string>(observer => {
       const xhr = new XMLHttpRequest();

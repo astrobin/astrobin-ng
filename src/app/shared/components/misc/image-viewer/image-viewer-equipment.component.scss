@@ -1,0 +1,41 @@
+:host {
+  .metadata-label {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+
+    .value {
+      background: var(--grey);
+      padding: .125rem .5rem;
+      border-radius: .5rem;
+      color: var(--lightestGrey);
+      border: 1px solid var(--lightGrey);
+
+      ::ng-deep astrobin-equipment-item-display-name {
+        white-space: nowrap;
+
+        .klass-icon {
+          opacity: .75;
+          width: .8rem;
+          height: .8rem;
+        }
+
+        .brand {
+          font-weight: normal !important;
+          padding-left: .25rem;
+          border-left: 1px solid var(--lightGrey);
+        }
+      }
+
+      &:hover {
+        background: var(--lightGrey);
+
+        ::ng-deep astrobin-equipment-item-display-name {
+          .brand {
+            border-left-color: var(--lighterGrey);
+          }
+        }
+      }
+    }
+  }
+}

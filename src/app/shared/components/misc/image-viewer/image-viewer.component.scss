@@ -173,25 +173,6 @@
         font-size: 1.5rem;
       }
 
-      .equipment {
-        padding: .5rem 0 1rem 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: .5rem;
-
-        a.value {
-          background: var(--darkGrey);
-          padding: .25rem .5rem;
-          border-radius: .5rem;
-          color: var(--lightestGrey);
-          border: 1px solid var(--lightGrey);
-
-          astrobin-equipment-item-display-name {
-            white-space: nowrap;
-          }
-        }
-      }
-
       .description {
         ::ng-deep {
           img {

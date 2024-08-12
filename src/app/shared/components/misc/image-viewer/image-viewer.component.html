@@ -50,27 +50,6 @@
   </div>
 </ng-template>
 
-<ng-template #equipmentTemplate>
-  <div *ngIf="equipmentItems?.length > 0" class="equipment data-area-section">
-    <a
-      *ngFor="let item of equipmentItems"
-      href="#"
-      (click)="equipmentItemClicked($event, item)"
-      class="value"
-    >
-      <astrobin-equipment-item-display-name
-        [item]="item"
-        [enableKlassIcon]="true"
-        [enableBrandLink]="false"
-        [enableNameLink]="false"
-        [enableSummaryModal]="false"
-        [showFrozenAsAmbiguous]="false"
-        [showItemUnapprovedInfo]="false"
-      ></astrobin-equipment-item-display-name>
-    </a>
-  </div>
-</ng-template>
-
 <ng-template #descriptionTemplate>
   <div *ngIf="image.descriptionBbcode" class="description data-area-section">
     <div class="value" [innerHTML]="image.descriptionBbcode | BBCodeToHtml"></div>
@@ -95,11 +74,16 @@
     ></astrobin-image-viewer-acquisition>
 
     <astrobin-image-viewer-astrometry
-      *ngIf="image.solution"
+      *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null"
       [image]="image"
+      [revisionLabel]="revisionLabel"
     ></astrobin-image-viewer-astrometry>
 
-    <ng-container [ngTemplateOutlet]="equipmentTemplate"></ng-container>
+    <astrobin-image-viewer-equipment
+      *ngIf="imageService.hasEquipment(image)"
+      [image]="image"
+    ></astrobin-image-viewer-equipment>
+
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
   </div> <!-- data-area -->
 </ng-template>

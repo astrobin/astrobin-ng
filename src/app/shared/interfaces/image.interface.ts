@@ -263,7 +263,10 @@ export interface ImageRevisionInterface {
   pk: number;
   uploaded: string;
   image: ImageInterface["pk"];
-  imageFile: string;
+  imageFile: string | null;
+  videoFile: string | null;
+  encodedVideoFile: string | null;
+  loopVideo: string | null;
   title: string;
   description: string;
   skipNotifications: boolean;

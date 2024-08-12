@@ -1,5 +1,5 @@
-import { Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { Component, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges } from "@angular/core";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
@@ -12,8 +12,6 @@ import { ImageService } from "@shared/services/image/image.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { SolutionService } from "@shared/services/solution/solution.service";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
@@ -30,7 +28,7 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
   templateUrl: "./image-viewer.component.html",
   styleUrls: ["./image-viewer.component.scss"]
 })
-export class ImageViewerComponent extends BaseComponentDirective implements OnInit {
+export class ImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges {
   readonly ImageAlias = ImageAlias;
 
   loading = false;
@@ -41,11 +39,11 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   userContentType: ContentTypeInterface;
   fullscreen = false;
 
-  equipmentItems: EquipmentItem[] = null;
-  objectsInField: string[] = null;
-
   @Input()
   image: ImageInterface;
+
+  @Input()
+  revisionLabel = FINAL_REVISION_LABEL;
 
   @Input()
   navigationContext: (ImageInterface["hash"] | ImageInterface["pk"])[];
@@ -56,6 +54,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @Output()
   initialized = new EventEmitter<void>();
 
+  // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
+  revision: ImageInterface | ImageRevisionInterface;
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly deviceService: DeviceService,
@@ -63,7 +64,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly searchService: SearchService,
     public readonly router: Router,
-    public readonly solutionService: SolutionService,
     public readonly modalService: NgbModal,
     public readonly jsonApiService: JsonApiService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
@@ -107,6 +107,12 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.initialized.emit();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.image || changes.revisionLabel) {
+      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+    }
+  }
+
   @HostListener("document:keydown.escape", ["$event"])
   handleEscapeKey(event: KeyboardEvent) {
     if (this.fullscreen) {
@@ -118,15 +124,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   updateImageInformation(): void {
-    this.equipmentItems = [
-      ...this.image.imagingTelescopes2,
-      ...this.image.imagingCameras2,
-      ...this.image.mounts2,
-      ...this.image.filters2,
-      ...this.image.accessories2,
-      ...this.image.software2
-    ];
-
     this._recordHit();
   }
 
@@ -169,8 +166,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         select(selectImage, this.navigationContext[this.currentIndex + 1]),
         filter(image => !!image),
         take(1)
-      ).subscribe(image => {
+      ).subscribe((image: ImageInterface) => {
         this.image = image;
+        this.revisionLabel = FINAL_REVISION_LABEL;
         this.updateNavigationContextInformation();
         this.updateImageInformation();
       });
@@ -184,20 +182,13 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         select(selectImage, this.navigationContext[this.currentIndex - 1]),
         filter(image => !!image),
         take(1)
-      ).subscribe(image => {
+      ).subscribe((image: ImageInterface) => {
         this.image = image;
+        this.revisionLabel = FINAL_REVISION_LABEL;
         this.updateNavigationContextInformation();
         this.updateImageInformation();
       });
     }
-  }
-
-  equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {
-    event.preventDefault();
-
-    this.router.navigateByUrl(`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`).then(() => {
-      this.close();
-    });
   }
 
   openCommentsModal(event: MouseEvent): void {
@@ -214,7 +205,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   openFullscreen(event: MouseEvent): void {
     event.preventDefault();
 
-    if (!this.image.videoFile) {
+    if (!this.revision.videoFile) {
       this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
       this.fullscreen = true;
     }

@@ -12,7 +12,7 @@ import { ImageService } from "@shared/services/image/image.service";
 @Component({
   selector: "astrobin-image-viewer-acquisition",
   template: `
-    <div *ngIf="image.deepSkyAcquisitions?.length || image.solarSystemAcquisitions?.length" class="metadata-section">
+    <div class="metadata-section">
       <div *ngIf="dates?.length" class="metadata-item">
         <div class="metadata-icon">
           <fa-icon icon="calendar"></fa-icon>
@@ -22,11 +22,28 @@ import { ImageService } from "@shared/services/image/image.service";
         </div>
       </div>
 
-      <div *ngIf="image.deepSkyAcquisitions?.length" class="metadata-item">
+      <div *ngIf="deepSkyIntegrationTime" class="metadata-item">
         <div class="metadata-icon">
           <fa-icon icon="clock"></fa-icon>
         </div>
         <div class="metadata-label" [innerHTML]="deepSkyIntegrationTime">
+        </div>
+      </div>
+
+      <div *ngIf="solarSystemIntegration" class="metadata-item">
+        <div class="metadata-icon">
+          <fa-icon icon="clock"></fa-icon>
+        </div>
+        <div class="metadata-label" [innerHTML]="solarSystemIntegration">
+        </div>
+      </div>
+
+      <div *ngIf="!deepSkyIntegrationTime && !solarSystemIntegration" class="metadata-item">
+        <div class="metadata-icon">
+          <fa-icon icon="clock"></fa-icon>
+        </div>
+        <div class="metadata-label">
+          {{ "n/d" | translate }}
         </div>
       </div>
     </div>
@@ -37,6 +54,7 @@ import { ImageService } from "@shared/services/image/image.service";
 export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   dates: string[];
   deepSkyIntegrationTime: string;
+  solarSystemIntegration: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -56,6 +74,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
 
       this.setDates([...deepSkyDates, ...solarSystemDates].filter(date => !!date));
       this.setDeepSkyIntegrationTime(image);
+      this.setSolarSystemFrames(image);
     }
   }
 
@@ -65,5 +84,9 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
 
   setDeepSkyIntegrationTime(image: ImageInterface) {
     this.deepSkyIntegrationTime = this.imageService.getDeepSkyIntegration(image);
+  }
+
+  setSolarSystemFrames(image: ImageInterface) {
+    this.solarSystemIntegration = this.imageService.getSolarSystemIntegration(image);
   }
 }
