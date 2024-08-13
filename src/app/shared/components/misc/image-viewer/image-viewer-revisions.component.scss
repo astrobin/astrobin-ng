@@ -1,0 +1,63 @@
+@import "src/app/styles/breakpoints";
+
+:host {
+  .revisions {
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+    padding: 0 1rem;
+
+    .revision {
+      width: 5rem;
+      height: 5rem;
+      transition: transform .2s;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 1px solid var(--lightGrey);
+        border-radius: 20px;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
+        cursor: pointer;
+      }
+
+      &.active {
+        transform: translateY(-.25rem);
+
+        img {
+          border-color: var(--accentColor);
+        }
+      }
+
+      &:hover {
+        transform: translateY(-.25rem);
+      }
+    }
+
+    @media (max-width: $md-max) {
+      bottom: .5rem;
+      padding: 0 .5rem;
+
+      .revision {
+        width: 3rem;
+        height: 3rem;
+
+        img {
+          border-radius: 10px;
+        }
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      bottom: 4rem;
+    }
+  }
+}

@@ -38,7 +38,14 @@
     <astrobin-image
       [alias]="alias"
       [image]="image"
+      [revision]="revisionLabel"
     ></astrobin-image>
+
+    <astrobin-image-viewer-revisions
+      [image]="image"
+      (revisionSelected)="onRevisionSelected($event)"
+      [class.show]="showRevisions"
+    ></astrobin-image-viewer-revisions>
 
     <button
       *ngIf="currentIndex < navigationContext?.length - 1"
@@ -46,6 +53,16 @@
       class="next-button"
     >
       <fa-icon icon="chevron-circle-right"></fa-icon>
+    </button>
+
+    {{showRevisions}}
+
+    <button
+      *ngIf="image.revisions?.length"
+      (click)="showRevisions = !showRevisions"
+      class="revisions-mobile-button"
+    >
+      <fa-icon icon="ellipsis"></fa-icon>
     </button>
   </div>
 </ng-template>

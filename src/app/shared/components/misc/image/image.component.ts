@@ -8,7 +8,7 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -35,7 +35,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   image: ImageInterface;
 
   @Input()
-  revision = "final";
+  revision = FINAL_REVISION_LABEL;
 
   @Input()
   alias: ImageAlias;
@@ -101,8 +101,12 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   ngOnChanges(changes: SimpleChanges) {
     this.thumbnailUrl = null;
 
-    if (changes.image && changes.image.currentValue) {
-      this.id = changes.image.currentValue.pk;
+    if (
+      changes.image && changes.image.currentValue ||
+      changes.revision && changes.revision.currentValue ||
+      changes.alias && changes.alias.currentValue
+    ) {
+      this.id = this.image.pk;
       this._loadThumbnail();
       this._disposeVideoJsPlayer();
 
@@ -184,17 +188,29 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _loadThumbnail() {
-    const preRenderedThumbnails: ImageThumbnailInterface[] = this.image.thumbnails
-      ? this.image.thumbnails.filter(thumbnail => thumbnail.alias === this.alias)
-      : [];
+    const allAvailableThumbnails: {
+      revisionLabel: ImageRevisionInterface["label"];
+      url: string;
+    }[] = [
+      ...this.image.thumbnails.filter(thumbnail => thumbnail.alias === this.alias).map(thumbnail => ({
+        revisionLabel: FINAL_REVISION_LABEL,
+        url: thumbnail.url
+      })),
+      ...this.image.revisions.map(revision => ({
+        revisionLabel: revision.label,
+        url: revision.thumbnails.find(thumbnail => thumbnail.alias === this.alias).url
+      }))
+    ];
 
-    if (preRenderedThumbnails.length > 0) {
+    const url = allAvailableThumbnails.find(thumbnail => thumbnail.revisionLabel === this.revision)?.url;
+
+    if (url) {
       this.imageService
-        .loadImageFile(preRenderedThumbnails[0].url, (progress: number) => {
+        .loadImageFile(url, (progress: number) => {
           this.progress = progress;
         })
         .subscribe(url => {
-          this.thumbnailUrl = preRenderedThumbnails[0].url;
+          this.thumbnailUrl = this.domSanitizer.bypassSecurityTrustUrl(url);
           this.loading = false;
         });
       return;

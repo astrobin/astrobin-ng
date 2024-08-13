@@ -279,6 +279,7 @@ export interface ImageRevisionInterface {
   uploaderUploadLength?: number;
   solution: SolutionInterface | null;
   constellation: string;
+  thumbnails: ImageThumbnailInterface[];
 }
 
 export const ORIGINAL_REVISION_LABEL = "0";

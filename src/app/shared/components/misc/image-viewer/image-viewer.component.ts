@@ -38,6 +38,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   imageContentType: ContentTypeInterface;
   userContentType: ContentTypeInterface;
   fullscreen = false;
+  showRevisions = false;
 
   @Input()
   image: ImageInterface;
@@ -184,6 +185,11 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         this.setImage(image, FINAL_REVISION_LABEL, this.navigationContext);
       });
     }
+  }
+
+  onRevisionSelected(revisionLabel: ImageRevisionInterface["label"]): void {
+    this.revisionLabel = revisionLabel;
+    this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
   }
 
   openCommentsModal(event: MouseEvent): void {
