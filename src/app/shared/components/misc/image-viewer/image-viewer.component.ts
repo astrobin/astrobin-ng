@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
+import { Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -22,6 +22,7 @@ import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/ful
 import { of } from "rxjs";
 import { isPlatformServer } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 
 @Component({
   selector: "astrobin-image-viewer",
@@ -39,6 +40,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   userContentType: ContentTypeInterface;
   fullscreen = false;
   showRevisions = false;
+  loadingHistogram = false;
+  histogram: string;
 
   @Input()
   image: ImageInterface;
@@ -55,6 +58,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @Output()
   initialized = new EventEmitter<void>();
 
+  @ViewChild("histogramModalTemplate")
+  histogramModalTemplate: TemplateRef<any>;
+
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   revision: ImageInterface | ImageRevisionInterface;
 
@@ -68,7 +74,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly modalService: NgbModal,
     public readonly jsonApiService: JsonApiService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly imageApiService: ImageApiService
   ) {
     super(store$);
   }
@@ -201,6 +208,24 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     instance.contentType = this.imageContentType;
     instance.objectId = this.image.pk;
     instance.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS;
+  }
+
+  openHistogram(event: MouseEvent): void {
+    event.preventDefault();
+
+    if (this.loadingHistogram) {
+      return;
+    }
+
+    this.modalService.open(this.histogramModalTemplate, { size: "sm" });
+    this.loadingHistogram = true;
+
+    this.imageApiService.getThumbnail(
+      this.image.hash || this.image.pk, this.revisionLabel, ImageAlias.HISTOGRAM
+    ).subscribe(thumbnail => {
+      this.loadingHistogram = false;
+      this.histogram = thumbnail.url;
+    });
   }
 
   openFullscreen(event: MouseEvent): void {

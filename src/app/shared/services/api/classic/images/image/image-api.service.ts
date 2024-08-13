@@ -90,7 +90,7 @@ export class ImageApiService extends BaseClassicApiService {
 
   getThumbnail(
     id: ImageInterface["pk"] | ImageInterface["hash"],
-    revision: string,
+    revision: ImageRevisionInterface["label"],
     alias: ImageAlias,
     bustCache = false
   ): Observable<ImageThumbnailInterface> {

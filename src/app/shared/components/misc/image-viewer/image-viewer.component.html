@@ -19,9 +19,15 @@
       <fa-icon icon="times-circle"></fa-icon>
     </button>
 
-    <button *ngIf="!image.videoFile" class="fullscreen-button" (click)="openFullscreen($event)">
-      <fa-icon icon="expand"></fa-icon>
-    </button>
+    <div class="additional-buttons">
+      <button *ngIf="!image.videoFile" class="histogram-button" (click)="openHistogram($event)">
+        <fa-icon icon="chart-simple"></fa-icon>
+      </button>
+
+      <button *ngIf="!image.videoFile" class="fullscreen-button" (click)="openFullscreen($event)">
+        <fa-icon icon="expand"></fa-icon>
+      </button>
+    </div>
 
     <button
       *ngIf="currentIndex > 0"
@@ -156,4 +162,10 @@
       </div>
     </ng-container>
   </div> <!-- buttons-area -->
+</ng-template>
+
+<ng-template #histogramModalTemplate>
+  <div class="modal-body">
+    <img *ngIf="!loadingHistogram; else loadingTemplate" [src]="histogram" alt="" />
+  </div>
 </ng-template>

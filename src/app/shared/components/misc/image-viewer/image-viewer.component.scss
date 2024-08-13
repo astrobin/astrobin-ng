@@ -90,13 +90,20 @@
     }
 
     .close-button,
-    .fullscreen-button,
     .next-button,
     .previous-button,
+    .additional-buttons,
     .revisions-mobile-button {
       position: absolute;
+    }
+
+    .close-button,
+    .next-button,
+    .previous-button,
+    .additional-buttons button,
+    .revisions-mobile-button {
       background: transparent;
-      border: none;
+      border: 1px solid var(--black);
       color: var(--white);
       font-size: 2rem;
       cursor: pointer;
@@ -116,9 +123,12 @@
       left: .75rem;
     }
 
-    .fullscreen-button {
+    .additional-buttons {
       top: .75rem;
       right: .75rem;
+      display: flex;
+      gap: .5rem;
+      flex-wrap: nowrap;
     }
 
     .next-button,
@@ -177,9 +187,9 @@
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         .close-button,
-        .fullscreen-button,
         .next-button,
         .previous-button,
+        .additional-buttons button,
         astrobin-image-viewer-revisions {
           opacity: 1;
           pointer-events: auto;
@@ -191,9 +201,9 @@
     // by a button.
     @media (hover: none) and (pointer: coarse) {
       .close-button,
-      .fullscreen-button,
       .next-button,
-      .previous-button {
+      .previous-button,
+      .additional-buttons button {
         opacity: 1;
         pointer-events: auto;
       }
