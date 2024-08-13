@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -13,9 +13,15 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
         *ngFor="let revision of revisionData"
         (click)="onRevisionSelected(revision.label)"
         [class.active]="revision.active"
+        [class.final]="revision.isFinal"
         class="revision"
       >
         <img [src]="revision.gallery" alt="" />
+        <span
+          *ngIf="revision.label !== FINAL_REVISION_LABEL && revision.label !== ORIGINAL_REVISION_LABEL"
+          class="label"
+        >{{ revision.label }}
+        </span>
       </div>
     </div>
   `,
@@ -32,6 +38,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
     active: boolean;
     id: ImageRevisionInterface["pk"];
     label: ImageRevisionInterface["label"];
+    isFinal: boolean;
     gallery: string;
     regular: string;
     hd: string;
@@ -58,17 +65,27 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
     this.revisionData = [
       {
         id: image.pk,
-        active: true,
-        label: FINAL_REVISION_LABEL,
-        gallery: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
-        regular: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR).url,
-        hd: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.HD).url,
-        qhd: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.QHD).url
+        active: image.isFinal,
+        label: ORIGINAL_REVISION_LABEL,
+        isFinal: image.isFinal,
+        gallery: image.thumbnails.find(thumbnail =>
+          thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
+          thumbnail.alias === ImageAlias.GALLERY).url,
+        regular: image.thumbnails.find(thumbnail =>
+          thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
+          thumbnail.alias === ImageAlias.REGULAR).url,
+        hd: image.thumbnails.find(thumbnail =>
+          thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
+          thumbnail.alias === ImageAlias.HD).url,
+        qhd: image.thumbnails.find(thumbnail =>
+          thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
+          thumbnail.alias === ImageAlias.QHD).url
       },
       ...image.revisions.map(revision => ({
         id: revision.pk,
-        active: false,
+        active: revision.isFinal,
         label: revision.label,
+        isFinal: revision.isFinal,
         gallery: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
         regular: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR).url,
         hd: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.HD).url,
@@ -84,4 +101,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
     }));
     this.revisionSelected.emit(revisionLabel);
   }
+
+  protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
+  protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
 }
