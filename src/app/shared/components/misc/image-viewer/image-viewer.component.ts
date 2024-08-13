@@ -61,6 +61,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @ViewChild("histogramModalTemplate")
   histogramModalTemplate: TemplateRef<any>;
 
+  @ViewChild("skyplotModalTemplate")
+  skyplotModalTemplate: TemplateRef<any>;
+
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   revision: ImageInterface | ImageRevisionInterface;
 
@@ -170,6 +173,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @HostListener("document:keydown.arrowRight", ["$event"])
   onNextClicked(): void {
+    this.modalService.dismissAll();
+
     if (this.currentIndex < this.navigationContext.length - 1) {
       this.store$.pipe(
         select(selectImage, this.navigationContext[this.currentIndex + 1]),
@@ -183,6 +188,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @HostListener("document:keydown.arrowLeft", ["$event"])
   onPreviousClicked(): void {
+    this.modalService.dismissAll();
+
     if (this.currentIndex > 0) {
       this.store$.pipe(
         select(selectImage, this.navigationContext[this.currentIndex - 1]),
@@ -226,6 +233,12 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       this.loadingHistogram = false;
       this.histogram = thumbnail.url;
     });
+  }
+
+  openSkyplot(event: MouseEvent): void {
+    event.preventDefault();
+
+    this.modalService.open(this.skyplotModalTemplate, { size: "md" });
   }
 
   openFullscreen(event: MouseEvent): void {

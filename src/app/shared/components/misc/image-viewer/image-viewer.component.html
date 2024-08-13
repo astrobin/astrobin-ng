@@ -20,11 +20,19 @@
     </button>
 
     <div class="additional-buttons">
-      <button *ngIf="!image.videoFile" class="histogram-button" (click)="openHistogram($event)">
+      <button
+        *ngIf="revision?.solution && (revision?.solution.skyplotZoom1 || revision?.solution.pixinsightFindingChart)"
+        (click)="openSkyplot($event)"
+        class="skyplot-button"
+      >
+        <fa-icon icon="map"></fa-icon>
+      </button>
+
+      <button *ngIf="!revision?.videoFile" class="histogram-button" (click)="openHistogram($event)">
         <fa-icon icon="chart-simple"></fa-icon>
       </button>
 
-      <button *ngIf="!image.videoFile" class="fullscreen-button" (click)="openFullscreen($event)">
+      <button *ngIf="!revision?.videoFile" class="fullscreen-button" (click)="openFullscreen($event)">
         <fa-icon icon="expand"></fa-icon>
       </button>
     </div>
@@ -167,5 +175,15 @@
 <ng-template #histogramModalTemplate>
   <div class="modal-body">
     <img *ngIf="!loadingHistogram; else loadingTemplate" [src]="histogram" alt="" />
+  </div>
+</ng-template>
+
+<ng-template #skyplotModalTemplate>
+  <div class="modal-body">
+    <img
+      [src]="revision?.solution?.pixinsightFindingChart || revision?.solution?.skyplotZoom1"
+      class="w-100"
+      alt=""
+    />
   </div>
 </ng-template>
