@@ -57,7 +57,8 @@ const pipes = [
 @NgModule({
   declarations: pipes,
   imports: [CommonModule],
-  exports: pipes
+  exports: pipes,
+  providers: pipes
 })
 export class PipesModule {
 }

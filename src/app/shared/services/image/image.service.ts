@@ -410,34 +410,42 @@ export class ImageService extends BaseService {
     return null;
   }
 
+  formatIntegration(integration: number): string {
+    const seconds = integration % 60;
+    const minutes = Math.floor(integration / 60) % 60;
+    const hours = Math.floor(integration / 3600);
+
+    const hourSymbol = "<span class='symbol'>h</span>";
+    const minuteSymbol = "<span class='symbol'>&prime;</span>";
+    const secondSymbol = "<span class='symbol'>&Prime;</span>";
+
+    if (hours > 0) {
+      if (minutes > 0 || seconds > 0) {
+        const minutePart = minutes > 0 ? `${minutes}${minuteSymbol} ` : "";
+        const secondPart = seconds > 0 ? `${seconds}${secondSymbol}` : "";
+        return `${hours}${hourSymbol} ${minutePart}${secondPart}`.trim();
+      }
+      return `${hours}${hourSymbol}`;
+    }
+
+    if (minutes > 0) {
+      if (seconds > 0) {
+        return `${minutes}${minuteSymbol} ${seconds}${secondSymbol}`;
+      }
+      return `${minutes}${minuteSymbol}`;
+    }
+
+    return `${seconds}${secondSymbol}`;
+  };
+
   getDeepSkyIntegration(image: ImageInterface): string {
     const getIntegration = (acquisition: DeepSkyAcquisitionInterface): number => {
       return acquisition.number * parseFloat(acquisition.duration);
     };
 
-    const formatIntegration = (integration: number): string => {
-      const seconds = integration % 60;
-      const minutes = Math.floor(integration / 60) % 60;
-      const hours = Math.floor(integration / 3600);
-
-      const hourSymbol = "<span class='symbol'>h</span>";
-      const minuteSymbol = "<span class='symbol'>&prime;</span>";
-      const secondSymbol = "<span class='symbol'>&Prime;</span>";
-
-      if (hours > 0) {
-        return `${hours}${hourSymbol} ${minutes}${minuteSymbol} ${seconds}${secondSymbol}`;
-      }
-
-      if (minutes > 0) {
-        return `${minutes}${minuteSymbol} ${seconds}${secondSymbol}`;
-      }
-
-      return `${seconds}${secondSymbol}`;
-    };
-
     if (image.deepSkyAcquisitions?.length > 0) {
       const integration = image.deepSkyAcquisitions.map(getIntegration).reduce((acc, val) => acc + val, 0);
-      return formatIntegration(integration);
+      return this.formatIntegration(integration);
     }
 
     return null;

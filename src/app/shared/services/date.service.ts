@@ -85,6 +85,29 @@ export class DateService extends BaseService {
     return this.formatNonContiguous(parsedDates);
   }
 
+  public getContiguousRanges(dates: number[]): number[][] {
+    const ranges: number[][] = [];
+    let currentRange: number[] = [dates[0]];
+
+    for (let i = 1; i < dates.length; i++) {
+      const prevDate = dates[i - 1];
+      const currentDate = dates[i];
+
+      const oneDay = 24 * 60 * 60 * 1000;
+
+      if (currentDate - prevDate <= oneDay) {
+        currentRange.push(currentDate);
+      } else {
+        ranges.push(currentRange);
+        currentRange = [currentDate];
+      }
+    }
+
+    ranges.push(currentRange);
+
+    return ranges;
+  }
+
   private getDateFormat(): string {
     return this.translateService.currentLang === "en-US" ? "MMM d" : "d MMM";
   }
@@ -104,7 +127,7 @@ export class DateService extends BaseService {
   private formatRange(range: number[]): string {
     const startDate = new Date(range[0]);
     const endDate = new Date(range[range.length - 1]);
-    const currentYear = this.getCurrentYear()
+    const currentYear = this.getCurrentYear();
     const dateFormat = this.getDateFormat();
 
     const startYear = startDate.getFullYear();
@@ -160,28 +183,5 @@ export class DateService extends BaseService {
     }
 
     return `${dates.length} days`;
-  }
-
-  private getContiguousRanges(dates: number[]): number[][] {
-    const ranges: number[][] = [];
-    let currentRange: number[] = [dates[0]];
-
-    for (let i = 1; i < dates.length; i++) {
-      const prevDate = dates[i - 1];
-      const currentDate = dates[i];
-
-      const oneDay = 24 * 60 * 60 * 1000;
-
-      if (currentDate - prevDate <= oneDay) {
-        currentRange.push(currentDate);
-      } else {
-        ranges.push(currentRange);
-        currentRange = [currentDate];
-      }
-    }
-
-    ranges.push(currentRange);
-
-    return ranges;
   }
 }

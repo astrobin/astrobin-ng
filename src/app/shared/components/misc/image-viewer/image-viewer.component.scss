@@ -46,6 +46,12 @@
           .symbol {
             color: var(--lighterGrey);
           }
+
+          [data-toggle="tooltip"],
+          [data-toggle="offcanvas"] {
+            cursor: help;
+            border-bottom: 1px dashed var(--lightGrey);
+          }
         }
 
         .metadata-link {

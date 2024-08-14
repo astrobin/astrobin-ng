@@ -4,7 +4,26 @@ import { DateService } from "@shared/services/date.service";
 @Component({
   selector: "astrobin-image-viewer-acquisition-dates",
   template: `
-    {{ dateRange }}
+    <ng-container *ngIf="contiguousRanges?.length > 1 && dates?.length > 2; else singleRangeTemplate">
+      <div
+        [ngbTooltip]="fullDatesTemplate"
+        container="body"
+        data-toggle="tooltip"
+        triggers="click"
+      >
+        {{ dateRange }}
+      </div>
+    </ng-container>
+
+    <ng-template #singleRangeTemplate>
+      {{ dateRange }}
+    </ng-template>
+
+    <ng-template #fullDatesTemplate>
+      <div *ngFor="let date of distinctDates">
+        {{ date | localDate | date: "mediumDate" }}
+      </div>
+    </ng-template>
   `,
   styles: [`
   `]
@@ -14,11 +33,12 @@ export class ImageViewerAcquisitionDatesComponent implements OnChanges {
   dates: string[];
 
   dateRange: string;
+  contiguousRanges: number[][];
+  distinctDates: string[];
 
   constructor(
     public readonly dateService: DateService
   ) {
-
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -29,5 +49,11 @@ export class ImageViewerAcquisitionDatesComponent implements OnChanges {
 
   setDates(dates: string[]) {
     this.dateRange = this.dateService.formatDates(dates);
+    this.contiguousRanges = this.dateService.getContiguousRanges(dates.map(date => new Date(date).getTime()));
+    this.distinctDates = this.dates
+      .map(date => new Date(date).getTime())
+      .sort((a, b) => a - b)
+      .filter((date, index, self) => self.indexOf(date) === index)
+      .map(date => new Date(date).toISOString().split("T")[0]);
   }
 }
