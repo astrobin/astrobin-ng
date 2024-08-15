@@ -3,13 +3,13 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
-import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
+import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 
 @Component({
   selector: "astrobin-image-search-card",
@@ -49,34 +49,44 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
-    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
+    public readonly imageSearchApiService: ImageSearchApiService
   ) {
     super(store$);
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.model) {
-      const urlParams = new URLSearchParams();
-      urlParams.set("d", "i");
-      urlParams.set("sort", this.model.ordering || '-likes');
-
-      if (this.model.itemType) {
-        urlParams.set(`${this.model.itemType.toLowerCase()}_ids`, this.model.itemId.toString());
-      }
-
-      if (this.model.username) {
-        urlParams.set("username", this.model.username.toString());
-      }
-
-      this.searchUrl = `${this.classicRoutesService.SEARCH}?${urlParams.toString()}`;
+    if (!this.model.ordering) {
+      this.model = { ...this.model, ordering: "-likes" };
     }
+    this.updateSearchUrl();
   }
 
   sortBy(ordering: string): void {
     this.model = { ...this.model, ordering, page: 1 };
+    this.updateSearchUrl();
   }
 
   setUsageType(usageType: EquipmentItemUsageType): void {
     this.model = { ...this.model, usageType, page: 1 };
+    this.updateSearchUrl();
+  }
+
+  updateSearchUrl(): void {
+    const urlParams = new URLSearchParams();
+    urlParams.set("d", "i");
+    urlParams.set("sort", this.model.ordering || "-likes");
+
+    const paramName = this.imageSearchApiService.getFilterParamName(this.model.itemType, this.model.usageType);
+
+    if (this.model.itemType) {
+      urlParams.set(paramName, this.model.itemId.toString());
+    }
+
+    if (this.model.username) {
+      urlParams.set("username", this.model.username.toString());
+    }
+
+    this.searchUrl = `${this.classicRoutesService.SEARCH}?${urlParams.toString()}`;
   }
 }
