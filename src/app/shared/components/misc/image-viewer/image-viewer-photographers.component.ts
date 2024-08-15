@@ -53,11 +53,23 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
         </ng-container>
       </div>
 
-      <div *ngIf="publicationDate" class="metadata-item text-end flex-row">
-        <ng-container *ngIf="licenseIcon && licenseTooltip">
-          <fa-icon [icon]="licenseIcon" [ngbTooltip]="licenseTooltip"></fa-icon>
-        </ng-container>
-        {{ publicationDate | localDate | timeago:true }}
+      <div *ngIf="publicationDate" class="metadata-item flex-column gap-0 align-items-end">
+        <div class="publication-date d-flex flex-row gap-2">
+          <ng-container *ngIf="licenseIcon && licenseTooltip">
+            <fa-icon [icon]="licenseIcon" [ngbTooltip]="licenseTooltip"></fa-icon>
+          </ng-container>
+          {{ publicationDate | localDate | timeago:true }}
+        </div>
+        <div class="view-count">
+          <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
+          <span
+            *ngIf="image.viewCount > 1"
+            [translateParams]="{
+            '0': image.viewCount
+          }"
+            [translate]="'{{0}} views'"
+          ></span>
+        </div>
       </div>
     </div>
 

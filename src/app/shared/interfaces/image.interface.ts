@@ -253,6 +253,7 @@ export interface ImageInterface {
   likeCount: number;
   bookmarkCount: number;
   commentCount: number;
+  viewCount?: number;
   userFollowerCount: number;
   uploaderUploadLength?: number;
   iotdDate?: string;

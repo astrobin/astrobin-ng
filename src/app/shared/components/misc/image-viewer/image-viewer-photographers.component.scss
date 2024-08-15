@@ -17,6 +17,11 @@
       border-radius: 50%;
     }
   }
+
+  .view-count {
+    font-size: .85rem;
+    color: var(--lightGrey);
+  }
 }
 
 ::ng-deep {
