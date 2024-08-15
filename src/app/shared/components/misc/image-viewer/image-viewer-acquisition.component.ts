@@ -69,7 +69,7 @@ interface FilterSummary {
       </div>
     </div>
 
-    <ng-template #deepSkyIntegrationDetailsTemplate let-offcanvas="offcanvas">
+    <ng-template #deepSkyIntegrationDetailsTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Acquisition sessions" | translate }}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>

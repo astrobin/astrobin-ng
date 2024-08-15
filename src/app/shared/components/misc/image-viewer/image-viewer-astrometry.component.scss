@@ -7,10 +7,14 @@
       .dec {
         white-space: nowrap;
 
-        .hours .symbol {
-          vertical-align: .375rem;
-          font-size: .65rem;
-          line-height: 0;
+        .hours,
+        .minutes,
+        .seconds {
+          .symbol {
+            vertical-align: .375rem;
+            font-size: .65rem;
+            line-height: 0;
+          }
         }
       }
 
@@ -60,5 +64,11 @@
         }
       }
     }
+  }
+}
+
+::ng-deep .offcanvas-more-info {
+  &:not(.offcanvas-bottom) {
+    width: 40vw !important;
   }
 }

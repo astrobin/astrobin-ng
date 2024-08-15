@@ -33,6 +33,14 @@
             width: 1rem;
             height: 1rem;
           }
+
+          [data-toggle="offcanvas"] {
+            cursor: pointer;
+
+            &:hover {
+              color: var(--lightestGrey);
+            }
+          }
         }
 
         .metadata-label,

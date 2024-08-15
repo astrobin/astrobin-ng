@@ -492,8 +492,8 @@ export class ImageService extends BaseService {
 
     return `
       <span class="hours">${hours}<span class="symbol">h</span></span>
-      <span class="minutes">${minutes}<span class="symbol">&prime;</span></span>
-      <span class="seconds">${seconds}<span class="symbol">&Prime;</span></span>
+      <span class="minutes">${minutes}<span class="symbol">m</span></span>
+      <span class="seconds">${seconds}<span class="symbol">s</span></span>
     `;
   }
 
@@ -518,6 +518,19 @@ export class ImageService extends BaseService {
 
     const symbol = "<span class='symbol'>&Prime;/px</span>";
     const value = parseFloat((revision.solution.advancedPixscale || revision.solution.pixscale)).toFixed(2);
+
+    return `${value}${symbol}`;
+  }
+
+  getOrientation(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+
+    if (!revision.solution || !revision.solution.orientation) {
+      return null;
+    }
+
+    const symbol = "<span class='symbol'>&deg;N</span>";
+    const value = parseFloat((revision.solution.advancedOrientation || revision.solution.orientation)).toFixed(2);
 
     return `${value}${symbol}`;
   }
