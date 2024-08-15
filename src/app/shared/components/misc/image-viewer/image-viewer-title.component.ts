@@ -7,19 +7,21 @@ import { Router } from "@angular/router";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-image-viewer-title",
   template: `
-    <h2>
-      {{ image.title }}
+    <div class="image-viewer-title d-flex flex-row justify-content-between align-items-center gap-2">
+      <h2 class="flex-grow-1">
+        {{ image.title }}
 
-      <small *ngIf="resolution || size">
-        <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
-        <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
-      </small>
+        <small *ngIf="resolution || size">
+          <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
+          <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
+        </small>
 
-      <div *ngIf="image.iotdDate || image.isTopPick || image.isTopPickNomination" class="iotd-tp">
+        <div *ngIf="image.iotdDate || image.isTopPick || image.isTopPickNomination" class="iotd-tp">
         <span *ngIf="image.iotdDate" class="iotd">
           <span class="label">
             <fa-icon icon="trophy"></fa-icon>
@@ -30,65 +32,118 @@ import { ImageService } from "@shared/services/image/image.service";
           </span>
         </span>
 
-        <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
+          <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
           <span class="label">
             <fa-icon icon="star"></fa-icon>
             {{ "Top Pick" | translate }}
           </span>
         </span>
 
-        <span *ngIf="!image.iotdDate && !image.isTopPick && image.isTopPickNomination" class="top-pick-nomination">
+          <span *ngIf="!image.iotdDate && !image.isTopPick && image.isTopPickNomination" class="top-pick-nomination">
           <span class="label">
             <fa-icon icon="arrow-up"></fa-icon>
             {{ "Top Pick Nomination" | translate }}
           </span>
         </span>
+        </div>
+      </h2>
+
+      <div ngbDropdown class="dropdown w-auto">
+        <fa-icon
+          ngbDropdownToggle
+          icon="ellipsis-v"
+          class="dropdown-toggle no-toggle"
+          aria-haspopup="true"
+          aria-expanded="false"
+        ></fa-icon>
+        <div ngbDropdownMenu class="dropdown-menu">
+          <a
+            [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString())"
+            class="dropdown-item"
+          >
+            {{ "Classic view" | translate }}
+          </a>
+
+          <ng-container *ngIf="image.link || image.linkToFits">
+            <div class="dropdown-divider"></div>
+
+            <a
+              *ngIf="image.link"
+              [href]="image.link"
+              class="dropdown-item"
+            >
+              {{ "External link" | translate }}
+            </a>
+
+            <a
+              *ngIf="image.linkToFits"
+              [href]="image.linkToFits"
+              class="dropdown-item"
+            >
+              {{ "External link to FITS" | translate }}
+            </a>
+          </ng-container>
+        </div>
       </div>
-    </h2>
+    </div>
   `,
   styles: [`
     :host {
-      h2 {
-        font-size: 1.5rem;
+      .image-viewer-title {
         padding-bottom: .75rem;
         border-bottom: 1px solid rgba(255, 255, 255, .1);
 
-        small {
-          font-size: .75rem;
-          color: var(--lightGrey);
-          margin-left: .5rem;
-          display: inline-block;
-          vertical-align: middle;
+        h2 {
+          font-size: 1.5rem;
 
-          .resolution {
-            margin-right: .5rem;
+          small {
+            font-size: .75rem;
+            color: var(--lightGrey);
+            margin-left: .5rem;
+            display: inline-block;
+            vertical-align: middle;
+
+            .resolution {
+              margin-right: .5rem;
+            }
+          }
+
+          .iotd-tp {
+            font-size: .85rem;
+            margin-top: .5rem;
+
+            .iotd {
+              .label {
+                color: var(--gold);
+              }
+
+              .date {
+                color: var(--white);
+              }
+            }
+
+            .top-pick {
+              .label {
+                color: var(--silver);
+              }
+            }
+
+            .top-pick-nomination {
+              .label {
+                color: var(--bronze);
+              }
+            }
           }
         }
 
-        .iotd-tp {
-          font-size: .85rem;
-          margin-top: .5rem;
+        .dropdown .ng-fa-icon {
+          margin-right:  -.5rem;
+          padding: .5rem;
+          cursor: pointer;
 
-          .iotd {
-            .label {
-              color: var(--gold);
-            }
 
-            .date {
-              color: var(--white);
-            }
-          }
-
-          .top-pick {
-            .label {
-              color: var(--silver);
-            }
-          }
-
-          .top-pick-nomination {
-            .label {
-              color: var(--bronze);
-            }
+          &:hover {
+            color: var(--white);
           }
         }
       }
@@ -104,7 +159,8 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
     public readonly searchService: SearchService,
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$, searchService, router, imageViewerService);
   }
