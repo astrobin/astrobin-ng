@@ -26,43 +26,20 @@ export class ImageSearchApiService extends BaseClassicApiService {
   }
 
   getFilterParamName(itemType: EquipmentItemType, usageType?: EquipmentItemUsageType): string | null {
-    if (itemType === EquipmentItemType.SENSOR) {
-      if (usageType === EquipmentItemUsageType.GUIDING) {
-        return "guiding_sensors_id";
-      } else if (usageType === EquipmentItemUsageType.IMAGING) {
-        return "imaging_sensors_id";
-      } else {
-        return "all_sensors_id";
-      }
-    } else if (itemType === EquipmentItemType.CAMERA) {
-      if (usageType === EquipmentItemUsageType.GUIDING) {
-        return "guiding_cameras_2_id";
-      } else if (usageType === EquipmentItemUsageType.IMAGING) {
-        return "imaging_cameras_2_id";
-      } else {
-        return "all_cameras_2_id";
-      }
-    } else if (itemType === EquipmentItemType.TELESCOPE) {
-      if (usageType === EquipmentItemUsageType.GUIDING) {
-        return "guiding_telescopes_2_id";
-      } else if (usageType === EquipmentItemUsageType.IMAGING) {
-        return "imaging_telescopes_2_id";
-      } else {
-        return "all_telescopes_2_id";
-      }
-    } else if (itemType === EquipmentItemType.MOUNT) {
-      return "mounts_2_id";
-    } else if (itemType === EquipmentItemType.FILTER) {
-      return "filters_2_id";
-    } else if (itemType === EquipmentItemType.ACCESSORY) {
-      return "accessories_2_id";
-    } else if (itemType === EquipmentItemType.SOFTWARE) {
-      return "software_2_id";
-    } else {
-      return null;
-    }
-  }
+    let usageTypePrefix = "";
 
+    if (itemType === EquipmentItemType.TELESCOPE || itemType === EquipmentItemType.CAMERA || itemType === EquipmentItemType.SENSOR) {
+      if (usageType === EquipmentItemUsageType.GUIDING) {
+        usageTypePrefix = "guiding_";
+      } else if (usageType === EquipmentItemUsageType.IMAGING) {
+        usageTypePrefix = "imaging_";
+      } else {
+        usageTypePrefix = "all_";
+      }
+    }
+
+    return `${usageTypePrefix}${EquipmentItemType[itemType].toLowerCase()}_ids`;
+  }
 
   search(options: SearchModelInterface): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
     let url = `${this.configUrl}/`;
