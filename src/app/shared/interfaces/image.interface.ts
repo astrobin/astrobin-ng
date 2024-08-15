@@ -255,6 +255,9 @@ export interface ImageInterface {
   commentCount: number;
   userFollowerCount: number;
   uploaderUploadLength?: number;
+  iotdDate?: string;
+  isTopPick?: boolean;
+  isTopPickNomination?: boolean;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;

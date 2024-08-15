@@ -18,24 +18,79 @@ import { ImageService } from "@shared/services/image/image.service";
         <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
         <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
       </small>
+
+      <div *ngIf="image.iotdDate || image.isTopPick || image.isTopPickNomination" class="iotd-tp">
+        <span *ngIf="image.iotdDate" class="iotd">
+          <span class="label">
+            <fa-icon icon="trophy"></fa-icon>
+            {{ "Image of the day" | translate }}:
+          </span>
+          <span class="date">
+            {{ image.iotdDate | date:"mediumDate" }}
+          </span>
+        </span>
+
+        <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
+          <span class="label">
+            <fa-icon icon="star"></fa-icon>
+            {{ "Top Pick" | translate }}
+          </span>
+        </span>
+
+        <span *ngIf="!image.iotdDate && !image.isTopPick && image.isTopPickNomination" class="top-pick-nomination">
+          <span class="label">
+            <fa-icon icon="arrow-up"></fa-icon>
+            {{ "Top Pick Nomination" | translate }}
+          </span>
+        </span>
+      </div>
     </h2>
   `,
   styles: [`
-    h2 {
-      font-size: 1.33rem;
-      padding-bottom: .75rem;
-      border-bottom: 1px solid rgba(255, 255, 255, .1);
-    }
+    :host {
+      h2 {
+        font-size: 1.5rem;
+        padding-bottom: .75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, .1);
 
-    small {
-      font-size: .75rem;
-      color: var(--lightGrey);
-      margin-left: .5rem;
-      display: inline-block;
-      vertical-align: middle;
+        small {
+          font-size: .75rem;
+          color: var(--lightGrey);
+          margin-left: .5rem;
+          display: inline-block;
+          vertical-align: middle;
 
-      .resolution {
-        margin-right: .5rem;
+          .resolution {
+            margin-right: .5rem;
+          }
+        }
+
+        .iotd-tp {
+          font-size: .85rem;
+          margin-top: .5rem;
+
+          .iotd {
+            .label {
+              color: var(--gold);
+            }
+
+            .date {
+              color: var(--white);
+            }
+          }
+
+          .top-pick {
+            .label {
+              color: var(--silver);
+            }
+          }
+
+          .top-pick-nomination {
+            .label {
+              color: var(--bronze);
+            }
+          }
+        }
       }
     }
   `]
