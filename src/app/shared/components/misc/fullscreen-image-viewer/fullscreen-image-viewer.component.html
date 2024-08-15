@@ -43,6 +43,7 @@
   <lib-ngx-image-zoom
     (zoomPosition)="setZoomPosition($event)"
     (zoomScroll)="setZoomScroll($event)"
+    (imagesLoaded)="onImagesLoaded($event)"
     [circularLens]="true"
     [enableLens]="true"
     [enableScrollZoom]="true"
@@ -77,17 +78,25 @@
 </ng-template>
 
 <ng-template #hdImageLoadingTmpl>
-  <astrobin-loading-indicator [progress]="hdImageLoadingProgress$ | async"></astrobin-loading-indicator>
+  <div class="loading-indicator-container">
+    <astrobin-loading-indicator [progress]="hdImageLoadingProgress$ | async"></astrobin-loading-indicator>
+  </div>
 </ng-template>
 
 <ng-template #realThumbnailLoadingTmpl>
-  <div *ngIf="realThumbnailLoading" class="loading-indicator-container">
-    <astrobin-loading-indicator></astrobin-loading-indicator>
+  <div *ngIf="realThumbnailLoading" class="loading-indicator-container has-message">
+    <astrobin-loading-indicator
+      [message]="'Downloading high resolution image' | translate"
+    ></astrobin-loading-indicator>
   </div>
 </ng-template>
 
 <ng-template #realImageLoadingTmpl>
-  <div *ngIf="realImageLoadingProgress$ | async as progress" class="loading-indicator-container">
-    <astrobin-loading-indicator *ngIf="progress && progress < 100" [progress]="progress"></astrobin-loading-indicator>
+  <div *ngIf="realImageLoadingProgress$ | async as progress" class="loading-indicator-container has-message">
+    <astrobin-loading-indicator
+      *ngIf="progress && progress < 100"
+      [message]="'Downloading high resolution image' | translate"
+      [progress]="progress"
+    ></astrobin-loading-indicator>
   </div>
 </ng-template>

@@ -46,6 +46,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   @Output()
   loaded = new EventEmitter();
 
+  @Output()
+  imageClick = new EventEmitter<MouseEvent>();
+
   @HostBinding("class.loading")
   loading = false;
 
@@ -185,6 +188,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     }
 
     this.loaded.emit();
+  }
+
+  onClick(event: MouseEvent) {
+    event.preventDefault();
+    this.imageClick.emit(event);
   }
 
   private _loadThumbnail() {

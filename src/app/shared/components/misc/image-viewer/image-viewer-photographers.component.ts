@@ -154,16 +154,23 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   }
 
   setUsers(image: ImageInterface): void {
+    const appAvatar = (avatar: string): string => {
+      if (avatar.indexOf("default-avatar") > -1) {
+        return "/assets/images/default-avatar.jpeg?v=2";
+      }
+
+      return avatar;
+    }
     this.users = [
       {
         id: image.user,
-        avatar: image.userAvatar,
+        avatar: appAvatar(image.userAvatar),
         username: image.username,
         displayName: image.userDisplayName
       },
       ...image.collaborators.map(collaborator => ({
         id: collaborator.id,
-        avatar: collaborator.avatar,
+        avatar: appAvatar(collaborator.avatar),
         username: collaborator.username,
         displayName: collaborator.displayName
       }))

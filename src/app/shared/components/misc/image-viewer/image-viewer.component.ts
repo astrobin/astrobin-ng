@@ -1,5 +1,5 @@
-import { Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
@@ -19,10 +19,15 @@ import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { of } from "rxjs";
-import { isPlatformServer } from "@angular/common";
+import { Observable, of } from "rxjs";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from "@angular/platform-browser";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "@env/environment";
 
 @Component({
   selector: "astrobin-image-viewer",
@@ -33,6 +38,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   readonly ImageAlias = ImageAlias;
 
   loading = false;
+  imageLoaded = false;
   alias: ImageAlias;
   hasOtherImages = false;
   currentIndex = null;
@@ -42,6 +48,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   showRevisions = false;
   loadingHistogram = false;
   histogram: string;
+  mouseHoverImage: string;
+  inlineSvg: SafeHtml;
 
   @Input()
   image: ImageInterface;
@@ -58,14 +66,21 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @Output()
   initialized = new EventEmitter<void>();
 
+  @ViewChild("imageArea")
+  imageArea: ElementRef;
+
   @ViewChild("histogramModalTemplate")
   histogramModalTemplate: TemplateRef<any>;
 
   @ViewChild("skyplotModalTemplate")
   skyplotModalTemplate: TemplateRef<any>;
 
+  @ViewChild("mouseHoverSvgObject", { static: false })
+  mouseHoverSvgObject: ElementRef;
+
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   revision: ImageInterface | ImageRevisionInterface;
+  protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -78,7 +93,11 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly jsonApiService: JsonApiService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly imageApiService: ImageApiService
+    public readonly imageApiService: ImageApiService,
+    public readonly domSanitizer: DomSanitizer,
+    public readonly windowRefService: WindowRefService,
+    public readonly utilsService: UtilsService,
+    public readonly http: HttpClient
   ) {
     super(store$);
   }
@@ -124,12 +143,39 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     revisionLabel: ImageRevisionInterface["label"],
     navigationContext: (ImageInterface["pk"] | ImageInterface["hash"])[]
   ): void {
+    this.imageLoaded = false;
     this.image = image;
     this.revisionLabel = revisionLabel;
     this.navigationContext = [...navigationContext];
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+    this.setMouseHoverImage();
     this._updateNavigationContextInformation();
     this._recordHit();
+  }
+
+  setMouseHoverImage() {
+    switch (this.revision.mouseHoverImage) {
+      case MouseHoverImageOptions.NOTHING:
+        this.mouseHoverImage = null;
+        this.inlineSvg = null;
+        break;
+      case MouseHoverImageOptions.SOLUTION:
+        if (this.revision?.solution?.pixinsightSvgAnnotationRegular) {
+          this.mouseHoverImage = null;
+          this.loadInlineSvg$(
+            environment.classicApiUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
+          ).subscribe(inlineSvg => {
+            this.inlineSvg = inlineSvg;
+          });
+        } else if (this.revision?.solution?.imageFile) {
+          this.mouseHoverImage = this.revision.solution.imageFile;
+          this.inlineSvg = null;
+        } else {
+          this.mouseHoverImage = null;
+          this.inlineSvg = null;
+        }
+        break;
+    }
   }
 
   @HostListener("document:keydown.escape", ["$event"])
@@ -201,9 +247,20 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  @HostListener("window:resize")
+  onResize(): void {
+    this.adjustSvgOverlay();
+  }
+
+  onImageLoaded(): void {
+    this.imageLoaded = true;
+  }
+
   onRevisionSelected(revisionLabel: ImageRevisionInterface["label"]): void {
+    this.imageLoaded = false;
     this.revisionLabel = revisionLabel;
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+    this.setMouseHoverImage();
   }
 
   openCommentsModal(event: MouseEvent): void {
@@ -258,6 +315,89 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   close(): void {
     this.closeFullscreen();
     this.closeViewer.emit();
+  }
+
+  loadInlineSvg$(svgUrl: string): Observable<SafeHtml> {
+    return this.http.get(svgUrl, { responseType: 'text' }).pipe(
+      map(svgContent => {
+        this.onMouseHoverSvgLoad();
+        return this.domSanitizer.bypassSecurityTrustHtml(svgContent);
+      })
+    );
+  }
+
+  onMouseHoverSvgLoad(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.utilsService.delay(100).subscribe(() => {
+        const _doc = this.windowRefService.nativeWindow.document;
+        const svgObject = _doc.getElementById("mouse-hover-svg-" + this.image.pk) as HTMLObjectElement;
+
+        if (svgObject) {
+          const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+          const isFirefox92 = /Firefox\/92./i.test(navigator.userAgent);
+
+          if (isSafari || isFirefox92) {
+            // Remove the filter from the SVG element
+            const gElements = svgObject.querySelectorAll("svg > g");
+            if (gElements) {
+              gElements.forEach((element: HTMLElement) => {
+                element.removeAttribute("filter");
+              });
+            }
+          }
+
+          // Fix font path
+          svgObject.innerHTML = svgObject.innerHTML.replace(
+            "/media/static/astrobin/fonts/",
+            "/assets/fonts/"
+          );
+        }
+
+        this.adjustSvgOverlay();
+      });
+    }
+  }
+
+  adjustSvgOverlay(): void {
+    const imageAreaElement = this.imageArea.nativeElement as HTMLElement;
+    const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-container") as HTMLElement;
+
+    if (!overlaySvgElement) {
+      return;
+    }
+
+    // Get the dimensions of the container and the image
+    const containerWidth = imageAreaElement.clientWidth;
+    const containerHeight = imageAreaElement.clientHeight;
+
+    const naturalWidth = this.image.w;
+    const naturalHeight = this.image.h;
+
+    // Calculate the aspect ratio of the image and the container
+    const imageAspectRatio = naturalWidth / naturalHeight;
+    const containerAspectRatio = containerWidth / containerHeight;
+
+    let renderedImageWidth: number, renderedImageHeight: number;
+
+    if (imageAspectRatio > containerAspectRatio) {
+      // Image is wider relative to the container, so it's constrained by the container's width
+      renderedImageWidth = containerWidth;
+      renderedImageHeight = containerWidth / imageAspectRatio;
+    } else {
+      // Image is taller relative to the container, so it's constrained by the container's height
+      renderedImageWidth = containerHeight * imageAspectRatio;
+      renderedImageHeight = containerHeight;
+    }
+
+    // Calculate the top and left offset to center the image within the container
+    const offsetX = (containerWidth - renderedImageWidth) / 2;
+    const offsetY = (containerHeight - renderedImageHeight) / 2;
+
+    // Set the SVG overlay size and position
+    overlaySvgElement.style.width = `${renderedImageWidth}px`;
+    overlaySvgElement.style.height = `${renderedImageHeight}px`;
+    overlaySvgElement.style.left = `${offsetX}px`;
+    overlaySvgElement.style.top = `${offsetY}px`;
   }
 
   private _updateNavigationContextInformation(): void {

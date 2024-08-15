@@ -14,9 +14,15 @@
 </ng-template>
 
 <ng-template #imageAreaTemplate>
-  <div class="image-area">
+  <div
+    #imageArea
+    class="image-area"
+  >
     <button class="close-button" (click)="close()">
-      <fa-icon icon="times-circle"></fa-icon>
+      <fa-icon
+        [ngbTooltip]="'Close' | translate"
+        icon="times-circle"
+      ></fa-icon>
     </button>
 
     <div class="additional-buttons">
@@ -25,15 +31,24 @@
         (click)="openSkyplot($event)"
         class="skyplot-button"
       >
-        <fa-icon icon="map"></fa-icon>
+        <fa-icon
+          [ngbTooltip]="'View sky map' | translate"
+          icon="map"
+        ></fa-icon>
       </button>
 
       <button *ngIf="!revision?.videoFile" class="histogram-button" (click)="openHistogram($event)">
-        <fa-icon icon="chart-simple"></fa-icon>
+        <fa-icon
+          [ngbTooltip]="'View histogram' | translate"
+          icon="chart-simple"
+        ></fa-icon>
       </button>
 
       <button *ngIf="!revision?.videoFile" class="fullscreen-button" (click)="openFullscreen($event)">
-        <fa-icon icon="expand"></fa-icon>
+        <fa-icon
+          [ngbTooltip]="'View fullscreen' | translate"
+          icon="expand"
+        ></fa-icon>
       </button>
     </div>
 
@@ -51,10 +66,32 @@
     ></astrobin-fullscreen-image-viewer>
 
     <astrobin-image
+      (imageClick)="openFullscreen($event)"
+      (loaded)="onImageLoaded()"
       [alias]="alias"
       [image]="image"
       [revision]="revisionLabel"
     ></astrobin-image>
+
+    <img
+      *ngIf="mouseHoverImage && imageLoaded"
+      (click)="openFullscreen($event)"
+      alt=""
+      class="mouse-hover"
+      src="{{ mouseHoverImage }}"
+    />
+
+    <div
+      *ngIf="inlineSvg && imageLoaded"
+      (click)="openFullscreen($event)"
+      class="mouse-hover-container d-flex justify-content-center position-absolute"
+    >
+      <div
+        [innerHTML]="inlineSvg"
+        [id]="'mouse-hover-svg-' + image.pk"
+        class="mouse-hover w-100 position-relative"
+      ></div>
+    </div>
 
     <astrobin-image-viewer-revisions
       [image]="image"

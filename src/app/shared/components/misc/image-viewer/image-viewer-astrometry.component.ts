@@ -165,7 +165,7 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
-      const image = changes.image.currentValue;
+      const image = this.image;
       this.revision = this.imageService.getRevision(image, this.revisionLabel);
       this.celestialHemisphere = this.imageService.getCelestialHemisphere(image, this.revisionLabel);
       this.constellation = this.imageService.getConstellation(image, this.revisionLabel);
@@ -174,7 +174,7 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
       this.pixelScale = this.imageService.getPixelScale(image, this.revisionLabel);
       this.orientation = this.imageService.getOrientation(image, this.revisionLabel);
       this.objectsInField = this.solutionService.getObjectsInField(this.revision.solution);
-      this.astrometryNetJobId = this.revision?.solution?.submissionId.toString();
+      this.astrometryNetJobId = this.revision?.solution?.submissionId?.toString();
     }
   }
 

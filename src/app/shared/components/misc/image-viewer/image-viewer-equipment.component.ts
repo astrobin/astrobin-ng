@@ -49,7 +49,7 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
-      const image = changes.image.currentValue;
+      const image = this.image;
       this.equipmentItems = [
         ...image.imagingTelescopes2,
         ...image.imagingCameras2,

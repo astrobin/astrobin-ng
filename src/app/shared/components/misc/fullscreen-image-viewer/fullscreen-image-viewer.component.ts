@@ -127,22 +127,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           }
         })
       ),
-      map(url => this.domSanitizer.bypassSecurityTrustUrl(url)),
-      tap(() => {
-        const message = this.isTouchDevice
-          ? this.translateService.instant("Pinch & zoom to view details closer.")
-          : this.translateService.instant("Click on the image and scroll to magnify up to 8x.");
-
-        this._zoomReadyNotification = this.popNotificationsService.info(
-          message,
-          this.translateService.instant("Zoom ready"),
-          {
-            progressBar: false,
-            timeOut: 5000,
-            positionClass: "toast-bottom-right"
-          }
-        );
-      })
+      map(url => this.domSanitizer.bypassSecurityTrustUrl(url))
     );
 
     this.show$ = this.store$.select(selectApp).pipe(
@@ -167,6 +152,24 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         }
       })
     );
+  }
+
+  onImagesLoaded(loaded: boolean) {
+    if (loaded) {
+      const message = this.isTouchDevice
+        ? this.translateService.instant("Pinch & zoom to view details closer.")
+        : this.translateService.instant("Click on the image and scroll to magnify up to 8x.");
+
+      this._zoomReadyNotification = this.popNotificationsService.info(
+        message,
+        this.translateService.instant("Zoom ready"),
+        {
+          progressBar: false,
+          timeOut: 5000,
+          positionClass: "toast-bottom-right"
+        }
+      );
+    }
   }
 
   setZoomPosition(position: Coord) {

@@ -284,6 +284,7 @@ export interface ImageRevisionInterface {
   solution: SolutionInterface | null;
   constellation: string;
   thumbnails: ImageThumbnailInterface[];
+  mouseHoverImage: MouseHoverImageOptions | ImageRevisionInterface["label"];
 }
 
 export const ORIGINAL_REVISION_LABEL = "0";

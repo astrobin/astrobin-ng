@@ -22,6 +22,7 @@
 <ng-template #imageTemplate>
   <img
     (load)="onLoad($event)"
+    (click)="onClick($event)"
     [alt]="image.title"
     [attr.height]="!!height ? height : null"
     [attr.width]="!!width ? width : null"

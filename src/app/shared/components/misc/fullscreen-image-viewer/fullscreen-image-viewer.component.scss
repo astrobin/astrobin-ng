@@ -52,10 +52,16 @@
 
     .loading-indicator-container {
       position: fixed;
-      top: 5rem;
-      right: calc(75px / 2);
-      width: 75px;
+      bottom: 2rem;
+      left: calc(50vw);
+      transform: translateX(-50%);
       text-align: center;
+
+      &.has-message {
+        background-color: rgba(0, 0, 0, .5);
+        padding: 1rem;
+        border-radius: 1rem;
+      }
     }
 
     img {
