@@ -387,7 +387,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   adjustSvgOverlay(): void {
     const imageAreaElement = this.imageArea.nativeElement as HTMLElement;
-    const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-container") as HTMLElement;
+    const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-svg-container") as HTMLElement;
 
     if (!overlaySvgElement) {
       return;

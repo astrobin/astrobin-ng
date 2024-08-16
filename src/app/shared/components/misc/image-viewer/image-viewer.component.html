@@ -76,18 +76,22 @@
       [revision]="revisionLabel"
     ></astrobin-image>
 
-    <img
+    <div
       *ngIf="mouseHoverImage && imageLoaded"
       (click)="openFullscreen($event)"
-      alt=""
-      class="mouse-hover"
-      src="{{ mouseHoverImage }}"
-    />
+      class="mouse-hover-container"
+    >
+      <img
+        alt=""
+        class="mouse-hover"
+        src="{{ mouseHoverImage }}"
+      />
+    </div>
 
     <div
       *ngIf="inlineSvg && imageLoaded"
       (click)="openFullscreen($event)"
-      class="mouse-hover-container d-flex justify-content-center position-absolute"
+      class="mouse-hover-svg-container"
     >
       <div
         [innerHTML]="inlineSvg"
@@ -109,8 +113,6 @@
     >
       <fa-icon icon="chevron-circle-right"></fa-icon>
     </button>
-
-    {{showRevisions}}
 
     <button
       *ngIf="image.revisions?.length"

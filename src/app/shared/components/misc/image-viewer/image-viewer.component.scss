@@ -186,9 +186,10 @@
     ::ng-deep astrobin-image {
       .astrobin-image,
       .video-js {
-        width: 100%;
-        height: 100%;
-        max-height: 100vh;
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
         object-fit: contain;
       }
 
@@ -197,19 +198,50 @@
       }
     }
 
-    .mouse-hover {
+    .mouse-hover-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      max-height: 100vh;
-      object-fit: contain;
-      opacity: 0;
-      transition: opacity 0.3s;
-      cursor: zoom-in;
-      // Believe it or not, this is necessary to prevent the SVG to display with a white background.
-      color-scheme: none;
+      max-width: 100%;
+      max-height: 100%;
+
+      .mouse-hover {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.3s;
+        cursor: zoom-in;
+      }
+    }
+
+    .mouse-hover-svg-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+
+      .mouse-hover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: auto;
+        height: auto;
+        max-height: 100vh;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.3s;
+        cursor: zoom-in;
+        // Believe it or not, this is necessary to prevent the SVG to display with a white background.
+        color-scheme: none;
+      }
     }
 
     astrobin-image-viewer-revisions {
@@ -226,7 +258,7 @@
         .additional-buttons button,
         .mouse-hover,
         astrobin-image-viewer-revisions {
-          opacity: 1;
+          opacity: 1 !important;
           pointer-events: auto;
         }
       }
