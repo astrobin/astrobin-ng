@@ -229,6 +229,7 @@
   <div class="modal-body">
     <img
       [src]="revision?.solution?.pixinsightFindingChart || revision?.solution?.skyplotZoom1"
+      [ngStyle]="{'filter': revision.solution.pixinsightFindingChart ? 'none' : 'grayscale(100%)'}"
       class="w-100"
       alt=""
     />
