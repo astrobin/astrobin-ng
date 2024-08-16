@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
@@ -23,7 +23,7 @@ import { Observable, of } from "rxjs";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
-import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { HttpClient } from "@angular/common/http";
@@ -175,6 +175,29 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
           this.inlineSvg = null;
         }
         break;
+      case MouseHoverImageOptions.INVERTED:
+        this.mouseHoverImage = this.revision.thumbnails.find(thumbnail =>
+          thumbnail.alias === this.alias + '_inverted'
+        ).url;
+        this.inlineSvg = null;
+        break;
+      case "ORIGINAL":
+        this.mouseHoverImage = this.image.thumbnails.find(thumbnail =>
+          thumbnail.alias === this.alias &&
+          thumbnail.revision === ORIGINAL_REVISION_LABEL
+        ).url;
+        this.inlineSvg = null;
+        break;
+      default:
+        const matchingRevision = this.image.revisions.find(
+          revision => revision.label === this.revision.mouseHoverImage.replace("REVISION__", "")
+        );
+        if (matchingRevision) {
+          this.mouseHoverImage = matchingRevision.thumbnails.find(
+            thumbnail => thumbnail.alias === this.alias
+          ).url;
+          this.inlineSvg = null;
+        }
     }
   }
 
@@ -257,6 +280,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   onRevisionSelected(revisionLabel: ImageRevisionInterface["label"]): void {
+    if (this.revisionLabel === revisionLabel) {
+      return;
+    }
+
     this.imageLoaded = false;
     this.revisionLabel = revisionLabel;
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
@@ -318,7 +345,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   loadInlineSvg$(svgUrl: string): Observable<SafeHtml> {
-    return this.http.get(svgUrl, { responseType: 'text' }).pipe(
+    return this.http.get(svgUrl, { responseType: "text" }).pipe(
       map(svgContent => {
         this.onMouseHoverSvgLoad();
         return this.domSanitizer.bypassSecurityTrustHtml(svgContent);

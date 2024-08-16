@@ -135,11 +135,14 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   load(delay = null) {
-    const noNeedToLoad = () => !!this.thumbnailUrl ||
-      !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement);
+    if (!!this.thumbnailUrl) {
+      this.loaded.emit();
+      return
+    }
+
+    const noNeedToLoad = () =>  !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement);
 
     if (noNeedToLoad()) {
-      console.log("No need to load");
       return;
     }
 
