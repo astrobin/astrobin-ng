@@ -1,13 +1,11 @@
-<div class="image-viewer-overlay">
-  <ng-container *ngIf="!!image; else loadingTemplate">
-    <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
+<ng-container *ngIf="!!image; else loadingTemplate">
+  <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
 
-    <div class="data-area-container">
-      <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
-      <ng-container [ngTemplateOutlet]="buttonsAreaTemplate"></ng-container>
-    </div> <!-- data-area-container -->
-  </ng-container>
-</div>
+  <div class="data-area-container">
+    <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="buttonsAreaTemplate"></ng-container>
+  </div> <!-- data-area-container -->
+</ng-container>
 
 <ng-template #loadingTemplate>
   <astrobin-loading-indicator></astrobin-loading-indicator>
@@ -23,7 +21,9 @@
   >
     <button class="close-button" (click)="close()">
       <fa-icon
+        *ngIf="showCloseButton"
         [ngbTooltip]="'Close' | translate"
+        container="body"
         icon="times-circle"
       ></fa-icon>
     </button>
@@ -36,6 +36,7 @@
       >
         <fa-icon
           [ngbTooltip]="'View sky map' | translate"
+          container="body"
           icon="map"
         ></fa-icon>
       </button>
@@ -43,13 +44,15 @@
       <button *ngIf="!revision?.videoFile" class="histogram-button" (click)="openHistogram($event)">
         <fa-icon
           [ngbTooltip]="'View histogram' | translate"
+          container="body"
           icon="chart-simple"
         ></fa-icon>
       </button>
 
-      <button *ngIf="!revision?.videoFile" class="fullscreen-button" (click)="openFullscreen($event)">
+      <button *ngIf="!revision?.videoFile" class="fullscreen-button" (click)="enterFullscreen($event)">
         <fa-icon
           [ngbTooltip]="'View fullscreen' | translate"
+          container="body"
           icon="expand"
         ></fa-icon>
       </button>
@@ -66,10 +69,11 @@
     <astrobin-fullscreen-image-viewer
       [id]="image.pk"
       [revision]="revisionLabel"
+      (exitFullscreen)="exitFullscreen()"
     ></astrobin-fullscreen-image-viewer>
 
     <astrobin-image
-      (imageClick)="openFullscreen($event)"
+      (imageClick)="enterFullscreen($event)"
       (loaded)="onImageLoaded()"
       [alias]="alias"
       [image]="image"
@@ -78,7 +82,7 @@
 
     <div
       *ngIf="mouseHoverImage && imageLoaded"
-      (click)="openFullscreen($event)"
+      (click)="enterFullscreen($event)"
       class="mouse-hover-container"
     >
       <img
@@ -90,7 +94,7 @@
 
     <div
       *ngIf="inlineSvg && imageLoaded"
-      (click)="openFullscreen($event)"
+      (click)="enterFullscreen($event)"
       class="mouse-hover-svg-container"
     >
       <div
@@ -141,6 +145,7 @@
     ></astrobin-image-viewer-title>
 
     <astrobin-image-viewer-photographers
+      *ngIf="userContentType"
       [image]="image"
       [userContentType]="userContentType"
     ></astrobin-image-viewer-photographers>
@@ -171,7 +176,7 @@
 
 <ng-template #buttonsAreaTemplate>
   <div class="buttons-area">
-    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+    <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
       <div *ngIf="currentUserWrapper.user?.id !== image.user" class="like">
         <astrobin-toggle-property
           [contentType]="imageContentType.id"
@@ -204,11 +209,11 @@
           <fa-icon icon="comments"></fa-icon>
         </button>
         <span class="count">
-              <astrobin-nested-comments-count
-                [contentType]="imageContentType"
-                [objectId]="image.pk"
-              ></astrobin-nested-comments-count>
-            </span>
+          <astrobin-nested-comments-count
+            [contentType]="imageContentType"
+            [objectId]="image.pk"
+          ></astrobin-nested-comments-count>
+        </span>
       </div>
     </ng-container>
   </div> <!-- buttons-area -->

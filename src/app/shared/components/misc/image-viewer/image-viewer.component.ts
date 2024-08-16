@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -35,22 +35,6 @@ import { environment } from "@env/environment";
   styleUrls: ["./image-viewer.component.scss"]
 })
 export class ImageViewerComponent extends BaseComponentDirective implements OnInit {
-  readonly ImageAlias = ImageAlias;
-
-  loading = false;
-  imageLoaded = false;
-  alias: ImageAlias;
-  hasOtherImages = false;
-  currentIndex = null;
-  imageContentType: ContentTypeInterface;
-  userContentType: ContentTypeInterface;
-  fullscreen = false;
-  showRevisions = false;
-  loadingHistogram = false;
-  histogram: string;
-  mouseHoverImage: string;
-  inlineSvg: SafeHtml;
-
   @Input()
   image: ImageInterface;
 
@@ -59,6 +43,12 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   navigationContext: (ImageInterface["hash"] | ImageInterface["pk"])[];
+
+  @Input()
+  fullscreenMode = false;
+
+  @Input()
+  showCloseButton = false;
 
   @Output()
   closeViewer = new EventEmitter<void>();
@@ -78,8 +68,28 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
 
+  @HostBinding('class.fullscreen-mode')
+  get isFullscreenMode() {
+    return this.fullscreenMode || this.viewingFullscreenImage;
+  }
+
+  protected readonly ImageAlias = ImageAlias;
+
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
-  revision: ImageInterface | ImageRevisionInterface;
+  protected revision: ImageInterface | ImageRevisionInterface;
+  protected loading = false;
+  protected imageLoaded = false;
+  protected alias: ImageAlias;
+  protected hasOtherImages = false;
+  protected currentIndex = null;
+  protected imageContentType: ContentTypeInterface;
+  protected userContentType: ContentTypeInterface;
+  protected viewingFullscreenImage = false;
+  protected showRevisions = false;
+  protected loadingHistogram = false;
+  protected histogram: string;
+  protected mouseHoverImage: string;
+  protected inlineSvg: SafeHtml;
   protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
 
   constructor(
@@ -177,7 +187,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         break;
       case MouseHoverImageOptions.INVERTED:
         this.mouseHoverImage = this.revision.thumbnails.find(thumbnail =>
-          thumbnail.alias === this.alias + '_inverted'
+          thumbnail.alias === this.alias + "_inverted"
         ).url;
         this.inlineSvg = null;
         break;
@@ -203,8 +213,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @HostListener("document:keydown.escape", ["$event"])
   handleEscapeKey(event: KeyboardEvent) {
-    if (this.fullscreen) {
-      this.closeFullscreen();
+    if (this.viewingFullscreenImage) {
+      this.exitFullscreen();
       return;
     }
 
@@ -325,22 +335,22 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.modalService.open(this.skyplotModalTemplate, { size: "md" });
   }
 
-  openFullscreen(event: MouseEvent): void {
+  enterFullscreen(event: MouseEvent): void {
     event.preventDefault();
 
     if (!this.revision.videoFile) {
       this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
-      this.fullscreen = true;
+      this.viewingFullscreenImage = true;
     }
   }
 
-  closeFullscreen(): void {
+  exitFullscreen(): void {
     this.store$.dispatch(new HideFullscreenImage());
-    this.fullscreen = false;
+    this.viewingFullscreenImage = false;
   }
 
   close(): void {
-    this.closeFullscreen();
+    this.exitFullscreen();
     this.closeViewer.emit();
   }
 

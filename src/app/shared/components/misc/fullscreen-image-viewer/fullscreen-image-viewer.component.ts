@@ -1,10 +1,10 @@
 import {
-  Component,
+  Component, EventEmitter,
   HostBinding,
   HostListener,
   Inject,
   Input,
-  OnChanges,
+  OnChanges, Output,
   PLATFORM_ID,
   SimpleChanges
 } from "@angular/core";
@@ -44,6 +44,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @Input()
   anonymized = false;
+
+  @Output()
+  exitFullscreen = new EventEmitter<void>();
 
   @HostBinding("class")
   klass = "d-none";
@@ -210,6 +213,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.store$.dispatch(new HideFullscreenImage());
           this.store$.dispatch(new LoadThumbnailCancel(this._getHdOptions()));
           this.store$.dispatch(new LoadThumbnailCancel(this._getRealOptions()));
+          this.exitFullscreen.emit();
         }
       });
   }
