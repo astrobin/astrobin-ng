@@ -16,6 +16,9 @@
 <ng-template #imageAreaTemplate>
   <div
     #imageArea
+    (swipeleft)="onNextClicked()"
+    (swiperight)="onPreviousClicked()"
+    (swipedown)="close()"
     class="image-area"
   >
     <button class="close-button" (click)="close()">

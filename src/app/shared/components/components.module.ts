@@ -127,6 +127,7 @@ import { ImageViewerAcquisitionDatesComponent } from "@shared/components/misc/im
 import { ImageViewerAstrometryComponent } from "@shared/components/misc/image-viewer/image-viewer-astrometry.component";
 import { ImageViewerEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment.component";
 import { ImageViewerRevisionsComponent } from "@shared/components/misc/image-viewer/image-viewer-revisions.component";
+import { HammerModule } from "@angular/platform-browser";
 
 const modules = [
   CommonModule,
@@ -136,6 +137,7 @@ const modules = [
   FormsModule,
   FormlyBootstrapModule,
   FormlySelectModule,
+  HammerModule,
   ImageCropperModule,
   NgbAccordionModule,
   NgbCollapseModule,

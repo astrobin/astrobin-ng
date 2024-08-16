@@ -66,6 +66,7 @@ import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-
 import { NgImageSliderModule } from "ng-image-slider";
 import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
+import { HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from "@angular/platform-browser";
 
 export function appInitializer(store: Store<MainState>, actions$: Actions) {
   return () =>
@@ -85,6 +86,12 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
           resolve();
         });
     });
+}
+
+export class AstroBinHammerConfig extends HammerGestureConfig {
+  override overrides = {
+    swipe: { direction: 31 } // 31 corresponds to Hammer.DIRECTION_ALL
+  };
 }
 
 @NgModule({
@@ -110,6 +117,7 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
     }),
     FormlyBootstrapModule,
     FormlySelectModule,
+    HammerModule,
     ImageCropperModule,
     NgbModule,
     NgbAccordionModule,
@@ -174,6 +182,7 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
     FontAwesomeModule,
     FormlyModule,
     FormlyBootstrapModule,
+    HammerModule,
     ImageCropperModule,
     NgbModule,
     NgbAccordionModule,
@@ -235,6 +244,10 @@ export class SharedModule {
           useFactory: formlyConfig,
           multi: true,
           deps: [TranslateService, JsonApiService]
+        },
+        {
+          provide: HAMMER_GESTURE_CONFIG,
+          useClass: AstroBinHammerConfig
         }
       ]
     };
