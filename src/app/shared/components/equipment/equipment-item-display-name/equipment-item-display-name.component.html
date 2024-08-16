@@ -86,6 +86,11 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
   </div>
   <div class="offcanvas-body offcanvas-retailers">
+    <div class="alert alert-dark mb-4">
+      <fa-icon icon="heart"></fa-icon>
+      <span>{{ "Please support AstroBin by shopping at one of our partners!" | translate }}</span>
+    </div>
+
     <div *ngIf="item.listings.itemListings.length; else brandsTemplate">
       <div *ngFor="let listing of item.listings.itemListings" class="retailer">
         <a [href]="listing.url" target="_blank">
