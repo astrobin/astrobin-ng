@@ -27,6 +27,7 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
               [enableSummaryModal]="false"
               [showFrozenAsAmbiguous]="false"
               [showItemUnapprovedInfo]="false"
+              [showRetailers]="true"
             ></astrobin-equipment-item-display-name>
           </a>
         </div>
