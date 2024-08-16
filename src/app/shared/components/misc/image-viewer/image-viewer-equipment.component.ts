@@ -6,11 +6,27 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
+import { CameraInterface } from "@shared/interfaces/camera.interface";
+import { MountInterface } from "@shared/interfaces/mount.interface";
+import { FilterInterface } from "@shared/interfaces/filter.interface";
+import { FocalReducerInterface } from "@shared/interfaces/focal-reducer.interface";
+import { AccessoryInterface } from "@shared/interfaces/accessory.interface";
+import { SoftwareInterface } from "@shared/interfaces/software.interface";
+
+type LegacyEquipmentItem = |
+  TelescopeInterface |
+  CameraInterface |
+  MountInterface |
+  FilterInterface |
+  FocalReducerInterface |
+  AccessoryInterface |
+  SoftwareInterface;
 
 @Component({
   selector: "astrobin-image-viewer-equipment",
   template: `
-    <div *ngIf="equipmentItems?.length" class="metadata-section">
+    <div *ngIf="equipmentItems?.length || legacyEquipmentItems?.length" class="metadata-section">
       <div class="metadata-item">
         <div class="metadata-label">
           <a
@@ -30,6 +46,15 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
               [showRetailers]="true"
             ></astrobin-equipment-item-display-name>
           </a>
+
+          <a
+            *ngFor="let item of legacyEquipmentItems"
+            href="#"
+            (click)="legacyEquipmentItemClicked($event, item)"
+            class="value"
+          >
+            {{ item.make }} {{ item.name }}
+          </a>
         </div>
       </div>
     </div>
@@ -38,12 +63,13 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 })
 export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   equipmentItems: EquipmentItem[] = null;
+  legacyEquipmentItems: LegacyEquipmentItem[] = null;
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
     public readonly router: Router,
-    public readonly imageViewerService: ImageViewerService,
+    public readonly imageViewerService: ImageViewerService
   ) {
     super(store$, searchService, router, imageViewerService);
   }
@@ -59,11 +85,25 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
         ...image.accessories2,
         ...image.software2
       ];
+      this.legacyEquipmentItems = [
+        ...image.imagingTelescopes,
+        ...image.imagingCameras,
+        ...image.mounts,
+        ...image.filters,
+        ...image.focalReducers,
+        ...image.accessories,
+        ...image.software
+      ];
     }
   }
 
   equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {
     event.preventDefault();
     this.router.navigateByUrl(`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`);
+  }
+
+  legacyEquipmentItemClicked(event: MouseEvent, item: LegacyEquipmentItem): void {
+    event.preventDefault();
+    this.search({ text: (item.make + " " + item.name).trim() });
   }
 }

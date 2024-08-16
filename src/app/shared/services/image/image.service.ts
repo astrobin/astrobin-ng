@@ -585,7 +585,14 @@ export class ImageService extends BaseService {
       image.accessories2?.length > 0 ||
       image.software2?.length > 0 ||
       image.guidingTelescopes2?.length > 0 ||
-      image.guidingCameras2?.length > 0
+      image.guidingCameras2?.length > 0 ||
+      image.imagingTelescopes?.length > 0 ||
+      image.imagingCameras?.length > 0 ||
+      image.mounts?.length > 0 ||
+      image.filters?.length > 0 ||
+      image.accessories?.length > 0 ||
+      image.focalReducers?.length > 0 ||
+      image.software?.length > 0
     );
   }
 

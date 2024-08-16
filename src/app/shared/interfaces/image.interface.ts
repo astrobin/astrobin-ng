@@ -18,6 +18,7 @@ import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisi
 import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system-acquisition.interface";
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
+import { FilterInterface } from "@shared/interfaces/filter.interface";
 
 export enum AcquisitionType {
   REGULAR = "REGULAR",
@@ -205,6 +206,7 @@ export interface ImageInterface {
   guidingCameras: CameraInterface[];
   focalReducers: FocalReducerInterface[];
   mounts: MountInterface[];
+  filters: FilterInterface[];
   accessories: AccessoryInterface[];
   software: SoftwareInterface[];
   imagingTelescopes2: TelescopeInterface2[];
