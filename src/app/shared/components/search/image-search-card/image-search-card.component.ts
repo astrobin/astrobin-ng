@@ -38,6 +38,9 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
   @Input()
   showSortButton = true;
 
+  @Input()
+  showMoreButton = true;
+
   next: string;
   loading = true;
   images: ImageSearchInterface[] = [];
@@ -77,9 +80,8 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
     urlParams.set("d", "i");
     urlParams.set("sort", this.model.ordering || "-likes");
 
-    const paramName = this.imageSearchApiService.getFilterParamName(this.model.itemType, this.model.usageType);
-
     if (this.model.itemType) {
+      const paramName = this.imageSearchApiService.getFilterParamName(this.model.itemType, this.model.usageType);
       urlParams.set(paramName, this.model.itemId.toString());
     }
 

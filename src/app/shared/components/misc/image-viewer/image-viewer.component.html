@@ -138,6 +138,17 @@
   </div>
 </ng-template>
 
+<ng-template #moreFromThisPhotographerTemplate>
+  <astrobin-image-search-card
+    [header]="'More from this photographer' | translate"
+    [model]="{ userId: image.user, ordering: '-likes', pageSize: 60 }"
+    [loadMoreOnScroll]="false"
+    [showUsageButton]="false"
+    [showMoreButton]="false"
+    class="more-from-this-photographer mt-5"
+  ></astrobin-image-search-card>
+</ng-template>
+
 <ng-template #dataAreaTemplate>
   <div class="data-area">
     <astrobin-image-viewer-title
@@ -171,6 +182,8 @@
     ></astrobin-image-viewer-equipment>
 
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+
+    <ng-container [ngTemplateOutlet]="moreFromThisPhotographerTemplate"></ng-container>
   </div> <!-- data-area -->
 </ng-template>
 

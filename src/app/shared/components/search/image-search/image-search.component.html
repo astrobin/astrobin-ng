@@ -1,21 +1,23 @@
 <div class="search-results">
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
-    <ng-container *ngIf="results.length > 0; else noImagesTemplate">
-      <a *ngFor="let image of results" (click)="openImage(image)">
-        <img [alt]="image.title" [src]="image.galleryThumbnail" />
-        <fa-icon *ngIf="image.video || image.animated" icon="play"></fa-icon>
+    <ng-container *ngIf="results !== null; else loadingTemplate">
+      <ng-container *ngIf="results.length > 0; else noImagesTemplate">
+        <a *ngFor="let image of results" (click)="openImage(image)">
+          <img [alt]="image.title" [src]="image.galleryThumbnail" />
+          <fa-icon *ngIf="image.video || image.animated" icon="play"></fa-icon>
 
-        <div class="badges">
-          <fa-icon *ngIf="image.isIotd" class="iotd" icon="trophy"></fa-icon>
-          <fa-icon *ngIf="image.isTopPick" class="top-pick" icon="star"></fa-icon>
-          <fa-icon *ngIf="image.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
-        </div>
-      </a>
+          <div class="badges">
+            <fa-icon *ngIf="image.isIotd" class="iotd" icon="trophy"></fa-icon>
+            <fa-icon *ngIf="image.isTopPick" class="top-pick" icon="star"></fa-icon>
+            <fa-icon *ngIf="image.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
+          </div>
+        </a>
+      </ng-container>
     </ng-container>
   </ng-container>
 
   <div *ngIf="loading && !initialLoading" class="loading">
-    <astrobin-loading-indicator></astrobin-loading-indicator>
+    <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
   </div>
 </div>
 

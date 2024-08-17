@@ -18,7 +18,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   loading = false;
   page = 1;
   next: string | null = null;
-  results: T[] = [];
+  results: T[] = null;
   pageSize = 100;
 
   @Input()
@@ -40,7 +40,9 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     super.ngOnInit();
 
     if (isPlatformBrowser(this.platformId)) {
-      fromEvent(this.windowRefService.nativeWindow, "scroll")
+      const scrollElement = this._getScrollableParent(this.elementRef.nativeElement) || this.windowRefService.nativeWindow;
+
+      fromEvent(scrollElement, "scroll")
         .pipe(takeUntil(this.destroyed$), debounceTime(200), distinctUntilChanged())
         .subscribe(() => this._onScroll());
     }
@@ -53,14 +55,21 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   }
 
   loadData(): void {
-    this.loading = false;
-    this.initialLoading = true;
+    if (
+      isPlatformBrowser(this.platformId) &&
+      this._isNearBottom() &&
+      !this.initialLoading &&
+      !this.loading
+    ) {
+      this.loading = false;
+      this.initialLoading = true;
 
-    this.fetchData().subscribe(response => {
-      this.results = response.results;
-      this.next = response.next;
-      this.initialLoading = false;
-    });
+      this.fetchData().subscribe(response => {
+        this.results = response.results;
+        this.next = response.next;
+        this.initialLoading = false;
+      });
+    }
   }
 
   loadMore(): Observable<T[]> {
@@ -81,25 +90,48 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
         observer.next([]);
         observer.complete();
       }
-    })
+    });
   }
 
   abstract fetchData(): Observable<PaginatedApiResultInterface<T>>;
 
   private _onScroll() {
-    if (isPlatformServer(this.platformId)) {
-      return;
+    if (
+      isPlatformBrowser(this.platformId) &&
+      this._isNearBottom() &&
+      !this.initialLoading &&
+      !this.loading
+    ) {
+      if (this.results !== null) {
+        this.loadMore().subscribe();
+      } else {
+        this.loadData();
+      }
+    }
+  }
+
+  private _getScrollableParent(element: HTMLElement): HTMLElement | null {
+    let parent = element.parentElement;
+
+    while (parent) {
+      const overflowY = window.getComputedStyle(parent).overflowY;
+      if (overflowY === "auto" || overflowY === "scroll") {
+        return parent;
+      }
+      parent = parent.parentElement;
     }
 
-    if (!this.loadMoreOnScroll) {
-      return;
+    return null;
+  }
+
+  private _isNearBottom(): boolean {
+    if (isPlatformServer(this.platformId)) {
+      return false;
     }
 
     const window = this.windowRefService.nativeWindow;
     const rect = this.elementRef.nativeElement.getBoundingClientRect();
 
-    if (!this.loading && rect.bottom < window.innerHeight + 2000) {
-      this.loadMore().subscribe();
-    }
+    return rect.bottom < window.innerHeight + 500;
   }
 }

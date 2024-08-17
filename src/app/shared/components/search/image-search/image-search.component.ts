@@ -36,7 +36,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
-    return this.imageSearchApiService.search({ ...this.model, pageSize: this.pageSize });
+    return this.imageSearchApiService.search({ ...this.model, pageSize: this.model.pageSize || this.pageSize });
   }
 
   openImage(image: ImageSearchInterface): void {
