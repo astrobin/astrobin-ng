@@ -59,6 +59,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @ViewChild("imageArea")
   imageArea: ElementRef;
 
+  @ViewChild("nestedCommentsTemplate")
+  nestedCommentsTemplate: TemplateRef<any>;
+
   @ViewChild("histogramModalTemplate")
   histogramModalTemplate: TemplateRef<any>;
 
@@ -303,12 +306,11 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   openCommentsModal(event: MouseEvent): void {
     event.preventDefault();
 
-    const modalRef = this.modalService.open(NestedCommentsModalComponent, { size: "lg" });
-    const instance: NestedCommentsModalComponent = modalRef.componentInstance;
-
-    instance.contentType = this.imageContentType;
-    instance.objectId = this.image.pk;
-    instance.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS;
+    const position = this.deviceService.smMax() ? "bottom" : "end";
+    this.offcanvasService.open(this.nestedCommentsTemplate, {
+      position,
+      panelClass: "image-viewer-nested-comments-offcanvas",
+    });
   }
 
   openHistogram(event: MouseEvent): void {
@@ -475,4 +477,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       )
       .subscribe();
   }
+
+  protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
 }

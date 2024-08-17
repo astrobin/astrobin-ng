@@ -371,3 +371,21 @@
     flex-direction: column;
   }
 }
+
+::ng-deep {
+  .image-viewer-nested-comments-offcanvas {
+    &:not(.offcanvas-bottom) {
+      width: 40vw !important;
+    }
+
+    .offcanvas-body {
+      padding: 0;
+    }
+
+    .card {
+      background: transparent;
+      box-shadow: none;
+      border: none;
+    }
+  }
+}

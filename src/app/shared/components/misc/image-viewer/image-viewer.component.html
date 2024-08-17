@@ -219,6 +219,18 @@
   </div> <!-- buttons-area -->
 </ng-template>
 
+<ng-template #nestedCommentsTemplate let-offcanvas>
+  <div class="offcanvas-body">
+    <astrobin-nested-comments
+      (close)="offcanvas.dismiss()"
+      [autoStartTopLevelStrategy]="NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS"
+      [contentType]="imageContentType"
+      [objectId]="image.pk"
+      [showCloseButton]="true"
+    ></astrobin-nested-comments>
+  </div>
+</ng-template>
+
 <ng-template #histogramModalTemplate>
   <div class="modal-body">
     <img *ngIf="!loadingHistogram; else loadingTemplate" [src]="histogram" alt="" />
