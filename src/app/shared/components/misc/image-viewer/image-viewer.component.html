@@ -203,7 +203,7 @@
 
       <div class="comment">
         <button
-          (click)="openCommentsModal($event)"
+          (click)="openComments($event)"
           class="btn btn-link link-secondary"
         >
           <fa-icon icon="comments"></fa-icon>
@@ -214,6 +214,15 @@
             [objectId]="image.pk"
           ></astrobin-nested-comments-count>
         </span>
+      </div>
+
+      <div class="share">
+        <button
+          (click)="openShare($event)"
+          class="btn btn-link link-secondary"
+        >
+          <fa-icon icon="share"></fa-icon>
+        </button>
       </div>
     </ng-container>
   </div> <!-- buttons-area -->
@@ -228,6 +237,27 @@
       [objectId]="image.pk"
       [showCloseButton]="true"
     ></astrobin-nested-comments>
+  </div>
+</ng-template>
+
+<ng-template #shareTemplate let-offcanvas>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">{{ 'Share' | translate }}</h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="offcanvas.dismiss()"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="offcanvas-body">
+    <form>
+      <formly-form
+        [form]="shareForm"
+        [fields]="shareFields"
+        [model]="shareModel"
+      ></formly-form>
+    </form>
   </div>
 </ng-template>
 

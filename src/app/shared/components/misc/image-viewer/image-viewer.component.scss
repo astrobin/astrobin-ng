@@ -388,4 +388,10 @@
       border: none;
     }
   }
+
+  .image-viewer-share-offcanvas {
+    &:not(.offcanvas-bottom) {
+      width: 40vw !important;
+    }
+  }
 }

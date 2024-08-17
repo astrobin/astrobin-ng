@@ -16,7 +16,6 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { Observable, of } from "rxjs";
@@ -28,6 +27,15 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@env/environment";
+import { FormGroup } from "@angular/forms";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
+
+enum SharingMode {
+  LINK = "link",
+  BBCODE = "bbcode",
+  HTML = "html"
+}
 
 @Component({
   selector: "astrobin-image-viewer",
@@ -62,6 +70,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @ViewChild("nestedCommentsTemplate")
   nestedCommentsTemplate: TemplateRef<any>;
 
+  @ViewChild("shareTemplate")
+  shareTemplate: TemplateRef<any>;
+
   @ViewChild("histogramModalTemplate")
   histogramModalTemplate: TemplateRef<any>;
 
@@ -70,14 +81,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
-
-  @HostBinding('class.fullscreen-mode')
-  get isFullscreenMode() {
-    return this.fullscreenMode || this.viewingFullscreenImage;
-  }
-
   protected readonly ImageAlias = ImageAlias;
-
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;
   protected loading = false;
@@ -93,7 +97,55 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   protected histogram: string;
   protected mouseHoverImage: string;
   protected inlineSvg: SafeHtml;
+  protected readonly shareForm: FormGroup = new FormGroup({});
+  protected shareModel: {
+    sharingMode: SharingMode;
+    copyThis: string;
+  } = {
+    sharingMode: SharingMode.LINK,
+    copyThis: ""
+  };
+  protected readonly shareFields: FormlyFieldConfig[] = [
+    {
+      key: "sharingMode",
+      type: "ng-select",
+      wrappers: ["default-wrapper"],
+      defaultValue: SharingMode.LINK,
+      props: {
+        label: this.translateService.instant("Sharing mode"),
+        options: [
+          { value: SharingMode.LINK, label: this.translateService.instant("Simple link") },
+          { value: SharingMode.BBCODE, label: this.translateService.instant("Forums (BBCode)") },
+          { value: SharingMode.HTML, label: this.translateService.instant("HTML") }
+        ],
+        searchable: false,
+        clearable: false
+      },
+      hooks: {
+        onInit: field => {
+          field.formControl.valueChanges.subscribe(() => {
+            this.shareModel = {
+              ...this.shareModel,
+              copyThis: this.getSharingValue(this.shareModel.sharingMode)
+            };
+          });
+        }
+      }
+    },
+    {
+      key: "copyThis",
+      type: "textarea",
+      wrappers: ["default-wrapper"],
+      defaultValue: this.getSharingValue(SharingMode.LINK),
+      props: {
+        label: this.translateService.instant("Copy this"),
+        rows: 5,
+        readonly: true
+      }
+    }
+  ];
   protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
+  protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -110,9 +162,15 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly domSanitizer: DomSanitizer,
     public readonly windowRefService: WindowRefService,
     public readonly utilsService: UtilsService,
-    public readonly http: HttpClient
+    public readonly http: HttpClient,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
+  }
+
+  @HostBinding("class.fullscreen-mode")
+  get isFullscreenMode() {
+    return this.fullscreenMode || this.viewingFullscreenImage;
   }
 
   ngOnInit(): void {
@@ -303,13 +361,28 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.setMouseHoverImage();
   }
 
-  openCommentsModal(event: MouseEvent): void {
+  openShare(event: MouseEvent): void {
+    event.preventDefault();
+
+    this.shareModel = {
+      sharingMode: SharingMode.LINK,
+      copyThis: this.getSharingValue(SharingMode.LINK)
+    };
+
+    const position = this.deviceService.smMax() ? "bottom" : "end";
+    this.offcanvasService.open(this.shareTemplate, {
+      position,
+      panelClass: "image-viewer-share-offcanvas"
+    });
+  }
+
+  openComments(event: MouseEvent): void {
     event.preventDefault();
 
     const position = this.deviceService.smMax() ? "bottom" : "end";
     this.offcanvasService.open(this.nestedCommentsTemplate, {
       position,
-      panelClass: "image-viewer-nested-comments-offcanvas",
+      panelClass: "image-viewer-nested-comments-offcanvas"
     });
   }
 
@@ -439,6 +512,26 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     overlaySvgElement.style.top = `${offsetY}px`;
   }
 
+  protected getSharingValue(sharingMode: SharingMode): string {
+    if (!this.revision) {
+      return "";
+    }
+
+    const baseUrl = this.windowRefService.nativeWindow.location.origin;
+    const imagePath = `/i/${this.image.hash || this.image.pk}/`;
+    const galleryThumbnailUrl = this.revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url;
+    const url = baseUrl + imagePath;
+
+    switch (sharingMode) {
+      case SharingMode.LINK:
+        return url;
+      case SharingMode.BBCODE:
+        return `[url=${url}][img]${galleryThumbnailUrl}[/img][/url]`;
+      case SharingMode.HTML:
+        return `<a href="${url}"><img src="${galleryThumbnailUrl}" /></a>`;
+    }
+  }
+
   private _updateNavigationContextInformation(): void {
     this.hasOtherImages = this.navigationContext.filter(id => id !== this.image.hash && id !== this.image.pk).length > 0;
     this.updateCurrentImageIndexInNavigationContext();
@@ -477,6 +570,4 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       )
       .subscribe();
   }
-
-  protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
 }
