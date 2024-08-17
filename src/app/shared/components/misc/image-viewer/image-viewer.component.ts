@@ -314,6 +314,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @HostListener("document:keydown.arrowRight", ["$event"])
   onNextClicked(): void {
     this.modalService.dismissAll();
+    this.offcanvasService.dismiss();
 
     if (this.currentIndex < this.navigationContext.length - 1) {
       this.store$.pipe(
@@ -329,6 +330,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @HostListener("document:keydown.arrowLeft", ["$event"])
   onPreviousClicked(): void {
     this.modalService.dismissAll();
+    this.offcanvasService.dismiss();
 
     if (this.currentIndex > 0) {
       this.store$.pipe(
