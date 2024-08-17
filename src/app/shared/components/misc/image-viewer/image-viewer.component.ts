@@ -428,6 +428,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   close(): void {
     this.exitFullscreen();
+    this.modalService.dismissAll();
+    this.offcanvasService.dismiss();
     this.closeViewer.emit();
   }
 
