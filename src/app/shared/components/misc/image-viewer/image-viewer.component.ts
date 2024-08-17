@@ -64,6 +64,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @Output()
   initialized = new EventEmitter<void>();
 
+  @Output()
+  nearEndOfContext = new EventEmitter<void>();
+
   @ViewChild("imageArea")
   imageArea: ElementRef;
 
@@ -284,31 +287,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
 
     this.close();
-  }
-
-  updateCurrentImageIndexInNavigationContext(): void {
-    const byHash = this.navigationContext.indexOf(this.image.hash);
-    const byPk = this.navigationContext.indexOf(this.image.pk);
-
-    this.currentIndex = byHash !== -1 ? byHash : byPk;
-  }
-
-  loadNextImages(n: number): void {
-    for (let i = 1; i <= n; i++) {
-      const nextIndex = this.currentIndex + i;
-      if (nextIndex < this.navigationContext.length) {
-        this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[nextIndex] }));
-      }
-    }
-  }
-
-  loadPreviousImages(n: number): void {
-    for (let i = 1; i <= n; i++) {
-      const previousIndex = this.currentIndex - i;
-      if (previousIndex >= 0) {
-        this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[previousIndex] }));
-      }
-    }
   }
 
   @HostListener("document:keydown.arrowRight", ["$event"])
@@ -536,11 +514,46 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  private _loadNextImages(n: number): void {
+    for (let i = 1; i <= n; i++) {
+      const nextIndex = this.currentIndex + i;
+      if (nextIndex < this.navigationContext.length) {
+        this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[nextIndex] }));
+      }
+    }
+  }
+
+  private _loadPreviousImages(n: number): void {
+    for (let i = 1; i <= n; i++) {
+      const previousIndex = this.currentIndex - i;
+      if (previousIndex >= 0) {
+        this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[previousIndex] }));
+      }
+    }
+  }
+
+  private _updateCurrentImageIndexInNavigationContext(): void {
+    const byHash = this.navigationContext.indexOf(this.image.hash);
+    const byPk = this.navigationContext.indexOf(this.image.pk);
+
+    this.currentIndex = byHash !== -1 ? byHash : byPk;
+  }
+
   private _updateNavigationContextInformation(): void {
+    const previousIndex = this.currentIndex;
+
     this.hasOtherImages = this.navigationContext.filter(id => id !== this.image.hash && id !== this.image.pk).length > 0;
-    this.updateCurrentImageIndexInNavigationContext();
-    this.loadNextImages(5);
-    this.loadPreviousImages(5);
+    this._updateCurrentImageIndexInNavigationContext();
+    this._loadNextImages(5);
+    this._loadPreviousImages(5);
+
+    if (
+      this.currentIndex > previousIndex &&
+      this.navigationContext.length > 5
+      && this.currentIndex === this.navigationContext.length - 5
+    ) {
+      this.nearEndOfContext.emit();
+    }
   }
 
   private _recordHit() {

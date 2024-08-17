@@ -40,10 +40,17 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   openImage(image: ImageSearchInterface): void {
-    this.imageViewerService.openImageViewer(
+    const imageViewerComponentRef = this.imageViewerService.openImageViewer(
       image.hash || image.objectId,
       this.results.map(result => result.hash || result.objectId),
       this.viewContainerRef
     );
+    const imageViewerComponent = imageViewerComponentRef.instance;
+
+    imageViewerComponent.nearEndOfContext.subscribe(() => {
+      this.loadMore().subscribe(() => {
+        imageViewerComponent.navigationContext = [...this.results.map(result => result.hash || result.objectId)];
+      });
+    });
   }
 }

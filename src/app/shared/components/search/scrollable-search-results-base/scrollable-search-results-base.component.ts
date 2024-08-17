@@ -63,17 +63,25 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     });
   }
 
-  loadMore(): void {
-    if (this.next) {
-      this.loading = true;
-      this.model = { ...this.model, page: (this.model.page || 1) + 1 };
+  loadMore(): Observable<T[]> {
+    return new Observable<T[]>(observer => {
+      if (this.next) {
+        this.loading = true;
+        this.model = { ...this.model, page: (this.model.page || 1) + 1 };
 
-      this.fetchData().subscribe(response => {
-        this.results = this.results.concat(response.results);
-        this.next = response.next;
-        this.loading = false;
-      });
-    }
+        this.fetchData().subscribe(response => {
+          this.results = this.results.concat(response.results);
+          this.next = response.next;
+          this.loading = false;
+
+          observer.next(response.results);
+          observer.complete();
+        });
+      } else {
+        observer.next([]);
+        observer.complete();
+      }
+    })
   }
 
   abstract fetchData(): Observable<PaginatedApiResultInterface<T>>;
@@ -91,7 +99,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     const rect = this.elementRef.nativeElement.getBoundingClientRect();
 
     if (!this.loading && rect.bottom < window.innerHeight + 2000) {
-      this.loadMore();
+      this.loadMore().subscribe();
     }
   }
 }
