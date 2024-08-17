@@ -70,6 +70,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @ViewChild("imageArea")
   imageArea: ElementRef;
 
+  @ViewChild("dataArea")
+  dataArea: ElementRef;
+
   @ViewChild("nestedCommentsTemplate")
   nestedCommentsTemplate: TemplateRef<any>;
 
@@ -217,6 +220,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     revisionLabel: ImageRevisionInterface["label"],
     navigationContext: (ImageInterface["pk"] | ImageInterface["hash"])[]
   ): void {
+    if (this.dataArea) {
+      this.dataArea.nativeElement.scrollTop = 0;
+    }
+
     this.imageLoaded = false;
     this.image = image;
     this.revisionLabel = revisionLabel;

@@ -17,7 +17,7 @@ import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions
   providedIn: "root"
 })
 export class ImageViewerService extends BaseService {
-  private _activeImageViewer?: ComponentRef<ImageViewerComponent>;
+  activeImageViewer?: ComponentRef<ImageViewerComponent>;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -35,23 +35,23 @@ export class ImageViewerService extends BaseService {
   ): ComponentRef<ImageViewerComponent> {
     this.closeActiveImageViewer();
 
-    this._activeImageViewer = viewContainerRef.createComponent(ImageViewerComponent);
-    this._activeImageViewer.instance.showCloseButton = true;
-    this._activeImageViewer.instance.fullscreenMode = true;
+    this.activeImageViewer = viewContainerRef.createComponent(ImageViewerComponent);
+    this.activeImageViewer.instance.showCloseButton = true;
+    this.activeImageViewer.instance.fullscreenMode = true;
 
-    this._activeImageViewer.instance.initialized.pipe(
+    this.activeImageViewer.instance.initialized.pipe(
       switchMap(() => this.loadImage(imageId)),
     ).subscribe(image => {
-      this._activeImageViewer.instance.setImage(image, FINAL_REVISION_LABEL, navigationContext);
+      this.activeImageViewer.instance.setImage(image, FINAL_REVISION_LABEL, navigationContext);
     });
 
-    this._activeImageViewer.instance.closeViewer.subscribe(() => {
+    this.activeImageViewer.instance.closeViewer.subscribe(() => {
       this.closeActiveImageViewer();
     });
 
     this._stopBodyScrolling();
 
-    return this._activeImageViewer;
+    return this.activeImageViewer;
   }
 
   loadImage(imageId: ImageInterface["hash"] | ImageInterface["pk"]): Observable<ImageInterface> {
@@ -70,10 +70,10 @@ export class ImageViewerService extends BaseService {
   }
 
   closeActiveImageViewer() {
-    if (this._activeImageViewer) {
+    if (this.activeImageViewer) {
       this.store$.dispatch(new HideFullscreenImage());
-      this._activeImageViewer.destroy();
-      this._activeImageViewer = undefined;
+      this.activeImageViewer.destroy();
+      this.activeImageViewer = undefined;
       this._resumeBodyScrolling();
     }
   }

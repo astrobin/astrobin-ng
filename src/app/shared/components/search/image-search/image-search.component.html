@@ -2,7 +2,13 @@
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
     <ng-container *ngIf="results !== null; else loadingTemplate">
       <ng-container *ngIf="results.length > 0; else noImagesTemplate">
-        <a *ngFor="let image of results" (click)="openImage(image)">
+        <a
+          *ngFor="let image of results"
+          (click)="openImage(image)"
+          astrobinEventStopPropagation
+          astrobinEventPreventDefault
+          href="#"
+        >
           <img [alt]="image.title" [src]="image.galleryThumbnail" />
           <fa-icon *ngIf="image.video || image.animated" icon="play"></fa-icon>
 

@@ -11,6 +11,7 @@ import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/t
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-image-search",
@@ -40,16 +41,23 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   openImage(image: ImageSearchInterface): void {
-    const imageViewerComponentRef = this.imageViewerService.openImageViewer(
-      image.hash || image.objectId,
-      this.results.map(result => result.hash || result.objectId),
-      this.viewContainerRef
-    );
-    const imageViewerComponent = imageViewerComponentRef.instance;
+    let activeImageViewer = this.imageViewerService.activeImageViewer;
 
-    imageViewerComponent.nearEndOfContext.subscribe(() => {
+    if (!activeImageViewer) {
+      activeImageViewer =  this.imageViewerService.openImageViewer(
+        image.hash || image.objectId,
+        this.results.map(result => result.hash || result.objectId),
+        this.viewContainerRef
+      );
+    } else {
+      this.imageViewerService.loadImage(image.hash || image.objectId).subscribe(image => {
+        activeImageViewer.instance.setImage(image, FINAL_REVISION_LABEL, this.results.map(result => result.hash || result.objectId));
+      });
+    }
+
+    activeImageViewer.instance.nearEndOfContext.subscribe(() => {
       this.loadMore().subscribe(() => {
-        imageViewerComponent.navigationContext = [...this.results.map(result => result.hash || result.objectId)];
+        activeImageViewer.instance.navigationContext = [...this.results.map(result => result.hash || result.objectId)];
       });
     });
   }
