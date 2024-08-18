@@ -131,6 +131,7 @@
           lineItem.sellerImageCount > 0 &&
           listing.listingType === MarketplaceListingType.FOR_SALE
         "
+        [alias]="ImageAlias.GALLERY"
         [header]="'Images by the seller' | translate"
         [loadMoreOnScroll]="false"
         [model]="{
@@ -152,6 +153,7 @@
           lineItem.totalImageCount > 0 &&
           listing.listingType === MarketplaceListingType.FOR_SALE
         "
+        [alias]="ImageAlias.GALLERY"
         [class.mt-5]="!lineItem.sellerImageCount"
         [header]="'Images from the AstroBin community' | translate"
         [loadMoreOnScroll]="false"

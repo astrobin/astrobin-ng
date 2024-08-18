@@ -9,7 +9,10 @@
           astrobinEventPreventDefault
           href="#"
         >
-          <img [alt]="image.title" [src]="image.galleryThumbnail" />
+          <img
+            [alt]="image.title"
+            [src]="alias === ImageAlias.REGULAR ? image.regularThumbnail : image.galleryThumbnail"
+          />
           <fa-icon *ngIf="image.video || image.animated" icon="play"></fa-icon>
 
           <div class="badges">
@@ -21,10 +24,10 @@
       </ng-container>
     </ng-container>
   </ng-container>
+</div>
 
-  <div *ngIf="loading && !initialLoading" class="loading">
-    <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
-  </div>
+<div *ngIf="loading && !initialLoading" class="loading">
+  <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
 </div>
 
 <ng-container #imageViewerContainer></ng-container>

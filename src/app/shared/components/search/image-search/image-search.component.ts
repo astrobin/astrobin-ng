@@ -1,4 +1,4 @@
-import { Component, ComponentRef, ElementRef, Inject, PLATFORM_ID, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, ElementRef, Inject, Input, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
@@ -12,6 +12,7 @@ import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-image-search",
@@ -21,6 +22,9 @@ import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
+
+  @Input()
+  alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -61,4 +65,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       });
     });
   }
+
+  protected readonly ImageAlias = ImageAlias;
 }

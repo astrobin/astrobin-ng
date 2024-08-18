@@ -39,6 +39,7 @@ export interface ImageSearchInterface {
   w: number;
   h: number;
   galleryThumbnail: string;
+  regularThumbnail: string;
 
   video: boolean;
   animated: boolean;

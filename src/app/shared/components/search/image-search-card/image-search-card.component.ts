@@ -10,6 +10,7 @@ import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/t
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-image-search-card",
@@ -28,6 +29,9 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
 
   @Input()
   model: SearchModelInterface;
+
+  @Input()
+  alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
 
   @Input()
   loadMoreOnScroll = true;

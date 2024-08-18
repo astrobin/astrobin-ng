@@ -138,15 +138,24 @@
   </div>
 </ng-template>
 
-<ng-template #moreFromThisPhotographerTemplate>
-  <astrobin-image-search-card
-    [header]="'More from this photographer' | translate"
+<ng-template #moreFromThisUserTemplate>
+  <h5 class="mt-5 mb-3">{{ "More from this user" | translate }}</h5>
+  <astrobin-image-search
+    [alias]="ImageAlias.REGULAR"
     [model]="{ userId: image.user, ordering: '-likes', pageSize: 60 }"
     [loadMoreOnScroll]="false"
-    [showUsageButton]="false"
-    [showMoreButton]="false"
-    class="more-from-this-photographer mt-5"
-  ></astrobin-image-search-card>
+    class="more-from-this-photographer"
+  ></astrobin-image-search>
+</ng-template>
+
+<ng-template #similarToThisTemplate>
+  <h5 class="mt-5 mb-3">{{ "Related images" | translate }}</h5>
+  <astrobin-image-search
+    [alias]="ImageAlias.REGULAR"
+    [model]="{ similarToImageId: this.image.hash || this.image.pk, ordering: '-likes', pageSize: 60 }"
+    [loadMoreOnScroll]="true"
+    class="similar-to-this"
+  ></astrobin-image-search>
 </ng-template>
 
 <ng-template #dataAreaTemplate>
@@ -183,7 +192,9 @@
 
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
 
-    <ng-container [ngTemplateOutlet]="moreFromThisPhotographerTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="moreFromThisUserTemplate"></ng-container>
+
+    <ng-container [ngTemplateOutlet]="similarToThisTemplate"></ng-container>
   </div> <!-- data-area -->
 </ng-template>
 
