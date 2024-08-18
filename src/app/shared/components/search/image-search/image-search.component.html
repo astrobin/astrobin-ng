@@ -1,30 +1,33 @@
-<div class="search-results">
-  <ng-container *ngIf="!initialLoading; else loadingTemplate">
-    <ng-container *ngIf="results !== null; else loadingTemplate">
-      <ng-container *ngIf="results.length > 0; else noImagesTemplate">
+<ng-container *ngIf="!initialLoading; else loadingTemplate">
+  <ng-container *ngIf="results !== null; else loadingTemplate">
+    <ng-container *ngIf="results.length > 0; else noImagesTemplate">
+      <div class="search-results">
+
         <a
-          *ngFor="let image of results"
-          (click)="openImage(image)"
+          *ngFor="let item of gridItems"
+          (click)="openImage(item)"
+          [ngClass]="item.spanClass"
+          [ngStyle]="{'max-height.px': item.randomHeight}"
           astrobinEventStopPropagation
           astrobinEventPreventDefault
           href="#"
         >
           <img
-            [alt]="image.title"
-            [src]="alias === ImageAlias.REGULAR ? image.regularThumbnail : image.galleryThumbnail"
+            [alt]="item.title"
+            [src]="alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail"
           />
-          <fa-icon *ngIf="image.video || image.animated" icon="play"></fa-icon>
+          <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
 
           <div class="badges">
-            <fa-icon *ngIf="image.isIotd" class="iotd" icon="trophy"></fa-icon>
-            <fa-icon *ngIf="image.isTopPick" class="top-pick" icon="star"></fa-icon>
-            <fa-icon *ngIf="image.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
+            <fa-icon *ngIf="item.isIotd" class="iotd" icon="trophy"></fa-icon>
+            <fa-icon *ngIf="item.isTopPick" class="top-pick" icon="star"></fa-icon>
+            <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
           </div>
         </a>
-      </ng-container>
+      </div>
     </ng-container>
   </ng-container>
-</div>
+</ng-container>
 
 <div *ngIf="loading && !initialLoading" class="loading">
   <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>

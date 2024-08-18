@@ -1,6 +1,6 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { fromEvent, Observable } from "rxjs";
+import { fromEvent, Observable, Subject } from "rxjs";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { Store } from "@ngrx/store";
@@ -20,6 +20,8 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   next: string | null = null;
   results: T[] = null;
   pageSize = 100;
+
+  protected dataFetched = new Subject<T[]>();
 
   @Input()
   model: SearchModelInterface;
@@ -57,7 +59,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   loadData(): void {
     if (
       isPlatformBrowser(this.platformId) &&
-      this._isNearBottom() &&
+      this._isNearTop() &&
       !this.initialLoading &&
       !this.loading
     ) {
@@ -68,6 +70,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
         this.results = response.results;
         this.next = response.next;
         this.initialLoading = false;
+        this.dataFetched.next(this.results);
       });
     }
   }
@@ -82,6 +85,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
           this.results = this.results.concat(response.results);
           this.next = response.next;
           this.loading = false;
+          this.dataFetched.next(this.results);
 
           observer.next(response.results);
           observer.complete();
@@ -124,6 +128,17 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     return null;
   }
 
+  private _isNearTop(): boolean {
+    if (isPlatformServer(this.platformId)) {
+      return false;
+    }
+
+    const window = this.windowRefService.nativeWindow;
+    const rect = this.elementRef.nativeElement.getBoundingClientRect();
+
+    return rect.top < window.innerHeight + 2000;
+  }
+
   private _isNearBottom(): boolean {
     if (isPlatformServer(this.platformId)) {
       return false;
@@ -132,6 +147,6 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     const window = this.windowRefService.nativeWindow;
     const rect = this.elementRef.nativeElement.getBoundingClientRect();
 
-    return rect.bottom < window.innerHeight + 500;
+    return rect.bottom < window.innerHeight + 2000;
   }
 }

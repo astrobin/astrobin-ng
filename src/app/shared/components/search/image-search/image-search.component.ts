@@ -13,6 +13,9 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { takeUntil, tap } from "rxjs/operators";
+
+type SpanClass = "wide" | "medium" | "normal";
 
 @Component({
   selector: "astrobin-image-search",
@@ -22,9 +25,10 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
-
   @Input()
   alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
+  protected gridItems: Array<ImageSearchInterface & { spanClass: SpanClass, randomHeight: number }> = [];
+  protected readonly ImageAlias = ImageAlias;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -38,17 +42,51 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly imageViewerService: ImageViewerService
   ) {
     super(store$, windowRefService, elementRef, platformId);
+    this.dataFetched.pipe(
+      takeUntil(this.destroyed$),
+      tap(() => this.assignWidthsToGridItems())
+    ).subscribe();
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
     return this.imageSearchApiService.search({ ...this.model, pageSize: this.model.pageSize || this.pageSize });
   }
 
+  assignWidthsToGridItems(): void {
+    const totalCols = 12;
+    const colSpans = {
+      wide: 4,
+      medium: 3,
+      normal: 2
+    };
+
+    let currentRowCols = 0;
+    let currentRowHeight = this._getRandomHeight();
+    this.gridItems = []; // Reset grid items
+
+    this.results.forEach((image, index) => {
+      if (currentRowCols === 0) {
+        // Start the row with a new random height
+        currentRowHeight = this._getRandomHeight();
+      }
+
+      const spanClass = this._getSpanClassForCurrentImage(currentRowCols, totalCols, colSpans);
+      currentRowCols += colSpans[spanClass];
+
+      this.gridItems.push({ ...image, spanClass, randomHeight: currentRowHeight });
+
+      // Reset row column count when full
+      if (currentRowCols === totalCols) {
+        currentRowCols = 0;
+      }
+    });
+  }
+
   openImage(image: ImageSearchInterface): void {
     let activeImageViewer = this.imageViewerService.activeImageViewer;
 
     if (!activeImageViewer) {
-      activeImageViewer =  this.imageViewerService.openImageViewer(
+      activeImageViewer = this.imageViewerService.openImageViewer(
         image.hash || image.objectId,
         this.results.map(result => result.hash || result.objectId),
         this.viewContainerRef
@@ -66,5 +104,40 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     });
   }
 
-  protected readonly ImageAlias = ImageAlias;
+  private _getSpanClassForCurrentImage(currentRowCols: number, totalCols: number, colSpans: { [key: string]: number }): SpanClass {
+    const remainingCols = totalCols - currentRowCols;
+    const random = Math.random();
+
+    if (currentRowCols === 0) {
+      return this._getRandomSpanClass(random);
+    } else {
+      return this._getSpanClassBasedOnRemainingCols(remainingCols, colSpans, random);
+    }
+  }
+
+  private _getRandomSpanClass(random: number): SpanClass {
+    if (random < 1 / 3) {
+      return "wide";
+    } else if (random < 2 / 3) {
+      return "medium";
+    } else {
+      return "normal";
+    }
+  }
+
+  private _getSpanClassBasedOnRemainingCols(remainingCols: number, colSpans: { [key: string]: number }, random: number): SpanClass {
+    if (remainingCols >= colSpans.wide && remainingCols % colSpans.wide === 0) {
+      return "wide";
+    } else if (remainingCols >= colSpans.medium && remainingCols % colSpans.medium === 0) {
+      return "medium";
+    } else {
+      return "normal";
+    }
+  }
+
+  private _getRandomHeight(): number {
+    const max = 400;
+    const min = 200;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 }
