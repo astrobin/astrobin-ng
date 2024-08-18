@@ -19,7 +19,7 @@
           </div>
 
           <div
-            [innerHTML]="post.text | BBCodeToHtml | removeBr | highlight:model.text"
+            [innerHTML]="post.bodyHtml | removeBr | highlight:model.text"
             class="card-body"
           >
           </div>

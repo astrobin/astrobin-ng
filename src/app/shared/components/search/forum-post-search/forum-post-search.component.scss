@@ -49,6 +49,12 @@
         border: .25rem var(--white);
         margin: 1rem;
       }
+
+      blockquote {
+        margin: 1rem 0;
+        padding: 2rem;
+        background-color: var(--darkestGrey);
+      }
     }
   }
 
