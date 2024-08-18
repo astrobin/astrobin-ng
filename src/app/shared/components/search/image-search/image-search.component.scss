@@ -1,5 +1,37 @@
 @import "../../../../styles/breakpoints";
 
+.retailers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  .retailer-list {
+    display: flex;
+    gap: .5rem;
+
+    .retailer-link {
+      border-bottom: none;
+
+      &::after {
+        content: "";
+      }
+
+      .retailer-logo {
+        height: 2.5rem;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
+        border-radius: .5rem;
+      }
+
+      &:hover {
+        .retailer-logo {
+          filter: brightness(1.5);
+        }
+      }
+    }
+  }
+}
+
 .search-results {
   $gap: .5rem;
 

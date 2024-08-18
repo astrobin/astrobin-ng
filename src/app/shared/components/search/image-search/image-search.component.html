@@ -1,8 +1,52 @@
 <ng-container *ngIf="!initialLoading; else loadingTemplate">
   <ng-container *ngIf="results !== null; else loadingTemplate">
     <ng-container *ngIf="results.length > 0; else noImagesTemplate">
-      <div class="search-results">
+      <div
+        *ngIf="allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)"
+        class="alert alert-light retailers mb-4"
+      >
+        <ng-container *ngIf="itemListings?.length">
+          <div>
+            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+            <span
+              [innerHTML]="getItemListingsMessage(itemListings[0])"
+              class="item-listings me-2"
+            ></span>
+          </div>
+          <div class="retailer-list">
+            <a
+              *ngFor="let item of itemListings"
+              [href]="item.url"
+              class="retailer-link"
+              target="_blank"
+            >
+              <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="retailer-logo" />
+            </a>
+          </div>
+        </ng-container>
 
+        <ng-container *ngIf="(!itemListings || itemListings.length === 0) && brandListings?.length > 0">
+          <div>
+            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+            <span
+              [innerHTML]="getBrandListingsMessage(brandListings[0].brand)"
+              class="item-listings me-2"
+            ></span>
+          </div>
+          <div class="retailer-list">
+            <a
+              *ngFor="let item of brandListings"
+              [href]="item.url"
+              class="retailer-link"
+              target="_blank"
+            >
+              <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="retailer-logo" />
+            </a>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="search-results">
         <a
           *ngFor="let item of gridItems"
           (click)="openImage(item)"

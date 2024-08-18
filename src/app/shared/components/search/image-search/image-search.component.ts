@@ -9,13 +9,15 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { debounceTime, takeUntil, tap } from "rxjs/operators";
 import { DeviceService } from "@shared/services/device.service";
 import { isPlatformBrowser } from "@angular/common";
+import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
+import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 type SpanClass = "wide" | "medium" | "normal";
 
@@ -27,10 +29,12 @@ type SpanClass = "wide" | "medium" | "normal";
 export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
-  @Input()
-  alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
+  @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
   protected gridItems: Array<ImageSearchInterface & { spanClass: SpanClass, randomHeight: number }> = [];
   protected readonly ImageAlias = ImageAlias;
+  protected allowFullRetailerIntegration = false;
+  protected itemListings: EquipmentItemListingInterface[] = [];
+  protected brandListings: EquipmentBrandListingInterface[] = [];
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -63,11 +67,43 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     }
   }
 
-  fetchData(): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
-    return this.imageSearchApiService.search({ ...this.model, pageSize: this.model.pageSize || this.pageSize });
+  getItemListingsMessage(listing: EquipmentItemListingInterface): string {
+    return this.translateService.instant(
+      "Support AstroBin by shopping for {{0}} at our partners!",
+      { 0: `<strong>${listing.name}</strong>` }
+    );
+  }
+
+  getBrandListingsMessage(brand: BrandInterface): string {
+    return this.translateService.instant(
+      "Support AstroBin by shopping for {{0}} products at our partners!",
+      { 0: `<strong>${brand.name}</strong>` }
+    );
+  }
+
+  fetchData(): Observable<SearchPaginatedApiResultInterface<ImageSearchInterface>> {
+    return this.imageSearchApiService
+      .search({ ...this.model, pageSize: this.model.pageSize || this.pageSize })
+      .pipe(
+        tap(result => {
+          this.allowFullRetailerIntegration = result.allowFullRetailerIntegration;
+
+          if (result.equipmentItemListings) {
+            this.itemListings = this._removeDuplicateRetailers(result.equipmentItemListings);
+          }
+
+          if (result.equipmentBrandListings) {
+            this.brandListings = this._removeDuplicateRetailers(result.equipmentBrandListings);
+          }
+        })
+      );
   }
 
   assignWidthsToGridItems(): void {
+    if (!this.results || this.results.length === 0) {
+      return;
+    }
+
     const totalCols = 12;
     const colSpans = this._getColSpansForScreenWidth();
 
@@ -179,5 +215,17 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     const max = 350;
     const min = 150;
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  private _removeDuplicateRetailers(listings: any[]): any[] {
+    return listings.reduce((acc, current) => {
+      const retailerId = current.retailer.id;
+
+      if (!acc.some(item => item.retailer.id === retailerId)) {
+        acc.push(current);
+      }
+
+      return acc;
+    }, []);
   }
 }

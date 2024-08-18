@@ -8,6 +8,7 @@ import { MainState } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 
 @Component({
   selector: "astrobin-scrollable-search-results-base",
@@ -97,7 +98,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     });
   }
 
-  abstract fetchData(): Observable<PaginatedApiResultInterface<T>>;
+  abstract fetchData(): Observable<SearchPaginatedApiResultInterface<T>>;
 
   private _onScroll() {
     if (
