@@ -1,10 +1,10 @@
-import { Component, ElementRef, Inject, Input, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { Observable } from "rxjs";
+import { fromEvent, Observable } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
@@ -13,7 +13,9 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { takeUntil, tap } from "rxjs/operators";
+import { debounceTime, takeUntil, tap } from "rxjs/operators";
+import { DeviceService } from "@shared/services/device.service";
+import { isPlatformBrowser } from "@angular/common";
 
 type SpanClass = "wide" | "medium" | "normal";
 
@@ -22,7 +24,7 @@ type SpanClass = "wide" | "medium" | "normal";
   templateUrl: "./image-search.component.html",
   styleUrls: ["./image-search.component.scss"]
 })
-export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> {
+export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
   @Input()
@@ -39,7 +41,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly viewContainerRef: ViewContainerRef,
-    public readonly imageViewerService: ImageViewerService
+    public readonly imageViewerService: ImageViewerService,
+    public readonly deviceService: DeviceService
   ) {
     super(store$, windowRefService, elementRef, platformId);
     this.dataFetched.pipe(
@@ -48,21 +51,30 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     ).subscribe();
   }
 
+  ngOnInit(): void {
+    super.ngOnInit();
+
+    if (isPlatformBrowser(this.platformId)) {
+      fromEvent(this.windowRefService.nativeWindow, "resize")
+        .pipe(debounceTime(100), takeUntil(this.destroyed$))
+        .subscribe(() => {
+          this.assignWidthsToGridItems();
+        });
+    }
+  }
+
   fetchData(): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
     return this.imageSearchApiService.search({ ...this.model, pageSize: this.model.pageSize || this.pageSize });
   }
 
   assignWidthsToGridItems(): void {
     const totalCols = 12;
-    const colSpans = {
-      wide: 4,
-      medium: 3,
-      normal: 2
-    };
+    const colSpans = this._getColSpansForScreenWidth();
 
     let currentRowCols = 0;
     let currentRowHasWideItem = false;
     let currentRowHeight = this._getRandomHeight();
+
     this.gridItems = []; // Reset grid items
 
     this.results.forEach((image, index) => {
@@ -109,6 +121,20 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     });
   }
 
+  private _getColSpansForScreenWidth(): { wide: number; medium: number; normal: number } {
+    if (this.deviceService.xsMax()) {
+      return { wide: 6, medium: 6, normal: 6 };
+    } else if (this.deviceService.smMax()) {
+      return { wide: 6, medium: 3, normal: 3 };
+    } else if (this.deviceService.mdMax()) {
+      return { wide: 4, medium: 3, normal: 2 };
+    } else if (this.deviceService.lgMax()) {
+      return { wide: 4, medium: 3, normal: 2 };
+    } else {
+      return { wide: 4, medium: 3, normal: 2 };
+    }
+  }
+
   private _getSpanClassForCurrentImage(
     currentRowCols: number,
     currentRowHasWideItem: boolean,
@@ -150,8 +176,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   private _getRandomHeight(): number {
-    const max = 400;
-    const min = 200;
+    const max = 350;
+    const min = 150;
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }

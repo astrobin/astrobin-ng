@@ -27,6 +27,15 @@ export class DeviceService extends BaseService {
     this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
+  xsMax(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth <= Breakpoint.XS;
+    }
+
+    return false;
+  }
+
   smMax(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;

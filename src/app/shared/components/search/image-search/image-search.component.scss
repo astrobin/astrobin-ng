@@ -87,6 +87,34 @@
         filter: brightness(1.5);
       }
     }
+
+    @media (max-width: $sm-max) {
+      &.wide {
+        grid-column: span 6;
+      }
+
+      &.medium {
+        grid-column: span 3;
+      }
+
+      &.normal {
+        grid-column: span 3;
+      }
+    }
+
+    @media (max-width: $xs-max) {
+      &.wide {
+        grid-column: span 6;
+      }
+
+      &.medium {
+        grid-column: span 6;
+      }
+
+      &.normal {
+        grid-column: span 6;
+      }
+    }
   }
 
   .loading {
