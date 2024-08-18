@@ -181,6 +181,7 @@
       .astrobin-image {
         width: auto;
         height: auto;
+        max-height: 100%;
         object-fit: contain;
         cursor: zoom-in;
       }
