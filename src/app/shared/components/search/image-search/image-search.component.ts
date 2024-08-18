@@ -18,6 +18,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 
 type SpanClass = "wide" | "medium" | "normal";
 
@@ -35,6 +36,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
+  protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -81,6 +83,12 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     );
   }
 
+  getMarketplaceMessage(): string {
+    return this.translateService.instant(
+      "We found some items relevant to your search for sale on our marketplace!"
+    );
+  }
+
   fetchData(): Observable<SearchPaginatedApiResultInterface<ImageSearchInterface>> {
     return this.imageSearchApiService
       .search({ ...this.model, pageSize: this.model.pageSize || this.pageSize })
@@ -94,6 +102,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
           if (result.equipmentBrandListings) {
             this.brandListings = this._removeDuplicateRetailers(result.equipmentBrandListings);
+          }
+
+          if (result.marketplaceLineItems) {
+            this.marketplaceLineItems = result.marketplaceLineItems;
           }
         })
       );

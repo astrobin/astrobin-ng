@@ -1,30 +1,33 @@
 @import "../../../../styles/breakpoints";
 
-.retailers {
+.retailers,
+.marketplace-listings {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  margin-bottom: .5rem;
 
-  .retailer-list {
+  .list {
     display: flex;
+    align-items: center;
     gap: .5rem;
 
-    .retailer-link {
+    .link {
       border-bottom: none;
 
       &::after {
         content: "";
       }
 
-      .retailer-logo {
+      .image {
         height: 2.5rem;
         box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
         border-radius: .5rem;
       }
 
       &:hover {
-        .retailer-logo {
+        .image {
           filter: brightness(1.5);
         }
       }

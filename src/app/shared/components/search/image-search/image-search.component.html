@@ -2,48 +2,87 @@
   <ng-container *ngIf="results !== null; else loadingTemplate">
     <ng-container *ngIf="results.length > 0; else noImagesTemplate">
       <div
-        *ngIf="allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)"
-        class="alert alert-light retailers mb-4"
+        *ngIf="
+          (allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)) ||
+          marketplaceLineItems?.length
+        "
+        class="mb-4"
       >
-        <ng-container *ngIf="itemListings?.length">
-          <div>
-            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-            <span
-              [innerHTML]="getItemListingsMessage(itemListings[0])"
-              class="item-listings me-2"
-            ></span>
-          </div>
-          <div class="retailer-list">
-            <a
-              *ngFor="let item of itemListings"
-              [href]="item.url"
-              class="retailer-link"
-              target="_blank"
-            >
-              <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="retailer-logo" />
-            </a>
-          </div>
-        </ng-container>
+        <div
+          *ngIf="allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)"
+          class="alert alert-light retailers"
+        >
+          <ng-container *ngIf="itemListings?.length">
+            <div>
+              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+              <span
+                [innerHTML]="getItemListingsMessage(itemListings[0])"
+                class="me-2"
+              ></span>
+            </div>
+            <div class="list">
+              <a
+                *ngFor="let item of itemListings"
+                [href]="item.url"
+                class="link"
+                target="_blank"
+              >
+                <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
+              </a>
+            </div>
+          </ng-container>
 
-        <ng-container *ngIf="(!itemListings || itemListings.length === 0) && brandListings?.length > 0">
+          <ng-container *ngIf="(!itemListings || itemListings.length === 0) && brandListings?.length > 0">
+            <div>
+              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+              <span
+                [innerHTML]="getBrandListingsMessage(brandListings[0].brand)"
+                class="me-2"
+              ></span>
+            </div>
+            <div class="list">
+              <a
+                *ngFor="let item of brandListings"
+                [href]="item.url"
+                class="link"
+                target="_blank"
+              >
+                <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
+              </a>
+            </div>
+          </ng-container>
+        </div>
+
+        <div
+          *ngIf="marketplaceLineItems?.length"
+          class="alert alert-light marketplace-listings"
+        >
           <div>
             <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
             <span
-              [innerHTML]="getBrandListingsMessage(brandListings[0].brand)"
-              class="item-listings me-2"
+              [innerHTML]="getMarketplaceMessage()"
+              class="me-2"
             ></span>
           </div>
-          <div class="retailer-list">
+          <div class="list">
             <a
-              *ngFor="let item of brandListings"
-              [href]="item.url"
-              class="retailer-link"
-              target="_blank"
+              *ngFor="let item of marketplaceLineItems"
+              [routerLink]="['/equipment/marketplace/listing', item.listingHash]"
+              class="link"
             >
-              <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="retailer-logo" />
+              <img
+                *ngIf="item.images?.length"
+                [src]="item.images[0].thumbnailFile"
+                [alt]="item.itemName"
+                class="image"
+              />
+
+              <span *ngIf="!item.images || item.images.length === 0" class="item-name">
+                  {{ item.itemName }}
+                </span>
             </a>
           </div>
-        </ng-container>
+        </div>
       </div>
 
       <div class="search-results">
