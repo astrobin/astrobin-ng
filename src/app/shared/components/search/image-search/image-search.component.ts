@@ -61,6 +61,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     };
 
     let currentRowCols = 0;
+    let currentRowHasWideItem = false;
     let currentRowHeight = this._getRandomHeight();
     this.gridItems = []; // Reset grid items
 
@@ -70,7 +71,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
         currentRowHeight = this._getRandomHeight();
       }
 
-      const spanClass = this._getSpanClassForCurrentImage(currentRowCols, totalCols, colSpans);
+      const spanClass = this._getSpanClassForCurrentImage(currentRowCols, currentRowHasWideItem, totalCols, colSpans);
+      if (spanClass === "wide") {
+        currentRowHasWideItem = true;
+      }
       currentRowCols += colSpans[spanClass];
 
       this.gridItems.push({ ...image, spanClass, randomHeight: currentRowHeight });
@@ -78,6 +82,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       // Reset row column count when full
       if (currentRowCols === totalCols) {
         currentRowCols = 0;
+        currentRowHasWideItem = false;
       }
     });
   }
@@ -104,14 +109,19 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     });
   }
 
-  private _getSpanClassForCurrentImage(currentRowCols: number, totalCols: number, colSpans: { [key: string]: number }): SpanClass {
+  private _getSpanClassForCurrentImage(
+    currentRowCols: number,
+    currentRowHasWideItem: boolean,
+    totalCols: number,
+    colSpans: { [key: string]: number }
+  ): SpanClass {
     const remainingCols = totalCols - currentRowCols;
     const random = Math.random();
 
     if (currentRowCols === 0) {
       return this._getRandomSpanClass(random);
     } else {
-      return this._getSpanClassBasedOnRemainingCols(remainingCols, colSpans, random);
+      return this._getSpanClassBasedOnRemainingCols(currentRowHasWideItem, remainingCols, colSpans, random);
     }
   }
 
@@ -125,8 +135,12 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     }
   }
 
-  private _getSpanClassBasedOnRemainingCols(remainingCols: number, colSpans: { [key: string]: number }, random: number): SpanClass {
-    if (remainingCols >= colSpans.wide && remainingCols % colSpans.wide === 0) {
+  private _getSpanClassBasedOnRemainingCols(
+    currentRowHasWideItem: boolean,
+    remainingCols: number,
+    colSpans: { [key: string]: number }, random: number
+  ): SpanClass {
+    if (!currentRowHasWideItem && remainingCols >= colSpans.wide && remainingCols % colSpans.wide === 0) {
       return "wide";
     } else if (remainingCols >= colSpans.medium && remainingCols % colSpans.medium === 0) {
       return "medium";
