@@ -18,5 +18,7 @@
   "accessories2": [],
   "software2": [],
   "guidingTelescopes2": [],
-  "guidingCameras2": []
+  "guidingCameras2": [],
+  "isFinal": true,
+  "revisions": []
 }

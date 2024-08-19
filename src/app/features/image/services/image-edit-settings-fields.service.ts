@@ -83,7 +83,7 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
 
   getMouseHoverImageField(): FormlyFieldConfig {
     const image = this.imageEditService.model;
-    const revisions = image.revisions;
+    const revisions = image.revisions || [];
 
     const options: {
       value: MouseHoverImageOptions | string;

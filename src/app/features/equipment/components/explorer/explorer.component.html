@@ -50,7 +50,7 @@
         ></astrobin-equipment-item-summary>
 
         <div *ngIf="!!selectedItem.variantOf || selectedItem.variants.length > 0" class="item-variants-container">
-          <ng-container *ngIf="selectedItem.variants.length > 0; else variantTemplate">
+          <ng-container *ngIf="selectedItem.variants?.length > 0; else variantTemplate">
             {{ "Also available in the following variants:" | translate }}
 
             <span class="item-variants">

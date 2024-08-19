@@ -41,7 +41,9 @@
           "id": 1,
           "revision": "final"
         }
-      ]
+      ],
+      "isFinal": true,
+      "revisions": []
     },
     {
       "user": 2,
@@ -75,7 +77,9 @@
           "id": 1,
           "revision": "final"
         }
-      ]
+      ],
+      "isFinal": true,
+      "revisions": []
     }
   ]
 }

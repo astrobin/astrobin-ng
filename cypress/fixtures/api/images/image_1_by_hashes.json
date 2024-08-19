@@ -271,7 +271,9 @@
           "brand": 1,
           "group": null
         }
-      ]
+      ],
+      "isFinal": true,
+      "revisions": []
     }
   ]
 }
