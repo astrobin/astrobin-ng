@@ -15,7 +15,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { fromEvent, merge, Subscription } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
-import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { isPlatformBrowser } from "@angular/common";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 

@@ -83,9 +83,34 @@ import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image
           >
             <span class="name" [innerHTML]="item"></span>
           </a>
+
+          <a
+            *ngIf="moreObjectsInField?.length > 0"
+            (click)="moreObjectsInFieldClicked($event)"
+            href="#"
+            class="value more"
+          >
+            {{ "+ {{count}} more" | translate: { count: moreObjectsInField.length } }}
+          </a>
         </div>
       </div>
     </div>
+
+    <ng-template #moreObjectsInFieldTemplate let-offcanvas>
+      <div class="offcanvas-header">
+        <h4 class="offcanvas-title">{{ "Additional objects in this field" | translate }}</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul>
+          <li *ngFor="let item of moreObjectsInField">
+            <a (click)="objectInFieldClicked($event, item)" href="#" class="value">
+              <span class="name" [innerHTML]="item"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </ng-template>
 
     <ng-template #moreInfoTemplate let-offcanvas>
       <div class="offcanvas-header">
@@ -146,9 +171,13 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   orientation: string;
   astrometryNetJobId: string;
   objectsInField: string[];
+  moreObjectsInField: string[];
 
   @ViewChild("moreInfoTemplate")
   moreInfoTemplate: TemplateRef<any>;
+
+  @ViewChild("moreObjectsInFieldTemplate")
+  moreObjectsInFieldTemplate: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -174,6 +203,8 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
       this.pixelScale = this.imageService.getPixelScale(image, this.revisionLabel);
       this.orientation = this.imageService.getOrientation(image, this.revisionLabel);
       this.objectsInField = this.solutionService.getObjectsInField(this.revision.solution);
+      this.moreObjectsInField = this.objectsInField.slice(10);
+      this.objectsInField = this.objectsInField.slice(0, 10);
       this.astrometryNetJobId = this.revision?.solution?.submissionId?.toString();
     }
   }
@@ -186,7 +217,17 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
 
   objectInFieldClicked(event: MouseEvent, subject: string): void {
     event.preventDefault();
+    this.offcanvasService.dismiss();
     this.search({ subject });
+  }
+
+  moreObjectsInFieldClicked(event: MouseEvent): void {
+    event.preventDefault();
+    const position = this.deviceService.smMax() ? "bottom" : "end";
+    this.offcanvasService.open(this.moreObjectsInFieldTemplate, {
+      panelClass: "offcanvas-more-objects-in-field",
+      position
+    });
   }
 
   openMoreInfo(event: MouseEvent): void {

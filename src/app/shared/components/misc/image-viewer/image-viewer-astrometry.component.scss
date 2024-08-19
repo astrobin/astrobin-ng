@@ -59,9 +59,38 @@
         border: 1px solid var(--lightGrey);
         cursor: pointer;
 
+        &.more {
+          font-style: italic;
+        }
+
         &:hover {
           background: var(--lightGrey);
         }
+      }
+    }
+  }
+}
+
+::ng-deep .offcanvas-more-objects-in-field {
+  width: 40vw !important;
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    .value {
+      color: var(--lightestGrey);
+      background: var(--grey);
+      padding: .125rem .375rem;
+      border-radius: .5rem;
+      border: 1px solid var(--lightGrey);
+      cursor: pointer;
+
+      &:hover {
+        background: var(--lightGrey);
       }
     }
   }

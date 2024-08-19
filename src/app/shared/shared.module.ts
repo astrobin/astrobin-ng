@@ -8,27 +8,14 @@ import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { MainState } from "@app/store/state";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import {
-  NgbAccordionModule,
-  NgbDropdownModule,
-  NgbModule, NgbNavModule,
-  NgbPaginationModule,
-  NgbPopoverModule,
-  NgbProgressbarModule
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbAccordionModule, NgbDropdownModule, NgbModule, NgbNavModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";
-import {
-  MissingTranslationHandler,
-  TranslateLoader,
-  TranslateModule,
-  TranslateParser,
-  TranslateService
-} from "@ngx-translate/core";
+import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser, TranslateService } from "@ngx-translate/core";
 import { ApiModule } from "@shared/services/api/api.module";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";

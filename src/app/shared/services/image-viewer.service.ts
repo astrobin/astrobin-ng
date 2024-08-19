@@ -40,7 +40,7 @@ export class ImageViewerService extends BaseService {
     this.activeImageViewer.instance.fullscreenMode = true;
 
     this.activeImageViewer.instance.initialized.pipe(
-      switchMap(() => this.loadImage(imageId)),
+      switchMap(() => this.loadImage(imageId))
     ).subscribe(image => {
       this.activeImageViewer.instance.setImage(image, FINAL_REVISION_LABEL, navigationContext);
     });
@@ -79,16 +79,19 @@ export class ImageViewerService extends BaseService {
   }
 
   private _stopBodyScrolling(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const _document = this.windowRefService.nativeWindow.document;
-      _document.body.style.overflow = "hidden";
-    }
+    this._changeBodyOverflow("hidden");
   }
 
   private _resumeBodyScrolling(): void {
+    this._changeBodyOverflow("auto");
+  }
+
+  private _changeBodyOverflow(value: "hidden" | "auto"): void {
     if (isPlatformBrowser(this.platformId)) {
       const _document = this.windowRefService.nativeWindow.document;
-      _document.body.style.overflow = "auto";
+      if (_document) {
+        _document.body.classList.toggle("overflow-hidden", value === "hidden");
+      }
     }
   }
 }
