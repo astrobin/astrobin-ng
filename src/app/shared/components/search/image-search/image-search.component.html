@@ -89,8 +89,8 @@
         <a
           *ngFor="let item of gridItems"
           (click)="openImage(item)"
-          [ngClass]="item.spanClass"
-          [ngStyle]="{'max-height.px': item.randomHeight}"
+          [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
+          [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
           astrobinEventStopPropagation
           astrobinEventPreventDefault
           href="#"
@@ -99,6 +99,7 @@
             [alt]="item.title"
             [src]="alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail"
           />
+
           <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
 
           <div class="badges">

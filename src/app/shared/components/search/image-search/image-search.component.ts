@@ -20,8 +20,6 @@ import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfac
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 
-type SpanClass = "wide" | "medium" | "normal";
-
 @Component({
   selector: "astrobin-image-search",
   templateUrl: "./image-search.component.html",
@@ -31,12 +29,13 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
   @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
-  protected gridItems: Array<ImageSearchInterface & { spanClass: SpanClass, randomHeight: number }> = [];
+  protected gridItems: Array<ImageSearchInterface & { displayHeight: number, displayWidth: number }> = [];
   protected readonly ImageAlias = ImageAlias;
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
+  protected averageHeight: number = 200; // Sync with $minSize in SCSS.
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -67,6 +66,28 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
           this.assignWidthsToGridItems();
         });
     }
+  }
+
+  assignWidthsToGridItems(): void {
+    if (!this.results || this.results.length === 0) {
+      return;
+    }
+
+    this.gridItems = [];
+
+    const MIN_ASPECT_RATIO = .5;
+    const MAX_ASPECT_RATIO = 2;
+
+    this.results.forEach((image, i) => {
+      const imageAspectRatio = image.finalW && image.finalH ? image.finalW / image.finalH : 1.0;
+      const {width, height} = this._getRandomDimensions(MIN_ASPECT_RATIO, MAX_ASPECT_RATIO, imageAspectRatio);
+
+      this.gridItems.push({
+        ...image,
+        displayWidth: width,
+        displayHeight: height
+      });
+    });
   }
 
   getItemListingsMessage(listing: EquipmentItemListingInterface): string {
@@ -111,51 +132,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       );
   }
 
-  assignWidthsToGridItems(): void {
-    if (!this.results || this.results.length === 0) {
-      return;
-    }
-
-    const totalCols = 12;
-    const colSpans = this._getColSpansForScreenWidth();
-
-    let currentRowCols = 0;
-    let currentRowHasWideItem = false;
-    let currentRowHeight = this._getRandomHeight();
-
-    this.gridItems = []; // Reset grid items
-
-    this.results.forEach((image, index) => {
-      const aspectRatio = image.w / image.h;
-
-      if (currentRowCols === 0) {
-        // Start the row with a new random height
-        currentRowHeight = this._getRandomHeight();
-      }
-
-      const spanClass = this._getSpanClassForCurrentImage(
-        aspectRatio,
-        currentRowCols,
-        currentRowHasWideItem,
-        totalCols,
-        colSpans
-      );
-
-      if (spanClass === "wide") {
-        currentRowHasWideItem = true;
-      }
-      currentRowCols += colSpans[spanClass];
-
-      this.gridItems.push({ ...image, spanClass, randomHeight: currentRowHeight });
-
-      // Reset row column count when full
-      if (currentRowCols === totalCols) {
-        currentRowCols = 0;
-        currentRowHasWideItem = false;
-      }
-    });
-  }
-
   openImage(image: ImageSearchInterface): void {
     let activeImageViewer = this.imageViewerService.activeImageViewer;
 
@@ -178,72 +154,49 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     });
   }
 
-  private _getColSpansForScreenWidth(): { wide: number; medium: number; normal: number } {
-    if (this.deviceService.xsMax()) {
-      return { wide: 6, medium: 6, normal: 6 };
-    } else if (this.deviceService.smMax()) {
-      return { wide: 6, medium: 3, normal: 3 };
-    } else if (this.deviceService.mdMax()) {
-      return { wide: 4, medium: 3, normal: 2 };
-    } else if (this.deviceService.lgMax()) {
-      return { wide: 4, medium: 3, normal: 2 };
-    } else {
-      return { wide: 4, medium: 3, normal: 2 };
-    }
+  private _getRandomDimensions(
+    minAspectRatio: number,
+    maxAspectRatio: number,
+    targetAspectRatio: number
+  ): { width: number; height: number } {
+    const sizes = [
+      160, 180, 200, 220, 240, 280,
+      300, 320, 360, 380,
+      400, 420, 480,
+      500, 520, 560,
+      600, 620, 660, 680,
+      720, 760,
+      800, 860, 920
+    ];
+
+    let height: number;
+    let bestWidth: number = sizes[0];
+    let bestDiff: number = Number.MAX_VALUE;
+
+    do {
+      height = sizes[Math.floor(Math.random() * sizes.length)];
+
+      // Reset the best diff for this particular height
+      bestDiff = Number.MAX_VALUE;
+
+      // Find the best width that gets closest to the target aspect ratio
+      for (const width of sizes) {
+        const aspectRatio = width / height;
+        const diff = Math.abs(aspectRatio - targetAspectRatio);
+
+        // Check if this width and height combination is the best match
+        if (diff < bestDiff && aspectRatio >= minAspectRatio && aspectRatio <= maxAspectRatio) {
+          bestWidth = width;
+          bestDiff = diff;
+        }
+      }
+
+      // If we can't find a good aspect ratio match, retry
+    } while ((bestWidth / height) < minAspectRatio || (bestWidth / height) > maxAspectRatio);
+
+    return { width: bestWidth, height };
   }
 
-  private _getSpanClassForCurrentImage(
-    aspectRatio: number,
-    currentRowCols: number,
-    currentRowHasWideItem: boolean,
-    totalCols: number,
-    colSpans: { [key: string]: number }
-  ): SpanClass {
-    const remainingCols = totalCols - currentRowCols;
-    const random = Math.random();
-
-    if (currentRowCols === 0) {
-      return this._getRandomSpanClass(aspectRatio, random);
-    } else {
-      return this._getSpanClassBasedOnRemainingCols(currentRowHasWideItem, remainingCols, colSpans, random);
-    }
-  }
-
-  private _getRandomSpanClass(aspectRatio: number, random: number): SpanClass {
-    if (aspectRatio < 0.5) {
-      return "normal";
-    } else if (aspectRatio > 1.5) {
-      return "wide";
-    }
-
-    if (random < 1 / 3) {
-      return "wide";
-    } else if (random < 2 / 3) {
-      return "medium";
-    } else {
-      return "normal";
-    }
-  }
-
-  private _getSpanClassBasedOnRemainingCols(
-    currentRowHasWideItem: boolean,
-    remainingCols: number,
-    colSpans: { [key: string]: number }, random: number
-  ): SpanClass {
-    if (!currentRowHasWideItem && remainingCols >= colSpans.wide && remainingCols % colSpans.wide === 0) {
-      return "wide";
-    } else if (remainingCols >= colSpans.medium && remainingCols % colSpans.medium === 0) {
-      return "medium";
-    } else {
-      return "normal";
-    }
-  }
-
-  private _getRandomHeight(): number {
-    const max = 350;
-    const min = 150;
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 
   private _removeDuplicateRetailers(listings: any[]): any[] {
     return listings.reduce((acc, current) => {

@@ -38,6 +38,8 @@ export interface ImageSearchInterface {
   likes: number;
   w: number;
   h: number;
+  finalW: number;
+  finalH: number;
   galleryThumbnail: string;
   regularThumbnail: string;
 

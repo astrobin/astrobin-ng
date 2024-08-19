@@ -37,34 +37,35 @@
 }
 
 .search-results {
-  $gap: .5rem;
+  $gap: .75rem;
+  $minSize: 200px;
 
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
   gap: $gap;
+
+  &::after {
+    content: "";
+    flex-grow: 999999999999;
+  }
 
   > a {
     display: flex;
     justify-content: center;
     overflow: hidden;
     position: relative;
-
-    &.wide {
-      grid-column: span 4;
-    }
-
-    &.medium {
-      grid-column: span 3;
-    }
-
-    &.normal {
-      grid-column: span 2;
-    }
+    min-width: $minSize;
+    min-height: $minSize;
 
     > img {
+      position: absolute;
+      top: 0;
+      vertical-align: bottom;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      border-radius: .75rem;
       transition: filter .25s ease-in-out;
     }
 
