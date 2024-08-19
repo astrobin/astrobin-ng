@@ -1,12 +1,4 @@
-import {
-  AcquisitionType,
-  DataSource,
-  ImageInterface,
-  MouseHoverImageOptions,
-  SubjectType,
-  WatermarkPositionOptions,
-  WatermarkSizeOptions
-} from "../interfaces/image.interface";
+import { AcquisitionType, DataSource, ImageInterface, LicenseOptions, MouseHoverImageOptions, SubjectType, WatermarkPositionOptions, WatermarkSizeOptions } from "../interfaces/image.interface";
 
 export class ImageGenerator {
   static image(source: Partial<ImageInterface> = {}): ImageInterface {
@@ -33,6 +25,7 @@ export class ImageGenerator {
       imagingCameras: source.imagingCameras || [],
       guidingTelescopes: source.guidingTelescopes || [],
       guidingCameras: source.guidingCameras || [],
+      filters: source.filters || [],
       focalReducers: source.focalReducers || [],
       mounts: source.mounts || [],
       accessories: source.accessories || [],
@@ -47,7 +40,7 @@ export class ImageGenerator {
       software2: source.software2 || [],
       uploaded: source.uploaded || new Date().toISOString(),
       published: source.published || new Date().toISOString(),
-      license: "",
+      license: LicenseOptions.ALL_RIGHTS_RESERVED,
       description: undefined,
       descriptionBbcode: undefined,
       link: undefined,
@@ -82,7 +75,7 @@ export class ImageGenerator {
       likeCount: source.likeCount || 0,
       bookmarkCount: source.bookmarkCount || 0,
       commentCount: source.commentCount || 0,
-      userFollowerCount: source.userFollowerCount || 0
+      userFollowerCount: source.userFollowerCount || 0,
     };
   }
 }

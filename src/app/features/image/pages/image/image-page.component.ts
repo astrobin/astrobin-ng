@@ -27,6 +27,9 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
     this.image = this.route.snapshot.data.image;
-    this.imageViewer.setImage(this.image, FINAL_REVISION_LABEL, []);
+
+    if (this.image && this.imageViewer) {
+      this.imageViewer.setImage(this.image, FINAL_REVISION_LABEL, []);
+    }
   }
 }

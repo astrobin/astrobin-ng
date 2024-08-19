@@ -8,16 +8,15 @@ import { of } from "rxjs";
 import { ImagePageComponent } from "./image-page.component";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
-import { ImageComponent } from "@shared/components/misc/image/image.component";
 
-describe("ImageComponent", () => {
+describe("ImagePageComponent", () => {
   let component: ImagePageComponent;
   let fixture: ComponentFixture<ImagePageComponent>;
   let store: MockStore;
   const image = ImageGenerator.image();
 
   beforeEach(async () => {
-    await MockBuilder(ImageComponent, AppModule).provide([
+    await MockBuilder(ImagePageComponent, AppModule).provide([
       provideMockStore({ initialState: initialMainState }),
       {
         provide: ActivatedRoute,

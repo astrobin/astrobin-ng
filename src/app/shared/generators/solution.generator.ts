@@ -19,6 +19,8 @@ export class SolutionGenerator {
       pixinsightSerialNumber: null,
       pixinsightSvgAnnotationHd: null,
       pixinsightSvgAnnotationRegular: null,
+      pixinsightFindingChart: null,
+      pixinsightFindingChartSmall: null,
       advancedRa: null,
       advancedRaTopLeft: null,
       advancedRaTopRight: null,

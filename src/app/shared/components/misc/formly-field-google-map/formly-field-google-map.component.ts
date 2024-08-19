@@ -78,10 +78,10 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
 
         this.map = new this.googleMapsService.maps.Map(this.mapElement.nativeElement, mapOptions);
 
-        if ((this.isCypress || this.isLocalhost) && this.props.mapError !== undefined) {
-          this.props.mapError();
-          this.changeDetectorRef.detectChanges();
-        }
+        // if ((this.isCypress || this.isLocalhost) && this.props.mapError !== undefined) {
+        //   this.props.mapError();
+        //   this.changeDetectorRef.detectChanges();
+        // }
 
         const marker = new this.googleMapsService.maps.Marker({
           position: location,
