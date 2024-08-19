@@ -1,6 +1,6 @@
 <div
   *ngIf="progress !== undefined && progress > 0 && progress < 100; else noProgress"
-  class="d-flex justify-content-center align-items-center flex-row"
+  class="d-flex justify-content-center align-items-center flex-column"
 >
   <ngb-progressbar type="secondary" [value]="progress"></ngb-progressbar>
   <ng-container *ngIf="message">
