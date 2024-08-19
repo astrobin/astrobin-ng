@@ -31,7 +31,7 @@ interface FilterSummary {
     <div class="metadata-section">
       <div *ngIf="dates?.length" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="calendar"></fa-icon>
+          <fa-icon icon="calendar" [ngbTooltip]="'Acquisition dates' | translate" container="body"></fa-icon>
         </div>
         <div class="metadata-label">
           <astrobin-image-viewer-acquisition-dates [dates]="dates"></astrobin-image-viewer-acquisition-dates>
@@ -40,7 +40,7 @@ interface FilterSummary {
 
       <div *ngIf="deepSkyIntegrationTime" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="clock"></fa-icon>
+          <fa-icon icon="clock" [ngbTooltip]="'Integration' | translate" container="body"></fa-icon>
         </div>
         <div class="metadata-label">
           <span
@@ -53,7 +53,7 @@ interface FilterSummary {
 
       <div *ngIf="solarSystemIntegration" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="clock"></fa-icon>
+          <fa-icon icon="clock" [ngbTooltip]="'Integration' | translate" container="body"></fa-icon>
         </div>
         <div class="metadata-label" [innerHTML]="solarSystemIntegration">
         </div>
@@ -61,10 +61,19 @@ interface FilterSummary {
 
       <div *ngIf="!deepSkyIntegrationTime && !solarSystemIntegration" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="clock"></fa-icon>
+          <fa-icon icon="clock" [ngbTooltip]="'Integration' | translate" container="body"></fa-icon>
         </div>
         <div class="metadata-label">
           {{ "n/d" | translate }}
+        </div>
+      </div>
+
+      <div *ngIf="image.averageMoonIllumination !== null" class="metadata-item">
+        <div class="metadata-icon">
+          <fa-icon icon="moon" [ngbTooltip]="'Average moon illumination' | translate" container="body"></fa-icon>
+        </div>
+        <div class="metadata-label">
+          <span>{{ image.averageMoonIllumination | percent }}</span>
         </div>
       </div>
     </div>

@@ -261,6 +261,8 @@ export interface ImageInterface {
   iotdDate?: string;
   isTopPick?: boolean;
   isTopPickNomination?: boolean;
+  averageMoonAge?: number;
+  averageMoonIllumination?: number;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;
