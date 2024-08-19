@@ -141,6 +141,8 @@
         }"
         [showSortButton]="false"
         [showUsageButton]="false"
+        [showRetailers]="false"
+        [showMarketplaceItems]="false"
         class="d-block mt-5"
         ordering="-likes"
       ></astrobin-image-search-card>
@@ -158,6 +160,8 @@
         [model]="{ itemId: lineItem.itemObjectId, itemType: lineItem.itemKlass, pageSize: 21 }"
         [showSortButton]="false"
         [showUsageButton]="false"
+        [showRetailers]="false"
+        [showMarketplaceItems]="false"
         class="d-block"
         ordering="-likes"
       ></astrobin-image-search-card>

@@ -3,8 +3,8 @@
     <ng-container *ngIf="results.length > 0; else noImagesTemplate">
       <div
         *ngIf="
-          (allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)) ||
-          marketplaceLineItems?.length
+          (showRetailers && allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)) ||
+          (showMarketplaceItems && marketplaceLineItems?.length)
         "
         class="mb-4"
       >

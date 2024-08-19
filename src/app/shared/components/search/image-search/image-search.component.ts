@@ -29,6 +29,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
   @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
+  @Input() showRetailers = true;
+  @Input() showMarketplaceItems = true;
   protected gridItems: Array<ImageSearchInterface & { displayHeight: number, displayWidth: number }> = [];
   protected readonly ImageAlias = ImageAlias;
   protected allowFullRetailerIntegration = false;

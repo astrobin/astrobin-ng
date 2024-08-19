@@ -143,6 +143,8 @@
   <astrobin-image-search
     [model]="{ userId: image.user, ordering: '-likes', pageSize: 60 }"
     [loadMoreOnScroll]="false"
+    [showRetailers]="false"
+    [showMarketplaceItems]="false"
     class="more-from-this-photographer"
   ></astrobin-image-search>
 </ng-template>
@@ -152,6 +154,8 @@
   <astrobin-image-search
     [model]="{ similarToImageId: this.image.hash || this.image.pk, ordering: '-likes', pageSize: 60 }"
     [loadMoreOnScroll]="true"
+    [showRetailers]="false"
+    [showMarketplaceItems]="false"
     class="similar-to-this"
   ></astrobin-image-search>
 </ng-template>

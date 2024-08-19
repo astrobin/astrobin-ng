@@ -511,6 +511,8 @@
           itemType: activeType,
           text: equipmentItemService.getFullDisplayName$(selectedItem) | async
         }"
+        [showRetailers]="false"
+        [showMarketplaceItems]="false"
         class="mt-5 d-block"
         ordering="-likes"
       ></astrobin-image-search-card>
