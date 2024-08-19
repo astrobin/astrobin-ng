@@ -28,12 +28,12 @@ describe("SolutionApiService", () => {
   it("getSolution should work", () => {
     const solution = SolutionGenerator.solution();
 
-    service.getSolution(solution.content_type, solution.object_id).subscribe(response => {
+    service.getSolution(solution.contentType, solution.objectId).subscribe(response => {
       expect(response.id).toEqual(solution.id);
     });
 
     const req = httpMock.expectOne(
-      `${service.configUrl}/?content_type=${solution.content_type}&object_id=${solution.object_id}`
+      `${service.configUrl}/?content_type=${solution.contentType}&object_id=${solution.objectId}`
     );
     expect(req.request.method).toBe("GET");
     req.flush(solution);
@@ -42,12 +42,12 @@ describe("SolutionApiService", () => {
   it("getSolutions should work", () => {
     const solutions = [SolutionGenerator.solution({ id: 1 }), SolutionGenerator.solution({ id: 2 })];
 
-    service.getSolutions(solutions[0].content_type, ["1", "2"]).subscribe(response => {
+    service.getSolutions(solutions[0].contentType, ["1", "2"]).subscribe(response => {
       expect(response[0].id).toEqual(solutions[0].id);
       expect(response[1].id).toEqual(solutions[1].id);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/?content_type=${solutions[0].content_type}&object_ids=1,2`);
+    const req = httpMock.expectOne(`${service.configUrl}/?content_type=${solutions[0].contentType}&object_ids=1,2`);
     expect(req.request.method).toBe("GET");
     req.flush(solutions);
   });
