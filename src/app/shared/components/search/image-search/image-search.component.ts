@@ -126,12 +126,21 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     this.gridItems = []; // Reset grid items
 
     this.results.forEach((image, index) => {
+      const aspectRatio = image.w / image.h;
+
       if (currentRowCols === 0) {
         // Start the row with a new random height
         currentRowHeight = this._getRandomHeight();
       }
 
-      const spanClass = this._getSpanClassForCurrentImage(currentRowCols, currentRowHasWideItem, totalCols, colSpans);
+      const spanClass = this._getSpanClassForCurrentImage(
+        aspectRatio,
+        currentRowCols,
+        currentRowHasWideItem,
+        totalCols,
+        colSpans
+      );
+
       if (spanClass === "wide") {
         currentRowHasWideItem = true;
       }
@@ -184,6 +193,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   private _getSpanClassForCurrentImage(
+    aspectRatio: number,
     currentRowCols: number,
     currentRowHasWideItem: boolean,
     totalCols: number,
@@ -193,13 +203,19 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     const random = Math.random();
 
     if (currentRowCols === 0) {
-      return this._getRandomSpanClass(random);
+      return this._getRandomSpanClass(aspectRatio, random);
     } else {
       return this._getSpanClassBasedOnRemainingCols(currentRowHasWideItem, remainingCols, colSpans, random);
     }
   }
 
-  private _getRandomSpanClass(random: number): SpanClass {
+  private _getRandomSpanClass(aspectRatio: number, random: number): SpanClass {
+    if (aspectRatio < 0.5) {
+      return "normal";
+    } else if (aspectRatio > 1.5) {
+      return "wide";
+    }
+
     if (random < 1 / 3) {
       return "wide";
     } else if (random < 2 / 3) {
