@@ -337,6 +337,16 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.imageLoaded = true;
   }
 
+  onImageMouseEnter(event: MouseEvent): void {
+    event.preventDefault();
+    this.imageArea.nativeElement.classList.add("hover");
+  }
+
+  onImageMouseLeave(event: MouseEvent): void {
+    event.preventDefault();
+    this.imageArea.nativeElement.classList.remove("hover");
+  }
+
   onRevisionSelected(revisionLabel: ImageRevisionInterface["label"]): void {
     if (this.revisionLabel === revisionLabel) {
       return;

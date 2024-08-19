@@ -252,11 +252,17 @@
         .next-button,
         .previous-button,
         .additional-buttons button,
-        .mouse-hover,
         astrobin-image-viewer-revisions {
           opacity: 1 !important;
           pointer-events: auto;
         }
+      }
+    }
+
+    &.hover {
+      .mouse-hover {
+        opacity: 1 !important;
+        pointer-events: auto;
       }
     }
 

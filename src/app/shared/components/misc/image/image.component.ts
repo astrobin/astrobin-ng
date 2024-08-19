@@ -49,6 +49,12 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   @Output()
   imageClick = new EventEmitter<MouseEvent>();
 
+  @Output()
+  imageMouseEnter = new EventEmitter<MouseEvent>();
+
+  @Output()
+  imageMouseLeave = new EventEmitter<MouseEvent>();
+
   @HostBinding("class.loading")
   loading = false;
 

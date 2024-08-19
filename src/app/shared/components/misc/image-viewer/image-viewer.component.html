@@ -75,6 +75,8 @@
     <astrobin-image
       (imageClick)="enterFullscreen($event)"
       (loaded)="onImageLoaded()"
+      (imageMouseEnter)="onImageMouseEnter($event)"
+      (imageMouseLeave)="onImageMouseLeave($event)"
       [alias]="alias"
       [image]="image"
       [revision]="revisionLabel"
@@ -86,6 +88,8 @@
       class="mouse-hover-container"
     >
       <img
+        (mouseenter)="onImageMouseEnter($event)"
+        (mouseleave)="onImageMouseLeave($event)"
         alt=""
         class="mouse-hover"
         src="{{ mouseHoverImage }}"
@@ -98,6 +102,8 @@
       class="mouse-hover-svg-container"
     >
       <div
+        (mouseenter)="onImageMouseEnter($event)"
+        (mouseleave)="onImageMouseLeave($event)"
         [innerHTML]="inlineSvg"
         [id]="'mouse-hover-svg-' + image.pk"
         class="mouse-hover w-100 position-relative"

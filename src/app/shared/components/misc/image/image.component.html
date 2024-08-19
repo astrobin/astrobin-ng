@@ -23,6 +23,8 @@
   <img
     (load)="onLoad($event)"
     (click)="onClick($event)"
+    (mouseenter)="imageMouseEnter.emit($event)"
+    (mouseleave)="imageMouseLeave.emit($event)"
     [alt]="image.title"
     [attr.height]="!!height ? height : null"
     [attr.width]="!!width ? width : null"
