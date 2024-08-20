@@ -309,6 +309,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       ).subscribe((image: ImageInterface) => {
         this.setImage(image, FINAL_REVISION_LABEL, this.navigationContext);
       });
+      this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[this.currentIndex + 1] }));
     }
   }
 
@@ -325,6 +326,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       ).subscribe((image: ImageInterface) => {
         this.setImage(image, FINAL_REVISION_LABEL, this.navigationContext);
       });
+      this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[this.currentIndex - 1] }));
     }
   }
 
@@ -470,6 +472,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   adjustSvgOverlay(): void {
+    if (!this.imageArea) {
+      return;
+    }
+
     const imageAreaElement = this.imageArea.nativeElement as HTMLElement;
     const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-svg-container") as HTMLElement;
 
@@ -531,24 +537,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
   }
 
-  private _loadNextImages(n: number): void {
-    for (let i = 1; i <= n; i++) {
-      const nextIndex = this.currentIndex + i;
-      if (nextIndex < this.navigationContext.length) {
-        this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[nextIndex] }));
-      }
-    }
-  }
-
-  private _loadPreviousImages(n: number): void {
-    for (let i = 1; i <= n; i++) {
-      const previousIndex = this.currentIndex - i;
-      if (previousIndex >= 0) {
-        this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[previousIndex] }));
-      }
-    }
-  }
-
   private _updateCurrentImageIndexInNavigationContext(): void {
     const byHash = this.navigationContext.indexOf(this.image.hash);
     const byPk = this.navigationContext.indexOf(this.image.pk);
@@ -561,8 +549,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
     this.hasOtherImages = this.navigationContext.filter(id => id !== this.image.hash && id !== this.image.pk).length > 0;
     this._updateCurrentImageIndexInNavigationContext();
-    this._loadNextImages(5);
-    this._loadPreviousImages(5);
 
     if (
       this.currentIndex > previousIndex &&
