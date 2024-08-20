@@ -12,13 +12,7 @@
 </ng-template>
 
 <ng-template #imageAreaTemplate>
-  <div
-    #imageArea
-    (swipeleft)="onNextClicked()"
-    (swiperight)="onPreviousClicked()"
-    (swipedown)="close()"
-    class="image-area"
-  >
+  <div #imageArea class="image-area">
     <button class="close-button" (click)="close()">
       <fa-icon
         *ngIf="showCloseButton"
@@ -82,6 +76,9 @@
       (loaded)="onImageLoaded()"
       (imageMouseEnter)="onImageMouseEnter($event)"
       (imageMouseLeave)="onImageMouseLeave($event)"
+      (swipeleft)="onNextClicked()"
+      (swiperight)="onPreviousClicked()"
+      (swipedown)="close()"
       [alias]="alias"
       [class.supports-fullscreen]="supportsFullscreen()"
       [image]="image"
@@ -96,6 +93,9 @@
       <img
         (mouseenter)="onImageMouseEnter($event)"
         (mouseleave)="onImageMouseLeave($event)"
+        (swipeleft)="onNextClicked()"
+        (swiperight)="onPreviousClicked()"
+        (swipedown)="close()"
         alt=""
         class="mouse-hover"
         src="{{ mouseHoverImage }}"
@@ -110,6 +110,9 @@
       <div
         (mouseenter)="onImageMouseEnter($event)"
         (mouseleave)="onImageMouseLeave($event)"
+        (swipeleft)="onNextClicked()"
+        (swiperight)="onPreviousClicked()"
+        (swipedown)="close()"
         [innerHTML]="inlineSvg"
         [id]="'mouse-hover-svg-' + image.pk"
         class="mouse-hover w-100 position-relative"
