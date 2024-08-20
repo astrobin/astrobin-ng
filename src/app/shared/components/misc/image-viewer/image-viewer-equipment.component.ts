@@ -100,7 +100,7 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
   equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {
     event.preventDefault();
     this.router.navigateByUrl(`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`).then(() => {
-      this.imageViewerService.closeActiveImageViewer();
+      this.imageViewerService.closeActiveImageViewer(false);
     });
   }
 

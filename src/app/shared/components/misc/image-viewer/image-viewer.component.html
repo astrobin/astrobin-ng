@@ -68,7 +68,7 @@
       *ngIf="supportsFullscreen()"
       [id]="image.pk"
       [revision]="revisionLabel"
-      (exitFullscreen)="exitFullscreen()"
+      (exitFullscreen)="exitFullscreen(true)"
     ></astrobin-fullscreen-image-viewer>
 
     <astrobin-image

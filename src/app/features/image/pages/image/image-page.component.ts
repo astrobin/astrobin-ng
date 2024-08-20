@@ -5,6 +5,8 @@ import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
+import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-page",
@@ -26,10 +28,18 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.image = this.route.snapshot.data.image;
 
-    if (this.image && this.imageViewer) {
-      this.imageViewer.setImage(this.image, FINAL_REVISION_LABEL, []);
-    }
+    this.route.data.pipe(
+      takeUntil(this.destroyed$),
+      distinctUntilChangedObj()
+    ).subscribe(data => {
+      this.image = data.image;
+
+      if (this.image && this.imageViewer) {
+        this.imageViewer.setImage(
+          this.image, FINAL_REVISION_LABEL, false, [], false
+        );
+      }
+    });
   }
 }

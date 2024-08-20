@@ -1,7 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { DOCUMENT, isPlatformBrowser, Location } from "@angular/common";
+import { DOCUMENT, isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Router } from "@angular/router";
 import { BehaviorSubject, fromEvent } from "rxjs";
@@ -140,5 +140,24 @@ export class WindowRefService extends BaseService {
 
   checkDevice(width: number) {
     this._isMobile.next(width < 768);
+  }
+
+  pushState(data: any, url: string) {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
+    const _history = this.nativeWindow.history;
+    const currentState = _history.state;
+
+    if (
+      currentState &&
+      currentState.url === url &&
+      JSON.stringify(currentState.data) === JSON.stringify(data)
+    ) {
+      return;
+    }
+
+    _history.pushState(data, "", url);
   }
 }

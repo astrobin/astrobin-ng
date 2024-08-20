@@ -19,7 +19,7 @@ import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { Observable, of } from "rxjs";
-import { isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
@@ -30,6 +30,7 @@ import { environment } from "@env/environment";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
+import { TitleService } from "@shared/services/title/title.service";
 
 enum SharingMode {
   LINK = "link",
@@ -52,6 +53,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @Input()
   navigationContext: (ImageInterface["hash"] | ImageInterface["pk"])[];
 
+  // This is used to determine whether the view is fixed and occupying the entire screen.
   @Input()
   fullscreenMode = false;
 
@@ -150,7 +152,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       }
     }
   ];
-  protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
   protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
 
   constructor(
@@ -169,7 +170,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly windowRefService: WindowRefService,
     public readonly utilsService: UtilsService,
     public readonly http: HttpClient,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly location: Location,
+    public readonly titleService: TitleService
   ) {
     super(store$);
   }
@@ -218,7 +221,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   setImage(
     image: ImageInterface,
     revisionLabel: ImageRevisionInterface["label"],
-    navigationContext: (ImageInterface["pk"] | ImageInterface["hash"])[]
+    fullscreenMode: boolean,
+    navigationContext: (ImageInterface["pk"] | ImageInterface["hash"])[],
+    pushState: boolean
   ): void {
     if (this.dataArea) {
       this.dataArea.nativeElement.scrollTop = 0;
@@ -229,9 +234,30 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.revisionLabel = revisionLabel;
     this.navigationContext = [...navigationContext];
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+
+    if (revisionLabel === FINAL_REVISION_LABEL) {
+      this.onRevisionSelected(revisionLabel);
+    }
+
+    if (fullscreenMode) {
+      this.enterFullscreen(null);
+    }
+
     this.setMouseHoverImage();
     this._updateNavigationContextInformation();
     this._recordHit();
+    this._setTitle();
+
+    if (pushState) {
+      this.windowRefService.pushState(
+        {
+          imageId: image.hash || image.pk,
+          revisionLabel,
+          fullscreenMode
+        },
+        this._getPath(image, revisionLabel, fullscreenMode)
+      );
+    }
   }
 
   setMouseHoverImage() {
@@ -282,10 +308,27 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  @HostListener("window:popstate", ["$event"])
+  onPopState(event: any) {
+    if (this.viewingFullscreenImage) {
+      this.exitFullscreen(false);
+    } else {
+      if (event.state?.imageId) {
+        this._navigateToImage(
+          event.state.imageId,
+          event.state.revisionLabel || FINAL_REVISION_LABEL,
+          !!event.state.fullscreen,
+          false);
+      } else {
+        this.close();
+      }
+    }
+  }
+
   @HostListener("document:keydown.escape", ["$event"])
   handleEscapeKey(event: KeyboardEvent) {
     if (this.viewingFullscreenImage) {
-      this.exitFullscreen();
+      this.exitFullscreen(true);
       return;
     }
 
@@ -298,36 +341,14 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @HostListener("document:keydown.arrowRight", ["$event"])
   onNextClicked(): void {
-    this.modalService.dismissAll();
-    this.offcanvasService.dismiss();
-
-    if (this.currentIndex < this.navigationContext.length - 1) {
-      this.store$.pipe(
-        select(selectImage, this.navigationContext[this.currentIndex + 1]),
-        filter(image => !!image),
-        take(1)
-      ).subscribe((image: ImageInterface) => {
-        this.setImage(image, FINAL_REVISION_LABEL, this.navigationContext);
-      });
-      this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[this.currentIndex + 1] }));
-    }
+    const imageId = this.navigationContext[this.currentIndex + 1];
+    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false,true);
   }
 
   @HostListener("document:keydown.arrowLeft", ["$event"])
   onPreviousClicked(): void {
-    this.modalService.dismissAll();
-    this.offcanvasService.dismiss();
-
-    if (this.currentIndex > 0) {
-      this.store$.pipe(
-        select(selectImage, this.navigationContext[this.currentIndex - 1]),
-        filter(image => !!image),
-        take(1)
-      ).subscribe((image: ImageInterface) => {
-        this.setImage(image, FINAL_REVISION_LABEL, this.navigationContext);
-      });
-      this.store$.dispatch(new LoadImage({ imageId: this.navigationContext[this.currentIndex - 1] }));
-    }
+    const imageId = this.navigationContext[this.currentIndex - 1];
+    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false,true);
   }
 
   @HostListener("window:resize")
@@ -358,6 +379,14 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.revisionLabel = revisionLabel;
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     this.setMouseHoverImage();
+
+    this.windowRefService.pushState(
+      {
+        imageId: this.image.hash || this.image.pk,
+        revisionLabel
+      },
+      this._getPath(this.image, revisionLabel)
+    );
   }
 
   openShare(event: MouseEvent): void {
@@ -420,22 +449,45 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     );
   }
 
-  enterFullscreen(event: MouseEvent): void {
-    event.preventDefault();
+  enterFullscreen(event: MouseEvent | null): void {
+    if (event) {
+      event.preventDefault();
+    }
 
     if (this.supportsFullscreen()) {
       this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
       this.viewingFullscreenImage = true;
+
+      this.windowRefService.pushState(
+        {
+          imageId: this.image.hash || this.image.pk,
+          revisionLabel: this.revisionLabel,
+          fullscreen: true
+        },
+        this._getPath(this.image, this.revisionLabel, true)
+      );
     }
   }
 
-  exitFullscreen(): void {
-    this.store$.dispatch(new HideFullscreenImage());
-    this.viewingFullscreenImage = false;
+  exitFullscreen(pushState: boolean): void {
+    if (this.viewingFullscreenImage) {
+      this.store$.dispatch(new HideFullscreenImage());
+      this.viewingFullscreenImage = false;
+
+      if (pushState) {
+        this.windowRefService.pushState(
+          {
+            imageId: this.image.hash || this.image.pk,
+            revisionLabel: this.revisionLabel
+          },
+          this._getPath(this.image, this.revisionLabel)
+        );
+      }
+    }
   }
 
   close(): void {
-    this.exitFullscreen();
+    this.exitFullscreen(true);
     this.modalService.dismissAll();
     this.offcanvasService.dismiss();
     this.closeViewer.emit();
@@ -548,6 +600,25 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  private _navigateToImage(
+    imageId: ImageInterface["hash"] | ImageInterface["pk"],
+    revisionLabel: ImageRevisionInterface["label"],
+    fullscreenMode: boolean,
+    pushState: boolean
+  ): void {
+    this.modalService.dismissAll();
+    this.offcanvasService.dismiss();
+
+    this.store$.pipe(
+      select(selectImage, imageId),
+      filter(image => !!image),
+      take(1)
+    ).subscribe((image: ImageInterface) => {
+      this.setImage(image, revisionLabel, fullscreenMode, this.navigationContext, pushState);
+    });
+    this.store$.dispatch(new LoadImage({ imageId }));
+  }
+
   private _updateCurrentImageIndexInNavigationContext(): void {
     const byHash = this.navigationContext.indexOf(this.image.hash);
     const byPk = this.navigationContext.indexOf(this.image.pk);
@@ -600,5 +671,28 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         take(1)
       )
       .subscribe();
+  }
+
+  private _setTitle(): void {
+    this.titleService.setTitle(this.image.title);
+  }
+
+  private _getPath(
+    image: ImageInterface,
+    revisionLabel: ImageRevisionInterface["label"],
+    fullscreenMode = false
+  ): string {
+    let path = this.location.path().split("#")[0];
+
+    path = UtilsService.addOrUpdateUrlParam(path, "i", image.hash || ("" + image.pk));
+    if (revisionLabel !== FINAL_REVISION_LABEL) {
+      path = UtilsService.addOrUpdateUrlParam(path, "r", revisionLabel);
+    }
+
+    if (fullscreenMode) {
+      path += `#fullscreen`;
+    }
+
+    return path;
   }
 }

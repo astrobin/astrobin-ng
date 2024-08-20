@@ -17,6 +17,7 @@ import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-image-search",
@@ -46,7 +47,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly viewContainerRef: ViewContainerRef,
-    public readonly imageViewerService: ImageViewerService
+    public readonly imageViewerService: ImageViewerService,
+    public readonly router: Router
   ) {
     super(store$, windowRefService, elementRef, platformId);
     this.dataFetched.pipe(
@@ -132,17 +134,38 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   openImage(image: ImageSearchInterface): void {
+    // If we are on an image's page, we don't want to open the image viewer but simply route to the image.
+    if (this.router.url.startsWith("/i/")) {
+      this._openImageByNavigation(image);
+    } else {
+      this._openImageByImageViewer(image);
+    }
+  }
+
+  private _openImageByNavigation(image: ImageSearchInterface): void {
+    this.router.navigate([`/i/${image.hash || image.objectId}`]);
+  }
+
+  private _openImageByImageViewer(image: ImageSearchInterface): void {
     let activeImageViewer = this.imageViewerService.activeImageViewer;
 
     if (!activeImageViewer) {
       activeImageViewer = this.imageViewerService.openImageViewer(
         image.hash || image.objectId,
+        FINAL_REVISION_LABEL,
+        false,
         this.results.map(result => result.hash || result.objectId),
         this.viewContainerRef
       );
     } else {
       this.imageViewerService.loadImage(image.hash || image.objectId).subscribe(image => {
-        activeImageViewer.instance.setImage(image, FINAL_REVISION_LABEL, this.results.map(result => result.hash || result.objectId));
+        activeImageViewer.instance.setImage(
+          image,
+          FINAL_REVISION_LABEL,
+          false,
+          this.results.map(result => result.hash || result.objectId),
+          true
+        );
       });
     }
 

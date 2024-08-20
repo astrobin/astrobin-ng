@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewContainerRef } from "@angular/core";
 import { Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -9,6 +9,9 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { SearchService } from "@features/search/services/search.service";
 import { filter, map, startWith, takeUntil } from "rxjs/operators";
 import { merge } from "rxjs";
+import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-search-page",
@@ -26,7 +29,9 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly activatedRoute: ActivatedRoute,
     public readonly windowRefService: WindowRefService,
     public readonly searchService: SearchService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly imageViewerService: ImageViewerService,
+    public readonly viewContainerRef: ViewContainerRef
   ) {
     super(store$);
   }
@@ -43,8 +48,21 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
         startWith(this.activatedRoute.snapshot.queryParams)
       )
     ).pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe((queryParams: Record<string, string>) => this.loadModel(queryParams));
+      takeUntil(this.destroyed$),
+      distinctUntilChangedObj()
+    ).subscribe((queryParams: Record<string, string>) => {
+      this.loadModel(queryParams);
+
+      if (queryParams["i"]) {
+        this.imageViewerService.openImageViewer(
+          queryParams["i"],
+          queryParams["r"] || FINAL_REVISION_LABEL,
+          this.activatedRoute.snapshot.fragment?.includes("fullscreen"),
+          [],
+          this.viewContainerRef
+        );
+      }
+    });
   }
 
   loadModel(queryParams: Record<string, string> = {}): void {
@@ -100,9 +118,15 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
         model.searchType !== SearchType.IMAGE
       )
     ) {
-      this.location.go(`/search?p=${this.searchService.modelToParams(model)}`);
+      this.windowRefService.pushState(
+        {},
+        `/search?p=${this.searchService.modelToParams(model)}`
+      );
     } else {
-      this.location.go("/search");
+      this.windowRefService.pushState(
+        {},
+        `/search`
+      );
     }
   }
 }
