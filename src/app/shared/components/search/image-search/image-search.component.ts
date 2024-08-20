@@ -75,21 +75,21 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       return;
     }
 
-    this.gridItems = [];
-
     const MIN_ASPECT_RATIO = .5;
     const MAX_ASPECT_RATIO = 2;
 
-    this.results.forEach((image, i) => {
-      const imageAspectRatio = image.finalW && image.finalH ? image.finalW / image.finalH : 1.0;
-      const {width, height} = this._getRandomDimensions(MIN_ASPECT_RATIO, MAX_ASPECT_RATIO, imageAspectRatio);
+    this.results
+      .filter(image => !this.gridItems.some(item => item.objectId === image.objectId))
+      .forEach((image, i) => {
+        const imageAspectRatio = image.finalW && image.finalH ? image.finalW / image.finalH : 1.0;
+        const { width, height } = this._getRandomDimensions(MIN_ASPECT_RATIO, MAX_ASPECT_RATIO, imageAspectRatio);
 
-      this.gridItems.push({
-        ...image,
-        displayWidth: width,
-        displayHeight: height
+        this.gridItems.push({
+          ...image,
+          displayWidth: width,
+          displayHeight: height
+        });
       });
-    });
   }
 
   getItemListingsMessage(listing: EquipmentItemListingInterface): string {
