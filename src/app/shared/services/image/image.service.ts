@@ -570,7 +570,10 @@ export class ImageService extends BaseService {
     }
 
     if (image.revisions && image.revisions.length > 0) {
-      return image.revisions.find(revision => revision.isFinal);
+      const finalRevision = image.revisions.find(revision => revision.isFinal);
+      if (finalRevision) {
+        return finalRevision;
+      }
     }
 
     return image;
