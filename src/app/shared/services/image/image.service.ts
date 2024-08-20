@@ -422,7 +422,7 @@ export class ImageService extends BaseService {
     if (hours > 0) {
       if (minutes > 0 || seconds > 0) {
         const minutePart = minutes > 0 ? `${minutes}${minuteSymbol} ` : "";
-        const secondPart = seconds > 0 ? `${seconds}${secondSymbol}` : "";
+        const secondPart = seconds > 0 ? `${seconds.toFixed(2).replace(".00", "")}${secondSymbol}` : "";
         return `${hours}${hourSymbol} ${minutePart}${secondPart}`.trim();
       }
       return `${hours}${hourSymbol}`;
