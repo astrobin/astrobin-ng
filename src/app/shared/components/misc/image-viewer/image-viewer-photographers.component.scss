@@ -8,7 +8,7 @@
   .avatars {
     display: flex;
     gap: .5rem;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     flex-direction: row !important;
 
     img {
