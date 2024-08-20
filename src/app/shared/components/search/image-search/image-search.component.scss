@@ -38,7 +38,6 @@
 
 .search-results {
   $gap: .75rem;
-  $minSize: 200px;
 
   display: flex;
   flex-wrap: wrap;
@@ -55,8 +54,6 @@
     justify-content: center;
     overflow: hidden;
     position: relative;
-    min-width: $minSize;
-    min-height: $minSize;
 
     > img {
       position: absolute;

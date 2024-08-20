@@ -20,10 +20,8 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   next: string | null = null;
   results: T[] = null;
   pageSize = 100;
-  @Input()
-  model: SearchModelInterface;
-  @Input()
-  loadMoreOnScroll = true;
+  @Input() model: SearchModelInterface;
+  @Input() loadMoreOnScroll = true;
   protected dataFetched = new Subject<{ data: T[], cumulative: boolean }>();
 
   protected constructor(
@@ -104,7 +102,9 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
       !this.loading
     ) {
       if (this.results !== null) {
-        this.loadMore().subscribe();
+        if (this.loadMoreOnScroll) {
+          this.loadMore().subscribe();
+        }
       } else {
         this.loadData();
       }

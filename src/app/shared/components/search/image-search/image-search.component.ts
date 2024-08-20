@@ -35,7 +35,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
-  protected averageHeight: number = 200; // Sync with $minSize in SCSS.
+  protected averageHeight: number = 200;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -58,12 +58,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   ngOnInit(): void {
     super.ngOnInit();
 
-    if (isPlatformBrowser(this.platformId)) {
-      fromEvent(this.windowRefService.nativeWindow, "resize")
-        .pipe(debounceTime(100), takeUntil(this.destroyed$))
-        .subscribe(() => {
-          this.assignWidthsToGridItems();
-        });
+    if (this.alias === ImageAlias.GALLERY) {
+      this.averageHeight = 75;
     }
   }
 

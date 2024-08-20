@@ -91,6 +91,8 @@
           (click)="openImage(item)"
           [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
           [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
+          [style.min-width.px]="averageHeight"
+          [style.min-height.px]="averageHeight"
           astrobinEventStopPropagation
           astrobinEventPreventDefault
           href="#"

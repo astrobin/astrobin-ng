@@ -147,7 +147,8 @@
 <ng-template #moreFromThisUserTemplate>
   <h5 class="mt-5 mb-3">{{ "More from this user" | translate }}</h5>
   <astrobin-image-search
-    [model]="{ userId: image.user, ordering: '-likes', pageSize: 60 }"
+    [alias]="ImageAlias.GALLERY"
+    [model]="{ userId: image.user, ordering: '-likes', pageSize: 25 }"
     [loadMoreOnScroll]="false"
     [showRetailers]="false"
     [showMarketplaceItems]="false"
@@ -158,7 +159,7 @@
 <ng-template #similarToThisTemplate>
   <h5 class="mt-5 mb-3">{{ "Related images" | translate }}</h5>
   <astrobin-image-search
-    [model]="{ similarToImageId: this.image.hash || this.image.pk, ordering: '-likes', pageSize: 60 }"
+    [model]="{ similarToImageId: this.image.hash || this.image.pk, ordering: '-likes', pageSize: 50 }"
     [loadMoreOnScroll]="true"
     [showRetailers]="false"
     [showMarketplaceItems]="false"
