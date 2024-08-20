@@ -17,43 +17,48 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 @Component({
   selector: "astrobin-image-viewer-photographers",
   template: `
-    <div class="metadata-section flex-nowrap">
-      <div class="metadata-item avatars">
-        <a
-          *ngFor="let user of users"
-          (click)="avatarClicked($event, user)"
-          [href]="classicRoutesService.GALLERY(user.username)"
-        >
-          <img [src]="user.avatar" alt="" />
-        </a>
+    <div class="metadata-section">
+      <div class="metadata-item flex-grow-1">
+        <div class="avatars">
+          <a
+            *ngFor="let user of users"
+            (click)="avatarClicked($event, user)"
+            [href]="classicRoutesService.GALLERY(user.username)"
+          >
+            <img [src]="user.avatar" alt="" />
+          </a>
+        </div>
+
+        <div *ngIf="users?.length === 1" class="d-flex flex-nowrap align-items-center gap-2">
+          <a
+            *ngFor="let user of users"
+            [href]="classicRoutesService.GALLERY(user.username)"
+            class="d-block no-wrap"
+          >
+            {{ user.displayName }}
+          </a>
+
+          <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+            <astrobin-toggle-property
+              *ngIf="currentUserWrapper.user?.id !== image.user"
+              [contentType]="userContentType.id"
+              [objectId]="image.user"
+              [userId]="currentUserWrapper.user?.id"
+              [showLabel]="false"
+              [setLabel]="'Follow user' | translate"
+              [unsetLabel]="'Unfollow user' | translate"
+              class="w-auto"
+              btnClass="btn btn-link btn-no-block link-secondary"
+              propertyType="follow"
+            ></astrobin-toggle-property>
+          </ng-container>
+        </div>
       </div>
 
-      <div *ngIf="users?.length === 1" class="metadata-item flex-grow-1 text-start no-wrap">
-        <a
-          *ngFor="let user of users"
-          [href]="classicRoutesService.GALLERY(user.username)"
-          class="d-block"
-        >
-          {{ user.displayName }}
-        </a>
-
-        <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-          <astrobin-toggle-property
-            *ngIf="currentUserWrapper.user?.id !== image.user"
-            [contentType]="userContentType.id"
-            [objectId]="image.user"
-            [userId]="currentUserWrapper.user?.id"
-            [showLabel]="false"
-            [setLabel]="'Follow user' | translate"
-            [unsetLabel]="'Unfollow user' | translate"
-            class="w-auto"
-            btnClass="btn btn-link btn-no-block link-secondary"
-            propertyType="follow"
-          ></astrobin-toggle-property>
-        </ng-container>
-      </div>
-
-      <div *ngIf="publicationDate" class="metadata-item flex-column gap-0 align-items-end">
+      <div
+        *ngIf="publicationDate"
+        class="metadata-item flex-column flex-sm-row flex-md-column gap-2 gap-md-0 align-items-end"
+      >
         <div class="publication-date d-flex flex-row gap-2 no-wrap">
           <ng-container *ngIf="licenseIcon && licenseTooltip">
             <fa-icon [icon]="licenseIcon" [ngbTooltip]="licenseTooltip"></fa-icon>
