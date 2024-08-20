@@ -18,6 +18,7 @@ import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfac
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { Router } from "@angular/router";
+import { LoadingService } from "@shared/services/loading.service";
 
 @Component({
   selector: "astrobin-image-search",
@@ -48,7 +49,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly viewContainerRef: ViewContainerRef,
     public readonly imageViewerService: ImageViewerService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly loadingService: LoadingService
   ) {
     super(store$, windowRefService, elementRef, platformId);
     this.dataFetched.pipe(
@@ -158,7 +160,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
         this.viewContainerRef
       );
     } else {
-      activeImageViewer.instance.loading = true;
+      this.loadingService.setLoading(true);
       this.imageViewerService.loadImage(image.hash || image.objectId).subscribe(image => {
         activeImageViewer.instance.setImage(
           image,
@@ -167,8 +169,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
           this.results.map(result => result.hash || result.objectId),
           true
         );
+        this.loadingService.setLoading(false);
       });
-      activeImageViewer.instance.loading = false;
     }
 
     activeImageViewer.instance.nearEndOfContext.subscribe(() => {

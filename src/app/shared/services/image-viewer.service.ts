@@ -76,6 +76,9 @@ export class ImageViewerService extends BaseService {
       ).subscribe(image => {
         observer.next(image);
         observer.complete();
+      }, () => {
+        observer.error();
+        observer.complete();
       });
 
       this.store$.dispatch(new LoadImage({ imageId }));

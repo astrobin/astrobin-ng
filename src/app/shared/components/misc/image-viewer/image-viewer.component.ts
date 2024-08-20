@@ -31,6 +31,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
+import { LoadingService } from "@shared/services/loading.service";
 
 enum SharingMode {
   LINK = "link",
@@ -172,7 +173,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly http: HttpClient,
     public readonly translateService: TranslateService,
     public readonly location: Location,
-    public readonly titleService: TitleService
+    public readonly titleService: TitleService,
+    public readonly loadingService: LoadingService
   ) {
     super(store$);
   }
@@ -235,7 +237,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.navigationContext = [...navigationContext];
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
 
-    if (revisionLabel === FINAL_REVISION_LABEL) {
+    if (revisionLabel !== FINAL_REVISION_LABEL) {
       this.onRevisionSelected(revisionLabel);
     }
 
@@ -261,6 +263,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   setMouseHoverImage() {
+    if (!this.revision) {
+      return;
+    }
+
     switch (this.revision.mouseHoverImage) {
       case MouseHoverImageOptions.NOTHING:
         this.mouseHoverImage = null;
