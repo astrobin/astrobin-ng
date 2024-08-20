@@ -18,6 +18,7 @@
         align-items: center;
         gap: .5rem;
         position: relative;
+        max-width: 100%;
 
         .metadata-icon {
           line-height: 0;
@@ -46,6 +47,7 @@
         .metadata-label,
         .metadata-link {
           line-height: 1.15rem;
+          max-width: 100%;
         }
 
         .metadata-label {
@@ -53,6 +55,11 @@
 
           .symbol {
             color: var(--lighterGrey);
+          }
+
+          .value {
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
 
           [data-toggle="tooltip"],
