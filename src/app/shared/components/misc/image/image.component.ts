@@ -213,7 +213,13 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       }))
     ];
 
-    const url = allAvailableThumbnails.find(thumbnail => thumbnail.revisionLabel === this.revision)?.url;
+    let url: string;
+
+    if (this.image.imageFile && this.image.imageFile.toLowerCase().endsWith(".gif")) {
+      url = this.image.imageFile;
+    } else {
+      url = allAvailableThumbnails.find(thumbnail => thumbnail.revisionLabel === this.revision)?.url;
+    }
 
     if (url) {
       this.imageService

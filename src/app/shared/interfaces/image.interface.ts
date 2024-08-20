@@ -192,8 +192,8 @@ export interface ImageInterface {
   collaborators: UserInterface[] | null;
   hash: string;
   title: string;
-  imageFile: string | null;
-  videoFile: string | null;
+  imageFile?: string | null;
+  videoFile?: string | null;
   encodedVideoFile: string | null;
   loopVideo: string | null;
   isWip: boolean;

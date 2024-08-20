@@ -409,10 +409,21 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.modalService.open(this.skyplotModalTemplate, { size: "md" });
   }
 
+  supportsFullscreen(): boolean {
+    return (
+      this.revision &&
+      !this.revision.videoFile &&
+      (
+        !this.revision.imageFile ||
+        !this.revision.imageFile.toLowerCase().endsWith(".gif")
+      )
+    );
+  }
+
   enterFullscreen(event: MouseEvent): void {
     event.preventDefault();
 
-    if (!this.revision.videoFile) {
+    if (this.supportsFullscreen()) {
       this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
       this.viewingFullscreenImage = true;
     }
