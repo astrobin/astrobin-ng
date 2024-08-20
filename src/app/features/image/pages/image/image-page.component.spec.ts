@@ -26,6 +26,9 @@ describe("ImagePageComponent", () => {
               image
             }
           },
+          data: of({
+            image
+          }),
           fragment: of("1")
         }
       }
