@@ -4,7 +4,7 @@ import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { fromEvent, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
@@ -12,9 +12,7 @@ import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { debounceTime, takeUntil, tap } from "rxjs/operators";
-import { DeviceService } from "@shared/services/device.service";
-import { isPlatformBrowser } from "@angular/common";
+import { takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -48,13 +46,12 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly viewContainerRef: ViewContainerRef,
-    public readonly imageViewerService: ImageViewerService,
-    public readonly deviceService: DeviceService
+    public readonly imageViewerService: ImageViewerService
   ) {
     super(store$, windowRefService, elementRef, platformId);
     this.dataFetched.pipe(
       takeUntil(this.destroyed$),
-      tap(() => this.assignWidthsToGridItems())
+      tap(({ data, cumulative }) => this.assignWidthsToGridItems(data, cumulative))
     ).subscribe();
   }
 
@@ -70,15 +67,19 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     }
   }
 
-  assignWidthsToGridItems(): void {
-    if (!this.results || this.results.length === 0) {
+  assignWidthsToGridItems(images: ImageSearchInterface[], cumulative: boolean): void {
+    if (!images || images.length === 0) {
       return;
     }
 
     const MIN_ASPECT_RATIO = .5;
     const MAX_ASPECT_RATIO = 2;
 
-    this.results
+    if (!cumulative) {
+      this.gridItems = [];
+    }
+
+    images
       .filter(image => !this.gridItems.some(item => item.objectId === image.objectId))
       .forEach((image, i) => {
         const imageAspectRatio = image.finalW && image.finalH ? image.finalW / image.finalH : 1.0;

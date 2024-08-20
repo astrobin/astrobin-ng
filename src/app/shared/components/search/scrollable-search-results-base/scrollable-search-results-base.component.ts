@@ -6,7 +6,6 @@ import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 
@@ -21,14 +20,11 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   next: string | null = null;
   results: T[] = null;
   pageSize = 100;
-
-  protected dataFetched = new Subject<T[]>();
-
   @Input()
   model: SearchModelInterface;
-
   @Input()
   loadMoreOnScroll = true;
+  protected dataFetched = new Subject<{ data: T[], cumulative: boolean }>();
 
   protected constructor(
     public readonly store$: Store<MainState>,
@@ -71,7 +67,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
         this.results = response.results;
         this.next = response.next;
         this.initialLoading = false;
-        this.dataFetched.next(this.results);
+        this.dataFetched.next({ data: this.results, cumulative: false });
       });
     }
   }
@@ -86,7 +82,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
           this.results = this.results.concat(response.results);
           this.next = response.next;
           this.loading = false;
-          this.dataFetched.next(this.results);
+          this.dataFetched.next({data: this.results, cumulative: true});
 
           observer.next(response.results);
           observer.complete();
