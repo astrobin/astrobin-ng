@@ -17,7 +17,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 @Component({
   selector: "astrobin-image-viewer-photographers",
   template: `
-    <div class="metadata-section">
+    <div class="metadata-section flex-nowrap">
       <div class="metadata-item avatars">
         <a
           *ngFor="let user of users"
@@ -54,7 +54,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
       </div>
 
       <div *ngIf="publicationDate" class="metadata-item flex-column gap-0 align-items-end">
-        <div class="publication-date d-flex flex-row gap-2">
+        <div class="publication-date d-flex flex-row gap-2 no-wrap">
           <ng-container *ngIf="licenseIcon && licenseTooltip">
             <fa-icon [icon]="licenseIcon" [ngbTooltip]="licenseTooltip"></fa-icon>
           </ng-container>
@@ -147,9 +147,9 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue) {
-      this.setUsers(changes.image.currentValue);
-      this.setPublicationDate(changes.image.currentValue);
-      this.setLicenseIconAndTooltip(changes.image.currentValue);
+      this.setUsers(this.image);
+      this.setPublicationDate(this.image);
+      this.setLicenseIconAndTooltip(this.image);
     }
   }
 
