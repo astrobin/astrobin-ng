@@ -89,10 +89,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
+  loading = false;
   protected readonly ImageAlias = ImageAlias;
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;
-  protected loading = false;
   protected imageLoaded = false;
   protected alias: ImageAlias;
   protected hasOtherImages = false;
@@ -342,13 +342,13 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   @HostListener("document:keydown.arrowRight", ["$event"])
   onNextClicked(): void {
     const imageId = this.navigationContext[this.currentIndex + 1];
-    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false,true);
+    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
   }
 
   @HostListener("document:keydown.arrowLeft", ["$event"])
   onPreviousClicked(): void {
     const imageId = this.navigationContext[this.currentIndex - 1];
-    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false,true);
+    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
   }
 
   @HostListener("window:resize")
@@ -608,6 +608,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   ): void {
     this.modalService.dismissAll();
     this.offcanvasService.dismiss();
+    this.loading = true;
 
     this.store$.pipe(
       select(selectImage, imageId),
@@ -615,6 +616,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       take(1)
     ).subscribe((image: ImageInterface) => {
       this.setImage(image, revisionLabel, fullscreenMode, this.navigationContext, pushState);
+      this.loading = false;
     });
     this.store$.dispatch(new LoadImage({ imageId }));
   }

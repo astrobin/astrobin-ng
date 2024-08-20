@@ -72,6 +72,7 @@
     ></astrobin-fullscreen-image-viewer>
 
     <astrobin-image
+      *ngIf="!loading; else loadingTemplate"
       (imageClick)="enterFullscreen($event)"
       (loaded)="onImageLoaded()"
       (imageMouseEnter)="onImageMouseEnter($event)"

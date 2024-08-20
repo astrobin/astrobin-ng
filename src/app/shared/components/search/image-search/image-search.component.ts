@@ -158,6 +158,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
         this.viewContainerRef
       );
     } else {
+      activeImageViewer.instance.loading = true;
       this.imageViewerService.loadImage(image.hash || image.objectId).subscribe(image => {
         activeImageViewer.instance.setImage(
           image,
@@ -167,6 +168,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
           true
         );
       });
+      activeImageViewer.instance.loading = false;
     }
 
     activeImageViewer.instance.nearEndOfContext.subscribe(() => {
