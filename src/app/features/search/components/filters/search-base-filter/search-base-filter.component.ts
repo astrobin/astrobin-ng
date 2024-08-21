@@ -15,6 +15,7 @@ import { takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isObservable } from "rxjs";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 
 @Component({
   selector: "astrobin-search-filter-base",
@@ -63,6 +64,17 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
   }
 
   edit(): void {
+    const minimumSubscription = (this.constructor as any).minimumSubscription;
+    this.searchService.allowFilter$(minimumSubscription).subscribe(allowEdit => {
+      if (allowEdit) {
+        this._openEditModal();
+      } else {
+        this.searchService.openSubscriptionRequiredModal(minimumSubscription);
+      }
+    });
+  }
+
+  _openEditModal(): void {
     const modalRef: NgbModalRef = this.modalService.open(SearchFilterEditorModalComponent);
     const instance: SearchFilterEditorModalComponent = modalRef.componentInstance;
     const key = this.searchService.getKeyByFilterComponentInstance(this);

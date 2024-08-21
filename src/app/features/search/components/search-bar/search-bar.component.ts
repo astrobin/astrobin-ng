@@ -368,23 +368,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   onAutoCompleteItemClicked(autoCompleteItem: SearchAutoCompleteItem): void {
     this.searchService.allowFilter$(autoCompleteItem.minimumSubscription).subscribe(allow => {
       if (!allow) {
-        const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
-        let minimumSubscription: SimplifiedSubscriptionName;
-
-        switch (autoCompleteItem.minimumSubscription) {
-          case PayableProductInterface.LITE:
-            minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_LITE;
-            break;
-          case PayableProductInterface.PREMIUM:
-            minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_PREMIUM;
-            break;
-          case PayableProductInterface.ULTIMATE:
-            minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
-            break;
-        }
-
-        modalRef.componentInstance.minimumSubscription = minimumSubscription;
-
+        this.searchService.openSubscriptionRequiredModal(autoCompleteItem.minimumSubscription);
         return;
       }
 

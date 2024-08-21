@@ -34,6 +34,9 @@ import { SearchPersonalFiltersFilterValue } from "@features/search/components/fi
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -112,7 +115,8 @@ export class SearchService extends BaseService {
     public readonly countryService: CountryService,
     public readonly constellationService: ConstellationsService,
     public readonly filterService: FilterService,
-    public readonly userSubscriptionService: UserSubscriptionService
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly modalService: NgbModal
   ) {
     super(loadingService);
 
@@ -891,6 +895,25 @@ export class SearchService extends BaseService {
         }))
         .slice(0, this._autoCompleteItemsLimit)
     );
+  }
+
+  openSubscriptionRequiredModal(minimumSubscription: PayableProductInterface): void {
+    const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+    let value: SimplifiedSubscriptionName;
+
+    switch (minimumSubscription) {
+      case PayableProductInterface.LITE:
+        value = SimplifiedSubscriptionName.ASTROBIN_LITE;
+        break;
+      case PayableProductInterface.PREMIUM:
+        value = SimplifiedSubscriptionName.ASTROBIN_PREMIUM;
+        break;
+      case PayableProductInterface.ULTIMATE:
+        value = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
+        break;
+    }
+
+    modalRef.componentInstance.minimumSubscription = value;
   }
 
   private _autoCompleteMatch(query: string, candidate: string): boolean {

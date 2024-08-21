@@ -110,24 +110,7 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
     filter.allow$.subscribe(allow => {
       if (!allow) {
         this.modal.close();
-
-        const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
-        let minimumSubscription: SimplifiedSubscriptionName;
-
-        switch (filter.minimumSubscription) {
-          case PayableProductInterface.LITE:
-            minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_LITE;
-            break;
-          case PayableProductInterface.PREMIUM:
-            minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_PREMIUM;
-            break;
-          case PayableProductInterface.ULTIMATE:
-            minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
-            break;
-        }
-
-        modalRef.componentInstance.minimumSubscription = minimumSubscription;
-
+        this.searchService.openSubscriptionRequiredModal(filter.minimumSubscription);
         return;
       }
 
