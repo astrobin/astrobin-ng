@@ -229,6 +229,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   ): void {
     if (this.dataArea) {
       this.dataArea.nativeElement.scrollTop = 0;
+
+      if (this.deviceService.mdMax()) {
+        this.dataArea.nativeElement.closest("astrobin-image-viewer").scrollTop = 0;
+      }
     }
 
     this.imageLoaded = false;
@@ -404,7 +408,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       copyThis: this.getSharingValue(SharingMode.LINK)
     };
 
-    const position = this.deviceService.smMax() ? "bottom" : "end";
+    const position = this.deviceService.mdMax() ? "bottom" : "end";
     this.offcanvasService.open(this.shareTemplate, {
       position,
       panelClass: "image-viewer-share-offcanvas"
@@ -414,7 +418,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   openComments(event: MouseEvent): void {
     event.preventDefault();
 
-    const position = this.deviceService.smMax() ? "bottom" : "end";
+    const position = this.deviceService.mdMax() ? "bottom" : "end";
     this.offcanvasService.open(this.nestedCommentsTemplate, {
       position,
       panelClass: "image-viewer-nested-comments-offcanvas"

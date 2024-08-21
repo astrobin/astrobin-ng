@@ -267,7 +267,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
       return a.localeCompare(b);
     });
 
-    const position = this.deviceService.smMax() ? "bottom" : "end";
+    const position = this.deviceService.mdMax() ? "bottom" : "end";
     this.offcanvasService.open(this.deepSkyIntegrationDetailsTemplate, {
       panelClass: "offcanvas-deep-sky-integration-details",
       position
