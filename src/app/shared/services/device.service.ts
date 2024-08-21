@@ -54,6 +54,15 @@ export class DeviceService extends BaseService {
     return false;
   }
 
+  lgMin(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth > Breakpoint.LG;
+    }
+
+    return false;
+  }
+
   lgMax(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;

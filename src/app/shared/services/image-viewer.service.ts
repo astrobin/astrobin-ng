@@ -116,7 +116,7 @@ export class ImageViewerService extends BaseService {
   }
 
   private _changeBodyOverflow(value: "hidden" | "auto"): void {
-    if (isPlatformBrowser(this.platformId) && this.deviceService.mdMax()) {
+    if (isPlatformBrowser(this.platformId) && this.deviceService.lgMin()) {
       const _document = this.windowRefService.nativeWindow.document;
       if (_document) {
         _document.body.classList.toggle("overflow-hidden", value === "hidden");
