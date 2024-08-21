@@ -252,19 +252,12 @@
       }
     }
 
-    astrobin-image-viewer-revisions {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-    }
-
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         .close-button,
         .next-button,
         .previous-button,
-        .additional-buttons button,
-        astrobin-image-viewer-revisions {
+        .additional-buttons button {
           opacity: 1 !important;
           pointer-events: auto;
         }
@@ -285,6 +278,12 @@
     // The buttons are always visible on touch devices. The revisions are handled separately and activated
     // by a button.
     @media (hover: none) and (pointer: coarse) {
+      astrobin-image-viewer-revisions {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+
       .close-button,
       .next-button,
       .previous-button,

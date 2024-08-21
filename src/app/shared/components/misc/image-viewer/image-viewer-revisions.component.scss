@@ -3,7 +3,7 @@
 :host {
   .revisions {
     position: absolute;
-    bottom: 2rem;
+    bottom: 1rem;
     left: 0;
     right: 0;
     width: 100%;
@@ -15,9 +15,9 @@
     padding: 0 1rem;
 
     .revision {
-      width: 5rem;
-      height: 5rem;
-      transition: transform .2s;
+      width: 2.5rem;
+      height: 2.5rem;
+      transition: transform .2s ease-in-out, width .2s ease-in-out, height .2s ease-in-out;
       position: relative;
 
       img {
@@ -25,9 +25,10 @@
         height: 100%;
         object-fit: cover;
         border: 1px solid var(--lightGrey);
-        border-radius: 20px;
+        border-radius: 10px;
         box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
         cursor: pointer;
+        transition: border-radius .2s ease-in-out;
       }
 
       .label {
@@ -40,12 +41,21 @@
         color: var(--white);
         font-size: .75rem;
         text-align: center;
-        border-bottom-left-radius: 20px;
-        border-bottom-right-radius: 20px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        transition: border-radius .2s ease-in-out;
       }
 
-      &.active {
-        transform: translateY(-.25rem);
+      &.active::after {
+        content: "▾";
+        display: block;
+        font-size: .75rem;
+        position: absolute;
+        top: calc(-1rem - 2px);
+        width: 100%;
+        text-align: center;
+        color: var(--accentColor);
+        transition: transform .2s ease-in-out;
       }
 
       &.final {
@@ -56,6 +66,28 @@
 
       &:hover {
         transform: translateY(-.25rem);
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        .revision {
+          width: 5rem;
+          height: 5rem;
+
+          img {
+            border-radius: 20px;
+          }
+
+          .label {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+          }
+
+          &.active::after {
+            transform: scale(1.5);
+          }
+        }
       }
     }
 

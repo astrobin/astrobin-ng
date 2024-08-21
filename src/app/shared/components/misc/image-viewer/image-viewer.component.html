@@ -139,7 +139,8 @@
       (click)="showRevisions = !showRevisions"
       class="revisions-mobile-button"
     >
-      <fa-icon icon="ellipsis"></fa-icon>
+      <fa-icon *ngIf="!showRevisions" icon="ellipsis"></fa-icon>
+      <fa-icon *ngIf="showRevisions" icon="angle-down"></fa-icon>
     </button>
   </div>
 </ng-template>
