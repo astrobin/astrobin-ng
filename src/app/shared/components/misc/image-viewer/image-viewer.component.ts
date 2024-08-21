@@ -269,6 +269,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
     switch (this.revision.mouseHoverImage) {
       case MouseHoverImageOptions.NOTHING:
+      case null:
         this.mouseHoverImage = null;
         this.inlineSvg = null;
         break;
