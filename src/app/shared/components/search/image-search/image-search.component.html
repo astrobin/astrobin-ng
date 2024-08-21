@@ -95,7 +95,7 @@
           [style.min-height.px]="averageHeight"
           astrobinEventStopPropagation
           astrobinEventPreventDefault
-          href="#"
+          [href]="getImageLink(item)"
         >
           <img
             [alt]="item.title"

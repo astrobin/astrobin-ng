@@ -21,6 +21,7 @@ import { Router } from "@angular/router";
 import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
 import { DeviceService } from "@shared/services/device.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-image-search",
@@ -168,6 +169,12 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     } else {
       this._openImageByImageViewer(image);
     }
+  }
+
+  getImageLink(image: ImageSearchInterface): string {
+    let path = this.windowRefService.getCurrentUrl().toString()
+    path = UtilsService.addOrUpdateUrlParam(path, "i", image.hash || ("" + image.objectId));
+    return path;
   }
 
   private _openImageByNavigation(image: ImageSearchInterface): void {
