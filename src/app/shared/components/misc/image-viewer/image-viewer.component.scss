@@ -99,6 +99,7 @@
     @media (max-width: $md-max) {
       width: 100%;
       height: auto;
+      min-height: 33.34vh;
     }
 
     .close-button,
@@ -199,10 +200,6 @@
         .astrobin-image {
           cursor: zoom-in;
         }
-      }
-
-      @media (max-width: $md-max) {
-        min-height: 40vh;
       }
     }
 
