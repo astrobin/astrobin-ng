@@ -10,7 +10,7 @@
     >
   </small>
 
-  <div class="row">
+  <div class="row g-0 g-md-4">
     <div [class]="navCollapsed ? 'col-md-1' : 'col-md-4 col-xl-3'">
       <astrobin-equipment-item-type-nav
         #itemTypeNavComponent
@@ -19,7 +19,7 @@
       ></astrobin-equipment-item-type-nav>
     </div>
 
-    <div class="col">
+    <div [class]="navCollapsed ? 'col-md-11' : 'col-md-8 col-xl-9'">
       <astrobin-equipment-explorer
         #explorer
         (creationMode)="creationMode = $event"
