@@ -10,6 +10,7 @@ import { SolutionService } from "@shared/services/solution/solution.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-viewer-astrometry",
@@ -187,9 +188,10 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     public readonly imageService: ImageService,
     public readonly solutionService: SolutionService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, searchService, router, imageViewerService);
+    super(store$, searchService, router, imageViewerService, windowRefService);
   }
 
   ngOnChanges(changes: SimpleChanges) {

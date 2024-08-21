@@ -7,6 +7,7 @@ import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-viewer-data-source",
@@ -61,9 +62,10 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
     public readonly searchService: SearchService,
     public readonly router: Router,
     public readonly imageService: ImageService,
-    public readonly imageViewerService: ImageViewerService
+    public readonly imageViewerService: ImageViewerService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, searchService, router, imageViewerService);
+    super(store$, searchService, router, imageViewerService, windowRefService);
   }
 
   ngOnChanges(changes: SimpleChanges) {

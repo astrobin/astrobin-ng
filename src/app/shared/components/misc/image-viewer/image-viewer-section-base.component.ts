@@ -7,6 +7,7 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-viewer-section-base",
@@ -23,7 +24,8 @@ export abstract class ImageViewerSectionBaseComponent extends BaseComponentDirec
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
     public readonly router: Router,
-    public readonly imageViewerService: ImageViewerService
+    public readonly imageViewerService: ImageViewerService,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
   }
@@ -32,6 +34,7 @@ export abstract class ImageViewerSectionBaseComponent extends BaseComponentDirec
     const params = this.searchService.modelToParams(model);
     this.router.navigateByUrl(`/search?p=${params}`).then(() => {
       this.imageViewerService.closeActiveImageViewer(false);
+      this.windowRefService.scroll({ top: 0 });
     });
   }
 }

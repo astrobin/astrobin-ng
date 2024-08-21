@@ -12,6 +12,7 @@ import { DeviceService } from "@shared/services/device.service";
 import { FilterType } from "@features/equipment/types/filter.interface";
 import { FilterService } from "@features/equipment/services/filter.service";
 import { TranslateService } from "@ngx-translate/core";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 interface FilterSummary {
   totalIntegration: number;
@@ -171,9 +172,10 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
     public readonly filterService: FilterService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, searchService, router, imageViewerService);
+    super(store$, searchService, router, imageViewerService, windowRefService);
   }
 
   ngOnChanges(changes: SimpleChanges) {

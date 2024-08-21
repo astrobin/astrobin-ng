@@ -13,6 +13,7 @@ import { FilterInterface } from "@shared/interfaces/filter.interface";
 import { FocalReducerInterface } from "@shared/interfaces/focal-reducer.interface";
 import { AccessoryInterface } from "@shared/interfaces/accessory.interface";
 import { SoftwareInterface } from "@shared/interfaces/software.interface";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 type LegacyEquipmentItem = |
   TelescopeInterface |
@@ -69,9 +70,10 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
     public readonly router: Router,
-    public readonly imageViewerService: ImageViewerService
+    public readonly imageViewerService: ImageViewerService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, searchService, router, imageViewerService);
+    super(store$, searchService, router, imageViewerService, windowRefService);
   }
 
   ngOnChanges(changes: SimpleChanges) {

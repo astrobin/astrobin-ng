@@ -13,6 +13,7 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-viewer-photographers",
@@ -145,9 +146,10 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly imageService: ImageService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, searchService, router, imageViewerService);
+    super(store$, searchService, router, imageViewerService, windowRefService);
   }
 
   ngOnChanges(changes: SimpleChanges) {

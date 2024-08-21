@@ -8,6 +8,7 @@ import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-viewer-title",
@@ -160,9 +161,10 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
     public readonly imageService: ImageService,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, searchService, router, imageViewerService);
+    super(store$, searchService, router, imageViewerService, windowRefService);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
