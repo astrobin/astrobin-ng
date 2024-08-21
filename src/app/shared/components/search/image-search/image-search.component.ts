@@ -19,6 +19,7 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { Router } from "@angular/router";
 import { LoadingService } from "@shared/services/loading.service";
+import { SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-image-search",
@@ -50,7 +51,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly viewContainerRef: ViewContainerRef,
     public readonly imageViewerService: ImageViewerService,
     public readonly router: Router,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly searchService: SearchService
   ) {
     super(store$, windowRefService, elementRef, platformId);
     this.dataFetched.pipe(
@@ -131,6 +133,9 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
           if (result.marketplaceLineItems) {
             this.marketplaceLineItems = result.marketplaceLineItems;
           }
+        }),
+        tap(result => {
+          this.searchService.searchCompleteSubject.next(result);
         })
       );
   }

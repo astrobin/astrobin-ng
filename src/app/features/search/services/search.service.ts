@@ -1,7 +1,7 @@
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { ComponentRef, Inject, Injectable, Type, ViewContainerRef } from "@angular/core";
-import { forkJoin, Observable, of } from "rxjs";
+import { forkJoin, Observable, of, Subject } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
@@ -33,6 +33,7 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
 import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 
 export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
@@ -88,9 +89,12 @@ export interface SearchAutoCompleteItem {
 })
 export class SearchService extends BaseService {
   private _autoCompleteItemsLimit = 15;
-
   private _autoCompleteTelescopeCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteCameraCache: { [query: string]: SearchAutoCompleteItem[] } = {};
+
+  searchCompleteSubject: Subject<SearchPaginatedApiResultInterface<any>> =
+    new Subject<SearchPaginatedApiResultInterface<any>>();
+  searchComplete$: Observable<SearchPaginatedApiResultInterface<any>>;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -111,6 +115,8 @@ export class SearchService extends BaseService {
     public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(loadingService);
+
+    this.searchComplete$ = this.searchCompleteSubject.asObservable();
   }
 
   modelToParams(model: SearchModelInterface): string {

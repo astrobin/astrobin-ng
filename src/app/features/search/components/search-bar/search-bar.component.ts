@@ -150,6 +150,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         });
       }
     });
+
+    this.searchService.searchComplete$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+      this.resetAutoCompleteItems();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
