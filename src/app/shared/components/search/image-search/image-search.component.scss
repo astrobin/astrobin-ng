@@ -12,6 +12,7 @@
     display: flex;
     align-items: center;
     gap: .5rem;
+    flex-wrap: wrap;
 
     .link {
       border-bottom: none;
@@ -22,6 +23,8 @@
 
       .image {
         height: 2.5rem;
+        width: 2.5rem;
+        object-fit: cover;
         box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
         border-radius: .5rem;
         transition: filter .25s ease-in-out;
