@@ -319,6 +319,10 @@
         img {
           max-width: 100%;
           height: auto;
+
+          &.smiley {
+            height: 1rem;
+          }
         }
       }
 
