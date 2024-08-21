@@ -109,6 +109,6 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
 
   legacyEquipmentItemClicked(event: MouseEvent, item: LegacyEquipmentItem): void {
     event.preventDefault();
-    this.search({ text: (item.make + " " + item.name).trim() });
+    this.search({ text: ((item.make || "") + " " + (item.name || "")).trim() });
   }
 }
