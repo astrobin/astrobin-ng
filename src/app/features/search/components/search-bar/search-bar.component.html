@@ -78,7 +78,12 @@
         ></fa-icon>
       </ng-container>
 
-      <div *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined" ngbDropdown class="mb-0">
+      <div
+        *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
+        ngbDropdown
+        class="mb-0"
+        placement="start-top"
+      >
         <button
           class="btn btn-link no-toggle mb-0"
           ngbDropdownToggle
@@ -189,7 +194,11 @@
         </div>
       </div>
 
-      <div ngbDropdown class="mb-0">
+      <div
+        ngbDropdown
+        class="mb-0"
+        placement="start-top"
+      >
         <button
           class="btn btn-link no-toggle mb-0"
           ngbDropdownToggle
