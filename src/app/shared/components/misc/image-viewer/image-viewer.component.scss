@@ -99,7 +99,7 @@
     @media (max-width: $md-max) {
       width: 100%;
       height: auto;
-      min-height: 33.34vh;
+      min-height: 33.34%;
     }
 
     .close-button,
@@ -239,7 +239,7 @@
         left: 0;
         width: auto;
         height: auto;
-        max-height: 100vh;
+        max-height: 100%;
         object-fit: contain;
         opacity: 0;
         transition: opacity 0.3s;
@@ -398,7 +398,7 @@
 ::ng-deep {
   .image-viewer-nested-comments-offcanvas {
     &:not(.offcanvas-bottom) {
-      width: 40vw !important;
+      width: 40% !important;
     }
 
     .offcanvas-body {
@@ -414,7 +414,7 @@
 
   .image-viewer-share-offcanvas {
     &:not(.offcanvas-bottom) {
-      width: 40vw !important;
+      width: 40% !important;
     }
   }
 }

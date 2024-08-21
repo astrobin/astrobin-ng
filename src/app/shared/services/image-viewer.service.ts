@@ -13,6 +13,7 @@ import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { DeviceService } from "@shared/services/device.service";
 
 @Injectable({
   providedIn: "root"
@@ -25,7 +26,8 @@ export class ImageViewerService extends BaseService {
     public readonly store$: Store<MainState>,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly windowRefService: WindowRefService,
-    public readonly location: Location
+    public readonly location: Location,
+    public readonly deviceService: DeviceService
   ) {
     super(loadingService);
   }
@@ -114,7 +116,7 @@ export class ImageViewerService extends BaseService {
   }
 
   private _changeBodyOverflow(value: "hidden" | "auto"): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && this.deviceService.mdMax()) {
       const _document = this.windowRefService.nativeWindow.document;
       if (_document) {
         _document.body.classList.toggle("overflow-hidden", value === "hidden");
