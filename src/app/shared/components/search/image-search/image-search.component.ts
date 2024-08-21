@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { Component, ElementRef, HostListener, Inject, Input, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
@@ -20,6 +20,7 @@ import { MarketplaceLineItemInterface } from "@features/equipment/types/marketpl
 import { Router } from "@angular/router";
 import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-image-search",
@@ -52,7 +53,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly imageViewerService: ImageViewerService,
     public readonly router: Router,
     public readonly loadingService: LoadingService,
-    public readonly searchService: SearchService
+    public readonly searchService: SearchService,
+    public readonly deviceService: DeviceService
   ) {
     super(store$, windowRefService, elementRef, platformId);
     this.dataFetched.pipe(
@@ -66,6 +68,25 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
     if (this.alias === ImageAlias.GALLERY) {
       this.averageHeight = 75;
+    } else {
+      this._setAverageSizeForRegularAlias();
+    }
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize(event: Event): void {
+    this._setAverageSizeForRegularAlias();
+  }
+
+  private _setAverageSizeForRegularAlias(): void {
+    if (this.alias === ImageAlias.REGULAR) {
+      if (this.deviceService.mdMax()) {
+        this.averageHeight = 150;
+      } else if (this.deviceService.smMax()) {
+        this.averageHeight = 100;
+      } else {
+        this.averageHeight = 200;
+      }
     }
   }
 
