@@ -103,6 +103,7 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
     event.preventDefault();
     this.router.navigateByUrl(`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`).then(() => {
       this.imageViewerService.closeActiveImageViewer(false);
+      this.windowRefService.scroll({ top: 0 });
     });
   }
 
