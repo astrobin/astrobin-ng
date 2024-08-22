@@ -66,7 +66,9 @@
       <fa-icon
         *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
         (click)="onFilterSelectionClicked($event)"
+        [ngbTooltip]="'Filters' | translate"
         icon="sliders"
+        container="body"
       >
       </fa-icon>
 
@@ -82,7 +84,11 @@
           type="button"
           id="ordering-button"
         >
-          <fa-icon icon="sort"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Sort results' | translate"
+            icon="sort"
+            container="body"
+          ></fa-icon>
         </button>
 
         <div aria-labelledby="ordering-button" ngbDropdownMenu class="ordering-menu">
@@ -201,12 +207,14 @@
         >
           <fa-icon
             [icon]="getSearchTypeIcon(model.searchType)"
+            [ngbTooltip]="'Search area' | translate"
+            container="body"
           ></fa-icon>
         </button>
 
         <div aria-labelledby="search-type-button" ngbDropdownMenu class="search-type-menu">
           <div class="dropdown-header">
-            {{ "Search type" | translate }}
+            {{ "Search area" | translate }}
           </div>
 
           <button
@@ -251,13 +259,17 @@
         <fa-icon
           *ngIf="currentUserWrapper.user && (model.searchType === SearchType.IMAGE || model.searchType === undefined)"
           (click)="onLoadSaveClicked($event)"
+          [ngbTooltip]="'Load or save search' | translate"
           icon="database"
+          container="body"
         ></fa-icon>
       </ng-container>
 
       <fa-icon
         (click)="onSearch(model)"
+        [ngbTooltip]="'Search' | translate"
         icon="search"
+        container="body"
       ></fa-icon>
     </ng-template>
   </div>
