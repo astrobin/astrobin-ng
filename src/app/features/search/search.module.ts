@@ -49,8 +49,10 @@ import { SearchImageSizeFilterComponent } from "@features/search/components/filt
 import { SearchGroupsFilterComponent } from "@features/search/components/filters/search-groups-filter/search-groups-filter.component";
 import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
 import { LoadSaveSearchModalComponent } from './components/filters/load-save-search-modal/load-save-search-modal.component';
+import { SearchTextFilterComponent } from "@features/search/components/filters/search-text-filter/search-text-filter.component";
 
 const allFilterComponents = [
+  SearchTextFilterComponent,
   SearchSubjectFilterComponent,
   SearchTelescopeFilterComponent,
   SearchCameraFilterComponent,

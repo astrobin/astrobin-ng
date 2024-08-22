@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Store } from "@ngrx/store";
@@ -20,25 +20,24 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
   selector: "astrobin-search-filter-base",
   template: ""
 })
-export abstract class SearchBaseFilterComponent extends BaseComponentDirective implements SearchFilterComponentInterface, OnInit {
+export abstract class SearchBaseFilterComponent
+  extends BaseComponentDirective
+  implements SearchFilterComponentInterface, OnInit {
   // This is the attribute that ends up in the search query.
   static key: SearchAutoCompleteType;
   static minimumSubscription: PayableProductInterface = null;
 
   editForm: FormGroup = new FormGroup({});
   editModel: any = {};
-  valueTransformer: (value: any) => any = value => value;
-
+  mayBeRemoved = true;
+  infoText: string = null;
   abstract editFields: FormlyFieldConfig[];
   abstract label: string;
-
   // Value to be used in the search model.
   @Input()
   value: any;
-
   @Output()
   valueChanges = new EventEmitter<any>();
-
   @Output()
   remove = new EventEmitter<void>();
 
@@ -52,9 +51,9 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
     super(store$);
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
+  valueTransformer: (value: any) => any = value => value;
 
+  ngOnInit(): void {
     this.valueChanges.emit(this.value);
   }
 
@@ -85,7 +84,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
     const applyValue = (value: any) => {
       this.value = value;
       this.valueChanges.emit(this.value);
-    }
+    };
 
     modalRef.closed.subscribe(keyValue => {
       const transformedValue = this.valueTransformer(keyValue[key]);

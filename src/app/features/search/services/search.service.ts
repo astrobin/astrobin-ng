@@ -39,6 +39,7 @@ import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 export enum SearchAutoCompleteType {
+  TEXT = "text",
   SEARCH_FILTER = "search_filter",
   SUBJECT = "subject",
   TELESCOPE = "telescope",
@@ -180,6 +181,8 @@ export class SearchService extends BaseService {
 
   humanizeSearchAutoCompleteType(type: SearchAutoCompleteType): string {
     switch (type) {
+      case SearchAutoCompleteType.TEXT:
+        return this.translateService.instant("Free text");
       case SearchAutoCompleteType.SEARCH_FILTER:
         return this.translateService.instant("Search filters");
       case SearchAutoCompleteType.SUBJECT:
@@ -303,6 +306,15 @@ export class SearchService extends BaseService {
         );
       })
     );
+  }
+
+  autoCompleteFreeText$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return of([
+      {
+        type: SearchAutoCompleteType.TEXT,
+        label: query
+      }
+    ]);
   }
 
   autoCompleteSearchFilters$(query: string): Observable<SearchAutoCompleteItem[]> {

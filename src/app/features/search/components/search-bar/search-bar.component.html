@@ -276,6 +276,11 @@
 </div>
 
 <div class="filters">
+  <astrobin-search-text-filter
+    *ngIf="model.text"
+    class="search-filter-component"
+    [value]="model.text"
+  ></astrobin-search-text-filter>
   <ng-container #filterContainer></ng-container>
 </div>
 

@@ -38,11 +38,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
-import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
 import { LoadSaveSearchModalComponent } from "@features/search/components/filters/load-save-search-modal/load-save-search-modal.component";
+import { SearchTextFilterComponent } from "@features/search/components/filters/search-text-filter/search-text-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -115,7 +115,6 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
         forkJoin(
           this._autoCompleteMethods(query)
-            .filter(filter => !this.model.hasOwnProperty(filter.key))
             .map(filter => filter.method)
         ).subscribe((results: SearchAutoCompleteItem[][]) => {
           if (this.abortAutoComplete) {
@@ -377,47 +376,88 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       if (autoCompleteItem.type === SearchAutoCompleteType.SEARCH_FILTER) {
         filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.value);
         this.createAndEditFilter(filterComponentType);
+        this.model.text = "";
+      } else if (autoCompleteItem.type === SearchAutoCompleteType.TEXT) {
+        this.onSearch(this.model);
       } else {
         filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
         this.addFilter(filterComponentType, autoCompleteItem.value);
+        this.model.text = "";
       }
     });
   }
 
-  addFilter(filterComponentType: Type<SearchFilterComponentInterface>, value: any): void {
-    this.utilsService.delay(1).subscribe(() => {
-      const componentRef = this.searchService.instantiateFilterComponent(
-        filterComponentType,
-        value,
-        this.filterContainer
-      );
-      const key = this.searchService.getKeyByFilterComponentType(componentRef.componentType);
+  updateFilter(
+    filterComponentType: Type<SearchFilterComponentInterface>,
+    value: any,
+    triggerSearch: boolean = true
+  ): void {
+    const componentRef = this._findFilterComponentRef(filterComponentType);
 
-      this.filterComponentRefs.push(componentRef);
-
-      componentRef.instance.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(filterValue => {
-        if (componentRef.instance.hasValue()) {
-          this.model = {
-            ...this.model,
-            ...{
-              [key]: filterValue
-            }
-          };
-        } else {
-          this.removeFilter(componentRef);
-        }
-
-        this.onSearch(this.model);
-      });
-
-      componentRef.instance.remove.subscribe(() => {
-        this.removeFilter(componentRef);
-      });
-
+    if (componentRef) {
+      componentRef.instance.value = value;
       this.model = {
         ...this.model,
-        text: ""
+        [this.searchService.getKeyByFilterComponentType(filterComponentType)]: value
       };
+
+      if (triggerSearch) {
+        this.onSearch(this.model);
+      }
+    }
+  }
+
+  addFilter(
+    filterComponentType: Type<SearchFilterComponentInterface>,
+    value: any,
+    triggerSearch: boolean = true
+  ): void {
+    if (filterComponentType === SearchTextFilterComponent) {
+      // The Text filter is handled separately and hardcoded in the template.
+      return;
+    }
+
+    this.utilsService.delay(1).subscribe(() => {
+      let key: string;
+      let created = false;
+      let componentRef: ComponentRef<SearchFilterComponentInterface> = this._findFilterComponentRef(filterComponentType);
+
+      if (componentRef) {
+        this.updateFilter(filterComponentType, value, triggerSearch);
+      } else {
+        componentRef = this.searchService.instantiateFilterComponent(
+          filterComponentType,
+          value,
+          this.filterContainer
+        );
+        created = true;
+      }
+
+      key = this.searchService.getKeyByFilterComponentType(componentRef.componentType);
+
+      if (created) {
+        this.filterComponentRefs.push(componentRef);
+
+        componentRef.instance.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(filterValue => {
+          if (componentRef.instance.hasValue()) {
+            this.model = {
+              ...this.model,
+              ...{
+                [key]: filterValue
+              }
+            };
+          } else {
+            this.removeFilter(componentRef);
+          }
+
+          this.onSearch(this.model);
+        });
+
+        componentRef.instance.remove.subscribe(() => {
+          this.removeFilter(componentRef);
+        });
+      }
+
       this.resetAutoCompleteItems();
       this.searchInput.nativeElement.focus();
     });
@@ -446,10 +486,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   createAndEditFilter(filterComponentType: Type<SearchFilterComponentInterface>): void {
     this.utilsService.delay(1).subscribe(() => {
-      const key: string = this.searchService.getKeyByFilterComponentType(filterComponentType);
-      let componentRef: ComponentRef<any> = this.filterComponentRefs.find(
-        componentRef => this.searchService.getKeyByFilterComponentType(componentRef.componentType) === key
-      );
+      let componentRef: ComponentRef<any> = this._findFilterComponentRef(filterComponentType);
       const alreadyPresent: boolean = !!componentRef;
 
       if (!alreadyPresent) {
@@ -545,8 +582,18 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.onSearch(this.model);
   }
 
+  private _findFilterComponentRef(filterComponentType: Type<SearchFilterComponentInterface>): ComponentRef<SearchFilterComponentInterface> {
+    return this.filterComponentRefs.find(
+      componentRef => this.searchService.getKeyByFilterComponentType(componentRef.componentType) === this.searchService.getKeyByFilterComponentType(filterComponentType)
+    );
+  }
+
   private _autoCompleteMethods = (query: string) => {
     return [
+      {
+        key: SearchAutoCompleteType.TEXT,
+        method: this.searchService.autoCompleteFreeText$(query)
+      },
       {
         key: SearchAutoCompleteType.SEARCH_FILTER,
         method: this.searchService.autoCompleteSearchFilters$(query)
