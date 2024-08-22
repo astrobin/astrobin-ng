@@ -170,9 +170,9 @@
     flex-wrap: wrap;
     padding: .75rem .125rem;
 
-    ::ng-deep .search-filter-component:last-child {
+    ::ng-deep .search-filter-component:first-child {
       .search-filter-operator {
-        visibility: hidden;
+        display: none;
       }
     }
   }

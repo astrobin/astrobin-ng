@@ -79,4 +79,8 @@
   font-size: .65rem;
   color: var(--white);
   text-transform: uppercase;
+
+  @media (max-width: $sm-max) {
+    display: none;
+  }
 }

@@ -281,7 +281,16 @@
     class="search-filter-component"
     [value]="model.text"
   ></astrobin-search-text-filter>
+
   <ng-container #filterContainer></ng-container>
+
+  <button
+    *ngIf="model.text || filterComponentRefs?.length > 0"
+    (click)="reset()"
+    class="btn btn-outline-secondary btn-xs"
+  >
+    {{ "Clear filters" | translate }}
+  </button>
 </div>
 
 <div class="d-none">

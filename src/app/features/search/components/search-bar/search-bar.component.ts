@@ -463,6 +463,12 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     });
   }
 
+  reset(): void {
+    this.model = {};
+    this.clearFilters();
+    this.onSearch(this.model);
+  }
+
   clearFilters(): void {
     this.filterComponentRefs.forEach(componentRef => componentRef.destroy());
     this.filterComponentRefs = [];
