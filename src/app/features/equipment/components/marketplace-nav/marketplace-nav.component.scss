@@ -1,0 +1,9 @@
+::ng-deep {
+  .offcanvas.mobile-menu {
+    .nav {
+      background: none !important;
+      box-shadow: none !important;
+      padding: 0;
+    }
+  }
+}

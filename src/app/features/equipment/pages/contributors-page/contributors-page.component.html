@@ -1,26 +1,43 @@
-<div class="page">
-  <h1>
-    {{ "Contributors" | translate  }}
-    <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
-  </h1>
-  <small>
-    {{
+<astrobin-mobile-menu
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
+  [titleTemplate]="titleTemplate"
+  [descriptionTemplate]="descriptionTemplate"
+  [template]="navTemplate"
+></astrobin-mobile-menu>
+
+<ng-template #titleTemplate>
+  {{ title }}
+</ng-template>
+
+<ng-template #descriptionTemplate>
+  {{
     "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!"
       | translate
-    }}
-    <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database"
-       target="_blank">{{"Learn more"}}.</a>
-  </small>
+  }}
+  <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database" target="_blank">
+    {{ "Learn more" }}.
+  </a>
+</ng-template>
 
-  <div class="row">
-    <div [class]="navCollapsed ? 'col-md-1' : 'col-md-4 col-xl-3'">
-      <astrobin-equipment-item-type-nav
-        (collapsedChanged)="onNavCollapsedChanged($event)"
-        [activeType]="'contributors'"
-      ></astrobin-equipment-item-type-nav>
+<ng-template #navTemplate>
+  <astrobin-equipment-item-type-nav
+    #itemTypeNavComponent
+  ></astrobin-equipment-item-type-nav>
+</ng-template>
+
+<div class="page has-mobile-menu">
+  <ng-container *ngIf="breakpointMdMin">
+    <h1><ng-container [ngTemplateOutlet]="titleTemplate"></ng-container></h1>
+    <small><ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container></small>
+  </ng-container>
+
+  <div class="row g-0 g-md-4">
+    <div *ngIf="breakpointMdMin" class="col-md-4">
+      <ng-container [ngTemplateOutlet]="navTemplate"></ng-container>
     </div>
 
-    <div class="col">
+    <div class="col md-8">
       <div *ngIf="contributors$ | async as contributors; else loading" class="row">
         <div *ngFor="let contributor of contributors" class="col-6 col-sm-4 col-lg-3">
           <div *ngIf="selectUser(contributor[0]) | async as user" class="contributor">

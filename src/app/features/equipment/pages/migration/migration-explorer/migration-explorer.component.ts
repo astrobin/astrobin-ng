@@ -10,6 +10,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
+import { DeviceService } from "@shared/services/device.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-migration-explorer",
@@ -31,7 +33,9 @@ export class MigrationExplorerComponent extends ExplorerBaseComponent implements
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly changeDetectionRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(
       store$,
@@ -41,7 +45,9 @@ export class MigrationExplorerComponent extends ExplorerBaseComponent implements
       windowRefService,
       cookieService,
       changeDetectionRef,
-      platformId
+      platformId,
+      deviceService,
+      offcanvasService
     );
   }
 

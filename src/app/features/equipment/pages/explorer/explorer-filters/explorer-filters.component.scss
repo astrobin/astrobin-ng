@@ -1,24 +1,10 @@
 @import "../../../../../styles/breakpoints";
 
-#add-filter {
-  margin-right: .5rem;
-}
-
 .widget {
-  margin-bottom: .5rem;
-
-  @media screen and (min-width: $sm_min) {
-    margin-right: .5rem;
-  }
-
   .dropdown-menu {
     padding: .75rem;
     border: 1px solid var(--grey);
     box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
-
-    @media screen and (max-width: $xs_max) {
-      width: 100%;
-    }
 
     .widget-content {
       transform: scale(.85);
@@ -32,12 +18,6 @@
     color: var(--lighterGrey);
     border-color: var(--lighterGrey);
     background: transparent;
-
-    @media screen and (max-width: $xs_max) {
-      width: calc(100% - 25px);
-      padding-top: .75rem;
-      padding-bottom: .75rem;
-    }
 
     &:hover,
     &:active {
@@ -66,12 +46,7 @@
     opacity: 1;
     color: var(--lighterGrey);
     font-size: 1rem;
-    padding: 2px .375rem;
-
-    @media screen and (max-width: $xs_max) {
-      padding-top: .75rem;
-      padding-bottom: .75rem;
-    }
+    padding: 1px .375rem;
 
     &:hover {
       color: var(--accentColor);
@@ -85,10 +60,6 @@
   font-weight: bold;
   vertical-align: middle;
   color: var(--lighterGrey);
-
-  @media screen and (min-width: $sm_min) {
-    padding: 0 .75rem;
-  }
 
   &:hover {
     text-decoration: none;

@@ -92,11 +92,24 @@ astrobin-marketplace-more-from-user {
 .listing-info {
   font-size: 1rem;
   text-shadow: none;
-  color: var(--lighterGrey);
   font-weight: normal;
 
   fa-icon {
     margin-right: .25rem;
+  }
+
+  @media (max-width: $sm-max) {
+    .listing-info-section {
+      display: block;
+    }
+
+    .listing-info-section-separator {
+      display: none;
+    }
+  }
+
+  @media (min-width: $md-min) {
+    color: var(--lighterGrey);
   }
 }
 

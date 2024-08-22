@@ -30,10 +30,11 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-brand-explorer-page",
@@ -44,7 +45,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   readonly ExplorerPageSortOrder = EquipmentItemsSortOrder;
   readonly UtilsService = UtilsService;
 
-  title = this.translateService.instant("Equipment explorer");
+  title = this.translateService.instant("Brands");
   activeId: BrandInterface["id"];
   activeBrand: BrandInterface;
   itemsInBrand: EquipmentItemBaseInterface[];
@@ -63,7 +64,9 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     public readonly modalService: NgbModal,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly changeDetectionRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(
       store$,
@@ -73,7 +76,9 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
       windowRefService,
       cookieService,
       changeDetectionRef,
-      platformId
+      platformId,
+      deviceService,
+      offcanvasService
     );
     this.activeType = "BRAND";
   }

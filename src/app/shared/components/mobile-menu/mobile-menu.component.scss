@@ -1,0 +1,61 @@
+@import "../../../styles/breakpoints";
+@import "../../../styles/mixins";
+
+:host {
+  background-color: var(--almostBlack);
+  box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  padding: .25rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  .main-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    overflow: hidden;
+
+    .ng-fa-icon[data-toggle="offcanvas"] {
+      cursor: pointer;
+      padding: .5rem;
+    }
+
+    .title {
+      font-weight: bold;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .icon-area {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+
+    .ng-fa-icon {
+      cursor: pointer;
+      padding: .5rem;
+    }
+  }
+
+  @media (min-width: $md-min) {
+    display: none;
+  }
+}
+
+::ng-deep {
+  .offcanvas.mobile-menu {
+    max-width: 80%;
+  }
+}

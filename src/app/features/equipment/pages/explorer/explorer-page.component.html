@@ -1,25 +1,47 @@
-<div *ngIf="activeType" [class.compare-component-visible]="compareComponentVisible" class="page has-breadcrumb">
-  <h1>{{ title }}</h1>
-  <small>
-    {{
+<astrobin-mobile-menu
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
+  [titleTemplate]="titleTemplate"
+  [descriptionTemplate]="descriptionTemplate"
+  [template]="navTemplate"
+></astrobin-mobile-menu>
+
+<ng-template #titleTemplate>
+  {{ title }}
+</ng-template>
+
+<ng-template #descriptionTemplate>
+  {{
     "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!"
       | translate
-    }}
-    <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database" target="_blank"
-    >{{ "Learn more" }}.</a
-    >
-  </small>
+  }}
+  <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database" target="_blank">
+    {{ "Learn more" }}.
+  </a>
+</ng-template>
 
-  <div class="row">
-    <div [class]="navCollapsed ? 'col-md-1' : 'col-md-4 col-xl-3'">
-      <astrobin-equipment-item-type-nav
-        #itemTypeNavComponent
-        (collapsedChanged)="onNavCollapsedChanged($event)"
-        [enableCollapse]="enableCollapse"
-      ></astrobin-equipment-item-type-nav>
+<ng-template #navTemplate>
+  <astrobin-equipment-item-type-nav
+    #itemTypeNavComponent
+  ></astrobin-equipment-item-type-nav>
+</ng-template>
+
+<div
+  *ngIf="activeType"
+  [class.compare-component-visible]="compareComponentVisible"
+  class="page has-breadcrumb has-mobile-menu"
+>
+  <ng-container *ngIf="breakpointMdMin">
+    <h1><ng-container [ngTemplateOutlet]="titleTemplate"></ng-container></h1>
+    <small><ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container></small>
+  </ng-container>
+
+  <div class="row g-0 g-md-4">
+    <div *ngIf="breakpointMdMin" class="col-md-4">
+      <ng-container [ngTemplateOutlet]="navTemplate"></ng-container>
     </div>
 
-    <div class="col">
+    <div class="col-md-8">
       <astrobin-equipment-explorer
         #explorer
         (creationMode)="creationMode = $event"
@@ -28,7 +50,6 @@
         [activeId]="activeId"
         [activeType]="activeType"
         [goBackOnClose]="goBackOnClose"
-        [navCollapsed]="navCollapsed"
       ></astrobin-equipment-explorer>
 
       <ng-container *ngIf="!activeId && !creationMode">

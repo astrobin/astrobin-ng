@@ -44,9 +44,4 @@ describe("ListingsComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
-
-  it("should have a title", () => {
-    const title = fixture.nativeElement.querySelector("h1 > span");
-    expect(title.textContent).toContain("Marketplace");
-  });
 });

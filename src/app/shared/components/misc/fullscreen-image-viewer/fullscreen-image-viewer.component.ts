@@ -79,7 +79,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly imageService: ImageService,
     public readonly domSanitizer: DomSanitizer,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly deviceService: DeviceService
   ) {
     super(store$);

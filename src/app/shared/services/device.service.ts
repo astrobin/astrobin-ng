@@ -4,14 +4,23 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 
+// Keep in sync with _breakpoints.scss
 enum Breakpoint {
-  XXS = 474,
-  XS = 576,
-  SM = 768,
-  MD = 992,
-  LG = 1200,
-  XL = 1400
+  XXS_MIN = 0,
+  XXS_MAX = 475.98,
+  XS_MIN = 476,
+  XS_MAX = 575.98,
+  SM_MIN = 576,
+  SM_MAX = 767.98,
+  MD_MIN = 768,
+  MD_MAX = 991.98,
+  LG_MIN = 992,
+  LG_MAX = 1199.98,
+  XL_MIN = 1200,
+  XL_MAX = 1399.98,
+  XXL_MIN = 1400
 }
+
 @Injectable({
   providedIn: "root"
 })
@@ -27,10 +36,46 @@ export class DeviceService extends BaseService {
     this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
+  xxsMin(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth >= Breakpoint.XXS_MIN;
+    }
+
+    return false;
+  }
+
+  xxsMax(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth <= Breakpoint.XXS_MAX;
+    }
+
+    return false;
+  }
+
+  xsMin(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth >= Breakpoint.XS_MIN;
+    }
+
+    return false;
+  }
+
   xsMax(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;
-      return window.innerWidth <= Breakpoint.XS;
+      return window.innerWidth <= Breakpoint.XS_MAX;
+    }
+
+    return false;
+  }
+
+  smMin(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth >= Breakpoint.SM_MIN;
     }
 
     return false;
@@ -39,16 +84,26 @@ export class DeviceService extends BaseService {
   smMax(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;
-      return window.innerWidth <= Breakpoint.SM;
+      return window.innerWidth <= Breakpoint.SM_MAX;
     }
 
     return false;
   }
 
+  mdMin(): boolean {
+    console.log(this.windowRefService.nativeWindow.innerWidth);
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth >= Breakpoint.MD_MIN;
+    }
+
+    return false
+  }
+
   mdMax(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;
-      return window.innerWidth <= Breakpoint.MD;
+      return window.innerWidth <= Breakpoint.MD_MAX;
     }
 
     return false;
@@ -57,7 +112,7 @@ export class DeviceService extends BaseService {
   lgMin(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;
-      return window.innerWidth > Breakpoint.LG;
+      return window.innerWidth >= Breakpoint.LG_MIN;
     }
 
     return false;
@@ -66,16 +121,7 @@ export class DeviceService extends BaseService {
   lgMax(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;
-      return window.innerWidth <= Breakpoint.LG;
-    }
-
-    return false;
-  }
-
-  xlMax(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
-      const window = this.windowRefService.nativeWindow;
-      return window.innerWidth <= Breakpoint.XL;
+      return window.innerWidth <= Breakpoint.LG_MAX;
     }
 
     return false;
@@ -84,7 +130,25 @@ export class DeviceService extends BaseService {
   xlMin(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;
-      return window.innerWidth > Breakpoint.XL;
+      return window.innerWidth >= Breakpoint.XL_MIN;
+    }
+
+    return false;
+  }
+
+  xlMax(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth <= Breakpoint.XL_MAX;
+    }
+
+    return false;
+  }
+
+  xxlMin(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const window = this.windowRefService.nativeWindow;
+      return window.innerWidth >= Breakpoint.XXL_MIN;
     }
 
     return false;

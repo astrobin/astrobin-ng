@@ -23,6 +23,12 @@
   transition: opacity .5s ease-in;
   color: var(--white);
 
+  @media screen and (max-width: $sm-max) {
+    &.has-mobile-menu {
+      padding-top: 4rem;
+    }
+  }
+
   @media screen and (max-width: $md-max) {
     padding: 2rem .5rem;
     margin-top: 0;

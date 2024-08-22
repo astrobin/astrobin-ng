@@ -118,6 +118,7 @@ import { FormlyFieldSliderComponent } from "@shared/components/misc/formly-field
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { ForumPostSearchComponent } from "@shared/components/search/forum-post-search/forum-post-search.component";
 import { NestedCommentSearchComponent } from "@shared/components/search/nestedcomment-search/nested-comment-search.component";
+import { MobileMenuComponent } from "@shared/components/mobile-menu/mobile-menu.component";
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { ImageViewerTitleComponent } from "@shared/components/misc/image-viewer/image-viewer-title.component";
 import { ImageViewerPhotographersComponent } from "@shared/components/misc/image-viewer/image-viewer-photographers.component";
@@ -217,6 +218,7 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  MobileMenuComponent,
   MoreRelatedItemsModalComponent,
   MostOftenUsedWithModalComponent,
   NestedCommentComponent,
