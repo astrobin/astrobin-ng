@@ -31,7 +31,7 @@ export class SearchConstellationFilterComponent extends SearchBaseFilterComponen
         description: this.translateService.instant("Only show images in a specific constellation."),
         options: this.constellations.map(constellation => ({
           value: constellation.id,
-          label: constellation.name
+          label: `${constellation.name} (${constellation.id})`
         }))
       }
     }
@@ -54,6 +54,6 @@ export class SearchConstellationFilterComponent extends SearchBaseFilterComponen
     }
 
     const constellation = this.constellations.find(constellation => constellation.id === this.value);
-    return this.domSanitizer.bypassSecurityTrustHtml(constellation.name);
+    return this.domSanitizer.bypassSecurityTrustHtml(`${constellation.name} (${constellation.id})`);
   }
 }

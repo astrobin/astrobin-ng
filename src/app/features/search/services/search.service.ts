@@ -91,13 +91,12 @@ export interface SearchAutoCompleteItem {
   providedIn: "root"
 })
 export class SearchService extends BaseService {
-  private _autoCompleteItemsLimit = 15;
-  private _autoCompleteTelescopeCache: { [query: string]: SearchAutoCompleteItem[] } = {};
-  private _autoCompleteCameraCache: { [query: string]: SearchAutoCompleteItem[] } = {};
-
   searchCompleteSubject: Subject<SearchPaginatedApiResultInterface<any>> =
     new Subject<SearchPaginatedApiResultInterface<any>>();
   searchComplete$: Observable<SearchPaginatedApiResultInterface<any>>;
+  private _autoCompleteItemsLimit = 15;
+  private _autoCompleteTelescopeCache: { [query: string]: SearchAutoCompleteItem[] } = {};
+  private _autoCompleteCameraCache: { [query: string]: SearchAutoCompleteItem[] } = {};
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -687,11 +686,11 @@ export class SearchService extends BaseService {
     return this._autoCompleteYesNo$(query, SearchAutoCompleteType.MODIFIED_CAMERA).pipe(
       map(value => (
         value.map(item => ({
-          ...item,
-          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.MODIFIED_CAMERA)
-        })
-      )
-    ))) as Observable<SearchAutoCompleteItem[]>;
+            ...item,
+            minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.MODIFIED_CAMERA)
+          })
+        )
+      ))) as Observable<SearchAutoCompleteItem[]>;
   }
 
   autoCompleteAnimated$(query: string): Observable<SearchAutoCompleteItem[]> {
@@ -790,10 +789,12 @@ export class SearchService extends BaseService {
     return of(
       this.constellationService
         .getConstellations(this.translateService.currentLang)
-        .filter(constellation => this._autoCompleteMatch(query, constellation.name))
+        .filter(constellation =>
+          this._autoCompleteMatch(query, `${constellation.name} (${constellation.id})`)
+        )
         .map(constellation => ({
           type: SearchAutoCompleteType.CONSTELLATION,
-          label: constellation.name,
+          label: `${constellation.name} (${constellation.id})`,
           value: constellation.id,
           minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.CONSTELLATION)
         }))
