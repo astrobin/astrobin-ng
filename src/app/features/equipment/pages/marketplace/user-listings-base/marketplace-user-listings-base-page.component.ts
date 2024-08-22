@@ -21,9 +21,10 @@ import { CountryService } from "@shared/services/country.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LocalStorageService } from "@shared/services/localstorage.service";
-import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { RouterService } from "@shared/services/router.service";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-marketplace-user-listings-base-page",
@@ -53,7 +54,9 @@ export abstract class MarketplaceUserListingsBasePageComponent
     public readonly routerService: RouterService,
     @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(
       store$,
@@ -72,7 +75,9 @@ export abstract class MarketplaceUserListingsBasePageComponent
       routerService,
       platformId,
       changeDetectorRef,
-      equipmentMarketplaceService
+      equipmentMarketplaceService,
+      deviceService,
+      offcanvasService
     );
   }
 

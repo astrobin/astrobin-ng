@@ -1,87 +1,34 @@
-<div class="page has-breadcrumb">
-  <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row">
-    <span class="flex-grow-1 me-lg-3 mb-3 mb-md-1 mb-lg-0">
-      {{ title }}
-    </span>
+<astrobin-mobile-menu
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
+  [titleTemplate]="titleTemplate"
+  [descriptionTemplate]="descriptionTemplate"
+  [template]="navTemplate"
+></astrobin-mobile-menu>
 
-    <span class="d-inline-block mb-2 me-lg-3 pt-0 pb-0" ngbDropdown>
-      <button
-        #selectRegionTooltip="ngbTooltip"
-        [class.loading]="loadingService.loading$ | async"
-        [ngbTooltip]="selectRegionTooltipText"
-        class="btn btn-outline-primary mb-0"
-        container="body"
-        id="region-selector"
-        ngbDropdownToggle
-        placement="start"
-        tooltipClass="tooltip-warning"
-        triggers="manual"
-      >
-        <ng-container *ngIf="!!selectedRegion && selectedRegion !== WORLDWIDE">
-          <fa-icon icon="flag"></fa-icon>
-          {{ selectedRegionLabel }}
-        </ng-container>
-        <ng-container *ngIf="!selectedRegion || selectedRegion === WORLDWIDE">
-          <fa-icon icon="globe"></fa-icon>
-          {{ "Worldwide" | translate }}
-        </ng-container>
-      </button>
-
-      <span aria-labelledby="region-selector" ngbDropdownMenu>
-        <button (click)="setRegion($event, WORLDWIDE)" ngbDropdownItem>
-          <fa-icon icon="globe"></fa-icon>
-          {{ "Worldwide" | translate }}
-        </button>
-
-        <button (click)="setRegion($event, requestContinent)" *ngIf="!!requestContinent" ngbDropdownItem>
-          <ng-container *ngTemplateOutlet="continentFlagTemplate"></ng-container>
-          {{ requestContinent }}
-        </button>
-
-        <button
-          (click)="setRegion($event, 'EU')"
-          *ngIf="!!requestCountryCode && UtilsService.isEUCountry(requestCountryCode)"
-          ngbDropdownItem
-        >
-          <fa-icon icon="euro-sign"></fa-icon>
-          {{ "European Union" | translate }}
-        </button>
-
-        <button (click)="setRegion($event, requestCountryCode)" *ngIf="!!requestCountryLabel" ngbDropdownItem>
-          <ng-container *ngTemplateOutlet="countryFlagTemplate"></ng-container>
-          {{ requestCountryLabel }}
-        </button>
-
-        <button (click)="startOtherCountrySelection($event)" ngbDropdownItem>
-          <fa-icon icon="arrow-pointer"></fa-icon>
-          {{ "Select" | translate }}
-        </button>
+<div class="page has-breadcrumb has-mobile-menu">
+  <ng-container *ngIf="breakpointMdMin">
+    <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row">
+      <span class="flex-grow-1 me-lg-3 mb-3 mb-md-1 mb-lg-0">
+        {{ title }}
       </span>
-    </span>
 
-    <astrobin-refresh-button (click)="refresh()" class="d-none d-lg-block"></astrobin-refresh-button>
-  </h1>
+      <span class="mb-2 me-lg-3 pt-0 pb-0">
+        <ng-container *ngTemplateOutlet="regionSelectorTemplate"></ng-container>
+      </span>
 
-  <small>
-    {{
-    "AstroBin is the best place to buy and sell astrophotography equipment. You can find telescopes, cameras, mounts, filters, and much more."
-      | translate
-    }}
-    <a
-      class="learn-more"
-      href="https://welcome.astrobin.com/features/marketplace"
-      target="_blank"
-    >
-      {{ "Learn more" }}.
-    </a>
-  </small>
+      <astrobin-refresh-button *ngIf="breakpointLgMin" (click)="refresh()"></astrobin-refresh-button>
+    </h1>
+
+    <small>
+      <ng-container *ngTemplateOutlet="descriptionTemplate"></ng-container>
+    </small>
+  </ng-container>
 
   <div class="row">
-    <div class="col-12 col-md-5 col-lg-3">
-      <astrobin-marketplace-sidebar
-        (filterChange)="refresh($event)"
-        class="d-block mb-3 mb-lg-0"
-      ></astrobin-marketplace-sidebar>
+    <div *ngIf="breakpointMdMin" class="col-12 col-md-5 col-lg-3">
+      <ng-container *ngTemplateOutlet="sellSeekButtons"></ng-container>
+      <ng-container [ngTemplateOutlet]="sidebarTemplate"></ng-container>
     </div>
 
     <div class="col-12 col-md-7 col-lg-9">
@@ -96,7 +43,29 @@
       ></astrobin-marketplace-listing-cards>
     </div>
   </div>
+
+  <ng-container *ngIf="breakpointSmMax">
+    <ng-container *ngTemplateOutlet="sellSeekButtons"></ng-container>
+  </ng-container>
 </div>
+
+<ng-template #sellSeekButtons>
+  <div class="fixed-mobile-buttons">
+    <a
+      (click)="equipmentMarketplaceService.onCreateListingClicked($event)"
+      class="btn btn-primary btn-lg w-100 mb-2"
+    >
+      {{ "Sell" | translate }}
+    </a>
+
+    <a
+      (click)="equipmentMarketplaceService.onPostWantedClicked($event)"
+      class="btn btn-secondary btn-lg w-100 mb-3"
+    >
+      {{ "Seek" | translate }}
+    </a>
+  </div>
+</ng-template>
 
 <ng-template #countryFlagTemplate>
   <fa-icon *ngIf="requestCountryCode === 'US'" icon="flag-usa"></fa-icon>
@@ -112,4 +81,89 @@
   <fa-icon *ngIf="requestContinent === 'Africa'" icon="earth-africa"></fa-icon>
   <fa-icon *ngIf="requestContinent === 'Oceania'" icon="earth-oceania"></fa-icon>
   <fa-icon *ngIf="requestContinent === 'Antarctica'" icon="globe"></fa-icon>
+</ng-template>
+
+<ng-template #regionSelectorTemplate>
+  <div ngbDropdown>
+    <button
+      #selectRegionTooltip="ngbTooltip"
+      [class.loading]="loadingService.loading$ | async"
+      [ngbTooltip]="selectRegionTooltipText"
+      class="btn btn-outline-primary mb-0"
+      container="body"
+      id="region-selector"
+      ngbDropdownToggle
+      placement="start"
+      tooltipClass="tooltip-warning"
+      triggers="manual"
+    >
+      <ng-container *ngIf="!!selectedRegion && selectedRegion !== WORLDWIDE">
+        <fa-icon icon="flag"></fa-icon>
+        {{ selectedRegionLabel }}
+      </ng-container>
+
+      <ng-container *ngIf="!selectedRegion || selectedRegion === WORLDWIDE">
+        <fa-icon icon="globe"></fa-icon>
+        {{ "Worldwide" | translate }}
+      </ng-container>
+    </button>
+
+    <span aria-labelledby="region-selector" ngbDropdownMenu>
+      <button (click)="setRegion($event, WORLDWIDE)" ngbDropdownItem>
+        <fa-icon icon="globe"></fa-icon>
+        {{ "Worldwide" | translate }}
+      </button>
+
+      <button (click)="setRegion($event, requestContinent)" *ngIf="!!requestContinent" ngbDropdownItem>
+        <ng-container *ngTemplateOutlet="continentFlagTemplate"></ng-container>
+        {{ requestContinent }}
+      </button>
+
+      <button
+        (click)="setRegion($event, 'EU')"
+        *ngIf="!!requestCountryCode && UtilsService.isEUCountry(requestCountryCode)"
+        ngbDropdownItem
+      >
+        <fa-icon icon="euro-sign"></fa-icon>
+        {{ "European Union" | translate }}
+      </button>
+
+      <button (click)="setRegion($event, requestCountryCode)" *ngIf="!!requestCountryLabel" ngbDropdownItem>
+        <ng-container *ngTemplateOutlet="countryFlagTemplate"></ng-container>
+        {{ requestCountryLabel }}
+      </button>
+
+      <button (click)="startOtherCountrySelection($event)" ngbDropdownItem>
+        <fa-icon icon="arrow-pointer"></fa-icon>
+        {{ "Select" | translate }}
+      </button>
+    </span>
+  </div>
+</ng-template>
+
+<ng-template #sidebarTemplate>
+  <astrobin-marketplace-sidebar (filterChange)="refresh($event)"></astrobin-marketplace-sidebar>
+</ng-template>
+
+<ng-template #navTemplate>
+  <ng-container [ngTemplateOutlet]="regionSelectorTemplate"></ng-container>
+  <ng-container [ngTemplateOutlet]="sidebarTemplate"></ng-container>
+</ng-template>
+
+<ng-template #titleTemplate>
+  {{ title }}
+</ng-template>
+
+<ng-template #descriptionTemplate>
+  {{
+    "AstroBin is the best place to buy and sell astrophotography equipment. You can find telescopes, cameras, mounts, filters, and much more."
+      | translate
+  }}
+  <a
+    class="learn-more"
+    href="https://welcome.astrobin.com/features/marketplace"
+    target="_blank"
+  >
+    {{ "Learn more" }}.
+  </a>
 </ng-template>

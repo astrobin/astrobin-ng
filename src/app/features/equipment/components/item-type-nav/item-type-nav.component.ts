@@ -1,16 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  PLATFORM_ID,
-  SimpleChanges
-} from "@angular/core";
+import { AfterViewInit, Component, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -38,9 +26,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input()
   excludeTypes: EquipmentItemType[] = [];
-
-  @Input()
-  enableCollapse = true;
 
   @Input()
   showCounts = true;
@@ -102,9 +87,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   @Input()
   activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
 
-  @Output()
-  collapsedChanged = new EventEmitter<boolean>();
-
   brandCount$: Observable<number | null> = this.store$.select(selectEquipment).pipe(map(state => state.brandsCount));
   contributorCount$: Observable<number | null> = this.store$
     .select(selectEquipmentContributors)
@@ -124,7 +106,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   activeSubNav = "";
   reviewPendingEditNotification: ActiveToast<any>;
   isSmallDevice: boolean;
-  collapsed: boolean = false;
+  uncollapsedTypes: string[] = [];
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -136,7 +118,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective
     public readonly loadingService: LoadingService,
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationsService: PopNotificationsService,
-    @Inject(PLATFORM_ID) public readonly platformId
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
   }
@@ -144,7 +126,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   ngOnInit() {
     super.ngOnInit();
 
-    this.collapse();
     this._initRouterEvents();
     this._setActiveSubNav(this.activatedRoute.snapshot?.url.join("/"));
     this._initActionListeners();
@@ -210,21 +191,15 @@ export class ItemTypeNavComponent extends BaseComponentDirective
     super.ngOnDestroy();
   }
 
-  collapse() {
-    if (!this.enableCollapse) {
-      return;
-    }
+  toggleCollapseType(event: MouseEvent, type: EquipmentItemType) {
+    event.preventDefault();
+    event.stopPropagation();
 
-    if (!this.collapsed) {
-      this.collapsed = true;
-      this.collapsedChanged.emit(true);
-    }
-  }
-
-  expand() {
-    if (this.collapsed) {
-      this.collapsed = false;
-      this.collapsedChanged.emit(false);
+    const index = this.uncollapsedTypes.indexOf(type);
+    if (index > -1) {
+      this.uncollapsedTypes.splice(index, 1);
+    } else {
+      this.uncollapsedTypes.push(type);
     }
   }
 
@@ -245,7 +220,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective
       if (event instanceof NavigationEnd) {
         this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
         this._setActiveSubNav(event.urlAfterRedirects);
-        this.collapse();
       }
     });
   }

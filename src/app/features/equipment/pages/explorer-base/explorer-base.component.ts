@@ -15,6 +15,8 @@ import { CookieService } from "ngx-cookie";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
 import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
+import { DeviceService } from "@shared/services/device.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explorer-page-sorting";
 
@@ -29,8 +31,6 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   activeEditProposalId: EditProposalInterface<EquipmentItemBaseInterface>["id"];
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface> | BrandInterface[]>;
   sortOrder: EquipmentItemsSortOrder = EquipmentItemsSortOrder.AZ;
-  enableCollapse = true;
-  navCollapsed = false;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -40,7 +40,9 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly changeDetectionRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(store$);
   }
@@ -67,9 +69,7 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   ngOnInit() {
     super.ngOnInit();
 
-    if (this.windowRefService.nativeWindow.innerWidth > 1200) {
-      this.enableCollapse = false;
-    }
+    this.initializeWindowWidthUpdate(this.platformId, this.deviceService, this.windowRefService);
 
     this.page = +this.activatedRoute.snapshot?.queryParamMap.get("page") || 1;
     this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
@@ -78,6 +78,8 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     this.store$.dispatch(new GetContributors());
 
     this.router.events?.pipe(takeUntil(this.destroyed$)).subscribe(event => {
+      this.offcanvasService.dismiss();
+
       if (event instanceof NavigationEnd) {
         this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
         this.getItems();
@@ -147,17 +149,6 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     this.getItems();
   }
 
-  onNavCollapsedChanged(collapsed: boolean): void {
-    this.navCollapsed = collapsed;
-    this.changeDetectionRef.detectChanges();
-  }
-
   getItems() {
-  }
-
-  protected _scrollToItemBrowser(): void {
-    if (this.windowRefService.nativeWindow.innerWidth < 768) {
-      this.windowRefService.scrollToElement("astrobin-equipment-item-browser");
-    }
   }
 }

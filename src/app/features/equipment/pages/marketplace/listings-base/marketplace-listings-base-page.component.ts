@@ -1,13 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-  ViewChild
-} from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -16,17 +7,9 @@ import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectMarketplace, selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
 import { debounceTime, filter, map, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
-import {
-  ClearMarketplaceListings,
-  EquipmentActionTypes,
-  LoadMarketplaceListings
-} from "@features/equipment/store/equipment.actions";
+import { ClearMarketplaceListings, EquipmentActionTypes, LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 import { LoadingService } from "@shared/services/loading.service";
-import {
-  MarketplaceFilterModel,
-  marketplaceFilterModelKeys,
-  MarketplaceRefreshOptions
-} from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import { MarketplaceFilterModel, marketplaceFilterModelKeys, MarketplaceRefreshOptions } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { CountryService } from "@shared/services/country.service";
@@ -36,12 +19,13 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LocalStorageService } from "@shared/services/localstorage.service";
-import { NgbModal, NgbModalRef, NgbPaginationConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbOffcanvas, NgbPaginationConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -90,7 +74,9 @@ export abstract class MarketplaceListingsBasePageComponent
     public readonly routerService: RouterService,
     @Inject(PLATFORM_ID) public readonly platformId: object,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(store$);
   }
@@ -113,6 +99,8 @@ export abstract class MarketplaceListingsBasePageComponent
 
       this._refreshOnQueryParamsChange();
     }
+
+    this.initializeWindowWidthUpdate(this.platformId, this.deviceService, this.windowRefService);
   }
 
   ngAfterViewInit() {
@@ -211,6 +199,7 @@ export abstract class MarketplaceListingsBasePageComponent
     }
 
     this.loadingService.setLoading(true);
+    this.offcanvasService.dismiss();
 
     this.filterModel = {
       ...this.filterModel,

@@ -1,15 +1,6 @@
-<button
-  (click)="expand()"
-  *ngIf="isSmallDevice && collapsed"
-  class="btn btn-outline-secondary btn-block mb-4"
->
-  {{ "Select equipment class" | translate }}
-</button>
-
 <ul
   #nav="ngbNav"
   [(activeId)]="activeType"
-  [class.collapsed]="collapsed"
   class="nav-pills"
   ngbNav
   orientation="vertical"
@@ -22,11 +13,10 @@
         routerLink="{{ routingBasePath }}/brand"
       >
         <img
-          (mouseover)="expand()"
           [alt]="'Brands' | translate"
           src="/assets/images/brand-placeholder.png?v=2"
         />
-        <span>
+        <span class="type-label">
           {{ "Brands" | translate }} / {{ "Companies" | translate }}
         </span>
 
@@ -41,27 +31,53 @@
 
   <li *ngFor="let type of types" [disabled]="type.disabled" [ngbNavItem]="type.value.toLowerCase()">
     <a
-      (mouseover)="expand()"
       [queryParams]="{'page': 1}"
       ngbNavLink
       routerLink="{{ routingBasePath }}/{{ type.value.toLowerCase() }}"
     >
       <img
         alt="{{ type.label }}"
+        class="type-icon"
         src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png?v=2"
       />
-      <span>
+
+      <span class="type-label">
         {{ type.label }}
       </span>
 
       <span *ngIf="type.count" class="count">
-      {{ type.count | async }}
+        {{ type.count | async }}
+      </span>
+
+      <span class="type-collapse-toggle">
+        <fa-icon
+          *ngIf="activeType !== type.value.toLowerCase() && uncollapsedTypes.includes(type.value)"
+          (click)="toggleCollapseType($event, type.value)"
+          icon="angle-up"
+        ></fa-icon>
+
+        <fa-icon
+          *ngIf="activeType !== type.value.toLowerCase() && !uncollapsedTypes.includes(type.value)"
+          (click)="toggleCollapseType($event, type.value)"
+          icon="angle-down"
+        ></fa-icon>
+
+        <fa-icon
+          *ngIf="activeType === type.value.toLowerCase()"
+          icon="circle-dot"
+        ></fa-icon>
       </span>
     </a>
 
     <ul
       #subnav="ngbNav"
-      *ngIf="activeType === type.value.toLowerCase() && showSubNavigation"
+      *ngIf="
+        showSubNavigation &&
+        (
+          uncollapsedTypes.includes(type.value) ||
+          activeType === type.value.toLowerCase()
+        )
+      "
       [(activeId)]="activeSubNav"
       class="nav-pills"
       ngbNav
@@ -70,24 +86,24 @@
       <ng-container *ngIf="currentUser$ | async as currentUser">
         <li *ngIf="currentUser | isEquipmentModerator" ngbNavItem="pending-review-explorer">
           <a ngbNavLink routerLink="/equipment/pending-review-explorer/{{ type.value.toLowerCase() }}">
-            {{ "Pending review" | translate }}
+            <span class="type-label">{{ "Pending review" | translate }}</span>
+            <span *ngIf="type.pendingReviewCount" class="count">{{ type.pendingReviewCount | async }}</span>
           </a>
-          <span *ngIf="type.pendingReviewCount" class="count">{{ type.pendingReviewCount | async }}</span>
         </li>
 
         <li ngbNavItem="followed-explorer">
           <a ngbNavLink routerLink="/equipment/followed-explorer/{{ type.value.toLowerCase() }}">
-            {{ "Followed" | translate }}
+            <span class="type-label">{{ "Followed" | translate }}</span>
+            <span *ngIf="type.followedCount" class="count">{{ type.followedCount | async }}</span>
           </a>
-          <span *ngIf="type.followedCount" class="count">{{ type.followedCount | async }}</span>
         </li>
       </ng-container>
 
       <li ngbNavItem="pending-edit-explorer">
         <a ngbNavLink routerLink="/equipment/pending-edit-explorer/{{ type.value.toLowerCase() }}">
-          {{ "Pending edit" | translate }}
+          <span class="type-label">{{ "Pending edit" | translate }}</span>
+          <span *ngIf="type.pendingEditCount" class="count">{{ type.pendingEditCount | async }}</span>
         </a>
-        <span *ngIf="type.pendingEditCount" class="count">{{ type.pendingEditCount | async }}</span>
       </li>
     </ul>
   </li>
@@ -101,30 +117,18 @@
         routerLink="{{ routingBasePath }}/contributors"
       >
         <img
-          (mouseover)="expand()"
           [alt]="'Contributors' | translate"
           class="contributors-icon"
           src="/assets/images/default-avatar.jpeg?v=2"
         />
-        <span>
+        <span class="type-label">
           {{ "Contributors" | translate }}
         </span>
 
         <span *ngIf="contributorCount$" class="count">
-        {{ contributorCount$ | async }}
+          {{ contributorCount$ | async }}
         </span>
       </a>
-    </li>
-  </ng-container>
-
-  <ng-container *ngIf="!collapsed && enableCollapse">
-    <li class="nav-item-separator"></li>
-
-    <li [ngbNavItem]="'collapse'">
-      <button (click)="collapse()" class="btn btn-outline-secondary btn-block">
-        <fa-icon *ngIf="isSmallDevice" icon="angle-double-up"></fa-icon>
-        <fa-icon *ngIf="!isSmallDevice" icon="angle-double-left"></fa-icon>
-      </button>
     </li>
   </ng-container>
 </ul>

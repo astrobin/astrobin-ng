@@ -7,6 +7,8 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { DeviceService } from "@shared/services/device.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 export enum PendingType {
   PENDING_EDIT = "PENDING_EDIT",
@@ -30,7 +32,9 @@ export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
     public readonly cookieService: CookieService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly changeDetectionRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(
       store$,
@@ -40,6 +44,9 @@ export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
       windowRefService,
       cookieService,
       changeDetectionRef,
-      platformId);
+      platformId,
+      deviceService,
+      offcanvasService
+    );
   }
 }

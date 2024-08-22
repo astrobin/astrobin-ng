@@ -1,5 +1,13 @@
-<div class="page has-breadcrumb has-mobile-buttons-bar">
-  <h1 class="d-flex justify-content-between align-items-center flex-column flex-lg-row gap-1">
+<astrobin-mobile-menu
+  (menuClose)="onMobileMenuClose()"
+  (menuOpen)="onMobileMenuOpen()"
+  [titleTemplate]="titleTemplate"
+  [descriptionTemplate]="descriptionTemplate"
+  [iconsTemplate]="shareButtons"
+></astrobin-mobile-menu>
+
+<div class="page has-breadcrumb has-mobile-buttons-bar has-mobile-menu">
+  <h1 *ngIf="breakpointMdMin" class="d-flex justify-content-between align-items-center flex-column flex-lg-row gap-1">
     <span class="d-block flex-grow-1 me-lg-3 mb-1 mb-lg-0">
       <span class="d-block mb-0 mb-lg-2">
         {{ title }}
@@ -9,63 +17,9 @@
         <fa-icon icon="arrow-left"></fa-icon>
         {{ "Back to marketplace" | translate }}
       </a>
-
-      <span class="d-block mt-1 listing-info">
-        <fa-icon icon="calendar"></fa-icon>
-        <ng-container *ngIf="listing.approved">
-          {{ "Published" | translate }}: {{ listing.approved | localDate | timeago : true }}
-        </ng-container>
-
-        <ng-container *ngIf="!listing.approved">
-          {{ "Created" | translate }}: {{ listing.created | localDate | timeago : true }}
-        </ng-container>
-
-        &middot;
-
-        <fa-icon icon="bell"></fa-icon>
-        <span *ngIf="listing.followerCount === 0" [translate]="'No followers yet'"></span>
-        <span *ngIf="listing.followerCount === 1" [translate]="'One follower'"></span>
-        <span
-          *ngIf="listing.followerCount > 1"
-          [translateParams]="{
-            '0': listing.followerCount
-          }"
-          [translate]="'{{0}} followers'"
-        ></span>
-
-        &middot;
-
-        <fa-icon icon="eye"></fa-icon>
-        <span *ngIf="listing.viewCount === 0" [translate]="'No views yet'"></span>
-        <span *ngIf="listing.viewCount === 1" [translate]="'One view'"></span>
-        <span
-          *ngIf="listing.viewCount > 1"
-          [translateParams]="{
-            '0': listing.viewCount
-          }"
-          [translate]="'{{0}} views'"
-        ></span>
-
-        &middot;
-
-        <fa-icon icon="clock"></fa-icon>
-        {{ "Expiration" }}: {{ listing.expiration | localDate | timeago : true }}
-      </span>
     </span>
 
-    <span class="share-buttons">
-      <button (click)="shareOnFacebook()" class="btn btn-link btn-no-block">
-        <fa-icon [icon]="['fab', 'facebook']"></fa-icon>
-      </button>
-
-      <button (click)="shareOnX()" class="btn btn-link btn-no-block">
-        <fa-icon [icon]="['fab', 'twitter']"></fa-icon>
-      </button>
-
-      <button (click)="shareOnWhatsApp()" class="btn btn-link btn-no-block">
-        <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
-      </button>
-    </span>
+    <ng-container [ngTemplateOutlet]="shareButtons"></ng-container>
   </h1>
 
   <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
@@ -372,4 +326,76 @@
       <span class="btn-text">{{ "Report listing" | translate }}</span>
     </button>
   </div>
+</ng-template>
+
+<ng-template #titleTemplate>
+  {{ title }}
+</ng-template>
+
+<ng-template #descriptionTemplate>
+  <span class="d-block listing-info">
+    <span class="listing-info-section">
+      <fa-icon icon="calendar"></fa-icon>
+      <ng-container *ngIf="listing.approved">
+        {{ "Published" | translate }}: {{ listing.approved | localDate | timeago : true }}
+      </ng-container>
+
+      <ng-container *ngIf="!listing.approved">
+        {{ "Created" | translate }}: {{ listing.created | localDate | timeago : true }}
+      </ng-container>
+    </span>
+
+    <span class="listing-info-section-separator">&middot;</span>
+
+    <span class="listing-info-section">
+      <fa-icon icon="bell"></fa-icon>
+      <span *ngIf="listing.followerCount === 0" [translate]="'No followers yet'"></span>
+      <span *ngIf="listing.followerCount === 1" [translate]="'One follower'"></span>
+      <span
+        *ngIf="listing.followerCount > 1"
+        [translateParams]="{
+          '0': listing.followerCount
+        }"
+        [translate]="'{{0}} followers'"
+      ></span>
+    </span>
+
+    <span class="listing-info-section-separator">&middot;</span>
+
+    <span class="listing-info-section">
+      <fa-icon icon="eye"></fa-icon>
+      <span *ngIf="listing.viewCount === 0" [translate]="'No views yet'"></span>
+      <span *ngIf="listing.viewCount === 1" [translate]="'One view'"></span>
+      <span
+        *ngIf="listing.viewCount > 1"
+        [translateParams]="{
+          '0': listing.viewCount
+        }"
+        [translate]="'{{0}} views'"
+      ></span>
+    </span>
+
+    <span class="listing-info-section-separator">&middot;</span>
+
+    <span class="listing-info-section">
+      <fa-icon icon="clock"></fa-icon>
+      {{ "Expiration" }}: {{ listing.expiration | localDate | timeago : true }}
+    </span>
+  </span>
+</ng-template>
+
+<ng-template #shareButtons>
+  <span class="share-buttons">
+    <button (click)="shareOnFacebook()" class="btn btn-link btn-no-block">
+      <fa-icon [icon]="['fab', 'facebook']"></fa-icon>
+    </button>
+
+    <button (click)="shareOnX()" class="btn btn-link btn-no-block">
+      <fa-icon [icon]="['fab', 'twitter']"></fa-icon>
+    </button>
+
+    <button (click)="shareOnWhatsApp()" class="btn btn-link btn-no-block">
+      <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
+    </button>
+  </span>
 </ng-template>

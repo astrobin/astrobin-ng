@@ -18,6 +18,8 @@ import { CookieService } from "ngx-cookie";
 import { LoadingService } from "@shared/services/loading.service";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { DeviceService } from "@shared/services/device.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-equipment-pending-review-explorer",
@@ -41,7 +43,9 @@ export class FollowedExplorerComponent extends ExplorerBaseComponent implements 
     public readonly loadingService: LoadingService,
     public readonly changeDetectionRef: ChangeDetectorRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(
       store$,
@@ -51,7 +55,9 @@ export class FollowedExplorerComponent extends ExplorerBaseComponent implements 
       windowRefService,
       cookieService,
       changeDetectionRef,
-      platformId
+      platformId,
+      deviceService,
+      offcanvasService
     );
   }
 
@@ -90,7 +96,6 @@ export class FollowedExplorerComponent extends ExplorerBaseComponent implements 
         }),
         tap(() => {
           this.loadingService.setLoading(false);
-          this._scrollToItemBrowser();
         })
       );
   }

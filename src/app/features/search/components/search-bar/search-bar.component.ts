@@ -221,7 +221,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   @HostListener("window:keyup.arrowUp", ["$event"])
   selectPreviousAutoCompleteGroup(event: KeyboardEvent) {
-    if (isPlatformBrowser(this.platformId) && event && !this.deviceService.isMobileDevice()) {
+    if (isPlatformBrowser(this.platformId) && event && !this.deviceService.smMax()) {
       event.preventDefault();
       const groupOrder = this.getGroupOrder();
       const currentGroupIndex = groupOrder.indexOf(this.selectedAutoCompleteGroup);
@@ -237,7 +237,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   @HostListener("window:keyup.arrowDown", ["$event"])
   selectNextAutoCompleteGroup(event: KeyboardEvent) {
-    if (isPlatformBrowser(this.platformId) && event && !this.deviceService.isMobileDevice()) {
+    if (isPlatformBrowser(this.platformId) && event && !this.deviceService.smMax()) {
       event.preventDefault();
       const groupOrder = this.getGroupOrder();
       const currentGroupIndex = groupOrder.indexOf(this.selectedAutoCompleteGroup);

@@ -28,9 +28,10 @@ import {
 import { CompareService } from "@features/equipment/services/compare.service";
 import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
 import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -74,7 +75,9 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly utilsService: UtilsService,
     public readonly modalService: NgbModal,
     public readonly changeDetectionRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(
       store$,
@@ -84,7 +87,9 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       windowRefService,
       cookieService,
       changeDetectionRef,
-      platformId
+      platformId,
+      deviceService,
+      offcanvasService
     );
   }
 
@@ -114,7 +119,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     this._updateTitle(item);
     this._updateDescription(item);
     this._setLocation();
-    this._scrollToItemBrowser();
   }
 
   viewItem(item: EquipmentItemBaseInterface): void {
@@ -143,8 +147,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         page: this.page,
         sortOrder: this.sortOrder,
         filters: this.filters
-      })
-      .pipe(tap(() => this._scrollToItemBrowser()));
+      });
   }
 
   filtersApplied(): void {
@@ -201,10 +204,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   private _setLocation() {
     const _doSetLocation = (item: EquipmentItemBaseInterface) => {
-      if (!!this.itemTypeNavComponent) {
-        this.itemTypeNavComponent.collapse();
-      }
-
       this.utilsService.delay(100).subscribe(() => {
         if (!item) {
           const urlObject = this.windowRefService.getCurrentUrl();
