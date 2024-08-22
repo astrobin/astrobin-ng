@@ -10,6 +10,7 @@
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: flex-start;
+      align-items: center;
       gap: .25rem;
 
       @media (max-width: $xs-max) {
@@ -29,6 +30,10 @@
         padding-right: 0;
         width: auto;
         flex-grow: 1;
+
+        &::placeholder {
+          color: var(--lighterGrey) !important;
+        }
 
         @media (max-width: $sm-max) {
           padding-left: .5rem;
