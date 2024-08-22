@@ -109,6 +109,13 @@
             <fa-icon *ngIf="item.isTopPick" class="top-pick" icon="star"></fa-icon>
             <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
           </div>
+
+          <div *ngIf="averageHeight >= 150" class="hover">
+            <div *ngIf="item.username && item.userDisplayName" class="user">
+              <a [href]="classicRoutesService.GALLERY(item.username)">{{ item.userDisplayName }}</a>
+            </div>
+            <div class="title">{{ item.title }}</div>
+          </div>
         </a>
       </div>
     </ng-container>

@@ -48,4 +48,6 @@ export interface ImageSearchInterface {
   isIotd: boolean;
   isTopPick: boolean;
   isTopPickNomination: boolean;
+  username: string;
+  userDisplayName: string;
 }
