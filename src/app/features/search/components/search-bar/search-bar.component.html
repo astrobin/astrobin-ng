@@ -70,14 +70,6 @@
       >
       </fa-icon>
 
-      <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-        <fa-icon
-          *ngIf="currentUserWrapper.user && (model.searchType === SearchType.IMAGE || model.searchType === undefined)"
-          (click)="onLoadSaveClicked($event)"
-          icon="database"
-        ></fa-icon>
-      </ng-container>
-
       <div
         *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
         ngbDropdown
@@ -254,6 +246,14 @@
           </button>
         </div>
       </div>
+
+      <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+        <fa-icon
+          *ngIf="currentUserWrapper.user && (model.searchType === SearchType.IMAGE || model.searchType === undefined)"
+          (click)="onLoadSaveClicked($event)"
+          icon="database"
+        ></fa-icon>
+      </ng-container>
 
       <fa-icon
         (click)="onSearch(model)"
