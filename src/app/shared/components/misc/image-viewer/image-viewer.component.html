@@ -250,7 +250,12 @@
           (click)="openComments($event)"
           class="btn btn-link link-secondary"
         >
-          <fa-icon icon="comments"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Comments' | translate"
+            triggers="hover click"
+            container="body"
+            icon="comments"
+          ></fa-icon>
         </button>
         <span class="count">
           <astrobin-nested-comments-count
@@ -265,7 +270,12 @@
           (click)="openShare($event)"
           class="btn btn-link link-secondary"
         >
-          <fa-icon icon="share"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Share' | translate"
+            triggers="hover click"
+            container="body"
+            icon="share"
+          ></fa-icon>
         </button>
       </div>
     </ng-container>
