@@ -15,7 +15,13 @@ import { WindowRefService } from "@shared/services/window-ref.service";
     <div class="metadata-section">
       <div *ngIf="dataSource && dataSourceIcon" class="metadata-item">
         <div class="metadata-icon">
-          <img [src]="'/assets/images/' + dataSourceIcon" alt="" />
+          <img
+            [ngbTooltip]="'Data source' | translate"
+            triggers="hover click"
+            container="body"
+            [src]="'/assets/images/' + dataSourceIcon"
+            alt=""
+          />
         </div>
         <div (click)="dataSourceClicked($event)" class="metadata-link">
           {{ dataSource }}
@@ -24,7 +30,13 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 
       <div *ngIf="remoteDataSource" class="metadata-item">
         <div class="metadata-icon">
-          <img src="/assets/images/data-sources/observatory-white.png?v=1" alt="" />
+          <img
+            [ngbTooltip]="'Remote hosting' | translate"
+            triggers="hover click"
+            container="body"
+            src="/assets/images/data-sources/observatory-white.png?v=1"
+            alt=""
+          />
         </div>
         <div (click)="remoteDataSourceClicked($event)" class="metadata-link">
           {{ remoteDataSource }}
@@ -33,7 +45,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 
       <div *ngFor="let location of locations" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="map-marker-alt"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Location' | translate"
+            triggers="hover click"
+            container="body"
+            icon="map-marker-alt"
+          ></fa-icon>
         </div>
         <div class="metadata-label">
           {{ location }}

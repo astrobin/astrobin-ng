@@ -18,7 +18,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
     <div *ngIf="image?.solution" class="metadata-section">
       <div *ngIf="celestialHemisphere" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="globe"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Celestial hemisphere' | translate"
+            triggers="hover click"
+            container="body"
+            icon="globe"
+          ></fa-icon>
         </div>
         <div class="metadata-label">
           {{ celestialHemisphere }}
@@ -27,7 +32,13 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 
       <div *ngIf="constellation" class="metadata-item">
         <div class="metadata-icon">
-          <img src="/assets/images/subject-types/constellation-white.png?v=1" alt="" />
+          <img
+            [ngbTooltip]="'Constellation' | translate"
+            triggers="hover click"
+            container="body"
+            src="/assets/images/subject-types/constellation-white.png?v=1"
+            alt=""
+          />
         </div>
         <div (click)="constellationClicked($event, constellation)" class="metadata-link">
           {{ constellation }}
@@ -36,7 +47,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 
       <div *ngIf="coordinates" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="crosshairs"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Coordinates' | translate"
+            triggers="hover click"
+            container="body"
+            icon="crosshairs"
+          ></fa-icon>
         </div>
         <div [innerHTML]="coordinates" class="metadata-label coordinates">
         </div>
@@ -44,16 +60,24 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 
       <div *ngIf="fieldRadius" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="circle-notch"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Field radius' | translate"
+            triggers="hover click"
+            container="body"
+            icon="circle-notch"
+          ></fa-icon>
         </div>
         <div [innerHTML]="fieldRadius" class="metadata-label">
         </div>
       </div>
 
       <div *ngIf="pixelScale" class="metadata-item">
-        <div class="metadata-icon">
-          &middot;
-        </div>
+        <fa-icon
+          [ngbTooltip]="'Pixel scale' | translate"
+          triggers="hover click"
+          container="body"
+          icon="square"
+        ></fa-icon>
         <div [innerHTML]="pixelScale" class="metadata-label">
         </div>
       </div>
@@ -61,6 +85,9 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       <div class="metadata-item">
         <div class="metadata-icon">
           <fa-icon
+            [ngbTooltip]="'More info' | translate"
+            triggers="hover"
+            container="body"
             (click)="openMoreInfo($event)"
             data-toggle="offcanvas"
             icon="circle-info"

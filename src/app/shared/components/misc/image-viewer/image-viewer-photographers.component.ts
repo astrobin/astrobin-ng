@@ -62,7 +62,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       >
         <div class="publication-date d-flex flex-row gap-2 no-wrap">
           <ng-container *ngIf="licenseIcon && licenseTooltip">
-            <fa-icon [icon]="licenseIcon" [ngbTooltip]="licenseTooltip"></fa-icon>
+            <fa-icon
+              [icon]="licenseIcon"
+              [ngbTooltip]="licenseTooltip"
+              triggers="hover click"
+              container="body"
+            ></fa-icon>
           </ng-container>
           {{ publicationDate | localDate | timeago:true }}
         </div>

@@ -41,7 +41,12 @@ interface FilterSummary {
 
       <div *ngIf="deepSkyIntegrationTime" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="clock" [ngbTooltip]="'Integration' | translate" container="body"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Integration' | translate"
+            triggers="hover click"
+            container="body"
+            icon="clock"
+          ></fa-icon>
         </div>
         <div class="metadata-label">
           <span
@@ -54,7 +59,12 @@ interface FilterSummary {
 
       <div *ngIf="solarSystemIntegration" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="clock" [ngbTooltip]="'Integration' | translate" container="body"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Integration' | translate"
+            triggers="hover click"
+            container="body"
+            icon="clock"
+          ></fa-icon>
         </div>
         <div class="metadata-label" [innerHTML]="solarSystemIntegration">
         </div>
@@ -62,7 +72,12 @@ interface FilterSummary {
 
       <div *ngIf="!deepSkyIntegrationTime && !solarSystemIntegration" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="clock" [ngbTooltip]="'Integration' | translate" container="body"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Integration' | translate"
+            triggers="hover click"
+            container="body"
+            icon="clock"
+          ></fa-icon>
         </div>
         <div class="metadata-label">
           {{ "n/d" | translate }}
@@ -71,7 +86,12 @@ interface FilterSummary {
 
       <div *ngIf="image.averageMoonIllumination !== null" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="moon" [ngbTooltip]="'Average moon illumination' | translate" container="body"></fa-icon>
+          <fa-icon
+            [ngbTooltip]="'Average moon illumination' | translate"
+            triggers="hover click"
+            container="body"
+            icon="moon"
+          ></fa-icon>
         </div>
         <div class="metadata-label">
           <span>{{ image.averageMoonIllumination | percent }}</span>
