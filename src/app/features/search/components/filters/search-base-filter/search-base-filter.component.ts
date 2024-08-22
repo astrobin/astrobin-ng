@@ -15,7 +15,6 @@ import { takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isObservable } from "rxjs";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 
 @Component({
   selector: "astrobin-search-filter-base",
