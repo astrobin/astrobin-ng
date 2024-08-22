@@ -21,6 +21,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { DeviceService } from "@shared/services/device.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-equipment-pending-review-explorer",
@@ -45,7 +47,9 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
     public readonly loadingService: LoadingService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly changeDetectionRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(
       store$,
@@ -56,7 +60,9 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
       cookieService,
       equipmentItemService,
       changeDetectionRef,
-      platformId
+      platformId,
+      deviceService,
+      offcanvasService
     );
     this.pendingType = PendingType.PENDING_REVIEW;
   }
@@ -96,7 +102,6 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
         }),
         tap(() => {
           this.loadingService.setLoading(false);
-          this._scrollToItemBrowser();
         })
       );
   }

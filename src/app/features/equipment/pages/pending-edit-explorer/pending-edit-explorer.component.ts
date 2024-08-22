@@ -16,6 +16,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { CookieService } from "ngx-cookie";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { DeviceService } from "@shared/services/device.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-equipment-pending-edit-explorer",
@@ -37,7 +39,9 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
     public readonly cookieService: CookieService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly changeDetectionRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly deviceService: DeviceService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(
       store$,
@@ -48,7 +52,9 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
       cookieService,
       equipmentItemService,
       changeDetectionRef,
-      platformId
+      platformId,
+      deviceService,
+      offcanvasService
     );
     this.pendingType = PendingType.PENDING_EDIT;
   }
@@ -73,8 +79,6 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
   }
 
   getItems() {
-    this.items$ = this.equipmentApiService
-      .getAllEquipmentItemsPendingEdit(this._activeType as EquipmentItemType)
-      .pipe(tap(() => this._scrollToItemBrowser()));
+    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingEdit(this._activeType as EquipmentItemType);
   }
 }

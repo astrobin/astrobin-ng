@@ -86,6 +86,7 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { RouterService } from "@shared/services/router.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { UserService } from "@shared/services/user.service";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -113,9 +114,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   @Input()
   routingBasePath = "/equipment/explorer";
-
-  @Input()
-  navCollapsed = false;
 
   @Input()
   showMostOftenUsedWith = true;
@@ -215,9 +213,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly modalService: NgbModal,
     public readonly compareService: CompareService,
     public readonly location: Location,
-    @Inject(PLATFORM_ID) public readonly platformId,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly routerService: RouterService,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
   }
@@ -233,6 +232,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     this._initActions();
     this._initActiveId();
+
+    this.initializeWindowWidthUpdate(this.platformId, this.deviceService, this.windowRefService);
   }
 
   ngOnChanges(changes: SimpleChanges) {

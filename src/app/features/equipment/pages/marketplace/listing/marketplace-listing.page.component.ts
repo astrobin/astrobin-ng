@@ -62,6 +62,7 @@ import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipmen
 import { isPlatformBrowser, Location } from "@angular/common";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -114,7 +115,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly popNotificationsService: PopNotificationsService,
     public readonly location: Location,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
   }
@@ -128,6 +130,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.setListing(this.activatedRoute.snapshot.data.listing);
     this._subscribeToListingChanges();
     this.windowRefService.scroll({ top: 0 });
+    this.initializeWindowWidthUpdate(this.platformId, this.deviceService, this.windowRefService);
 
     // If we're navigating to a different listing, update the page.
     this.router.events
