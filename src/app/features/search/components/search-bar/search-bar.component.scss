@@ -169,5 +169,11 @@
     gap: .5rem;
     flex-wrap: wrap;
     padding: .75rem .125rem;
+
+    ::ng-deep .search-filter-component:last-child {
+      .search-filter-operator {
+        visibility: hidden;
+      }
+    }
   }
 }
