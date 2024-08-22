@@ -112,7 +112,7 @@
             (click)="onOrderingChanged('-published')"
           >
             <fa-icon icon="calendar"></fa-icon>
-            <span>{{ "Publication" | translate }}</span>
+            <span>{{ "Publication date" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-published'"></fa-icon>
           </button>
 
@@ -121,7 +121,7 @@
             (click)="onOrderingChanged('-likes')"
           >
             <fa-icon icon="thumbs-up"></fa-icon>
-            <span>{{ "Likes" | translate }}</span>
+            <span>{{ "Number of likes" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-likes'"></fa-icon>
           </button>
 
@@ -130,17 +130,8 @@
             (click)="onOrderingChanged('-bookmarks')"
           >
             <fa-icon icon="bookmark"></fa-icon>
-            <span>{{ "Bookmarks" | translate }}</span>
+            <span>{{ "Number of bookmarks" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-bookmarks'"></fa-icon>
-          </button>
-
-          <button
-            ngbDropdownItem
-            (click)="onOrderingChanged('-integration')"
-          >
-            <fa-icon icon="clock"></fa-icon>
-            <span>{{ "Integration" | translate }}</span>
-            <fa-icon icon="check" *ngIf="model.ordering === '-integration'"></fa-icon>
           </button>
 
           <button
@@ -148,8 +139,19 @@
             (click)="onOrderingChanged('-views')"
           >
             <fa-icon icon="eye"></fa-icon>
-            <span>{{ "Views" | translate }}</span>
+            <span>{{ "Number of views" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-views'"></fa-icon>
+          </button>
+
+          <hr />
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-integration')"
+          >
+            <fa-icon icon="clock"></fa-icon>
+            <span>{{ "Integration time" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-integration'"></fa-icon>
           </button>
 
           <hr />
