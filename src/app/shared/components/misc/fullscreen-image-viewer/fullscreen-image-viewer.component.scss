@@ -18,6 +18,7 @@
     justify-content: center;
     align-items: center;
     height: 100%;
+    position: relative;
 
     .ngxImageZoomContainer {
       width: auto !important;
@@ -35,13 +36,36 @@
   }
 
   .image-zoom-indicator {
-    position: fixed;
-    top: 2rem;
-    left: 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
     color: var(--white);
     background: rgba(0, 0, 0, .5);
     border-radius: 2rem;
+    border: 1px solid rgba(255, 255, 255, .25);
     padding: .5rem 1rem;
+  }
+
+  .instruction-container {
+    position: fixed;
+    bottom: .5rem;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .instructions {
+      background: rgba(0, 0, 0, .5);
+      padding: .5rem 1rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, .05);
+      box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
+      font-size: .9rem;
+      cursor: default;
+      animation: tinyBounce 1s 3;
+
+      .ng-fa-icon {
+        margin-right: .5rem;
+      }
+    }
   }
 
   .no-zoom {
@@ -52,8 +76,8 @@
 
     .loading-indicator-container {
       position: fixed;
-      bottom: 2rem;
-      left: calc(50vw);
+      bottom: .5rem;
+      left: 50%;
       transform: translateX(-50%);
       text-align: center;
 

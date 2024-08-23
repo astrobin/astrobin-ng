@@ -19,7 +19,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageService } from "@shared/services/image/image.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Coord } from "ngx-image-zoom";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -28,7 +27,6 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
 import { DeviceService } from "@shared/services/device.service";
-import { ActiveToast } from "ngx-toastr";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -62,19 +60,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   realImageLoadingProgress$: Observable<number>;
   hdThumbnailLoading = false;
   realThumbnailLoading = false;
+  ready = false;
 
-  private _zoomReadyNotification: ActiveToast<any>;
   private _zoomPosition: Coord;
   private _zoomScroll = 1;
   private _zoomIndicatorTimeout: number;
-  private _zoomIndicatorTimeoutDuration = 3000;
+  private _zoomIndicatorTimeoutDuration = 1000;
   private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly windowRef: WindowRefService,
-    public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly imageService: ImageService,
     public readonly domSanitizer: DomSanitizer,
@@ -145,10 +142,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             this.klass = "d-flex";
           });
         } else {
-          if (this._zoomReadyNotification) {
-            this.popNotificationsService.clear(this._zoomReadyNotification.toastId);
-          }
-
           this.utilsService.delay(1).subscribe(() => {
             this.klass = "d-none";
           });
@@ -158,21 +151,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   onImagesLoaded(loaded: boolean) {
-    if (loaded) {
-      const message = this.isTouchDevice
-        ? this.translateService.instant("Pinch & zoom to view details closer.")
-        : this.translateService.instant("Click on the image and scroll to magnify up to 8x.");
-
-      this._zoomReadyNotification = this.popNotificationsService.info(
-        message,
-        this.translateService.instant("Zoom ready"),
-        {
-          progressBar: false,
-          timeOut: 5000,
-          positionClass: "toast-bottom-right"
-        }
-      );
-    }
+    this.ready = loaded;
   }
 
   setZoomPosition(position: Coord) {
@@ -181,8 +160,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._setZoomIndicatorTimeout();
   }
 
-  getZoomPosition(): Coord {
-    return this._zoomPosition;
+  getZoomIndicatorStyle(): { left: string; top: string, transform: string } {
+    if (!this._zoomPosition) {
+      return { left: "0", top: "0", transform: "none" };
+    }
+
+    const x = this._zoomPosition.x;
+    const y = this._zoomPosition.y;
+
+    return {
+      top: `calc(${y}px + ${this.zoomLensSize / 2}px)`,
+      left: `${x}px`,
+      transform: `translate(-50%, 20%)`
+    };
   }
 
   setZoomScroll(scroll: number) {
@@ -219,7 +209,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _setZoomLensSize(): void {
-    this.zoomLensSize = Math.floor(this.windowRef.nativeWindow.innerWidth / 3);
+    this.zoomLensSize = Math.floor(this.windowRef.nativeWindow.innerWidth / 4);
   }
 
   private _setZoomIndicatorTimeout(): void {
