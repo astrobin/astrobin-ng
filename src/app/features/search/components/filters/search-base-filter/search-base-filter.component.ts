@@ -127,7 +127,10 @@ export abstract class SearchBaseFilterComponent
       wrappers: ["default-wrapper"],
       expressions: {
         className: () => {
-          const value = this.editForm.get(listKey).value;
+          let value = this.editForm.get(listKey).value;
+          if (UtilsService.isString(value)) {
+            value = value.split(",");
+          }
           return !value || value.length <= 1 ? "d-none" : "";
         }
       },
@@ -149,6 +152,9 @@ export abstract class SearchBaseFilterComponent
       hooks: {
         onInit: field => {
           this.editForm.get(listKey).valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+            if (UtilsService.isString(value)) {
+              value = value.split(",");
+            }
             if (!value || value.length <= 1) {
               field.formControl.setValue(null);
             } else if (field.formControl.value === null) {

@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { SearchSubjectFilterComponent } from "./search-subject-filter.component";
+import { SearchSubjectsFilterComponent } from "./search-subjects-filter.component";
 import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 
-describe("SubjectFilterComponent", () => {
-  let component: SearchSubjectFilterComponent;
-  let fixture: ComponentFixture<SearchSubjectFilterComponent>;
+describe("SubjectsFilterComponent", () => {
+  let component: SearchSubjectsFilterComponent;
+  let fixture: ComponentFixture<SearchSubjectsFilterComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(SearchSubjectFilterComponent, AppModule).provide([
+    await MockBuilder(SearchSubjectsFilterComponent, AppModule).provide([
       provideMockStore({ initialState: initialMainState })
     ]);
 
-    fixture = TestBed.createComponent(SearchSubjectFilterComponent);
+    fixture = TestBed.createComponent(SearchSubjectsFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -41,7 +41,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 export enum SearchAutoCompleteType {
   TEXT = "text",
   SEARCH_FILTER = "search_filter",
-  SUBJECT = "subject",
+  SUBJECTS = "subjects",
   TELESCOPE = "telescope",
   CAMERA = "camera",
   TELESCOPE_TYPES = "telescope_types",
@@ -185,7 +185,7 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Free text");
       case SearchAutoCompleteType.SEARCH_FILTER:
         return this.translateService.instant("Search filters");
-      case SearchAutoCompleteType.SUBJECT:
+      case SearchAutoCompleteType.SUBJECTS:
         return this.translateService.instant("Subjects");
       case SearchAutoCompleteType.SUBJECT_TYPE:
         return this.translateService.instant("Subject type");
@@ -346,19 +346,19 @@ export class SearchService extends BaseService {
 
     const subjects = [
       ...messierRange.map(i => ({
-        type: SearchAutoCompleteType.SUBJECT,
+        type: SearchAutoCompleteType.SUBJECTS,
         label: `M ${i}`
       })),
       ...ngcRange.map(i => ({
-        type: SearchAutoCompleteType.SUBJECT,
+        type: SearchAutoCompleteType.SUBJECTS,
         label: `NGC ${i}`
       })),
       ...icRange.map(i => ({
-        type: SearchAutoCompleteType.SUBJECT,
+        type: SearchAutoCompleteType.SUBJECTS,
         label: `IC ${i}`
       })),
       ...sh2Range.map(i => ({
-        type: SearchAutoCompleteType.SUBJECT,
+        type: SearchAutoCompleteType.SUBJECTS,
         label: `Sh2-${i}`
       }))
     ];
@@ -485,7 +485,7 @@ export class SearchService extends BaseService {
 
     subjects.push(
       ...commonSubjects.map(label => ({
-        type: SearchAutoCompleteType.SUBJECT,
+        type: SearchAutoCompleteType.SUBJECTS,
         label
       }))
     );
@@ -494,7 +494,15 @@ export class SearchService extends BaseService {
       const normalizedQuery = query.replace(/\s+/g, "").toLowerCase();
       const filteredSubjects = subjects
         .filter(subject => subject.label.replace(/\s+/g, "").toLowerCase().includes(normalizedQuery))
-        .map(subjects => ({ ...subjects, value: subjects.label }))
+        .map(subjects => (
+          {
+            ...subjects,
+            value: {
+              value: [subjects.label],
+              matchType: null
+            }
+          }
+        ))
         .slice(0, this._autoCompleteItemsLimit);
       subscriber.next(filteredSubjects);
       subscriber.complete();

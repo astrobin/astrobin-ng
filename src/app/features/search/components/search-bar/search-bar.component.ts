@@ -6,7 +6,7 @@ import { SearchModelInterface, SearchType } from "@features/search/interfaces/se
 import { SearchAutoCompleteItem, SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { forkJoin, Subject } from "rxjs";
-import { SearchSubjectFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subject-filter.component";
+import { SearchSubjectsFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subjects-filter.component";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
 import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
@@ -630,7 +630,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         method: this.searchService.autoCompleteCameras$(query)
       },
       {
-        key: SearchSubjectFilterComponent.key,
+        key: SearchSubjectsFilterComponent.key,
         method: this.searchService.autoCompleteSubjects$(query)
       },
       {
