@@ -247,6 +247,21 @@
         // Believe it or not, this is necessary to prevent the SVG to display with a white background.
         color-scheme: none;
       }
+
+      .mouse-hover-svg-overlay {
+        position: absolute;
+        bottom: .5rem;
+        right: .5rem;
+        background: rgba(0, 0, 0, .75);
+        opacity: 0;
+        transition: opacity 0.3s;
+        padding: .5rem .75rem;
+        font-size: .9rem;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -262,7 +277,8 @@
     }
 
     &.hover {
-      .mouse-hover {
+      .mouse-hover,
+      .mouse-hover-svg-overlay {
         opacity: 1 !important;
         pointer-events: auto;
       }
