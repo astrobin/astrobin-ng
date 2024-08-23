@@ -44,8 +44,8 @@ export enum SearchAutoCompleteType {
   SUBJECT = "subject",
   TELESCOPE = "telescope",
   CAMERA = "camera",
-  TELESCOPE_TYPE = "telescope_type",
-  CAMERA_TYPE = "camera_type",
+  TELESCOPE_TYPES = "telescope_types",
+  CAMERA_TYPES = "camera_types",
   ACQUISITION_MONTHS = "acquisition_months",
   REMOTE_SOURCE = "remote_source",
   SUBJECT_TYPE = "subject_type",
@@ -193,10 +193,10 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Telescopes or lens");
       case SearchAutoCompleteType.CAMERA:
         return this.translateService.instant("Camera");
-      case SearchAutoCompleteType.TELESCOPE_TYPE:
-        return this.translateService.instant("Telescope type");
-      case SearchAutoCompleteType.CAMERA_TYPE:
-        return this.translateService.instant("Camera type");
+      case SearchAutoCompleteType.TELESCOPE_TYPES:
+        return this.translateService.instant("Telescope types");
+      case SearchAutoCompleteType.CAMERA_TYPES:
+        return this.translateService.instant("Camera types");
       case SearchAutoCompleteType.ACQUISITION_MONTHS:
         return this.translateService.instant("Acquisition months");
       case SearchAutoCompleteType.REMOTE_SOURCE:
@@ -582,9 +582,13 @@ export class SearchService extends BaseService {
         }))
         .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
-          type: SearchAutoCompleteType.TELESCOPE_TYPE,
+          type: SearchAutoCompleteType.TELESCOPE_TYPES,
           label: item.humanized,
-          value: item.type
+          value: {
+            value: [item.type],
+            matchType: null
+          },
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.TELESCOPE_TYPES)
         }))
         .slice(0, this._autoCompleteItemsLimit)
     );
@@ -599,9 +603,13 @@ export class SearchService extends BaseService {
         }))
         .filter(item => this._autoCompleteMatch(query, item.humanized))
         .map(item => ({
-          type: SearchAutoCompleteType.CAMERA_TYPE,
+          type: SearchAutoCompleteType.CAMERA_TYPES,
           label: item.humanized,
-          value: item.type
+          value: {
+            value: [item.type],
+            matchType: null
+          },
+          minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.CAMERA_TYPES)
         }))
         .slice(0, this._autoCompleteItemsLimit)
     );

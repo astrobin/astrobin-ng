@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { SearchCameraTypeFilterComponent } from "./search-camera-type-filter.component";
+import { SearchCameraTypesFilterComponent } from "./search-camera-types-filter.component";
 import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 
-describe("CameraTypeFilterComponent", () => {
-  let component: SearchCameraTypeFilterComponent;
-  let fixture: ComponentFixture<SearchCameraTypeFilterComponent>;
+describe("CameraTypesFilterComponent", () => {
+  let component: SearchCameraTypesFilterComponent;
+  let fixture: ComponentFixture<SearchCameraTypesFilterComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(SearchCameraTypeFilterComponent, AppModule).provide([
+    await MockBuilder(SearchCameraTypesFilterComponent, AppModule).provide([
       provideMockStore({ initialState: initialMainState })
     ]);
 
-    fixture = TestBed.createComponent(SearchCameraTypeFilterComponent);
+    fixture = TestBed.createComponent(SearchCameraTypesFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

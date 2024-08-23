@@ -15,8 +15,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { SearchTelescopeTypeFilterComponent } from "@features/search/components/filters/search-telescope-type-filter/search-telescope-type-filter.component";
-import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
+import { SearchTelescopeTypesFilterComponent } from "@features/search/components/filters/search-telescope-types-filter/search-telescope-types-filter.component";
+import { SearchCameraTypesFilterComponent } from "@features/search/components/filters/search-camera-types-filter/search-camera-types-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
 import { SearchAcquisitionTypeFilterComponent } from "@features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component";
@@ -617,11 +617,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         method: this.searchService.autoCompleteSubjects$(query)
       },
       {
-        key: SearchTelescopeTypeFilterComponent.key,
+        key: SearchTelescopeTypesFilterComponent.key,
         method: this.searchService.autoCompleteTelescopeTypes$(query)
       },
       {
-        key: SearchCameraTypeFilterComponent.key,
+        key: SearchCameraTypesFilterComponent.key,
         method: this.searchService.autoCompleteCameraTypes$(query)
       },
       {

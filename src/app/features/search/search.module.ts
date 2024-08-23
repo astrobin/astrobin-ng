@@ -13,8 +13,8 @@ import { SearchCameraFilterComponent } from "@features/search/components/filters
 import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
 import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@features/search/injection-tokens/search-filter.tokens";
 import { SearchService } from "@features/search/services/search.service";
-import { SearchTelescopeTypeFilterComponent } from "@features/search/components/filters/search-telescope-type-filter/search-telescope-type-filter.component";
-import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
+import { SearchTelescopeTypesFilterComponent } from "@features/search/components/filters/search-telescope-types-filter/search-telescope-types-filter.component";
+import { SearchCameraTypesFilterComponent } from "@features/search/components/filters/search-camera-types-filter/search-camera-types-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
 import { SearchAcquisitionTypeFilterComponent } from "@features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component";
@@ -56,8 +56,8 @@ const allFilterComponents = [
   SearchSubjectFilterComponent,
   SearchTelescopeFilterComponent,
   SearchCameraFilterComponent,
-  SearchTelescopeTypeFilterComponent,
-  SearchCameraTypeFilterComponent,
+  SearchTelescopeTypesFilterComponent,
+  SearchCameraTypesFilterComponent,
   SearchAcquisitionMonthsFilterComponent,
   SearchRemoteSourceFilterComponent,
   SearchSubjectTypeFilterComponent,
