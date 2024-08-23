@@ -325,7 +325,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     if (normalizedQuery && (model.searchType === SearchType.IMAGE || model.searchType === undefined)) {
       forkJoin(
         this._autoCompleteMethods(model.text)
-          .filter(filter => !this.model.hasOwnProperty(filter.key))
+          .filter(filter => filter.key !== SearchAutoCompleteType.TEXT)
           .map(filter => filter.method)
       ).subscribe((results: SearchAutoCompleteItem[][]) => {
         results.forEach(group => {
