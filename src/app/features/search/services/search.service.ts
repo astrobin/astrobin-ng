@@ -204,11 +204,11 @@ export class SearchService extends BaseService {
       case SearchAutoCompleteType.COLOR_OR_MONO:
         return this.translateService.instant("Color or mono cameras");
       case SearchAutoCompleteType.MODIFIED_CAMERA:
-        return this.translateService.instant("Modified cameras");
+        return this.translateService.instant("Modified cameras only");
       case SearchAutoCompleteType.ANIMATED:
-        return this.translateService.instant("Animated images (GIF)");
+        return this.translateService.instant("Animated images (GIF) only");
       case SearchAutoCompleteType.VIDEO:
-        return this.translateService.instant("Videos");
+        return this.translateService.instant("Videos only");
       case SearchAutoCompleteType.AWARD:
         return this.translateService.instant("IOTD/TP award");
       case SearchAutoCompleteType.COUNTRY:
