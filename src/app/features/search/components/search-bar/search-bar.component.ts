@@ -43,6 +43,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
 import { LoadSaveSearchModalComponent } from "@features/search/components/filters/load-save-search-modal/load-save-search-modal.component";
 import { SearchTextFilterComponent } from "@features/search/components/filters/search-text-filter/search-text-filter.component";
+import { MatchType } from "@features/search/enums/match-type.enum";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -393,12 +394,28 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     triggerSearch: boolean = true
   ): void {
     const componentRef = this._findFilterComponentRef(filterComponentType);
+    let currentValue: any = componentRef.instance.value;
 
     if (componentRef) {
-      componentRef.instance.value = value;
+      if (UtilsService.isArray(currentValue)) {
+        if (!currentValue.includes(value[0])) {
+          currentValue = [...currentValue, ...value];
+        }
+      } else if (UtilsService.isObject(currentValue) && currentValue.hasOwnProperty("value")) {
+        if (!currentValue.value.includes(value.value[0])) {
+          currentValue.value = [...currentValue.value, ...value.value];
+          if (currentValue.hasOwnProperty("matchType")) {
+            currentValue.matchType = currentValue.matchType || MatchType.ANY;
+          }
+        }
+      } else {
+        currentValue = value;
+      }
+
+      componentRef.instance.value = currentValue;
       this.model = {
         ...this.model,
-        [this.searchService.getKeyByFilterComponentType(filterComponentType)]: value
+        [this.searchService.getKeyByFilterComponentType(filterComponentType)]: currentValue
       };
 
       if (triggerSearch) {
