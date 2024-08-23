@@ -6,6 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-text-filter.search-filter-component",
@@ -14,6 +15,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 })
 export class SearchTextFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.TEXT;
+  category = SearchFilterCategory.GENERAL;
   label = this.searchService.humanizeSearchAutoCompleteType(SearchTextFilterComponent.key);
   editFields = [];
   mayBeRemoved = false;

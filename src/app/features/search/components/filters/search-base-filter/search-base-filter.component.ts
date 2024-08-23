@@ -8,7 +8,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
-import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterCategory, SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { takeUntil } from "rxjs/operators";
@@ -33,6 +33,7 @@ export abstract class SearchBaseFilterComponent
   infoText: string = null;
   abstract editFields: FormlyFieldConfig[];
   abstract label: string;
+  abstract category: SearchFilterCategory
   // Value to be used in the search model.
   @Input()
   value: any;

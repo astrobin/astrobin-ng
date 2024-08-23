@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { TelescopeType } from "@features/equipment/types/telescope.interface";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-telescope-types-filter.search-filter-component",
@@ -18,7 +19,7 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
 export class SearchTelescopeTypesFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.TELESCOPE_TYPES;
   static minimumSubscription = PayableProductInterface.LITE;
-
+  category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
   label = this.searchService.humanizeSearchAutoCompleteType(SearchTelescopeTypesFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {

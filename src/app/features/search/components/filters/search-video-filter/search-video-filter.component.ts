@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { YesNoPipe } from "@shared/pipes/yes-no.pipe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-video-filter.search-filter-component",
@@ -18,7 +19,7 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
 export class SearchVideoFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.VIDEO;
   static minimumSubscription = PayableProductInterface.LITE;
-
+  category = SearchFilterCategory.FILE_ATTRIBUTES;
   label = this.searchService.humanizeSearchAutoCompleteType(SearchVideoFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {

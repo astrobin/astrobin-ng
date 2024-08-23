@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-personal-filters-filter.search-filter-component",
@@ -16,7 +17,7 @@ import { SearchPersonalFiltersFilterValue } from "@features/search/components/fi
 })
 export class SearchPersonalFiltersFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.PERSONAL_FILTERS;
-
+  readonly category = SearchFilterCategory.GENERAL;
   readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchPersonalFiltersFilterComponent.key as SearchAutoCompleteType);
   readonly values: { [key: string]: string } = {
     [SearchPersonalFiltersFilterValue.MY_IMAGES]: this.searchService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_IMAGES),

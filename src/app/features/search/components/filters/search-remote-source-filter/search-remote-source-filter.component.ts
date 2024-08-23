@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { RemoteSource } from "@shared/interfaces/image.interface";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-remote-source-filter.search-filter-component",
@@ -17,7 +18,7 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
 export class SearchRemoteSourceFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.REMOTE_SOURCE;
   static minimumSubscription = PayableProductInterface.ULTIMATE;
-
+  category = SearchFilterCategory.ACQUISITION_ATTRIBUTES;
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchRemoteSourceFilterComponent.key as SearchAutoCompleteType
   );

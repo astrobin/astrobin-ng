@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { DataSource } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-data-source-filter.search-filter-component",
@@ -19,10 +20,11 @@ export class SearchDataSourceFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.DATA_SOURCE;
   static minimumSubscription = PayableProductInterface.ULTIMATE;
 
-  label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly category = SearchFilterCategory.ACQUISITION_ATTRIBUTES;
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(
     SearchDataSourceFilterComponent.key as SearchAutoCompleteType
   );
-  editFields = [
+  readonly editFields = [
     {
       key: SearchDataSourceFilterComponent.key,
       type: "ng-select",

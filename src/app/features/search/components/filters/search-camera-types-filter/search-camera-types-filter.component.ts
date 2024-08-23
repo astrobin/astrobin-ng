@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { CameraType } from "@features/equipment/types/camera.interface";
 import { CameraService } from "@features/equipment/services/camera.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-camera-types-filter.search-filter-component",
@@ -19,8 +20,9 @@ export class SearchCameraTypesFilterComponent extends SearchBaseFilterComponent 
   static key = SearchAutoCompleteType.CAMERA_TYPES;
   static minimumSubscription = PayableProductInterface.LITE;
 
-  label = this.searchService.humanizeSearchAutoCompleteType(SearchCameraTypesFilterComponent.key as SearchAutoCompleteType);
-  editFields = [
+  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchCameraTypesFilterComponent.key as SearchAutoCompleteType);
+  readonly editFields = [
     {
       key: SearchCameraTypesFilterComponent.key,
       fieldGroup: [

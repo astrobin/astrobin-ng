@@ -9,7 +9,7 @@ import { TelescopeInterface, TelescopeType } from "@features/equipment/types/tel
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { map, tap } from "rxjs/operators";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterCategory, SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@features/search/injection-tokens/search-filter.tokens";
 import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
@@ -177,6 +177,23 @@ export class SearchService extends BaseService {
 
   getKeyByFilterComponentInstance(componentInstance: SearchFilterComponentInterface): string {
     return (componentInstance.constructor as any).key;
+  }
+
+  humanizeSearchFilterCategory(category: SearchFilterCategory): string {
+    switch (category) {
+      case SearchFilterCategory.DATETIME:
+        return this.translateService.instant("Date and time");
+      case SearchFilterCategory.FILE_ATTRIBUTES:
+        return this.translateService.instant("File attributes");
+      case SearchFilterCategory.EQUIPMENT_ATTRIBUTES:
+        return this.translateService.instant("Equipment attributes");
+      case SearchFilterCategory.SKY_AND_SUBJECTS:
+        return this.translateService.instant("Sky and subjects");
+      case SearchFilterCategory.ACQUISITION_ATTRIBUTES:
+        return this.translateService.instant("Acquisition attributes");
+      case SearchFilterCategory.GENERAL:
+        return this.translateService.instant("General");
+    }
   }
 
   humanizeSearchAutoCompleteType(type: SearchAutoCompleteType): string {

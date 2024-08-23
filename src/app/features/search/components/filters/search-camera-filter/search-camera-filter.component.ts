@@ -9,6 +9,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { SearchBaseEquipmentFilterComponent } from "@features/search/components/filters/search-base-equipment-filter/search-base-equipment-filter.component";
 import { Actions } from "@ngrx/effects";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-camera-filter.search-filter-component",
@@ -19,6 +20,7 @@ export class SearchCameraFilterComponent extends SearchBaseEquipmentFilterCompon
   static key = SearchAutoCompleteType.CAMERA;
   static minimumSubscription = PayableProductInterface.LITE;
 
+  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
   readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchCameraFilterComponent.key);
   readonly itemType: EquipmentItemType = EquipmentItemType.CAMERA;
 

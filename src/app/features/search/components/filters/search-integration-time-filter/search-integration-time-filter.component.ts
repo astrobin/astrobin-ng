@@ -7,6 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-integration-time-filter.search-filter-component",
@@ -17,8 +18,9 @@ export class SearchIntegrationTimeFilterComponent extends SearchBaseSliderFilter
   static key = SearchAutoCompleteType.INTEGRATION_TIME;
   static minimumSubscription = PayableProductInterface.ULTIMATE;
 
-  unit = "h";
-  label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly category = SearchFilterCategory.ACQUISITION_ATTRIBUTES;
+  readonly unit = "h";
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(
     SearchIntegrationTimeFilterComponent.key as SearchAutoCompleteType
   );
 

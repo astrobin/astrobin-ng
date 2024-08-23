@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-minimum-data-filter.search-filter-component",
@@ -19,6 +20,7 @@ export class SearchMinimumDataFilterComponent extends SearchBaseFilterComponent 
   static key = SearchAutoCompleteType.MINIMUM_DATA;
   static minimumSubscription = PayableProductInterface.ULTIMATE;
 
+  readonly category = SearchFilterCategory.GENERAL;
   readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchMinimumDataFilterComponent.key as SearchAutoCompleteType);
   readonly values: { [key: string]: string } = {
     [SearchMinimumDataFilterValue.TELESCOPES]: this.translateService.instant("Imaging telescopes or lenses"),

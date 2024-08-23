@@ -7,6 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-moon-phase-filter.search-filter-component",
@@ -17,8 +18,9 @@ export class SearchMoonPhaseFilterComponent extends SearchBaseSliderFilterCompon
   static key = SearchAutoCompleteType.MOON_PHASE;
   static minimumSubscription = PayableProductInterface.LITE;
 
-  unit = "%";
-  label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly category = SearchFilterCategory.SKY_AND_SUBJECTS
+  readonly unit = "%";
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(
     SearchMoonPhaseFilterComponent.key as SearchAutoCompleteType
   );
 

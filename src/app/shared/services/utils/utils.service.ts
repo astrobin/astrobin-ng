@@ -901,6 +901,10 @@ export class UtilsService {
     return size / (1024 * 1024) > 1 ? (size / (1024 * 1024)).toFixed(2) + " MB" : (size / 1024).toFixed(2) + " KB";
   }
 
+  static getEnumKeys<E>(enumObj: E): string[] {
+    return Object.keys(enumObj).filter(key => isNaN(Number(key)));
+  }
+
   static isValidEnumValue(value: any, enumType: any): boolean {
     return Object.values(enumType).includes(value);
   }

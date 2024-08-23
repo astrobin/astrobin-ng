@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-color-or-mono-filter.search-filter-component",
@@ -16,10 +17,12 @@ import { SensorService } from "@features/equipment/services/sensor.service";
 })
 export class SearchColorOrMonoFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.COLOR_OR_MONO;
-  label = this.searchService.humanizeSearchAutoCompleteType(
+
+  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;readonly
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(
     SearchColorOrMonoFilterComponent.key as SearchAutoCompleteType
   );
-  editFields = [
+  readonly editFields = [
     {
       key: SearchColorOrMonoFilterComponent.key,
       fieldGroup: [

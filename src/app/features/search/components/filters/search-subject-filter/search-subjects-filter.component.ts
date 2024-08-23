@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { FormControl } from "@angular/forms";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-subjects-filter.search-filter-component",
@@ -17,8 +18,8 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 })
 export class SearchSubjectsFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.SUBJECTS;
+  category = SearchFilterCategory.SKY_AND_SUBJECTS
   label = this.searchService.humanizeSearchAutoCompleteType(SearchSubjectsFilterComponent.key);
-
   editFields = [
     {
       key: SearchSubjectsFilterComponent.key,

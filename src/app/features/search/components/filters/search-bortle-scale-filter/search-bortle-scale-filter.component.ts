@@ -11,6 +11,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-bortle-scale-filter.search-filter-component",
@@ -19,12 +20,14 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 })
 export class SearchBortleScaleFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.BORTLE_SCALE;
-  label = this.searchService.humanizeSearchAutoCompleteType(
+
+  readonly category = SearchFilterCategory.SKY_AND_SUBJECTS;
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(
     SearchBortleScaleFilterComponent.key as SearchAutoCompleteType
   );
-  minLabel = this.translateService.instant("Minimum Bortle scale");
-  maxLabel = this.translateService.instant("Maximum Bortle scale");
-  options = Object.values(BortleScale).filter(v => isNaN(Number(v))).map(value => ({
+  readonly minLabel = this.translateService.instant("Minimum Bortle scale");
+  readonly maxLabel = this.translateService.instant("Maximum Bortle scale");
+  readonly options = Object.values(BortleScale).filter(v => isNaN(Number(v))).map(value => ({
     value: BortleScale[value],
     label: this.imageService.humanizeBortleScale(BortleScale[value])
   })).sort(

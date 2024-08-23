@@ -115,7 +115,7 @@ const allFilterComponents = [
     },
     {
       provide: AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
-      useValue: [SearchCameraFilterComponent, SearchTelescopeFilterComponent]
+      useValue: [SearchTextFilterComponent, SearchCameraFilterComponent, SearchTelescopeFilterComponent]
     }
   ]
 })
