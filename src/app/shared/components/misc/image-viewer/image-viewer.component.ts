@@ -416,7 +416,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       return;
     }
 
-    this.imageLoaded = false;
     this.revisionLabel = revisionLabel;
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     this.setMouseHoverImage();
