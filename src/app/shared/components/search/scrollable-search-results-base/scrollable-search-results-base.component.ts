@@ -78,7 +78,6 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
       isPlatformBrowser(this.platformId) &&
       this._isNearTop()
     ) {
-      console.log(this.model);
       this.loading = false;
       this.initialLoading = true;
 
