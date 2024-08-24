@@ -1,5 +1,5 @@
 <ng-container *ngIf="!initialLoading; else loadingTemplate">
-  <ng-container *ngIf="results !== null; else loadingTemplate">
+  <ng-container *ngIf="results !== null && !scheduledLoadingTimeout; else loadingTemplate">
     <ng-container *ngIf="results.length > 0; else noImagesTemplate">
       <div
         *ngIf="

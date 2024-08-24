@@ -293,7 +293,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         return;
       }
     }
-    this.onSearch(this.model);
+    this.onSearch(this.model, true);
   }
 
   onBackspace(): void {
@@ -325,7 +325,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.abortAutoComplete = true;
   }
 
-  onSearch(model: SearchModelInterface): void {
+  onSearch(model: SearchModelInterface, findExactMatchFilter: boolean): void {
     const normalizedQuery = model.text
       ? model.text.toLowerCase().replace(/\s/g, "")
       : null;
@@ -336,7 +336,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     this.resetAutoCompleteItems();
 
-    if (normalizedQuery && (model.searchType === SearchType.IMAGE || model.searchType === undefined)) {
+    if (
+      findExactMatchFilter &&
+      normalizedQuery &&
+      (model.searchType === SearchType.IMAGE || model.searchType === undefined)
+    ) {
       forkJoin(
         this._autoCompleteMethods(model.text)
           .filter(filter => filter.key !== SearchAutoCompleteType.TEXT)
@@ -351,10 +355,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
             }
           });
         });
+        this.modelChanged.emit(model);
       });
+    } else {
+      this.modelChanged.emit(model);
     }
-
-    this.modelChanged.emit(model);
   }
 
   findSelectedAutoCompleteItem(): ElementRef | undefined {
@@ -396,14 +401,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
           text: ""
         }
       } else if (autoCompleteItem.type === SearchAutoCompleteType.TEXT) {
-        this.onSearch(this.model);
+        this.onSearch(this.model, false);
       } else {
         filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
         this.addFilter(filterComponentType, autoCompleteItem.value);
-        this.model = {
-          ...this.model,
-          text: ""
-        };
       }
     });
   }
@@ -435,11 +436,12 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       componentRef.instance.value = currentValue;
       this.model = {
         ...this.model,
-        [this.searchService.getKeyByFilterComponentType(filterComponentType)]: currentValue
+        [this.searchService.getKeyByFilterComponentType(filterComponentType)]: currentValue,
+        text: ""
       };
 
       if (triggerSearch) {
-        this.onSearch(this.model);
+        this.onSearch(this.model, false);
       }
     }
   }
@@ -480,14 +482,15 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
             this.model = {
               ...this.model,
               ...{
-                [key]: filterValue
+                [key]: filterValue,
+                text: ""
               }
             };
           } else {
             this.removeFilter(componentRef);
           }
 
-          this.onSearch(this.model);
+          this.onSearch(this.model, false);
         });
 
         componentRef.instance.remove.subscribe(() => {
@@ -503,7 +506,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   reset(): void {
     this.model = {};
     this.clearFilters();
-    this.onSearch(this.model);
+    this.onSearch(this.model, false);
   }
 
   clearFilters(): void {
@@ -523,7 +526,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
       componentRef.destroy();
       this.searchInput.nativeElement.focus();
-      this.onSearch(this.model);
+      this.onSearch(this.model, false);
     });
   }
 
@@ -577,7 +580,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         this.model = this.searchService.paramsToModel(params);
         this.clearFilters();
         this.initializeFilters();
-        this.onSearch(this.model);
+        this.onSearch(this.model, false);
       }
     });
   }
@@ -594,7 +597,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
           ordering
         };
 
-        this.onSearch(this.model);
+        this.onSearch(this.model, false);
       }
     });
   }
@@ -622,7 +625,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     this.resetAutoCompleteItems();
     this.filterComponentRefs.forEach(componentRef => componentRef.destroy());
-    this.onSearch(this.model);
+    this.onSearch(this.model, false);
   }
 
   private _findFilterComponentRef(filterComponentType: Type<SearchFilterComponentInterface>): ComponentRef<SearchFilterComponentInterface> {
@@ -633,10 +636,6 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   private _autoCompleteMethods = (query: string) => {
     return [
-      {
-        key: SearchAutoCompleteType.TEXT,
-        method: this.searchService.autoCompleteFreeText$(query)
-      },
       {
         key: SearchAutoCompleteType.SEARCH_FILTER,
         method: this.searchService.autoCompleteSearchFilters$(query)
@@ -728,6 +727,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       {
         key: SearchPersonalFiltersFilterComponent.key,
         method: this.searchService.autoCompletePersonalFilters$(query)
+      },
+      {
+        key: SearchAutoCompleteType.TEXT,
+        method: this.searchService.autoCompleteFreeText$(query)
       }
     ];
   };

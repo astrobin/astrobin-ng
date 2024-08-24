@@ -20,9 +20,12 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   next: string | null = null;
   results: T[] = null;
   pageSize = 100;
+
   @Input() model: SearchModelInterface;
   @Input() loadMoreOnScroll = true;
+
   protected dataFetched = new Subject<{ data: T[], cumulative: boolean }>();
+  protected scheduledLoadingTimeout: number = null;
 
   protected constructor(
     public readonly store$: Store<MainState>,
@@ -46,18 +49,36 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.model) {
-      this.loadData();
+    if (changes.model && changes.model.currentValue) {
+      if (clearInterval === undefined || setTimeout === undefined) {
+        // Server side.
+        this.loadData();
+      } else {
+        this.cancelScheduledLoading();
+        this.scheduleLoading();
+      }
     }
+  }
+
+  cancelScheduledLoading() {
+    if (this.scheduledLoadingTimeout) {
+      clearTimeout(this.scheduledLoadingTimeout);
+      this.scheduledLoadingTimeout = null;
+    }
+  }
+
+  scheduleLoading() {
+    this.scheduledLoadingTimeout = setTimeout(() => {
+      this.loadData();
+    }, 50);
   }
 
   loadData(): void {
     if (
       isPlatformBrowser(this.platformId) &&
-      this._isNearTop() &&
-      !this.initialLoading &&
-      !this.loading
+      this._isNearTop()
     ) {
+      console.log(this.model);
       this.loading = false;
       this.initialLoading = true;
 
@@ -65,6 +86,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
         this.results = response.results;
         this.next = response.next;
         this.initialLoading = false;
+        this.cancelScheduledLoading();
         this.dataFetched.next({ data: this.results, cumulative: false });
       });
     }
@@ -72,7 +94,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
 
   loadMore(): Observable<T[]> {
     return new Observable<T[]>(observer => {
-      if (this.next) {
+      if (this.next && !this.loading) {
         this.loading = true;
         this.model = { ...this.model, page: (this.model.page || 1) + 1 };
 
@@ -80,7 +102,8 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
           this.results = this.results.concat(response.results);
           this.next = response.next;
           this.loading = false;
-          this.dataFetched.next({data: this.results, cumulative: true});
+          this.cancelScheduledLoading();
+          this.dataFetched.next({ data: this.results, cumulative: true });
 
           observer.next(response.results);
           observer.complete();
