@@ -12,7 +12,7 @@
 </ng-template>
 
 <ng-template #imageAreaTemplate>
-  <div #imageArea class="image-area" [class.force-view-annotations]="forceViewAnnotations">
+  <div #imageArea class="image-area" [class.force-view-mousehover]="forceViewMouseHover">
     <button class="close-button" (click)="close()">
       <fa-icon
         *ngIf="showCloseButton"
@@ -24,12 +24,14 @@
 
     <div class="additional-buttons">
       <button
-        *ngIf="revision?.solution && (revision?.solution.imageFile || revision?.solution.pixinsightSvgAnnotationRegular)"
-        (click)="toggleViewAnnotations($event)"
-        class="force-view-annotations-button"
-        [class.active]="forceViewAnnotations"
+        *ngIf="
+          mouseHoverImage || inlineSvg
+        "
+        (click)="toggleViewMouseHover($event)"
+        class="force-view-mousehover-button"
+        [class.active]="forceViewMouseHover"
       >
-        <fa-icon icon="crosshairs"></fa-icon>
+        <fa-icon icon="computer-mouse"></fa-icon>
       </button>
 
       <button

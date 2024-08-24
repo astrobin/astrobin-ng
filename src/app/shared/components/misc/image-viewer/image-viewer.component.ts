@@ -105,7 +105,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   protected loadingHistogram = false;
   protected histogram: string;
   protected mouseHoverImage: string;
-  protected forceViewAnnotations = false;
+  protected forceViewMouseHover = false;
   protected inlineSvg: SafeHtml;
   protected readonly shareForm: FormGroup = new FormGroup({});
   protected shareModel: {
@@ -444,9 +444,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     });
   }
 
-  toggleViewAnnotations(event: MouseEvent): void {
+  toggleViewMouseHover(event: MouseEvent): void {
     event.preventDefault();
-    this.forceViewAnnotations = !this.forceViewAnnotations;
+    this.forceViewMouseHover = !this.forceViewMouseHover;
   }
 
   openSkyplot(event: MouseEvent): void {
