@@ -37,7 +37,11 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
 
       if (this.image && this.imageViewer) {
         this.imageViewer.setImage(
-          this.image, FINAL_REVISION_LABEL, false, [], false
+          this.image,
+          FINAL_REVISION_LABEL,
+          false,
+          [],
+          false
         );
       }
     });

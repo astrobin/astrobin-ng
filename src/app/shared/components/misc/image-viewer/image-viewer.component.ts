@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -94,7 +94,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;
   protected imageLoaded = false;
-  protected currentImageAreaHeight: number;
   protected alias: ImageAlias;
   protected hasOtherImages = false;
   protected currentIndex = null;
@@ -175,7 +174,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly translateService: TranslateService,
     public readonly location: Location,
     public readonly titleService: TitleService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly renderer: Renderer2
   ) {
     super(store$);
   }
@@ -221,6 +221,27 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.initialized.emit();
   }
 
+  computeImageAreaHeight(imageWidth: number, imageHeight: number): void {
+    // These are used to determine the initial height of the image area: when loading this view on mobile, AstroBin does
+    // not know how tall the image area should be. If we're initializing this view from a search view, we can pass the
+    // height of the image in the search index to use as a basis for calculating the height of the image area.
+
+    if (!this.imageArea) {
+      this.utilsService.delay(50).subscribe(() => this.computeImageAreaHeight(imageWidth, imageHeight));
+      return;
+    }
+
+    if (imageHeight && imageWidth && this.deviceService.mdMax()) {
+      const viewportWidth = this.windowRefService.nativeWindow.innerWidth;
+      // SCSS sets a max-height of 66.67% of the viewport height for the image area.
+      const maxAvailableHeight = this.windowRefService.nativeWindow.innerHeight * 2 / 3;
+      const height = Math.min(imageHeight, maxAvailableHeight, imageHeight * viewportWidth / imageWidth);
+      this.utilsService.delay(1).subscribe(() => {
+        this.renderer.setStyle(this.imageArea.nativeElement, "min-height", `${height}px`);
+      });
+    }
+  }
+
   setImage(
     image: ImageInterface,
     revisionLabel: ImageRevisionInterface["label"],
@@ -241,6 +262,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.revisionLabel = revisionLabel;
     this.navigationContext = [...navigationContext];
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+
+    this.computeImageAreaHeight(this.revision.w, this.revision.h);
 
     if (revisionLabel !== FINAL_REVISION_LABEL) {
       this.onRevisionSelected(revisionLabel);
@@ -370,7 +393,12 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   onImageLoaded(): void {
     this.imageLoaded = true;
-    this.imageArea.nativeElement.querySelector("astrobin-image").style.height = "100%";
+    if (this.deviceService.mdMax()) {
+      this.utilsService.delay(10).subscribe(() => {
+        this.renderer.setStyle(this.imageArea.nativeElement, "min-height", "unset");
+        this.renderer.setStyle(this.imageArea.nativeElement.querySelector("astrobin-image"), "height", "100%");
+      });
+    }
   }
 
   onImageMouseEnter(event: MouseEvent): void {
@@ -627,16 +655,19 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.modalService.dismissAll();
     this.offcanvasService.dismiss();
     this.imageLoaded = false;
-    this.currentImageAreaHeight = this.imageArea.nativeElement.clientHeight;
-
-    this.imageArea.nativeElement.querySelector("astrobin-image").style.height = `${this.currentImageAreaHeight}px`;
 
     this.store$.pipe(
       select(selectImage, imageId),
       filter(image => !!image),
       take(1)
     ).subscribe((image: ImageInterface) => {
-      this.setImage(image, revisionLabel, fullscreenMode, this.navigationContext, pushState);
+      this.setImage(
+        image,
+        revisionLabel,
+        fullscreenMode,
+        this.navigationContext,
+        pushState
+      );
     });
     this.store$.dispatch(new LoadImage({ imageId }));
   }
