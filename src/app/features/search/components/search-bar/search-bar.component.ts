@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentRef, ElementRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, QueryList, SimpleChanges, Type, ViewChild, ViewChildren, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, Component, ComponentRef, ElementRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, QueryList, SimpleChanges, Type, ViewChild, ViewChildren, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -54,7 +54,7 @@ type SearchAutoCompleteGroups = {
   templateUrl: "./search-bar.component.html",
   styleUrls: ["./search-bar.component.scss"]
 })
-export class SearchBarComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewInit {
+export class SearchBarComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   readonly SearchType = SearchType;
   readonly placeholder = this.translateService.instant("Type here to search");
   autoCompleteGroups: SearchAutoCompleteGroups = {};
@@ -93,13 +93,17 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     public readonly utilsService: UtilsService,
     public readonly deviceService: DeviceService,
     public readonly translateService: TranslateService,
-    public readonly userSubscriptionService: UserSubscriptionService
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly elementRef: ElementRef
   ) {
     super(store$);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    this.windowRefService.nativeWindow.document.addEventListener('click', this.onDocumentClick.bind(this));
+
 
     this._modelChanged.pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$)).subscribe(value => {
       if (this.model.searchType !== SearchType.IMAGE && this.model.searchType !== undefined) {
@@ -174,6 +178,16 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       this.searchInput.nativeElement.blur();
     } else {
       this.searchInput.nativeElement.focus();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.windowRefService.nativeWindow.document.removeEventListener('click', this.onDocumentClick.bind(this));
+  }
+
+  onDocumentClick(event: MouseEvent): void {
+    if (this.hasAutoCompleteItems() && !this.elementRef.nativeElement.contains(event.target)) {
+      this.resetAutoCompleteItems();
     }
   }
 

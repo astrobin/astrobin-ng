@@ -21,7 +21,8 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
   mayBeRemoved = false;
   infoText = this.translateService.instant(
     "This searches the title, description, and most image attributes, even if the exact words don't match perfectly." +
-    " Use specific filters for more precise searches."
+    " You can use quotation marks for exact matching, and the minus sign to exclude keywords. To do even more" +
+    " precise searches, add filters."
   );
 
   constructor(
