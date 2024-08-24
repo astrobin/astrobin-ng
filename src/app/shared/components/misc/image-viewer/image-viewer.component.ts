@@ -634,7 +634,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   private _updateCurrentImageIndexInNavigationContext(): void {
     const byHash = this.navigationContext.indexOf(this.image.hash);
-    const byPk = this.navigationContext.indexOf(this.image.pk);
+    const byPk = this.navigationContext.indexOf("" + this.image.pk);
 
     this.currentIndex = byHash !== -1 ? byHash : byPk;
   }
