@@ -391,13 +391,19 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       if (autoCompleteItem.type === SearchAutoCompleteType.SEARCH_FILTER) {
         filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.value);
         this.createAndEditFilter(filterComponentType);
-        this.model.text = "";
+        this.model = {
+          ...this.model,
+          text: ""
+        }
       } else if (autoCompleteItem.type === SearchAutoCompleteType.TEXT) {
         this.onSearch(this.model);
       } else {
         filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
         this.addFilter(filterComponentType, autoCompleteItem.value);
-        this.model.text = "";
+        this.model = {
+          ...this.model,
+          text: ""
+        };
       }
     });
   }
