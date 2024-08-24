@@ -98,8 +98,7 @@
 
     @media (max-width: $md-max) {
       width: 100%;
-      height: auto;
-      min-height: 33.34%;
+      max-height: 66.67%;
     }
 
     .close-button,
@@ -127,6 +126,16 @@
       transition: opacity 0.3s, transform 0.3s ease-in-out;
 
       :focus-visible {
+        outline: none !important;
+      }
+    }
+
+    .next-button,
+    .previous-button {
+      height: 75%;
+      padding: 1rem;
+
+      &:focus-visible {
         outline: none !important;
       }
     }
@@ -190,6 +199,13 @@
         pointer-events: auto;
         display: block;
         opacity: 1;
+      }
+    }
+
+    @media (max-width: $md-max) {
+      astrobin-loading-indicator,
+      astrobin-image.loading {
+
       }
     }
 

@@ -46,7 +46,6 @@ export class ImageViewerService extends BaseService {
     this.activeImageViewer = viewContainerRef.createComponent(ImageViewerComponent);
     this.activeImageViewer.instance.showCloseButton = true;
     this.activeImageViewer.instance.fullscreenMode = true;
-    this.activeImageViewer.instance.loading = true;
 
     this.activeImageViewer.instance.initialized.pipe(
       switchMap(() => this.loadImage(imageId))
@@ -57,7 +56,6 @@ export class ImageViewerService extends BaseService {
         fullscreenMode,
         navigationContext,
         true);
-      this.activeImageViewer.instance.loading = false;
     });
 
     this.activeImageViewer.instance.closeViewer.subscribe(() => {

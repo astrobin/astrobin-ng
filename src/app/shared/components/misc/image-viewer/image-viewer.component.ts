@@ -90,11 +90,11 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
-  loading = false;
   protected readonly ImageAlias = ImageAlias;
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;
   protected imageLoaded = false;
+  protected currentImageAreaHeight: number;
   protected alias: ImageAlias;
   protected hasOtherImages = false;
   protected currentIndex = null;
@@ -370,6 +370,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   onImageLoaded(): void {
     this.imageLoaded = true;
+    this.imageArea.nativeElement.querySelector("astrobin-image").style.height = "100%";
   }
 
   onImageMouseEnter(event: MouseEvent): void {
@@ -625,7 +626,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   ): void {
     this.modalService.dismissAll();
     this.offcanvasService.dismiss();
-    this.loading = true;
+    this.imageLoaded = false;
+    this.currentImageAreaHeight = this.imageArea.nativeElement.clientHeight;
+
+    this.imageArea.nativeElement.querySelector("astrobin-image").style.height = `${this.currentImageAreaHeight}px`;
 
     this.store$.pipe(
       select(selectImage, imageId),
@@ -633,7 +637,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       take(1)
     ).subscribe((image: ImageInterface) => {
       this.setImage(image, revisionLabel, fullscreenMode, this.navigationContext, pushState);
-      this.loading = false;
     });
     this.store$.dispatch(new LoadImage({ imageId }));
   }
