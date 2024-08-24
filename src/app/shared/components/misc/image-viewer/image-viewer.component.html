@@ -82,6 +82,8 @@
       (exitFullscreen)="exitFullscreen(true)"
     ></astrobin-fullscreen-image-viewer>
 
+    <astrobin-loading-indicator *ngIf="!imageLoaded"></astrobin-loading-indicator>
+
     <astrobin-image
       (imageClick)="enterFullscreen($event)"
       (loaded)="onImageLoaded()"
