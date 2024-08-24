@@ -12,7 +12,7 @@
 </ng-template>
 
 <ng-template #imageAreaTemplate>
-  <div #imageArea class="image-area">
+  <div #imageArea class="image-area" [class.force-view-annotations]="forceViewAnnotations">
     <button class="close-button" (click)="close()">
       <fa-icon
         *ngIf="showCloseButton"
@@ -23,6 +23,15 @@
     </button>
 
     <div class="additional-buttons">
+      <button
+        *ngIf="revision?.solution && (revision?.solution.imageFile || revision?.solution.pixinsightSvgAnnotationRegular)"
+        (click)="toggleViewAnnotations($event)"
+        class="force-view-annotations-button"
+        [class.active]="forceViewAnnotations"
+      >
+        <fa-icon icon="crosshairs"></fa-icon>
+      </button>
+
       <button
         *ngIf="revision?.solution && (revision?.solution.skyplotZoom1 || revision?.solution.pixinsightFindingChart)"
         (click)="openSkyplot($event)"
