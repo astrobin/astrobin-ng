@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { ChangeDetectorRef, Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -60,9 +60,7 @@ export class EquipmentItemService extends BaseService {
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationsService: PopNotificationsService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly http: HttpClient,
-    public readonly renderer: Renderer2,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly http: HttpClient
   ) {
     super(loadingService);
   }
@@ -235,9 +233,7 @@ export class EquipmentItemService extends BaseService {
             this.ckEditorService,
             this.windowRefService,
             this.platformId,
-            this.http,
-            this.renderer,
-            this.changeDetectorRef
+            this.http
           ).transform(propertyValue.toString())
         );
     }

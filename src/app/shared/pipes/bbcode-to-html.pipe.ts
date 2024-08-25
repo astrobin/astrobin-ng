@@ -16,8 +16,7 @@ export class BBCodeToHtmlPipe implements PipeTransform {
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly http: HttpClient,
-    public readonly renderer: Renderer2,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly renderer?: Renderer2
   ) {
   }
 
@@ -98,6 +97,10 @@ export class BBCodeToHtmlPipe implements PipeTransform {
           };
         },
         img: element => {
+          if (!this.renderer) {
+            return;
+          }
+
           const src: string = element.attributes.src;
           const placeholderSrc = "/assets/images/loading.gif"; // Set a placeholder image path here
 

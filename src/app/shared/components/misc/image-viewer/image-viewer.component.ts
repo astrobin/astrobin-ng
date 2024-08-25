@@ -247,6 +247,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   onDescriptionClicked(event: MouseEvent) {
+    if (this.isLightBoxOpen) {
+      return;
+    }
+
     const target = event.target as HTMLElement;
 
     // Check if the clicked element is an image with the data-src attribute
