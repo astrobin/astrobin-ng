@@ -296,15 +296,6 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.onSearch(this.model, true);
   }
 
-  onBackspace(): void {
-    if (this.model.text === "") {
-      const lastFilterRef = this.filterComponentRefs.pop();
-      if (lastFilterRef) {
-        this.removeFilter(lastFilterRef);
-      }
-    }
-  }
-
   onModelChangeDebounced(value: string): void {
     this._modelChanged.next(value);
   }
