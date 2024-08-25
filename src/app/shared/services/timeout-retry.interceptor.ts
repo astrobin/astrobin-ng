@@ -13,7 +13,8 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
     const uploaderPaths = [
       "/api/v2/images/image-upload/",
       "/api/v2/images/image-revision-upload/",
-      "/api/v2/images/uncompressed-source-upload/"
+      "/api/v2/images/uncompressed-source-upload/",
+      "/json-api/common/ckeditor-upload/"
     ];
 
     if (uploaderPaths.some(path => req.url.includes(path))) {
