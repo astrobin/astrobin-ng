@@ -577,7 +577,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     };
     modalRef.closed.subscribe((params: string) => {
       if (params) {
-        this.model = this.searchService.paramsToModel(params);
+        const decodedParams = decodeURIComponent(params);
+        this.model = this.searchService.paramsToModel(decodedParams);
         this.clearFilters();
         this.initializeFilters();
         this.onSearch(this.model, false);
