@@ -20,7 +20,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   template: `
     <div class="metadata-section">
       <div class="metadata-item flex-grow-1 gap-3">
-        <div class="avatars">
+        <div [class.flex-grow-1]="users?.length > 1" class="avatars flex-nowrap">
           <a
             *ngFor="let user of users"
             (click)="avatarClicked($event, user)"
@@ -31,7 +31,10 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </div>
 
         <div class="d-flex flex-nowrap align-items-center w-100 gap-1 flex-column flex-xl-row">
-          <div *ngIf="users?.length === 1" class="d-flex flex-nowrap flex-grow-1 align-items-center w-100 gap-2">
+          <div
+            *ngIf="users?.length === 1"
+            [class.flex-grow-1]="users?.length === 1"
+            class="d-flex flex-nowrap align-items-center gap-2 w-100">
             <a
               [href]="classicRoutesService.GALLERY(users[0].username)"
               class="d-block no-wrap"
