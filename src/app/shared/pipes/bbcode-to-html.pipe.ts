@@ -4,6 +4,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformServer } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@env/environment";
+import { catchError, map } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Pipe({
   name: "BBCodeToHtml"
@@ -20,7 +22,7 @@ export class BBCodeToHtmlPipe implements PipeTransform {
   ) {
   }
 
-  BBCodeToHtml(code) {
+  BBCodeToHtml(code: string) {
     if (isPlatformServer(this.platformId)) {
       return code;
     }
@@ -143,16 +145,16 @@ export class BBCodeToHtmlPipe implements PipeTransform {
     const urlPath = new URL(src, this.windowRefService.nativeWindow.location.origin).pathname.slice(1);
     const url = `${environment.classicBaseUrl}/json-api/common/ckeditor-upload/?path=${encodeURIComponent(urlPath)}`;
 
-    this.http.get<{ thumbnail: string }>(url).subscribe(
-      response => {
-        if (response.thumbnail) {
-          callback(response.thumbnail);
-        }
-      },
-      error => {
+    this.http.get<{ thumbnail: string }>(url).pipe(
+      map(response => response.thumbnail),
+      catchError(error => {
         console.error("Error fetching thumbnail:", error);
-        // Optionally handle the error or replace with a fallback image
+        return of(src);
+      })
+    ).subscribe(thumbnail => {
+      if (thumbnail) {
+        callback(thumbnail);
       }
-    );
+    });
   }
 }

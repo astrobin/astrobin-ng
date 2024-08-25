@@ -43,7 +43,10 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
     let errorMessage: string;
     let handled = false;
 
-    const ignored404Paths = [/.*\/api\/v2\/equipment\/\w+\/\d+\/release-reviewer-lock\/$/];
+    const ignored404Paths = [
+      /.*\/api\/v2\/equipment\/\w+\/\d+\/release-reviewer-lock\/$/,
+      /.*\/json-api\/common\/ckeditor-upload\/*/,
+    ];
 
     // The backend returned an unsuccessful response code.
     switch (err.status) {
