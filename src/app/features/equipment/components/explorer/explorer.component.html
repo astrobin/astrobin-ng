@@ -508,8 +508,7 @@
         [header]="'Acquired with this item' | translate"
         [model]="{
           itemId: selectedItem.id,
-          itemType: activeType,
-          text: equipmentItemService.getFullDisplayName$(selectedItem) | async
+          itemType: activeType
         }"
         [showRetailers]="false"
         [showMarketplaceItems]="false"
