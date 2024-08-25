@@ -108,14 +108,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   ngOnChanges(changes: SimpleChanges) {
     this.thumbnailUrl = null;
-
-    if (changes.image && changes.image.currentValue && changes.image.currentValue.pk !== this.id) {
-      this.id = changes.image.currentValue.pk;
-      this._loadThumbnail();
-      this._disposeVideoJsPlayer();
-      if (!!this.image.videoFile) {
-        this._insertVideoJs();
-      }
+    this.id = this.image.pk
+    this._loadThumbnail();
+    this._disposeVideoJsPlayer();
+    if (!!this.image.videoFile) {
+      this._insertVideoJs();
     }
 
     this.load(0);
