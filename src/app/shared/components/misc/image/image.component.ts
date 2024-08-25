@@ -292,6 +292,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this.utilsService.insertStylesheet("https://vjs.zencdn.net/8.3.0/video-js.min.css", this.renderer, () => {
       this.utilsService.insertScript("https://vjs.zencdn.net/8.3.0/video.min.js", this.renderer, () => {
         this.videoJsReady = true;
+        this.loaded.emit()
         this.changeDetectorRef.detectChanges();
 
         this.utilsService.delay(200).subscribe(() => {
