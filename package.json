@@ -87,6 +87,7 @@
     "ngx-filesize": "3.0.2",
     "ngx-image-cropper": "6.3.4",
     "ngx-image-zoom": "1.0.1",
+    "ngx-lightbox": "3.0.0",
     "ngx-ssr-exclude": "1.1.0",
     "ngx-timeago": "2.0.0",
     "ngx-toastr": "16.0.2",

@@ -383,6 +383,14 @@
           &.smiley {
             height: 1rem;
           }
+
+          &.loading {
+            height: 1rem;
+          }
+
+          &[data-src] {
+            cursor: zoom-in;
+          }
         }
       }
 

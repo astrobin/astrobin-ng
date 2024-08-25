@@ -163,7 +163,11 @@
 
 <ng-template #descriptionTemplate>
   <div *ngIf="image.descriptionBbcode" class="metadata-section">
-    <div class="metadata-item description" [innerHTML]="image.descriptionBbcode | BBCodeToHtml"></div>
+    <div
+      (click)="onDescriptionClicked($event)"
+      [innerHTML]="image.descriptionBbcode | BBCodeToHtml"
+      class="metadata-item description"
+    ></div>
   </div>
 
   <div *ngIf="image.description && !image.descriptionBbcode" class="metadata-section">

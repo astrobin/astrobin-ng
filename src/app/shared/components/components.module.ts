@@ -129,6 +129,7 @@ import { ImageViewerAstrometryComponent } from "@shared/components/misc/image-vi
 import { ImageViewerEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment.component";
 import { ImageViewerRevisionsComponent } from "@shared/components/misc/image-viewer/image-viewer-revisions.component";
 import { HammerModule } from "@angular/platform-browser";
+import { LightboxModule } from "ngx-lightbox";
 
 const modules = [
   CommonModule,
@@ -140,6 +141,7 @@ const modules = [
   FormlySelectModule,
   HammerModule,
   ImageCropperModule,
+  LightboxModule,
   NgbAccordionModule,
   NgbCollapseModule,
   NgbDropdownModule,

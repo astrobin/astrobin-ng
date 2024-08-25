@@ -1,16 +1,24 @@
-import { Inject, Pipe, PipeTransform, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectorRef, Inject, Pipe, PipeTransform, PLATFORM_ID, Renderer2, RendererFactory2 } from "@angular/core";
 import { CKEditorService } from "@shared/services/ckeditor.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformServer } from "@angular/common";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "@env/environment";
 
 @Pipe({
   name: "BBCodeToHtml"
 })
 export class BBCodeToHtmlPipe implements PipeTransform {
+  private readonly _imageMap: {[key: string]: string} = {};
+
   constructor(
     public readonly ckEditorService: CKEditorService,
     public readonly windowRefService: WindowRefService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object) {
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly http: HttpClient,
+    public readonly renderer: Renderer2,
+    public readonly changeDetectorRef: ChangeDetectorRef
+  ) {
   }
 
   BBCodeToHtml(code) {
@@ -88,6 +96,34 @@ export class BBCodeToHtmlPipe implements PipeTransform {
             title: description,
             alt: description
           };
+        },
+        img: element => {
+          const src: string = element.attributes.src;
+          const placeholderSrc = "/assets/images/loading.gif"; // Set a placeholder image path here
+
+          if (src && src.indexOf("/ckeditor-files/") > 0) {
+            // Set the placeholder image initially
+            element.attributes.src = placeholderSrc;
+
+            // Parse file name out of src
+            const fileName = src.split("/").pop().split(".")[0];
+            element.attributes.class = `loading ${fileName}`;
+
+            // Fetch the thumbnail asynchronously and update the src attribute
+            this._fetchThumbnail(src, thumbnailSrc => {
+              setTimeout(() => {
+                const imgElement = this.windowRefService.nativeWindow.document.querySelector(
+                  `img.${fileName}`
+                );
+                if (imgElement) {
+                  this.renderer.setAttribute(imgElement, "src", thumbnailSrc);
+                  this.renderer.setAttribute(imgElement, "data-src", src);
+                  this.renderer.removeClass(imgElement, "loading");
+                  this.renderer.removeClass(imgElement, `${fileName}`);
+                }
+              });
+            });
+          }
         }
       }
     });
@@ -98,5 +134,22 @@ export class BBCodeToHtmlPipe implements PipeTransform {
 
   transform(value: string): string {
     return this.BBCodeToHtml(value);
+  }
+
+  private _fetchThumbnail(src: string, callback: (thumbnailSrc: string) => void) {
+    const urlPath = new URL(src, this.windowRefService.nativeWindow.location.origin).pathname.slice(1);
+    const url = `${environment.classicBaseUrl}/json-api/common/ckeditor-upload/?path=${encodeURIComponent(urlPath)}`;
+
+    this.http.get<{ thumbnail: string }>(url).subscribe(
+      response => {
+        if (response.thumbnail) {
+          callback(response.thumbnail);
+        }
+      },
+      error => {
+        console.error("Error fetching thumbnail:", error);
+        // Optionally handle the error or replace with a fallback image
+      }
+    );
   }
 }

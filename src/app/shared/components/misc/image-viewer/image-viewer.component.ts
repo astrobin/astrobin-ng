@@ -32,6 +32,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 
 enum SharingMode {
   LINK = "link",
@@ -154,6 +155,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
   ];
   protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
+  protected isLightBoxOpen = false;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -175,7 +177,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly location: Location,
     public readonly titleService: TitleService,
     public readonly loadingService: LoadingService,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    public readonly lightbox: Lightbox,
+    public readonly lightboxEvent: LightboxEvent,
   ) {
     super(store$);
   }
@@ -239,6 +243,30 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       this.utilsService.delay(1).subscribe(() => {
         this.renderer.setStyle(this.imageArea.nativeElement, "min-height", `${height}px`);
       });
+    }
+  }
+
+  onDescriptionClicked(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+
+    // Check if the clicked element is an image with the data-src attribute
+    if (target.tagName === 'IMG' && target.getAttribute('data-src')) {
+      // Check if the parent element is not an anchor tag
+      const parentElement = target.parentElement;
+
+      if (parentElement && parentElement.tagName !== 'A') {
+        const src = target.getAttribute('data-src');
+        const thumb = target.getAttribute('src');
+        const lightBoxEventSubscription = this.lightboxEvent.lightboxEvent$.subscribe((lightBoxEvent: any) => {
+          if (lightBoxEvent.id === LIGHTBOX_EVENT.CLOSE) {
+            this.isLightBoxOpen = false;
+            lightBoxEventSubscription.unsubscribe();
+          }
+        });
+
+        this.isLightBoxOpen = true;
+        this.lightbox.open([{ src, thumb }], 0);
+      }
     }
   }
 
@@ -368,6 +396,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
 
     if (this.offcanvasService.hasOpenOffcanvas()) {
+      return;
+    }
+
+    if (this.isLightBoxOpen) {
       return;
     }
 
