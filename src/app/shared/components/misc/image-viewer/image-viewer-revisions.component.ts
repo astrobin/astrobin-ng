@@ -4,6 +4,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-image-viewer-revisions",
@@ -31,6 +32,9 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
   @Input()
   image: ImageInterface;
 
+  @Input()
+  activeLabel: ImageRevisionInterface["label"];
+
   @Output()
   revisionSelected = new EventEmitter<ImageRevisionInterface["label"]>();
 
@@ -46,7 +50,8 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
   }[];
 
   constructor(
-    public readonly store$: Store<MainState>
+    public readonly store$: Store<MainState>,
+    public readonly imageService: ImageService
   ) {
     super(store$);
   }
@@ -62,10 +67,14 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
   }
 
   setRevisionData(image: ImageInterface): void {
+    if (this.activeLabel === FINAL_REVISION_LABEL) {
+      this.activeLabel = this.imageService.getFinalRevisionLabel(image);
+    }
+
     this.revisionData = [
       {
         id: image.pk,
-        active: image.isFinal,
+        active: this.activeLabel === ORIGINAL_REVISION_LABEL,
         label: ORIGINAL_REVISION_LABEL,
         isFinal: image.isFinal,
         gallery: image.thumbnails.find(thumbnail =>
@@ -83,7 +92,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
       },
       ...image.revisions.map(revision => ({
         id: revision.pk,
-        active: revision.isFinal,
+        active: this.activeLabel === revision.label,
         label: revision.label,
         isFinal: revision.isFinal,
         gallery: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,

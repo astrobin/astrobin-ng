@@ -579,6 +579,21 @@ export class ImageService extends BaseService {
     return image;
   }
 
+  getFinalRevisionLabel(image: ImageInterface): string {
+    if (image.isFinal) {
+      return ORIGINAL_REVISION_LABEL;
+    }
+
+    if (image.revisions && image.revisions.length > 0) {
+      const finalRevision = image.revisions.find(revision => revision.isFinal);
+      if (finalRevision) {
+        return finalRevision.label;
+      }
+    }
+
+    return null;
+  }
+
   hasEquipment(image: ImageInterface): boolean {
     return (
       image.imagingTelescopes2?.length > 0 ||
