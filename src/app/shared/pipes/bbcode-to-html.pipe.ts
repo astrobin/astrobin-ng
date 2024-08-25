@@ -106,7 +106,7 @@ export class BBCodeToHtmlPipe implements PipeTransform {
             element.attributes.src = placeholderSrc;
 
             // Parse file name out of src
-            const fileName = src.split("/").pop().split(".")[0];
+            const fileName = 'f' + src.split("/").pop().split(".")[0].replace(/-/gi, "");
             element.attributes.class = `loading ${fileName}`;
 
             // Fetch the thumbnail asynchronously and update the src attribute
