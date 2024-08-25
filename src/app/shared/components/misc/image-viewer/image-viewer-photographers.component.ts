@@ -19,7 +19,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   selector: "astrobin-image-viewer-photographers",
   template: `
     <div class="metadata-section">
-      <div class="metadata-item flex-grow-1">
+      <div class="metadata-item flex-grow-1 gap-3">
         <div class="avatars">
           <a
             *ngFor="let user of users"
@@ -30,56 +30,57 @@ import { WindowRefService } from "@shared/services/window-ref.service";
           </a>
         </div>
 
-        <div *ngIf="users?.length === 1" class="d-flex flex-nowrap align-items-center gap-2">
-          <a
-            *ngFor="let user of users"
-            [href]="classicRoutesService.GALLERY(user.username)"
-            class="d-block no-wrap"
+        <div class="d-flex flex-nowrap align-items-center w-100 gap-1 flex-column flex-xl-row">
+          <div *ngIf="users?.length === 1" class="d-flex flex-nowrap flex-grow-1 align-items-center w-100 gap-2">
+            <a
+              [href]="classicRoutesService.GALLERY(users[0].username)"
+              class="d-block no-wrap"
+            >
+              {{ users[0].displayName }}
+            </a>
+
+            <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+              <astrobin-toggle-property
+                *ngIf="currentUserWrapper.user?.id !== image.user"
+                [contentType]="userContentType.id"
+                [objectId]="users[0].id"
+                [userId]="currentUserWrapper.user?.id"
+                [showLabel]="false"
+                [setLabel]="'Follow user' | translate"
+                [unsetLabel]="'Unfollow user' | translate"
+                class="w-auto"
+                btnClass="btn btn-link btn-no-block link-secondary"
+                propertyType="follow"
+              ></astrobin-toggle-property>
+            </ng-container>
+          </div>
+
+          <div
+            *ngIf="publicationDate"
+            class="metadata-item flex-row flex-xl-column w-100 gap-0 justify-content-between align-items-center align-items-xl-end"
           >
-            {{ user.displayName }}
-          </a>
-
-          <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-            <astrobin-toggle-property
-              *ngIf="currentUserWrapper.user?.id !== image.user"
-              [contentType]="userContentType.id"
-              [objectId]="image.user"
-              [userId]="currentUserWrapper.user?.id"
-              [showLabel]="false"
-              [setLabel]="'Follow user' | translate"
-              [unsetLabel]="'Unfollow user' | translate"
-              class="w-auto"
-              btnClass="btn btn-link btn-no-block link-secondary"
-              propertyType="follow"
-            ></astrobin-toggle-property>
-          </ng-container>
-        </div>
-      </div>
-
-      <div
-        *ngIf="publicationDate"
-        class="metadata-item flex-column flex-sm-row flex-md-column gap-2 gap-md-0 align-items-end"
-      >
-        <div class="publication-date d-flex flex-row gap-2 no-wrap">
-          <ng-container *ngIf="licenseIcon && licenseTooltip">
-            <fa-icon
-              [icon]="licenseIcon"
-              [ngbTooltip]="licenseTooltip"
-              triggers="hover click"
-              container="body"
-            ></fa-icon>
-          </ng-container>
-          {{ publicationDate | localDate | timeago:true }}
-        </div>
-        <div class="view-count">
-          <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
-          <span
-            *ngIf="image.viewCount > 1"
-            [translateParams]="{
+            <div class="publication-date d-flex flex-row gap-2 no-wrap">
+              <ng-container *ngIf="licenseIcon && licenseTooltip">
+                <fa-icon
+                  [icon]="licenseIcon"
+                  [ngbTooltip]="licenseTooltip"
+                  triggers="hover click"
+                  container="body"
+                ></fa-icon>
+              </ng-container>
+              {{ publicationDate | localDate | timeago:true }}
+            </div>
+            <div class="view-count">
+              <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
+              <span
+                *ngIf="image.viewCount > 1"
+                [translateParams]="{
             '0': image.viewCount
           }"
-            [translate]="'{{0}} views'"
-          ></span>
+                [translate]="'{{0}} views'"
+              ></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
