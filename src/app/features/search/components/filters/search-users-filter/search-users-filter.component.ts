@@ -15,7 +15,8 @@ import { forkJoin, Observable, of } from "rxjs";
 import { filter, map, take, tap } from "rxjs/operators";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import { AuthActionTypes, LoadUserProfile, LoadUserProfileSuccess } from "@features/account/store/auth.actions";
+import { AuthActionTypes, LoadUser, LoadUserSuccess } from "@features/account/store/auth.actions";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 @Component({
   selector: "astrobin-search-users-filter.search-filter-component",
@@ -66,7 +67,7 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
           },
           hooks: {
             onInit: (field: FormlyFieldConfig) => {
-              const value: { id: UserProfileInterface["id"]; name: string }[] = field.formControl.value;
+              const value: { id: UserInterface["id"]; name: string }[] = field.formControl.value;
               if (value) {
                 const arrayValue = UtilsService.isArray(value) ? value : [value];
                 field.props.options = of(arrayValue.map(x => ({
@@ -102,48 +103,48 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
   }
 
   valueTransformer: (value: {
-    value: (UserProfileInterface["id"] | {
-      id: UserProfileInterface["id"];
+    value: (UserInterface["id"] | {
+      id: UserInterface["id"];
       name: string
     })[],
     matchType: MatchType
   }) => Observable<{
     value: {
-      id: UserProfileInterface["id"];
+      id: UserInterface["id"];
       name: string
     }[],
     matchType: MatchType
   }> = value => {
-    const userProfileIds: UserProfileInterface["id"][] = [];
+    const userIds: UserInterface["id"][] = [];
     value.value.forEach((value: any) => {
       if (typeof value === "object") {
-        userProfileIds.push(value.id);
+        userIds.push(value.id);
       } else {
-        userProfileIds.push(value);
+        userIds.push(value);
       }
     });
 
     return new Observable<{
       value: {
-        id: UserProfileInterface["id"];
+        id: UserInterface["id"];
         name: string
       }[],
       matchType: MatchType
     }>(observer => {
-      const observables$ = userProfileIds.map((id: UserProfileInterface["id"]) =>
+      const observables$ = userIds.map((id: UserInterface["id"]) =>
         this.actions$.pipe(
-          ofType(AuthActionTypes.LOAD_USER_PROFILE_SUCCESS),
-          map((action: LoadUserProfileSuccess) => action.payload.userProfile),
-          filter((userProfile: UserProfileInterface) => userProfile.id === id),
+          ofType(AuthActionTypes.LOAD_USER_SUCCESS),
+          map((action: LoadUserSuccess) => action.payload.user),
+          filter((user: UserInterface) => user.id === id),
           take(1)
         )
       );
 
-      forkJoin(observables$).pipe(take(1)).subscribe((userProfiles: UserProfileInterface[]) => {
+      forkJoin(observables$).pipe(take(1)).subscribe((users: UserInterface[]) => {
         const newValue = {
-          value: userProfiles.map(userProfile => ({
-            id: userProfile.id,
-            name: userProfile.realName || userProfile.username
+          value: users.map(user => ({
+            id: user.id,
+            name: user.displayName === user.username ? user.username : `${user.displayName} (${user.username})`
           })),
           matchType: value.matchType
         };
@@ -151,8 +152,8 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
         observer.complete();
       });
 
-      userProfileIds.forEach((id: UserProfileInterface["id"]) => {
-        this.store$.dispatch(new LoadUserProfile({ id }));
+      userIds.forEach((id: UserInterface["id"]) => {
+        this.store$.dispatch(new LoadUser({ id }));
       });
     });
   };
@@ -172,7 +173,7 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
       );
     }
 
-    const names = this.value.value.map((value: { id: UserProfileInterface["id"]; name: string }) => value.name);
+    const names = this.value.value.map((value: { id: UserInterface["id"]; name: string }) => value.name);
     return this.domSanitizer.bypassSecurityTrustHtml(
       names.map((name: string) => name || "...").join(", ")
     );

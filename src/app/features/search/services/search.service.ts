@@ -1167,7 +1167,7 @@ export class SearchService extends BaseService {
               label: name,
               value: {
                 value: [{
-                  id: userProfile.id,
+                  id: userProfile.user,
                   name
                 }],
                 matchType: null
