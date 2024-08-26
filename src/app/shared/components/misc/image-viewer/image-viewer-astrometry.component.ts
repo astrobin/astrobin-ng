@@ -247,7 +247,14 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   objectInFieldClicked(event: MouseEvent, subject: string): void {
     event.preventDefault();
     this.offcanvasService.dismiss();
-    this.search({ subject });
+    this.search({
+      subjects: {
+        value: [
+          subject
+        ],
+        matchType: null
+      }
+    });
   }
 
   moreObjectsInFieldClicked(event: MouseEvent): void {
