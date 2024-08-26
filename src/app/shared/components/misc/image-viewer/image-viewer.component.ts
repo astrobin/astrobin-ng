@@ -341,7 +341,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
         if (this.revision?.solution?.pixinsightSvgAnnotationRegular) {
           this.mouseHoverImage = null;
           this.loadInlineSvg$(
-            environment.classicApiUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
+            environment.classicBaseUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
           ).subscribe(inlineSvg => {
             this.inlineSvg = inlineSvg;
           });
