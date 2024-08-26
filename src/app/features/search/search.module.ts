@@ -50,12 +50,14 @@ import { SearchGroupsFilterComponent } from "@features/search/components/filters
 import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
 import { LoadSaveSearchModalComponent } from './components/filters/load-save-search-modal/load-save-search-modal.component';
 import { SearchTextFilterComponent } from "@features/search/components/filters/search-text-filter/search-text-filter.component";
+import { SearchMountFilterComponent } from "@features/search/components/filters/search-mount-filter/search-mount-filter.component";
 
 const allFilterComponents = [
   SearchTextFilterComponent,
   SearchSubjectsFilterComponent,
   SearchTelescopeFilterComponent,
   SearchCameraFilterComponent,
+  SearchMountFilterComponent,
   SearchTelescopeTypesFilterComponent,
   SearchCameraTypesFilterComponent,
   SearchAcquisitionMonthsFilterComponent,
