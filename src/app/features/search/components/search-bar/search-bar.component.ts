@@ -48,6 +48,7 @@ import { SearchMountFilterComponent } from "@features/search/components/filters/
 import { SearchFilterFilterComponent } from "@features/search/components/filters/search-filter-filter/search-filter-filter.component";
 import { SearchAccessoryFilterComponent } from "@features/search/components/filters/search-accessory-filter/search-accessory-filter.component";
 import { SearchSoftwareFilterComponent } from "@features/search/components/filters/search-software-filter/search-software-filter.component";
+import { SearchUsersFilterComponent } from "@features/search/components/filters/search-users-filter/search-users-filter.component";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -740,6 +741,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       {
         key: SearchPersonalFiltersFilterComponent.key,
         method: this.searchService.autoCompletePersonalFilters$(query)
+      },
+      {
+        key: SearchUsersFilterComponent.key,
+        method: this.searchService.autoCompleteUsers$(query)
       },
       {
         key: SearchAutoCompleteType.TEXT,

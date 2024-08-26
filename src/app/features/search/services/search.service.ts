@@ -37,10 +37,11 @@ import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfac
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { MountService } from "@features/equipment/services/mount.service";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 export enum SearchAutoCompleteType {
   TEXT = "text",
@@ -87,6 +88,7 @@ export enum SearchAutoCompleteType {
   IMAGE_SIZE = "image_size",
   GROUPS = "groups",
   PERSONAL_FILTERS = "personal_filters",
+  USERS = "users"
 }
 
 export interface SearchAutoCompleteItem {
@@ -121,7 +123,6 @@ export class SearchService extends BaseService {
     public readonly autoCompleteOnlyFiltersTypes: Type<SearchFilterComponentInterface>[],
     public readonly telescopeService: TelescopeService,
     public readonly cameraService: CameraService,
-    public readonly mountService: MountService,
     public readonly dateService: DateService,
     public readonly imageService: ImageService,
     public readonly sensorService: SensorService,
@@ -129,7 +130,8 @@ export class SearchService extends BaseService {
     public readonly constellationService: ConstellationsService,
     public readonly filterService: FilterService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly commonApiService: CommonApiService
   ) {
     super(loadingService);
 
@@ -301,6 +303,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("In groups");
       case SearchAutoCompleteType.PERSONAL_FILTERS:
         return this.translateService.instant("Personal filters");
+      case SearchAutoCompleteType.USERS:
+        return this.translateService.instant("Users");
     }
   }
 
@@ -1149,6 +1153,29 @@ export class SearchService extends BaseService {
           }
         }))
         .slice(0, this._autoCompleteItemsLimit)
+    );
+  }
+
+  autoCompleteUsers$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return this.commonApiService.findUserProfiles(query).pipe(
+      map((userProfiles: UserProfileInterface[]) =>
+        userProfiles
+          .map(userProfile => {
+            const name = userProfile.realName ? `${userProfile.realName} (${userProfile.username})` : userProfile.username;
+            return ({
+              type: SearchAutoCompleteType.USERS,
+              label: name,
+              value: {
+                value: [{
+                  id: userProfile.id,
+                  name
+                }],
+                matchType: null
+              }
+            });
+          })
+          .slice(0, this._autoCompleteItemsLimit)
+      )
     );
   }
 
