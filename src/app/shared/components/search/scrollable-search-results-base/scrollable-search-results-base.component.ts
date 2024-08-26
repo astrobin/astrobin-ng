@@ -50,7 +50,10 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.model && changes.model.currentValue) {
-      if (clearInterval === undefined || setTimeout === undefined) {
+      if (
+        this.windowRefService.nativeWindow.clearTimeout === undefined ||
+        this.windowRefService.nativeWindow.setTimeout === undefined
+      ) {
         // Server side.
         this.loadData();
       } else {
@@ -61,16 +64,20 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   }
 
   cancelScheduledLoading() {
-    if (this.scheduledLoadingTimeout) {
-      clearTimeout(this.scheduledLoadingTimeout);
+    if (this.scheduledLoadingTimeout && this.windowRefService.nativeWindow.clearTimeout !== undefined) {
+      this.windowRefService.nativeWindow.clearTimeout(this.scheduledLoadingTimeout);
       this.scheduledLoadingTimeout = null;
     }
   }
 
   scheduleLoading() {
-    this.scheduledLoadingTimeout = setTimeout(() => {
+    if (this.windowRefService.nativeWindow.setTimeout !== undefined) {
+      this.scheduledLoadingTimeout = this.windowRefService.nativeWindow.setTimeout(() => {
+        this.loadData();
+      }, 50);
+    } else {
       this.loadData();
-    }, 50);
+    }
   }
 
   loadData(): void {

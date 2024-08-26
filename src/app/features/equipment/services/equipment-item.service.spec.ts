@@ -9,13 +9,15 @@ import {
   EquipmentItemReviewerRejectionReason
 } from "@features/equipment/types/equipment-item-base.interface";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("EquipmentItemService", () => {
   let service: EquipmentItemService;
   let cameraService: CameraService;
 
   beforeEach(async () => {
-    await MockBuilder(EquipmentItemService, AppModule);
+    await MockBuilder(EquipmentItemService, AppModule).replace(HttpClientModule, HttpClientTestingModule);
     service = TestBed.inject(EquipmentItemService);
     cameraService = TestBed.inject(CameraService);
 

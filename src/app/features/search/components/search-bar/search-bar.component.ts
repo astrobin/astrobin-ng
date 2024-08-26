@@ -106,8 +106,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.windowRefService.nativeWindow.document.addEventListener('click', this.onDocumentClick.bind(this));
-
+    if (isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.document?.addEventListener) {
+      this.windowRefService.nativeWindow.document.addEventListener('click', this.onDocumentClick.bind(this));
+    }
 
     this._modelChanged.pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$)).subscribe(value => {
       if (this.model.searchType !== SearchType.IMAGE && this.model.searchType !== undefined) {
@@ -184,7 +185,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   ngOnDestroy(): void {
-    this.windowRefService.nativeWindow.document.removeEventListener('click', this.onDocumentClick.bind(this));
+    if (isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.document?.removeEventListener) {
+      this.windowRefService.nativeWindow.document.removeEventListener('click', this.onDocumentClick.bind(this));
+    }
   }
 
   onDocumentClick(event: MouseEvent): void {
