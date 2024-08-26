@@ -3,10 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import {
-  MarketplaceListingInterface,
-  MarketplaceListingType
-} from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceListingInterface, MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
@@ -21,38 +18,14 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Actions, ofType } from "@ngrx/effects";
-import {
-  ApproveMarketplaceListing,
-  ApproveMarketplaceListingSuccess,
-  CreateMarketplacePrivateConversation,
-  CreateMarketplacePrivateConversationSuccess,
-  DeleteMarketplaceListing,
-  DeleteMarketplaceListingSuccess,
-  DeleteMarketplacePrivateConversation,
-  DeleteMarketplacePrivateConversationSuccess,
-  EquipmentActionTypes,
-  LoadMarketplacePrivateConversations,
-  RenewMarketplaceListing,
-  UpdateMarketplacePrivateConversation
-} from "@features/equipment/store/equipment.actions";
+import { ApproveMarketplaceListing, ApproveMarketplaceListingSuccess, CreateMarketplacePrivateConversation, CreateMarketplacePrivateConversationSuccess, DeleteMarketplaceListing, DeleteMarketplaceListingSuccess, DeleteMarketplacePrivateConversation, DeleteMarketplacePrivateConversationSuccess, EquipmentActionTypes, LoadMarketplacePrivateConversations, RenewMarketplaceListing, UpdateMarketplacePrivateConversation } from "@features/equipment/store/equipment.actions";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
-import {
-  LoadNestedComment,
-  LoadNestedComments,
-  LoadNestedCommentsSuccess
-} from "@app/store/actions/nested-comments.actions";
+import { LoadNestedComment, LoadNestedComments, LoadNestedCommentsSuccess } from "@app/store/actions/nested-comments.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import {
-  selectMarketplaceListing,
-  selectMarketplaceOffersByUser,
-  selectMarketplacePrivateConversation,
-  selectMarketplacePrivateConversations
-} from "@features/equipment/store/equipment.selectors";
+import { selectMarketplaceListing, selectMarketplaceOffersByUser, selectMarketplacePrivateConversation, selectMarketplacePrivateConversations } from "@features/equipment/store/equipment.selectors";
 import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import { HttpClient } from "@angular/common/http";
-import { environment } from "@env/environment";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
