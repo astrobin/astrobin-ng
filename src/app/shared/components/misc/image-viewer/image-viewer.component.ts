@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -100,6 +100,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   protected currentIndex = null;
   protected imageContentType: ContentTypeInterface;
   protected userContentType: ContentTypeInterface;
+  protected supportsFullscreen: boolean;
   protected viewingFullscreenImage = false;
   protected showRevisions = false;
   protected loadingHistogram = false;
@@ -180,6 +181,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     public readonly renderer: Renderer2,
     public readonly lightbox: Lightbox,
     public readonly lightboxEvent: LightboxEvent,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -258,13 +260,13 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     const target = event.target as HTMLElement;
 
     // Check if the clicked element is an image with the data-src attribute
-    if (target.tagName === 'IMG' && target.getAttribute('data-src')) {
+    if (target.tagName === "IMG" && target.getAttribute("data-src")) {
       // Check if the parent element is not an anchor tag
       const parentElement = target.parentElement;
 
-      if (parentElement && parentElement.tagName !== 'A') {
-        const src = target.getAttribute('data-src');
-        const thumb = target.getAttribute('src');
+      if (parentElement && parentElement.tagName !== "A") {
+        const src = target.getAttribute("data-src");
+        const thumb = target.getAttribute("src");
         const lightBoxEventSubscription = this.lightboxEvent.lightboxEvent$.subscribe((lightBoxEvent: any) => {
           if (lightBoxEvent.id === LIGHTBOX_EVENT.CLOSE) {
             this.isLightBoxOpen = false;
@@ -299,6 +301,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.navigationContext = [...navigationContext];
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
 
+    this.updateSupportsFullscreen();
     this.computeImageAreaHeight(this.revision.w, this.revision.h);
 
     if (revisionLabel !== FINAL_REVISION_LABEL) {
@@ -313,6 +316,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this._updateNavigationContextInformation();
     this._recordHit();
     this._setTitle();
+
+    this.changeDetectorRef.detectChanges();
 
     if (pushState) {
       this.windowRefService.pushState(
@@ -523,8 +528,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.modalService.open(this.skyplotModalTemplate, { size: "md" });
   }
 
-  supportsFullscreen(): boolean {
-    return (
+  updateSupportsFullscreen(): void {
+    this.supportsFullscreen = (
       this.revision &&
       !this.revision.videoFile &&
       (
@@ -539,7 +544,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       event.preventDefault();
     }
 
-    if (this.supportsFullscreen()) {
+    if (this.supportsFullscreen) {
       this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
       this.viewingFullscreenImage = true;
 

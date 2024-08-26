@@ -55,7 +55,7 @@
       </button>
 
       <button
-        *ngIf="supportsFullscreen()"
+        *ngIf="supportsFullscreen"
         class="fullscreen-button"
         (click)="enterFullscreen($event)"
       >
@@ -76,7 +76,7 @@
     </button>
 
     <astrobin-fullscreen-image-viewer
-      *ngIf="supportsFullscreen()"
+      *ngIf="supportsFullscreen"
       [id]="image.pk"
       [revision]="revisionLabel"
       (exitFullscreen)="exitFullscreen(true)"
@@ -93,7 +93,7 @@
       (swiperight)="onPreviousClicked()"
       (swipedown)="close()"
       [alias]="alias"
-      [class.supports-fullscreen]="supportsFullscreen()"
+      [class.supports-fullscreen]="supportsFullscreen"
       [image]="image"
       [revision]="revisionLabel"
     ></astrobin-image>
