@@ -95,7 +95,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;
   protected imageLoaded = false;
-  protected alias: ImageAlias;
+  protected alias: ImageAlias = ImageAlias.QHD;
   protected hasOtherImages = false;
   protected currentIndex = null;
   protected imageContentType: ContentTypeInterface;
@@ -229,6 +229,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     // These are used to determine the initial height of the image area: when loading this view on mobile, AstroBin does
     // not know how tall the image area should be. If we're initializing this view from a search view, we can pass the
     // height of the image in the search index to use as a basis for calculating the height of the image area.
+
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
 
     if (!this.imageArea) {
       this.utilsService.delay(50).subscribe(() => this.computeImageAreaHeight(imageWidth, imageHeight));

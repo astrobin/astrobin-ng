@@ -1,6 +1,6 @@
 import { CommonModule, CurrencyPipe, DatePipe } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
+import { APP_INITIALIZER, Injectable, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { formlyConfig } from "@app/formly.config";
 import { AppActionTypes } from "@app/store/actions/app.actions";
@@ -75,6 +75,7 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
     });
 }
 
+@Injectable()
 export class AstroBinHammerConfig extends HammerGestureConfig {
   override overrides = {
     swipe: { direction: 31 }, // 31 corresponds to Hammer.DIRECTION_ALL

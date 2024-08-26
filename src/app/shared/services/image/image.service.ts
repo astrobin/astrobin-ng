@@ -1,12 +1,15 @@
-import { Injectable, NgZone } from "@angular/core";
+import { Inject, Injectable, NgZone, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { Observable } from "rxjs";
+import { Observable, Observer, of } from "rxjs";
 import { AcquisitionType, CelestialHemisphere, DataSource, FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, LicenseOptions, ORIGINAL_REVISION_LABEL, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { BortleScale, DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { map, tap } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { isPlatformServer } from "@angular/common";
 
 @Injectable({
   providedIn: "root"
@@ -16,7 +19,9 @@ export class ImageService extends BaseService {
     public readonly loadingService: LoadingService,
     public readonly windowRef: WindowRefService,
     public readonly zone: NgZone,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly http: HttpClient,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(loadingService);
   }
@@ -615,9 +620,28 @@ export class ImageService extends BaseService {
   }
 
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
+    if (isPlatformServer(this.platformId)) {
+      // For SSR, just return the URL as-is
+      return of(url);
+    }
+
     return new Observable<string>(observer => {
+      if (typeof XMLHttpRequest === 'undefined') {
+        // Fallback for environments without XMLHttpRequest
+        this.http.get(url, { responseType: 'blob' }).pipe(
+          tap(() => progressCallback(100)),
+          map(blob => this._createObjectURL(blob))
+        ).subscribe(
+          objectUrl => {
+            observer.next(objectUrl);
+            observer.complete();
+          },
+          error => observer.error(error)
+        );
+        return;
+      }
+
       const xhr = new XMLHttpRequest();
-      const nativeWindow = this.windowRef.nativeWindow;
       let notifiedNotComputable = false;
 
       xhr.open("GET", url, true);
@@ -628,11 +652,9 @@ export class ImageService extends BaseService {
           if (event.lengthComputable) {
             const progress: number = (event.loaded / event.total) * 100;
             progressCallback(progress);
-          } else {
-            if (!notifiedNotComputable) {
-              notifiedNotComputable = true;
-              progressCallback(-1);
-            }
+          } else if (!notifiedNotComputable) {
+            notifiedNotComputable = true;
+            progressCallback(-1);
           }
         });
       };
@@ -640,13 +662,8 @@ export class ImageService extends BaseService {
       xhr.onloadend = () => {
         this.zone.run(() => {
           if (!xhr.status.toString().match(/^2/)) {
-            // Try a more traditional approach.
-            const image = new Image();
-            image.onload = () => {
-              observer.next(url);
-              observer.complete();
-            };
-            image.src = url;
+            // Try a more traditional approach
+            this._loadImageTraditional(url, observer);
             return;
           }
 
@@ -663,13 +680,36 @@ export class ImageService extends BaseService {
           }
 
           const blob = new Blob([xhr.response], options);
-
-          observer.next((nativeWindow as any).URL.createObjectURL(blob));
+          observer.next(this._createObjectURL(blob));
           observer.complete();
+        });
+      };
+
+      xhr.onerror = () => {
+        this.zone.run(() => {
+          // Fallback to traditional approach on error
+          this._loadImageTraditional(url, observer);
         });
       };
 
       xhr.send();
     });
   }
-}
+
+  private _loadImageTraditional(url: string, observer: Observer<string>): void {
+    const image = new Image();
+    image.onload = () => {
+      observer.next(url);
+      observer.complete();
+    };
+    image.onerror = error => observer.error(error);
+    image.src = url;
+  }
+
+  private _createObjectURL(blob: Blob): string {
+    if (typeof URL !== 'undefined' && URL.createObjectURL) {
+      return URL.createObjectURL(blob);
+    }
+    // Fallback for environments without URL.createObjectURL
+    return '';
+  }}
