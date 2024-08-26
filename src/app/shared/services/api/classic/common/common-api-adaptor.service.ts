@@ -104,6 +104,7 @@ export interface BackendUserProfileInterface {
   email?: string;
   signup_country?: string;
   agreed_to_marketplace_terms?: string;
+  enable_new_search_experience?: boolean;
 }
 
 export interface BackendTogglePropertyInterface {
@@ -220,7 +221,8 @@ export class CommonApiAdaptorService extends BaseService {
       locations: userProfile.locations,
       email: userProfile.email,
       signUpCountry: userProfile.signup_country,
-      agreedToMarketplaceTerms: userProfile.agreed_to_marketplace_terms
+      agreedToMarketplaceTerms: userProfile.agreed_to_marketplace_terms,
+      enableNewSearchExperience: userProfile.enable_new_search_experience
     };
   }
 
