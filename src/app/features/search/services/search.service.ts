@@ -39,6 +39,8 @@ import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MountService } from "@features/equipment/services/mount.service";
 import { MountInterface } from "@features/equipment/types/mount.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
 export enum SearchAutoCompleteType {
   TEXT = "text",
@@ -48,6 +50,8 @@ export enum SearchAutoCompleteType {
   CAMERA = "camera",
   MOUNT = "mount",
   FILTER = "filter",
+  ACCESSORY = "accessory",
+  SOFTWARE = "software",
   TELESCOPE_TYPES = "telescope_types",
   CAMERA_TYPES = "camera_types",
   ACQUISITION_MONTHS = "acquisition_months",
@@ -82,7 +86,7 @@ export enum SearchAutoCompleteType {
   COORDS = "coords",
   IMAGE_SIZE = "image_size",
   GROUPS = "groups",
-  PERSONAL_FILTERS = "personal_filters"
+  PERSONAL_FILTERS = "personal_filters",
 }
 
 export interface SearchAutoCompleteItem {
@@ -104,6 +108,8 @@ export class SearchService extends BaseService {
   private _autoCompleteCameraCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteMountCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteFilterCache: { [query: string]: SearchAutoCompleteItem[] } = {};
+  private _autoCompleteAccessoryCache: { [query: string]: SearchAutoCompleteItem[] } = {};
+  private _autoCompleteSoftwareCache: { [query: string]: SearchAutoCompleteItem[] } = {};
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -223,6 +229,10 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Mount");
       case SearchAutoCompleteType.FILTER:
         return this.translateService.instant("Filter");
+      case SearchAutoCompleteType.ACCESSORY:
+        return this.translateService.instant("Accessory");
+      case SearchAutoCompleteType.SOFTWARE:
+        return this.translateService.instant("Software");
       case SearchAutoCompleteType.TELESCOPE_TYPES:
         return this.translateService.instant("Telescope types");
       case SearchAutoCompleteType.CAMERA_TYPES:
@@ -698,6 +708,92 @@ export class SearchService extends BaseService {
                   matchType: null
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.FILTER)
+              };
+            });
+          }),
+          tap(items => {
+            this._autoCompleteFilterCache[query] = items;
+          })
+        ).subscribe(items => {
+        observer.next(items);
+        observer.complete();
+      });
+    });
+  }
+
+  autoCompleteAccessories$(query: string): Observable<SearchAutoCompleteItem[]> {
+    if (this._autoCompleteAccessoryCache[query]) {
+      return of(this._autoCompleteFilterCache[query]);
+    }
+
+    return new Observable<SearchAutoCompleteItem[]>(observer => {
+      observer.next(null); // Indicates loading.
+
+      this.equipmentApiService
+        .findAllEquipmentItems(EquipmentItemType.ACCESSORY, {
+          query,
+          limit: this._autoCompleteItemsLimit
+        })
+        .pipe(
+          map((response: PaginatedApiResultInterface<AccessoryInterface>) => {
+            return response.results.map(accessory => {
+              const label = `${accessory.brandName || this.translateService.instant("(DIY)")} ${accessory.name}`;
+              const value = {
+                id: accessory.id,
+                name: label
+              };
+
+              return {
+                type: SearchAutoCompleteType.ACCESSORY,
+                label,
+                value: {
+                  value: [value],
+                  matchType: null
+                },
+                minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.ACCESSORY)
+              };
+            });
+          }),
+          tap(items => {
+            this._autoCompleteFilterCache[query] = items;
+          })
+        ).subscribe(items => {
+        observer.next(items);
+        observer.complete();
+      });
+    });
+  }
+
+  autoCompleteSoftware$(query: string): Observable<SearchAutoCompleteItem[]> {
+    if (this._autoCompleteSoftwareCache[query]) {
+      return of(this._autoCompleteFilterCache[query]);
+    }
+
+    return new Observable<SearchAutoCompleteItem[]>(observer => {
+      observer.next(null); // Indicates loading.
+
+      this.equipmentApiService
+        .findAllEquipmentItems(EquipmentItemType.SOFTWARE, {
+          query,
+          limit: this._autoCompleteItemsLimit
+        })
+        .pipe(
+          map((response: PaginatedApiResultInterface<SoftwareInterface>) => {
+            return response.results.map(software => {
+              const label = `${software.brandName || this.translateService.instant("(DIY)")} ${software.name}`;
+              const value = {
+                id: software.id,
+                name: label
+              };
+
+              return {
+                type: SearchAutoCompleteType.SOFTWARE,
+                label,
+                value: {
+                  value: [value],
+                  matchType: null
+                },
+                minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.SOFTWARE)
               };
             });
           }),

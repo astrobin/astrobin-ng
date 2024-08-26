@@ -52,6 +52,8 @@ import { LoadSaveSearchModalComponent } from './components/filters/load-save-sea
 import { SearchTextFilterComponent } from "@features/search/components/filters/search-text-filter/search-text-filter.component";
 import { SearchMountFilterComponent } from "@features/search/components/filters/search-mount-filter/search-mount-filter.component";
 import { SearchFilterFilterComponent } from "@features/search/components/filters/search-filter-filter/search-filter-filter.component";
+import { SearchAccessoryFilterComponent } from "@features/search/components/filters/search-accessory-filter/search-accessory-filter.component";
+import { SearchSoftwareFilterComponent } from "@features/search/components/filters/search-software-filter/search-software-filter.component";
 
 const allFilterComponents = [
   SearchTextFilterComponent,
@@ -60,6 +62,8 @@ const allFilterComponents = [
   SearchCameraFilterComponent,
   SearchMountFilterComponent,
   SearchFilterFilterComponent,
+  SearchAccessoryFilterComponent,
+  SearchSoftwareFilterComponent,
   SearchTelescopeTypesFilterComponent,
   SearchCameraTypesFilterComponent,
   SearchAcquisitionMonthsFilterComponent,
