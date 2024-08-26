@@ -224,15 +224,15 @@ export class SearchService extends BaseService {
       case SearchAutoCompleteType.SUBJECT_TYPE:
         return this.translateService.instant("Subject type");
       case SearchAutoCompleteType.TELESCOPE:
-        return this.translateService.instant("Telescopes or lens");
+        return this.translateService.instant("Telescopes or lenses");
       case SearchAutoCompleteType.CAMERA:
-        return this.translateService.instant("Camera");
+        return this.translateService.instant("Cameras");
       case SearchAutoCompleteType.MOUNT:
-        return this.translateService.instant("Mount");
+        return this.translateService.instant("Mounts");
       case SearchAutoCompleteType.FILTER:
-        return this.translateService.instant("Filter");
+        return this.translateService.instant("Filters");
       case SearchAutoCompleteType.ACCESSORY:
-        return this.translateService.instant("Accessory");
+        return this.translateService.instant("Accessories");
       case SearchAutoCompleteType.SOFTWARE:
         return this.translateService.instant("Software");
       case SearchAutoCompleteType.TELESCOPE_TYPES:
@@ -300,7 +300,7 @@ export class SearchService extends BaseService {
       case SearchAutoCompleteType.IMAGE_SIZE:
         return this.translateService.instant("Width and height");
       case SearchAutoCompleteType.GROUPS:
-        return this.translateService.instant("In groups");
+        return this.translateService.instant("Featured in groups");
       case SearchAutoCompleteType.PERSONAL_FILTERS:
         return this.translateService.instant("Personal filters");
       case SearchAutoCompleteType.USERS:
