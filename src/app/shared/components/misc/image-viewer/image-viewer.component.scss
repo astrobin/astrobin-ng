@@ -420,18 +420,28 @@
       .comment {
         display: flex;
         align-items: center;
-        gap: .75rem;
 
         ::ng-deep {
           .ng-fa-icon,
           .btn-link {
             margin: 0 !important;
+            &:hover {
+              color: var(--lighterGrey);
+            }
           }
         }
 
-        > astrobin-toggle-property,
+        > astrobin-toggle-property::ng-deep .btn,
         > .btn {
           height: 2.25rem;
+          padding: .5rem 1rem;
+
+          &:hover {
+            .ng-fa-icon,
+            .btn-link {
+              color: var(--lighterGrey);
+            }
+          }
         }
 
         > .count {
@@ -444,6 +454,11 @@
       @media (max-width: $md-max) {
         position: fixed;
         bottom: 0;
+        padding: .5rem;
+
+        astrobin-toggle-property {
+          margin-bottom: 0;
+        }
       }
     }
 
