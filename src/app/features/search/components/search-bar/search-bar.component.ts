@@ -172,8 +172,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       changes.model.currentValue &&
       JSON.stringify(changes.model.currentValue) !== JSON.stringify(changes.model.previousValue)
     ) {
-      this.clearFilters();
-      this.initializeFilters();
+      if (isPlatformBrowser(this.platformId)) {
+        // No point of doing this on the server because the container ref will not be defined.
+        this.clearFilters();
+        this.initializeFilters();
+      }
     }
   }
 
