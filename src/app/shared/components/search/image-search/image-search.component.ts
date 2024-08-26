@@ -12,7 +12,7 @@ import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { takeUntil, tap } from "rxjs/operators";
+import { take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -22,6 +22,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
 import { DeviceService } from "@shared/services/device.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-image-search",
@@ -167,7 +168,13 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     if (this.router.url.startsWith("/i/")) {
       this._openImageByNavigation(image);
     } else {
-      this._openImageByImageViewer(image);
+      this.currentUserProfile$.pipe(take(1)).subscribe((userProfile: UserProfileInterface) => {
+        if (userProfile && userProfile.enableNewSearchExperience) {
+          this._openImageByImageViewer(image);
+        } else {
+          this._openImageClassicUrl(image);
+        }
+      });
     }
   }
 
@@ -179,6 +186,13 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
   private _openImageByNavigation(image: ImageSearchInterface): void {
     this.router.navigate([`/i/${image.hash || image.objectId}`]);
+  }
+
+  private _openImageClassicUrl(image: ImageSearchInterface): void {
+    this.windowRefService.nativeWindow.open(
+      this.classicRoutesService.IMAGE(image.hash || ("" + image.objectId)),
+      "_self"
+    );
   }
 
   private _openImageByImageViewer(image: ImageSearchInterface): void {
