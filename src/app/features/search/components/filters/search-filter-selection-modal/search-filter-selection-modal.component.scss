@@ -1,20 +1,45 @@
 :host {
-  max-height: calc(100vh - 2rem);
+  max-height: calc(100vh - 3rem);
   overflow-y: auto;
+
+  .search-filter-selection-item-label {
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem 0;
+    cursor: pointer;
+    width: 100%;
+
+    &:not(:last-child) {
+      margin-bottom: .5rem;
+    }
+
+    &:hover {
+      color: var(--white);
+    }
+
+    .search-filter-selection-item-label-text {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+      flex-grow: 1;
+    }
+
+    .search-filter-selection-item-label-icon {
+      font-size: 1.25rem;
+      line-height: 1rem;
+    }
+  }
 
   ::ng-deep {
     .dropdown-menu {
-      position: unset !important;
-      inset: unset !important;
-      transform: unset !important;
-      margin-top: 1rem !important;
-      box-shadow: none;
-      background-color: unset;
+      width: calc(100% - 2rem);
 
       .dropdown-item {
         padding: .75rem .5rem;
 
-        &.active {
+        &.active,
+        &:active,
+        &:focus {
           background: unset;
         }
 

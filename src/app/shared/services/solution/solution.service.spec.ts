@@ -18,7 +18,7 @@ describe("SolutionService", () => {
   describe("getObjectsInField", () => {
     it("should work", () => {
       const solution = SolutionGenerator.solution();
-      solution.objects_in_field = "M1, M2, M3";
+      solution.objectsInField = "M1, M2, M3";
 
       expect(service.getObjectsInField(solution)).toEqual(["M1", "M2", "M3"]);
     });

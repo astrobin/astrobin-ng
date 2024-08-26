@@ -1,7 +1,7 @@
 const { pathsToModuleNameMapper } = require("ts-jest/dist/config");
 const { compilerOptions } = require("./tsconfig.json");
 
-const esModules = ["@angular", "@ngrx", "rxjs"];
+const esModules = ["@angular", "@ngrx", "rxjs", "ngx-lightbox"];
 
 module.exports = {
   verbose: true,

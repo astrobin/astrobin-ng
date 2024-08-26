@@ -1,48 +1,13 @@
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  PLATFORM_ID,
-  SimpleChanges,
-  TemplateRef,
-  ViewChild
-} from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Action, Store } from "@ngrx/store";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType,
-  EquipmentItemUsageType
-} from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
 import { forkJoin, Observable, of, Subscription } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
-import {
-  CreateAccessory,
-  CreateCamera,
-  CreateFilter,
-  CreateMount,
-  CreateSensor,
-  CreateSoftware,
-  CreateTelescope,
-  EquipmentActionTypes,
-  EquipmentItemCreationSuccessPayloadInterface,
-  FindAllEquipmentItems,
-  FindAllEquipmentItemsSuccess,
-  FindRecentlyUsedEquipmentItems,
-  FindRecentlyUsedEquipmentItemsSuccess,
-  ItemBrowserAdd,
-  ItemBrowserExitFullscreen,
-  ItemBrowserSet,
-  LoadBrand,
-  LoadEquipmentItem
-} from "@features/equipment/store/equipment.actions";
+import { CreateAccessory, CreateCamera, CreateFilter, CreateMount, CreateSensor, CreateSoftware, CreateTelescope, EquipmentActionTypes, EquipmentItemCreationSuccessPayloadInterface, FindAllEquipmentItems, FindAllEquipmentItemsSuccess, FindRecentlyUsedEquipmentItems, FindRecentlyUsedEquipmentItemsSuccess, ItemBrowserAdd, ItemBrowserExitFullscreen, ItemBrowserSet, LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { filter, first, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
@@ -132,6 +97,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   excludeId: number;
+
+  @Input()
+  hideOptionalMarker = false;
 
   @Input()
   layout: ItemBrowserLayout = ItemBrowserLayout.HORIZONTAL;
@@ -740,7 +708,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     fullScreenBodyTemplate: this.fullScreenBodyTemplate,
                     showArrow: false,
                     classNames: "equipment-select",
-                    enableSelectFrozen: this.enableSelectFrozen
+                    enableSelectFrozen: this.enableSelectFrozen,
+                    required: this.required,
+                    hideOptionalMarker: this.hideOptionalMarker
                   },
                   hooks: {
                     onInit: (field: FormlyFieldConfig) => {

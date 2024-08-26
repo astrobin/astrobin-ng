@@ -7,6 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-telescope-diameter-filter.search-filter-component",
@@ -16,11 +17,11 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
 export class SearchTelescopeDiameterFilterComponent extends SearchBaseSliderFilterComponent {
   static key = SearchAutoCompleteType.TELESCOPE_DIAMETER;
   static minimumSubscription = PayableProductInterface.ULTIMATE;
-
-  unit = "mm";
+  category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchTelescopeDiameterFilterComponent.key as SearchAutoCompleteType
   );
+  unit = "mm";
 
   constructor(
     public readonly store$: Store<MainState>,

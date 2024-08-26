@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-subject-type-source-filter.search-filter-component",
@@ -18,7 +19,7 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
 export class SearchSubjectTypeFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.SUBJECT_TYPE;
   static minimumSubscription = PayableProductInterface.LITE;
-
+  category = SearchFilterCategory.SKY_AND_SUBJECTS;
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchSubjectTypeFilterComponent.key as SearchAutoCompleteType
   );

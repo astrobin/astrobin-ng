@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -7,11 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
 import { Observable } from "rxjs";
 import { LoadingService } from "@shared/services/loading.service";
-import {
-  CreateToggleProperty,
-  DeleteToggleProperty,
-  LoadToggleProperty
-} from "@app/store/actions/toggle-property.actions";
+import { CreateToggleProperty, DeleteToggleProperty, LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
 import { takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
@@ -24,7 +20,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   templateUrl: "./toggle-property.component.html",
   styleUrls: ["./toggle-property.component.scss"]
 })
-export class TogglePropertyComponent extends BaseComponentDirective implements OnInit {
+export class TogglePropertyComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   propertyType: TogglePropertyInterface["propertyType"];
 
@@ -45,6 +41,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
 
   @Input()
   btnClass: string = "btn btn-secondary";
+
+  @Input()
+  showLabel = true;
 
   toggleProperty$: Observable<TogglePropertyInterface | null>;
 
@@ -79,17 +78,6 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     }
   }
 
-  get unsetTogglePropertyIcon(): IconProp {
-    switch (this.propertyType) {
-      case "like":
-        return "thumbs-down";
-      case "bookmark":
-        return "bookmark-slash";
-      case "follow":
-        return "bell-slash";
-    }
-  }
-
   get setTogglePropertyLabel(): string {
     if (this.setLabel) {
       return this.setLabel;
@@ -105,7 +93,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     }
   }
 
-  get setTogglePropertyIcon(): IconProp {
+  get togglePropertyIcon(): IconProp {
     switch (this.propertyType) {
       case "like":
         return "thumbs-up";
@@ -116,8 +104,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     }
   }
 
-  public ngOnInit(): void {
-    super.ngOnInit();
+  public ngOnChanges(): void {
     this._initStatus();
   }
 

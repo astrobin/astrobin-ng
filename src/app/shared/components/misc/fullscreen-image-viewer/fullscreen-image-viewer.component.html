@@ -33,32 +33,46 @@
     </ng-container>
   </ng-container>
 
-  <div (click)="hide()" class="close">
+  <div (click)="hide($event)" class="close">
     <fa-icon icon="times"></fa-icon>
     <span class="esc">ESC</span>
   </div>
 </ng-container>
 
 <ng-template #imageZoom let-hd="hd" let-real="real">
-  <lib-ngx-image-zoom
-    (zoomPosition)="setZoomPosition($event)"
-    (zoomScroll)="setZoomScroll($event)"
-    [circularLens]="true"
-    [enableLens]="true"
-    [enableScrollZoom]="true"
-    [fullImage]="real"
-    [lensHeight]="zoomLensSize"
-    [lensWidth]="zoomLensSize"
-    [maxZoomRatio]="8"
-    [minZoomRatio]="0.1"
-    [thumbImage]="hd"
-    [zoomMode]="'click'"
-    class="image-zoom"
-  >
-  </lib-ngx-image-zoom>
+  <div class="position-relative">
+    <lib-ngx-image-zoom
+      (zoomPosition)="setZoomPosition($event)"
+      (zoomScroll)="setZoomScroll($event)"
+      (imagesLoaded)="onImagesLoaded($event)"
+      [circularLens]="true"
+      [enableLens]="true"
+      [enableScrollZoom]="true"
+      [fullImage]="real"
+      [lensHeight]="zoomLensSize"
+      [lensWidth]="zoomLensSize"
+      [maxZoomRatio]="8"
+      [minZoomRatio]="0.1"
+      [thumbImage]="hd"
+      zoomMode="hover-freeze"
+      class="image-zoom"
+    >
+    </lib-ngx-image-zoom>
 
-  <div *ngIf="showZoomIndicator && getZoomPosition()" class="image-zoom-indicator">
-    {{ getZoomScroll() | number: "1.2-2" }}x
+    <div
+      *ngIf="showZoomIndicator"
+      class="image-zoom-indicator"
+      [ngStyle]="getZoomIndicatorStyle()"
+    >
+      {{ getZoomScroll() | number: "1.2-2" }}x
+    </div>
+
+    <div *ngIf="!showZoomIndicator && !isTouchDevice" class="instruction-container">
+      <div class="instructions">
+        <fa-icon icon="mouse-pointer"></fa-icon>
+        <span>{{ "Click to zoom, scroll to magnify." | translate }}</span>
+      </div>
+    </div>
   </div>
 </ng-template>
 
@@ -70,24 +84,26 @@
   </div>
 </ng-template>
 
-<ng-template #hdThumbnailLoadingTmpl>
-  <div *ngIf="hdThumbnailLoading" class="loading-indicator-container">
-    <astrobin-loading-indicator></astrobin-loading-indicator>
+<ng-template #hdImageLoadingTmpl>
+  <div class="loading-indicator-container">
+    <astrobin-loading-indicator [progress]="hdImageLoadingProgress$ | async"></astrobin-loading-indicator>
   </div>
 </ng-template>
 
-<ng-template #hdImageLoadingTmpl>
-  <astrobin-loading-indicator [progress]="hdImageLoadingProgress$ | async"></astrobin-loading-indicator>
-</ng-template>
-
 <ng-template #realThumbnailLoadingTmpl>
-  <div *ngIf="realThumbnailLoading" class="loading-indicator-container">
-    <astrobin-loading-indicator></astrobin-loading-indicator>
+  <div *ngIf="realThumbnailLoading" class="loading-indicator-container has-message">
+    <astrobin-loading-indicator
+      [message]="'Downloading high resolution image' | translate"
+    ></astrobin-loading-indicator>
   </div>
 </ng-template>
 
 <ng-template #realImageLoadingTmpl>
-  <div *ngIf="realImageLoadingProgress$ | async as progress" class="loading-indicator-container">
-    <astrobin-loading-indicator *ngIf="progress && progress < 100" [progress]="progress"></astrobin-loading-indicator>
+  <div *ngIf="realImageLoadingProgress$ | async as progress" class="loading-indicator-container has-message">
+    <astrobin-loading-indicator
+      *ngIf="progress && progress < 100"
+      [message]="'Downloading high resolution image' | translate"
+      [progress]="progress"
+    ></astrobin-loading-indicator>
   </div>
 </ng-template>

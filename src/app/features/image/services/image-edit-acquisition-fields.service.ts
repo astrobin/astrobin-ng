@@ -43,15 +43,17 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   }
 
   onFieldsInitialized(): void {
-    this._subjectTypeChangesSubscription = this.imageEditService.form
-      .get("subjectType")
-      .valueChanges.subscribe(subjectType => {
+    const field = this.imageEditService.form.get("subjectType");
+
+    if (field) {
+      this._subjectTypeChangesSubscription = field.valueChanges.subscribe(subjectType => {
         const stepper = this.imageEditService.fields.find(field => field.id === "image-stepper-field");
         const acquisitionStep = stepper.fieldGroup.find(field => field.id === "image-stepper-acquisition");
         const field = acquisitionStep.fieldGroup.find(field => field.key === "unsupportedSubjectTypeForAcquisitions");
 
         field.template = this._getUnsupportedSubjectTypeForAcquisitionsTemplate(subjectType);
       });
+    }
   }
 
   getFields(): FormlyFieldConfig[] {

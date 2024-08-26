@@ -98,7 +98,7 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
 
     if (this.props.multiple) {
       const values = (value as EquipmentItem[]).map(x => x.id);
-      const formValues = this.formControl.value as EquipmentItem[];
+      const formValues = (this.formControl.value || []) as EquipmentItem[];
 
       if (JSON.stringify([...values].sort()) !== JSON.stringify([...formValues].sort())) {
         this.formControl.markAsTouched();

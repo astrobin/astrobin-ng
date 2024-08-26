@@ -32,6 +32,7 @@ export interface MarketplaceLineItemInterface {
   hash?: string;
   user?: UserInterface["id"];
   listing?: MarketplaceListingInterface["id"];
+  listingHash?: MarketplaceListingInterface["hash"];
   created: string;
   updated: string;
   sold: string | null;

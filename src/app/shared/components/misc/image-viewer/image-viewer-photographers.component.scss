@@ -1,0 +1,48 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  flex-wrap: nowrap;
+
+  .avatars {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+    flex-direction: row !important;
+
+    img {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+    }
+  }
+
+  .view-count {
+    font-size: .85rem;
+    color: var(--lightGrey);
+  }
+}
+
+::ng-deep {
+  .offcanvas-collaborators {
+    .users {
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+    }
+
+    .user {
+      display: flex;
+      gap: .5rem;
+      justify-content: space-between;
+      align-items: center;
+
+      img {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+      }
+    }
+  }
+}

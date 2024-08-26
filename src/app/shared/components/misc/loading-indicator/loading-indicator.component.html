@@ -1,9 +1,23 @@
-<div *ngIf="progress !== undefined && progress > 0; else noProgress">
+<div
+  *ngIf="progress !== undefined && progress > 0 && progress < 100; else noProgress"
+  class="d-flex justify-content-center align-items-center flex-column"
+>
   <ngb-progressbar type="secondary" [value]="progress"></ngb-progressbar>
+  <ng-container *ngIf="message">
+    <ng-container [ngTemplateOutlet]="messageTemplate"></ng-container>
+  </ng-container>
 </div>
 
 <ng-template #noProgress>
   <div class="btn loading">
     <span class="sr-only">{{ "Loading..." | translate }}</span>
   </div>
+
+  <ng-container *ngIf="message">
+    <ng-container [ngTemplateOutlet]="messageTemplate"></ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #messageTemplate>
+  <div class="message" [innerHTML]="message"></div>
 </ng-template>

@@ -32,7 +32,7 @@ export class ForumPostSearchComponent extends ScrollableSearchResultsBaseCompone
     super(store$, windowRefService, elementRef, platformId);
   }
 
-  fetchData(url?: string): Observable<PaginatedApiResultInterface<ForumPostSearchInterface>> {
+  fetchData(): Observable<PaginatedApiResultInterface<ForumPostSearchInterface>> {
     return this.forumPostSearchApiService.search({ ...this.model, pageSize: this.pageSize });
   }
 

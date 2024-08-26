@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { GroupApiService } from "@shared/services/api/classic/groups/group-api.service";
 import { takeUntil, tap } from "rxjs/operators";
 import { GroupInterface } from "@shared/interfaces/group.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-groups-filter.search-filter-component",
@@ -17,9 +18,10 @@ import { GroupInterface } from "@shared/interfaces/group.interface";
 })
 export class SearchGroupsFilterComponent extends SearchBaseFilterComponent implements OnInit {
   static key = SearchAutoCompleteType.GROUPS;
-  label = this.searchService.humanizeSearchAutoCompleteType(SearchGroupsFilterComponent.key);
-  groups: GroupInterface[] = [];
-  editFields = [
+
+  readonly category = SearchFilterCategory.GENERAL;
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchGroupsFilterComponent.key);
+  readonly editFields = [
     {
       key: SearchGroupsFilterComponent.key,
       fieldGroup: [
@@ -48,6 +50,8 @@ export class SearchGroupsFilterComponent extends SearchBaseFilterComponent imple
       ]
     }
   ];
+
+  groups: GroupInterface[] = [];
 
   constructor(
     public readonly store$: Store<MainState>,

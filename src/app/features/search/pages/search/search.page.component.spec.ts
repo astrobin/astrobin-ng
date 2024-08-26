@@ -5,7 +5,8 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
+import { EMPTY } from "rxjs";
 
 describe("SearchPageComponent", () => {
   let component: SearchPageComponent;
@@ -19,7 +20,14 @@ describe("SearchPageComponent", () => {
         useValue: {
           snapshot: {
             queryParams: {}
-          }
+          },
+          queryParams: EMPTY
+        }
+      },
+      {
+        provide: Router,
+        useValue: {
+          events: EMPTY
         }
       }
     ]);

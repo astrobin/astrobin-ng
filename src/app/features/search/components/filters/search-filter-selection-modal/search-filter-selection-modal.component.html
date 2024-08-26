@@ -1,8 +1,6 @@
 <div class="modal-body">
   <div class="form-group">
     <input
-      (click)="click$.next($any($event).target.value)"
-      (focus)="focus$.next($any($event).target.value)"
       (keydown.escape)="modal.dismiss()"
       (ngModelChange)="onSelect($event)"
       [(ngModel)]="model"
@@ -14,6 +12,39 @@
       type="text"
     />
 
+    <div class="search-filter-selection">
+      <ngb-accordion class="d-block mt-4">
+        <ngb-panel *ngFor="let category of categories">
+          <ng-template ngbPanelTitle>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>{{ searchService.humanizeSearchFilterCategory(SearchFilterCategory[category]) }}</div>
+            </div>
+          </ng-template>
+
+          <ng-template ngbPanelContent>
+            <div class="search-filter-selection-list">
+              <div *ngFor="let filter of categoryFilters(SearchFilterCategory[category])">
+                <div class="search-filter-selection-item">
+                  <div
+                    (click)="onSelect(filter)"
+                    class="search-filter-selection-item-label"
+                  >
+                    <span class="search-filter-selection-item-label-text">{{ filter.label }}</span>
+                    <span class="earch-filter-selection-item-label-icon">
+                      <ng-container
+                        [ngTemplateOutlet]="allowTemplate"
+                        [ngTemplateOutletContext]="{ filter }"
+                      ></ng-container>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-panel>
+      </ngb-accordion>
+    </div>
+
     <ng-container #filterContainer></ng-container>
   </div>
 </div>
@@ -23,10 +54,14 @@
     <div class="search-filter-result-label flex-grow-1">
       <ngb-highlight [result]="result.label" [term]="term"></ngb-highlight>
     </div>
-    <div class="allow">
-      <ng-container *ngIf="(result.allow$ | async) === false">
-        <fa-icon icon="lock"></fa-icon>
-      </ng-container>
-    </div>
+    <ng-container [ngTemplateOutlet]="allowTemplate" [ngTemplateOutletContext]="{ filter: result }"></ng-container>
   </div>
+</ng-template>
+
+<ng-template #allowTemplate let-filter="filter">
+  <span class="allow">
+    <ng-container *ngIf="(filter.allow$ | async) === false">
+      <fa-icon icon="lock"></fa-icon>
+    </ng-container>
+  </span>
 </ng-template>

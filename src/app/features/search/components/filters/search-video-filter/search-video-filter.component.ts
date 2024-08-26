@@ -9,16 +9,17 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { YesNoPipe } from "@shared/pipes/yes-no.pipe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
-  selector: "astrobin-animated-filter.search-filter-component",
+  selector: "astrobin-video-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
 export class SearchVideoFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.VIDEO;
   static minimumSubscription = PayableProductInterface.LITE;
-
+  category = SearchFilterCategory.FILE_ATTRIBUTES;
   label = this.searchService.humanizeSearchAutoCompleteType(SearchVideoFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {
@@ -28,7 +29,6 @@ export class SearchVideoFilterComponent extends SearchBaseFilterComponent {
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show videos.")
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

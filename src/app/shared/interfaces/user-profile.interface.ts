@@ -62,4 +62,5 @@ export interface UserProfileInterface {
   email?: string;
   signUpCountry?: string;
   agreedToMarketplaceTerms?: string;
+  enableNewSearchExperience?: boolean;
 }

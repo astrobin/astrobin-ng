@@ -13,7 +13,8 @@ const testEquipmentPreset = {
   mounts: [1],
   filters: [1],
   accessories: [1],
-  software: [1]
+  software: [1],
+  revisions: []
 };
 
 const testEquipmentPreset2 = {
@@ -31,7 +32,8 @@ const testEquipmentPreset2 = {
   mounts: [],
   filters: [],
   accessories: [],
-  software: []
+  software: [],
+  revisions: []
 };
 
 context("Image edit (existing), test equipment presets", () => {

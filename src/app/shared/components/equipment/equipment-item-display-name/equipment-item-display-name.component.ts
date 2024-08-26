@@ -1,22 +1,20 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemReviewerDecision,
-  EquipmentItemType
-} from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { filter, take } from "rxjs/operators";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
 import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentRetailerInterface } from "@features/equipment/types/equipment-listings.interface";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-equipment-item-display-name",
@@ -36,6 +34,12 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   item: EquipmentItem;
 
   @Input()
+  enableKlassIcon = false;
+
+  @Input()
+  klassIconColor = "white";
+
+  @Input()
   enableSummaryModal = false;
 
   @Input()
@@ -53,22 +57,29 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   @Input()
   showItemUnapprovedInfo = true;
 
+  @Input()
+  showRetailers = false;
+
   // A part of the name to remove. This is useful if this display-name is shown in a list of variants, to avoid
   // repetitions.
   @Input()
   cut = "";
+
+  @ViewChild("retailersTemplate", { static: true })
+  retailersTemplate: TemplateRef<any>;
 
   brandName: string;
   brandLink: string;
   itemName: string;
   nameLink: string;
 
-
   constructor(
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
   }
@@ -124,6 +135,11 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
     } else {
       _onChanges(this.item);
     }
+  }
+
+  openRetailersOffcanvas() {
+    const position = this.deviceService.smMax() ? "bottom" : "end";
+    this.offcanvasService.open(this.retailersTemplate, { position });
   }
 
   openItemSummaryModal(item: EquipmentItemBaseInterface) {

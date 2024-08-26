@@ -23,4 +23,7 @@ export interface SearchModelInterface {
   username?: UserInterface["username"];
   subject?: string;
   telescope?: string | number;
+
+  // Search fields.
+  [key: string]: any;
 }

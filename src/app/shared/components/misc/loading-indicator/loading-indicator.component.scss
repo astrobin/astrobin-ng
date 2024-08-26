@@ -6,10 +6,11 @@
   display: flex;
   justify-items: center;
   align-items: center;
+  flex-direction: column;
 
   > div {
     flex-grow: 1;
-    height: 14px;
+    min-height: 14px;
   }
 
   .loading {
@@ -26,5 +27,9 @@
     height: 14px;
     width: 75px;
     margin: 0 auto;
+  }
+
+  .message {
+    margin-top: .25rem;
   }
 }

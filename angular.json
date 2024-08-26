@@ -37,7 +37,12 @@
                 "inject": false,
                 "bundleName": "high-contrast"
               }
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/app/styles"
+              ]
+            }
           },
           "configurations": {
             "development": {

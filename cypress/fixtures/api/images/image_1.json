@@ -19,6 +19,8 @@
   "software2": [],
   "guidingTelescopes2": [],
   "guidingCameras2": [],
+  "isFinal": true,
+  "revisions": [],
   "thumbnails": [
     {
       "url": "assets/test/images/regular.jpg",

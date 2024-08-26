@@ -98,7 +98,7 @@
                 >
                   <astrobin-equipment-item-display-name
                     [item]="item"
-                    [showFrozenAsAmbiguous]="item.variants.length === 0"
+                    [showFrozenAsAmbiguous]="item.variants?.length === 0"
                   ></astrobin-equipment-item-display-name>
                   <span
                     *ngIf="item.variants?.length > 0"

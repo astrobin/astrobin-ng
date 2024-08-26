@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { YesNoPipe } from "@shared/pipes/yes-no.pipe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-animated-filter.search-filter-component",
@@ -19,8 +20,9 @@ export class SearchAnimatedFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.ANIMATED;
   static minimumSubscription = PayableProductInterface.LITE;
 
-  label = this.searchService.humanizeSearchAutoCompleteType(SearchAnimatedFilterComponent.key as SearchAutoCompleteType);
-  editFields = [
+  readonly category = SearchFilterCategory.FILE_ATTRIBUTES;
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchAnimatedFilterComponent.key as SearchAutoCompleteType);
+  readonly editFields = [
     {
       key: SearchAnimatedFilterComponent.key,
       type: "checkbox",
@@ -28,7 +30,6 @@ export class SearchAnimatedFilterComponent extends SearchBaseFilterComponent {
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show GIF animations.")
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

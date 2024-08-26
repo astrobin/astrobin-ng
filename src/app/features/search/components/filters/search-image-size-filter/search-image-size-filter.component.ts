@@ -7,6 +7,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-image-size-filter.search-filter-component",
@@ -15,6 +16,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class SearchImageSizeFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.IMAGE_SIZE;
+  readonly category = SearchFilterCategory.FILE_ATTRIBUTES;
   readonly label = this.searchService.humanizeSearchAutoCompleteType(
     SearchImageSizeFilterComponent.key as SearchAutoCompleteType
   );

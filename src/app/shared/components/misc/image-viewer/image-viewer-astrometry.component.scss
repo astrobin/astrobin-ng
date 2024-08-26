@@ -1,0 +1,101 @@
+@import "../../../../styles/breakpoints";
+
+:host {
+  .coordinates {
+    ::ng-deep {
+      .ra,
+      .dec {
+        white-space: nowrap;
+
+        .hours,
+        .minutes,
+        .seconds {
+          .symbol {
+            vertical-align: .375rem;
+            font-size: .65rem;
+            line-height: 0;
+          }
+        }
+      }
+
+      .separator {
+        display: inline-block;
+        margin: 0 .25rem;
+      }
+    }
+  }
+
+  @media (min-width: $xs-min) and (max-width: $sm-max), (min-width: $lg-min) and (max-width: $xl-max) {
+    .coordinates {
+      ::ng-deep {
+        .ra,
+        .dec {
+          .seconds {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .metadata-item.objects-in-field {
+    flex-direction: row;
+    align-items: flex-start;
+
+    .metadata-icon {
+      padding-top: calc(.5rem + 1px);
+    }
+
+    .metadata-label {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .375rem;
+
+      .value {
+        color: var(--lightestGrey);
+        background: var(--grey);
+        padding: .25rem .75rem;
+        border-radius: .5rem;
+        cursor: pointer;
+
+        &.more {
+          font-style: italic;
+        }
+
+        &:hover {
+          background: var(--lightGrey);
+        }
+      }
+    }
+  }
+}
+
+::ng-deep .offcanvas-more-objects-in-field {
+  width: 40vw !important;
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    .value {
+      color: var(--lightestGrey);
+      background: var(--grey);
+      padding: .25rem .75rem;
+      border-radius: .5rem;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--lightGrey);
+      }
+    }
+  }
+}
+
+::ng-deep .offcanvas-more-info {
+  &:not(.offcanvas-bottom) {
+    width: 40vw !important;
+  }
+}

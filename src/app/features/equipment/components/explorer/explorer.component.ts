@@ -87,6 +87,7 @@ import { RouterService } from "@shared/services/router.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { UserService } from "@shared/services/user.service";
 import { DeviceService } from "@shared/services/device.service";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -850,4 +851,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       }
     });
   }
+
+  protected readonly ImageAlias = ImageAlias;
 }

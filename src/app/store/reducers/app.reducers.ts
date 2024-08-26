@@ -4,7 +4,7 @@ import { BackendConfigInterface } from "@shared/interfaces/backend-config.interf
 import { CameraInterface } from "@shared/interfaces/camera.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
@@ -37,9 +37,6 @@ export interface AppState {
 
   // All seen images.
   images: ImageInterface[];
-
-  // All seen image revisions.
-  imageRevisions: ImageRevisionInterface[];
 
   // All seen thumbnails.
   thumbnails: ImageThumbnailInterface[];
@@ -76,7 +73,6 @@ export const initialAppState: AppState = {
   requestCountry: null,
   contentTypes: [],
   images: [],
-  imageRevisions: [],
   thumbnails: [],
   loadingThumbnails: [],
   solutions: [],
@@ -86,6 +82,81 @@ export const initialAppState: AppState = {
   nestedComments: null,
   toggleProperties: []
 };
+
+function handleCreateTogglePropertySuccess(
+  state: AppState,
+  action: any
+): AppState {
+  let image: ImageInterface = null;
+
+  const imageContentType = findImageContentType(state);
+
+  if (imageContentType && action.payload.toggleProperty.contentType === imageContentType.id) {
+    image = findImage(state, action.payload.toggleProperty.objectId);
+
+    if (image) {
+      updateImageCounts(image, action.payload.toggleProperty.propertyType, true);
+    }
+  }
+
+  return {
+    ...state,
+    toggleProperties: UtilsService.arrayUniqueObjects(
+      [...state.toggleProperties, action.payload.toggleProperty],
+      "id"
+    ),
+    images: image ? updateImages(state.images, image) : state.images
+  };
+}
+
+function handleDeleteTogglePropertySuccess(
+  state: AppState,
+  action: any
+): AppState {
+  let image: ImageInterface = null;
+
+  const imageContentType = findImageContentType(state);
+
+  if (imageContentType && action.payload.toggleProperty.contentType === imageContentType.id) {
+    image = findImage(state, action.payload.toggleProperty.objectId);
+
+    if (image) {
+      updateImageCounts(image, action.payload.toggleProperty.propertyType, false);
+    }
+  }
+
+  return {
+    ...state,
+    toggleProperties: state.toggleProperties.filter(
+      property => property.id !== action.payload.toggleProperty.id
+    ),
+    images: image ? updateImages(state.images, image) : state.images
+  };
+}
+
+// Helper functions
+function findImageContentType(state: AppState): ContentTypeInterface | undefined {
+  return state.contentTypes.find(
+    contentType => contentType.appLabel === "astrobin" && contentType.model === "image"
+  );
+}
+
+function findImage(state: AppState, objectId: number): ImageInterface | undefined {
+  return state.images.find(image => image.pk === objectId);
+}
+
+function updateImageCounts(image: ImageInterface, propertyType: string, increment: boolean): void {
+  const countChange = increment ? 1 : -1;
+  if (propertyType === "like") {
+    image.likeCount += countChange;
+  } else if (propertyType === "bookmark") {
+    image.bookmarkCount += countChange;
+  }
+}
+
+function updateImages(images: ImageInterface[], updatedImage: ImageInterface): ImageInterface[] {
+  return [...images.filter(i => i.pk !== updatedImage.pk), updatedImage];
+}
 
 export function appReducer(state = initialAppState, action: All): AppState {
   switch (action.type) {
@@ -224,16 +295,6 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS: {
-      return {
-        ...state,
-        imageRevisions: UtilsService.arrayUniqueObjects(
-          [...state.imageRevisions, ...action.payload.imageRevisions.results],
-          "pk"
-        )
-      };
-    }
-
     case AppActionTypes.LOAD_THUMBNAIL: {
       return {
         ...state,
@@ -341,22 +402,11 @@ export function appReducer(state = initialAppState, action: All): AppState {
     }
 
     case AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS: {
-      return {
-        ...state,
-        toggleProperties: UtilsService.arrayUniqueObjects(
-          [...state.toggleProperties, action.payload.toggleProperty],
-          "id"
-        )
-      };
+      return handleCreateTogglePropertySuccess(state, action);
     }
 
     case AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS: {
-      return {
-        ...state,
-        toggleProperties: state.toggleProperties.filter(
-          toggleProperty => toggleProperty.id !== action.payload.toggleProperty.id
-        )
-      };
+      return handleDeleteTogglePropertySuccess(state, action);
     }
 
     default: {
@@ -364,3 +414,4 @@ export function appReducer(state = initialAppState, action: All): AppState {
     }
   }
 }
+

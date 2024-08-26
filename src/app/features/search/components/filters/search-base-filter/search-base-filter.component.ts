@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Store } from "@ngrx/store";
@@ -8,7 +8,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
-import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterCategory, SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { takeUntil } from "rxjs/operators";
@@ -20,25 +20,25 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
   selector: "astrobin-search-filter-base",
   template: ""
 })
-export abstract class SearchBaseFilterComponent extends BaseComponentDirective implements SearchFilterComponentInterface, OnInit {
+export abstract class SearchBaseFilterComponent
+  extends BaseComponentDirective
+  implements SearchFilterComponentInterface, OnInit {
   // This is the attribute that ends up in the search query.
   static key: SearchAutoCompleteType;
   static minimumSubscription: PayableProductInterface = null;
 
   editForm: FormGroup = new FormGroup({});
   editModel: any = {};
-  valueTransformer: (value: any) => any = value => value;
-
+  mayBeRemoved = true;
+  infoText: string = null;
   abstract editFields: FormlyFieldConfig[];
   abstract label: string;
-
+  abstract category: SearchFilterCategory
   // Value to be used in the search model.
   @Input()
   value: any;
-
   @Output()
   valueChanges = new EventEmitter<any>();
-
   @Output()
   remove = new EventEmitter<void>();
 
@@ -52,9 +52,9 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
     super(store$);
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
+  valueTransformer: (value: any) => any = value => value;
 
+  ngOnInit(): void {
     this.valueChanges.emit(this.value);
   }
 
@@ -63,6 +63,17 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
   }
 
   edit(): void {
+    const minimumSubscription = (this.constructor as any).minimumSubscription;
+    this.searchService.allowFilter$(minimumSubscription).subscribe(allowEdit => {
+      if (allowEdit) {
+        this._openEditModal();
+      } else {
+        this.searchService.openSubscriptionRequiredModal(minimumSubscription);
+      }
+    });
+  }
+
+  _openEditModal(): void {
     const modalRef: NgbModalRef = this.modalService.open(SearchFilterEditorModalComponent);
     const instance: SearchFilterEditorModalComponent = modalRef.componentInstance;
     const key = this.searchService.getKeyByFilterComponentInstance(this);
@@ -74,7 +85,7 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
     const applyValue = (value: any) => {
       this.value = value;
       this.valueChanges.emit(this.value);
-    }
+    };
 
     modalRef.closed.subscribe(keyValue => {
       const transformedValue = this.valueTransformer(keyValue[key]);
@@ -117,7 +128,10 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
       wrappers: ["default-wrapper"],
       expressions: {
         className: () => {
-          const value = this.editForm.get(listKey).value;
+          let value = this.editForm.get(listKey).value;
+          if (UtilsService.isString(value)) {
+            value = value.split(",");
+          }
           return !value || value.length <= 1 ? "d-none" : "";
         }
       },
@@ -139,6 +153,9 @@ export abstract class SearchBaseFilterComponent extends BaseComponentDirective i
       hooks: {
         onInit: field => {
           this.editForm.get(listKey).valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+            if (UtilsService.isString(value)) {
+              value = value.split(",");
+            }
             if (!value || value.length <= 1) {
               field.formControl.setValue(null);
             } else if (field.formControl.value === null) {

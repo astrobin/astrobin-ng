@@ -10,6 +10,7 @@ import { ImageSearchInterface } from "@shared/interfaces/image-search.interface"
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 
 @Injectable({
   providedIn: "root"
@@ -41,7 +42,7 @@ export class ImageSearchApiService extends BaseClassicApiService {
     return `${usageTypePrefix}${EquipmentItemType[itemType].toLowerCase()}_ids`;
   }
 
-  search(options: SearchModelInterface): Observable<PaginatedApiResultInterface<ImageSearchInterface>> {
+  search(options: SearchModelInterface): Observable<SearchPaginatedApiResultInterface<ImageSearchInterface>> {
     let url = `${this.configUrl}/`;
 
     // Handle special cases for property names before serialization
@@ -76,6 +77,6 @@ export class ImageSearchApiService extends BaseClassicApiService {
     // Convert options to query string
     url += `?params=${encodedQueryString}`;
 
-    return this.http.get<PaginatedApiResultInterface<ImageSearchInterface>>(url);
+    return this.http.get<SearchPaginatedApiResultInterface<ImageSearchInterface>>(url);
   }
 }

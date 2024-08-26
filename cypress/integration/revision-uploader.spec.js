@@ -5,13 +5,11 @@ import { Constants } from "../../src/app/shared/constants";
 context("revision uploader", () => {
   beforeEach(() => {
     cy.server();
-    cy.route("get", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage");
-    cy.route("get", "**/images/thumbnail-group/?image=1", "fixture:api/images/image_1.json").as("getThumbnailGroup");
+    cy.route("get", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage1");
+    cy.route("get", "**/images/thumbnail-group/?image=1", "fixture:api/images/thumbnail_group_1.json").as("getThumbnailGroup1");
 
-    cy.route("get", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
-    cy.route("get", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as("getThumbnailGroup");
-
-    cy.route("get", "**/api/v2/images/image-revision/?image=*", { count: 0, results: [] });
+    cy.route("get", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage2");
+    cy.route("get", "**/images/thumbnail-group/?image=2", "fixture:api/images/thumbnail_group_2.json").as("getThumbnailGroup2");
   });
 
   describe("when logged out", () => {
@@ -47,12 +45,12 @@ context("revision uploader", () => {
         cy.login();
 
         cy.route("get", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
-          "getCurrentUserProfile"
+          "getCurrentUserProfile2"
         );
-        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
-        cy.route("get", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
-        cy.route("get", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
-          "getThumbnailGroup"
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser2");
+        cy.route("get", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage2");
+        cy.route("get", "**/images/thumbnail-group/?image=2", "fixture:api/images/thumbnail_group_2.json").as(
+          "getThumbnailGroup2"
         );
 
         cy.route(
@@ -100,9 +98,8 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("get", "**/api/v2/image/image-revision/?image=*", {
-            count: 5,
-            results: [
+          cy.fixture("api/images/image_2.json").then(image => {
+            image.revisions = [
               {
                 pk: 1,
                 image: 2
@@ -123,13 +120,15 @@ context("revision uploader", () => {
                 pk: 5,
                 image: 2
               }
-            ]
+            ];
+
+            cy.route("get", "**/images/image/2", image).as("getImage2");
+
+            cy.visitPage("/uploader/revision/2");
+
+            cy.get("#image_file").should("exist");
+            cy.get("upload-not-allowed").should("not.exist");
           });
-
-          cy.visitPage("/uploader/revision/2");
-
-          cy.get("#image_file").should("exist");
-          cy.get("upload-not-allowed").should("not.exist");
         });
       });
 
@@ -158,9 +157,8 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("get", "**/api/v2/images/image-revision/?image=*", {
-            count: 5,
-            results: [
+          cy.fixture("api/images/image_2.json").then(image => {
+            image.revisions = [
               {
                 pk: 1,
                 image: 2
@@ -181,13 +179,15 @@ context("revision uploader", () => {
                 pk: 5,
                 image: 2
               }
-            ]
+            ];
+
+            cy.route("get", "**/images/image/2", image).as("getImage2");
+
+            cy.visitPage("/uploader/revision/2");
+
+            cy.get("#image_file").should("exist");
+            cy.get("upload-not-allowed").should("not.exist");
           });
-
-          cy.visitPage("/uploader/revision/2");
-
-          cy.get("#image_file").should("exist");
-          cy.get("upload-not-allowed").should("not.exist");
         });
       });
 
@@ -216,9 +216,8 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("get", "**/api/v2/image/image-revisions/?image=*", {
-            count: 5,
-            results: [
+          cy.fixture("api/images/image_2.json").then(image => {
+            image.revisions = [
               {
                 pk: 1,
                 image: 2
@@ -239,13 +238,15 @@ context("revision uploader", () => {
                 pk: 5,
                 image: 2
               }
-            ]
+            ];
+
+            cy.route("get", "**/images/image/2", image).as("getImage2");
+
+            cy.visitPage("/uploader/revision/2");
+
+            cy.get("#image_file").should("exist");
+            cy.get("upload-not-allowed").should("not.exist");
           });
-
-          cy.visitPage("/uploader/revision/2");
-
-          cy.get("#image_file").should("exist");
-          cy.get("upload-not-allowed").should("not.exist");
         });
       });
 
@@ -272,9 +273,8 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("get", "**/api/v2/image/image-revisions/?image=*", {
-            count: 5,
-            results: [
+          cy.fixture("api/images/image_2.json").then(image => {
+            image.revisions = [
               {
                 pk: 1,
                 image: 2
@@ -295,13 +295,15 @@ context("revision uploader", () => {
                 pk: 5,
                 image: 2
               }
-            ]
+            ];
+
+            cy.route("get", "**/images/image/2", image).as("getImage2");
+
+            cy.visitPage("/uploader/revision/2");
+
+            cy.get("#image_file").should("exist");
+            cy.get("upload-not-allowed").should("not.exist");
           });
-
-          cy.visitPage("/uploader/revision/2");
-
-          cy.get("#image_file").should("exist");
-          cy.get("upload-not-allowed").should("not.exist");
         });
       });
 
@@ -328,9 +330,8 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("get", "**/api/v2/image/image-revisions/?image=*", {
-            count: 5,
-            results: [
+          cy.fixture('api/images/image_2.json').then(image => {
+            image.revisions =[
               {
                 pk: 1,
                 image: 2
@@ -351,13 +352,15 @@ context("revision uploader", () => {
                 pk: 5,
                 image: 2
               }
-            ]
+            ];
+
+            cy.route("get", "**/images/image/2", image).as("getImage2");
+
+            cy.visitPage("/uploader/revision/2");
+
+            cy.get("#image_file").should("exist");
+            cy.get(".upload-not-allowed").should("not.exist");
           });
-
-          cy.visitPage("/uploader/revision/2");
-
-          cy.get("#image_file").should("exist");
-          cy.get(".upload-not-allowed").should("not.exist");
         });
       });
 
@@ -386,9 +389,8 @@ context("revision uploader", () => {
         });
 
         it("should not allow the upload if the user has more revisions than allowed", () => {
-          cy.route("get", "**/api/v2/images/image-revision/?image=*", {
-            count: 5,
-            results: [
+          cy.fixture('api/images/image_2.json').then(image => {
+            image.revisions =[
               {
                 pk: 1,
                 image: 2
@@ -409,13 +411,15 @@ context("revision uploader", () => {
                 pk: 5,
                 image: 2
               }
-            ]
+            ];
+
+            cy.route("get", "**/images/image/2", image).as("getImage2");
+
+            cy.visitPage("/uploader/revision/2");
+
+            cy.get("#image_file").should("not.exist");
+            cy.get(".upload-not-allowed").should("exist");
           });
-
-          cy.visitPage("/uploader/revision/2");
-
-          cy.get("#image_file").should("not.exist");
-          cy.get(".upload-not-allowed").should("exist");
         });
       });
 
@@ -444,20 +448,21 @@ context("revision uploader", () => {
         });
 
         it("should not allow the upload if the user has more revisions than allowed", () => {
-          cy.route("get", "**/api/v2/images/image-revision/?image=*", {
-            count: 5,
-            results: [
+          cy.fixture('api/images/image_2.json').then(image => {
+            image.revisions =[
               {
                 pk: 1,
                 image: 2
               }
-            ]
+            ];
+
+            cy.route("get", "**/images/image/2", image).as("getImage2");
+
+            cy.visitPage("/uploader/revision/2");
+
+            cy.get("#image_file").should("not.exist");
+            cy.get(".upload-not-allowed").should("exist");
           });
-
-          cy.visitPage("/uploader/revision/2");
-
-          cy.get("#image_file").should("not.exist");
-          cy.get(".upload-not-allowed").should("exist");
         });
       });
 

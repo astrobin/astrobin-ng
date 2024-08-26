@@ -160,6 +160,8 @@
               <astrobin-image-search-card
                 [header]="'Acquired with this brand' | translate"
                 [model]="{ text: activeBrand.name }"
+                [showRetailers]="false"
+                [showMarketplaceItems]="false"
                 class="mt-5 d-block"
                 ordering="-likes"
               ></astrobin-image-search-card>

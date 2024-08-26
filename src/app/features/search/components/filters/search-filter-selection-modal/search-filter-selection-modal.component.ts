@@ -6,14 +6,14 @@ import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { SearchService } from "@features/search/services/search.service";
 import { merge, Observable, of, Subject } from "rxjs";
-import { debounceTime, distinctUntilChanged, map, startWith } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 type FilterType = {
+  category: SearchFilterCategory;
   label: string;
   key: string;
   minimumSubscription: PayableProductInterface;
@@ -27,6 +27,7 @@ type FilterType = {
 })
 export class SearchFilterSelectionModalComponent extends BaseComponentDirective implements OnInit {
   public model: string;
+  public categories: string[] = UtilsService.getEnumKeys(SearchFilterCategory);
   public filters: FilterType[];
   public focus$ = new Subject<string>();
   public click$ = new Subject<string>();
@@ -35,6 +36,7 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
   filterContainer: ViewContainerRef;
 
   public search: (text$: Observable<string>) => Observable<FilterType[]>;
+  protected readonly SearchFilterCategory = SearchFilterCategory;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -53,6 +55,10 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
     this.utilsService.delay(1).subscribe(() => {
       this.initializeSearch();
     });
+  }
+
+  categoryFilters(category: SearchFilterCategory): FilterType[] {
+    return this.filters.filter(filterType => filterType.category === category);
   }
 
   initializeSearch(): void {
@@ -80,27 +86,25 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
       });
 
       this.filters = componentRefs.map(componentRef => ({
+        category: componentRef.instance.category,
         label: componentRef.instance.label,
         minimumSubscription: (componentRef.componentType as any).minimumSubscription as PayableProductInterface,
-        key: this.searchService.getKeyByFilterComponentType(componentRef.componentType)
+        key: this.searchService.getKeyByFilterComponentType(componentRef.componentType),
+        allow$: this.searchService.allowFilter$((componentRef.componentType as any).minimumSubscription as PayableProductInterface)
       }));
 
       // Now that we have the labels, we don't need these anymore.
       componentRefs.forEach(componentRefs => componentRefs.destroy());
 
       return merge(debouncedText$, this.focus$, this.click$).pipe(
-        startWith(""),
         map(term => {
           return (
-            term === ""
-              ? this.filters
-              : this.filters.filter(filterType => filterType.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
-          ).map(filterType => (
-            {
-              ...filterType,
-              allow$: this.searchService.allowFilter$(filterType.minimumSubscription)
-            }
-          ));
+            !term || term.length < 2
+              ? []
+              : this.filters.filter(
+                filterType => filterType.label.toLowerCase().indexOf(term.toLowerCase()) > -1
+              )
+          );
         })
       );
     };
@@ -110,24 +114,7 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
     filter.allow$.subscribe(allow => {
       if (!allow) {
         this.modal.close();
-
-        const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
-        let minimumSubscription: SimplifiedSubscriptionName;
-
-        switch (filter.minimumSubscription) {
-          case PayableProductInterface.LITE:
-            minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_LITE;
-            break;
-          case PayableProductInterface.PREMIUM:
-            minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_PREMIUM;
-            break;
-          case PayableProductInterface.ULTIMATE:
-            minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
-            break;
-        }
-
-        modalRef.componentInstance.minimumSubscription = minimumSubscription;
-
+        this.searchService.openSubscriptionRequiredModal(filter.minimumSubscription);
         return;
       }
 

@@ -33,7 +33,7 @@ export class NestedCommentSearchComponent extends ScrollableSearchResultsBaseCom
     super(store$, windowRefService, elementRef, platformId);
   }
 
-  fetchData(url?: string): Observable<PaginatedApiResultInterface<NestedCommentSearchInterface>> {
+  fetchData(): Observable<PaginatedApiResultInterface<NestedCommentSearchInterface>> {
     return this.nestedCommentsSearchApiService.search({ ...this.model, pageSize: this.pageSize });
   }
 

@@ -23,9 +23,12 @@ import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features
 import { OverrideAcquisitionFormModalComponent } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
 import { imageFeatureKey, imageReducer } from "@features/image/store/image.reducer";
+import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
+import { SearchModule } from "@features/search/search.module";
 
 @NgModule({
   declarations: [
+    ImagePageComponent,
     ImageEditPageComponent,
     CreateLocationModalComponent,
     SaveEquipmentPresetModalComponent,
@@ -39,6 +42,7 @@ import { imageFeatureKey, imageReducer } from "@features/image/store/image.reduc
   imports: [
     RouterModule.forChild(imageRoutes),
     SharedModule,
+    SearchModule,
     StoreModule.forFeature(imageFeatureKey, imageReducer),
     EffectsModule.forFeature([ImageEffects])
   ],

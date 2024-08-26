@@ -10,6 +10,7 @@ import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/t
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-image-search-card",
@@ -30,6 +31,9 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
   model: SearchModelInterface;
 
   @Input()
+  alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
+
+  @Input()
   loadMoreOnScroll = true;
 
   @Input()
@@ -37,6 +41,15 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
 
   @Input()
   showSortButton = true;
+
+  @Input()
+  showMoreButton = true;
+
+  @Input()
+  showRetailers = true;
+
+  @Input()
+  showMarketplaceItems = true;
 
   next: string;
   loading = true;
@@ -77,9 +90,8 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
     urlParams.set("d", "i");
     urlParams.set("sort", this.model.ordering || "-likes");
 
-    const paramName = this.imageSearchApiService.getFilterParamName(this.model.itemType, this.model.usageType);
-
     if (this.model.itemType) {
+      const paramName = this.imageSearchApiService.getFilterParamName(this.model.itemType, this.model.usageType);
       urlParams.set(paramName, this.model.itemId.toString());
     }
 

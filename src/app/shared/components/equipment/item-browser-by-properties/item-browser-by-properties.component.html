@@ -73,11 +73,11 @@
               >
                 <astrobin-equipment-item-display-name
                   [item]="item"
-                  [showFrozenAsAmbiguous]="item.variants.length === 0"
+                  [showFrozenAsAmbiguous]="item.variants?.length === 0"
                 ></astrobin-equipment-item-display-name>
 
                 <ng-container *ngIf="item.variants?.length > 0">
-                  <p class="item-variants-info">{{ variantsMessage(item.variants.length) }}</p>
+                  <p class="item-variants-info">{{ variantsMessage(item.variants?.length) }}</p>
                   <p class="item-variants-list">
                     <span *ngFor="let variant of item.variants">
                       <astrobin-equipment-item-display-name

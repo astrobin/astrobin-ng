@@ -56,7 +56,8 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
               }
             },
             props: {
-              required: true,
+              required: false,
+              hideOptionalMarker: true,
               multiple: true,
               itemType: this.itemType,
               enableCreation: false,

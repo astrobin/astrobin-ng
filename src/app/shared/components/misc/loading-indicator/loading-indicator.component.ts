@@ -9,4 +9,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 export class LoadingIndicatorComponent extends BaseComponentDirective {
   @Input()
   progress: number;
+
+  @Input()
+  message: string;
 }

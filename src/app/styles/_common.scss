@@ -44,9 +44,13 @@ astrobin-root .app-loading,
 a {
   text-decoration: none;
 
-  &[target="_blank"]:after {
-    content: " \279a";
-    font-size: 0.8em;
+  &[target="_blank"] {
+    &:not([href*="astrobin.com"]):not([href*="localhost"]) {
+      &:after {
+        content: " \279a";
+        font-size: 0.8em;
+      }
+    }
   }
 }
 

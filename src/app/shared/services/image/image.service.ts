@@ -1,17 +1,15 @@
-import { Injectable, NgZone } from "@angular/core";
+import { Inject, Injectable, NgZone, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { Observable } from "rxjs";
-import {
-  AcquisitionType,
-  DataSource,
-  LicenseOptions,
-  SolarSystemSubjectType,
-  SubjectType
-} from "@shared/interfaces/image.interface";
+import { Observable, Observer, of } from "rxjs";
+import { AcquisitionType, CelestialHemisphere, DataSource, FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, LicenseOptions, ORIGINAL_REVISION_LABEL, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
+import { BortleScale, DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { map, tap } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { isPlatformServer } from "@angular/common";
 
 @Injectable({
   providedIn: "root"
@@ -21,9 +19,36 @@ export class ImageService extends BaseService {
     public readonly loadingService: LoadingService,
     public readonly windowRef: WindowRefService,
     public readonly zone: NgZone,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly http: HttpClient,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(loadingService);
+  }
+
+  public humanizeSubjectTypeShort(value: SubjectType): string {
+    switch (value) {
+      case SubjectType.DEEP_SKY:
+        return this.translateService.instant("Deep sky");
+      case SubjectType.SOLAR_SYSTEM:
+        return this.translateService.instant("Solar system");
+      case SubjectType.WIDE_FIELD:
+        return this.translateService.instant("Wide field");
+      case SubjectType.STAR_TRAILS:
+        return this.translateService.instant("Star trails");
+      case SubjectType.NORTHERN_LIGHTS:
+        return this.translateService.instant("Northern lights");
+      case SubjectType.NOCTILUCENT_CLOUDS:
+        return this.translateService.instant("Noctilucent clouds");
+      case SubjectType.LANDSCAPE:
+        return this.translateService.instant("Landscape");
+      case SubjectType.ARTIFICIAL_SATELLITE:
+        return this.translateService.instant("Satellite");
+      case SubjectType.GEAR:
+        return this.translateService.instant("Equipment");
+      case SubjectType.OTHER:
+        return this.translateService.instant("Other");
+    }
   }
 
   public humanizeSubjectType(value: SubjectType): string {
@@ -49,6 +74,125 @@ export class ImageService extends BaseService {
       case SubjectType.OTHER:
         return this.translateService.instant("Other");
     }
+  }
+
+  getLicenseIcon(value: LicenseOptions): IconProp {
+    switch (value) {
+      case LicenseOptions.ALL_RIGHTS_RESERVED:
+        return ["far", "copyright"];
+      case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE:
+        return ["fab", "creative-commons-sa"];
+      case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL:
+        return ["fab", "creative-commons-nc"];
+      case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_NO_DERIVS:
+        return ["fab", "creative-commons-nd"];
+      case LicenseOptions.ATTRIBUTION:
+        return ["fab", "creative-commons"];
+      case LicenseOptions.ATTRIBUTION_SHARE_ALIKE:
+        return ["fab", "creative-commons-sa"];
+      case LicenseOptions.ATTRIBUTION_NO_DERIVS:
+        return ["fab", "creative-commons-nd"];
+      default:
+        return "copyright";
+    }
+  }
+
+  getSubjectTypeIcon(value: SubjectType, solarSystemValue: SolarSystemSubjectType, color: "white" | "black"): string {
+    let icon: string;
+
+    if (solarSystemValue) {
+      switch (solarSystemValue) {
+        case SolarSystemSubjectType.SUN:
+          icon = "sun";
+          break;
+        case SolarSystemSubjectType.MOON:
+          icon = "moon";
+          break;
+        case SolarSystemSubjectType.MERCURY:
+          icon = "mercury";
+          break;
+        case SolarSystemSubjectType.VENUS:
+          icon = "venus";
+          break;
+        case SolarSystemSubjectType.MARS:
+          icon = "mars";
+          break;
+        case SolarSystemSubjectType.JUPITER:
+          icon = "jupiter";
+          break;
+        case SolarSystemSubjectType.SATURN:
+          icon = "saturn";
+          break;
+        case SolarSystemSubjectType.URANUS:
+          icon = "uranus";
+          break;
+        case SolarSystemSubjectType.NEPTUNE:
+          icon = "neptune";
+          break;
+        case SolarSystemSubjectType.MINOR_PLANET:
+          icon = "minor-planet";
+          break;
+        case SolarSystemSubjectType.COMET:
+          icon = "comet";
+          break;
+        case SolarSystemSubjectType.OCCULTATION:
+          icon = "occultation";
+          break;
+        case SolarSystemSubjectType.CONJUNCTION:
+          icon = "conjunction";
+          break;
+        case SolarSystemSubjectType.PARTIAL_LUNAR_ECLIPSE:
+        case SolarSystemSubjectType.PARTIAL_SOLAR_ECLIPSE:
+        case SolarSystemSubjectType.TOTAL_LUNAR_ECLIPSE:
+        case SolarSystemSubjectType.TOTAL_SOLAR_ECLIPSE:
+          icon = "eclipse";
+          break;
+        case SolarSystemSubjectType.ANULAR_SOLAR_ECLIPSE:
+          icon = "annular-eclipse";
+          break;
+        case SolarSystemSubjectType.METEOR_SHOWER:
+          icon = "meteor-shower";
+          break;
+        case SolarSystemSubjectType.OTHER:
+          icon = "other";
+          break;
+      }
+    } else {
+      switch (value) {
+        case SubjectType.DEEP_SKY:
+          icon = "galaxy";
+          break;
+        case SubjectType.SOLAR_SYSTEM:
+          icon = "other";
+          break;
+        case SubjectType.WIDE_FIELD:
+          icon = "constellation";
+          break;
+        case SubjectType.STAR_TRAILS:
+          icon = "star-trails";
+          break;
+        case SubjectType.NORTHERN_LIGHTS:
+          icon = "northern-lights";
+          break;
+        case SubjectType.NOCTILUCENT_CLOUDS:
+          icon = "cloud";
+          break;
+        case SubjectType.LANDSCAPE:
+          icon = "landscape";
+          break;
+        case SubjectType.ARTIFICIAL_SATELLITE:
+          icon = "artificial-satellite";
+          break;
+        case SubjectType.GEAR:
+          icon = "gear";
+          break;
+        case SubjectType.OTHER:
+          icon = "other";
+          break;
+      }
+    }
+
+    return `subject-types/${icon}-${color}.png?v=1`;
   }
 
   humanizeSolarSystemSubjectType(value: SolarSystemSubjectType): string {
@@ -96,6 +240,40 @@ export class ImageService extends BaseService {
       default:
         return value;
     }
+  }
+
+  getDataSourceIcon(value: DataSource, color: "white" | "black"): string {
+    let icon: string = null;
+
+    switch (value) {
+      case DataSource.BACKYARD:
+        icon = "backyard";
+        break;
+      case DataSource.TRAVELLER:
+        icon = "traveller";
+        break;
+      case DataSource.OWN_REMOTE:
+        icon = "own-remote";
+        break;
+      case DataSource.AMATEUR_HOSTING:
+        icon = "amateur-hosting";
+        break;
+      case DataSource.PUBLIC_AMATEUR_DATA:
+        icon = "public-amateur-data";
+        break;
+      case DataSource.PRO_DATA:
+        icon = "pro-data";
+        break;
+      case DataSource.MIX:
+        icon = "mix";
+        break;
+    }
+
+    if (icon) {
+      return `data-sources/${icon}-${color}.png?v=1`;
+    }
+
+    return null;
   }
 
   humanizeDataSource(value: DataSource): string {
@@ -188,10 +366,282 @@ export class ImageService extends BaseService {
     }
   }
 
+  isImage(object: ImageInterface | ImageRevisionInterface): object is ImageInterface {
+    return (object as ImageInterface).revisions !== undefined;
+  }
+
+  getCelestialHemisphere(image: ImageInterface, revisionLabel: string): CelestialHemisphere {
+    const revision = this.getRevision(image, revisionLabel);
+
+    if (!revision.solution || !revision.solution.dec) {
+      return null;
+    }
+
+    if (parseFloat(revision.solution.dec) < 0) {
+      return CelestialHemisphere.NORTHERN;
+    }
+
+    return CelestialHemisphere.SOUTHERN;
+  }
+
+  getConstellation(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+    return revision.constellation;
+  }
+
+  getIntegration(image: ImageInterface): string {
+    if (image.deepSkyAcquisitions?.length > 0) {
+      return this.getDeepSkyIntegration(image);
+    } else if (image.solarSystemAcquisitions?.length > 0) {
+      return this.getSolarSystemIntegration(image);
+    }
+
+    return null;
+  }
+
+  getAverageBortleScale(image: ImageInterface): number {
+    if (image.deepSkyAcquisitions?.length > 0) {
+      const totalWeightedBortle = image.deepSkyAcquisitions.reduce((acc, acquisition) => {
+        return acc + (acquisition.bortle * parseFloat(acquisition.duration));
+      }, 0);
+
+      const totalDuration = image.deepSkyAcquisitions.reduce((acc, acquisition) => {
+        return acc + parseFloat(acquisition.duration);
+      }, 0);
+
+      return totalDuration > 0 ? totalWeightedBortle / totalDuration : null;
+    }
+
+    return null;
+  }
+
+  formatIntegration(integration: number): string {
+    const seconds = integration % 60;
+    const minutes = Math.floor(integration / 60) % 60;
+    const hours = Math.floor(integration / 3600);
+
+    const hourSymbol = "<span class='symbol'>h</span>";
+    const minuteSymbol = "<span class='symbol'>&prime;</span>";
+    const secondSymbol = "<span class='symbol'>&Prime;</span>";
+
+    if (hours > 0) {
+      if (minutes > 0 || seconds > 0) {
+        const minutePart = minutes > 0 ? `${minutes}${minuteSymbol} ` : "";
+        const secondPart = seconds > 0 ? `${seconds.toFixed(2).replace(".00", "")}${secondSymbol}` : "";
+        return `${hours}${hourSymbol} ${minutePart}${secondPart}`.trim();
+      }
+      return `${hours}${hourSymbol}`;
+    }
+
+    if (minutes > 0) {
+      if (seconds > 0) {
+        return `${minutes}${minuteSymbol} ${seconds}${secondSymbol}`;
+      }
+      return `${minutes}${minuteSymbol}`;
+    }
+
+    return `${seconds}${secondSymbol}`;
+  };
+
+  getDeepSkyIntegration(image: ImageInterface): string {
+    const getIntegration = (acquisition: DeepSkyAcquisitionInterface): number => {
+      return acquisition.number * parseFloat(acquisition.duration);
+    };
+
+    if (image.deepSkyAcquisitions?.length > 0) {
+      const integration = image.deepSkyAcquisitions.map(getIntegration).reduce((acc, val) => acc + val, 0);
+      return this.formatIntegration(integration);
+    }
+
+    return null;
+  }
+
+  getSolarSystemIntegration(image: ImageInterface): string {
+    if (image.solarSystemAcquisitions?.length > 0) {
+      const acquisition = image.solarSystemAcquisitions[0];
+      if (acquisition.frames && acquisition.exposurePerFrame) {
+        return `${acquisition.frames} &times; ${acquisition.exposurePerFrame}s`;
+      }
+    }
+
+    return null;
+  }
+
+  getPublicationDate(image: ImageInterface): string {
+    const final = this.getFinalRevision(image);
+
+    if (this.isImage(final)) {
+      return final.published || final.uploaded;
+    }
+
+    return final.uploaded;
+  }
+
+  getCoordinates(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+
+    if (!revision.solution || !revision.solution.ra || !revision.solution.dec) {
+      return null;
+    }
+
+    const ra = this.formatRightAscension(parseFloat(revision.solution.advancedRa || revision.solution.ra));
+    const dec = this.formatDeclination(parseFloat(revision.solution.advancedDec || revision.solution.dec));
+
+    return `<span class="ra">${ra}</span><span class="separator">&middot;</span><span class="dec">${dec}</span>`;
+  }
+
+  formatRightAscension(ra: number): string {
+    const hours = Math.floor(ra / 15);
+    const minutes = Math.floor((ra % 15) * 4);
+    const seconds = Math.round(((ra % 15) * 4 - minutes) * 60);
+
+    return `
+      <span class="hours">${hours}<span class="symbol">h</span></span>
+      <span class="minutes">${minutes}<span class="symbol">m</span></span>
+      <span class="seconds">${seconds}<span class="symbol">s</span></span>
+    `;
+  }
+
+  formatDeclination(dec: number): string {
+    const degrees = Math.floor(dec);
+    const minutes = Math.floor((dec - degrees) * 60);
+    const seconds = Math.round(((dec - degrees) * 60 - minutes) * 60);
+
+    return `
+      <span class="degrees">${degrees}<span class="symbol">&deg;</span></span>
+      <span class="minutes">${minutes}<span class="symbol">&prime;</span></span>
+      <span class="seconds">${seconds}<span class="symbol">&Prime;</span></span>
+    `;
+  }
+
+  getPixelScale(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+
+    if (!revision.solution || !revision.solution.pixscale) {
+      return null;
+    }
+
+    const symbol = "<span class='symbol'>&Prime;/px</span>";
+    const value = parseFloat((revision.solution.advancedPixscale || revision.solution.pixscale)).toFixed(2);
+
+    return `${value}${symbol}`;
+  }
+
+  getOrientation(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+
+    if (!revision.solution || !revision.solution.orientation) {
+      return null;
+    }
+
+    const symbol = "<span class='symbol'>&deg;N</span>";
+    const value = parseFloat((revision.solution.advancedOrientation || revision.solution.orientation)).toFixed(2);
+
+    return `${value}${symbol}`;
+  }
+
+  getFieldRadius(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+
+    if (!revision.solution || !revision.solution.radius) {
+      return null;
+    }
+
+    const symbol = "<span class='symbol'>&deg;</span>";
+    const value = parseFloat(revision.solution.radius).toFixed(2);
+
+    return `${value}${symbol}`;
+  }
+
+  getRevision(image: ImageInterface, revisionLabel: string): ImageInterface | ImageRevisionInterface {
+    if (revisionLabel === null || revisionLabel === ORIGINAL_REVISION_LABEL) {
+      return image;
+    }
+
+    if (revisionLabel === FINAL_REVISION_LABEL) {
+      return this.getFinalRevision(image);
+    }
+
+    if (image.revisions && image.revisions.length > 0) {
+      return image.revisions.find(revision => revision.label === revisionLabel);
+    }
+
+    return image;
+  }
+
+  getFinalRevision(image: ImageInterface): ImageInterface | ImageRevisionInterface {
+    if (image.isFinal) {
+      return image;
+    }
+
+    if (image.revisions && image.revisions.length > 0) {
+      const finalRevision = image.revisions.find(revision => revision.isFinal);
+      if (finalRevision) {
+        return finalRevision;
+      }
+    }
+
+    return image;
+  }
+
+  getFinalRevisionLabel(image: ImageInterface): string {
+    if (image.isFinal) {
+      return ORIGINAL_REVISION_LABEL;
+    }
+
+    if (image.revisions && image.revisions.length > 0) {
+      const finalRevision = image.revisions.find(revision => revision.isFinal);
+      if (finalRevision) {
+        return finalRevision.label;
+      }
+    }
+
+    return null;
+  }
+
+  hasEquipment(image: ImageInterface): boolean {
+    return (
+      image.imagingTelescopes2?.length > 0 ||
+      image.imagingCameras2?.length > 0 ||
+      image.mounts2?.length > 0 ||
+      image.filters2?.length > 0 ||
+      image.accessories2?.length > 0 ||
+      image.software2?.length > 0 ||
+      image.guidingTelescopes2?.length > 0 ||
+      image.guidingCameras2?.length > 0 ||
+      image.imagingTelescopes?.length > 0 ||
+      image.imagingCameras?.length > 0 ||
+      image.mounts?.length > 0 ||
+      image.filters?.length > 0 ||
+      image.accessories?.length > 0 ||
+      image.focalReducers?.length > 0 ||
+      image.software?.length > 0
+    );
+  }
+
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
+    if (isPlatformServer(this.platformId)) {
+      // For SSR, just return the URL as-is
+      return of(url);
+    }
+
     return new Observable<string>(observer => {
+      if (typeof XMLHttpRequest === 'undefined') {
+        // Fallback for environments without XMLHttpRequest
+        this.http.get(url, { responseType: 'blob' }).pipe(
+          tap(() => progressCallback(100)),
+          map(blob => this._createObjectURL(blob))
+        ).subscribe(
+          objectUrl => {
+            observer.next(objectUrl);
+            observer.complete();
+          },
+          error => observer.error(error)
+        );
+        return;
+      }
+
       const xhr = new XMLHttpRequest();
-      const nativeWindow = this.windowRef.nativeWindow;
       let notifiedNotComputable = false;
 
       xhr.open("GET", url, true);
@@ -202,11 +652,9 @@ export class ImageService extends BaseService {
           if (event.lengthComputable) {
             const progress: number = (event.loaded / event.total) * 100;
             progressCallback(progress);
-          } else {
-            if (!notifiedNotComputable) {
-              notifiedNotComputable = true;
-              progressCallback(-1);
-            }
+          } else if (!notifiedNotComputable) {
+            notifiedNotComputable = true;
+            progressCallback(-1);
           }
         });
       };
@@ -214,13 +662,8 @@ export class ImageService extends BaseService {
       xhr.onloadend = () => {
         this.zone.run(() => {
           if (!xhr.status.toString().match(/^2/)) {
-            // Try a more traditional approach.
-            const image = new Image();
-            image.onload = () => {
-              observer.next(url);
-              observer.complete();
-            };
-            image.src = url;
+            // Try a more traditional approach
+            this._loadImageTraditional(url, observer);
             return;
           }
 
@@ -237,13 +680,36 @@ export class ImageService extends BaseService {
           }
 
           const blob = new Blob([xhr.response], options);
-
-          observer.next((nativeWindow as any).URL.createObjectURL(blob));
+          observer.next(this._createObjectURL(blob));
           observer.complete();
+        });
+      };
+
+      xhr.onerror = () => {
+        this.zone.run(() => {
+          // Fallback to traditional approach on error
+          this._loadImageTraditional(url, observer);
         });
       };
 
       xhr.send();
     });
   }
-}
+
+  private _loadImageTraditional(url: string, observer: Observer<string>): void {
+    const image = new Image();
+    image.onload = () => {
+      observer.next(url);
+      observer.complete();
+    };
+    image.onerror = error => observer.error(error);
+    image.src = url;
+  }
+
+  private _createObjectURL(blob: Blob): string {
+    if (typeof URL !== 'undefined' && URL.createObjectURL) {
+      return URL.createObjectURL(blob);
+    }
+    // Fallback for environments without URL.createObjectURL
+    return '';
+  }}

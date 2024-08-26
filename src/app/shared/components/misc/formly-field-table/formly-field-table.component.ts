@@ -65,16 +65,18 @@ export class FormlyFieldTableComponent extends FieldArrayType implements OnInit,
     this.fieldChangesSubscription = this.field.formControl.valueChanges
       .pipe(startWith(this.field.formControl.value))
       .subscribe(() => {
-        this.model.forEach((item, index) => {
-          this.nonNullProperties = {
-            ...this.nonNullProperties,
-            [index]: UtilsService.countNonNullProperties(
-              this.model[index],
-              this.field.props.excludeFromCountNonNullProperties
-            )
-          };
-          this.changeDetectorRef.detectChanges();
-        });
+        if (this.model) {
+          this.model.forEach((item, index) => {
+            this.nonNullProperties = {
+              ...this.nonNullProperties,
+              [index]: UtilsService.countNonNullProperties(
+                this.model[index],
+                this.field.props.excludeFromCountNonNullProperties
+              )
+            };
+            this.changeDetectorRef.detectChanges();
+          });
+        }
       });
   }
 

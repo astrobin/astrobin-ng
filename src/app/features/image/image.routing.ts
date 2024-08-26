@@ -7,6 +7,7 @@ import { ImageUserGroupsResolver } from "@shared/resolvers/image-user-groups.res
 import { CurrentUsersLocationsResolver } from "@shared/resolvers/current-users-locations.resolver";
 import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
 import { ImageUserCollectionsResolver } from "@shared/resolvers/image-user-collections-resolver.service";
+import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
 
 export const imageRoutes: Routes = [
   {
@@ -23,5 +24,12 @@ export const imageRoutes: Routes = [
     data: {
       skipThumbnails: true
     }
+  },
+  {
+    path: ":imageId",
+    component: ImagePageComponent,
+    resolve: {
+      image: ImageResolver,
+    },
   }
 ];

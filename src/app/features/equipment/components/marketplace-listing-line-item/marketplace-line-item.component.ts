@@ -22,6 +22,7 @@ import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-of
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { SafeUrl } from "@angular/platform-browser";
 import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item",
@@ -130,5 +131,7 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
 
     return this.equipmentItemService.humanizeType(EquipmentItemType.TELESCOPE);
   }
+
+  protected readonly ImageAlias = ImageAlias;
 }
 

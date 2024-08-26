@@ -1,3 +1,7 @@
+<div class="search-filter-operator">
+  {{ "and" | translate }}
+</div>
+
 <div class="search-filter">
   <span class="search-filter__main">
     <span class="search-filter__title">{{ label }}:</span>
@@ -14,8 +18,29 @@
     <span>{{ value.matchType }}</span>
   </span>
 
-  <span class="search-filter__icons">
-    <fa-icon (click)="edit()" *ngIf="editFields?.length" icon="pencil-alt"></fa-icon>
-    <fa-icon (click)="remove.emit()" icon="remove"></fa-icon>
+  <span
+    *ngIf="editFields?.length > 0 || mayBeRemoved || infoText"
+    class="search-filter__icons"
+  >
+    <fa-icon
+      *ngIf="editFields?.length"
+      (click)="edit()"
+      icon="pencil-alt"
+    ></fa-icon>
+
+    <fa-icon
+      *ngIf="mayBeRemoved"
+      (click)="remove.emit()"
+      icon="remove"
+    ></fa-icon>
+
+    <fa-icon
+      *ngIf="infoText"
+      icon="info-circle"
+      [ngbTooltip]="infoText"
+      triggers="click"
+      container="body"
+      class="cursor-pointer"
+    ></fa-icon>
   </span>
 </div>

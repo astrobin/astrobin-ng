@@ -7,8 +7,6 @@ import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/ful
 import {
   ForceCheckImageAutoLoad,
   LoadImage,
-  LoadImageRevisions,
-  LoadImageRevisionsSuccess,
   LoadImages,
   LoadImagesSuccess,
   LoadImageSuccess,
@@ -149,8 +147,6 @@ export type All =
   | SaveImageFailure
   | LoadImages
   | LoadImagesSuccess
-  | LoadImageRevisions
-  | LoadImageRevisionsSuccess
   | LoadThumbnail
   | LoadThumbnailCancel
   | LoadThumbnailSuccess

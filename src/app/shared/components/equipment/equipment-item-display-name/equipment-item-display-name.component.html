@@ -1,3 +1,7 @@
+<ng-container *ngIf="enableKlassIcon">
+  <img class="klass-icon" src="/assets/images/{{ item.klass.toLowerCase() }}-{{ klassIconColor }}.png?v=1" alt="" />
+</ng-container>
+
 <ng-container *ngIf="showBrand">
   <span *ngIf="!!brandName; else loading" class="brand">
     <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
@@ -47,15 +51,64 @@
 </span>
 
 <a
-  (click)="openItemSummaryModal(item)"
-  *ngIf="enableSummaryModal"
+  *ngIf="
+    showRetailers &&
+    item.listings.allowFullRetailerIntegration &&
+    (item.listings.itemListings.length || item.listings.brandListings.length)
+  "
+  (click)="openRetailersOffcanvas()"
   astrobinEventPreventDefault
-  class="btn-info-modal"
+  astrobinEventStopPropagation
+  class="btn-retailers"
   href=""
+>
+  <fa-icon icon="shopping-cart"></fa-icon>
+</a>
+
+<a
+  *ngIf="enableSummaryModal"
+  (click)="openItemSummaryModal(item)"
+  astrobinEventPreventDefault
+  astrobinEventStopPropagation
+  class="btn-info-modal"
+  href="#"
 >
   <fa-icon icon="info-circle"></fa-icon>
 </a>
 
 <ng-template #loading>
   <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
+</ng-template>
+
+<ng-template #retailersTemplate let-offcanvas>
+  <div class="offcanvas-header">
+    <h4 class="offcanvas-title">{{ "Shop" | translate }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+  </div>
+  <div class="offcanvas-body offcanvas-retailers">
+    <div class="alert alert-dark mb-4">
+      <fa-icon icon="heart"></fa-icon>
+      <span>{{ "Please support AstroBin by shopping at one of our partners!" | translate }}</span>
+    </div>
+
+    <div *ngIf="item.listings.itemListings.length; else brandsTemplate">
+      <div *ngFor="let listing of item.listings.itemListings" class="retailer">
+        <a [href]="listing.url" target="_blank">
+          <img *ngIf="listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
+          <span *ngIf="!listing.retailer.logo">{{ listing.retailer.name }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #brandsTemplate>
+    <div *ngIf="item.listings.brandListings">
+      <div *ngFor="let listing of item.listings.brandListings" class="retailer">
+        <a [href]="listing.url" target="_blank">
+          <img *ngIf="listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
+          <span *ngIf="!listing.retailer.logo">{{ listing.retailer.name }}</span>
+        </a>
+      </div>
+    </div>
+  </ng-template>
 </ng-template>

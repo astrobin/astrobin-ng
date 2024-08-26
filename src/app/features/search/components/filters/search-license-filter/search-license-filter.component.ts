@@ -9,6 +9,7 @@ import { SearchAutoCompleteType, SearchService } from "@features/search/services
 import { LicenseOptions } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-license-data-filter.search-filter-component",
@@ -19,6 +20,7 @@ export class SearchLicenseFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.LICENSES;
   static minimumSubscription = PayableProductInterface.LITE;
 
+  readonly category = SearchFilterCategory.GENERAL;
   readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchLicenseFilterComponent.key as SearchAutoCompleteType);
   readonly editFields = [
     {

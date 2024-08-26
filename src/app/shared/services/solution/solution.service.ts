@@ -11,15 +11,48 @@ export class SolutionService extends BaseService {
     super(loadingService);
   }
 
-  getObjectsInField(solution: SolutionInterface): string[] {
-    const objects = [];
+  getObjectsInField(solution: SolutionInterface, clean: boolean = true): string[] {
+    const names: string[] = [];
 
-    if (solution.objects_in_field) {
-      solution.objects_in_field.split(",").forEach(object => objects.push(object.trim()));
+    // Step 1: Add objects from objectsInField
+    if (solution?.objectsInField?.length > 0) {
+      solution.objectsInField.split(",").forEach(object => names.push(object.trim()));
     }
 
-    // TODO: merge with advanced annotation.
+    // Step 2: Process advancedAnnotations and merge with objectsInField
+    if (solution?.advancedAnnotations?.length > 0) {
+      const advancedAnnotationsLines = solution.advancedAnnotations.split('\n');
+      for (const line of advancedAnnotationsLines) {
+        const header = line.split(',')[0];
 
-    return objects;
+        if (header !== "Label") {
+          continue;
+        }
+
+        let advancedAnnotation = line.split(',').pop()!.trim();
+
+        if (clean) {
+          const regex = /^(M|NGC|IC|LDN|LBN|PGC|HD)(\d+)$/;
+          const matches = advancedAnnotation.match(regex);
+          if (matches) {
+            const catalog = matches[1];
+            const id = matches[2];
+            advancedAnnotation = `${catalog} ${id}`;
+
+            // Skip objects in the PGC or HD catalogs
+            if (catalog === 'PGC' || catalog === 'HD') {
+              continue;
+            }
+          }
+        }
+
+        // Add to names if not already present (case-insensitive comparison)
+        if (advancedAnnotation && !names.some(name => name.toLowerCase() === advancedAnnotation.toLowerCase())) {
+          names.push(advancedAnnotation);
+        }
+      }
+    }
+
+    return names.sort();
   }
 }

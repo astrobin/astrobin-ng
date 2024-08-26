@@ -3,14 +3,13 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { formlyConfig } from "@app/formly.config";
-import { ObjectsInFieldComponent } from "@app/shared/components/misc/objects-in-field/objects-in-field.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   NgbAccordionModule,
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalConfig,
-  NgbModalModule, NgbNavModule,
+  NgbModalModule, NgbNavModule, NgbOffcanvasModule,
   NgbPopoverModule,
   NgbProgressbarModule,
   NgbTooltipModule
@@ -120,6 +119,17 @@ import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { ForumPostSearchComponent } from "@shared/components/search/forum-post-search/forum-post-search.component";
 import { NestedCommentSearchComponent } from "@shared/components/search/nestedcomment-search/nested-comment-search.component";
 import { MobileMenuComponent } from "@shared/components/mobile-menu/mobile-menu.component";
+import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
+import { ImageViewerTitleComponent } from "@shared/components/misc/image-viewer/image-viewer-title.component";
+import { ImageViewerPhotographersComponent } from "@shared/components/misc/image-viewer/image-viewer-photographers.component";
+import { ImageViewerDataSourceComponent } from "@shared/components/misc/image-viewer/image-viewer-data-source.component";
+import { ImageViewerAcquisitionComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition.component";
+import { ImageViewerAcquisitionDatesComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition-dates.component";
+import { ImageViewerAstrometryComponent } from "@shared/components/misc/image-viewer/image-viewer-astrometry.component";
+import { ImageViewerEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment.component";
+import { ImageViewerRevisionsComponent } from "@shared/components/misc/image-viewer/image-viewer-revisions.component";
+import { HammerModule } from "@angular/platform-browser";
+import { LightboxModule } from "ngx-lightbox";
 
 const modules = [
   CommonModule,
@@ -129,12 +139,15 @@ const modules = [
   FormsModule,
   FormlyBootstrapModule,
   FormlySelectModule,
+  HammerModule,
   ImageCropperModule,
+  LightboxModule,
   NgbAccordionModule,
   NgbCollapseModule,
   NgbDropdownModule,
   NgbNavModule,
   NgbModalModule,
+  NgbOffcanvasModule,
   NgbPopoverModule,
   NgbProgressbarModule,
   NgbTooltipModule,
@@ -192,6 +205,15 @@ const components = [
   ImageComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,
+  ImageViewerComponent,
+  ImageViewerTitleComponent,
+  ImageViewerPhotographersComponent,
+  ImageViewerDataSourceComponent,
+  ImageViewerAcquisitionComponent,
+  ImageViewerAcquisitionDatesComponent,
+  ImageViewerAstrometryComponent,
+  ImageViewerEquipmentComponent,
+  ImageViewerRevisionsComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,
@@ -206,7 +228,6 @@ const components = [
   NestedCommentsCountComponent,
   NestedCommentsModalComponent,
   NothingHereComponent,
-  ObjectsInFieldComponent,
   PrivateInformationComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,

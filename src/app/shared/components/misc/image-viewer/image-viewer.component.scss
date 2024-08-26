@@ -1,0 +1,492 @@
+@import "src/app/styles/breakpoints";
+@import "src/app/styles/mixins";
+
+:host {
+  ::ng-deep {
+    .metadata-section {
+      display: flex;
+      gap: .75rem;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      padding: .75rem 0;
+
+      .metadata-item {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        position: relative;
+        max-width: 100%;
+
+        .metadata-icon {
+          line-height: 0;
+          width: 1rem;
+          height: 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .ng-fa-icon,
+          img {
+            opacity: .7; // Try to match the light grey of the icons, as images are white.
+            width: 1rem;
+            height: 1rem;
+          }
+
+          [data-toggle="offcanvas"] {
+            cursor: pointer;
+
+            &:hover {
+              color: var(--lightestGrey);
+            }
+          }
+        }
+
+        .metadata-label,
+        .metadata-link {
+          line-height: 1.15rem;
+          max-width: 100%;
+        }
+
+        .metadata-label {
+          color: var(--white);
+
+          .symbol {
+            color: var(--lighterGrey);
+          }
+
+          .value {
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          [data-toggle="tooltip"],
+          [data-toggle="offcanvas"] {
+            cursor: help;
+            border-bottom: 1px dashed var(--lightGrey);
+          }
+        }
+
+        .metadata-link {
+          color: var(--accentColor);
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 4rem);
+  background-color: var(--black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+
+  .image-area {
+    position: relative;
+    width: 60%;
+    height: 100%;
+    touch-action: manipulation;
+    pointer-events: auto;
+    background: black; // Real black as opposed to var(--black), for maximum contrast.
+
+    @media (max-width: $md-max) {
+      width: 100%;
+      max-height: 66.67%;
+    }
+
+    .close-button,
+    .next-button,
+    .previous-button,
+    .additional-buttons,
+    .revisions-mobile-button {
+      position: absolute;
+    }
+
+    .close-button,
+    .next-button,
+    .previous-button,
+    .additional-buttons button,
+    .revisions-mobile-button {
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1031;
+      opacity: 0;
+      pointer-events: none;
+      padding: .5rem;
+      transition: opacity 0.3s, transform 0.3s ease-in-out;
+
+      :focus-visible {
+        outline: none !important;
+      }
+    }
+
+    .next-button,
+    .previous-button {
+      height: 75%;
+      padding: 1rem;
+
+      &:focus-visible {
+        outline: none !important;
+      }
+    }
+
+    .close-button {
+      top: .75rem;
+      left: .75rem;
+    }
+
+    .additional-buttons {
+      top: .75rem;
+      right: .75rem;
+      display: flex;
+      gap: .5rem;
+      flex-wrap: nowrap;
+
+      .force-view-mousehover-button {
+        display: none;
+
+        &.active .ng-fa-icon {
+          color: var(--accentColor);
+        }
+      }
+    }
+
+    .next-button,
+    .previous-button {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .next-button {
+      right: 0;
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          transform: translateX(0.125rem) translateY(-50%);
+        }
+      }
+    }
+
+    .previous-button {
+      left: 0;
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          transform: translateX(-0.125rem) translateY(-50%);
+        }
+      }
+    }
+
+    .revisions-mobile-button {
+      bottom: .5rem;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      font-size: 1.5rem;
+      display: none;
+
+      @media (hover: none) and (pointer: coarse) {
+        pointer-events: auto;
+        display: block;
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: $md-max) {
+      astrobin-loading-indicator,
+      astrobin-image.loading {
+
+      }
+    }
+
+    ::ng-deep astrobin-image {
+      .astrobin-image {
+        width: auto;
+        height: auto;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      .video-js {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      &.supports-fullscreen {
+        .astrobin-image {
+          cursor: zoom-in;
+        }
+      }
+    }
+
+    .mouse-hover-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+
+      .mouse-hover {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.3s;
+        cursor: zoom-in;
+      }
+    }
+
+    .mouse-hover-svg-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+
+      .mouse-hover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: auto;
+        height: auto;
+        max-height: 100%;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.3s;
+        cursor: zoom-in;
+        // Believe it or not, this is necessary to prevent the SVG to display with a white background.
+        color-scheme: none;
+      }
+
+      .mouse-hover-svg-overlay {
+        position: absolute;
+        bottom: .5rem;
+        right: .5rem;
+        background: rgba(0, 0, 0, .75);
+        opacity: 0;
+        transition: opacity 0.3s;
+        padding: .5rem .75rem;
+        font-size: .9rem;
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        .close-button,
+        .next-button,
+        .previous-button,
+        .additional-buttons button {
+          opacity: 1 !important;
+          pointer-events: auto;
+        }
+      }
+    }
+
+    &.hover {
+      .mouse-hover,
+      .mouse-hover-svg-overlay {
+        opacity: 1 !important;
+        pointer-events: auto;
+      }
+    }
+
+    &.force-view-mousehover {
+      @media (hover: none) and (pointer: coarse) {
+        .mouse-hover,
+        .mouse-hover-svg-overlay {
+          opacity: 1 !important;
+          pointer-events: auto;
+        }
+      }
+    }
+
+    ::ng-deep .mouse-hover {
+      background: transparent !important;
+    }
+
+    // The buttons are always visible on touch devices. The revisions are handled separately and activated
+    // by a button.
+    @media (hover: none) and (pointer: coarse) {
+      astrobin-image-viewer-revisions {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+
+      .close-button,
+      .next-button,
+      .previous-button,
+      .additional-buttons button {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .additional-buttons {
+        .force-view-mousehover-button {
+          display: block;
+        }
+      }
+
+      astrobin-image-viewer-revisions.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+
+  .data-area-container {
+    position: relative;
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    .data-area {
+      @include darker-background-texture;
+      height: 100%;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+
+      .description ::ng-deep {
+        display: block;
+        word-break: break-word;
+        overflow: hidden;
+
+        img {
+          max-width: 100%;
+          height: auto;
+
+          &.smiley {
+            height: 1rem;
+          }
+
+          &.loading {
+            height: 1rem;
+          }
+
+          &[data-src] {
+            cursor: zoom-in;
+          }
+        }
+      }
+
+      @media (max-width: $md-max) {
+        padding: 1rem .75rem;
+      }
+
+      @media (min-width: $lg-min) {
+        overflow-y: auto;
+      }
+    }
+
+    .buttons-area {
+      background: var(--black);
+      border-top: 1px solid var(--grey);
+      width: 100%;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.25rem;
+
+      .like,
+      .bookmark,
+      .follow,
+      .comment {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+
+        ::ng-deep {
+          .ng-fa-icon,
+          .btn-link {
+            margin: 0 !important;
+          }
+        }
+
+        > astrobin-toggle-property,
+        > .btn {
+          height: 2.25rem;
+        }
+
+        > .count {
+          font-size: .85rem;
+          color: var(--lightGrey);
+          line-height: 1.25rem;
+        }
+      }
+
+      @media (max-width: $md-max) {
+        position: fixed;
+        bottom: 0;
+      }
+    }
+
+    @media (max-width: $md-max) {
+      width: 100%;
+      height: auto;
+      padding-bottom: 77px; // 77px is the height of the buttons area.
+    }
+  }
+
+  &.fullscreen-mode {
+    top: 0;
+    height: 100%;
+    z-index: 1030;
+  }
+
+  @media (max-width: $md-max) {
+    overflow-y: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
+
+::ng-deep {
+  .image-viewer-nested-comments-offcanvas {
+    &:not(.offcanvas-bottom) {
+      width: 40% !important;
+    }
+
+    .offcanvas-body {
+      padding: 0;
+    }
+
+    .card {
+      background: transparent;
+      box-shadow: none;
+      border: none;
+    }
+  }
+
+  .image-viewer-share-offcanvas {
+    &:not(.offcanvas-bottom) {
+      width: 40% !important;
+    }
+  }
+}

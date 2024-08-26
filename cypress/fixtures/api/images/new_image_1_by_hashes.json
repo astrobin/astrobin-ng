@@ -44,7 +44,9 @@
       "watermarkSize": "M",
       "watermarkOpacity": 10,
       "sharpenThumbnails": true,
-      "fullSizeDisplayLimitation": "EVERYBODY"
+      "fullSizeDisplayLimitation": "EVERYBODY",
+      "isFinal": true,
+      "revisions": []
     }
   ]
 }

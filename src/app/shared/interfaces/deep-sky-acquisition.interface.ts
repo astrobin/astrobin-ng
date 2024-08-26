@@ -20,10 +20,16 @@ export interface DeepSkyAcquisitionInterface {
   image: number; // Avoiding circular import.
   isSynthetic: boolean | null;
   filter: LegacyFilterInterface["pk"] | null;
+  filterMake?: LegacyFilterInterface["make"] | null;
+  filterName?: LegacyFilterInterface["name"] | null;
+  filterType?: LegacyFilterInterface["type"] | null;
   filter2: FilterInterface["id"] | null;
+  filter2Brand?: FilterInterface["brand"] | null;
+  filter2Name?: FilterInterface["name"] | null;
+  filter2Type?: FilterInterface["type"] | null;
   binning: number | null;
   number: number | null;
-  duration: number | null;
+  duration: string | null;
   iso: number | null;
   gain: number | null;
   fNumber: number | null;

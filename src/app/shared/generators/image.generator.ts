@@ -1,17 +1,12 @@
-import {
-  AcquisitionType,
-  DataSource,
-  ImageInterface,
-  MouseHoverImageOptions,
-  SubjectType,
-  WatermarkPositionOptions,
-  WatermarkSizeOptions
-} from "../interfaces/image.interface";
+import { AcquisitionType, DataSource, ImageInterface, LicenseOptions, MouseHoverImageOptions, SubjectType, WatermarkPositionOptions, WatermarkSizeOptions } from "../interfaces/image.interface";
 
 export class ImageGenerator {
   static image(source: Partial<ImageInterface> = {}): ImageInterface {
     return {
       user: source.user || 1,
+      username: source.username || "astrobin",
+      userDisplayName: source.userDisplayName || "AstroBin",
+      userAvatar: source.userAvatar || "/media/avatars/astrobin.jpg",
       pendingCollaborators: source.pendingCollaborators || null,
       collaborators: source.collaborators || null,
       pk: source.pk || 1,
@@ -22,6 +17,7 @@ export class ImageGenerator {
       encodedVideoFile: null,
       loopVideo: null,
       isWip: source.isWip || false,
+      isFinal: source.isFinal || true,
       skipNotifications: source.skipNotifications || false,
       w: source.w || 1000,
       h: source.h || 1000,
@@ -29,6 +25,7 @@ export class ImageGenerator {
       imagingCameras: source.imagingCameras || [],
       guidingTelescopes: source.guidingTelescopes || [],
       guidingCameras: source.guidingCameras || [],
+      filters: source.filters || [],
       focalReducers: source.focalReducers || [],
       mounts: source.mounts || [],
       accessories: source.accessories || [],
@@ -41,8 +38,9 @@ export class ImageGenerator {
       filters2: source.filters2 || [],
       accessories2: source.accessories2 || [],
       software2: source.software2 || [],
+      uploaded: source.uploaded || new Date().toISOString(),
       published: source.published || new Date().toISOString(),
-      license: "",
+      license: LicenseOptions.ALL_RIGHTS_RESERVED,
       description: undefined,
       descriptionBbcode: undefined,
       link: undefined,
@@ -64,12 +62,20 @@ export class ImageGenerator {
       sharpenThumbnails: false,
       keyValueTags: null,
       locations: [],
+      locationObjects: [],
       fullSizeDisplayLimitation: null,
       downloadLimitation: null,
       thumbnails: [],
       submittedForIotdTpConsideration: null,
       deepSkyAcquisitions: [],
-      solarSystemAcquisitions: []
+      solarSystemAcquisitions: [],
+      solution: null,
+      revisions: [],
+      constellation: source.constellation || null,
+      likeCount: source.likeCount || 0,
+      bookmarkCount: source.bookmarkCount || 0,
+      commentCount: source.commentCount || 0,
+      userFollowerCount: source.userFollowerCount || 0,
     };
   }
 }

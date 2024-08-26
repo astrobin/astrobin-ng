@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FilterType } from "@features/equipment/types/filter.interface";
 import { FilterService } from "@features/equipment/services/filter.service";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-filter-types-filter.search-filter-component",
@@ -16,10 +17,12 @@ import { FilterService } from "@features/equipment/services/filter.service";
 })
 export class SearchFilterTypesFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.FILTER_TYPES;
-  label = this.searchService.humanizeSearchAutoCompleteType(
+
+  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(
     SearchFilterTypesFilterComponent.key as SearchAutoCompleteType
   );
-  editFields = [
+  readonly editFields = [
     {
       key: SearchFilterTypesFilterComponent.key,
       fieldGroup: [

@@ -9,7 +9,8 @@
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      justify-content: start;
+      justify-content: flex-start;
+      align-items: center;
       gap: .25rem;
 
       @media (max-width: $xs-max) {
@@ -29,6 +30,10 @@
         padding-right: 0;
         width: auto;
         flex-grow: 1;
+
+        &::placeholder {
+          color: var(--lighterGrey) !important;
+        }
 
         @media (max-width: $sm-max) {
           padding-left: .5rem;
@@ -139,7 +144,7 @@
       .search-type-menu {
         .dropdown-item {
           display: flex;
-          justify-content: start;
+          justify-content: flex-start;
           align-items: center;
 
           .ng-fa-icon {
@@ -164,5 +169,11 @@
     gap: .5rem;
     flex-wrap: wrap;
     padding: .75rem .125rem;
+
+    ::ng-deep .search-filter-component:first-child {
+      .search-filter-operator {
+        display: none;
+      }
+    }
   }
 }

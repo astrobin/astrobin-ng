@@ -1,0 +1,354 @@
+<ng-container *ngIf="!!image; else loadingTemplate">
+  <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
+
+  <div class="data-area-container">
+    <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="buttonsAreaTemplate"></ng-container>
+  </div> <!-- data-area-container -->
+</ng-container>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #imageAreaTemplate>
+  <div #imageArea class="image-area" [class.force-view-mousehover]="forceViewMouseHover">
+    <button class="close-button" (click)="close()">
+      <fa-icon
+        *ngIf="showCloseButton"
+        [ngbTooltip]="'Close' | translate"
+        container="body"
+        icon="times-circle"
+      ></fa-icon>
+    </button>
+
+    <div class="additional-buttons">
+      <button
+        *ngIf="
+          mouseHoverImage || inlineSvg
+        "
+        (click)="toggleViewMouseHover($event)"
+        class="force-view-mousehover-button"
+        [class.active]="forceViewMouseHover"
+      >
+        <fa-icon icon="computer-mouse"></fa-icon>
+      </button>
+
+      <button
+        *ngIf="revision?.solution && (revision?.solution.skyplotZoom1 || revision?.solution.pixinsightFindingChart)"
+        (click)="openSkyplot($event)"
+        class="skyplot-button"
+      >
+        <fa-icon
+          [ngbTooltip]="'View sky map' | translate"
+          container="body"
+          icon="map"
+        ></fa-icon>
+      </button>
+
+      <button *ngIf="!revision?.videoFile" class="histogram-button" (click)="openHistogram($event)">
+        <fa-icon
+          [ngbTooltip]="'View histogram' | translate"
+          container="body"
+          icon="chart-simple"
+        ></fa-icon>
+      </button>
+
+      <button
+        *ngIf="supportsFullscreen()"
+        class="fullscreen-button"
+        (click)="enterFullscreen($event)"
+      >
+        <fa-icon
+          [ngbTooltip]="'View fullscreen' | translate"
+          container="body"
+          icon="expand"
+        ></fa-icon>
+      </button>
+    </div>
+
+    <button
+      *ngIf="currentIndex > 0"
+      (click)="onPreviousClicked()"
+      class="previous-button"
+    >
+      <fa-icon icon="chevron-circle-left"></fa-icon>
+    </button>
+
+    <astrobin-fullscreen-image-viewer
+      *ngIf="supportsFullscreen()"
+      [id]="image.pk"
+      [revision]="revisionLabel"
+      (exitFullscreen)="exitFullscreen(true)"
+    ></astrobin-fullscreen-image-viewer>
+
+    <astrobin-loading-indicator *ngIf="!imageLoaded"></astrobin-loading-indicator>
+
+    <astrobin-image
+      (imageClick)="enterFullscreen($event)"
+      (loaded)="onImageLoaded()"
+      (imageMouseEnter)="onImageMouseEnter($event)"
+      (imageMouseLeave)="onImageMouseLeave($event)"
+      (swipeleft)="onNextClicked()"
+      (swiperight)="onPreviousClicked()"
+      (swipedown)="close()"
+      [alias]="alias"
+      [class.supports-fullscreen]="supportsFullscreen()"
+      [image]="image"
+      [revision]="revisionLabel"
+    ></astrobin-image>
+
+    <div
+      *ngIf="mouseHoverImage && imageLoaded"
+      (click)="enterFullscreen($event)"
+      class="mouse-hover-container"
+    >
+      <img
+        (mouseenter)="onImageMouseEnter($event)"
+        (mouseleave)="onImageMouseLeave($event)"
+        (swipeleft)="onNextClicked()"
+        (swiperight)="onPreviousClicked()"
+        (swipedown)="close()"
+        alt=""
+        class="mouse-hover"
+        src="{{ mouseHoverImage }}"
+      />
+    </div>
+
+    <div
+      *ngIf="inlineSvg && imageLoaded"
+      (click)="enterFullscreen($event)"
+      class="mouse-hover-svg-container"
+    >
+      <div
+        (mouseenter)="onImageMouseEnter($event)"
+        (mouseleave)="onImageMouseLeave($event)"
+        (swipeleft)="onNextClicked()"
+        (swiperight)="onPreviousClicked()"
+        (swipedown)="close()"
+        [innerHTML]="inlineSvg"
+        [id]="'mouse-hover-svg-' + image.pk"
+        class="mouse-hover w-100 position-relative"
+      ></div>
+
+      <div class="mouse-hover-svg-overlay">
+        Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
+      </div>
+    </div>
+
+    <astrobin-image-viewer-revisions
+      [image]="image"
+      [activeLabel]="revisionLabel"
+      (revisionSelected)="onRevisionSelected($event)"
+      [class.show]="showRevisions"
+    ></astrobin-image-viewer-revisions>
+
+    <button
+      *ngIf="currentIndex < navigationContext?.length - 1"
+      (click)="onNextClicked()"
+      class="next-button"
+    >
+      <fa-icon icon="chevron-circle-right"></fa-icon>
+    </button>
+
+    <button
+      *ngIf="image.revisions?.length"
+      (click)="showRevisions = !showRevisions"
+      class="revisions-mobile-button"
+    >
+      <fa-icon *ngIf="!showRevisions" icon="ellipsis"></fa-icon>
+      <fa-icon *ngIf="showRevisions" icon="angle-down"></fa-icon>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #descriptionTemplate>
+  <div *ngIf="image.descriptionBbcode" class="metadata-section">
+    <div
+      (click)="onDescriptionClicked($event)"
+      [innerHTML]="image.descriptionBbcode | BBCodeToHtml"
+      class="metadata-item description"
+    ></div>
+  </div>
+
+  <div *ngIf="image.description && !image.descriptionBbcode" class="metadata-section">
+    <div class="metadata-item description" [innerHTML]="image.description"></div>
+  </div>
+</ng-template>
+
+<ng-template #moreFromThisUserTemplate>
+  <h5 class="mt-5 mb-3">{{ "More from this user" | translate }}</h5>
+  <astrobin-image-search
+    [alias]="ImageAlias.GALLERY"
+    [model]="{ userId: image.user, ordering: '-likes', pageSize: 25 }"
+    [loadMoreOnScroll]="false"
+    [showRetailers]="false"
+    [showMarketplaceItems]="false"
+    class="more-from-this-photographer"
+  ></astrobin-image-search>
+</ng-template>
+
+<ng-template #similarToThisTemplate>
+  <h5 class="mt-5 mb-3">{{ "Related images" | translate }}</h5>
+  <astrobin-image-search
+    [model]="{ similarToImageId: this.image.hash || this.image.pk, ordering: '-likes', pageSize: 50 }"
+    [loadMoreOnScroll]="true"
+    [showRetailers]="false"
+    [showMarketplaceItems]="false"
+    class="similar-to-this"
+  ></astrobin-image-search>
+</ng-template>
+
+<ng-template #dataAreaTemplate>
+  <div #dataArea class="data-area">
+    <astrobin-image-viewer-title
+      [image]="image"
+    ></astrobin-image-viewer-title>
+
+    <astrobin-image-viewer-photographers
+      *ngIf="userContentType"
+      [image]="image"
+      [userContentType]="userContentType"
+    ></astrobin-image-viewer-photographers>
+
+    <astrobin-image-viewer-data-source
+      [image]="image"
+    ></astrobin-image-viewer-data-source>
+
+    <astrobin-image-viewer-acquisition
+      *ngIf="image.deepSkyAcquisitions?.length || image.solarSystemAcquisitions?.length"
+      [image]="image"
+    ></astrobin-image-viewer-acquisition>
+
+    <astrobin-image-viewer-astrometry
+      *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null"
+      [image]="image"
+      [revisionLabel]="revisionLabel"
+    ></astrobin-image-viewer-astrometry>
+
+    <astrobin-image-viewer-equipment
+      *ngIf="imageService.hasEquipment(image)"
+      [image]="image"
+    ></astrobin-image-viewer-equipment>
+
+    <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+
+    <ng-container [ngTemplateOutlet]="moreFromThisUserTemplate"></ng-container>
+
+    <ng-container [ngTemplateOutlet]="similarToThisTemplate"></ng-container>
+  </div> <!-- data-area -->
+</ng-template>
+
+<ng-template #buttonsAreaTemplate>
+  <div class="buttons-area">
+    <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
+      <div *ngIf="currentUserWrapper.user?.id !== image.user" class="like">
+        <astrobin-toggle-property
+          [contentType]="imageContentType.id"
+          [objectId]="image.pk"
+          [userId]="currentUserWrapper.user?.id"
+          [showLabel]="false"
+          btnClass="btn btn-link link-secondary"
+          propertyType="like"
+        ></astrobin-toggle-property>
+        <span class="count">{{ image.likeCount }}</span>
+      </div>
+
+      <div class="bookmark">
+        <astrobin-toggle-property
+          [contentType]="imageContentType.id"
+          [objectId]="image.pk"
+          [userId]="currentUserWrapper.user?.id"
+          [showLabel]="false"
+          btnClass="btn btn-link link-secondary"
+          propertyType="bookmark"
+        ></astrobin-toggle-property>
+        <span class="count">{{ image.bookmarkCount }}</span>
+      </div>
+
+      <div class="comment">
+        <button
+          (click)="openComments($event)"
+          class="btn btn-link link-secondary"
+        >
+          <fa-icon
+            [ngbTooltip]="'Comments' | translate"
+            triggers="hover click"
+            container="body"
+            icon="comments"
+          ></fa-icon>
+        </button>
+        <span class="count">
+          <astrobin-nested-comments-count
+            [contentType]="imageContentType"
+            [objectId]="image.pk"
+          ></astrobin-nested-comments-count>
+        </span>
+      </div>
+
+      <div class="share">
+        <button
+          (click)="openShare($event)"
+          class="btn btn-link link-secondary"
+        >
+          <fa-icon
+            [ngbTooltip]="'Share' | translate"
+            triggers="hover click"
+            container="body"
+            icon="share"
+          ></fa-icon>
+        </button>
+      </div>
+    </ng-container>
+  </div> <!-- buttons-area -->
+</ng-template>
+
+<ng-template #nestedCommentsTemplate let-offcanvas>
+  <div class="offcanvas-body">
+    <astrobin-nested-comments
+      (close)="offcanvas.dismiss()"
+      [autoStartTopLevelStrategy]="NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS"
+      [contentType]="imageContentType"
+      [objectId]="image.pk"
+      [showCloseButton]="true"
+    ></astrobin-nested-comments>
+  </div>
+</ng-template>
+
+<ng-template #shareTemplate let-offcanvas>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">{{ 'Share' | translate }}</h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="offcanvas.dismiss()"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="offcanvas-body">
+    <form>
+      <formly-form
+        [form]="shareForm"
+        [fields]="shareFields"
+        [model]="shareModel"
+      ></formly-form>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #histogramModalTemplate>
+  <div class="modal-body">
+    <img *ngIf="!loadingHistogram; else loadingTemplate" [src]="histogram" alt="" />
+  </div>
+</ng-template>
+
+<ng-template #skyplotModalTemplate>
+  <div class="modal-body">
+    <img
+      [src]="revision?.solution?.pixinsightFindingChart || revision?.solution?.skyplotZoom1"
+      [ngStyle]="{'filter': revision.solution.pixinsightFindingChart ? 'none' : 'grayscale(100%)'}"
+      class="w-100"
+      alt=""
+    />
+  </div>
+</ng-template>

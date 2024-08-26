@@ -35,6 +35,7 @@ export interface EquipmentItemListingInterface {
   createdBy: UserInterface["id"] | null;
   itemType: EquipmentItemType;
   item: EquipmentItem["id"];
+  name: string;
   retailer: EquipmentRetailerInterface;
   stockStatus?: StockStatus;
   stockAmount?: number;

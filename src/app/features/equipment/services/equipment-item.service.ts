@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectorRef, Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -34,6 +34,7 @@ import {
   MarketplaceListingCondition,
   MarketplaceShippingCostType
 } from "@features/equipment/types/marketplace-line-item.interface";
+import { HttpClient } from "@angular/common/http";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -58,7 +59,8 @@ export class EquipmentItemService extends BaseService {
     public readonly ckEditorService: CKEditorService,
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationsService: PopNotificationsService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly http: HttpClient
   ) {
     super(loadingService);
   }
@@ -230,7 +232,8 @@ export class EquipmentItemService extends BaseService {
           new BBCodeToHtmlPipe(
             this.ckEditorService,
             this.windowRefService,
-            this.platformId
+            this.platformId,
+            this.http
           ).transform(propertyValue.toString())
         );
     }

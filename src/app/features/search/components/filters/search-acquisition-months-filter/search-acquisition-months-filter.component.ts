@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { Month } from "@shared/enums/month.enum";
 import { DateService } from "@shared/services/date.service";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-search-acquisition-months-filter.search-filter-component",
@@ -16,6 +17,7 @@ import { DateService } from "@shared/services/date.service";
 })
 export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.ACQUISITION_MONTHS;
+  category = SearchFilterCategory.DATETIME;
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchAcquisitionMonthsFilterComponent.key as SearchAutoCompleteType
   );

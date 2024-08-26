@@ -7,6 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-mount-weight-filter.search-filter-component",
@@ -16,9 +17,9 @@ import { PayableProductInterface } from "@features/subscriptions/interfaces/paya
 export class SearchMountWeightFilterComponent extends SearchBaseSliderFilterComponent {
   static key = SearchAutoCompleteType.MOUNT_WEIGHT;
   static minimumSubscription = PayableProductInterface.ULTIMATE;
-
-  unit = "kg";
-  label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
+  readonly unit = "kg";
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(
     SearchMountWeightFilterComponent.key as SearchAutoCompleteType
   );
 

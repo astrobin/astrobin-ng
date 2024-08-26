@@ -1,20 +1,10 @@
 import { Injectable } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
-import {
-  DownloadLimitationOptions,
-  FullSizeLimitationDisplayOptions,
-  ImageRevisionInterface,
-  LicenseOptions,
-  MouseHoverImageOptions
-} from "@shared/interfaces/image.interface";
+import { DownloadLimitationOptions, FullSizeLimitationDisplayOptions, LicenseOptions, MouseHoverImageOptions } from "@shared/interfaces/image.interface";
 import { ImageEditService, KeyValueTagsValidator } from "@features/image/services/image-edit.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
-import { map, tap } from "rxjs/operators";
-import { LoadImageRevisions } from "@app/store/actions/image.actions";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { ImageService } from "@shared/services/image/image.service";
@@ -93,53 +83,39 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
 
   getMouseHoverImageField(): FormlyFieldConfig {
     const image = this.imageEditService.model;
+    const revisions = image.revisions || [];
 
-    this.store$.dispatch(new LoadImageRevisions({ imageId: image.pk }));
-    const options = this.store$.select(selectImageRevisionsForImage, image.pk).pipe(
-      distinctUntilChangedObj(),
-      map(revisions => {
-        const newOptions: {
-          value: MouseHoverImageOptions | ImageRevisionInterface["label"];
-          label: string;
-          disabled?: boolean;
-        }[] = [
-          {
-            value: MouseHoverImageOptions.NOTHING,
-            label: this.translateService.instant("Nothing")
-          },
-          {
-            value: MouseHoverImageOptions.SOLUTION,
-            label: this.translateService.instant("Plate-solution annotations (if available)")
-          },
-          {
-            value: MouseHoverImageOptions.INVERTED,
-            label: this.translateService.instant("Inverted monochrome")
-          }
-        ];
+    const options: {
+      value: MouseHoverImageOptions | string;
+      label: string;
+      disabled?: boolean;
+    }[] = [
+      {
+        value: MouseHoverImageOptions.NOTHING,
+        label: this.translateService.instant("Nothing")
+      },
+      {
+        value: MouseHoverImageOptions.SOLUTION,
+        label: this.translateService.instant("Plate-solution annotations (if available)")
+      },
+      {
+        value: MouseHoverImageOptions.INVERTED,
+        label: this.translateService.instant("Inverted monochrome")
+      }
+    ];
 
-        for (const revision of revisions) {
-          const disabled = image.w !== revision.w || image.h !== revision.h;
-          newOptions.push({
-            value: `REVISION__${revision.label}`,
-            label:
-              this.translateService.instant("Revision") +
-              `: ${revision.label} (${revision.w}x${revision.h}${
-                disabled ? " " + this.translateService.instant("resolution not matching") : ""
-              })`,
-            disabled
-          });
-        }
-
-        return newOptions;
-      }),
-      tap(newOptions => {
-        const mouseHoverImageField = this.getMouseHoverImageField();
-        mouseHoverImageField.props = {
-          ...mouseHoverImageField.props,
-          options: newOptions
-        };
-      })
-    );
+    for (const revision of revisions) {
+      const disabled = image.w !== revision.w || image.h !== revision.h;
+      options.push({
+        value: `REVISION__${revision.label}`,
+        label:
+          this.translateService.instant("Revision") +
+          `: ${revision.label} (${revision.w}x${revision.h}${
+            disabled ? " " + this.translateService.instant("resolution not matching") : ""
+          })`,
+        disabled
+      });
+    }
 
     return {
       key: "mouseHoverImage",

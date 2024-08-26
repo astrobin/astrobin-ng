@@ -53,12 +53,6 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<ImageInterface>(`${this.configUrl}/image/${id}/`);
   }
 
-  getImageRevisions(id: ImageInterface["pk"]): Observable<PaginatedApiResultInterface<ImageRevisionInterface>> {
-    return this.http.get<PaginatedApiResultInterface<ImageRevisionInterface>>(
-      `${this.configUrl}/image-revision/?image=${id}`
-    );
-  }
-
   getImages(ids: ImageInterface["pk"][]): Observable<PaginatedApiResultInterface<ImageInterface>> {
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?id=${ids.join(",")}`);
   }
@@ -96,7 +90,7 @@ export class ImageApiService extends BaseClassicApiService {
 
   getThumbnail(
     id: ImageInterface["pk"] | ImageInterface["hash"],
-    revision: string,
+    revision: ImageRevisionInterface["label"],
     alias: ImageAlias,
     bustCache = false
   ): Observable<ImageThumbnailInterface> {

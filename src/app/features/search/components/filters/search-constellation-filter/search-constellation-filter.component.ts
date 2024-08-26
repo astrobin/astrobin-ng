@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { ConstellationsService } from "@features/explore/services/constellations.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-constellation-source-filter.search-filter-component",
@@ -18,9 +19,10 @@ export class SearchConstellationFilterComponent extends SearchBaseFilterComponen
   static key = SearchAutoCompleteType.CONSTELLATION;
   static minimumSubscription = PayableProductInterface.LITE;
 
-  label = this.searchService.humanizeSearchAutoCompleteType(SearchConstellationFilterComponent.key as SearchAutoCompleteType);
+  readonly category = SearchFilterCategory.SKY_AND_SUBJECTS;
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchConstellationFilterComponent.key as SearchAutoCompleteType);
   readonly constellations = this.constellationService.getConstellations(this.translateService.currentLang);
-  editFields = [
+  readonly editFields = [
     {
       key: SearchConstellationFilterComponent.key,
       type: "ng-select",
@@ -31,7 +33,7 @@ export class SearchConstellationFilterComponent extends SearchBaseFilterComponen
         description: this.translateService.instant("Only show images in a specific constellation."),
         options: this.constellations.map(constellation => ({
           value: constellation.id,
-          label: constellation.name
+          label: `${constellation.name} (${constellation.id})`
         }))
       }
     }
@@ -54,6 +56,6 @@ export class SearchConstellationFilterComponent extends SearchBaseFilterComponen
     }
 
     const constellation = this.constellations.find(constellation => constellation.id === this.value);
-    return this.domSanitizer.bypassSecurityTrustHtml(constellation.name);
+    return this.domSanitizer.bypassSecurityTrustHtml(`${constellation.name} (${constellation.id})`);
   }
 }

@@ -3,11 +3,9 @@
     <ng-container *ngIf="videoJsReady; else simpleLoadingTemplate">
       <ng-container *ngIf="!!image.encodedVideoFile; else stillProcessingTemplate">
         <video
-          #videoPlayer
+          #videoPlayerElement
           [attr.data-setup]='videoSetup'
-          [attr.height]="height"
           [attr.poster]="thumbnailUrl"
-          [attr.width]="width"
           class="video-js vjs-default-skin"
           controls
           preload="auto"
@@ -17,19 +15,20 @@
       </ng-container>
     </ng-container>
   </ng-container>
-
-  <ng-template #imageTemplate>
-    <img
-      (load)="onLoad($event)"
-      [alt]="image.title"
-      [attr.height]="!!height ? height : null"
-      [attr.width]="!!width ? width : null"
-      [src]="thumbnailUrl"
-      class="astrobin-image"
-      id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revision }}-{{ alias }}"
-    >
-  </ng-template>
 </ng-container>
+
+<ng-template #imageTemplate>
+  <img
+    (load)="onLoad($event)"
+    (click)="onClick($event)"
+    (mouseenter)="imageMouseEnter.emit($event)"
+    (mouseleave)="imageMouseLeave.emit($event)"
+    [alt]="image.title"
+    [src]="thumbnailUrl"
+    class="astrobin-image"
+    id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revision }}-{{ alias }}"
+  >
+</ng-template>
 
 <ng-template #loadingTemplate>
   <div

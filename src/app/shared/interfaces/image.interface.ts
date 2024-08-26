@@ -16,6 +16,9 @@ import { SoftwareInterface as SoftwareInterface2 } from "@features/equipment/typ
 import { GroupInterface } from "@shared/interfaces/group.interface";
 import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
 import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system-acquisition.interface";
+import { SolutionInterface } from "@shared/interfaces/solution.interface";
+import { LocationInterface } from "@shared/interfaces/location.interface";
+import { FilterInterface } from "@shared/interfaces/filter.interface";
 
 export enum AcquisitionType {
   REGULAR = "REGULAR",
@@ -174,15 +177,23 @@ export enum DownloadLimitationOptions {
   ME_ONLY = "ME"
 }
 
+export enum CelestialHemisphere {
+  NORTHERN = "N",
+  SOUTHERN = "S"
+}
+
 export interface ImageInterface {
   pk: number;
   user: UserInterface["id"];
+  username: UserInterface["username"];
+  userDisplayName: UserInterface["displayName"];
+  userAvatar: UserInterface["avatar"];
   pendingCollaborators: UserInterface["id"][] | null;
-  collaborators: UserInterface["id"][] | null;
+  collaborators: UserInterface[] | null;
   hash: string;
   title: string;
-  imageFile: string | null;
-  videoFile: string | null;
+  imageFile?: string | null;
+  videoFile?: string | null;
   encodedVideoFile: string | null;
   loopVideo: string | null;
   isWip: boolean;
@@ -195,6 +206,7 @@ export interface ImageInterface {
   guidingCameras: CameraInterface[];
   focalReducers: FocalReducerInterface[];
   mounts: MountInterface[];
+  filters: FilterInterface[];
   accessories: AccessoryInterface[];
   software: SoftwareInterface[];
   imagingTelescopes2: TelescopeInterface2[];
@@ -206,7 +218,8 @@ export interface ImageInterface {
   accessories2: AccessoryInterface2[];
   software2: SoftwareInterface2[];
   published: string;
-  license: string;
+  uploaded: string;
+  license: LicenseOptions;
   description?: string;
   descriptionBbcode?: string;
   link?: string;
@@ -228,12 +241,28 @@ export interface ImageInterface {
   sharpenThumbnails: boolean;
   keyValueTags: string;
   locations: number[];
+  locationObjects: LocationInterface[];
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
   downloadLimitation: DownloadLimitationOptions;
   thumbnails: ImageThumbnailInterface[];
   submittedForIotdTpConsideration: string | null;
   deepSkyAcquisitions: DeepSkyAcquisitionInterface[];
   solarSystemAcquisitions: SolarSystemAcquisitionInterface[];
+  solution: SolutionInterface | null;
+  revisions: ImageRevisionInterface[];
+  constellation: string;
+  isFinal: boolean;
+  likeCount: number;
+  bookmarkCount: number;
+  commentCount: number;
+  viewCount?: number;
+  userFollowerCount: number;
+  uploaderUploadLength?: number;
+  iotdDate?: string;
+  isTopPick?: boolean;
+  isTopPickNomination?: boolean;
+  averageMoonAge?: number;
+  averageMoonIllumination?: number;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;
@@ -243,7 +272,10 @@ export interface ImageRevisionInterface {
   pk: number;
   uploaded: string;
   image: ImageInterface["pk"];
-  imageFile: string;
+  imageFile: string | null;
+  videoFile: string | null;
+  encodedVideoFile: string | null;
+  loopVideo: string | null;
   title: string;
   description: string;
   skipNotifications: boolean;
@@ -252,4 +284,12 @@ export interface ImageRevisionInterface {
   w: number;
   h: number;
   uploaderInProgress: boolean;
+  uploaderUploadLength?: number;
+  solution: SolutionInterface | null;
+  constellation: string;
+  thumbnails: ImageThumbnailInterface[];
+  mouseHoverImage: MouseHoverImageOptions | ImageRevisionInterface["label"];
 }
+
+export const ORIGINAL_REVISION_LABEL = "0";
+export const FINAL_REVISION_LABEL = "final";

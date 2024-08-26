@@ -6,15 +6,15 @@ import { searchRoutes } from "@features/search/search.routing";
 import { searchFeatureKey, searchReducer } from "@features/search/state/state.reducer";
 import { SearchPageComponent } from "./pages/search/search.page.component";
 import { SearchBarComponent } from "./components/search-bar/search-bar.component";
-import { SearchSubjectFilterComponent } from "./components/filters/search-subject-filter/search-subject-filter.component";
+import { SearchSubjectsFilterComponent } from "./components/filters/search-subject-filter/search-subjects-filter.component";
 import { SearchFilterEditorModalComponent } from "./components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
 import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
 import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
 import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@features/search/injection-tokens/search-filter.tokens";
 import { SearchService } from "@features/search/services/search.service";
-import { SearchTelescopeTypeFilterComponent } from "@features/search/components/filters/search-telescope-type-filter/search-telescope-type-filter.component";
-import { SearchCameraTypeFilterComponent } from "@features/search/components/filters/search-camera-type-filter/search-camera-type-filter.component";
+import { SearchTelescopeTypesFilterComponent } from "@features/search/components/filters/search-telescope-types-filter/search-telescope-types-filter.component";
+import { SearchCameraTypesFilterComponent } from "@features/search/components/filters/search-camera-types-filter/search-camera-types-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
 import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
 import { SearchAcquisitionTypeFilterComponent } from "@features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component";
@@ -49,13 +49,24 @@ import { SearchImageSizeFilterComponent } from "@features/search/components/filt
 import { SearchGroupsFilterComponent } from "@features/search/components/filters/search-groups-filter/search-groups-filter.component";
 import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
 import { LoadSaveSearchModalComponent } from './components/filters/load-save-search-modal/load-save-search-modal.component';
+import { SearchTextFilterComponent } from "@features/search/components/filters/search-text-filter/search-text-filter.component";
+import { SearchMountFilterComponent } from "@features/search/components/filters/search-mount-filter/search-mount-filter.component";
+import { SearchFilterFilterComponent } from "@features/search/components/filters/search-filter-filter/search-filter-filter.component";
+import { SearchAccessoryFilterComponent } from "@features/search/components/filters/search-accessory-filter/search-accessory-filter.component";
+import { SearchSoftwareFilterComponent } from "@features/search/components/filters/search-software-filter/search-software-filter.component";
+import { SearchUsersFilterComponent } from "@features/search/components/filters/search-users-filter/search-users-filter.component";
 
 const allFilterComponents = [
-  SearchSubjectFilterComponent,
+  SearchTextFilterComponent,
+  SearchSubjectsFilterComponent,
   SearchTelescopeFilterComponent,
   SearchCameraFilterComponent,
-  SearchTelescopeTypeFilterComponent,
-  SearchCameraTypeFilterComponent,
+  SearchMountFilterComponent,
+  SearchFilterFilterComponent,
+  SearchAccessoryFilterComponent,
+  SearchSoftwareFilterComponent,
+  SearchTelescopeTypesFilterComponent,
+  SearchCameraTypesFilterComponent,
   SearchAcquisitionMonthsFilterComponent,
   SearchRemoteSourceFilterComponent,
   SearchSubjectTypeFilterComponent,
@@ -88,7 +99,8 @@ const allFilterComponents = [
   SearchCoordsFilterComponent,
   SearchImageSizeFilterComponent,
   SearchGroupsFilterComponent,
-  SearchPersonalFiltersFilterComponent
+  SearchPersonalFiltersFilterComponent,
+  SearchUsersFilterComponent
 ];
 
 @NgModule({
@@ -113,7 +125,7 @@ const allFilterComponents = [
     },
     {
       provide: AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
-      useValue: [SearchCameraFilterComponent, SearchTelescopeFilterComponent]
+      useValue: [SearchTextFilterComponent]
     }
   ]
 })

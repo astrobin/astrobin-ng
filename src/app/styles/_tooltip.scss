@@ -1,4 +1,6 @@
 .tooltip {
+  z-index: 9999;
+
   .tooltip-inner {
     box-shadow: 0 0 1rem black;
   }

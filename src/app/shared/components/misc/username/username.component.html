@@ -1,4 +1,9 @@
-<a [href]="classicRoutesService.GALLERY(user.username)" [target]="linkTarget" *ngIf="link" astrobinEventStopPropagation>
+<a
+  *ngIf="user && link"
+  [href]="classicRoutesService.GALLERY(user.username)"
+  [target]="linkTarget"
+  astrobinEventStopPropagation
+>
   <ng-container [ngTemplateOutlet]="usernameTemplate"></ng-container>
 </a>
 

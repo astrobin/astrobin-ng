@@ -8,4 +8,5 @@ export interface ForumPostSearchInterface {
   user:string;
   userDisplayName: string;
   userAvatar: string;
+  bodyHtml: string;
 }

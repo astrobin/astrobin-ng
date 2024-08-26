@@ -1,23 +1,132 @@
-<div class="search-results">
-  <ng-container *ngIf="!initialLoading; else loadingTemplate">
+<ng-container *ngIf="!initialLoading; else loadingTemplate">
+  <ng-container *ngIf="results !== null && !scheduledLoadingTimeout; else loadingTemplate">
     <ng-container *ngIf="results.length > 0; else noImagesTemplate">
-      <a *ngFor="let image of results" [href]="classicRoutesService.IMAGE(image.hash || image.objectId.toString())">
-        <img [alt]="image.title" [src]="image.galleryThumbnail" />
-        <fa-icon *ngIf="image.video || image.animated" icon="play"></fa-icon>
+      <div
+        *ngIf="
+          (showRetailers && allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)) ||
+          (showMarketplaceItems && marketplaceLineItems?.length)
+        "
+        class="mb-4"
+      >
+        <div
+          *ngIf="allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)"
+          class="alert alert-light retailers"
+        >
+          <ng-container *ngIf="itemListings?.length">
+            <div>
+              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+              <span
+                [innerHTML]="getItemListingsMessage(itemListings[0])"
+                class="me-2"
+              ></span>
+            </div>
+            <div class="list">
+              <a
+                *ngFor="let item of itemListings"
+                [href]="item.url"
+                class="link"
+                target="_blank"
+              >
+                <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
+              </a>
+            </div>
+          </ng-container>
 
-        <div class="badges">
-          <fa-icon *ngIf="image.isIotd" class="iotd" icon="trophy"></fa-icon>
-          <fa-icon *ngIf="image.isTopPick" class="top-pick" icon="star"></fa-icon>
-          <fa-icon *ngIf="image.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
+          <ng-container *ngIf="(!itemListings || itemListings.length === 0) && brandListings?.length > 0">
+            <div>
+              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+              <span
+                [innerHTML]="getBrandListingsMessage(brandListings[0].brand)"
+                class="me-2"
+              ></span>
+            </div>
+            <div class="list">
+              <a
+                *ngFor="let item of brandListings"
+                [href]="item.url"
+                class="link"
+                target="_blank"
+              >
+                <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
+              </a>
+            </div>
+          </ng-container>
         </div>
-      </a>
+
+        <div
+          *ngIf="marketplaceLineItems?.length"
+          class="alert alert-light marketplace-listings"
+        >
+          <div>
+            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+            <span
+              [innerHTML]="getMarketplaceMessage()"
+              class="me-2"
+            ></span>
+          </div>
+          <div class="list">
+            <a
+              *ngFor="let item of marketplaceLineItems"
+              [routerLink]="['/equipment/marketplace/listing', item.listingHash]"
+              class="link"
+            >
+              <img
+                *ngIf="item.images?.length"
+                [src]="item.images[0].thumbnailFile"
+                [alt]="item.itemName"
+                class="image"
+              />
+
+              <span *ngIf="!item.images || item.images.length === 0" class="item-name">
+                  {{ item.itemName }}
+                </span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-results">
+        <a
+          *ngFor="let item of gridItems"
+          (click)="openImage(item)"
+          [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
+          [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
+          [style.min-width.px]="averageHeight"
+          [style.min-height.px]="averageHeight"
+          astrobinEventStopPropagation
+          astrobinEventPreventDefault
+          [href]="getImageLink(item)"
+        >
+          <img
+            [alt]="item.title"
+            [src]="alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail"
+          />
+
+          <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
+
+          <div class="badges">
+            <fa-icon *ngIf="item.isIotd" class="iotd" icon="trophy"></fa-icon>
+            <fa-icon *ngIf="item.isTopPick" class="top-pick" icon="star"></fa-icon>
+            <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
+          </div>
+
+          <div *ngIf="averageHeight >= 150" class="hover">
+            <div *ngIf="item.username && item.userDisplayName" class="user">
+              <a [href]="classicRoutesService.GALLERY(item.username)">{{ item.userDisplayName }}</a>
+            </div>
+            <div class="title">{{ item.title }}</div>
+          </div>
+        </a>
+      </div>
     </ng-container>
   </ng-container>
+</ng-container>
 
-  <div *ngIf="loading && !initialLoading" class="loading">
-    <astrobin-loading-indicator></astrobin-loading-indicator>
-  </div>
+<div *ngIf="loading && !initialLoading" class="loading">
+  <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
 </div>
+
+<ng-container #imageViewerContainer></ng-container>
 
 <ng-template #noImagesTemplate>
   <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>

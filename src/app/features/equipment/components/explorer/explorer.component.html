@@ -50,7 +50,7 @@
         ></astrobin-equipment-item-summary>
 
         <div *ngIf="!!selectedItem.variantOf || selectedItem.variants.length > 0" class="item-variants-container">
-          <ng-container *ngIf="selectedItem.variants.length > 0; else variantTemplate">
+          <ng-container *ngIf="selectedItem.variants?.length > 0; else variantTemplate">
             {{ "Also available in the following variants:" | translate }}
 
             <span class="item-variants">
@@ -508,9 +508,10 @@
         [header]="'Acquired with this item' | translate"
         [model]="{
           itemId: selectedItem.id,
-          itemType: activeType,
-          text: equipmentItemService.getFullDisplayName$(selectedItem) | async
+          itemType: activeType
         }"
+        [showRetailers]="false"
+        [showMarketplaceItems]="false"
         class="mt-5 d-block"
         ordering="-likes"
       ></astrobin-image-search-card>

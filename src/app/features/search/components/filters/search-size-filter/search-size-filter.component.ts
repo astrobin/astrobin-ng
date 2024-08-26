@@ -6,6 +6,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
 
 @Component({
   selector: "astrobin-size-filter.search-filter-component",
@@ -14,10 +15,11 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class SearchSizeFilterComponent extends SearchBaseSliderFilterComponent {
   static key = SearchAutoCompleteType.SIZE;
-  unit = "MB";
+  category = SearchFilterCategory.FILE_ATTRIBUTES;
   label = this.searchService.humanizeSearchAutoCompleteType(
     SearchSizeFilterComponent.key as SearchAutoCompleteType
   );
+  unit = "MB";
 
   constructor(
     public readonly store$: Store<MainState>,
