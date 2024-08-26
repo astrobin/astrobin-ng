@@ -27,19 +27,29 @@
         {{ searchService.humanizeSearchAutoCompleteType(group.key) }}
       </h4>
 
-      <div
-        #autoCompleteItem
-        (click)="onAutoCompleteItemClicked(item)"
-        (mouseenter)="selectedAutoCompleteItemIndex = i"
-        *ngFor="let item of group.value; let i = index"
-        [class.selected]="item.type === selectedAutoCompleteGroup && i === selectedAutoCompleteItemIndex"
-        class="search-bar-autocomplete-item"
-      >
-        <span [innerHTML]="item.label | highlight: model.text"></span>
-        <ng-container *ngIf="(searchService.allowFilter$(item.minimumSubscription) | async) === false">
-          <fa-icon icon="lock" class="ms-2"></fa-icon>
-        </ng-container>
-      </div>
+      <ng-container *ngIf="group.value === null">
+        <fa-icon
+          class="search-bar-autocomplete-item"
+          icon="circle-notch"
+          animation="spin"
+        ></fa-icon>
+      </ng-container>
+
+      <ng-container *ngIf="group.value !== null">
+        <div
+          #autoCompleteItem
+          (click)="onAutoCompleteItemClicked(item)"
+          (mouseenter)="selectedAutoCompleteItemIndex = i"
+          *ngFor="let item of group.value; let i = index"
+          [class.selected]="item.type === selectedAutoCompleteGroup && i === selectedAutoCompleteItemIndex"
+          class="search-bar-autocomplete-item"
+        >
+          <span [innerHTML]="item.label | highlight: model.text"></span>
+          <ng-container *ngIf="(searchService.allowFilter$(item.minimumSubscription) | async) === false">
+            <fa-icon icon="lock" class="ms-2"></fa-icon>
+          </ng-container>
+        </div>
+      </ng-container>
     </div>
   </div>
 

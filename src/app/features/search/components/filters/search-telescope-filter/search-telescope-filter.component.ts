@@ -19,7 +19,7 @@ import { SearchFilterCategory } from "@features/search/interfaces/search-filter-
 export class SearchTelescopeFilterComponent extends SearchBaseEquipmentFilterComponent {
   static key = SearchAutoCompleteType.TELESCOPE;
   static minimumSubscription = PayableProductInterface.LITE;
-  category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
+  category = SearchFilterCategory.EQUIPMENT;
   readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchTelescopeFilterComponent.key);
   readonly itemType: EquipmentItemType = EquipmentItemType.TELESCOPE;
 

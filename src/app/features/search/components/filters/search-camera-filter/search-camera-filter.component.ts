@@ -20,7 +20,7 @@ export class SearchCameraFilterComponent extends SearchBaseEquipmentFilterCompon
   static key = SearchAutoCompleteType.CAMERA;
   static minimumSubscription = PayableProductInterface.LITE;
 
-  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
+  readonly category = SearchFilterCategory.EQUIPMENT;
   readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchCameraFilterComponent.key);
   readonly itemType: EquipmentItemType = EquipmentItemType.CAMERA;
 

@@ -99,6 +99,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   excludeId: number;
 
   @Input()
+  hideOptionalMarker = false;
+
+  @Input()
   layout: ItemBrowserLayout = ItemBrowserLayout.HORIZONTAL;
 
   @Input()
@@ -705,7 +708,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     fullScreenBodyTemplate: this.fullScreenBodyTemplate,
                     showArrow: false,
                     classNames: "equipment-select",
-                    enableSelectFrozen: this.enableSelectFrozen
+                    enableSelectFrozen: this.enableSelectFrozen,
+                    required: this.required,
+                    hideOptionalMarker: this.hideOptionalMarker
                   },
                   hooks: {
                     onInit: (field: FormlyFieldConfig) => {

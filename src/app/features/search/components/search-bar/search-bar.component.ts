@@ -4,8 +4,8 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { SearchModelInterface, SearchType } from "@features/search/interfaces/search-model.interface";
 import { SearchAutoCompleteItem, SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
-import { forkJoin, Subject } from "rxjs";
+import { concatMap, debounceTime, distinctUntilChanged, map, mergeMap, takeUntil } from "rxjs/operators";
+import { forkJoin, from, Subject } from "rxjs";
 import { SearchSubjectsFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subjects-filter.component";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
@@ -118,39 +118,37 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         const query = this.model.text;
         this.loadingAutoCompleteItems = true;
 
-        forkJoin(
-          this._autoCompleteMethods(query)
-            .map(filter => filter.method)
-        ).subscribe((results: SearchAutoCompleteItem[][]) => {
-          if (this.abortAutoComplete) {
+        from(this._autoCompleteMethods(query)).pipe(
+          concatMap(filter =>
+            filter.method.pipe(
+              map(result => ({ key: filter.key, result }))
+            )
+          ),
+          takeUntil(this.destroyed$)
+        ).subscribe({
+          next: ({ key, result }) => {
+            if (this.abortAutoComplete) {
+              this.loadingAutoCompleteItems = false;
+              return;
+            }
+
+            if (result === null || result.length) {
+              this.autoCompleteGroups[key] = result;
+            } else {
+              if (this.autoCompleteGroups[key] !== undefined) {
+                delete this.autoCompleteGroups[key];
+              }
+            }
+
+            this.autoCompleteGroups = { ...this.autoCompleteGroups };
+          },
+          error: error => {
+            console.error('Error loading autocomplete items:', error);
             this.loadingAutoCompleteItems = false;
-            return;
+          },
+          complete: () => {
+            this.loadingAutoCompleteItems = false;
           }
-
-          const newAutoCompleteGroups: SearchAutoCompleteGroups = {};
-
-          // Populate newAutoCompleteGroups with non-empty groups
-          results.forEach(group => {
-            if (group.length) {
-              const type = group[0].type;
-              newAutoCompleteGroups[type] = group;
-            }
-          });
-
-          // Remove keys that are no longer present
-          for (const key in this.autoCompleteGroups) {
-            if (!(key in newAutoCompleteGroups)) {
-              delete this.autoCompleteGroups[key];
-            }
-          }
-
-          // Update autoCompleteGroups with new groups
-          Object.assign(this.autoCompleteGroups, newAutoCompleteGroups);
-
-          // Trigger change detection
-          this.autoCompleteGroups = { ...this.autoCompleteGroups };
-
-          this.loadingAutoCompleteItems = false;
         });
       }
     });
@@ -160,7 +158,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         this.resetAutoCompleteItems();
       });
     }
-  }
+  };
 
   ngOnChanges(changes: SimpleChanges) {
     if (
