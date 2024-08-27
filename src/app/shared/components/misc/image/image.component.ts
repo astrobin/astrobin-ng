@@ -208,7 +208,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         revisionLabel: FINAL_REVISION_LABEL,
         url: thumbnail.url
       })),
-      ...this.image.revisions.map(revision => ({
+      ...this.image.revisions.filter(
+        revision => revision.thumbnails.find(thumbnail => thumbnail.alias === this.alias)
+      ).map(revision => ({
         revisionLabel: revision.label,
         url: revision.thumbnails.find(thumbnail => thumbnail.alias === this.alias).url
       }))
