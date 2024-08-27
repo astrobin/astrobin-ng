@@ -189,7 +189,16 @@
 </ng-template>
 
 <ng-template #similarToThisTemplate>
-  <h5 class="mt-5 mb-3">{{ "Related images" | translate }}</h5>
+  <h5 class="mt-5 mb-3">
+    <ng-container
+      *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null; else relatedImagesLabelTemplate"
+    >
+      {{ "Images in the same area" | translate }}
+    </ng-container>
+    <ng-template #relatedImagesLabelTemplate>
+      {{ "Related images" | translate }}
+    </ng-template>
+  </h5>
   <astrobin-image-search
     [model]="{ similarToImageId: this.image.hash || this.image.pk, ordering: '-likes', pageSize: 50 }"
     [loadMoreOnScroll]="true"
