@@ -619,6 +619,31 @@ export class ImageService extends BaseService {
     );
   }
 
+  hasImagingEquipment(image: ImageInterface): boolean {
+    return (
+      image.imagingTelescopes2?.length > 0 ||
+      image.imagingCameras2?.length > 0 ||
+      image.imagingTelescopes?.length > 0 ||
+      image.imagingCameras?.length > 0 ||
+      image.mounts2?.length > 0 ||
+      image.mounts?.length > 0 ||
+      image.filters2?.length > 0 ||
+      image.filters?.length > 0 ||
+      image.accessories2?.length > 0 ||
+      image.accessories?.length > 0 ||
+      image.focalReducers?.length > 0
+    );
+  }
+
+  hasGuidingEquipment(image: ImageInterface): boolean {
+    return (
+      image.guidingTelescopes2?.length > 0 ||
+      image.guidingCameras2?.length > 0 ||
+      image.guidingTelescopes?.length > 0 ||
+      image.guidingCameras?.length > 0
+    );
+  }
+
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
     if (isPlatformServer(this.platformId)) {
       // For SSR, just return the URL as-is

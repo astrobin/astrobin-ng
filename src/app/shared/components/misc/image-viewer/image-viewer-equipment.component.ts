@@ -6,72 +6,169 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
-import { CameraInterface } from "@shared/interfaces/camera.interface";
-import { MountInterface } from "@shared/interfaces/mount.interface";
-import { FilterInterface } from "@shared/interfaces/filter.interface";
-import { FocalReducerInterface } from "@shared/interfaces/focal-reducer.interface";
-import { AccessoryInterface } from "@shared/interfaces/accessory.interface";
-import { SoftwareInterface } from "@shared/interfaces/software.interface";
+import { TelescopeInterface as LegacyTelescopeInterface } from "@shared/interfaces/telescope.interface";
+import { CameraInterface as LegacyCameraInterface } from "@shared/interfaces/camera.interface";
+import { MountInterface as LegacyMountInterface } from "@shared/interfaces/mount.interface";
+import { FilterInterface as LegacyFilterInterface } from "@shared/interfaces/filter.interface";
+import { FocalReducerInterface as LegacyFocalReducerInterface} from "@shared/interfaces/focal-reducer.interface";
+import { AccessoryInterface as LegacyAccessoryInterface } from "@shared/interfaces/accessory.interface";
+import { SoftwareInterface as LegacySoftwareInterface } from "@shared/interfaces/software.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { ImageService } from "@shared/services/image/image.service";
 
-type LegacyEquipmentItem = |
-  TelescopeInterface |
-  CameraInterface |
-  MountInterface |
-  FilterInterface |
-  FocalReducerInterface |
-  AccessoryInterface |
-  SoftwareInterface;
+type LegacyEquipmentItem =
+  | LegacyTelescopeInterface
+  | LegacyCameraInterface
+  | LegacyMountInterface
+  | LegacyFilterInterface
+  | LegacyAccessoryInterface
+  | LegacySoftwareInterface;
 
 @Component({
   selector: "astrobin-image-viewer-equipment",
   template: `
-    <div *ngIf="equipmentItems?.length || legacyEquipmentItems?.length" class="metadata-section">
+    <div *ngIf="hasEquipment" class="metadata-section">
       <div class="metadata-item">
         <div class="metadata-label">
-          <a
-            *ngFor="let item of equipmentItems"
-            href="#"
-            (click)="equipmentItemClicked($event, item)"
-            class="value"
-          >
-            <astrobin-equipment-item-display-name
-              [item]="item"
-              [enableKlassIcon]="true"
-              [enableBrandLink]="false"
-              [enableNameLink]="false"
-              [enableSummaryModal]="false"
-              [showFrozenAsAmbiguous]="false"
-              [showItemUnapprovedInfo]="false"
-              [showRetailers]="true"
-            ></astrobin-equipment-item-display-name>
-          </a>
+          <div class="equipment-section">
+            <strong *ngIf="hasGuidingEquipment">{{ "Imaging equipment" }}:</strong>
+            <ng-container *ngFor="let attr of imagingAttributes">
+              <ng-container
+                [ngTemplateOutlet]="equipmentTemplate"
+                [ngTemplateOutletContext]="{ $implicit: attr }"
+              ></ng-container>
+            </ng-container>
+          </div>
 
-          <a
-            *ngFor="let item of legacyEquipmentItems"
-            href="#"
-            (click)="legacyEquipmentItemClicked($event, item)"
-            class="value"
-          >
-            {{ item.make }} {{ item.name }}
-          </a>
+          <ng-container *ngIf="hasGuidingEquipment">
+            <div class="equipment-section">
+              <strong>{{ "Guiding equipment" }}:</strong>
+              <ng-container *ngFor="let attr of guidingAttributes">
+                <ng-container
+                  [ngTemplateOutlet]="equipmentTemplate"
+                  [ngTemplateOutletContext]="{ $implicit: attr }"
+                ></ng-container>
+              </ng-container>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>
+
+    <ng-template #equipmentTemplate let-attr>
+      <ng-container *ngIf="attr.indexOf('legacy') === -1; else legacyTemplate">
+        <a
+          *ngFor="let item of this[attr]"
+          href="#"
+          (click)="equipmentItemClicked($event, item)"
+          class="value"
+        >
+          <astrobin-equipment-item-display-name
+            [item]="item"
+            [enableKlassIcon]="true"
+            [enableBrandLink]="false"
+            [enableNameLink]="false"
+            [enableSummaryModal]="false"
+            [showFrozenAsAmbiguous]="false"
+            [showItemUnapprovedInfo]="false"
+            [showRetailers]="true"
+          ></astrobin-equipment-item-display-name>
+        </a>
+      </ng-container>
+
+      <ng-template #legacyTemplate>
+        <a
+          *ngFor="let item of this[attr]"
+          href="#"
+          (click)="legacyEquipmentItemClicked($event, item)"
+          class="value"
+        >
+          <img class="klass-icon" src="/assets/images/{{ attrToIcon[attr] }}-white.png?v=1" alt="" />
+          <span>{{ item.make }} {{ item.name }}</span>
+        </a>
+      </ng-template>
+    </ng-template>
   `,
   styleUrls: ["./image-viewer-equipment.component.scss"]
 })
 export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseComponent implements OnChanges {
-  equipmentItems: EquipmentItem[] = null;
-  legacyEquipmentItems: LegacyEquipmentItem[] = null;
+  readonly imagingAttributes = [
+    "telescopes",
+    "legacyTelescopes",
+    "cameras",
+    "legacyCameras",
+    "mounts",
+    "legacyMounts",
+    "filters",
+    "legacyFilters",
+    "accessories",
+    "legacyAccessories",
+    "legacyFocalReducers",
+    "software",
+    "legacySoftware",
+    ]
+
+  readonly guidingAttributes = [
+    "guidingTelescopes",
+    "legacyGuidingTelescopes",
+    "guidingCameras",
+    "legacyGuidingCameras"
+  ];
+
+  readonly attrToIcon = {
+    "telescopes": "telescope",
+    "legacyTelescopes": "telescope",
+    "cameras": "camera",
+    "legacyCameras": "camera",
+    "mounts": "mount",
+    "legacyMounts": "mount",
+    "filters": "filter",
+    "legacyFilters": "filter",
+    "accessories": "accessory",
+    "legacyAccessories": "accessory",
+    "legacyFocalReducers": "accessory",
+    "software": "software",
+    "legacySoftware": "software",
+    "guidingTelescopes": "telescope",
+    "legacyGuidingTelescopes": "telescope",
+    "guidingCameras": "camera",
+    "legacyGuidingCameras": "camera"
+  }
+
+  hasEquipment: boolean;
+  hasImagingEquipment: boolean;
+  hasGuidingEquipment: boolean;
+  telescopes: TelescopeInterface[] = [];
+  legacyTelescopes: LegacyTelescopeInterface[] = [];
+  cameras: CameraInterface[] = [];
+  legacyCameras: LegacyCameraInterface[] = [];
+  mounts: MountInterface[] = [];
+  legacyMounts: LegacyMountInterface[] = [];
+  filters: FilterInterface[] = [];
+  legacyFilters: LegacyFilterInterface[] = [];
+  accessories: AccessoryInterface[] = [];
+  legacyAccessories: LegacyAccessoryInterface[] = [];
+  legacyFocalReducers: LegacyFocalReducerInterface[] = [];
+  software: SoftwareInterface[] = [];
+  legacySoftware: LegacySoftwareInterface[];
+  guidingTelescopes: TelescopeInterface[] = [];
+  legacyGuidingTelescopes: LegacyTelescopeInterface[] = [];
+  guidingCameras: CameraInterface[] = [];
+  legacyGuidingCameras: LegacyCameraInterface[] = [];
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly imageService: ImageService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -79,23 +176,26 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
       const image = this.image;
-      this.equipmentItems = [
-        ...image.imagingTelescopes2,
-        ...image.imagingCameras2,
-        ...image.mounts2,
-        ...image.filters2,
-        ...image.accessories2,
-        ...image.software2
-      ];
-      this.legacyEquipmentItems = [
-        ...image.imagingTelescopes,
-        ...image.imagingCameras,
-        ...image.mounts,
-        ...image.filters,
-        ...image.focalReducers,
-        ...image.accessories,
-        ...image.software
-      ];
+      this.hasEquipment = this.imageService.hasEquipment(image);
+      this.hasImagingEquipment = this.imageService.hasImagingEquipment(image);
+      this.hasGuidingEquipment = this.imageService.hasGuidingEquipment(image);
+      this.telescopes = image.imagingTelescopes2;
+      this.legacyTelescopes = image.imagingTelescopes;
+      this.cameras = image.imagingCameras2;
+      this.legacyCameras = image.imagingCameras;
+      this.mounts = image.mounts2;
+      this.legacyMounts = image.mounts;
+      this.filters = image.filters2;
+      this.legacyFilters = image.filters;
+      this.accessories = image.accessories2;
+      this.legacyAccessories = image.accessories;
+      this.legacyFocalReducers = image.focalReducers;
+      this.software = image.software2;
+      this.legacySoftware = image.software;
+      this.guidingTelescopes = image.guidingTelescopes2;
+      this.legacyGuidingTelescopes = image.guidingTelescopes;
+      this.guidingCameras = image.guidingCameras2;
+      this.legacyGuidingCameras = image.guidingCameras;
     }
   }
 
@@ -109,6 +209,10 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
 
   legacyEquipmentItemClicked(event: MouseEvent, item: LegacyEquipmentItem): void {
     event.preventDefault();
-    this.search({ text: ((item.make || "") + " " + (item.name || "")).trim() });
+    const text = "\"" + ((item.make || "") + " " + (item.name || "")).trim() + "\"";
+    console.log(text);
+    this.search({
+      text
+    });
   }
 }
