@@ -91,9 +91,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     });
   }
 
-  updateLastResultsCount(): void {
-    let count = this.results?.length || 0;
-
+  updateLastResultsCount(count: number): void {
     if (this.modelIsPristine()) {
       this.lastResultsCount = null;
       return;
@@ -143,7 +141,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
         this.results = response.results;
         this.next = response.next;
         this.initialLoading = false;
-        this.updateLastResultsCount();
+        this.updateLastResultsCount(response.count);
         this.cancelScheduledLoading();
         this.dataFetched.next({ data: this.results, cumulative: false });
       });
