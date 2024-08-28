@@ -27,7 +27,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
       matchType: undefined
     },
     page: 1,
-    pageSize: 100
+    pageSize: SearchService.DEFAULT_PAGE_SIZE
   };
 
   constructor(

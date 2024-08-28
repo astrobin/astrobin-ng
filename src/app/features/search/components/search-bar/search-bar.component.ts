@@ -584,7 +584,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         matchType: undefined
       },
       page: 1,
-      pageSize: 100
+      pageSize: SearchService.DEFAULT_PAGE_SIZE
     };
 
     this.clearFilters();

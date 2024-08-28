@@ -102,6 +102,8 @@ export interface SearchAutoCompleteItem {
   providedIn: "root"
 })
 export class SearchService extends BaseService {
+  static readonly DEFAULT_PAGE_SIZE = 100;
+
   searchCompleteSubject: Subject<SearchPaginatedApiResultInterface<any>> =
     new Subject<SearchPaginatedApiResultInterface<any>>();
   searchComplete$: Observable<SearchPaginatedApiResultInterface<any>>;
@@ -144,7 +146,7 @@ export class SearchService extends BaseService {
     }
 
     if (model.pageSize === undefined) {
-      model = { ...model, pageSize: 100 };
+      model = { ...model, pageSize: SearchService.DEFAULT_PAGE_SIZE };
     }
 
     if (model.text?.value === undefined) {
