@@ -66,7 +66,13 @@
         </div>
       </div>
 
-      <a *ngIf="showMoreButton" [href]="searchUrl" class="btn btn-outline-primary float-end">
+      <a
+        *ngIf="showMoreButton"
+        (click)="onMoreClicked($event)"
+        astrobinEventStopPropagation
+        astrobinEventPreventDefault
+        class="btn btn-outline-primary float-end"
+      >
         {{ "More" | translate }}
       </a>
     </div>

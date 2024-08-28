@@ -11,6 +11,12 @@ import { SearchModelInterface } from "@features/search/interfaces/search-model.i
 import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { SearchService } from "@features/search/services/search.service";
+import { Router } from "@angular/router";
+import { filter, take } from "rxjs/operators";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-image-search-card",
@@ -63,7 +69,9 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
-    public readonly imageSearchApiService: ImageSearchApiService
+    public readonly imageSearchApiService: ImageSearchApiService,
+    public readonly searchService: SearchService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -100,5 +108,36 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
     }
 
     this.searchUrl = `${this.classicRoutesService.SEARCH}?${urlParams.toString()}`;
+  }
+
+  onMoreClicked(event: MouseEvent): void {
+    this.currentUserProfile$.pipe(take(1)).subscribe((userProfile: UserProfileInterface) => {
+      if (!userProfile || !userProfile.enableNewSearchExperience) {
+        this.windowRefService.nativeWindow.location.href = this.searchUrl;
+      } else {
+        const { itemId, itemType, ...model } = this.model;
+
+        this.store$.select(selectEquipmentItem, { id: itemId, type: itemType }).pipe(
+          filter(item => !!item),
+          take(1)
+        ).subscribe(item => {
+          const params = this.searchService.modelToParams({
+            ...model,
+            [itemType.toLowerCase()]: {
+              value: [{
+                id: itemId,
+                name: (item.brandName || this.translateService.instant("DIY")) + " " + item.name,
+              }],
+              matchType: null
+            }
+          });
+          this.router.navigateByUrl(`/search?p=${params}`).then(() => {
+            this.windowRefService.scroll({ top: 0 });
+          });
+        });
+
+        this.store$.dispatch(new LoadEquipmentItem({ id: itemId, type: itemType }));
+      }
+    });
   }
 }
