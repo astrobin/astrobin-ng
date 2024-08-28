@@ -80,6 +80,10 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
 
         this.model = {
           ...parsedParams,
+          text: {
+            value: parsedParams.text?.value || "",
+            matchType: parsedParams.text?.matchType
+          },
           page: 1
         };
       } catch (e) {
