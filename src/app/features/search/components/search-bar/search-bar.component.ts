@@ -294,21 +294,20 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     // empties the text. Otherwise, it sets the text.
 
     const normalizedQuery = value.toLowerCase().replace(/\s/g, "");
+    const observables$ = this._autoCompleteMethods(value).map(filter => filter.method);
     let found = false;
 
-    return forkJoin(
-      this._autoCompleteMethods(value)
-        // .filter(filter => filter.key !== SearchAutoCompleteType.TEXT)
-        .map(filter => filter.method)
-    ).pipe(
+    return forkJoin(observables$).pipe(
       tap((results: SearchAutoCompleteItem[][]) => {
         results.forEach(group => {
           group.forEach(item => {
-            const normalizedLabel = item.label.toLowerCase().replace(/\s/g, "");
-            if (normalizedLabel === normalizedQuery) {
-              found = true;
-              this.onAutoCompleteItemClicked(item).subscribe();
-              return;
+            if (item.type !== SearchAutoCompleteType.TEXT) {
+              const normalizedLabel = item.label.toLowerCase().replace(/\s/g, "");
+              if (normalizedLabel === normalizedQuery) {
+                found = true;
+                this.onAutoCompleteItemClicked(item).subscribe();
+                return;
+              }
             }
           });
         });
@@ -318,7 +317,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
             ...this.model,
             text: {
               value,
-              matchType: undefined
+              matchType: this.model.text.matchType !== undefined
+                ? this.model.text.matchType
+                : value.includes(" ") ? MatchType.ALL : undefined
             }
           };
 
@@ -331,7 +332,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   _updateModel(value: SearchAutoCompleteItem): void {
     this.model = {
       ...this.model,
-      [value.type]: value.value,
+      [value.type]: value.value
     };
 
     this.modelChanged.emit(this.model);
@@ -356,6 +357,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   onAutoCompleteItemClicked(autoCompleteItem: SearchAutoCompleteItem): Observable<SearchModelInterface> {
+    this.resetAutoCompleteItems();
+
     return this.searchService.allowFilter$(autoCompleteItem.minimumSubscription).pipe(
       tap(allow => {
         if (!allow) {
@@ -380,7 +383,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
           this._updateModel({
             type: autoCompleteItem.type,
             label: autoCompleteItem.label,
-            value: autoCompleteItem.value,
+            value: autoCompleteItem.value
           });
         } else {
           this.model = {
