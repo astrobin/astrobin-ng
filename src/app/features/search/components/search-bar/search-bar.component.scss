@@ -45,6 +45,10 @@
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
       }
+
+      @media (max-width: $sm-max) {
+        padding-right: 10rem;
+      }
     }
 
     .search-bar-autocomplete-items {

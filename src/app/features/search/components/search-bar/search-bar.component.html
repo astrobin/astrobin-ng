@@ -3,16 +3,23 @@
     [class.has-auto-complete-items]="hasAutoCompleteItems()"
     class="search-bar-input-container form-control"
   >
-    <input
-      #searchInput
-      (keyup.escape)="resetAutoCompleteItems()"
-      (ngModelChange)="onModelChangeDebounced($event)"
-      [(ngModel)]="model.text.value"
-      [placeholder]="placeholder"
-      autofocus
-      class="search-bar-input form-control"
-      type="text"
-    />
+    <form
+      (ngSubmit)="onEnter(null)"
+      action="#"
+      class="w-100"
+    >
+      <input
+        #searchInput
+        (keyup.escape)="resetAutoCompleteItems()"
+        (ngModelChange)="onModelChangeDebounced($event)"
+        [ngModelOptions]="{standalone: true}"
+        [(ngModel)]="model.text.value"
+        [placeholder]="placeholder"
+        autofocus
+        class="search-bar-input form-control w-100"
+        type="search"
+      />
+    </form>
   </div>
 
   <div

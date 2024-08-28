@@ -340,7 +340,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   @HostListener("window:keyup.enter", ["$event"])
   onEnter(event: KeyboardEvent): void {
-    if (event.target !== this.searchInput.nativeElement) {
+    if (event && event.target !== this.searchInput.nativeElement) {
       return;
     }
 
