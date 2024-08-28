@@ -66,7 +66,7 @@
     "@tobyodonnell-aiau/ngx-translate-po-http-loader": "3.1.13",
     "babel-plugin-transform-runtime": "6.23.0",
     "babel-preset-env": "1.7.0",
-    "bootstrap": "5.2.3",
+    "bootstrap": "5.3.3",
     "bootswatch": "5.2.3",
     "buffer": "6.0.3",
     "class-transformer": "0.5.1",
