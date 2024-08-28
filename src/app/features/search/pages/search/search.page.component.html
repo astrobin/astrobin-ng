@@ -7,6 +7,7 @@
   <astrobin-image-search
     *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
     [model]="model"
+    [showResultsCount]="true"
     class="d-block mt-3"
   ></astrobin-image-search>
 

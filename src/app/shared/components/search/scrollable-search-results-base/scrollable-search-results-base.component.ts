@@ -2,12 +2,14 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { fromEvent, Observable, Subject, throttleTime } from "rxjs";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
+import { TranslateService } from "@ngx-translate/core";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-scrollable-search-results-base",
@@ -19,10 +21,12 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   page = 1;
   next: string | null = null;
   results: T[] = null;
+  lastResultsCount = 0;
   pageSize = 100;
 
   @Input() model: SearchModelInterface;
   @Input() loadMoreOnScroll = true;
+  @Input() showResultsCount = false;
 
   protected dataFetched = new Subject<{ data: T[], cumulative: boolean }>();
   protected scheduledLoadingTimeout: number = null;
@@ -31,7 +35,8 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     public readonly store$: Store<MainState>,
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
@@ -60,6 +65,54 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
         this.cancelScheduledLoading();
         this.scheduleLoading();
       }
+    }
+  }
+
+  modelIsPristine(): boolean {
+    const ignoreModelKeys = ["page", "pageSize", "searchType", "ordering"];
+    const modelKeys = Object.keys(this.model).filter(key => !ignoreModelKeys.includes(key));
+
+    console.log(this.model);
+
+    return modelKeys.filter(key => !ignoreModelKeys.includes(key)).every(key => {
+      const value = this.model[key];
+      console.log(value);
+      return (
+        value === "" ||
+        value === null ||
+        value === undefined ||
+        (
+          UtilsService.isObject(value) && (
+            value.value === "" ||
+            value.value === null ||
+            value.value === undefined ||
+            (UtilsService.isArray(value.value) && value.value.length === 0)
+          )
+        )
+      );
+    });
+  }
+
+  updateLastResultsCount(): void {
+    let count = this.results?.length || 0;
+
+    if (this.modelIsPristine()) {
+      this.lastResultsCount = null;
+      return;
+    }
+
+    if (count === 0) {
+      this.lastResultsCount = this.translateService.instant("No results");
+    } else if (count === 1) {
+      this.lastResultsCount = this.translateService.instant("1 result");
+    } else if (count >= 10000 && count < 100000) {
+      this.lastResultsCount = this.translateService.instant("{{ count }} results", { count: Math.round(count / 10000) * 10000 });
+    } else if (count >= 100000 && count < 1000000) {
+      this.lastResultsCount = this.translateService.instant("{{ count }} results", { count: Math.round(count / 100000) * 100000 });
+    } else if (count >= 1000000 && count < 10000000) {
+      this.lastResultsCount = this.translateService.instant("{{ count }} results", { count: Math.round(count / 1000000) * 1000000 });
+    } else {
+      this.lastResultsCount = this.translateService.instant("{{ count }} results", { count });
     }
   }
 
@@ -92,6 +145,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
         this.results = response.results;
         this.next = response.next;
         this.initialLoading = false;
+        this.updateLastResultsCount();
         this.cancelScheduledLoading();
         this.dataFetched.next({ data: this.results, cumulative: false });
       });

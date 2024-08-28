@@ -58,7 +58,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly searchService: SearchService,
     public readonly deviceService: DeviceService
   ) {
-    super(store$, windowRefService, elementRef, platformId);
+    super(store$, windowRefService, elementRef, platformId, translateService);
     this.dataFetched.pipe(
       takeUntil(this.destroyed$),
       tap(({ data, cumulative }) => this.assignWidthsToGridItems(data, cumulative))
@@ -78,18 +78,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   @HostListener("window:resize", ["$event"])
   onResize(event: Event): void {
     this._setAverageSizeForRegularAlias();
-  }
-
-  private _setAverageSizeForRegularAlias(): void {
-    if (this.alias === ImageAlias.REGULAR) {
-      if (this.deviceService.mdMax()) {
-        this.averageHeight = 150;
-      } else if (this.deviceService.smMax()) {
-        this.averageHeight = 100;
-      } else {
-        this.averageHeight = 200;
-      }
-    }
   }
 
   assignWidthsToGridItems(images: ImageSearchInterface[], cumulative: boolean): void {
@@ -179,9 +167,21 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   getImageLink(image: ImageSearchInterface): string {
-    let path = this.windowRefService.getCurrentUrl().toString()
+    let path = this.windowRefService.getCurrentUrl().toString();
     path = UtilsService.addOrUpdateUrlParam(path, "i", image.hash || ("" + image.objectId));
     return path;
+  }
+
+  private _setAverageSizeForRegularAlias(): void {
+    if (this.alias === ImageAlias.REGULAR) {
+      if (this.deviceService.mdMax()) {
+        this.averageHeight = 150;
+      } else if (this.deviceService.smMax()) {
+        this.averageHeight = 100;
+      } else {
+        this.averageHeight = 200;
+      }
+    }
   }
 
   private _openImageByNavigation(image: ImageSearchInterface): void {

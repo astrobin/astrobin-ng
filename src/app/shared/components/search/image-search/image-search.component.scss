@@ -39,6 +39,13 @@
   }
 }
 
+.results-count {
+  font-size: .9rem;
+  color: var(--lighterGrey);
+  margin-bottom: .5rem;
+  padding-left: .25rem;
+}
+
 .search-results {
   $gap: .75rem;
 

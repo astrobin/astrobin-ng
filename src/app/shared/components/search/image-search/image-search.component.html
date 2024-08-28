@@ -85,6 +85,10 @@
         </div>
       </div>
 
+      <div class="results-count" *ngIf="showResultsCount && lastResultsCount">
+        <span [innerHTML]="lastResultsCount"></span>
+      </div>
+
       <div class="search-results">
         <a
           *ngFor="let item of gridItems"

@@ -29,7 +29,7 @@ export class ForumPostSearchComponent extends ScrollableSearchResultsBaseCompone
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
   ) {
-    super(store$, windowRefService, elementRef, platformId);
+    super(store$, windowRefService, elementRef, platformId, translateService);
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<ForumPostSearchInterface>> {
