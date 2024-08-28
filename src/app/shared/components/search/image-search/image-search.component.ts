@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Inject, Input, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, Input, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
@@ -56,12 +56,16 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly router: Router,
     public readonly loadingService: LoadingService,
     public readonly searchService: SearchService,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, windowRefService, elementRef, platformId, translateService);
     this.dataFetched.pipe(
       takeUntil(this.destroyed$),
-      tap(({ data, cumulative }) => this.assignWidthsToGridItems(data, cumulative))
+      tap(({ data, cumulative }) => {
+        this.assignWidthsToGridItems(data, cumulative);
+        this.changeDetectorRef.detectChanges();
+      })
     ).subscribe();
   }
 
@@ -135,14 +139,20 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
           if (result.equipmentItemListings) {
             this.itemListings = this._removeDuplicateRetailers(result.equipmentItemListings);
+          } else {
+            this.itemListings = [];
           }
 
           if (result.equipmentBrandListings) {
             this.brandListings = this._removeDuplicateRetailers(result.equipmentBrandListings);
+          } else {
+            this.brandListings = [];
           }
 
           if (result.marketplaceLineItems) {
             this.marketplaceLineItems = result.marketplaceLineItems;
+          } else {
+            this.marketplaceLineItems = [];
           }
         }),
         tap(result => {

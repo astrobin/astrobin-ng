@@ -338,12 +338,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.modelChanged.emit(this.model);
   }
 
-  @HostListener("window:keyup.enter", ["$event"])
-  onEnter(event: KeyboardEvent): void {
-    if (event && event.target !== this.searchInput.nativeElement) {
-      return;
-    }
-
+  onFormSubmit(): void {
     if (this.selectedAutoCompleteGroup && this.selectedAutoCompleteItemIndex > -1) {
       const selectedItem = this.autoCompleteGroups[this.selectedAutoCompleteGroup][this.selectedAutoCompleteItemIndex];
       if (selectedItem) {
