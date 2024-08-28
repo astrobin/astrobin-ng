@@ -7,7 +7,7 @@
       #searchInput
       (keyup.escape)="resetAutoCompleteItems()"
       (ngModelChange)="onModelChangeDebounced($event)"
-      [(ngModel)]="model.text"
+      [(ngModel)]="model.text.value"
       [placeholder]="placeholder"
       autofocus
       class="search-bar-input form-control"
@@ -38,13 +38,13 @@
       <ng-container *ngIf="group.value !== null">
         <div
           #autoCompleteItem
-          (click)="onAutoCompleteItemClicked(item)"
+          (click)="onAutoCompleteItemClicked(item).subscribe()"
           (mouseenter)="selectedAutoCompleteItemIndex = i"
           *ngFor="let item of group.value; let i = index"
           [class.selected]="item.type === selectedAutoCompleteGroup && i === selectedAutoCompleteItemIndex"
           class="search-bar-autocomplete-item"
         >
-          <span [innerHTML]="item.label | highlight: model.text"></span>
+          <span [innerHTML]="item.label | highlight: model.text?.value"></span>
           <ng-container *ngIf="(searchService.allowFilter$(item.minimumSubscription) | async) === false">
             <fa-icon icon="lock" class="ms-2"></fa-icon>
           </ng-container>
@@ -286,15 +286,16 @@
 
 <div class="filters">
   <astrobin-search-text-filter
-    *ngIf="model.text"
-    class="search-filter-component"
+    *ngIf="model.text?.value"
+    (valueChanges)="onFilterValueChanges(SearchTextFilterComponent.key, $event)"
     [value]="model.text"
+    class="search-filter-component"
   ></astrobin-search-text-filter>
 
   <ng-container #filterContainer></ng-container>
 
   <button
-    *ngIf="model.text || filterComponentRefs?.length > 0"
+    *ngIf="model.text?.value || filterComponentRefs?.length > 0"
     (click)="reset()"
     class="btn btn-outline-secondary btn-xs"
   >

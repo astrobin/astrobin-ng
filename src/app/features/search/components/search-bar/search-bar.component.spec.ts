@@ -30,6 +30,11 @@ describe("SearchBarComponent", () => {
 
     fixture = TestBed.createComponent(SearchBarComponent);
     component = fixture.componentInstance;
+    component.model = {
+      text: {
+        value: ""
+      }
+    }
     fixture.detectChanges();
   });
 

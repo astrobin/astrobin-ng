@@ -30,7 +30,7 @@
           </div>
 
           <div
-            [innerHTML]="comment.text | BBCodeToHtml | removeBr | highlight:model.text"
+            [innerHTML]="comment.text | BBCodeToHtml | removeBr | highlight:model.text?.value"
             class="card-body"
           >
           </div>

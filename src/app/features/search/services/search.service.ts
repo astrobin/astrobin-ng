@@ -147,8 +147,14 @@ export class SearchService extends BaseService {
       model = { ...model, pageSize: 100 };
     }
 
-    if (model.text === undefined) {
-      model = { ...model, text: "" };
+    if (model.text?.value === undefined) {
+      model = {
+        ...model,
+        text: {
+          value: "",
+          matchType: undefined
+        }
+      };
     }
 
     const queryString = UtilsService.toQueryString(model);
@@ -353,10 +359,18 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteFreeText$(query: string): Observable<SearchAutoCompleteItem[]> {
+    if (!query) {
+      return of([]);
+    }
+
     return of([
       {
         type: SearchAutoCompleteType.TEXT,
-        label: query
+        label: query,
+        value: {
+          value: query,
+          matchType: query.includes(" ") ? MatchType.ALL : undefined
+        }
       }
     ]);
   }

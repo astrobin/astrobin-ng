@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Store } from "@ngrx/store";
@@ -33,7 +33,7 @@ export abstract class SearchBaseFilterComponent
   infoText: string = null;
   abstract editFields: FormlyFieldConfig[];
   abstract label: string;
-  abstract category: SearchFilterCategory
+  abstract category: SearchFilterCategory;
   // Value to be used in the search model.
   @Input()
   value: any;
@@ -52,7 +52,7 @@ export abstract class SearchBaseFilterComponent
     super(store$);
   }
 
-  valueTransformer: (value: any) => any = value => value;
+  readonly valueTransformer: (value: any) => any = value => value;
 
   ngOnInit(): void {
     this.valueChanges.emit(this.value);
@@ -121,7 +121,7 @@ export abstract class SearchBaseFilterComponent
     return true;
   }
 
-  getMatchTypeField(listKey: string): FormlyFieldConfig {
+  getMatchTypeField(listKey: string, stringSeparator = ","): FormlyFieldConfig {
     return {
       key: `matchType`,
       type: "ng-select",
@@ -130,7 +130,7 @@ export abstract class SearchBaseFilterComponent
         className: () => {
           let value = this.editForm.get(listKey).value;
           if (UtilsService.isString(value)) {
-            value = value.split(",");
+            value = value.split(stringSeparator);
           }
           return !value || value.length <= 1 ? "d-none" : "";
         }
@@ -152,16 +152,19 @@ export abstract class SearchBaseFilterComponent
       },
       hooks: {
         onInit: field => {
-          this.editForm.get(listKey).valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-            if (UtilsService.isString(value)) {
-              value = value.split(",");
-            }
-            if (!value || value.length <= 1) {
-              field.formControl.setValue(null);
-            } else if (field.formControl.value === null) {
-              field.formControl.setValue(MatchType.ANY);
-            }
-          });
+          if (this.editForm.get(listKey)) {
+            this.editForm.get(listKey).valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+              if (UtilsService.isString(value)) {
+                value = value.split(stringSeparator);
+              }
+
+              if (!value || value.length <= 1) {
+                field.formControl.setValue(null);
+              } else if (field.formControl.value === null) {
+                field.formControl.setValue(MatchType.ANY);
+              }
+            });
+          }
         }
       }
     };

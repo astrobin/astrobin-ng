@@ -21,7 +21,14 @@ import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 export class SearchPageComponent extends BaseComponentDirective implements OnInit {
   readonly SearchType = SearchType;
 
-  model: SearchModelInterface = {};
+  model: SearchModelInterface = {
+    text: {
+      value: "",
+      matchType: undefined
+    },
+    page: 1,
+    pageSize: 100
+  };
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -73,6 +80,10 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
 
         this.model = {
           ...parsedParams,
+          text: {
+            value: parsedParams.text?.value || "",
+            matchType: parsedParams.text?.matchType
+          },
           page: 1
         };
       } catch (e) {
@@ -105,7 +116,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
       (
         Object.keys(model).length === 1 &&
         model.hasOwnProperty("text") &&
-        model.text !== ""
+        model.text?.value !== ""
       ) ||
       (
         model.hasOwnProperty("ordering") &&

@@ -10,7 +10,7 @@ import { TelescopeInterface as LegacyTelescopeInterface } from "@shared/interfac
 import { CameraInterface as LegacyCameraInterface } from "@shared/interfaces/camera.interface";
 import { MountInterface as LegacyMountInterface } from "@shared/interfaces/mount.interface";
 import { FilterInterface as LegacyFilterInterface } from "@shared/interfaces/filter.interface";
-import { FocalReducerInterface as LegacyFocalReducerInterface} from "@shared/interfaces/focal-reducer.interface";
+import { FocalReducerInterface as LegacyFocalReducerInterface } from "@shared/interfaces/focal-reducer.interface";
 import { AccessoryInterface as LegacyAccessoryInterface } from "@shared/interfaces/accessory.interface";
 import { SoftwareInterface as LegacySoftwareInterface } from "@shared/interfaces/software.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -21,6 +21,7 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { ImageService } from "@shared/services/image/image.service";
+import { MatchType } from "@features/search/enums/match-type.enum";
 
 type LegacyEquipmentItem =
   | LegacyTelescopeInterface
@@ -212,7 +213,10 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
     const text = "\"" + ((item.make || "") + " " + (item.name || "")).trim() + "\"";
     console.log(text);
     this.search({
-      text
+      text: {
+        value: text,
+        matchType: MatchType.ALL
+      }
     });
   }
 }

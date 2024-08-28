@@ -102,7 +102,7 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
     );
   }
 
-  valueTransformer: (value: {
+  readonly valueTransformer: (value: {
     value: (UserInterface["id"] | {
       id: UserInterface["id"];
       name: string
