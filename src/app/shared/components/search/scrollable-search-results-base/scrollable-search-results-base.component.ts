@@ -72,11 +72,9 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     const ignoreModelKeys = ["page", "pageSize", "searchType", "ordering"];
     const modelKeys = Object.keys(this.model).filter(key => !ignoreModelKeys.includes(key));
 
-    console.log(this.model);
-
     return modelKeys.filter(key => !ignoreModelKeys.includes(key)).every(key => {
       const value = this.model[key];
-      console.log(value);
+
       return (
         value === "" ||
         value === null ||

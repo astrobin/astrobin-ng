@@ -91,7 +91,6 @@ export class DeviceService extends BaseService {
   }
 
   mdMin(): boolean {
-    console.log(this.windowRefService.nativeWindow.innerWidth);
     if (isPlatformBrowser(this.platformId)) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth >= Breakpoint.MD_MIN;

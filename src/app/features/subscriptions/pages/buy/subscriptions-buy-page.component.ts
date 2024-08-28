@@ -297,11 +297,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           subscriptionName = subscriptionNames[this.product]?.default;
         }
 
-        console.log(subscriptionName);
-
-        return this.userSubscriptionService
-          .getActiveUserSubscription$(userProfile, subscriptionName)
-          .pipe(tap(activeUserSubscription => console.log(activeUserSubscription)));
+        return this.userSubscriptionService.getActiveUserSubscription$(userProfile, subscriptionName);
       })
     );
   }
