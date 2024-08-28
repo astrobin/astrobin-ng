@@ -1,6 +1,7 @@
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { MatchType } from "@features/search/enums/match-type.enum";
 
 export enum SearchType {
   IMAGE = "image",
@@ -16,7 +17,10 @@ export interface SearchModelInterface {
   ordering?: string;
 
   // Model fields.
-  text?: string;
+  text?: {
+    value: string;
+    matchType?: MatchType;
+  };
   itemType?: EquipmentItemType;
   itemId?: EquipmentItem["id"];
   usageType?: EquipmentItemUsageType;

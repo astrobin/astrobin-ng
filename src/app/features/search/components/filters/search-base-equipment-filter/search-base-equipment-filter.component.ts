@@ -79,7 +79,7 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
     ];
   }
 
-  valueTransformer: (value: {value: EquipmentItem["id"][], matchType: MatchType}) => Observable<{
+  readonly valueTransformer: (value: { value: EquipmentItem["id"][], matchType: MatchType }) => Observable<{
     value: {
       id: EquipmentItem["id"];
       name: string

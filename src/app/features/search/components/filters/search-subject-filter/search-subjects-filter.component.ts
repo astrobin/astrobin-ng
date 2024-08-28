@@ -18,9 +18,10 @@ import { SearchFilterCategory } from "@features/search/interfaces/search-filter-
 })
 export class SearchSubjectsFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.SUBJECTS;
-  category = SearchFilterCategory.SKY_AND_SUBJECTS
-  label = this.searchService.humanizeSearchAutoCompleteType(SearchSubjectsFilterComponent.key);
-  editFields = [
+
+  readonly category = SearchFilterCategory.SKY_AND_SUBJECTS
+  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchSubjectsFilterComponent.key);
+  readonly editFields = [
     {
       key: SearchSubjectsFilterComponent.key,
       fieldGroup: [
