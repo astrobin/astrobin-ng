@@ -377,7 +377,7 @@ export class ImageService extends BaseService {
       return null;
     }
 
-    if (parseFloat(revision.solution.dec) < 0) {
+    if (parseFloat(revision.solution.dec) >= 0) {
       return CelestialHemisphere.NORTHERN;
     }
 
