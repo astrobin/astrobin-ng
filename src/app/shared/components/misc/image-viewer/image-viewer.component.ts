@@ -698,6 +698,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   ): void {
     this.modalService.dismissAll();
     this.offcanvasService.dismiss();
+    this.exitFullscreen(false);
     this.imageLoaded = false;
 
     this.store$.pipe(
