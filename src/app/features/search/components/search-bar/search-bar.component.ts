@@ -294,7 +294,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     // empties the text. Otherwise, it sets the text.
 
     const normalizedQuery = value.toLowerCase().replace(/\s/g, "");
-    const observables$ = this._autoCompleteMethods(value).map(filter => filter.method);
+    const observables$ = this._autoCompleteMethods(value)
+      .filter(filter => filter.key !== SearchAutoCompleteType.USERS)
+      .map(filter => filter.method);
     let found = false;
 
     return forkJoin(observables$).pipe(
