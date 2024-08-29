@@ -138,8 +138,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   }
 
   openRetailersOffcanvas() {
-    const position = this.deviceService.smMax() ? "bottom" : "end";
-    this.offcanvasService.open(this.retailersTemplate, { position });
+    this.offcanvasService.open(this.retailersTemplate, { position: this.deviceService.offcanvasPosition() });
   }
 
   openItemSummaryModal(item: EquipmentItemBaseInterface) {

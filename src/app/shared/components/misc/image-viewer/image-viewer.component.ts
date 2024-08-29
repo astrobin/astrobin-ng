@@ -7,7 +7,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { DeviceService } from "@shared/services/device.service";
 import { LoadImage } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { filter, map, switchMap, take } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageService } from "@shared/services/image/image.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { SearchService } from "@features/search/services/search.service";
@@ -18,7 +18,7 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { Observable, of } from "rxjs";
+import { Observable, of, Subject } from "rxjs";
 import { isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -157,6 +157,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   ];
   protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
   protected isLightBoxOpen = false;
+
+  private _imageChangedSubject = new Subject<ImageInterface>();
+  private _imageChanged$ = this._imageChangedSubject.asObservable();
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -316,6 +319,16 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this._updateNavigationContextInformation();
     this._recordHit();
     this._setTitle();
+
+    this._imageChangedSubject.next(image);
+
+    // Updates to the current image.
+    this.store$.pipe(
+      select(selectImage, image.pk),
+      takeUntil(this._imageChanged$)
+    ).subscribe((image: ImageInterface) => {
+      this.image = image;
+    });
 
     this.changeDetectorRef.detectChanges();
 
@@ -482,9 +495,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       copyThis: this.getSharingValue(SharingMode.LINK)
     };
 
-    const position = this.deviceService.mdMax() ? "bottom" : "end";
     this.offcanvasService.open(this.shareTemplate, {
-      position,
+      position: this.deviceService.offcanvasPosition(),
       panelClass: "image-viewer-share-offcanvas"
     });
   }
@@ -492,9 +504,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   openComments(event: MouseEvent): void {
     event.preventDefault();
 
-    const position = this.deviceService.mdMax() ? "bottom" : "end";
     this.offcanvasService.open(this.nestedCommentsTemplate, {
-      position,
+      position: this.deviceService.offcanvasPosition(),
       panelClass: "image-viewer-nested-comments-offcanvas"
     });
   }

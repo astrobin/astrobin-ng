@@ -130,6 +130,7 @@ import { ImageViewerEquipmentComponent } from "@shared/components/misc/image-vie
 import { ImageViewerRevisionsComponent } from "@shared/components/misc/image-viewer/image-viewer-revisions.component";
 import { HammerModule } from "@angular/platform-browser";
 import { LightboxModule } from "ngx-lightbox";
+import { ImageViewerWipBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-wip-banner.component";
 
 const modules = [
   CommonModule,
@@ -206,6 +207,7 @@ const components = [
   ImageSearchCardComponent,
   ImageSearchComponent,
   ImageViewerComponent,
+  ImageViewerWipBannerComponent,
   ImageViewerTitleComponent,
   ImageViewerPhotographersComponent,
   ImageViewerDataSourceComponent,

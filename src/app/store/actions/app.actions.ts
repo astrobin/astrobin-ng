@@ -9,7 +9,7 @@ import {
   LoadImage,
   LoadImages,
   LoadImagesSuccess,
-  LoadImageSuccess,
+  LoadImageSuccess, PublishImage, PublishImageFailure, PublishImageSuccess,
   SaveImage,
   SaveImageFailure,
   SaveImageSuccess,
@@ -86,6 +86,10 @@ export enum AppActionTypes {
   LOAD_IMAGE_REVISIONS = "[App] Load image revisions",
   LOAD_IMAGE_REVISIONS_SUCCESS = "[App] Load image revisions success",
 
+  PUBLISH_IMAGE = "[App] Publish image",
+  PUBLISH_IMAGE_SUCCESS = "[App] Publish image success",
+  PUBLISH_IMAGE_FAILURE = "[App] Publish image failure",
+
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_CANCEL = "[App] Load thumbnail cancel",
   LOAD_THUMBNAIL_SUCCESS = "[App] Load thumbnail success",
@@ -147,6 +151,9 @@ export type All =
   | SaveImageFailure
   | LoadImages
   | LoadImagesSuccess
+  | PublishImage
+  | PublishImageSuccess
+  | PublishImageFailure
   | LoadThumbnail
   | LoadThumbnailCancel
   | LoadThumbnailSuccess

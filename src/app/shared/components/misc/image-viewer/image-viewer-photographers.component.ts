@@ -209,10 +209,9 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   }
 
   openCollaboratorsOffcanvas(): void {
-    const position = this.deviceService.mdMax() ? "bottom" : "end";
     this.offcanvasService.open(this.collaboratorsTemplate, {
       panelClass: "offcanvas-collaborators",
-      position
+      position: this.deviceService.offcanvasPosition()
     });
   }
 }

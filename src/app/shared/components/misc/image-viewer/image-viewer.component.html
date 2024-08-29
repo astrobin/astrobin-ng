@@ -210,6 +210,11 @@
 
 <ng-template #dataAreaTemplate>
   <div #dataArea class="data-area">
+    <astrobin-image-viewer-wip-banner
+      *ngIf="image.isWip"
+      [image]="image"
+    ></astrobin-image-viewer-wip-banner>
+
     <astrobin-image-viewer-title
       [image]="image"
     ></astrobin-image-viewer-title>

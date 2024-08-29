@@ -162,4 +162,8 @@ export class DeviceService extends BaseService {
     const _navigator = window.navigator;
     return "ontouchstart" in _window || _navigator.maxTouchPoints > 0 || "msMaxTouchPoints" in _navigator;
   }
+
+  offcanvasPosition(): "bottom" | "end" {
+    return this.smMax() ? "bottom" : "end";
+  }
 }

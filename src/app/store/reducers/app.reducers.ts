@@ -295,6 +295,21 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.PUBLISH_IMAGE_SUCCESS: {
+      const updatedImage: ImageInterface = {
+        ...state.images.find(image => image.pk === action.payload.pk),
+        isWip: false
+      };
+
+      return {
+        ...state,
+        images: [
+          ...state.images.filter(image => image.pk !== action.payload.pk),
+          updatedImage
+        ]
+      };
+    }
+
     case AppActionTypes.LOAD_THUMBNAIL: {
       return {
         ...state,

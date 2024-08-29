@@ -1,12 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import {
-  LoadImageFailure,
-  LoadImagesSuccess,
-  LoadImageSuccess,
-  SaveImageFailure,
-  SaveImageSuccess
-} from "@app/store/actions/image.actions";
+import { LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageSuccess } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -81,6 +75,47 @@ export class ImageEffects {
           this.popNotificationsService.error(
             this.translateService.instant("The server responded with an error: " + error.statusText)
           );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  PublishImage: Observable<PublishImageSuccess | PublishImageFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.PUBLISH_IMAGE),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.publishImage(
+          action.payload.pk,
+          action.payload.skipNotifications,
+          action.payload.skipActivityStream
+        ).pipe(
+          map(() => new PublishImageSuccess({ pk: action.payload.pk })),
+          catchError(error => of(new PublishImageFailure({ pk: action.payload.pk, error })))
+        )
+      )
+    )
+  );
+
+  PublishImageSuccess: Observable<PublishImageSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.PUBLISH_IMAGE_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  PublishImageFailure: Observable<PublishImageFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.PUBLISH_IMAGE_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
         })
       ),
     {
