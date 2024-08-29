@@ -132,8 +132,9 @@
 
     .next-button,
     .previous-button {
-      height: 75%;
+      height: 100%;
       padding: 1rem;
+      z-index: 1030; // Lower than the other buttons because they are tall.
 
       &:focus-visible {
         outline: none !important;
