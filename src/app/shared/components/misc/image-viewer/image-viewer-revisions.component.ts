@@ -24,6 +24,14 @@ import { ImageService } from "@shared/services/image/image.service";
         >{{ revision.label }}
         </span>
       </div>
+
+      <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+        <div *ngIf="currentUserWrapper.user?.id === image.user" class="revision">
+          <a [routerLink]="['/uploader/revision', image.hash || image.pk.toString()]" class="add-revision">
+            <fa-icon icon="plus"></fa-icon>
+          </a>
+        </div>
+      </ng-container>
     </div>
   `,
   styleUrls: ["./image-viewer-revisions.component.scss"]

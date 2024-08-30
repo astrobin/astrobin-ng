@@ -43,7 +43,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     public readonly transferState: TransferState,
     @Inject(CLIENT_IP) public readonly clientIp: string,
     public readonly notificationsService: NotificationsService,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
   ) {
     super(store$);
 
@@ -117,6 +117,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   initRouterEvents(): void {
     this.router.events?.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        this.windowRefService.changeBodyOverflow("auto");
         this.offcanvasService.dismiss();
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);

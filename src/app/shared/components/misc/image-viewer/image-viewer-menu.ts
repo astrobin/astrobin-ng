@@ -7,7 +7,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { filter, take } from "rxjs/operators";
-import { PublishImage, PublishImageSuccess, UnpublishImage, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { UnpublishImage, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Component({
@@ -32,12 +32,19 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
         </a>
 
         <a
+          [routerLink]="['/uploader/revision', image.hash || image.pk.toString()]"
+          [class]="itemClass"
+        >
+          {{ "Upload new revision" | translate }}
+        </a>
+
+        <a
           *ngIf="!image.isWip"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
           (click)="unpublish()"
           [class]="itemClass"
-          >
+        >
           {{ "Move to staging area" | translate }}
         </a>
       </ng-container>
@@ -116,6 +123,6 @@ export class ImageViewerMenuComponent extends BaseComponentDirective {
       this.popNotificationsService.success("Image moved to your staging area.");
     });
 
-    this.store$.dispatch(new UnpublishImage({ pk: this.image.pk, }));
+    this.store$.dispatch(new UnpublishImage({ pk: this.image.pk }));
   }
 }

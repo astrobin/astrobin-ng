@@ -160,4 +160,13 @@ export class WindowRefService extends BaseService {
 
     _history.pushState(data, "", url);
   }
+
+  changeBodyOverflow(value: "hidden" | "auto"): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const _document = this.nativeWindow.document;
+      if (_document) {
+        _document.body.classList.toggle("overflow-hidden", value === "hidden");
+      }
+    }
+  }
 }

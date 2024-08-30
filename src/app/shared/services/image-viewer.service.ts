@@ -106,19 +106,10 @@ export class ImageViewerService extends BaseService {
   }
 
   private _stopBodyScrolling(): void {
-    this._changeBodyOverflow("hidden");
+    this.windowRefService.changeBodyOverflow("hidden");
   }
 
   private _resumeBodyScrolling(): void {
-    this._changeBodyOverflow("auto");
-  }
-
-  private _changeBodyOverflow(value: "hidden" | "auto"): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const _document = this.windowRefService.nativeWindow.document;
-      if (_document) {
-        _document.body.classList.toggle("overflow-hidden", value === "hidden");
-      }
-    }
+    this.windowRefService.changeBodyOverflow("auto");
   }
 }
