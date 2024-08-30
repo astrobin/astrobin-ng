@@ -80,3 +80,28 @@ export class SaveImageFailure implements PayloadActionInterface {
   constructor(public payload: { error: any }) {
   }
 }
+
+export class PublishImage implements PayloadActionInterface {
+  readonly type = AppActionTypes.PUBLISH_IMAGE;
+
+  constructor(public payload: {
+    pk: ImageInterface["pk"],
+    skipNotifications: boolean,
+    skipActivityStream: boolean,
+  }) {
+  }
+}
+
+export class PublishImageSuccess implements Action {
+  readonly type = AppActionTypes.PUBLISH_IMAGE_SUCCESS;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class PublishImageFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.PUBLISH_IMAGE_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"], error?: any }) {
+  }
+}

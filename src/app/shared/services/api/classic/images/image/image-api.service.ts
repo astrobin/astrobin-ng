@@ -106,4 +106,15 @@ export class ImageApiService extends BaseClassicApiService {
   updateImage(pk: ImageInterface["pk"], image: ImageEditModelInterface): Observable<ImageInterface> {
     return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/`, image);
   }
+
+  publishImage(
+    pk: ImageInterface["pk"],
+    skipNotifications: boolean,
+    skipActivityStream: boolean
+  ): Observable<ImageInterface> {
+    return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/publish/`, {
+      skipNotifications,
+      skipActivityStream
+    });
+  }
 }

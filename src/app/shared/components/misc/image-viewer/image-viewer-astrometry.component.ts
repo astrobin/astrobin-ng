@@ -259,19 +259,17 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
 
   moreObjectsInFieldClicked(event: MouseEvent): void {
     event.preventDefault();
-    const position = this.deviceService.mdMax() ? "bottom" : "end";
     this.offcanvasService.open(this.moreObjectsInFieldTemplate, {
       panelClass: "offcanvas-more-objects-in-field",
-      position
+      position: this.deviceService.offcanvasPosition()
     });
   }
 
   openMoreInfo(event: MouseEvent): void {
     event.preventDefault();
-    const position = this.deviceService.mdMax() ? "bottom" : "end";
     this.offcanvasService.open(this.moreInfoTemplate, {
       panelClass: "offcanvas-more-info",
-      position
+      position: this.deviceService.offcanvasPosition()
     });
   }
 }
