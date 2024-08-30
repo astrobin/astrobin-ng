@@ -11,6 +11,8 @@ import { fromEvent, Subscription } from "rxjs";
 import { debounceTime, filter, map, take, tap } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
+import { Obj } from "@popperjs/core";
+import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
@@ -45,7 +47,7 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationService: PopNotificationsService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId,
+    @Inject(PLATFORM_ID) public readonly platformId: Obj,
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super();
@@ -78,7 +80,7 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   }
 
   onCropperReady(dimensions: Dimensions) {
-    const image = this.props.image;
+    const image: ImageInterface | ImageRevisionInterface = this.props.image;
 
     if (!dimensions) {
       return;
@@ -88,10 +90,10 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
       this.ratio = image.w / dimensions.width;
 
       this.cropper = {
-        x1: image.squareCropping.split(",")[0] / this.ratio,
-        y1: image.squareCropping.split(",")[1] / this.ratio,
-        x2: image.squareCropping.split(",")[2] / this.ratio,
-        y2: image.squareCropping.split(",")[3] / this.ratio
+        x1: parseInt(image.squareCropping.split(",")[0], 10)/ this.ratio,
+        y1: parseInt(image.squareCropping.split(",")[1], 10) / this.ratio,
+        x2: parseInt(image.squareCropping.split(",")[2], 10) / this.ratio,
+        y2: parseInt(image.squareCropping.split(",")[3], 10) / this.ratio
       };
     } else {
       const w = image.w;

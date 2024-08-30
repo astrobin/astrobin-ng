@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
+import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 
 const BASE_URL = environment.classicBaseUrl;
 
@@ -54,7 +55,12 @@ export class ClassicRoutesService extends BaseService {
 
   SET_LANGUAGE = (languageCode: string, next) => BASE_URL + `/language/set/${languageCode}/?next=${next}`;
 
-  IMAGE = (id: string) => BASE_URL + `/${id}/`;
+  IMAGE = (id: ImageInterface["hash"] | ImageInterface["pk"]) => BASE_URL + `/${id}/`;
+
+  IMAGE_REVISION = (
+    imageId: ImageInterface["hash"] | ImageInterface["pk"],
+    revisionLabel: ImageRevisionInterface["label"]
+  ) => BASE_URL + `/${imageId}/${revisionLabel}`;
 
   EDIT_IMAGE_THUMBNAILS = (id: string) => BASE_URL + `/edit/thumbnails/${id}/`;
 

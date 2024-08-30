@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { MainState } from "@app/store/state";
@@ -37,8 +37,6 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
   model = {
     image_file: "",
-    title: "",
-    description: "",
     skip_notifications: false,
     skip_activity_stream: false,
     mark_as_final: true
@@ -53,33 +51,6 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
         required: true,
         experimentalTiffSupportWarning: true,
         veryLargeSizeWarning: true
-      }
-    },
-    {
-      key: "title",
-      wrappers: ["default-wrapper"],
-      id: "title",
-      type: "input",
-      props: {
-        label: this.translate.instant("Title"),
-        description: this.translate.instant(
-          "The revision's title will be shown as an addendum to the original image's title."
-        ),
-        required: false,
-        maxLength: 128,
-        change: this._onTitleChange.bind(this)
-      }
-    },
-    {
-      key: "description",
-      id: "description",
-      type: "textarea",
-      wrappers: ["default-wrapper"],
-      props: {
-        label: this.translate.instant("Description"),
-        required: false,
-        change: this._onDescriptionChange.bind(this),
-        rows: 4
       }
     },
     {
@@ -133,7 +104,8 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     public readonly route: ActivatedRoute,
     public readonly titleService: TitleService,
     public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
-    public readonly userSubscriptionService: UserSubscriptionService
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -299,9 +271,6 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     this._setUploadData();
     this._setThumbnail();
     this._setRevisionCount();
-
-    this._onTitleChange();
-    this._onDescriptionChange();
     this._onSkipNotificationsChange();
     this._onSkipActivityStreamChange();
     this._onMarkAsFinalChange();
@@ -355,8 +324,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
       if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
-        // @ts-ignore
-        this.windowRef.nativeWindow.location.assign(this.classicRoutesService.EDIT_IMAGE_REVISION(response.pk));
+        this.router.navigate(['i', response.image, response.label, 'edit']);
       }
     });
   }
@@ -369,14 +337,6 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
   private _setRevisionCount() {
     this.revisionCount = this.image.revisions.length;
-  }
-
-  private _onTitleChange() {
-    this.uploadDataService.patchMetadata("image-upload", { title: this.model.title || Constants.NO_VALUE });
-  }
-
-  private _onDescriptionChange() {
-    this.uploadDataService.patchMetadata("image-upload", { description: this.model.description || Constants.NO_VALUE });
   }
 
   private _onSkipNotificationsChange() {

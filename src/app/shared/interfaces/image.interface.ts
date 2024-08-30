@@ -289,6 +289,7 @@ export interface ImageRevisionInterface {
   constellation: string;
   thumbnails: ImageThumbnailInterface[];
   mouseHoverImage: MouseHoverImageOptions | ImageRevisionInterface["label"];
+  squareCropping: string;
 }
 
 export const ORIGINAL_REVISION_LABEL = "0";

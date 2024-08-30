@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
-import { DownloadLimitationOptions, FullSizeLimitationDisplayOptions, LicenseOptions, MouseHoverImageOptions } from "@shared/interfaces/image.interface";
+import { DownloadLimitationOptions, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface, LicenseOptions, MouseHoverImageOptions } from "@shared/interfaces/image.interface";
 import { ImageEditService, KeyValueTagsValidator } from "@features/image/services/image-edit.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
@@ -81,15 +81,8 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
     };
   }
 
-  getMouseHoverImageField(): FormlyFieldConfig {
-    const image = this.imageEditService.model;
-    const revisions = image.revisions || [];
-
-    const options: {
-      value: MouseHoverImageOptions | string;
-      label: string;
-      disabled?: boolean;
-    }[] = [
+  basicMouseHoverOptions(): { value: MouseHoverImageOptions | string, label: string, disabled?: boolean }[] {
+    return [
       {
         value: MouseHoverImageOptions.NOTHING,
         label: this.translateService.instant("Nothing")
@@ -103,9 +96,16 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
         label: this.translateService.instant("Inverted monochrome")
       }
     ];
+  }
+
+  additionalMouseHoverOptions(
+    sourceImageOrRevision: Partial<ImageInterface> | Partial<ImageRevisionInterface>,
+    revisions: ImageRevisionInterface[]
+  ): { value: MouseHoverImageOptions | string, label: string, disabled?: boolean }[] {
+    const options: { value: MouseHoverImageOptions | string, label: string, disabled?: boolean }[] = [];
 
     for (const revision of revisions) {
-      const disabled = image.w !== revision.w || image.h !== revision.h;
+      const disabled = sourceImageOrRevision.w !== revision.w || sourceImageOrRevision.h !== revision.h;
       options.push({
         value: `REVISION__${revision.label}`,
         label:
@@ -117,6 +117,36 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
       });
     }
 
+    return options;
+  }
+
+  mouseHoverImageLabel(): string {
+    return this.translateService.instant("Mouse hover image");
+  }
+
+  mouseHoverImageDescription(): string {
+    return  this.translateService.instant(
+      "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
+      "revisions with the same width and height of your original image can be considered."
+    );
+  }
+
+  getMouseHoverImageField(): FormlyFieldConfig {
+    const image = this.imageEditService.model;
+    const revisions = image.revisions || [];
+
+    const options: {
+      value: MouseHoverImageOptions | string;
+      label: string;
+      disabled?: boolean;
+    }[] = this.basicMouseHoverOptions();
+
+    const additionalOptions: {
+      value: MouseHoverImageOptions | string;
+      label: string;
+      disabled?: boolean;
+    }[] = this.additionalMouseHoverOptions(image, revisions);
+
     return {
       key: "mouseHoverImage",
       type: "ng-select",
@@ -124,12 +154,9 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
       props: {
         required: true,
         clearable: false,
-        label: this.translateService.instant("Mouse hover image"),
-        description: this.translateService.instant(
-          "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
-          "revisions with the same width and height of your original image can be considered."
-        ),
-        options
+        label: this.mouseHoverImageLabel(),
+        description: this.mouseHoverImageDescription(),
+        options: [...options, ...additionalOptions]
       }
     };
   }

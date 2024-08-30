@@ -8,8 +8,21 @@ import { CurrentUsersLocationsResolver } from "@shared/resolvers/current-users-l
 import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
 import { ImageUserCollectionsResolver } from "@shared/resolvers/image-user-collections-resolver.service";
 import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
+import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revision/image-edit-revision-page.component";
 
 export const imageRoutes: Routes = [
+  {
+    path: ":imageId/:revisionLabel/edit",
+    component: ImageEditRevisionPageComponent,
+    canActivate: [AuthGuardService, ImageOwnerGuardService],
+    canDeactivate: [PendingChangesGuard],
+    resolve: {
+      image: ImageResolver,
+    },
+    data: {
+      skipThumbnails: false
+    }
+  },
   {
     path: ":imageId/edit",
     component: ImageEditPageComponent,
