@@ -11,8 +11,29 @@
   <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>
 
+<ng-template #titleTemplate>
+  {{ image.title }}
+</ng-template>
+
+<ng-template #navTemplate let-image>
+  <astrobin-image-viewer-menu
+    [image]="image"
+    itemClass="standalone"
+    dividerClass="standalone-divider"
+  ></astrobin-image-viewer-menu>
+</ng-template>
+
 <ng-template #imageAreaTemplate>
   <div #imageArea class="image-area" [class.force-view-mousehover]="forceViewMouseHover">
+    <astrobin-mobile-menu
+      (menuClose)="onMobileMenuClose()"
+      (menuOpen)="onMobileMenuOpen()"
+      [titleTemplate]="titleTemplate"
+      [descriptionTemplate]="descriptionTemplate"
+      [template]="navTemplate"
+      [templateContext]="{ $implicit: image }"
+    ></astrobin-mobile-menu>
+
     <button class="close-button" (click)="close()">
       <fa-icon
         *ngIf="showCloseButton"
@@ -209,9 +230,9 @@
 </ng-template>
 
 <ng-template #dataAreaTemplate>
-  <div #dataArea class="data-area">
+  <div #dataArea class="data-area" *ngIf="currentUserWrapper$ | async as currentUserWrapper">
     <astrobin-image-viewer-wip-banner
-      *ngIf="image.isWip"
+      *ngIf="image.isWip && currentUserWrapper.user?.id === image.user"
       [image]="image"
     ></astrobin-image-viewer-wip-banner>
 

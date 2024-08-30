@@ -117,4 +117,8 @@ export class ImageApiService extends BaseClassicApiService {
       skipActivityStream
     });
   }
+
+  unpublishImage(pk: ImageInterface["pk"]): Observable<ImageInterface> {
+    return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/unpublish/`, {});
+  }
 }

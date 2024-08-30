@@ -13,7 +13,7 @@ import { CookieConsentService } from "@shared/services/cookie-consent/cookie-con
 import { CookieConsentEnum } from "@shared/types/cookie-consent.enum";
 import { Observable } from "rxjs";
 import { DOCUMENT, isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
 import { TransferState } from "@angular/platform-browser";
 import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
@@ -42,7 +42,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     @Inject(DOCUMENT) public document: any,
     public readonly transferState: TransferState,
     @Inject(CLIENT_IP) public readonly clientIp: string,
-    public readonly notificationsService: NotificationsService
+    public readonly notificationsService: NotificationsService,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(store$);
 
@@ -116,6 +117,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   initRouterEvents(): void {
     this.router.events?.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        this.offcanvasService.dismiss();
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);
 

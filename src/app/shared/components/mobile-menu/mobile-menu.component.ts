@@ -15,7 +15,9 @@ export class MobileMenuComponent extends BaseComponentDirective implements OnIni
   @Input() titleTemplate: TemplateRef<any>;
   @Input() descriptionTemplate: TemplateRef<any>;
   @Input() iconsTemplate: TemplateRef<any>;
+  @Input() position: "start" | "end" | "top" | "bottom" = "start";
   @Input() template: TemplateRef<any>;
+  @Input() templateContext: any;
 
   @Output() menuOpen = new EventEmitter<void>();
   @Output() menuClose = new EventEmitter<void>();
@@ -42,7 +44,7 @@ export class MobileMenuComponent extends BaseComponentDirective implements OnIni
 
     this._offcanvasRef = this.offcanvasService.open(this.offcanvasTemplate, {
       panelClass: "mobile-menu",
-      position: "start"
+      position: this.position
     });
 
     this._offcanvasRef.hidden.pipe(take(1)).subscribe(() => {

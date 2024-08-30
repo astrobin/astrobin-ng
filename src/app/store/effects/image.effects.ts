@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageSuccess } from "@app/store/actions/image.actions";
+import { LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -114,6 +114,43 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.PUBLISH_IMAGE_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  UnpublishImage: Observable<UnpublishImageSuccess | UnpublishImageFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.UNPUBLISH_IMAGE),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.unpublishImage(action.payload.pk).pipe(
+          map(() => new UnpublishImageSuccess({ pk: action.payload.pk })),
+          catchError(error => of(new UnpublishImageFailure({ pk: action.payload.pk, error })))
+        )
+      )
+    )
+  );
+
+  UnpublishImageSuccess: Observable<UnpublishImageSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.UNPUBLISH_IMAGE_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  UnpublishImageFailure: Observable<UnpublishImageFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.UNPUBLISH_IMAGE_FAILURE),
         tap(error => {
           this.loadingService.setLoading(false);
         })

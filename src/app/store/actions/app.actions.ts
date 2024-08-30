@@ -13,7 +13,7 @@ import {
   SaveImage,
   SaveImageFailure,
   SaveImageSuccess,
-  SetImage
+  SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
 } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import {
@@ -90,6 +90,10 @@ export enum AppActionTypes {
   PUBLISH_IMAGE_SUCCESS = "[App] Publish image success",
   PUBLISH_IMAGE_FAILURE = "[App] Publish image failure",
 
+  UNPUBLISH_IMAGE = "[App] Unpublish image",
+  UNPUBLISH_IMAGE_SUCCESS = "[App] Unpublish image success",
+  UNPUBLISH_IMAGE_FAILURE = "[App] Unpublish image failure",
+
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_CANCEL = "[App] Load thumbnail cancel",
   LOAD_THUMBNAIL_SUCCESS = "[App] Load thumbnail success",
@@ -154,6 +158,9 @@ export type All =
   | PublishImage
   | PublishImageSuccess
   | PublishImageFailure
+  | UnpublishImage
+  | UnpublishImageSuccess
+  | UnpublishImageFailure
   | LoadThumbnail
   | LoadThumbnailCancel
   | LoadThumbnailSuccess

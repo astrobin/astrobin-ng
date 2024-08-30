@@ -105,3 +105,25 @@ export class PublishImageFailure implements PayloadActionInterface {
   constructor(public payload: { pk: ImageInterface["pk"], error?: any }) {
   }
 }
+
+export class UnpublishImage implements PayloadActionInterface {
+  readonly type = AppActionTypes.UNPUBLISH_IMAGE;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class UnpublishImageSuccess implements Action {
+  readonly type = AppActionTypes.UNPUBLISH_IMAGE_SUCCESS;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class UnpublishImageFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.UNPUBLISH_IMAGE_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"], error?: any }) {
+  }
+}
+

@@ -14,7 +14,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   selector: "astrobin-image-viewer-title",
   template: `
     <div class="image-viewer-title d-flex flex-row justify-content-between align-items-center gap-2">
-      <h2 class="flex-grow-1">
+      <h2 class="flex-grow-1 mb-0">
         {{ image.title }}
 
         <small *ngIf="resolution || size">
@@ -49,41 +49,20 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </div>
       </h2>
 
-      <div ngbDropdown class="dropdown w-auto">
+      <div ngbDropdown class="dropdown w-auto d-none d-lg-block">
         <fa-icon
           ngbDropdownToggle
-          icon="ellipsis-v"
+          icon="bars"
           class="dropdown-toggle no-toggle"
           aria-haspopup="true"
           aria-expanded="false"
         ></fa-icon>
         <div ngbDropdownMenu class="dropdown-menu">
-          <a
-            [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString())"
-            class="dropdown-item"
-          >
-            {{ "Classic view" | translate }}
-          </a>
-
-          <ng-container *ngIf="image.link || image.linkToFits">
-            <div class="dropdown-divider"></div>
-
-            <a
-              *ngIf="image.link"
-              [href]="image.link"
-              class="dropdown-item"
-            >
-              {{ "External link" | translate }}
-            </a>
-
-            <a
-              *ngIf="image.linkToFits"
-              [href]="image.linkToFits"
-              class="dropdown-item"
-            >
-              {{ "External link to FITS" | translate }}
-            </a>
-          </ng-container>
+          <astrobin-image-viewer-menu
+            [image]="image"
+            itemClass="dropdown-item"
+            dividerClass="dropdown-divider"
+          ></astrobin-image-viewer-menu>
         </div>
       </div>
     </div>

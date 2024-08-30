@@ -41,6 +41,8 @@
     <button type="button" class="btn-close text-reset" (click)="closeOffcanvas($event)"></button>
   </div>
   <div class="offcanvas-body">
-    <ng-container *ngTemplateOutlet="template"></ng-container>
+    <ng-container
+      *ngTemplateOutlet="template; context: templateContext"
+    ></ng-container>
   </div>
 </ng-template>
