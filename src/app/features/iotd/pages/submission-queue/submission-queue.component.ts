@@ -32,7 +32,7 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { fromEvent, Observable } from "rxjs";
+import { fromEvent, Observable, throttleTime } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
@@ -109,7 +109,7 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
 
     if (isPlatformBrowser(this.platformId)) {
       fromEvent(this.windowRefService.nativeWindow, "scroll")
-        .pipe(takeUntil(this.destroyed$), debounceTime(100), distinctUntilChanged())
+        .pipe(takeUntil(this.destroyed$), throttleTime(100))
         .subscribe(() => {
           this.markVisibleImageAsSubmitterSeen();
         });
