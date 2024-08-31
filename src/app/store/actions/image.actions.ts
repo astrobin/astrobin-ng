@@ -148,3 +148,24 @@ export class UnpublishImageFailure implements PayloadActionInterface {
   }
 }
 
+export class MarkAsFinal implements PayloadActionInterface {
+  readonly type = AppActionTypes.MARK_AS_FINAL;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; revisionLabel: ImageRevisionInterface["label"] }) {
+  }
+}
+
+export class MarkAsFinalSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.MARK_AS_FINAL_SUCCESS;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; revisionLabel: ImageRevisionInterface["label"] }) {
+  }
+}
+
+export class MarkAsFinalFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.MARK_AS_FINAL_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; revisionLabel: ImageRevisionInterface["label"]; error: any }) {
+  }
+}
+

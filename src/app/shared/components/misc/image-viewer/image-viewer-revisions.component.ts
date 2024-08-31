@@ -5,6 +5,7 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageService } from "@shared/services/image/image.service";
+import { MarkAsFinal } from "@app/store/actions/image.actions";
 
 @Component({
   selector: "astrobin-image-viewer-revisions",
@@ -44,9 +45,19 @@ import { ImageService } from "@shared/services/image/image.service";
             <div ngbDropdownMenu class="dropdown-menu">
               <a
                 ngbDropdownItem
-                [href]=""
+                [routerLink]="['/i', image.hash || image.pk.toString(), revision.label, 'edit']"
               >
                 {{ "Edit" | translate }}
+              </a>
+              <a
+                *ngIf="!revision.isFinal"
+                (click)="markAsFinal(revision)"
+                ngbDropdownItem
+                astrobinEventPreventDefault
+                astrobinEventStopPropagation
+                href="#"
+              >
+                {{ "Mark as final" | translate }}
               </a>
             </div>
           </div>
@@ -143,6 +154,14 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
       active: revision.label === revisionLabel
     }));
     this.revisionSelected.emit(revisionLabel);
+  }
+
+  markAsFinal(revision: any): void {
+    const label = revision.hasOwnProperty("label")
+      ? (revision as ImageRevisionInterface).label
+      : FINAL_REVISION_LABEL;
+
+    this.store$.dispatch(new MarkAsFinal({ pk: this.image.pk, revisionLabel: label }));
   }
 
   protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;

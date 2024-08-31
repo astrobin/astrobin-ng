@@ -9,7 +9,7 @@ import {
   LoadImage,
   LoadImages,
   LoadImagesSuccess,
-  LoadImageSuccess, PublishImage, PublishImageFailure, PublishImageSuccess,
+  LoadImageSuccess, MarkAsFinal, MarkAsFinalFailure, MarkAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess,
   SaveImage,
   SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess,
   SaveImageSuccess,
@@ -98,6 +98,10 @@ export enum AppActionTypes {
   UNPUBLISH_IMAGE_SUCCESS = "[App] Unpublish image success",
   UNPUBLISH_IMAGE_FAILURE = "[App] Unpublish image failure",
 
+  MARK_AS_FINAL = "[App] Mark as final",
+  MARK_AS_FINAL_SUCCESS = "[App] Mark as final success",
+  MARK_AS_FINAL_FAILURE = "[App] Mark as final failure",
+
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_CANCEL = "[App] Load thumbnail cancel",
   LOAD_THUMBNAIL_SUCCESS = "[App] Load thumbnail success",
@@ -168,6 +172,9 @@ export type All =
   | UnpublishImage
   | UnpublishImageSuccess
   | UnpublishImageFailure
+  | MarkAsFinal
+  | MarkAsFinalSuccess
+  | MarkAsFinalFailure
   | LoadThumbnail
   | LoadThumbnailCancel
   | LoadThumbnailSuccess
