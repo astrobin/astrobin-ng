@@ -107,6 +107,10 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/`, image);
   }
 
+  updateImageRevision(imageRevision: Partial<ImageRevisionInterface>): Observable<ImageRevisionInterface> {
+    return this.http.patch<ImageRevisionInterface>(`${this.configUrl}/image-revision/${imageRevision.pk}/`, imageRevision);
+  }
+
   publishImage(
     pk: ImageInterface["pk"],
     skipNotifications: boolean,

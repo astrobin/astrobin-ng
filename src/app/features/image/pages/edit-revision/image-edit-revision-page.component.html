@@ -1,0 +1,57 @@
+<div class="page has-breadcrumb">
+  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else editTemplate">
+  </astrobin-read-only-mode>
+</div>
+
+<ng-template #editTemplate>
+  <h1>{{ pageTitle }}</h1>
+
+  <ng-container *ngIf="isBrowser; else loadingTemplate">
+    <div class="row">
+      <div class="col-sm-12 col-md-3" *ngIf="thumbnail">
+        <div class="thumbnail text-center">
+          <img [attr.src]="imageThumbnail" alt="image.title" />
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-9">
+        <form [formGroup]="form">
+          <div class="form-group">
+            <label>{{ "Target image" | translate }}</label>
+            <p class="d-block mb-4">{{ image.title }}</p>
+          </div>
+
+          <formly-form
+            [fields]="fields"
+            [form]="form"
+            [model]="model"
+          ></formly-form>
+
+          <div class="form-actions">
+            <button
+              (click)="onCancel($event)"
+              [class.loading]="saving || (loadingService.loading$ | async)"
+              class="btn btn-secondary"
+              type="button"
+            >
+              {{ "Cancel" | translate }}
+            </button>
+
+            <button
+              (click)="onSave($event)"
+              [class.loading]="saving || (loadingService.loading$ | async)"
+              class="btn btn-primary"
+              type="submit"
+            >
+              {{ "Save" | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

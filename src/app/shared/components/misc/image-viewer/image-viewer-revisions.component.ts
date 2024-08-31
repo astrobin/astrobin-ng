@@ -9,30 +9,56 @@ import { ImageService } from "@shared/services/image/image.service";
 @Component({
   selector: "astrobin-image-viewer-revisions",
   template: `
-    <div *ngIf="revisionData && revisionData.length > 1" class="revisions">
-      <div
-        *ngFor="let revision of revisionData"
-        (click)="onRevisionSelected(revision.label)"
-        [class.active]="revision.active"
-        [class.final]="revision.isFinal"
-        class="revision"
-      >
-        <img [src]="revision.gallery" alt="" />
-        <span
-          *ngIf="revision.label !== FINAL_REVISION_LABEL && revision.label !== ORIGINAL_REVISION_LABEL"
-          class="label"
-        >{{ revision.label }}
-        </span>
-      </div>
+    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+      <div *ngIf="revisionData && revisionData.length > 1" class="revisions">
+        <div
+          *ngFor="let revision of revisionData"
+          [class.active]="revision.active"
+          [class.final]="revision.isFinal"
+          class="revision"
+        >
+          <img
+            (click)="onRevisionSelected(revision.label)"
+            [src]="revision.gallery"
+            alt=""
+          />
+          <span
+            *ngIf="revision.label !== FINAL_REVISION_LABEL && revision.label !== ORIGINAL_REVISION_LABEL"
+            class="label"
+          >{{ revision.label }}
+          </span>
 
-      <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+          <div
+            *ngIf="currentUserWrapper.user?.id === image.user"
+            class="no-toggle"
+            ngbDropdown
+            placement="top"
+          >
+            <fa-icon
+              ngbDropdownToggle
+              icon="ellipsis"
+              class="dropdown-toggle no-toggle"
+              aria-haspopup="true"
+              aria-expanded="false"
+            ></fa-icon>
+            <div ngbDropdownMenu class="dropdown-menu">
+              <a
+                ngbDropdownItem
+                [href]=""
+              >
+                {{ "Edit" | translate }}
+              </a>
+            </div>
+          </div>
+        </div>
+
         <div *ngIf="currentUserWrapper.user?.id === image.user" class="revision">
           <a [routerLink]="['/uploader/revision', image.hash || image.pk.toString()]" class="add-revision">
             <fa-icon icon="plus"></fa-icon>
           </a>
         </div>
-      </ng-container>
-    </div>
+      </div>
+    </ng-container>
   `,
   styleUrls: ["./image-viewer-revisions.component.scss"]
 })

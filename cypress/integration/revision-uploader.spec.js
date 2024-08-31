@@ -85,7 +85,6 @@ context("revision uploader", () => {
 
         it("should have all form controls", () => {
           cy.get("#image_file").should("exist");
-          cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
           [
@@ -151,7 +150,6 @@ context("revision uploader", () => {
 
         it("should have all form controls", () => {
           cy.get("#image_file").should("exist");
-          cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
         });
@@ -210,7 +208,6 @@ context("revision uploader", () => {
 
         it("should have all form controls", () => {
           cy.get("#image_file").should("exist");
-          cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
         });
@@ -267,7 +264,6 @@ context("revision uploader", () => {
 
         it("should have all form controls", () => {
           cy.get("#image_file").should("exist");
-          cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
         });
@@ -324,7 +320,6 @@ context("revision uploader", () => {
 
         it("should have all form controls", () => {
           cy.get("#image_file").should("exist");
-          cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
         });
@@ -383,7 +378,6 @@ context("revision uploader", () => {
 
         it("should have all form controls", () => {
           cy.get("#image_file").should("exist");
-          cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
         });
@@ -442,7 +436,6 @@ context("revision uploader", () => {
 
         it("should have all form controls", () => {
           cy.get("#image_file").should("exist");
-          cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
         });
@@ -481,7 +474,6 @@ context("revision uploader", () => {
 
         it("should not have all form controls", () => {
           cy.get("#image_file").should("not.exist");
-          cy.get("#description").should("not.exist");
           cy.get("#skip_notifications").should("not.exist");
           cy.get("#mark_as_final").should("not.exist");
 
