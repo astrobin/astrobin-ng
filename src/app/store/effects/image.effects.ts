@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkAsFinalFailure, MarkAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -151,6 +151,43 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.UNPUBLISH_IMAGE_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  MarkAsFinal: Observable<MarkAsFinalSuccess | MarkAsFinalFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.MARK_AS_FINAL),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.markAsFinal(action.payload.pk, action.payload.revisionLabel).pipe(
+          map(() => new MarkAsFinalSuccess(action.payload)),
+          catchError(error => of(new MarkAsFinalFailure({ ...action.payload, error })))
+        )
+      )
+    )
+  );
+
+  MarkAsFinalSuccess: Observable<MarkAsFinalSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.MARK_AS_FINAL_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  MarkAsFinalFailure: Observable<MarkAsFinalFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.MARK_AS_FINAL_FAILURE),
         tap(error => {
           this.loadingService.setLoading(false);
         })

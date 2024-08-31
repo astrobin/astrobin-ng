@@ -4,7 +4,7 @@ import { BackendConfigInterface } from "@shared/interfaces/backend-config.interf
 import { CameraInterface } from "@shared/interfaces/camera.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
@@ -321,6 +321,32 @@ export function appReducer(state = initialAppState, action: All): AppState {
         images: [
           ...state.images.filter(image => image.pk !== action.payload.pk),
           updatedImage
+        ]
+      };
+    }
+
+    case AppActionTypes.MARK_AS_FINAL_SUCCESS: {
+      const imagePk = action.payload.pk;
+      const revisionLabel = action.payload.revisionLabel;
+      const image = state.images.find(i => i.pk === imagePk);
+
+      if (revisionLabel === ORIGINAL_REVISION_LABEL) {
+        image.isFinal = true;
+        image.revisions.forEach(revision => {
+          revision.isFinal = false;
+        });
+      } else {
+        image.isFinal = false;
+        image.revisions.forEach(revision => {
+          revision.isFinal = revision.label === revisionLabel;
+        });
+      }
+
+      return {
+        ...state,
+        images: [
+          ...state.images.filter(i => i.pk !== imagePk),
+          image
         ]
       };
     }

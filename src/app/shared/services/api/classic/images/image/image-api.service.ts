@@ -121,4 +121,8 @@ export class ImageApiService extends BaseClassicApiService {
   unpublishImage(pk: ImageInterface["pk"]): Observable<ImageInterface> {
     return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/unpublish/`, {});
   }
+
+  markAsFinal(pk: ImageInterface["pk"], revisionLabel: ImageRevisionInterface["label"]): Observable<ImageInterface> {
+    return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/mark-as-final/`, { revisionLabel });
+  }
 }
