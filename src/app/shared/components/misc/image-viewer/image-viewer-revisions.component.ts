@@ -44,11 +44,13 @@ import { MarkAsFinal } from "@app/store/actions/image.actions";
             ></fa-icon>
             <div ngbDropdownMenu class="dropdown-menu">
               <a
+                *ngIf="revision.label !== ORIGINAL_REVISION_LABEL"
                 ngbDropdownItem
                 [routerLink]="['/i', image.hash || image.pk.toString(), revision.label, 'edit']"
               >
                 {{ "Edit" | translate }}
               </a>
+
               <a
                 *ngIf="!revision.isFinal"
                 (click)="markAsFinal(revision)"
@@ -58,6 +60,15 @@ import { MarkAsFinal } from "@app/store/actions/image.actions";
                 href="#"
               >
                 {{ "Mark as final" | translate }}
+              </a>
+
+              <a
+                *ngIf="revision.original"
+                [href]="revision.original"
+                ngbDropdownItem
+                target="_blank"
+              >
+                {{ "Download original" | translate }}
               </a>
             </div>
           </div>
@@ -88,6 +99,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
     id: ImageRevisionInterface["pk"];
     label: ImageRevisionInterface["label"];
     isFinal: boolean;
+    original: string;
     gallery: string;
     regular: string;
     hd: string;
@@ -122,6 +134,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
         active: this.activeLabel === ORIGINAL_REVISION_LABEL,
         label: ORIGINAL_REVISION_LABEL,
         isFinal: image.isFinal,
+        original: image.videoFile || image.imageFile,
         gallery: image.thumbnails.find(thumbnail =>
           thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
           thumbnail.alias === ImageAlias.GALLERY).url,
@@ -140,6 +153,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
         active: this.activeLabel === revision.label,
         label: revision.label,
         isFinal: revision.isFinal,
+        original: revision.videoFile || revision.imageFile,
         gallery: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
         regular: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR).url,
         hd: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.HD).url,
