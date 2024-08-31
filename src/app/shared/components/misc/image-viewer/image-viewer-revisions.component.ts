@@ -5,7 +5,10 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageService } from "@shared/services/image/image.service";
-import { MarkAsFinal } from "@app/store/actions/image.actions";
+import { DeleteOriginalImage, MarkAsFinal } from "@app/store/actions/image.actions";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-image-viewer-revisions",
@@ -70,6 +73,17 @@ import { MarkAsFinal } from "@app/store/actions/image.actions";
               >
                 {{ "Download original" | translate }}
               </a>
+
+              <a
+                *ngIf="revision.label === ORIGINAL_REVISION_LABEL"
+                (click)="showDeleteOriginalConfirmation()"
+                astrobinEventPreventDefault
+                class="text-danger"
+                ngbDropdownItem
+                href="#"
+              >
+                {{ "Delete" | translate }}
+              </a>
             </div>
           </div>
         </div>
@@ -105,10 +119,14 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
     hd: string;
     qhd: string;
   }[];
+  protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
+  protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
 
   constructor(
     public readonly store$: Store<MainState>,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly modalService: NgbModal,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
@@ -178,6 +196,20 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
     this.store$.dispatch(new MarkAsFinal({ pk: this.image.pk, revisionLabel: label }));
   }
 
-  protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
-  protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
+  showDeleteOriginalConfirmation(): void {
+    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const instance: ConfirmationDialogComponent = modalRef.componentInstance;
+    instance.message = this.translateService.instant(
+      "This will delete the original image, and the first revision will take its place. All metadata will remain" +
+      " intact."
+    );
+
+    modalRef.closed.subscribe(() => {
+      this.deleteOriginal();
+    });
+  }
+
+  deleteOriginal(): void {
+    this.store$.dispatch(new DeleteOriginalImage({ pk: this.image.pk }));
+  }
 }

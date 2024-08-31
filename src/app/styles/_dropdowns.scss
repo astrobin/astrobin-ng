@@ -63,6 +63,11 @@
       text-align: center;
     }
 
+    &.text-danger:hover {
+      background-color: var(--dangerColor) !important;
+      color: var(--white) !important;
+    }
+
     @media (max-width: $xs-max) {
       padding: 1rem;
     }
