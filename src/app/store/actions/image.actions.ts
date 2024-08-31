@@ -169,3 +169,23 @@ export class MarkImageAsFinalFailure implements PayloadActionInterface {
   }
 }
 
+export class DeleteOriginalImage implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_ORIGINAL_IMAGE;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class DeleteOriginalImageSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_ORIGINAL_IMAGE_SUCCESS;
+
+  constructor(public payload: { image: ImageInterface }) {
+  }
+}
+
+export class DeleteOriginalImageFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_ORIGINAL_IMAGE_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
+  }
+}

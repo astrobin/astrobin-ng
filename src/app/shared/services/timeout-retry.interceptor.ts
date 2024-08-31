@@ -9,15 +9,7 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Exclude uploader path from timeout and retry
-    const uploaderPaths = [
-      "/api/v2/images/image-upload/",
-      "/api/v2/images/image-revision-upload/",
-      "/api/v2/images/uncompressed-source-upload/",
-      "/json-api/common/ckeditor-upload/"
-    ];
-
-    if (uploaderPaths.some(path => req.url.includes(path))) {
+    if (req.method !== "GET") {
       return next.handle(req);
     }
 

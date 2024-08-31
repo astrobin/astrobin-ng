@@ -394,6 +394,20 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.DELETE_ORIGINAL_IMAGE_SUCCESS: {
+      const imageIndex = state.images.findIndex(image => image.pk === action.payload.image.pk);
+      if (imageIndex === -1) return state; // If the image is not found, return the original state
+
+      return {
+        ...state,
+        images: [
+          ...state.images.slice(0, imageIndex),
+          action.payload.image,
+          ...state.images.slice(imageIndex + 1),
+        ]
+      };
+    }
+
     case AppActionTypes.LOAD_THUMBNAIL: {
       return {
         ...state,

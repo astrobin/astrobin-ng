@@ -13,45 +13,16 @@ import {
   SaveImage,
   SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess,
   SaveImageSuccess,
-  SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
+  SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess,
+  DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess
 } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
-import {
-  LoadSolution,
-  LoadSolutionFailure,
-  LoadSolutions,
-  LoadSolutionsSuccess,
-  LoadSolutionSuccess
-} from "@app/store/actions/solution.actions";
+import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
-import {
-  LoadThumbnail,
-  LoadThumbnailCancel,
-  LoadThumbnailCanceled,
-  LoadThumbnailSuccess
-} from "@app/store/actions/thumbnail.actions";
+import { LoadThumbnail, LoadThumbnailCancel, LoadThumbnailCanceled, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
 import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
-import {
-  CreateNestedComment,
-  CreateNestedCommentFailure,
-  CreateNestedCommentSuccess,
-  LoadNestedComment,
-  LoadNestedCommentFailure,
-  LoadNestedComments,
-  LoadNestedCommentsSuccess,
-  LoadNestedCommentSuccess
-} from "@app/store/actions/nested-comments.actions";
-import {
-  CreateToggleProperty,
-  CreateTogglePropertyFailure,
-  CreateTogglePropertySuccess,
-  DeleteToggleProperty,
-  DeleteTogglePropertyFailure,
-  DeleteTogglePropertySuccess,
-  LoadToggleProperty,
-  LoadTogglePropertyFailure,
-  LoadTogglePropertySuccess
-} from "@app/store/actions/toggle-property.actions";
+import { CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
+import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",
@@ -101,6 +72,10 @@ export enum AppActionTypes {
   MARK_IMAGE_AS_FINAL = "[App] Mark image as final",
   MARK_IMAGE_AS_FINAL_SUCCESS = "[App] Mark image as final success",
   MARK_IMAGE_AS_FINAL_FAILURE = "[App] Mark image as final failure",
+
+  DELETE_ORIGINAL_IMAGE = "[App] Delete original image",
+  DELETE_ORIGINAL_IMAGE_SUCCESS = "[App] Delete original image success",
+  DELETE_ORIGINAL_IMAGE_FAILURE = "[App] Delete original image failure",
 
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_CANCEL = "[App] Load thumbnail cancel",
@@ -175,6 +150,9 @@ export type All =
   | MarkImageAsFinal
   | MarkImageAsFinalSuccess
   | MarkImageAsFinalFailure
+  | DeleteOriginalImage
+  | DeleteOriginalImageSuccess
+  | DeleteOriginalImageFailure
   | LoadThumbnail
   | LoadThumbnailCancel
   | LoadThumbnailSuccess

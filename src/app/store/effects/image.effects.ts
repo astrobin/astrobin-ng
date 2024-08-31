@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { DeleteOriginalImageFailure, DeleteOriginalImageSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -234,6 +234,50 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.MARK_IMAGE_AS_FINAL_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  DeleteOriginalImage: Observable<DeleteOriginalImageSuccess | DeleteOriginalImageFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_ORIGINAL_IMAGE),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.deleteOriginal(action.payload.pk).pipe(
+          map(image => new DeleteOriginalImageSuccess({ image })),
+          catchError(error => of(new DeleteOriginalImageFailure({ pk: action.payload.pk, error })))
+        )
+      )
+    )
+  );
+
+  DeleteOriginalImageSuccess: Observable<DeleteOriginalImageSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_ORIGINAL_IMAGE_SUCCESS),
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant(
+              "The original image has been deleted. The first revision is now the new original."
+            )
+          );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  DeleteOriginalImageFailure: Observable<DeleteOriginalImageFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_ORIGINAL_IMAGE_FAILURE),
         tap(error => {
           this.loadingService.setLoading(false);
         })

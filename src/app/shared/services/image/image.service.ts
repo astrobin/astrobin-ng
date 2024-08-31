@@ -563,7 +563,10 @@ export class ImageService extends BaseService {
     }
 
     if (image.revisions && image.revisions.length > 0) {
-      return image.revisions.find(revision => revision.label === revisionLabel);
+      const revisionByLabel = image.revisions.find(revision => revision.label === revisionLabel);
+      if (revisionByLabel) {
+        return revisionByLabel;
+      }
     }
 
     return image;
