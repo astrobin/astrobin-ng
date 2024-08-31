@@ -29,21 +29,21 @@
 
           <div class="form-actions">
             <button
-              (click)="onSave($event)"
-              [class.loading]="saving || (loadingService.loading$ | async)"
-              class="btn btn-primary"
-              type="submit"
-            >
-              {{ "Save" | translate }}
-            </button>
-
-            <button
               (click)="onCancel($event)"
               [class.loading]="saving || (loadingService.loading$ | async)"
               class="btn btn-secondary"
               type="button"
             >
               {{ "Cancel" | translate }}
+            </button>
+
+            <button
+              (click)="onSave($event)"
+              [class.loading]="saving || (loadingService.loading$ | async)"
+              class="btn btn-primary"
+              type="submit"
+            >
+              {{ "Save" | translate }}
             </button>
           </div>
         </form>
