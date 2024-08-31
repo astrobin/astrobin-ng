@@ -204,7 +204,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
       ? (revision as ImageRevisionInterface).label
       : FINAL_REVISION_LABEL;
 
-    this.store$.dispatch(new MarkAsFinal({ pk: this.image.pk, revisionLabel: label }));
+    this.store$.dispatch(new MarkImageAsFinal({ pk: this.image.pk, revisionLabel: label }));
   }
 
   showDeleteOriginalConfirmation(): void {
