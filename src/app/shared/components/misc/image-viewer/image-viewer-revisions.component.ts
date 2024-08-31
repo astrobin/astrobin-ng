@@ -5,7 +5,7 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageService } from "@shared/services/image/image.service";
-import { MarkAsFinal } from "@app/store/actions/image.actions";
+import { MarkImageAsFinal } from "@app/store/actions/image.actions";
 
 @Component({
   selector: "astrobin-image-viewer-revisions",
@@ -175,7 +175,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
       ? (revision as ImageRevisionInterface).label
       : FINAL_REVISION_LABEL;
 
-    this.store$.dispatch(new MarkAsFinal({ pk: this.image.pk, revisionLabel: label }));
+    this.store$.dispatch(new MarkImageAsFinal({ pk: this.image.pk, revisionLabel: label }));
   }
 
   protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
