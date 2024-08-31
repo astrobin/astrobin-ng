@@ -111,7 +111,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       this.windowRefService.nativeWindow.document.addEventListener("click", this.onDocumentClick.bind(this));
     }
 
-    this._modelChanged.pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$)).subscribe(value => {
+    this._modelChanged.pipe(debounceTime(200), takeUntil(this.destroyed$)).subscribe(value => {
       if (this.model.searchType !== SearchType.IMAGE && this.model.searchType !== undefined) {
         return;
       }
@@ -120,7 +120,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       this.selectedAutoCompleteItemIndex = -1;
       this.abortAutoComplete = false;
 
-      if (value && value.length >= 2) {
+      if (value && value.length > 0) {
         const query = this.model.text;
         this.loadingAutoCompleteItems = true;
 
@@ -345,6 +345,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       const selectedItem = this.autoCompleteGroups[this.selectedAutoCompleteGroup][this.selectedAutoCompleteItemIndex];
       if (selectedItem) {
         this.onAutoCompleteItemClicked(selectedItem).subscribe();
+        this.resetAutoCompleteItems();
         return;
       }
     }
