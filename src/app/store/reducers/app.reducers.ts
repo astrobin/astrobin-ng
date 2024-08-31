@@ -297,7 +297,9 @@ export function appReducer(state = initialAppState, action: All): AppState {
 
     case AppActionTypes.SAVE_IMAGE_REVISION_SUCCESS: {
       const imageIndex = state.images.findIndex(image => image.pk === action.payload.revision.image);
-      if (imageIndex === -1) return state; // If the image is not found, return the original state
+      if (imageIndex === -1) {
+        return state;
+      } // If the image is not found, return the original state
 
       const updatedImage = {
         ...state.images[imageIndex],
@@ -312,7 +314,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
         images: [
           ...state.images.slice(0, imageIndex),
           updatedImage,
-          ...state.images.slice(imageIndex + 1),
+          ...state.images.slice(imageIndex + 1)
         ]
       };
     }
@@ -320,7 +322,9 @@ export function appReducer(state = initialAppState, action: All): AppState {
 
     case AppActionTypes.PUBLISH_IMAGE_SUCCESS: {
       const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
-      if (imageIndex === -1) return state; // If the image is not found, return the original state
+      if (imageIndex === -1) {
+        return state;
+      } // If the image is not found, return the original state
 
       const updatedImage = {
         ...state.images[imageIndex],
@@ -332,7 +336,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
         images: [
           ...state.images.slice(0, imageIndex),
           updatedImage,
-          ...state.images.slice(imageIndex + 1),
+          ...state.images.slice(imageIndex + 1)
         ]
       };
     }
@@ -340,7 +344,9 @@ export function appReducer(state = initialAppState, action: All): AppState {
 
     case AppActionTypes.UNPUBLISH_IMAGE_SUCCESS: {
       const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
-      if (imageIndex === -1) return state; // If the image is not found, return the original state
+      if (imageIndex === -1) {
+        return state;
+      } // If the image is not found, return the original state
 
       const updatedImage = {
         ...state.images[imageIndex],
@@ -352,7 +358,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
         images: [
           ...state.images.slice(0, imageIndex),
           updatedImage,
-          ...state.images.slice(imageIndex + 1),
+          ...state.images.slice(imageIndex + 1)
         ]
       };
     }
@@ -364,7 +370,9 @@ export function appReducer(state = initialAppState, action: All): AppState {
 
       // Create a deep copy of the image object
       const imageIndex = state.images.findIndex(i => i.pk === imagePk);
-      if (imageIndex < 0) return state; // If image not found, return the original state
+      if (imageIndex < 0) {
+        return state;
+      } // If image not found, return the original state
 
       const image = {
         ...state.images[imageIndex],
@@ -389,21 +397,42 @@ export function appReducer(state = initialAppState, action: All): AppState {
         images: [
           ...state.images.slice(0, imageIndex),
           image,
-          ...state.images.slice(imageIndex + 1),
+          ...state.images.slice(imageIndex + 1)
         ]
       };
     }
 
     case AppActionTypes.DELETE_ORIGINAL_IMAGE_SUCCESS: {
       const imageIndex = state.images.findIndex(image => image.pk === action.payload.image.pk);
-      if (imageIndex === -1) return state; // If the image is not found, return the original state
+      if (imageIndex === -1) {
+        return state;
+      } // If the image is not found, return the original state
 
       return {
         ...state,
         images: [
           ...state.images.slice(0, imageIndex),
           action.payload.image,
-          ...state.images.slice(imageIndex + 1),
+          ...state.images.slice(imageIndex + 1)
+        ]
+      };
+    }
+
+    case AppActionTypes.DELETE_IMAGE_REVISION_SUCCESS: {
+      const imageIndex = state.images.findIndex(image => image.revisions.some(revision => revision.pk === action.payload.pk));
+      if (imageIndex === -1) {
+        return state;
+      } // If the image is not found, return the original state
+
+      const image = { ...state.images[imageIndex] };
+      image.revisions = image.revisions.filter(revision => revision.pk !== action.payload.pk);
+
+      return {
+        ...state,
+        images: [
+          ...state.images.slice(0, imageIndex),
+          image,
+          ...state.images.slice(imageIndex + 1)
         ]
       };
     }
