@@ -5,7 +5,7 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageService } from "@shared/services/image/image.service";
-import { DeleteOriginalImage, MarkImageAsFinal } from "@app/store/actions/image.actions";
+import { DeleteImageRevision, DeleteOriginalImage, MarkImageAsFinal } from "@app/store/actions/image.actions";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
@@ -77,6 +77,17 @@ import { TranslateService } from "@ngx-translate/core";
               <a
                 *ngIf="revision.label === ORIGINAL_REVISION_LABEL"
                 (click)="showDeleteOriginalConfirmation()"
+                astrobinEventPreventDefault
+                class="text-danger"
+                ngbDropdownItem
+                href="#"
+              >
+                {{ "Delete" | translate }}
+              </a>
+
+              <a
+                *ngIf="revision.label !== ORIGINAL_REVISION_LABEL && revision.label !== FINAL_REVISION_LABEL"
+                (click)="showDeleteRevisionConfirmation(revision.id)"
                 astrobinEventPreventDefault
                 class="text-danger"
                 ngbDropdownItem
@@ -193,7 +204,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
       ? (revision as ImageRevisionInterface).label
       : FINAL_REVISION_LABEL;
 
-    this.store$.dispatch(new MarkImageAsFinal({ pk: this.image.pk, revisionLabel: label }));
+    this.store$.dispatch(new MarkAsFinal({ pk: this.image.pk, revisionLabel: label }));
   }
 
   showDeleteOriginalConfirmation(): void {
@@ -211,5 +222,20 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
 
   deleteOriginal(): void {
     this.store$.dispatch(new DeleteOriginalImage({ pk: this.image.pk }));
+  }
+
+  showDeleteRevisionConfirmation(pk: ImageRevisionInterface["pk"]): void {
+    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const instance: ConfirmationDialogComponent = modalRef.componentInstance;
+    instance.message = this.translateService.instant("This will delete this revision. Your original image and all" +
+      " metadata will remain intact. This operation cannot be undone.");
+
+    modalRef.closed.subscribe(() => {
+      this.deleteRevision(pk);
+    });
+  }
+
+  deleteRevision(pk: ImageRevisionInterface["pk"]): void {
+    this.store$.dispatch(new DeleteImageRevision({ pk }));
   }
 }

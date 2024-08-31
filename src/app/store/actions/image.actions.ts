@@ -189,3 +189,23 @@ export class DeleteOriginalImageFailure implements PayloadActionInterface {
   constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
   }
 }
+
+export class DeleteImageRevision implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_IMAGE_REVISION;
+
+  constructor(public payload: { pk: ImageRevisionInterface["pk"] }) {
+  }
+}
+
+export class DeleteImageRevisionSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_IMAGE_REVISION_SUCCESS;
+
+  constructor(public payload: { pk: ImageRevisionInterface["pk"] }) {
+  }
+}
+export class DeleteImageRevisionFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_IMAGE_REVISION_FAILURE;
+
+  constructor(public payload: { pk: ImageRevisionInterface["pk"]; error: any }) {
+  }
+}

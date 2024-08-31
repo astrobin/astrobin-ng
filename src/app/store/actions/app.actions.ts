@@ -14,7 +14,8 @@ import {
   SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess,
   SaveImageSuccess,
   SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess,
-  DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess
+  DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess,
+  DeleteImageRevision, DeleteImageRevisionSuccess, DeleteImageRevisionFailure
 } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
@@ -76,6 +77,10 @@ export enum AppActionTypes {
   DELETE_ORIGINAL_IMAGE = "[App] Delete original image",
   DELETE_ORIGINAL_IMAGE_SUCCESS = "[App] Delete original image success",
   DELETE_ORIGINAL_IMAGE_FAILURE = "[App] Delete original image failure",
+
+  DELETE_IMAGE_REVISION = "[App] Delete image revision",
+  DELETE_IMAGE_REVISION_SUCCESS = "[App] Delete image revision success",
+  DELETE_IMAGE_REVISION_FAILURE = "[App] Delete image revision failure",
 
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_CANCEL = "[App] Load thumbnail cancel",
@@ -153,6 +158,9 @@ export type All =
   | DeleteOriginalImage
   | DeleteOriginalImageSuccess
   | DeleteOriginalImageFailure
+  | DeleteImageRevision
+  | DeleteImageRevisionSuccess
+  | DeleteImageRevisionFailure
   | LoadThumbnail
   | LoadThumbnailCancel
   | LoadThumbnailSuccess

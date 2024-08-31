@@ -133,4 +133,8 @@ export class ImageApiService extends BaseClassicApiService {
   deleteOriginal(pk: ImageInterface["pk"]): Observable<ImageInterface> {
     return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/delete-original/`, {});
   }
+
+  deleteRevision(pk: ImageRevisionInterface["pk"]): Observable<ImageInterface> {
+    return this.http.delete<ImageInterface>(`${this.configUrl}/image-revision/${pk}/`);
+  }
 }

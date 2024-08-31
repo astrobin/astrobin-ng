@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { DeleteOriginalImageFailure, DeleteOriginalImageSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -278,6 +278,48 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_ORIGINAL_IMAGE_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  DeleteImageRevision: Observable<DeleteImageRevisionSuccess | DeleteImageRevisionFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_IMAGE_REVISION),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.deleteRevision(action.payload.pk).pipe(
+          map(() => new DeleteImageRevisionSuccess({ pk: action.payload.pk })),
+          catchError(error => of(new DeleteImageRevisionFailure({ pk: action.payload.pk, error })))
+        )
+      )
+    )
+  );
+
+  DeleteImageRevisionSuccess: Observable<DeleteImageRevisionSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_IMAGE_REVISION_SUCCESS),
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant("The image revision has been deleted.")
+          );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  DeleteImageRevisionFailure: Observable<DeleteImageRevisionFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_IMAGE_REVISION_FAILURE),
         tap(error => {
           this.loadingService.setLoading(false);
         })
