@@ -4,7 +4,19 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, ForceCheckImageAutoLoad, LoadImage, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkAsFinal, MarkAsFinalFailure, MarkAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import {
+  ForceCheckImageAutoLoad,
+  LoadImage,
+  LoadImages,
+  LoadImagesSuccess,
+  LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess,
+  SaveImage,
+  SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess,
+  SaveImageSuccess,
+  SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess,
+  DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess,
+  DeleteImageRevision, DeleteImageRevisionSuccess, DeleteImageRevisionFailure
+} from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
@@ -58,9 +70,9 @@ export enum AppActionTypes {
   UNPUBLISH_IMAGE_SUCCESS = "[App] Unpublish image success",
   UNPUBLISH_IMAGE_FAILURE = "[App] Unpublish image failure",
 
-  MARK_AS_FINAL = "[App] Mark as final",
-  MARK_AS_FINAL_SUCCESS = "[App] Mark as final success",
-  MARK_AS_FINAL_FAILURE = "[App] Mark as final failure",
+  MARK_IMAGE_AS_FINAL = "[App] Mark image as final",
+  MARK_IMAGE_AS_FINAL_SUCCESS = "[App] Mark image as final success",
+  MARK_IMAGE_AS_FINAL_FAILURE = "[App] Mark image as final failure",
 
   DELETE_ORIGINAL_IMAGE = "[App] Delete original image",
   DELETE_ORIGINAL_IMAGE_SUCCESS = "[App] Delete original image success",
@@ -140,9 +152,9 @@ export type All =
   | UnpublishImage
   | UnpublishImageSuccess
   | UnpublishImageFailure
-  | MarkAsFinal
-  | MarkAsFinalSuccess
-  | MarkAsFinalFailure
+  | MarkImageAsFinal
+  | MarkImageAsFinalSuccess
+  | MarkImageAsFinalFailure
   | DeleteOriginalImage
   | DeleteOriginalImageSuccess
   | DeleteOriginalImageFailure

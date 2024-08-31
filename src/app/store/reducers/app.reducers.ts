@@ -364,7 +364,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
     }
 
 
-    case AppActionTypes.MARK_AS_FINAL_SUCCESS: {
+    case AppActionTypes.MARK_IMAGE_AS_FINAL_SUCCESS: {
       const imagePk = action.payload.pk;
       const revisionLabel = action.payload.revisionLabel;
 
