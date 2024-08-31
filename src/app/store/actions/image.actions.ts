@@ -81,6 +81,27 @@ export class SaveImageFailure implements PayloadActionInterface {
   }
 }
 
+export class SaveImageRevision implements PayloadActionInterface {
+  readonly type = AppActionTypes.SAVE_IMAGE_REVISION;
+
+  constructor(public payload: { revision: Partial<ImageRevisionInterface> }) {
+  }
+}
+
+export class SaveImageRevisionSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.SAVE_IMAGE_REVISION_SUCCESS;
+
+  constructor(public payload: { revision: ImageRevisionInterface }) {
+  }
+}
+
+export class SaveImageRevisionFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.SAVE_IMAGE_REVISION_FAILURE;
+
+  constructor(public payload: { revision: Partial<ImageRevisionInterface>; error: any }) {
+  }
+}
+
 export class PublishImage implements PayloadActionInterface {
   readonly type = AppActionTypes.PUBLISH_IMAGE;
 

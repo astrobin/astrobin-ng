@@ -295,6 +295,27 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.SAVE_IMAGE_REVISION_SUCCESS: {
+      const updatedImage: ImageInterface = {
+        ...state.images.find(image => image.pk === action.payload.revision.image),
+      };
+
+      const updatedRevision = updatedImage.revisions.find(revision => revision.pk === action.payload.revision.pk);
+
+      updatedImage.revisions = [
+        ...updatedImage.revisions.filter(revision => revision.pk !== action.payload.revision.pk),
+        action.payload.revision
+      ].sort((a, b) => a.uploaded > b.uploaded ? -1 : 1);
+
+      return {
+        ...state,
+        images: [
+          ...state.images.filter(image => image.pk !== action.payload.revision.image),
+          updatedImage
+        ]
+      };
+    }
+
     case AppActionTypes.PUBLISH_IMAGE_SUCCESS: {
       const updatedImage: ImageInterface = {
         ...state.images.find(image => image.pk === action.payload.pk),

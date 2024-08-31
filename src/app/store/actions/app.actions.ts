@@ -11,7 +11,7 @@ import {
   LoadImagesSuccess,
   LoadImageSuccess, MarkAsFinal, MarkAsFinalFailure, MarkAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess,
   SaveImage,
-  SaveImageFailure,
+  SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess,
   SaveImageSuccess,
   SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
 } from "@app/store/actions/image.actions";
@@ -86,6 +86,10 @@ export enum AppActionTypes {
   LOAD_IMAGE_REVISIONS = "[App] Load image revisions",
   LOAD_IMAGE_REVISIONS_SUCCESS = "[App] Load image revisions success",
 
+  SAVE_IMAGE_REVISION = "[App] Save image revision",
+  SAVE_IMAGE_REVISION_SUCCESS = "[App] Save image revision success",
+  SAVE_IMAGE_REVISION_FAILURE = "[App] Save image revision failure",
+
   PUBLISH_IMAGE = "[App] Publish image",
   PUBLISH_IMAGE_SUCCESS = "[App] Publish image success",
   PUBLISH_IMAGE_FAILURE = "[App] Publish image failure",
@@ -159,6 +163,9 @@ export type All =
   | SaveImageFailure
   | LoadImages
   | LoadImagesSuccess
+  | SaveImageRevision
+  | SaveImageRevisionSuccess
+  | SaveImageRevisionFailure
   | PublishImage
   | PublishImageSuccess
   | PublishImageFailure

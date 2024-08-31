@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkAsFinalFailure, MarkAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkAsFinalFailure, MarkAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -69,6 +69,47 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.SAVE_IMAGE_FAILURE),
+        map(action => action.payload.error),
+        tap(error => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.error(
+            this.translateService.instant("The server responded with an error: " + error.statusText)
+          );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  SaveImageRevision: Observable<SaveImageRevisionSuccess | SaveImageRevisionFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.SAVE_IMAGE_REVISION),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.updateImageRevision(action.payload.revision).pipe(
+          map(updatedRevision => new SaveImageRevisionSuccess({ revision: updatedRevision })),
+          catchError(error => of(new SaveImageRevisionFailure({ revision: action.payload.revision, error })))
+        )
+      )
+    )
+  );
+
+  SaveImageRevisionSuccess: Observable<SaveImageRevisionSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.SAVE_IMAGE_REVISION_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  SaveImageRevisionFailure: Observable<SaveImageRevisionFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.SAVE_IMAGE_REVISION_FAILURE),
         map(action => action.payload.error),
         tap(error => {
           this.loadingService.setLoading(false);

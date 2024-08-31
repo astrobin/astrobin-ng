@@ -1,6 +1,7 @@
 @import "breakpoints";
 
-.dropdown {
+.dropdown,
+.dropup {
   @media (max-width: $xs-max) {
     &:not(.btn-no-block) {
       display: block;
@@ -15,6 +16,8 @@
   }
 
   .dropdown-toggle {
+    cursor: pointer;
+
     &.no-toggle {
       &::after {
         display: none;

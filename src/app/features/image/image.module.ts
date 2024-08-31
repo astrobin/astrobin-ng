@@ -25,6 +25,7 @@ import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/com
 import { imageFeatureKey, imageReducer } from "@features/image/store/image.reducer";
 import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
 import { SearchModule } from "@features/search/search.module";
+import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revision/image-edit-revision-page.component";
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { SearchModule } from "@features/search/search.module";
     AdditionalSolarSystemAcquisitionPropertiesModalComponent,
     CopyAcquisitionSessionsFromAnotherImageModalComponent,
     OverrideAcquisitionFormModalComponent,
-    ImportAcquisitionsFromCsvFormModalComponent
+    ImportAcquisitionsFromCsvFormModalComponent,
+    ImageEditRevisionPageComponent
   ],
   imports: [
     RouterModule.forChild(imageRoutes),
