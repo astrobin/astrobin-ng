@@ -296,60 +296,80 @@ export function appReducer(state = initialAppState, action: All): AppState {
     }
 
     case AppActionTypes.SAVE_IMAGE_REVISION_SUCCESS: {
-      const updatedImage: ImageInterface = {
-        ...state.images.find(image => image.pk === action.payload.revision.image),
+      const imageIndex = state.images.findIndex(image => image.pk === action.payload.revision.image);
+      if (imageIndex === -1) return state; // If the image is not found, return the original state
+
+      const updatedImage = {
+        ...state.images[imageIndex],
+        revisions: [
+          ...state.images[imageIndex].revisions.filter(revision => revision.pk !== action.payload.revision.pk),
+          action.payload.revision
+        ].sort((a, b) => a.uploaded > b.uploaded ? -1 : 1)
       };
-
-      const updatedRevision = updatedImage.revisions.find(revision => revision.pk === action.payload.revision.pk);
-
-      updatedImage.revisions = [
-        ...updatedImage.revisions.filter(revision => revision.pk !== action.payload.revision.pk),
-        action.payload.revision
-      ].sort((a, b) => a.uploaded > b.uploaded ? -1 : 1);
 
       return {
         ...state,
         images: [
-          ...state.images.filter(image => image.pk !== action.payload.revision.image),
-          updatedImage
+          ...state.images.slice(0, imageIndex),
+          updatedImage,
+          ...state.images.slice(imageIndex + 1),
         ]
       };
     }
 
+
     case AppActionTypes.PUBLISH_IMAGE_SUCCESS: {
-      const updatedImage: ImageInterface = {
-        ...state.images.find(image => image.pk === action.payload.pk),
+      const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
+      if (imageIndex === -1) return state; // If the image is not found, return the original state
+
+      const updatedImage = {
+        ...state.images[imageIndex],
         isWip: false
       };
 
       return {
         ...state,
         images: [
-          ...state.images.filter(image => image.pk !== action.payload.pk),
-          updatedImage
+          ...state.images.slice(0, imageIndex),
+          updatedImage,
+          ...state.images.slice(imageIndex + 1),
         ]
       };
     }
 
+
     case AppActionTypes.UNPUBLISH_IMAGE_SUCCESS: {
-      const updatedImage: ImageInterface = {
-        ...state.images.find(image => image.pk === action.payload.pk),
+      const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
+      if (imageIndex === -1) return state; // If the image is not found, return the original state
+
+      const updatedImage = {
+        ...state.images[imageIndex],
         isWip: true
       };
 
       return {
         ...state,
         images: [
-          ...state.images.filter(image => image.pk !== action.payload.pk),
-          updatedImage
+          ...state.images.slice(0, imageIndex),
+          updatedImage,
+          ...state.images.slice(imageIndex + 1),
         ]
       };
     }
 
+
     case AppActionTypes.MARK_AS_FINAL_SUCCESS: {
       const imagePk = action.payload.pk;
       const revisionLabel = action.payload.revisionLabel;
-      const image = state.images.find(i => i.pk === imagePk);
+
+      // Create a deep copy of the image object
+      const imageIndex = state.images.findIndex(i => i.pk === imagePk);
+      if (imageIndex < 0) return state; // If image not found, return the original state
+
+      const image = {
+        ...state.images[imageIndex],
+        revisions: state.images[imageIndex].revisions.map(revision => ({ ...revision }))
+      };
 
       if (revisionLabel === ORIGINAL_REVISION_LABEL) {
         image.isFinal = true;
@@ -363,11 +383,13 @@ export function appReducer(state = initialAppState, action: All): AppState {
         });
       }
 
+      // Return new state with the updated image
       return {
         ...state,
         images: [
-          ...state.images.filter(i => i.pk !== imagePk),
-          image
+          ...state.images.slice(0, imageIndex),
+          image,
+          ...state.images.slice(imageIndex + 1),
         ]
       };
     }

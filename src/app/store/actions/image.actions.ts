@@ -168,3 +168,4 @@ export class MarkAsFinalFailure implements PayloadActionInterface {
   constructor(public payload: { pk: ImageInterface["pk"]; revisionLabel: ImageRevisionInterface["label"]; error: any }) {
   }
 }
+

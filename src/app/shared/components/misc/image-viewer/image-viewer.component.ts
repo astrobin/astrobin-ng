@@ -327,7 +327,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       select(selectImage, image.pk),
       takeUntil(this._imageChanged$)
     ).subscribe((image: ImageInterface) => {
-      this.image = image;
+      this.image = { ...image };
     });
 
     this.changeDetectorRef.detectChanges();

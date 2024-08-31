@@ -218,7 +218,12 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.MARK_AS_FINAL_SUCCESS),
-        tap(() => this.loadingService.setLoading(false))
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant("The revision has been marked as final.")
+          );
+        })
       ),
     {
       dispatch: false
