@@ -16,6 +16,7 @@
   .loading {
     display: inline-block;
     height: 100%;
+    cursor: default;
 
     @media (max-width: $xs-max) {
       width: auto;

@@ -429,6 +429,7 @@ export class ImageViewerComponent
     // Updates to the current image.
     this.store$.pipe(
       select(selectImage, image.pk),
+      filter(image => !!image),
       takeUntil(this._imageChanged$)
     ).subscribe((image: ImageInterface) => {
       this.image = { ...image };
