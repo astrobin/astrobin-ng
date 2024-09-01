@@ -65,6 +65,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
           queryParams["i"],
           queryParams["r"] || FINAL_REVISION_LABEL,
           this.activatedRoute.snapshot.fragment?.includes("fullscreen"),
+          this.componentId,
           [],
           this.viewContainerRef
         );

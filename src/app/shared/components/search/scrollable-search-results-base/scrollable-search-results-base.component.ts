@@ -10,6 +10,7 @@ import { SearchModelInterface } from "@features/search/interfaces/search-model.i
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { SearchService } from "@features/search/services/search.service";
 
 @Component({
   selector: "astrobin-scrollable-search-results-base",
@@ -22,7 +23,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   next: string | null = null;
   results: T[] = null;
   lastResultsCount = 0;
-  pageSize = 100;
+  pageSize = SearchService.DEFAULT_PAGE_SIZE;
 
   @Input() model: SearchModelInterface;
   @Input() loadMoreOnScroll = true;

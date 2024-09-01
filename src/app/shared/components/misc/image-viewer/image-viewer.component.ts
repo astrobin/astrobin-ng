@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -18,7 +18,7 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { Observable, of, Subject } from "rxjs";
+import { fromEvent, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -40,12 +40,21 @@ enum SharingMode {
   HTML = "html"
 }
 
+export interface ImageViewerNavigationContextItem {
+  imageId: ImageInterface["hash"] | ImageInterface["pk"];
+  thumbnailUrl: string;
+}
+
+export type ImageViewerNavigationContext = ImageViewerNavigationContextItem[];
+
 @Component({
   selector: "astrobin-image-viewer",
   templateUrl: "./image-viewer.component.html",
   styleUrls: ["./image-viewer.component.scss"]
 })
-export class ImageViewerComponent extends BaseComponentDirective implements OnInit {
+export class ImageViewerComponent
+  extends BaseComponentDirective
+  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @Input()
   image: ImageInterface;
 
@@ -53,7 +62,10 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   revisionLabel = FINAL_REVISION_LABEL;
 
   @Input()
-  navigationContext: (ImageInterface["hash"] | ImageInterface["pk"])[];
+  searchComponentId: string;
+
+  @Input()
+  navigationContext: ImageViewerNavigationContext;
 
   // This is used to determine whether the view is fixed and occupying the entire screen.
   @Input()
@@ -69,13 +81,16 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   initialized = new EventEmitter<void>();
 
   @Output()
-  nearEndOfContext = new EventEmitter<void>();
+  nearEndOfContext = new EventEmitter<string>();
 
   @ViewChild("imageArea")
   imageArea: ElementRef;
 
   @ViewChild("dataArea")
   dataArea: ElementRef;
+
+  @ViewChild("navigationContextElement")
+  navigationContextElement: ElementRef;
 
   @ViewChild("nestedCommentsTemplate")
   nestedCommentsTemplate: TemplateRef<any>;
@@ -161,6 +176,12 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   private _imageChangedSubject = new Subject<ImageInterface>();
   private _imageChanged$ = this._imageChangedSubject.asObservable();
 
+  private _navigationContextChangedSubject = new Subject<void>();
+  public navigationContextChanged$ = this._navigationContextChangedSubject.asObservable();
+
+  private _navigationContextWheelEventSubscription: Subscription;
+  private _navigationContextScrollEventSubscription: Subscription;
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly deviceService: DeviceService,
@@ -230,6 +251,54 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.initialized.emit();
   }
 
+  ngAfterViewInit() {
+    this.initScrollHandling();
+  }
+
+  ngAfterViewChecked() {
+    if (this.navigationContextElement && !this._navigationContextWheelEventSubscription) {
+      this.initScrollHandling();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this._navigationContextWheelEventSubscription) {
+      this._navigationContextWheelEventSubscription.unsubscribe();
+    }
+
+    if (this._navigationContextScrollEventSubscription) {
+      this._navigationContextScrollEventSubscription.unsubscribe();
+    }
+  }
+
+  initScrollHandling() {
+    if (this.navigationContextElement) {
+      const el = this.navigationContextElement.nativeElement;
+
+      this._navigationContextWheelEventSubscription = fromEvent<WheelEvent>(el, "wheel")
+        .subscribe(event => {
+          const scrollAmount = event.deltaY;
+          if (scrollAmount) {
+            el.scrollLeft += scrollAmount;
+          }
+        });
+
+      this._navigationContextScrollEventSubscription = fromEvent<Event>(el, "scroll")
+        .pipe(throttleTime(200))
+        .subscribe(() => {
+          const maxScrollLeft = el.scrollWidth;
+          const currentScrollLeft = el.scrollLeft + el.clientWidth;
+
+          if (currentScrollLeft >= maxScrollLeft - el.clientWidth * 2) {
+            this.nearEndOfContext.emit(this.searchComponentId);
+          }
+        });
+
+      // Ensure that change detection runs to update the view
+      this.changeDetectorRef.detectChanges();
+    }
+  }
+
   computeImageAreaHeight(imageWidth: number, imageHeight: number): void {
     // These are used to determine the initial height of the image area: when loading this view on mobile, AstroBin does
     // not know how tall the image area should be. If we're initializing this view from a search view, we can pass the
@@ -283,11 +352,36 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  setNavigationContext(navigationContext: ImageViewerNavigationContext): void {
+    let currentScrollLeft = null;
+    const navigationContextLength = navigationContext.length;
+
+    if (this.navigationContextElement) {
+      currentScrollLeft = this.navigationContextElement.nativeElement.scrollLeft;
+    }
+
+    if (this.navigationContext) {
+      this.navigationContext.splice(0, this.navigationContext.length, ...navigationContext);
+    } else {
+      this.navigationContext = navigationContext;
+    }
+
+    if (currentScrollLeft !== null && navigationContextLength !== this.navigationContext.length) {
+      this.utilsService.delay(1).subscribe(() => {
+        this.navigationContextElement.nativeElement.scrollLeft = currentScrollLeft;
+      });
+    }
+
+    this._updateNavigationContextInformation();
+
+    this._navigationContextChangedSubject.next();
+  }
+
   setImage(
     image: ImageInterface,
     revisionLabel: ImageRevisionInterface["label"],
     fullscreenMode: boolean,
-    navigationContext: (ImageInterface["pk"] | ImageInterface["hash"])[],
+    navigationContext: ImageViewerNavigationContext,
     pushState: boolean
   ): void {
     if (this.dataArea) {
@@ -301,7 +395,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.imageLoaded = false;
     this.image = image;
     this.revisionLabel = revisionLabel;
-    this.navigationContext = [...navigationContext];
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
 
     this.updateSupportsFullscreen();
@@ -316,9 +409,20 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
 
     this.setMouseHoverImage();
-    this._updateNavigationContextInformation();
+    this.setNavigationContext(navigationContext);
     this._recordHit();
     this._setTitle();
+
+    if (this.navigationContextElement) {
+      this.windowRefService.scrollToElement(
+        `#image-viewer-context-${image.hash || image.pk}`,
+        {
+          behavior: "smooth",
+          block: "center",
+          inline: "center"
+        }
+      );
+    }
 
     this._imageChangedSubject.next(image);
 
@@ -434,13 +538,13 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @HostListener("document:keydown.arrowRight", ["$event"])
   onNextClicked(): void {
-    const imageId = this.navigationContext[this.currentIndex + 1];
+    const imageId = this.navigationContext[this.currentIndex + 1].imageId;
     this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
   }
 
   @HostListener("document:keydown.arrowLeft", ["$event"])
   onPreviousClicked(): void {
-    const imageId = this.navigationContext[this.currentIndex - 1];
+    const imageId = this.navigationContext[this.currentIndex - 1].imageId;
     this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
   }
 
@@ -681,6 +785,34 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     overlaySvgElement.style.top = `${offsetY}px`;
   }
 
+  protected navigationContextTrackByFn(
+    index: number,
+    item: ImageViewerNavigationContextItem
+  ): ImageViewerNavigationContextItem["imageId"] {
+    return item.imageId;
+  }
+
+  protected onNavigationContextClicked(index: number) {
+    const imageId = this.navigationContext[index].imageId;
+    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
+  }
+
+  protected scrollNavigationContextLeft(): void {
+    const el = this.navigationContextElement.nativeElement;
+    el.scrollBy({
+      left: -el.clientWidth,
+      behavior: "smooth"
+    });
+  }
+
+  protected scrollNavigationContextRight(): void {
+    const el = this.navigationContextElement.nativeElement;
+    el.scrollBy({
+      left: el.clientWidth,
+      behavior: "smooth"
+    });
+  }
+
   protected getSharingValue(sharingMode: SharingMode): string {
     if (!this.revision) {
       return "";
@@ -729,8 +861,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   private _updateCurrentImageIndexInNavigationContext(): void {
-    const byHash = this.navigationContext.indexOf(this.image.hash);
-    const byPk = this.navigationContext.indexOf("" + this.image.pk);
+    const byHash = this.navigationContext.findIndex(item => item.imageId === this.image.hash);
+    const byPk = this.navigationContext.findIndex(item => item.imageId === this.image.pk);
 
     this.currentIndex = byHash !== -1 ? byHash : byPk;
   }
@@ -738,15 +870,19 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   private _updateNavigationContextInformation(): void {
     const previousIndex = this.currentIndex;
 
-    this.hasOtherImages = this.navigationContext.filter(id => id !== this.image.hash && id !== this.image.pk).length > 0;
     this._updateCurrentImageIndexInNavigationContext();
+
+    this.hasOtherImages = this.navigationContext.filter(item =>
+      item.imageId !== this.image.hash &&
+      item.imageId !== this.image.pk
+    ).length > 0;
 
     if (
       this.currentIndex > previousIndex &&
       this.navigationContext.length > 5
       && this.currentIndex === this.navigationContext.length - 5
     ) {
-      this.nearEndOfContext.emit();
+      this.nearEndOfContext.emit(this.searchComponentId);
     }
   }
 
