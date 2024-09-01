@@ -137,4 +137,11 @@ export class ImageApiService extends BaseClassicApiService {
   deleteRevision(pk: ImageRevisionInterface["pk"]): Observable<ImageInterface> {
     return this.http.delete<ImageInterface>(`${this.configUrl}/image-revision/${pk}/`);
   }
+
+  download(
+    pk: ImageInterface["pk"],
+    revisionLabel: ImageRevisionInterface["label"],
+    version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations"
+  ): void {
+  }
 }

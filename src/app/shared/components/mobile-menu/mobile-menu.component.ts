@@ -43,7 +43,7 @@ export class MobileMenuComponent extends BaseComponentDirective implements OnIni
     event.stopPropagation();
 
     this._offcanvasRef = this.offcanvasService.open(this.offcanvasTemplate, {
-      panelClass: "mobile-menu",
+      panelClass: "offcanvas-menu mobile-menu",
       position: this.position
     });
 
