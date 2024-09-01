@@ -222,6 +222,22 @@ export class ImageEditRevisionPageComponent
       disabled?: boolean;
     }[] = this.imageEditSettingsFieldsService.basicMouseHoverOptions();
 
+    const matchesOriginal = this.revision.w === this.image.w && this.revision.h === this.image.h;
+
+    const originalOption: {
+      value: MouseHoverImageOptions | string;
+      label: string;
+      disabled?: boolean;
+    } = {
+      value: "ORIGINAL",
+      label:
+        this.translateService.instant("Original") +
+        `: (${this.image.w}x${this.image.h}${
+          !matchesOriginal ? " " + this.translateService.instant("resolution not matching") : ""
+        })`,
+      disabled: !matchesOriginal
+    };
+
     const additionalOptions: {
       value: MouseHoverImageOptions | string,
       label: string,
@@ -239,7 +255,7 @@ export class ImageEditRevisionPageComponent
         clearable: false,
         label: this.imageEditSettingsFieldsService.mouseHoverImageLabel(),
         description: this.imageEditSettingsFieldsService.mouseHoverImageDescription(),
-        options: [...options, ...additionalOptions]
+        options: [...options, originalOption, ...additionalOptions]
       }
     };
   }
