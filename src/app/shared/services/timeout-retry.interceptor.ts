@@ -9,6 +9,10 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (req.url.includes("/api/v2/images/image")) {
+      return next.handle(req);
+    }
+
     if (req.method !== "GET") {
       return next.handle(req);
     }
