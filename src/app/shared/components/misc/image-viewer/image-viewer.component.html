@@ -413,7 +413,7 @@
 
     <div #navigationContextElement class="navigation-context">
       <div
-        *ngFor="let context of navigationContext; let i = index"
+        *ngFor="let context of navigationContext; let i = index; trackBy: navigationContextTrackByFn"
         (click)="onNavigationContextClicked(i)"
         class="navigation-context-item"
         [class.active]="context.imageId === image.pk || context.imageId === image.hash"

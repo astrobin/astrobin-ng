@@ -538,6 +538,12 @@
       flex-grow: 1;
       height: 100%;
       overflow: hidden;
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+
+      &::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, and Opera */
+      }
 
       .navigation-context-item {
         height: 100%;
@@ -571,6 +577,9 @@
       }
 
       .navigation-context {
+        overflow-x: auto;
+        overflow-y: hidden;
+
         .navigation-context-item {
           padding: 1rem 0.5rem;
         }

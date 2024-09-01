@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -18,7 +18,7 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { Observable, of, Subject } from "rxjs";
+import { fromEvent, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -52,7 +52,7 @@ export type ImageViewerNavigationContext = ImageViewerNavigationContextItem[];
   templateUrl: "./image-viewer.component.html",
   styleUrls: ["./image-viewer.component.scss"]
 })
-export class ImageViewerComponent extends BaseComponentDirective implements OnInit {
+export class ImageViewerComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnDestroy {
   @Input()
   image: ImageInterface;
 
@@ -171,6 +171,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   private _imageChangedSubject = new Subject<ImageInterface>();
   private _imageChanged$ = this._imageChangedSubject.asObservable();
 
+  private _navigationContextWheelEventSubscription: Subscription;
+  private _navigationContextScrollEventSubscription: Subscription;
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly deviceService: DeviceService,
@@ -240,6 +243,41 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.initialized.emit();
   }
 
+  ngAfterViewInit() {
+    if (this.navigationContextElement) {
+      const el = this.navigationContextElement.nativeElement;
+
+      this._navigationContextWheelEventSubscription = fromEvent<WheelEvent>(el, "wheel")
+        .subscribe(event => {
+          const scrollAmount = event.deltaY;
+          if (scrollAmount) {
+            el.scrollLeft += scrollAmount;
+          }
+        });
+
+      this._navigationContextScrollEventSubscription = fromEvent<Event>(el, "scroll")
+        .pipe(throttleTime(200))
+        .subscribe(() => {
+          const maxScrollLeft = el.scrollWidth;
+          const currentScrollLeft = el.scrollLeft + el.clientWidth;
+
+          if (currentScrollLeft >= maxScrollLeft - el.clientWidth * 2) {
+            this.nearEndOfContext.emit();
+          }
+        });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this._navigationContextWheelEventSubscription) {
+      this._navigationContextWheelEventSubscription.unsubscribe();
+    }
+
+    if (this._navigationContextScrollEventSubscription) {
+      this._navigationContextScrollEventSubscription.unsubscribe();
+    }
+  }
+
   computeImageAreaHeight(imageWidth: number, imageHeight: number): void {
     // These are used to determine the initial height of the image area: when loading this view on mobile, AstroBin does
     // not know how tall the image area should be. If we're initializing this view from a search view, we can pass the
@@ -301,7 +339,11 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       currentScrollLeft = this.navigationContextElement.nativeElement.scrollLeft;
     }
 
-    this.navigationContext = navigationContext;
+    if (this.navigationContext) {
+      this.navigationContext.splice(0, this.navigationContext.length, ...navigationContext);
+    } else {
+      this.navigationContext = navigationContext;
+    }
 
     if (currentScrollLeft !== null && navigationContextLength !== this.navigationContext.length) {
       this.utilsService.delay(1).subscribe(() => {
@@ -356,7 +398,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
           block: "center",
           inline: "center"
         }
-      )
+      );
     }
 
     this._imageChangedSubject.next(image);
@@ -720,6 +762,13 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     overlaySvgElement.style.top = `${offsetY}px`;
   }
 
+  protected navigationContextTrackByFn(
+    index: number,
+    item: ImageViewerNavigationContextItem
+  ): ImageViewerNavigationContextItem["imageId"] {
+    return item.imageId;
+  }
+
   protected onNavigationContextClicked(index: number) {
     const imageId = this.navigationContext[index].imageId;
     this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
@@ -739,13 +788,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
       left: el.clientWidth,
       behavior: "smooth"
     });
-
-    const maxScrollLeft = el.scrollWidth;
-    const currentScrollLeft = el.scrollLeft + el.clientWidth;
-
-    if (currentScrollLeft >= maxScrollLeft - el.clientWidth * 4) {
-      this.nearEndOfContext.emit();
-    }
   }
 
   protected getSharingValue(sharingMode: SharingMode): string {
