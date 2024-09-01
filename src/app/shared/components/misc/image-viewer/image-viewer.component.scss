@@ -562,19 +562,29 @@
       }
     }
 
-    &:hover {
+    @mixin navigation-context-wrapper-hover {
       height: 6rem;
 
       .scroll-left,
       .scroll-right {
-         padding: 1rem 2rem;
+        padding: 1rem 2rem;
       }
 
       .navigation-context {
         .navigation-context-item {
-          padding: 1rem .5rem;
+          padding: 1rem 0.5rem;
         }
       }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        @include navigation-context-wrapper-hover;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      @include navigation-context-wrapper-hover;
     }
 
     @media (max-width: $md-max) {
