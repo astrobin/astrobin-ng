@@ -213,7 +213,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
         image.hash || image.objectId,
         FINAL_REVISION_LABEL,
         false,
-        this.results.map(result => result.hash || result.objectId),
+        this.results.map(result => ({
+          imageId: result.hash || result.objectId,
+          thumbnailUrl: result.galleryThumbnail
+        })),
         this.viewContainerRef
       );
     } else {
@@ -223,7 +226,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
           image,
           FINAL_REVISION_LABEL,
           false,
-          this.results.map(result => result.hash || result.objectId),
+          this.results.map(result => ({
+            imageId: result.hash || result.objectId,
+            thumbnailUrl: result.galleryThumbnail
+          })),
           true
         );
         this.loadingService.setLoading(false);
@@ -232,7 +238,12 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
     activeImageViewer.instance.nearEndOfContext.subscribe(() => {
       this.loadMore().subscribe(() => {
-        activeImageViewer.instance.navigationContext = [...this.results.map(result => result.hash || result.objectId)];
+        activeImageViewer.instance.setNavigationContext([
+          ...this.results.map(result => ({
+            imageId: result.hash || result.objectId,
+            thumbnailUrl: result.galleryThumbnail
+          }))
+        ]);
       });
     });
   }

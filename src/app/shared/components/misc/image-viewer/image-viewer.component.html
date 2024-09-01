@@ -1,10 +1,28 @@
 <ng-container *ngIf="!!image; else loadingTemplate">
-  <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
+  <astrobin-mobile-menu
+    (menuClose)="onMobileMenuClose()"
+    (menuOpen)="onMobileMenuOpen()"
+    [titleTemplate]="titleTemplate"
+    [template]="navTemplate"
+    [templateContext]="{ $implicit: image }"
+  ></astrobin-mobile-menu>
 
-  <div class="data-area-container">
-    <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
-    <ng-container [ngTemplateOutlet]="buttonsAreaTemplate"></ng-container>
-  </div> <!-- data-area-container -->
+  <div
+    class="main-area"
+    [class.has-context]="!!navigationContext && navigationContext.length > 1"
+  >
+    <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
+
+    <div class="data-area-container">
+      <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
+      <ng-container [ngTemplateOutlet]="buttonsAreaTemplate"></ng-container>
+    </div> <!-- data-area-container -->
+  </div>
+
+  <ng-container
+    *ngIf="navigationContext && navigationContext.length > 1"
+    [ngTemplateOutlet]="navigationContextTemplate"
+  ></ng-container>
 </ng-container>
 
 <ng-template #loadingTemplate>
@@ -24,15 +42,11 @@
 </ng-template>
 
 <ng-template #imageAreaTemplate>
-  <div #imageArea class="image-area" [class.force-view-mousehover]="forceViewMouseHover">
-    <astrobin-mobile-menu
-      (menuClose)="onMobileMenuClose()"
-      (menuOpen)="onMobileMenuOpen()"
-      [titleTemplate]="titleTemplate"
-      [template]="navTemplate"
-      [templateContext]="{ $implicit: image }"
-    ></astrobin-mobile-menu>
-
+  <div
+    #imageArea
+    class="image-area"
+    [class.force-view-mousehover]="forceViewMouseHover"
+  >
     <button class="close-button" (click)="close()">
       <fa-icon
         *ngIf="showCloseButton"
@@ -229,7 +243,11 @@
 </ng-template>
 
 <ng-template #dataAreaTemplate>
-  <div #dataArea class="data-area" *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+  <div
+    #dataArea
+    *ngIf="currentUserWrapper$ | async as currentUserWrapper"
+    class="data-area"
+  >
     <astrobin-image-viewer-wip-banner
       *ngIf="image.isWip && currentUserWrapper.user?.id === image.user"
       [image]="image"
@@ -384,5 +402,32 @@
       class="w-100"
       alt=""
     />
+  </div>
+</ng-template>
+
+<ng-template #navigationContextTemplate>
+  <div class="navigation-context-wrapper">
+    <button (click)="scrollNavigationContextLeft()" class="scroll-left">
+      <fa-icon icon="chevron-circle-left"></fa-icon>
+    </button>
+
+    <div #navigationContextElement class="navigation-context">
+      <div
+        *ngFor="let context of navigationContext; let i = index"
+        (click)="onNavigationContextClicked(i)"
+        class="navigation-context-item"
+        [class.active]="context.imageId === image.pk || context.imageId === image.hash"
+        >
+        <img
+          [id]="'image-viewer-context-' + context.imageId"
+          [src]="context.thumbnailUrl"
+          alt=""
+        />
+      </div>
+    </div>
+
+    <button (click)="scrollNavigationContextRight()" class="scroll-right">
+      <fa-icon icon="chevron-circle-right"></fa-icon>
+    </button>
   </div>
 </ng-template>

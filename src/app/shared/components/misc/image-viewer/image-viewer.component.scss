@@ -84,398 +84,501 @@
   height: calc(100% - 4rem);
   background-color: var(--black);
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
   z-index: 1;
 
-  .image-area {
-    position: relative;
-    width: 60%;
+  .main-area {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
     height: 100%;
-    touch-action: manipulation;
-    pointer-events: auto;
-    background: black; // Real black as opposed to var(--black), for maximum contrast.
+    overflow: hidden;
 
-    @media (max-width: $md-max) {
-      width: 100%;
-      max-height: 66.67%;
-    }
+    .image-area {
+      position: relative;
+      width: 60%;
+      height: 100%;
+      touch-action: manipulation;
+      pointer-events: auto;
+      background: black; // Real black as opposed to var(--black), for maximum contrast.
 
-    .close-button,
-    .next-button,
-    .previous-button,
-    .additional-buttons,
-    .revisions-mobile-button {
-      position: absolute;
-    }
-
-    .close-button,
-    .next-button,
-    .previous-button,
-    .additional-buttons button,
-    .revisions-mobile-button {
-      background: transparent;
-      border: none;
-      color: var(--white);
-      font-size: 1.5rem;
-      cursor: pointer;
-      z-index: 1031;
-      opacity: 0;
-      pointer-events: none;
-      padding: .5rem;
-      transition: opacity 0.3s, transform 0.3s ease-in-out;
-
-      :focus-visible {
-        outline: none !important;
+      @media (max-width: $md-max) {
+        width: 100%;
+        max-height: 66.67%;
       }
-    }
 
-    .next-button,
-    .previous-button {
-      height: 50%;
-      padding: 1rem;
-      z-index: 1030; // Lower than the other buttons because they are tall.
-
-      &:focus-visible {
-        outline: none !important;
+      .close-button,
+      .next-button,
+      .previous-button,
+      .additional-buttons,
+      .revisions-mobile-button {
+        position: absolute;
       }
-    }
 
-    .close-button {
-      top: .75rem;
-      left: .75rem;
-    }
+      .close-button,
+      .next-button,
+      .previous-button,
+      .additional-buttons button,
+      .revisions-mobile-button {
+        background: transparent;
+        border: none;
+        color: var(--white);
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 1031;
+        opacity: 0;
+        pointer-events: none;
+        padding: .5rem;
+        transition: opacity 0.3s, transform 0.3s ease-in-out;
 
-    .additional-buttons {
-      top: .75rem;
-      right: .75rem;
-      display: flex;
-      gap: .5rem;
-      flex-wrap: nowrap;
+        &:focus-visible {
+          outline: none !important;
+        }
+      }
 
-      .force-view-mousehover-button {
+      .next-button,
+      .previous-button {
+        height: 50%;
+        padding: 1rem;
+        z-index: 1030; // Lower than the other buttons because they are tall.
+
+        &:focus-visible {
+          outline: none !important;
+        }
+      }
+
+      .close-button {
+        top: .75rem;
+        left: .75rem;
+      }
+
+      .additional-buttons {
+        top: .75rem;
+        right: .75rem;
+        display: flex;
+        gap: .5rem;
+        flex-wrap: nowrap;
+
+        .force-view-mousehover-button {
+          display: none;
+
+          &.active .ng-fa-icon {
+            color: var(--accentColor);
+          }
+        }
+      }
+
+      .next-button,
+      .previous-button {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .next-button {
+        right: 0;
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            transform: translateX(0.125rem) translateY(-50%);
+          }
+        }
+      }
+
+      .previous-button {
+        left: 0;
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            transform: translateX(-0.125rem) translateY(-50%);
+          }
+        }
+      }
+
+      .revisions-mobile-button {
+        bottom: .5rem;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        font-size: 1.5rem;
         display: none;
 
-        &.active .ng-fa-icon {
-          color: var(--accentColor);
+        @media (hover: none) and (pointer: coarse) {
+          pointer-events: auto;
+          display: block;
+          opacity: 1;
         }
       }
-    }
 
-    .next-button,
-    .previous-button {
-      top: 50%;
-      transform: translateY(-50%);
-    }
+      @media (max-width: $md-max) {
+        astrobin-loading-indicator,
+        astrobin-image.loading {
 
-    .next-button {
-      right: 0;
-
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          transform: translateX(0.125rem) translateY(-50%);
         }
       }
-    }
 
-    .previous-button {
-      left: 0;
+      ::ng-deep astrobin-image {
+        .astrobin-image {
+          width: auto;
+          height: auto;
+          max-height: 100%;
+          object-fit: contain;
+        }
 
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          transform: translateX(-0.125rem) translateY(-50%);
+        .video-js {
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+          max-height: 100%;
+        }
+
+        &.supports-fullscreen {
+          .astrobin-image {
+            cursor: zoom-in;
+          }
         }
       }
-    }
 
-    .revisions-mobile-button {
-      bottom: .5rem;
-      left: 0;
-      right: 0;
-      margin: 0 auto;
-      font-size: 1.5rem;
-      display: none;
-
-      @media (hover: none) and (pointer: coarse) {
-        pointer-events: auto;
-        display: block;
-        opacity: 1;
-      }
-    }
-
-    @media (max-width: $md-max) {
-      astrobin-loading-indicator,
-      astrobin-image.loading {
-
-      }
-    }
-
-    ::ng-deep astrobin-image {
-      .astrobin-image {
-        width: auto;
-        height: auto;
-        max-height: 100%;
-        object-fit: contain;
-      }
-
-      .video-js {
+      .mouse-hover-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         max-width: 100%;
         max-height: 100%;
-      }
 
-      &.supports-fullscreen {
-        .astrobin-image {
+        .mouse-hover {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          opacity: 0;
+          transition: opacity 0.3s;
           cursor: zoom-in;
         }
       }
-    }
 
-    .mouse-hover-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      max-width: 100%;
-      max-height: 100%;
-
-      .mouse-hover {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        opacity: 0;
-        transition: opacity 0.3s;
-        cursor: zoom-in;
-      }
-    }
-
-    .mouse-hover-svg-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-
-      .mouse-hover {
+      .mouse-hover-svg-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         position: absolute;
-        top: 0;
-        left: 0;
-        width: auto;
-        height: auto;
-        max-height: 100%;
-        object-fit: contain;
-        opacity: 0;
-        transition: opacity 0.3s;
-        cursor: zoom-in;
-        // Believe it or not, this is necessary to prevent the SVG to display with a white background.
-        color-scheme: none;
-      }
 
-      .mouse-hover-svg-overlay {
-        position: absolute;
-        bottom: .5rem;
-        right: .5rem;
-        background: rgba(0, 0, 0, .75);
-        opacity: 0;
-        transition: opacity 0.3s;
-        padding: .5rem .75rem;
-        font-size: .9rem;
+        .mouse-hover {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: auto;
+          height: auto;
+          max-height: 100%;
+          object-fit: contain;
+          opacity: 0;
+          transition: opacity 0.3s;
+          cursor: zoom-in;
+          // Believe it or not, this is necessary to prevent the SVG to display with a white background.
+          color-scheme: none;
+        }
 
-        @media (hover: hover) and (pointer: fine) {
-          &:hover {
-            opacity: 1;
+        .mouse-hover-svg-overlay {
+          position: absolute;
+          bottom: .5rem;
+          right: .5rem;
+          background: rgba(0, 0, 0, .75);
+          opacity: 0;
+          transition: opacity 0.3s;
+          padding: .5rem .75rem;
+          font-size: .9rem;
+
+          @media (hover: hover) and (pointer: fine) {
+            &:hover {
+              opacity: 1;
+            }
           }
         }
       }
-    }
 
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        .close-button,
-        .next-button,
-        .previous-button,
-        .additional-buttons button {
-          opacity: 1 !important;
-          pointer-events: auto;
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          .close-button,
+          .next-button,
+          .previous-button,
+          .additional-buttons button {
+            opacity: 1 !important;
+            pointer-events: auto;
+          }
         }
       }
-    }
 
-    &.hover {
-      .mouse-hover,
-      .mouse-hover-svg-overlay {
-        opacity: 1 !important;
-        pointer-events: auto;
-      }
-    }
-
-    &.force-view-mousehover {
-      @media (hover: none) and (pointer: coarse) {
+      &.hover {
         .mouse-hover,
         .mouse-hover-svg-overlay {
           opacity: 1 !important;
           pointer-events: auto;
         }
       }
-    }
 
-    ::ng-deep .mouse-hover {
-      background: transparent !important;
-    }
-
-    // The buttons are always visible on touch devices. The revisions are handled separately and activated
-    // by a button.
-    @media (hover: none) and (pointer: coarse) {
-      astrobin-image-viewer-revisions {
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s;
-      }
-
-      .close-button,
-      .next-button,
-      .previous-button,
-      .additional-buttons button {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .additional-buttons {
-        .force-view-mousehover-button {
-          display: block;
+      &.force-view-mousehover {
+        @media (hover: none) and (pointer: coarse) {
+          .mouse-hover,
+          .mouse-hover-svg-overlay {
+            opacity: 1 !important;
+            pointer-events: auto;
+          }
         }
       }
 
-      astrobin-image-viewer-revisions.show {
-        opacity: 1;
-        pointer-events: auto;
+      ::ng-deep .mouse-hover {
+        background: transparent !important;
       }
+
+      // The buttons are always visible on touch devices. The revisions are handled separately and activated
+      // by a button.
+      @media (hover: none) and (pointer: coarse) {
+        astrobin-image-viewer-revisions {
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.3s;
+        }
+
+        .close-button,
+        .next-button,
+        .previous-button,
+        .additional-buttons button {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        .additional-buttons {
+          .force-view-mousehover-button {
+            display: block;
+          }
+        }
+
+        astrobin-image-viewer-revisions.show {
+          opacity: 1;
+          pointer-events: auto;
+        }
+      }
+    }
+
+    .data-area-container {
+      position: relative;
+      width: 40%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      .data-area {
+        @include darker-background-texture;
+        height: 100%;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+
+        ::ng-deep {
+          .image-viewer-banner {
+            margin: -2rem -2rem 1rem -2rem;
+            padding: .5rem 2rem;
+            border-radius: 0;
+            box-shadow: none;
+          }
+        }
+
+        .description ::ng-deep {
+          display: block;
+          word-break: break-word;
+          overflow: hidden;
+
+          img {
+            max-width: 100%;
+            height: auto;
+
+            &.smiley {
+              height: 1rem;
+            }
+
+            &.loading {
+              height: 1rem;
+            }
+
+            &[data-src] {
+              cursor: zoom-in;
+            }
+          }
+        }
+
+        @media (max-width: $md-max) {
+          padding: 1rem .75rem;
+        }
+
+        @media (min-width: $lg-min) {
+          overflow-y: auto;
+        }
+      }
+
+      .buttons-area {
+        background: var(--black);
+        border-top: 1px solid var(--grey);
+        width: 100%;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.25rem;
+
+        .like,
+        .bookmark,
+        .follow,
+        .comment {
+          display: flex;
+          align-items: center;
+
+          ::ng-deep {
+            .ng-fa-icon,
+            .btn-link {
+              margin: 0 !important;
+              &:hover {
+                color: var(--lighterGrey);
+              }
+            }
+          }
+
+          > astrobin-toggle-property::ng-deep .btn,
+          > .btn {
+            height: 2.25rem;
+            padding: .5rem 1rem;
+
+            &:hover {
+              .ng-fa-icon,
+              .btn-link {
+                color: var(--lighterGrey);
+              }
+            }
+          }
+
+          > .count {
+            font-size: .85rem;
+            color: var(--lightGrey);
+            line-height: 1.25rem;
+          }
+        }
+
+        @media (max-width: $md-max) {
+          position: fixed;
+          bottom: 0;
+          padding: .5rem;
+
+          astrobin-toggle-property {
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      @media (max-width: $md-max) {
+        width: 100%;
+        height: auto;
+        padding-bottom: 77px; // 77px is the height of the buttons area.
+      }
+    }
+
+    @media (max-width: $md-max) {
+      overflow-y: auto;
+      flex-direction: column;
+      justify-content: flex-start;
     }
   }
 
-  .data-area-container {
-    position: relative;
-    width: 40%;
-    height: 100%;
+  .navigation-context-wrapper {
+    height: 2rem;
+    overflow: hidden;
+    white-space: nowrap;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--grey);
+    transition: height 0.3s ease;
 
-    .data-area {
-      @include darker-background-texture;
-      height: 100%;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
+    .scroll-left,
+    .scroll-right {
+      background: transparent;
+      color: var(--white);
+      cursor: pointer;
+      font-size: 1.5rem;
+      padding: 0 2rem;
+      border: 0;
+      border-radius: 50%;
+      transition: transform 0.3s ease-in-out;
 
-      ::ng-deep {
-        .image-viewer-banner {
-          margin: -2rem -2rem 1rem -2rem;
-          padding: .5rem 2rem;
-          border-radius: 0;
-          box-shadow: none;
-        }
-      }
-
-      .description ::ng-deep {
-        display: block;
-        word-break: break-word;
-        overflow: hidden;
-
-        img {
-          max-width: 100%;
-          height: auto;
-
-          &.smiley {
-            height: 1rem;
-          }
-
-          &.loading {
-            height: 1rem;
-          }
-
-          &[data-src] {
-            cursor: zoom-in;
-          }
-        }
-      }
-
-      @media (max-width: $md-max) {
-        padding: 1rem .75rem;
-      }
-
-      @media (min-width: $lg-min) {
-        overflow-y: auto;
+      &:focus-visible {
+        outline: none !important;
       }
     }
 
-    .buttons-area {
-      background: var(--black);
-      border-top: 1px solid var(--grey);
-      width: 100%;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      gap: 1rem;
-      font-size: 1.25rem;
-
-      .like,
-      .bookmark,
-      .follow,
-      .comment {
-        display: flex;
-        align-items: center;
-
-        ::ng-deep {
-          .ng-fa-icon,
-          .btn-link {
-            margin: 0 !important;
-            &:hover {
-              color: var(--lighterGrey);
-            }
-          }
-        }
-
-        > astrobin-toggle-property::ng-deep .btn,
-        > .btn {
-          height: 2.25rem;
-          padding: .5rem 1rem;
-
-          &:hover {
-            .ng-fa-icon,
-            .btn-link {
-              color: var(--lighterGrey);
-            }
-          }
-        }
-
-        > .count {
-          font-size: .85rem;
-          color: var(--lightGrey);
-          line-height: 1.25rem;
+    .scroll-left {
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          transform: translateX(-.125rem);
         }
       }
+    }
 
-      @media (max-width: $md-max) {
-        position: fixed;
-        bottom: 0;
-        padding: .5rem;
+    .scroll-right {
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          transform: translateX(.125rem);
+        }
+      }
+    }
 
-        astrobin-toggle-property {
-          margin-bottom: 0;
+    .navigation-context {
+      flex-grow: 1;
+      height: 100%;
+      overflow: hidden;
+
+      .navigation-context-item {
+        height: 100%;
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 0 .5rem;
+
+        img {
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+
+          &:hover {
+            filter: brightness(1.5);
+          }
+        }
+
+        &.active {
+          background: var(--grey);
+        }
+      }
+    }
+
+    &:hover {
+      height: 6rem;
+
+      .scroll-left,
+      .scroll-right {
+         padding: 1rem 2rem;
+      }
+
+      .navigation-context {
+        .navigation-context-item {
+          padding: 1rem .5rem;
         }
       }
     }
 
     @media (max-width: $md-max) {
-      width: 100%;
-      height: auto;
-      padding-bottom: 77px; // 77px is the height of the buttons area.
+      display: none;
     }
   }
 
@@ -503,12 +606,6 @@
       top: calc(.3rem + 3.5rem + 3rem);
       height: calc(100% - 84px);
     }
-  }
-
-  @media (max-width: $md-max) {
-    overflow-y: auto;
-    flex-direction: column;
-    justify-content: flex-start;
   }
 }
 

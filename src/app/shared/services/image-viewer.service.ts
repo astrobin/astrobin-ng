@@ -9,7 +9,7 @@ import { LoadImage } from "@app/store/actions/image.actions";
 import { Observable } from "rxjs";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { filter, switchMap, take } from "rxjs/operators";
-import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
+import { ImageViewerComponent, ImageViewerNavigationContext } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -36,7 +36,7 @@ export class ImageViewerService extends BaseService {
     imageId: ImageInterface["hash"] | ImageInterface["pk"],
     revisionLabel: ImageRevisionInterface["label"],
     fullscreenMode: boolean,
-    navigationContext: (ImageInterface["hash"] | ImageInterface["pk"])[],
+    navigationContext: ImageViewerNavigationContext,
     viewContainerRef: ViewContainerRef
   ): ComponentRef<ImageViewerComponent> {
     if (this.activeImageViewer) {

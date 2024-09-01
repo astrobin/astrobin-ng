@@ -40,6 +40,13 @@ enum SharingMode {
   HTML = "html"
 }
 
+export interface ImageViewerNavigationContextItem {
+  imageId: ImageInterface["hash"] | ImageInterface["pk"];
+  thumbnailUrl: string;
+}
+
+export type ImageViewerNavigationContext = ImageViewerNavigationContextItem[];
+
 @Component({
   selector: "astrobin-image-viewer",
   templateUrl: "./image-viewer.component.html",
@@ -53,7 +60,7 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   revisionLabel = FINAL_REVISION_LABEL;
 
   @Input()
-  navigationContext: (ImageInterface["hash"] | ImageInterface["pk"])[];
+  navigationContext: ImageViewerNavigationContext;
 
   // This is used to determine whether the view is fixed and occupying the entire screen.
   @Input()
@@ -76,6 +83,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @ViewChild("dataArea")
   dataArea: ElementRef;
+
+  @ViewChild("navigationContextElement")
+  navigationContextElement: ElementRef;
 
   @ViewChild("nestedCommentsTemplate")
   nestedCommentsTemplate: TemplateRef<any>;
@@ -283,11 +293,30 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  setNavigationContext(navigationContext: ImageViewerNavigationContext): void {
+    let currentScrollLeft = null;
+    const navigationContextLength = navigationContext.length;
+
+    if (this.navigationContextElement) {
+      currentScrollLeft = this.navigationContextElement.nativeElement.scrollLeft;
+    }
+
+    this.navigationContext = navigationContext;
+
+    if (currentScrollLeft !== null && navigationContextLength !== this.navigationContext.length) {
+      this.utilsService.delay(1).subscribe(() => {
+        this.navigationContextElement.nativeElement.scrollLeft = currentScrollLeft;
+      });
+    }
+
+    this._updateNavigationContextInformation();
+  }
+
   setImage(
     image: ImageInterface,
     revisionLabel: ImageRevisionInterface["label"],
     fullscreenMode: boolean,
-    navigationContext: (ImageInterface["pk"] | ImageInterface["hash"])[],
+    navigationContext: ImageViewerNavigationContext,
     pushState: boolean
   ): void {
     if (this.dataArea) {
@@ -301,7 +330,6 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     this.imageLoaded = false;
     this.image = image;
     this.revisionLabel = revisionLabel;
-    this.navigationContext = [...navigationContext];
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
 
     this.updateSupportsFullscreen();
@@ -316,9 +344,20 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     }
 
     this.setMouseHoverImage();
-    this._updateNavigationContextInformation();
+    this.setNavigationContext(navigationContext);
     this._recordHit();
     this._setTitle();
+
+    if (this.navigationContextElement) {
+      this.windowRefService.scrollToElement(
+        `#image-viewer-context-${image.hash || image.pk}`,
+        {
+          behavior: "smooth",
+          block: "center",
+          inline: "center"
+        }
+      )
+    }
 
     this._imageChangedSubject.next(image);
 
@@ -434,13 +473,13 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
 
   @HostListener("document:keydown.arrowRight", ["$event"])
   onNextClicked(): void {
-    const imageId = this.navigationContext[this.currentIndex + 1];
+    const imageId = this.navigationContext[this.currentIndex + 1].imageId;
     this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
   }
 
   @HostListener("document:keydown.arrowLeft", ["$event"])
   onPreviousClicked(): void {
-    const imageId = this.navigationContext[this.currentIndex - 1];
+    const imageId = this.navigationContext[this.currentIndex - 1].imageId;
     this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
   }
 
@@ -681,6 +720,34 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
     overlaySvgElement.style.top = `${offsetY}px`;
   }
 
+  protected onNavigationContextClicked(index: number) {
+    const imageId = this.navigationContext[index].imageId;
+    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
+  }
+
+  protected scrollNavigationContextLeft(): void {
+    const el = this.navigationContextElement.nativeElement;
+    el.scrollBy({
+      left: -el.clientWidth,
+      behavior: "smooth"
+    });
+  }
+
+  protected scrollNavigationContextRight(): void {
+    const el = this.navigationContextElement.nativeElement;
+    el.scrollBy({
+      left: el.clientWidth,
+      behavior: "smooth"
+    });
+
+    const maxScrollLeft = el.scrollWidth;
+    const currentScrollLeft = el.scrollLeft + el.clientWidth;
+
+    if (currentScrollLeft >= maxScrollLeft - el.clientWidth * 4) {
+      this.nearEndOfContext.emit();
+    }
+  }
+
   protected getSharingValue(sharingMode: SharingMode): string {
     if (!this.revision) {
       return "";
@@ -729,8 +796,8 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   private _updateCurrentImageIndexInNavigationContext(): void {
-    const byHash = this.navigationContext.indexOf(this.image.hash);
-    const byPk = this.navigationContext.indexOf("" + this.image.pk);
+    const byHash = this.navigationContext.findIndex(item => item.imageId === this.image.hash);
+    const byPk = this.navigationContext.findIndex(item => item.imageId === this.image.pk);
 
     this.currentIndex = byHash !== -1 ? byHash : byPk;
   }
@@ -738,8 +805,12 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   private _updateNavigationContextInformation(): void {
     const previousIndex = this.currentIndex;
 
-    this.hasOtherImages = this.navigationContext.filter(id => id !== this.image.hash && id !== this.image.pk).length > 0;
     this._updateCurrentImageIndexInNavigationContext();
+
+    this.hasOtherImages = this.navigationContext.filter(item =>
+      item.imageId !== this.image.hash &&
+      item.imageId !== this.image.pk
+    ).length > 0;
 
     if (
       this.currentIndex > previousIndex &&
