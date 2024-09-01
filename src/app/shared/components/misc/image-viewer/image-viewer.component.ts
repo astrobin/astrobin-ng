@@ -54,13 +54,15 @@ export type ImageViewerNavigationContext = ImageViewerNavigationContextItem[];
 })
 export class ImageViewerComponent
   extends BaseComponentDirective
-  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy
-{
+  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @Input()
   image: ImageInterface;
 
   @Input()
   revisionLabel = FINAL_REVISION_LABEL;
+
+  @Input()
+  searchComponentId: string;
 
   @Input()
   navigationContext: ImageViewerNavigationContext;
@@ -79,7 +81,7 @@ export class ImageViewerComponent
   initialized = new EventEmitter<void>();
 
   @Output()
-  nearEndOfContext = new EventEmitter<void>();
+  nearEndOfContext = new EventEmitter<string>();
 
   @ViewChild("imageArea")
   imageArea: ElementRef;
@@ -173,6 +175,9 @@ export class ImageViewerComponent
 
   private _imageChangedSubject = new Subject<ImageInterface>();
   private _imageChanged$ = this._imageChangedSubject.asObservable();
+
+  private _navigationContextChangedSubject = new Subject<void>();
+  public navigationContextChanged$ = this._navigationContextChangedSubject.asObservable();
 
   private _navigationContextWheelEventSubscription: Subscription;
   private _navigationContextScrollEventSubscription: Subscription;
@@ -285,7 +290,7 @@ export class ImageViewerComponent
           const currentScrollLeft = el.scrollLeft + el.clientWidth;
 
           if (currentScrollLeft >= maxScrollLeft - el.clientWidth * 2) {
-            this.nearEndOfContext.emit();
+            this.nearEndOfContext.emit(this.searchComponentId);
           }
         });
 
@@ -368,6 +373,8 @@ export class ImageViewerComponent
     }
 
     this._updateNavigationContextInformation();
+
+    this._navigationContextChangedSubject.next();
   }
 
   setImage(
@@ -875,7 +882,7 @@ export class ImageViewerComponent
       this.navigationContext.length > 5
       && this.currentIndex === this.navigationContext.length - 5
     ) {
-      this.nearEndOfContext.emit();
+      this.nearEndOfContext.emit(this.searchComponentId);
     }
   }
 

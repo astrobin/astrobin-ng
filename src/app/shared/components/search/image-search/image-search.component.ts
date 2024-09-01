@@ -12,7 +12,7 @@ import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { take, takeUntil, tap } from "rxjs/operators";
+import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -213,6 +213,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
         image.hash || image.objectId,
         FINAL_REVISION_LABEL,
         false,
+        this.componentId,
         this.results.map(result => ({
           imageId: result.hash || result.objectId,
           thumbnailUrl: result.galleryThumbnail
@@ -222,6 +223,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     } else {
       this.loadingService.setLoading(true);
       this.imageViewerService.loadImage(image.hash || image.objectId).subscribe(image => {
+        activeImageViewer.instance.searchComponentId = this.componentId;
         activeImageViewer.instance.setImage(
           image,
           FINAL_REVISION_LABEL,
@@ -236,7 +238,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       });
     }
 
-    activeImageViewer.instance.nearEndOfContext.subscribe(() => {
+    activeImageViewer.instance.nearEndOfContext.pipe(
+      filter((searchComponentId: string) => searchComponentId === this.componentId),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
       this.loadMore().subscribe(() => {
         activeImageViewer.instance.setNavigationContext([
           ...this.results.map(result => ({

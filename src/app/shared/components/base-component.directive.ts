@@ -13,6 +13,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Directive()
 export class BaseComponentDirective implements OnInit, OnDestroy {
+  readonly componentId: string;
+
   title: string;
   destroyedSubject = new ReplaySubject<void>(1);
   destroyed$ = this.destroyedSubject.asObservable();
@@ -46,6 +48,8 @@ export class BaseComponentDirective implements OnInit, OnDestroy {
   protected mobileMenuOpen: boolean;
 
   constructor(public readonly store$: Store) {
+    this.componentId = Math.random().toString(36).substring(2);
+
     this.currentUser$ = this.store$
       .select(selectCurrentUser)
       .pipe(takeUntil(this.destroyed$), distinctUntilKeyChangedOrNull("id"));

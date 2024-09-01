@@ -36,6 +36,7 @@ export class ImageViewerService extends BaseService {
     imageId: ImageInterface["hash"] | ImageInterface["pk"],
     revisionLabel: ImageRevisionInterface["label"],
     fullscreenMode: boolean,
+    searchComponentId: string,
     navigationContext: ImageViewerNavigationContext,
     viewContainerRef: ViewContainerRef
   ): ComponentRef<ImageViewerComponent> {
@@ -46,6 +47,7 @@ export class ImageViewerService extends BaseService {
     this.activeImageViewer = viewContainerRef.createComponent(ImageViewerComponent);
     this.activeImageViewer.instance.showCloseButton = true;
     this.activeImageViewer.instance.fullscreenMode = true;
+    this.activeImageViewer.instance.searchComponentId = searchComponentId;
 
     this.activeImageViewer.instance.initialized.pipe(
       switchMap(() => this.loadImage(imageId))
