@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -52,7 +52,10 @@ export type ImageViewerNavigationContext = ImageViewerNavigationContextItem[];
   templateUrl: "./image-viewer.component.html",
   styleUrls: ["./image-viewer.component.scss"]
 })
-export class ImageViewerComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnDestroy {
+export class ImageViewerComponent
+  extends BaseComponentDirective
+  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy
+{
   @Input()
   image: ImageInterface;
 
@@ -244,6 +247,26 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
   }
 
   ngAfterViewInit() {
+    this.initScrollHandling();
+  }
+
+  ngAfterViewChecked() {
+    if (this.navigationContextElement && !this._navigationContextWheelEventSubscription) {
+      this.initScrollHandling();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this._navigationContextWheelEventSubscription) {
+      this._navigationContextWheelEventSubscription.unsubscribe();
+    }
+
+    if (this._navigationContextScrollEventSubscription) {
+      this._navigationContextScrollEventSubscription.unsubscribe();
+    }
+  }
+
+  initScrollHandling() {
     if (this.navigationContextElement) {
       const el = this.navigationContextElement.nativeElement;
 
@@ -265,16 +288,9 @@ export class ImageViewerComponent extends BaseComponentDirective implements OnIn
             this.nearEndOfContext.emit();
           }
         });
-    }
-  }
 
-  ngOnDestroy() {
-    if (this._navigationContextWheelEventSubscription) {
-      this._navigationContextWheelEventSubscription.unsubscribe();
-    }
-
-    if (this._navigationContextScrollEventSubscription) {
-      this._navigationContextScrollEventSubscription.unsubscribe();
+      // Ensure that change detection runs to update the view
+      this.changeDetectorRef.detectChanges();
     }
   }
 
