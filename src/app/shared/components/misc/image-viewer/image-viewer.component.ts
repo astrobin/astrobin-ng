@@ -11,7 +11,7 @@ import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageService } from "@shared/services/image/image.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { SearchService } from "@features/search/services/search.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
@@ -208,7 +208,8 @@ export class ImageViewerComponent
     public readonly renderer: Renderer2,
     public readonly lightbox: Lightbox,
     public readonly lightboxEvent: LightboxEvent,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);
   }
@@ -256,6 +257,7 @@ export class ImageViewerComponent
 
   ngAfterViewInit() {
     this.initScrollHandling();
+    this.autoOpenComments();
   }
 
   ngAfterViewChecked() {
@@ -299,6 +301,13 @@ export class ImageViewerComponent
 
       // Ensure that change detection runs to update the view
       this.changeDetectorRef.detectChanges();
+    }
+  }
+
+  autoOpenComments(): void {
+    const fragment = this.activatedRoute.snapshot.fragment;
+    if (fragment && fragment[0] === "c") {
+      this.openComments(null);
     }
   }
 
@@ -610,7 +619,9 @@ export class ImageViewerComponent
   }
 
   openComments(event: MouseEvent): void {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
 
     this.offcanvasService.open(this.nestedCommentsTemplate, {
       position: this.deviceService.offcanvasPosition(),
