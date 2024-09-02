@@ -29,7 +29,7 @@ export class ImageUserCollectionsResolver implements Resolve<CollectionInterface
       filter((currentUser: UserInterface) => !!currentUser),
       take(1),
       map((currentUser: UserInterface) => currentUser.id),
-      switchMap((currentUserId: number) => this.collectionApiService.getAll(currentUserId)),
+      switchMap((currentUserId: number) => this.collectionApiService.getAll({ user: currentUserId })),
       first(),
       catchError(() => [])
     );

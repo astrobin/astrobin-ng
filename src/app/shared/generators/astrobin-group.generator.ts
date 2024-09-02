@@ -17,7 +17,8 @@ export class AstroBinGroupGenerator {
       invitedUsers: [],
       joinRequests: [],
       images: [],
-      forum: 1
+      forum: 1,
+      members: [1],
     };
   }
 }

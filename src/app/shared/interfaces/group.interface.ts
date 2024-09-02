@@ -1,3 +1,5 @@
+import { UserInterface } from "@shared/interfaces/user.interface";
+
 export enum GroupCategory {
   PROFESSIONAL_NETWORK = "PROFESSIONAL_NETWORK",
   CLUB_OR_ASSOCIATION = "CLUB_OR_ASSOCIATION",
@@ -15,17 +17,18 @@ export interface GroupInterface {
   id: number;
   dateCreated: string;
   dateUpdated: string;
-  creator: number;
-  owner: number;
+  creator: UserInterface["id"];
+  owner: UserInterface["id"];
   name: string;
   description?: string;
   category: GroupCategory;
   public: boolean;
   moderated: boolean;
   autosubmission: boolean;
-  moderators: number[];
-  invitedUsers: number[];
-  joinRequests: number[];
+  moderators: UserInterface["id"][];
+  invitedUsers: UserInterface["id"][];
+  joinRequests: UserInterface["id"][];
   images: number[];
   forum: number;
+  members: UserInterface["id"][];
 }

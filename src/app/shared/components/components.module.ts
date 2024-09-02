@@ -133,6 +133,7 @@ import { LightboxModule } from "ngx-lightbox";
 import { ImageViewerWipBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-wip-banner.component";
 import { ImageViewerMenuComponent } from "@shared/components/misc/image-viewer/image-viewer-menu";
 import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/loading-dialog.component";
+import { ImageViewerGroupsAndCollectionsComponent } from "@shared/components/misc/image-viewer/image-viewer-groups-and-collections.component";
 
 const modules = [
   CommonModule,
@@ -219,6 +220,7 @@ const components = [
   ImageViewerAstrometryComponent,
   ImageViewerEquipmentComponent,
   ImageViewerRevisionsComponent,
+  ImageViewerGroupsAndCollectionsComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,

@@ -12,6 +12,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
+import { GroupInterface } from "@shared/interfaces/group.interface";
+import { CollectionInterface } from "@shared/interfaces/collection.interface";
 
 export interface AppState {
   // Weather the app has been initialized.
@@ -63,8 +65,14 @@ export interface AppState {
   // All seen toggle properties.
   toggleProperties: TogglePropertyInterface[];
 
-  // all seen remote source affiliates.
+  // All seen remote source affiliates.
   remoteSourceAffiliates: RemoteSourceAffiliateInterface[] | null;
+
+  // All seen groups.
+  groups: GroupInterface[] | null;
+
+  // All seen collections.
+  collections: CollectionInterface[] | null;
 }
 
 export const initialAppState: AppState = {
@@ -85,7 +93,9 @@ export const initialAppState: AppState = {
   createLocationAddTag: null,
   nestedComments: null,
   toggleProperties: [],
-  remoteSourceAffiliates: null
+  remoteSourceAffiliates: null,
+  groups: null,
+  collections: null
 };
 
 function handleCreateTogglePropertySuccess(
@@ -567,6 +577,20 @@ export function appReducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         remoteSourceAffiliates: action.payload.affiliates
+      };
+    }
+
+    case AppActionTypes.LOAD_GROUPS_SUCCESS: {
+      return {
+        ...state,
+        groups: action.payload.groups
+      };
+    }
+
+    case AppActionTypes.LOAD_COLLECTIONS_SUCCESS: {
+      return {
+        ...state,
+        collections: action.payload.collections
       };
     }
 

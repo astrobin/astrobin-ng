@@ -29,6 +29,8 @@ import { TogglePropertyEffects } from "@app/store/effects/toggle-property.effect
 import { initialSearchState, searchReducer, SearchState } from "@features/search/state/state.reducer";
 import { SearchEffects } from "@features/search/state/search.effects";
 import { RemoteSourceAffiliatesEffects } from "@app/store/effects/remote-source-affiliates.effects";
+import { GroupEffects } from "@app/store/effects/group.effect";
+import { CollectionEffects } from "@app/store/effects/collection.effects";
 
 export interface MainState {
   app: AppState;
@@ -74,5 +76,7 @@ export const mainStateEffects = [
   TelescopeEffects,
   ThumbnailEffects,
   TogglePropertyEffects,
-  RemoteSourceAffiliatesEffects
+  RemoteSourceAffiliatesEffects,
+  GroupEffects,
+  CollectionEffects
 ];

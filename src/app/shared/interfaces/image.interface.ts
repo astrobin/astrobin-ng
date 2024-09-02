@@ -19,6 +19,7 @@ import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
 import { FilterInterface } from "@shared/interfaces/filter.interface";
+import { CollectionInterface } from "@shared/interfaces/collection.interface";
 
 export enum AcquisitionType {
   REGULAR = "REGULAR",
@@ -230,6 +231,7 @@ export interface ImageInterface {
   dataSource: DataSource;
   remoteSource?: string;
   partOfGroupSet: GroupInterface["id"][];
+  collections: CollectionInterface["id"][];
   mouseHoverImage: MouseHoverImageOptions | ImageRevisionInterface["label"];
   allowComments: boolean;
   squareCropping: string;
