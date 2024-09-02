@@ -877,7 +877,16 @@ export class ImageViewerComponent
 
   private _updateCurrentImageIndexInNavigationContext(): void {
     const byHash = this.navigationContext.findIndex(item => item.imageId === this.image.hash);
-    const byPk = this.navigationContext.findIndex(item => item.imageId === this.image.pk);
+    const byPk = this.navigationContext.findIndex(item => {
+      try {
+        const itemImageIdAsNumber = parseInt(item.imageId + "", 10);
+        const imagePkAsNumber = parseInt(this.image.pk + "", 10);
+        return itemImageIdAsNumber === imagePkAsNumber;
+      } catch (e) {
+        return -1;
+      }
+      }
+    );
 
     this.currentIndex = byHash !== -1 ? byHash : byPk;
   }
