@@ -359,6 +359,7 @@
 <ng-template #nestedCommentsTemplate let-offcanvas>
   <div class="offcanvas-body">
     <astrobin-nested-comments
+      *ngIf="imageContentType; else loadingTemplate"
       (close)="offcanvas.dismiss()"
       [autoStartTopLevelStrategy]="NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS"
       [contentType]="imageContentType"
