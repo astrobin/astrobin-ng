@@ -235,6 +235,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
           true
         );
         this.loadingService.setLoading(false);
+      }, () => {
+        this.router.navigateByUrl("/404", { skipLocationChange: true });
       });
     }
 

@@ -7,14 +7,17 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { filter, take } from "rxjs/operators";
-import { UnpublishImage, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { DeleteImage, DeleteImageFailure, DeleteImageSuccess, UnpublishImage, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageService } from "@shared/services/image/image.service";
 import { environment } from "@env/environment";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { TranslateService } from "@ngx-translate/core";
+import { ModalService } from "@shared/services/modal.service";
 
 @Component({
   selector: "astrobin-image-viewer-menu",
@@ -52,6 +55,15 @@ import { DeviceService } from "@shared/services/device.service";
           [class]="itemClass"
         >
           {{ "Move to staging area" | translate }}
+        </a>
+
+        <a
+          astrobinEventPreventDefault
+          astrobinEventStopPropagation
+          (click)="delete()"
+          [class]="itemClass + ' text-danger'"
+        >
+          {{ "Delete" | translate }}
         </a>
       </ng-container>
 
@@ -197,6 +209,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
   @ViewChild("downloadOffcanvasTemplate") downloadOffcanvasTemplate: TemplateRef<any>;
 
   protected revision: ImageInterface | ImageRevisionInterface;
+  protected readonly DownloadLimitationOptions = DownloadLimitationOptions;
+  protected readonly ImageAlias = ImageAlias;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -206,7 +220,9 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     public readonly imageService: ImageService,
     public readonly windowRefService: WindowRefService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly modalService: ModalService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
@@ -231,6 +247,29 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     this.store$.dispatch(new UnpublishImage({ pk: this.image.pk }));
   }
 
+  delete() {
+    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const instance: ConfirmationDialogComponent = modalRef.componentInstance;
+
+    instance.message = this.translateService.instant(
+      "Your image will be deleted along with all revisions and metadata."
+    );
+
+    modalRef.closed.subscribe(() => {
+      const loadingModalRef: NgbModalRef = this.modalService.openLoadingDialog();
+
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_IMAGE_SUCCESS, AppActionTypes.DELETE_IMAGE_FAILURE), // Listen for both success and failure
+        filter((action: DeleteImageSuccess | DeleteImageFailure) => action.payload.pk === this.image.pk),
+        take(1)
+      ).subscribe(() => {
+        loadingModalRef.close();
+      });
+
+      this.store$.dispatch(new DeleteImage({ pk: this.image.pk }));
+    });
+  }
+
   openDownloadOffcanvas() {
     this.offcanvasService.dismiss(); // Avoids nested offcanvases.
     this.offcanvasService.open(
@@ -241,11 +280,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     );
   }
 
-  downloadImage(version: ImageAlias | 'original' | 'basic_annotations' | 'advanced_annotations') {
+  downloadImage(version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations") {
     const url = `${environment.classicBaseUrl}/download/${this.image.hash || this.image.pk}/${this.revisionLabel}/${version}/`;
     this.windowRefService.nativeWindow.open(url, "_blank");
   }
-
-  protected readonly DownloadLimitationOptions = DownloadLimitationOptions;
-  protected readonly ImageAlias = ImageAlias;
 }

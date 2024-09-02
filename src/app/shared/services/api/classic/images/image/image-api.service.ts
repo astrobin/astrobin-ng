@@ -9,7 +9,7 @@ import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable, throwError } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
@@ -45,7 +45,7 @@ export class ImageApiService extends BaseClassicApiService {
           if (response.results.length > 0) {
             return response.results[0];
           }
-          throwError({ statusCode: 404 });
+          throw new Error("Image not found");
         })
       );
     }
@@ -136,6 +136,10 @@ export class ImageApiService extends BaseClassicApiService {
 
   deleteRevision(pk: ImageRevisionInterface["pk"]): Observable<ImageInterface> {
     return this.http.delete<ImageInterface>(`${this.configUrl}/image-revision/${pk}/`);
+  }
+
+  delete(pk: ImageInterface["pk"]): Observable<ImageInterface> {
+    return this.http.delete<ImageInterface>(`${this.configUrl}/image/${pk}/`);
   }
 
   download(

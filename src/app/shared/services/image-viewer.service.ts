@@ -1,19 +1,22 @@
-import { isPlatformBrowser, Location } from "@angular/common";
+import { Location } from "@angular/common";
 import { ComponentRef, Inject, Injectable, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { LoadImage } from "@app/store/actions/image.actions";
+import { DeleteImageSuccess, LoadImage } from "@app/store/actions/image.actions";
 import { Observable } from "rxjs";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { filter, switchMap, take } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageViewerComponent, ImageViewerNavigationContext } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root"
@@ -24,12 +27,24 @@ export class ImageViewerService extends BaseService {
   constructor(
     public readonly loadingService: LoadingService,
     public readonly store$: Store<MainState>,
+    public readonly actions$: Actions,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly windowRefService: WindowRefService,
     public readonly location: Location,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly router: Router
   ) {
     super(loadingService);
+
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_IMAGE_SUCCESS),
+      takeUntil(this.destroyed$),
+      map((action: DeleteImageSuccess) => action.payload.pk)
+    ).subscribe((pk: ImageInterface["pk"]) => {
+      if (this.activeImageViewer && this.activeImageViewer.instance.image.pk === pk) {
+        this.closeActiveImageViewer(false);
+      }
+    });
   }
 
   openImageViewer(
@@ -58,6 +73,8 @@ export class ImageViewerService extends BaseService {
         fullscreenMode,
         navigationContext,
         true);
+    }, () => {
+      this.router.navigateByUrl("/404", { skipLocationChange: true });
     });
 
     this.activeImageViewer.instance.closeViewer.subscribe(() => {
@@ -79,6 +96,14 @@ export class ImageViewerService extends BaseService {
         observer.next(image);
         observer.complete();
       }, () => {
+        observer.error();
+        observer.complete();
+      });
+
+      this.actions$.pipe(
+        ofType(AppActionTypes.LOAD_IMAGE_FAILURE),
+        take(1)
+      ).subscribe(() => {
         observer.error();
         observer.complete();
       });

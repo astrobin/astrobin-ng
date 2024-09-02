@@ -132,6 +132,7 @@ import { HammerModule } from "@angular/platform-browser";
 import { LightboxModule } from "ngx-lightbox";
 import { ImageViewerWipBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-wip-banner.component";
 import { ImageViewerMenuComponent } from "@shared/components/misc/image-viewer/image-viewer-menu";
+import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/loading-dialog.component";
 
 const modules = [
   CommonModule,
@@ -221,6 +222,7 @@ const components = [
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,
+  LoadingDialogComponent,
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,

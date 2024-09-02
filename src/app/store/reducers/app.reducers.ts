@@ -437,6 +437,13 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.DELETE_IMAGE_SUCCESS: {
+      return {
+        ...state,
+        images: state.images.filter(image => image.pk !== action.payload.pk)
+      };
+    }
+
     case AppActionTypes.LOAD_THUMBNAIL: {
       return {
         ...state,

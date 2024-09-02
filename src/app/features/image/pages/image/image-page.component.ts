@@ -6,7 +6,12 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
-import { takeUntil } from "rxjs/operators";
+import { filter, take, takeUntil } from "rxjs/operators";
+import { Actions, ofType } from "@ngrx/effects";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { DeleteImageFailure, DeleteImageSuccess } from "@app/store/actions/image.actions";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-image-page",
@@ -21,7 +26,10 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
 
   constructor(
     public readonly store$: Store<MainState>,
-    public readonly route: ActivatedRoute
+    public readonly actions$: Actions,
+    public readonly route: ActivatedRoute,
+    public readonly windowRefService: WindowRefService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
   }
@@ -44,6 +52,19 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
           false
         );
       }
+    });
+
+    this._setupOnDelete();
+  }
+
+  private _setupOnDelete(): void {
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_IMAGE_SUCCESS, AppActionTypes.DELETE_IMAGE_FAILURE), // Listen for both success and failure
+      filter((action: DeleteImageSuccess | DeleteImageFailure) => action.payload.pk === this.image.pk),
+      take(1)
+    ).subscribe(() => {
+      this.windowRefService.nativeWindow.location.href =
+        this.classicRoutesService.GALLERY(this.image.username);
     });
   }
 }
