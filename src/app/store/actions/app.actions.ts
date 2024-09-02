@@ -4,19 +4,7 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import {
-  ForceCheckImageAutoLoad,
-  LoadImage,
-  LoadImages,
-  LoadImagesSuccess,
-  LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess,
-  SaveImage,
-  SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess,
-  SaveImageSuccess,
-  SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess,
-  DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess,
-  DeleteImageRevision, DeleteImageRevisionSuccess, DeleteImageRevisionFailure, DeleteImage, DeleteImageSuccess, DeleteImageFailure, LoadImageFailure
-} from "@app/store/actions/image.actions";
+import { DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, ForceCheckImageAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
@@ -25,6 +13,8 @@ import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@ap
 import { CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { LoadRemoteSourceAffiliates, LoadRemoteSourceAffiliatesFailure, LoadRemoteSourceAffiliatesSuccess } from "@app/store/actions/remote-source-affiliates.actions";
+import { LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess } from "@app/store/actions/collection.actions";
+import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
 
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",
@@ -132,7 +122,15 @@ export enum AppActionTypes {
 
   LOAD_REMOTE_SOURCE_AFFILIATES = "[App] Load remote source affiliates",
   LOAD_REMOTE_SOURCE_AFFILIATES_SUCCESS = "[App] Load remote source affiliates success",
-  LOAD_REMOTE_SOURCE_AFFILIATES_FAILURE = "[App] Load remote source affiliates failure"
+  LOAD_REMOTE_SOURCE_AFFILIATES_FAILURE = "[App] Load remote source affiliates failure",
+
+  LOAD_GROUPS = "[App] Load groups",
+  LOAD_GROUPS_SUCCESS = "[App] Load groups success",
+  LOAD_GROUPS_FAILURE = "[App] Load groups failure",
+
+  LOAD_COLLECTIONS = "[App] Load collections",
+  LOAD_COLLECTIONS_SUCCESS = "[App] Load collections success",
+  LOAD_COLLECTIONS_FAILURE = "[App] Load collections failure",
 }
 
 export type All =
@@ -209,4 +207,10 @@ export type All =
   | LoadTogglePropertyFailure
   | LoadRemoteSourceAffiliates
   | LoadRemoteSourceAffiliatesSuccess
-  | LoadRemoteSourceAffiliatesFailure;
+  | LoadRemoteSourceAffiliatesFailure
+  | LoadGroups
+  | LoadGroupsSuccess
+  | LoadGroupsFailure
+  | LoadCollections
+  | LoadCollectionsSuccess
+  | LoadCollectionsFailure;

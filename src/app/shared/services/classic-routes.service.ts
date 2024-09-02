@@ -3,6 +3,7 @@ import { environment } from "@env/environment";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { GroupInterface } from "@shared/interfaces/group.interface";
 
 const BASE_URL = environment.classicBaseUrl;
 
@@ -27,6 +28,7 @@ export class ClassicRoutesService extends BaseService {
   TOP_PICK_NOMINATIONS = BASE_URL + "/explore/top-pick-nominations/";
   TOP_PICKS = BASE_URL + "/explore/top-picks/";
   IOTD = BASE_URL + "/iotd/archive/";
+  GROUP = (id : GroupInterface["id"]) => BASE_URL + `/groups/${id}/`;
   GROUPS = BASE_URL + "/groups/";
   REMOTE_ASTROPHOTOGRAPHY = "https://welcome.astrobin.com/remote-astrophotography";
   ASTROPHOTOGRAPHERS_LIST = BASE_URL + "/astrophotographers-list/";

@@ -6,6 +6,13 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { LoadingService } from "@shared/services/loading.service";
 import { EMPTY, Observable } from "rxjs";
 import { expand, reduce } from "rxjs/operators";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
+
+export interface GetGroupsParamsInterface {
+  members?: UserInterface["id"];
+  ids?: GroupInterface["id"][];
+}
 
 @Injectable({
   providedIn: "root"
@@ -17,11 +24,37 @@ export class GroupApiService extends BaseClassicApiService {
     super(loadingService);
   }
 
-  getAll(memberId?: number): Observable<GroupInterface[]> {
-    let url = this.configUrl;
+  getAll(memberId?: UserInterface["id"]): Observable<GroupInterface[]> {
+    const params: GetGroupsParamsInterface = {};
 
     if (memberId !== undefined) {
-      url += "?members=" + memberId;
+      params.members = memberId;
+    }
+
+    return this.fetchGroups(params);
+  }
+
+  getByIds(ids: GroupInterface["id"][]): Observable<GroupInterface[]> {
+    if (ids.length === 0) {
+      return EMPTY;
+    }
+
+    const params: GetGroupsParamsInterface = { ids: ids };
+
+    return this.fetchGroups(params);
+  }
+
+  public fetchGroups(params: GetGroupsParamsInterface): Observable<GroupInterface[]> {
+    let url = this.configUrl;
+
+    // Use UtilsService.addOrUpdateUrlParam to build the URL with parameters
+    if (params.members !== undefined) {
+      url = UtilsService.addOrUpdateUrlParam(url, 'members', params.members.toString());
+    }
+
+    if (params.ids && params.ids.length > 0) {
+      // Backend uses 'id' in singular.
+      url = UtilsService.addOrUpdateUrlParam(url, 'id', params.ids.join(","));
     }
 
     return this.http.get<PaginatedApiResultInterface<GroupInterface>>(url).pipe(

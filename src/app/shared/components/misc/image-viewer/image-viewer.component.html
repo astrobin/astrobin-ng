@@ -284,6 +284,11 @@
       [image]="image"
     ></astrobin-image-viewer-equipment>
 
+    <astrobin-image-viewer-groups-and-collections
+      *ngIf="image.partOfGroupSet?.length || image.collections?.length"
+      [image]="image"
+    ></astrobin-image-viewer-groups-and-collections>
+
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
 
     <ng-container [ngTemplateOutlet]="moreFromThisUserTemplate"></ng-container>

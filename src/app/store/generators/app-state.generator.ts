@@ -44,7 +44,9 @@ export class AppStateGenerator {
       createLocationAddTag: null,
       nestedComments: null,
       toggleProperties: [],
-      remoteSourceAffiliates: []
+      remoteSourceAffiliates: [],
+      groups: [],
+      collections: [],
     };
   }
 }
