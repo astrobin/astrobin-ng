@@ -54,6 +54,16 @@
         <fa-icon icon="reply"></fa-icon>
         {{ "Reply" | translate }}
       </button>
+
+      <astrobin-toggle-property
+        *ngIf="commentContentType && currentUserWrapper.user?.id && currentUserWrapper.user.id !== comment.author"
+        [contentType]="commentContentType.id"
+        [objectId]="comment.id"
+        [userId]="currentUserWrapper.user?.id"
+        [showLabel]="true"
+        btnClass="btn btn-sm btn-primary"
+        propertyType="like"
+      ></astrobin-toggle-property>
     </div>
 
     <div *ngIf="showReplyForm" class="reply-form">

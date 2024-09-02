@@ -1,14 +1,10 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { Observable } from "rxjs";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import {
-  CreateNestedComment,
-  LoadNestedComments,
-  LoadNestedCommentsSuccess
-} from "@app/store/actions/nested-comments.actions";
+import { CreateNestedComment, LoadNestedComments, LoadNestedCommentsSuccess } from "@app/store/actions/nested-comments.actions";
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { LoadingService } from "@shared/services/loading.service";
@@ -20,6 +16,8 @@ import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { RouterService } from "@shared/services/router.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
 
 export enum NestedCommentsAutoStartTopLevelStrategy {
   ALWAYS = "ALWAYS",
@@ -33,7 +31,7 @@ export type NestedCommentsTopLevelFormPlacement = "TOP" | "BOTTOM";
   templateUrl: "./nested-comments.component.html",
   styleUrls: ["./nested-comments.component.scss"]
 })
-export class NestedCommentsComponent extends BaseComponentDirective implements OnChanges {
+export class NestedCommentsComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
   contentType: ContentTypeInterface;
 
@@ -92,6 +90,9 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   _lastFetchedComments: NestedCommentInterface[] = null;
   _autoStartTopLevelRetries = 0;
 
+  // This the comment type of NestedComment, used to like comments.
+  protected commentContentType: ContentTypeInterface;
+
   constructor(
     public readonly store$: Store,
     public readonly actions$: Actions,
@@ -101,6 +102,12 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     public readonly utilsService: UtilsService
   ) {
     super(store$);
+  }
+
+  ngOnInit(): void {
+    super.ngOnInit();
+
+    this._initCommentContentType();
   }
 
   ngOnChanges() {
@@ -238,5 +245,17 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         }
       }
     ];
+  }
+
+  private _initCommentContentType() {
+    const payload = { appLabel: "nested_comments", model: "nestedcomment" };
+    this.store$.pipe(
+      select(selectContentType, payload),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      this.commentContentType = contentType;
+    });
+    this.store$.dispatch(new LoadContentType(payload));
   }
 }

@@ -36,6 +36,16 @@
   .actions {
     margin-top: 1rem;
 
+    astrobin-toggle-property {
+      display: inline-flex;
+      margin-left: .75rem;
+
+      ::ng-deep .btn {
+        font-size: .7rem;
+        padding: .125rem .4rem;
+      }
+    }
+
     a,
     .btn {
       font-size: .7rem;
