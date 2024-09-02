@@ -1,13 +1,19 @@
-import { Component, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { DataSource, ImageInterface, RemoteSource } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { LoadRemoteSourceAffiliates } from "@app/store/actions/remote-source-affiliates.actions";
+import { selectRemoteSourceAffiliates } from "@app/store/selectors/app/remote-source-affiliates.selectors";
+import { filter, takeUntil } from "rxjs/operators";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { DeviceService } from "@shared/services/device.service";
+import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
 
 @Component({
   selector: "astrobin-image-viewer-data-source",
@@ -28,7 +34,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </div>
       </div>
 
-      <div *ngIf="remoteDataSource" class="metadata-item">
+      <div *ngIf="remoteDataSource" class="metadata-item remote-source">
         <div class="metadata-icon">
           <img
             [ngbTooltip]="'Remote hosting' | translate"
@@ -38,7 +44,11 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             alt=""
           />
         </div>
-        <div (click)="remoteDataSourceClicked($event)" class="metadata-link">
+        <div
+          (click)="remoteDataSourceClicked($event)"
+          class="metadata-link"
+          [class.is-sponsor]="remoteDataSourceIsSponsor"
+        >
           {{ remoteDataSource }}
         </div>
       </div>
@@ -63,16 +73,58 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </div>
       </div>
     </div>
+
+    <ng-template #remoteSourceAffiliateSponsorOffcanvasTemplate let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">{{ remoteDataSource }}</h5>
+        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="sponsor-info d-flex flex-column gap-3 align-items-center p-4">
+          <a
+            *ngIf="remoteDataSourceAffiliate.imageFile"
+            [href]="remoteDataSourceAffiliate.url"
+            class="no-external-link-icon w-100"
+            target="_blank"
+          >
+            <img
+              [alt]="remoteDataSourceAffiliate.name"
+              [src]="remoteDataSourceAffiliate.imageFile"
+              class="img-fluid"
+            />
+          </a>
+
+          <a [href]="remoteDataSourceAffiliate.url" target="_blank">
+            {{ "Visit website" | translate }}
+          </a>
+
+          <button class="btn btn-primary" (click)="search({ remote_source: this.image.remoteSource })">
+            {{ "Browse images" | translate }}
+          </button>
+        </div>
+      </div>
+    </ng-template>
   `,
   styles: [`
+    .remote-source {
+      .metadata-link:not(.is-sponsor) {
+        color: var(--lightestGrey);
+        pointer-events: none;
+      }
+    }
   `]
 })
 export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   dataSource: string;
   dataSourceIcon: string;
   remoteDataSource: string;
+  remoteDataSourceAffiliate: RemoteSourceAffiliateInterface;
+  remoteDataSourceIsSponsor = false;
   locations: string[];
   bortle: number;
+
+  @ViewChild("remoteSourceAffiliateSponsorOffcanvasTemplate")
+  protected remoteSourceAffiliateSponsorOffcanvasTemplate: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -80,17 +132,21 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
     public readonly router: Router,
     public readonly imageService: ImageService,
     public readonly imageViewerService: ImageViewerService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly deviceService: DeviceService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue) {
-      this.setDataSource(changes.image.currentValue);
-      this.setRemoteDataSource(changes.image.currentValue);
-      this.setLocations(changes.image.currentValue);
-      this.setBortle(changes.image.currentValue);
+      const image = changes.image.currentValue as ImageInterface;
+      this.setDataSource(image);
+      this.setRemoteDataSource(image);
+      this.setRemoteDataSourceAffiliate(image);
+      this.setLocations(image);
+      this.setBortle(image);
     }
   }
 
@@ -107,6 +163,22 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
 
   setRemoteDataSource(image: ImageInterface) {
     this.remoteDataSource = RemoteSource[this.image.remoteSource];
+  }
+
+  setRemoteDataSourceAffiliate(image: ImageInterface) {
+    this.store$.pipe(
+      select(selectRemoteSourceAffiliates),
+      filter(affiliates => !!affiliates),
+      takeUntil(this.destroyed$)
+    ).subscribe(affiliates => {
+      const remoteSourceAffiliate = affiliates.find(affiliate => affiliate.code === image.remoteSource);
+      if (remoteSourceAffiliate) {
+        this.remoteDataSourceAffiliate = remoteSourceAffiliate;
+        this.remoteDataSourceIsSponsor = new Date(remoteSourceAffiliate.affiliationExpiration) >= new Date();
+      }
+    });
+
+    this.store$.dispatch(new LoadRemoteSourceAffiliates());
   }
 
   setLocations(image: ImageInterface) {
@@ -140,6 +212,13 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
 
   remoteDataSourceClicked(event: MouseEvent): void {
     event.preventDefault();
-    this.search({ remote_source: this.image.remoteSource });
+
+    if (!this.remoteDataSourceIsSponsor) {
+      return;
+    }
+
+    this.offcanvasService.open(this.remoteSourceAffiliateSponsorOffcanvasTemplate,{
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 }

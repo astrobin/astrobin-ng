@@ -43,7 +43,8 @@ export class AppStateGenerator {
       cameras: [],
       createLocationAddTag: null,
       nestedComments: null,
-      toggleProperties: []
+      toggleProperties: [],
+      remoteSourceAffiliates: []
     };
   }
 }

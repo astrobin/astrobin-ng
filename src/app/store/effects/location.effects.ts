@@ -7,8 +7,8 @@ import { Observable } from "rxjs";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { CreateLocationSuccess } from "@app/store/actions/location.actions";
 import { LocationApiService } from "@shared/services/api/classic/astrobin/location/location-api.service";
-import { LoadUser, LoadUserProfile, UpdateUserProfile } from "@features/account/store/auth.actions";
-import { selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
+import { LoadUserProfile, UpdateUserProfile } from "@features/account/store/auth.actions";
+import { selectUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable()
 export class LocationEffects {

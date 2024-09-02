@@ -24,6 +24,7 @@ import { LoadThumbnail, LoadThumbnailCancel, LoadThumbnailCanceled, LoadThumbnai
 import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
 import { CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
+import { LoadRemoteSourceAffiliates, LoadRemoteSourceAffiliatesFailure, LoadRemoteSourceAffiliatesSuccess } from "@app/store/actions/remote-source-affiliates.actions";
 
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",
@@ -127,7 +128,11 @@ export enum AppActionTypes {
   DELETE_TOGGLE_PROPERTY_FAILURE = "[App] Delete toggle property failure",
   LOAD_TOGGLE_PROPERTY = "[App] Load toggle property",
   LOAD_TOGGLE_PROPERTY_SUCCESS = "[App] Load toggle property success",
-  LOAD_TOGGLE_PROPERTY_FAILURE = "[App] Load toggle property failure"
+  LOAD_TOGGLE_PROPERTY_FAILURE = "[App] Load toggle property failure",
+
+  LOAD_REMOTE_SOURCE_AFFILIATES = "[App] Load remote source affiliates",
+  LOAD_REMOTE_SOURCE_AFFILIATES_SUCCESS = "[App] Load remote source affiliates success",
+  LOAD_REMOTE_SOURCE_AFFILIATES_FAILURE = "[App] Load remote source affiliates failure"
 }
 
 export type All =
@@ -201,4 +206,7 @@ export type All =
   | DeleteTogglePropertyFailure
   | LoadToggleProperty
   | LoadTogglePropertySuccess
-  | LoadTogglePropertyFailure;
+  | LoadTogglePropertyFailure
+  | LoadRemoteSourceAffiliates
+  | LoadRemoteSourceAffiliatesSuccess
+  | LoadRemoteSourceAffiliatesFailure;

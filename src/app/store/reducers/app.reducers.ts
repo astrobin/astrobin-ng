@@ -11,6 +11,7 @@ import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
 
 export interface AppState {
   // Weather the app has been initialized.
@@ -61,6 +62,9 @@ export interface AppState {
 
   // All seen toggle properties.
   toggleProperties: TogglePropertyInterface[];
+
+  // all seen remote source affiliates.
+  remoteSourceAffiliates: RemoteSourceAffiliateInterface[] | null;
 }
 
 export const initialAppState: AppState = {
@@ -80,7 +84,8 @@ export const initialAppState: AppState = {
   cameras: [],
   createLocationAddTag: null,
   nestedComments: null,
-  toggleProperties: []
+  toggleProperties: [],
+  remoteSourceAffiliates: null
 };
 
 function handleCreateTogglePropertySuccess(
@@ -556,6 +561,13 @@ export function appReducer(state = initialAppState, action: All): AppState {
 
     case AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS: {
       return handleDeleteTogglePropertySuccess(state, action);
+    }
+
+    case AppActionTypes.LOAD_REMOTE_SOURCE_AFFILIATES_SUCCESS: {
+      return {
+        ...state,
+        remoteSourceAffiliates: action.payload.affiliates
+      };
     }
 
     default: {

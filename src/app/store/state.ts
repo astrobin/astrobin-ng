@@ -28,6 +28,7 @@ import { SubscriptionsEffects } from "@features/subscriptions/store/subscription
 import { TogglePropertyEffects } from "@app/store/effects/toggle-property.effects";
 import { initialSearchState, searchReducer, SearchState } from "@features/search/state/state.reducer";
 import { SearchEffects } from "@features/search/state/search.effects";
+import { RemoteSourceAffiliatesEffects } from "@app/store/effects/remote-source-affiliates.effects";
 
 export interface MainState {
   app: AppState;
@@ -72,5 +73,6 @@ export const mainStateEffects = [
   SubscriptionsEffects,
   TelescopeEffects,
   ThumbnailEffects,
-  TogglePropertyEffects
+  TogglePropertyEffects,
+  RemoteSourceAffiliatesEffects
 ];
