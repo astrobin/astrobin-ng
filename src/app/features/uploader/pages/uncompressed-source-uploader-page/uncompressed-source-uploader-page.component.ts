@@ -128,6 +128,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
 
     this.store$.pipe(
       select(selectImage, this.image.pk),
+      filter(image => !!image),
       takeUntil(this.destroyed$)
     ).subscribe(image => {
       this.image = image;
