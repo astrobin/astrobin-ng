@@ -260,6 +260,7 @@ export interface ImageInterface {
   viewCount?: number;
   userFollowerCount: number;
   uploaderUploadLength?: number;
+  uploaderName?: string;
   iotdDate?: string;
   isTopPick?: boolean;
   isTopPickNomination?: boolean;

@@ -17,10 +17,15 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       <h2 class="flex-grow-1 mb-0">
         {{ image.title }}
 
-        <small *ngIf="resolution || size">
-          <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
-          <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
-        </small>
+        <small *ngIf="resolution" class="resolution" [innerHTML]="resolution"></small>
+        <small *ngIf="size" class="file-size" [innerHTML]="size | filesize"></small>
+        <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+          <small
+            *ngIf="currentUserWrapper.user?.id === image.user && image.uploaderName"
+            class="original-filename"
+            [innerHTML]="image.uploaderName"
+          ></small>
+        </ng-container>
 
         <div *ngIf="image.iotdDate || image.isTopPick || image.isTopPickNomination" class="iotd-tp">
         <span *ngIf="image.iotdDate" class="iotd">
@@ -80,11 +85,11 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             font-size: .75rem;
             color: var(--lightGrey);
             margin-left: .5rem;
-            display: inline-block;
+            display: inline;
             vertical-align: middle;
 
-            .resolution {
-              margin-right: .5rem;
+            &.original-filename {
+              word-break: break-all;
             }
           }
 
