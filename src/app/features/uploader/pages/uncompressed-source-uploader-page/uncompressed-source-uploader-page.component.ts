@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
 import { environment } from "@env/environment";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -18,7 +18,13 @@ import { UploadDataService } from "@shared/services/upload-metadata/upload-data.
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UploadState, UploadxService } from "ngx-uploadx";
 import { Observable } from "rxjs";
-import { map, take, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
+import { ModalService } from "@shared/services/modal.service";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess } from "@app/store/actions/image.actions";
+import { Actions, ofType } from "@ngrx/effects";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
 
 @Component({
   selector: "astrobin-uncompressed-source-uploader-page",
@@ -26,31 +32,21 @@ import { map, take, takeUntil } from "rxjs/operators";
   styleUrls: ["./uncompressed-source-uploader-page.component.scss"]
 })
 export class UncompressedSourceUploaderPageComponent extends BaseComponentDirective implements OnInit {
-  form = new FormGroup({});
-  uploadState: UploadState;
-  pageTitle = this.translate.instant("Uncompressed source uploader");
-
-  model = {
+  readonly form = new FormGroup({});
+  readonly pageTitle = this.translate.instant("Uncompressed source uploader");
+  readonly model = {
     image_file: ""
   };
 
-  fields: FormlyFieldConfig[] = [
-    {
-      key: "image_file",
-      id: "image_file",
-      type: "chunked-file",
-      props: {
-        required: true
-      }
-    }
-  ];
-
+  uploadState: UploadState;
+  fields: FormlyFieldConfig[];
   imageThumbnail$: Observable<string>;
-
   image: ImageInterface;
+  deleting = false;
 
   constructor(
     public readonly store$: Store<MainState>,
+    public readonly actions$: Actions,
     public readonly translate: TranslateService,
     public readonly uploaderService: UploadxService,
     public readonly uploadDataService: UploadDataService,
@@ -59,17 +55,121 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     public readonly route: ActivatedRoute,
     public readonly titleService: TitleService,
     public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
-    public readonly imageApiService: ImageApiService
+    public readonly imageApiService: ImageApiService,
+    public readonly modalService: ModalService
   ) {
     super(store$);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
+    this._initImage();
+    this._initFields();
+    this._initTitle();
+    this._initBreadcrumb();
+    this._initThumbnail();
+    this._initUploadService();
+  }
 
+  onSubmit() {
+    if (this.form.valid) {
+      this.uploaderService.control({ action: "upload" });
+    }
+  }
+
+  uploadButtonLoading(): boolean {
+    return (
+      this.form.valid &&
+      this.uploadState &&
+      ["queue", "uploading", "retry", "complete"].indexOf(this.uploadState.status) > -1
+    );
+  }
+
+  deleteUncompressedSourceFile() {
+    const modalRef = this.modalService.open(ConfirmationDialogComponent);
+    const instance = modalRef.componentInstance;
+    instance.message = this.translate.instant(
+      "You are about to delete the uncompressed source file that you associated to this image. " +
+      "This action cannot be undone."
+    );
+
+    modalRef.closed.subscribe(() => {
+      this.deleting = true;
+
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS),
+        filter((action: DeleteImageUncompressedSourceFileSuccess) => this.image.pk === action.payload.image.pk),
+        take(1)
+      ).subscribe(() => {
+        this.deleting = false;
+        this.fields = this.fields.map(field => {
+          if (field.key === "download") {
+            field.template = "";
+          }
+          return field;
+        });
+      });
+
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE),
+        filter((action: DeleteImageUncompressedSourceFileFailure) => this.image.pk === action.payload.pk),
+        take(1)
+      ).subscribe(() => {
+        this.deleting = false;
+      });
+
+
+      this.store$.dispatch(new DeleteImageUncompressedSourceFile({ pk: this.image.pk }));
+    })
+  }
+
+  private _initImage(): void {
     this.image = this.route.snapshot.data.image;
 
+    this.store$.pipe(
+      select(selectImage, this.image.pk),
+      takeUntil(this.destroyed$)
+    ).subscribe(image => {
+      this.image = image;
+    });
+  }
+
+  private _initFields(): void {
+    this.fields = [
+      {
+        key: "image_file",
+        id: "image_file",
+        type: "chunked-file",
+        props: {
+          required: true
+        }
+      },
+      {
+        key: "download",
+        type: "html",
+        template: this.image.uncompressedSourceFile
+          ? `
+            <p>
+              ${this.translate.instant("This image already has an uncompressed source file.")}
+              <a
+                class="btn btn-xs btn-primary no-external-link-icon ms-2"
+                href="${this.image.uncompressedSourceFile}"
+                target="_blank"
+              >
+                ${this.translate.instant("Download")}
+              </a>
+            </p>
+          `
+          : ``
+      }
+    ];
+  }
+
+  private _initTitle(): void {
     this.titleService.setTitle(this.pageTitle);
+  }
+
+  private _initBreadcrumb(): void {
     this.store$.dispatch(
       new SetBreadcrumb({
         breadcrumb: [
@@ -79,15 +179,19 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
         ]
       })
     );
+  }
 
+  private _initThumbnail(): void {
+    this.imageThumbnail$ = this.thumbnailGroupApiService
+      .getThumbnailGroup(this.image.pk, Constants.ORIGINAL_REVISION)
+      .pipe(map(thumbnailGroup => thumbnailGroup.gallery));
+  }
+
+  private _initUploadService(): void {
     this.uploadDataService.patchMetadata("image-upload", { image_id: this.image.pk });
     this.uploadDataService.patchMetadata("image-upload", {
       allowedExtensions: Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS
     });
-
-    this.imageThumbnail$ = this.thumbnailGroupApiService
-      .getThumbnailGroup(this.image.pk, Constants.ORIGINAL_REVISION)
-      .pipe(map(thumbnailGroup => thumbnailGroup.gallery));
 
     this.uploadDataService.setEndpoint(`${environment.classicApiUrl}/api/v2/images/uncompressed-source-upload/`);
     this.uploadDataService.setAllowedTypes(Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(","));
@@ -106,19 +210,5 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
           });
       }
     });
-  }
-
-  onSubmit() {
-    if (this.form.valid) {
-      this.uploaderService.control({ action: "upload" });
-    }
-  }
-
-  uploadButtonLoading(): boolean {
-    return (
-      this.form.valid &&
-      this.uploadState &&
-      ["queue", "uploading", "retry", "complete"].indexOf(this.uploadState.status) > -1
-    );
   }
 }

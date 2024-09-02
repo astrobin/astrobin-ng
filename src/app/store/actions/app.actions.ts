@@ -4,7 +4,7 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, ForceCheckImageAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, ForceCheckImageAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
@@ -131,6 +131,10 @@ export enum AppActionTypes {
   LOAD_COLLECTIONS = "[App] Load collections",
   LOAD_COLLECTIONS_SUCCESS = "[App] Load collections success",
   LOAD_COLLECTIONS_FAILURE = "[App] Load collections failure",
+
+  DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE = "[App] Delete image uncompressed source file",
+  DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS = "[App] Delete image uncompressed source file success",
+  DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE = "[App] Delete image uncompressed source file failure"
 }
 
 export type All =
@@ -213,4 +217,7 @@ export type All =
   | LoadGroupsFailure
   | LoadCollections
   | LoadCollectionsSuccess
-  | LoadCollectionsFailure;
+  | LoadCollectionsFailure
+  | DeleteImageUncompressedSourceFile
+  | DeleteImageUncompressedSourceFileSuccess
+  | DeleteImageUncompressedSourceFileFailure;

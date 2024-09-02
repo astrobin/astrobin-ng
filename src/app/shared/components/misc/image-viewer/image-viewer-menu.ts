@@ -18,6 +18,10 @@ import { DeviceService } from "@shared/services/device.service";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
 import { ModalService } from "@shared/services/modal.service";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { Router } from "@angular/router";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
 
 @Component({
   selector: "astrobin-image-viewer-menu",
@@ -45,6 +49,20 @@ import { ModalService } from "@shared/services/modal.service";
           [class]="itemClass"
         >
           {{ "Upload new revision" | translate }}
+        </a>
+
+        <a
+          (click)="uploadCompressedSourceClicked()"
+          [class]="itemClass"
+          astrobinEventPreventDefault
+          href="#"
+        >
+          <ng-container *ngIf="image.uncompressedSourceFile">
+            {{ "Replace/delete uncompressed source file" | translate }}
+          </ng-container>
+          <ng-container *ngIf="!image.uncompressedSourceFile">
+            {{ "Upload uncompressed source (XISF/FITS/PSD/TIFF)" | translate }}
+          </ng-container>
         </a>
 
         <a
@@ -179,8 +197,18 @@ import { ModalService } from "@shared/services/modal.service";
             astrobinEventStopPropagation
             class="menu-item"
           >
-            <fa-icon icon="lock"></fa-icon>
+            <fa-icon icon="lock" class="me-2"></fa-icon>
             {{ "Original" | translate }}
+          </a>
+
+          <a
+            [href]="image.uncompressedSourceFile"
+            class="menu-item no-external-link-icon"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <fa-icon icon="lock" class="me-2"></fa-icon>
+            {{ "Uncompressed source file" | translate }}
           </a>
         </ng-container>
       </div>
@@ -222,7 +250,9 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
     public readonly modalService: ModalService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -283,5 +313,16 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
   downloadImage(version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations") {
     const url = `${environment.classicBaseUrl}/download/${this.image.hash || this.image.pk}/${this.revisionLabel}/${version}/`;
     this.windowRefService.nativeWindow.open(url, "_blank");
+  }
+
+  uploadCompressedSourceClicked() {
+    this.userSubscriptionService.isUltimate$().pipe(take(1)).subscribe(isUltimate => {
+      if (isUltimate) {
+        this.router.navigate(["/uploader/uncompressed-source", this.image.hash || this.image.pk.toString()]);
+      } else {
+        const modalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+        modalRef.componentInstance.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
+      }
+    });
   }
 }
