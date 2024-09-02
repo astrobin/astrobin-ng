@@ -83,6 +83,9 @@ export class ImageViewerComponent
   @Output()
   nearEndOfContext = new EventEmitter<string>();
 
+  @ViewChild("mainArea")
+  mainArea: ElementRef;
+
   @ViewChild("imageArea")
   imageArea: ElementRef;
 
@@ -385,10 +388,10 @@ export class ImageViewerComponent
     pushState: boolean
   ): void {
     if (this.dataArea) {
-      this.dataArea.nativeElement.scrollTop = 0;
+      this.renderer.setProperty(this.dataArea.nativeElement, "scrollTop", 0);
 
       if (this.deviceService.mdMax()) {
-        this.dataArea.nativeElement.closest("astrobin-image-viewer").scrollTop = 0;
+        this.renderer.setProperty(this.mainArea.nativeElement, "scrollTop", 0);
       }
     }
 
