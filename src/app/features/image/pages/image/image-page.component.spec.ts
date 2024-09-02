@@ -8,6 +8,7 @@ import { of } from "rxjs";
 import { ImagePageComponent } from "./image-page.component";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { provideMockActions } from "@ngrx/effects/testing";
 
 describe("ImagePageComponent", () => {
   let component: ImagePageComponent;
@@ -18,6 +19,7 @@ describe("ImagePageComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ImagePageComponent, AppModule).provide([
       provideMockStore({ initialState: initialMainState }),
+      provideMockActions(() => of()),
       {
         provide: ActivatedRoute,
         useValue: {
