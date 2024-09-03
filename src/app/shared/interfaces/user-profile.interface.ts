@@ -63,4 +63,5 @@ export interface UserProfileInterface {
   signUpCountry?: string;
   agreedToMarketplaceTerms?: string;
   enableNewSearchExperience?: boolean;
+  agreedToIotdTpRulesAndGuidelines?: boolean;
 }

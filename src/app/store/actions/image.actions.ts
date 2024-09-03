@@ -251,3 +251,24 @@ export class DeleteImageUncompressedSourceFileFailure implements PayloadActionIn
   constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
   }
 }
+
+export class SubmitImageForIotdTpConsideration implements PayloadActionInterface {
+  readonly type = AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class SubmitImageForIotdTpConsiderationSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_SUCCESS;
+
+  constructor(public payload: { image: ImageInterface }) {
+  }
+}
+
+export class SubmitImageForIotdTpConsiderationFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
+  }
+}
