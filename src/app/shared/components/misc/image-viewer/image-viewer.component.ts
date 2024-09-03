@@ -542,6 +542,10 @@ export class ImageViewerComponent
       return;
     }
 
+    if (this.modalService.hasOpenModals()) {
+      return;
+    }
+
     if (this.isLightBoxOpen) {
       return;
     }
