@@ -418,7 +418,8 @@ export function appReducer(state = initialAppState, action: All): AppState {
     }
 
     case AppActionTypes.DELETE_ORIGINAL_IMAGE_SUCCESS:
-    case AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS: {
+    case AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS:
+    case AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_SUCCESS: {
       const imageIndex = state.images.findIndex(image => image.pk === action.payload.image.pk);
       if (imageIndex === -1) {
         return state;

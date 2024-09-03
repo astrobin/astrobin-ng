@@ -15,6 +15,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
+import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
 
 @Injectable({
   providedIn: "root"
@@ -151,5 +152,29 @@ export class ImageApiService extends BaseClassicApiService {
 
   deleteUncompressedSourceFile(pk: ImageInterface["pk"]): Observable<ImageInterface> {
     return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/delete-uncompressed-source-file/`, {});
+  }
+
+  maySubmitForIotdTpConsideration(pk: ImageInterface["pk"]): Observable<{
+    may: boolean,
+    reason: string,
+    humanizedReason: string
+  }> {
+    return this.http.get<{
+      may: boolean,
+      reason: string,
+      humanizedReason: string
+    }>(
+      `${this.configUrl}/image/${pk}/may-submit-for-iotd-tp-consideration/`
+    );
+  }
+
+  submitForIotdTpConsideration(pk: ImageInterface["pk"]): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/submit-for-iotd-tp-consideration/`, {
+      agreedToIotdTpRulesAndGuidelines: true
+    });
+  }
+
+  getImageStats(imageId: (ImageInterface["hash"] | ImageInterface["pk"])): Observable<ImageIotdTpStatsInterface> {
+    return this.http.get<ImageIotdTpStatsInterface>(`${this.baseUrl}/iotd/image-stats/${imageId}/`);
   }
 }

@@ -25,6 +25,8 @@ import { YesNoIconPipe } from "@shared/pipes/yes-no-icon.pipe";
 import { KeysPipe } from "@shared/pipes/keys.pipe";
 import { HighlightPipe } from "@shared/pipes/highlight.pipe";
 import { RemoveBrPipe } from "@shared/pipes/remove-br.pipe";
+import { AddDaysPipe } from "@shared/pipes/add-days.pipe";
+import { UtcToLocalPipe } from "@shared/pipes/utc-to-local.pipe";
 
 const pipes = [
   BBCodeToHtmlPipe,
@@ -51,7 +53,9 @@ const pipes = [
   YesNoIconPipe,
   KeysPipe,
   HighlightPipe,
-  RemoveBrPipe
+  RemoveBrPipe,
+  AddDaysPipe,
+  UtcToLocalPipe
 ];
 
 @NgModule({
