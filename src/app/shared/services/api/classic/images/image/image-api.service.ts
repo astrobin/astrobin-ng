@@ -148,4 +148,8 @@ export class ImageApiService extends BaseClassicApiService {
     version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations"
   ): void {
   }
+
+  deleteUncompressedSourceFile(pk: ImageInterface["pk"]): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/delete-uncompressed-source-file/`, {});
+  }
 }

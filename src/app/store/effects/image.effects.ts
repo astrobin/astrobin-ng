@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { DeleteImageFailure, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { DeleteImageFailure, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -362,6 +362,48 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_IMAGE_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  DeleteImageUncompressedSourceFile: Observable<DeleteImageUncompressedSourceFileSuccess | DeleteImageUncompressedSourceFileFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.deleteUncompressedSourceFile(action.payload.pk).pipe(
+          map(image => new DeleteImageUncompressedSourceFileSuccess({ image })),
+          catchError(error => of(new DeleteImageUncompressedSourceFileFailure({ pk: action.payload.pk, error })))
+        )
+      )
+    )
+  );
+
+  DeleteImageUncompressedSourceFileSuccess: Observable<DeleteImageUncompressedSourceFileSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS),
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant("The uncompressed source file has been deleted.")
+          );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  DeleteImageUncompressedSourceFileFailure: Observable<DeleteImageUncompressedSourceFileFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE),
         tap(error => {
           this.loadingService.setLoading(false);
         })

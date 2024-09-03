@@ -230,3 +230,24 @@ export class DeleteImageFailure implements PayloadActionInterface {
   constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
   }
 }
+
+export class DeleteImageUncompressedSourceFile implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class DeleteImageUncompressedSourceFileSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS;
+
+  constructor(public payload: { image: ImageInterface }) {
+  }
+}
+
+export class DeleteImageUncompressedSourceFileFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
+  }
+}

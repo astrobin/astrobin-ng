@@ -266,6 +266,7 @@ export interface ImageInterface {
   isTopPickNomination?: boolean;
   averageMoonAge?: number;
   averageMoonIllumination?: number;
+  uncompressedSourceFile?: string;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;
