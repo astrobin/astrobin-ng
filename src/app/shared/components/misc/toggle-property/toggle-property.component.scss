@@ -1,6 +1,14 @@
 :host {
   display: flex;
 
+  button {
+    &[disabled] {
+      cursor: not-allowed;
+      pointer-events: auto;
+      color: var(--lightGrey) !important;
+    }
+  }
+
   .btn-link.toggled .ng-fa-icon {
     color: var(--accentColor);
   }

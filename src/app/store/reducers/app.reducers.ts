@@ -110,7 +110,7 @@ function handleCreateTogglePropertySuccess(
     image = findImage(state, action.payload.toggleProperty.objectId);
 
     if (image) {
-      updateImageCounts(image, action.payload.toggleProperty.propertyType, true);
+      image = updateImageCounts(image, action.payload.toggleProperty.propertyType, true);
     }
   }
 
@@ -136,7 +136,7 @@ function handleDeleteTogglePropertySuccess(
     image = findImage(state, action.payload.toggleProperty.objectId);
 
     if (image) {
-      updateImageCounts(image, action.payload.toggleProperty.propertyType, false);
+      image = updateImageCounts(image, action.payload.toggleProperty.propertyType, false);
     }
   }
 
@@ -160,17 +160,34 @@ function findImage(state: AppState, objectId: number): ImageInterface | undefine
   return state.images.find(image => image.pk === objectId);
 }
 
-function updateImageCounts(image: ImageInterface, propertyType: string, increment: boolean): void {
+function updateImageCounts(image: ImageInterface, propertyType: string, increment: boolean): ImageInterface {
   const countChange = increment ? 1 : -1;
   if (propertyType === "like") {
-    image.likeCount += countChange;
+    return {
+      ...image,
+      likeCount: image.likeCount + countChange
+    };
   } else if (propertyType === "bookmark") {
-    image.bookmarkCount += countChange;
+    return {
+      ...image,
+      bookmarkCount: image.bookmarkCount + countChange
+    };
   }
+  return image; // Default to return the same image if no changes
 }
 
 function updateImages(images: ImageInterface[], updatedImage: ImageInterface): ImageInterface[] {
-  return [...images.filter(i => i.pk !== updatedImage.pk), updatedImage];
+  const imageIndex = images.findIndex(i => i.pk === updatedImage.pk);
+
+  if (imageIndex === -1) {
+    return images;
+  }
+
+  return [
+    ...images.slice(0, imageIndex),
+    updatedImage,
+    ...images.slice(imageIndex + 1)
+  ];
 }
 
 export function appReducer(state = initialAppState, action: All): AppState {

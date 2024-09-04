@@ -300,12 +300,13 @@
 <ng-template #buttonsAreaTemplate>
   <div class="buttons-area">
     <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
-      <div *ngIf="currentUserWrapper.user?.id !== image.user" class="like">
+      <div class="like">
         <astrobin-toggle-property
           [contentType]="imageContentType.id"
+          [disabled]="currentUserWrapper.user?.id === image.user"
           [objectId]="image.pk"
-          [userId]="currentUserWrapper.user?.id"
           [showLabel]="false"
+          [userId]="currentUserWrapper.user?.id"
           btnClass="btn btn-link link-secondary"
           propertyType="like"
         ></astrobin-toggle-property>

@@ -34,6 +34,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   contentType: TogglePropertyInterface["contentType"];
 
   @Input()
+  disabled = false;
+
+  @Input()
   setLabel: string;
 
   @Input()
@@ -109,6 +112,10 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   }
 
   public onClick(toggleProperty: Partial<TogglePropertyInterface>): void {
+    if (this.disabled) {
+      return;
+    }
+
     if (!this.userId) {
       this.routerService.redirectToLogin();
       return;
