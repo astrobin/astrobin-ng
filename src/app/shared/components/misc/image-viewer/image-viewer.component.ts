@@ -582,7 +582,9 @@ export class ImageViewerComponent
 
   onImageMouseEnter(event: MouseEvent): void {
     event.preventDefault();
-    this.imageArea.nativeElement.classList.add("hover");
+    if (!this.deviceService.isTouchEnabled()) {
+      this.imageArea.nativeElement.classList.add("hover");
+    }
   }
 
   onImageMouseLeave(event: MouseEvent): void {
