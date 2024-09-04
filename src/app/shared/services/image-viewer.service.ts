@@ -17,6 +17,7 @@ import { DeviceService } from "@shared/services/device.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { Router } from "@angular/router";
+import { TitleService } from "@shared/services/title/title.service";
 
 @Injectable({
   providedIn: "root"
@@ -32,7 +33,8 @@ export class ImageViewerService extends BaseService {
     public readonly windowRefService: WindowRefService,
     public readonly location: Location,
     public readonly deviceService: DeviceService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly titleService: TitleService
   ) {
     super(loadingService);
 
@@ -55,6 +57,8 @@ export class ImageViewerService extends BaseService {
     navigationContext: ImageViewerNavigationContext,
     viewContainerRef: ViewContainerRef
   ): ComponentRef<ImageViewerComponent> {
+    const currentPageTitle = this.titleService.getTitle();
+
     if (this.activeImageViewer) {
       return this.activeImageViewer;
     }
@@ -79,6 +83,7 @@ export class ImageViewerService extends BaseService {
 
     this.activeImageViewer.instance.closeViewer.subscribe(() => {
       this.closeActiveImageViewer(true);
+      this.titleService.setTitle(currentPageTitle);
     });
 
     this._stopBodyScrolling();

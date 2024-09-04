@@ -16,6 +16,10 @@ export class TitleService extends BaseService implements TitleServiceInterface {
     super(loadingService);
   }
 
+  public getTitle(): string {
+    return this.titleService.getTitle();
+  }
+
   public setTitle(title: string) {
     this.titleService.setTitle(title + " - AstroBin");
   }

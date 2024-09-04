@@ -12,6 +12,8 @@ import { merge } from "rxjs";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
+import { TitleService } from "@shared/services/title/title.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-search-page",
@@ -38,13 +40,17 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly searchService: SearchService,
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef
+    public readonly viewContainerRef: ViewContainerRef,
+    public readonly titleService: TitleService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.titleService.setTitle(this.translateService.instant("Search"));
 
     merge(
       this.router.events.pipe(
