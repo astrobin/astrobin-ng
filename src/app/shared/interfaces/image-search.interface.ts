@@ -36,6 +36,8 @@ export interface ImageSearchInterface {
   guidingCameras2Id: string[];
 
   likes: number;
+  bookmarks: number;
+  comments: number;
   w: number;
   h: number;
   finalW: number;
