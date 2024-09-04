@@ -52,7 +52,27 @@ export class WindowRefService extends BaseService {
       return;
     }
 
+    if (!options) {
+      options = { top: 0, left: 0, behavior: "auto" };
+    }
+
+    let overrideScrollBehavior = false;
+
+    if (options.behavior === "auto" || options.behavior === undefined) {
+      overrideScrollBehavior = true;
+    }
+
+    if (overrideScrollBehavior) {
+      this.nativeWindow.document.documentElement.style.scrollBehavior = "auto";
+    }
+
     this.nativeWindow.scroll(options);
+
+    if (overrideScrollBehavior) {
+      this.utilsService.delay(100).subscribe(() => {
+        this.nativeWindow.document.documentElement.style.scrollBehavior = "";
+      });
+    }
   }
 
   scrollToElement(selector: string, options?: boolean | ScrollIntoViewOptions) {

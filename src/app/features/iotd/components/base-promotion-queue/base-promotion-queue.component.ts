@@ -198,7 +198,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
       })
       .then(() => {
         this.loadQueue(page, "default");
-        this.windowRefService.scroll({ top: 0, behavior: "smooth" });
+        this.windowRefService.scroll({ top: 0 });
       });
   }
 
