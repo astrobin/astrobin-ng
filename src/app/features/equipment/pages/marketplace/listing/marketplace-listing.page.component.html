@@ -3,23 +3,29 @@
   (menuOpen)="onMobileMenuOpen()"
   [titleTemplate]="titleTemplate"
   [descriptionTemplate]="descriptionTemplate"
-  [iconsTemplate]="shareButtons"
+  [iconsTemplate]="shareButtonsTemplate"
 ></astrobin-mobile-menu>
 
 <div class="page has-breadcrumb has-mobile-buttons-bar has-mobile-menu">
-  <h1 *ngIf="breakpointMdMin" class="d-flex justify-content-between align-items-center flex-column flex-lg-row gap-1">
+  <h1
+    *ngIf="breakpointMdMin"
+    class="d-flex justify-content-between align-items-center align-items-lg-end flex-column flex-lg-row gap-1"
+  >
     <span class="d-block flex-grow-1 me-lg-3 mb-1 mb-lg-0">
       <span class="d-block mb-0 mb-lg-2">
         {{ title }}
       </span>
 
-      <a [routerLink]="['/', 'equipment', 'marketplace']" class="d-block d-lg-none mb-3 back-to-marketplace">
+      <ng-container *ngIf="deviceService.mdMin()" [ngTemplateOutlet]="descriptionTemplate">
+      </ng-container>
+
+      <a [routerLink]="['/', 'equipment', 'marketplace']" class="d-block d-lg-none mt-3 mb-3 back-to-marketplace">
         <fa-icon icon="arrow-left"></fa-icon>
         {{ "Back to marketplace" | translate }}
       </a>
     </span>
 
-    <ng-container [ngTemplateOutlet]="shareButtons"></ng-container>
+    <ng-container [ngTemplateOutlet]="shareButtonsTemplate"></ng-container>
   </h1>
 
   <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
@@ -384,7 +390,7 @@
   </span>
 </ng-template>
 
-<ng-template #shareButtons>
+<ng-template #shareButtonsTemplate>
   <span class="share-buttons">
     <button (click)="shareOnFacebook()" class="btn btn-link btn-no-block">
       <fa-icon [icon]="['fab', 'facebook']"></fa-icon>

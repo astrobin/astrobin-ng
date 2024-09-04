@@ -110,6 +110,11 @@ astrobin-marketplace-more-from-user {
 
   @media (min-width: $md-min) {
     color: var(--lighterGrey);
+    margin-top: .5rem;
+
+    .listing-info-section-separator {
+      padding: 0 .5rem;
+    }
   }
 }
 
