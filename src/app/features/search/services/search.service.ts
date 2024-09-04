@@ -403,6 +403,8 @@ export class SearchService extends BaseService {
     const ngcRange = Array.from({ length: 7840 }, (_, i) => i + 1);
     const icRange = Array.from({ length: 5386 }, (_, i) => i + 1);
     const sh2Range = Array.from({ length: 313 }, (_, i) => i + 1);
+    const ldnRange = Array.from({ length: 1802 }, (_, i) => i + 1);
+    const lbnRange = Array.from({ length: 1125 }, (_, i) => i + 1);
 
     const subjects = [
       ...messierRange.map(i => ({
@@ -420,6 +422,14 @@ export class SearchService extends BaseService {
       ...sh2Range.map(i => ({
         type: SearchAutoCompleteType.SUBJECTS,
         label: `Sh2-${i}`
+      })),
+      ...ldnRange.map(i => ({
+        type: SearchAutoCompleteType.SUBJECTS,
+        label: `LDN ${i}`
+      })),
+      ...lbnRange.map(i => ({
+        type: SearchAutoCompleteType.SUBJECTS,
+        label: `LBN ${i}`
       }))
     ];
 
