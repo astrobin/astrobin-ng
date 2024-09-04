@@ -424,10 +424,6 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       ? model.text.value.toLowerCase().replace(/\s/g, "")
       : null;
 
-    if (model.text?.value === "" && this.filterComponentRefs.length === 0) {
-      model.ordering = null;
-    }
-
     this.resetAutoCompleteItems();
 
     if (
