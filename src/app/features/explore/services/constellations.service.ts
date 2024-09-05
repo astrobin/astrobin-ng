@@ -32,10 +32,6 @@ export class ConstellationsService {
     return this._constellations[language] ? this._constellations[language] : this._constellations["en"];
   }
 
-  getFindImagesLink(constellation: ConstellationInterface): string {
-    return `${this.classicRoutesService.SEARCH}?d=i&constellation=${constellation.id}`;
-  }
-
   private _buildConstellationData(language: string) {
     this._constellations = {
       de: [

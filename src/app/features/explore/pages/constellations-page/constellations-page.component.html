@@ -35,8 +35,8 @@
             </h3>
             <p>{{ constellationData.extract }}</p>
             <a
-              (click)="findImages(constellation)"
-              [class.loading]="loadingService.loading$ | async"
+              (click)="findImages($event, constellation)"
+              [href]="getFindImagesUrl(constellation)"
               class="btn btn-outline-primary"
             >
               {{ "Find images" | translate }}

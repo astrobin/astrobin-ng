@@ -10,6 +10,8 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { startWith, takeUntil } from "rxjs/operators";
+import { SearchService } from "@features/search/services/search.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-constellations-page",
@@ -27,7 +29,9 @@ export class ConstellationsPageComponent extends BaseComponentDirective implemen
     public readonly constellationsService: ConstellationsService,
     public readonly viewportScroller: ViewportScroller,
     public readonly loadingService: LoadingService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly searchService: SearchService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -53,9 +57,20 @@ export class ConstellationsPageComponent extends BaseComponentDirective implemen
     this.viewportScroller.scrollToAnchor(`constellation-${constellation.id}`);
   }
 
-  findImages(constellation: ConstellationInterface): boolean {
-    this.loadingService.setLoading(true);
-    this.windowRefService.nativeWindow.location.href = this.constellationsService.getFindImagesLink(constellation);
-    return false;
+  getFindImagesUrl(constellation: ConstellationInterface): string {
+    const params = this.searchService.modelToParams({ constellation: constellation.id });
+    return `/search?p=${params}`;
+  }
+
+  findImages(event: MouseEvent, constellation: ConstellationInterface){
+    if (event.ctrlKey || event.metaKey || event.button === 1) {
+      return;
+    }
+
+    event.preventDefault();
+
+    this.router.navigateByUrl(this.getFindImagesUrl(constellation)).then(() => {
+      this.windowRefService.scroll({ top: 0 });
+    });
   }
 }
