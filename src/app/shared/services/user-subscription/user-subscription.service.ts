@@ -274,6 +274,10 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     );
   }
 
+  canPlateSolveAdvanced$(): Observable<boolean> {
+    return this.isUltimate$();
+  }
+
   fileSizeAllowed(size: number): Observable<{ allowed: boolean; max: number }> {
     return this.store$.pipe(
       take(1),

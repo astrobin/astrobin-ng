@@ -135,6 +135,7 @@ import { ImageViewerMenuComponent } from "@shared/components/misc/image-viewer/i
 import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/loading-dialog.component";
 import { ImageViewerGroupsAndCollectionsComponent } from "@shared/components/misc/image-viewer/image-viewer-groups-and-collections.component";
 import { ImageViewerCustomMessageBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-custom-message-banner.component";
+import { ImageViewerPlateSolvingBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component";
 
 const modules = [
   CommonModule,
@@ -223,6 +224,7 @@ const components = [
   ImageViewerEquipmentComponent,
   ImageViewerRevisionsComponent,
   ImageViewerGroupsAndCollectionsComponent,
+  ImageViewerPlateSolvingBannerComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,

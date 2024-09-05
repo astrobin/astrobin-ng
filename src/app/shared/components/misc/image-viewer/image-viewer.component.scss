@@ -379,16 +379,17 @@
         flex-direction: column;
 
         ::ng-deep {
-          .image-viewer-banner {
-            margin: -2rem -2rem 1rem -2rem;
-            padding: .5rem 2rem;
-            border-radius: 0;
-            box-shadow: none;
-          }
+          .image-viewer-banner-component {
+            + .image-viewer-banner-component {
+              margin-top: 1rem;
+            }
 
-          astrobin-image-viewer-wip-banner + astrobin-image-viewer-custom-message-banner,
-          astrobin-image-viewer-custom-message-banner + astrobin-image-viewer-custom-message-banner {
-            margin-top: 1rem;
+            .image-viewer-banner {
+              margin: -2rem -2rem 1rem -2rem;
+              padding: .5rem 2rem;
+              border-radius: 0;
+              box-shadow: none;
+            }
           }
         }
 

@@ -8,7 +8,11 @@ import { Action } from "@ngrx/store";
 export class LoadSolution implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_SOLUTION;
 
-  constructor(public payload: { contentType: number; objectId: string }) {
+  constructor(public payload: {
+    contentType: number;
+    objectId: string;
+    forceRefresh?: boolean;
+  }) {
   }
 }
 

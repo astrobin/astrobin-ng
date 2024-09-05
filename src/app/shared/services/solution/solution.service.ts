@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { SolutionInterface } from "@shared/interfaces/solution.interface";
+import { SolutionInterface, SolutionStatus } from "@shared/interfaces/solution.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 
@@ -9,6 +9,16 @@ import { LoadingService } from "@shared/services/loading.service";
 export class SolutionService extends BaseService {
   constructor(public readonly loadingService: LoadingService) {
     super(loadingService);
+  }
+
+  isSolving(solution: SolutionInterface): boolean {
+    return (
+      solution === null ||
+      typeof solution === "undefined" ||
+      solution.status === SolutionStatus.MISSING ||
+      solution.status === SolutionStatus.PENDING ||
+      solution.status === SolutionStatus.ADVANCED_PENDING
+    );
   }
 
   getObjectsInField(solution: SolutionInterface, clean: boolean = true): string[] {
