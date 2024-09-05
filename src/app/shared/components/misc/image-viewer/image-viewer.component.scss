@@ -385,6 +385,11 @@
             border-radius: 0;
             box-shadow: none;
           }
+
+          astrobin-image-viewer-wip-banner + astrobin-image-viewer-custom-message-banner,
+          astrobin-image-viewer-custom-message-banner + astrobin-image-viewer-custom-message-banner {
+            margin-top: 1rem;
+          }
         }
 
         .description ::ng-deep {
