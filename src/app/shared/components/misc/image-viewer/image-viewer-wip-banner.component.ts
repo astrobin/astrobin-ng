@@ -21,12 +21,14 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
   selector: "astrobin-image-viewer-wip-banner",
   template: `
     <div
-      class="image-viewer-banner alert alert-warning d-flex justify-content-between align-items-center gap-2"
+      class="image-viewer-banner alert alert-warning d-flex align-items-center gap-2"
     >
-      <div>
+      <div class="flex-grow-1">
         <fa-icon icon="info-circle"></fa-icon>
         {{ "This image is in your staging area." | translate }}
-        <a href="" target="_blank">{{ "Learn more" | translate }}.</a>
+        <a href="https://welcome.astrobin.com/faq#staging-area" target="_blank" rel="noopener">
+          {{ "Learn more" | translate }}.
+        </a>
       </div>
       <button
         (click)="openPromoteOffcanvas()"

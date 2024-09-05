@@ -18,7 +18,7 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { fromEvent, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
+import { combineLatest, fromEvent, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -33,6 +33,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 
 enum SharingMode {
   LINK = "link",
@@ -176,6 +177,20 @@ export class ImageViewerComponent
   protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
   protected isLightBoxOpen = false;
 
+  protected showUpgradeToPlateSolveBanner$ = combineLatest([
+    this.currentUser$,
+    this.userSubscriptionService.canPlateSolve$()
+  ]).pipe(
+    takeUntil(this.destroyed$),
+    map(([user, canPlateSolve]) => {
+      if (!this.image || !user || user.id !== this.image.user || canPlateSolve) {
+        return false;
+      }
+
+      return this.imageService.isPlateSolvable(this.image);
+    })
+  );
+
   private _imageChangedSubject = new Subject<ImageInterface>();
   private _imageChanged$ = this._imageChangedSubject.asObservable();
 
@@ -209,7 +224,8 @@ export class ImageViewerComponent
     public readonly lightbox: Lightbox,
     public readonly lightboxEvent: LightboxEvent,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$);
   }

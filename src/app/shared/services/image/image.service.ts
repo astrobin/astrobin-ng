@@ -647,6 +647,18 @@ export class ImageService extends BaseService {
     );
   }
 
+  isPlateSolvable(image: ImageInterface): boolean {
+    const isDeepSkyPlateSolvable = [
+      SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD
+    ].indexOf(image.subjectType) !== -1;
+
+    const isSolarSystemPlateSolvable =
+      image.subjectType === SubjectType.SOLAR_SYSTEM &&
+      image.solarSystemMainSubject !== SolarSystemSubjectType.COMET;
+
+    return isDeepSkyPlateSolvable || isSolarSystemPlateSolvable;
+  }
+
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
     if (isPlatformServer(this.platformId)) {
       // For SSR, just return the URL as-is

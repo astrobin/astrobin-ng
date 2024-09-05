@@ -243,6 +243,16 @@
   ></astrobin-image-search>
 </ng-template>
 
+<ng-template #upgradeToPlateSolveBannerMessageTemplate>
+  <div class="flex-grow-1">
+    <fa-icon icon="exclamation-triangle" class="me-2"></fa-icon>
+    <span>{{ "Upgrade your account to enable plate-solving." | translate }}</span>
+  </div>
+  <a href="https://welcome.astrobin.com/pricing" target="_blank" rel="noopener">
+    {{ "Learn more" | translate }}
+  </a>
+</ng-template>
+
 <ng-template #dataAreaTemplate>
   <div
     #dataArea
@@ -253,6 +263,12 @@
       *ngIf="image.isWip && currentUserWrapper.user?.id === image.user"
       [image]="image"
     ></astrobin-image-viewer-wip-banner>
+
+    <astrobin-image-viewer-custom-message-banner
+      *ngIf="(showUpgradeToPlateSolveBanner$ | async) === true"
+      [messageTemplate]="upgradeToPlateSolveBannerMessageTemplate"
+      alertClass="info"
+    ></astrobin-image-viewer-custom-message-banner>
 
     <astrobin-image-viewer-title
       [image]="image"
