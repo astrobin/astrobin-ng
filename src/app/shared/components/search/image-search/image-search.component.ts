@@ -161,7 +161,14 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       );
   }
 
-  openImage(image: ImageSearchInterface): void {
+  openImage(event: MouseEvent, image: ImageSearchInterface): void {
+    // Check if any modifier key is pressed (cmd, ctrl, or middle-click)
+    if (event.ctrlKey || event.metaKey || event.button === 1) {
+      return; // Let the default browser behavior handle the opening of a new tab
+    }
+
+    event.preventDefault();
+
     // If we are on an image's page, we don't want to open the image viewer but simply route to the image.
     if (this.router.url.startsWith("/i/")) {
       this._openImageByNavigation(image);
@@ -177,9 +184,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   getImageLink(image: ImageSearchInterface): string {
-    let path = this.windowRefService.getCurrentUrl().toString();
-    path = UtilsService.addOrUpdateUrlParam(path, "i", image.hash || ("" + image.objectId));
-    return path;
+    return `/i/${image.hash || image.objectId}`;
   }
 
   private _setAverageSizeForRegularAlias(): void {
