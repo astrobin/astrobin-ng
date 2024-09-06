@@ -262,12 +262,21 @@
     <astrobin-image-viewer-wip-banner
       *ngIf="image.isWip && currentUserWrapper.user?.id === image.user"
       [image]="image"
+      class="image-viewer-banner-component"
     ></astrobin-image-viewer-wip-banner>
+
+    <astrobin-image-viewer-plate-solving-banner
+      *ngIf="currentUserWrapper.user?.id === image.user"
+      [image]="image"
+      [revisionLabel]="revisionLabel"
+      class="image-viewer-banner-component"
+    ></astrobin-image-viewer-plate-solving-banner>
 
     <astrobin-image-viewer-custom-message-banner
       *ngIf="(showUpgradeToPlateSolveBanner$ | async) === true"
       [messageTemplate]="upgradeToPlateSolveBannerMessageTemplate"
       alertClass="info"
+      class="image-viewer-banner-component"
     ></astrobin-image-viewer-custom-message-banner>
 
     <astrobin-image-viewer-title

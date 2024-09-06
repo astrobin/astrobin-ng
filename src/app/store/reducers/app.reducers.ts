@@ -515,8 +515,28 @@ export function appReducer(state = initialAppState, action: All): AppState {
     }
 
     case AppActionTypes.LOAD_SOLUTION_SUCCESS: {
+      const imageContentType = findImageContentType(state);
+      let image: ImageInterface = null;
+
+      if (imageContentType && action.payload.contentType === imageContentType.id) {
+        image = findImage(state, parseInt(action.payload.objectId, 10));
+        if (image) {
+          image = {
+            ...image,
+            solution: action.payload
+          };
+        }
+      }
+
       return {
         ...state,
+        images: image
+          ? [
+            ...state.images.slice(0, state.images.findIndex(i => i.pk === image.pk)),
+            image,
+            ...state.images.slice(state.images.findIndex(i => i.pk === image.pk) + 1)
+          ]
+          : state.images,
         solutions: UtilsService.arrayUniqueObjects([...state.solutions, action.payload], "id")
       };
     }

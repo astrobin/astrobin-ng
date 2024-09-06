@@ -461,6 +461,7 @@ export class ImageViewerComponent
       takeUntil(this._imageChanged$)
     ).subscribe((image: ImageInterface) => {
       this.image = { ...image };
+      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     });
 
     this.changeDetectorRef.detectChanges();

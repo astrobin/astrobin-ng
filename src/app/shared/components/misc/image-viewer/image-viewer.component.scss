@@ -78,7 +78,7 @@
   }
 
   position: fixed;
-  top: calc(4rem + 2px);
+  top: 4rem;
   left: 0;
   width: 100%;
   height: calc(100% - 4rem);
@@ -379,16 +379,17 @@
         flex-direction: column;
 
         ::ng-deep {
-          .image-viewer-banner {
-            margin: -2rem -2rem 1rem -2rem;
-            padding: .5rem 2rem;
-            border-radius: 0;
-            box-shadow: none;
-          }
+          .image-viewer-banner-component {
+            + .image-viewer-banner-component {
+              margin-top: 1rem;
+            }
 
-          astrobin-image-viewer-wip-banner + astrobin-image-viewer-custom-message-banner,
-          astrobin-image-viewer-custom-message-banner + astrobin-image-viewer-custom-message-banner {
-            margin-top: 1rem;
+            .image-viewer-banner {
+              margin: -2rem -2rem 1rem -2rem;
+              padding: .5rem 2rem;
+              border-radius: 0;
+              box-shadow: none;
+            }
           }
         }
 
@@ -607,8 +608,8 @@
   }
 
   &.fullscreen-mode {
-    top: 0;
-    height: 100%;
+    top: .325rem;
+    height: calc(100% - .325rem);
     z-index: 1030;
 
     @media (max-width: $md-max) {

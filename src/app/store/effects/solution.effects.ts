@@ -14,21 +14,30 @@ export class SolutionEffects {
   LoadSolution: Observable<LoadSolutionSuccess | LoadSolutionFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.LOAD_SOLUTION),
-      mergeMap(action =>
-        this.store$.select(selectSolution, action.payload).pipe(
+      mergeMap(action => {
+        const loadFromApi$ = this.solutionApiService.getSolution(
+          action.payload.contentType,
+          action.payload.objectId,
+          action.payload.includePixInsightDetails
+        ).pipe(
+          map(solution => (!!solution ? new LoadSolutionSuccess(solution) : new LoadSolutionFailure())),
+          catchError(() => of(new LoadSolutionFailure()))
+        );
+
+        // If forceRefresh is true, skip store check and load directly from API
+        if (action.payload.forceRefresh || action.payload.includePixInsightDetails) {
+          return loadFromApi$;
+        }
+
+        // Otherwise, check the store and only load from API if solution is not found
+        return this.store$.select(selectSolution, action.payload).pipe(
           mergeMap(solutionFromStore =>
             solutionFromStore !== null
-              ? of(solutionFromStore).pipe(
-                take(1),
-                map(solution => new LoadSolutionSuccess(solution))
-              )
-              : this.solutionApiService.getSolution(action.payload.contentType, action.payload.objectId).pipe(
-                map(solution => (!!solution ? new LoadSolutionSuccess(solution) : new LoadSolutionFailure())),
-                catchError(error => EMPTY)
-              )
+              ? of(new LoadSolutionSuccess(solutionFromStore))
+              : loadFromApi$
           )
-        )
-      )
+        );
+      })
     )
   );
 
