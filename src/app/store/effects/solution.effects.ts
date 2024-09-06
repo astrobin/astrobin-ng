@@ -15,13 +15,17 @@ export class SolutionEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.LOAD_SOLUTION),
       mergeMap(action => {
-        const loadFromApi$ = this.solutionApiService.getSolution(action.payload.contentType, action.payload.objectId).pipe(
+        const loadFromApi$ = this.solutionApiService.getSolution(
+          action.payload.contentType,
+          action.payload.objectId,
+          action.payload.includePixInsightDetails
+        ).pipe(
           map(solution => (!!solution ? new LoadSolutionSuccess(solution) : new LoadSolutionFailure())),
           catchError(() => of(new LoadSolutionFailure()))
         );
 
         // If forceRefresh is true, skip store check and load directly from API
-        if (action.payload.forceRefresh) {
+        if (action.payload.forceRefresh || action.payload.includePixInsightDetails) {
           return loadFromApi$;
         }
 

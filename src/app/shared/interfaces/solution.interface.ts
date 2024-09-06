@@ -27,6 +27,8 @@ export interface SolutionInterface {
   pixinsightSvgAnnotationRegular: string;
   pixinsightFindingChartSmall: string;
   pixinsightFindingChart: string;
+  pixinsightQueueSize?: number;
+  pixinsightStage?: string;
   advancedRa: string;
   advancedRaTopLeft: string;
   advancedRaTopRight: string;

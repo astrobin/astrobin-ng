@@ -11,6 +11,7 @@ export class LoadSolution implements PayloadActionInterface {
   constructor(public payload: {
     contentType: number;
     objectId: string;
+    includePixInsightDetails?: boolean;
     forceRefresh?: boolean;
   }) {
   }
