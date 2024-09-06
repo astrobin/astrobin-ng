@@ -441,6 +441,7 @@
         align-items: center;
         gap: 1rem;
         font-size: 1.25rem;
+        transition: transform 0.3s ease;
 
         .like,
         .bookmark,
@@ -480,7 +481,7 @@
         }
 
         @media (max-width: $md-max) {
-          position: fixed;
+          position: sticky;
           bottom: 0;
           padding: .5rem;
 
@@ -493,7 +494,6 @@
       @media (max-width: $md-max) {
         width: 100%;
         height: unset;
-        padding-bottom: 77px; // 77px is the height of the buttons area.
       }
     }
 
@@ -635,7 +635,7 @@
   &:not(.fullscreen-mode) {
     @media (max-width: $md-max) {
       top: calc(.3rem + 3.5rem + 3rem);
-      height: calc(100% - 84px);
+      height: calc(100vh - 108px);
     }
   }
 }

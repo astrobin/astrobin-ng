@@ -93,6 +93,9 @@ export class ImageViewerComponent
   @ViewChild("dataArea")
   dataArea: ElementRef;
 
+  @ViewChild("buttonsArea", { static: false, read: ElementRef })
+  buttonsAreaElement: ElementRef;
+
   @ViewChild("navigationContextElement")
   navigationContextElement: ElementRef;
 
@@ -272,13 +275,12 @@ export class ImageViewerComponent
   }
 
   ngAfterViewInit() {
-    this.initScrollHandling();
     this.autoOpenComments();
   }
 
   ngAfterViewChecked() {
     if (this.navigationContextElement && !this._navigationContextWheelEventSubscription) {
-      this.initScrollHandling();
+      this.initNavigationScrollHandling();
     }
   }
 
@@ -292,7 +294,7 @@ export class ImageViewerComponent
     }
   }
 
-  initScrollHandling() {
+  initNavigationScrollHandling() {
     if (this.navigationContextElement) {
       const el = this.navigationContextElement.nativeElement;
 
