@@ -36,6 +36,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
           <span class="date">
             {{ image.iotdDate | date:"mediumDate" }}
           </span>
+          <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
         </span>
 
           <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
@@ -43,6 +44,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             <fa-icon icon="star"></fa-icon>
             {{ "Top Pick" | translate }}
           </span>
+          <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
         </span>
 
           <span *ngIf="!image.iotdDate && !image.isTopPick && image.isTopPickNomination" class="top-pick-nomination">
@@ -50,6 +52,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             <fa-icon icon="arrow-up"></fa-icon>
             {{ "Top Pick Nomination" | translate }}
           </span>
+          <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
         </span>
         </div>
       </h2>
@@ -71,6 +74,17 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </div>
       </div>
     </div>
+
+    <ng-template #iotdInfoLinkTemplate>
+      <a
+        href="https://welcome.astrobin.com/iotd"
+        class="ms-2 no-external-link-icon text-muted"
+        rel="noopener"
+        target="_blank"
+      >
+        <fa-icon icon="info-circle"></fa-icon>
+      </a>
+    </ng-template>
   `,
   styles: [`
     :host {
