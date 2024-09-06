@@ -23,7 +23,7 @@ export class SolutionApiService extends BaseClassicApiService {
     objectId: string,
     includePixInsightDetails = false
   ): Observable<SolutionInterface> {
-    let url = this.configUrl;
+    let url = this.configUrl + "/";
 
     url = UtilsService.addOrUpdateUrlParam(url, "content_type", contentType + "");
     url = UtilsService.addOrUpdateUrlParam(url, "object_id", objectId);
