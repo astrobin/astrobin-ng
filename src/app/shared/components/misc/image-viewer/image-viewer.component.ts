@@ -555,15 +555,7 @@ export class ImageViewerComponent
       return;
     }
 
-    if (this.offcanvasService.hasOpenOffcanvas()) {
-      return;
-    }
-
-    if (this.modalService.hasOpenModals()) {
-      return;
-    }
-
-    if (this.isLightBoxOpen) {
+    if (this._ignoreNavigationEvent()) {
       return;
     }
 
@@ -572,12 +564,20 @@ export class ImageViewerComponent
 
   @HostListener("document:keydown.arrowRight", ["$event"])
   onNextClicked(): void {
+    if (this._ignoreNavigationEvent()) {
+      return;
+    }
+
     const imageId = this.navigationContext[this.currentIndex + 1].imageId;
     this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
   }
 
   @HostListener("document:keydown.arrowLeft", ["$event"])
   onPreviousClicked(): void {
+    if (this._ignoreNavigationEvent()) {
+      return;
+    }
+
     const imageId = this.navigationContext[this.currentIndex - 1].imageId;
     this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
   }
@@ -871,6 +871,12 @@ export class ImageViewerComponent
     }
   }
 
+  private _ignoreNavigationEvent() {
+    return this.offcanvasService.hasOpenOffcanvas() ||
+      this.modalService.hasOpenModals() ||
+      this.isLightBoxOpen;
+  }
+
   private _navigateToImage(
     imageId: ImageInterface["hash"] | ImageInterface["pk"],
     revisionLabel: ImageRevisionInterface["label"],
@@ -901,13 +907,13 @@ export class ImageViewerComponent
   private _updateCurrentImageIndexInNavigationContext(): void {
     const byHash = this.navigationContext.findIndex(item => item.imageId === this.image.hash);
     const byPk = this.navigationContext.findIndex(item => {
-      try {
-        const itemImageIdAsNumber = parseInt(item.imageId + "", 10);
-        const imagePkAsNumber = parseInt(this.image.pk + "", 10);
-        return itemImageIdAsNumber === imagePkAsNumber;
-      } catch (e) {
-        return -1;
-      }
+        try {
+          const itemImageIdAsNumber = parseInt(item.imageId + "", 10);
+          const imagePkAsNumber = parseInt(this.image.pk + "", 10);
+          return itemImageIdAsNumber === imagePkAsNumber;
+        } catch (e) {
+          return -1;
+        }
       }
     );
 
