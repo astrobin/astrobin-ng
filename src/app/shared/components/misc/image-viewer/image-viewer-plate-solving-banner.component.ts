@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { Component, HostBinding, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
@@ -25,16 +25,61 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
     <div
       class="image-viewer-banner alert alert-dark d-flex align-items-center gap-2"
     >
-      <fa-icon icon="spinner" animation="spin"></fa-icon>
-      <span *ngIf="solution.status < SolutionStatus.SUCCESS; else solvingWithPixInsightTemplate">
-        {{ "AstroBin is plate-solving this image with Astrometry.net..." | translate }}
-      </span>
+      <div class="flex-grow-1">
+        <fa-icon icon="spinner" animation="spin" class="me-2"></fa-icon>
+        <span *ngIf="solution.status < SolutionStatus.SUCCESS; else solvingWithPixInsightTemplate">
+          {{ "AstroBin is plate-solving this image with Astrometry.net..." | translate }}
+        </span>
+      </div>
+      <fa-icon icon="info-circle" class="me-0" (click)="openInformationOffcanvas()"></fa-icon>
     </div>
 
     <ng-template #solvingWithPixInsightTemplate>
       <span>
         {{ "AstroBin is plate-solving this image with PixInsight..." | translate }}
       </span>
+    </ng-template>
+
+    <ng-template #informationOffcanvasTemplate let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">
+          {{ "Plate-solving information" | translate }}
+        </h5>
+        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <p>Astrometry.net job ID:
+          <a
+            *ngIf="solution.submissionId; else naTemplate"
+            [href]="'https://nova.astrometry.net/status/' + solution.submissionId"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ solution.submissionId }}
+          </a>
+        </p>
+
+        <p>
+          PixInsight job ID:
+          <span
+            *ngIf="solution.pixinsightSerialNumber; else naTemplate"
+          >
+            {{ solution.pixinsightSerialNumber}}
+          </span>
+        </p>
+
+        <p *ngIf="solution.pixinsightQueueSize">
+          {{ "PixInsight queue size" | translate }}: {{ solution.pixinsightSerialNumber}}
+        </p>
+
+        <p *ngIf="solution.pixinsightStage">
+          {{ "PixInsight stage" | translate }}: {{ solution.pixinsightStage}}
+        </p>
+      </div>
+    </ng-template>
+
+    <ng-template #naTemplate>
+      {{ "n/a" | translate }}
     </ng-template>
   `
 })
@@ -43,6 +88,9 @@ export class ImageViewerPlateSolvingBannerComponent
   protected solution: SolutionInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
   protected readonly SolutionStatus = SolutionStatus;
+
+  @ViewChild("informationOffcanvasTemplate")
+  private _informationOffcanvasTemplate: TemplateRef<any>;
 
   // Used to determine if the banner should be shown. If the solution is successful or failed, the banner should be
   @HostBinding("class")
@@ -105,6 +153,12 @@ export class ImageViewerPlateSolvingBannerComponent
         }
       }
     }
+  }
+
+  protected openInformationOffcanvas() {
+    this.offcanvasService.open(this._informationOffcanvasTemplate, {
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 
   _solutionSucceeded(): boolean {
