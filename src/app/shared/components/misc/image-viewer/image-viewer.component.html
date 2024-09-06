@@ -266,6 +266,7 @@
     ></astrobin-image-viewer-wip-banner>
 
     <astrobin-image-viewer-plate-solving-banner
+      *ngIf="currentUserWrapper.user?.id === image.user"
       [image]="image"
       [revisionLabel]="revisionLabel"
       class="image-viewer-banner-component"
