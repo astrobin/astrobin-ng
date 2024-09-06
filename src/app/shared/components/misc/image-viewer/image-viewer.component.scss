@@ -104,7 +104,8 @@
 
       @media (max-width: $md-max) {
         width: 100%;
-        max-height: 66.67%;
+        height: unset;
+        min-height: calc(50vh - 4rem);
       }
 
       .close-button,
@@ -133,6 +134,12 @@
 
         &:focus-visible {
           outline: none !important;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            opacity: 1 !important;
+          }
         }
       }
 
@@ -206,13 +213,6 @@
           pointer-events: auto;
           display: block;
           opacity: 1;
-        }
-      }
-
-      @media (max-width: $md-max) {
-        astrobin-loading-indicator,
-        astrobin-image.loading {
-
         }
       }
 
@@ -305,7 +305,7 @@
           .next-button,
           .previous-button,
           .additional-buttons button {
-            opacity: 1 !important;
+            opacity: .5;
             pointer-events: auto;
           }
         }
@@ -343,11 +343,17 @@
         }
 
         .close-button,
+        .additional-buttons button {
+          top: .25rem;
+        }
+
+        .close-button,
         .next-button,
         .previous-button,
         .additional-buttons button {
-          opacity: 1;
+          opacity: .5;
           pointer-events: auto;
+          font-size: 1rem;
         }
 
         .additional-buttons {
@@ -486,7 +492,7 @@
 
       @media (max-width: $md-max) {
         width: 100%;
-        height: auto;
+        height: unset;
         padding-bottom: 77px; // 77px is the height of the buttons area.
       }
     }

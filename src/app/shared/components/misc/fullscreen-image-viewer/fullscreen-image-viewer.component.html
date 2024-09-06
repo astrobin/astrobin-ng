@@ -35,20 +35,21 @@
 
   <div
     *ngIf="!isTouchDevice && isLargeEnough"
-    [class.lens-enabled]="enableLens"
+    (click)="toggleEnableLens()"
+    [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
     class="enable-lens-toggle"
+    container="body"
   >
-    <fa-icon
-      icon="magnifying-glass"
-      (click)="toggleEnableLens()"
-      [ngbTooltip]="enableLens ? ('Disable lens' | translate) : ('Enable lens' | translate)"
-      container="body"
-    ></fa-icon>
+    <ng-container *ngIf="!enableLens">
+      <span>{{ "Zoom mode" | translate }}</span>
+    </ng-container>
+    <ng-container *ngIf="enableLens">
+      <span>{{ "Lens mode" | translate }}</span>
+    </ng-container>
   </div>
 
   <div (click)="hide($event)" class="close">
-    <fa-icon icon="times"></fa-icon>
-    <span class="esc">ESC</span>
+    <fa-icon icon="down-left-and-up-right-to-center"></fa-icon>
   </div>
 </ng-container>
 

@@ -88,18 +88,6 @@
           icon="chart-simple"
         ></fa-icon>
       </button>
-
-      <button
-        *ngIf="supportsFullscreen"
-        class="fullscreen-button"
-        (click)="enterFullscreen($event)"
-      >
-        <fa-icon
-          [ngbTooltip]="'View fullscreen' | translate"
-          container="body"
-          icon="expand"
-        ></fa-icon>
-      </button>
     </div>
 
     <button
@@ -117,7 +105,7 @@
       (exitFullscreen)="exitFullscreen(true)"
     ></astrobin-fullscreen-image-viewer>
 
-    <astrobin-loading-indicator *ngIf="!imageLoaded"></astrobin-loading-indicator>
+    <astrobin-loading-indicator *ngIf="!image"></astrobin-loading-indicator>
 
     <astrobin-image
       (imageClick)="enterFullscreen($event)"
@@ -266,7 +254,7 @@
     ></astrobin-image-viewer-wip-banner>
 
     <astrobin-image-viewer-plate-solving-banner
-      *ngIf="currentUserWrapper.user?.id === image.user"
+      *ngIf="revision?.solution && currentUserWrapper.user?.id === image.user"
       [image]="image"
       [revisionLabel]="revisionLabel"
       class="image-viewer-banner-component"

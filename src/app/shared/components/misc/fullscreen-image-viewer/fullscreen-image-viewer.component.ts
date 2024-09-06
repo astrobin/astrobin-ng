@@ -1,13 +1,4 @@
-import {
-  Component, EventEmitter,
-  HostBinding,
-  HostListener,
-  Inject,
-  Input,
-  OnChanges, OnInit, Output,
-  PLATFORM_ID,
-  SimpleChanges, ViewChild
-} from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
@@ -51,8 +42,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @HostBinding("class")
   klass = "d-none";
 
-  @ViewChild("ngxImageZoom", {static: false, read: NgxImageZoomComponent})
+  @ViewChild("ngxImageZoom", { static: false, read: NgxImageZoomComponent })
   ngxImageZoom: NgxImageZoomComponent;
+
+  @ViewChild("ngxImageZoom", { static: false, read: ElementRef })
+  ngxImageZoomEl: ElementRef;
 
   enableLens = true;
   zoomLensSize: number;
@@ -75,7 +69,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _zoomIndicatorTimeoutDuration = 1000;
   private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
-  private readonly LENS_ENABLED_COOKIE_NAME = 'astrobin-fullscreen-lens-enabled';
+  private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
 
   constructor(
     public readonly store$: Store<MainState>,

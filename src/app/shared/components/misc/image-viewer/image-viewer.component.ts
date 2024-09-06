@@ -327,31 +327,6 @@ export class ImageViewerComponent
     }
   }
 
-  computeImageAreaHeight(imageWidth: number, imageHeight: number): void {
-    // These are used to determine the initial height of the image area: when loading this view on mobile, AstroBin does
-    // not know how tall the image area should be. If we're initializing this view from a search view, we can pass the
-    // height of the image in the search index to use as a basis for calculating the height of the image area.
-
-    if (isPlatformServer(this.platformId)) {
-      return;
-    }
-
-    if (!this.imageArea) {
-      this.utilsService.delay(50).subscribe(() => this.computeImageAreaHeight(imageWidth, imageHeight));
-      return;
-    }
-
-    if (imageHeight && imageWidth && this.deviceService.mdMax()) {
-      const viewportWidth = this.windowRefService.nativeWindow.innerWidth;
-      // SCSS sets a max-height of 66.67% of the viewport height for the image area.
-      const maxAvailableHeight = this.windowRefService.nativeWindow.innerHeight * 2 / 3;
-      const height = Math.min(imageHeight, maxAvailableHeight, imageHeight * viewportWidth / imageWidth);
-      this.utilsService.delay(1).subscribe(() => {
-        this.renderer.setStyle(this.imageArea.nativeElement, "min-height", `${height}px`);
-      });
-    }
-  }
-
   onDescriptionClicked(event: MouseEvent) {
     if (this.isLightBoxOpen) {
       return;
@@ -426,7 +401,6 @@ export class ImageViewerComponent
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
 
     this.updateSupportsFullscreen();
-    this.computeImageAreaHeight(this.revision.w, this.revision.h);
 
     if (revisionLabel !== FINAL_REVISION_LABEL) {
       this.onRevisionSelected(revisionLabel);
@@ -589,12 +563,6 @@ export class ImageViewerComponent
 
   onImageLoaded(): void {
     this.imageLoaded = true;
-    if (this.deviceService.mdMax()) {
-      this.utilsService.delay(10).subscribe(() => {
-        this.renderer.setStyle(this.imageArea.nativeElement, "min-height", "unset");
-        this.renderer.setStyle(this.imageArea.nativeElement.querySelector("astrobin-image"), "height", "100%");
-      });
-    }
   }
 
   onImageMouseEnter(event: MouseEvent): void {

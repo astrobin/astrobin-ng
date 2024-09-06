@@ -120,38 +120,28 @@
     }
   }
 
-  .enable-lens-toggle {
+  .enable-lens-toggle,
+  .close {
+    cursor: pointer;
     position: fixed;
-    top: 2rem;
-    left: 2rem;
+    top: 1.5rem;
+    padding: .5rem;
     color: var(--white);
+    opacity: .5;
 
-    &.lens-enabled {
-      color: var(--accentColor);
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 
+  .enable-lens-toggle {
+    right: .75rem;
+    transform: scale(.9);
+  }
+
   .close {
-    position: fixed;
-    top: 2rem;
-    right: 2rem;
-    color: var(--white);
-    background: rgba(0, 0, 0, .5);
-    border-radius: 2rem;
-    padding: .5rem 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-
-    .esc {
-      display: block;
-      margin-left: .5rem;
-      font-weight: normal;
-
-      @media screen and (max-width: $xs-max) {
-        display: none;
-      }
-    }
+    left: 1rem;
   }
 }
