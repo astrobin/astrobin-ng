@@ -4,9 +4,9 @@ import {
   HostListener,
   Inject,
   Input,
-  OnChanges, Output,
+  OnChanges, OnInit, Output,
   PLATFORM_ID,
-  SimpleChanges
+  SimpleChanges, ViewChild
 } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
@@ -14,26 +14,28 @@ import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { MainState } from "@app/store/state";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageService } from "@shared/services/image/image.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { Coord } from "ngx-image-zoom";
+import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
 import { BehaviorSubject, Observable } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
 import { DeviceService } from "@shared/services/device.service";
+import { CookieService } from "ngx-cookie";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
   templateUrl: "./fullscreen-image-viewer.component.html",
   styleUrls: ["./fullscreen-image-viewer.component.scss"]
 })
-export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnChanges {
+export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
   id: number;
 
@@ -49,9 +51,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @HostBinding("class")
   klass = "d-none";
 
+  @ViewChild("ngxImageZoom", {static: false, read: NgxImageZoomComponent})
+  ngxImageZoom: NgxImageZoomComponent;
+
+  enableLens = true;
   zoomLensSize: number;
   showZoomIndicator = false;
   isTouchDevice = false;
+  isLargeEnough = false;
 
   hdThumbnail$: Observable<SafeUrl>;
   realThumbnail$: Observable<SafeUrl>;
@@ -68,6 +75,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _zoomIndicatorTimeoutDuration = 1000;
   private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
+  private readonly LENS_ENABLED_COOKIE_NAME = 'astrobin-fullscreen-lens-enabled';
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -77,7 +85,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly domSanitizer: DomSanitizer,
     public readonly utilsService: UtilsService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly cookieService: CookieService
   ) {
     super(store$);
 
@@ -90,6 +99,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._setZoomLensSize();
   }
 
+  ngOnInit() {
+    this.enableLens = this.cookieService.get(this.LENS_ENABLED_COOKIE_NAME) === "true";
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (this.id === undefined) {
       throw new Error("Attribute 'id' is required");
@@ -98,6 +111,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._setZoomLensSize();
 
     this.isTouchDevice = this.deviceService.isTouchEnabled();
+
+    this.store$.pipe(
+      select(selectImage, this.id),
+      filter(image => !!image),
+      take(1)
+    ).subscribe(image => {
+      this.isLargeEnough = (
+        image.w > this.windowRef.nativeWindow.innerWidth ||
+        image.h > this.windowRef.nativeWindow.innerHeight
+      );
+    });
 
     this.hdThumbnail$ = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
       takeUntil(this.destroyed$),
@@ -165,6 +189,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return { left: "0", top: "0", transform: "none" };
     }
 
+    if (!this.enableLens) {
+      return {
+        top: "1.5rem",
+        left: "4rem",
+        transform: "none"
+      };
+    }
+
     const x = this._zoomPosition.x;
     const y = this._zoomPosition.y;
 
@@ -183,6 +215,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   getZoomScroll(): number {
     return this._zoomScroll;
+  }
+
+  toggleEnableLens(): void {
+    this.enableLens = !this.enableLens;
+    this.cookieService.put(this.LENS_ENABLED_COOKIE_NAME, this.enableLens.toString());
+    if (this.enableLens) {
+      this._setZoomLensSize();
+    }
   }
 
   @HostListener("window:keyup.escape", ["$event"])
@@ -210,6 +250,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   private _setZoomLensSize(): void {
     this.zoomLensSize = Math.floor(this.windowRef.nativeWindow.innerWidth / 4);
+    if (this.ngxImageZoom) {
+      this.ngxImageZoom.lensWidth = this.zoomLensSize;
+      this.ngxImageZoom.lensHeight = this.zoomLensSize;
+    }
   }
 
   private _setZoomIndicatorTimeout(): void {
@@ -228,7 +272,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return {
       id: this.id,
       revision: this.revision,
-      alias: this.anonymized ? ImageAlias.HD_ANONYMIZED : ImageAlias.HD
+      alias: this.anonymized ? ImageAlias.HD_ANONYMIZED : ImageAlias.QHD
     };
   }
 
