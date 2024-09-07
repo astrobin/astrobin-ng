@@ -1,32 +1,30 @@
-<ng-container *ngIf="{ toggleProperty: toggleProperty$ | async } as context">
-  <button
-    (click)="onClick(context.toggleProperty)"
-    [class.loading]="loading"
-    [class.toggled]="!!context.toggleProperty"
-    [class]="btnClass"
-    [disabled]="disabled || loading"
-    [ngbTooltip]="
-        !showLabel ? (context.toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel) : ''
+<button
+  (click)="onClick($event, toggleProperty)"
+  [class.loading]="loading"
+  [class.toggled]="toggled"
+  [class]="btnClass"
+  [disabled]="disabled || loading"
+  [ngbTooltip]="
+        !isTouchDevice && !showLabel ? (toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel) : ''
       "
-    [attr.aria-label]="
-        !showLabel ? (context.toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null
+  [attr.aria-label]="
+        !showLabel ? (toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null
       "
-    container="body"
-  >
-    <ng-container *ngIf="!!context.toggleProperty">
-      <fa-icon
-        [animation]="loading ? 'spin' : null"
-        [icon]="loading ? 'spinner' : togglePropertyIcon"
-      ></fa-icon>
-      <span *ngIf="showLabel" class="btn-text">{{ unsetTogglePropertyLabel }}</span>
-    </ng-container>
+  container="body"
+>
+  <ng-container *ngIf="toggled">
+    <fa-icon
+      [animation]="loading ? 'spin' : null"
+      [icon]="loading ? 'spinner' : togglePropertyIcon"
+    ></fa-icon>
+    <span *ngIf="showLabel" class="btn-text">{{ unsetTogglePropertyLabel }}</span>
+  </ng-container>
 
-    <ng-container *ngIf="context.toggleProperty === null">
-      <fa-icon
-        [animation]="loading ? 'spin' : null"
-        [icon]="loading ? 'spinner' : togglePropertyIcon"
-      ></fa-icon>
-      <span *ngIf="showLabel" class="btn-text">{{ setTogglePropertyLabel }}</span>
-    </ng-container>
-  </button>
-</ng-container>
+  <ng-container *ngIf="!toggled">
+    <fa-icon
+      [animation]="loading ? 'spin' : null"
+      [icon]="loading ? 'spinner' : togglePropertyIcon"
+    ></fa-icon>
+    <span *ngIf="showLabel" class="btn-text">{{ setTogglePropertyLabel }}</span>
+  </ng-container>
+</button>
