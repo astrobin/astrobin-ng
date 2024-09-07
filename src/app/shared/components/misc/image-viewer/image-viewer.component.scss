@@ -621,13 +621,26 @@
     z-index: 1030;
 
     @media (max-width: $md-max) {
-      // Leave room for the mobile menu
-      top: 3.3rem;
-      height: calc(100% - 3.3rem);
+      // Leave room for the site header
+      top: calc(3rem + 14px);
+      height: calc(100% - 3rem - 14px);
 
       &::ng-deep {
         astrobin-mobile-menu {
           top: .3rem;
+          z-index: 1031;
+        }
+      }
+    }
+
+    @media (max-width: $sm-max) {
+      // Leave room for the mobile menu
+      top: calc(3rem + 6px);
+      height: calc(100% - 3rem - 6px);
+
+      &::ng-deep {
+        astrobin-mobile-menu {
+          top: .325rem;
           z-index: 1031;
         }
       }

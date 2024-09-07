@@ -57,7 +57,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </div>
       </h2>
 
-      <div ngbDropdown class="dropdown w-auto d-none d-lg-block">
+      <div ngbDropdown class="dropdown w-auto d-none d-md-block">
         <fa-icon
           ngbDropdownToggle
           icon="bars"

@@ -2,7 +2,8 @@
   <astrobin-mobile-menu
     (menuClose)="onMobileMenuClose()"
     (menuOpen)="onMobileMenuOpen()"
-    [titleTemplate]="titleTemplate"
+    [titleTemplate]="mobileMenuTitleTemplate"
+    [iconsTemplate]="mobileMenuIconsTemplate"
     [template]="navTemplate"
     [templateContext]="{ $implicit: image }"
   ></astrobin-mobile-menu>
@@ -47,8 +48,14 @@
   <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>
 
-<ng-template #titleTemplate>
-  {{ image.title }}
+<ng-template #mobileMenuTitleTemplate>
+  {{ "Image" | translate }}
+</ng-template>
+
+<ng-template #mobileMenuIconsTemplate>
+  <button *ngIf="showCloseButton" (click)="close()" class="btn btn-link btn-no-block text-white">
+    <fa-icon icon="times"></fa-icon>
+  </button>
 </ng-template>
 
 <ng-template #navTemplate let-image>
@@ -65,7 +72,7 @@
     class="image-area"
     [class.force-view-mousehover]="forceViewMouseHover"
   >
-    <button class="close-button" (click)="close()">
+    <button class="close-button d-none d-md-block" (click)="close()">
       <fa-icon
         *ngIf="showCloseButton"
         [ngbTooltip]="'Close' | translate"

@@ -31,7 +31,9 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
           {{ "AstroBin is plate-solving this image with Astrometry.net..." | translate }}
         </span>
       </div>
-      <fa-icon icon="info-circle" class="me-0" (click)="openInformationOffcanvas()"></fa-icon>
+      <button class="btn btn-link" (click)="openInformationOffcanvas()">
+        <fa-icon icon="info-circle"></fa-icon>
+      </button>
     </div>
 
     <ng-template #solvingWithPixInsightTemplate>
