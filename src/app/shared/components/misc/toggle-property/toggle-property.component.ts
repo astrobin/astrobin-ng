@@ -1,26 +1,27 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
-import { Observable } from "rxjs";
 import { LoadingService } from "@shared/services/loading.service";
-import { CreateToggleProperty, DeleteToggleProperty, LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
-import { takeUntil } from "rxjs/operators";
+import { CreateToggleProperty, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertySuccess, LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
+import { filter, map, takeUntil, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { RouterService } from "@shared/services/router.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-toggle-property",
   templateUrl: "./toggle-property.component.html",
-  styleUrls: ["./toggle-property.component.scss"]
+  styleUrls: ["./toggle-property.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TogglePropertyComponent extends BaseComponentDirective implements OnChanges {
+export class TogglePropertyComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
   propertyType: TogglePropertyInterface["propertyType"];
 
@@ -48,12 +49,13 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   @Input()
   showLabel = true;
 
-  toggleProperty$: Observable<TogglePropertyInterface | null>;
+  toggleProperty: TogglePropertyInterface | null = null;
 
   // We keep a local "loading" state because we don't want to freeze the whole app.
   loading = false;
 
-  buttonState: "default" | "success" = "default";
+  protected isTouchDevice = false;
+  protected toggled: boolean;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -61,7 +63,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly utilsService: UtilsService,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -107,11 +111,17 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     }
   }
 
+  public ngOnInit(): void {
+    this.isTouchDevice = this.deviceService.isTouchEnabled();
+  }
+
   public ngOnChanges(): void {
     this._initStatus();
   }
 
-  public onClick(toggleProperty: Partial<TogglePropertyInterface>): void {
+  public onClick(event: MouseEvent | TouchEvent, toggleProperty: Partial<TogglePropertyInterface>): void {
+    event.preventDefault();
+
     if (this.disabled) {
       return;
     }
@@ -137,6 +147,8 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
         })
       );
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   private _initStatus(): void {
@@ -151,34 +163,61 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       contentType: this.contentType
     };
 
-    this.toggleProperty$ = this.store$.select(selectToggleProperty(params));
+    const filterParams = (toggleProperty: TogglePropertyInterface) => {
+      return toggleProperty.propertyType === this.propertyType &&
+        toggleProperty.user === this.userId &&
+        toggleProperty.objectId === this.objectId &&
+        toggleProperty.contentType === this.contentType;
+    }
+
+    this.store$.pipe(
+      select(selectToggleProperty(params)),
+      takeUntil(this.destroyed$),
+      tap(toggleProperty => {
+        this.toggleProperty = toggleProperty;
+        this.toggled = !!toggleProperty;
+        this.changeDetectorRef.markForCheck();
+      })
+    ).subscribe();
 
     this.store$.dispatch(new LoadToggleProperty({ toggleProperty: params }));
 
     this.actions$.pipe(
       ofType(
         AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS,
-        AppActionTypes.CREATE_TOGGLE_PROPERTY_FAILURE,
-        AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS,
         AppActionTypes.DELETE_TOGGLE_PROPERTY_FAILURE
       ),
+      filter(filterParams),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       this.loading = false;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.actions$.pipe(
-      ofType(
-        AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS,
-        AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS
-      ),
+      ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS),
+      map((action: CreateTogglePropertySuccess) => action.payload.toggleProperty),
+      filter(filterParams),
       takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.buttonState = "success";
-
-      this.utilsService.delay(1000).subscribe(() => {
-        this.buttonState = "default";
+    ).subscribe(toggleProperty => {
+      this.utilsService.delay(50).subscribe(() => {
+        this.toggleProperty = toggleProperty;
+        this.toggled = true;
+        this.loading = false;
+        this.changeDetectorRef.markForCheck();
       });
+    });
+
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS),
+      map((action: CreateTogglePropertySuccess) => action.payload.toggleProperty),
+      filter(filterParams),
+      takeUntil(this.destroyed$)
+    ).subscribe(toggleProperty => {
+      this.toggleProperty = null;
+      this.toggled = false;
+      this.loading = false;
+      this.changeDetectorRef.markForCheck();
     });
   }
 }
