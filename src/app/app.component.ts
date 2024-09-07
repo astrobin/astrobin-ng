@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -18,6 +18,7 @@ import { Constants } from "@shared/constants";
 import { TransferState } from "@angular/platform-browser";
 import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
+import { LoadingService } from "@shared/services/loading.service";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -44,6 +45,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     @Inject(CLIENT_IP) public readonly clientIp: string,
     public readonly notificationsService: NotificationsService,
     public readonly offcanvasService: NgbOffcanvas,
+    public readonly loadingService: LoadingService
   ) {
     super(store$);
 

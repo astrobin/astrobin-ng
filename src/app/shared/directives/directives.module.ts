@@ -4,19 +4,22 @@ import { EventStopPropagationDirective } from "@shared/directives/event-stop-pro
 import { EventPreventDefaultDirective } from "@shared/directives/event-prevent-default/event-prevent-default.directive";
 import { GtagOutboundClickEventDirective } from "@shared/directives/gtag-outbound-click-event/gtag-outbound-click-event.directive";
 import { NoScrollDirective } from "@shared/directives/no-scroll/no-scroll.directive";
+import { ScrollToggleDirective } from "@shared/directives/scroll-toggle.directive";
 
 @NgModule({
   declarations: [
     EventPreventDefaultDirective,
     EventStopPropagationDirective,
     GtagOutboundClickEventDirective,
-    NoScrollDirective
+    NoScrollDirective,
+    ScrollToggleDirective
   ],
   exports: [
     EventPreventDefaultDirective,
     EventStopPropagationDirective,
     GtagOutboundClickEventDirective,
-    NoScrollDirective
+    NoScrollDirective,
+    ScrollToggleDirective
   ],
   imports: [CommonModule]
 })

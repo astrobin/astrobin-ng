@@ -10,6 +10,9 @@
   <div
     #mainArea
     class="main-area"
+    astrobinScrollToggle
+    [enabled]="deviceService.mdMax()"
+    [bottomElement]="buttonsAreaElement?.nativeElement"
     [class.has-context]="!!navigationContext && navigationContext.length > 1"
   >
     <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
@@ -311,7 +314,7 @@
 </ng-template>
 
 <ng-template #buttonsAreaTemplate>
-  <div class="buttons-area">
+  <div #buttonsArea class="buttons-area">
     <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
       <div class="like">
         <astrobin-toggle-property
@@ -438,7 +441,7 @@
         (click)="onNavigationContextClicked(i)"
         class="navigation-context-item"
         [class.active]="context.imageId === image.pk || context.imageId === image.hash"
-        >
+      >
         <img
           [id]="'image-viewer-context-' + context.imageId"
           [src]="context.thumbnailUrl"
