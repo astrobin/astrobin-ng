@@ -11,6 +11,9 @@ import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
 
 @Component({
   selector: "astrobin-image-viewer-astrometry",
@@ -54,7 +57,15 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             icon="crosshairs"
           ></fa-icon>
         </div>
-        <div [innerHTML]="coordinates" class="metadata-label coordinates">
+        <div class="metadata-label">
+          <span
+            (click)="openFindImagesInTheSameArea()"
+            [innerHTML]="coordinates"
+            astrobinEventPreventDefault
+            class="coordinates"
+            data-toggle="offcanvas"
+          >
+          </span>
         </div>
       </div>
 
@@ -186,6 +197,31 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </table>
       </div>
     </ng-template>
+
+    <ng-template #findImagesInTheSameAreaOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h4 class="offcanvas-title">{{ "Find images in the same area" | translate }}</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <p>
+          {{
+            "Select how many degrees around the center coordinates you'd like to search for astro images, " +
+            "ranging from 1 to 5 degrees." | translate
+          }}
+        </p>
+        <div class="degree-choices d-flex flex-nowrap gap-3 mt-4">
+          <button
+            *ngFor="let degree of [1, 2, 3, 4, 5]"
+            (click)="findImagesInTheSameArea(degree)"
+            astrobinEventPreventDefault
+            class="btn btn-outline-secondary m-0 p-3"
+          >
+            {{ degree }}°
+          </button>
+        </div>
+      </div>
+    </ng-template>
   `,
   styleUrls: ["./image-viewer-astrometry.component.scss"]
 })
@@ -207,6 +243,9 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   @ViewChild("moreObjectsInFieldTemplate")
   moreObjectsInFieldTemplate: TemplateRef<any>;
 
+  @ViewChild("findImagesInTheSameAreaOffcanvas")
+  findImagesInTheSameAreaOffcanvas: TemplateRef<any>;
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
@@ -216,7 +255,9 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     public readonly solutionService: SolutionService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly astroUtilsService: AstroUtilsService,
+    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -270,6 +311,49 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     this.offcanvasService.open(this.moreInfoTemplate, {
       panelClass: "offcanvas-more-info",
       position: this.deviceService.offcanvasPosition()
+    });
+  }
+
+  openFindImagesInTheSameArea(): void {
+    this.offcanvasService.open(this.findImagesInTheSameAreaOffcanvas, {
+      position: this.deviceService.offcanvasPosition()
+    });
+  }
+
+  findImagesInTheSameArea(degree: number): void {
+    this.offcanvasService.dismiss();
+
+    const minimumSubscription = SearchCoordsFilterComponent.minimumSubscription;
+
+    this.searchService.allowFilter$(minimumSubscription).subscribe(allow => {
+      if (allow) {
+        this._doFindImagesInTheSameArea(degree);
+      } else {
+        this.searchService.openSubscriptionRequiredModal(minimumSubscription);
+      }
+    });
+  }
+
+  private _doFindImagesInTheSameArea(degree: number): void {
+    const ra = parseFloat(this.revision.solution.advancedRa || this.revision.solution.ra);
+    const dec = parseFloat(this.revision.solution.advancedDec || this.revision.solution.dec);
+
+    const raMin = this.astroUtilsService.raDegreesToMinutes(Math.max(ra - degree, 0));
+    const raMax = this.astroUtilsService.raDegreesToMinutes(Math.min(ra + degree, 360));
+    const decMin = Math.max(dec - degree, -90);
+    const decMax = Math.min(dec + degree, 90);
+
+    this.search({
+      coords: {
+        ra: {
+          min: raMin,
+          max: raMax
+        },
+        dec: {
+          min: decMin,
+          max: decMax
+        }
+      }
     });
   }
 }

@@ -1,7 +1,10 @@
 @import "../../../../styles/breakpoints";
 
 :host {
-  .coordinates {
+  .metadata-label > .coordinates {
+    cursor: pointer;
+    color: var(--lightestGrey);
+
     ::ng-deep {
       .ra,
       .dec {

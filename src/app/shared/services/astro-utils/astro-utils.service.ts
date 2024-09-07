@@ -4,6 +4,10 @@ import { Injectable } from "@angular/core";
   providedIn: "root"
 })
 export class AstroUtilsService {
+  raDegreesToMinutes(ra: number): number {
+    return ra * 4;
+  }
+
   formatRa(value: number): string {
     const hours = Math.floor(value / 60);
     const minutes = value % 60;
