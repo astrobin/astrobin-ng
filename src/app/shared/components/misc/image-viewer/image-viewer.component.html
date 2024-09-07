@@ -23,6 +23,16 @@
     </div> <!-- data-area-container -->
   </div>
 
+  <astrobin-scroll-to-top
+    *ngIf="deviceService.mdMax()"
+    [element]="mainArea"
+  ></astrobin-scroll-to-top>
+
+  <astrobin-scroll-to-top
+    *ngIf="deviceService.lgMin()"
+    [element]="dataArea?.nativeElement"
+  ></astrobin-scroll-to-top>
+
   <ng-container
     *ngIf="navigationContext && navigationContext.length > 1"
     [ngTemplateOutlet]="navigationContextTemplate"

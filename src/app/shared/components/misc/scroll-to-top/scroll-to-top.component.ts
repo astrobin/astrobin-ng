@@ -1,22 +1,33 @@
-import { Component, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
+import { Component, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { fromEvent } from "rxjs";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
-import { isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { fromEvent, Subscription } from "rxjs";
+import { throttleTime } from "rxjs/operators";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-scroll-to-top",
-  templateUrl: "./scroll-to-top.component.html",
+  template: `
+    <button
+      *ngIf="show"
+      (click)="scrollToTop()"
+      class="btn btn-secondary position-{{ position }}"
+    >
+      <fa-icon icon="chevron-circle-up"></fa-icon>
+      {{ "Scroll to top" | translate }}
+    </button>
+  `,
   styleUrls: ["./scroll-to-top.component.scss"]
 })
-export class ScrollToTopComponent extends BaseComponentDirective implements OnInit {
-  offset = 0;
+export class ScrollToTopComponent extends BaseComponentDirective implements OnChanges, OnInit, OnDestroy {
+  @Input() position: "left" | "right" = "right";
+  @Input() element: HTMLElement;
 
-  @Input()
-  position: "left" | "right" = "right";
+  private _offset = 0;
+  private readonly _isBrowser: boolean;
+  private _scrollSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -24,35 +35,102 @@ export class ScrollToTopComponent extends BaseComponentDirective implements OnIn
     @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
+    this._isBrowser = isPlatformBrowser(this.platformId); // Set _isBrowser as readonly
   }
 
   get show(): boolean {
-    if (isPlatformServer(this.platformId)) {
+    if (!this._isBrowser) {
+      return false; // Return false on the server as there is no scrolling
+    }
+
+    const element = this._getElement();
+    if (!element) {
       return false;
     }
 
-    return this.offset > this.windowRefService.nativeWindow.innerHeight / 2;
+    return this._offset > this._getClientHeight(element) / 2;
   }
 
   ngOnInit(): void {
-    super.ngOnInit();
+    if (this._isBrowser) {
+      // Initialize scroll listener on component initialization
+      this._initializeScrollListener();
+    }
+  }
 
-    if (isPlatformBrowser(this.platformId)) {
-      fromEvent(window, "scroll")
-        .pipe(takeUntil(this.destroyed$), debounceTime(100), distinctUntilChanged())
-        .subscribe(() => (this.offset = this.windowRefService.nativeWindow.pageYOffset));
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this._isBrowser && changes["element"]) {
+      // Reinitialize the scroll listener when the element input changes
+      this._initializeScrollListener();
     }
   }
 
   scrollToTop() {
-    if (isPlatformServer(this.platformId)) {
+    if (!this._isBrowser) {
+      return; // Prevent running in SSR
+    }
+
+    const element = this._getElement();
+    if (!element) {
       return;
     }
 
-    this.windowRefService.nativeWindow.scrollTo({
+    element.scrollTo({
       top: 0,
       left: 0,
       behavior: "smooth"
     });
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe when the component is destroyed to avoid memory leaks
+    if (this._scrollSubscription) {
+      this._scrollSubscription.unsubscribe();
+    }
+    super.ngOnDestroy();
+  }
+
+  private _initializeScrollListener(): void {
+    // Unsubscribe from any previous scroll subscription to avoid memory leaks
+    if (this._scrollSubscription) {
+      this._scrollSubscription.unsubscribe();
+    }
+
+    const element = this._getElement();
+    if (!element) {
+      return;
+    }
+
+    // Subscribe to the scroll event of the current element or window
+    this._scrollSubscription = fromEvent(element, "scroll")
+      .pipe(throttleTime(100))
+      .subscribe(() => {
+        this._offset = this._getScrollTop(element);
+      });
+  }
+
+  private _getElement(): HTMLElement | Window {
+    if (!this._isBrowser) {
+      return null; // Skip on server
+    }
+
+    // Default to the window if no element is passed
+    return this.element || this.windowRefService.nativeWindow;
+  }
+
+  private _getScrollTop(element: HTMLElement | Window): number {
+    if (element instanceof Window) {
+      return this.windowRefService.nativeWindow.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+    } else {
+      return element.scrollTop;
+    }
+  }
+
+  private _getClientHeight(element: HTMLElement | Window): number {
+    if (element instanceof Window) {
+      return document.documentElement.clientHeight || document.body.clientHeight;
+    } else {
+      return element.clientHeight;
+    }
   }
 }
