@@ -335,14 +335,14 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     });
   }
 
-  private _doFindImagesInTheSameArea(degree: number): void {
+  private _doFindImagesInTheSameArea(degrees: number): void {
     const ra = parseFloat(this.revision.solution.advancedRa || this.revision.solution.ra);
     const dec = parseFloat(this.revision.solution.advancedDec || this.revision.solution.dec);
 
-    const raMin = this.astroUtilsService.raDegreesToMinutes(Math.max(ra - degree, 0));
-    const raMax = this.astroUtilsService.raDegreesToMinutes(Math.min(ra + degree, 360));
-    const decMin = Math.max(dec - degree, -90);
-    const decMax = Math.min(dec + degree, 90);
+    const raMin = this.astroUtilsService.raDegreesToMinutes(Math.max(ra - degrees, 0));
+    const raMax = this.astroUtilsService.raDegreesToMinutes(Math.min(ra + degrees, 360));
+    const decMin = Math.max(dec - degrees, -90);
+    const decMax = Math.min(dec + degrees, 90);
 
     this.search({
       coords: {
@@ -354,6 +354,10 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
           min: decMin,
           max: decMax
         }
+      },
+      field_radius: {
+        min: 0,
+        max: degrees
       }
     });
   }
