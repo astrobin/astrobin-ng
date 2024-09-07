@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Directive, ElementRef, Input, OnDestroy, Renderer2 } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, Directive, ElementRef, Input, OnChanges, OnDestroy, Renderer2, SimpleChanges } from "@angular/core";
 import { fromEvent, Subscription } from "rxjs";
 import { throttleTime } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -6,7 +6,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 @Directive({
   selector: "[astrobinScrollToggle]"
 })
-export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
+export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, OnDestroy, OnChanges {
+  @Input() enabled = true;  // Whether the directive is enabled
   @Input() topElement!: HTMLElement;   // Optional: Top element to show/hide
   @Input() bottomElement!: HTMLElement; // Optional: Bottom element to show/hide
   @Input() throttle = 30;  // Throttle time (default is 100ms)
@@ -27,6 +28,53 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
   }
 
   ngAfterViewInit(): void {
+    this._init();
+  }
+
+  ngAfterViewChecked(): void {
+    if (!this.enabled || this.initialized || !this.bottomElement) {
+      return;
+    }
+
+    // Check if the scrollable space is taller than the viewport
+    const contentHeight = this.el.nativeElement.scrollHeight || this.windowRefService.nativeWindow.document.body.scrollHeight;
+    const viewportHeight = this.windowRefService.nativeWindow.innerHeight || this.el.nativeElement.clientHeight;
+
+    // If content is taller than the viewport, start by hiding the bottom element
+    if (contentHeight > viewportHeight) {
+      this.renderer.setStyle(this.bottomElement, "transform", `translateY(100%)`);
+      this.bottomElementVisible = false;  // Set the initial state to hidden
+    }
+
+    // Enable smooth transitions for further show/hide events
+    this.renderer.setStyle(this.bottomElement, "transition", "transform 0.3s ease");
+
+    // Mark the initialization as complete to avoid repetitive checks
+    this.initialized = true;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.enabled && !changes.enabled.firstChange) {
+      if (this.enabled) {
+        this._init();
+      } else {
+        this._reset();
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Clean up the subscription when the directive is destroyed
+    if (this.scrollSubscription) {
+      this.scrollSubscription.unsubscribe();
+    }
+  }
+
+  private _init() {
+    if (!this.enabled) {
+      return;  // Exit if the directive is disabled
+    }
+
     // Determine the scroll source (element or window)
     const scrollTarget = this.globalScroll ? this.windowRefService.nativeWindow : this.el.nativeElement;
 
@@ -38,47 +86,33 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
 
       // Handle the top element (e.g., search bar with offset)
       if (this.topElement) {
-        this.handleTopElementScroll(currentScrollTop);
+        this._handleTopElementScroll(currentScrollTop);
       }
 
       // Handle the bottom element (e.g., footer)
       if (this.bottomElement) {
-        this.handleBottomElementScroll(currentScrollTop);
+        this._handleBottomElementScroll(currentScrollTop);
       }
 
       this.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;  // Avoid negative scroll values
     });
   }
 
-  ngAfterViewChecked(): void {
-    // Only check once the view is fully initialized and available
-    if (!this.initialized && this.bottomElement) {
-      // Check if the scrollable space is taller than the viewport
-      const contentHeight = this.el.nativeElement.scrollHeight || this.windowRefService.nativeWindow.document.body.scrollHeight;
-      const viewportHeight = this.windowRefService.nativeWindow.innerHeight || this.el.nativeElement.clientHeight;
-
-      // If content is taller than the viewport, start by hiding the bottom element
-      if (contentHeight > viewportHeight) {
-        this.renderer.setStyle(this.bottomElement, "transform", `translateY(100%)`);
-        this.bottomElementVisible = false;  // Set the initial state to hidden
-      }
-
-      // Enable smooth transitions for further show/hide events
-      this.renderer.setStyle(this.bottomElement, "transition", "transform 0.3s ease");
-
-      // Mark the initialization as complete to avoid repetitive checks
-      this.initialized = true;
+  private _reset() {
+    if (this.topElement) {
+      this.renderer.setStyle(this.topElement, "transform", "translateY(0)");
     }
+
+    if (this.bottomElement) {
+      this.renderer.setStyle(this.bottomElement, "transform", "translateY(0)");
+    }
+
+    this.topElementVisible = true;
+    this.bottomElementVisible = true;
+    this.initialized = false;
   }
 
-  ngOnDestroy(): void {
-    // Clean up the subscription when the directive is destroyed
-    if (this.scrollSubscription) {
-      this.scrollSubscription.unsubscribe();
-    }
-  }
-
-  private handleBottomElementScroll(currentScrollTop: number): void {
+  private _handleBottomElementScroll(currentScrollTop: number): void {
     const bottomElementHeight = this.bottomElement.offsetHeight;
 
     if (currentScrollTop > this.lastScrollTop) {
@@ -96,7 +130,7 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
     }
   }
 
-  private handleTopElementScroll(currentScrollTop: number): void {
+  private _handleTopElementScroll(currentScrollTop: number): void {
     const topElementHeight = this.topElement.offsetHeight;
     const topElementOffsetTop = parseInt(window.getComputedStyle(this.topElement).top || "0", 10); // Get the CSS 'top' value
 

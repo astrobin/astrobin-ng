@@ -11,6 +11,7 @@
     #mainArea
     class="main-area"
     astrobinScrollToggle
+    [enabled]="deviceService.mdMax()"
     [bottomElement]="buttonsAreaElement?.nativeElement"
     [class.has-context]="!!navigationContext && navigationContext.length > 1"
   >
