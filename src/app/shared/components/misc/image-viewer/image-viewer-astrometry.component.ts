@@ -215,9 +215,9 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
             *ngFor="let degree of [1, 2, 3, 4, 5]"
             (click)="findImagesInTheSameArea(degree)"
             astrobinEventPreventDefault
-            class="btn btn-outline-secondary m-0 p-3"
+            class="btn btn-outline-secondary m-0 p-2"
           >
-            {{ degree }}°
+            <span class="symbol">±</span><span class="value">{{ degree }}</span><span class="symbol">°</span>
           </button>
         </div>
       </div>
@@ -316,6 +316,7 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
 
   openFindImagesInTheSameArea(): void {
     this.offcanvasService.open(this.findImagesInTheSameAreaOffcanvas, {
+      panelClass: "offcanvas-find-images-in-the-same-area",
       position: this.deviceService.offcanvasPosition()
     });
   }

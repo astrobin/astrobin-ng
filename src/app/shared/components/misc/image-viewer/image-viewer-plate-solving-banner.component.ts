@@ -31,8 +31,8 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
           {{ "AstroBin is plate-solving this image with Astrometry.net..." | translate }}
         </span>
       </div>
-      <button class="btn btn-link" (click)="openInformationOffcanvas()">
-        <fa-icon icon="info-circle"></fa-icon>
+      <button class="btn btn-link btn-no-block" (click)="openInformationOffcanvas()">
+        <fa-icon icon="info-circle" class="me-0"></fa-icon>
       </button>
     </div>
 

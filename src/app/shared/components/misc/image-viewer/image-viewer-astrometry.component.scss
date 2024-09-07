@@ -102,3 +102,20 @@
     width: 40vw !important;
   }
 }
+
+::ng-deep .offcanvas-find-images-in-the-same-area {
+  .degree-choices > .btn {
+    display: flex;
+    gap: .15rem;
+    justify-content: center;
+
+    .symbol {
+      color: var(--lighterGrey);
+    }
+
+    .value {
+      color: var(--lightestGrey);
+      font-weight: bold;
+    }
+  }
+}
