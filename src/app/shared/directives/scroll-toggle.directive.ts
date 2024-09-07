@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Directive, ElementRef, Input, OnChanges, OnDestroy, Renderer2, SimpleChanges } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, Directive, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, Renderer2, SimpleChanges } from "@angular/core";
 import { fromEvent, Subscription } from "rxjs";
 import { throttleTime } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -13,6 +13,11 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
   @Input() throttle = 30;  // Throttle time (default is 100ms)
   @Input() hideThreshold = 10;  // Scroll distance threshold (default is 50px)
   @Input() globalScroll = false;  // Whether to listen on window (global) scroll
+
+  @Output() showTopElement = new EventEmitter<void>();
+  @Output() hideTopElement = new EventEmitter<void>();
+  @Output() showBottomElement = new EventEmitter<void>();
+  @Output() hideBottomElement = new EventEmitter<void>();
 
   private lastScrollTop = 0;
   private scrollSubscription!: Subscription;
@@ -44,6 +49,7 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
     if (contentHeight > viewportHeight) {
       this.renderer.setStyle(this.bottomElement, "transform", `translateY(100%)`);
       this.bottomElementVisible = false;  // Set the initial state to hidden
+      this.hideBottomElement.emit();
     }
 
     // Enable smooth transitions for further show/hide events
@@ -114,41 +120,80 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
 
   private _handleBottomElementScroll(currentScrollTop: number): void {
     const bottomElementHeight = this.bottomElement.offsetHeight;
+    const scrollHeight = this._getScrollHeight();
+    const clientHeight = this._getClientHeight();
+    const scrollPosition = currentScrollTop + clientHeight;
 
+    // Force show the bottom element if we're near the bottom of the scrollable content
+    const nearBottomThreshold = 100;
+    if (scrollPosition >= scrollHeight - nearBottomThreshold) {
+      this._showBottomElement();
+      return; // Exit to avoid hiding it again in the same cycle
+    }
+
+    // Normal scroll handling: show or hide based on scroll direction
     if (currentScrollTop > this.lastScrollTop) {
-      // Scrolling down, show the bottom element
-      if (!this.bottomElementVisible) {
-        this.renderer.setStyle(this.bottomElement, "transform", "translateY(0)");
-        this.bottomElementVisible = true;
-      }
+      this._showBottomElement();
     } else if (currentScrollTop < this.lastScrollTop - this.hideThreshold) {
-      // Scrolling up, hide the bottom element
-      if (this.bottomElementVisible) {
-        this.renderer.setStyle(this.bottomElement, `transform`, `translateY(${bottomElementHeight}px)`);
-        this.bottomElementVisible = false;
-      }
+      this._hideBottomElement(bottomElementHeight);
+    }
+  }
+
+  private _getScrollHeight(): number {
+    return this.globalScroll
+      ? this.windowRefService.nativeWindow.document.documentElement.scrollHeight
+      : this.el.nativeElement.scrollHeight;
+  }
+
+  private _getClientHeight(): number {
+    return this.globalScroll
+      ? this.windowRefService.nativeWindow.innerHeight
+      : this.el.nativeElement.clientHeight;
+  }
+
+  private _showBottomElement(): void {
+    if (!this.bottomElementVisible) {
+      this.renderer.setStyle(this.bottomElement, "transform", "translateY(0)");
+      this.bottomElementVisible = true;
+      this.showBottomElement.emit();
+    }
+  }
+
+  private _hideBottomElement(bottomElementHeight: number): void {
+    if (this.bottomElementVisible) {
+      this.renderer.setStyle(this.bottomElement, `transform`, `translateY(${bottomElementHeight}px)`);
+      this.bottomElementVisible = false;
+      this.hideBottomElement.emit();
     }
   }
 
   private _handleTopElementScroll(currentScrollTop: number): void {
     const topElementHeight = this.topElement.offsetHeight;
     const topElementOffsetTop = parseInt(window.getComputedStyle(this.topElement).top || "0", 10); // Get the CSS 'top' value
-
-    // Calculate the total amount to move the element out of view
-    const totalOffset = topElementHeight + topElementOffsetTop;
+    const totalOffset = topElementHeight + topElementOffsetTop; // Calculate the total amount to move the element out of view
 
     if (currentScrollTop > this.lastScrollTop) {
       // Scrolling down, hide the top element (move it up by its total offset)
-      if (this.topElementVisible) {
-        this.renderer.setStyle(this.topElement, `transform`, `translateY(-${totalOffset}px)`);
-        this.topElementVisible = false;
-      }
+      this._hideTopElement(totalOffset);
     } else if (currentScrollTop < this.lastScrollTop - this.hideThreshold) {
       // Scrolling up, show the top element (reset transform)
-      if (!this.topElementVisible) {
-        this.renderer.setStyle(this.topElement, "transform", "translateY(0)");
-        this.topElementVisible = true;
-      }
+      this._showTopElement();
+    }
+  }
+
+  private _showTopElement(): void {
+    if (!this.topElementVisible) {
+      this.renderer.setStyle(this.topElement, "transform", "translateY(0)");
+      this.topElementVisible = true;
+      this.showTopElement.emit();
+    }
+  }
+
+  private _hideTopElement(totalOffset: number): void {
+    if (this.topElementVisible) {
+      this.renderer.setStyle(this.topElement, `transform`, `translateY(-${totalOffset}px)`);
+      this.topElementVisible = false;
+      this.hideTopElement.emit();
     }
   }
 }

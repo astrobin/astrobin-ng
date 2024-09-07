@@ -9,6 +9,8 @@
 
   <div
     #mainArea
+    (hideBottomElement)="onButtonsAreaHidden()"
+    (showBottomElement)="onButtonsAreaShown()"
     class="main-area"
     astrobinScrollToggle
     [enabled]="deviceService.mdMax()"
@@ -22,6 +24,18 @@
       <ng-container [ngTemplateOutlet]="buttonsAreaTemplate"></ng-container>
     </div> <!-- data-area-container -->
   </div>
+
+  <astrobin-scroll-to-top
+    #scrollToTopMdMax
+    *ngIf="deviceService.mdMax()"
+    [element]="mainArea"
+  ></astrobin-scroll-to-top>
+
+  <astrobin-scroll-to-top
+    #scrollToTopLgMin
+    *ngIf="deviceService.lgMin()"
+    [element]="dataArea?.nativeElement"
+  ></astrobin-scroll-to-top>
 
   <ng-container
     *ngIf="navigationContext && navigationContext.length > 1"

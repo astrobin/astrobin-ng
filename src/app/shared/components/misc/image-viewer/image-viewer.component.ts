@@ -96,6 +96,12 @@ export class ImageViewerComponent
   @ViewChild("buttonsArea", { static: false, read: ElementRef })
   buttonsAreaElement: ElementRef;
 
+  @ViewChild("scrollToTopMdMax", { static: false, read: ElementRef })
+  scrollToTopMdMax: ElementRef;
+
+  @ViewChild("scrollToTopLgMin", { static: false, read: ElementRef })
+  scrollToTopLgMin: ElementRef;
+
   @ViewChild("navigationContextElement")
   navigationContextElement: ElementRef;
 
@@ -819,6 +825,36 @@ export class ImageViewerComponent
       left: el.clientWidth,
       behavior: "smooth"
     });
+  }
+
+  protected onButtonsAreaHidden() {
+    if (this.scrollToTopMdMax) {
+      this.renderer.setStyle(this.scrollToTopMdMax.nativeElement, "transform", "translateY(0)");
+    }
+
+    if (this.scrollToTopLgMin) {
+      this.renderer.setStyle(this.scrollToTopLgMin.nativeElement, "transform", "translateY(0)");
+    }
+  }
+
+  protected onButtonsAreaShown() {
+    let amount: number;
+
+    if (this.deviceService.xsMax()) {
+      amount = -77;
+    } else if (this.deviceService.mdMax()) {
+      amount = -50;
+    }
+
+    if (amount) {
+      if (this.scrollToTopMdMax) {
+        this.renderer.setStyle(this.scrollToTopMdMax.nativeElement, "transform", `translateY(${amount}px)`);
+      }
+
+      if (this.scrollToTopLgMin) {
+        this.renderer.setStyle(this.scrollToTopLgMin.nativeElement, "transform", `translateY(${amount}px)`);
+      }
+    }
   }
 
   protected getSharingValue(sharingMode: SharingMode): string {

@@ -640,6 +640,25 @@
       height: calc(100vh - 108px);
     }
   }
+
+  ::ng-deep {
+    astrobin-scroll-to-top {
+      transition: transform 0.3s ease-in-out;
+
+      .btn {
+        bottom: .75rem !important;
+        right: 1rem !important;
+      }
+
+      @media (min-width: $lg-min) {
+        position: absolute;
+
+        .btn {
+          bottom: calc(.5rem + 77px) !important;
+        }
+      }
+    }
+  }
 }
 
 ::ng-deep {
