@@ -484,6 +484,8 @@
           position: sticky;
           bottom: 0;
           padding: .5rem;
+          transform: translateY(100%); // Initially hidden
+          transition: none;  // Prevent any transition initially
 
           astrobin-toggle-property {
             margin-bottom: 0;

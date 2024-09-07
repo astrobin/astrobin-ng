@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, Renderer2 } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, Directive, ElementRef, Input, OnDestroy, Renderer2 } from "@angular/core";
 import { fromEvent, Subscription } from "rxjs";
 import { throttleTime } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -6,7 +6,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 @Directive({
   selector: "[astrobinScrollToggle]"
 })
-export class ScrollToggleDirective implements AfterViewInit, OnDestroy {
+export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
   @Input() topElement!: HTMLElement;   // Optional: Top element to show/hide
   @Input() bottomElement!: HTMLElement; // Optional: Bottom element to show/hide
   @Input() throttle = 30;  // Throttle time (default is 100ms)
@@ -17,6 +17,7 @@ export class ScrollToggleDirective implements AfterViewInit, OnDestroy {
   private scrollSubscription!: Subscription;
   private topElementVisible = true;
   private bottomElementVisible = true;
+  private initialized = false; // To prevent repetitive checks
 
   constructor(
     private readonly el: ElementRef,
@@ -47,6 +48,27 @@ export class ScrollToggleDirective implements AfterViewInit, OnDestroy {
 
       this.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;  // Avoid negative scroll values
     });
+  }
+
+  ngAfterViewChecked(): void {
+    // Only check once the view is fully initialized and available
+    if (!this.initialized && this.bottomElement) {
+      // Check if the scrollable space is taller than the viewport
+      const contentHeight = this.el.nativeElement.scrollHeight || this.windowRefService.nativeWindow.document.body.scrollHeight;
+      const viewportHeight = this.windowRefService.nativeWindow.innerHeight || this.el.nativeElement.clientHeight;
+
+      // If content is taller than the viewport, start by hiding the bottom element
+      if (contentHeight > viewportHeight) {
+        this.renderer.setStyle(this.bottomElement, "transform", `translateY(100%)`);
+        this.bottomElementVisible = false;  // Set the initial state to hidden
+      }
+
+      // Enable smooth transitions for further show/hide events
+      this.renderer.setStyle(this.bottomElement, "transition", "transform 0.3s ease");
+
+      // Mark the initialization as complete to avoid repetitive checks
+      this.initialized = true;
+    }
   }
 
   ngOnDestroy(): void {
