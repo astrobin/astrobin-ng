@@ -68,8 +68,18 @@ import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source
       </div>
 
       <div *ngIf="bortle" class="metadata-item">
+        <div class="metadata-icon w-auto">
+          <span
+            class="bortle"
+            [ngbTooltip]="'Weighted average Bortle scale' | translate"
+            triggers="hover click"
+            container="body"
+          >
+            Bortle
+          </span>
+        </div>
         <div class="metadata-label">
-          Bortle: {{ bortle }}
+          {{ bortle }}
         </div>
       </div>
     </div>
@@ -111,6 +121,12 @@ import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source
         color: var(--lightestGrey);
         pointer-events: none;
       }
+    }
+
+    .bortle {
+      text-transform: uppercase;
+      font-size: .8rem;
+      cursor: pointer;
     }
   `]
 })
