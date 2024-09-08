@@ -403,6 +403,22 @@ export class ImageViewerComponent
       }
     }
 
+    if (image === null) {
+      this.imageLoaded = false;
+      this.image = null;
+      this.revisionLabel = null;
+      this.revision = null;
+      this.mouseHoverImage = null;
+      this.inlineSvg = null;
+      this.supportsFullscreen = false;
+      this.viewingFullscreenImage = false;
+      this.showRevisions = false;
+      this.imageService.showInvalidImageNotification();
+      this.close();
+      return;
+    }
+
+    this.imageService.removeInvalidImageNotification();
     this.imageLoaded = false;
     this.image = image;
     this.revisionLabel = revisionLabel;
@@ -894,18 +910,25 @@ export class ImageViewerComponent
     this.exitFullscreen(false);
     this.imageLoaded = false;
 
-    this.store$.pipe(
-      select(selectImage, imageId),
-      filter(image => !!image),
-      take(1)
-    ).subscribe((image: ImageInterface) => {
-      this.setImage(
-        image,
-        revisionLabel,
-        fullscreenMode,
-        this.navigationContext,
-        pushState
-      );
+    this.imageService.loadImage(imageId).subscribe({
+      next: image => {
+        this.setImage(
+          image,
+          revisionLabel,
+          fullscreenMode,
+          this.navigationContext,
+          pushState
+        );
+      },
+      error: err => {
+        this.setImage(
+          null,
+          null,
+          fullscreenMode,
+          this.navigationContext,
+          pushState
+        );
+      }
     });
     this.store$.dispatch(new LoadImage({ imageId }));
   }

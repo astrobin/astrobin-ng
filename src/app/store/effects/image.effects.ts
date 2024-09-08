@@ -24,7 +24,7 @@ export class ImageEffects {
     ), // Selector for the image
     id => this.imageApiService.getImage(id), // API call to load image
     image => new LoadImageSuccess(image), // Success action
-    error => new LoadImageFailure(error), // Failure action
+    (imageId, error) => new LoadImageFailure({imageId, error}), // Failure action
     this.loadingService,
     "image"
   );

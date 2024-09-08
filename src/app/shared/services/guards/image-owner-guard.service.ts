@@ -11,7 +11,7 @@ import { filter, map } from "rxjs/operators";
 import { AuthService } from "../auth.service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { LoadImage } from "@app/store/actions/image.actions";
+import { LoadImage, LoadImageFailure } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 
@@ -70,7 +70,10 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
             }
           });
 
-        this.actions$.pipe(ofType(AppActionTypes.LOAD_IMAGE_FAILURE)).subscribe(error => {
+        this.actions$.pipe(
+          ofType(AppActionTypes.LOAD_IMAGE_FAILURE),
+          filter((action: LoadImageFailure) => action.payload.imageId === imageId),
+        ).subscribe(error => {
           onError(observer, "/404");
         });
       });

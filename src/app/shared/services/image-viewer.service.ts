@@ -18,6 +18,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { Router } from "@angular/router";
 import { TitleService } from "@shared/services/title/title.service";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Injectable({
   providedIn: "root"
@@ -34,7 +35,8 @@ export class ImageViewerService extends BaseService {
     public readonly location: Location,
     public readonly deviceService: DeviceService,
     public readonly router: Router,
-    public readonly titleService: TitleService
+    public readonly titleService: TitleService,
+    public readonly imageService: ImageService
   ) {
     super(loadingService);
 
@@ -69,16 +71,26 @@ export class ImageViewerService extends BaseService {
     this.activeImageViewer.instance.searchComponentId = searchComponentId;
 
     this.activeImageViewer.instance.initialized.pipe(
-      switchMap(() => this.loadImage(imageId))
-    ).subscribe(image => {
-      this.activeImageViewer.instance.setImage(
-        image,
-        revisionLabel,
-        fullscreenMode,
-        navigationContext,
-        true);
-    }, () => {
-      this.router.navigateByUrl("/404", { skipLocationChange: true });
+      switchMap(() => this.imageService.loadImage(imageId))
+    ).subscribe({
+      next: image => {
+        this.activeImageViewer.instance.setImage(
+          image,
+          revisionLabel,
+          fullscreenMode,
+          navigationContext,
+          true
+        );
+      },
+      error: err => {
+        this.activeImageViewer.instance.setImage(
+          null,
+          null,
+          fullscreenMode,
+          navigationContext,
+          true
+        );
+      }
     });
 
     this.activeImageViewer.instance.closeViewer.subscribe(() => {
@@ -89,32 +101,6 @@ export class ImageViewerService extends BaseService {
     this._stopBodyScrolling();
 
     return this.activeImageViewer;
-  }
-
-  loadImage(imageId: ImageInterface["hash"] | ImageInterface["pk"]): Observable<ImageInterface> {
-    return new Observable<ImageInterface>(observer => {
-      this.store$.pipe(
-        select(selectImage, imageId),
-        filter(image => !!image),
-        take(1)
-      ).subscribe(image => {
-        observer.next(image);
-        observer.complete();
-      }, () => {
-        observer.error();
-        observer.complete();
-      });
-
-      this.actions$.pipe(
-        ofType(AppActionTypes.LOAD_IMAGE_FAILURE),
-        take(1)
-      ).subscribe(() => {
-        observer.error();
-        observer.complete();
-      });
-
-      this.store$.dispatch(new LoadImage({ imageId }));
-    });
   }
 
   closeActiveImageViewer(pushState: boolean): void {

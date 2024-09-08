@@ -7,21 +7,34 @@ import { AcquisitionType, CelestialHemisphere, DataSource, FINAL_REVISION_LABEL,
 import { TranslateService } from "@ngx-translate/core";
 import { BortleScale, DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { map, tap } from "rxjs/operators";
+import { filter, map, take, tap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { isPlatformServer } from "@angular/common";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { ActiveToast } from "ngx-toastr";
+import { select, Store } from "@ngrx/store";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { Actions, ofType } from "@ngrx/effects";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadImage, LoadImageFailure } from "@app/store/actions/image.actions";
+import { MainState } from "@app/store/state";
 
 @Injectable({
   providedIn: "root"
 })
 export class ImageService extends BaseService {
+  private _imageNotFoundNotification: ActiveToast<any>;
+
   public constructor(
+    public readonly store$: Store<MainState>,
+    public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly windowRef: WindowRefService,
     public readonly zone: NgZone,
     public readonly translateService: TranslateService,
     public readonly http: HttpClient,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(loadingService);
   }
@@ -659,6 +672,38 @@ export class ImageService extends BaseService {
     return isDeepSkyPlateSolvable || isSolarSystemPlateSolvable;
   }
 
+  loadImage(imageId: ImageInterface["hash"] | ImageInterface["pk"]): Observable<ImageInterface> {
+    return new Observable<ImageInterface>(observer => {
+      this.store$.pipe(
+        select(selectImage, imageId),
+        filter(image => !!image),
+        take(1)
+      ).subscribe({
+        next: image => {
+          observer.next(image);
+          observer.complete();
+        },
+        error: err => {
+          observer.error(err);
+          observer.complete();
+        }
+      });
+
+      this.actions$.pipe(
+        ofType(AppActionTypes.LOAD_IMAGE_FAILURE),
+        filter((action: LoadImageFailure) => action.payload.imageId === imageId),
+        take(1)
+      ).subscribe({
+        next: err => {
+          observer.error(err);
+          observer.complete();
+        }
+      });
+
+      this.store$.dispatch(new LoadImage({ imageId }));
+    });
+  }
+
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
     if (isPlatformServer(this.platformId)) {
       // For SSR, just return the URL as-is
@@ -703,7 +748,7 @@ export class ImageService extends BaseService {
         this.zone.run(() => {
           if (!xhr.status.toString().match(/^2/)) {
             // Try a more traditional approach
-            this._loadImageTraditional(url, observer);
+            this._loadImageFileTraditional(url, observer);
             return;
           }
 
@@ -728,7 +773,7 @@ export class ImageService extends BaseService {
       xhr.onerror = () => {
         this.zone.run(() => {
           // Fallback to traditional approach on error
-          this._loadImageTraditional(url, observer);
+          this._loadImageFileTraditional(url, observer);
         });
       };
 
@@ -736,7 +781,20 @@ export class ImageService extends BaseService {
     });
   }
 
-  private _loadImageTraditional(url: string, observer: Observer<string>): void {
+  showInvalidImageNotification(): void {
+    this._imageNotFoundNotification = this.popNotificationsService.error(this.translateService.instant(
+      "Image not found. It may have been deleted or you have an invalid link."
+    ));
+  }
+
+  removeInvalidImageNotification(): void {
+    if (this._imageNotFoundNotification) {
+      this.popNotificationsService.remove(this._imageNotFoundNotification.toastId);
+      this._imageNotFoundNotification = null;
+    }
+  }
+
+  private _loadImageFileTraditional(url: string, observer: Observer<string>): void {
     const image = new Image();
     image.onload = () => {
       observer.next(url);

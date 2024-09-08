@@ -13,7 +13,7 @@ export function loadResourceEffect<T, K>(
   resourceSelector: (state: MainState, id: K) => T, // Selector function for the resource
   apiCall: (id: K) => Observable<T>, // API call function
   successActionCreator: (resource: T) => any, // Success action creator
-  failureActionCreator: (error: any) => any, // Failure action creator
+  failureActionCreator: (resourceId: any, error: any) => any, // Failure action creator
   loadingService: LoadingService,
   loadingKeyPrefix: string
 ): Observable<any> { // The effect function
@@ -37,15 +37,15 @@ export function loadResourceEffect<T, K>(
               return timer(500, 500).pipe(
                 switchMap(() => store$.pipe(select(state => resourceSelector(state, resourceId)), take(1))),
                 takeUntil(timer(2500)), // 5 attempts with 500ms interval
-                map(resource => resource ? successActionCreator(resource) : failureActionCreator(null)),
-                catchError(() => of(failureActionCreator(null)))
+                map(resource => resource ? successActionCreator(resource) : of(null)),
+                catchError(() => of(failureActionCreator(resourceId, null)))
               );
             }
 
             loadingService.setObjectLoading(loadingKey, true);
             return apiCall(resourceId).pipe(
               map(successActionCreator),
-              catchError(error => of(failureActionCreator(error))),
+              catchError(error => of(failureActionCreator(resourceId, error))),
               finalize(() => loadingService.setObjectLoading(loadingKey, false))
             );
           })

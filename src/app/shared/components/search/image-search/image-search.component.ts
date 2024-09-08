@@ -21,8 +21,8 @@ import { Router } from "@angular/router";
 import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
 import { DeviceService } from "@shared/services/device.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-image-search",
@@ -57,7 +57,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly loadingService: LoadingService,
     public readonly searchService: SearchService,
     public readonly deviceService: DeviceService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly imageService: ImageService
   ) {
     super(store$, windowRefService, elementRef, platformId, translateService);
     this.dataFetched.pipe(
@@ -227,21 +228,24 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       );
     } else {
       this.loadingService.setLoading(true);
-      this.imageViewerService.loadImage(image.hash || image.objectId).subscribe(image => {
-        activeImageViewer.instance.searchComponentId = this.componentId;
-        activeImageViewer.instance.setImage(
-          image,
-          FINAL_REVISION_LABEL,
-          false,
-          this.results.map(result => ({
-            imageId: result.hash || result.objectId,
-            thumbnailUrl: result.galleryThumbnail
-          })),
-          true
-        );
-        this.loadingService.setLoading(false);
-      }, () => {
-        this.router.navigateByUrl("/404", { skipLocationChange: true });
+      this.imageService.loadImage(image.hash || image.objectId).subscribe({
+        next: image => {
+          activeImageViewer.instance.searchComponentId = this.componentId;
+          activeImageViewer.instance.setImage(
+            image,
+            FINAL_REVISION_LABEL,
+            false,
+            this.results.map(result => ({
+              imageId: result.hash || result.objectId,
+              thumbnailUrl: result.galleryThumbnail
+            })),
+            true
+          );
+          this.loadingService.setLoading(false);
+        },
+        error: () => {
+          this.router.navigateByUrl("/404", { skipLocationChange: true });
+        }
       });
     }
 

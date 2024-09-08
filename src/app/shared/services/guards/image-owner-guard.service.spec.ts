@@ -61,7 +61,7 @@ describe("ImageOwnerGuardService", () => {
 
     jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(true));
 
-    actions.next({ type: AppActionTypes.LOAD_IMAGE_FAILURE });
+    actions.next({ type: AppActionTypes.LOAD_IMAGE_FAILURE, payload: { imageId: 1, error: null } });
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(false);

@@ -35,7 +35,7 @@ export class LoadImageSuccess implements PayloadActionInterface {
 export class LoadImageFailure implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_IMAGE_FAILURE;
 
-  constructor(public payload: HttpErrorResponse) {
+  constructor(public payload: {imageId: ImageInterface["hash"] | ImageInterface["pk"], error: HttpErrorResponse }) {
   }
 }
 
