@@ -2,7 +2,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { select, Store } from "@ngrx/store";
 import { finalize, Observable, of, timer } from "rxjs";
 import { LoadingService } from "@shared/services/loading.service";
-import { catchError, map, mergeMap, switchMap, take, takeUntil } from "rxjs/operators";
+import { catchError, filter, map, mergeMap, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { MainState } from "@app/store/state";
 
 export function loadResourceEffect<T, K>(
@@ -36,9 +36,11 @@ export function loadResourceEffect<T, K>(
               // Delay and retry mechanism
               return timer(500, 500).pipe(
                 switchMap(() => store$.pipe(select(state => resourceSelector(state, resourceId)), take(1))),
-                takeUntil(timer(2500)), // 5 attempts with 500ms interval
-                map(resource => resource ? successActionCreator(resource) : of(null)),
-                catchError(() => of(failureActionCreator(resourceId, null)))
+                takeUntil(timer(5000)), // 10 attempts with 500ms interval
+                filter(resource => !!resource), // Filter out null or falsy values
+                take(1),
+                map(resource => successActionCreator(resource)),
+                catchError(error => of(failureActionCreator(resourceId, error)))
               );
             }
 
