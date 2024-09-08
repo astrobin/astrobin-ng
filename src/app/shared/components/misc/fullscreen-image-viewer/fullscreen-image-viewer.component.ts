@@ -170,6 +170,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   onImagesLoaded(loaded: boolean) {
     this.ready = loaded;
+    // Prevents the jarring resetting of the zoom when the mouse wanders off the image.
+    (this.ngxImageZoom as any).clickMouseLeave = () => {}
   }
 
   setZoomPosition(position: Coord) {
