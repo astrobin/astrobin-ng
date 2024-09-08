@@ -266,7 +266,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
 
   humanizeFilterType(filterType: string): string {
     if (filterType === "UNKNOWN") {
-      return this.translateService.instant("Unknown filter");
+      return this.translateService.instant("Unknown or no filter");
     }
 
     return this.filterService.humanizeType(filterType as FilterType);
