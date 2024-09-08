@@ -262,6 +262,7 @@ export interface ImageInterface {
   uploaderUploadLength?: number;
   uploaderName?: string;
   iotdDate?: string;
+  isIotd?: boolean;
   isTopPick?: boolean;
   isTopPickNomination?: boolean;
   averageMoonAge?: number;
