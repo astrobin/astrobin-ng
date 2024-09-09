@@ -33,7 +33,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
-import { debounceTime, distinctUntilChanged, filter, takeUntil, tap } from "rxjs/operators";
+import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { isPlatformBrowser } from "@angular/common";
 import { ReviewEntryComponent } from "@features/iotd/components/review-entry/review-entry.component";
 
@@ -49,9 +49,7 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
 
   promotions$: Observable<VoteInterface[]> = this.store$.select(selectReviews).pipe(takeUntil(this.destroyed$));
 
-  reviewerSeenImages$: Observable<ReviewerSeenImage[]> = this.store$
-    .select(selectReviewerSeenImages)
-    .pipe(takeUntil(this.destroyed$));
+  reviewerSeenImages$: Observable<ReviewerSeenImage[]> = this.store$.select(selectReviewerSeenImages);
 
   @ViewChildren(ReviewEntryComponent)
   reviewEntryComponents: QueryList<ReviewEntryComponent>;
@@ -113,9 +111,17 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
     this.reviewEntryComponents.forEach((component, index) => {
       const rect = component.elementRef.nativeElement.getBoundingClientRect();
       if (rect.top < (viewportHeight + scrollPosition) && rect.bottom > scrollPosition) {
-        this.reviewerSeenImages$.subscribe(seenImages => {
-          if (!seenImages.find(seenImage => seenImage.image === component.entry.pk)) {
+        this.reviewerSeenImages$.pipe(take(1)).subscribe(seenImages => {
+          if (seenImages.map(seen => seen.image).includes(component.entry.pk)) {
+            this.markingAsSeen = this.markingAsSeen.filter(pk => pk !== component.entry.pk);
+          }
+
+          const isAlreadySeen = !!seenImages.find(seenImage => seenImage.image === component.entry.pk);
+          const isBeingMarkedAsSeen = this.markingAsSeen.includes(component.entry.pk);
+
+          if (!isAlreadySeen && !isBeingMarkedAsSeen) {
             this.store$.dispatch(new MarkReviewerSeenImage({ id: component.entry.pk }));
+            this.markingAsSeen.push(component.entry.pk);
           }
         });
       }

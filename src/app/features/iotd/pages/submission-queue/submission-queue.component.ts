@@ -37,7 +37,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { Actions } from "@ngrx/effects";
-import { debounceTime, distinctUntilChanged, filter, takeUntil, tap } from "rxjs/operators";
+import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { isPlatformBrowser } from "@angular/common";
 import { SubmissionEntryComponent } from "@features/iotd/components/submission-entry/submission-entry.component";
 
@@ -59,9 +59,7 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
     .select(selectSubmissions)
     .pipe(takeUntil(this.destroyed$));
 
-  submitterSeenImages$: Observable<SubmitterSeenImage[]> = this.store$
-    .select(selectSubmitterSeenImages)
-    .pipe(takeUntil(this.destroyed$));
+  submitterSeenImages$: Observable<SubmitterSeenImage[]> = this.store$.select(selectSubmitterSeenImages);
 
   @ViewChildren(SubmissionEntryComponent)
   submissionEntryComponents: QueryList<SubmissionEntryComponent>;
@@ -123,9 +121,17 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
     this.submissionEntryComponents.forEach((component, index) => {
       const rect = component.elementRef.nativeElement.getBoundingClientRect();
       if (rect.top < (viewportHeight + scrollPosition) && rect.bottom > scrollPosition) {
-        this.submitterSeenImages$.subscribe(seenImages => {
-          if (!seenImages.find(seenImage => seenImage.image === component.entry.pk)) {
+        this.submitterSeenImages$.pipe(take(1)).subscribe(seenImages => {
+          if (seenImages.map(seen => seen.image).includes(component.entry.pk)) {
+            this.markingAsSeen = this.markingAsSeen.filter(pk => pk !== component.entry.pk);
+          }
+
+          const isAlreadySeen = !!seenImages.find(seenImage => seenImage.image === component.entry.pk);
+          const isBeingMarkedAsSeen = this.markingAsSeen.includes(component.entry.pk);
+
+            if (!isAlreadySeen && !isBeingMarkedAsSeen) {
             this.store$.dispatch(new MarkSubmitterSeenImage({ id: component.entry.pk }));
+            this.markingAsSeen.push(component.entry.pk);
           }
         });
       }

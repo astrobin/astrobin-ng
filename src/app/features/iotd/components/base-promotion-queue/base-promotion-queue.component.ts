@@ -26,6 +26,7 @@ import { SubmissionImageInterface } from "@features/iotd/types/submission-image.
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
 import { isPlatformBrowser } from "@angular/common";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
 const IOTD_PROMOTION_QUEUE_DISPLAY_HIDDEN_IMAGES_COOKIE = "astrobin-iotd-promotion-queue-display-hidden-images";
@@ -51,6 +52,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
 
   isDismissed: boolean;
   loadingQueue: boolean;
+  markingAsSeen: ImageInterface["pk"][] = [];
 
   abstract queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface | ReviewImageInterface>>;
   abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[] | IotdInterface[]>;
