@@ -20,6 +20,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { DeviceService } from "@shared/services/device.service";
 import { CookieService } from "ngx-cookie";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -80,7 +81,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly utilsService: UtilsService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly deviceService: DeviceService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
 
@@ -197,8 +199,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     if (!this.enableLens) {
       return {
-        top: "1.5rem",
-        left: "4rem",
+        top: "1.25rem",
+        left: "3.5rem",
         transform: "none"
       };
     }

@@ -69,8 +69,9 @@
     background: rgba(0, 0, 0, .5);
     border-radius: 2rem;
     border: 1px solid rgba(255, 255, 255, .25);
-    padding: .5rem 1rem;
+    padding: .25rem .5rem;
     pointer-events: none;
+    font-size: .9rem;
   }
 
   .instruction-container {
@@ -130,7 +131,7 @@
   .close {
     cursor: pointer;
     position: fixed;
-    top: 1.5rem;
+    top: 1rem;
     padding: .5rem;
     color: var(--white);
     opacity: .5;
@@ -145,6 +146,18 @@
   .enable-lens-toggle {
     right: .75rem;
     transform: scale(.9);
+  }
+
+  .astrobin-logo {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: .5;
+
+    img {
+      height: 2rem;
+    }
   }
 
   .close {
