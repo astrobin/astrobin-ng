@@ -88,6 +88,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.realImageLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
   }
 
+  get zoomingEnabled(): boolean {
+    return this.ngxImageZoom && (this.ngxImageZoom as any).zoomingEnabled;
+  }
+
   @HostListener("window:resize", ["$event"])
   onResize(event) {
     this._setZoomLensSize();
@@ -111,9 +115,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       filter(image => !!image),
       take(1)
     ).subscribe(image => {
+      const revision = this.imageService.getRevision(image, this.revision);
       this.isLargeEnough = (
-        image.w > this.windowRef.nativeWindow.innerWidth ||
-        image.h > this.windowRef.nativeWindow.innerHeight
+        revision.w > this.windowRef.nativeWindow.innerWidth ||
+        revision.h > this.windowRef.nativeWindow.innerHeight
       );
     });
 
@@ -124,7 +129,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       switchMap(thumbnail =>
         this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
           this._hdLoadingProgressSubject.next(progress);
-          if (progress > 0) {
+          if (progress >= 100) {
             this.hdThumbnailLoading = false;
           }
         })
@@ -140,7 +145,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       switchMap(thumbnail =>
         this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
           this._realLoadingProgressSubject.next(progress);
-          if (progress > 0) {
+          if (progress >= 100) {
             this.realThumbnailLoading = false;
           }
         })

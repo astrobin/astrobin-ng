@@ -95,30 +95,35 @@
     }
   }
 
-  .no-zoom {
+  .loading-indicator-container {
+    position: fixed;
+    bottom: .5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+
+    &.has-message {
+      background-color: rgba(0, 0, 0, .5);
+      padding: 1rem;
+      border-radius: 1rem;
+    }
+  }
+
+  .touch-device {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
 
-    .loading-indicator-container {
-      position: fixed;
-      bottom: .5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
-
-      &.has-message {
-        background-color: rgba(0, 0, 0, .5);
-        padding: 1rem;
-        border-radius: 1rem;
-      }
-    }
-
     img {
       max-width: 100vw;
       max-height: 100vh;
     }
+  }
+
+  .hd-image {
+    max-width: 100vw;
+    max-height: 100vh;
   }
 
   .enable-lens-toggle,

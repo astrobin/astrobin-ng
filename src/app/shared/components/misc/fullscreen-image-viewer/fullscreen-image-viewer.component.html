@@ -1,62 +1,104 @@
-<ng-container *ngIf="(show$ | async) === true">
+<ng-template #hdImageLoadingTemplate>
+  <div *ngIf="hdThumbnailLoading" class="loading-indicator-container has-message">
+    <astrobin-loading-indicator
+      [progress]="hdImageLoadingProgress$ | async"
+      [message]="'Downloading image' | translate"
+    ></astrobin-loading-indicator>
+  </div>
+</ng-template>
+
+<ng-template #realThumbnailLoadingTemplate>
+  <div *ngIf="realThumbnailLoading" class="loading-indicator-container has-message">
+    <astrobin-loading-indicator
+      [progress]="realImageLoadingProgress$ | async"
+      [message]="'Downloading high resolution image' | translate"
+    ></astrobin-loading-indicator>
+  </div>
+</ng-template>
+
+<ng-template #instructionTemplate let-message="message" let-icon="icon">
+  <div class="instruction-container">
+    <div class="instructions">
+      <fa-icon [icon]="icon"></fa-icon>
+      <span>{{ message | translate }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #notLargeEnoughToZoomInstructionTemplate>
   <ng-container
-    *ngIf="{
-      hd: hdThumbnail$ | async,
-      real: realThumbnail$ | async
-    } as thumbnails"
-  >
-    <ng-container
-      *ngIf="isTouchDevice || !isLargeEnough"
-      [ngTemplateOutletContext]="{
-        url: thumbnails.real ? thumbnails.real : thumbnails.hd
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+      icon: 'info-circle',
+      message: 'Zoom not available because the image is smaller than your viewport.' | translate
+    }"
+  ></ng-container>
+</ng-template>
+
+<ng-template #pinchAndZoomInstructionTemplate>
+  <ng-container
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+      icon: 'hand-paper',
+      message: 'Pinch and zoom!' | translate
+    }"
+  ></ng-container>
+</ng-template>
+
+<ng-template #clickAndScrollInstructionTemplate>
+  <ng-container
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+      icon: 'mouse-pointer',
+      message: 'Click to zoom, scroll to magnify.' | translate
+    }"
+  ></ng-container>
+</ng-template>
+
+<ng-template #clickAgainToZoomOutInstructionTemplate>
+  <ng-container
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+        icon: 'mouse-pointer',
+        message: 'Click again to zoom out.' | translate
       }"
-      [ngTemplateOutlet]="noZoom"
-    >
-    </ng-container>
+  ></ng-container>
+</ng-template>
 
-    <ng-container *ngIf="!isTouchDevice && isLargeEnough">
-      <ng-container
-        *ngIf="thumbnails.hd && thumbnails.real; else hdOnly"
-        [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
-        [ngTemplateOutlet]="imageZoom"
-      >
-      </ng-container>
+<ng-template #clickAgainToCloseLensInstructionTemplate>
+  <ng-container
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+        icon: 'mouse-pointer',
+        message: 'Click again to close lens.' | translate
+      }"
+  ></ng-container>
+</ng-template>
 
-      <ng-template #hdOnly>
-        <ng-container
-          *ngIf="thumbnails.hd; else hdImageLoadingTmpl"
-          [ngTemplateOutletContext]="{ url: thumbnails.hd }"
-          [ngTemplateOutlet]="noZoom"
-        >
-        </ng-container>
-      </ng-template>
-    </ng-container>
-  </ng-container>
+<ng-template #touchDeviceTemplate let-hd="hd" let-real="real">
+  <div class="touch-device">
+    <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
+    <ng-container *ngIf="hd && !real" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
-  <div
-    *ngIf="!isTouchDevice && isLargeEnough"
-    (click)="toggleEnableLens()"
-    [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
-    class="enable-lens-toggle"
-    container="body"
-  >
-    <ng-container *ngIf="!enableLens">
-      <span>{{ "Zoom mode" | translate }}</span>
-    </ng-container>
-    <ng-container *ngIf="enableLens">
-      <span>{{ "Lens mode" | translate }}</span>
-    </ng-container>
+    <img *ngIf="real" [src]="real" alt="" />
+    <img *ngIf="hd && !real" [src]="hd" class="hd-image" alt="" />
+
+    <ng-container *ngIf="isLargeEnough && real" [ngTemplateOutlet]="real && pinchAndZoomInstructionTemplate"></ng-container>
+    <ng-container *ngIf="hd && !isLargeEnough" [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
   </div>
+</ng-template>
 
-  <div (click)="hide($event)" class="close">
-    <fa-icon icon="down-left-and-up-right-to-center"></fa-icon>
-  </div>
-</ng-container>
-
-<ng-template #imageZoom let-hd="hd" let-real="real">
+<ng-template #nonTouchDeviceTemplate let-hd="hd" let-real="real">
   <div class="position-relative">
+    <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
+    <ng-container *ngIf="hd && !real" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
+
+    <img *ngIf="hd && !real" [src]="hd" class="hd-image" alt="" />
+    <img *ngIf="real && !isLargeEnough" [src]="hd" class="hd-image" alt="" />
+
     <lib-ngx-image-zoom
       #ngxImageZoom
+      *ngIf="real && isLargeEnough"
       (zoomPosition)="setZoomPosition($event)"
       (zoomScroll)="setZoomScroll($event)"
       (imagesLoaded)="onImagesLoaded($event)"
@@ -83,43 +125,69 @@
       {{ getZoomScroll() | number: "1.2-2" }}x
     </div>
 
-    <div *ngIf="!showZoomIndicator && !isTouchDevice && isLargeEnough" class="instruction-container">
-      <div class="instructions">
-        <fa-icon icon="mouse-pointer"></fa-icon>
-        <span>{{ "Click to zoom, scroll to magnify." | translate }}</span>
-      </div>
-    </div>
+    <ng-container
+      *ngIf="hd && real && !isLargeEnough"
+      [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"
+    ></ng-container>
+
+    <ng-container *ngIf="isLargeEnough && real">
+      <ng-container
+        *ngIf="!zoomingEnabled && !showZoomIndicator"
+        [ngTemplateOutlet]="clickAndScrollInstructionTemplate"
+      ></ng-container>
+
+      <ng-container
+        *ngIf="zoomingEnabled && !showZoomIndicator && !enableLens"
+        [ngTemplateOutlet]="clickAgainToZoomOutInstructionTemplate"
+      ></ng-container>
+
+      <ng-container
+        *ngIf="zoomingEnabled && !showZoomIndicator && enableLens"
+        [ngTemplateOutlet]="clickAgainToCloseLensInstructionTemplate"
+      ></ng-container>
+    </ng-container>
+  </div>
+
+  <div
+    *ngIf="isLargeEnough"
+    (click)="toggleEnableLens()"
+    [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
+    class="enable-lens-toggle"
+    container="body"
+  >
+    <ng-container *ngIf="!enableLens">
+      <span>{{ "Zoom mode" | translate }}</span>
+    </ng-container>
+    <ng-container *ngIf="enableLens">
+      <span>{{ "Lens mode" | translate }}</span>
+    </ng-container>
   </div>
 </ng-template>
 
-<ng-template #noZoom let-url="url">
-  <div class="no-zoom">
-    <img [src]="url" alt="" />
-    <ng-container [ngTemplateOutlet]="realThumbnailLoadingTmpl"></ng-container>
-    <ng-container [ngTemplateOutlet]="realImageLoadingTmpl"></ng-container>
-  </div>
-</ng-template>
+<ng-container *ngIf="(show$ | async) === true">
+  <ng-container
+    *ngIf="{
+      hd: hdThumbnail$ | async,
+      real: realThumbnail$ | async
+    } as thumbnails"
+  >
+    <ng-container
+      *ngIf="isTouchDevice"
+      [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
+      [ngTemplateOutlet]="touchDeviceTemplate"
+    >
+    </ng-container>
 
-<ng-template #hdImageLoadingTmpl>
-  <div class="loading-indicator-container">
-    <astrobin-loading-indicator [progress]="hdImageLoadingProgress$ | async"></astrobin-loading-indicator>
-  </div>
-</ng-template>
+    <ng-container *ngIf="!isTouchDevice">
+      <ng-container
+        [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
+        [ngTemplateOutlet]="nonTouchDeviceTemplate"
+      >
+      </ng-container>
+    </ng-container>
+  </ng-container>
 
-<ng-template #realThumbnailLoadingTmpl>
-  <div *ngIf="realThumbnailLoading" class="loading-indicator-container has-message">
-    <astrobin-loading-indicator
-      [message]="'Downloading high resolution image' | translate"
-    ></astrobin-loading-indicator>
+  <div (click)="hide($event)" class="close">
+    <fa-icon icon="down-left-and-up-right-to-center"></fa-icon>
   </div>
-</ng-template>
-
-<ng-template #realImageLoadingTmpl>
-  <div *ngIf="realImageLoadingProgress$ | async as progress" class="loading-indicator-container has-message">
-    <astrobin-loading-indicator
-      *ngIf="progress && progress < 100"
-      [message]="'Downloading high resolution image' | translate"
-      [progress]="progress"
-    ></astrobin-loading-indicator>
-  </div>
-</ng-template>
+</ng-container>

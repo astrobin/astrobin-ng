@@ -96,7 +96,7 @@ export class DeviceService extends BaseService {
       return window.innerWidth >= Breakpoint.MD_MIN;
     }
 
-    return false
+    return false;
   }
 
   mdMax(): boolean {
@@ -159,8 +159,13 @@ export class DeviceService extends BaseService {
     }
 
     const _window = this.windowRefService.nativeWindow;
-    const _navigator = window.navigator;
-    return "ontouchstart" in _window || _navigator.maxTouchPoints > 0 || "msMaxTouchPoints" in _navigator;
+
+    // Use media queries to check if the device is currently using touch-based input
+    const hoverQuery = _window.matchMedia("(hover: none)");  // No hover, i.e., touch input
+    const pointerQuery = _window.matchMedia("(pointer: coarse)");  // Coarse pointer, i.e., touch input (finger)
+
+    // Return true if both media queries indicate touch-based input is active
+    return hoverQuery.matches && pointerQuery.matches;
   }
 
   offcanvasPosition(): "bottom" | "end" {
