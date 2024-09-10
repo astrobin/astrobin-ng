@@ -37,7 +37,6 @@ export class AppStateGenerator {
       contentTypes: [],
       images: [],
       thumbnails: [],
-      loadingThumbnails: [],
       solutions: [],
       telescopes: [],
       cameras: [],
