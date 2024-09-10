@@ -19,7 +19,8 @@ describe("ImageViewerComponent", () => {
         provide: ActivatedRoute,
         useValue: {
           snapshot: {
-            fragment: ""
+            fragment: "",
+            queryParams: {}
           }
         }
       }

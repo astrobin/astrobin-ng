@@ -794,6 +794,20 @@ export class ImageService extends BaseService {
     }
   }
 
+  getShareUrl(image: ImageInterface, revisionLabel: string): string {
+    let url = `${this.windowRef.nativeWindow.location.origin}/i/${image.hash || image.pk}`;
+
+    if (revisionLabel === null || revisionLabel === FINAL_REVISION_LABEL) {
+      return url;
+    }
+
+    if (revisionLabel === ORIGINAL_REVISION_LABEL) {
+      return `${url}/0`;
+    }
+
+    return `${url}/${revisionLabel}`;
+  }
+
   private _loadImageFileTraditional(url: string, observer: Observer<string>): void {
     const image = new Image();
     image.onload = () => {

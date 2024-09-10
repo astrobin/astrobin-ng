@@ -71,48 +71,37 @@
     #imageArea
     class="image-area"
     [class.force-view-mousehover]="forceViewMouseHover"
+    [class.adjustment-editor-visible]="adjustmentEditorVisible"
   >
-    <button class="close-button d-none d-md-block" (click)="close()">
-      <fa-icon
+    <ng-container *ngIf="adjustmentEditorVisible">
+      <astrobin-image-viewer-adjustment-editor
+        [image]="image"
+        [revisionLabel]="revisionLabel"
+        [imageComponent]="imageComponent"
+        (closeClick)="adjustmentEditorVisible = false"
+        class="adjustment-editor"
+      ></astrobin-image-viewer-adjustment-editor>
+    </ng-container>
+
+    <ng-container *ngIf="!adjustmentEditorVisible">
+      <astrobin-image-viewer-close-button
         *ngIf="showCloseButton"
-        [ngbTooltip]="'Close' | translate"
-        container="body"
-        icon="times-circle"
-      ></fa-icon>
-    </button>
+        (closeClick)="close()"
+        class="close-button"
+      ></astrobin-image-viewer-close-button>
 
-    <div class="additional-buttons">
-      <button
-        *ngIf="
-          mouseHoverImage || inlineSvg
-        "
-        (click)="toggleViewMouseHover($event)"
-        class="force-view-mousehover-button"
-        [class.active]="forceViewMouseHover"
+      <astrobin-image-viewer-additional-buttons
+        *ngIf="image && imageLoaded"
+        [image]="image"
+        [revisionLabel]="revisionLabel"
+        [hasMouseHover]="!!mouseHoverImage || !!inlineSvg"
+        [forceViewMouseHover]="forceViewMouseHover"
+        (toggleViewMouseHover)="toggleViewMouseHover()"
+        (showAdjustmentsEditor)="adjustmentEditorVisible = true"
+        class="additional-buttons"
       >
-        <fa-icon icon="computer-mouse"></fa-icon>
-      </button>
-
-      <button
-        *ngIf="revision?.solution && (revision?.solution.skyplotZoom1 || revision?.solution.pixinsightFindingChart)"
-        (click)="openSkyplot($event)"
-        class="skyplot-button"
-      >
-        <fa-icon
-          [ngbTooltip]="'View sky map' | translate"
-          container="body"
-          icon="map"
-        ></fa-icon>
-      </button>
-
-      <button *ngIf="!revision?.videoFile" class="histogram-button" (click)="openHistogram($event)">
-        <fa-icon
-          [ngbTooltip]="'View histogram' | translate"
-          container="body"
-          icon="chart-simple"
-        ></fa-icon>
-      </button>
-    </div>
+      </astrobin-image-viewer-additional-buttons>
+    </ng-container>
 
     <button
       *ngIf="currentIndex > 0"
@@ -132,6 +121,7 @@
     <astrobin-loading-indicator *ngIf="!image"></astrobin-loading-indicator>
 
     <astrobin-image
+      #imageComponent
       (imageClick)="enterFullscreen($event)"
       (loaded)="onImageLoaded()"
       (imageMouseEnter)="onImageMouseEnter($event)"
@@ -430,23 +420,6 @@
         [model]="shareModel"
       ></formly-form>
     </form>
-  </div>
-</ng-template>
-
-<ng-template #histogramModalTemplate>
-  <div class="modal-body">
-    <img *ngIf="!loadingHistogram; else loadingTemplate" [src]="histogram" alt="" />
-  </div>
-</ng-template>
-
-<ng-template #skyplotModalTemplate>
-  <div class="modal-body">
-    <img
-      [src]="revision?.solution?.pixinsightFindingChart || revision?.solution?.skyplotZoom1"
-      [ngStyle]="{'filter': revision.solution.pixinsightFindingChart ? 'none' : 'grayscale(100%)'}"
-      class="w-100"
-      alt=""
-    />
   </div>
 </ng-template>
 

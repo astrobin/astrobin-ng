@@ -1,0 +1,17 @@
+.ngx-slider {
+  .ngx-slider-pointer {
+    background-color: var(--accentColor) !important;
+
+    &.ngx-slider-active::after {
+      background-color: var(--darkerAccentColor) !important;
+    }
+  }
+
+  .ngx-slider-selection {
+    background: var(--accentColor) !important;
+  }
+
+  .ngx-slider-bubble {
+    color: var(--mutedAccentColor) !important;
+  }
+}

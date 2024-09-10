@@ -108,10 +108,19 @@
         min-height: calc(50vh - 4rem);
       }
 
+      .adjustment-editor {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        padding: .5rem .5rem .5rem 1rem;
+        z-index: 1;
+      }
+
       .close-button,
       .next-button,
       .previous-button,
-      .additional-buttons,
       .revisions-mobile-button {
         position: absolute;
       }
@@ -119,7 +128,7 @@
       .close-button,
       .next-button,
       .previous-button,
-      .additional-buttons button,
+      ::ng-deep .additional-buttons .btn,
       .revisions-mobile-button {
         background: transparent;
         border: none;
@@ -165,14 +174,6 @@
         display: flex;
         gap: .5rem;
         flex-wrap: nowrap;
-
-        .force-view-mousehover-button {
-          display: none;
-
-          &.active .ng-fa-icon {
-            color: var(--accentColor);
-          }
-        }
       }
 
       .next-button,
@@ -304,14 +305,14 @@
           .close-button,
           .next-button,
           .previous-button,
-          .additional-buttons button {
-            opacity: .5;
+          ::ng-deep .additional-buttons .btn {
+            opacity: .75;
             pointer-events: auto;
           }
         }
       }
 
-      &.hover {
+      &.hover:not(.adjustments-editor-visible) {
         .mouse-hover,
         .mouse-hover-svg-overlay {
           opacity: 1 !important;
@@ -350,16 +351,10 @@
         .close-button,
         .next-button,
         .previous-button,
-        .additional-buttons button {
-          opacity: .5;
+        ::ng-deep .additional-buttons .btn {
+          opacity: .75;
           pointer-events: auto;
           font-size: 1rem;
-        }
-
-        .additional-buttons {
-          .force-view-mousehover-button {
-            display: block;
-          }
         }
 
         astrobin-image-viewer-revisions.show {

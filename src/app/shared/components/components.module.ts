@@ -136,6 +136,9 @@ import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/l
 import { ImageViewerGroupsAndCollectionsComponent } from "@shared/components/misc/image-viewer/image-viewer-groups-and-collections.component";
 import { ImageViewerCustomMessageBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-custom-message-banner.component";
 import { ImageViewerPlateSolvingBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component";
+import { ImageViewerCloseButtonComponent } from "@shared/components/misc/image-viewer/image-viewer-close-button.component";
+import { ImageViewerAdditionalButtonComponent } from "@shared/components/misc/image-viewer/image-viewer-additional-buttons.component";
+import { ImageViewerAdjustmentsEditorComponent } from "@shared/components/misc/image-viewer/image-viewer-adjustments-editor.component";
 
 const modules = [
   CommonModule,
@@ -225,6 +228,9 @@ const components = [
   ImageViewerRevisionsComponent,
   ImageViewerGroupsAndCollectionsComponent,
   ImageViewerPlateSolvingBannerComponent,
+  ImageViewerCloseButtonComponent,
+  ImageViewerAdditionalButtonComponent,
+  ImageViewerAdjustmentsEditorComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,

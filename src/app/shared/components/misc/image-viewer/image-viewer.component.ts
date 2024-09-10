@@ -111,15 +111,12 @@ export class ImageViewerComponent
   @ViewChild("shareTemplate")
   shareTemplate: TemplateRef<any>;
 
-  @ViewChild("histogramModalTemplate")
-  histogramModalTemplate: TemplateRef<any>;
-
-  @ViewChild("skyplotModalTemplate")
-  skyplotModalTemplate: TemplateRef<any>;
-
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
+
   protected readonly ImageAlias = ImageAlias;
+  protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
+
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;
   protected imageLoaded = false;
@@ -131,8 +128,6 @@ export class ImageViewerComponent
   protected supportsFullscreen: boolean;
   protected viewingFullscreenImage = false;
   protected showRevisions = false;
-  protected loadingHistogram = false;
-  protected histogram: string;
   protected mouseHoverImage: string;
   protected forceViewMouseHover = false;
   protected inlineSvg: SafeHtml;
@@ -183,9 +178,7 @@ export class ImageViewerComponent
       }
     }
   ];
-  protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
   protected isLightBoxOpen = false;
-
   protected showUpgradeToPlateSolveBanner$ = combineLatest([
     this.currentUser$,
     this.userSubscriptionService.canPlateSolve$()
@@ -199,13 +192,12 @@ export class ImageViewerComponent
       return this.imageService.isPlateSolvable(this.image);
     })
   );
+  protected adjustmentEditorVisible = false;
 
   private _imageChangedSubject = new Subject<ImageInterface>();
   private _imageChanged$ = this._imageChangedSubject.asObservable();
-
   private _navigationContextChangedSubject = new Subject<void>();
   public navigationContextChanged$ = this._navigationContextChangedSubject.asObservable();
-
   private _navigationContextWheelEventSubscription: Subscription;
   private _navigationContextScrollEventSubscription: Subscription;
 
@@ -249,6 +241,14 @@ export class ImageViewerComponent
       this.alias = ImageAlias.HD;
     } else if (this.deviceService.xlMin()) {
       this.alias = ImageAlias.QHD;
+    }
+
+    if (
+      this.activatedRoute.snapshot.queryParams["brightness"] ||
+      this.activatedRoute.snapshot.queryParams["contrast"] ||
+      this.activatedRoute.snapshot.queryParams["saturation"]
+    ) {
+      this.adjustmentEditorVisible = true;
     }
 
     this.store$.pipe(
@@ -553,6 +553,11 @@ export class ImageViewerComponent
       return;
     }
 
+    if (this.adjustmentEditorVisible) {
+      this.adjustmentEditorVisible = false;
+      return;
+    }
+
     if (this._ignoreNavigationEvent()) {
       return;
     }
@@ -644,33 +649,8 @@ export class ImageViewerComponent
     });
   }
 
-  openHistogram(event: MouseEvent): void {
-    event.preventDefault();
-
-    if (this.loadingHistogram) {
-      return;
-    }
-
-    this.modalService.open(this.histogramModalTemplate, { size: "sm" });
-    this.loadingHistogram = true;
-
-    this.imageApiService.getThumbnail(
-      this.image.hash || this.image.pk, this.revisionLabel, ImageAlias.HISTOGRAM
-    ).subscribe(thumbnail => {
-      this.loadingHistogram = false;
-      this.histogram = thumbnail.url;
-    });
-  }
-
-  toggleViewMouseHover(event: MouseEvent): void {
-    event.preventDefault();
+  toggleViewMouseHover(): void {
     this.forceViewMouseHover = !this.forceViewMouseHover;
-  }
-
-  openSkyplot(event: MouseEvent): void {
-    event.preventDefault();
-
-    this.modalService.open(this.skyplotModalTemplate, { size: "md" });
   }
 
   updateSupportsFullscreen(): void {
@@ -878,10 +858,8 @@ export class ImageViewerComponent
       return "";
     }
 
-    const baseUrl = this.windowRefService.nativeWindow.location.origin;
-    const imagePath = `/i/${this.image.hash || this.image.pk}/`;
     const galleryThumbnailUrl = this.revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url;
-    const url = baseUrl + imagePath;
+    const url = this.imageService.getShareUrl(this.image, this.revisionLabel);
 
     switch (sharingMode) {
       case SharingMode.LINK:
