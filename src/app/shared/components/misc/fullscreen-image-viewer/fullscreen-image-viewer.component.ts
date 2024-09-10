@@ -249,8 +249,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       .subscribe(shown => {
         if (shown) {
           this.store$.dispatch(new HideFullscreenImage());
-          this.store$.dispatch(new LoadThumbnailCancel(this._getHdOptions()));
-          this.store$.dispatch(new LoadThumbnailCancel(this._getRealOptions()));
+          this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getHdOptions() }));
+          this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getRealOptions() }));
           this.exitFullscreen.emit();
         }
       });

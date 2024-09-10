@@ -1,7 +1,7 @@
-<ng-container *ngIf="!!image && !!thumbnailUrl; else loadingTemplate">
-  <ng-container *ngIf="!!image.videoFile; else imageTemplate">
+<ng-container *ngIf="!!revision && !!thumbnailUrl; else loadingTemplate">
+  <ng-container *ngIf="!!revision.videoFile; else imageTemplate">
     <ng-container *ngIf="videoJsReady; else simpleLoadingTemplate">
-      <ng-container *ngIf="!!image.encodedVideoFile; else stillProcessingTemplate">
+      <ng-container *ngIf="!!revision.encodedVideoFile; else stillProcessingTemplate">
         <video
           #videoPlayerElement
           [attr.data-setup]='videoSetup'
@@ -10,7 +10,7 @@
           controls
           preload="auto"
         >
-          <source src="{{ image.encodedVideoFile }}" type="video/mp4" />
+          <source src="{{ revision.encodedVideoFile }}" type="video/mp4" />
         </video>
       </ng-container>
     </ng-container>
@@ -26,7 +26,7 @@
     [alt]="image.title"
     [src]="thumbnailUrl"
     class="astrobin-image"
-    id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revision }}-{{ alias }}"
+    id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revisionLabel }}-{{ alias }}"
   >
 </ng-template>
 
@@ -36,7 +36,7 @@
     [style.padding]="!!height ? 0 : '2rem'"
     class="loading-container"
   >
-    <astrobin-loading-indicator [progress]="progress"></astrobin-loading-indicator>
+    <astrobin-loading-indicator [progress]="imageLoadingProgress"></astrobin-loading-indicator>
   </div>
 </ng-template>
 
@@ -51,7 +51,11 @@
 </ng-template>
 
 <ng-template #stillProcessingTemplate>
-  <p class="alert alert-info video-still-processing" translate>
-    This video is still processing, please return to this page later.
-  </p>
+  <div class="loading-container">
+    <astrobin-loading-indicator
+      class="video-still-processing"
+      [progress]="videoEncodingProgress"
+      [message]="'This video is still processing, please return to this page later.' | translate"
+    ></astrobin-loading-indicator>
+  </div>
 </ng-template>

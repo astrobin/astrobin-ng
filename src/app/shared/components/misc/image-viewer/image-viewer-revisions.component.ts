@@ -9,6 +9,7 @@ import { DeleteImageRevision, DeleteOriginalImage, MarkImageAsFinal } from "@app
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
+import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 
 @Component({
   selector: "astrobin-image-viewer-revisions",
@@ -23,7 +24,7 @@ import { TranslateService } from "@ngx-translate/core";
         >
           <img
             (click)="onRevisionSelected(revision.label)"
-            [src]="revision.gallery"
+            [src]="revision.gallery?.url"
             alt=""
           />
           <span
@@ -125,10 +126,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
     label: ImageRevisionInterface["label"];
     isFinal: boolean;
     original: string;
-    gallery: string;
-    regular: string;
-    hd: string;
-    qhd: string;
+    gallery: ImageThumbnailInterface;
   }[];
   protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
   protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
@@ -166,16 +164,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
         original: image.videoFile || image.imageFile,
         gallery: image.thumbnails.find(thumbnail =>
           thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
-          thumbnail.alias === ImageAlias.GALLERY).url,
-        regular: image.thumbnails.find(thumbnail =>
-          thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
-          thumbnail.alias === ImageAlias.REGULAR).url,
-        hd: image.thumbnails.find(thumbnail =>
-          thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
-          thumbnail.alias === ImageAlias.HD).url,
-        qhd: image.thumbnails.find(thumbnail =>
-          thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
-          thumbnail.alias === ImageAlias.QHD).url
+          thumbnail.alias === ImageAlias.GALLERY)
       },
       ...image.revisions.map(revision => ({
         id: revision.pk,
@@ -183,10 +172,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
         label: revision.label,
         isFinal: revision.isFinal,
         original: revision.videoFile || revision.imageFile,
-        gallery: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
-        regular: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR).url,
-        hd: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.HD).url,
-        qhd: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.QHD).url
+        gallery: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY)
       }))
     ];
   }

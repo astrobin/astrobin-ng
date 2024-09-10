@@ -192,6 +192,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     if (isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.document?.removeEventListener) {
       this.windowRefService.nativeWindow.document.removeEventListener("click", this.onDocumentClick.bind(this));
     }
+
+    super.ngOnDestroy();
   }
 
   onDocumentClick(event: MouseEvent): void {
