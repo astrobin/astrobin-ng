@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
 @Component({
   selector: 'astrobin-image-viewer-close-button',
   template: `
-    <button class="d-none d-md-block btn btn-link text-light" (click)="closeClick.emit()">
+    <button class="btn btn-link text-light" (click)="closeClick.emit()">
       <fa-icon
         [ngbTooltip]="'Close' | translate"
         container="body"
