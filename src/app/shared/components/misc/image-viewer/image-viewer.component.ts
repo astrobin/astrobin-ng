@@ -116,6 +116,7 @@ export class ImageViewerComponent
 
   protected readonly ImageAlias = ImageAlias;
   protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
+  protected readonly isPlatformBrowser = isPlatformBrowser;
 
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;

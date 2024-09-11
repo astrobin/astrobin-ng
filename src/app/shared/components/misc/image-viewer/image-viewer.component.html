@@ -73,7 +73,7 @@
     [class.force-view-mousehover]="forceViewMouseHover"
     [class.adjustment-editor-visible]="adjustmentEditorVisible"
   >
-    <ng-container *ngIf="adjustmentEditorVisible">
+    <ng-container *ngIf="adjustmentEditorVisible && isPlatformBrowser(platformId)">
       <astrobin-image-viewer-adjustment-editor
         [image]="image"
         [revisionLabel]="revisionLabel"
