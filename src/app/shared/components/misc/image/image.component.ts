@@ -116,17 +116,20 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.image && changes.image.currentValue) {
+    const imageChanged = changes.image && changes.image.currentValue;
+    const revisionLabelChanged = changes.revisionLabel && changes.revisionLabel.currentValue;
+
+    if (imageChanged) {
       this.id = this.image.pk;
-      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     }
 
-    if (changes.image || changes.revisionLabel || changes.id) {
-      this.loading = false;
-      this._stopPollingVideoEncoderProgress.next();
+    if (imageChanged || revisionLabelChanged) {
+        this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     }
 
     this.thumbnailUrl = null;
+    this.loading = false;
+    this._stopPollingVideoEncoderProgress.next();
     this._disposeVideoJsPlayer();
 
     this.load(0);

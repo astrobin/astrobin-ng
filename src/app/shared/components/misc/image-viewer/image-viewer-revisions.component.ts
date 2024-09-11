@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -110,7 +110,7 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
   `,
   styleUrls: ["./image-viewer-revisions.component.scss"]
 })
-export class ImageViewerRevisionsComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class ImageViewerRevisionsComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   image: ImageInterface;
 
@@ -140,14 +140,8 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
     super(store$);
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-  }
-
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.image && changes.image.currentValue) {
-      this.setRevisionData(changes.image.currentValue);
-    }
+    this.setRevisionData(this.image);
   }
 
   setRevisionData(image: ImageInterface): void {

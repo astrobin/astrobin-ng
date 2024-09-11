@@ -4,7 +4,7 @@ import { BackendConfigInterface } from "@shared/interfaces/backend-config.interf
 import { CameraInterface } from "@shared/interfaces/camera.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
-import { ImageInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
@@ -374,12 +374,12 @@ export function appReducer(state = initialAppState, action: All): AppState {
       const imagePk = action.payload.pk;
       const revisionLabel = action.payload.revisionLabel;
 
-      // Create a deep copy of the image object
       const imageIndex = state.images.findIndex(i => i.pk === imagePk);
       if (imageIndex < 0) {
         return state;
       } // If image not found, return the original state
 
+      // Create a deep copy of the image object
       const image = {
         ...state.images[imageIndex],
         revisions: state.images[imageIndex].revisions.map(revision => ({ ...revision }))
@@ -390,8 +390,14 @@ export function appReducer(state = initialAppState, action: All): AppState {
         image.revisions.forEach(revision => {
           revision.isFinal = false;
         });
+        image.thumbnails.forEach(thumbnail => {
+          thumbnail.revision = FINAL_REVISION_LABEL;
+        });
       } else {
         image.isFinal = false;
+        image.thumbnails.forEach(thumbnail => {
+          thumbnail.revision = ORIGINAL_REVISION_LABEL;
+        });
         image.revisions.forEach(revision => {
           revision.isFinal = revision.label === revisionLabel;
         });

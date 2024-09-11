@@ -428,8 +428,10 @@ export class ImageViewerComponent
 
     this.updateSupportsFullscreen();
 
-    if (revisionLabel !== FINAL_REVISION_LABEL) {
-      this.onRevisionSelected(revisionLabel);
+    if (this.revision.hasOwnProperty("label")) {
+      this.onRevisionSelected((this.revision as ImageRevisionInterface).label);
+    } else {
+      this.onRevisionSelected(ORIGINAL_REVISION_LABEL);
     }
 
     if (fullscreenMode) {
