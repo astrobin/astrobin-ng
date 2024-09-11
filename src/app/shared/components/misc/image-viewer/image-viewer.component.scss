@@ -125,12 +125,13 @@
         position: absolute;
       }
 
-      .close-button,
+      ::ng-deep .close-button,
       .next-button,
       .previous-button,
       ::ng-deep .additional-buttons .btn,
       .revisions-mobile-button {
-        background: transparent;
+        background: rgba(0, 0, 0, .5);
+        border-radius: .25rem;
         border: none;
         color: var(--white);
         font-size: 1.5rem;
@@ -145,6 +146,10 @@
           outline: none !important;
         }
 
+        .ng-fa-icon {
+          margin: 0;
+        }
+
         @media (hover: hover) and (pointer: fine) {
           &:hover {
             opacity: 1 !important;
@@ -154,8 +159,8 @@
 
       .next-button,
       .previous-button {
-        height: 50%;
-        padding: 1rem;
+        padding: 1rem .75rem;
+        border-radius: .75rem;
         z-index: 1030; // Lower than the other buttons because they are tall.
 
         &:focus-visible {
@@ -183,7 +188,7 @@
       }
 
       .next-button {
-        right: 0;
+        right: .125rem;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
@@ -193,7 +198,7 @@
       }
 
       .previous-button {
-        left: 0;
+        left: .125rem;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
