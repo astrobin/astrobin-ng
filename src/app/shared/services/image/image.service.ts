@@ -802,10 +802,10 @@ export class ImageService extends BaseService {
     }
 
     if (revisionLabel === ORIGINAL_REVISION_LABEL) {
-      return `${url}/0`;
+      return `${url}?r=0`;
     }
 
-    return `${url}/${revisionLabel}`;
+    return `${url}?r=${revisionLabel}`;
   }
 
   private _loadImageFileTraditional(url: string, observer: Observer<string>): void {

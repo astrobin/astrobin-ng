@@ -991,11 +991,23 @@ export class ImageViewerComponent
     revisionLabel: ImageRevisionInterface["label"],
     fullscreenMode = false
   ): string {
+    const revision = this.imageService.getRevision(image, revisionLabel);
     let path = this.location.path().split("#")[0];
 
-    path = UtilsService.addOrUpdateUrlParam(path, "i", image.hash || ("" + image.pk));
-    if (revisionLabel !== FINAL_REVISION_LABEL) {
+    if (!path.includes(image.hash || image.pk + "")) {
+      path = UtilsService.addOrUpdateUrlParam(path, "i", image.hash || ("" + image.pk));
+    }
+
+    if (
+      revisionLabel !== FINAL_REVISION_LABEL &&
+      (
+        image.isFinal === false ||
+        revisionLabel !== ORIGINAL_REVISION_LABEL
+      )
+    ) {
       path = UtilsService.addOrUpdateUrlParam(path, "r", revisionLabel);
+    } else {
+      path = UtilsService.removeUrlParam(path, "r");
     }
 
     if (fullscreenMode) {
