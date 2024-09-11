@@ -12,6 +12,10 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { DeleteImageFailure, DeleteImageSuccess } from "@app/store/actions/image.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { TitleService } from "@shared/services/title/title.service";
+import { TranslateService } from "@ngx-translate/core";
+import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-image-page",
@@ -29,7 +33,10 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
     public readonly actions$: Actions,
     public readonly route: ActivatedRoute,
     public readonly windowRefService: WindowRefService,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly titleService: TitleService,
+    public readonly translateService: TranslateService,
+    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe
   ) {
     super(store$);
   }
@@ -43,10 +50,12 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
     ).subscribe(data => {
       this.image = data.image;
 
+      this._setMetaTags();
+
       if (this.image && this.imageViewer) {
         this.imageViewer.setImage(
           this.image,
-          this.route.snapshot.queryParams.r ||  FINAL_REVISION_LABEL,
+          this.route.snapshot.queryParams.r || FINAL_REVISION_LABEL,
           false,
           [],
           false
@@ -66,5 +75,32 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
       this.windowRefService.nativeWindow.location.href =
         this.classicRoutesService.GALLERY(this.image.username);
     });
+  }
+
+  private _setMetaTags() {
+    const maxDescriptionLength = 160;
+    let description: string;
+    let image: string;
+
+    if (this.image.descriptionBbcode && this.image.descriptionBbcode.length > 0) {
+      description = this.bbCodeToHtmlPipe.transform(this.image.descriptionBbcode).slice(0, maxDescriptionLength);
+    } else if (this.image.description && this.image.description.length > 0) {
+      description = this.image.description.slice(0, maxDescriptionLength);
+    } else {
+      description = this.translateService.instant("An image on AstroBin.");
+    }
+
+    if (this.image.thumbnails && this.image.thumbnails.length > 0) {
+      image = this.image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR).url;
+    }
+
+    this.titleService.setTitle(this.image.title);
+    this.titleService.setDescription(description);
+    this.titleService.addMetaTag({ name: "og:title", content: this.image.title });
+    this.titleService.addMetaTag({ name: "og:description", content: description });
+
+    if (image) {
+      this.titleService.addMetaTag({ name: "og:image", content: image });
+    }
   }
 }

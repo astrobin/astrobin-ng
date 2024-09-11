@@ -24,6 +24,10 @@ export class TitleService extends BaseService implements TitleServiceInterface {
     this.titleService.setTitle(title + " - AstroBin");
   }
 
+  public addMetaTag(tag: { name: string; content: string }) {
+    this.meta.addTag(tag);
+  }
+
   public setDescription(description: string) {
     this.meta.updateTag({ name: "description", content: description });
   }

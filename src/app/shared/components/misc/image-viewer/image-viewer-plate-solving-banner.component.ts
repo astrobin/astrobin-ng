@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { Component, HostBinding, Inject, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
@@ -18,6 +18,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { Subscription } from "rxjs";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-image-viewer-plate-solving-banner",
@@ -118,7 +119,8 @@ export class ImageViewerPlateSolvingBannerComponent
     public readonly utilsService: UtilsService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
-    public readonly userSubscriptionService: UserSubscriptionService
+    public readonly userSubscriptionService: UserSubscriptionService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -126,10 +128,12 @@ export class ImageViewerPlateSolvingBannerComponent
   ngOnInit() {
     super.ngOnInit();
 
-    this.userSubscriptionService.canPlateSolveAdvanced$().subscribe(canPlateSolveAdvanced => {
-      this._performAdvancedSolve = canPlateSolveAdvanced;
-      this._pollSolution();
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.userSubscriptionService.canPlateSolveAdvanced$().subscribe(canPlateSolveAdvanced => {
+        this._performAdvancedSolve = canPlateSolveAdvanced;
+        this._pollSolution();
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
