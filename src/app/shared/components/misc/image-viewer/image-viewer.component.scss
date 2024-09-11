@@ -386,8 +386,10 @@
 
         ::ng-deep {
           .image-viewer-banner-component {
-            + .image-viewer-banner-component {
-              margin-top: 1rem;
+            @media (min-width: $lg-min) {
+              + .image-viewer-banner-component {
+                margin-top: 1rem;
+              }
             }
 
             .image-viewer-banner {

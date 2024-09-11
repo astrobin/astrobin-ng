@@ -177,4 +177,12 @@ export class ImageApiService extends BaseClassicApiService {
   getImageStats(imageId: (ImageInterface["hash"] | ImageInterface["pk"])): Observable<ImageIotdTpStatsInterface> {
     return this.http.get<ImageIotdTpStatsInterface>(`${this.baseUrl}/iotd/image-stats/${imageId}/`);
   }
+
+  getVideoEncodingProgress(pk: ImageInterface["pk"]): Observable<number> {
+    return this.http.get<number>(`${this.configUrl}/image/${pk}/video-encoding-progress/`);
+  }
+
+  getRevisionVideoEncodingProgress(pk: ImageRevisionInterface["pk"]): Observable<number> {
+    return this.http.get<number>(`${this.configUrl}/image-revision/${pk}/video-encoding-progress/`);
+  }
 }

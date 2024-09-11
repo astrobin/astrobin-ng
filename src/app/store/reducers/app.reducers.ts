@@ -44,9 +44,6 @@ export interface AppState {
   // All seen thumbnails.
   thumbnails: ImageThumbnailInterface[];
 
-  // Thumbnails currently being loaded.
-  loadingThumbnails: Omit<ImageThumbnailInterface, "url">[];
-
   // All seen solutions.
   solutions: SolutionInterface[];
 
@@ -86,7 +83,6 @@ export const initialAppState: AppState = {
   contentTypes: [],
   images: [],
   thumbnails: [],
-  loadingThumbnails: [],
   solutions: [],
   telescopes: [],
   cameras: [],
@@ -236,25 +232,12 @@ export function appReducer(state = initialAppState, action: All): AppState {
         return state;
       }
 
-      let loadingThumbnails = [...state.loadingThumbnails];
       const thumbnails = !!action.payload.thumbnails ? [...action.payload.thumbnails] : [];
-
-      if (action.payload.thumbnails) {
-        action.payload.thumbnails.forEach(thumbnail => {
-          loadingThumbnails = loadingThumbnails.filter(
-            loadingThumbnail =>
-              loadingThumbnail.id !== thumbnail.id ||
-              loadingThumbnail.revision !== thumbnail.revision ||
-              loadingThumbnail.alias !== thumbnail.alias
-          );
-        });
-      }
 
       return {
         ...state,
         images: [...state.images.filter(i => i.pk !== action.payload.pk), action.payload],
         thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, ...thumbnails], null, false),
-        loadingThumbnails,
         telescopes: action.payload.imagingTelescopes
           ? UtilsService.arrayUniqueObjects([...state.telescopes, ...action.payload.imagingTelescopes], "pk")
           : [],
@@ -283,19 +266,11 @@ export function appReducer(state = initialAppState, action: All): AppState {
       }));
       const images = UtilsService.arrayUniqueObjects([...state.images, ...flatImages], "pk");
 
-      let loadingThumbnails = [...state.loadingThumbnails];
       let thumbnails = [...state.thumbnails];
 
       action.payload.results.forEach(image => {
         if (!!image.thumbnails) {
           image.thumbnails.forEach(thumbnail => {
-            loadingThumbnails = loadingThumbnails.filter(
-              loadingThumbnail =>
-                loadingThumbnail.id !== thumbnail.id ||
-                loadingThumbnail.revision !== thumbnail.revision ||
-                loadingThumbnail.alias !== thumbnail.alias
-            );
-
             thumbnails = UtilsService.arrayUniqueObjects([...thumbnails, ...image.thumbnails], null, false);
           });
         }
@@ -321,7 +296,6 @@ export function appReducer(state = initialAppState, action: All): AppState {
         ...state,
         images,
         thumbnails,
-        loadingThumbnails,
         telescopes,
         cameras
       };
@@ -478,39 +452,10 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.LOAD_THUMBNAIL: {
-      return {
-        ...state,
-        loadingThumbnails: UtilsService.arrayUniqueObjects(
-          [...state.loadingThumbnails, action.payload.data],
-          null,
-          false
-        )
-      };
-    }
-
-    case AppActionTypes.LOAD_THUMBNAIL_CANCEL: {
-      return {
-        ...state,
-        loadingThumbnails: state.loadingThumbnails.filter(
-          thumbnail =>
-            thumbnail.id !== action.payload.id ||
-            thumbnail.revision !== action.payload.revision ||
-            thumbnail.alias !== action.payload.alias
-        )
-      };
-    }
-
     case AppActionTypes.LOAD_THUMBNAIL_SUCCESS: {
       return {
         ...state,
         thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, action.payload], null, false),
-        loadingThumbnails: state.loadingThumbnails.filter(
-          thumbnail =>
-            thumbnail.id !== action.payload.id ||
-            thumbnail.revision !== action.payload.revision ||
-            thumbnail.alias !== action.payload.alias
-        )
       };
     }
 

@@ -298,6 +298,8 @@ export class ImageViewerComponent
     if (this._navigationContextScrollEventSubscription) {
       this._navigationContextScrollEventSubscription.unsubscribe();
     }
+
+    super.ngOnDestroy();
   }
 
   initNavigationScrollHandling() {

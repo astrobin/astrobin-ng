@@ -18,22 +18,3 @@ export const selectThumbnail = createSelector(
     return matching.length > 0 ? matching[0] : null;
   }
 );
-
-export const selectLoadingThumbnails = createSelector(
-  selectApp,
-  (state: AppState): Omit<ImageThumbnailInterface, "url">[] => state.loadingThumbnails
-);
-
-export const selectLoadingThumbnail = createSelector(
-  selectLoadingThumbnails,
-  (
-    thumbnails: Omit<ImageThumbnailInterface, "url">[],
-    payload: Omit<ImageThumbnailInterface, "url">
-  ): Omit<ImageThumbnailInterface, "url"> => {
-    const matching = thumbnails.filter(
-      thumbnail =>
-        thumbnail.id === payload.id && thumbnail.revision === payload.revision && thumbnail.alias === payload.alias
-    );
-    return matching.length > 0 ? matching[0] : null;
-  }
-);
