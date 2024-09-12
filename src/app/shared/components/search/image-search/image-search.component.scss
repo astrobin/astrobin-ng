@@ -145,6 +145,11 @@
         color: var(--lightestGrey);
       }
 
+      .published {
+        color: var(--lighterGrey);
+        font-size: .7rem;
+      }
+
       .counters {
         .counter {
           color: var(--lighterGrey);

@@ -118,6 +118,7 @@
                 <a [href]="classicRoutesService.GALLERY(item.username)">{{ item.userDisplayName }}</a>
               </div>
               <div class="title">{{ item.title }}</div>
+              <div *ngIf="item.published" class="published">{{ item.published | localDate | timeago }}</div>
             </div>
 
             <div class="counters d-flex flex-column gap-1">
