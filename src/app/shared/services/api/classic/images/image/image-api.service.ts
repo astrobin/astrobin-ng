@@ -185,4 +185,16 @@ export class ImageApiService extends BaseClassicApiService {
   getRevisionVideoEncodingProgress(pk: ImageRevisionInterface["pk"]): Observable<number> {
     return this.http.get<number>(`${this.configUrl}/image-revision/${pk}/video-encoding-progress/`);
   }
+
+  acceptCollaboratorRequest(pk: ImageInterface["pk"], userId: UserInterface["id"]): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/accept-collaborator-request/`, { userId });
+  }
+
+  denyCollaboratorRequest(pk: ImageInterface["pk"], userId: UserInterface["id"]): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/deny-collaborator-request/`, { userId });
+  }
+
+  removeCollaborator(pk: ImageInterface["pk"], userId: UserInterface["id"]): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/remove-collaborator/`, { userId });
+  }
 }

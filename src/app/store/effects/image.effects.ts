@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { DeleteImageFailure, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImageFailure, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -24,7 +24,7 @@ export class ImageEffects {
     ), // Selector for the image
     id => this.imageApiService.getImage(id), // API call to load image
     image => new LoadImageSuccess(image), // Success action
-    (imageId, error) => new LoadImageFailure({imageId, error}), // Failure action
+    (imageId, error) => new LoadImageFailure({ imageId, error }), // Failure action
     this.loadingService,
     "image"
   );
@@ -446,6 +446,144 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  AcceptCollaboratorRequest: Observable<AcceptCollaboratorRequestSuccess | AcceptCollaboratorRequestFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.ACCEPT_COLLABORATOR_REQUEST),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.acceptCollaboratorRequest(action.payload.pk, action.payload.userId).pipe(
+          map(image => new AcceptCollaboratorRequestSuccess(image)),
+          catchError(error => of(new AcceptCollaboratorRequestFailure({
+            pk: action.payload.pk,
+            userId: action.payload.userId,
+            error
+          })))
+        )
+      )
+    )
+  );
+
+  AcceptCollaboratorRequestSuccess: Observable<AcceptCollaboratorRequestSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.ACCEPT_COLLABORATOR_REQUEST_SUCCESS),
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant("You are now a collaborator to this image!")
+          );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  AcceptCollaboratorRequestFailure: Observable<AcceptCollaboratorRequestFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.ACCEPT_COLLABORATOR_REQUEST_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  DenyCollaboratorRequest: Observable<DenyCollaboratorRequestSuccess | DenyCollaboratorRequestFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.DENY_COLLABORATOR_REQUEST),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.denyCollaboratorRequest(action.payload.pk, action.payload.userId).pipe(
+          map(image => new DenyCollaboratorRequestSuccess(image)),
+          catchError(error => of(new DenyCollaboratorRequestFailure({
+            pk: action.payload.pk,
+            userId: action.payload.userId,
+            error
+          })))
+        )
+      )
+    )
+  );
+
+  DenyCollaboratorRequestSuccess: Observable<DenyCollaboratorRequestSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DENY_COLLABORATOR_REQUEST_SUCCESS),
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant("The collaborator request has been denied.")
+          );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  DenyCollaboratorRequestFailure: Observable<DenyCollaboratorRequestFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DENY_COLLABORATOR_REQUEST_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  RemoveCollaborator: Observable<RemoveCollaboratorSuccess | RemoveCollaboratorFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.REMOVE_COLLABORATOR),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(action =>
+        this.imageApiService.removeCollaborator(action.payload.pk, action.payload.userId).pipe(
+          map(image => new RemoveCollaboratorSuccess(image)),
+          catchError(error => of(new RemoveCollaboratorFailure({
+            pk: action.payload.pk,
+            userId: action.payload.userId,
+            error
+          })))
+        )
+      )
+    )
+  );
+
+  RemoveCollaboratorSuccess: Observable<RemoveCollaboratorSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.REMOVE_COLLABORATOR_SUCCESS),
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant("The collaborator has been removed.")
+          );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  RemoveCollaboratorFailure: Observable<RemoveCollaboratorFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.REMOVE_COLLABORATOR_FAILURE),
         tap(error => {
           this.loadingService.setLoading(false);
         })

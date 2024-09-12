@@ -7,6 +7,7 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { HttpErrorResponse } from "@angular/common/http";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
 import { Action } from "@ngrx/store";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 export interface LoadImageOptionsInterface {
   skipThumbnails: boolean;
@@ -270,5 +271,68 @@ export class SubmitImageForIotdTpConsiderationFailure implements PayloadActionIn
   readonly type = AppActionTypes.SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_FAILURE;
 
   constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
+  }
+}
+
+export class AcceptCollaboratorRequest implements PayloadActionInterface {
+  readonly type = AppActionTypes.ACCEPT_COLLABORATOR_REQUEST;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; userId: UserInterface["id"] }) {
+  }
+}
+
+export class AcceptCollaboratorRequestSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.ACCEPT_COLLABORATOR_REQUEST_SUCCESS;
+
+  constructor(public payload: ImageInterface) {
+  }
+}
+
+export class AcceptCollaboratorRequestFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.ACCEPT_COLLABORATOR_REQUEST_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; userId: UserInterface["id"], error: any }) {
+  }
+}
+
+export class DenyCollaboratorRequest implements PayloadActionInterface {
+  readonly type = AppActionTypes.DENY_COLLABORATOR_REQUEST;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; userId: UserInterface["id"] }) {
+  }
+}
+
+export class DenyCollaboratorRequestSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.DENY_COLLABORATOR_REQUEST_SUCCESS;
+
+  constructor(public payload: ImageInterface) {
+  }
+}
+
+export class DenyCollaboratorRequestFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.DENY_COLLABORATOR_REQUEST_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; userId: UserInterface["id"], error: any }) {
+  }
+}
+
+export class RemoveCollaborator implements PayloadActionInterface {
+  readonly type = AppActionTypes.REMOVE_COLLABORATOR;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; userId: UserInterface["id"] }) {
+  }
+}
+
+export class RemoveCollaboratorSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.REMOVE_COLLABORATOR_SUCCESS;
+
+  constructor(public payload: ImageInterface) {
+  }
+}
+
+export class RemoveCollaboratorFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.REMOVE_COLLABORATOR_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; userId: UserInterface["id"], error: any }) {
   }
 }

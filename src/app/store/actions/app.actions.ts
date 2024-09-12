@@ -4,7 +4,9 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, ForceCheckImageAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import {
+  AcceptCollaboratorRequest, AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequest, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, ForceCheckImageAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, RemoveCollaborator, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
+} from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
@@ -138,7 +140,17 @@ export enum AppActionTypes {
 
   SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION = "[App] Submit image for IOTD/TP consideration",
   SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_SUCCESS = "[App] Submit image for IOTD/TP consideration success",
-  SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_FAILURE = "[App] Submit image for IOTD/TP consideration failure"
+  SUBMIT_IMAGE_FOR_IOTD_TP_CONSIDERATION_FAILURE = "[App] Submit image for IOTD/TP consideration failure",
+
+  ACCEPT_COLLABORATOR_REQUEST = "[App] Accept collaborator request",
+  ACCEPT_COLLABORATOR_REQUEST_SUCCESS = "[App] Accept collaborator request success",
+  ACCEPT_COLLABORATOR_REQUEST_FAILURE = "[App] Accept collaborator request failure",
+  DENY_COLLABORATOR_REQUEST = "[App] Deny collaborator request",
+  DENY_COLLABORATOR_REQUEST_SUCCESS = "[App] Deny collaborator request success",
+  DENY_COLLABORATOR_REQUEST_FAILURE = "[App] Deny collaborator request failure",
+  REMOVE_COLLABORATOR = "[App] Remove collaborator",
+  REMOVE_COLLABORATOR_SUCCESS = "[App] Remove collaborator success",
+  REMOVE_COLLABORATOR_FAILURE = "[App] Remove collaborator failure"
 }
 
 export type All =
@@ -226,4 +238,13 @@ export type All =
   | DeleteImageUncompressedSourceFileFailure
   | SubmitImageForIotdTpConsideration
   | SubmitImageForIotdTpConsiderationSuccess
-  | SubmitImageForIotdTpConsiderationFailure;
+  | SubmitImageForIotdTpConsiderationFailure
+  | AcceptCollaboratorRequest
+  | AcceptCollaboratorRequestSuccess
+  | AcceptCollaboratorRequestFailure
+  | DenyCollaboratorRequest
+  | DenyCollaboratorRequestSuccess
+  | DenyCollaboratorRequestFailure
+  | RemoveCollaborator
+  | RemoveCollaboratorSuccess
+  | RemoveCollaboratorFailure;
