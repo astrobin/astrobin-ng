@@ -227,7 +227,10 @@ export function appReducer(state = initialAppState, action: All): AppState {
     }
 
     case AppActionTypes.SET_IMAGE:
-    case AppActionTypes.LOAD_IMAGE_SUCCESS: {
+    case AppActionTypes.LOAD_IMAGE_SUCCESS:
+    case AppActionTypes.ACCEPT_COLLABORATOR_REQUEST_SUCCESS:
+    case AppActionTypes.DENY_COLLABORATOR_REQUEST_SUCCESS:
+    case AppActionTypes.REMOVE_COLLABORATOR_SUCCESS: {
       if (action.payload === null || action.payload === undefined) {
         return state;
       }
