@@ -62,6 +62,15 @@ import { switchMap } from "rxjs/operators";
           {{ "Save" | translate }}
         </button>
 
+        <button
+          (click)="restart()"
+          [class.loading]="loadingService.loading$ | async"
+          class="btn btn-secondary"
+          type="submit"
+        >
+          {{ "Restart place-solving" | translate }}
+        </button>
+
         <a
           [class.loading]="loadingService.loading$ | async"
           [routerLink]="'/i/' + (image.hash || image.pk)"
@@ -191,7 +200,27 @@ export class ImagePlateSolvingSettingsPageComponent
         }
       }).then(() => {
         this.loadingService.setLoading(false);
-        this.popNotificationsService.success("Settings saved. Plate-solving will restart momentarily.");
+        this.popNotificationsService.success(
+          this.translateService.instant("Settings saved.") +
+          " " +
+          this.translateService.instant("Plate-solving will be restarted.")
+        );
+      });
+    });
+  }
+
+  restart() {
+    this.loadingService.setLoading(true);
+    this.plateSolvingSettingsApiService.restart(this.basicModel.solution).subscribe(() => {
+      this.router.navigate(["/i", this.image.hash || this.image.pk], {
+        queryParams: {
+          r: this.revisionLabel
+        }
+      }).then(() => {
+        this.loadingService.setLoading(false);
+        this.popNotificationsService.success(
+          this.translateService.instant("Plate-solving will be restarted.")
+        );
       });
     });
   }

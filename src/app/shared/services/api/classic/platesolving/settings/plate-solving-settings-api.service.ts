@@ -82,4 +82,9 @@ export class PlateSolvingSettingsApiService extends BaseClassicApiService {
 
     return this.http.post<PlateSolvingAdvancedSettingsInterface>(url, formData, httpOptions);
   }
+
+  restart(solutionId: SolutionInterface["id"]): Observable<void> {
+    const url = this.configUrl + `/solutions/${solutionId}/restart/`;
+    return this.http.patch<void>(url, {});
+  }
 }
