@@ -26,6 +26,7 @@ import { imageFeatureKey, imageReducer } from "@features/image/store/image.reduc
 import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
 import { SearchModule } from "@features/search/search.module";
 import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revision/image-edit-revision-page.component";
+import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component";
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revis
     CopyAcquisitionSessionsFromAnotherImageModalComponent,
     OverrideAcquisitionFormModalComponent,
     ImportAcquisitionsFromCsvFormModalComponent,
-    ImageEditRevisionPageComponent
+    ImageEditRevisionPageComponent,
+    ImagePlateSolvingSettingsPageComponent
   ],
   imports: [
     RouterModule.forChild(imageRoutes),

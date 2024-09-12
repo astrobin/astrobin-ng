@@ -68,6 +68,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         <div ngbDropdownMenu class="dropdown-menu">
           <astrobin-image-viewer-menu
             [image]="image"
+            [revisionLabel]="revisionLabel"
             itemClass="dropdown-item"
             dividerClass="dropdown-divider"
           ></astrobin-image-viewer-menu>
@@ -139,7 +140,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
           margin-right:  -.5rem;
           padding: .5rem;
           cursor: pointer;
-
 
           &:hover {
             color: var(--white);

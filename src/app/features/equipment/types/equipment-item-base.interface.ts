@@ -54,8 +54,8 @@ export interface EquipmentItemBaseInterface {
   variantOf: number | null;
   variants: EquipmentItemBaseInterface[];
   website: string;
-  image?: string | File[];
-  thumbnail?: string | File[];
+  image?: string | { file: File, url: string  }[];
+  thumbnail?: string;
   communityNotes: string | null;
   frozenAsAmbiguous: boolean | null;
   forum: ForumInterface["id"] | null;

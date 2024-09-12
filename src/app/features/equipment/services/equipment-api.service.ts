@@ -576,7 +576,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         .pipe(take(1))
         .subscribe(createdBrand => {
           if (brand.logo && brand.logo.length > 0) {
-            this.uploadBrandLogo(createdBrand.id, (brand.logo as File[])[0])
+            this.uploadBrandLogo(createdBrand.id, (brand.logo as { file: File }[])[0].file)
               .pipe(
                 take(1),
                 catchError(error => {
@@ -613,7 +613,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     const httpOptions = {
       headers: new HttpHeaders({
-        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+        // Unsetting the Content-Type is necessary, so it gets set to multipart/form-data with the correct boundary.
         "Content-Type": "__unset__",
         "Content-Disposition": `form-data; name="logo"; filename=${logo.name}`
       })
@@ -918,7 +918,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     const httpOptions = {
       headers: new HttpHeaders({
-        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+        // Unsetting the Content-Type is necessary so, it gets set to multipart/form-data with the correct boundary.
         "Content-Type": "__unset__",
         "Content-Disposition": `form-data; name="image"; filename=${image.name}`
       })
@@ -1167,7 +1167,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         .pipe(take(1))
         .subscribe(createdItem => {
           if (item.image && item.image.length > 0) {
-            this._uploadItemImage<T>(createdItem.id, (item.image as File[])[0], path)
+            this._uploadItemImage<T>(createdItem.id, (item.image as { file: File }[])[0].file, path)
               .pipe(
                 take(1),
                 catchError(error => {
@@ -1208,7 +1208,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     const httpOptions = {
       headers: new HttpHeaders({
-        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+        // Unsetting the Content-Type is necessary so, it gets set to multipart/form-data with the correct boundary.
         "Content-Type": "__unset__",
         "Content-Disposition": `form-data; name="image"; filename=${image.name}`
       })
@@ -1286,7 +1286,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
       const httpOptions = {
         headers: new HttpHeaders({
-          // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+          // Unsetting the Content-Type is necessary, so it gets set to multipart/form-data with the correct boundary.
           "Content-Type": "__unset__",
           "Content-Disposition": `form-data; name="image"; filename=${imageFile.name}`
         })

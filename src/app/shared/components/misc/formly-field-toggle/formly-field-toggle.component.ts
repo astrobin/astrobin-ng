@@ -9,5 +9,7 @@ import { FieldType } from "@ngx-formly/core";
 export class FormlyFieldToggleComponent extends FieldType {
   onToggle(value: boolean): void {
     this.formControl.setValue(value);
+    this.formControl.markAsTouched();
+    this.formControl.markAsDirty();
   }
 }
