@@ -1,0 +1,20 @@
+:host {
+  position: relative;
+
+  .remove-ads {
+    position: absolute;
+    bottom: .25rem;
+    right: .25rem;
+    background: rgba(0, 0, 0, .75);
+    color: var(--ligherGray);
+    padding: .25rem .5rem;
+    font-size: .7rem;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+
+  &:hover .remove-ads {
+    opacity: 1;
+  }
+}

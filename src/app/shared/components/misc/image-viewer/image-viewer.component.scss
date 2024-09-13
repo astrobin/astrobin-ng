@@ -384,6 +384,21 @@
         display: flex;
         flex-direction: column;
 
+        astrobin-ad-manager {
+          position: sticky;
+          z-index: 1;
+
+          @media (min-width: $lg-min) {
+            margin: -2rem -2rem 2rem -2rem;
+            top: -2rem;
+          }
+
+          @media (max-width: $md-max) {
+            margin: -1rem -1em 1rem -1rem;
+            top: 0;
+          }
+        }
+
         ::ng-deep {
           .image-viewer-banner-component {
             @media (min-width: $lg-min) {

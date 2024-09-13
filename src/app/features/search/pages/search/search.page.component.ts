@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -14,6 +14,8 @@ import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 
 @Component({
   selector: "astrobin-search-page",
@@ -23,6 +25,8 @@ import { TranslateService } from "@ngx-translate/core";
 export class SearchPageComponent extends BaseComponentDirective implements OnInit {
   readonly SearchType = SearchType;
 
+  @ViewChild("ad", { static: false, read: AdManagerComponent }) adManagerComponent: AdManagerComponent;
+
   model: SearchModelInterface = {
     text: {
       value: "",
@@ -31,6 +35,8 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     page: 1,
     pageSize: SearchService.DEFAULT_PAGE_SIZE
   };
+
+  protected showAd: boolean;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -42,7 +48,8 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly imageViewerService: ImageViewerService,
     public readonly viewContainerRef: ViewContainerRef,
     public readonly titleService: TitleService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$);
   }
@@ -51,6 +58,12 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     super.ngOnInit();
 
     this.titleService.setTitle(this.translateService.instant("Search"));
+
+    this.userSubscriptionService.displayAds$().pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(showAd => {
+      this.showAd = showAd;
+    });
 
     merge(
       this.router.events.pipe(
@@ -145,6 +158,14 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
         {},
         `/search`
       );
+    }
+  }
+
+  imageClicked() {
+    if (this.adManagerComponent) {
+      // Makes the slot available to the image viewer.
+      this.showAd = false;
+      this.adManagerComponent.destroyAd();
     }
   }
 }

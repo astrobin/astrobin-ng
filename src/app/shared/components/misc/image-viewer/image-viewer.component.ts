@@ -34,6 +34,7 @@ import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 
 enum SharingMode {
   LINK = "link",
@@ -92,6 +93,9 @@ export class ImageViewerComponent
 
   @ViewChild("dataArea")
   dataArea: ElementRef;
+
+  @ViewChild("ad", { static: false, read: AdManagerComponent })
+  adManagerComponent: AdManagerComponent;
 
   @ViewChild("buttonsArea", { static: false, read: ElementRef })
   buttonsAreaElement: ElementRef;
@@ -194,6 +198,9 @@ export class ImageViewerComponent
     })
   );
   protected adjustmentEditorVisible = false;
+  protected showAd = false;
+  protected adConfig: "rectangular" | "wide";
+  protected adDisplayed = false;
 
   private _imageChangedSubject = new Subject<ImageInterface>();
   private _imageChanged$ = this._imageChangedSubject.asObservable();
@@ -282,6 +289,18 @@ export class ImageViewerComponent
   }
 
   ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
+        throttleTime(300)
+      ).subscribe(() => {
+        this.adjustSvgOverlay();
+
+        if (this.adManagerComponent) {
+          this._setAd();
+        }
+      });
+    }
+
     this.autoOpenComments();
   }
 
@@ -443,6 +462,7 @@ export class ImageViewerComponent
     this.setNavigationContext(navigationContext);
     this._recordHit();
     this._setTitle();
+    this._setAd();
 
     if (this.navigationContextElement) {
       this.windowRefService.scrollToElement(
@@ -588,11 +608,6 @@ export class ImageViewerComponent
 
     const imageId = this.navigationContext[this.currentIndex - 1].imageId;
     this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
-  }
-
-  @HostListener("window:resize")
-  onResize(): void {
-    this.adjustSvgOverlay();
   }
 
   onImageLoaded(): void {
@@ -874,6 +889,41 @@ export class ImageViewerComponent
       case SharingMode.HTML:
         return `<a href="${url}"><img src="${galleryThumbnailUrl}" /></a>`;
     }
+  }
+
+  private _setAd() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
+    if (!this.dataArea) {
+      this.utilsService.delay(100).subscribe(() => {
+        this._setAd();
+      });
+      return;
+    }
+
+    this.userSubscriptionService.displayAds$().pipe(
+      filter(showAds => showAds !== undefined),
+      take(1)
+    ).subscribe(showAds => {
+      const dataAreaWith = this.dataArea.nativeElement.clientWidth;
+      const windowHeight = this.windowRefService.nativeWindow.innerHeight;
+
+      this.showAd = this.image.allowAds && showAds;
+
+      if (this.deviceService.mdMax()) {
+        this.adConfig = "wide";
+      } else if (windowHeight > dataAreaWith * 1.5) {
+        this.adConfig = "rectangular";
+      } else {
+        this.adConfig = "wide";
+      }
+
+      if (this.adManagerComponent && this.adDisplayed) {
+        this.adManagerComponent.refreshAd();
+      }
+    });
   }
 
   private _ignoreNavigationEvent() {

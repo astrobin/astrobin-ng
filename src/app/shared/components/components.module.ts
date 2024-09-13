@@ -139,6 +139,7 @@ import { ImageViewerPlateSolvingBannerComponent } from "@shared/components/misc/
 import { ImageViewerCloseButtonComponent } from "@shared/components/misc/image-viewer/image-viewer-close-button.component";
 import { ImageViewerAdditionalButtonComponent } from "@shared/components/misc/image-viewer/image-viewer-additional-buttons.component";
 import { ImageViewerAdjustmentsEditorComponent } from "@shared/components/misc/image-viewer/image-viewer-adjustments-editor.component";
+import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 
 const modules = [
   CommonModule,
@@ -177,6 +178,7 @@ const modules = [
 ];
 
 const components = [
+  AdManagerComponent,
   AvatarComponent,
   BetaBannerComponent,
   BreadcrumbComponent,
