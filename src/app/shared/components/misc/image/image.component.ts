@@ -369,8 +369,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   private _createVideoJsPlayer() {
     this._videoJsPlayer = videojs(this.videoPlayerElement.nativeElement, {}, () => {
-      console.log("Video.js player is ready!");
-
       this._videoJsPlayer.on("fullscreenchange", () => {
         const isFullscreen = this._videoJsPlayer.isFullscreen();
         const el = this._videoJsPlayer.el().firstChild;

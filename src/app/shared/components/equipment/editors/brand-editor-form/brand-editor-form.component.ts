@@ -229,11 +229,13 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
       {
         key: "logo",
         type: "file",
+        wrappers: ["default-wrapper"],
         id: "brand-field-logo",
         props: {
           required: false,
           label: this.translateService.instant("Logo"),
-          accept: "image/jpeg, image/png"
+          accept: "image/jpeg, image/png",
+          image: true
         }
       }
     ];

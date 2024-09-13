@@ -19,6 +19,9 @@ export class ToggleButtonComponent extends BaseComponentDirective implements OnI
   label: string;
 
   @Input()
+  labelClassName: string;
+
+  @Input()
   disabled = false;
 
   @Output()

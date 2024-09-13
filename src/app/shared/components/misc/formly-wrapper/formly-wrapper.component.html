@@ -1,5 +1,9 @@
 <div [class.has-error]="showError && !!formControl.errors" class="form-group {{props.fieldGroupClassName}}">
-  <label *ngIf="props.label && props.hideLabel !== true" [attr.for]="id">
+  <label
+    *ngIf="props.label && props.hideLabel !== true"
+    [className]="props.labelClassName"
+    [for]="id"
+  >
     <span [innerHTML]="props.label"></span>
     <span *ngIf="props.required && !props.hideRequiredMarker" class="required-marker">
       {{ props.requiredMarker || '*'}}

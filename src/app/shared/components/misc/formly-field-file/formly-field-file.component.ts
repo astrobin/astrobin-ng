@@ -39,13 +39,13 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
 
   ngOnInit() {
     if (this.formControl.value) {
-      if (UtilsService.isArray(this.formControl.value)) {
-        this.loadingService.setLoading(true);
+      this.loadingService.setLoading(true);
 
-        const promises = (this.formControl.value as string[]).map(file => {
-          return UtilsService.fileFromUrl(file).then((file: File) => {
-            this._setValueFromFiles([file]);
-          });
+      if (UtilsService.isArray(this.formControl.value)) {
+
+        const promises = (this.formControl.value as string[]).map(async file => {
+          let file1 = await UtilsService.fileFromUrl(file);
+          this._setValueFromFiles([file1]);
         });
 
         Promise.all(promises).then(() => {
@@ -54,6 +54,7 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
       } else {
         UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
           this._setValueFromFiles([file]);
+          this.loadingService.setLoading(false);
         });
       }
     }

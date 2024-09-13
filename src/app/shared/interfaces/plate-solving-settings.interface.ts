@@ -1,0 +1,15 @@
+import { SolutionInterface } from "@shared/interfaces/solution.interface";
+
+export interface PlateSolvingSettingsInterface {
+  id: number;
+  solution: SolutionInterface["id"];
+  blind: boolean;
+  scaleUnits: string | null;
+  scaleMin: string | null;
+  scaleMax: string | null;
+  centerRa: string | null;
+  centerDec: string | null;
+  radius: string | null;
+  downsampleFactor: string | null;
+  useSextractor: boolean;
+}

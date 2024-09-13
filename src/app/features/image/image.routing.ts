@@ -9,6 +9,9 @@ import { PendingChangesGuard } from "@shared/services/guards/pending-changes-gua
 import { ImageUserCollectionsResolver } from "@shared/resolvers/image-user-collections-resolver.service";
 import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
 import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revision/image-edit-revision-page.component";
+import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component";
+import { PlateSolvingSettingsResolver } from "@shared/resolvers/plate-solving-settings.resolver";
+import { PlateSolvingAdvancedSettingsResolver } from "@shared/resolvers/plate-solving-advanced-settings.resolver";
 
 export const imageRoutes: Routes = [
   {
@@ -18,6 +21,20 @@ export const imageRoutes: Routes = [
     canDeactivate: [PendingChangesGuard],
     resolve: {
       image: ImageResolver,
+    },
+    data: {
+      skipThumbnails: false
+    }
+  },
+  {
+    path: ":imageId/plate-solving-settings",
+    component: ImagePlateSolvingSettingsPageComponent,
+    canActivate: [AuthGuardService, ImageOwnerGuardService],
+    canDeactivate: [PendingChangesGuard],
+    resolve: {
+      image: ImageResolver,
+      basicSettings: PlateSolvingSettingsResolver,
+      advancedSettings: PlateSolvingAdvancedSettingsResolver
     },
     data: {
       skipThumbnails: false

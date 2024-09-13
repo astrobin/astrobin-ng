@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewCh
 import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
-import { DownloadLimitationOptions, FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { DownloadLimitationOptions, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
@@ -51,6 +51,20 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
           [class]="itemClass"
         >
           {{ "Edit" | translate }}
+        </a>
+
+        <a
+          *ngIf="image.solution"
+          [routerLink]="['/i', image.hash || image.pk.toString(), 'plate-solving-settings']"
+          [queryParams]="{ r: revisionLabel }"
+          [class]="itemClass"
+        >
+          {{ "Edit plate-solving settings" | translate }}
+          <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark">
+            <ng-container *ngIf="revisionLabel !== ORIGINAL_REVISION_LABEL">
+              {{ "Revision" | translate }}: {{ revisionLabel }}
+            </ng-container>
+          </span>
         </a>
 
         <a
@@ -322,7 +336,7 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
       </div>
       <div class="offcanvas-body">
         <ng-container *ngIf="getIotdTpStatsLegend$() | async as legend">
-          <ngb-accordion *ngIf="iotdTpStats; loadingTemplate" #accordion="ngbAccordion" class="iotd-stats-accordion">
+          <ngb-accordion *ngIf="iotdTpStats; else loadingTemplate" #accordion="ngbAccordion" class="iotd-stats-accordion">
             <ngb-panel>
               <ng-template ngbPanelTitle>
                 <div class="image-iotd-tp-stats-item">
@@ -432,7 +446,7 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 })
 export class ImageViewerMenuComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() image: ImageInterface;
-  @Input() revisionLabel: string = FINAL_REVISION_LABEL;
+  @Input() revisionLabel: string;
   @Input() itemClass: string;
   @Input() dividerClass: string;
 
@@ -442,6 +456,7 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
 
   protected readonly DownloadLimitationOptions = DownloadLimitationOptions;
   protected readonly ImageAlias = ImageAlias;
+  protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
 
   protected readonly submitForIotdTpConsiderationForm = new FormGroup({});
   protected readonly submitForIotdTpConsiderationModel: {
