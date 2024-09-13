@@ -9,7 +9,7 @@ import { DateService } from "@shared/services/date.service";
         [ngbTooltip]="fullDatesTemplate"
         container="body"
         data-toggle="tooltip"
-        triggers="click"
+        triggers="hover click"
       >
         {{ dateRange }}
       </div>

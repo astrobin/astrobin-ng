@@ -32,7 +32,12 @@ interface FilterSummary {
     <div class="metadata-section">
       <div *ngIf="dates?.length" class="metadata-item">
         <div class="metadata-icon">
-          <fa-icon icon="calendar" [ngbTooltip]="'Acquisition dates' | translate" container="body"></fa-icon>
+          <fa-icon
+            icon="calendar"
+            [ngbTooltip]="'Acquisition dates' | translate"
+            container="body"
+            triggers="hover click"
+          ></fa-icon>
         </div>
         <div class="metadata-label">
           <astrobin-image-viewer-acquisition-dates [dates]="dates"></astrobin-image-viewer-acquisition-dates>
