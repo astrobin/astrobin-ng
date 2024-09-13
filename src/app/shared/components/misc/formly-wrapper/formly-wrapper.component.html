@@ -2,6 +2,7 @@
   <label
     *ngIf="props.label && props.hideLabel !== true"
     [className]="props.labelClassName"
+    [for]="id"
   >
     <span [innerHTML]="props.label"></span>
     <span *ngIf="props.required && !props.hideRequiredMarker" class="required-marker">
