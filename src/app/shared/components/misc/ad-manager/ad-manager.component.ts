@@ -28,7 +28,7 @@ import { DeviceService } from "@shared/services/device.service";
         <p translate="However, please let us offer you a good reason to allow ads on AstroBin:"></p>
         <p
           class="alert alert-dark my-4"
-          translate="There are only astronomy ads on AstroBin, that are published after carefuly review and approval. Nothing fishy, nothing off-topic, and nothing that will use any of your private information."
+          translate="There are only astronomy ads on AstroBin, that are published after careful review and approval. Nothing fishy, nothing off-topic, and nothing that will use any of your private information."
         ></p>
 
         <p translate="If you are on AstroBin Premium or AstroBin Ultimate, you can remove ads in your settings. If you are not, please consider supporting AstroBin by subscribing!"></p>
