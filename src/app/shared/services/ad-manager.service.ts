@@ -21,7 +21,7 @@ export class AdManagerService extends BaseService {
   private _adConfigurations = {
     'rectangular': {
       adUnitPath: `/${this._publisherId}/astrobin-native-responsive-rectangular`,
-      divId: 'div-gpt-ad-1726208353288-0',
+      divId: 'div-gpt-ad-1603646272754-0',
       adSize: ['fluid']
     },
     'wide': {
@@ -50,37 +50,57 @@ export class AdManagerService extends BaseService {
     return this._adConfigurations[name] || null;
   }
 
-  defineAdSlot(adUnitPath: string, size: any[], divId: string): void {
+  defineAdSlot(configName: string, adUnitPath: string, size: any[], divId: string): void {
     if (this._isBrowser) {
       const nativeWindow = this.windowRefService.nativeWindow as any;
       if (nativeWindow) {
         nativeWindow.googletag.cmd.push(() => {
           this._adSlots[divId] = nativeWindow.googletag.defineSlot(adUnitPath, size, divId)
+            .setTargeting("format", [configName])
             .addService(nativeWindow.googletag.pubads());
         });
       }
     }
   }
 
-  displayAd(divId: string): void {
+  displayAd(divId: string, callback: () => void): void {
     if (this._isBrowser) {
       const nativeWindow = this.windowRefService.nativeWindow as any;
       if (nativeWindow) {
         nativeWindow.googletag.cmd.push(() => {
           nativeWindow.googletag.display(divId);
+          if (callback) {
+            callback();
+          }
         });
       }
     }
   }
 
-  refreshAd(divId: string): void {
+  refreshAd(divId: string, callback: () => void): void {
     if (this._isBrowser) {
       const nativeWindow = this.windowRefService.nativeWindow as any;
       if (nativeWindow && this._adSlots[divId]) {
         nativeWindow.googletag.cmd.push(() => {
           nativeWindow.googletag.pubads().refresh([this._adSlots[divId]]);
+          if (callback) {
+            callback();
+          }
         });
       }
+    }
+  }
+
+  destroyAdSlot(divId: string): void {
+    if (this._isBrowser) {
+      const nativeWindow = this.windowRefService.nativeWindow as any;
+      nativeWindow.googletag.cmd.push(() => {
+        const slot = this._adSlots[divId];
+        if (slot) {
+          nativeWindow.googletag.destroySlots([slot]);
+          delete this._adSlots[divId];
+        }
+      });
     }
   }
 
@@ -91,6 +111,10 @@ export class AdManagerService extends BaseService {
         filter(requestCountry => !!requestCountry),
         take(1),
         map(requestCountry => {
+          if (requestCountry === "UNKNOWN") {
+            requestCountry = "US";
+          }
+
           const isGDPRCountry = UtilsService.isGDPRCountry(requestCountry);
           const hasCookieConsent = this.cookieConsentService.cookieGroupAccepted(CookieConsentEnum.ADVERTISING);
 
@@ -109,7 +133,7 @@ export class AdManagerService extends BaseService {
             }
           });
         })
-      );
+      ).subscribe();
     }
   }
 }

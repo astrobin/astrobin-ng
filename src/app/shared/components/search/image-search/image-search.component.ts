@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, Input, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
@@ -32,11 +32,14 @@ import { ImageService } from "@shared/services/image/image.service";
 export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
+  protected readonly ImageAlias = ImageAlias;
+
   @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
+  @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
+
   protected gridItems: Array<ImageSearchInterface & { displayHeight: number, displayWidth: number }> = [];
-  protected readonly ImageAlias = ImageAlias;
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
@@ -169,6 +172,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     }
 
     event.preventDefault();
+
+    this.imageClicked.emit(image);
 
     // If we are on an image's page, we don't want to open the image viewer but simply route to the image.
     if (this.router.url.startsWith("/i/")) {

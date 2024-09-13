@@ -6,7 +6,7 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { ActivatedRoute, Router } from "@angular/router";
-import { EMPTY } from "rxjs";
+import { EMPTY, of } from "rxjs";
 
 describe("SearchPageComponent", () => {
   let component: SearchPageComponent;
@@ -33,6 +33,9 @@ describe("SearchPageComponent", () => {
     ]);
     fixture = TestBed.createComponent(SearchPageComponent);
     component = fixture.componentInstance;
+
+    jest.spyOn(component.userSubscriptionService, "displayAds$").mockReturnValue(of(false));
+
     fixture.detectChanges();
   });
 

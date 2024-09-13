@@ -3,12 +3,10 @@ import { ComponentRef, Inject, Injectable, PLATFORM_ID, ViewContainerRef } from 
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { select, Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { DeleteImageSuccess, LoadImage } from "@app/store/actions/image.actions";
-import { Observable } from "rxjs";
-import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { DeleteImageSuccess } from "@app/store/actions/image.actions";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { ImageViewerComponent, ImageViewerNavigationContext } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
