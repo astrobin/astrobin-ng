@@ -436,6 +436,10 @@
               height: 1rem;
             }
 
+            &[src*="/precise_bbcode/smilies/"] {
+              height: 1rem;
+            }
+
             &.loading {
               height: 1rem;
             }
