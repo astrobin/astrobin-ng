@@ -261,6 +261,8 @@
     *ngIf="currentUserWrapper$ | async as currentUserWrapper"
     class="data-area"
   >
+    <astrobin-ad-manager *ngIf="showAd" configName="rectangular"></astrobin-ad-manager>
+
     <astrobin-image-viewer-wip-banner
       *ngIf="image.isWip && currentUserWrapper.user?.id === image.user"
       [image]="image"

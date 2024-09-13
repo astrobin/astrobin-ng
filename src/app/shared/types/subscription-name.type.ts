@@ -12,7 +12,26 @@ export enum SubscriptionName {
   ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY = "AstroBin Premium 2020+ (autorenew/monthly)",
   ASTROBIN_ULTIMATE_2020 = "AstroBin Ultimate 2020+",
   ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY = "AstroBin Ultimate 2020+ (autorenew/yearly)",
-  ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY = "AstroBin Ultimate 2020+ (autorenew/monthly)"
+  ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY = "AstroBin Ultimate 2020+ (autorenew/monthly)",
+
+  ASTROBIN_DONOR_COFFEE_MONTHLY = "AstroBin Donor Coffee Monthly",
+  ASTROBIN_DONOR_SNACK_MONTHLY = "AstroBin Donor Snack Monthly",
+  ASTROBIN_DONOR_PIZZA_MONTHLY = "AstroBin Donor Pizza Monthly",
+  ASTROBIN_DONOR_MOVIE_MONTHLY = "AstroBin Donor Movie Monthly",
+  ASTROBIN_DONOR_DINNER_MONTHLY = "AstroBin Donor Dinner Monthly",
+  ASTROBIN_DONOR_BRONZE_MONTHLY = "AstroBin Donor Bronze Monthly",
+  ASTROBIN_DONOR_SILVER_MONTHLY = "AstroBin Donor Silver Monthly",
+  ASTROBIN_DONOR_GOLD_MONTHLY = "AstroBin Donor Gold Monthly",
+  ASTROBIN_DONOR_PLATINUM_MONTHLY = "AstroBin Donor Platinum Monthly",
+  ASTROBIN_DONOR_COFFEE_YEARLY = "AstroBin Donor Coffee Yearly",
+  ASTROBIN_DONOR_SNACK_YEARLY = "AstroBin Donor Snack Yearly",
+  ASTROBIN_DONOR_PIZZA_YEARLY = "AstroBin Donor Pizza Yearly",
+  ASTROBIN_DONOR_MOVIE_YEARLY = "AstroBin Donor Movie Yearly",
+  ASTROBIN_DONOR_DINNER_YEARLY = "AstroBin Donor Dinner Yearly",
+  ASTROBIN_DONOR_BRONZE_YEARLY = "AstroBin Donor Bronze Yearly",
+  ASTROBIN_DONOR_SILVER_YEARLY = "AstroBin Donor Silver Yearly",
+  ASTROBIN_DONOR_GOLD_YEARLY = "AstroBin Donor Gold Yearly",
+  ASTROBIN_DONOR_PLATINUM_YEARLY = "AstroBin Donor Platinum Yearly"
 }
 
 export enum SimplifiedSubscriptionName {

@@ -54,11 +54,11 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
       ),
       map(
         ([
-           hasNonRecurringPayPalSubscription,
-           hasRecurringPayPalSubscription,
-           hasNonRecurringStripeSubscription,
-           hasRecurringStripeSubscription
-         ]) => {
+          hasNonRecurringPayPalSubscription,
+          hasRecurringPayPalSubscription,
+          hasNonRecurringStripeSubscription,
+          hasRecurringStripeSubscription
+        ]) => {
           if (
             (hasNonRecurringStripeSubscription ||
               hasRecurringPayPalSubscription ||
@@ -226,6 +226,65 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     );
   }
 
+  isDonor$(): Observable<boolean> {
+    return this.store$.select(selectCurrentUserProfile).pipe(
+      take(1),
+      switchMap(userProfile => this.hasValidSubscription$(userProfile, [
+        SubscriptionName.ASTROBIN_DONOR_COFFEE_MONTHLY,
+        SubscriptionName.ASTROBIN_DONOR_SNACK_MONTHLY,
+        SubscriptionName.ASTROBIN_DONOR_PIZZA_MONTHLY,
+        SubscriptionName.ASTROBIN_DONOR_MOVIE_MONTHLY,
+        SubscriptionName.ASTROBIN_DONOR_DINNER_MONTHLY,
+        SubscriptionName.ASTROBIN_DONOR_BRONZE_MONTHLY,
+        SubscriptionName.ASTROBIN_DONOR_SILVER_MONTHLY,
+        SubscriptionName.ASTROBIN_DONOR_GOLD_MONTHLY,
+        SubscriptionName.ASTROBIN_DONOR_PLATINUM_MONTHLY,
+        SubscriptionName.ASTROBIN_DONOR_COFFEE_YEARLY,
+        SubscriptionName.ASTROBIN_DONOR_SNACK_YEARLY,
+        SubscriptionName.ASTROBIN_DONOR_PIZZA_YEARLY,
+        SubscriptionName.ASTROBIN_DONOR_MOVIE_YEARLY,
+        SubscriptionName.ASTROBIN_DONOR_DINNER_YEARLY,
+        SubscriptionName.ASTROBIN_DONOR_BRONZE_YEARLY,
+        SubscriptionName.ASTROBIN_DONOR_SILVER_YEARLY,
+        SubscriptionName.ASTROBIN_DONOR_GOLD_YEARLY,
+        SubscriptionName.ASTROBIN_DONOR_PLATINUM_YEARLY
+      ]))
+    );
+  }
+
+  displayAds$(): Observable<boolean> {
+    const isDonor$ = this.isDonor$();
+    const isClassicLite$ = this.isClassicLite$();
+    const isClassicPremium$ = this.isClassicPremium$();
+    const isPremium$ = this.isPremium$();
+    const isUltimate$ = this.isUltimate$();
+    const allowAstronomyAds$ = this.store$.select(selectCurrentUserProfile).pipe(
+      map(userProfile => userProfile.allowAstronomyAds)
+    );
+
+    return combineLatest([isDonor$, isClassicLite$, isClassicPremium$, isPremium$, isUltimate$, allowAstronomyAds$]).pipe(
+      map(([isDonor, isClassicLite, isClassicPremium, isPremium, isUltimate, allowAstronomyAds]) => {
+        if (isDonor || isClassicLite || isClassicPremium) {
+          // Donors, Classic Lite, and Classic Premium users never see ads
+          return false;
+        }
+
+        if ((isPremium || isUltimate) && allowAstronomyAds) {
+          // Premium and Ultimate users only see ads if allowAstronomyAds is true
+          return true;
+        }
+
+        if (isPremium || isUltimate) {
+          // Premium and Ultimate users, without astronomy ads permission, do not see ads
+          return false;
+        }
+
+        // All other users see ads
+        return true;
+      })
+    );
+  }
+
   canRemoveAds$(): Observable<boolean> {
     return this.store$.select(selectCurrentUserProfile).pipe(
       take(1),
@@ -356,6 +415,15 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     );
   }
 
+  // Old Lite via PayPal.
+  isClassicLite$(): Observable<boolean> {
+    return this.hasValidSubscription$(null, [
+      SubscriptionName.ASTROBIN_LITE,
+      SubscriptionName.ASTROBIN_LITE_AUTORENEW
+    ]);
+  }
+
+  // Any Lite.
   isLite$(): Observable<boolean> {
     return this.hasValidSubscription$(null, [
       SubscriptionName.ASTROBIN_LITE,
@@ -366,6 +434,15 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     ]);
   }
 
+  // Old Premium via PayPal.
+  isClassicPremium$(): Observable<boolean> {
+    return this.hasValidSubscription$(null, [
+      SubscriptionName.ASTROBIN_PREMIUM,
+      SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW
+    ]);
+  }
+
+  // Any Premium.
   isPremium$(): Observable<boolean> {
     return this.hasValidSubscription$(null, [
       SubscriptionName.ASTROBIN_PREMIUM,

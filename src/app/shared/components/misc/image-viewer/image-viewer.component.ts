@@ -194,6 +194,7 @@ export class ImageViewerComponent
     })
   );
   protected adjustmentEditorVisible = false;
+  protected showAd = false;
 
   private _imageChangedSubject = new Subject<ImageInterface>();
   private _imageChanged$ = this._imageChangedSubject.asObservable();
@@ -426,6 +427,9 @@ export class ImageViewerComponent
     this.image = image;
     this.revisionLabel = revisionLabel;
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+    this.userSubscriptionService.displayAds$().pipe(take(1)).subscribe(showAds => {
+      this.showAd = this.image.allowAds && showAds;
+    });
 
     this.updateSupportsFullscreen();
 
