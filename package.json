@@ -82,6 +82,7 @@
     "msgpack-lite": "0.1.26",
     "ng-image-slider": "7.0.1",
     "ng-toggle-button": "1.5.2",
+    "ngx-autosize-input": "15.0.4",
     "ngx-cookie": "6.0.1",
     "ngx-cookie-backend": "6.0.1",
     "ngx-filesize": "3.0.2",

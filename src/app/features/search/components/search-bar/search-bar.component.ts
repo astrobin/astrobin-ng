@@ -1,17 +1,17 @@
-import { AfterViewInit, Component, ComponentRef, ElementRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, QueryList, SimpleChanges, Type, ViewChild, ViewChildren, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, Component, ComponentRef, ElementRef, EventEmitter, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, QueryList, SimpleChanges, TemplateRef, Type, ViewChild, ViewChildren, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { SearchModelInterface, SearchType } from "@features/search/interfaces/search-model.interface";
 import { SearchAutoCompleteItem, SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
-import { concatMap, debounceTime, distinctUntilChanged, map, takeUntil, tap } from "rxjs/operators";
+import { concatMap, debounceTime, filter, map, takeUntil, tap } from "rxjs/operators";
 import { forkJoin, from, Observable, Subject } from "rxjs";
 import { SearchSubjectsFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subjects-filter.component";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
 import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
 import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -49,6 +49,7 @@ import { SearchFilterFilterComponent } from "@features/search/components/filters
 import { SearchAccessoryFilterComponent } from "@features/search/components/filters/search-accessory-filter/search-accessory-filter.component";
 import { SearchSoftwareFilterComponent } from "@features/search/components/filters/search-software-filter/search-software-filter.component";
 import { SearchUsersFilterComponent } from "@features/search/components/filters/search-users-filter/search-users-filter.component";
+import { NgModel } from "@angular/forms";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -60,34 +61,29 @@ type SearchAutoCompleteGroups = {
   styleUrls: ["./search-bar.component.scss"]
 })
 export class SearchBarComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewInit, OnDestroy {
-  readonly SearchType = SearchType;
-  readonly placeholder = this.translateService.instant("Type here to search");
-  autoCompleteGroups: SearchAutoCompleteGroups = {};
-  selectedAutoCompleteGroup: SearchAutoCompleteType = null;
-  abortAutoComplete = false;
-  loadingAutoCompleteItems = false;
-  selectedAutoCompleteItemIndex = -1;
-  filterComponentRefs: ComponentRef<SearchFilterComponentInterface>[] = [];
+  @ViewChild("searchInput", { static: false, read: ElementRef }) searchInputEl: ElementRef;
+  @ViewChild("searchInput", { static: false, read: NgModel }) searchInputNgModel: NgModel;
+  @ViewChild("filterContainer", { read: ViewContainerRef }) filterContainer: ViewContainerRef;
+  @ViewChild("temporaryFilterContainer", { read: ViewContainerRef }) temporaryFilterContainer: ViewContainerRef;
+  @ViewChild("tabOrEnterInformationOffcanvasTemplate") tabOrEnterInformationOffcanvasTemplate: TemplateRef<any>;
+  @ViewChildren("autoCompleteItem") autoCompleteItemsRefs!: QueryList<ElementRef>;
 
-  @ViewChild("searchInput")
-  searchInput: ElementRef;
+  @Input() model: SearchModelInterface = {};
 
-  @ViewChild("filterContainer", { read: ViewContainerRef })
-  filterContainer: ViewContainerRef;
+  @Output() modelChanged = new EventEmitter<SearchModelInterface>();
 
-  @ViewChild("temporaryFilterContainer", { read: ViewContainerRef })
-  temporaryFilterContainer: ViewContainerRef;
-
-  @ViewChildren("autoCompleteItem")
-  autoCompleteItemsRefs!: QueryList<ElementRef>;
-
-  @Input()
-  model: SearchModelInterface = {};
-
-  @Output()
-  modelChanged = new EventEmitter<SearchModelInterface>();
+  protected readonly SearchType = SearchType;
   protected readonly SearchTextFilterComponent = SearchTextFilterComponent;
+  protected readonly placeholder = this.translateService.instant("Type here to search");
+  protected isTouchDevice = false;
+  protected showAutoCompleteGroups = false;
+  protected autoCompleteGroups: SearchAutoCompleteGroups = {};
+  protected selectedAutoCompleteGroup: SearchAutoCompleteType = null;
+  protected loadingAutoCompleteItems = false;
+  protected selectedAutoCompleteItemIndex = -1;
+  protected filterComponentRefs: ComponentRef<SearchFilterComponentInterface>[] = [];
   private _modelChanged: Subject<string> = new Subject<string>();
+  private _abortAutoComplete = false;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -99,7 +95,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     public readonly deviceService: DeviceService,
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly elementRef: ElementRef
+    public readonly elementRef: ElementRef,
+    public readonly offcanvasService: NgbOffcanvas
   ) {
     super(store$);
   }
@@ -107,18 +104,24 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
 
+    this.isTouchDevice = this.deviceService.isTouchEnabled();
+
     if (isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.document?.addEventListener) {
       this.windowRefService.nativeWindow.document.addEventListener("click", this.onDocumentClick.bind(this));
     }
 
-    this._modelChanged.pipe(debounceTime(200), takeUntil(this.destroyed$)).subscribe(value => {
+    this._modelChanged.pipe(
+      debounceTime(200),
+      filter(value => value && value.length > 2),
+      takeUntil(this.destroyed$)
+    ).subscribe(value => {
       if (this.model.searchType !== SearchType.IMAGE && this.model.searchType !== undefined) {
         return;
       }
 
       this.selectedAutoCompleteGroup = null;
       this.selectedAutoCompleteItemIndex = -1;
-      this.abortAutoComplete = false;
+      this._abortAutoComplete = false;
 
       if (value && value.length > 0) {
         const query = this.model.text;
@@ -133,7 +136,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
           takeUntil(this.destroyed$)
         ).subscribe({
           next: ({ key, result }) => {
-            if (this.abortAutoComplete) {
+            if (this._abortAutoComplete) {
               this.loadingAutoCompleteItems = false;
               return;
             }
@@ -182,9 +185,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   ngAfterViewInit(): void {
     if (this.deviceService.isTouchEnabled()) {
-      this.searchInput.nativeElement.blur();
+      this.searchInputEl.nativeElement.blur();
     } else {
-      this.searchInput.nativeElement.focus();
+      this.searchInputEl.nativeElement.focus();
     }
   }
 
@@ -197,7 +200,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   onDocumentClick(event: MouseEvent): void {
-    if (this.hasAutoCompleteItems() && !this.elementRef.nativeElement.contains(event.target)) {
+    if (this.hasAutoCompleteGroups() && !this.elementRef.nativeElement.contains(event.target)) {
       this.resetAutoCompleteItems();
     }
   }
@@ -210,8 +213,21 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     return this.autoCompleteGroups[group]?.length || 0;
   }
 
-  hasAutoCompleteItems(): boolean {
-    return Object.keys(this.autoCompleteGroups).length > 0;
+  hasAutoCompleteGroups(): boolean {
+    return Object
+      .keys(this.autoCompleteGroups)
+      .filter(key =>
+        key !== SearchAutoCompleteType.TEXT &&
+        this.autoCompleteGroups[key] &&
+        this.autoCompleteGroups[key].length > 0
+      )
+      .length > 0;
+  }
+
+  showTabOrEnterInformation() {
+    this.offcanvasService.open(this.tabOrEnterInformationOffcanvasTemplate, {
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 
   @HostListener("window:keyup.arrowRight", ["$event"])
@@ -291,48 +307,6 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     }
   }
 
-  private _updateModelWithMagicAutoComplete(value: string): Observable<SearchAutoCompleteItem[][]> {
-    // Checks if any autocomplete items are a perfect match. If they are, updates the model with that item type and
-    // empties the text. Otherwise, it sets the text.
-
-    const normalizedQuery = value.toLowerCase().replace(/\s/g, "");
-    const observables$ = this._autoCompleteMethods(value)
-      .filter(filter => filter.key !== SearchAutoCompleteType.USERS)
-      .map(filter => filter.method);
-    let found = false;
-
-    return forkJoin(observables$).pipe(
-      tap((results: SearchAutoCompleteItem[][]) => {
-        results.forEach(group => {
-          group.forEach(item => {
-            if (item.type !== SearchAutoCompleteType.TEXT) {
-              const normalizedLabel = item.label.toLowerCase().replace(/\s/g, "");
-              if (normalizedLabel === normalizedQuery) {
-                found = true;
-                this.onAutoCompleteItemClicked(item).subscribe();
-                return;
-              }
-            }
-          });
-        });
-
-        if (!found) {
-          this.model = {
-            ...this.model,
-            text: {
-              value,
-              matchType: this.model.text.matchType !== undefined
-                ? this.model.text.matchType
-                : value.includes(" ") ? MatchType.ALL : undefined
-            }
-          };
-
-          this.modelChanged.emit(this.model);
-        }
-      })
-    );
-  }
-
   _updateModel(value: SearchAutoCompleteItem): void {
     this.model = {
       ...this.model,
@@ -351,6 +325,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         return;
       }
     }
+
+    this.searchInputNgModel.control.markAsPristine();
 
     this.resetAutoCompleteItems();
     this._updateModelWithMagicAutoComplete(this.model.text.value).subscribe();
@@ -414,11 +390,36 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     });
   }
 
-  resetAutoCompleteItems(): void {
+  openAutoCompleteSuggestions(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (this.hasAutoCompleteGroups()) {
+      this.showAutoCompleteGroups = true;
+    }
+  }
+
+  closeAutoCompleteSuggestions(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    this.showAutoCompleteGroups = false;
+    this.selectedAutoCompleteGroup = null;
+    this.selectedAutoCompleteItemIndex = -1;
+  }
+
+  resetAutoCompleteItems(event?: KeyboardEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    this.showAutoCompleteGroups = false;
     this.autoCompleteGroups = {};
     this.selectedAutoCompleteGroup = null;
     this.selectedAutoCompleteItemIndex = -1;
-    this.abortAutoComplete = true;
+    this._abortAutoComplete = true;
   }
 
   onSearch(model: SearchModelInterface, findExactMatchFilter: boolean): void {
@@ -427,6 +428,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       : null;
 
     this.resetAutoCompleteItems();
+    this.searchInputNgModel.control.markAsPristine();
 
     if (
       findExactMatchFilter &&
@@ -562,7 +564,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       }
 
       this.resetAutoCompleteItems();
-      this.searchInput.nativeElement.focus();
+      this.searchInputEl.nativeElement.focus();
     });
   }
 
@@ -595,6 +597,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   clearFilters(): void {
     this.filterComponentRefs.forEach(componentRef => componentRef.destroy());
     this.filterComponentRefs = [];
+
+    if (this.searchInputEl) {
+      this.searchInputEl.nativeElement.focus();
+    }
   }
 
   removeFilter(componentRef: ComponentRef<SearchFilterComponentInterface>): void {
@@ -608,7 +614,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       delete this.model[key];
 
       componentRef.destroy();
-      this.searchInput.nativeElement.focus();
+      this.searchInputEl.nativeElement.focus();
       this.onSearch(this.model, false);
     });
   }
@@ -710,6 +716,48 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.resetAutoCompleteItems();
     this.filterComponentRefs.forEach(componentRef => componentRef.destroy());
     this.onSearch(this.model, false);
+  }
+
+  private _updateModelWithMagicAutoComplete(value: string): Observable<SearchAutoCompleteItem[][]> {
+    // Checks if any autocomplete items are a perfect match. If they are, updates the model with that item type and
+    // empties the text. Otherwise, it sets the text.
+
+    const normalizedQuery = value.toLowerCase().replace(/\s/g, "");
+    const observables$ = this._autoCompleteMethods(value)
+      .filter(filter => filter.key !== SearchAutoCompleteType.USERS)
+      .map(filter => filter.method);
+    let found = false;
+
+    return forkJoin(observables$).pipe(
+      tap((results: SearchAutoCompleteItem[][]) => {
+        results.forEach(group => {
+          group.forEach(item => {
+            if (item.type !== SearchAutoCompleteType.TEXT) {
+              const normalizedLabel = item.label.toLowerCase().replace(/\s/g, "");
+              if (normalizedLabel === normalizedQuery) {
+                found = true;
+                this.onAutoCompleteItemClicked(item).subscribe();
+                return;
+              }
+            }
+          });
+        });
+
+        if (!found) {
+          this.model = {
+            ...this.model,
+            text: {
+              value,
+              matchType: this.model.text.matchType !== undefined
+                ? this.model.text.matchType
+                : value.includes(" ") ? MatchType.ALL : undefined
+            }
+          };
+
+          this.modelChanged.emit(this.model);
+        }
+      })
+    );
   }
 
   private _findFilterComponentRef(filterComponentType: Type<SearchFilterComponentInterface>): ComponentRef<SearchFilterComponentInterface> {

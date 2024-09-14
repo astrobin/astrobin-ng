@@ -3,9 +3,13 @@
 
 :host {
   .search-bar-wrapper {
+    .search-form {
+      cursor: text;
+    }
+
     .search-bar-input-container {
       background-color: #111;
-      padding: .75rem 14rem .75rem 1rem;
+      padding: .75rem 12rem .75rem 1rem;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
@@ -29,7 +33,12 @@
         padding-left: 0;
         padding-right: 0;
         width: auto;
-        flex-grow: 1;
+        flex-grow: 0;
+
+        &::-webkit-search-cancel-button {
+          -webkit-appearance: none;
+          appearance: none;
+        }
 
         &::placeholder {
           color: var(--lighterGrey) !important;
@@ -41,13 +50,43 @@
         }
       }
 
-      &.has-auto-complete-items {
+      .tab-or-enter-hint {
+        background: var(--darkestGrey);
+        color: var(--lighterGrey);
+        font-size: .75rem;
+        margin-left: .5rem;
+        padding: .25rem .5rem;
+        border-radius: var(--bs-border-radius);
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+
+        .btn {
+          margin: 0;
+          color: var(--white);
+
+          .ng-fa-icon {
+            margin-right: 0;
+          }
+        }
+
+        .ng-fa-icon {
+          display: inline-block;
+          cursor: pointer;
+        }
+
+        @media (max-width: $sm-max) {
+          gap: 0;
+        }
+      }
+
+      &.has-auto-complete-items.show-auto-complete-items {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
       }
 
       @media (max-width: $sm-max) {
-        padding-right: 10rem;
+        padding-right: 8rem;
       }
     }
 
@@ -169,15 +208,31 @@
   }
 
   .filters {
+    @include darkest-background-texture();
     display: flex;
     gap: .5rem;
     flex-wrap: wrap;
-    padding: .75rem .125rem;
+    padding: .75rem 1rem;
+    margin: 0 -2rem 1rem;
+    border-bottom: 1px solid var(--grey);
+
+    .no-filters {
+      color: var(--lightGrey);
+      font-size: .9rem;
+      font-style: italic;
+      margin: 0;
+      padding: .5rem 0;
+      cursor: default;
+    }
 
     ::ng-deep .search-filter-component:first-child {
       .search-filter-operator {
         display: none;
       }
+    }
+
+    @media (max-width: $md-max) {
+      margin: 0 -.5rem 1rem;
     }
   }
 }

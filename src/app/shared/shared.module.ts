@@ -54,6 +54,7 @@ import { NgImageSliderModule } from "ng-image-slider";
 import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from "@angular/platform-browser";
+import { AutoSizeInputModule } from "ngx-autosize-input";
 
 export function appInitializer(store: Store<MainState>, actions$: Actions) {
   return () =>
@@ -86,6 +87,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
 
 @NgModule({
   imports: [
+    AutoSizeInputModule,
     CommonModule,
     ComponentsModule,
     DirectivesModule,
@@ -162,6 +164,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     PipesModule
   ],
   exports: [
+    AutoSizeInputModule,
     CommonModule,
     ComponentsModule,
     DirectivesModule,

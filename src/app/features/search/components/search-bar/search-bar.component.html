@@ -1,29 +1,79 @@
 <div class="search-bar-wrapper">
   <div
-    [class.has-auto-complete-items]="hasAutoCompleteItems()"
+    [class.has-auto-complete-items]="hasAutoCompleteGroups()"
+    [class.show-auto-complete-items]="showAutoCompleteGroups"
     class="search-bar-input-container form-control"
   >
     <form
       (ngSubmit)="onFormSubmit()"
+      (click)="searchInputEl.nativeElement.focus()"
       action="#"
-      class="w-100"
+      class="search-form d-flex align-items-center w-100"
     >
       <input
-        #searchInput
-        (keyup.escape)="resetAutoCompleteItems()"
+        #searchInput="ngModel"
+        (keydown.escape)="closeAutoCompleteSuggestions($event)"
         (ngModelChange)="onModelChangeDebounced($event)"
+        (keydown.tab)="openAutoCompleteSuggestions($event)"
+        (keydown.enter)="onFormSubmit()"
         [ngModelOptions]="{standalone: true}"
         [(ngModel)]="model.text.value"
         [placeholder]="placeholder"
         autofocus
-        class="search-bar-input form-control w-100"
+        autoSizeInput
+        [extraWidth]="16"
+        [includePlaceholder]="true"
+        [usePlaceHolderWhenEmpty]="true"
+        class="search-bar-input form-control"
         type="search"
       />
+
+      <div
+        *ngIf="!showAutoCompleteGroups && model.text?.value?.length > 2 && searchInputNgModel?.dirty"
+        class="tab-or-enter-hint"
+      >
+        <ng-container *ngIf="isTouchDevice">
+          <button
+            *ngIf="hasAutoCompleteGroups()"
+            (click)="openAutoCompleteSuggestions($event)"
+            astrobinEventPreventDefault
+            astrobinEventStopPropagation
+            class="btn btn-link btn-xs"
+          >
+            <span class="d-none d-md-inline" translate="Show suggestions"></span>
+            <fa-icon icon="circle-chevron-down" class="d-inline d-md-none"></fa-icon>
+          </button>
+
+          <button
+            (click)="onSearch(model, true)"
+            astrobinEventPreventDefault
+            astrobinEventStopPropagation
+            class="btn btn-link btn-xs"
+          >
+            <span class="d-none d-md-inline" translate="Search"></span>
+            <fa-icon icon="search" class="d-inline d-md-none"></fa-icon>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="!isTouchDevice">
+          <span
+            *ngIf="hasAutoCompleteGroups()"
+            [innerHTML]="'Press <kbd>Tab</kbd> for suggestion, <kbd>Enter</kbd> for a free text search.' | translate"
+          ></span>
+
+          <span
+            *ngIf="!hasAutoCompleteGroups()"
+            [innerHTML]="'No suggestions available, press <kbd>Enter</kbd> for a free text search.' | translate"
+          ></span>
+        </ng-container>
+
+        <fa-icon icon="info-circle" class="ms-2" (click)="showTabOrEnterInformation()"></fa-icon>
+      </div>
     </form>
   </div>
 
   <div
-    *ngIf="hasAutoCompleteItems()"
+    *ngIf="showAutoCompleteGroups && hasAutoCompleteGroups()"
     class="search-bar-autocomplete-items"
   >
     <div
@@ -70,7 +120,7 @@
     </ng-container>
 
     <ng-template #resetAutoCompleteTemplate>
-      <ng-container *ngIf="hasAutoCompleteItems(); else iconsTemplate">
+      <ng-container *ngIf="showAutoCompleteGroups && hasAutoCompleteGroups(); else iconsTemplate">
         <fa-icon
           (click)="resetAutoCompleteItems()"
           icon="times"
@@ -280,18 +330,17 @@
           container="body"
         ></fa-icon>
       </ng-container>
-
-      <fa-icon
-        (click)="onSearch(model, true)"
-        [ngbTooltip]="'Search' | translate"
-        icon="search"
-        container="body"
-      ></fa-icon>
     </ng-template>
   </div>
 </div>
 
 <div class="filters">
+  <p
+    *ngIf="!model.text?.value && filterComponentRefs?.length === 0"
+    class="no-filters"
+    translate="No filters applied yet. Search for something!"
+  ></p>
+
   <astrobin-search-text-filter
     *ngIf="model.text?.value"
     (valueChanges)="onFilterValueChanges(SearchTextFilterComponent.key, $event)"
@@ -314,3 +363,32 @@
   <!-- Used as a ViewRefContainer to add filters temporarily while their value is being edited. -->
   <ng-container #temporaryFilterContainer></ng-container>
 </div>
+
+<ng-template #tabOrEnterInformationOffcanvasTemplate let-offcanvas>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">{{ "Info about the AstroBin Search" | translate }}</h5>
+    <button
+      type="button"
+      class="btn-close text-reset"
+      (click)="offcanvas.close()"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body">
+    <p translate>
+      AstroBin recommends using specific filters to find equipment items, celestial subjects, and users. You can add filters
+      by selecting the <strong>Filters</strong> icon on the right end of the search bar.
+    </p>
+
+    <p translate>
+      If you want to perform a free text search, you can press <kbd>Enter</kbd> after typing. Free text searches are
+      usually more inclusive and may return more results, as they search in all available fields.
+    </p>
+
+    <p translate>
+      For instance, if you search for <strong>Andromeda</strong>, you will find images of the Andromeda Galaxy, but also
+      images taken with an Andromeda telescope, or by an AstroBin user with Andromeda in their username, or images with
+      the text "Next week I'll image Andromeda" in their description.
+    </p>
+  </div>
+</ng-template>

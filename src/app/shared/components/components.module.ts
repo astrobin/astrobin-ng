@@ -140,6 +140,7 @@ import { ImageViewerCloseButtonComponent } from "@shared/components/misc/image-v
 import { ImageViewerAdditionalButtonComponent } from "@shared/components/misc/image-viewer/image-viewer-additional-buttons.component";
 import { ImageViewerAdjustmentsEditorComponent } from "@shared/components/misc/image-viewer/image-viewer-adjustments-editor.component";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
+import { AutoSizeInputModule } from "ngx-autosize-input";
 
 const modules = [
   CommonModule,
@@ -174,7 +175,8 @@ const modules = [
   TimeagoModule,
   TranslateModule,
   FormlyModule,
-  UploadxModule
+  UploadxModule,
+  AutoSizeInputModule
 ];
 
 const components = [
