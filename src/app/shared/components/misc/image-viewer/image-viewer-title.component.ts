@@ -87,68 +87,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       </a>
     </ng-template>
   `,
-  styles: [`
-    :host {
-      .image-viewer-title {
-        padding-bottom: .75rem;
-        border-bottom: 1px solid rgba(255, 255, 255, .1);
-
-        h2 {
-          font-size: 1.5rem;
-
-          small {
-            font-size: .75rem;
-            color: var(--lightGrey);
-            margin-left: .5rem;
-            display: inline-block;
-            margin-bottom: 3px;
-            vertical-align: middle;
-
-            &.original-filename {
-              word-break: break-all;
-            }
-          }
-
-          .iotd-tp {
-            font-size: .85rem;
-            margin-top: .5rem;
-
-            .iotd {
-              .label {
-                color: var(--gold);
-              }
-
-              .date {
-                color: var(--white);
-              }
-            }
-
-            .top-pick {
-              .label {
-                color: var(--silver);
-              }
-            }
-
-            .top-pick-nomination {
-              .label {
-                color: var(--bronze);
-              }
-            }
-          }
-        }
-
-        .dropdown .ng-fa-icon {
-          margin-right:  -.5rem;
-          padding: .5rem;
-          cursor: pointer;
-
-          &:hover {
-            color: var(--white);
-          }
-        }
-      }
-    }
-  `]
+  styleUrls: ["./image-viewer-title.component.scss"]
 })
 export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   resolution: string;

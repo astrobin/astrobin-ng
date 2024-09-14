@@ -115,20 +115,7 @@ import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source
       </div>
     </ng-template>
   `,
-  styles: [`
-    .remote-source {
-      .metadata-link:not(.is-sponsor) {
-        color: var(--lightestGrey);
-        pointer-events: none;
-      }
-    }
-
-    .bortle {
-      text-transform: uppercase;
-      font-size: .8rem;
-      cursor: pointer;
-    }
-  `]
+  styleUrls: ["./image-viewer-data-source.component.scss"]
 })
 export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   dataSource: string;

@@ -1,0 +1,25 @@
+:host {
+  position: absolute;
+
+  .btn {
+    margin: 0 !important;
+
+    .ng-fa-icon {
+      margin: 0 !important;
+    }
+  }
+
+  .force-view-mousehover-button {
+    display: none;
+
+    &.active .ng-fa-icon {
+      color: var(--accentColor);
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .force-view-mousehover-button {
+      display: block;
+    }
+  }
+}

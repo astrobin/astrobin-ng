@@ -139,44 +139,7 @@ interface FilterSummary {
       </div>
     </ng-template>
   `,
-  styles: [`
-    ::ng-deep .offcanvas-deep-sky-integration-details {
-      &:not(.offcanvas-bottom) {
-        width: 40vw !important;
-      }
-
-      .filter-details-title {
-        display: flex;
-        justify-content: space-between;
-        width: calc(100% - 2rem);
-
-        strong {
-          font-weight: bold;
-          color: var(--white);
-        }
-
-        span {
-          color: var(--lighterGrey);
-        }
-      }
-
-      .filter-details {
-        .date {
-          color: var(--lighterGrey);
-          margin-right: .5rem;
-        }
-
-        .number {
-          margin-left: .5rem;
-        }
-
-        .number,
-        .duration {
-          color: var(--lightestGrey);
-        }
-      }
-    }
-  `]
+  styleUrls: ["./image-viewer-acquisition.component.scss"]
 })
 export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   dates: string[];

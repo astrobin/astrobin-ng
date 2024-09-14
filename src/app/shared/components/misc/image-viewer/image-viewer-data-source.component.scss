@@ -1,0 +1,12 @@
+.remote-source {
+  .metadata-link:not(.is-sponsor) {
+    color: var(--lightestGrey);
+    pointer-events: none;
+  }
+}
+
+.bortle {
+  text-transform: uppercase;
+  font-size: .8rem;
+  cursor: pointer;
+}

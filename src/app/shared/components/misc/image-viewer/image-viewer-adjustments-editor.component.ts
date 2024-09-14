@@ -111,43 +111,7 @@ const DEFAULT_SATURATION = 100;
       </div>
     </ng-template>
   `,
-  styles: [`
-    :host {
-      background-color: rgba(0, 0, 0, .75);
-      opacity: .75;
-    }
-
-    .adjuster {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: baseline;
-      gap: .5rem;
-
-      .ng-fa-icon {
-        color: var(--white);
-        font-size: 1.25rem;
-      }
-
-      .ngx-slider {
-        margin-top: 18px;
-        padding-bottom: 10px;
-
-        .ngx-slider-bubble {
-          top: 1.5rem;
-          bottom: unset;
-          background: rgba(0, 0, 0, .8);
-          padding: 0 .5rem;
-          border-radius: .5rem;
-        }
-      }
-    }
-
-    .btn {
-      padding: .5rem;
-      cursor: pointer;
-      font-size: 1.25rem;
-    }
-  `]
+  styleUrls: ["./image-viewer-adjustments-editor.component.scss"]
 })
 export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy {
   @Input() image: ImageInterface;

@@ -104,9 +104,7 @@ import { DeviceService } from "@shared/services/device.service";
     <ng-template #loadingTemplate>
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
-  `,
-  styles: [`
-  `]
+  `
 })
 export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirective implements OnChanges {
   @Input() image: ImageInterface;

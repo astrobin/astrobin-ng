@@ -77,33 +77,7 @@ import { ImageService } from "@shared/services/image/image.service";
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
-  styles: [`
-    :host {
-      position: absolute;
-
-      .btn {
-        margin: 0 !important;
-
-        .ng-fa-icon {
-          margin: 0 !important;
-        }
-      }
-
-      .force-view-mousehover-button {
-        display: none;
-
-        &.active .ng-fa-icon {
-          color: var(--accentColor);
-        }
-      }
-
-      @media (hover: none) and (pointer: coarse) {
-        .force-view-mousehover-button {
-          display: block;
-        }
-      }
-    }
-  `]
+  styleUrls: ["./image-viewer-additional-buttons.component.scss"]
 })
 export class ImageViewerAdditionalButtonComponent implements OnInit {
   @Input() image: ImageInterface;
