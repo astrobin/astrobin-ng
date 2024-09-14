@@ -259,7 +259,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     const isPremium$ = this.isPremium$();
     const isUltimate$ = this.isUltimate$();
     const allowAstronomyAds$ = this.store$.select(selectCurrentUserProfile).pipe(
-      map(userProfile => userProfile.allowAstronomyAds)
+      map(userProfile => userProfile && userProfile.allowAstronomyAds)
     );
 
     return combineLatest([isDonor$, isClassicLite$, isClassicPremium$, isPremium$, isUltimate$, allowAstronomyAds$]).pipe(
