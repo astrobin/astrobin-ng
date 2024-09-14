@@ -55,9 +55,11 @@ export class AdManagerService extends BaseService {
       const nativeWindow = this.windowRefService.nativeWindow as any;
       if (nativeWindow) {
         nativeWindow.googletag.cmd.push(() => {
-          this._adSlots[divId] = nativeWindow.googletag.defineSlot(adUnitPath, size, divId)
-            .setTargeting("format", [configName])
-            .addService(nativeWindow.googletag.pubads());
+          const slot = nativeWindow.googletag.defineSlot(adUnitPath, size, divId);
+          if (slot) {
+            slot.setTargeting("format", [configName]).addService(nativeWindow.googletag.pubads());
+            this._adSlots[divId] = slot;
+          }
         });
       }
     }
