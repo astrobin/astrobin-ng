@@ -21,7 +21,7 @@ import { DateService } from "@shared/services/date.service";
 
     <ng-template #fullDatesTemplate>
       <div *ngFor="let date_ of distinctDates">
-        {{ date_ ? (date_ | localDate | date: "mediumDate") : "n/a" | translate }}
+        {{ date_ ? (date_ | date: "mediumDate") : "n/a" | translate }}
       </div>
     </ng-template>
   `
