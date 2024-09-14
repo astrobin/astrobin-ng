@@ -3,6 +3,22 @@
 
 :host {
   ::ng-deep {
+    .metadata {
+      :last-child {
+        .metadata-section {
+          border-bottom: none;
+        }
+      }
+    }
+
+    .metadata-header {
+      @include darkest-background-texture;
+      margin: 1.75rem -2rem .25rem;
+      width: calc(100% + 4rem);
+      padding: .5rem .75rem .5rem 2rem;
+      color: var(--white);
+    }
+
     .metadata-section {
       display: flex;
       gap: .75rem;
@@ -22,7 +38,6 @@
 
         .metadata-icon {
           line-height: 0;
-          width: 1rem;
           height: 1rem;
           display: flex;
           align-items: center;
@@ -30,9 +45,11 @@
 
           .ng-fa-icon,
           img {
-            opacity: .7; // Try to match the light grey of the icons, as images are white.
-            width: 1rem;
             height: 1rem;
+          }
+
+          img {
+            opacity: .65; // Try to match the light grey of the icons, as images are white.
           }
 
           [data-toggle="offcanvas"] {
@@ -383,6 +400,7 @@
         padding: 2rem;
         display: flex;
         flex-direction: column;
+        overflow-x: hidden;
 
         astrobin-ad-manager {
           position: sticky;
@@ -395,7 +413,7 @@
 
           @media (max-width: $md-max) {
             margin: -1rem -1em 1rem -1rem;
-            top: 0;
+            top: -1rem;
           }
         }
 

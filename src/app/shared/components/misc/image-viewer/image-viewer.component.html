@@ -201,21 +201,24 @@
 </ng-template>
 
 <ng-template #descriptionTemplate>
-  <div *ngIf="image.descriptionBbcode" class="metadata-section">
-    <div
-      (click)="onDescriptionClicked($event)"
-      [innerHTML]="image.descriptionBbcode | BBCodeToHtml"
-      class="metadata-item description"
-    ></div>
-  </div>
+  <ng-container *ngIf="image.descriptionBbcode || image.description">
+    <div class="metadata-header">{{ "Description" | translate }}</div>
+    <div *ngIf="image.descriptionBbcode" class="metadata-section border-bottom-0">
+      <div
+        (click)="onDescriptionClicked($event)"
+        [innerHTML]="image.descriptionBbcode | BBCodeToHtml"
+        class="metadata-item description"
+      ></div>
+    </div>
 
-  <div *ngIf="image.description && !image.descriptionBbcode" class="metadata-section">
-    <div class="metadata-item description" [innerHTML]="image.description"></div>
-  </div>
+    <div *ngIf="image.description && !image.descriptionBbcode" class="metadata-section border-bottom-0">
+      <div class="metadata-item description" [innerHTML]="image.description"></div>
+    </div>
+  </ng-container>
 </ng-template>
 
 <ng-template #moreFromThisUserTemplate>
-  <h5 class="mt-5 mb-3">{{ "More from this user" | translate }}</h5>
+  <div class="metadata-header mt-4 mb-3">{{ "More from this user" | translate }}</div>
   <astrobin-image-search
     [alias]="ImageAlias.GALLERY"
     [model]="{ userId: image.user, ordering: '-likes', pageSize: 25 }"
@@ -227,7 +230,7 @@
 </ng-template>
 
 <ng-template #similarToThisTemplate>
-  <h5 class="mt-5 mb-3">
+  <div class="metadata-header mt-5 mb-3">
     <ng-container
       *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null; else relatedImagesLabelTemplate"
     >
@@ -236,7 +239,7 @@
     <ng-template #relatedImagesLabelTemplate>
       {{ "Related images" | translate }}
     </ng-template>
-  </h5>
+  </div>
   <astrobin-image-search
     [model]="{ similarToImageId: this.image.hash || this.image.pk, ordering: '-likes', pageSize: 50 }"
     [loadMoreOnScroll]="true"
@@ -289,41 +292,43 @@
       class="image-viewer-banner-component"
     ></astrobin-image-viewer-custom-message-banner>
 
-    <astrobin-image-viewer-title
-      [image]="image"
-      [revisionLabel]="revisionLabel"
-    ></astrobin-image-viewer-title>
+    <div class="metadata">
+      <astrobin-image-viewer-title
+        [image]="image"
+        [revisionLabel]="revisionLabel"
+      ></astrobin-image-viewer-title>
 
-    <astrobin-image-viewer-photographers
-      *ngIf="userContentType"
-      [image]="image"
-      [userContentType]="userContentType"
-    ></astrobin-image-viewer-photographers>
+      <astrobin-image-viewer-photographers
+        *ngIf="userContentType"
+        [image]="image"
+        [userContentType]="userContentType"
+      ></astrobin-image-viewer-photographers>
 
-    <astrobin-image-viewer-data-source
-      [image]="image"
-    ></astrobin-image-viewer-data-source>
+      <astrobin-image-viewer-groups-and-collections
+        *ngIf="image.partOfGroupSet?.length || image.collections?.length"
+        [image]="image"
+      ></astrobin-image-viewer-groups-and-collections>
 
-    <astrobin-image-viewer-acquisition
-      *ngIf="image.deepSkyAcquisitions?.length || image.solarSystemAcquisitions?.length"
-      [image]="image"
-    ></astrobin-image-viewer-acquisition>
+      <astrobin-image-viewer-data-source
+        [image]="image"
+      ></astrobin-image-viewer-data-source>
 
-    <astrobin-image-viewer-astrometry
-      *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null"
-      [image]="image"
-      [revisionLabel]="revisionLabel"
-    ></astrobin-image-viewer-astrometry>
+      <astrobin-image-viewer-acquisition
+        *ngIf="image.deepSkyAcquisitions?.length || image.solarSystemAcquisitions?.length"
+        [image]="image"
+      ></astrobin-image-viewer-acquisition>
+
+      <astrobin-image-viewer-astrometry
+        *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null"
+        [image]="image"
+        [revisionLabel]="revisionLabel"
+      ></astrobin-image-viewer-astrometry>
+    </div>
 
     <astrobin-image-viewer-equipment
       *ngIf="imageService.hasEquipment(image)"
       [image]="image"
     ></astrobin-image-viewer-equipment>
-
-    <astrobin-image-viewer-groups-and-collections
-      *ngIf="image.partOfGroupSet?.length || image.collections?.length"
-      [image]="image"
-    ></astrobin-image-viewer-groups-and-collections>
 
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
 

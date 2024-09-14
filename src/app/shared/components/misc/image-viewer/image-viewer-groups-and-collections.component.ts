@@ -32,10 +32,10 @@ import { DeviceService } from "@shared/services/device.service";
             <ng-container
               *ngIf="image.partOfGroupSet.length === 1; else pluralGroupsTemplate"
             >
-              {{ "1 group" | translate }}
+              {{ "In 1 group" | translate }}
             </ng-container>
             <ng-template #pluralGroupsTemplate>
-              {{ "{{ 0 }} groups" | translate: { "0": image.partOfGroupSet.length } }}
+              {{ "In {{ 0 }} groups" | translate: { "0": image.partOfGroupSet.length } }}
             </ng-template>
           </a>
         </div>
@@ -55,10 +55,10 @@ import { DeviceService } from "@shared/services/device.service";
             <ng-container
               *ngIf="image.collections.length === 1; else pluralCollectionsTemplate"
             >
-              {{ "1 collection" | translate }}
+              {{ "In 1 collection" | translate }}
             </ng-container>
             <ng-template #pluralCollectionsTemplate>
-              {{ "{{ 0 }} collections" | translate: { "0": image.collections.length } }}
+              {{ "In {{ 0 }} collections" | translate: { "0": image.collections.length } }}
             </ng-template>
           </a>
         </div>

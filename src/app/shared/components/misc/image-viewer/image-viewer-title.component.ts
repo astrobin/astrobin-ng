@@ -100,7 +100,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             font-size: .75rem;
             color: var(--lightGrey);
             margin-left: .5rem;
-            display: inline;
+            display: inline-block;
+            margin-bottom: 3px;
             vertical-align: middle;
 
             &.original-filename {

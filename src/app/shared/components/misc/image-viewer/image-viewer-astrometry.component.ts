@@ -107,12 +107,9 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
       </div>
     </div>
 
-    <div *ngIf="objectsInField?.length > 0" class="metadata-section">
+    <div *ngIf="objectsInField?.length > 0" class="metadata-header">{{ "Objects" | translate }}</div>
+    <div *ngIf="objectsInField?.length > 0" class="metadata-section border-bottom-0">
       <div class="metadata-item objects-in-field">
-        <div class="metadata-icon">
-          <fa-icon icon="binoculars"></fa-icon>
-        </div>
-
         <div class="metadata-label">
           <a
             *ngFor="let item of objectsInField"
