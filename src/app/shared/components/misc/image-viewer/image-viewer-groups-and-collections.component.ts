@@ -27,17 +27,15 @@ import { DeviceService } from "@shared/services/device.service";
             icon="users"
           ></fa-icon>
         </div>
-        <div class="metadata-label">
-          <a href="#" astrobinEventPreventDefault (click)="openGroupsOffcanvas()">
-            <ng-container
-              *ngIf="image.partOfGroupSet.length === 1; else pluralGroupsTemplate"
-            >
-              {{ "In 1 group" | translate }}
-            </ng-container>
-            <ng-template #pluralGroupsTemplate>
-              {{ "In {{ 0 }} groups" | translate: { "0": image.partOfGroupSet.length } }}
-            </ng-template>
-          </a>
+        <div class="metadata-link" (click)="openGroupsOffcanvas()">
+          <ng-container
+            *ngIf="image.partOfGroupSet.length === 1; else pluralGroupsTemplate"
+          >
+            {{ "In 1 group" | translate }}
+          </ng-container>
+          <ng-template #pluralGroupsTemplate>
+            {{ "In {{ 0 }} groups" | translate: { "0": image.partOfGroupSet.length } }}
+          </ng-template>
         </div>
       </div>
 
@@ -50,17 +48,15 @@ import { DeviceService } from "@shared/services/device.service";
             icon="folder"
           ></fa-icon>
         </div>
-        <div class="metadata-label">
-          <a href="#" astrobinEventPreventDefault (click)="openCollectionsOffcanvas()">
-            <ng-container
-              *ngIf="image.collections.length === 1; else pluralCollectionsTemplate"
-            >
-              {{ "In 1 collection" | translate }}
-            </ng-container>
-            <ng-template #pluralCollectionsTemplate>
-              {{ "In {{ 0 }} collections" | translate: { "0": image.collections.length } }}
-            </ng-template>
-          </a>
+        <div class="metadata-link" (click)="openCollectionsOffcanvas()">
+          <ng-container
+            *ngIf="image.collections.length === 1; else pluralCollectionsTemplate"
+          >
+            {{ "In 1 collection" | translate }}
+          </ng-container>
+          <ng-template #pluralCollectionsTemplate>
+            {{ "In {{ 0 }} collections" | translate: { "0": image.collections.length } }}
+          </ng-template>
         </div>
       </div>
     </div>

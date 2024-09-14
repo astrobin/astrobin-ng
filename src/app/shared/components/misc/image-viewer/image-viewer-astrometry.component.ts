@@ -107,47 +107,6 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
       </div>
     </div>
 
-    <div *ngIf="objectsInField?.length > 0" class="metadata-header">{{ "Objects" | translate }}</div>
-    <div *ngIf="objectsInField?.length > 0" class="metadata-section border-bottom-0">
-      <div class="metadata-item objects-in-field">
-        <div class="metadata-label">
-          <a
-            *ngFor="let item of objectsInField"
-            (click)="objectInFieldClicked($event, item)"
-            href="#"
-            class="value"
-          >
-            <span class="name" [innerHTML]="item"></span>
-          </a>
-
-          <a
-            *ngIf="moreObjectsInField?.length > 0"
-            (click)="moreObjectsInFieldClicked($event)"
-            href="#"
-            class="value more"
-          >
-            {{ "+ {{count}} more" | translate: { count: moreObjectsInField.length } }}
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <ng-template #moreObjectsInFieldTemplate let-offcanvas>
-      <div class="offcanvas-header">
-        <h4 class="offcanvas-title">{{ "Additional objects in this field" | translate }}</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
-      </div>
-      <div class="offcanvas-body">
-        <ul>
-          <li *ngFor="let item of moreObjectsInField">
-            <a (click)="objectInFieldClicked($event, item)" href="#" class="value">
-              <span class="name" [innerHTML]="item"></span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </ng-template>
-
     <ng-template #moreInfoTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Astrometry details" | translate }}</h4>
@@ -231,14 +190,9 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   pixelScale: string;
   orientation: string;
   astrometryNetJobId: string;
-  objectsInField: string[];
-  moreObjectsInField: string[];
 
   @ViewChild("moreInfoTemplate")
   moreInfoTemplate: TemplateRef<any>;
-
-  @ViewChild("moreObjectsInFieldTemplate")
-  moreObjectsInFieldTemplate: TemplateRef<any>;
 
   @ViewChild("findImagesInTheSameAreaOffcanvas")
   findImagesInTheSameAreaOffcanvas: TemplateRef<any>;
@@ -249,12 +203,10 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
     public readonly imageService: ImageService,
-    public readonly solutionService: SolutionService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
     public readonly windowRefService: WindowRefService,
     public readonly astroUtilsService: AstroUtilsService,
-    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -269,9 +221,6 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
       this.fieldRadius = this.imageService.getFieldRadius(image, this.revisionLabel);
       this.pixelScale = this.imageService.getPixelScale(image, this.revisionLabel);
       this.orientation = this.imageService.getOrientation(image, this.revisionLabel);
-      this.objectsInField = this.solutionService.getObjectsInField(this.revision.solution);
-      this.moreObjectsInField = this.objectsInField.slice(10);
-      this.objectsInField = this.objectsInField.slice(0, 10);
       this.astrometryNetJobId = this.revision?.solution?.submissionId?.toString();
     }
   }
@@ -280,27 +229,6 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     event.preventDefault();
 
     this.search({ constellation });
-  }
-
-  objectInFieldClicked(event: MouseEvent, subject: string): void {
-    event.preventDefault();
-    this.offcanvasService.dismiss();
-    this.search({
-      subjects: {
-        value: [
-          subject
-        ],
-        matchType: null
-      }
-    });
-  }
-
-  moreObjectsInFieldClicked(event: MouseEvent): void {
-    event.preventDefault();
-    this.offcanvasService.open(this.moreObjectsInFieldTemplate, {
-      panelClass: "offcanvas-more-objects-in-field",
-      position: this.deviceService.offcanvasPosition()
-    });
   }
 
   openMoreInfo(event: MouseEvent): void {

@@ -37,7 +37,7 @@ type LegacyEquipmentItem =
     <ng-container *ngIf="hasEquipment">
       <div *ngIf="hasGuidingEquipment" class="metadata-header">{{ "Imaging equipment" | translate }}</div>
       <div *ngIf="!hasGuidingEquipment" class="metadata-header">{{ "Equipment" | translate }}</div>
-      <div class="metadata-section border-bottom-0">
+      <div class="metadata-section">
         <div class="metadata-item">
           <div class="metadata-label">
             <div class="equipment-section">
@@ -53,7 +53,7 @@ type LegacyEquipmentItem =
       </div>
 
       <div *ngIf="hasGuidingEquipment" class="metadata-header">{{ "Guiding equipment" | translate }}</div>
-      <div *ngIf="hasGuidingEquipment" class="metadata-section border-bottom-0">
+      <div *ngIf="hasGuidingEquipment" class="metadata-section">
         <div class="metadata-item">
           <div class="metadata-label">
             <div class="equipment-section">

@@ -1,12 +1,70 @@
 @import "src/app/styles/breakpoints";
 @import "src/app/styles/mixins";
 
+@mixin clickableMetadata {
+  color: var(--lightestGrey);
+  cursor: pointer;
+  text-decoration: underline solid var(--lightGrey) 1px;
+  text-underline-offset: 4px;
+
+  &:hover {
+    color: var(--accentColor);
+  }
+}
+
 :host {
   ::ng-deep {
-    .metadata {
-      :last-child {
+    .metadata-striped {
+      padding: .75rem 0;
+
+      & > * {
+        display: block;
+        margin-left: -1rem;
+        margin-right: -1rem;
+
+        @media (min-width: $lg-min) {
+          &:first-child {
+            .metadata-section {
+              border-top-left-radius: .25rem;
+              border-top-right-radius: .25rem;
+            }
+          }
+
+          &:last-child {
+            .metadata-section {
+              border-bottom-left-radius: .25rem;
+              border-bottom-right-radius: .25rem;
+            }
+          }
+        }
+
+        &:nth-child(odd) {
+          .metadata-section {
+            background: rgba(0, 0, 0, .075);
+          }
+        }
+
+        &:nth-child(even) {
+          .metadata-section {
+            background: rgba(255, 255, 255, .025);
+          }
+        }
+
+        &:only-child {
+          @media (min-width: $lg-min) {
+            .metadata-section {
+              border-radius: .25rem;
+            }
+          }
+
+          .metadata-section {
+            background: none;
+          }
+        }
+
         .metadata-section {
-          border-bottom: none;
+          padding-left: 1rem;
+          padding-right: 1rem;
         }
       }
     }
@@ -26,7 +84,6 @@
       justify-content: space-between;
       flex-wrap: wrap;
       width: 100%;
-      border-bottom: 1px solid rgba(255, 255, 255, .05);
       padding: .75rem 0;
 
       .metadata-item {
@@ -81,14 +138,16 @@
 
           [data-toggle="tooltip"],
           [data-toggle="offcanvas"] {
-            cursor: help;
-            border-bottom: 1px dashed var(--lightGrey);
+            @include clickableMetadata;
+
+            &:hover .symbol {
+              color: var(--accentColor);
+            }
           }
         }
 
         .metadata-link {
-          color: var(--accentColor);
-          cursor: pointer;
+          @include clickableMetadata;
         }
       }
     }

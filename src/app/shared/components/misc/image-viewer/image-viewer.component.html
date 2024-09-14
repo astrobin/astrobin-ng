@@ -203,7 +203,7 @@
 <ng-template #descriptionTemplate>
   <ng-container *ngIf="image.descriptionBbcode || image.description">
     <div class="metadata-header">{{ "Description" | translate }}</div>
-    <div *ngIf="image.descriptionBbcode" class="metadata-section border-bottom-0">
+    <div *ngIf="image.descriptionBbcode" class="metadata-section">
       <div
         (click)="onDescriptionClicked($event)"
         [innerHTML]="image.descriptionBbcode | BBCodeToHtml"
@@ -211,7 +211,7 @@
       ></div>
     </div>
 
-    <div *ngIf="image.description && !image.descriptionBbcode" class="metadata-section border-bottom-0">
+    <div *ngIf="image.description && !image.descriptionBbcode" class="metadata-section">
       <div class="metadata-item description" [innerHTML]="image.description"></div>
     </div>
   </ng-container>
@@ -292,7 +292,6 @@
       class="image-viewer-banner-component"
     ></astrobin-image-viewer-custom-message-banner>
 
-    <div class="metadata">
       <astrobin-image-viewer-title
         [image]="image"
         [revisionLabel]="revisionLabel"
@@ -304,6 +303,7 @@
         [userContentType]="userContentType"
       ></astrobin-image-viewer-photographers>
 
+    <div class="metadata-striped">
       <astrobin-image-viewer-groups-and-collections
         *ngIf="image.partOfGroupSet?.length || image.collections?.length"
         [image]="image"
@@ -324,6 +324,12 @@
         [revisionLabel]="revisionLabel"
       ></astrobin-image-viewer-astrometry>
     </div>
+
+    <astrobin-image-objects-astrometry
+      *ngIf="revision?.solution?.objectsInField || revision?.solution?.advancedAnnotations"
+      [image]="image"
+      [revisionLabel]="revisionLabel"
+    ></astrobin-image-objects-astrometry>
 
     <astrobin-image-viewer-equipment
       *ngIf="imageService.hasEquipment(image)"

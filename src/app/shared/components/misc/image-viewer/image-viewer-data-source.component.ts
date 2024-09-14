@@ -46,7 +46,7 @@ import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source
         </div>
         <div
           (click)="remoteDataSourceClicked($event)"
-          class="metadata-link"
+          [ngClass]="remoteDataSourceIsSponsor ? 'metadata-link' : 'metadata-label'"
           [class.is-sponsor]="remoteDataSourceIsSponsor"
         >
           {{ remoteDataSource }}

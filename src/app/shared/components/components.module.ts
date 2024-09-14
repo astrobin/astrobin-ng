@@ -141,6 +141,7 @@ import { ImageViewerAdditionalButtonComponent } from "@shared/components/misc/im
 import { ImageViewerAdjustmentsEditorComponent } from "@shared/components/misc/image-viewer/image-viewer-adjustments-editor.component";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { AutoSizeInputModule } from "ngx-autosize-input";
+import { ImageViewerObjectsComponent } from "@shared/components/misc/image-viewer/image-viewer-objects.component";
 
 const modules = [
   CommonModule,
@@ -228,6 +229,7 @@ const components = [
   ImageViewerAcquisitionComponent,
   ImageViewerAcquisitionDatesComponent,
   ImageViewerAstrometryComponent,
+  ImageViewerObjectsComponent,
   ImageViewerEquipmentComponent,
   ImageViewerRevisionsComponent,
   ImageViewerGroupsAndCollectionsComponent,
