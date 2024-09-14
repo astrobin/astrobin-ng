@@ -59,7 +59,7 @@ import { LoadingService } from "@shared/services/loading.service";
         </div>
       </ng-container>
 
-      <div class="metadata-section photographers">
+      <div class="metadata-section photographers border-bottom-0 mb-4">
         <div class="metadata-item flex-grow-1 gap-3">
           <ng-container *ngIf="photographers?.length > 0; else loadingTemplate">
             <div [class.flex-grow-1]="photographers.length > 1" class="avatars flex-nowrap">
@@ -114,7 +114,7 @@ import { LoadingService } from "@shared/services/loading.service";
                   [showLabel]="false"
                   [setLabel]="'Follow user' | translate"
                   [unsetLabel]="'Unfollow user' | translate"
-                  class="w-auto"
+                  class="w-auto py-0"
                   btnClass="btn btn-link btn-no-block link-secondary"
                   propertyType="follow"
                 ></astrobin-toggle-property>

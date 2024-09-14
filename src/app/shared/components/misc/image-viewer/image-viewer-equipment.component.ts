@@ -34,22 +34,29 @@ type LegacyEquipmentItem =
 @Component({
   selector: "astrobin-image-viewer-equipment",
   template: `
-    <div *ngIf="hasEquipment" class="metadata-section">
-      <div class="metadata-item">
-        <div class="metadata-label">
-          <div class="equipment-section">
-            <strong *ngIf="hasGuidingEquipment">{{ "Imaging equipment" }}:</strong>
-            <ng-container *ngFor="let attr of imagingAttributes">
-              <ng-container
-                [ngTemplateOutlet]="equipmentTemplate"
-                [ngTemplateOutletContext]="{ $implicit: attr }"
-              ></ng-container>
-            </ng-container>
-          </div>
-
-          <ng-container *ngIf="hasGuidingEquipment">
+    <ng-container *ngIf="hasEquipment">
+      <div *ngIf="hasGuidingEquipment" class="metadata-header">{{ "Imaging equipment" | translate }}</div>
+      <div *ngIf="!hasGuidingEquipment" class="metadata-header">{{ "Equipment" | translate }}</div>
+      <div class="metadata-section border-bottom-0">
+        <div class="metadata-item">
+          <div class="metadata-label">
             <div class="equipment-section">
-              <strong>{{ "Guiding equipment" }}:</strong>
+              <ng-container *ngFor="let attr of imagingAttributes">
+                <ng-container
+                  [ngTemplateOutlet]="equipmentTemplate"
+                  [ngTemplateOutletContext]="{ $implicit: attr }"
+                ></ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="hasGuidingEquipment" class="metadata-header">{{ "Guiding equipment" | translate }}</div>
+      <div *ngIf="hasGuidingEquipment" class="metadata-section border-bottom-0">
+        <div class="metadata-item">
+          <div class="metadata-label">
+            <div class="equipment-section">
               <ng-container *ngFor="let attr of guidingAttributes">
                 <ng-container
                   [ngTemplateOutlet]="equipmentTemplate"
@@ -57,10 +64,10 @@ type LegacyEquipmentItem =
                 ></ng-container>
               </ng-container>
             </div>
-          </ng-container>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-container>
 
     <ng-template #equipmentTemplate let-attr>
       <ng-container *ngIf="attr.indexOf('legacy') === -1; else legacyTemplate">

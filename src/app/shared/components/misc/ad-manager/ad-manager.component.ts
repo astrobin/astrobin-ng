@@ -10,7 +10,7 @@ import { DeviceService } from "@shared/services/device.service";
     <div *ngIf="isBrowser" [id]="divId" class="ad-container"></div>
     <button
       (click)="removeAds()"
-      class="btn btn-link remove-ads"
+      class="btn btn-link btn-no-block remove-ads"
     >
       {{ "Remove ads" | translate }}
     </button>
