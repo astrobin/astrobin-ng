@@ -596,8 +596,13 @@ export class ImageViewerComponent
       return;
     }
 
-    const imageId = this.navigationContext[this.currentIndex + 1].imageId;
-    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
+    const contextItem = this.navigationContext[this.currentIndex + 1];
+
+    if (!contextItem) {
+      return;
+    }
+
+    this._navigateToImage(contextItem.imageId, FINAL_REVISION_LABEL, false, true);
   }
 
   @HostListener("document:keydown.arrowLeft", ["$event"])
@@ -606,8 +611,13 @@ export class ImageViewerComponent
       return;
     }
 
-    const imageId = this.navigationContext[this.currentIndex - 1].imageId;
-    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
+    const contextItem = this.navigationContext[this.currentIndex - 1];
+
+    if (!contextItem) {
+      return;
+    }
+
+    this._navigateToImage(contextItem.imageId, FINAL_REVISION_LABEL, false, true);
   }
 
   onImageLoaded(): void {
