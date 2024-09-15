@@ -1,9 +1,13 @@
 @import "../../../../styles/breakpoints";
 
 astrobin-search-bar ::ng-deep {
+  position: sticky;
+  z-index: 3;
+  top: 60px;
+  opacity: .99;
+
   .search-bar-wrapper {
-    position: sticky;
-    top: 60px;
+    position: relative;
     display: block;
     margin-top: -2rem;
     margin-left: -.5rem;
@@ -18,7 +22,6 @@ astrobin-search-bar ::ng-deep {
     }
 
     @media (min-width: $lg-min) {
-      top: 63px;
       margin-left: -2rem;
       margin-right: -2rem;
     }
@@ -31,5 +34,9 @@ astrobin-search-bar ::ng-deep {
         }
       }
     }
+  }
+
+  @media (min-width: $lg-min) {
+    top: 63px;
   }
 }

@@ -9,7 +9,7 @@
 
     .search-bar-input-container {
       background-color: #111;
-      padding: .75rem 12rem .75rem 1rem;
+      padding: .75rem 11rem .75rem 1rem;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
@@ -213,7 +213,7 @@
     gap: .5rem;
     flex-wrap: wrap;
     padding: .75rem 1rem;
-    margin: 0 -2rem 1rem;
+    margin: -1px -2rem 1rem;
     border-bottom: 1px solid var(--grey);
 
     .no-filters {
@@ -232,7 +232,7 @@
     }
 
     @media (max-width: $md-max) {
-      margin: 0 -.5rem 1rem;
+      margin: -1px -.5rem 1rem;
     }
   }
 }
