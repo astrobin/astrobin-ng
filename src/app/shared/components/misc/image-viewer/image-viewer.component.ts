@@ -795,8 +795,8 @@ export class ImageViewerComponent
     const containerWidth = imageAreaElement.clientWidth;
     const containerHeight = imageAreaElement.clientHeight;
 
-    const naturalWidth = this.image.w;
-    const naturalHeight = this.image.h;
+    const naturalWidth = this.revision.w || this.image.w;
+    const naturalHeight = this.revision.h || this.image.h;
 
     // Calculate the aspect ratio of the image and the container
     const imageAspectRatio = naturalWidth / naturalHeight;
