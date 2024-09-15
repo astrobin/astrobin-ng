@@ -4,7 +4,9 @@
 @mixin clickableMetadata {
   color: var(--lightestGrey);
   cursor: pointer;
-  text-decoration: underline solid var(--lightGrey) 1px;
+  text-decoration: underline;
+  text-decoration-color: var(--lightGrey);
+  text-decoration-thickness: 1px;
   text-underline-offset: 4px;
 
   &:hover {
@@ -162,7 +164,7 @@
           @include clickableMetadata;
 
           &.search {
-            cursor: url("/assets/images/search-white.png"), pointer;
+            cursor: url("/assets/images/search-white.png") 16 16, pointer;
           }
         }
       }

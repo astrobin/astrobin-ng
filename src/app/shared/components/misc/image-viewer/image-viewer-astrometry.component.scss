@@ -53,7 +53,7 @@
     display: flex;
     gap: .15rem;
     justify-content: center;
-    cursor: url("/assets/images/search-white.png"), pointer;
+    cursor: url("/assets/images/search-white.png") 16 16, pointer;
 
     .symbol {
       color: var(--lighterGrey);
