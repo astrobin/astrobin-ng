@@ -43,7 +43,7 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
             alt=""
           />
         </div>
-        <div (click)="constellationClicked($event, constellation)" class="metadata-link">
+        <div (click)="constellationClicked($event, constellation)" class="metadata-link search">
           {{ constellation }}
         </div>
       </div>
@@ -83,12 +83,14 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
       </div>
 
       <div *ngIf="pixelScale" class="metadata-item">
-        <fa-icon
-          [ngbTooltip]="'Pixel scale' | translate"
-          triggers="hover click"
-          container="body"
-          icon="square"
-        ></fa-icon>
+        <div class="metadata-icon">
+          <fa-icon
+            [ngbTooltip]="'Pixel scale' | translate"
+            triggers="hover click"
+            container="body"
+            icon="square"
+          ></fa-icon>
+        </div>
         <div [innerHTML]="pixelScale" class="metadata-label">
         </div>
       </div>

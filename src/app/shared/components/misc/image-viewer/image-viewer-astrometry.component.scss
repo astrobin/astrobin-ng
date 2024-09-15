@@ -47,3 +47,28 @@
     width: 40vw !important;
   }
 }
+
+::ng-deep .offcanvas-find-images-in-the-same-area {
+  .degree-choices > .btn {
+    display: flex;
+    gap: .15rem;
+    justify-content: center;
+    cursor: url("/assets/images/search-white.png"), pointer;
+
+    .symbol {
+      color: var(--lighterGrey);
+    }
+
+    .value {
+      color: var(--lightestGrey);
+      font-weight: bold;
+    }
+
+    &:hover {
+      .symbol,
+      .value {
+        color: var(--darkestGrey);
+      }
+    }
+  }
+}

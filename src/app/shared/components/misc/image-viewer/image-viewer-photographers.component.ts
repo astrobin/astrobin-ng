@@ -124,13 +124,14 @@ import { LoadingService } from "@shared/services/loading.service";
                 *ngIf="publicationDate"
                 class="metadata-item flex-row flex-xl-column w-100 gap-0 justify-content-between align-items-center align-items-xl-end"
               >
-                <div class="publication-date d-flex flex-row gap-2 no-wrap">
+                <div class="publication-date d-flex flex-row gap-2 no-wrap align-items-center">
                   <ng-container *ngIf="licenseIcon && licenseTooltip">
                     <fa-icon
                       [icon]="licenseIcon"
                       [ngbTooltip]="licenseTooltip"
                       triggers="hover click"
                       container="body"
+                      class="license-icon"
                     ></fa-icon>
                   </ng-container>
                   {{ publicationDate | localDate | timeago:true }}

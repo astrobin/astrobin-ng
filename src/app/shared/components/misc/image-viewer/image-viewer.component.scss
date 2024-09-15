@@ -9,6 +9,7 @@
 
   &:hover {
     color: var(--accentColor);
+    text-decoration-color: var(--accentColor);
   }
 }
 
@@ -99,14 +100,25 @@
           display: flex;
           align-items: center;
           justify-content: center;
+          color: var(--accentColor);
 
           .ng-fa-icon,
           img {
             height: 1rem;
+            cursor: help;
+          }
+
+          .ng-fa-icon {
+            opacity: .75;
+            font-size: .85rem;
+            line-height: 1rem;
           }
 
           img {
-            opacity: .65; // Try to match the light grey of the icons, as images are white.
+            // Matches accent color closely without needing to generate new icons.
+            filter: invert(60%) sepia(100%) saturate(1000%) hue-rotate(5deg) brightness(75%) contrast(100%);
+            height: .85rem;
+            vertical-align: middle;
           }
 
           [data-toggle="offcanvas"] {
@@ -148,6 +160,10 @@
 
         .metadata-link {
           @include clickableMetadata;
+
+          &.search {
+            cursor: url("/assets/images/search-white.png"), pointer;
+          }
         }
       }
     }

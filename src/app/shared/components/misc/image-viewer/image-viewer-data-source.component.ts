@@ -29,7 +29,7 @@ import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source
             alt=""
           />
         </div>
-        <div (click)="dataSourceClicked($event)" class="metadata-link">
+        <div (click)="dataSourceClicked($event)" class="metadata-link search">
           {{ dataSource }}
         </div>
       </div>
