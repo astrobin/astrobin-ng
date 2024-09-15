@@ -328,8 +328,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     this.searchInputNgModel.control.markAsPristine();
 
-    this.resetAutoCompleteItems();
-    this._updateModelWithMagicAutoComplete(this.model.text.value).subscribe();
+    this._updateModelWithMagicAutoComplete(this.model.text.value).subscribe(() => {
+      this.resetAutoCompleteItems();
+    });
   }
 
   onAutoCompleteItemClicked(autoCompleteItem: SearchAutoCompleteItem): Observable<SearchModelInterface> {
@@ -722,7 +723,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     // Checks if any autocomplete items are a perfect match. If they are, updates the model with that item type and
     // empties the text. Otherwise, it sets the text.
 
-    const normalizedQuery = value.toLowerCase().replace(/\s/g, "");
+    const normalizeLabel = (label: string) => label.toLowerCase().replace(/\s/g, "");
+
+    const normalizedQuery = normalizeLabel(value);
     const observables$ = this._autoCompleteMethods(value)
       .filter(filter => filter.key !== SearchAutoCompleteType.USERS)
       .map(filter => filter.method);
@@ -733,8 +736,14 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         results.forEach(group => {
           group.forEach(item => {
             if (item.type !== SearchAutoCompleteType.TEXT) {
-              const normalizedLabel = item.label.toLowerCase().replace(/\s/g, "");
-              if (normalizedLabel === normalizedQuery) {
+              const normalizedLabel = normalizeLabel(item.label);
+              if (
+                normalizedLabel === normalizedQuery ||
+                (
+                  item.aliases &&
+                  item.aliases.some(alias => normalizeLabel(alias) === normalizedQuery)
+                )
+              ) {
                 found = true;
                 this.onAutoCompleteItemClicked(item).subscribe();
                 return;

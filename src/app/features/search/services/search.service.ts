@@ -95,6 +95,7 @@ export enum SearchAutoCompleteType {
 export interface SearchAutoCompleteItem {
   type: SearchAutoCompleteType;
   label: string;
+  aliases?: string[];
   value?: any;
   minimumSubscription?: PayableProductInterface;
 }
@@ -794,6 +795,14 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteSubjectTypes$(query: string): Observable<SearchAutoCompleteItem[]> {
+    const aliases = {
+      [SubjectType.DEEP_SKY]: ["DSO", this.translateService.instant("Deep sky")],
+      [SubjectType.SOLAR_SYSTEM]: [this.translateService.instant("Solar system")],
+      [SubjectType.NORTHERN_LIGHTS]: [this.translateService.instant("Aurora")],
+      [SubjectType.GEAR]: [this.translateService.instant("Equipment")],
+      [SolarSystemSubjectType.MOON]: [this.translateService.instant("Moon")],
+    }
+
     // Process SubjectType entries
     const subjectTypeItems = Object.values(SubjectType)
       .map(type => ({
@@ -804,6 +813,7 @@ export class SearchService extends BaseService {
       .map(item => ({
         type: SearchAutoCompleteType.SUBJECT_TYPE,
         label: item.humanized,
+        aliases: aliases[item.type],
         value: item.type
       }));
 
@@ -817,6 +827,7 @@ export class SearchService extends BaseService {
       .map(item => ({
         type: SearchAutoCompleteType.SUBJECT_TYPE,
         label: item.humanized,
+        aliases: aliases[item.type],
         value: item.type
       }));
 

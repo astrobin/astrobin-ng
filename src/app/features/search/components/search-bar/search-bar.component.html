@@ -58,7 +58,7 @@
         <ng-container *ngIf="!isTouchDevice">
           <span
             *ngIf="hasAutoCompleteGroups()"
-            [innerHTML]="'Press <kbd>Tab</kbd> for suggestion, <kbd>Enter</kbd> for a free text search.' | translate"
+            [innerHTML]="'Press <kbd>Tab</kbd> for suggestion, <kbd>Enter</kbd> to just search.' | translate"
           ></span>
 
           <span
@@ -382,13 +382,16 @@
 
     <p translate>
       If you want to perform a free text search, you can press <kbd>Enter</kbd> after typing. Free text searches are
-      usually more inclusive and may return more results, as they search in all available fields.
+      usually more inclusive and may return more results, as they search in all available fields. AstroBin will still
+      try to show relevant results by matching your free text search to a filter, if there is a perfect match.
     </p>
 
     <p translate>
-      For instance, if you search for <strong>Andromeda</strong>, you will find images of the Andromeda Galaxy, but also
-      images taken with an Andromeda telescope, or by an AstroBin user with Andromeda in their username, or images with
-      the text "Next week I'll image Andromeda" in their description.
+      The distinction between a free text search and a search using a specific filter can be illustrated with the
+      following example. If you search for <strong>Orion</strong>, AstroBin cannot know if you want to see images OF
+      the Orion constellations, images IN the Orion constellation, images of the Orion nebula, images taken with an
+      Orion telescope, or images with somebody whose username is Orion. By using filters, you can specify what you are
+      looking for exactly.
     </p>
   </div>
 </ng-template>
