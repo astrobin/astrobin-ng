@@ -917,14 +917,14 @@ export class ImageViewerComponent
       filter(showAds => showAds !== undefined),
       take(1)
     ).subscribe(showAds => {
-      const dataAreaWith = this.dataArea.nativeElement.clientWidth;
+      const dataAreaWidth = this.dataArea.nativeElement.clientWidth;
       const windowHeight = this.windowRefService.nativeWindow.innerHeight;
 
       this.showAd = this.image.allowAds && showAds;
 
       if (this.deviceService.mdMax()) {
         this.adConfig = "wide";
-      } else if (windowHeight > dataAreaWith * 1.5) {
+      } else if (windowHeight > dataAreaWidth * 2) {
         this.adConfig = "rectangular";
       } else {
         this.adConfig = "wide";

@@ -22,8 +22,6 @@
 
       & > * {
         display: block;
-        margin-left: -1rem;
-        margin-right: -1rem;
 
         @media (min-width: $lg-min) {
           &:first-child {
@@ -74,10 +72,10 @@
 
     .metadata-header {
       @include darkest-background-texture;
-      margin: 1.75rem -2rem .25rem;
-      width: calc(100% + 4rem);
-      padding: .5rem .75rem .5rem 2rem;
-      color: var(--white);
+      margin: 1.75rem 0 0.25rem;
+      padding: .5rem .75rem;
+      color: var(--lightestGrey);
+      border-radius: var(--bs-border-radius);
     }
 
     .metadata-section {
@@ -195,6 +193,10 @@
       touch-action: manipulation;
       pointer-events: auto;
       background: black; // Real black as opposed to var(--black), for maximum contrast.
+
+      @media (max-width: $lg-max) {
+        width: 50%;
+      }
 
       @media (max-width: $md-max) {
         width: 100%;
@@ -488,6 +490,11 @@
             top: -2rem;
           }
 
+          @media (min-width: $xl-min) {
+            margin-left: -3rem;
+            margin-right: -3rem;
+          }
+
           @media (max-width: $md-max) {
             margin: -1rem -1em 1rem -1rem;
             top: -1rem;
@@ -503,17 +510,24 @@
             }
 
             .image-viewer-banner {
+              padding: .5rem 2rem;
+              border-radius: 0;
+              box-shadow: none;
+
               @media (min-width: $lg-min) {
                 margin: -2rem -2rem 1rem -2rem;
+              }
+
+              @media (min-width: $xl-min) {
+                margin-left: -3rem;
+                margin-right: -3rem;
+                padding-left: 3rem;
+                padding-right: 3rem;
               }
 
               @media (max-width: $md-max) {
                 margin: -1rem -2rem 1rem -2rem;
               }
-
-              padding: .5rem 2rem;
-              border-radius: 0;
-              box-shadow: none;
             }
           }
         }
@@ -522,6 +536,7 @@
           display: block;
           word-break: break-word;
           overflow: hidden;
+          padding: 0 .5rem;
 
           img {
             max-width: 100%;
@@ -551,6 +566,11 @@
 
         @media (min-width: $lg-min) {
           overflow-y: auto;
+        }
+
+        @media (min-width: $xl-min) {
+          padding-left: 3rem;
+          padding-right: 3rem;
         }
       }
 
@@ -614,6 +634,10 @@
             margin-bottom: 0;
           }
         }
+      }
+
+      @media (max-width: $lg-max) {
+        width: 50%;
       }
 
       @media (max-width: $md-max) {
