@@ -180,7 +180,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       this._openImageByNavigation(image);
     } else {
       this.currentUserProfile$.pipe(take(1)).subscribe((userProfile: UserProfileInterface) => {
-        if (userProfile && userProfile.enableNewSearchExperience) {
+        if (!userProfile || userProfile.enableNewSearchExperience) {
           this._openImageByImageViewer(image);
         } else {
           this._openImageClassicUrl(image);

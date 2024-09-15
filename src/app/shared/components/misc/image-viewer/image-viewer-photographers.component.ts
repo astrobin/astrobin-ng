@@ -271,7 +271,9 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
           !image.collaborators.some(collaborator => collaborator.id === pendingCollaborator)
       );
 
-      this.isPendingCollaborator = !!pendingCollaborators?.some(pendingCollaborator => pendingCollaborator === currentUser.id);
+      this.isPendingCollaborator = !!currentUser && !!pendingCollaborators?.some(
+        pendingCollaborator => pendingCollaborator === currentUser.id
+      );
 
       if (
         currentUser &&
