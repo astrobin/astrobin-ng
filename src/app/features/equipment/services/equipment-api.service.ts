@@ -615,7 +615,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       headers: new HttpHeaders({
         // Unsetting the Content-Type is necessary, so it gets set to multipart/form-data with the correct boundary.
         "Content-Type": "__unset__",
-        "Content-Disposition": `form-data; name="logo"; filename=${logo.name}`
+        "Content-Disposition": `form-data; name="logo"; filename=${encodeURIComponent(logo.name)}`
       })
     };
 
@@ -920,7 +920,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       headers: new HttpHeaders({
         // Unsetting the Content-Type is necessary so, it gets set to multipart/form-data with the correct boundary.
         "Content-Type": "__unset__",
-        "Content-Disposition": `form-data; name="image"; filename=${image.name}`
+        "Content-Disposition": `form-data; name="image"; filename=${encodeURIComponent(image.name)}`
       })
     };
 
@@ -1210,7 +1210,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       headers: new HttpHeaders({
         // Unsetting the Content-Type is necessary so, it gets set to multipart/form-data with the correct boundary.
         "Content-Type": "__unset__",
-        "Content-Disposition": `form-data; name="image"; filename=${image.name}`
+        "Content-Disposition": `form-data; name="image"; filename=${encodeURIComponent(image.name)}`
       })
     };
 
@@ -1288,7 +1288,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         headers: new HttpHeaders({
           // Unsetting the Content-Type is necessary, so it gets set to multipart/form-data with the correct boundary.
           "Content-Type": "__unset__",
-          "Content-Disposition": `form-data; name="image"; filename=${imageFile.name}`
+          "Content-Disposition": `form-data; name="image"; filename=${encodeURIComponent(imageFile.name)}`
         })
       };
 

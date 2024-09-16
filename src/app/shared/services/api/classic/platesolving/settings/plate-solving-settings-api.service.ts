@@ -76,7 +76,7 @@ export class PlateSolvingSettingsApiService extends BaseClassicApiService {
       headers: new HttpHeaders({
         // Unsetting the Content-Type is necessary, so it gets set to multipart/form-data with the correct boundary.
         "Content-Type": "__unset__",
-        "Content-Disposition": `form-data; name="sample_raw_frame_file"; filename=${file.name}`
+        "Content-Disposition": `form-data; name="sample_raw_frame_file"; filename=${encodeURIComponent(file.name)}`
       })
     };
 
