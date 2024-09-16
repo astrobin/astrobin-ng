@@ -25,7 +25,8 @@ export enum AuthActionTypes {
   LOAD_USER_SUCCESS = "[Auth] Load user success",
   LOAD_USER_FAILURE = "[Auth] Load user failure",
   LOAD_USER_PROFILE = "[Auth] Load user profile",
-  LOAD_USER_PROFILE_SUCCESS = "[Auth] Load user profile success"
+  LOAD_USER_PROFILE_SUCCESS = "[Auth] Load user profile success",
+  LOAD_USER_PROFILE_FAILURE = "[Auth] Load user profile failure"
 }
 
 export class InitializeAuth implements Action {
@@ -123,6 +124,13 @@ export class LoadUserProfileSuccess implements PayloadActionInterface {
   }
 }
 
+export class LoadUserProfileFailure implements PayloadActionInterface {
+  readonly type = AuthActionTypes.LOAD_USER_PROFILE_FAILURE;
+
+  constructor(public payload: { id: UserProfileInterface["id"], error: any }) {
+  }
+}
+
 export type All =
   | InitializeAuth
   | InitializeAuthSuccess
@@ -136,4 +144,5 @@ export type All =
   | LoadUser
   | LoadUserSuccess
   | LoadUserProfile
-  | LoadUserProfileSuccess;
+  | LoadUserProfileSuccess
+  | LoadUserProfileFailure;

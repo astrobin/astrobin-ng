@@ -64,4 +64,5 @@ export interface UserProfileInterface {
   agreedToMarketplaceTerms?: string;
   enableNewSearchExperience?: boolean;
   agreedToIotdTpRulesAndGuidelines?: boolean;
+  galleryHeaderImage?: string;
 }

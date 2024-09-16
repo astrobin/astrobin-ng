@@ -101,7 +101,9 @@
         >
           <img
             [alt]="item.title"
-            [src]="alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail"
+            [ngSrc]="alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail"
+            [style.object-position]="getObjectPosition(item)"
+            fill
           />
 
           <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>

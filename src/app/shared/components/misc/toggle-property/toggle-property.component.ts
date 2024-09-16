@@ -47,6 +47,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   btnClass: string = "btn btn-secondary";
 
   @Input()
+  showIcon = true;
+
+  @Input()
   showLabel = true;
 
   toggleProperty: TogglePropertyInterface | null = null;

@@ -22,4 +22,7 @@ export interface UserInterface {
   marketplaceFeedback: number;
   marketplaceFeedbackCount: number;
   marketplaceListingCount: number;
+  imageCount: number;
+  followerCount: number;
+  followingCount: number;
 }

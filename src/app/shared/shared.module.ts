@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, DatePipe } from "@angular/common";
+import { CommonModule, CurrencyPipe, DatePipe, NgOptimizedImage } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, Injectable, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -115,6 +115,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     NgbAccordionModule,
     NgbDropdownModule,
     NgbNavModule,
+    NgOptimizedImage,
     NgbPaginationModule,
     NgbPopoverModule,
     NgbProgressbarModule,
@@ -185,6 +186,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     NgbPopoverModule,
     NgbProgressbarModule,
     NgImageSliderModule,
+    NgOptimizedImage,
     NgSelectModule,
     NgxSliderModule,
     NgxFilesizeModule,

@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -142,6 +142,7 @@ import { ImageViewerAdjustmentsEditorComponent } from "@shared/components/misc/i
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { AutoSizeInputModule } from "ngx-autosize-input";
 import { ImageViewerObjectsComponent } from "@shared/components/misc/image-viewer/image-viewer-objects.component";
+import { ImageLoadingIndicatorComponent } from "@shared/components/misc/image-loading-indicator/image-loading-indicator.component";
 
 const modules = [
   CommonModule,
@@ -177,7 +178,8 @@ const modules = [
   TranslateModule,
   FormlyModule,
   UploadxModule,
-  AutoSizeInputModule
+  AutoSizeInputModule,
+  NgOptimizedImage
 ];
 
 const components = [
@@ -217,6 +219,7 @@ const components = [
   HeaderComponent,
   HrComponent,
   ImageComponent,
+  ImageLoadingIndicatorComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,
   ImageViewerComponent,

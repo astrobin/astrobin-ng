@@ -80,10 +80,13 @@ astrobin-toggle-property {
   }
 
   &.loading {
-    background: url("/assets/images/white-loader.svg") transparent no-repeat center !important;
-    background-size: 1rem !important;
-    color: transparent !important;
-    text-shadow: none !important;
+    &,
+    .btn-text {
+      background: url("/assets/images/white-loader.svg") transparent no-repeat center !important;
+      background-size: 1rem !important;
+      color: transparent !important;
+      text-shadow: none !important;
+    }
 
     fa-icon {
       color: transparent !important;

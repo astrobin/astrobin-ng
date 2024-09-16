@@ -193,6 +193,32 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     return `/i/${image.hash || image.objectId}`;
   }
 
+  getObjectPosition(image: ImageSearchInterface): string {
+    if (!image.squareCropping) {
+      return '50% 50%'; // Fallback to center
+    }
+
+    const coords = image.squareCropping.split(',').map(Number);
+
+    // Validate that we have exactly 4 numeric coordinates
+    if (coords.length !== 4 || coords.some(isNaN)) {
+      return '50% 50%'; // Fallback to center if parsing failed
+    }
+
+    const [x1, y1, x2, y2] = coords;
+
+    // Calculate the center of the cropping square
+    const centerX = (x1 + x2) / 2;
+    const centerY = (y1 + y2) / 2;
+
+    // Convert the center point to percentages relative to the image dimensions
+    const positionX = (centerX / image.finalW) * 100;
+    const positionY = (centerY / image.finalH) * 100;
+
+    // Return the position in the format 'x% y%'
+    return `${positionX}% ${positionY}%`;
+  }
+
   private _setAverageSizeForRegularAlias(): void {
     if (this.alias === ImageAlias.REGULAR) {
       if (this.deviceService.mdMax()) {

@@ -7,6 +7,7 @@ import {
   LoadUser,
   LoadUserFailure,
   LoadUserProfile,
+  LoadUserProfileFailure,
   LoadUserProfileSuccess,
   LoadUserSuccess,
   Login,
@@ -128,11 +129,10 @@ export class AuthEffects {
                 map(() => new LoadUserProfileSuccess({ userProfile: userProfileFromStore }))
               )
               : this.commonApiService.getUserProfile(payload.id).pipe(
-                map(
-                  userProfile => new LoadUserProfileSuccess({ userProfile }),
-                  catchError(error => EMPTY)
-                )
+                map(userProfile => new LoadUserProfileSuccess({ userProfile }),
+                catchError(error => of(new LoadUserProfileFailure({ id: payload.id, error })))
               )
+            )
           )
         )
       )
