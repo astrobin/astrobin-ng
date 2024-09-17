@@ -996,13 +996,15 @@ export class UtilsService {
       return false;
     }
 
-    const maxDistance = 500;
+    const maxVerticalDistance = 500;
+    const maxHorizontalDistance = 100;
     const rect = element.getBoundingClientRect();
+
     return (
       rect.top >= 0 &&
       rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || window.document.documentElement.clientHeight) + maxDistance &&
-      rect.right <= (window.innerWidth || window.document.documentElement.clientWidth)
+      rect.bottom <= (window.innerHeight || window.document.documentElement.clientHeight) + maxVerticalDistance &&
+      rect.right <= (window.innerWidth || window.document.documentElement.clientWidth) + maxHorizontalDistance
     );
   }
 
