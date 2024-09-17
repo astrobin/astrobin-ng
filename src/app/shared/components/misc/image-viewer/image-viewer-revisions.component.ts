@@ -18,12 +18,12 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
       <div *ngIf="revisionData && revisionData.length > 1" class="revisions">
         <div
           *ngFor="let revision of revisionData"
+          (click)="onRevisionSelected(revision.label)"
           [class.active]="revision.active"
           [class.final]="revision.isFinal"
           class="revision"
         >
           <img
-            (click)="onRevisionSelected(revision.label)"
             [src]="revision.gallery?.url"
             alt=""
           />
@@ -40,6 +40,7 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
             placement="top"
           >
             <fa-icon
+              astrobinEventStopPropagation
               ngbDropdownToggle
               icon="ellipsis"
               class="dropdown-toggle no-toggle"

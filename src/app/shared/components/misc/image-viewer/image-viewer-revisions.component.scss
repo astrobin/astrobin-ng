@@ -102,6 +102,16 @@
           }
         }
       }
+
+      @media (hover: none) and (pointer: coarse) {
+        .dropup {
+          opacity: 1;
+          text-align: center;
+          padding: .15rem 0;
+          top: -2.25rem;
+          border-radius: .5rem;
+        }
+      }
     }
 
     @media (hover: hover) and (pointer: fine) {
