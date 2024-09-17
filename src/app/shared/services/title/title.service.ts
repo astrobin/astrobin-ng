@@ -22,6 +22,7 @@ export class TitleService extends BaseService implements TitleServiceInterface {
 
   public setTitle(title: string) {
     this.titleService.setTitle(title + " - AstroBin");
+    this.meta.updateTag({ name: "og:title", content: title + " - AstroBin" });
   }
 
   public addMetaTag(tag: { name: string; content: string }) {
@@ -30,5 +31,6 @@ export class TitleService extends BaseService implements TitleServiceInterface {
 
   public setDescription(description: string) {
     this.meta.updateTag({ name: "description", content: description });
+    this.meta.updateTag({ name: "og:description", content: description });
   }
 }

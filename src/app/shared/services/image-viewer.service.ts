@@ -1,6 +1,6 @@
 import { Location } from "@angular/common";
 import { ComponentRef, Inject, Injectable, PLATFORM_ID, ViewContainerRef } from "@angular/core";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Store } from "@ngrx/store";
@@ -14,7 +14,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TitleService } from "@shared/services/title/title.service";
 import { ImageService } from "@shared/services/image/image.service";
 
@@ -47,6 +47,21 @@ export class ImageViewerService extends BaseService {
         this.closeActiveImageViewer(false);
       }
     });
+  }
+
+  autoOpenImageViewer(activatedRoute: ActivatedRoute, componentId: string, viewContainerRef: ViewContainerRef): void {
+    const queryParams = activatedRoute.snapshot.queryParams;
+
+    if (queryParams["i"]) {
+      this.openImageViewer(
+        queryParams["i"],
+        queryParams["r"] || FINAL_REVISION_LABEL,
+        activatedRoute.snapshot.fragment?.includes("fullscreen"),
+        componentId,
+        [],
+        viewContainerRef
+      );
+    }
   }
 
   openImageViewer(
