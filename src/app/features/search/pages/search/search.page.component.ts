@@ -78,18 +78,9 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
       distinctUntilChangedObj()
     ).subscribe((queryParams: Record<string, string>) => {
       this.loadModel(queryParams);
-
-      if (queryParams["i"]) {
-        this.imageViewerService.openImageViewer(
-          queryParams["i"],
-          queryParams["r"] || FINAL_REVISION_LABEL,
-          this.activatedRoute.snapshot.fragment?.includes("fullscreen"),
-          this.componentId,
-          [],
-          this.viewContainerRef
-        );
-      }
     });
+
+    this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
   }
 
   loadModel(queryParams: Record<string, string> = {}): void {

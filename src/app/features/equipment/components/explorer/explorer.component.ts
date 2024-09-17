@@ -1,67 +1,24 @@
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  PLATFORM_ID,
-  SimpleChanges,
-  ViewChild
-} from "@angular/core";
+import { Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges, ViewChild, ViewContainerRef } from "@angular/core";
 import { Action, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemReviewerDecision,
-  EquipmentItemType
-} from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormGroup } from "@angular/forms";
 import { LoadingService } from "@shared/services/loading.service";
-import {
-  ApproveEquipmentItemEditProposalSuccess,
-  ApproveEquipmentItemSuccess,
-  AssignItemSuccess,
-  CreateAccessoryEditProposal,
-  CreateCameraEditProposal,
-  CreateFilterEditProposal,
-  CreateMountEditProposal,
-  CreateSensorEditProposal,
-  CreateSoftwareEditProposal,
-  CreateTelescopeEditProposal,
-  EquipmentActionTypes,
-  FindEquipmentItemEditProposals,
-  FreezeEquipmentItemAsAmbiguous,
-  FreezeEquipmentItemAsAmbiguousSuccess,
-  LoadEquipmentItem,
-  LoadMarketplaceListings,
-  UnapproveEquipmentItemSuccess,
-  UnfreezeEquipmentItemAsAmbiguous,
-  UnfreezeEquipmentItemAsAmbiguousSuccess
-} from "@features/equipment/store/equipment.actions";
+import { ApproveEquipmentItemEditProposalSuccess, ApproveEquipmentItemSuccess, AssignItemSuccess, CreateAccessoryEditProposal, CreateCameraEditProposal, CreateFilterEditProposal, CreateMountEditProposal, CreateSensorEditProposal, CreateSoftwareEditProposal, CreateTelescopeEditProposal, EquipmentActionTypes, FindEquipmentItemEditProposals, FreezeEquipmentItemAsAmbiguous, FreezeEquipmentItemAsAmbiguousSuccess, LoadEquipmentItem, LoadMarketplaceListings, UnapproveEquipmentItemSuccess, UnfreezeEquipmentItemAsAmbiguous, UnfreezeEquipmentItemAsAmbiguousSuccess } from "@features/equipment/store/equipment.actions";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import { EditProposalInterface, EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
-import {
-  BaseItemEditorComponent,
-  EquipmentItemEditorMode
-} from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import { BaseItemEditorComponent, EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import {
-  selectEditProposalsForItem,
-  selectEquipmentItem,
-  selectMarketplaceListings
-} from "@features/equipment/store/equipment.selectors";
+import { selectEditProposalsForItem, selectEquipmentItem, selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
@@ -88,6 +45,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { UserService } from "@shared/services/user.service";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageViewerService } from "@shared/services/image-viewer.service";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -195,7 +153,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       );
     })
   );
-
+  protected readonly ImageAlias = ImageAlias;
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
 
@@ -217,7 +175,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly routerService: RouterService,
     public readonly userService: UserService,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly imageViewerService: ImageViewerService,
+    public readonly viewContainerRef: ViewContainerRef
   ) {
     super(store$);
   }
@@ -235,6 +195,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     this._initActiveId();
 
     this.initializeWindowWidthUpdate(this.platformId, this.deviceService, this.windowRefService);
+    this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -851,6 +812,4 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       }
     });
   }
-
-  protected readonly ImageAlias = ImageAlias;
 }
