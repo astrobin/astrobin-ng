@@ -20,12 +20,7 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
         <li ngbNavItem="recent">
           <a ngbNavLink translate="Recent images"></a>
           <ng-template ngbNavContent>
-            <astrobin-image-search
-              [model]="{ userId: user.id, ordering: '-published', pageSize: 50 }"
-              [loadMoreOnScroll]="true"
-              [showRetailers]="false"
-              [showMarketplaceItems]="false"
-            ></astrobin-image-search>
+            <astrobin-user-gallery-images [user]="user"></astrobin-user-gallery-images>
           </ng-template>
         </li>
 

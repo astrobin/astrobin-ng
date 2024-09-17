@@ -17,6 +17,15 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
 import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
 
+export interface FindImagesOptionsInterface {
+  userId?: UserInterface["id"],
+  q?: string,
+  hasDeepSkyAcquisitions?: boolean,
+  hasSolarSystemAcquisitions?: boolean,
+  page?: number,
+  gallerySerializer?: boolean
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -62,12 +71,7 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<number>(`${this.configUrl}/image/public-images-count/?user=${userId}`);
   }
 
-  findImages(options: {
-    userId?: UserInterface["id"],
-    q?: string,
-    hasDeepSkyAcquisitions?: boolean,
-    hasSolarSystemAcquisitions?: boolean
-  }): Observable<PaginatedApiResultInterface<ImageInterface>> {
+  findImages(options: FindImagesOptionsInterface): Observable<PaginatedApiResultInterface<ImageInterface>> {
     let url = `${this.configUrl}/image/`;
 
     if (!!options.userId) {
@@ -84,6 +88,14 @@ export class ImageApiService extends BaseClassicApiService {
 
     if (!!options.hasSolarSystemAcquisitions) {
       url = UtilsService.addOrUpdateUrlParam(url, "has-solarsystem-acquisitions", "1");
+    }
+
+    if (!!options.page) {
+      url = UtilsService.addOrUpdateUrlParam(url, "page", "" + options.page);
+    }
+
+    if (!!options.gallerySerializer) {
+      url = UtilsService.addOrUpdateUrlParam(url, "gallery-serializer", "1");
     }
 
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url);

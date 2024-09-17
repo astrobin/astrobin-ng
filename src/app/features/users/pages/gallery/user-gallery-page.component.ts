@@ -20,9 +20,9 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
       <astrobin-user-gallery-navigation [user]="user"></astrobin-user-gallery-navigation>
     </div>
   `,
-  styleUrls: ["./user-gallery.component.scss"]
+  styleUrls: ["./user-gallery-page.component.scss"]
 })
-export class UserGalleryComponent extends BaseComponentDirective implements OnInit {
+export class UserGalleryPageComponent extends BaseComponentDirective implements OnInit {
   protected user: UserInterface;
   protected userProfile: UserProfileInterface;
 

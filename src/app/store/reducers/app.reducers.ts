@@ -260,7 +260,8 @@ export function appReducer(state = initialAppState, action: All): AppState {
     //   };
     // }
 
-    case AppActionTypes.LOAD_IMAGES_SUCCESS: {
+    case AppActionTypes.LOAD_IMAGES_SUCCESS:
+    case AppActionTypes.FIND_IMAGES_SUCCESS: {
       const flatImages = action.payload.results.map(image => ({
         ...image,
         imagingTelescopes: [],
