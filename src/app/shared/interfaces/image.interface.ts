@@ -269,6 +269,7 @@ export interface ImageInterface {
   averageMoonAge?: number;
   averageMoonIllumination?: number;
   uncompressedSourceFile?: string;
+  finalGalleryThumbnail?: string;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;

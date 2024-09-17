@@ -37,7 +37,8 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly utilsService: UtilsService,
   ) {
     super(store$);
   }
@@ -133,7 +134,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   loadData(): void {
     if (
       isPlatformBrowser(this.platformId) &&
-      this._isNearTop()
+      this.utilsService.isNearTop(this.windowRefService, this.elementRef)
     ) {
       this.loading = false;
       this.initialLoading = true;
@@ -177,7 +178,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   private _onScroll() {
     if (
       isPlatformBrowser(this.platformId) &&
-      this._isNearBottom() &&
+      this.utilsService.isNearBottom(this.windowRefService, this.elementRef) &&
       !this.initialLoading &&
       !this.loading
     ) {
@@ -203,27 +204,5 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     }
 
     return null;
-  }
-
-  private _isNearTop(): boolean {
-    if (isPlatformServer(this.platformId)) {
-      return false;
-    }
-
-    const window = this.windowRefService.nativeWindow;
-    const rect = this.elementRef.nativeElement.getBoundingClientRect();
-
-    return rect.top < window.innerHeight + 2000;
-  }
-
-  private _isNearBottom(): boolean {
-    if (isPlatformServer(this.platformId)) {
-      return false;
-    }
-
-    const window = this.windowRefService.nativeWindow;
-    const rect = this.elementRef.nativeElement.getBoundingClientRect();
-
-    return rect.bottom < window.innerHeight + 2000;
   }
 }

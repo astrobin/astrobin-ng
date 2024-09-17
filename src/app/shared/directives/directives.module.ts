@@ -5,6 +5,7 @@ import { EventPreventDefaultDirective } from "@shared/directives/event-prevent-d
 import { GtagOutboundClickEventDirective } from "@shared/directives/gtag-outbound-click-event/gtag-outbound-click-event.directive";
 import { NoScrollDirective } from "@shared/directives/no-scroll/no-scroll.directive";
 import { ScrollToggleDirective } from "@shared/directives/scroll-toggle.directive";
+import { MasonryLayoutDirective } from "@shared/directives/masonry-layout.directive";
 
 @NgModule({
   declarations: [
@@ -12,14 +13,16 @@ import { ScrollToggleDirective } from "@shared/directives/scroll-toggle.directiv
     EventStopPropagationDirective,
     GtagOutboundClickEventDirective,
     NoScrollDirective,
-    ScrollToggleDirective
+    ScrollToggleDirective,
+    MasonryLayoutDirective
   ],
   exports: [
     EventPreventDefaultDirective,
     EventStopPropagationDirective,
     GtagOutboundClickEventDirective,
     NoScrollDirective,
-    ScrollToggleDirective
+    ScrollToggleDirective,
+    MasonryLayoutDirective
   ],
   imports: [CommonModule]
 })

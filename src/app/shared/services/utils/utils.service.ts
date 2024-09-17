@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { ElementRef, Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
@@ -12,6 +12,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { Buffer } from "buffer";
 import msgpack from "msgpack-lite";
 import pako from "pako";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Injectable({
   providedIn: "root"
@@ -1006,6 +1007,28 @@ export class UtilsService {
       rect.bottom <= (window.innerHeight || window.document.documentElement.clientHeight) + maxVerticalDistance &&
       rect.right <= (window.innerWidth || window.document.documentElement.clientWidth) + maxHorizontalDistance
     );
+  }
+
+  isNearTop(windowRefService: WindowRefService, elementRef: ElementRef): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const window = windowRefService.nativeWindow;
+    const rect = elementRef.nativeElement.getBoundingClientRect();
+
+    return rect.top < window.innerHeight + 2000;
+  }
+
+  isNearBottom(windowRefService: WindowRefService, elementRef: ElementRef): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const window = windowRefService.nativeWindow;
+    const rect = elementRef.nativeElement.getBoundingClientRect();
+
+    return rect.bottom < window.innerHeight + 2000;
   }
 
   delay(ms: number): Observable<void> {

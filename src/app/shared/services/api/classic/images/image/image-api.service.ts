@@ -23,7 +23,8 @@ export interface FindImagesOptionsInterface {
   hasDeepSkyAcquisitions?: boolean,
   hasSolarSystemAcquisitions?: boolean,
   page?: number,
-  gallerySerializer?: boolean
+  gallerySerializer?: boolean,
+  staging?: boolean
 }
 
 @Injectable({
@@ -96,6 +97,10 @@ export class ImageApiService extends BaseClassicApiService {
 
     if (!!options.gallerySerializer) {
       url = UtilsService.addOrUpdateUrlParam(url, "gallery-serializer", "1");
+    }
+
+    if (!!options.staging) {
+      url = UtilsService.addOrUpdateUrlParam(url, "staging", "true");
     }
 
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url);

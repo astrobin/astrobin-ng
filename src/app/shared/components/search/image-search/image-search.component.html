@@ -89,7 +89,12 @@
         <span [innerHTML]="lastResultsCount"></span>
       </div>
 
-      <div class="search-results">
+      <div
+        class="masonry-layout-container"
+        [astrobinMasonryLayout]="results"
+        [alias]="alias"
+        (gridItemsChange)="onGridItemsChange($event)"
+      >
         <a
           *ngFor="let item of gridItems"
           (click)="openImage($event, item)"
@@ -102,7 +107,7 @@
           <img
             [alt]="item.title"
             [ngSrc]="alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail"
-            [style.object-position]="getObjectPosition(item)"
+            [style.object-position]="item.objectPosition"
             fill
           />
 

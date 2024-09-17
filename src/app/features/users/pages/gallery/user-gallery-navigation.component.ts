@@ -18,26 +18,44 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
         class="nav-tabs"
       >
         <li ngbNavItem="recent">
-          <a ngbNavLink translate="Recent images"></a>
+          <a ngbNavLink>
+            <fa-icon icon="images" class="me-2"></fa-icon>
+            <span translate="Recent images"></span>
+          </a>
           <ng-template ngbNavContent>
-            <astrobin-user-gallery-images [user]="user"></astrobin-user-gallery-images>
+            <astrobin-user-gallery-images
+              [user]="user"
+            ></astrobin-user-gallery-images>
           </ng-template>
         </li>
 
         <li *ngIf="currentUserWrapper.user?.id === user.id" ngbNavItem="staging">
-          <a ngbNavLink translate="Staging area"></a>
+          <a ngbNavLink>
+            <fa-icon icon="lock" class="me-2"></fa-icon>
+            <span translate="Staging area"></span>
+          </a>
           <ng-template ngbNavContent>
+            <astrobin-user-gallery-images
+              [user]="user"
+              [options]="{ staging: true }"
+            ></astrobin-user-gallery-images>
           </ng-template>
         </li>
 
         <li ngbNavItem="collections">
-          <a ngbNavLink translate="Collections"></a>
+          <a ngbNavLink>
+            <fa-icon icon="folder" class="me-2"></fa-icon>
+            <span translate="Collections"></span>
+          </a>
           <ng-template ngbNavContent>
           </ng-template>
         </li>
 
         <li ngbNavItem="about">
-          <a ngbNavLink translate="About"></a>
+          <a ngbNavLink>
+            <fa-icon icon="user" class="me-2"></fa-icon>
+            <span translate="About"></span>
+          </a>
           <ng-template ngbNavContent>
           </ng-template>
         </li>
