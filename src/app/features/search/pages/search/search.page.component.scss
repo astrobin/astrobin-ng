@@ -1,6 +1,7 @@
 @import "../../../../styles/breakpoints";
 
 astrobin-search-bar ::ng-deep {
+  display: block;
   position: sticky;
   z-index: 3;
   top: 60px;
