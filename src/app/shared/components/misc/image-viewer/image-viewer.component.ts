@@ -35,6 +35,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
+import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 
 enum SharingMode {
   LINK = "link",
@@ -234,7 +235,8 @@ export class ImageViewerComponent
     public readonly lightboxEvent: LightboxEvent,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly activatedRoute: ActivatedRoute,
-    public readonly userSubscriptionService: UserSubscriptionService
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe
   ) {
     super(store$);
   }
@@ -461,7 +463,7 @@ export class ImageViewerComponent
     this.setMouseHoverImage();
     this.setNavigationContext(navigationContext);
     this._recordHit();
-    this._setTitle();
+    this._setMetaTags();
     this._setAd();
 
     if (this.navigationContextElement) {
@@ -1045,8 +1047,29 @@ export class ImageViewerComponent
       .subscribe();
   }
 
-  private _setTitle(): void {
+  private _setMetaTags(): void {
+    const maxDescriptionLength = 200;
+    let description: string;
+    let image: string;
+
+    if (this.image.descriptionBbcode && this.image.descriptionBbcode.length > 0) {
+      description = this.bbCodeToHtmlPipe.transform(this.image.descriptionBbcode).slice(0, maxDescriptionLength) + "...";
+    } else if (this.image.description && this.image.description.length > 0) {
+      description = this.image.description.slice(0, maxDescriptionLength) + "...";
+    } else {
+      description = this.translateService.instant("An image on AstroBin.");
+    }
+
+    if (this.image.thumbnails && this.image.thumbnails.length > 0) {
+      image = this.image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR).url;
+    }
+
     this.titleService.setTitle(this.image.title);
+    this.titleService.setDescription(description);
+
+    if (image) {
+      this.titleService.addMetaTag({ name: "og:image", content: image });
+    }
   }
 
   private _getPath(
