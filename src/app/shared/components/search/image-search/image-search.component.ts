@@ -77,7 +77,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     super.ngOnInit();
 
     if (this.alias === ImageAlias.GALLERY) {
-      this.averageHeight = 75;
+      this.averageHeight = 80;
     } else {
       this._setAverageSizeForRegularAlias();
     }
@@ -221,10 +221,12 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
   private _setAverageSizeForRegularAlias(): void {
     if (this.alias === ImageAlias.REGULAR) {
-      if (this.deviceService.mdMax()) {
-        this.averageHeight = 150;
+      if (this.deviceService.xsMax()) {
+        this.averageHeight = 80;
       } else if (this.deviceService.smMax()) {
         this.averageHeight = 100;
+      } else if (this.deviceService.mdMax()) {
+        this.averageHeight = 150;
       } else {
         this.averageHeight = 200;
       }
