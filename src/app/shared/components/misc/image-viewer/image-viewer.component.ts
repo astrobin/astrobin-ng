@@ -449,9 +449,9 @@ export class ImageViewerComponent
     this.updateSupportsFullscreen();
 
     if (this.revision.hasOwnProperty("label")) {
-      this.onRevisionSelected((this.revision as ImageRevisionInterface).label);
+      this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
     } else {
-      this.onRevisionSelected(ORIGINAL_REVISION_LABEL);
+      this.onRevisionSelected(ORIGINAL_REVISION_LABEL, false);
     }
 
     if (fullscreenMode) {
@@ -559,7 +559,7 @@ export class ImageViewerComponent
     if (this.viewingFullscreenImage) {
       this.exitFullscreen(false);
     } else {
-      if (event.state?.imageId) {
+      if (event.state?.imageId && event.state?.imageId !== (this.image.hash || this.image.pk)) {
         this._navigateToImage(
           event.state.imageId,
           event.state.revisionLabel || FINAL_REVISION_LABEL,
@@ -636,7 +636,7 @@ export class ImageViewerComponent
     this.imageArea.nativeElement.classList.remove("hover");
   }
 
-  onRevisionSelected(revisionLabel: ImageRevisionInterface["label"]): void {
+  onRevisionSelected(revisionLabel: ImageRevisionInterface["label"], pushState: boolean): void {
     if (this.revisionLabel === revisionLabel) {
       return;
     }
@@ -645,13 +645,15 @@ export class ImageViewerComponent
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     this.setMouseHoverImage();
 
-    this.windowRefService.pushState(
-      {
-        imageId: this.image.hash || this.image.pk,
-        revisionLabel
-      },
-      this._getPath(this.image, revisionLabel)
-    );
+    if (pushState) {
+      this.windowRefService.pushState(
+        {
+          imageId: this.image.hash || this.image.pk,
+          revisionLabel
+        },
+        this._getPath(this.image, revisionLabel)
+      );
+    }
   }
 
   openShare(event: MouseEvent): void {
