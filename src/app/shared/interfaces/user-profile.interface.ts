@@ -65,4 +65,9 @@ export interface UserProfileInterface {
   enableNewSearchExperience?: boolean;
   agreedToIotdTpRulesAndGuidelines?: boolean;
   galleryHeaderImage?: string;
+  imageCount: number;
+  wipImageCount: number;
+  followersCount: number;
+  followingCount: number;
+  displayWipImagesOnPublicGallery?: boolean;
 }

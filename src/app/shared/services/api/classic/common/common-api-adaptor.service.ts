@@ -41,9 +41,6 @@ export interface BackendUserInterface {
   marketplace_feedback: number;
   marketplace_feedback_count: number;
   marketplace_listing_count: number;
-  image_count: number;
-  follower_count: number;
-  following_count: number;
 }
 
 export interface BackendUserProfileInterface {
@@ -110,6 +107,11 @@ export interface BackendUserProfileInterface {
   enable_new_search_experience?: boolean;
   agreed_to_iotd_tp_rules_and_guidelines?: boolean;
   gallery_header_image?: string;
+  image_count?: number;
+  wip_image_count?: number;
+  followers_count?: number;
+  following_count?: number;
+  display_wip_images_on_public_gallery?: boolean;
 }
 
 export interface BackendTogglePropertyInterface {
@@ -161,10 +163,7 @@ export class CommonApiAdaptorService extends BaseService {
       userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission)),
       marketplaceFeedback: user.marketplace_feedback,
       marketplaceFeedbackCount: user.marketplace_feedback_count,
-      marketplaceListingCount: user.marketplace_listing_count,
-      imageCount: user.image_count,
-      followerCount: user.follower_count,
-      followingCount: user.following_count
+      marketplaceListingCount: user.marketplace_listing_count
     };
   }
 
@@ -232,7 +231,12 @@ export class CommonApiAdaptorService extends BaseService {
       agreedToMarketplaceTerms: userProfile.agreed_to_marketplace_terms,
       enableNewSearchExperience: userProfile.enable_new_search_experience,
       agreedToIotdTpRulesAndGuidelines: userProfile.agreed_to_iotd_tp_rules_and_guidelines,
-      galleryHeaderImage: userProfile.gallery_header_image
+      galleryHeaderImage: userProfile.gallery_header_image,
+      imageCount: userProfile.image_count,
+      wipImageCount: userProfile.wip_image_count,
+      followersCount: userProfile.followers_count,
+      followingCount: userProfile.following_count,
+      displayWipImagesOnPublicGallery: userProfile.display_wip_images_on_public_gallery
     };
   }
 

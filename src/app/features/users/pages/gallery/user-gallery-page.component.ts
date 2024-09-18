@@ -16,8 +16,15 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
   selector: "astrobin-user-gallery-page",
   template: `
     <div class="page has-breadcrumb">
-      <astrobin-user-gallery-header [user]="user" [userProfile]="userProfile"></astrobin-user-gallery-header>
-      <astrobin-user-gallery-navigation [user]="user"></astrobin-user-gallery-navigation>
+      <astrobin-user-gallery-header
+        [user]="user"
+        [userProfile]="userProfile"
+      ></astrobin-user-gallery-header>
+
+      <astrobin-user-gallery-navigation
+        [user]="user"
+        [userProfile]="userProfile"
+      ></astrobin-user-gallery-navigation>
     </div>
   `,
   styleUrls: ["./user-gallery-page.component.scss"]

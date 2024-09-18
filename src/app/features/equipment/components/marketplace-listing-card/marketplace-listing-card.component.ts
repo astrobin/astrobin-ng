@@ -27,7 +27,7 @@ export class MarketplaceListingCardComponent extends BaseComponentDirective impl
 
   totalPrice: number;
   displayName: string;
-  imagesCount: number;
+  imageCount: number;
   hasUnassociatedItems: boolean;
   offersCount: number;
 
@@ -63,7 +63,7 @@ export class MarketplaceListingCardComponent extends BaseComponentDirective impl
   }
 
   _buildImagesCount() {
-    this.imagesCount = this.listing.lineItems.reduce((acc, lineItem) => acc + lineItem.images.length, 0);
+    this.imageCount = this.listing.lineItems.reduce((acc, lineItem) => acc + lineItem.images.length, 0);
   }
 
   _buildTotalPrice() {

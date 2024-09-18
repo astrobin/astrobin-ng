@@ -24,7 +24,8 @@ export interface FindImagesOptionsInterface {
   hasSolarSystemAcquisitions?: boolean,
   page?: number,
   gallerySerializer?: boolean,
-  staging?: boolean
+  includeStagingArea?: boolean,
+  onlyStagingArea?: boolean
 }
 
 @Injectable({
@@ -75,33 +76,23 @@ export class ImageApiService extends BaseClassicApiService {
   findImages(options: FindImagesOptionsInterface): Observable<PaginatedApiResultInterface<ImageInterface>> {
     let url = `${this.configUrl}/image/`;
 
-    if (!!options.userId) {
-      url = UtilsService.addOrUpdateUrlParam(url, "user", "" + options.userId);
-    }
+    const params: { [key: string]: any } = {
+      user: options.userId,
+      q: options.q,
+      "has-deepsky-acquisitions": options.hasDeepSkyAcquisitions ? "1" : null,
+      "has-solarsystem-acquisitions": options.hasSolarSystemAcquisitions ? "1" : null,
+      page: options.page,
+      "gallery-serializer": options.gallerySerializer ? "1" : null,
+      "include-staging-area": options.includeStagingArea ? "true" : null,
+      "only-staging-area": options.onlyStagingArea ? "true" : null,
+    };
 
-    if (!!options.q) {
-      url = UtilsService.addOrUpdateUrlParam(url, "q", options.q);
-    }
-
-    if (!!options.hasDeepSkyAcquisitions) {
-      url = UtilsService.addOrUpdateUrlParam(url, "has-deepsky-acquisitions", "1");
-    }
-
-    if (!!options.hasSolarSystemAcquisitions) {
-      url = UtilsService.addOrUpdateUrlParam(url, "has-solarsystem-acquisitions", "1");
-    }
-
-    if (!!options.page) {
-      url = UtilsService.addOrUpdateUrlParam(url, "page", "" + options.page);
-    }
-
-    if (!!options.gallerySerializer) {
-      url = UtilsService.addOrUpdateUrlParam(url, "gallery-serializer", "1");
-    }
-
-    if (!!options.staging) {
-      url = UtilsService.addOrUpdateUrlParam(url, "staging", "true");
-    }
+    // Filter out null or undefined values
+    Object.keys(params).forEach(key => {
+      if (params[key]) {
+        url = UtilsService.addOrUpdateUrlParam(url, key, params[key]);
+      }
+    });
 
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url);
   }

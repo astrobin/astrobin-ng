@@ -9,6 +9,11 @@
     height: 100%;
   }
 
+  img {
+    object-fit: cover;
+    filter: blur(10px);
+  }
+
   .user-info {
     position: absolute;
     bottom: 0;

@@ -1,9 +1,11 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { Router, ActivatedRoute } from "@angular/router";
 
 type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about";
 
@@ -16,6 +18,7 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
         #nav="ngbNav"
         [(activeId)]="active"
         class="nav-tabs"
+        (click)="onTabClick(active)"
       >
         <li ngbNavItem="recent">
           <a ngbNavLink>
@@ -25,6 +28,12 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
           <ng-template ngbNavContent>
             <astrobin-user-gallery-images
               [user]="user"
+              [userProfile]="userProfile"
+              [options]="{
+                includeStagingArea:
+                  currentUserWrapper.user?.id === user.id &&
+                  userProfile.displayWipImagesOnPublicGallery
+              }"
             ></astrobin-user-gallery-images>
           </ng-template>
         </li>
@@ -37,7 +46,8 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
           <ng-template ngbNavContent>
             <astrobin-user-gallery-images
               [user]="user"
-              [options]="{ staging: true }"
+              [userProfile]="userProfile"
+              [options]="{ onlyStagingArea: currentUserWrapper.user?.id === user.id }"
             ></astrobin-user-gallery-images>
           </ng-template>
         </li>
@@ -66,13 +76,30 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
   `,
   styleUrls: ["./user-gallery-navigation.component.scss"]
 })
-export class UserGalleryNavigationComponent extends BaseComponentDirective {
+export class UserGalleryNavigationComponent extends BaseComponentDirective implements OnInit {
   @Input() user: UserInterface;
+  @Input() userProfile: UserProfileInterface;
 
-  protected active: GalleryNavigationComponent;
+  protected active: GalleryNavigationComponent = "recent";
 
-  constructor(public readonly store$: Store<MainState>) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     super(store$);
+  }
+
+  ngOnInit(): void {
+    this.route.fragment.subscribe((fragment: string | null) => {
+      if (fragment) {
+        this.active = fragment as GalleryNavigationComponent;
+      }
+    });
+  }
+
+  onTabClick(tab: GalleryNavigationComponent) {
+    this.router.navigate([], { fragment: tab });
   }
 
   protected readonly ImageAlias = ImageAlias;

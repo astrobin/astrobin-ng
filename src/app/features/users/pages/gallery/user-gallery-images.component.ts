@@ -19,13 +19,18 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { fromEvent, throttleTime } from "rxjs";
 import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-user-gallery-images",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <ng-container *ngIf="loading">
-        <astrobin-loading-indicator></astrobin-loading-indicator>
+        <astrobin-user-gallery-loading
+          *ngIf="loadingPlaceholdersCount"
+          [numberOfImages]="loadingPlaceholdersCount"
+        ></astrobin-user-gallery-loading>
       </ng-container>
 
       <astrobin-nothing-here
@@ -50,6 +55,7 @@ import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/
           [style.min-height.px]="averageHeight"
           [href]="'/i/' + (item.hash || item.id)"
           astrobinEventPreventDefault
+          [class.wip]="item.isWip"
         >
           <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
           <img
@@ -58,6 +64,17 @@ import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/
             [style.object-position]="item.objectPosition"
             fill
           />
+
+          <div class="hover-overlay"></div>
+
+          <fa-icon
+            *ngIf="item.isWip"
+            [ngbTooltip]="'This image is in your staging area' | translate"
+            container="body"
+            triggers="hover click"
+            icon="lock"
+            class="wip-icon"
+          ></fa-icon>
         </a>
       </div>
     </ng-container>
@@ -66,6 +83,7 @@ import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/
 })
 export class UserGalleryImagesComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() user: UserInterface;
+  @Input() userProfile: UserProfileInterface;
   @Input() options: FindImagesOptionsInterface;
 
   protected readonly ImageAlias = ImageAlias;
@@ -74,8 +92,10 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   protected page = 1;
   protected images: ImageInterface[] = [];
   protected loading = false;
+  protected loadingMore = false;
   protected gridItems: MasonryLayoutGridItem[] = [];
   protected averageHeight = 200;
+  protected loadingPlaceholdersCount: number;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -88,7 +108,8 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly paginationConfig: NgbPaginationConfig,
   ) {
     super(store$);
 
@@ -103,6 +124,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
         this.images = payload.results;
       }
       this.next = payload.next;
+      this.loadingMore = false;
       this.loading = false;
     });
   }
@@ -120,6 +142,13 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   ngOnChanges(changes: SimpleChanges) {
     if (changes.user && changes.user.currentValue) {
       this._getImages();
+    }
+
+    if (changes.userProfile && changes.userProfile.currentValue) {
+      this.loadingPlaceholdersCount = Math.min(
+        changes.userProfile.currentValue.imageCount,
+        this.paginationConfig.pageSize
+      );
     }
   }
 
@@ -171,19 +200,25 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   }
 
   private _getImages(): void {
+    if (this.page > 1) {
+      this.loadingMore = true;
+    } else {
+      this.loading = true;
+    }
+
     this.store$.dispatch(new FindImages({
       userId: this.user.id,
       gallerySerializer: true,
       page: this.page,
       ...this.options
     }));
-    this.loading = true;
   }
 
   private _onScroll() {
     if (
       isPlatformServer(this.platformId) ||
       this.loading ||
+      this.loadingMore ||
       this.next === null
     ) {
       return;

@@ -11,13 +11,15 @@ import { userFeatureKey, userReducer } from "@features/users/store/user.reducers
 import { UserGalleryHeaderComponent } from "@features/users/pages/gallery/user-gallery-header.component";
 import { UserGalleryNavigationComponent } from "@features/users/pages/gallery/user-gallery-navigation.component";
 import { UserGalleryImagesComponent } from "@features/users/pages/gallery/user-gallery-images.component";
+import { UserGalleryLoadingComponent } from "@features/users/pages/gallery/user-gallery-loading.component";
 
 @NgModule({
   declarations: [
     UserGalleryPageComponent,
     UserGalleryHeaderComponent,
     UserGalleryNavigationComponent,
-    UserGalleryImagesComponent
+    UserGalleryImagesComponent,
+    UserGalleryLoadingComponent
   ],
   imports: [
     RouterModule.forChild(userRoutes),
