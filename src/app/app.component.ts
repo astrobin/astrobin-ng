@@ -181,11 +181,11 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
 
   setMetaTags(url: string): void {
     this.titleService.addMetaTag({
-      name: "og:type",
+      property: "og:type",
       content: "website"
     });
     this.titleService.addMetaTag({
-      name: "og:url",
+      property: "og:url",
       content:
         this.windowRefService.nativeWindow.location.protocol +
         "//" +

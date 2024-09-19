@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Meta, Title } from "@angular/platform-browser";
+import { Meta, MetaDefinition, Title } from "@angular/platform-browser";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TitleServiceInterface } from "@shared/services/title/title.service-interface";
@@ -27,20 +27,15 @@ export class TitleService extends BaseService implements TitleServiceInterface {
     }
 
     this.titleService.setTitle(title + suffix);
-    this.meta.updateTag({ name: "og:title", content: title + suffix });
+    this.updateMetaTag({ property: "og:title", content: title + suffix });
   }
 
-  public updateMetaTag(tag: { name: string; content: string }) {
-    this.meta.updateTag(tag);
+  public updateMetaTag(tag: MetaDefinition) {
+    this._addOrUpdateMetaTag(tag);
   }
 
-  public addMetaTag(tag: { name: string; content: string }) {
-    const existingTag = this.meta.getTag(`name="${tag.name}"`);
-    if (existingTag) {
-      this.meta.updateTag(tag);
-    } else {
-      this.meta.addTag(tag);
-    }
+  public addMetaTag(tag: MetaDefinition) {
+    this._addOrUpdateMetaTag(tag);
   }
 
   public getDescription(): string {
@@ -48,7 +43,29 @@ export class TitleService extends BaseService implements TitleServiceInterface {
   }
 
   public setDescription(description: string) {
-    this.meta.updateTag({ name: "description", content: description });
-    this.meta.updateTag({ name: "og:description", content: description });
+    this.updateMetaTag({ name: "description", content: description });
+    this.updateMetaTag({ property: "og:description", content: description });
+  }
+
+  private _getExistingMetaTag(tag: MetaDefinition) {
+    if (tag.name) {
+      return this.meta.getTag(`name="${tag.name}"`);
+    }
+
+    if (tag.property) {
+      return this.meta.getTag(`property="${tag.property}"`);
+    }
+
+    return null;
+  }
+
+  private _addOrUpdateMetaTag(tag: MetaDefinition) {
+    const existingTag = this._getExistingMetaTag(tag);
+
+    if (existingTag) {
+      this.meta.updateTag(tag);
+    } else {
+      this.meta.addTag(tag);
+    }
   }
 }

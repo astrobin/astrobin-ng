@@ -112,7 +112,7 @@ export class ImageViewerService extends BaseService {
       this.closeActiveImageViewer(true);
       this.titleService.setTitle(currentPageTitle);
       this.titleService.setDescription(currentPageDescription);
-      this.titleService.updateMetaTag({ name: "og:url", content: currentPageUrl });
+      this.titleService.updateMetaTag({ property: "og:url", content: currentPageUrl });
     });
 
     this._stopBodyScrolling();
