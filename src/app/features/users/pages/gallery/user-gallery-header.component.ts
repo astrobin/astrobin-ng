@@ -24,11 +24,12 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 
       <div class="user-info d-flex justify-content-between">
         <div class="d-flex gap-3 align-items-center">
-          <astrobin-avatar [user]="user"></astrobin-avatar>
+          <astrobin-avatar [user]="user" [link]="false"></astrobin-avatar>
 
           <div class="d-flex flex-column gap-2">
             <div class="d-flex gap-3 align-items-center">
               <astrobin-username [user]="user" [link]="false"></astrobin-username>
+              <div *ngIf="user.displayName !== user.username" class="username">({{ user.username }})</div>
               <astrobin-toggle-property
                 *ngIf="userContentType && currentUserWrapper.user?.id !== user.id"
                 [contentType]="userContentType.id"

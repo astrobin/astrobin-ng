@@ -65,7 +65,30 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
             fill
           />
 
-          <div class="hover-overlay"></div>
+          <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
+
+          <div *ngIf="averageHeight >= 150" class="hover d-flex align-items-center gap-2">
+            <div class="flex-grow-1">
+              <div class="title">{{ item.title }}</div>
+              <div *ngIf="item.published" class="published">{{ item.published | localDate | timeago }}</div>
+              <div *ngIf="!item.published && item.uploaded" class="uploaded">{{ item.uploaded | localDate | timeago }}</div>
+            </div>
+
+            <div class="counters d-flex flex-column gap-1">
+              <div class="counter likes">
+                <fa-icon icon="thumbs-up"></fa-icon>
+                <span class="value">{{ item.likeCount }}</span>
+              </div>
+              <div class="counter bookmarks">
+                <fa-icon icon="bookmark"></fa-icon>
+                <span class="value">{{ item.bookmarkCount }}</span>
+              </div>
+              <div class="counter comments">
+                <fa-icon icon="comment"></fa-icon>
+                <span class="value">{{ item.commentCount }}</span>
+              </div>
+            </div>
+          </div>
 
           <fa-icon
             *ngIf="item.isWip"
