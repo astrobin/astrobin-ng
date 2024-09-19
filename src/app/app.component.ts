@@ -19,6 +19,7 @@ import { TransferState } from "@angular/platform-browser";
 import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { TitleService } from "@shared/services/title/title.service";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -45,7 +46,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     @Inject(CLIENT_IP) public readonly clientIp: string,
     public readonly notificationsService: NotificationsService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly titleService: TitleService
   ) {
     super(store$);
 
@@ -123,6 +125,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
         this.offcanvasService.dismiss();
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);
+        this.setMetaTags(event.urlAfterRedirects);
 
         if (isPlatformBrowser(this.platformId)) {
           this.currentUser$.pipe(
@@ -164,12 +167,31 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   setCanonicalUrl(url: string): void {
-    const canonicalUrl = this.windowRefService.nativeWindow.location.origin + url;
+    const canonicalUrl =
+      this.windowRefService.nativeWindow.location.protocol +
+      "//" +
+      this.windowRefService.nativeWindow.location.host +
+      url;
     let link: HTMLLinkElement = this.document.createElement("link");
 
     link.setAttribute("rel", "canonical");
     this.document.head.appendChild(link);
     link.setAttribute("href", canonicalUrl);
+  }
+
+  setMetaTags(url: string): void {
+    this.titleService.addMetaTag({
+      name: "og:type",
+      content: "website"
+    });
+    this.titleService.addMetaTag({
+      name: "og:url",
+      content:
+        this.windowRefService.nativeWindow.location.protocol +
+        "//" +
+        this.windowRefService.nativeWindow.location.host +
+        url
+    });
   }
 
   markNotificationAsRead() {

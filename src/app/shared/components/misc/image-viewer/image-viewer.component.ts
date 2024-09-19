@@ -463,7 +463,6 @@ export class ImageViewerComponent
     this.setMouseHoverImage();
     this.setNavigationContext(navigationContext);
     this._recordHit();
-    this._setMetaTags();
     this._setAd();
 
     if (this.navigationContextElement) {
@@ -501,6 +500,8 @@ export class ImageViewerComponent
         this._getPath(image, revisionLabel, fullscreenMode)
       );
     }
+
+    this._setMetaTags();
   }
 
   setMouseHoverImage() {
@@ -1070,6 +1071,11 @@ export class ImageViewerComponent
     if (image) {
       this.titleService.addMetaTag({ name: "og:image", content: image });
     }
+
+    this.titleService.addMetaTag({
+      name: "og:url",
+      content: this.windowRefService.getCurrentUrl().toString()
+    });
   }
 
   private _getPath(
