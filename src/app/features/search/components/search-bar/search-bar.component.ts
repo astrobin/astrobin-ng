@@ -75,6 +75,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   protected readonly SearchType = SearchType;
   protected readonly SearchTextFilterComponent = SearchTextFilterComponent;
   protected readonly placeholder = this.translateService.instant("Type here to search");
+  protected readonly isBrowser: boolean;
   protected isTouchDevice = false;
   protected showAutoCompleteGroups = false;
   protected autoCompleteGroups: SearchAutoCompleteGroups = {};
@@ -99,6 +100,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     public readonly offcanvasService: NgbOffcanvas
   ) {
     super(store$);
+
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngOnInit(): void {
@@ -175,7 +178,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       changes.model.currentValue &&
       JSON.stringify(changes.model.currentValue) !== JSON.stringify(changes.model.previousValue)
     ) {
-      if (isPlatformBrowser(this.platformId)) {
+      if (this.isBrowser) {
         // No point of doing this on the server because the container ref will not be defined.
         this.clearFilters();
         this.initializeFilters();
@@ -184,15 +187,17 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   ngAfterViewInit(): void {
-    if (this.deviceService.isTouchEnabled()) {
-      this.searchInputEl.nativeElement.blur();
-    } else {
-      this.searchInputEl.nativeElement.focus();
+    if (this.isBrowser) {
+      if (this.deviceService.isTouchEnabled()) {
+        this.searchInputEl.nativeElement.blur();
+      } else {
+        this.searchInputEl.nativeElement.focus();
+      }
     }
   }
 
   ngOnDestroy(): void {
-    if (isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.document?.removeEventListener) {
+    if (this.isBrowser && this.windowRefService.nativeWindow.document?.removeEventListener) {
       this.windowRefService.nativeWindow.document.removeEventListener("click", this.onDocumentClick.bind(this));
     }
 
@@ -232,7 +237,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   @HostListener("window:keyup.arrowRight", ["$event"])
   selectNextAutoCompleteItem(event: KeyboardEvent) {
-    if (isPlatformBrowser(this.platformId) && event) {
+    if (this.isBrowser && event) {
       event.preventDefault();
       const groupOrder = this.getGroupOrder();
       const currentGroupIndex = groupOrder.indexOf(this.selectedAutoCompleteGroup);
@@ -255,7 +260,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   @HostListener("window:keyup.arrowLeft", ["$event"])
   selectPreviousAutoCompleteItem(event: KeyboardEvent) {
-    if (isPlatformBrowser(this.platformId) && event) {
+    if (this.isBrowser && event) {
       event.preventDefault();
       const groupOrder = this.getGroupOrder();
       const currentGroupIndex = groupOrder.indexOf(this.selectedAutoCompleteGroup);
@@ -277,7 +282,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   @HostListener("window:keyup.arrowUp", ["$event"])
   selectPreviousAutoCompleteGroup(event: KeyboardEvent) {
-    if (isPlatformBrowser(this.platformId) && event && !this.deviceService.smMax()) {
+    if (this.isBrowser && event && !this.deviceService.smMax()) {
       event.preventDefault();
       const groupOrder = this.getGroupOrder();
       const currentGroupIndex = groupOrder.indexOf(this.selectedAutoCompleteGroup);
@@ -293,7 +298,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   @HostListener("window:keyup.arrowDown", ["$event"])
   selectNextAutoCompleteGroup(event: KeyboardEvent) {
-    if (isPlatformBrowser(this.platformId) && event && !this.deviceService.smMax()) {
+    if (this.isBrowser && event && !this.deviceService.smMax()) {
       event.preventDefault();
       const groupOrder = this.getGroupOrder();
       const currentGroupIndex = groupOrder.indexOf(this.selectedAutoCompleteGroup);

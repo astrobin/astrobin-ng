@@ -25,6 +25,17 @@
         }
       }
 
+      .search-bar-input-loading-indicator {
+        width: auto;
+        padding: 0;
+        height: calc(2rem + 4px);
+
+        ::ng-deep .btn {
+          width: 1rem;
+          padding: 0;
+        }
+      }
+
       .search-bar-input {
         background: none;
         border: 0;

@@ -73,6 +73,8 @@ export class ImageViewerService extends BaseService {
     viewContainerRef: ViewContainerRef
   ): ComponentRef<ImageViewerComponent> {
     const currentPageTitle = this.titleService.getTitle();
+    const currentPageDescription = this.titleService.getDescription();
+    const currentPageUrl = this.windowRefService.getCurrentUrl().toString();
 
     if (this.activeImageViewer) {
       return this.activeImageViewer;
@@ -109,6 +111,8 @@ export class ImageViewerService extends BaseService {
     this.activeImageViewer.instance.closeViewer.subscribe(() => {
       this.closeActiveImageViewer(true);
       this.titleService.setTitle(currentPageTitle);
+      this.titleService.setDescription(currentPageDescription);
+      this.titleService.updateMetaTag({ name: "og:url", content: currentPageUrl });
     });
 
     this._stopBodyScrolling();

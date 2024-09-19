@@ -21,12 +21,30 @@ export class TitleService extends BaseService implements TitleServiceInterface {
   }
 
   public setTitle(title: string) {
-    this.titleService.setTitle(title + " - AstroBin");
-    this.meta.updateTag({ name: "og:title", content: title + " - AstroBin" });
+    const suffix = " - AstroBin";
+    if (title.endsWith(suffix)) {
+      title = title.replace(suffix, "");
+    }
+
+    this.titleService.setTitle(title + suffix);
+    this.meta.updateTag({ name: "og:title", content: title + suffix });
+  }
+
+  public updateMetaTag(tag: { name: string; content: string }) {
+    this.meta.updateTag(tag);
   }
 
   public addMetaTag(tag: { name: string; content: string }) {
-    this.meta.addTag(tag);
+    const existingTag = this.meta.getTag(`name="${tag.name}"`);
+    if (existingTag) {
+      this.meta.updateTag(tag);
+    } else {
+      this.meta.addTag(tag);
+    }
+  }
+
+  public getDescription(): string {
+    return this.meta.getTag("name='description'")?.content;
   }
 
   public setDescription(description: string) {

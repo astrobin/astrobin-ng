@@ -10,7 +10,13 @@
       action="#"
       class="search-form d-flex align-items-center w-100"
     >
+      <astrobin-loading-indicator
+        *ngIf="!isBrowser"
+        class="search-bar-input-loading-indicator"
+      >
+      </astrobin-loading-indicator>
       <input
+        *ngIf="isBrowser"
         #searchInput="ngModel"
         (keydown.escape)="closeAutoCompleteSuggestions($event)"
         (ngModelChange)="onModelChangeDebounced($event)"
