@@ -67,6 +67,12 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 
           <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
 
+          <div class="badges">
+            <fa-icon *ngIf="item.isIotd" class="iotd" icon="trophy"></fa-icon>
+            <fa-icon *ngIf="item.isTopPick" class="top-pick" icon="star"></fa-icon>
+            <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
+          </div>
+
           <div *ngIf="averageHeight >= 150" class="hover d-flex align-items-center gap-2">
             <div class="flex-grow-1">
               <div class="title">{{ item.title }}</div>
