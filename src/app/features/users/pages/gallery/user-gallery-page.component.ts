@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, OnInit, ViewContainerRef } from "@angular/core";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -9,8 +9,9 @@ import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { takeUntil } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { ImageViewerService } from "@shared/services/image-viewer.service";
 
 @Component({
   selector: "astrobin-user-gallery-page",
@@ -39,9 +40,20 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     public readonly route: ActivatedRoute,
     public readonly windowRefService: WindowRefService,
     public readonly titleService: TitleService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly router: Router,
+    public readonly imageViewerService: ImageViewerService,
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly viewContainerRef: ViewContainerRef
   ) {
     super(store$);
+
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
+    });
   }
 
   ngOnInit(): void {
