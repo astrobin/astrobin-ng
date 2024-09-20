@@ -53,6 +53,10 @@ export class ImageViewerService extends BaseService {
     const queryParams = activatedRoute.snapshot.queryParams;
 
     if (queryParams["i"]) {
+      if (this.activeImageViewer) {
+        this.closeActiveImageViewer(false);
+      }
+
       this.openImageViewer(
         queryParams["i"],
         queryParams["r"] || FINAL_REVISION_LABEL,

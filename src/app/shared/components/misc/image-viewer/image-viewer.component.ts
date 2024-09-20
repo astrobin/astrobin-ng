@@ -1108,4 +1108,6 @@ export class ImageViewerComponent
 
     return path;
   }
+
+  protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
 }

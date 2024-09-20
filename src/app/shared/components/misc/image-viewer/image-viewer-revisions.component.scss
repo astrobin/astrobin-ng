@@ -44,6 +44,7 @@
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
         transition: border-radius .2s ease-in-out;
+        pointer-events: none;
       }
 
       .add-revision {
@@ -65,13 +66,16 @@
         top: -2rem;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, .5);
+        background: rgba(0, 0, 0, .85);
+        border: 1px solid var(--lightGrey);
         color: var(--white);
         opacity: 0;
         transition: opacity .2s ease-in-out;
 
         .ng-fa-icon {
           padding: .5rem;
+          font-size: 1.25rem;
+          color: var(--white);
         }
       }
 

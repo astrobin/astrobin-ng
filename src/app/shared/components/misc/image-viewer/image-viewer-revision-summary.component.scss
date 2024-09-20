@@ -1,0 +1,13 @@
+.revision-summary {
+  padding: 0 .5rem;
+  color: var(--lighterGrey);
+
+  > div:not(:last-child) {
+    margin-bottom: 1rem;
+
+    strong {
+      display: block;
+      margin-bottom: .25rem;
+    }
+  }
+}

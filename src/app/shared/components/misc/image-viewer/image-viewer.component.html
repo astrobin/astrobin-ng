@@ -292,16 +292,16 @@
       class="image-viewer-banner-component"
     ></astrobin-image-viewer-custom-message-banner>
 
-      <astrobin-image-viewer-title
-        [image]="image"
-        [revisionLabel]="revisionLabel"
-      ></astrobin-image-viewer-title>
+    <astrobin-image-viewer-title
+      [image]="image"
+      [revisionLabel]="revisionLabel"
+    ></astrobin-image-viewer-title>
 
-      <astrobin-image-viewer-photographers
-        *ngIf="userContentType"
-        [image]="image"
-        [userContentType]="userContentType"
-      ></astrobin-image-viewer-photographers>
+    <astrobin-image-viewer-photographers
+      *ngIf="userContentType"
+      [image]="image"
+      [userContentType]="userContentType"
+    ></astrobin-image-viewer-photographers>
 
     <div class="metadata-striped">
       <astrobin-image-viewer-groups-and-collections
@@ -337,6 +337,11 @@
     ></astrobin-image-viewer-equipment>
 
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+
+    <astrobin-image-viewer-revision-summary
+      *ngIf="revisionLabel !== ORIGINAL_REVISION_LABEL"
+      [revision]="revision"
+    ></astrobin-image-viewer-revision-summary>
 
     <ng-container [ngTemplateOutlet]="moreFromThisUserTemplate"></ng-container>
 
