@@ -11,6 +11,18 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { TranslateService } from "@ngx-translate/core";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 
+interface RevisionDataInterface {
+  active: boolean;
+  id: ImageRevisionInterface["pk"];
+  label: ImageRevisionInterface["label"];
+  title: string;
+  description: string;
+  published: string;
+  isFinal: boolean;
+  original: string;
+  gallery: ImageThumbnailInterface;
+}
+
 @Component({
   selector: "astrobin-image-viewer-revisions",
   template: `
@@ -30,7 +42,8 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
           <span
             *ngIf="revision.label !== FINAL_REVISION_LABEL && revision.label !== ORIGINAL_REVISION_LABEL"
             class="label"
-          >{{ revision.label }}
+          >
+            {{ revision.label }}
           </span>
 
           <div
@@ -121,14 +134,7 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
   @Output()
   revisionSelected = new EventEmitter<ImageRevisionInterface["label"]>();
 
-  revisionData: {
-    active: boolean;
-    id: ImageRevisionInterface["pk"];
-    label: ImageRevisionInterface["label"];
-    isFinal: boolean;
-    original: string;
-    gallery: ImageThumbnailInterface;
-  }[];
+  revisionData: RevisionDataInterface[];
   protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
   protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
 
@@ -155,6 +161,9 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
         id: image.pk,
         active: this.activeLabel === ORIGINAL_REVISION_LABEL,
         label: ORIGINAL_REVISION_LABEL,
+        title: image.title,
+        description: null,
+        published: image.published || image.uploaded,
         isFinal: image.isFinal,
         original: image.videoFile || image.imageFile,
         gallery: image.thumbnails.find(thumbnail =>
@@ -165,6 +174,9 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
         id: revision.pk,
         active: this.activeLabel === revision.label,
         label: revision.label,
+        title: revision.title,
+        description: revision.description,
+        published: revision.uploaded,
         isFinal: revision.isFinal,
         original: revision.videoFile || revision.imageFile,
         gallery: revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY)
