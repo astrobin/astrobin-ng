@@ -29,7 +29,7 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
         <div class="d-flex gap-3 align-items-center">
           <astrobin-avatar [user]="user" [link]="false"></astrobin-avatar>
 
-          <div class="d-flex flex-column gap-2">
+          <div class="d-flex flex-column gap-1">
             <div class="d-flex gap-3 align-items-center">
               <astrobin-username [user]="user" [link]="false"></astrobin-username>
               <div *ngIf="user.displayName !== user.username" class="username">({{ user.username }})</div>

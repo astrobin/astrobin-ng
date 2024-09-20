@@ -10,13 +10,12 @@ import { TranslateService } from "@ngx-translate/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { filter, takeUntil } from "rxjs/operators";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 
 @Component({
   selector: "astrobin-user-gallery-page",
   template: `
-    <div class="page has-breadcrumb">
+    <div class="page">
       <astrobin-user-gallery-header
         [user]="user"
         [userProfile]="userProfile"
@@ -69,7 +68,6 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     });
 
     this._setMetaTags();
-    this._setBreadcrumb();
   }
 
   private _setMetaTags() {
@@ -84,14 +82,5 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     if (this.user.avatar) {
       this.titleService.addMetaTag({ name: "og:gallery", content: this.user.avatar });
     }
-  }
-
-  private _setBreadcrumb() {
-    this.store$.dispatch(new SetBreadcrumb({
-      breadcrumb: [
-        { label: this.translateService.instant("User") },
-        { label: this.user.displayName }
-      ]
-    }));
   }
 }
