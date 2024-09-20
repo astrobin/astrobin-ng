@@ -70,9 +70,9 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
             <span translate="Marketplace"></span>
           </a>
           <ng-template ngbNavContent>
-            <astrobin-marketplace-listing-cards
-              [listings]="listings$ | async"
-            ></astrobin-marketplace-listing-cards>
+            <astrobin-user-gallery-marketplace
+              [user]="user"
+            ></astrobin-user-gallery-marketplace>
           </ng-template>
         </li>
 

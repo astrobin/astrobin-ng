@@ -145,6 +145,8 @@ import { ImageViewerObjectsComponent } from "@shared/components/misc/image-viewe
 import { UserSearchComponent } from "@shared/components/search/user-search/user-search.component";
 import { ImageViewerRevisionSummaryComponent } from "@shared/components/misc/image-viewer/image-viewer-revision-summary.component";
 import { ImageLoadingIndicatorComponent } from "@shared/components/misc/image-loading-indicator/image-loading-indicator.component";
+import { MarketplaceListingCardComponent } from "@shared/components/equipment/marketplace-listing-card/marketplace-listing-card.component";
+import { MarketplaceListingCardsComponent } from "@shared/components/equipment/marketplace-listing-cards/marketplace-listing-cards.component";
 
 const modules = [
   CommonModule,
@@ -250,6 +252,8 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  MarketplaceListingCardComponent,
+  MarketplaceListingCardsComponent,
   MobileMenuComponent,
   MoreRelatedItemsModalComponent,
   MostOftenUsedWithModalComponent,
