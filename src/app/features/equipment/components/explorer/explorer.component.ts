@@ -3,7 +3,7 @@ import { Action, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -180,6 +180,13 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly viewContainerRef: ViewContainerRef
   ) {
     super(store$);
+
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
+    });
   }
 
   get contentType$(): Observable<ContentTypeInterface | null> {
@@ -195,7 +202,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     this._initActiveId();
 
     this.initializeWindowWidthUpdate(this.platformId, this.deviceService, this.windowRefService);
-    this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
   }
 
   ngOnChanges(changes: SimpleChanges) {

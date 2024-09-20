@@ -6,13 +6,11 @@ import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { SolutionService } from "@shared/services/solution/solution.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
 
 @Component({
