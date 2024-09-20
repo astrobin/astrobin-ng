@@ -37,7 +37,7 @@
       <div
         *ngIf="
           !showAutoCompleteGroups &&
-          model.searchType === SearchType.IMAGE &&
+          (model.searchType === SearchType.IMAGE || model.searchType === undefined) &&
           model.text?.value?.length > 2 &&
           searchInputNgModel?.dirty
         "

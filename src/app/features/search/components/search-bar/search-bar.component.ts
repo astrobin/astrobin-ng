@@ -5,7 +5,7 @@ import { MainState } from "@app/store/state";
 import { SearchModelInterface, SearchType } from "@features/search/interfaces/search-model.interface";
 import { SearchAutoCompleteItem, SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { concatMap, debounceTime, filter, map, takeUntil, tap } from "rxjs/operators";
-import { forkJoin, from, Observable, Subject } from "rxjs";
+import { forkJoin, from, Observable, of, Subject } from "rxjs";
 import { SearchSubjectsFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subjects-filter.component";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
@@ -729,6 +729,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   private _updateModelWithMagicAutoComplete(value: string): Observable<SearchAutoCompleteItem[][]> {
     // Checks if any autocomplete items are a perfect match. If they are, updates the model with that item type and
     // empties the text. Otherwise, it sets the text.
+
+    if (this.model.searchType !== SearchType.IMAGE && this.model.searchType !== undefined) {
+      this.modelChanged.emit(this.model);
+      return of([]);
+    }
 
     const normalizeLabel = (label: string) => label.toLowerCase().replace(/\s/g, "");
 
