@@ -384,7 +384,7 @@
             icon="comments"
           ></fa-icon>
         </button>
-        <span class="count">
+        <span *ngIf="image.allowComments" class="count">
           <astrobin-nested-comments-count
             [contentType]="imageContentType"
             [objectId]="image.pk"
@@ -411,14 +411,22 @@
 
 <ng-template #nestedCommentsTemplate let-offcanvas>
   <div class="offcanvas-body">
-    <astrobin-nested-comments
-      *ngIf="imageContentType; else loadingTemplate"
-      (close)="offcanvas.dismiss()"
-      [autoStartTopLevelStrategy]="NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS"
-      [contentType]="imageContentType"
-      [objectId]="image.pk"
-      [showCloseButton]="true"
-    ></astrobin-nested-comments>
+    <ng-container *ngIf="!image.allowComments">
+      <p class="p-2 mt-3 text-center">
+        {{ "The photographer has not enabled comments for this image." | translate }}
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="image.allowComments">
+      <astrobin-nested-comments
+        *ngIf="imageContentType; else loadingTemplate"
+        (close)="offcanvas.dismiss()"
+        [autoStartTopLevelStrategy]="NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS"
+        [contentType]="imageContentType"
+        [objectId]="image.pk"
+        [showCloseButton]="true"
+      ></astrobin-nested-comments>
+    </ng-container>
   </div>
 </ng-template>
 

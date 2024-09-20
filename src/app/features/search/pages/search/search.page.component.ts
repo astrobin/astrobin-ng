@@ -11,7 +11,6 @@ import { filter, map, startWith, takeUntil } from "rxjs/operators";
 import { merge } from "rxjs";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
@@ -52,6 +51,13 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$);
+
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
+    });
   }
 
   ngOnInit() {
@@ -79,8 +85,6 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     ).subscribe((queryParams: Record<string, string>) => {
       this.loadModel(queryParams);
     });
-
-    this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
   }
 
   loadModel(queryParams: Record<string, string> = {}): void {
@@ -116,6 +120,13 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
   }
 
   updateUrl(): void {
+    const currentUrlParams = decodeURIComponent(this.activatedRoute.snapshot.queryParams['p']);
+    const modelParams = decodeURIComponent(this.searchService.modelToParams(this.model));
+
+    if (currentUrlParams === modelParams) {
+      return;
+    }
+
     const { page, pageSize, ...model } = this.model;
 
     if (

@@ -1069,11 +1069,11 @@ export class ImageViewerComponent
     this.titleService.setDescription(description);
 
     if (image) {
-      this.titleService.addMetaTag({ name: "og:image", content: image });
+      this.titleService.addMetaTag({ property: "og:image", content: image });
     }
 
     this.titleService.addMetaTag({
-      name: "og:url",
+      property: "og:url",
       content: this.windowRefService.getCurrentUrl().toString()
     });
   }

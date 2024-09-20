@@ -32,8 +32,8 @@ export abstract class ImageViewerSectionBaseComponent extends BaseComponentDirec
 
   search(model: SearchModelInterface): void {
     const params = this.searchService.modelToParams(model);
+    this.imageViewerService.closeActiveImageViewer(false);
     this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-      this.imageViewerService.closeActiveImageViewer(false);
       this.windowRefService.scroll({ top: 0 });
     });
   }

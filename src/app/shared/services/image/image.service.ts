@@ -344,7 +344,7 @@ export class ImageService extends BaseService {
   humanizeLicenseOption(value: LicenseOptions): string {
     switch (value) {
       case LicenseOptions.ALL_RIGHTS_RESERVED:
-        return this.translateService.instant("None (All rights reserved)");
+        return this.translateService.instant("All rights reserved");
       case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE:
         return this.translateService.instant("Attribution-NonCommercial-ShareAlike Creative Commons");
       case LicenseOptions.ATTRIBUTION_NON_COMMERCIAL:

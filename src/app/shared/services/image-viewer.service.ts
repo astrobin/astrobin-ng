@@ -53,6 +53,10 @@ export class ImageViewerService extends BaseService {
     const queryParams = activatedRoute.snapshot.queryParams;
 
     if (queryParams["i"]) {
+      if (this.activeImageViewer) {
+        this.closeActiveImageViewer(false);
+      }
+
       this.openImageViewer(
         queryParams["i"],
         queryParams["r"] || FINAL_REVISION_LABEL,
@@ -112,7 +116,7 @@ export class ImageViewerService extends BaseService {
       this.closeActiveImageViewer(true);
       this.titleService.setTitle(currentPageTitle);
       this.titleService.setDescription(currentPageDescription);
-      this.titleService.updateMetaTag({ name: "og:url", content: currentPageUrl });
+      this.titleService.updateMetaTag({ property: "og:url", content: currentPageUrl });
     });
 
     this._stopBodyScrolling();
