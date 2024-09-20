@@ -18,7 +18,7 @@ import {
   GetOthersInBrandSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { Observable } from "rxjs";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";

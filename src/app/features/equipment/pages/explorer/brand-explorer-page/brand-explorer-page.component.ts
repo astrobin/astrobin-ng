@@ -28,7 +28,7 @@ import { CookieService } from "ngx-cookie";
 import { LoadingService } from "@shared/services/loading.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";

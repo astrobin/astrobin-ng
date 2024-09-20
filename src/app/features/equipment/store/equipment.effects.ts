@@ -161,7 +161,7 @@ import { SelectorWithProps } from "@ngrx/store/src/models";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { LocalDatePipe } from "@shared/pipes/local-date.pipe";
 

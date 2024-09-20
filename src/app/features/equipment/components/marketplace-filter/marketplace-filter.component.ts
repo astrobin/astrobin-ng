@@ -2,7 +2,7 @@ import { Component, EventEmitter, Inject, OnInit, Output, PLATFORM_ID } from "@a
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -25,7 +25,7 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { take } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 
 export const marketplaceFilterModelKeys: string[] = [
   "listingType",

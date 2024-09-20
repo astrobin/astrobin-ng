@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompareService, ComparisonInterface } from "@features/equipment/services/compare.service";
-import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemDisplayProperty } from "@shared/services/equipment-item.service";
 import { fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";

@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { CameraType } from "@features/equipment/types/camera.interface";

@@ -14,7 +14,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-reject-edit-proposal-modal",

@@ -7,7 +7,7 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { FormGroup } from "@angular/forms";
 import { LoadingService } from "@shared/services/loading.service";
 import { ApproveEquipmentItemEditProposalSuccess, ApproveEquipmentItemSuccess, AssignItemSuccess, CreateAccessoryEditProposal, CreateCameraEditProposal, CreateFilterEditProposal, CreateMountEditProposal, CreateSensorEditProposal, CreateSoftwareEditProposal, CreateTelescopeEditProposal, EquipmentActionTypes, FindEquipmentItemEditProposals, FreezeEquipmentItemAsAmbiguous, FreezeEquipmentItemAsAmbiguousSuccess, LoadEquipmentItem, LoadMarketplaceListings, UnapproveEquipmentItemSuccess, UnfreezeEquipmentItemAsAmbiguous, UnfreezeEquipmentItemAsAmbiguousSuccess } from "@features/equipment/store/equipment.actions";

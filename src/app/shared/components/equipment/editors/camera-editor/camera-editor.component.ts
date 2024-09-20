@@ -13,7 +13,7 @@ import { MainState } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";

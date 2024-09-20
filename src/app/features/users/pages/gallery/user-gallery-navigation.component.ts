@@ -64,6 +64,18 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
           </ng-template>
         </li>
 
+        <li ngbNavItem="marketplace">
+          <a ngbNavLink>
+            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+            <span translate="Marketplace"></span>
+          </a>
+          <ng-template ngbNavContent>
+            <astrobin-marketplace-listing-cards
+              [listings]="listings$ | async"
+            ></astrobin-marketplace-listing-cards>
+          </ng-template>
+        </li>
+
         <li ngbNavItem="about">
           <a ngbNavLink>
             <fa-icon icon="user" class="me-2"></fa-icon>

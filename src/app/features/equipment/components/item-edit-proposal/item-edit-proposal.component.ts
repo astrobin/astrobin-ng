@@ -8,7 +8,7 @@ import {
   EditProposalReviewStatus
 } from "@features/equipment/types/edit-proposal.interface";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import {
   ApproveEquipmentItemEditProposalSuccess,
   EquipmentActionTypes,

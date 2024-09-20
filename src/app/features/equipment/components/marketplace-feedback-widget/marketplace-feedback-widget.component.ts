@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { map, take, takeUntil } from "rxjs/operators";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";

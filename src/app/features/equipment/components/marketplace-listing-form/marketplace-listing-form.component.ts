@@ -34,7 +34,7 @@ import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content
 import { Constants } from "@shared/constants";
 import { TranslateService } from "@ngx-translate/core";
 import * as countryJs from "country-js";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";

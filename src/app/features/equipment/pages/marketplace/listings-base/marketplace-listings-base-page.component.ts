@@ -24,7 +24,7 @@ import { CountrySelectionModalComponent } from "@shared/components/misc/country-
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 import { DeviceService } from "@shared/services/device.service";
 
 @Component({

@@ -6,8 +6,8 @@ import {
 } from "@features/equipment/types/marketplace-listing.interface";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { CountryService } from "@shared/services/country.service";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";

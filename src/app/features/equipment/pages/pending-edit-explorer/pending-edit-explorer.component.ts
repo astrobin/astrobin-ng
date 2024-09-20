@@ -15,7 +15,7 @@ import {
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { CookieService } from "ngx-cookie";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { DeviceService } from "@shared/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 

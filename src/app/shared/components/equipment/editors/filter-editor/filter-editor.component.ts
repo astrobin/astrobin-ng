@@ -10,7 +10,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { MainState } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { FormlyFieldMessage, FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterInterface, FilterSize, FilterType } from "@features/equipment/types/filter.interface";
