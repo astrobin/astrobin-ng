@@ -13,6 +13,7 @@ import { UserGalleryNavigationComponent } from "@features/users/pages/gallery/us
 import { UserGalleryImagesComponent } from "@features/users/pages/gallery/user-gallery-images.component";
 import { UserGalleryLoadingComponent } from "@features/users/pages/gallery/user-gallery-loading.component";
 import { UserGalleryMarketplaceComponent } from "@features/users/pages/gallery/user-gallery-marketplace.component";
+import { UserGalleryAboutComponent } from "@features/users/pages/gallery/user-gallery-about.component";
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { UserGalleryMarketplaceComponent } from "@features/users/pages/gallery/u
     UserGalleryNavigationComponent,
     UserGalleryImagesComponent,
     UserGalleryLoadingComponent,
-    UserGalleryMarketplaceComponent
+    UserGalleryMarketplaceComponent,
+    UserGalleryAboutComponent
   ],
   imports: [
     RouterModule.forChild(userRoutes),
