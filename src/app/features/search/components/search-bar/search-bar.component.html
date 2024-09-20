@@ -35,7 +35,12 @@
       />
 
       <div
-        *ngIf="!showAutoCompleteGroups && model.text?.value?.length > 2 && searchInputNgModel?.dirty"
+        *ngIf="
+          !showAutoCompleteGroups &&
+          model.searchType === SearchType.IMAGE &&
+          model.text?.value?.length > 2 &&
+          searchInputNgModel?.dirty
+        "
         class="tab-or-enter-hint"
       >
         <ng-container *ngIf="isTouchDevice">
@@ -322,6 +327,18 @@
             <fa-icon
               icon="check"
               *ngIf="model.searchType === SearchType.COMMENTS"
+            ></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onSearchTypeChanged(SearchType.USERS)"
+          >
+            <fa-icon [icon]="getSearchTypeIcon(SearchType.USERS)"></fa-icon>
+            <span>{{ "Users" | translate }}</span>
+            <fa-icon
+              icon="check"
+              *ngIf="model.searchType === SearchType.USERS"
             ></fa-icon>
           </button>
         </div>

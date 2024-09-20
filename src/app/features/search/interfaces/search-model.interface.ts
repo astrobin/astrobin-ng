@@ -6,7 +6,8 @@ import { MatchType } from "@features/search/enums/match-type.enum";
 export enum SearchType {
   IMAGE = "image",
   FORUM = "forums",
-  COMMENTS = "comments"
+  COMMENTS = "comments",
+  USERS = "users"
 }
 
 export interface SearchModelInterface {

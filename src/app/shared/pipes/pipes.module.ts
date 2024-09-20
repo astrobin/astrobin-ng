@@ -27,6 +27,7 @@ import { HighlightPipe } from "@shared/pipes/highlight.pipe";
 import { RemoveBrPipe } from "@shared/pipes/remove-br.pipe";
 import { AddDaysPipe } from "@shared/pipes/add-days.pipe";
 import { UtcToLocalPipe } from "@shared/pipes/utc-to-local.pipe";
+import { NumberSuffixPipe } from "@shared/pipes/number-suffix.pipe";
 
 const pipes = [
   BBCodeToHtmlPipe,
@@ -55,7 +56,8 @@ const pipes = [
   HighlightPipe,
   RemoveBrPipe,
   AddDaysPipe,
-  UtcToLocalPipe
+  UtcToLocalPipe,
+  NumberSuffixPipe
 ];
 
 @NgModule({
