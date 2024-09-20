@@ -38,7 +38,10 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
           </ng-template>
         </li>
 
-        <li *ngIf="currentUserWrapper.user?.id === user.id" ngbNavItem="staging">
+        <li
+          *ngIf="currentUserWrapper.user?.id === user.id && !userProfile.displayWipImagesOnPublicGallery"
+          ngbNavItem="staging"
+        >
           <a ngbNavLink>
             <fa-icon icon="lock" class="me-2"></fa-icon>
             <span translate="Staging area"></span>

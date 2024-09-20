@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -8,11 +8,14 @@ import { MainState } from "@app/store/state";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { filter, map, take } from "rxjs/operators";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface, UserProfileStatsInterface } from "@shared/interfaces/user-profile.interface";
 import { FindImages, FindImagesSuccess, LoadImages } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { DeviceService } from "@shared/services/device.service";
+import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
 
 @Component({
   selector: "astrobin-user-gallery-header",
@@ -51,11 +54,42 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
                 [translateParams]="{'0': userProfile.wipImageCount}"></span>
               <span [translate]="'{{ 0 }} followers'" [translateParams]="{'0': userProfile.followersCount}"></span>
               <span [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"></span>
+              <a
+                (click)="openStatsOffcanvas()"
+                astrobinEventPreventDefault
+                class="btn btn-xs btn-outline-secondary"
+                href=""
+                translate="More"
+              ></a>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <ng-template #statsOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">{{ user.displayName }}</h5>
+        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <table *ngIf="stats; else loadingTemplate" class="table table-striped">
+          <tbody>
+          <tr *ngFor="let stat of stats.stats">
+            <td>{{ stat[0] }}</td>
+            <td *ngIf="!stat[2]">{{ stat[1] }}</td>
+            <td *ngIf="stat[2] && stat[2] === 'datetime'">
+              {{ stat[1] | localDate | timeago }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-template>
+
+    <ng-template #loadingTemplate>
+      <astrobin-loading-indicator></astrobin-loading-indicator>
+    </ng-template>
   `,
   styleUrls: ["./user-gallery-header.component.scss"]
 })
@@ -63,11 +97,17 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
+  @ViewChild("statsOffcanvas") statsOffcanvas: TemplateRef<any>;
+
   protected userContentType: ContentTypeInterface;
+  protected stats: UserProfileStatsInterface;
 
   constructor(
     public readonly store$: Store<MainState>,
-    public readonly imageApiService: ImageApiService
+    public readonly imageApiService: ImageApiService,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly deviceService: DeviceService,
+    public readonly commonApiService: CommonApiService
   ) {
     super(store$);
     this._setUserContentType();
@@ -75,6 +115,20 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
 
   ngOnInit() {
     super.ngOnInit();
+  }
+
+  protected openStatsOffcanvas() {
+    this.offcanvasService.open(
+      this.statsOffcanvas, {
+        position: this.deviceService.offcanvasPosition()
+      }
+    )
+
+    if (!this.stats) {
+      this.commonApiService.getUserProfileStats(this.userProfile.id).subscribe(stats => {
+        this.stats = stats;
+      });
+    }
   }
 
   private _setUserContentType() {

@@ -71,3 +71,7 @@ export interface UserProfileInterface {
   followingCount: number;
   displayWipImagesOnPublicGallery?: boolean;
 }
+
+export interface UserProfileStatsInterface {
+  stats: { 0: string, 1: string, 2?: string }[];
+}

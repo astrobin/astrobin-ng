@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { PaymentInterface } from "@shared/interfaces/payment.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface, UserProfileStatsInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import {
@@ -76,6 +76,11 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     return this.http
       .get<BackendUserProfileInterface>(`${this.configUrl}/userprofiles/${id}/`)
       .pipe(map((user: BackendUserProfileInterface) => this.commonApiAdaptorService.userProfileFromBackend(user)));
+  }
+
+  getUserProfileStats(id: UserProfileInterface["id"]): Observable<UserProfileStatsInterface> {
+    return this.http
+      .get<UserProfileStatsInterface>(`${this.configUrl}/userprofiles/${id}/stats/`);
   }
 
   getUserProfileByUserId(userId: UserInterface["id"]): Observable<UserProfileInterface> {
