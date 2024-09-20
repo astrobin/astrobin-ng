@@ -1,0 +1,75 @@
+@import "../../../../styles/breakpoints";
+
+.search-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .card {
+    cursor: pointer;
+    width: calc(100% / 5 - 1rem);
+    overflow: hidden;
+
+    .card-header {
+      box-shadow: 0 0 0 1px var(--gray-300);
+
+      h4 {
+        font-size: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        .highlight {
+          background-color: var(--gold);
+          color: var(--black);
+          padding: .125rem;
+          border-radius: .125rem;
+        }
+      }
+    }
+
+    .card-body {
+      padding: 0;
+      border-bottom-left-radius: var(--bs-border-radius);
+      border-bottom-right-radius: var(--bs-border-radius);
+      overflow: hidden;
+
+      .avatar {
+        width: 100%;
+      }
+
+      .info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        background: rgba(0, 0, 0, .75);
+        padding: .5rem 0;
+
+        .images,
+        .likes,
+        .followers {
+          display: flex;
+          flex-direction: column;
+          gap: .25rem;
+          text-align: center;
+        }
+      }
+    }
+
+    @media (max-width: $md-max) {
+      width: calc(100% / 4 - 1rem);
+    }
+
+    @media (max-width: $sm-max) {
+      width: calc(100% / 3 - 1rem);
+    }
+  }
+
+  .loading {
+    width: 100%;
+    margin: 2rem 0;
+  }
+}

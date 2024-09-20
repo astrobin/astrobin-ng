@@ -26,5 +26,11 @@
     class="d-block mt-3"
   ></astrobin-nested-comment-search>
 
+  <astrobin-user-search
+    *ngIf="model.searchType === SearchType.USERS"
+    [model]="model"
+    class="d-block mt-3"
+  ></astrobin-user-search>
+
   <astrobin-scroll-to-top></astrobin-scroll-to-top>
 </div>

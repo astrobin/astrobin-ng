@@ -1,0 +1,48 @@
+<div class="search-results">
+  <ng-container *ngIf="!initialLoading; else loadingTemplate">
+    <ng-container *ngIf="results !== null; else loadingTemplate">
+      <ng-container *ngIf="results.length > 0; else noResultsTemplate">
+        <div
+          (click)="openUser(user)"
+          *ngFor="let user of results" class="card"
+        >
+          <div class="card-header">
+              <h4 [innerHTML]="(user.displayName || user.username) | highlight:model.text?.value"></h4>
+          </div>
+          <div class="card-body">
+            <img [src]="avatarUrl(user)" [alt]="user.displayName" class="avatar" />
+
+            <div class="info">
+              <span class="images">
+                <fa-icon icon="image" [ngbTooltip]="'Images' | translate" container="body"></fa-icon>
+                <span>{{ user.images | numberSuffix }}</span>
+              </span>
+
+              <span class="likes">
+                <fa-icon icon="thumbs-up" [ngbTooltip]="'Likes' | translate" container="body"></fa-icon>
+                <span>{{ user.totalLikesReceived | numberSuffix }}</span>
+              </span>
+
+              <span class="followers">
+                <fa-icon icon="user-group" [ngbTooltip]="'Followers' | translate" container="body"></fa-icon>
+                <span>{{ user.followers | numberSuffix }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+
+  <div *ngIf="loading && !initialLoading" class="loading">
+    <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
+  </div>
+</div>
+
+<ng-template #noResultsTemplate>
+  <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

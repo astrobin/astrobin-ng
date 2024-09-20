@@ -142,6 +142,8 @@ import { ImageViewerAdjustmentsEditorComponent } from "@shared/components/misc/i
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { AutoSizeInputModule } from "ngx-autosize-input";
 import { ImageViewerObjectsComponent } from "@shared/components/misc/image-viewer/image-viewer-objects.component";
+import { UserSearchComponent } from "@shared/components/search/user-search/user-search.component";
+import { ImageViewerRevisionSummaryComponent } from "@shared/components/misc/image-viewer/image-viewer-revision-summary.component";
 import { ImageLoadingIndicatorComponent } from "@shared/components/misc/image-loading-indicator/image-loading-indicator.component";
 
 const modules = [
@@ -235,6 +237,7 @@ const components = [
   ImageViewerObjectsComponent,
   ImageViewerEquipmentComponent,
   ImageViewerRevisionsComponent,
+  ImageViewerRevisionSummaryComponent,
   ImageViewerGroupsAndCollectionsComponent,
   ImageViewerPlateSolvingBannerComponent,
   ImageViewerCloseButtonComponent,
@@ -266,6 +269,7 @@ const components = [
   ToggleButtonComponent,
   TogglePropertyComponent,
   UsernameComponent,
+  UserSearchComponent,
 
   // Equipment
   AccessoryEditorComponent,
