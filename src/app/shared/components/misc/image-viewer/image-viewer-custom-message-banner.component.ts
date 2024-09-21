@@ -16,13 +16,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       <ng-container [ngTemplateOutlet]="messageTemplate"></ng-container>
     </div>
   `,
-  styles: [
-    `
-      .image-viewer-banner {
-        font-size: .9rem;
-      }
-    `
-  ]
+  styleUrls: ["./image-viewer-custom-message-banner.component.scss"]
 })
 export class ImageViewerCustomMessageBannerComponent extends ImageViewerSectionBaseComponent {
   @Input() messageTemplate: TemplateRef<any>;

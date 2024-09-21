@@ -131,7 +131,7 @@ import { ImageViewerRevisionsComponent } from "@shared/components/misc/image-vie
 import { HammerModule } from "@angular/platform-browser";
 import { LightboxModule } from "ngx-lightbox";
 import { ImageViewerWipBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-wip-banner.component";
-import { ImageViewerMenuComponent } from "@shared/components/misc/image-viewer/image-viewer-menu";
+import { ImageViewerMenuComponent } from "@shared/components/misc/image-viewer/image-viewer-menu.component";
 import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/loading-dialog.component";
 import { ImageViewerGroupsAndCollectionsComponent } from "@shared/components/misc/image-viewer/image-viewer-groups-and-collections.component";
 import { ImageViewerCustomMessageBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-custom-message-banner.component";
@@ -144,6 +144,7 @@ import { AutoSizeInputModule } from "ngx-autosize-input";
 import { ImageViewerObjectsComponent } from "@shared/components/misc/image-viewer/image-viewer-objects.component";
 import { UserSearchComponent } from "@shared/components/search/user-search/user-search.component";
 import { ImageViewerRevisionSummaryComponent } from "@shared/components/misc/image-viewer/image-viewer-revision-summary.component";
+import { ImageViewerIotdBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-banner.component";
 
 
 const modules = [
@@ -241,6 +242,7 @@ const components = [
   ImageViewerCloseButtonComponent,
   ImageViewerAdditionalButtonComponent,
   ImageViewerAdjustmentsEditorComponent,
+  ImageViewerIotdBannerComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,

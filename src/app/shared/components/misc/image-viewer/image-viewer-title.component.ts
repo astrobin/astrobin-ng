@@ -27,18 +27,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
           ></small>
         </ng-container>
 
-        <div *ngIf="image.isIotd || image.isTopPick || image.isTopPickNomination" class="iotd-tp">
-          <span *ngIf="image.iotdDate" class="iotd">
-            <span class="label">
-              <fa-icon icon="trophy"></fa-icon>
-              {{ "Image of the day" | translate }}:
-            </span>
-            <span class="date">
-              {{ image.iotdDate | date:"mediumDate" }}
-            </span>
-            <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
-          </span>
-
+        <div *ngIf="!image.iotdDate && (image.isTopPick || image.isTopPickNomination)" class="iotd-tp">
           <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
             <span class="label">
               <fa-icon icon="star"></fa-icon>

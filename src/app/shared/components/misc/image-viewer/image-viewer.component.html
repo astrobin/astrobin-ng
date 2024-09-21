@@ -272,6 +272,11 @@
       [configName]="adConfig"
     ></astrobin-ad-manager>
 
+    <astrobin-image-viewer-iotd-banner
+      *ngIf="image.isIotd"
+      [image]="image"
+    ></astrobin-image-viewer-iotd-banner>
+
     <astrobin-image-viewer-wip-banner
       *ngIf="image.isWip && currentUserWrapper.user?.id === image.user"
       [image]="image"
