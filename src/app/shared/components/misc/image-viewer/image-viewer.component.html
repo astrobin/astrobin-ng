@@ -212,7 +212,7 @@
 </ng-template>
 
 <ng-template #moreFromThisUserTemplate>
-  <div class="metadata-header mt-5 mb-3">{{ "More from this user" | translate }}</div>
+  <div class="metadata-header mb-2">{{ "More from this user" | translate }}</div>
   <astrobin-image-search
     [alias]="ImageAlias.GALLERY"
     [model]="{ userId: image.user, ordering: '-likes', pageSize: 25 }"
@@ -224,7 +224,7 @@
 </ng-template>
 
 <ng-template #similarToThisTemplate>
-  <div class="metadata-header mt-5 mb-3">
+  <div class="metadata-header mb-2">
     <ng-container
       *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null; else relatedImagesLabelTemplate"
     >

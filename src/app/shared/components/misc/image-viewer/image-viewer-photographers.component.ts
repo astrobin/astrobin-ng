@@ -125,7 +125,7 @@ import { LoadingService } from "@shared/services/loading.service";
               <div class="text-center text-sm-start">
                 <a
                   [href]="classicRoutesService.GALLERY(photographers[0].username)"
-                  class="d-block"
+                  class="d-inline me-2"
                 >
                   {{ photographers[0].displayName }}
                 </a>
@@ -139,7 +139,7 @@ import { LoadingService } from "@shared/services/loading.service";
                   [showIcon]="false"
                   [setLabel]="'Follow' | translate"
                   [unsetLabel]="'Unfollow' | translate"
-                  class="d-block btn-no-block mt-1"
+                  class="d-inline-block btn-no-block"
                   btnClass="btn btn-xs btn-no-block btn-outline-secondary"
                   propertyType="follow"
                 ></astrobin-toggle-property>
@@ -147,7 +147,12 @@ import { LoadingService } from "@shared/services/loading.service";
             </div>
           </ng-container>
 
-          <astrobin-image-viewer-social-buttons [image]="image"></astrobin-image-viewer-social-buttons>
+          <astrobin-image-viewer-social-buttons
+            [image]="image"
+            [showComments]="false"
+            [showShare]="false"
+            btnExtraClasses="btn-lg"
+          ></astrobin-image-viewer-social-buttons>
         </div>
       </div>
     </ng-container>

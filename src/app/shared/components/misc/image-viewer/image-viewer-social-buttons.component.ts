@@ -23,19 +23,13 @@ import { isPlatformBrowser } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
 
-enum SharingMode {
-  LINK = "link",
-  BBCODE = "bbcode",
-  HTML = "html"
-}
-
 @Component({
   selector: "astrobin-image-viewer-social-buttons",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div class="social-buttons d-flex gap-2 align-items-start">
+      <div class="social-buttons d-flex gap-2 align-items-center">
         <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
-          <div class="like">
+          <div *ngIf="showLike" class="like">
             <astrobin-toggle-property
               [contentType]="imageContentType.id"
               [disabled]="currentUserWrapper.user?.id === image.user"
@@ -44,12 +38,12 @@ enum SharingMode {
               [userId]="currentUserWrapper.user?.id"
               [count]="image.likeCount"
               class="btn-no-block"
-              btnClass="btn btn-sm btn-no-block"
+              btnClass="btn btn-no-block {{ btnExtraClasses }}"
               propertyType="like"
             ></astrobin-toggle-property>
           </div>
 
-          <div class="bookmark">
+          <div *ngIf="showBookmark" class="bookmark">
             <astrobin-toggle-property
               [contentType]="imageContentType.id"
               [objectId]="image.pk"
@@ -57,15 +51,15 @@ enum SharingMode {
               [showLabel]="false"
               [count]="image.bookmarkCount"
               class="btn-no-block"
-              btnClass="btn btn-sm btn-no-block"
+              btnClass="btn btn-no-block {{ btnExtraClasses }}"
               propertyType="bookmark"
             ></astrobin-toggle-property>
           </div>
 
-          <div *ngIf="image.allowComments" class="comment">
+          <div *ngIf="image.allowComments && showComments" class="comment">
             <button
               (click)="scrollToComments($event)"
-              class="btn btn-sm btn-no-block"
+              class="btn btn-no-block {{ btnExtraClasses }}"
             >
               <fa-icon
                 [ngbTooltip]="'Comments' | translate"
@@ -83,43 +77,15 @@ enum SharingMode {
             </button>
           </div>
 
-          <div class="share">
-            <button
-              (click)="openShare($event)"
-              class="btn btn-sm btn-no-block"
-            >
-              <fa-icon
-                [ngbTooltip]="'Share' | translate"
-                triggers="hover click"
-                container="body"
-                icon="share"
-              ></fa-icon>
-            </button>
+          <div *ngIf="showShare" class="share">
+            <astrobin-image-viewer-share-button
+              [image]="image"
+              [revisionLabel]="revisionLabel"
+            ></astrobin-image-viewer-share-button>
           </div>
         </ng-container>
       </div>
     </ng-container>
-
-    <ng-template #shareTemplate let-offcanvas>
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title">{{ 'Share' | translate }}</h5>
-        <button
-          type="button"
-          class="btn-close"
-          (click)="offcanvas.dismiss()"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="offcanvas-body">
-        <form>
-          <formly-form
-            [form]="shareForm"
-            [fields]="shareFields"
-            [model]="shareModel"
-          ></formly-form>
-        </form>
-      </div>
-    </ng-template>
   `,
   styleUrls: ["./image-viewer-social-buttons.component.scss"]
 })
@@ -130,57 +96,16 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
   @Input()
   revision: ImageInterface | ImageRevisionInterface;
 
+  @Input() showLike = true;
+  @Input() showBookmark = true;
+  @Input() showComments = true;
+  @Input() showShare = true;
+  @Input() btnExtraClasses = ""
+
   @ViewChild("shareTemplate")
   shareTemplate: TemplateRef<any>;
 
   protected imageContentType: ContentTypeInterface;
-  protected readonly shareForm: FormGroup = new FormGroup({});
-  protected shareModel: {
-    sharingMode: SharingMode;
-    copyThis: string;
-  } = {
-    sharingMode: SharingMode.LINK,
-    copyThis: ""
-  };
-  protected readonly shareFields: FormlyFieldConfig[] = [
-    {
-      key: "sharingMode",
-      type: "ng-select",
-      wrappers: ["default-wrapper"],
-      defaultValue: SharingMode.LINK,
-      props: {
-        label: this.translateService.instant("Sharing mode"),
-        options: [
-          { value: SharingMode.LINK, label: this.translateService.instant("Simple link") },
-          { value: SharingMode.BBCODE, label: this.translateService.instant("Forums (BBCode)") },
-          { value: SharingMode.HTML, label: this.translateService.instant("HTML") }
-        ],
-        searchable: false,
-        clearable: false
-      },
-      hooks: {
-        onInit: field => {
-          field.formControl.valueChanges.subscribe(() => {
-            this.shareModel = {
-              ...this.shareModel,
-              copyThis: this.getSharingValue(this.shareModel.sharingMode)
-            };
-          });
-        }
-      }
-    },
-    {
-      key: "copyThis",
-      type: "textarea",
-      wrappers: ["default-wrapper"],
-      defaultValue: this.getSharingValue(SharingMode.LINK),
-      props: {
-        label: this.translateService.instant("Copy this"),
-        rows: 5,
-        readonly: true
-      }
-    }
-  ];
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -210,38 +135,6 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       appLabel: "astrobin",
       model: "image"
     }));
-  }
-
-  openShare(event: MouseEvent): void {
-    event.preventDefault();
-
-    this.shareModel = {
-      sharingMode: SharingMode.LINK,
-      copyThis: this.getSharingValue(SharingMode.LINK)
-    };
-
-    this.offcanvasService.open(this.shareTemplate, {
-      position: this.deviceService.offcanvasPosition(),
-      panelClass: "image-viewer-share-offcanvas"
-    });
-  }
-
-  protected getSharingValue(sharingMode: SharingMode): string {
-    if (!this.revision) {
-      return "";
-    }
-
-    const galleryThumbnailUrl = this.revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url;
-    const url = this.imageService.getShareUrl(this.image, this.revisionLabel);
-
-    switch (sharingMode) {
-      case SharingMode.LINK:
-        return url;
-      case SharingMode.BBCODE:
-        return `[url=${url}][img]${galleryThumbnailUrl}[/img][/url]`;
-      case SharingMode.HTML:
-        return `<a href="${url}"><img src="${galleryThumbnailUrl}" /></a>`;
-    }
   }
 
   protected scrollToComments(event: MouseEvent) {

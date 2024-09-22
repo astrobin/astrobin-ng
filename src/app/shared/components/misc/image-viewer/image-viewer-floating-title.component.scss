@@ -32,4 +32,8 @@
       font-size: 1rem;
     }
   }
+
+  astrobin-image-viewer-social-buttons ::ng-deep .social-buttons {
+    gap: .75rem !important;
+  }
 }

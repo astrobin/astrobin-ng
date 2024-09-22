@@ -75,10 +75,14 @@ $maxAspectRatio: 1/1;
 
     .metadata-header {
       @include darkest-background-texture;
-      margin: 1.75rem 0 0.25rem;
+      margin: 2.5rem 0 0.25rem;
       padding: .5rem .75rem;
       color: var(--lightestGrey);
       border-radius: var(--bs-border-radius);
+
+      + .metadata-section {
+        padding-top: .5rem;
+      }
     }
 
     .metadata-section {

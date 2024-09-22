@@ -137,6 +137,7 @@ import { UserSearchComponent } from "@shared/components/search/user-search/user-
 import { ImageViewerRevisionSummaryComponent } from "@shared/components/misc/image-viewer/image-viewer-revision-summary.component";
 import { ImageViewerSocialButtonsComponent } from "@shared/components/misc/image-viewer/image-viewer-social-buttons.component";
 import { ImageViewerFloatingTitleComponent } from "@shared/components/misc/image-viewer/image-viewer-floating-title.component";
+import { ImageViewerShareButtonComponent } from "@shared/components/misc/image-viewer/image-viewer-share-button.component";
 
 
 const modules = [
@@ -223,6 +224,7 @@ const components = [
   ImageViewerFloatingTitleComponent,
   ImageViewerPhotographersComponent,
   ImageViewerSocialButtonsComponent,
+  ImageViewerShareButtonComponent,
   ImageViewerDataSourceComponent,
   ImageViewerAcquisitionComponent,
   ImageViewerAcquisitionDatesComponent,

@@ -5,7 +5,7 @@
       margin: 0 !important;
     }
 
-    .btn {
+    .btn:not(.btn-link) {
       display: flex;
       align-items: center;
       gap: .5rem;

@@ -101,6 +101,12 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
           ></astrobin-image-viewer-menu>
         </div>
       </div>
+
+      <astrobin-image-viewer-share-button
+        [image]="image"
+        [revisionLabel]="revisionLabel"
+        class="p-1"
+      ></astrobin-image-viewer-share-button>
     </div>
     </ng-container>
 
