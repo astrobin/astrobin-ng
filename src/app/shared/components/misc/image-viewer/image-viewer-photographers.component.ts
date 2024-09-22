@@ -39,7 +39,7 @@ import { LoadingService } from "@shared/services/loading.service";
             <button
               (click)="acceptCollaboratorRequest(currentUserWrapper.user.id)"
               [ngbTooltip]="'Accept' | translate"
-              class="btn btn-xs btn-success"
+              class="btn btn-xs btn-success m-0"
               [class.loading]="loadingService.loading$ | async"
               container="body"
               triggers="hover"
@@ -50,7 +50,7 @@ import { LoadingService } from "@shared/services/loading.service";
             <button
               (click)="denyCollaboratorRequest(currentUserWrapper.user.id)"
               [ngbTooltip]="'Deny' | translate"
-              class="btn btn-xs btn-danger"
+              class="btn btn-xs btn-danger m-0"
               [class.loading]="loadingService.loading$ | async"
               container="body"
               triggers="hover"

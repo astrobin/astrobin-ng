@@ -47,7 +47,7 @@ interface DetailedFilterSummary {
           <div class="metadata-icon">
             <fa-icon icon="clock"></fa-icon>
           </div>
-          <div class="metadata-label">{{ solarSystemIntegration }}</div>
+          <div class="metadata-label" [innerHTML]="solarSystemIntegration"></div>
         </div>
 
         <div *ngIf="dates?.length" class="metadata-item">
@@ -83,6 +83,7 @@ interface DetailedFilterSummary {
             <span
               *ngIf="deepSkyIntegrationTime"
               [innerHTML]="deepSkyIntegrationTime"
+              class="no-wrap"
             ></span>
 
             <span *ngIf="!deepSkyIntegrationTime">
@@ -90,14 +91,12 @@ interface DetailedFilterSummary {
             </span>
           </th>
 
-          <th>
-            <div *ngIf="dates?.length">
-              <astrobin-image-viewer-acquisition-dates [dates]="dates"></astrobin-image-viewer-acquisition-dates>
-            </div>
+          <th *ngIf="dates?.length" class="d-none d-md-table-cell">
+            <astrobin-image-viewer-acquisition-dates [dates]="dates"></astrobin-image-viewer-acquisition-dates>
           </th>
 
-          <th>
-            <span *ngIf="image.averageMoonIllumination !== null">
+          <th *ngIf="dates?.length">
+            <span *ngIf="image.averageMoonIllumination !== null" class="no-wrap">
               <fa-icon icon="moon"></fa-icon>
               {{ image.averageMoonIllumination | percent }}
             </span>
@@ -130,12 +129,13 @@ interface DetailedFilterSummary {
               <div class="metadata-label">
                 <span
                   [innerHTML]="imageService.formatIntegration(filterSummary.summary.totalIntegration)"
+                  class="no-wrap"
                 ></span>
               </div>
             </div>
           </td>
 
-          <td>
+          <td *ngIf="dates?.length" class="d-none d-md-table-cell">
             <div class="metadata-item">
               <div class="metadata-label">
                 <astrobin-image-viewer-acquisition-dates
@@ -145,11 +145,12 @@ interface DetailedFilterSummary {
             </div>
           </td>
 
-          <td>
+          <td *ngIf="dates?.length">
             <div class="metadata-item">
               <div class="metadata-label">
                 <span
                   *ngIf="filterSummary.summary.averageMoonIllumination !== null"
+                  class="no-wrap"
                 >
                   <fa-icon icon="moon"></fa-icon>
                   {{ filterSummary.summary.averageMoonIllumination | percent }}
@@ -192,7 +193,14 @@ interface DetailedFilterSummary {
             </tr>
 
             <tr *ngFor="let detail of detailedFilterSummaries[filterType].details">
-              <td *ngIf="detail.date" class="date">{{ detail.date | localDate | date:"mediumDate" }}</td>
+              <td class="date">
+                <ng-container *ngIf="detail.date">
+                  {{ detail.date | localDate | date:"mediumDate" }}
+                </ng-container>
+                <ng-container *ngIf="!detail.date">
+                  {{ "Unknown date" | translate }}
+                </ng-container>
+              </td>
 
               <td>
                 <ng-container *ngIf="detail.name">

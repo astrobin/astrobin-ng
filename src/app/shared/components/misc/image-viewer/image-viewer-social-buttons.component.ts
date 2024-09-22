@@ -1,4 +1,4 @@
-import { Component, Inject, Input, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { Component, Inject, Input, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageService } from "@shared/services/image/image.service";
@@ -20,6 +20,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { isPlatformBrowser } from "@angular/common";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 
 enum SharingMode {
@@ -192,8 +193,8 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
     public readonly deviceService: DeviceService,
     public readonly windowRefService: WindowRefService,
     public readonly translateService: TranslateService,
-    public readonly renderer: Renderer2,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly utilsService: UtilsService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
 
@@ -248,31 +249,41 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       return;
     }
 
-    // Get the sticky element and calculate its height
-    const adManagerElement: HTMLElement = this.windowRefService.nativeWindow.document.querySelector(
+    const nativeWindow = this.windowRefService.nativeWindow;
+    const document = nativeWindow.document;
+
+    const adManagerElement: HTMLElement | null = document.querySelector(
       "astrobin-image-viewer .data-area astrobin-ad-manager"
-    )
+    );
+
+    const floatingTitleElement: HTMLElement | null = document.querySelector(
+      "astrobin-image-viewer astrobin-image-viewer-floating-title"
+    );
 
     let offsetHeight = 0;
 
     if (adManagerElement) {
-      const computedStyle = window.getComputedStyle(adManagerElement);
-      if (computedStyle.position === "sticky") {
-        offsetHeight = adManagerElement.offsetHeight;
+      const computedStyle = nativeWindow.getComputedStyle(adManagerElement);
+      if (computedStyle.position === "sticky" || computedStyle.position === "fixed") {
+        offsetHeight += adManagerElement.offsetHeight;
       }
     }
 
-    // Get the position of the comments section
-    const commentsSection = this.windowRefService.nativeWindow.document.getElementById("image-viewer-comments-header");
-    const scrollArea = this._getScrollArea();
+    if (floatingTitleElement) {
+      offsetHeight += floatingTitleElement.offsetHeight;
+    }
+
+    const commentsSection: HTMLElement | null = document.getElementById("image-viewer-comments-header");
+    const scrollArea: HTMLElement | null = this._getScrollArea();
 
     if (commentsSection && scrollArea) {
-      // Get the comments section position relative to the .data-area container
-      const commentsPosition = commentsSection.offsetTop;
+      // Calculate the position of commentsSection relative to scrollArea
+      const commentsRect = commentsSection.getBoundingClientRect();
+      const scrollAreaRect = scrollArea.getBoundingClientRect();
+      const offset = commentsRect.top - scrollAreaRect.top + scrollArea.scrollTop - offsetHeight - 10;
 
-      // Scroll the .data-area element to the adjusted position
       scrollArea.scrollTo({
-        top: commentsPosition - offsetHeight - 10,
+        top: offset,
         behavior: "smooth"
       });
     }
