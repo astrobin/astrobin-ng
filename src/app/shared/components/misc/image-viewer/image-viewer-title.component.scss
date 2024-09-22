@@ -9,19 +9,36 @@
       small {
         font-size: .75rem;
         color: var(--lightGrey);
-        margin-left: .5rem;
-        display: inline-block;
-        margin-bottom: 3px;
-        vertical-align: middle;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .75rem;
+        margin-top: .5rem;
+
+        > span:not(:last-child) {
+          &::after {
+            content: '\b7'; /* middot */
+            display: inline-block;
+            margin-left: .5rem;
+          }
+        }
 
         &.original-filename {
           word-break: break-all;
         }
       }
+
+      .license-icon {
+        color: var(--accentColor);
+        cursor: help;
+        font-size: .7rem;
+        line-height: 1rem;
+        margin-right: .5rem;
+      }
     }
 
     .iotd-tp {
-      margin-top: .5rem;
+      margin-top: 1rem;
       font-size:.85rem;
 
       .iotd {

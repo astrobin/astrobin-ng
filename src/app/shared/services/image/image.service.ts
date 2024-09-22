@@ -402,16 +402,6 @@ export class ImageService extends BaseService {
     return revision.constellation;
   }
 
-  getIntegration(image: ImageInterface): string {
-    if (image.deepSkyAcquisitions?.length > 0) {
-      return this.getDeepSkyIntegration(image);
-    } else if (image.solarSystemAcquisitions?.length > 0) {
-      return this.getSolarSystemIntegration(image);
-    }
-
-    return null;
-  }
-
   getAverageBortleScale(image: ImageInterface): number {
     if (image.deepSkyAcquisitions?.length > 0) {
       const totalWeightedBortle = image.deepSkyAcquisitions.reduce((acc, acquisition) => {

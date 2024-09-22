@@ -10,24 +10,17 @@
     gap: .5rem;
     flex-wrap: wrap;
     flex-direction: row !important;
+  }
 
-    img {
+  .avatar {
       width: 3rem;
       height: 3rem;
       border-radius: 50%;
-    }
   }
 
   .view-count {
     font-size: .85rem;
     color: var(--lightGrey);
-  }
-
-  .license-icon {
-    color: var(--accentColor);
-    cursor: help;
-    font-size: .85rem;
-    line-height: 1rem;
   }
 }
 

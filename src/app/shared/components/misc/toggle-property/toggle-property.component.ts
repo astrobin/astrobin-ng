@@ -49,6 +49,12 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   @Input()
   showLabel = true;
 
+  @Input()
+  showIcon = true;
+
+  @Input()
+  count: number;
+
   toggleProperty: TogglePropertyInterface | null = null;
 
   // We keep a local "loading" state because we don't want to freeze the whole app.

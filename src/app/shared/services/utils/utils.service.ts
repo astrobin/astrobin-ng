@@ -991,6 +991,20 @@ export class UtilsService {
     renderer.appendChild(document.head, link);
   }
 
+  isElementVisibleInContainer(child: HTMLElement, container: HTMLElement): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const childRect = child.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    return (
+      childRect.bottom > containerRect.top &&
+      childRect.top < containerRect.bottom
+    );
+  }
+
   isNearBelowViewport(element: HTMLElement): boolean {
     if (!isPlatformBrowser(this.platformId)) {
       return false;

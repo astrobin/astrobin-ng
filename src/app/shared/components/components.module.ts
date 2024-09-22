@@ -4,16 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { formlyConfig } from "@app/formly.config";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import {
-  NgbAccordionModule,
-  NgbCollapseModule,
-  NgbDropdownModule,
-  NgbModalConfig,
-  NgbModalModule, NgbNavModule, NgbOffcanvasModule,
-  NgbPopoverModule,
-  NgbProgressbarModule,
-  NgbTooltipModule
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbAccordionModule, NgbCollapseModule, NgbDropdownModule, NgbModalConfig, NgbModalModule, NgbNavModule, NgbOffcanvasModule, NgbPopoverModule, NgbProgressbarModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";
@@ -144,6 +135,8 @@ import { AutoSizeInputModule } from "ngx-autosize-input";
 import { ImageViewerObjectsComponent } from "@shared/components/misc/image-viewer/image-viewer-objects.component";
 import { UserSearchComponent } from "@shared/components/search/user-search/user-search.component";
 import { ImageViewerRevisionSummaryComponent } from "@shared/components/misc/image-viewer/image-viewer-revision-summary.component";
+import { ImageViewerSocialButtonsComponent } from "@shared/components/misc/image-viewer/image-viewer-social-buttons.component";
+import { ImageViewerFloatingTitleComponent } from "@shared/components/misc/image-viewer/image-viewer-floating-title.component";
 
 
 const modules = [
@@ -227,7 +220,9 @@ const components = [
   ImageViewerCustomMessageBannerComponent,
   ImageViewerWipBannerComponent,
   ImageViewerTitleComponent,
+  ImageViewerFloatingTitleComponent,
   ImageViewerPhotographersComponent,
+  ImageViewerSocialButtonsComponent,
   ImageViewerDataSourceComponent,
   ImageViewerAcquisitionComponent,
   ImageViewerAcquisitionDatesComponent,

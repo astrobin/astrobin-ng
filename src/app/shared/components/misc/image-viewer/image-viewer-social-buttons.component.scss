@@ -1,0 +1,46 @@
+.social-buttons {
+  ::ng-deep {
+    .ng-fa-icon,
+    .btn {
+      margin: 0 !important;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--accentColor);
+      color: var(--white);
+      border-radius: .25rem;
+
+      &.toggled {
+        box-shadow: 3px 3px 6px rgba(0, 0, 0, .5) inset;
+        color: var(--lighterAccentColor);
+      }
+
+      &.loading {
+        background: url("/assets/images/white-loader.svg") var(--accentColor) no-repeat center !important;
+        background-size: 1rem !important;
+      }
+
+      &[disabled] {
+        color: var(--lighterAccentColor) !important;
+        border-color: transparent !important;
+        opacity: .5;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          &:hover {
+            filter: brightness(1.25);
+          }
+        }
+      }
+
+      .count {
+        font-size: .75rem;
+        opacity: .65;
+      }
+    }
+  }
+}
