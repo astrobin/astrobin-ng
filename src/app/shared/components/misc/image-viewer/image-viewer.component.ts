@@ -571,6 +571,9 @@ export class ImageViewerComponent
 
   @HostListener("window:popstate", ["$event"])
   onPopState(event: any) {
+    event.preventDefault();
+    event.stopPropagation();
+
     if (this.viewingFullscreenImage) {
       this.exitFullscreen(false);
     } else {
@@ -1022,7 +1025,6 @@ export class ImageViewerComponent
     revisionLabel: ImageRevisionInterface["label"],
     fullscreenMode = false
   ): string {
-    const revision = this.imageService.getRevision(image, revisionLabel);
     let path = this.location.path().split("#")[0];
 
     if (!path.includes(image.hash || image.pk + "")) {

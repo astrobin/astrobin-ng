@@ -6,17 +6,17 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { DeleteImageSuccess } from "@app/store/actions/image.actions";
-import { map, switchMap, takeUntil } from "rxjs/operators";
+import { map, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageViewerComponent, ImageViewerNavigationContext } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TitleService } from "@shared/services/title/title.service";
 import { ImageService } from "@shared/services/image/image.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: "root"
@@ -53,6 +53,13 @@ export class ImageViewerService extends BaseService {
     const queryParams = activatedRoute.snapshot.queryParams;
 
     if (queryParams["i"]) {
+      const currentImage = this.activeImageViewer?.instance?.image;
+      const currentImageId = currentImage?.hash || currentImage?.pk;
+
+      if (currentImageId && currentImageId === queryParams["i"]) {
+        return;
+      }
+
       if (this.activeImageViewer) {
         this.closeActiveImageViewer(false);
       }
@@ -90,6 +97,7 @@ export class ImageViewerService extends BaseService {
     this.activeImageViewer.instance.searchComponentId = searchComponentId;
 
     this.activeImageViewer.instance.initialized.pipe(
+      take(1),
       switchMap(() => this.imageService.loadImage(imageId))
     ).subscribe({
       next: image => {
