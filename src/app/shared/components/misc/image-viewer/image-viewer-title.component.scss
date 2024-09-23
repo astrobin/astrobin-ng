@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 :host {
   .image-viewer-title {
     padding-bottom: .75rem;
@@ -26,6 +28,14 @@
         &.original-filename {
           word-break: break-all;
         }
+
+        @media (max-width: $md-max) {
+          gap: .5rem;
+        }
+
+        @media (max-width: $sm-max) {
+          gap: .25rem;
+        }
       }
 
       .license-icon {
@@ -34,6 +44,18 @@
         font-size: .7rem;
         line-height: 1rem;
         margin-right: .5rem;
+
+        @media (max-width: $sm-max) {
+          margin-right: .25rem;
+        }
+      }
+
+      @media (max-width: $md-max) {
+        font-size: 1.25rem;
+      }
+
+      @media (max-width: $sm-max) {
+        font-size: 1.15rem;
       }
     }
 

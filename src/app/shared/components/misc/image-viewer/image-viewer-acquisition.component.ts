@@ -290,8 +290,13 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
         };
       }
 
-      filterSummaries[filterType].totalIntegration += acquisition.number * parseFloat(acquisition.duration);
-      filterSummaries[filterType].dates.push(date);
+      if (acquisition.number !== null && acquisition.duration !== null) {
+        filterSummaries[filterType].totalIntegration += acquisition.number * parseFloat(acquisition.duration);
+      }
+
+      if (date) {
+        filterSummaries[filterType].dates.push(date);
+      }
     });
 
     for (const filterType in filterSummaries) {

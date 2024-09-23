@@ -1,62 +1,92 @@
-.klass-icon {
-  height: 1rem;
-  margin-bottom: .25rem;
-  margin-right: .5rem;
-}
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
 
-.brand {
-  font-weight: bold;
-  margin-right: .25rem;
 
-  a {
-    color: var(--white);
-    border-bottom: 1px solid var(--lighterGrey);
+  .klass-icon {
+    opacity: .75;
+    width: .8rem;
+    height: .8rem;
+  }
 
-    &:hover {
-      text-decoration: none;
-      color: var(--accentColor);
-      border-color: var(--accentColor);
+  .brand-name-icons {
+    gap: .25rem;
+  }
+
+  .brand {
+    font-weight: bold;
+    margin-right: .25rem;
+
+    a {
+      color: var(--white);
+      border-bottom: 1px solid var(--lighterGrey);
+
+      &:hover {
+        text-decoration: none;
+        color: var(--accentColor);
+        border-color: var(--accentColor);
+      }
     }
   }
-}
 
-.name {
-  [icon=asterisk] {
-    font-size: .5rem;
-    vertical-align: super;
+  .name {
+    [icon=asterisk] {
+      font-size: .5rem;
+      vertical-align: super;
+    }
+
+    [icon=snowflake] {
+      font-size: .85rem;
+      color: teal;
+      margin-left: .25rem;
+      vertical-align: top;
+    }
+
+    [icon=bell] {
+      font-size: .85rem;
+      color: var(--gold);
+      margin-left: .25rem;
+      vertical-align: middle;
+    }
   }
 
-  [icon=snowflake] {
-    font-size: .85rem;
-    color: teal;
+  .btn-retailers {
+    .ng-fa-icon {
+      padding: 0 .25rem;
+      margin-left: .25rem;
+      font-size: .85rem;
+      color: var(--gold);
+    }
+  }
+
+  .btn-info-modal {
+    color: var(--lightestGrey);
     margin-left: .25rem;
-    vertical-align: top;
-  }
-
-  [icon=bell] {
-    font-size: .85rem;
-    color: var(--gold);
-    margin-left: .25rem;
-    vertical-align: middle;
-  }
-}
-
-.btn-retailers {
-  .ng-fa-icon {
     padding: 0 .25rem;
-    margin-left: .25rem;
-    font-size: .85rem;
-    color: var(--gold);
+
+    fa-icon {
+      margin-right: 0;
+    }
   }
-}
 
-.btn-info-modal {
-  color: var(--lightestGrey);
-  margin-left: .25rem;
-  padding: 0 .25rem;
+  &.with-klass-icon {
+    background: var(--grey);
+    padding: .5rem .75rem;
+    border-radius: .5rem;
 
-  fa-icon {
-    margin-right: 0;
+    .brand-name-icons {
+      padding-left: .5rem;
+      border-left: 1px solid var(--lightGrey);
+    }
+
+    &:hover {
+      background: var(--lightGrey);
+
+      .brand-name-icons {
+        border-left-color: var(--lighterGrey);
+      }
+    }
   }
 }
 

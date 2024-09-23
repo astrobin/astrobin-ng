@@ -44,7 +44,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
             <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
             <span
               *ngIf="image.viewCount > 1"
-              [translateParams]="{ '0': image.viewCount }"
+              [translateParams]="{ '0': image.viewCount | numberSuffix }"
               [translate]="'{{0}} views'"
             ></span>
           </span>
@@ -105,7 +105,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
       <astrobin-image-viewer-share-button
         [image]="image"
         [revisionLabel]="revisionLabel"
-        class="p-1"
+        class="d-none d-md-block p-1"
       ></astrobin-image-viewer-share-button>
     </div>
     </ng-container>

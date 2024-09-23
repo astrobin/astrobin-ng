@@ -47,6 +47,11 @@
 </ng-template>
 
 <ng-template #mobileMenuIconsTemplate>
+  <astrobin-image-viewer-share-button
+    [image]="image"
+    [revisionLabel]="revisionLabel"
+    class="me-2"
+  ></astrobin-image-viewer-share-button>
   <button *ngIf="showCloseButton" (click)="close()" class="btn btn-link btn-no-block text-white">
     <fa-icon icon="times"></fa-icon>
   </button>
@@ -363,7 +368,6 @@
   <ng-container *ngIf="image.allowComments">
     <astrobin-nested-comments
       *ngIf="imageContentType; else loadingTemplate"
-      [autoStartTopLevelStrategy]="NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS"
       [contentType]="imageContentType"
       [objectId]="image.pk"
       [showCloseButton]="false"

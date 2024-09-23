@@ -448,6 +448,9 @@ export class ImageService extends BaseService {
 
   getDeepSkyIntegration(image: ImageInterface): string {
     const getIntegration = (acquisition: DeepSkyAcquisitionInterface): number => {
+      if (acquisition.number === null || acquisition.duration === null) {
+        return 0;
+      }
       return acquisition.number * parseFloat(acquisition.duration);
     };
 

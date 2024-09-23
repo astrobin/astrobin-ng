@@ -12,47 +12,12 @@
       }
 
       .value {
-        background: var(--grey);
-        padding: .5rem .75rem;
-        border-radius: .5rem;
         color: var(--lightestGrey);
 
         ::ng-deep astrobin-equipment-item-display-name {
-          white-space: nowrap;
-
-          .klass-icon {
-            opacity: .75;
-            width: .8rem;
-            height: .8rem;
-          }
-
           .brand {
             font-weight: normal !important;
-            padding-left: .25rem;
-            border-left: 1px solid var(--lightGrey);
             color: var(--white);
-          }
-        }
-
-        .klass-icon {
-          opacity: .75;
-          width: .8rem;
-          height: .8rem;
-
-          & + span {
-            margin-left: .5rem;
-            padding-left: .5rem;
-            border-left: 1px solid var(--lightGrey);
-          }
-        }
-
-        &:hover {
-          background: var(--lightGrey);
-
-          ::ng-deep astrobin-equipment-item-display-name {
-            .brand {
-              border-left-color: var(--lighterGrey);
-            }
           }
         }
       }
