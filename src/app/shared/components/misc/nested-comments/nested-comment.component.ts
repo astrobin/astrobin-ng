@@ -101,7 +101,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     const width = this.elementRef.nativeElement.getBoundingClientRect().width;
     const minContentWidth = 300;
     const maxMargin = width - minContentWidth;
-    const margin = Math.min(maxMargin, (depth - 1) * 20);
+    const margin = Math.min(maxMargin, (depth - 1) * 16);
     return `${margin}px`;
   }
 

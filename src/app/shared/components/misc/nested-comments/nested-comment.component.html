@@ -11,7 +11,11 @@
 
     <div class="nested-comment-content">
       <div class="meta">
-        <a [href]="classicRoutesService.GALLERY(comment.authorUsername)" class="username">{{ comment.authorDisplayName }}</a>
+        <a
+          [href]="classicRoutesService.GALLERY(comment.authorUsername)" class="username"
+        >
+          {{ comment.authorDisplayName }}
+        </a>
 
         <span [attr.data-test-value]="comment.created" class="timestamp">
           {{ comment.created | localDate | timeago: true }}
