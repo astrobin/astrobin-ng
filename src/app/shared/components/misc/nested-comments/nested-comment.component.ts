@@ -55,9 +55,6 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   replyFields: FormlyFieldConfig[];
   showReplyForm = false;
 
-  @ViewChild("commentText", { read: ElementRef })
-  private _commentText: ElementRef;
-
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
@@ -83,7 +80,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   ngAfterViewInit() {
     const window = this.windowRefService.nativeWindow as any;
     if (typeof window.hljs !== undefined) {
-      const $elements = this._commentText.nativeElement.querySelectorAll("pre code");
+      const $elements = this.elementRef.nativeElement.querySelectorAll("pre code");
       for (const $element of $elements) {
         const brPlugin = {
           "before:highlightBlock": ({ block }) => {

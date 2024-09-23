@@ -316,6 +316,10 @@ $maxAspectRatio: 1/1;
         left: 0;
         right: 0;
         margin: 0 auto;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        border: 1px solid var(--grey);
         font-size: 1.5rem;
         display: none;
 
@@ -605,6 +609,11 @@ $maxAspectRatio: 1/1;
       @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
         width: 100%;
         height: unset;
+
+        .data-area {
+          // This makes it so the search components don't think this is the scrollable area.
+          overflow-y: hidden;
+        }
       }
     }
 
