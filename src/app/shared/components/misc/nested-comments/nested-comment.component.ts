@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { Observable } from "rxjs";
@@ -18,8 +18,6 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { CreateTogglePropertySuccess, DeleteTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 
@@ -66,7 +64,8 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
     public readonly windowRefService: WindowRefService,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    public readonly elementRef: ElementRef
   ) {
     super(store$);
   }
@@ -100,6 +99,14 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
         window.hljs.initLineNumbersOnLoad();
       }
     }
+  }
+
+  getMarginLeft(depth: number): string {
+    const width = this.elementRef.nativeElement.getBoundingClientRect().width;
+    const minContentWidth = 300;
+    const maxMargin = width - minContentWidth;
+    const margin = Math.min(maxMargin, (depth - 1) * 20);
+    return `${margin}px`;
   }
 
   getLink(): string {

@@ -1,6 +1,8 @@
 .nested-comment {
   padding: .75rem;
   border-bottom: 1px dashed var(--grey);
+  display: flex;
+  gap: 1rem;
 
   &.created {
     animation: bounce .8s ease-out;
@@ -10,12 +12,20 @@
     background-color: rgba(255, 255, 255, .15);
   }
 
+  astrobin-avatar {
+    display: block;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-top: .25rem;
+  }
+
   .meta {
     font-size: .9rem;
     margin-bottom: .5rem;
   }
 
   .text {
+    color: var(--lightestGrey);
     ::ng-deep {
       img {
         max-width: 100%;
@@ -27,6 +37,7 @@
   .likes {
     color: var(--lightGrey);
     margin-left: .5rem;
+    font-size: .75rem;
   }
 
   .likes {

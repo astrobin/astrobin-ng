@@ -20,6 +20,34 @@
             color: var(--white);
           }
         }
+
+        &.legacy-equipment {
+          background: var(--grey);
+          padding: .5rem .75rem;
+          border-radius: .5rem;
+          display: flex;
+          align-items: center;
+          gap: .5rem;
+
+          .klass-icon {
+            opacity: .75;
+            width: .8rem;
+            height: .8rem;
+
+            & + span {
+              padding-left: .5rem;
+              border-left: 1px solid var(--lightGrey);
+            }
+          }
+
+          &:hover {
+            background: var(--lightGrey);
+
+            .klass-icon + span {
+              border-left-color: var(--lighterGrey);
+            }
+          }
+        }
       }
 
       &:not(:last-child) {
