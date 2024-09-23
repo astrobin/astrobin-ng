@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
+import { Component, HostBinding, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -13,7 +13,6 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { EquipmentRetailerInterface } from "@features/equipment/types/equipment-listings.interface";
 import { DeviceService } from "@shared/services/device.service";
 
 @Component({
@@ -67,6 +66,11 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
 
   @ViewChild("retailersTemplate", { static: true })
   retailersTemplate: TemplateRef<any>;
+
+  @HostBinding("class")
+  get klass(): string {
+    return `equipment-item-display-name ${this.enableKlassIcon ? "with-klass-icon" : ""}`;
+  }
 
   brandName: string;
   brandLink: string;

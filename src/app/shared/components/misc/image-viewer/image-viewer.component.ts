@@ -7,7 +7,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { DeviceService } from "@shared/services/device.service";
 import { LoadImage } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageService } from "@shared/services/image/image.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { SearchService } from "@features/search/services/search.service";
@@ -18,7 +18,7 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { combineLatest, fromEvent, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
+import { animationFrameScheduler, combineLatest, fromEvent, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -27,8 +27,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@env/environment";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -37,11 +35,6 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 
-enum SharingMode {
-  LINK = "link",
-  BBCODE = "bbcode",
-  HTML = "html"
-}
 
 export interface ImageViewerNavigationContextItem {
   imageId: ImageInterface["hash"] | ImageInterface["pk"];
@@ -98,9 +91,6 @@ export class ImageViewerComponent
   @ViewChild("ad", { static: false, read: AdManagerComponent })
   adManagerComponent: AdManagerComponent;
 
-  @ViewChild("buttonsArea", { static: false, read: ElementRef })
-  buttonsAreaElement: ElementRef;
-
   @ViewChild("scrollToTopMdMax", { static: false, read: ElementRef })
   scrollToTopMdMax: ElementRef;
 
@@ -112,9 +102,6 @@ export class ImageViewerComponent
 
   @ViewChild("nestedCommentsTemplate")
   nestedCommentsTemplate: TemplateRef<any>;
-
-  @ViewChild("shareTemplate")
-  shareTemplate: TemplateRef<any>;
 
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
@@ -137,53 +124,7 @@ export class ImageViewerComponent
   protected mouseHoverImage: string;
   protected forceViewMouseHover = false;
   protected inlineSvg: SafeHtml;
-  protected readonly shareForm: FormGroup = new FormGroup({});
-  protected shareModel: {
-    sharingMode: SharingMode;
-    copyThis: string;
-  } = {
-    sharingMode: SharingMode.LINK,
-    copyThis: ""
-  };
-  protected readonly shareFields: FormlyFieldConfig[] = [
-    {
-      key: "sharingMode",
-      type: "ng-select",
-      wrappers: ["default-wrapper"],
-      defaultValue: SharingMode.LINK,
-      props: {
-        label: this.translateService.instant("Sharing mode"),
-        options: [
-          { value: SharingMode.LINK, label: this.translateService.instant("Simple link") },
-          { value: SharingMode.BBCODE, label: this.translateService.instant("Forums (BBCode)") },
-          { value: SharingMode.HTML, label: this.translateService.instant("HTML") }
-        ],
-        searchable: false,
-        clearable: false
-      },
-      hooks: {
-        onInit: field => {
-          field.formControl.valueChanges.subscribe(() => {
-            this.shareModel = {
-              ...this.shareModel,
-              copyThis: this.getSharingValue(this.shareModel.sharingMode)
-            };
-          });
-        }
-      }
-    },
-    {
-      key: "copyThis",
-      type: "textarea",
-      wrappers: ["default-wrapper"],
-      defaultValue: this.getSharingValue(SharingMode.LINK),
-      props: {
-        label: this.translateService.instant("Copy this"),
-        rows: 5,
-        readonly: true
-      }
-    }
-  ];
+
   protected isLightBoxOpen = false;
   protected showUpgradeToPlateSolveBanner$ = combineLatest([
     this.currentUser$,
@@ -202,13 +143,14 @@ export class ImageViewerComponent
   protected showAd = false;
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
-
+  protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
   private _imageChangedSubject = new Subject<ImageInterface>();
   private _imageChanged$ = this._imageChangedSubject.asObservable();
   private _navigationContextChangedSubject = new Subject<void>();
   public navigationContextChanged$ = this._navigationContextChangedSubject.asObservable();
   private _navigationContextWheelEventSubscription: Subscription;
   private _navigationContextScrollEventSubscription: Subscription;
+  private _dataAreaScrollEventSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -300,15 +242,22 @@ export class ImageViewerComponent
         if (this.adManagerComponent) {
           this._setAd();
         }
+
+        if (this._dataAreaScrollEventSubscription) {
+          this._dataAreaScrollEventSubscription.unsubscribe();
+          this.initDataAreaScrollHandling();
+        }
       });
     }
-
-    this.autoOpenComments();
   }
 
   ngAfterViewChecked() {
     if (this.navigationContextElement && !this._navigationContextWheelEventSubscription) {
       this.initNavigationScrollHandling();
+    }
+
+    if (this.mainArea && this.dataArea && !this._dataAreaScrollEventSubscription) {
+      this.initDataAreaScrollHandling();
     }
   }
 
@@ -321,10 +270,18 @@ export class ImageViewerComponent
       this._navigationContextScrollEventSubscription.unsubscribe();
     }
 
+    if (this._dataAreaScrollEventSubscription) {
+      this._dataAreaScrollEventSubscription.unsubscribe();
+    }
+
     super.ngOnDestroy();
   }
 
   initNavigationScrollHandling() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     if (this.navigationContextElement) {
       const el = this.navigationContextElement.nativeElement;
 
@@ -352,11 +309,66 @@ export class ImageViewerComponent
     }
   }
 
-  autoOpenComments(): void {
-    const fragment = this.activatedRoute.snapshot.fragment;
-    if (fragment && fragment[0] === "c") {
-      this.openComments(null);
+  initDataAreaScrollHandling() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
     }
+
+    let scrollArea: HTMLElement;
+    const windowWidth = this.windowRefService.nativeWindow.innerWidth;
+    const windowHeight = this.windowRefService.nativeWindow.innerHeight;
+    const viewPortAspectRatio = windowWidth / windowHeight;
+    const sideToSideLayout = this.deviceService.lgMin() || viewPortAspectRatio > 1;
+    const hasMobileMenu = this.deviceService.mdMax();
+    const hasSiteHeader = !this.fullscreenMode;
+
+    if (sideToSideLayout) {
+      scrollArea = this.dataArea.nativeElement
+    } else {
+      scrollArea = this.mainArea.nativeElement;
+    }
+
+    this._dataAreaScrollEventSubscription = fromEvent<Event>(scrollArea, "scroll")
+      .pipe(
+        throttleTime(30, animationFrameScheduler, { leading: true, trailing: true }),
+        observeOn(animationFrameScheduler)
+      )
+      .subscribe(() => {
+        const socialButtons = scrollArea.querySelector(
+          'astrobin-image-viewer-photographers astrobin-image-viewer-social-buttons'
+        ) as HTMLElement | null;
+        const floatingTitle = scrollArea.querySelector('astrobin-image-viewer-floating-title') as HTMLElement | null;
+
+        if (!socialButtons || !floatingTitle) {
+          return;
+        }
+
+        const adManager = scrollArea.querySelector('astrobin-ad-manager') as HTMLElement | null;
+        const adManagerHeight = adManager ? adManager.offsetHeight : 0;
+        const socialButtonsVisible = this.utilsService.isElementVisibleInContainer(socialButtons, scrollArea);
+        const siteHeader = document.querySelector('astrobin-header > nav') as HTMLElement | null;
+        const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
+        const mobileMenu = document.querySelector('astrobin-mobile-menu') as HTMLElement | null;
+        const mobileMenuHeight = mobileMenu && hasMobileMenu ? mobileMenu.offsetHeight : 0;
+        const globalLoadingIndicator = document.querySelector('.global-loading-indicator') as HTMLElement | null;
+        const globalLoadingIndicatorHeight = globalLoadingIndicator ? globalLoadingIndicator.offsetHeight : 0;
+
+        if (!socialButtonsVisible) {
+          let translateYValue;
+
+          if (sideToSideLayout) {
+            // The position is relative to the data area.
+            translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
+          } else {
+            // The position is relative to the main area.
+            translateYValue = `${siteHeaderHeight + globalLoadingIndicatorHeight + mobileMenuHeight - 1}px`;
+          }
+
+          this.renderer.setStyle(floatingTitle, 'transform', `translateY(${translateYValue})`);
+        } else {
+          this.renderer.setStyle(floatingTitle, 'transform', 'translateY(-100%)');
+        }
+      });
   }
 
   onDescriptionClicked(event: MouseEvent) {
@@ -559,6 +571,9 @@ export class ImageViewerComponent
 
   @HostListener("window:popstate", ["$event"])
   onPopState(event: any) {
+    event.preventDefault();
+    event.stopPropagation();
+
     if (this.viewingFullscreenImage) {
       this.exitFullscreen(false);
     } else {
@@ -657,31 +672,6 @@ export class ImageViewerComponent
         this._getPath(this.image, revisionLabel)
       );
     }
-  }
-
-  openShare(event: MouseEvent): void {
-    event.preventDefault();
-
-    this.shareModel = {
-      sharingMode: SharingMode.LINK,
-      copyThis: this.getSharingValue(SharingMode.LINK)
-    };
-
-    this.offcanvasService.open(this.shareTemplate, {
-      position: this.deviceService.offcanvasPosition(),
-      panelClass: "image-viewer-share-offcanvas"
-    });
-  }
-
-  openComments(event: MouseEvent): void {
-    if (event) {
-      event.preventDefault();
-    }
-
-    this.offcanvasService.open(this.nestedCommentsTemplate, {
-      position: this.deviceService.offcanvasPosition(),
-      panelClass: "image-viewer-nested-comments-offcanvas"
-    });
   }
 
   toggleViewMouseHover(): void {
@@ -858,54 +848,6 @@ export class ImageViewerComponent
     });
   }
 
-  protected onButtonsAreaHidden() {
-    if (this.scrollToTopMdMax) {
-      this.renderer.setStyle(this.scrollToTopMdMax.nativeElement, "transform", "translateY(0)");
-    }
-
-    if (this.scrollToTopLgMin) {
-      this.renderer.setStyle(this.scrollToTopLgMin.nativeElement, "transform", "translateY(0)");
-    }
-  }
-
-  protected onButtonsAreaShown() {
-    let amount: number;
-
-    if (this.deviceService.xsMax()) {
-      amount = -77;
-    } else if (this.deviceService.mdMax()) {
-      amount = -50;
-    }
-
-    if (amount) {
-      if (this.scrollToTopMdMax) {
-        this.renderer.setStyle(this.scrollToTopMdMax.nativeElement, "transform", `translateY(${amount}px)`);
-      }
-
-      if (this.scrollToTopLgMin) {
-        this.renderer.setStyle(this.scrollToTopLgMin.nativeElement, "transform", `translateY(${amount}px)`);
-      }
-    }
-  }
-
-  protected getSharingValue(sharingMode: SharingMode): string {
-    if (!this.revision) {
-      return "";
-    }
-
-    const galleryThumbnailUrl = this.revision.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url;
-    const url = this.imageService.getShareUrl(this.image, this.revisionLabel);
-
-    switch (sharingMode) {
-      case SharingMode.LINK:
-        return url;
-      case SharingMode.BBCODE:
-        return `[url=${url}][img]${galleryThumbnailUrl}[/img][/url]`;
-      case SharingMode.HTML:
-        return `<a href="${url}"><img src="${galleryThumbnailUrl}" /></a>`;
-    }
-  }
-
   private _setAd() {
     if (isPlatformServer(this.platformId)) {
       return;
@@ -925,7 +867,7 @@ export class ImageViewerComponent
       const dataAreaWidth = this.dataArea.nativeElement.clientWidth;
       const windowHeight = this.windowRefService.nativeWindow.innerHeight;
 
-      this.showAd = this.image.allowAds && showAds;
+      this.showAd = this.image && this.image.allowAds && showAds;
 
       if (this.deviceService.mdMax()) {
         this.adConfig = "wide";
@@ -1083,7 +1025,6 @@ export class ImageViewerComponent
     revisionLabel: ImageRevisionInterface["label"],
     fullscreenMode = false
   ): string {
-    const revision = this.imageService.getRevision(image, revisionLabel);
     let path = this.location.path().split("#")[0];
 
     if (!path.includes(image.hash || image.pk + "")) {
@@ -1108,6 +1049,4 @@ export class ImageViewerComponent
 
     return path;
   }
-
-  protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
 }

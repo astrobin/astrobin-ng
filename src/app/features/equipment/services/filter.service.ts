@@ -53,7 +53,20 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       [FilterType.PHOTOMETRIC_V]: this.translateService.instant("Photometric Visual"),
       [FilterType.PHOTOMETRIC_R]: this.translateService.instant("Photometric Red"),
       [FilterType.PHOTOMETRIC_I]: this.translateService.instant("Photometric Infrared"),
-      [FilterType.OTHER]: this.translateService.instant("Other")
+      [FilterType.OTHER]: this.translateService.instant("Other"),
+
+      // Legacy filter types
+      "CLEAR_OR_COLOR": this.translateService.instant("Clear or color"),
+      "BROAD HA": this.translateService.instant("Hydrogen-alpha (Hα)"),
+      "NARROW HA": this.translateService.instant("Hydrogen-alpha (Hα)"),
+      "BROAD HB": this.translateService.instant("Hydrogen-beta (Hβ)"),
+      "NARROW HB": this.translateService.instant("Hydrogen-beta (Hβ)"),
+      "BROAD SII": this.translateService.instant("Sulfur-II (SII)"),
+      "NARROW SII": this.translateService.instant("Sulfur-II (SII)"),
+      "BROAD OIII": this.translateService.instant("Oxygen-III (OIII)"),
+      "NARROW OIII": this.translateService.instant("Oxygen-III (OIII)"),
+      "BROAD NII": this.translateService.instant("Nitrogen-II (NII)"),
+      "NARROW NII": this.translateService.instant("Nitrogen-II (NII)"),
     };
 
     return map[type];

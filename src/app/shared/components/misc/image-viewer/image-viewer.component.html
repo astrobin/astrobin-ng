@@ -10,19 +10,13 @@
 
   <div
     #mainArea
-    (hideBottomElement)="onButtonsAreaHidden()"
-    (showBottomElement)="onButtonsAreaShown()"
     class="main-area"
-    astrobinScrollToggle
-    [enabled]="deviceService.mdMax()"
-    [bottomElement]="buttonsAreaElement?.nativeElement"
     [class.has-context]="!!navigationContext && navigationContext.length > 1"
   >
     <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
 
     <div class="data-area-container">
       <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
-      <ng-container [ngTemplateOutlet]="buttonsAreaTemplate"></ng-container>
     </div> <!-- data-area-container -->
   </div>
 
@@ -53,6 +47,11 @@
 </ng-template>
 
 <ng-template #mobileMenuIconsTemplate>
+  <astrobin-image-viewer-share-button
+    [image]="image"
+    [revisionLabel]="revisionLabel"
+    class="me-2"
+  ></astrobin-image-viewer-share-button>
   <button *ngIf="showCloseButton" (click)="close()" class="btn btn-link btn-no-block text-white">
     <fa-icon icon="times"></fa-icon>
   </button>
@@ -218,7 +217,7 @@
 </ng-template>
 
 <ng-template #moreFromThisUserTemplate>
-  <div class="metadata-header mt-4 mb-3">{{ "More from this user" | translate }}</div>
+  <div class="metadata-header mb-2">{{ "More from this user" | translate }}</div>
   <astrobin-image-search
     [alias]="ImageAlias.GALLERY"
     [model]="{ userId: image.user, ordering: '-likes', pageSize: 25 }"
@@ -230,7 +229,7 @@
 </ng-template>
 
 <ng-template #similarToThisTemplate>
-  <div class="metadata-header mt-5 mb-3">
+  <div class="metadata-header mb-2">
     <ng-container
       *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null; else relatedImagesLabelTemplate"
     >
@@ -302,9 +301,15 @@
       [revisionLabel]="revisionLabel"
     ></astrobin-image-viewer-title>
 
+    <astrobin-image-viewer-floating-title
+      #floatingTitle
+      [image]="image"
+    ></astrobin-image-viewer-floating-title>
+
     <astrobin-image-viewer-photographers
       *ngIf="userContentType"
       [image]="image"
+      [revision]="revision"
       [userContentType]="userContentType"
     ></astrobin-image-viewer-photographers>
 
@@ -318,11 +323,6 @@
         [image]="image"
       ></astrobin-image-viewer-data-source>
 
-      <astrobin-image-viewer-acquisition
-        *ngIf="image.deepSkyAcquisitions?.length || image.solarSystemAcquisitions?.length"
-        [image]="image"
-      ></astrobin-image-viewer-acquisition>
-
       <astrobin-image-viewer-astrometry
         *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null"
         [image]="image"
@@ -330,16 +330,21 @@
       ></astrobin-image-viewer-astrometry>
     </div>
 
-    <astrobin-image-objects-astrometry
-      *ngIf="revision?.solution?.objectsInField || revision?.solution?.advancedAnnotations"
+    <astrobin-image-viewer-acquisition
+      *ngIf="image.deepSkyAcquisitions?.length || image.solarSystemAcquisitions?.length"
       [image]="image"
-      [revisionLabel]="revisionLabel"
-    ></astrobin-image-objects-astrometry>
+    ></astrobin-image-viewer-acquisition>
 
     <astrobin-image-viewer-equipment
       *ngIf="imageService.hasEquipment(image)"
       [image]="image"
     ></astrobin-image-viewer-equipment>
+
+    <astrobin-image-viewer-objects
+      *ngIf="revision?.solution?.objectsInField || revision?.solution?.advancedAnnotations"
+      [image]="image"
+      [revisionLabel]="revisionLabel"
+    ></astrobin-image-viewer-objects>
 
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
 
@@ -348,117 +353,31 @@
       [revision]="revision"
     ></astrobin-image-viewer-revision-summary>
 
+    <ng-container [ngTemplateOutlet]="nestedCommentsTemplate"></ng-container>
+
     <ng-container [ngTemplateOutlet]="moreFromThisUserTemplate"></ng-container>
 
     <ng-container [ngTemplateOutlet]="similarToThisTemplate"></ng-container>
   </div> <!-- data-area -->
 </ng-template>
 
-<ng-template #buttonsAreaTemplate>
-  <div #buttonsArea class="buttons-area">
-    <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
-      <div class="like">
-        <astrobin-toggle-property
-          [contentType]="imageContentType.id"
-          [disabled]="currentUserWrapper.user?.id === image.user"
-          [objectId]="image.pk"
-          [showLabel]="false"
-          [userId]="currentUserWrapper.user?.id"
-          btnClass="btn btn-link link-secondary"
-          propertyType="like"
-        ></astrobin-toggle-property>
-        <span class="count">{{ image.likeCount }}</span>
-      </div>
+<ng-template #nestedCommentsTemplate>
+  <div id="image-viewer-comments-header" class="metadata-header mt-5 mb-3">{{ "Comments" | translate }}</div>
 
-      <div class="bookmark">
-        <astrobin-toggle-property
-          [contentType]="imageContentType.id"
-          [objectId]="image.pk"
-          [userId]="currentUserWrapper.user?.id"
-          [showLabel]="false"
-          btnClass="btn btn-link link-secondary"
-          propertyType="bookmark"
-        ></astrobin-toggle-property>
-        <span class="count">{{ image.bookmarkCount }}</span>
-      </div>
+  <ng-container *ngIf="!image.allowComments">
+    <p class="px-2">
+      {{ "The photographer has not enabled comments for this image." | translate }}
+    </p>
+  </ng-container>
 
-      <div class="comment">
-        <button
-          (click)="openComments($event)"
-          class="btn btn-link link-secondary"
-        >
-          <fa-icon
-            [ngbTooltip]="'Comments' | translate"
-            triggers="hover click"
-            container="body"
-            icon="comments"
-          ></fa-icon>
-        </button>
-        <span *ngIf="image.allowComments" class="count">
-          <astrobin-nested-comments-count
-            [contentType]="imageContentType"
-            [objectId]="image.pk"
-          ></astrobin-nested-comments-count>
-        </span>
-      </div>
-
-      <div class="share">
-        <button
-          (click)="openShare($event)"
-          class="btn btn-link link-secondary"
-        >
-          <fa-icon
-            [ngbTooltip]="'Share' | translate"
-            triggers="hover click"
-            container="body"
-            icon="share"
-          ></fa-icon>
-        </button>
-      </div>
-    </ng-container>
-  </div> <!-- buttons-area -->
-</ng-template>
-
-<ng-template #nestedCommentsTemplate let-offcanvas>
-  <div class="offcanvas-body">
-    <ng-container *ngIf="!image.allowComments">
-      <p class="p-2 mt-3 text-center">
-        {{ "The photographer has not enabled comments for this image." | translate }}
-      </p>
-    </ng-container>
-
-    <ng-container *ngIf="image.allowComments">
-      <astrobin-nested-comments
-        *ngIf="imageContentType; else loadingTemplate"
-        (close)="offcanvas.dismiss()"
-        [autoStartTopLevelStrategy]="NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS"
-        [contentType]="imageContentType"
-        [objectId]="image.pk"
-        [showCloseButton]="true"
-      ></astrobin-nested-comments>
-    </ng-container>
-  </div>
-</ng-template>
-
-<ng-template #shareTemplate let-offcanvas>
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">{{ 'Share' | translate }}</h5>
-    <button
-      type="button"
-      class="btn-close"
-      (click)="offcanvas.dismiss()"
-      aria-label="Close"
-    ></button>
-  </div>
-  <div class="offcanvas-body">
-    <form>
-      <formly-form
-        [form]="shareForm"
-        [fields]="shareFields"
-        [model]="shareModel"
-      ></formly-form>
-    </form>
-  </div>
+  <ng-container *ngIf="image.allowComments">
+    <astrobin-nested-comments
+      *ngIf="imageContentType; else loadingTemplate"
+      [contentType]="imageContentType"
+      [objectId]="image.pk"
+      [showCloseButton]="false"
+    ></astrobin-nested-comments>
+  </ng-container>
 </ng-template>
 
 <ng-template #navigationContextTemplate>

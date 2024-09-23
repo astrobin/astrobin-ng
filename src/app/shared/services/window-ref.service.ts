@@ -168,7 +168,7 @@ export class WindowRefService extends BaseService {
     }
 
     const _history = this.nativeWindow.history;
-    const currentState = _history.state;
+    const currentState = JSON.parse(JSON.stringify(_history.state));
 
     if (
       currentState &&

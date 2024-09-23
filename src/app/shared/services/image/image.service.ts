@@ -402,16 +402,6 @@ export class ImageService extends BaseService {
     return revision.constellation;
   }
 
-  getIntegration(image: ImageInterface): string {
-    if (image.deepSkyAcquisitions?.length > 0) {
-      return this.getDeepSkyIntegration(image);
-    } else if (image.solarSystemAcquisitions?.length > 0) {
-      return this.getSolarSystemIntegration(image);
-    }
-
-    return null;
-  }
-
   getAverageBortleScale(image: ImageInterface): number {
     if (image.deepSkyAcquisitions?.length > 0) {
       const totalWeightedBortle = image.deepSkyAcquisitions.reduce((acc, acquisition) => {
@@ -422,7 +412,8 @@ export class ImageService extends BaseService {
         return acc + parseFloat(acquisition.duration);
       }, 0);
 
-      return totalDuration > 0 ? totalWeightedBortle / totalDuration : null;
+      const bortle = totalDuration > 0 ? totalWeightedBortle / totalDuration : null;
+      return parseFloat(bortle.toFixed(2));
     }
 
     return null;
@@ -458,6 +449,9 @@ export class ImageService extends BaseService {
 
   getDeepSkyIntegration(image: ImageInterface): string {
     const getIntegration = (acquisition: DeepSkyAcquisitionInterface): number => {
+      if (acquisition.number === null || acquisition.duration === null) {
+        return 0;
+      }
       return acquisition.number * parseFloat(acquisition.duration);
     };
 

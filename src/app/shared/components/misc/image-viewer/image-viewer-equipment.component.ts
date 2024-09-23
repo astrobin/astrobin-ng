@@ -95,7 +95,7 @@ type LegacyEquipmentItem =
           *ngFor="let item of this[attr]"
           href="#"
           (click)="legacyEquipmentItemClicked($event, item)"
-          class="value"
+          class="value legacy-equipment"
         >
           <img class="klass-icon" src="/assets/images/{{ attrToIcon[attr] }}-white.png?v=1" alt="" />
           <span>{{ item.make }} {{ item.name }}</span>

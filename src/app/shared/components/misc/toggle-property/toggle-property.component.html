@@ -14,17 +14,21 @@
 >
   <ng-container *ngIf="toggled">
     <fa-icon
+      *ngIf="showIcon"
       [animation]="loading ? 'spin' : null"
       [icon]="loading ? 'spinner' : togglePropertyIcon"
     ></fa-icon>
     <span *ngIf="showLabel" class="btn-text">{{ unsetTogglePropertyLabel }}</span>
+    <span *ngIf="count !== undefined" class="count">{{ count  | numberSuffix }}</span>
   </ng-container>
 
   <ng-container *ngIf="!toggled">
     <fa-icon
+      *ngIf="showIcon"
       [animation]="loading ? 'spin' : null"
       [icon]="loading ? 'spinner' : togglePropertyIcon"
     ></fa-icon>
     <span *ngIf="showLabel" class="btn-text">{{ setTogglePropertyLabel }}</span>
+    <span *ngIf="count !== undefined" class="count">{{ count | numberSuffix }}</span>
   </ng-container>
 </button>

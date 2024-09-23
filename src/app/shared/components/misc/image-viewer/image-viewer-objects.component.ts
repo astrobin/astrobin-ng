@@ -13,7 +13,7 @@ import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image
 import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
-  selector: "astrobin-image-objects-astrometry",
+  selector: "astrobin-image-viewer-objects",
   template: `
     <div *ngIf="objectsInField?.length > 0" class="metadata-header">{{ "Objects" | translate }}</div>
     <div *ngIf="objectsInField?.length > 0" class="metadata-section bg-transparent">
@@ -34,7 +34,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             href="#"
             class="value more"
           >
-            {{ "+ {{count  }} more" | translate: { count: moreObjectsInField.length } }}
+            {{ "+ {{ count }} more" | translate: { count: moreObjectsInField.length } }}
           </a>
         </div>
       </div>

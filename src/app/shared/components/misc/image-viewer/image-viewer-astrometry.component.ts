@@ -73,7 +73,7 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
             [ngbTooltip]="'Field radius' | translate"
             triggers="hover click"
             container="body"
-            icon="circle-notch"
+            icon="arrows-left-right-to-line"
           ></fa-icon>
         </div>
         <div [innerHTML]="fieldRadius" class="metadata-label">

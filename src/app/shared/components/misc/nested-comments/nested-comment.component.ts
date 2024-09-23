@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import { Observable } from "rxjs";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
@@ -18,10 +17,10 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { CreateTogglePropertySuccess, DeleteTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -51,14 +50,10 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   @Input()
   restrictReplyToUserId: UserInterface["id"];
 
-  user$: Observable<UserInterface>;
   replyModel: { topLevelComment: string };
   replyForm = new FormGroup({});
   replyFields: FormlyFieldConfig[];
   showReplyForm = false;
-
-  @ViewChild("commentText", { read: ElementRef })
-  private _commentText: ElementRef;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -66,7 +61,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
     public readonly windowRefService: WindowRefService,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    public readonly elementRef: ElementRef,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
   }
@@ -74,8 +71,6 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.store$.dispatch(new LoadUser({ id: this.comment.author }));
-    this.user$ = this.store$.select(selectUser, this.comment.author).pipe(takeUntil(this.destroyed$));
     this._initReplyFields();
     this._initHighlighted();
     this._listenToLikes();
@@ -84,7 +79,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   ngAfterViewInit() {
     const window = this.windowRefService.nativeWindow as any;
     if (typeof window.hljs !== undefined) {
-      const $elements = this._commentText.nativeElement.querySelectorAll("pre code");
+      const $elements = this.elementRef.nativeElement.querySelectorAll("pre code");
       for (const $element of $elements) {
         const brPlugin = {
           "before:highlightBlock": ({ block }) => {
@@ -100,6 +95,18 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
         window.hljs.initLineNumbersOnLoad();
       }
     }
+  }
+
+  getMarginLeft(depth: number): string {
+    const width = this.elementRef.nativeElement.getBoundingClientRect().width;
+    const minContentWidth = 300;
+    const maxMargin = width - minContentWidth;
+    const margin = Math.min(maxMargin, (depth - 1) * 16);
+    return `${margin}px`;
+  }
+
+  getAvatarUrl(avatar: string) {
+    return UtilsService.convertDefaultAvatar(avatar);
   }
 
   getLink(): string {
