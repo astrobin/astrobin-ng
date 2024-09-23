@@ -303,7 +303,9 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
       const moonIlluminations = this.image.deepSkyAcquisitions
         .filter(
           acquisition =>
-            acquisition.filter2Type === filterType || acquisition.filter2Type === undefined && filterType === "UNKNOWN"
+            acquisition.filter2Type === filterType ||
+            (acquisition.filter2Type === undefined && filterType === "UNKNOWN") ||
+            (acquisition.filterType === undefined && filterType === "UNKNOWN")
         )
         .map(acquisition => acquisition.moonIllumination)
         .filter(moonIllumination => moonIllumination !== null);
