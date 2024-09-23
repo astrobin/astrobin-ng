@@ -20,6 +20,7 @@ import { forkJoin } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { AcceptCollaboratorRequest, DenyCollaboratorRequest, RemoveCollaborator } from "@app/store/actions/image.actions";
 import { LoadingService } from "@shared/services/loading.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 
 @Component({
@@ -249,25 +250,17 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   }
 
   setPhotographers(image: ImageInterface): void {
-    const appAvatar = (avatar: string): string => {
-      if (avatar.indexOf("default-avatar") > -1) {
-        return "/assets/images/default-avatar.jpeg?v=2";
-      }
-
-      return avatar;
-    };
-
     this.currentUser$.pipe(take(1)).subscribe(currentUser => {
       this.photographers = [
         {
           id: image.user,
-          avatar: appAvatar(image.userAvatar),
+          avatar: UtilsService.convertDefaultAvatar(image.userAvatar),
           username: image.username,
           displayName: image.userDisplayName
         },
         ...image.collaborators.map(collaborator => ({
           id: collaborator.id,
-          avatar: appAvatar(collaborator.avatar),
+          avatar: UtilsService.convertDefaultAvatar(collaborator.avatar),
           username: collaborator.username,
           displayName: collaborator.displayName,
           canRemove: currentUser && (collaborator.id === currentUser.id || currentUser.id === this.image.user)
@@ -305,7 +298,7 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
           this.photographers.push(
             ...pendingCollaborators.map(collaborator => ({
               id: collaborator.id,
-              avatar: appAvatar(collaborator.avatar),
+              avatar: UtilsService.convertDefaultAvatar(collaborator.avatar),
               username: collaborator.username,
               displayName: collaborator.displayName,
               pending: true

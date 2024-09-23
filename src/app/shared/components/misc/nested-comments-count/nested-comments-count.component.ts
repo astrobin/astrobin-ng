@@ -36,8 +36,7 @@ export class NestedCommentsCountComponent extends BaseComponentDirective impleme
       return;
     }
 
-    const data = { contentTypeId: this.contentType.id, objectId: this.objectId };
-    this.store$.dispatch(new LoadNestedComments(data));
+    // Assume that the nested comments are already loaded.
     this.count$ = this.store$.select(
       selectNestedCommentsByContentTypeIdAndObjectId(this.contentType.id, this.objectId)
     ).pipe(

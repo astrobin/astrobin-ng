@@ -1,18 +1,17 @@
 <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
   <div
-    *ngIf="user$ | async as user"
     [class.highlighted]="highlighted"
     [ngStyle]="{ 'margin-left': getMarginLeft(comment.depth) }"
     class="nested-comment"
     id="c{{ comment.id }}"
   >
     <div class="avatar">
-      <astrobin-avatar [user]="user"></astrobin-avatar>
+      <img [src]="getAvatarUrl(comment.authorAvatar)" alt="" >
     </div>
 
     <div class="nested-comment-content">
       <div class="meta">
-        <astrobin-username [user]="user"></astrobin-username>
+        <a [href]="classicRoutesService.GALLERY(comment.authorUsername)" class="username">{{ comment.authorDisplayName }}</a>
 
         <span [attr.data-test-value]="comment.created" class="timestamp">
           {{ comment.created | localDate | timeago: true }}

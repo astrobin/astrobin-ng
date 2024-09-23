@@ -932,6 +932,14 @@ export class UtilsService {
     return value;
   }
 
+  static convertDefaultAvatar(avatar: string): string {
+    if (!avatar || avatar === "" || avatar.indexOf("default-avatar") > -1) {
+      return "/assets/images/default-avatar.jpeg?v=2";
+    }
+
+    return avatar;
+  }
+
   supportsDateInput() {
     if (isPlatformServer(this.platformId)) {
       return false;
