@@ -44,4 +44,5 @@ export interface DeepSkyAcquisitionInterface {
   temperature: number | null;
   advanced?: boolean;
   savedOn: string | null;
+  moonIllumination?: number | null;
 }

@@ -1,6 +1,9 @@
 @import "src/app/styles/breakpoints";
 @import "src/app/styles/mixins";
 
+$portraitLayoutBreakpoint: $md-max;
+$maxAspectRatio: 1/1;
+
 @mixin clickableMetadata {
   color: var(--lightestGrey);
   cursor: pointer;
@@ -72,10 +75,14 @@
 
     .metadata-header {
       @include darkest-background-texture;
-      margin: 1.75rem 0 0.25rem;
+      margin: 2.5rem 0 0.25rem;
       padding: .5rem .75rem;
       color: var(--lightestGrey);
       border-radius: var(--bs-border-radius);
+
+      + .metadata-section {
+        padding-top: .5rem;
+      }
     }
 
     .metadata-section {
@@ -198,10 +205,11 @@
         width: 50%;
       }
 
-      @media (max-width: $md-max) {
+      @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
         width: 100%;
         height: unset;
         min-height: calc(50vh - 4rem);
+        flex-direction: column;
       }
 
       .adjustment-editor {
@@ -308,6 +316,10 @@
         left: 0;
         right: 0;
         margin: 0 auto;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        border: 1px solid var(--grey);
         font-size: 1.5rem;
         display: none;
 
@@ -560,6 +572,22 @@
           }
         }
 
+        astrobin-nested-comments ::ng-deep {
+          .card {
+            box-shadow: none;
+            border: 0;
+            background: transparent;
+
+            .card-header {
+              display: none;
+            }
+
+            .card-body {
+              padding: 0;
+            }
+          }
+        }
+
         @media (max-width: $md-max) {
           padding: 1rem .75rem;
         }
@@ -574,79 +602,22 @@
         }
       }
 
-      .buttons-area {
-        background: var(--black);
-        border-top: 1px solid var(--grey);
-        width: 100%;
-        padding: 1rem;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        gap: 1rem;
-        font-size: 1.25rem;
-        transition: transform 0.3s ease;
-
-        .like,
-        .bookmark,
-        .follow,
-        .comment {
-          display: flex;
-          align-items: center;
-
-          ::ng-deep {
-            .ng-fa-icon,
-            .btn-link {
-              margin: 0 !important;
-              &:hover {
-                color: var(--lighterGrey);
-              }
-            }
-          }
-
-          > astrobin-toggle-property::ng-deep .btn,
-          > .btn {
-            height: 2.25rem;
-            padding: .5rem 1rem;
-
-            &:hover {
-              .ng-fa-icon,
-              .btn-link {
-                color: var(--lighterGrey);
-              }
-            }
-          }
-
-          > .count {
-            font-size: .85rem;
-            color: var(--lightGrey);
-            line-height: 1.25rem;
-          }
-        }
-
-        @media (max-width: $md-max) {
-          position: sticky;
-          bottom: 0;
-          padding: .5rem;
-          transform: translateY(100%); // Initially hidden
-          transition: none;  // Prevent any transition initially
-
-          astrobin-toggle-property {
-            margin-bottom: 0;
-          }
-        }
-      }
-
       @media (max-width: $lg-max) {
         width: 50%;
       }
 
-      @media (max-width: $md-max) {
+      @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
         width: 100%;
         height: unset;
+
+        .data-area {
+          // This makes it so the search components don't think this is the scrollable area.
+          overflow-y: hidden;
+        }
       }
     }
 
-    @media (max-width: $md-max) {
+    @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
       overflow-y: auto;
       flex-direction: column;
       justify-content: flex-start;
@@ -767,11 +738,7 @@
     height: calc(100% - .325rem);
     z-index: 1030;
 
-    @media (max-width: $md-max) {
-      // Leave room for the site header
-      top: calc(3rem + 14px);
-      height: calc(100% - 3rem - 14px);
-
+    @media (max-width: $sm-max) {
       &::ng-deep {
         astrobin-mobile-menu {
           top: .3rem;
@@ -795,26 +762,17 @@
   }
 
   &:not(.fullscreen-mode) {
-    @media (max-width: $md-max) {
+    @media (max-width: $sm-max) {
+      // Leave room for the mobile menu
       top: calc(.3rem + 3.5rem + 3rem);
       height: calc(100vh - 108px);
     }
-  }
 
-  ::ng-deep {
-    astrobin-scroll-to-top {
-      transition: transform 0.3s ease-in-out;
-
-      .btn {
-        bottom: .75rem !important;
-        right: 1rem !important;
-      }
-
-      @media (min-width: $lg-min) {
-        position: absolute;
-
-        .btn {
-          bottom: calc(.5rem + 77px) !important;
+    @media (min-width: $lg-min) or (min-aspect-ratio: 1/1) {
+      ::ng-deep {
+        astrobin-image-viewer-floating-title {
+          right: 1rem;
+          width: calc(100% - 1rem);
         }
       }
     }
@@ -822,22 +780,6 @@
 }
 
 ::ng-deep {
-  .image-viewer-nested-comments-offcanvas {
-    &:not(.offcanvas-bottom) {
-      width: 40% !important;
-    }
-
-    .offcanvas-body {
-      padding: 0;
-    }
-
-    .card {
-      background: transparent;
-      box-shadow: none;
-      border: none;
-    }
-  }
-
   .image-viewer-share-offcanvas {
     &:not(.offcanvas-bottom) {
       width: 40% !important;

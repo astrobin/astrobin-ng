@@ -10,6 +10,7 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { UserSearchInterface } from "@shared/interfaces/user-search.interface";
 import { UserSearchApiService } from "@shared/services/api/classic/users/user-search-api.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-user-search",
@@ -37,11 +38,7 @@ export class UserSearchComponent extends ScrollableSearchResultsBaseComponent<Us
   }
 
   avatarUrl(user: UserSearchInterface): string {
-    if (!user.avatarUrl || user.avatarUrl === "" || user.avatarUrl.indexOf("default-avatar") > -1) {
-      return "/assets/images/default-avatar.jpeg?v=2";
-    }
-
-    return user.avatarUrl;
+    return UtilsService.convertDefaultAvatar(user.avatarUrl);
   }
 
   openUser(user: UserSearchInterface) {

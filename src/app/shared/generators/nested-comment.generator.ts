@@ -8,6 +8,8 @@ export class NestedCommentGenerator {
       objectId: source.objectId || 1,
       author: source.author || null,
       authorAvatar: source.authorAvatar || null,
+      authorUsername: source.authorUsername || null,
+      authorDisplayName: source.authorDisplayName || null,
       text: source.text || "Test comment",
       html: source.html || "Test comment",
       created: source.created || "1970-01-01",

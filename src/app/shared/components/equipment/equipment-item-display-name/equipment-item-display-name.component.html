@@ -2,7 +2,8 @@
   <img class="klass-icon" src="/assets/images/{{ item.klass.toLowerCase() }}-{{ klassIconColor }}.png?v=1" alt="" />
 </ng-container>
 
-<ng-container *ngIf="showBrand">
+<div class="brand-name-icons">
+  <ng-container *ngIf="showBrand">
   <span *ngIf="!!brandName; else loading" class="brand">
     <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
 
@@ -10,9 +11,9 @@
       {{ brandName }}
     </ng-container>
   </span>
-</ng-container>
+  </ng-container>
 
-<span *ngIf="!!itemName; else loading" class="name">
+  <span *ngIf="!!itemName; else loading" class="name">
   <ng-template #nameTemplate>
     {{ itemName }}
     <a
@@ -50,31 +51,32 @@
   </ng-template>
 </span>
 
-<a
-  *ngIf="
+  <a
+    *ngIf="
     showRetailers &&
     item.listings.allowFullRetailerIntegration &&
     (item.listings.itemListings.length || item.listings.brandListings.length)
   "
-  (click)="openRetailersOffcanvas()"
-  astrobinEventPreventDefault
-  astrobinEventStopPropagation
-  class="btn-retailers"
-  href=""
->
-  <fa-icon icon="shopping-cart"></fa-icon>
-</a>
+    (click)="openRetailersOffcanvas()"
+    astrobinEventPreventDefault
+    astrobinEventStopPropagation
+    class="btn-retailers"
+    href=""
+  >
+    <fa-icon icon="shopping-cart"></fa-icon>
+  </a>
 
-<a
-  *ngIf="enableSummaryModal"
-  (click)="openItemSummaryModal(item)"
-  astrobinEventPreventDefault
-  astrobinEventStopPropagation
-  class="btn-info-modal"
-  href="#"
->
-  <fa-icon icon="info-circle"></fa-icon>
-</a>
+  <a
+    *ngIf="enableSummaryModal"
+    (click)="openItemSummaryModal(item)"
+    astrobinEventPreventDefault
+    astrobinEventStopPropagation
+    class="btn-info-modal"
+    href="#"
+  >
+    <fa-icon icon="info-circle"></fa-icon>
+  </a>
+</div>
 
 <ng-template #loading>
   <astrobin-text-loading-indicator></astrobin-text-loading-indicator>

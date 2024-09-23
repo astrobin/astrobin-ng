@@ -1,36 +1,83 @@
+@import '../../../../styles/mixins.scss';
+
+.table {
+  color: var(--lightestGrey);
+  margin-bottom: 0;
+  margin-top: 1.75rem;
+
+  thead > tr {
+    border-top-left-radius: var(--bs-border-radius);
+    border-top-right-radius: var(--bs-border-radius);
+
+    > th {
+      font-weight: normal;
+
+      &:first-child {
+        border-top-left-radius: var(--bs-border-radius);
+        border-bottom-left-radius: var(--bs-border-radius);
+      }
+
+      &:last-child {
+        text-align: right;
+        border-top-right-radius: var(--bs-border-radius);
+        border-bottom-right-radius: var(--bs-border-radius);
+      }
+    }
+  }
+
+  td,
+  th {
+    padding: .5rem;
+
+    &:first-child {
+      padding-left: 1rem;
+    }
+
+    &:last-child {
+      padding-right: 1rem;
+    }
+
+    .ng-fa-icon {
+      margin-right: .25rem;
+      color: var(--lightGrey);
+    }
+
+    .metadata-label {
+      flex-grow: 1;
+    }
+  }
+
+  tbody {
+    // 2 to skip the spacer row
+    tr:nth-child(2) {
+      td:first-child {
+        border-top-left-radius: var(--bs-border-radius);
+      }
+
+      td:last-child {
+        border-top-right-radius: var(--bs-border-radius);
+      }
+    }
+
+    tr:last-child {
+      td:first-child {
+        border-bottom-left-radius: var(--bs-border-radius);
+      }
+
+      td:last-child {
+        border-bottom-right-radius: var(--bs-border-radius);
+      }
+    }
+  }
+}
+
 ::ng-deep .offcanvas-deep-sky-integration-details {
   &:not(.offcanvas-bottom) {
     width: 40vw !important;
-  }
 
-  .filter-details-title {
-    display: flex;
-    justify-content: space-between;
-    width: calc(100% - 2rem);
-
-    strong {
-      font-weight: bold;
-      color: var(--white);
-    }
-
-    span {
-      color: var(--lighterGrey);
-    }
-  }
-
-  .filter-details {
-    .date {
-      color: var(--lighterGrey);
-      margin-right: .5rem;
-    }
-
-    .number {
-      margin-left: .5rem;
-    }
-
-    .number,
-    .duration {
+    .brand {
       color: var(--lightestGrey);
+      margin-right: .5rem;
     }
   }
 }

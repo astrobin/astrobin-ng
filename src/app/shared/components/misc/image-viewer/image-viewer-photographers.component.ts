@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { Component, Input, OnChanges, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
@@ -12,7 +12,6 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { filter, take } from "rxjs/operators";
 import { LoadUser } from "@features/account/store/auth.actions";
@@ -21,6 +20,8 @@ import { forkJoin } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { AcceptCollaboratorRequest, DenyCollaboratorRequest, RemoveCollaborator } from "@app/store/actions/image.actions";
 import { LoadingService } from "@shared/services/loading.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
+
 
 @Component({
   selector: "astrobin-image-viewer-photographers",
@@ -28,16 +29,18 @@ import { LoadingService } from "@shared/services/loading.service";
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <ng-container *ngIf="isPendingCollaborator">
         <div
-          class="alert alert-mini d-flex flex-nowrap align-items-center justify-content-between gap-2 mt-3 mb-2 px-3 py-2 w-100">
-        <span class="flex-grow-1">
-          <fa-icon icon="info-circle" class="me-2"></fa-icon>
-          <span translate="The owner of this image has requested to add you as a collaborator."></span>
-        </span>
+          class="alert alert-mini d-flex flex-nowrap align-items-center justify-content-between gap-2 mt-3 mb-2 px-3 py-2 w-100"
+        >
+          <span class="flex-grow-1">
+            <fa-icon icon="info-circle" class="me-2"></fa-icon>
+            <span translate="The owner of this image has requested to add you as a collaborator."></span>
+          </span>
+
           <div class="d-flex flex-nowrap gap-2">
             <button
               (click)="acceptCollaboratorRequest(currentUserWrapper.user.id)"
               [ngbTooltip]="'Accept' | translate"
-              class="btn btn-xs btn-success"
+              class="btn btn-xs btn-success m-0"
               [class.loading]="loadingService.loading$ | async"
               container="body"
               triggers="hover"
@@ -48,7 +51,7 @@ import { LoadingService } from "@shared/services/loading.service";
             <button
               (click)="denyCollaboratorRequest(currentUserWrapper.user.id)"
               [ngbTooltip]="'Deny' | translate"
-              class="btn btn-xs btn-danger"
+              class="btn btn-xs btn-danger m-0"
               [class.loading]="loadingService.loading$ | async"
               container="body"
               triggers="hover"
@@ -60,16 +63,23 @@ import { LoadingService } from "@shared/services/loading.service";
       </ng-container>
 
       <div class="metadata-section photographers mb-3">
-        <div class="metadata-item flex-grow-1 gap-3">
+        <div
+          class="
+            metadata-item
+            flex-grow-1
+            gap-3
+            flex-column flex-sm-row
+          "
+        >
           <ng-container *ngIf="photographers?.length > 0; else loadingTemplate">
-            <div [class.flex-grow-1]="photographers.length > 1" class="avatars flex-nowrap">
+            <div *ngIf="photographers.length > 1" class="avatars flex-grow-1">
               <a
                 *ngFor="let user of photographers"
                 (click)="avatarClicked($event, user)"
                 [href]="classicRoutesService.GALLERY(user.username)"
                 class="position-relative"
               >
-                <img [src]="user.avatar" alt="" />
+                <img [src]="user.avatar" alt="" class="avatar" />
 
                 <fa-icon
                   *ngIf="user.pending"
@@ -94,14 +104,29 @@ import { LoadingService } from "@shared/services/loading.service";
               </a>
             </div>
 
-            <div class="d-flex flex-nowrap align-items-center w-100 gap-1 flex-column flex-xl-row">
-              <div
-                *ngIf="photographers?.length === 1"
-                [class.flex-grow-1]="photographers.length === 1"
-                class="d-flex flex-nowrap align-items-center gap-2 w-100">
+            <div
+              *ngIf="photographers?.length === 1"
+              class="
+                d-flex
+                align-items-center
+                flex-nowrap
+                flex-grow-1
+                flex-column flex-sm-row
+                gap-2 gap-sm-3
+                w-100
+              "
+            >
+              <a
+                [href]="classicRoutesService.GALLERY(photographers[0].username)"
+                class="position-relative"
+              >
+                <img [src]="photographers[0].avatar" alt="" class="avatar" />
+              </a>
+
+              <div class="text-center text-sm-start">
                 <a
                   [href]="classicRoutesService.GALLERY(photographers[0].username)"
-                  class="d-block no-wrap"
+                  class="d-inline me-2"
                 >
                   {{ photographers[0].displayName }}
                 </a>
@@ -111,47 +136,28 @@ import { LoadingService } from "@shared/services/loading.service";
                   [contentType]="userContentType.id"
                   [objectId]="photographers[0].id"
                   [userId]="currentUserWrapper.user?.id"
-                  [showLabel]="false"
-                  [setLabel]="'Follow user' | translate"
-                  [unsetLabel]="'Unfollow user' | translate"
-                  class="w-auto py-0"
-                  btnClass="btn btn-link btn-no-block link-secondary"
+                  [showLabel]="true"
+                  [showIcon]="false"
+                  [setLabel]="'Follow' | translate"
+                  [unsetLabel]="'Unfollow' | translate"
+                  class="d-inline-block btn-no-block"
+                  btnClass="btn btn-xs btn-no-block btn-outline-secondary"
                   propertyType="follow"
                 ></astrobin-toggle-property>
               </div>
-
-              <div
-                *ngIf="publicationDate"
-                class="metadata-item flex-row flex-xl-column w-100 gap-0 justify-content-between align-items-center align-items-xl-end"
-              >
-                <div class="publication-date d-flex flex-row gap-2 no-wrap align-items-center">
-                  <ng-container *ngIf="licenseIcon && licenseTooltip">
-                    <fa-icon
-                      [icon]="licenseIcon"
-                      [ngbTooltip]="licenseTooltip"
-                      triggers="hover click"
-                      container="body"
-                      class="license-icon"
-                    ></fa-icon>
-                  </ng-container>
-                  {{ publicationDate | localDate | timeago:true }}
-                </div>
-                <div class="view-count">
-                  <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
-                  <span
-                    *ngIf="image.viewCount > 1"
-                    [translateParams]="{
-                      '0': image.viewCount
-                    }"
-                    [translate]="'{{0}} views'"
-                  ></span>
-                </div>
-              </div>
             </div>
           </ng-container>
+
+          <astrobin-image-viewer-social-buttons
+            [image]="image"
+            [showComments]="false"
+            [showShare]="false"
+            btnExtraClasses="btn-lg"
+          ></astrobin-image-viewer-social-buttons>
         </div>
       </div>
     </ng-container>
+
     <ng-template #loadingTemplate>
       <div class="metadata-item flex-grow-1">
         <astrobin-loading-indicator></astrobin-loading-indicator>
@@ -206,16 +212,19 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   image: ImageInterface;
 
   @Input()
+  revision: ImageInterface | ImageRevisionInterface;
+
+  @Input()
   userContentType: ContentTypeInterface;
 
   @ViewChild("collaboratorsTemplate")
   collaboratorsTemplate: TemplateRef<any>;
 
+  @ViewChild("shareTemplate")
+  shareTemplate: TemplateRef<any>;
+
   protected photographers: (Partial<UserInterface> & { pending?: boolean, canRemove?: boolean })[];
   protected isPendingCollaborator: boolean;
-  protected publicationDate: string;
-  protected licenseIcon: IconProp;
-  protected licenseTooltip: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -228,7 +237,8 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
     public readonly deviceService: DeviceService,
     public readonly windowRefService: WindowRefService,
     public readonly translateService: TranslateService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly renderer: Renderer2
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -236,31 +246,21 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue) {
       this.setPhotographers(this.image);
-      this.setPublicationDate(this.image);
-      this.setLicenseIconAndTooltip(this.image);
     }
   }
 
   setPhotographers(image: ImageInterface): void {
-    const appAvatar = (avatar: string): string => {
-      if (avatar.indexOf("default-avatar") > -1) {
-        return "/assets/images/default-avatar.jpeg?v=2";
-      }
-
-      return avatar;
-    };
-
     this.currentUser$.pipe(take(1)).subscribe(currentUser => {
       this.photographers = [
         {
           id: image.user,
-          avatar: appAvatar(image.userAvatar),
+          avatar: UtilsService.convertDefaultAvatar(image.userAvatar),
           username: image.username,
           displayName: image.userDisplayName
         },
         ...image.collaborators.map(collaborator => ({
           id: collaborator.id,
-          avatar: appAvatar(collaborator.avatar),
+          avatar: UtilsService.convertDefaultAvatar(collaborator.avatar),
           username: collaborator.username,
           displayName: collaborator.displayName,
           canRemove: currentUser && (collaborator.id === currentUser.id || currentUser.id === this.image.user)
@@ -298,7 +298,7 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
           this.photographers.push(
             ...pendingCollaborators.map(collaborator => ({
               id: collaborator.id,
-              avatar: appAvatar(collaborator.avatar),
+              avatar: UtilsService.convertDefaultAvatar(collaborator.avatar),
               username: collaborator.username,
               displayName: collaborator.displayName,
               pending: true
@@ -307,15 +307,6 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
         });
       }
     });
-  }
-
-  setPublicationDate(image: ImageInterface): void {
-    this.publicationDate = this.imageService.getPublicationDate(image);
-  }
-
-  setLicenseIconAndTooltip(image: ImageInterface): void {
-    this.licenseIcon = this.imageService.getLicenseIcon(image.license);
-    this.licenseTooltip = this.imageService.humanizeLicenseOption(image.license);
   }
 
   avatarClicked(event: MouseEvent, user: Partial<UserInterface>): void {

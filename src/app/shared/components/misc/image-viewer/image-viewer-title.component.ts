@@ -9,23 +9,50 @@ import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image
 import { ImageService } from "@shared/services/image/image.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 @Component({
   selector: "astrobin-image-viewer-title",
   template: `
-    <div class="image-viewer-title d-flex flex-row justify-content-between align-items-center gap-2">
-      <h2 class="flex-grow-1 mb-0">
+    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+
+    <div class="image-viewer-title d-flex flex-row justify-content-between align-items-start gap-2">
+      <h2 class="flex-grow-1 mb-0 text-center text-sm-start">
         {{ image.title }}
 
-        <small *ngIf="resolution" class="resolution" [innerHTML]="resolution"></small>
-        <small *ngIf="size" class="file-size" [innerHTML]="size | filesize"></small>
-        <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-          <small
-            *ngIf="currentUserWrapper.user?.id === image.user && image.uploaderName"
-            class="original-filename"
-            [innerHTML]="image.uploaderName"
-          ></small>
-        </ng-container>
+        <small
+          *ngIf="currentUserWrapper.user?.id === image.user && image.uploaderName"
+          class="justify-content-center justify-content-sm-start"
+        >
+          <span class="original-filename" [innerHTML]="image.uploaderName"></span>
+        </small>
+
+        <small class="justify-content-center justify-content-sm-start">
+          <span *ngIf="publicationDate">
+            <fa-icon
+              *ngIf="licenseIcon && licenseTooltip"
+              [icon]="licenseIcon"
+              [ngbTooltip]="licenseTooltip"
+              triggers="hover click"
+              container="body"
+              class="license-icon"
+            ></fa-icon>
+            {{ publicationDate | localDate | timeago:true }}
+          </span>
+
+          <span class="view-count">
+            <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
+            <span
+              *ngIf="image.viewCount > 1"
+              [translateParams]="{ '0': image.viewCount | numberSuffix }"
+              [translate]="'{{0}} views'"
+            ></span>
+          </span>
+
+          <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
+
+          <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
+        </small>
 
         <div *ngIf="image.isIotd || image.isTopPick || image.isTopPickNomination" class="iotd-tp">
           <span *ngIf="image.iotdDate" class="iotd">
@@ -57,7 +84,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </div>
       </h2>
 
-      <div ngbDropdown class="dropdown w-auto d-none d-md-block">
+      <div ngbDropdown class="dropdown w-auto d-none d-md-block mt-1">
         <fa-icon
           ngbDropdownToggle
           icon="bars"
@@ -74,7 +101,14 @@ import { WindowRefService } from "@shared/services/window-ref.service";
           ></astrobin-image-viewer-menu>
         </div>
       </div>
+
+      <astrobin-image-viewer-share-button
+        [image]="image"
+        [revisionLabel]="revisionLabel"
+        class="d-none d-md-block p-1"
+      ></astrobin-image-viewer-share-button>
     </div>
+    </ng-container>
 
     <ng-template #iotdInfoLinkTemplate>
       <a
@@ -90,8 +124,11 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   styleUrls: ["./image-viewer-title.component.scss"]
 })
 export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent implements OnChanges {
-  resolution: string;
-  size: number;
+  protected resolution: string;
+  protected size: number;
+  protected publicationDate: string;
+  protected licenseIcon: IconProp;
+  protected licenseTooltip: string;
 
   public constructor(
     public readonly store$: Store<MainState>,
@@ -108,6 +145,8 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
       this.setResolutionAndFileSize(this.image, this.revisionLabel);
+      this.setPublicationDate(this.image);
+      this.setLicenseIconAndTooltip(this.image);
     }
   }
 
@@ -115,5 +154,14 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
     const revision = this.imageService.getRevision(image, revisionLabel);
     this.resolution = `${revision.w}&times;${revision.h}`;
     this.size = revision.uploaderUploadLength;
+  }
+
+  setPublicationDate(image: ImageInterface): void {
+    this.publicationDate = this.imageService.getPublicationDate(image);
+  }
+
+  setLicenseIconAndTooltip(image: ImageInterface): void {
+    this.licenseIcon = this.imageService.getLicenseIcon(image.license);
+    this.licenseTooltip = this.imageService.humanizeLicenseOption(image.license);
   }
 }

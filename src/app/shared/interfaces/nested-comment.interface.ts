@@ -6,6 +6,8 @@ export interface NestedCommentInterface {
   contentType: ContentTypeInterface["id"];
   objectId: number;
   author: UserInterface["id"];
+  authorUsername: string;
+  authorDisplayName: string;
   authorAvatar: string;
   text: string;
   html: string;

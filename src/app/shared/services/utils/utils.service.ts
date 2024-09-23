@@ -932,6 +932,14 @@ export class UtilsService {
     return value;
   }
 
+  static convertDefaultAvatar(avatar: string): string {
+    if (!avatar || avatar === "" || avatar.indexOf("default-avatar") > -1) {
+      return "/assets/images/default-avatar.jpeg?v=2";
+    }
+
+    return avatar;
+  }
+
   supportsDateInput() {
     if (isPlatformServer(this.platformId)) {
       return false;
@@ -989,6 +997,20 @@ export class UtilsService {
     }
 
     renderer.appendChild(document.head, link);
+  }
+
+  isElementVisibleInContainer(child: HTMLElement, container: HTMLElement): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const childRect = child.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    return (
+      childRect.bottom > containerRect.top &&
+      childRect.top < containerRect.bottom
+    );
   }
 
   isNearBelowViewport(element: HTMLElement): boolean {

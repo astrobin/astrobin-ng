@@ -30,6 +30,36 @@ export enum FilterType {
   OTHER = "OTHER"
 }
 
+export const FilterTypePriority: { [key in keyof typeof FilterType]: number } = {
+  L: 1,
+  UV_IR_CUT: 2,
+  LP: 3,
+  R: 4,
+  G: 5,
+  B: 6,
+  H_ALPHA: 7,
+  H_BETA: 8,
+  SII: 9,
+  OIII: 10,
+  NII: 11,
+  MULTIBAND: 12,
+  UV: 13,
+  IR: 14,
+  ND: 15,
+  UHC: 16,
+  SKY_GLOW: 17,
+  SOLAR: 18,
+  LUNAR: 19,
+  PLANETARY: 20,
+  COMETARY: 21,
+  PHOTOMETRIC_U: 22,
+  PHOTOMETRIC_B: 23,
+  PHOTOMETRIC_V: 24,
+  PHOTOMETRIC_R: 25,
+  PHOTOMETRIC_I: 26,
+  OTHER: 27
+}
+
 export enum FilterSize {
   ROUND_1_25_IN = "ROUND_1_25_IN",
   ROUND_2_IN = "ROUND_2_IN",

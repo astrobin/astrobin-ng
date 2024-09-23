@@ -37,7 +37,7 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
   }
 
   ngAfterViewChecked(): void {
-    if (!this.enabled || this.initialized || !this.bottomElement) {
+    if (!this.enabled || this.initialized || !this.bottomElement || !this.topElement) {
       return;
     }
 
