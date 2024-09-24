@@ -8,6 +8,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   selector: "astrobin-image-viewer-iotd-banner",
   template: `
     <div class="iotd-banner">
+      <div class="stitches-top"></div>
       <div class="iotd-banner-inner">
         <h3>
           <span class="iotd-banner-label">
@@ -22,6 +23,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 
         <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
       </div>
+      <div class="stitches-bottom"></div>
     </div>
 
     <ng-template #iotdInfoLinkTemplate>
