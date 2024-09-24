@@ -72,130 +72,140 @@
     class="image-area"
     [class.force-view-mousehover]="forceViewMouseHover"
     [class.adjustment-editor-visible]="adjustmentEditorVisible"
+    [class.has-top-banner]="image.isIotd"
   >
-    <ng-container *ngIf="adjustmentEditorVisible && isPlatformBrowser(platformId)">
-      <astrobin-image-viewer-adjustment-editor
+    <div class="image-area-header">
+      <astrobin-image-viewer-iotd-banner
+        *ngIf="image.isIotd"
         [image]="image"
-        [revisionLabel]="revisionLabel"
-        [imageComponent]="imageComponent"
-        (closeClick)="adjustmentEditorVisible = false"
-        class="adjustment-editor"
-      ></astrobin-image-viewer-adjustment-editor>
-    </ng-container>
+      ></astrobin-image-viewer-iotd-banner>
+    </div>
 
-    <ng-container *ngIf="!adjustmentEditorVisible">
-      <astrobin-image-viewer-close-button
-        *ngIf="showCloseButton"
-        (closeClick)="close()"
-        class="close-button d-none d-md-block"
-      ></astrobin-image-viewer-close-button>
+    <div class="image-area-body">
+      <ng-container *ngIf="adjustmentEditorVisible && isPlatformBrowser(platformId)">
+        <astrobin-image-viewer-adjustment-editor
+          [image]="image"
+          [revisionLabel]="revisionLabel"
+          [imageComponent]="imageComponent"
+          (closeClick)="adjustmentEditorVisible = false"
+          class="adjustment-editor"
+        ></astrobin-image-viewer-adjustment-editor>
+      </ng-container>
 
-      <astrobin-image-viewer-additional-buttons
-        *ngIf="image && imageLoaded"
-        [image]="image"
-        [revisionLabel]="revisionLabel"
-        [hasMouseHover]="!!mouseHoverImage || !!inlineSvg"
-        [forceViewMouseHover]="forceViewMouseHover"
-        (toggleViewMouseHover)="toggleViewMouseHover()"
-        (showAdjustmentsEditor)="adjustmentEditorVisible = true"
-        class="additional-buttons"
+      <ng-container *ngIf="!adjustmentEditorVisible">
+        <astrobin-image-viewer-close-button
+          *ngIf="showCloseButton"
+          (closeClick)="close()"
+          class="close-button d-none d-md-block"
+        ></astrobin-image-viewer-close-button>
+
+        <astrobin-image-viewer-additional-buttons
+          *ngIf="image && imageLoaded"
+          [image]="image"
+          [revisionLabel]="revisionLabel"
+          [hasMouseHover]="!!mouseHoverImage || !!inlineSvg"
+          [forceViewMouseHover]="forceViewMouseHover"
+          (toggleViewMouseHover)="toggleViewMouseHover()"
+          (showAdjustmentsEditor)="adjustmentEditorVisible = true"
+          class="additional-buttons"
+        >
+        </astrobin-image-viewer-additional-buttons>
+      </ng-container>
+
+      <button
+        *ngIf="currentIndex > 0"
+        (click)="onPreviousClicked()"
+        class="previous-button"
       >
-      </astrobin-image-viewer-additional-buttons>
-    </ng-container>
+        <fa-icon icon="chevron-circle-left"></fa-icon>
+      </button>
 
-    <button
-      *ngIf="currentIndex > 0"
-      (click)="onPreviousClicked()"
-      class="previous-button"
-    >
-      <fa-icon icon="chevron-circle-left"></fa-icon>
-    </button>
+      <astrobin-fullscreen-image-viewer
+        *ngIf="supportsFullscreen"
+        [id]="image.pk"
+        [revision]="revisionLabel"
+        (exitFullscreen)="exitFullscreen(true)"
+      ></astrobin-fullscreen-image-viewer>
 
-    <astrobin-fullscreen-image-viewer
-      *ngIf="supportsFullscreen"
-      [id]="image.pk"
-      [revision]="revisionLabel"
-      (exitFullscreen)="exitFullscreen(true)"
-    ></astrobin-fullscreen-image-viewer>
+      <astrobin-loading-indicator *ngIf="!image"></astrobin-loading-indicator>
 
-    <astrobin-loading-indicator *ngIf="!image"></astrobin-loading-indicator>
-
-    <astrobin-image
-      #imageComponent
-      (imageClick)="enterFullscreen($event)"
-      (loaded)="onImageLoaded()"
-      (imageMouseEnter)="onImageMouseEnter($event)"
-      (imageMouseLeave)="onImageMouseLeave($event)"
-      (swipeleft)="onNextClicked()"
-      (swiperight)="onPreviousClicked()"
-      (swipedown)="close()"
-      [alias]="alias"
-      [class.supports-fullscreen]="supportsFullscreen"
-      [image]="image"
-      [revisionLabel]="revisionLabel"
-    ></astrobin-image>
-
-    <div
-      *ngIf="mouseHoverImage && imageLoaded"
-      (click)="enterFullscreen($event)"
-      class="mouse-hover-container"
-    >
-      <img
-        (mouseenter)="onImageMouseEnter($event)"
-        (mouseleave)="onImageMouseLeave($event)"
+      <astrobin-image
+        #imageComponent
+        (imageClick)="enterFullscreen($event)"
+        (loaded)="onImageLoaded()"
+        (imageMouseEnter)="onImageMouseEnter($event)"
+        (imageMouseLeave)="onImageMouseLeave($event)"
         (swipeleft)="onNextClicked()"
         (swiperight)="onPreviousClicked()"
         (swipedown)="close()"
-        alt=""
-        class="mouse-hover"
-        src="{{ mouseHoverImage }}"
-      />
-    </div>
+        [alias]="alias"
+        [class.supports-fullscreen]="supportsFullscreen"
+        [image]="image"
+        [revisionLabel]="revisionLabel"
+      ></astrobin-image>
 
-    <div
-      *ngIf="inlineSvg && imageLoaded"
-      (click)="enterFullscreen($event)"
-      class="mouse-hover-svg-container"
-    >
       <div
-        (mouseenter)="onImageMouseEnter($event)"
-        (mouseleave)="onImageMouseLeave($event)"
-        (swipeleft)="onNextClicked()"
-        (swiperight)="onPreviousClicked()"
-        (swipedown)="close()"
-        [innerHTML]="inlineSvg"
-        [id]="'mouse-hover-svg-' + image.pk"
-        class="mouse-hover w-100 position-relative"
-      ></div>
-
-      <div class="mouse-hover-svg-overlay">
-        Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
+        *ngIf="mouseHoverImage && imageLoaded"
+        (click)="enterFullscreen($event)"
+        class="mouse-hover-container"
+      >
+        <img
+          (mouseenter)="onImageMouseEnter($event)"
+          (mouseleave)="onImageMouseLeave($event)"
+          (swipeleft)="onNextClicked()"
+          (swiperight)="onPreviousClicked()"
+          (swipedown)="close()"
+          alt=""
+          class="mouse-hover ready"
+          src="{{ mouseHoverImage }}"
+        />
       </div>
+
+      <div
+        *ngIf="inlineSvg && imageLoaded"
+        (click)="enterFullscreen($event)"
+        class="mouse-hover-svg-container"
+      >
+        <div
+          (mouseenter)="onImageMouseEnter($event)"
+          (mouseleave)="onImageMouseLeave($event)"
+          (swipeleft)="onNextClicked()"
+          (swiperight)="onPreviousClicked()"
+          (swipedown)="close()"
+          [innerHTML]="inlineSvg"
+          [id]="'mouse-hover-svg-' + image.pk"
+          class="mouse-hover w-100 position-relative"
+        ></div>
+
+        <div class="mouse-hover-svg-overlay">
+          Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
+        </div>
+      </div>
+
+      <astrobin-image-viewer-revisions
+        [image]="image"
+        [activeLabel]="revisionLabel"
+        (revisionSelected)="onRevisionSelected($event, true)"
+        [class.show]="showRevisions"
+      ></astrobin-image-viewer-revisions>
+
+      <button
+        *ngIf="currentIndex < navigationContext?.length - 1"
+        (click)="onNextClicked()"
+        class="next-button"
+      >
+        <fa-icon icon="chevron-circle-right"></fa-icon>
+      </button>
+
+      <button
+        *ngIf="image.revisions?.length"
+        (click)="showRevisions = !showRevisions"
+        class="revisions-mobile-button"
+      >
+        <fa-icon *ngIf="!showRevisions" icon="ellipsis"></fa-icon>
+        <fa-icon *ngIf="showRevisions" icon="angle-down"></fa-icon>
+      </button>
     </div>
-
-    <astrobin-image-viewer-revisions
-      [image]="image"
-      [activeLabel]="revisionLabel"
-      (revisionSelected)="onRevisionSelected($event, true)"
-      [class.show]="showRevisions"
-    ></astrobin-image-viewer-revisions>
-
-    <button
-      *ngIf="currentIndex < navigationContext?.length - 1"
-      (click)="onNextClicked()"
-      class="next-button"
-    >
-      <fa-icon icon="chevron-circle-right"></fa-icon>
-    </button>
-
-    <button
-      *ngIf="image.revisions?.length"
-      (click)="showRevisions = !showRevisions"
-      class="revisions-mobile-button"
-    >
-      <fa-icon *ngIf="!showRevisions" icon="ellipsis"></fa-icon>
-      <fa-icon *ngIf="showRevisions" icon="angle-down"></fa-icon>
-    </button>
   </div>
 </ng-template>
 
@@ -270,11 +280,6 @@
       (adDisplayed)="adDisplayed = true"
       [configName]="adConfig"
     ></astrobin-ad-manager>
-
-    <astrobin-image-viewer-iotd-banner
-      *ngIf="image.isIotd"
-      [image]="image"
-    ></astrobin-image-viewer-iotd-banner>
 
     <astrobin-image-viewer-wip-banner
       *ngIf="image.isWip && currentUserWrapper.user?.id === image.user"
