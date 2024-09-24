@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -6,7 +6,7 @@ import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.inte
 import { TranslateService } from "@ngx-translate/core";
 import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
 import { LoadingService } from "@shared/services/loading.service";
-import { CreateToggleProperty, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertySuccess, LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
+import { CreateToggleProperty, CreateTogglePropertySuccess, DeleteToggleProperty, LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
 import { filter, map, takeUntil, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
@@ -14,6 +14,9 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { RouterService } from "@shared/services/router.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
+import { isPlatformBrowser } from "@angular/common";
+import { fromEvent, throttleTime } from "rxjs";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-toggle-property",
@@ -58,8 +61,8 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   toggleProperty: TogglePropertyInterface | null = null;
 
   // We keep a local "loading" state because we don't want to freeze the whole app.
-  loading = false;
-
+  protected loading = false;
+  protected initialized = false;
   protected isTouchDevice = false;
   protected toggled: boolean;
 
@@ -71,7 +74,10 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     public readonly utilsService: UtilsService,
     public readonly routerService: RouterService,
     public readonly deviceService: DeviceService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly elementRef: ElementRef,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
   }
@@ -122,7 +128,25 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   }
 
   public ngOnChanges(): void {
-    this._initStatus();
+    this.initialized = false;
+    this.loading = false;
+
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+        this._initStatus();
+      } else {
+        const scrollElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
+        fromEvent(scrollElement, "scroll").pipe(
+          takeUntil(this.destroyed$),
+          throttleTime(200),
+          tap(() => {
+            if (this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+              this._initStatus();
+            }
+          })
+        ).subscribe();
+      }
+    }
   }
 
   public onClick(event: MouseEvent | TouchEvent, toggleProperty: Partial<TogglePropertyInterface>): void {
@@ -158,6 +182,10 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   }
 
   private _initStatus(): void {
+    if (this.initialized) {
+      return;
+    }
+
     if (!this.userId) {
       return;
     }
@@ -174,7 +202,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
         toggleProperty.user === this.userId &&
         toggleProperty.objectId === this.objectId &&
         toggleProperty.contentType === this.contentType;
-    }
+    };
 
     this.store$.pipe(
       select(selectToggleProperty(params)),
@@ -225,5 +253,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this.loading = false;
       this.changeDetectorRef.markForCheck();
     });
+
+    this.initialized = true;
   }
 }

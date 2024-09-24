@@ -163,6 +163,23 @@ export class WindowRefService extends BaseService {
   }
 
   pushState(data: any, url: string) {
+    this._pushOrReplaceState("pushState", data, url);
+  }
+
+  replaceState(data: any, url: string) {
+    this._pushOrReplaceState("replaceState", data, url);
+  }
+
+  changeBodyOverflow(value: "hidden" | "auto"): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const _document = this.nativeWindow.document;
+      if (_document) {
+        _document.body.classList.toggle("overflow-hidden", value === "hidden");
+      }
+    }
+  }
+
+  private _pushOrReplaceState(method: "pushState" | "replaceState", data: any, url: string) {
     if (isPlatformServer(this.platformId)) {
       return;
     }
@@ -178,15 +195,6 @@ export class WindowRefService extends BaseService {
       return;
     }
 
-    _history.pushState(data, "", url);
-  }
-
-  changeBodyOverflow(value: "hidden" | "auto"): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const _document = this.nativeWindow.document;
-      if (_document) {
-        _document.body.classList.toggle("overflow-hidden", value === "hidden");
-      }
-    }
+    _history[method](data, "", url);
   }
 }

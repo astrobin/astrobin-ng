@@ -12,6 +12,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { Buffer } from "buffer";
 import msgpack from "msgpack-lite";
 import pako from "pako";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Injectable({
   providedIn: "root"
@@ -1011,6 +1012,24 @@ export class UtilsService {
       childRect.bottom > containerRect.top &&
       childRect.top < containerRect.bottom
     );
+  }
+
+  static getScrollableParent(element: HTMLElement, windowRefService: WindowRefService): HTMLElement | Window {
+    if (!element) {
+      return null;
+    }
+
+    let parent = element.parentElement;
+
+    while (parent) {
+      const overflowY = windowRefService.nativeWindow.getComputedStyle(parent).overflowY;
+      if (overflowY === "auto" || overflowY === "scroll") {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+
+    return windowRefService.nativeWindow;
   }
 
   isNearBelowViewport(element: HTMLElement): boolean {
