@@ -407,6 +407,7 @@ export class SearchService extends BaseService {
     const sh2Range = Array.from({ length: 313 }, (_, i) => i + 1);
     const ldnRange = Array.from({ length: 1802 }, (_, i) => i + 1);
     const lbnRange = Array.from({ length: 1125 }, (_, i) => i + 1);
+    const vdbRange = Array.from({ length: 159 }, (_, i) => i + 1);
 
     const subjects = [
       ...messierRange.map(i => ({
@@ -432,6 +433,10 @@ export class SearchService extends BaseService {
       ...lbnRange.map(i => ({
         type: SearchAutoCompleteType.SUBJECTS,
         label: `LBN ${i}`
+      })),
+      ...vdbRange.map(i => ({
+        type: SearchAutoCompleteType.SUBJECTS,
+        label: `VDB ${i}`
       }))
     ];
 
