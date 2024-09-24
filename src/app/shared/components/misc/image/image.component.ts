@@ -456,6 +456,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         url = allAvailableThumbnails[0].url;
       } else {
         url = allAvailableThumbnails.find(thumbnail => thumbnail.revisionLabel === this.revisionLabel)?.url;
+        if (!url) {
+          url = allAvailableThumbnails.find(thumbnail => thumbnail.revisionLabel === FINAL_REVISION_LABEL)?.url;
+        }
       }
     }
 

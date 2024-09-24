@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -336,40 +336,8 @@ export class ImageViewerComponent
         observeOn(animationFrameScheduler)
       )
       .subscribe(() => {
-        const socialButtons = scrollArea.querySelector(
-          "astrobin-image-viewer-photographers astrobin-image-viewer-social-buttons"
-        ) as HTMLElement | null;
-        const floatingTitle = scrollArea.querySelector("astrobin-image-viewer-floating-title") as HTMLElement | null;
-
-        if (!socialButtons || !floatingTitle) {
-          return;
-        }
-
-        const adManager = scrollArea.querySelector("astrobin-ad-manager") as HTMLElement | null;
-        const adManagerHeight = adManager ? adManager.offsetHeight : 0;
-        const socialButtonsVisible = this.utilsService.isElementVisibleInContainer(socialButtons, scrollArea);
-        const siteHeader = document.querySelector("astrobin-header > nav") as HTMLElement | null;
-        const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
-        const mobileMenu = document.querySelector("astrobin-mobile-menu") as HTMLElement | null;
-        const mobileMenuHeight = mobileMenu && hasMobileMenu ? mobileMenu.offsetHeight : 0;
-        const globalLoadingIndicator = document.querySelector(".global-loading-indicator") as HTMLElement | null;
-        const globalLoadingIndicatorHeight = globalLoadingIndicator ? globalLoadingIndicator.offsetHeight : 0;
-
-        if (!socialButtonsVisible) {
-          let translateYValue;
-
-          if (sideToSideLayout) {
-            // The position is relative to the data area.
-            translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
-          } else {
-            // The position is relative to the main area.
-            translateYValue = `${siteHeaderHeight + globalLoadingIndicatorHeight + mobileMenuHeight - 1}px`;
-          }
-
-          this.renderer.setStyle(floatingTitle, "transform", `translateY(${translateYValue})`);
-        } else {
-          this.renderer.setStyle(floatingTitle, "transform", "translateY(-100%)");
-        }
+        this._handleNavigationButtonsVisibility(scrollArea);
+        this._handleFloatingTitleOnScroll(scrollArea, hasSiteHeader, hasMobileMenu, sideToSideLayout);
       });
   }
 
@@ -869,6 +837,77 @@ export class ImageViewerComponent
       left: el.clientWidth,
       behavior: "smooth"
     });
+  }
+
+  private _handleFloatingTitleOnScroll(scrollArea: HTMLElement, hasSiteHeader: boolean, hasMobileMenu: boolean, sideToSideLayout: boolean) {
+    const socialButtons = scrollArea.querySelector(
+      "astrobin-image-viewer-photographers astrobin-image-viewer-social-buttons"
+    ) as HTMLElement | null;
+    const floatingTitle = scrollArea.querySelector("astrobin-image-viewer-floating-title") as HTMLElement | null;
+
+    if (!socialButtons || !floatingTitle) {
+      return;
+    }
+
+    const adManager = scrollArea.querySelector("astrobin-ad-manager") as HTMLElement | null;
+    const adManagerHeight = adManager ? adManager.offsetHeight : 0;
+    const siteHeader = document.querySelector("astrobin-header > nav") as HTMLElement | null;
+    const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
+    const mobileMenu = document.querySelector("astrobin-mobile-menu") as HTMLElement | null;
+    const mobileMenuHeight = mobileMenu && hasMobileMenu ? mobileMenu.offsetHeight : 0;
+    const globalLoadingIndicator = document.querySelector(".global-loading-indicator") as HTMLElement | null;
+    const globalLoadingIndicatorHeight = globalLoadingIndicator ? globalLoadingIndicator.offsetHeight : 0;
+
+    // Check if the social buttons are out of view, but only if they are above the visible area
+    const socialButtonsRect = socialButtons.getBoundingClientRect();
+    const scrollAreaRect = scrollArea.getBoundingClientRect();
+    const socialButtonsAboveViewport = socialButtonsRect.bottom < scrollAreaRect.top;
+
+    if (socialButtonsAboveViewport) {
+      let translateYValue;
+
+      if (sideToSideLayout) {
+        // The position is relative to the data area.
+        translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
+      } else {
+        // The position is relative to the main area.
+        translateYValue = `${siteHeaderHeight + globalLoadingIndicatorHeight + mobileMenuHeight - 1}px`;
+      }
+
+      this.renderer.setStyle(floatingTitle, "transform", `translateY(${translateYValue})`);
+    } else {
+      this.renderer.setStyle(floatingTitle, "transform", "translateY(-100%)");
+    }
+  }
+
+  private _handleNavigationButtonsVisibility(scrollArea: HTMLElement) {
+    const image = scrollArea.querySelector("astrobin-image") as HTMLElement | null;
+    const nextButton = scrollArea.querySelector(".next-button") as HTMLElement | null;
+    const prevButton = scrollArea.querySelector(".previous-button") as HTMLElement | null;
+
+    if (!image || (!nextButton && !prevButton)) {
+      return;
+    }
+
+    const imageVisible = this.utilsService.isElementVisibleInContainer(image, scrollArea);
+
+    if (imageVisible) {
+      if (nextButton) {
+        this.renderer.setStyle(nextButton, "opacity", "1");
+      }
+
+      if (prevButton) {
+        this.renderer.setStyle(prevButton, "opacity", "1");
+      }
+    } else {
+      if (nextButton) {
+        this.renderer.setStyle(nextButton, "opacity", "0", RendererStyleFlags2.Important);
+      }
+
+      if (prevButton) {
+        this.renderer.setStyle(prevButton, "opacity", "0", RendererStyleFlags2.Important);
+      }
+    }
   }
 
   private _setAd() {
