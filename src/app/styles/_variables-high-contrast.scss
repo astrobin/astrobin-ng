@@ -29,6 +29,9 @@ $almost-black: #101010;
 
 // ... other colors
 $gold: #fff;
+$dark-gold: darken($gold, 10%);
+$darker-gold: darken($gold, 25%);
+$darkest-gold: darken($gold, 33%);
 $silver: #ccc;
 $bronze: #aaa;
 
@@ -98,6 +101,9 @@ $ng-select-value-font-size: 0.9em;
   --almost-black: #{$almost-black};
 
   --gold: #{$gold};
+  --darkGold: #{$dark-gold};
+  --darkerGold: #{$darker-gold};
+  --darkestGold: #{$darkest-gold};
   --silver: #{$silver};
   --bronze: #{$bronze};
 

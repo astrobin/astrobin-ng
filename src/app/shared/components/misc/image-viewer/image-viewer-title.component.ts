@@ -54,18 +54,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
           <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
         </small>
 
-        <div *ngIf="image.isIotd || image.isTopPick || image.isTopPickNomination" class="iotd-tp">
-          <span *ngIf="image.iotdDate" class="iotd">
-            <span class="label">
-              <fa-icon icon="trophy"></fa-icon>
-              {{ "Image of the day" | translate }}:
-            </span>
-            <span class="date">
-              {{ image.iotdDate | date:"mediumDate" }}
-            </span>
-            <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
-          </span>
-
+        <div *ngIf="!image.iotdDate && (image.isTopPick || image.isTopPickNomination)" class="iotd-tp">
           <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
             <span class="label">
               <fa-icon icon="star"></fa-icon>

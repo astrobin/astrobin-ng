@@ -776,13 +776,19 @@ export class ImageViewerComponent
 
   adjustSvgOverlay(): void {
     if (!this.imageArea) {
+      this.utilsService.delay(100).subscribe(() => {
+        this.adjustSvgOverlay();
+      });
       return;
     }
 
-    const imageAreaElement = this.imageArea.nativeElement as HTMLElement;
+    const imageAreaElement = this.imageArea.nativeElement.querySelector('.image-area-body') as HTMLElement;
     const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-svg-container") as HTMLElement;
 
     if (!overlaySvgElement) {
+      this.utilsService.delay(100).subscribe(() => {
+        this.adjustSvgOverlay();
+      });
       return;
     }
 
@@ -818,6 +824,7 @@ export class ImageViewerComponent
     overlaySvgElement.style.height = `${renderedImageHeight}px`;
     overlaySvgElement.style.left = `${offsetX}px`;
     overlaySvgElement.style.top = `${offsetY}px`;
+    overlaySvgElement.querySelector(".mouse-hover").classList.add("ready");
   }
 
   protected navigationContextTrackByFn(

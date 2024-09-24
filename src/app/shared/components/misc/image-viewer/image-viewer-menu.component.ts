@@ -410,39 +410,7 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
-  styles: [
-    `
-      :host {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        overflow-y: auto;
-        gap: 1px;
-      }
-
-      ::ng-deep .iotd-stats-accordion {
-        .image-iotd-tp-stats-item {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-right: 1rem;
-          gap: 1rem;
-
-          .name {
-            color: var(--lightestGrey);
-          }
-
-          .value {
-            color: var(--white);
-            font-weight: bold;
-          }
-        }
-      }
-    `
-  ]
+  styleUrls: ["./image-viewer-menu.component.scss"]
 })
 export class ImageViewerMenuComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() image: ImageInterface;

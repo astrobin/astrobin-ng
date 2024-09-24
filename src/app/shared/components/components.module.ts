@@ -122,7 +122,7 @@ import { ImageViewerRevisionsComponent } from "@shared/components/misc/image-vie
 import { HammerModule } from "@angular/platform-browser";
 import { LightboxModule } from "ngx-lightbox";
 import { ImageViewerWipBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-wip-banner.component";
-import { ImageViewerMenuComponent } from "@shared/components/misc/image-viewer/image-viewer-menu";
+import { ImageViewerMenuComponent } from "@shared/components/misc/image-viewer/image-viewer-menu.component";
 import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/loading-dialog.component";
 import { ImageViewerGroupsAndCollectionsComponent } from "@shared/components/misc/image-viewer/image-viewer-groups-and-collections.component";
 import { ImageViewerCustomMessageBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-custom-message-banner.component";
@@ -138,6 +138,7 @@ import { ImageViewerRevisionSummaryComponent } from "@shared/components/misc/ima
 import { ImageViewerSocialButtonsComponent } from "@shared/components/misc/image-viewer/image-viewer-social-buttons.component";
 import { ImageViewerFloatingTitleComponent } from "@shared/components/misc/image-viewer/image-viewer-floating-title.component";
 import { ImageViewerShareButtonComponent } from "@shared/components/misc/image-viewer/image-viewer-share-button.component";
+import { ImageViewerIotdBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-banner.component";
 
 
 const modules = [
@@ -238,6 +239,7 @@ const components = [
   ImageViewerCloseButtonComponent,
   ImageViewerAdditionalButtonComponent,
   ImageViewerAdjustmentsEditorComponent,
+  ImageViewerIotdBannerComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,

@@ -1,0 +1,91 @@
+@import "../../../../styles/breakpoints";
+
+:host {
+  .iotd-banner {
+    padding: calc(.25rem - 2px) 1rem;
+    background: var(--gold);
+    background: -webkit-linear-gradient(to bottom, var(--gold), var(--darkGold));
+    background: -moz-linear-gradient(to bottom, var(--gold), var(--darkGold));
+    background: -ms-linear-gradient(to bottom, var(--gold), var(--darkGold));
+    background: -o-linear-gradient(to bottom, var(--gold), var(--darkGold));
+    background: linear-gradient(to bottom, var(--gold), var(--darkGold));
+    -webkit-box-shadow: rgba(000, 000, 000, 0.3) 0 1px 1px;
+    -moz-box-shadow: rgba(000, 000, 000, 0.3) 0 1px 1px;
+    box-shadow: rgba(000, 000, 000, 0.3) 0 1px 1px;
+
+    .iotd-banner-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .5rem 1rem;
+      margin: 0 -1rem 0 -1rem;
+
+      h3 {
+        font-size: 1.25rem;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        margin: 0;
+
+        [icon='trophy'] {
+          filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.33));
+          margin-right: .75rem;
+        }
+
+        .iotd-banner-date {
+          font-size: 1rem;
+          margin-left: .5rem;
+        }
+
+        @media (max-width: $md-max) {
+          font-size: 1rem;
+
+          .iotd-banner-date {
+            font-size: .875rem;
+          }
+        }
+      }
+
+      [icon='info-circle'] {
+        color: var(--white);
+        filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.33));
+        font-size: 1rem;
+      }
+    }
+
+    @media (min-width: $lg-min) {
+      &:after {
+        content: "";
+        position: absolute;
+        display: block;
+        top: 1rem;
+        border: 1em solid var(--darkestGold);
+        border-left-width: .25rem;
+        border-top-width: 1.25rem;
+        border-bottom-width: 1.25rem;
+        border-right-color: transparent;
+        z-index: 1;
+        right: -1.25rem;
+        filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.33));
+      }
+    }
+  }
+
+  .stitches-top {
+    margin-top: 1px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
+  .stitches-bottom {
+    margin-bottom: 1px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+}

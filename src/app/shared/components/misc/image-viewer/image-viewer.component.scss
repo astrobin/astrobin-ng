@@ -194,6 +194,8 @@ $maxAspectRatio: 1/1;
     overflow: hidden;
 
     .image-area {
+      display: flex;
+      flex-direction: column;
       position: relative;
       width: 60%;
       height: 100%;
@@ -208,8 +210,21 @@ $maxAspectRatio: 1/1;
       @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
         width: 100%;
         height: unset;
-        min-height: calc(50vh - 4rem);
+        min-height: 50%;
         flex-direction: column;
+      }
+
+      .image-area-body {
+        position: relative;
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        height: 100%;
+        max-height: inherit;
+      }
+
+      &.has-top-banner .image-area-body {
+        height: calc(100% - 3rem);
       }
 
       .adjustment-editor {
@@ -426,8 +441,8 @@ $maxAspectRatio: 1/1;
       }
 
       &.hover:not(.adjustments-editor-visible) {
-        .mouse-hover,
-        .mouse-hover-svg-overlay {
+        .mouse-hover.ready,
+        .mouse-hover.ready + .mouse-hover-svg-overlay {
           opacity: 1 !important;
           pointer-events: auto;
         }
@@ -435,8 +450,8 @@ $maxAspectRatio: 1/1;
 
       &.force-view-mousehover {
         @media (hover: none) and (pointer: coarse) {
-          .mouse-hover,
-          .mouse-hover-svg-overlay {
+          .mouse-hover.ready,
+          .mouse-hover.ready + .mouse-hover-svg-overlay {
             opacity: 1 !important;
             pointer-events: auto;
           }
