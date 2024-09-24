@@ -112,7 +112,9 @@ export class ImageViewerComponent
 
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;
-  protected imageLoaded = false;
+  protected imageObjectLoaded = false;
+  protected imageFileLoaded = false;
+  protected firstImageLoaded = false;
   protected alias: ImageAlias = ImageAlias.QHD;
   protected hasOtherImages = false;
   protected currentIndex = null;
@@ -323,7 +325,7 @@ export class ImageViewerComponent
     const hasSiteHeader = !this.fullscreenMode;
 
     if (sideToSideLayout) {
-      scrollArea = this.dataArea.nativeElement
+      scrollArea = this.dataArea.nativeElement;
     } else {
       scrollArea = this.mainArea.nativeElement;
     }
@@ -335,22 +337,22 @@ export class ImageViewerComponent
       )
       .subscribe(() => {
         const socialButtons = scrollArea.querySelector(
-          'astrobin-image-viewer-photographers astrobin-image-viewer-social-buttons'
+          "astrobin-image-viewer-photographers astrobin-image-viewer-social-buttons"
         ) as HTMLElement | null;
-        const floatingTitle = scrollArea.querySelector('astrobin-image-viewer-floating-title') as HTMLElement | null;
+        const floatingTitle = scrollArea.querySelector("astrobin-image-viewer-floating-title") as HTMLElement | null;
 
         if (!socialButtons || !floatingTitle) {
           return;
         }
 
-        const adManager = scrollArea.querySelector('astrobin-ad-manager') as HTMLElement | null;
+        const adManager = scrollArea.querySelector("astrobin-ad-manager") as HTMLElement | null;
         const adManagerHeight = adManager ? adManager.offsetHeight : 0;
         const socialButtonsVisible = this.utilsService.isElementVisibleInContainer(socialButtons, scrollArea);
-        const siteHeader = document.querySelector('astrobin-header > nav') as HTMLElement | null;
+        const siteHeader = document.querySelector("astrobin-header > nav") as HTMLElement | null;
         const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
-        const mobileMenu = document.querySelector('astrobin-mobile-menu') as HTMLElement | null;
+        const mobileMenu = document.querySelector("astrobin-mobile-menu") as HTMLElement | null;
         const mobileMenuHeight = mobileMenu && hasMobileMenu ? mobileMenu.offsetHeight : 0;
-        const globalLoadingIndicator = document.querySelector('.global-loading-indicator') as HTMLElement | null;
+        const globalLoadingIndicator = document.querySelector(".global-loading-indicator") as HTMLElement | null;
         const globalLoadingIndicatorHeight = globalLoadingIndicator ? globalLoadingIndicator.offsetHeight : 0;
 
         if (!socialButtonsVisible) {
@@ -364,9 +366,9 @@ export class ImageViewerComponent
             translateYValue = `${siteHeaderHeight + globalLoadingIndicatorHeight + mobileMenuHeight - 1}px`;
           }
 
-          this.renderer.setStyle(floatingTitle, 'transform', `translateY(${translateYValue})`);
+          this.renderer.setStyle(floatingTitle, "transform", `translateY(${translateYValue})`);
         } else {
-          this.renderer.setStyle(floatingTitle, 'transform', 'translateY(-100%)');
+          this.renderer.setStyle(floatingTitle, "transform", "translateY(-100%)");
         }
       });
   }
@@ -440,7 +442,8 @@ export class ImageViewerComponent
     }
 
     if (image === null) {
-      this.imageLoaded = false;
+      this.imageObjectLoaded = false;
+      this.imageFileLoaded = false;
       this.image = null;
       this.revisionLabel = null;
       this.revision = null;
@@ -455,9 +458,20 @@ export class ImageViewerComponent
     }
 
     this.imageService.removeInvalidImageNotification();
-    this.imageLoaded = false;
+    this.imageObjectLoaded = true;
+    this.imageFileLoaded = false;
     this.image = image;
-    this.revisionLabel = revisionLabel;
+    this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
+
+    this.windowRefService.replaceState(
+      {
+        imageId: image.hash || image.pk,
+        revisionLabel: this.revisionLabel,
+        fullscreenMode
+      },
+      this._getPath(image, this.revisionLabel, fullscreenMode)
+    );
+
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
 
     this.updateSupportsFullscreen();
@@ -498,6 +512,7 @@ export class ImageViewerComponent
     ).subscribe((image: ImageInterface) => {
       this.image = { ...image };
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+      this.setMouseHoverImage();
     });
 
     this.changeDetectorRef.detectChanges();
@@ -506,10 +521,10 @@ export class ImageViewerComponent
       this.windowRefService.pushState(
         {
           imageId: image.hash || image.pk,
-          revisionLabel,
+          revisionLabel: this.revisionLabel,
           fullscreenMode
         },
-        this._getPath(image, revisionLabel, fullscreenMode)
+        this._getPath(image, this.revisionLabel, fullscreenMode)
       );
     }
 
@@ -639,7 +654,8 @@ export class ImageViewerComponent
   }
 
   onImageLoaded(): void {
-    this.imageLoaded = true;
+    this.imageFileLoaded = true;
+    this.firstImageLoaded = true;
   }
 
   onImageMouseEnter(event: MouseEvent): void {
@@ -782,7 +798,7 @@ export class ImageViewerComponent
       return;
     }
 
-    const imageAreaElement = this.imageArea.nativeElement.querySelector('.image-area-body') as HTMLElement;
+    const imageAreaElement = this.imageArea.nativeElement.querySelector(".image-area-body") as HTMLElement;
     const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-svg-container") as HTMLElement;
 
     if (!overlaySvgElement) {
@@ -905,7 +921,8 @@ export class ImageViewerComponent
     this.modalService.dismissAll();
     this.offcanvasService.dismiss();
     this.exitFullscreen(false);
-    this.imageLoaded = false;
+    this.imageObjectLoaded = false;
+    this.imageFileLoaded = false;
 
     this.imageService.loadImage(imageId).subscribe({
       next: image => {

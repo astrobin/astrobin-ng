@@ -1,4 +1,11 @@
-<ng-container *ngIf="!!image; else loadingTemplate">
+<div [class.loading]="!imageObjectLoaded" class="image-loading-container">
+  <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
+</div>
+
+<div
+  *ngIf="!!image" [hidden]="!imageObjectLoaded"
+  class="main-area-container overflow-hidden d-flex flex-column w-100 h-100"
+>
   <astrobin-mobile-menu
     (menuClose)="onMobileMenuClose()"
     (menuOpen)="onMobileMenuOpen()"
@@ -20,6 +27,11 @@
     </div> <!-- data-area-container -->
   </div>
 
+  <ng-container
+    *ngIf="navigationContext && navigationContext.length > 1"
+    [ngTemplateOutlet]="navigationContextTemplate"
+  ></ng-container>
+
   <astrobin-scroll-to-top
     #scrollToTopMdMax
     *ngIf="deviceService.mdMax()"
@@ -31,12 +43,7 @@
     *ngIf="deviceService.lgMin()"
     [element]="dataArea?.nativeElement"
   ></astrobin-scroll-to-top>
-
-  <ng-container
-    *ngIf="navigationContext && navigationContext.length > 1"
-    [ngTemplateOutlet]="navigationContextTemplate"
-  ></ng-container>
-</ng-container>
+</div>
 
 <ng-template #loadingTemplate>
   <astrobin-loading-indicator></astrobin-loading-indicator>
@@ -72,11 +79,11 @@
     class="image-area"
     [class.force-view-mousehover]="forceViewMouseHover"
     [class.adjustment-editor-visible]="adjustmentEditorVisible"
-    [class.has-top-banner]="image.isIotd"
+    [class.has-top-banner]="image && image.isIotd"
   >
     <div class="image-area-header">
       <astrobin-image-viewer-iotd-banner
-        *ngIf="image.isIotd"
+        *ngIf="image && image.isIotd"
         [image]="image"
       ></astrobin-image-viewer-iotd-banner>
     </div>
@@ -100,7 +107,7 @@
         ></astrobin-image-viewer-close-button>
 
         <astrobin-image-viewer-additional-buttons
-          *ngIf="image && imageLoaded"
+          *ngIf="image && imageFileLoaded"
           [image]="image"
           [revisionLabel]="revisionLabel"
           [hasMouseHover]="!!mouseHoverImage || !!inlineSvg"
@@ -127,8 +134,6 @@
         (exitFullscreen)="exitFullscreen(true)"
       ></astrobin-fullscreen-image-viewer>
 
-      <astrobin-loading-indicator *ngIf="!image"></astrobin-loading-indicator>
-
       <astrobin-image
         #imageComponent
         (imageClick)="enterFullscreen($event)"
@@ -145,7 +150,7 @@
       ></astrobin-image>
 
       <div
-        *ngIf="mouseHoverImage && imageLoaded"
+        *ngIf="mouseHoverImage && imageFileLoaded"
         (click)="enterFullscreen($event)"
         class="mouse-hover-container"
       >
@@ -162,7 +167,7 @@
       </div>
 
       <div
-        *ngIf="inlineSvg && imageLoaded"
+        *ngIf="inlineSvg && imageFileLoaded"
         (click)="enterFullscreen($event)"
         class="mouse-hover-svg-container"
       >
@@ -198,7 +203,7 @@
       </button>
 
       <button
-        *ngIf="image.revisions?.length"
+        *ngIf="image?.revisions?.length"
         (click)="showRevisions = !showRevisions"
         class="revisions-mobile-button"
       >
@@ -210,9 +215,9 @@
 </ng-template>
 
 <ng-template #descriptionTemplate>
-  <ng-container *ngIf="image.descriptionBbcode || image.description">
+  <ng-container *ngIf="image?.descriptionBbcode || image.description">
     <div class="metadata-header">{{ "Description" | translate }}</div>
-    <div *ngIf="image.descriptionBbcode" class="metadata-section">
+    <div *ngIf="image?.descriptionBbcode" class="metadata-section">
       <div
         (click)="onDescriptionClicked($event)"
         [innerHTML]="image.descriptionBbcode | BBCodeToHtml"
@@ -220,7 +225,7 @@
       ></div>
     </div>
 
-    <div *ngIf="image.description && !image.descriptionBbcode" class="metadata-section">
+    <div *ngIf="image?.description && !image.descriptionBbcode" class="metadata-section">
       <div class="metadata-item description" [innerHTML]="image.description"></div>
     </div>
   </ng-container>
@@ -282,13 +287,13 @@
     ></astrobin-ad-manager>
 
     <astrobin-image-viewer-wip-banner
-      *ngIf="image.isWip && currentUserWrapper.user?.id === image.user"
+      *ngIf="image && image.isWip && currentUserWrapper.user?.id === image.user"
       [image]="image"
       class="image-viewer-banner-component"
     ></astrobin-image-viewer-wip-banner>
 
     <astrobin-image-viewer-plate-solving-banner
-      *ngIf="revision?.solution && currentUserWrapper.user?.id === image.user"
+      *ngIf="image && revision?.solution && currentUserWrapper.user?.id === image.user"
       [image]="image"
       [revisionLabel]="revisionLabel"
       class="image-viewer-banner-component"
@@ -320,7 +325,7 @@
 
     <div class="metadata-striped">
       <astrobin-image-viewer-groups-and-collections
-        *ngIf="image.partOfGroupSet?.length || image.collections?.length"
+        *ngIf="image?.partOfGroupSet?.length || image?.collections?.length"
         [image]="image"
       ></astrobin-image-viewer-groups-and-collections>
 
@@ -336,12 +341,12 @@
     </div>
 
     <astrobin-image-viewer-acquisition
-      *ngIf="image.deepSkyAcquisitions?.length || image.solarSystemAcquisitions?.length"
+      *ngIf="image?.deepSkyAcquisitions?.length || image?.solarSystemAcquisitions?.length"
       [image]="image"
     ></astrobin-image-viewer-acquisition>
 
     <astrobin-image-viewer-equipment
-      *ngIf="imageService.hasEquipment(image)"
+      *ngIf="image && imageService.hasEquipment(image)"
       [image]="image"
     ></astrobin-image-viewer-equipment>
 
@@ -369,13 +374,13 @@
 <ng-template #nestedCommentsTemplate>
   <div id="image-viewer-comments-header" class="metadata-header mt-5 mb-3">{{ "Comments" | translate }}</div>
 
-  <ng-container *ngIf="!image.allowComments">
+  <ng-container *ngIf="image && !image.allowComments">
     <p class="px-2">
       {{ "The photographer has not enabled comments for this image." | translate }}
     </p>
   </ng-container>
 
-  <ng-container *ngIf="image.allowComments">
+  <ng-container *ngIf="image?.allowComments">
     <astrobin-nested-comments
       *ngIf="imageContentType; else loadingTemplate"
       [contentType]="imageContentType"

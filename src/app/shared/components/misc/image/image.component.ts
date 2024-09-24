@@ -8,11 +8,11 @@ import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { filter, first, map, switchMap, take, takeUntil, takeWhile } from "rxjs/operators";
+import { filter, first, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { fromEvent, interval, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
@@ -75,6 +75,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   private _pollingVideEncoderProgress = false;
   private _stopPollingVideoEncoderProgress = new Subject<void>();
 
+  // New private properties to store previous values
+  private _previousThumbnailUrl: string;
+  private _previousVideoFile: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -116,37 +119,52 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const imageChanged = changes.image && changes.image.currentValue;
-    const revisionLabelChanged = changes.revisionLabel && changes.revisionLabel.currentValue;
+    const imageChanged = changes.image && !!changes.image.currentValue;
 
     if (imageChanged) {
       this.id = this.image.pk;
+      this.revisionLabel = this.imageService.validateRevisionLabel(this.image, this.revisionLabel);
+      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     }
 
-    if (imageChanged || revisionLabelChanged) {
-        this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+    const previousThumbnailUrl = this._previousThumbnailUrl;
+    const previousVideoFile = this._previousVideoFile;
+
+    const newThumbnailUrl = this.revision && this._getRevisionThumbnailUrl();
+    const newVideoFile = this.revision?.videoFile;
+
+    const thumbnailUrlChanged = (newThumbnailUrl || "") !== (previousThumbnailUrl || "");
+    const videoFileChanged = (newVideoFile || "") !== (previousVideoFile || "");
+    const isInitialLoad = previousThumbnailUrl === undefined && previousVideoFile === undefined;
+
+    if (thumbnailUrlChanged || videoFileChanged || isInitialLoad) {
+      this.thumbnailUrl = null;
+      this.loading = false;
+      this._stopPollingVideoEncoderProgress.next();
+      this._disposeVideoJsPlayer();
+
+      this.load(0);
     }
 
-    this.thumbnailUrl = null;
-    this.loading = false;
-    this._stopPollingVideoEncoderProgress.next();
-    this._disposeVideoJsPlayer();
-
-    this.load(0);
+    this._previousThumbnailUrl = newThumbnailUrl;
+    this._previousVideoFile = newVideoFile;
   }
+
 
   ngOnDestroy(): void {
     if (this.thumbnailUrl) {
       (this.windowRefService.nativeWindow as any).URL.revokeObjectURL(this.thumbnailUrl as string);
     }
 
-    this.store$.dispatch(new LoadThumbnailCancel({
-      thumbnail: {
-        id: this.id,
-        revision: this.revisionLabel,
-        alias: this.alias
-      }
-    }));
+    this.store$.dispatch(
+      new LoadThumbnailCancel({
+        thumbnail: {
+          id: this.id,
+          revision: this.revisionLabel,
+          alias: this.alias
+        }
+      })
+    );
 
     if (this._autoLoadSubscription) {
       this._autoLoadSubscription.unsubscribe();
@@ -160,49 +178,38 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   load(delay = null) {
     const noNeedToLoad = () =>
-      !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement) ||
-      this.loading;
+      !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement) || this.loading;
 
     if (noNeedToLoad()) {
       return;
     }
 
-    // 0-100 ms
-    this.utilsService
-      .delay(delay !== null ? delay : Math.floor(Math.random() * 100))
-      .pipe(take(1))
-      .subscribe(() => {
-        if (noNeedToLoad()) {
+    this.loading = true;
+
+    this._getImageObject()
+      .pipe(
+        filter(image => !!image),
+        take(1)
+      )
+      .subscribe(image => {
+        this.revision = this.imageService.getRevision(image, this.revisionLabel);
+
+        if (this.thumbnailUrl && !this.revision.videoFile) {
+          this.loaded.emit();
           return;
         }
 
-        this.loading = true;
+        this.image = image;
+        this.id = image.pk;
+        this._setWidthAndHeight(this.revision.w, this.revision.h);
+        this._loadThumbnail();
 
-        this._getImageObject()
-          .pipe(
-            filter(image => !!image),
-            take(1)
-          )
-          .subscribe(image => {
-            this.revision = this.imageService.getRevision(image, this.revisionLabel);
-
-            if (this.thumbnailUrl && !this.revision.videoFile) {
-              this.loaded.emit();
-              return;
-            }
-
-            this.image = image;
-            this.id = image.pk;
-            this._setWidthAndHeight(this.revision.w, this.revision.h);
-            this._loadThumbnail();
-
-            if (this.revision.videoFile && !this.revision.encodedVideoFile) {
-              this._pollingVideoEncodingProgress();
-            }
-          });
-
-        this.store$.dispatch(new LoadImage({ imageId: this.id }));
+        if (this.revision.videoFile && !this.revision.encodedVideoFile) {
+          this._pollingVideoEncodingProgress();
+        }
       });
+
+    this.store$.dispatch(new LoadImage({ imageId: this.id }));
   }
 
   onLoad(event) {
@@ -211,7 +218,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       this._autoLoadSubscription = null;
     }
 
-    this.loaded.emit();
+    if (!this.revision.videoFile) {
+      this.loaded.emit();
+    }
   }
 
   onClick(event: MouseEvent) {
@@ -225,56 +234,39 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     }
 
     return new Observable<ImageInterface>(observer => {
-      this.store$.select(selectImage, this.id).pipe(
-        filter(image => !!image),
-        take(1)
-      ).subscribe(image => {
-        observer.next(image);
-        observer.complete();
-      });
+      this.store$
+        .select(selectImage, this.id)
+        .pipe(
+          filter(image => !!image),
+          take(1)
+        )
+        .subscribe(image => {
+          observer.next(image);
+          observer.complete();
+        });
 
       this.store$.dispatch(new LoadImage({ imageId: this.id }));
     });
   }
 
   private _loadThumbnail() {
-    const allAvailableThumbnails: {
-      revisionLabel: ImageRevisionInterface["label"];
-      url: string;
-    }[] = [
-      ...this.image.thumbnails.filter(thumbnail => thumbnail.alias === this.alias).map(thumbnail => ({
-        revisionLabel: FINAL_REVISION_LABEL,
-        url: thumbnail.url
-      })),
-      ...this.image.revisions.filter(
-        revision => revision.thumbnails.find(thumbnail => thumbnail.alias === this.alias)
-      ).map(revision => ({
-        revisionLabel: revision.label,
-        url: revision.thumbnails.find(thumbnail => thumbnail.alias === this.alias).url
-      }))
-    ];
-
-    let url: string;
-
-    if (this.revision.imageFile && this.revision.imageFile.toLowerCase().endsWith(".gif")) {
-      url = this.revision.imageFile;
-    } else {
-      url = allAvailableThumbnails.find(thumbnail => thumbnail.revisionLabel === this.revisionLabel)?.url;
-    }
+    const url = this._getRevisionThumbnailUrl();
 
     if (url && !url.includes("placeholder")) {
       this.imageService
         .loadImageFile(url, (progress: number) => {
           this.imageLoadingProgress = progress;
         })
-        .subscribe(url => {
-          this.thumbnailUrl = this.domSanitizer.bypassSecurityTrustUrl(url);
+        .subscribe(loadedUrl => {
+          this.thumbnailUrl = this.domSanitizer.bypassSecurityTrustUrl(loadedUrl);
           this.loading = false;
-        });
 
-      if (this.revision.videoFile) {
-        this._insertVideoJs();
-      }
+          if (this.revision.videoFile) {
+            this._insertVideoJs();
+          } else {
+            this.loaded.emit();
+          }
+        });
 
       return;
     }
@@ -293,14 +285,16 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
             this.imageLoadingProgress = progress;
           })
         ),
-        map(url => this.domSanitizer.bypassSecurityTrustUrl(url))
+        map(loadedUrl => this.domSanitizer.bypassSecurityTrustUrl(loadedUrl))
       )
-      .subscribe(url => {
-        this.thumbnailUrl = url;
+      .subscribe(loadedUrl => {
+        this.thumbnailUrl = loadedUrl;
         this.loading = false;
 
         if (this.revision.videoFile) {
           this._insertVideoJs();
+        } else {
+          this.loaded.emit();
         }
       });
 
@@ -421,14 +415,50 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         if (progress >= 100) {
           this._stopPollingVideoEncoderProgress.next();
           this.store$.dispatch(new LoadImages([this.id]));
-          this.store$.pipe(
-            select(selectImage, this.id),
-            filter(image => !!image),
-            take(1)
-          ).subscribe(image => {
-            this.load(0);
-          });
+          this.store$
+            .pipe(
+              select(selectImage, this.id),
+              filter(image => !!image),
+              take(1)
+            )
+            .subscribe(image => {
+              this.load(0);
+            });
         }
       });
+  }
+
+  private _getRevisionThumbnailUrl(): string {
+    let url: string;
+
+    if (this.revision?.imageFile && this.revision.imageFile.toLowerCase().endsWith(".gif")) {
+      url = this.revision.imageFile;
+    } else {
+      const allAvailableThumbnails: {
+        revisionLabel: ImageRevisionInterface["label"];
+        url: string;
+      }[] = [
+        ...this.image.thumbnails
+          .filter(thumbnail => thumbnail.alias === this.alias)
+          .map(thumbnail => ({
+            revisionLabel: thumbnail.revision,
+            url: thumbnail.url
+          })),
+        ...this.image.revisions
+          .filter(revision => revision.thumbnails.find(thumbnail => thumbnail.alias === this.alias))
+          .map(revision => ({
+            revisionLabel: revision.label,
+            url: revision.thumbnails.find(thumbnail => thumbnail.alias === this.alias).url
+          }))
+      ];
+
+      if (allAvailableThumbnails.length === 1) {
+        url = allAvailableThumbnails[0].url;
+      } else {
+        url = allAvailableThumbnails.find(thumbnail => thumbnail.revisionLabel === this.revisionLabel)?.url;
+      }
+    }
+
+    return url;
   }
 }

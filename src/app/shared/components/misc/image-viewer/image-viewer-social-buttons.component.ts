@@ -32,8 +32,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
           <div *ngIf="showLike" class="like">
             <astrobin-toggle-property
               [contentType]="imageContentType.id"
-              [disabled]="currentUserWrapper.user?.id === image.user"
-              [objectId]="image.pk"
+              [disabled]="image && currentUserWrapper.user?.id === image.user"
+              [objectId]="image?.pk"
               [showLabel]="false"
               [userId]="currentUserWrapper.user?.id"
               [count]="image.likeCount"
@@ -46,17 +46,17 @@ import { UtilsService } from "@shared/services/utils/utils.service";
           <div *ngIf="showBookmark" class="bookmark">
             <astrobin-toggle-property
               [contentType]="imageContentType.id"
-              [objectId]="image.pk"
+              [objectId]="image?.pk"
               [userId]="currentUserWrapper.user?.id"
               [showLabel]="false"
-              [count]="image.bookmarkCount"
+              [count]="image?.bookmarkCount"
               class="btn-no-block"
               btnClass="btn btn-no-block {{ btnExtraClasses }}"
               propertyType="bookmark"
             ></astrobin-toggle-property>
           </div>
 
-          <div *ngIf="image.allowComments && showComments" class="comment">
+          <div *ngIf="image?.allowComments && showComments" class="comment">
             <button
               (click)="scrollToComments($event)"
               class="btn btn-no-block {{ btnExtraClasses }}"
@@ -71,7 +71,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
               <span class="count">
                 <astrobin-nested-comments-count
                   [contentType]="imageContentType"
-                  [objectId]="image.pk"
+                  [objectId]="image?.pk"
                 ></astrobin-nested-comments-count>
               </span>
             </button>
@@ -192,10 +192,12 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
 
     if (sideToSideLayout) {
       scrollArea = this.windowRefService.nativeWindow.document.querySelector(
-        "astrobin-image-viewer > .main-area > .data-area-container > .data-area"
+        "astrobin-image-viewer > .main-area-container > .main-area > .data-area-container > .data-area"
       );
     } else {
-      scrollArea = this.windowRefService.nativeWindow.document.querySelector("astrobin-image-viewer > .main-area");
+      scrollArea = this.windowRefService.nativeWindow.document.querySelector(
+        "astrobin-image-viewer > .main-area-container > .main-area"
+      );
     }
 
     return scrollArea;

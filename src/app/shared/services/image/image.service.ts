@@ -560,7 +560,22 @@ export class ImageService extends BaseService {
     return `${value}${symbol}`;
   }
 
+  validateRevisionLabel(image: ImageInterface, revisionLabel: string): string {
+    if (
+      revisionLabel !== null &&
+      revisionLabel !== ORIGINAL_REVISION_LABEL &&
+      revisionLabel !== FINAL_REVISION_LABEL &&
+      !image.revisions.find(revision => revision.label === revisionLabel)
+    ) {
+      return FINAL_REVISION_LABEL;
+    }
+
+    return revisionLabel;
+  }
+
   getRevision(image: ImageInterface, revisionLabel: string): ImageInterface | ImageRevisionInterface {
+    revisionLabel = this.validateRevisionLabel(image, revisionLabel);
+
     if (revisionLabel === null || revisionLabel === ORIGINAL_REVISION_LABEL) {
       return image;
     }
@@ -569,14 +584,9 @@ export class ImageService extends BaseService {
       return this.getFinalRevision(image);
     }
 
-    if (image.revisions && image.revisions.length > 0) {
-      const revisionByLabel = image.revisions.find(revision => revision.label === revisionLabel);
-      if (revisionByLabel) {
-        return revisionByLabel;
-      }
-    }
+    const revisionByLabel = image.revisions?.find(revision => revision.label === revisionLabel);
 
-    return image;
+    return revisionByLabel || this.getFinalRevision(image);
   }
 
   getFinalRevision(image: ImageInterface): ImageInterface | ImageRevisionInterface {
