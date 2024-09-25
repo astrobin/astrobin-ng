@@ -146,6 +146,7 @@ export class ImageViewerComponent
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
   protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
+  protected transformStyle: string;
   private _imageChangedSubject = new Subject<ImageInterface>();
   private _imageChanged$ = this._imageChangedSubject.asObservable();
   private _navigationContextChangedSubject = new Subject<void>();
@@ -153,6 +154,8 @@ export class ImageViewerComponent
   private _navigationContextWheelEventSubscription: Subscription;
   private _navigationContextScrollEventSubscription: Subscription;
   private _dataAreaScrollEventSubscription: Subscription;
+  private _initialPanPosition: number;
+  private _currentPanPosition: number;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -726,6 +729,89 @@ export class ImageViewerComponent
     );
   }
 
+  onPanStart(event: any): void {
+    if (this._isInvalidPan(event)) {
+      this._resetPanTransform();
+      return;
+    }
+
+    this._disablePointerEventsOnAbsolutelyPositionedElements();
+    this._disableMainAreaScroll();
+
+    this._initialPanPosition = event.deltaX;
+  }
+
+  onPanMove(event: any): void {
+    if (this._isInvalidPan(event)) {
+      this._resetPanTransform();
+      return;
+    }
+
+    this._currentPanPosition = event.deltaX - this._initialPanPosition;
+    const scaleFactor = 1 - Math.abs(event.deltaX) / 2000; // Subtle scale effect
+    this.transformStyle = `translateX(${this._currentPanPosition}px) scale(${scaleFactor})`;
+  }
+
+  onPanEnd(event: any): void {
+    const swipeThreshold = this.windowRefService.nativeWindow.innerWidth / 2;
+
+    this._enablePointerEventsOnAbsolutelyPositionedElements();
+    this._enableMainAreaScroll();
+
+    if (this._isInvalidPan(event) || Math.abs(event.deltaX) <= swipeThreshold) {
+      this._resetPanTransform();
+      return;
+    }
+
+    if (event.deltaX > 0) {
+      this._onSwipeRight();
+    } else {
+      this._onSwipeLeft();
+    }
+  }
+
+  onTouchCancel(event: any): void {
+    this._resetPanTransform();
+    this._enablePointerEventsOnAbsolutelyPositionedElements();
+    this._enableMainAreaScroll();
+  }
+
+  private _onSwipeRight() {
+    this.transformStyle = "translateX(100%) scale(0.95)";
+    this._disablePanTransition();
+    this.utilsService.delay(10).subscribe(() => {
+      this.transformStyle = "translateX(-100%) scale(0.95)";
+      this.onPreviousClicked();
+    }); // Small delay to ensure the style is applied
+  }
+
+  private _onSwipeLeft() {
+    this.transformStyle = "translateX(-100%) scale(0.95)";
+    this._disablePanTransition();
+    this.utilsService.delay(10).subscribe(() => {
+      this.transformStyle = "translateX(100%) scale(0.95)";
+      this.onNextClicked();
+    }); // Small delay to ensure the style is applied
+  }
+
+  private _disablePanTransition() {
+    const element = this.mainArea.nativeElement;
+    if (element) {
+      this.renderer.setStyle(element, "transition", "none"); // Disable transition
+    }
+  }
+
+  private _enablePanTransition() {
+    const element = this.mainArea.nativeElement;
+    if (element) {
+      this.renderer.setStyle(element, "transition", "transform 0.3s ease"); // Re-enable transition
+    }
+  }
+
+  private _resetPanTransform(): void {
+    this.transformStyle = 'translateX(0px) scale(1)';
+  }
+
   onMouseHoverSvgLoad(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.utilsService.delay(100).subscribe(() => {
@@ -837,6 +923,61 @@ export class ImageViewerComponent
       left: el.clientWidth,
       behavior: "smooth"
     });
+  }
+
+  private _getAbsolutelyPositionedElementsOnPanArea(): HTMLElement[] {
+    return [
+      this.imageArea.nativeElement.querySelector(".image-area-body astrobin-image-viewer-additional-buttons"),
+      this.imageArea.nativeElement.querySelector(".image-area-body astrobin-image-viewer-revisions"),
+      this.imageArea.nativeElement.querySelector(".image-area-body .next-button"),
+      this.imageArea.nativeElement.querySelector(".image-area-body .previous-button"),
+      this.imageArea.nativeElement.querySelector(".image-area-body .revisions-mobile-button")
+    ];
+  }
+
+  private _disablePointerEventsOnAbsolutelyPositionedElements() {
+    this._getAbsolutelyPositionedElementsOnPanArea().forEach((element: HTMLElement) => {
+      if (element) {
+        const computedStyle = this.windowRefService.nativeWindow.getComputedStyle(element);
+        const originalPointerEvents = computedStyle.pointerEvents || "auto";
+        this.renderer.setAttribute(element, "data-original-pointer-events", originalPointerEvents);
+        this.renderer.setStyle(element, "pointer-events", "none");
+      }
+    });
+  }
+
+  private _enablePointerEventsOnAbsolutelyPositionedElements() {
+    this._getAbsolutelyPositionedElementsOnPanArea().forEach((element: HTMLElement) => {
+      if (element) {
+        const originalPointerEvents = element.getAttribute("data-original-pointer-events") || "auto";
+        this.renderer.setStyle(element, "pointer-events", originalPointerEvents);
+      }
+    });
+  }
+
+  private _disableMainAreaScroll() {
+    this.renderer.setStyle(this.mainArea.nativeElement, "overflow-y", "hidden");
+  }
+
+  private _enableMainAreaScroll() {
+    this.renderer.setStyle(this.mainArea.nativeElement, "overflow-y", "auto");
+  }
+
+  private _isInvalidPan(event: any): boolean {
+    if (this.navigationContext.length <= 1) {
+      return true;
+    }
+
+    if (!this.deviceService.isTouchEnabled()) {
+      return true;
+    }
+
+    if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+      this.transformStyle = "translateX(0px)";
+      return true;
+    }
+
+    return false;
   }
 
   private _handleFloatingTitleOnScroll(scrollArea: HTMLElement, hasSiteHeader: boolean, hasMobileMenu: boolean, sideToSideLayout: boolean) {
@@ -981,6 +1122,12 @@ export class ImageViewerComponent
           this.navigationContext,
           pushState
         );
+      },
+      complete: () => {
+        this._enablePanTransition();
+        this.utilsService.delay(10).subscribe(() => {
+          this.transformStyle = "translateX(0px) scale(1)";
+        });
       }
     });
     this.store$.dispatch(new LoadImage({ imageId }));

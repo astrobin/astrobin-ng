@@ -14,6 +14,14 @@ import msgpack from "msgpack-lite";
 import pako from "pako";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
+
+interface ViewportCheckOptions {
+  shouldCheckVertical?: boolean;
+  shouldCheckHorizontal?: boolean;
+  verticalTolerance?: number;
+  horizontalTolerance?: number;
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -1032,22 +1040,48 @@ export class UtilsService {
     return windowRefService.nativeWindow;
   }
 
-  isNearBelowViewport(element: HTMLElement): boolean {
+  isNearBelowViewport(
+    element: HTMLElement,
+    options: ViewportCheckOptions = {}
+  ): boolean {
+    // Ensure the code runs only in the browser environment
     if (!isPlatformBrowser(this.platformId)) {
       return false;
     }
 
-    const maxVerticalDistance = 500;
-    const maxHorizontalDistance = 100;
+    // Destructure options with default values and improved naming
+    const {
+      shouldCheckVertical = true,
+      shouldCheckHorizontal = true,
+      verticalTolerance = 2000,
+      horizontalTolerance = 2000,
+    } = options;
+
+    // Get the bounding rectangle of the element
     const rect = element.getBoundingClientRect();
 
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || window.document.documentElement.clientHeight) + maxVerticalDistance &&
-      rect.right <= (window.innerWidth || window.document.documentElement.clientWidth) + maxHorizontalDistance
-    );
+    // Initialize check results to true
+    let isWithinVerticalTolerance = true;
+    let isWithinHorizontalTolerance = true;
+
+    // Perform vertical distance check if enabled
+    if (shouldCheckVertical) {
+      isWithinVerticalTolerance =
+        rect.top <= (window.innerHeight || document.documentElement.clientHeight) + verticalTolerance &&
+        rect.bottom >= -verticalTolerance;
+    }
+
+    // Perform horizontal distance check if enabled
+    if (shouldCheckHorizontal) {
+      isWithinHorizontalTolerance =
+        rect.left <= (window.innerWidth || document.documentElement.clientWidth) + horizontalTolerance &&
+        rect.right >= -horizontalTolerance;
+    }
+
+    // Return true only if all enabled checks pass
+    return isWithinVerticalTolerance && isWithinHorizontalTolerance;
   }
+
 
   delay(ms: number): Observable<void> {
     return new Observable<void>(observer => {

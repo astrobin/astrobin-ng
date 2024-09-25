@@ -214,6 +214,7 @@ $maxAspectRatio: 1/1;
     width: 100%;
     height: 100%;
     overflow: hidden;
+    transition: transform 0.3s ease;
 
     .image-area {
       display: flex;
@@ -670,6 +671,7 @@ $maxAspectRatio: 1/1;
       overflow-y: auto;
       flex-direction: column;
       justify-content: flex-start;
+      overscroll-behavior: none;
     }
   }
 

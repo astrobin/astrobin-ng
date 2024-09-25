@@ -17,8 +17,8 @@
 
   <div
     #mainArea
-    class="main-area"
     [class.has-context]="!!navigationContext && navigationContext.length > 1"
+    class="main-area"
   >
     <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
 
@@ -134,56 +134,56 @@
         (exitFullscreen)="exitFullscreen(true)"
       ></astrobin-fullscreen-image-viewer>
 
-      <astrobin-image
-        #imageComponent
-        (imageClick)="enterFullscreen($event)"
-        (loaded)="onImageLoaded()"
-        (imageMouseEnter)="onImageMouseEnter($event)"
-        (imageMouseLeave)="onImageMouseLeave($event)"
-        (swipeleft)="onNextClicked()"
-        (swiperight)="onPreviousClicked()"
-        (swipedown)="close()"
-        [alias]="alias"
-        [class.supports-fullscreen]="supportsFullscreen"
-        [image]="image"
-        [revisionLabel]="revisionLabel"
-      ></astrobin-image>
-
       <div
-        *ngIf="mouseHoverImage && imageFileLoaded"
-        (click)="enterFullscreen($event)"
-        class="mouse-hover-container"
+        (panstart)="onPanStart($event)"
+        (panmove)="onPanMove($event)"
+        (panend)="onPanEnd($event)"
+        (touchcancel)="onTouchCancel($event)"
+        [style.transform]="transformStyle"
+        class="w-100 h-100"
       >
-        <img
-          (mouseenter)="onImageMouseEnter($event)"
-          (mouseleave)="onImageMouseLeave($event)"
-          (swipeleft)="onNextClicked()"
-          (swiperight)="onPreviousClicked()"
-          (swipedown)="close()"
-          alt=""
-          class="mouse-hover ready"
-          src="{{ mouseHoverImage }}"
-        />
-      </div>
+        <astrobin-image
+          #imageComponent
+          (imageClick)="enterFullscreen($event)"
+          (loaded)="onImageLoaded()"
+          (imageMouseEnter)="onImageMouseEnter($event)"
+          (imageMouseLeave)="onImageMouseLeave($event)"
+          [alias]="alias"
+          [class.supports-fullscreen]="supportsFullscreen"
+          [image]="image"
+          [revisionLabel]="revisionLabel"
+        ></astrobin-image>
 
-      <div
-        *ngIf="inlineSvg && imageFileLoaded"
-        (click)="enterFullscreen($event)"
-        class="mouse-hover-svg-container"
-      >
         <div
-          (mouseenter)="onImageMouseEnter($event)"
-          (mouseleave)="onImageMouseLeave($event)"
-          (swipeleft)="onNextClicked()"
-          (swiperight)="onPreviousClicked()"
-          (swipedown)="close()"
-          [innerHTML]="inlineSvg"
-          [id]="'mouse-hover-svg-' + image.pk"
-          class="mouse-hover w-100 position-relative"
-        ></div>
+          *ngIf="mouseHoverImage && imageFileLoaded"
+          (click)="enterFullscreen($event)"
+          class="mouse-hover-container"
+        >
+          <img
+            (mouseenter)="onImageMouseEnter($event)"
+            (mouseleave)="onImageMouseLeave($event)"
+            alt=""
+            class="mouse-hover ready"
+            src="{{ mouseHoverImage }}"
+          />
+        </div>
 
-        <div class="mouse-hover-svg-overlay">
-          Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
+        <div
+          *ngIf="inlineSvg && imageFileLoaded"
+          (click)="enterFullscreen($event)"
+          class="mouse-hover-svg-container"
+        >
+          <div
+            (mouseenter)="onImageMouseEnter($event)"
+            (mouseleave)="onImageMouseLeave($event)"
+            [innerHTML]="inlineSvg"
+            [id]="'mouse-hover-svg-' + image.pk"
+            class="mouse-hover w-100 position-relative"
+          ></div>
+
+          <div class="mouse-hover-svg-overlay">
+            Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
+          </div>
         </div>
       </div>
 
