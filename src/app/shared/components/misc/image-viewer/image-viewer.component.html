@@ -1,10 +1,16 @@
-<div [class.loading]="!imageObjectLoaded" class="image-loading-container">
-  <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
-</div>
+<!--<div [class.loading]="!imageObjectLoaded" class="image-loading-container">-->
+<!--  <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>-->
+<!--</div>-->
 
 <div
   *ngIf="!!image" [hidden]="!imageObjectLoaded"
-  class="main-area-container overflow-hidden d-flex flex-column w-100 h-100"
+  (panstart)="onPanStart($event)"
+  (panmove)="onPanMove($event)"
+  (panend)="onPanEnd($event)"
+  (touchcancel)="onPanReset($event)"
+  (touchend)="onPanReset($event)"
+  [style.transform]="transformStyle"
+  class="main-area-container pan-container overflow-hidden d-flex flex-column w-100 h-100"
 >
   <astrobin-mobile-menu
     (menuClose)="onMobileMenuClose()"
@@ -124,7 +130,7 @@
         (click)="onPreviousClicked()"
         class="previous-button"
       >
-        <fa-icon icon="chevron-circle-left"></fa-icon>
+        <fa-icon icon="chevron-left"></fa-icon>
       </button>
 
       <astrobin-fullscreen-image-viewer
@@ -134,56 +140,47 @@
         (exitFullscreen)="exitFullscreen(true)"
       ></astrobin-fullscreen-image-viewer>
 
+      <astrobin-image
+        #imageComponent
+        (imageClick)="enterFullscreen($event)"
+        (loaded)="onImageLoaded()"
+        (imageMouseEnter)="onImageMouseEnter($event)"
+        (imageMouseLeave)="onImageMouseLeave($event)"
+        [alias]="alias"
+        [class.supports-fullscreen]="supportsFullscreen"
+        [image]="image"
+        [revisionLabel]="revisionLabel"
+      ></astrobin-image>
+
       <div
-        (panstart)="onPanStart($event)"
-        (panmove)="onPanMove($event)"
-        (panend)="onPanEnd($event)"
-        (touchcancel)="onTouchCancel($event)"
-        [style.transform]="transformStyle"
-        class="w-100 h-100"
+        *ngIf="mouseHoverImage && imageFileLoaded"
+        (click)="enterFullscreen($event)"
+        class="mouse-hover-container"
       >
-        <astrobin-image
-          #imageComponent
-          (imageClick)="enterFullscreen($event)"
-          (loaded)="onImageLoaded()"
-          (imageMouseEnter)="onImageMouseEnter($event)"
-          (imageMouseLeave)="onImageMouseLeave($event)"
-          [alias]="alias"
-          [class.supports-fullscreen]="supportsFullscreen"
-          [image]="image"
-          [revisionLabel]="revisionLabel"
-        ></astrobin-image>
+        <img
+          (mouseenter)="onImageMouseEnter($event)"
+          (mouseleave)="onImageMouseLeave($event)"
+          alt=""
+          class="mouse-hover ready"
+          src="{{ mouseHoverImage }}"
+        />
+      </div>
 
+      <div
+        *ngIf="inlineSvg && imageFileLoaded"
+        (click)="enterFullscreen($event)"
+        class="mouse-hover-svg-container"
+      >
         <div
-          *ngIf="mouseHoverImage && imageFileLoaded"
-          (click)="enterFullscreen($event)"
-          class="mouse-hover-container"
-        >
-          <img
-            (mouseenter)="onImageMouseEnter($event)"
-            (mouseleave)="onImageMouseLeave($event)"
-            alt=""
-            class="mouse-hover ready"
-            src="{{ mouseHoverImage }}"
-          />
-        </div>
+          (mouseenter)="onImageMouseEnter($event)"
+          (mouseleave)="onImageMouseLeave($event)"
+          [innerHTML]="inlineSvg"
+          [id]="'mouse-hover-svg-' + image.pk"
+          class="mouse-hover w-100 position-relative"
+        ></div>
 
-        <div
-          *ngIf="inlineSvg && imageFileLoaded"
-          (click)="enterFullscreen($event)"
-          class="mouse-hover-svg-container"
-        >
-          <div
-            (mouseenter)="onImageMouseEnter($event)"
-            (mouseleave)="onImageMouseLeave($event)"
-            [innerHTML]="inlineSvg"
-            [id]="'mouse-hover-svg-' + image.pk"
-            class="mouse-hover w-100 position-relative"
-          ></div>
-
-          <div class="mouse-hover-svg-overlay">
-            Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
-          </div>
+        <div class="mouse-hover-svg-overlay">
+          Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
         </div>
       </div>
 
@@ -199,7 +196,7 @@
         (click)="onNextClicked()"
         class="next-button"
       >
-        <fa-icon icon="chevron-circle-right"></fa-icon>
+        <fa-icon icon="chevron-right"></fa-icon>
       </button>
 
       <button

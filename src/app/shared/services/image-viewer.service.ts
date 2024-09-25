@@ -23,6 +23,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 })
 export class ImageViewerService extends BaseService {
   activeImageViewer?: ComponentRef<ImageViewerComponent>;
+  nextImageViewer?: ComponentRef<ImageViewerComponent>;
+  previousImageViewer?: ComponentRef<ImageViewerComponent>;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -46,6 +48,9 @@ export class ImageViewerService extends BaseService {
       if (this.activeImageViewer && this.activeImageViewer.instance.image.pk === pk) {
         this.closeActiveImageViewer(false);
       }
+
+      this.closeImageViewer(this.nextImageViewer, false);
+      this.closeImageViewer(this.previousImageViewer, false);
     });
   }
 
@@ -78,7 +83,7 @@ export class ImageViewerService extends BaseService {
   openImageViewer(
     imageId: ImageInterface["hash"] | ImageInterface["pk"],
     revisionLabel: ImageRevisionInterface["label"],
-    fullscreenMode: boolean,
+    fullscreen: boolean,
     searchComponentId: string,
     navigationContext: ImageViewerNavigationContext,
     viewContainerRef: ViewContainerRef
@@ -91,37 +96,40 @@ export class ImageViewerService extends BaseService {
       return this.activeImageViewer;
     }
 
-    this.activeImageViewer = viewContainerRef.createComponent(ImageViewerComponent);
-    this.activeImageViewer.instance.showCloseButton = true;
-    this.activeImageViewer.instance.fullscreenMode = true;
-    this.activeImageViewer.instance.searchComponentId = searchComponentId;
+    this.activeImageViewer = this._createImageViewer(viewContainerRef, searchComponentId);
+    this._loadImageIntoViewer(this.activeImageViewer, imageId, revisionLabel, navigationContext, fullscreen);
 
-    this.activeImageViewer.instance.initialized.pipe(
-      take(1),
-      switchMap(() => this.imageService.loadImage(imageId))
-    ).subscribe({
-      next: image => {
-        this.activeImageViewer.instance.setImage(
-          image,
-          revisionLabel,
-          fullscreenMode,
-          navigationContext,
-          true
-        );
-      },
-      error: err => {
-        this.activeImageViewer.instance.setImage(
-          null,
-          null,
-          fullscreenMode,
-          navigationContext,
-          true
+    if (navigationContext?.length > 1) {
+      const activeImageIndex = navigationContext.findIndex(context => context.imageId === imageId);
+      const nextImageIndex = activeImageIndex + 1;
+      const previousImageIndex = activeImageIndex - 1;
+
+      if (nextImageIndex < navigationContext.length) {
+        this.nextImageViewer = this._createImageViewer(viewContainerRef, searchComponentId, 'next');
+        this._loadImageIntoViewer(
+          this.nextImageViewer,
+          navigationContext[nextImageIndex].imageId,
+          FINAL_REVISION_LABEL, navigationContext,
+          false,
+          'next'
         );
       }
-    });
+
+      if (previousImageIndex >= 0) {
+        this.previousImageViewer = this._createImageViewer(viewContainerRef, searchComponentId, 'previous');
+        this._loadImageIntoViewer(
+          this.previousImageViewer,
+          navigationContext[previousImageIndex].imageId,
+          FINAL_REVISION_LABEL,
+          navigationContext,
+          false,
+          'previous'
+        );
+      }
+    }
 
     this.activeImageViewer.instance.closeViewer.subscribe(() => {
-      this.closeActiveImageViewer(true);
+      this.closeAllImageViewers(true);
       this.titleService.setTitle(currentPageTitle);
       this.titleService.setDescription(currentPageDescription);
       this.titleService.updateMetaTag({ property: "og:url", content: currentPageUrl });
@@ -132,11 +140,10 @@ export class ImageViewerService extends BaseService {
     return this.activeImageViewer;
   }
 
-  closeActiveImageViewer(pushState: boolean): void {
-    if (this.activeImageViewer) {
+  closeImageViewer(instance: ComponentRef<ImageViewerComponent>, pushState: boolean): void {
+    if (instance) {
       this.store$.dispatch(new HideFullscreenImage());
-      this.activeImageViewer.destroy();
-      this.activeImageViewer = undefined;
+      instance.destroy();
       this._resumeBodyScrolling();
 
       if (pushState) {
@@ -150,6 +157,68 @@ export class ImageViewerService extends BaseService {
         );
       }
     }
+  }
+
+  closeActiveImageViewer(pushState: boolean): void {
+    this.closeImageViewer(this.activeImageViewer, pushState);
+    this.activeImageViewer = undefined;
+  }
+
+  closeAllImageViewers(pushState: boolean): void {
+    this.closeImageViewer(this.activeImageViewer, pushState);
+    this.activeImageViewer = undefined;
+
+    this.closeImageViewer(this.nextImageViewer, false);
+    this.nextImageViewer = undefined;
+
+    this.closeImageViewer(this.previousImageViewer, false);
+    this.previousImageViewer = undefined;
+  }
+
+  private _createImageViewer(
+    viewContainerRef: ViewContainerRef,
+    searchComponentId: string,
+    viewerType: 'active' | 'next' | 'previous' = 'active'
+  ): ComponentRef<ImageViewerComponent> {
+    const viewer = viewContainerRef.createComponent(ImageViewerComponent);
+    viewer.instance.showCloseButton = viewerType === 'active';
+    viewer.instance.fullscreenMode = true;
+    viewer.instance.searchComponentId = searchComponentId;
+    viewer.instance.elementRef.nativeElement.classList.add(viewerType);
+    return viewer;
+  }
+
+  private _loadImageIntoViewer(
+    viewer: ComponentRef<ImageViewerComponent>,
+    imageId: ImageInterface["hash"] | ImageInterface["pk"],
+    revisionLabel: ImageRevisionInterface["label"],
+    navigationContext: ImageViewerNavigationContext,
+    fullscreen: boolean,
+    viewerType: 'active' | 'next' | 'previous' = 'active'
+  ): void {
+    viewer.instance.initialized.pipe(
+      take(1),
+      switchMap(() => this.imageService.loadImage(imageId))
+    ).subscribe({
+      next: image => {
+        viewer.instance.setImage(
+          image,
+          revisionLabel,
+          fullscreen,
+          navigationContext,
+          viewerType === 'active'
+        );
+      },
+      error: () => {
+        viewer.instance.setImage(
+          null,
+          null,
+          false,
+          navigationContext,
+          viewerType === 'active'
+        );
+      }
+    });
   }
 
   private _stopBodyScrolling(): void {

@@ -80,9 +80,14 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
 @Injectable()
 export class AstroBinHammerConfig extends HammerGestureConfig {
   override overrides = {
-    swipe: { enable: false },
+    swipe: { enable: true },
     pinch: { enable: false },
     rotate: { enable: false },
+    pan: {
+      enable: true,
+      threshold: 0,
+      direction: Hammer.DIRECTION_HORIZONTAL,
+    },
   };
 }
 

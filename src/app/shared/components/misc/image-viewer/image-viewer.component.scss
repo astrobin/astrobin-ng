@@ -3,6 +3,7 @@
 
 $portraitLayoutBreakpoint: $md-max;
 $maxAspectRatio: 1/1;
+$globalLoadingIndicatorHeight: 6px;
 
 @mixin clickableMetadata {
   color: var(--lightestGrey);
@@ -177,14 +178,22 @@ $maxAspectRatio: 1/1;
   }
 
   position: fixed;
-  top: 4rem;
+  top: $globalLoadingIndicatorHeight;
   left: 0;
   width: 100%;
-  height: calc(100% - 4rem);
+  height: calc(100% - $globalLoadingIndicatorHeight);
   background-color: var(--black);
   display: flex;
   flex-direction: column;
   z-index: 1;
+
+  &.next {
+    transform: translateX(100%);
+  }
+
+  &.previous {
+    transform: translateX(-100%);
+  }
 
   .image-loading-container {
     position: fixed;
@@ -214,7 +223,10 @@ $maxAspectRatio: 1/1;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    transition: transform 0.3s ease;
+
+    .pan-container {
+      transition: transform 0.3s ease;
+    }
 
     .image-area {
       display: flex;
@@ -309,11 +321,11 @@ $maxAspectRatio: 1/1;
         @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
           position: fixed;
           opacity: 1 !important;
-          font-size: 2rem !important;
+          font-size: 1.5rem !important;
           border-radius: 50%;
-          height: 3.5rem;
-          width: 3.5rem;
-          background: rgba(0, 0, 0, .75);
+          height: 3rem;
+          width: 3rem;
+          background: rgba(0, 0, 0, .5);
           padding: 0;
         }
 
@@ -792,24 +804,27 @@ $maxAspectRatio: 1/1;
     @media (max-width: $sm-max) {
       &::ng-deep {
         astrobin-mobile-menu {
-          top: .3rem;
+          top: unset;
+          left: unset;
+          right: unset;
+          position: unset;
           z-index: 1031;
         }
       }
     }
 
-    @media (max-width: $sm-max) {
-      // Leave room for the mobile menu
-      top: calc(3rem + 6px);
-      height: calc(100% - 3rem - 6px);
-
-      &::ng-deep {
-        astrobin-mobile-menu {
-          top: .325rem;
-          z-index: 1031;
-        }
-      }
-    }
+    //@media (max-width: $sm-max) {
+    //  // Leave room for the mobile menu
+    //  top: calc(3rem + 6px);
+    //  height: calc(100% - 3rem - 6px);
+    //
+    //  &::ng-deep {
+    //    astrobin-mobile-menu {
+    //      top: .325rem;
+    //      z-index: 1031;
+    //    }
+    //  }
+    //}
   }
 
   &:not(.fullscreen-mode) {

@@ -79,6 +79,12 @@ export class ImageViewerComponent
   @Output()
   nearEndOfContext = new EventEmitter<string>();
 
+  @Output()
+  next = new EventEmitter<void>();
+
+  @Output()
+  previous = new EventEmitter<void>();
+
   @ViewChild("mainArea")
   mainArea: ElementRef;
 
@@ -156,6 +162,8 @@ export class ImageViewerComponent
   private _dataAreaScrollEventSubscription: Subscription;
   private _initialPanPosition: number;
   private _currentPanPosition: number;
+  private readonly _panVelocityThreshold: number = 0.1;
+  private _panStartTime: number = 0;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -183,7 +191,8 @@ export class ImageViewerComponent
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly activatedRoute: ActivatedRoute,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe
+    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe,
+    public readonly elementRef: ElementRef
   ) {
     super(store$);
   }
@@ -600,13 +609,14 @@ export class ImageViewerComponent
       return;
     }
 
-    const contextItem = this.navigationContext[this.currentIndex + 1];
-
-    if (!contextItem) {
-      return;
-    }
-
-    this._navigateToImage(contextItem.imageId, FINAL_REVISION_LABEL, false, true);
+    this.next.emit();
+    // const contextItem = this.navigationContext[this.currentIndex + 1];
+    //
+    // if (!contextItem) {
+    //   return;
+    // }
+    //
+    // this._navigateToImage(contextItem.imageId, FINAL_REVISION_LABEL, false, true);
   }
 
   @HostListener("document:keydown.arrowLeft", ["$event"])
@@ -615,13 +625,14 @@ export class ImageViewerComponent
       return;
     }
 
-    const contextItem = this.navigationContext[this.currentIndex - 1];
-
-    if (!contextItem) {
-      return;
-    }
-
-    this._navigateToImage(contextItem.imageId, FINAL_REVISION_LABEL, false, true);
+    this.previous.emit();
+    // const contextItem = this.navigationContext[this.currentIndex - 1];
+    //
+    // if (!contextItem) {
+    //   return;
+    // }
+    //
+    // this._navigateToImage(contextItem.imageId, FINAL_REVISION_LABEL, false, true);
   }
 
   onImageLoaded(): void {
@@ -731,9 +742,11 @@ export class ImageViewerComponent
 
   onPanStart(event: any): void {
     if (this._isInvalidPan(event)) {
-      this._resetPanTransform();
+      this.onPanReset(null);
       return;
     }
+
+    this._panStartTime = new Date().getTime();
 
     this._disablePointerEventsOnAbsolutelyPositionedElements();
     this._disableMainAreaScroll();
@@ -743,7 +756,16 @@ export class ImageViewerComponent
 
   onPanMove(event: any): void {
     if (this._isInvalidPan(event)) {
-      this._resetPanTransform();
+      this.onPanReset(null);
+      return;
+    }
+
+    const currentTime = new Date().getTime();
+    const elapsedTime = currentTime - this._panStartTime;
+    const velocityX = Math.abs(event.deltaX) / elapsedTime;
+
+    if (velocityX < this._panVelocityThreshold) {
+      this.onPanReset(null);
       return;
     }
 
@@ -758,8 +780,12 @@ export class ImageViewerComponent
     this._enablePointerEventsOnAbsolutelyPositionedElements();
     this._enableMainAreaScroll();
 
-    if (this._isInvalidPan(event) || Math.abs(event.deltaX) <= swipeThreshold) {
-      this._resetPanTransform();
+    if (
+      this._isInvalidPan(event) ||
+      Math.abs(event.deltaX) <= swipeThreshold ||
+      Math.abs(event.velocityX) < this._panVelocityThreshold
+    ) {
+      this.onPanReset(null);
       return;
     }
 
@@ -770,7 +796,7 @@ export class ImageViewerComponent
     }
   }
 
-  onTouchCancel(event: any): void {
+  onPanReset(event: any): void {
     this._resetPanTransform();
     this._enablePointerEventsOnAbsolutelyPositionedElements();
     this._enableMainAreaScroll();
@@ -795,14 +821,14 @@ export class ImageViewerComponent
   }
 
   private _disablePanTransition() {
-    const element = this.mainArea.nativeElement;
+    const element = this.mainArea.nativeElement.querySelector(".pan-container");
     if (element) {
       this.renderer.setStyle(element, "transition", "none"); // Disable transition
     }
   }
 
   private _enablePanTransition() {
-    const element = this.mainArea.nativeElement;
+    const element = this.mainArea.nativeElement.querySelector(".pan-container");
     if (element) {
       this.renderer.setStyle(element, "transition", "transform 0.3s ease"); // Re-enable transition
     }
