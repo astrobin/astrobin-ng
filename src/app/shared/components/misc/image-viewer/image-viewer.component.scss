@@ -186,6 +186,7 @@ $globalLoadingIndicatorHeight: 6px;
   display: flex;
   flex-direction: column;
   z-index: 1;
+  transition: transform 0.3s ease;
 
   &.next {
     transform: translateX(100%);

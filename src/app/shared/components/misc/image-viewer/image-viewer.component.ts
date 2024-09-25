@@ -34,14 +34,8 @@ import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
+import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
 
-
-export interface ImageViewerNavigationContextItem {
-  imageId: ImageInterface["hash"] | ImageInterface["pk"];
-  thumbnailUrl: string;
-}
-
-export type ImageViewerNavigationContext = ImageViewerNavigationContextItem[];
 
 @Component({
   selector: "astrobin-image-viewer",

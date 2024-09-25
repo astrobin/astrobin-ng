@@ -1054,7 +1054,7 @@ export class UtilsService {
       shouldCheckVertical = true,
       shouldCheckHorizontal = true,
       verticalTolerance = 2000,
-      horizontalTolerance = 2000,
+      horizontalTolerance = 6000,
     } = options;
 
     // Get the bounding rectangle of the element
