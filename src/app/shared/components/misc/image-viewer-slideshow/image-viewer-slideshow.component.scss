@@ -33,6 +33,13 @@ $background: rgba(0, 0, 0, 0.95);
     flex-grow: 1;
     overflow: hidden;
 
+    .pan-container {
+      width: 100%;
+      height: 100%;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
     ::ng-deep {
       .carousel,
       .carousel-inner,
@@ -83,6 +90,22 @@ $background: rgba(0, 0, 0, 0.95);
       .carousel.is-on-last {
         .carousel-control-next {
           display: none;
+        }
+      }
+
+      .carousel-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.3s ease;
+        will-change: transform;
+        display: block;
+
+        &.active {
+          position: relative;
+          z-index: 2;
         }
       }
     }

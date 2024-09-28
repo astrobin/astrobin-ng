@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnDestroy, Output, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnDestroy, Output, PLATFORM_ID, ViewChild } from "@angular/core";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -12,18 +12,16 @@ import { Observable, Subscription } from "rxjs";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { NavigationEnd, Router } from "@angular/router";
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { isPlatformBrowser } from "@angular/common";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
 
-/*
-    TODO:
-    - Hammerjs panning.
- */
 @Component({
   selector: "astrobin-image-viewer-slideshow",
   template: `
-    <div class="carousel-container">
+    <div #carouselContainer class="carousel-container">
       <div class="carousel-area">
         <ngb-carousel
           #carousel
@@ -41,21 +39,23 @@ const SLIDESHOW_WINDOW = 3;
         >
           <ng-template
             ngbSlide
-            *ngFor="let item of navigationContext; trackBy: contextTrackByFn"
+            *ngFor="let item of navigationContext; let i = index; trackBy: contextTrackByFn"
             id="{{ item.imageId }}"
           >
-            <astrobin-image-viewer
-              *ngIf="item.image; else loadingTemplate"
-              [active]="item.imageId === activeId"
-              [image]="item.image"
-              [showCloseButton]="true"
-              [showPreviousButton]="activeId !== navigationContext[0].imageId"
-              [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
-              [standalone]="false"
-              (closeClick)="closeSlideshow.emit(true)"
-              (nextClick)="onNextClick()"
-              (previousClick)="onPreviousClick()"
-            ></astrobin-image-viewer>
+            <div class="pan-container" [ngStyle]="getSlideStyle(i)">
+              <astrobin-image-viewer
+                *ngIf="item.image; else loadingTemplate"
+                [active]="item.imageId === activeId"
+                [image]="item.image"
+                [showCloseButton]="true"
+                [showPreviousButton]="activeId !== navigationContext[0].imageId"
+                [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
+                [standalone]="false"
+                (closeClick)="closeSlideshow.emit(true)"
+                (nextClick)="onNextClick()"
+                (previousClick)="onPreviousClick()"
+              ></astrobin-image-viewer>
+            </div>
           </ng-template>
         </ngb-carousel>
       </div>
@@ -97,14 +97,21 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   @ViewChild("carousel", { static: false, read: NgbCarousel })
   protected carousel: NgbCarousel;
 
+  @ViewChild("carouselContainer")
+  protected carouselContainer: ElementRef;
+
   private _delayedLoadSubscription: Subscription = new Subscription();
   private _skipSlideEvent = false;
+  private _hammer: HammerManager;
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly imageService: ImageService,
     public readonly utilsService: UtilsService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly windowRefService: WindowRefService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly elementRef: ElementRef
   ) {
     super(store$);
 
@@ -132,6 +139,17 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   ngOnDestroy() {
     this._delayedLoadSubscription.unsubscribe();
+  }
+
+  getSlideStyle(index: number): any {
+    const offset = index - this._getImageIndexInContext(this.activeId);
+
+    // Calculate the translateX value based on the index offset
+    const translateX = offset * 100; // Previous slides will have negative values, next slides positive
+
+    return {
+      transform: `translateX(${translateX}%)`
+    };
   }
 
   activeImage(): ImageInterface {
@@ -167,6 +185,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this._loadImagesAround();
       this._dropImagesTooFarFromIndex();
 
+      if (this.navigationContext.length > 1 && isPlatformBrowser(this.platformId)) {
+        this._setupPan();
+      }
+
       if (emitChange) {
         this.imageChange.emit(image);
       }
@@ -188,6 +210,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
     if (this.activeId === event.current) {
       return;
+    }
+
+    if (this._hammer) {
+      this._hammer.destroy();
     }
 
     this.setImage(event.current);
@@ -282,5 +308,134 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   private _getImageIndexInContext(imageId: ImageInterface["pk"] | ImageInterface["hash"]): number {
     return this.navigationContext.findIndex(item => item.imageId === imageId);
+  }
+
+  private _setupPan() {
+    const panItem = this._getPanItem();
+    const previousSlide = this._getPreviousSlide();
+    const nextSlide = this._getNextSlide();
+
+    this._hammer = new Hammer(panItem);
+    this._hammer.get("pan").set({ direction: Hammer.DIRECTION_HORIZONTAL });
+
+    let currentX = 0; // Track the current translation
+    const friction = 0.5; // Resistance factor to reduce sensitivity of the swipe
+
+    // Handle pan movement
+    this._hammer.on("panmove", ev => {
+      let deltaX = ev.deltaX * friction;
+
+      // Optionally, limit the panning distance to within the window width
+      deltaX = Math.min(Math.max(deltaX, -window.innerWidth), window.innerWidth);
+
+      // Apply transformation to the current slide
+      panItem.style.transform = `translateX(${currentX + deltaX}px)`;
+
+      // Apply transformation to the adjacent slides
+      if (deltaX < 0 && nextSlide) {
+        // Swipe left - Move next slide into view
+        nextSlide.style.transform = `translateX(${window.innerWidth + deltaX}px)`;
+      } else if (deltaX > 0 && previousSlide) {
+        // Swipe right - Move previous slide into view
+        previousSlide.style.transform = `translateX(${-window.innerWidth + deltaX}px)`;
+      }
+    });
+
+    // Handle end of pan (swipe release)
+    this._hammer.on("panend", ev => {
+      const totalDeltaX = ev.deltaX * friction;
+      const threshold = window.innerWidth / 3; // Set swipe threshold
+      const direction = Math.sign(totalDeltaX); // Detect swipe direction
+
+      if (Math.abs(totalDeltaX) > threshold) {
+        // If swipe is beyond threshold, complete the transition
+        const targetX = direction > 0 ? window.innerWidth : -window.innerWidth;
+
+        panItem.style.transition = "transform 0.3s ease";
+        panItem.style.transform = `translateX(${targetX}px)`;
+
+        // Apply transition to adjacent slides
+        if (direction < 0 && nextSlide) {
+          nextSlide.style.transition = "transform 0.3s ease";
+          nextSlide.style.transform = `translateX(0px)`; // Move next slide into position
+        } else if (direction > 0 && previousSlide) {
+          previousSlide.style.transition = "transform 0.3s ease";
+          previousSlide.style.transform = `translateX(0px)`; // Move previous slide into position
+        }
+
+        // Wait for the transition to finish before navigating
+        this.utilsService.delay(300).subscribe(() => {
+          currentX = 0; // Reset the X position after transition
+          panItem.style.transition = "";
+          panItem.style.transform = `translateX(${currentX}px)`;
+
+          if (direction < 0) {
+            this.carousel.next(); // Swipe left to go to the next slide
+          } else {
+            this.carousel.prev(); // Swipe right to go to the previous slide
+          }
+
+          // Reset adjacent slides
+          if (nextSlide) {
+            nextSlide.style.transition = "";
+            nextSlide.style.transform = "";
+          }
+          if (previousSlide) {
+            previousSlide.style.transition = "";
+            previousSlide.style.transform = "";
+          }
+        });
+      } else {
+        // If swipe didn't reach threshold, reset to original position
+        panItem.style.transition = "transform 0.3s ease";
+        panItem.style.transform = `translateX(${currentX}px)`;
+
+        // Reset adjacent slides
+        if (nextSlide) {
+          nextSlide.style.transition = "transform 0.3s ease";
+          nextSlide.style.transform = `translateX(${window.innerWidth}px)`; // Move next slide out of view
+        }
+        if (previousSlide) {
+          previousSlide.style.transition = "transform 0.3s ease";
+          previousSlide.style.transform = `translateX(${-window.innerWidth}px)`; // Move previous slide out of view
+        }
+
+        // Remove the transition after it's done
+        this.utilsService.delay(300).subscribe(() => {
+          panItem.style.transition = "";
+          if (nextSlide) {
+            nextSlide.style.transition = "";
+          }
+          if (previousSlide) {
+            previousSlide.style.transition = "";
+          }
+        });
+      }
+    });
+  }
+
+// Helper methods to get the previous and next slide elements
+  private _getPreviousSlide(): HTMLElement | null {
+    const index = this._getImageIndexInContext(this.activeId);
+    if (index > 0) {
+      return this.elementRef.nativeElement.querySelector(
+        `#slide-${this.navigationContext[index - 1].imageId} .pan-container`
+      );
+    }
+    return null;
+  }
+
+  private _getNextSlide(): HTMLElement | null {
+    const index = this._getImageIndexInContext(this.activeId);
+    if (index < this.navigationContext.length - 1) {
+      return this.elementRef.nativeElement.querySelector(
+        `#slide-${this.navigationContext[index + 1].imageId} .pan-container`
+      );
+    }
+    return null;
+  }
+
+  private _getPanItem(): HTMLElement {
+    return this.elementRef.nativeElement.querySelector(`#slide-${this.activeId} .pan-container`);
   }
 }
