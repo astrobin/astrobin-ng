@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnDestroy, Output, PLATFORM_ID, ViewChild } from "@angular/core";
 import { ImageInterface } from "@shared/interfaces/image.interface";
-import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
+import { ImageViewerNavigationContext, ImageViewerNavigationContextItem, ImageViewerService } from "@shared/services/image-viewer.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -14,6 +14,7 @@ import { NavigationEnd, Router } from "@angular/router";
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import { DeviceService } from "@shared/services/device.service";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
@@ -27,7 +28,7 @@ const SLIDESHOW_WINDOW = 3;
           #carousel
           *ngIf="navigationContext.length > 0; else loadingTemplate"
           (slide)="onSlide($event)"
-          [animation]="false"
+          [animation]="animateCarousel"
           [activeId]="this.activeId"
           [interval]="0"
           [showNavigationArrows]="false"
@@ -100,6 +101,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   @ViewChild("carouselContainer")
   protected carouselContainer: ElementRef;
 
+  protected animateCarousel = false;
+
   private _delayedLoadSubscription: Subscription = new Subscription();
   private _skipSlideEvent = false;
   private _hammer: HammerManager;
@@ -111,7 +114,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly elementRef: ElementRef
+    public readonly elementRef: ElementRef,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
 
@@ -126,6 +130,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         this.setImage(imageId, false);
       }
     });
+
+    const viewPortAspectRatio = this.windowRefService.getViewPortAspectRatio();
+    const sideToSideLayout = this.deviceService.lgMin() || viewPortAspectRatio > 1;
+    this.animateCarousel = this.deviceService.isTouchEnabled() && !sideToSideLayout;
   }
 
   @HostListener("window:popstate", ["$event"])
@@ -314,6 +322,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     const panItem = this._getPanItem();
     const previousSlide = this._getPreviousSlide();
     const nextSlide = this._getNextSlide();
+    const currentIndex = this._getImageIndexInContext(this.activeId);
 
     this._hammer = new Hammer(panItem);
     this._hammer.get("pan").set({ direction: Hammer.DIRECTION_HORIZONTAL });
@@ -325,19 +334,30 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     this._hammer.on("panmove", ev => {
       let deltaX = ev.deltaX * friction;
 
-      // Optionally, limit the panning distance to within the window width
-      deltaX = Math.min(Math.max(deltaX, -window.innerWidth), window.innerWidth);
+      // Check if we're at the boundaries
+      const isFirstSlide = currentIndex === 0;
+      const isLastSlide = currentIndex === this.navigationContext.length - 1;
+
+      // Prevent panning to the right on the first slide
+      if (isFirstSlide && deltaX > 0) {
+        deltaX = 0;
+      }
+
+      // Prevent panning to the left on the last slide
+      if (isLastSlide && deltaX < 0) {
+        deltaX = 0;
+      }
 
       // Apply transformation to the current slide
       panItem.style.transform = `translateX(${currentX + deltaX}px)`;
 
       // Apply transformation to the adjacent slides
-      if (deltaX < 0 && nextSlide) {
+      if (deltaX < 0 && nextSlide && !isLastSlide) {
         // Swipe left - Move next slide into view
-        nextSlide.style.transform = `translateX(${window.innerWidth + deltaX}px)`;
-      } else if (deltaX > 0 && previousSlide) {
+        nextSlide.style.transform = `translateX(${100 + deltaX / window.innerWidth * 100}%)`;
+      } else if (deltaX > 0 && previousSlide && !isFirstSlide) {
         // Swipe right - Move previous slide into view
-        previousSlide.style.transform = `translateX(${-window.innerWidth + deltaX}px)`;
+        previousSlide.style.transform = `translateX(${-100 + deltaX / window.innerWidth * 100}%)`;
       }
     });
 
@@ -347,6 +367,9 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       const threshold = window.innerWidth / 3; // Set swipe threshold
       const direction = Math.sign(totalDeltaX); // Detect swipe direction
 
+      const isFirstSlide = currentIndex === 0;
+      const isLastSlide = currentIndex === this.navigationContext.length - 1;
+
       if (Math.abs(totalDeltaX) > threshold) {
         // If swipe is beyond threshold, complete the transition
         const targetX = direction > 0 ? window.innerWidth : -window.innerWidth;
@@ -355,12 +378,12 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         panItem.style.transform = `translateX(${targetX}px)`;
 
         // Apply transition to adjacent slides
-        if (direction < 0 && nextSlide) {
+        if (direction < 0 && nextSlide && !isLastSlide) {
           nextSlide.style.transition = "transform 0.3s ease";
-          nextSlide.style.transform = `translateX(0px)`; // Move next slide into position
-        } else if (direction > 0 && previousSlide) {
+          nextSlide.style.transform = `translateX(0)`; // Move next slide into position
+        } else if (direction > 0 && previousSlide && !isFirstSlide) {
           previousSlide.style.transition = "transform 0.3s ease";
-          previousSlide.style.transform = `translateX(0px)`; // Move previous slide into position
+          previousSlide.style.transform = `translateX(0)`; // Move previous slide into position
         }
 
         // Wait for the transition to finish before navigating
@@ -369,20 +392,20 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
           panItem.style.transition = "";
           panItem.style.transform = `translateX(${currentX}px)`;
 
-          if (direction < 0) {
+          if (direction < 0 && !isLastSlide) {
             this.carousel.next(); // Swipe left to go to the next slide
-          } else {
+          } else if (direction > 0 && !isFirstSlide) {
             this.carousel.prev(); // Swipe right to go to the previous slide
           }
 
           // Reset adjacent slides
           if (nextSlide) {
             nextSlide.style.transition = "";
-            nextSlide.style.transform = "";
+            nextSlide.style.transform = `translateX(100%)`; // Move next slide back to the right
           }
           if (previousSlide) {
             previousSlide.style.transition = "";
-            previousSlide.style.transform = "";
+            previousSlide.style.transform = `translateX(-100%)`; // Move previous slide back to the left
           }
         });
       } else {
@@ -393,11 +416,11 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         // Reset adjacent slides
         if (nextSlide) {
           nextSlide.style.transition = "transform 0.3s ease";
-          nextSlide.style.transform = `translateX(${window.innerWidth}px)`; // Move next slide out of view
+          nextSlide.style.transform = `translateX(100%)`; // Move next slide back to the right
         }
         if (previousSlide) {
           previousSlide.style.transition = "transform 0.3s ease";
-          previousSlide.style.transform = `translateX(${-window.innerWidth}px)`; // Move previous slide out of view
+          previousSlide.style.transform = `translateX(-100%)`; // Move previous slide back to the left
         }
 
         // Remove the transition after it's done
@@ -414,7 +437,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     });
   }
 
-// Helper methods to get the previous and next slide elements
+
   private _getPreviousSlide(): HTMLElement | null {
     const index = this._getImageIndexInContext(this.activeId);
     if (index > 0) {

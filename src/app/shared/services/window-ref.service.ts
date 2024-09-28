@@ -43,6 +43,14 @@ export class WindowRefService extends BaseService {
     return this._doc.defaultView;
   }
 
+  getViewPortAspectRatio(): number {
+    if (!isPlatformBrowser(this.platformId)) {
+      return 1;
+    }
+
+    return window.innerWidth / window.innerHeight;
+  }
+
   scroll(options: any) {
     if (!isPlatformBrowser(this.platformId) || typeof (this.nativeWindow?.scroll) === "undefined") {
       return;
