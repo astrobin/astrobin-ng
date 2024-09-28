@@ -56,7 +56,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      // this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
+      this.imageViewerService.autoOpenSlideshow(activatedRoute, viewContainerRef);
     });
   }
 

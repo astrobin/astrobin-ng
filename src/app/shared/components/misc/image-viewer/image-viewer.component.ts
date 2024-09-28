@@ -194,6 +194,8 @@ export class ImageViewerComponent
           this._initDataAreaScrollHandling();
         }
       });
+
+      this._initAutoOpenFullscreen();
     }
 
     this.changeDetectorRef.detectChanges();
@@ -213,6 +215,13 @@ export class ImageViewerComponent
     super.ngOnDestroy();
   }
 
+  @HostListener("window:popstate", ["$event"])
+  onPopState(event: PopStateEvent) {
+    if (event.state?.fullscreen) {
+      this.exitFullscreen(false);
+    }
+  }
+
   @HostListener("document:keydown.escape", ["$event"])
   handleEscapeKey(event: KeyboardEvent) {
     if (event) {
@@ -221,7 +230,7 @@ export class ImageViewerComponent
     }
 
     if (this.viewingFullscreenImage) {
-      this.exitFullscreen();
+      this.exitFullscreen(true);
       return;
     }
 
@@ -367,13 +376,29 @@ export class ImageViewerComponent
       this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
       this.viewingFullscreenImage = true;
       this.fullscreenMode.emit(true);
+
+      if (isPlatformBrowser(this.platformId)) {
+        const location_ = this.windowRefService.nativeWindow.location;
+        this.windowRefService.pushState(
+          null,
+          `${location_.pathname}${location_.search}#fullscreen`
+        );
+      }
     }
   }
 
-  protected exitFullscreen(): void {
+  protected exitFullscreen(replaceState: boolean): void {
     this.store$.dispatch(new HideFullscreenImage());
     this.viewingFullscreenImage = false;
     this.fullscreenMode.emit(false);
+
+    if (replaceState && isPlatformBrowser(this.platformId)) {
+      const location_ = this.windowRefService.nativeWindow.location;
+      this.windowRefService.replaceState(
+        null,
+        `${location_.pathname}${location_.search}`
+      );
+    }
   }
 
   protected onDescriptionClicked(event: MouseEvent) {
@@ -588,6 +613,15 @@ export class ImageViewerComponent
       this.activatedRoute.snapshot.queryParams["saturation"]
     ) {
       this.adjustmentEditorVisible = true;
+    }
+  }
+
+  private _initAutoOpenFullscreen() {
+    if (isPlatformBrowser(this.platformId)) {
+      const hash = this.windowRefService.nativeWindow.location.hash;
+      if (hash === "#fullscreen") {
+        this.enterFullscreen(null);
+      }
     }
   }
 

@@ -10,9 +10,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { filter, take, takeUntil, tap } from "rxjs/operators";
+import { take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -22,7 +21,6 @@ import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
 import { DeviceService } from "@shared/services/device.service";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-image-search",
@@ -32,13 +30,11 @@ import { ImageService } from "@shared/services/image/image.service";
 export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
-  protected readonly ImageAlias = ImageAlias;
-
   @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
   @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
-
+  protected readonly ImageAlias = ImageAlias;
   protected gridItems: Array<ImageSearchInterface & { displayHeight: number, displayWidth: number }> = [];
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
@@ -60,8 +56,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly loadingService: LoadingService,
     public readonly searchService: SearchService,
     public readonly deviceService: DeviceService,
-    public readonly changeDetectorRef: ChangeDetectorRef,
-    public readonly imageService: ImageService
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, windowRefService, elementRef, platformId, translateService);
     this.dataFetched.pipe(
@@ -225,7 +220,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
         imageId: result.hash || result.objectId,
         thumbnailUrl: result.galleryThumbnail
       })),
-      this.viewContainerRef
+      this.viewContainerRef,
+      true
     );
 
     slideshow.instance.nearEndOfContext.subscribe(() => {

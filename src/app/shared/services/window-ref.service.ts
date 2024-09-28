@@ -43,10 +43,6 @@ export class WindowRefService extends BaseService {
     return this._doc.defaultView;
   }
 
-  get isMobile$() {
-    return this._isMobile.asObservable();
-  }
-
   scroll(options: any) {
     if (!isPlatformBrowser(this.platformId) || typeof (this.nativeWindow?.scroll) === "undefined") {
       return;
@@ -163,6 +159,7 @@ export class WindowRefService extends BaseService {
   }
 
   pushState(data: any, url: string) {
+    console.log("pushState", data, url);
     this._pushOrReplaceState("pushState", data, url);
   }
 

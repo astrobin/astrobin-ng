@@ -43,6 +43,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   @Input()
   autoHeight = true;
 
+  @Input()
+  forceLoad = false;
+
   @Output()
   loaded = new EventEmitter();
 
@@ -70,7 +73,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   protected videoJsReady = false;
   protected revision: ImageInterface | ImageRevisionInterface;
 
-  private _forceLoad = false;
   private _videoJsPlayer: any;
   private _autoLoadSubscription: Subscription;
   private _pollingVideEncoderProgress = false;
@@ -181,7 +183,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     const noNeedToLoad = () =>
       !this.utilsService.isNearOrInViewport(this.elementRef.nativeElement) || this.loading;
 
-    if (!this._forceLoad && noNeedToLoad()) {
+    if (!this.forceLoad && noNeedToLoad()) {
       return;
     }
 
@@ -329,7 +331,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD),
         map((action: ForceCheckImageAutoLoad) => action.payload),
         filter(payload => payload.imageId === this.id),
-        tap(() => (this._forceLoad = true))
+        tap(() => (this.forceLoad = true))
       );
 
       this._autoLoadSubscription = merge(scroll$, resize$, forceCheck$)

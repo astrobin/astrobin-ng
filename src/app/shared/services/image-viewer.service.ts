@@ -1,6 +1,6 @@
-import { Location } from "@angular/common";
+import { isPlatformBrowser, Location } from "@angular/common";
 import { ComponentRef, Inject, Injectable, PLATFORM_ID, ViewContainerRef } from "@angular/core";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Store } from "@ngrx/store";
@@ -11,7 +11,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { DeviceService } from "@shared/services/device.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TitleService } from "@shared/services/title/title.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
@@ -56,15 +56,36 @@ export class ImageViewerService extends BaseService {
       map((action: DeleteImageSuccess) => action.payload.pk)
     ).subscribe((pk: ImageInterface["pk"]) => {
       if (this.slideshow && this.slideshow.instance.activeImage().pk === pk) {
-        this.closeSlideShow();
+        this.closeSlideShow(true);
       }
     });
+  }
+
+
+  autoOpenSlideshow(activatedRoute: ActivatedRoute, viewContainerRef: ViewContainerRef): void {
+    const queryParams = activatedRoute.snapshot.queryParams;
+
+    if (queryParams["i"]) {
+      const currentImageId = this.slideshow?.instance?.activeId;
+
+      if (currentImageId && currentImageId === queryParams["i"]) {
+        return;
+      }
+
+      this.openSlideshow(
+        queryParams["i"],
+        [],
+        viewContainerRef,
+        false
+      );
+    }
   }
 
   openSlideshow(
     imageId: ImageInterface["hash"] | ImageInterface["pk"],
     navigationContext: ImageViewerNavigationContext,
-    viewContainerRef: ViewContainerRef
+    viewContainerRef: ViewContainerRef,
+    pushState: boolean
   ): ComponentRef<ImageViewerSlideshowComponent> {
     if (!this.slideshow) {
       this._previousTitle = this.titleService.getTitle();
@@ -74,20 +95,35 @@ export class ImageViewerService extends BaseService {
 
       this._stopBodyScrolling();
 
-      this.slideshow.instance.closeSlideshow.subscribe(() => {
-        this.closeSlideShow();
+      this.slideshow.instance.closeSlideshow.subscribe(pushState => {
+        this.closeSlideShow(pushState);
         this.titleService.setTitle(this._previousTitle);
         this.titleService.setDescription(this._previousDescription);
         this.titleService.updateMetaTag({ property: "og:url", content: this._previousUrl });
       });
+
+      this.slideshow.instance.imageChange.subscribe((image: ImageInterface) => {
+        if (isPlatformBrowser(this.platformId)) {
+          let url = this.windowRefService.getCurrentUrl().href;
+          const fragment = url.split("#")[1];
+
+          url = UtilsService.addOrUpdateUrlParam(url, "i", image.hash || image.pk.toString());
+
+          if (fragment) {
+            url += "#" + fragment;
+          }
+
+          this.windowRefService.pushState({ imageId: image.hash || image.pk }, url);
+        }
+      });
     }
 
     this.slideshow.instance.setNavigationContext(navigationContext);
-    this.slideshow.instance.setImage(imageId);
+    this.slideshow.instance.setImage(imageId, pushState);
     return this.slideshow;
   }
 
-  closeSlideShow(): void {
+  closeSlideShow(pushState: boolean): void {
     if (this.slideshow) {
       this.slideshow.destroy();
       this.slideshow = null;
@@ -95,14 +131,16 @@ export class ImageViewerService extends BaseService {
       this.store$.dispatch(new HideFullscreenImage());
       this._resumeBodyScrolling();
 
-      let path = UtilsService.removeUrlParam(this.location.path(), "i");
-      path = UtilsService.removeUrlParam(path, "r");
-      path = path.split("#")[0];
+      if (pushState) {
+        let url = UtilsService.removeUrlParam(this.windowRefService.getCurrentUrl().href, "i");
+        url = UtilsService.removeUrlParam(url, "r");
+        url = url.split("#")[0];
 
-      this.windowRefService.pushState(
-        {},
-        path
-      );
+        this.windowRefService.replaceState(
+          {},
+          url
+        );
+      }
     }
   }
 
@@ -137,17 +175,6 @@ export class ImageViewerService extends BaseService {
       viewPortAspectRatio,
       sideToSideLayout
     };
-  }
-
-  pushState(imageId: ImageInterface["hash"] | ImageInterface["pk"], revision: string): void {
-    const url = this.router.createUrlTree([], {
-      queryParams: {
-        i: imageId,
-        r: revision
-      }
-    }).toString();
-
-    this.windowRefService.pushState({}, url);
   }
 
   private _stopBodyScrolling(): void {

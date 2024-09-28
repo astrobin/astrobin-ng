@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -32,6 +32,7 @@ import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap"
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { DeviceService } from "@shared/services/device.service";
+import { ImageViewerService } from "@shared/services/image-viewer.service";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -77,7 +78,9 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly changeDetectionRef: ChangeDetectorRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly deviceService: DeviceService,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly imageViewerService: ImageViewerService,
+    public readonly viewContainerRef: ViewContainerRef
   ) {
     super(
       store$,
@@ -91,6 +94,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       deviceService,
       offcanvasService
     );
+
+    this.imageViewerService.autoOpenSlideshow(this.activatedRoute, this.viewContainerRef);
   }
 
   ngOnInit(): void {

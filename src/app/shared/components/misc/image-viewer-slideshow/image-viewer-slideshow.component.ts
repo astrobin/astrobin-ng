@@ -7,16 +7,16 @@ import { Store } from "@ngrx/store";
 import { ImageService } from "@shared/services/image/image.service";
 import { NgbCarousel, NgbSlideEvent } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { switchMap } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, switchMap, takeUntil } from "rxjs/operators";
 import { Observable, Subscription } from "rxjs";
-import { ForceCheckImageAutoLoad } from "@app/store/actions/image.actions";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { NavigationEnd, Router } from "@angular/router";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
 
 /*
     TODO:
-    - Auto-open.
     - Hammerjs panning.
  */
 @Component({
@@ -26,7 +26,7 @@ const SLIDESHOW_WINDOW = 3;
       <div class="carousel-area">
         <ngb-carousel
           #carousel
-          *ngIf="navigationContext.length > 0"
+          *ngIf="navigationContext.length > 0; else loadingTemplate"
           (slide)="onSlide($event)"
           [animation]="false"
           [activeId]="this.activeId"
@@ -51,7 +51,7 @@ const SLIDESHOW_WINDOW = 3;
               [showPreviousButton]="activeId !== navigationContext[0].imageId"
               [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
               [standalone]="false"
-              (closeClick)="closeSlideshow.emit()"
+              (closeClick)="closeSlideshow.emit(true)"
               (nextClick)="onNextClick()"
               (previousClick)="onPreviousClick()"
             ></astrobin-image-viewer>
@@ -59,7 +59,7 @@ const SLIDESHOW_WINDOW = 3;
         </ngb-carousel>
       </div>
 
-      <div class="context-area">
+      <div *ngIf="navigationContext?.length > 1" class="context-area">
         <astrobin-image-viewer-slideshow-context
           [navigationContext]="navigationContext"
           [activeId]="activeId"
@@ -83,24 +83,50 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   navigationContext: ImageViewerNavigationContext;
 
   @Output()
-  closeSlideshow = new EventEmitter<void>();
+  closeSlideshow = new EventEmitter<boolean>();
 
   @Output()
   nearEndOfContext = new EventEmitter<ImageViewerNavigationContextItem["imageId"]>();
 
+  @Output()
+  imageChange = new EventEmitter<ImageInterface>();
+
+  activeId: ImageInterface["pk"] | ImageInterface["hash"];
+
   @ViewChild("carousel", { static: false, read: NgbCarousel })
   protected carousel: NgbCarousel;
 
-  protected activeId: ImageInterface["pk"] | ImageInterface["hash"];
-
   private _delayedLoadSubscription: Subscription = new Subscription();
+  private _skipSlideEvent = false;
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly imageService: ImageService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly router: Router
   ) {
     super(store$);
+
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map((event: NavigationEnd) => event.urlAfterRedirects),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(url => {
+      const imageId = this.router.parseUrl(url).queryParams["i"];
+      if (imageId) {
+        this.setImage(imageId, false);
+      }
+    });
+  }
+
+  @HostListener("window:popstate", ["$event"])
+  onPopState(event: PopStateEvent) {
+    if (event.state?.imageId && this.activeId !== event.state.imageId && !event.state?.fullscreen) {
+      this.setImage(event.state.imageId, false);
+    } else {
+      this.closeSlideshow.emit(false);
+    }
   }
 
   ngOnDestroy() {
@@ -126,21 +152,31 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     }
   }
 
-  setImage(imageId: ImageInterface["pk"] | ImageInterface["hash"]) {
+  setImage(imageId: ImageInterface["pk"] | ImageInterface["hash"], emitChange: boolean = true) {
     this._loadImage(imageId).subscribe(image => {
+      if (this.carousel) {
+        this._skipSlideEvent = true;
+        this.carousel.select(imageId.toString());
+        this._skipSlideEvent = false;
+
+        this.carousel.focus();
+      }
+
       this.activeId = imageId;
       this._loadImagesAround();
       this._dropImagesTooFarFromIndex();
-      this.carousel.select(imageId.toString());
-      this.carousel.focus();
 
-      this.utilsService.delay(100).subscribe(() => {
-        this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: image.pk }))
-      });
+      if (emitChange) {
+        this.imageChange.emit(image);
+      }
     });
   }
 
   protected onSlide(event: NgbSlideEvent) {
+    if (this._skipSlideEvent) {
+      return;
+    }
+
     if (!event.current) {
       return;
     }
@@ -182,7 +218,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     const index = this._getImageIndexInContext(this.activeId);
     for (let i = 0; i < this.navigationContext.length; i++) {
       if (Math.abs(index - i) > SLIDESHOW_WINDOW) {
-        // this.navigationContext[i].image = null;
         this.navigationContext = this.navigationContext.map(item => {
           if (item.imageId === this.navigationContext[i].imageId) {
             return {
@@ -204,13 +239,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     return new Observable(subscriber => {
       const index = this._getImageIndexInContext(imageId);
 
-      if (index === -1) {
-        subscriber.error("Image not found in context");
-        subscriber.complete();
-        return;
-      }
-
-      if (this.navigationContext[index].image) {
+      if (this.navigationContext && this.navigationContext[index]?.image) {
         subscriber.next(this.navigationContext[index].image);
         subscriber.complete();
         return;
@@ -219,16 +248,26 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this._delayedLoadSubscription.add(this.utilsService.delay(delay).pipe(
         switchMap(() => this.imageService.loadImage(imageId))
       ).subscribe(image => {
-        this.navigationContext = this.navigationContext.map(item => {
-          if (item.imageId === imageId) {
-            return {
-              ...item,
+        if (!this.navigationContext || !this.navigationContext.length) {
+          this.navigationContext = [
+            {
+              imageId,
+              thumbnailUrl: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
               image
-            };
-          }
+            }
+          ];
+        } else {
+          this.navigationContext = this.navigationContext.map(item => {
+            if (item.imageId === imageId) {
+              return {
+                ...item,
+                image
+              };
+            }
 
-          return item;
-        });
+            return item;
+          });
+        }
 
         subscriber.next(image);
         subscriber.complete();
