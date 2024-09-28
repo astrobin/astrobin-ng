@@ -588,7 +588,7 @@ export class ImageViewerComponent
     const socialButtonsAboveViewport = socialButtonsRect.bottom < scrollAreaRect.top;
 
     if (socialButtonsAboveViewport) {
-      let translateYValue;
+      let translateYValue: string;
 
       if (sideToSideLayout) {
         // The position is relative to the data area.
