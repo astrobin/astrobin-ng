@@ -15,7 +15,7 @@ import { RouterService } from "@shared/services/router.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { isPlatformBrowser } from "@angular/common";
-import { fromEvent, Subscription, throttleTime } from "rxjs";
+import { fromEvent, merge, Subscription, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
@@ -142,9 +142,14 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
         this._initStatus();
       } else {
         const scrollElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
-        fromEvent(scrollElement, "scroll").pipe(
-          takeUntil(this.destroyed$),
-          throttleTime(500),
+        const forceCheck$ = this.actions$.pipe(
+          ofType(AppActionTypes.FORCE_CHECK_TOGGLE_PROPERTY_AUTO_LOAD)
+        );
+
+        merge(
+          fromEvent(scrollElement, "scroll").pipe(throttleTime(500)),
+          forceCheck$
+        ).pipe(
           tap(() => {
             if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, {
               verticalTolerance: 500

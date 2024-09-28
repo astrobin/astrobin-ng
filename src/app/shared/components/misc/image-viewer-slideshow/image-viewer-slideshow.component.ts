@@ -11,6 +11,7 @@ import { distinctUntilChanged, filter, map, switchMap, takeUntil } from "rxjs/op
 import { Observable, Subscription } from "rxjs";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { NavigationEnd, Router } from "@angular/router";
+import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
@@ -169,6 +170,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       if (emitChange) {
         this.imageChange.emit(image);
       }
+
+      this.utilsService.delay(10).subscribe(() => {
+        this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
+      });
     });
   }
 

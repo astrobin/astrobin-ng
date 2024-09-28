@@ -20,6 +20,10 @@ export class ForceCheckImageAutoLoad implements PayloadActionInterface {
   }
 }
 
+export class ForceCheckTogglePropertyAutoLoad implements Action {
+  readonly type = AppActionTypes.FORCE_CHECK_TOGGLE_PROPERTY_AUTO_LOAD;
+}
+
 export class LoadImage implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_IMAGE;
 

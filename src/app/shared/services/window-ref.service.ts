@@ -159,7 +159,6 @@ export class WindowRefService extends BaseService {
   }
 
   pushState(data: any, url: string) {
-    console.log("pushState", data, url);
     this._pushOrReplaceState("pushState", data, url);
   }
 
