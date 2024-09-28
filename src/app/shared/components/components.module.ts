@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { formlyConfig } from "@app/formly.config";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NgbAccordionModule, NgbCollapseModule, NgbDropdownModule, NgbModalConfig, NgbModalModule, NgbNavModule, NgbOffcanvasModule, NgbPopoverModule, NgbProgressbarModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbAccordionModule, NgbCarouselModule, NgbCollapseModule, NgbDropdownModule, NgbModalConfig, NgbModalModule, NgbNavModule, NgbOffcanvasModule, NgbPopoverModule, NgbProgressbarModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";
@@ -139,6 +139,8 @@ import { ImageViewerSocialButtonsComponent } from "@shared/components/misc/image
 import { ImageViewerFloatingTitleComponent } from "@shared/components/misc/image-viewer/image-viewer-floating-title.component";
 import { ImageViewerShareButtonComponent } from "@shared/components/misc/image-viewer/image-viewer-share-button.component";
 import { ImageViewerIotdBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-banner.component";
+import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
+import { ImageViewerSlideshowContextComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow-context.component";
 
 
 const modules = [
@@ -153,6 +155,7 @@ const modules = [
   ImageCropperModule,
   LightboxModule,
   NgbAccordionModule,
+  NgbCarouselModule,
   NgbCollapseModule,
   NgbDropdownModule,
   NgbNavModule,
@@ -217,6 +220,8 @@ const components = [
   ImageComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,
+  ImageViewerSlideshowComponent,
+  ImageViewerSlideshowContextComponent,
   ImageViewerComponent,
   ImageViewerMenuComponent,
   ImageViewerCustomMessageBannerComponent,

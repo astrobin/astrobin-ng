@@ -1040,7 +1040,7 @@ export class UtilsService {
     return windowRefService.nativeWindow;
   }
 
-  isNearBelowViewport(
+  isNearOrInViewport(
     element: HTMLElement,
     options: ViewportCheckOptions = {}
   ): boolean {
@@ -1054,11 +1054,20 @@ export class UtilsService {
       shouldCheckVertical = true,
       shouldCheckHorizontal = true,
       verticalTolerance = 2000,
-      horizontalTolerance = 6000,
+      horizontalTolerance = 10,
     } = options;
 
     // Get the bounding rectangle of the element
     const rect = element.getBoundingClientRect();
+
+    // If the element has no dimensions or position (all rect values are zero), return false
+    if (
+      rect.width === 0 ||
+      rect.height === 0 ||
+      (rect.top === 0 && rect.bottom === 0 && rect.left === 0 && rect.right === 0)
+    ) {
+      return false;
+    }
 
     // Initialize check results to true
     let isWithinVerticalTolerance = true;

@@ -1,14 +1,14 @@
 <button
-  (click)="onClick($event, toggleProperty)"
-  [class.loading]="loading || !initialized"
+  (click)="onClick($event)"
+  [class.loading]="loading || !initialized || toggled === undefined"
   [class.toggled]="toggled"
   [class]="btnClass"
-  [disabled]="disabled || loading || !initialized"
+  [disabled]="disabled"
   [ngbTooltip]="
-        !isTouchDevice && !showLabel ? (toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel) : ''
+        !isTouchDevice && !showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : ''
       "
   [attr.aria-label]="
-        !showLabel ? (toggleProperty === null ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null
+        !showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null
       "
   container="body"
 >

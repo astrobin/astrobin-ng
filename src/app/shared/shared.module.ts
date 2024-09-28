@@ -8,7 +8,7 @@ import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { MainState } from "@app/store/state";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NgbAccordionModule, NgbDropdownModule, NgbModule, NgbNavModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbAccordionModule, NgbCarouselModule, NgbDropdownModule, NgbModule, NgbNavModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -119,6 +119,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     ImageCropperModule,
     NgbModule,
     NgbAccordionModule,
+    NgbCarouselModule,
     NgbDropdownModule,
     NgbNavModule,
     NgbPaginationModule,
@@ -185,6 +186,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     ImageCropperModule,
     NgbModule,
     NgbAccordionModule,
+    NgbCarouselModule,
     NgbDropdownModule,
     NgbNavModule,
     NgbPaginationModule,

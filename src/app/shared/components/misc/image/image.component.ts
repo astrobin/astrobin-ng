@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { LoadImage, LoadImages } from "@app/store/actions/image.actions";
+import { ForceCheckImageAutoLoad, LoadImage, LoadImages } from "@app/store/actions/image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
@@ -8,11 +8,11 @@ import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { filter, first, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { fromEvent, interval, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
@@ -70,6 +70,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   protected videoJsReady = false;
   protected revision: ImageInterface | ImageRevisionInterface;
 
+  private _forceLoad = false;
   private _videoJsPlayer: any;
   private _autoLoadSubscription: Subscription;
   private _pollingVideEncoderProgress = false;
@@ -178,9 +179,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   load(delay = null) {
     const noNeedToLoad = () =>
-      !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement) || this.loading;
+      !this.utilsService.isNearOrInViewport(this.elementRef.nativeElement) || this.loading;
 
-    if (noNeedToLoad()) {
+    if (!this._forceLoad && noNeedToLoad()) {
       return;
     }
 
@@ -324,7 +325,12 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     if (isPlatformBrowser(this.platformId)) {
       const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll");
       const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize");
-      const forceCheck$ = this.actions$.pipe(ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD));
+      const forceCheck$ = this.actions$.pipe(
+        ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD),
+        map((action: ForceCheckImageAutoLoad) => action.payload),
+        filter(payload => payload.imageId === this.id),
+        tap(() => (this._forceLoad = true))
+      );
 
       this._autoLoadSubscription = merge(scroll$, resize$, forceCheck$)
         .pipe(takeUntil(this.destroyed$), throttleTime(100))

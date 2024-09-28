@@ -1,0 +1,119 @@
+@import "../../../../styles/breakpoints";
+
+$contextAreaHeight: 2.5rem;
+$background: rgba(0, 0, 0, 0.95);
+
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: calc(100% - $contextAreaHeight);
+  padding: 3rem;
+  z-index: 1030;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $background;
+
+  .carousel-container {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    box-shadow: 0 0 .5rem var(--black);
+  }
+
+  .carousel-area {
+    height: 100%;
+    overflow: hidden;
+    border-radius: .5rem;
+
+    ::ng-deep {
+      .carousel,
+      .carousel-inner,
+      .carousel-item {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .carousel-control-prev,
+      .carousel-control-next {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        height: calc(100% - 6rem);
+        width: 3rem;
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+          width: 2rem;
+          height: 2rem;
+          trnasiiton: transform 0.3s ease-in-out;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
+      }
+
+      .carousel-control-prev {
+        left: 0;
+      }
+
+      .carousel-control-next {
+        right: 0;
+      }
+
+      .carousel.is-on-first {
+        .carousel-control-prev {
+          display: none;
+        }
+      }
+
+      .carousel.is-on-last {
+        .carousel-control-next {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .context-area {
+    height: $contextAreaHeight;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transition: height 0.3s ease-in-out;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        height: $contextAreaHeight * 2;
+      }
+    }
+  }
+
+  .close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--lighterGrey);
+    font-size: 1.5rem;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    transition: transform 0.3s ease-in-out;
+
+    &:focus-visible {
+      outline: none !important;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        transform: scale(1.1);
+        color: var(--white);
+      }
+    }
+  }
+}

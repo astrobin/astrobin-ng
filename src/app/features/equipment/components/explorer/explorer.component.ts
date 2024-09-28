@@ -185,7 +185,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
+      // this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
     });
   }
 

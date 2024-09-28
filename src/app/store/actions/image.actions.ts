@@ -13,8 +13,11 @@ export interface LoadImageOptionsInterface {
   skipThumbnails: boolean;
 }
 
-export class ForceCheckImageAutoLoad implements Action {
+export class ForceCheckImageAutoLoad implements PayloadActionInterface {
   readonly type = AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD;
+
+  constructor(public payload: { imageId: ImageInterface["pk"] }) {
+  }
 }
 
 export class LoadImage implements PayloadActionInterface {

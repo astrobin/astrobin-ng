@@ -219,54 +219,23 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   private _openImageByImageViewer(image: ImageSearchInterface): void {
-    let activeImageViewer = this.imageViewerService.activeImageViewer;
+    const slideshow = this.imageViewerService.openSlideshow(
+      image.hash || image.objectId,
+      this.results.map(result => ({
+        imageId: result.hash || result.objectId,
+        thumbnailUrl: result.galleryThumbnail
+      })),
+      this.viewContainerRef
+    );
 
-    if (!activeImageViewer) {
-      activeImageViewer = this.imageViewerService.openImageViewer(
-        image.hash || image.objectId,
-        FINAL_REVISION_LABEL,
-        false,
-        this.componentId,
-        this.results.map(result => ({
-          imageId: result.hash || result.objectId,
-          thumbnailUrl: result.galleryThumbnail
-        })),
-        this.viewContainerRef
-      );
-    } else {
-      this.loadingService.setLoading(true);
-      this.imageService.loadImage(image.hash || image.objectId).subscribe({
-        next: image => {
-          activeImageViewer.instance.searchComponentId = this.componentId;
-          activeImageViewer.instance.setImage(
-            image,
-            FINAL_REVISION_LABEL,
-            false,
-            this.results.map(result => ({
-              imageId: result.hash || result.objectId,
-              thumbnailUrl: result.galleryThumbnail
-            })),
-            true
-          );
-          this.loadingService.setLoading(false);
-        },
-        error: () => {
-          this.router.navigateByUrl("/404", { skipLocationChange: true });
-        }
-      });
-    }
-
-    activeImageViewer.instance.nearEndOfContext.pipe(
-      filter((searchComponentId: string) => searchComponentId === this.componentId),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
+    slideshow.instance.nearEndOfContext.subscribe(() => {
       this.loadMore().subscribe(() => {
-        activeImageViewer.instance.setNavigationContext([
-          ...this.results.map(result => ({
+        slideshow.instance.setNavigationContext(
+          this.results.map(result => ({
             imageId: result.hash || result.objectId,
             thumbnailUrl: result.galleryThumbnail
           }))
-        ]);
+        );
       });
     });
   }

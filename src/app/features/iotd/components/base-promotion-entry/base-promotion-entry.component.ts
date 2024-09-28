@@ -154,7 +154,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       filter((action: HideImageSuccess) => action.payload.hiddenImage.id === pk),
       take(1)
     ).subscribe(() => {
-      this.store$.dispatch(new ForceCheckImageAutoLoad());
+      this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: pk }));
     });
     this.store$.dispatch(new HideImage({ id: pk }));
   }
@@ -166,7 +166,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
         filter((action: DismissImageSuccess) => action.payload.dismissedImage.id === pk),
         take(1)
       ).subscribe(() => {
-        this.store$.dispatch(new ForceCheckImageAutoLoad());
+        this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: pk }));
       });
       this.store$.dispatch(new DismissImage({ id: pk }));
     };
@@ -225,7 +225,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       this.autoLoadSubscription = merge(scroll$, resize$)
         .pipe(takeUntil(this.destroyed$), debounceTime(200), distinctUntilChanged())
         .subscribe(() => {
-          if (this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+          if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement)) {
             for (const telescope of this.entry.imagingTelescopes2) {
               this.store$.dispatch(
                 new LoadEquipmentItem({
