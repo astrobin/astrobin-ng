@@ -61,5 +61,8 @@ export const imageRoutes: Routes = [
     resolve: {
       image: ImageResolver,
     },
+    data: {
+      fluid: true
+    }
   }
 ];

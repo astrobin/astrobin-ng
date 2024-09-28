@@ -685,44 +685,27 @@ $globalLoadingIndicatorHeight: 6px;
     }
   }
 
-  &.fullscreen-mode {
-    top: 0.325rem;
-    height: calc(100% - .325rem);
+  &.standalone {
+    position: fixed;
+    top: 63px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100% - 63px);
+    width: 100%;
+    overflow: hidden;
     z-index: 1030;
-    display: block;
-    position: relative;
-
-    @media (max-width: $sm-max) {
-      &::ng-deep {
-        astrobin-mobile-menu {
-          top: unset;
-          left: unset;
-          right: unset;
-          position: unset;
-          z-index: 1031;
-        }
-      }
-    }
-
-    //@media (max-width: $sm-max) {
-    //  // Leave room for the mobile menu
-    //  top: calc(3rem + 6px);
-    //  height: calc(100% - 3rem - 6px);
-    //
-    //  &::ng-deep {
-    //    astrobin-mobile-menu {
-    //      top: .325rem;
-    //      z-index: 1031;
-    //    }
-    //  }
-    //}
   }
 
-  &:not(.fullscreen-mode) {
-    @media (max-width: $sm-max) {
-      // Leave room for the mobile menu
-      top: calc(.3rem + 3.5rem + 3rem);
-      height: calc(100vh - 108px);
+  @media (max-width: $sm-max) {
+    &::ng-deep {
+      astrobin-mobile-menu {
+        top: unset;
+        left: unset;
+        right: unset;
+        position: unset;
+        z-index: 1031;
+      }
     }
   }
 }

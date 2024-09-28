@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
+import { Component, Inject, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";

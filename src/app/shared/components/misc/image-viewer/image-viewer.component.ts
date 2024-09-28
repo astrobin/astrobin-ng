@@ -53,6 +53,9 @@ export class ImageViewerComponent
   @Input()
   showNextButton = false;
 
+  @Input()
+  standalone = true;
+
   @Output()
   initialized = new EventEmitter<void>();
 
@@ -152,9 +155,9 @@ export class ImageViewerComponent
     super(store$);
   }
 
-  @HostBinding("class.fullscreen-mode")
-  get isFullscreenMode() {
-    return this.showCloseButton || this.viewingFullscreenImage;
+  @HostBinding("class.standalone")
+  get isStandalone() {
+    return this.standalone;
   }
 
   ngOnInit(): void {
@@ -484,7 +487,7 @@ export class ImageViewerComponent
         observeOn(animationFrameScheduler)
       )
       .subscribe(() => {
-        this._handleFloatingTitleOnScroll(scrollArea, hasMobileMenu, sideToSideLayout);
+        this._handleFloatingTitleOnScroll(scrollArea, this.standalone, hasMobileMenu, sideToSideLayout);
         this._handleNavigationButtonsVisibility(scrollArea);
       });
   }
@@ -555,7 +558,12 @@ export class ImageViewerComponent
     );
   }
 
-  private _handleFloatingTitleOnScroll(scrollArea: HTMLElement, hasMobileMenu: boolean, sideToSideLayout: boolean) {
+  private _handleFloatingTitleOnScroll(
+    scrollArea: HTMLElement,
+    hasSiteHeader: boolean,
+    hasMobileMenu: boolean,
+    sideToSideLayout: boolean
+  ) {
     const socialButtons = scrollArea.querySelector(
       "astrobin-image-viewer-photographers astrobin-image-viewer-social-buttons"
     ) as HTMLElement | null;
@@ -567,6 +575,8 @@ export class ImageViewerComponent
 
     const adManager = scrollArea.querySelector("astrobin-ad-manager") as HTMLElement | null;
     const adManagerHeight = adManager ? adManager.offsetHeight : 0;
+    const siteHeader = document.querySelector("astrobin-header > nav") as HTMLElement | null;
+    const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
     const mobileMenu = document.querySelector("astrobin-mobile-menu") as HTMLElement | null;
     const mobileMenuHeight = mobileMenu && hasMobileMenu ? mobileMenu.offsetHeight : 0;
     const globalLoadingIndicator = document.querySelector(".global-loading-indicator") as HTMLElement | null;
@@ -585,12 +595,12 @@ export class ImageViewerComponent
         translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
       } else {
         // The position is relative to the main area.
-        translateYValue = `${globalLoadingIndicatorHeight + mobileMenuHeight - 1}px`;
+        translateYValue = `${globalLoadingIndicatorHeight + siteHeaderHeight +  mobileMenuHeight - 1}px`;
       }
 
       this.renderer.setStyle(floatingTitle, "transform", `translateY(${translateYValue})`);
     } else {
-      this.renderer.setStyle(floatingTitle, "transform", "translateY(-100%)");
+      this.renderer.setStyle(floatingTitle, "transform", "translateY(-120%)");
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -9,7 +9,7 @@ import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { filter, take, takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { DeleteImageFailure, DeleteImageSuccess } from "@app/store/actions/image.actions";
+import { DeleteImageFailure, DeleteImageSuccess, ForceCheckImageAutoLoad } from "@app/store/actions/image.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
@@ -20,7 +20,7 @@ import { TranslateService } from "@ngx-translate/core";
   templateUrl: "./image-page.component.html",
   styleUrls: ["./image-page.component.scss"]
 })
-export class ImagePageComponent extends BaseComponentDirective implements OnInit {
+export class ImagePageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @ViewChild("imageViewer", { static: true })
   imageViewer: ImageViewerComponent;
 
@@ -56,6 +56,10 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
     });
 
     this._setupOnDelete();
+  }
+
+  ngAfterViewInit(): void {
+    this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: this.image.pk }));
   }
 
   private _setupOnDelete(): void {

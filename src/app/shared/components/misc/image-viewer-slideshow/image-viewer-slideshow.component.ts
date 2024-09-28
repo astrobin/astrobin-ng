@@ -49,6 +49,7 @@ const SLIDESHOW_WINDOW = 3;
               [showCloseButton]="true"
               [showPreviousButton]="activeId !== navigationContext[0].imageId"
               [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
+              [standalone]="false"
               (closeClick)="closeSlideshow.emit()"
               (nextClick)="carousel.next()"
               (previousClick)="carousel.prev()"
