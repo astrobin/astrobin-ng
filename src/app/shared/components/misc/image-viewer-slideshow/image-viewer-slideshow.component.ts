@@ -17,7 +17,6 @@ const SLIDESHOW_WINDOW = 3;
 /*
     TODO:
     - Auto-open.
-    - Esc key management when there are other things open like fullscreen, modals, offcanvas, etc.
     - Hammerjs panning.
  */
 @Component({
@@ -34,6 +33,7 @@ const SLIDESHOW_WINDOW = 3;
           [interval]="0"
           [showNavigationArrows]="false"
           [showNavigationIndicators]="false"
+          [keyboard]="false"
           [wrap]="false"
           [class.is-on-first]="activeId === navigationContext[0].imageId"
           [class.is-on-last]="activeId === navigationContext[navigationContext.length - 1].imageId"
@@ -45,6 +45,7 @@ const SLIDESHOW_WINDOW = 3;
           >
             <astrobin-image-viewer
               *ngIf="item.image; else loadingTemplate"
+              [active]="item.imageId === activeId"
               [image]="item.image"
               [showCloseButton]="true"
               [showPreviousButton]="activeId !== navigationContext[0].imageId"
@@ -102,11 +103,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     super(store$);
   }
 
-  @HostListener("document:keydown.escape", ["$event"])
-  handleEscapeKey(event: KeyboardEvent) {
-    this.closeSlideshow.emit();
-  }
-
   ngOnDestroy() {
     this._delayedLoadSubscription.unsubscribe();
   }
@@ -136,6 +132,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this._loadImagesAround();
       this._dropImagesTooFarFromIndex();
       this.carousel.select(imageId.toString());
+      this.carousel.focus();
 
       this.utilsService.delay(100).subscribe(() => {
         this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: image.pk }))

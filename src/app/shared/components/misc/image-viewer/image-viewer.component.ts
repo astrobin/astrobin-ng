@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -28,6 +28,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 
 @Component({
@@ -56,6 +57,9 @@ export class ImageViewerComponent
   @Input()
   standalone = true;
 
+  @Input()
+  active = true;
+
   @Output()
   initialized = new EventEmitter<void>();
 
@@ -67,6 +71,9 @@ export class ImageViewerComponent
 
   @Output()
   nextClick = new EventEmitter<void>();
+
+  @Output()
+  fullscreenMode = new EventEmitter<boolean>();
 
   @ViewChild("mainArea")
   mainArea: ElementRef;
@@ -150,7 +157,9 @@ export class ImageViewerComponent
     public readonly activatedRoute: ActivatedRoute,
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe,
-    public readonly imageViewerService: ImageViewerService
+    public readonly imageViewerService: ImageViewerService,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -202,6 +211,69 @@ export class ImageViewerComponent
     }
 
     super.ngOnDestroy();
+  }
+
+  @HostListener("document:keydown.escape", ["$event"])
+  handleEscapeKey(event: KeyboardEvent) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    if (!this.active) {
+      return;
+    }
+
+    if (this.viewingFullscreenImage) {
+      this.exitFullscreen();
+      return;
+    }
+
+    if (this.adjustmentEditorVisible) {
+      this.adjustmentEditorVisible = false;
+      return;
+    }
+
+    if (this.offcanvasService.hasOpenOffcanvas()) {
+      this.offcanvasService.dismiss();
+      return;
+    }
+
+    if (this.modalService.hasOpenModals()) {
+      this.modalService.dismissAll();
+      return;
+    }
+
+    if (this._ignoreNavigationEvent()) {
+      return;
+    }
+
+    this.closeClick.emit();
+  }
+
+  @HostListener("document:keydown.arrowRight", ["$event"])
+  onNextClicked(): void {
+    if (this._ignoreNavigationEvent()) {
+      return;
+    }
+
+    this.nextClick.emit();
+  }
+
+  @HostListener("document:keydown.arrowLeft", ["$event"])
+  onPreviousClicked(): void {
+    if (this._ignoreNavigationEvent()) {
+      return;
+    }
+
+    this.previousClick.emit();
+  }
+
+  private _ignoreNavigationEvent() {
+    return this.offcanvasService.hasOpenOffcanvas() ||
+      this.modalService.hasOpenModals() ||
+      this.viewingFullscreenImage ||
+      this.isLightBoxOpen;
   }
 
   private _scrollToTop() {
@@ -285,14 +357,14 @@ export class ImageViewerComponent
     if (this.supportsFullscreen) {
       this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
       this.viewingFullscreenImage = true;
+      this.fullscreenMode.emit(true);
     }
   }
 
   protected exitFullscreen(): void {
-    if (this.viewingFullscreenImage) {
-      this.store$.dispatch(new HideFullscreenImage());
-      this.viewingFullscreenImage = false;
-    }
+    this.store$.dispatch(new HideFullscreenImage());
+    this.viewingFullscreenImage = false;
+    this.fullscreenMode.emit(false);
   }
 
   protected onDescriptionClicked(event: MouseEvent) {
