@@ -52,8 +52,8 @@ const SLIDESHOW_WINDOW = 3;
               [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
               [standalone]="false"
               (closeClick)="closeSlideshow.emit()"
-              (nextClick)="carousel.next()"
-              (previousClick)="carousel.prev()"
+              (nextClick)="onNextClick()"
+              (previousClick)="onPreviousClick()"
             ></astrobin-image-viewer>
           </ng-template>
         </ngb-carousel>
@@ -150,6 +150,18 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     }
 
     this.setImage(event.current);
+  }
+
+  protected onNextClick() {
+    this.utilsService.delay(1).subscribe(() => {
+      this.carousel.next();
+    });
+  }
+
+  protected onPreviousClick() {
+    this.utilsService.delay(1).subscribe(() => {
+      this.carousel.prev();
+    });
   }
 
   protected contextTrackByFn(index: number, item: ImageViewerNavigationContextItem) {

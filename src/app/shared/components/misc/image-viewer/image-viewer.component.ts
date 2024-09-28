@@ -220,10 +220,6 @@ export class ImageViewerComponent
       event.preventDefault();
     }
 
-    if (!this.active) {
-      return;
-    }
-
     if (this.viewingFullscreenImage) {
       this.exitFullscreen();
       return;
@@ -251,8 +247,13 @@ export class ImageViewerComponent
     this.closeClick.emit();
   }
 
-  @HostListener("document:keydown.arrowRight", ["$event"])
-  onNextClicked(): void {
+  @HostListener("document:keyup.arrowRight", ["$event"])
+  onArrowRight(event: KeyboardEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     if (this._ignoreNavigationEvent()) {
       return;
     }
@@ -260,8 +261,13 @@ export class ImageViewerComponent
     this.nextClick.emit();
   }
 
-  @HostListener("document:keydown.arrowLeft", ["$event"])
-  onPreviousClicked(): void {
+  @HostListener("document:keyup.arrowLeft", ["$event"])
+  onArrowLeft(event: KeyboardEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     if (this._ignoreNavigationEvent()) {
       return;
     }
@@ -270,10 +276,13 @@ export class ImageViewerComponent
   }
 
   private _ignoreNavigationEvent() {
-    return this.offcanvasService.hasOpenOffcanvas() ||
+    return (
+      !this.active ||
+      this.offcanvasService.hasOpenOffcanvas() ||
       this.modalService.hasOpenModals() ||
       this.viewingFullscreenImage ||
-      this.isLightBoxOpen;
+      this.isLightBoxOpen
+    );
   }
 
   private _scrollToTop() {
