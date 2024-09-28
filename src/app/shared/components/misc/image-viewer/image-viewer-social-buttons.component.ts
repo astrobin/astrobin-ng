@@ -167,7 +167,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
     }
 
     const commentsSection: HTMLElement | null = document.getElementById("image-viewer-comments-header");
-    const scrollArea: HTMLElement | null = this._getScrollArea();
+    const scrollArea: HTMLElement | null = this.imageViewerService.getScrollArea().scrollArea;
 
     if (commentsSection && scrollArea) {
       // Calculate the position of commentsSection relative to scrollArea
@@ -180,26 +180,5 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
         behavior: "smooth"
       });
     }
-  }
-
-  private _getScrollArea(): HTMLElement {
-    let scrollArea: HTMLElement;
-
-    const windowWidth = this.windowRefService.nativeWindow.innerWidth;
-    const windowHeight = this.windowRefService.nativeWindow.innerHeight;
-    const viewPortAspectRatio = windowWidth / windowHeight;
-    const sideToSideLayout = this.deviceService.lgMin() || viewPortAspectRatio > 1;
-
-    if (sideToSideLayout) {
-      scrollArea = this.windowRefService.nativeWindow.document.querySelector(
-        "astrobin-image-viewer > .main-area-container > .main-area > .data-area-container > .data-area"
-      );
-    } else {
-      scrollArea = this.windowRefService.nativeWindow.document.querySelector(
-        "astrobin-image-viewer > .main-area-container > .main-area"
-      );
-    }
-
-    return scrollArea;
   }
 }

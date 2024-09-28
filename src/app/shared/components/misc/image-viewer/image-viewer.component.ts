@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -27,6 +27,7 @@ import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
+import { ImageViewerService } from "@shared/services/image-viewer.service";
 
 
 @Component({
@@ -43,8 +44,26 @@ export class ImageViewerComponent
   @Input()
   revisionLabel = FINAL_REVISION_LABEL;
 
+  @Input()
+  showCloseButton = false;
+
+  @Input()
+  showPreviousButton = false;
+
+  @Input()
+  showNextButton = false;
+
   @Output()
   initialized = new EventEmitter<void>();
+
+  @Output()
+  closeClick = new EventEmitter<void>();
+
+  @Output()
+  previousClick = new EventEmitter<void>();
+
+  @Output()
+  nextClick = new EventEmitter<void>();
 
   @ViewChild("mainArea")
   mainArea: ElementRef;
@@ -127,9 +146,15 @@ export class ImageViewerComponent
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly activatedRoute: ActivatedRoute,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe
+    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe,
+    public readonly imageViewerService: ImageViewerService
   ) {
     super(store$);
+  }
+
+  @HostBinding("class.fullscreen-mode")
+  get isFullscreenMode() {
+    return this.showCloseButton || this.viewingFullscreenImage;
   }
 
   ngOnInit(): void {
@@ -447,26 +472,20 @@ export class ImageViewerComponent
       return;
     }
 
-    let scrollArea: HTMLElement;
-    const windowWidth = this.windowRefService.nativeWindow.innerWidth;
-    const windowHeight = this.windowRefService.nativeWindow.innerHeight;
-    const viewPortAspectRatio = windowWidth / windowHeight;
-    const sideToSideLayout = this.deviceService.lgMin() || viewPortAspectRatio > 1;
+    const {
+      scrollArea,
+      sideToSideLayout
+    } = this.imageViewerService.getScrollArea();
     const hasMobileMenu = this.deviceService.mdMax();
-
-    if (sideToSideLayout) {
-      scrollArea = this.dataArea.nativeElement;
-    } else {
-      scrollArea = this.mainArea.nativeElement;
-    }
 
     this._dataAreaScrollEventSubscription = fromEvent<Event>(scrollArea, "scroll")
       .pipe(
-        throttleTime(30, animationFrameScheduler, { leading: true, trailing: true }),
+        throttleTime(100, animationFrameScheduler, { leading: true, trailing: true }),
         observeOn(animationFrameScheduler)
       )
       .subscribe(() => {
         this._handleFloatingTitleOnScroll(scrollArea, hasMobileMenu, sideToSideLayout);
+        this._handleNavigationButtonsVisibility(scrollArea);
       });
   }
 
@@ -572,6 +591,36 @@ export class ImageViewerComponent
       this.renderer.setStyle(floatingTitle, "transform", `translateY(${translateYValue})`);
     } else {
       this.renderer.setStyle(floatingTitle, "transform", "translateY(-100%)");
+    }
+  }
+
+  private _handleNavigationButtonsVisibility(scrollArea: HTMLElement) {
+    const image = scrollArea.querySelector("astrobin-image") as HTMLElement | null;
+    const nextButton = scrollArea.querySelector(".next-button") as HTMLElement | null;
+    const prevButton = scrollArea.querySelector(".previous-button") as HTMLElement | null;
+
+    if (!image || (!nextButton && !prevButton)) {
+      return;
+    }
+
+    const imageVisible = this.utilsService.isElementVisibleInContainer(image, scrollArea);
+
+    if (imageVisible) {
+      if (nextButton) {
+        this.renderer.setStyle(nextButton, "opacity", "1");
+      }
+
+      if (prevButton) {
+        this.renderer.setStyle(prevButton, "opacity", "1");
+      }
+    } else {
+      if (nextButton) {
+        this.renderer.setStyle(nextButton, "opacity", "0", RendererStyleFlags2.Important);
+      }
+
+      if (prevButton) {
+        this.renderer.setStyle(prevButton, "opacity", "0", RendererStyleFlags2.Important);
+      }
     }
   }
 

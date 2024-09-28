@@ -81,6 +81,7 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
       });
 
     this._wheelEventSubscription = fromEvent<WheelEvent>(el, "wheel")
+      .pipe(throttleTime(200))
       .subscribe((event: WheelEvent) => {
         event.preventDefault();
         const scrollAmount = event.deltaY;

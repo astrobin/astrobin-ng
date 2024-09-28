@@ -106,6 +106,39 @@ export class ImageViewerService extends BaseService {
     }
   }
 
+  getScrollArea(): {
+    scrollArea: HTMLElement;
+    windowWidth: number;
+    windowHeight: number;
+    viewPortAspectRatio: number;
+    sideToSideLayout: boolean;
+  } | null {
+    let scrollArea: HTMLElement;
+
+    const windowWidth = this.windowRefService.nativeWindow.innerWidth;
+    const windowHeight = this.windowRefService.nativeWindow.innerHeight;
+    const viewPortAspectRatio = windowWidth / windowHeight;
+    const sideToSideLayout = this.deviceService.lgMin() || viewPortAspectRatio > 1;
+
+    if (sideToSideLayout) {
+      scrollArea = this.windowRefService.nativeWindow.document.querySelector(
+        "astrobin-image-viewer > .main-area-container > .main-area > .data-area-container > .data-area"
+      );
+    } else {
+      scrollArea = this.windowRefService.nativeWindow.document.querySelector(
+        "astrobin-image-viewer > .main-area-container > .main-area"
+      );
+    }
+
+    return {
+      scrollArea,
+      windowWidth,
+      windowHeight,
+      viewPortAspectRatio,
+      sideToSideLayout
+    };
+  }
+
   pushState(imageId: ImageInterface["hash"] | ImageInterface["pk"], revision: string): void {
     const url = this.router.createUrlTree([], {
       queryParams: {

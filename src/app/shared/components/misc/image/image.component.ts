@@ -323,8 +323,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   private _setupAutoLoad() {
     if (isPlatformBrowser(this.platformId)) {
-      const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll");
-      const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize");
+      const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(throttleTime(100));
+      const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize").pipe(throttleTime(100));
       const forceCheck$ = this.actions$.pipe(
         ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD),
         map((action: ForceCheckImageAutoLoad) => action.payload),
@@ -333,7 +333,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       );
 
       this._autoLoadSubscription = merge(scroll$, resize$, forceCheck$)
-        .pipe(takeUntil(this.destroyed$), throttleTime(100))
+        .pipe(takeUntil(this.destroyed$))
         .subscribe(() => this.load());
     }
   }

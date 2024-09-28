@@ -1,6 +1,7 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
-$contextAreaHeight: 2.5rem;
+$contextAreaHeight: 1.5rem;
 $background: rgba(0, 0, 0, 0.95);
 
 :host {
@@ -8,26 +9,29 @@ $background: rgba(0, 0, 0, 0.95);
   top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   width: 100%;
-  height: calc(100% - $contextAreaHeight);
-  padding: 3rem;
+  height: 100%;
   z-index: 1030;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   background: $background;
+
+  @media (hover: none) and (pointer: coarse) {
+    height: 100%;
+  }
 
   .carousel-container {
     overflow: hidden;
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 0 .5rem var(--black);
   }
 
   .carousel-area {
-    height: 100%;
+    flex-grow: 1;
     overflow: hidden;
-    border-radius: .5rem;
 
     ::ng-deep {
       .carousel,
@@ -39,17 +43,22 @@ $background: rgba(0, 0, 0, 0.95);
 
       .carousel-control-prev,
       .carousel-control-next {
+        @include darkest-background-texture;
         position: fixed;
         top: 50%;
         transform: translateY(-50%);
-        height: calc(100% - 6rem);
-        width: 3rem;
+        height: 2rem;
+        width: 2rem;
+        border-radius: 50%;
+        border: 1px solid var(--grey);
+        filter: drop-shadow(.15rem .15rem .25rem var(--black));
+        opacity: 1;
 
         .carousel-control-prev-icon,
         .carousel-control-next-icon {
-          width: 2rem;
-          height: 2rem;
-          trnasiiton: transform 0.3s ease-in-out;
+          width: 1.25rem;
+          height: 1.25rem;
+          transition: transform 0.3s ease-in-out;
 
           &:hover {
             transform: scale(1.1);
@@ -58,11 +67,11 @@ $background: rgba(0, 0, 0, 0.95);
       }
 
       .carousel-control-prev {
-        left: 0;
+        left: .5rem;
       }
 
       .carousel-control-next {
-        right: 0;
+        right: calc(40vw + .5rem);
       }
 
       .carousel.is-on-first {
@@ -81,38 +90,19 @@ $background: rgba(0, 0, 0, 0.95);
 
   .context-area {
     height: $contextAreaHeight;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    width: 100vw;
     transition: height 0.3s ease-in-out;
 
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        height: $contextAreaHeight * 2;
+    @media (hover: none) and (pointer: coarse) {
+      .carousel-area {
+        height: 0;
       }
     }
-  }
-
-  .close-button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    color: var(--lighterGrey);
-    font-size: 1.5rem;
-    cursor: pointer;
-    background: transparent;
-    border: 0;
-    transition: transform 0.3s ease-in-out;
-
-    &:focus-visible {
-      outline: none !important;
-    }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        transform: scale(1.1);
-        color: var(--white);
+        z-index: 1031;
+        height: 6rem;
       }
     }
   }

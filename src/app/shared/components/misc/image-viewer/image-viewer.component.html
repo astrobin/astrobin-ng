@@ -6,14 +6,14 @@
   *ngIf="!!image" [hidden]="!imageObjectLoaded"
   class="main-area-container overflow-hidden d-flex flex-column w-100 h-100"
 >
-<!--  <astrobin-mobile-menu-->
-<!--    (menuClose)="onMobileMenuClose()"-->
-<!--    (menuOpen)="onMobileMenuOpen()"-->
-<!--    [titleTemplate]="mobileMenuTitleTemplate"-->
-<!--    [iconsTemplate]="mobileMenuIconsTemplate"-->
-<!--    [template]="navTemplate"-->
-<!--    [templateContext]="{ $implicit: image }"-->
-<!--  ></astrobin-mobile-menu>-->
+  <astrobin-mobile-menu
+    (menuClose)="onMobileMenuClose()"
+    (menuOpen)="onMobileMenuOpen()"
+    [titleTemplate]="mobileMenuTitleTemplate"
+    [iconsTemplate]="mobileMenuIconsTemplate"
+    [template]="navTemplate"
+    [templateContext]="{ $implicit: image }"
+  ></astrobin-mobile-menu>
 
   <div
     #mainArea
@@ -48,14 +48,14 @@
 </ng-template>
 
 <ng-template #mobileMenuIconsTemplate>
-<!--  <astrobin-image-viewer-share-button-->
-<!--    [image]="image"-->
-<!--    [revisionLabel]="revisionLabel"-->
-<!--    class="me-2"-->
-<!--  ></astrobin-image-viewer-share-button>-->
-<!--  <button *ngIf="showCloseButton" (click)="close()" class="btn btn-link btn-no-block text-white">-->
-<!--    <fa-icon icon="times"></fa-icon>-->
-<!--  </button>-->
+  <astrobin-image-viewer-share-button
+    [image]="image"
+    [revisionLabel]="revisionLabel"
+    class="me-2"
+  ></astrobin-image-viewer-share-button>
+  <button *ngIf="showCloseButton" (click)="closeClick.emit()" class="btn btn-link btn-no-block text-white">
+    <fa-icon icon="times"></fa-icon>
+  </button>
 </ng-template>
 
 <ng-template #navTemplate let-image>
@@ -94,6 +94,12 @@
       </ng-container>
 
       <ng-container *ngIf="!adjustmentEditorVisible">
+        <astrobin-image-viewer-close-button
+          *ngIf="showCloseButton"
+          (closeClick)="closeClick.emit()"
+          class="close-button d-none d-md-block"
+        ></astrobin-image-viewer-close-button>
+
         <astrobin-image-viewer-additional-buttons
           *ngIf="image && imageFileLoaded"
           [image]="image"
@@ -106,6 +112,14 @@
         >
         </astrobin-image-viewer-additional-buttons>
       </ng-container>
+
+      <button
+        *ngIf="showPreviousButton"
+        (click)="previousClick.emit()"
+        class="previous-button"
+      >
+        <fa-icon icon="chevron-left"></fa-icon>
+      </button>
 
       <astrobin-fullscreen-image-viewer
         *ngIf="supportsFullscreen"
@@ -158,6 +172,14 @@
           Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
         </div>
       </div>
+
+      <button
+        *ngIf="showNextButton"
+        (click)="nextClick.emit()"
+        class="next-button"
+      >
+        <fa-icon icon="chevron-right"></fa-icon>
+      </button>
 
       <astrobin-image-viewer-revisions
         [image]="image"

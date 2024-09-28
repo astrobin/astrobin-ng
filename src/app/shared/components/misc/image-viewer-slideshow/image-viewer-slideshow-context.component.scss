@@ -7,8 +7,8 @@
   justify-content: space-between;
   background: rgba(0, 0, 0, 0.95);
   height: 100%;
-  transition: height 0.3s ease-in-out, filter 0.3s ease-in-out;
-  filter: brightness(0.4);
+  transition: filter 0.3s ease-in-out;
+  filter: brightness(0.25);
 
   .scroll-left,
   .scroll-right {
@@ -63,8 +63,8 @@
       padding: .25rem;
 
       img {
-        height: 4rem;
-        width: 4rem;
+        height: 5rem;
+        width: 5rem;
         object-fit: contain;
         transition: filter 0.1s ease, transform 0.1s ease;
 

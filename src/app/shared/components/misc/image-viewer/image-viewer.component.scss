@@ -309,13 +309,14 @@ $globalLoadingIndicatorHeight: 6px;
 
         @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
           position: fixed;
-          opacity: 1 !important;
-          font-size: 1.5rem !important;
+          opacity: .8 !important;
+          font-size: 1.25rem !important;
           border-radius: 50%;
-          height: 3rem;
-          width: 3rem;
-          background: rgba(0, 0, 0, .5);
+          height: 2rem;
+          width: 2rem;
+          background: rgba(0, 0, 0, .75);
           padding: 0;
+          filter: drop-shadow(0 0 .25rem var(--black));
         }
 
         &:focus-visible {
@@ -685,9 +686,11 @@ $globalLoadingIndicatorHeight: 6px;
   }
 
   &.fullscreen-mode {
-    top: .325rem;
+    top: 0.325rem;
     height: calc(100% - .325rem);
     z-index: 1030;
+    display: block;
+    position: relative;
 
     @media (max-width: $sm-max) {
       &::ng-deep {

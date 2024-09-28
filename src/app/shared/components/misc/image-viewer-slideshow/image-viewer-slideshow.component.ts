@@ -16,11 +16,7 @@ const SLIDESHOW_WINDOW = 3;
 
 /*
     TODO:
-    - Remove padding from carousel :(
     - Auto-open.
-    - Check that the Share button is present.
-    - Mobile menu and mobile layout in general
-    - Style of offcanvas to account for padding.
     - Esc key management when there are other things open like fullscreen, modals, offcanvas, etc.
     - Hammerjs panning.
  */
@@ -36,7 +32,7 @@ const SLIDESHOW_WINDOW = 3;
           [animation]="false"
           [activeId]="this.activeId"
           [interval]="0"
-          [showNavigationArrows]="true"
+          [showNavigationArrows]="false"
           [showNavigationIndicators]="false"
           [wrap]="false"
           [class.is-on-first]="activeId === navigationContext[0].imageId"
@@ -50,6 +46,12 @@ const SLIDESHOW_WINDOW = 3;
             <astrobin-image-viewer
               *ngIf="item.image; else loadingTemplate"
               [image]="item.image"
+              [showCloseButton]="true"
+              [showPreviousButton]="activeId !== navigationContext[0].imageId"
+              [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
+              (closeClick)="closeSlideshow.emit()"
+              (nextClick)="carousel.next()"
+              (previousClick)="carousel.prev()"
             ></astrobin-image-viewer>
           </ng-template>
         </ngb-carousel>
@@ -63,10 +65,6 @@ const SLIDESHOW_WINDOW = 3;
           (nearEndOfContext)="nearEndOfContext.emit($event)"
         ></astrobin-image-viewer-slideshow-context>
       </div>
-    </div>
-
-    <div class="close-button" (click)="close()">
-      <fa-icon icon="times"></fa-icon>
     </div>
 
     <ng-template #loadingTemplate>
@@ -105,15 +103,11 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   @HostListener("document:keydown.escape", ["$event"])
   handleEscapeKey(event: KeyboardEvent) {
-    this.close();
+    this.closeSlideshow.emit();
   }
 
   ngOnDestroy() {
     this._delayedLoadSubscription.unsubscribe();
-  }
-
-  close() {
-    this.closeSlideshow.emit();
   }
 
   activeImage(): ImageInterface {
@@ -133,8 +127,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     } else {
       this.navigationContext = newContext;
     }
-
-    console.log(this.navigationContext);
   }
 
   setImage(imageId: ImageInterface["pk"] | ImageInterface["hash"]) {
