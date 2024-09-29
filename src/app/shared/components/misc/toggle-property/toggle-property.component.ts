@@ -238,6 +238,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
 
     if (!this.userId) {
       this.initialized = true;
+      this.toggled = false;
+      this._toggleProperty = null;
+      this.changeDetectorRef.markForCheck();
       return;
     }
 
