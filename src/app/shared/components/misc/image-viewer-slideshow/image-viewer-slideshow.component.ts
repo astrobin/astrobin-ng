@@ -1,6 +1,6 @@
-import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnDestroy, Output, PLATFORM_ID, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnDestroy, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
 import { ImageInterface } from "@shared/interfaces/image.interface";
-import { ImageViewerNavigationContext, ImageViewerNavigationContextItem, ImageViewerService } from "@shared/services/image-viewer.service";
+import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -43,7 +43,7 @@ const SLIDESHOW_WINDOW = 3;
             *ngFor="let item of navigationContext; let i = index; trackBy: contextTrackByFn"
             id="{{ item.imageId }}"
           >
-            <div class="pan-container" [ngStyle]="getSlideStyle(i)">
+            <div class="pan-container">
               <astrobin-image-viewer
                 *ngIf="item.image; else loadingTemplate"
                 [active]="item.imageId === activeId"
@@ -106,6 +106,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   private _delayedLoadSubscription: Subscription = new Subscription();
   private _skipSlideEvent = false;
   private _hammer: HammerManager;
+  private _panningAllowed = false;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -115,7 +116,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly elementRef: ElementRef,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly renderer: Renderer2
   ) {
     super(store$);
 
@@ -147,17 +149,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   ngOnDestroy() {
     this._delayedLoadSubscription.unsubscribe();
-  }
-
-  getSlideStyle(index: number): any {
-    const offset = index - this._getImageIndexInContext(this.activeId);
-
-    // Calculate the translateX value based on the index offset
-    const translateX = offset * 100; // Previous slides will have negative values, next slides positive
-
-    return {
-      transform: `translateX(${translateX}%)`
-    };
   }
 
   activeImage(): ImageInterface {
@@ -320,129 +311,188 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   private _setupPan() {
     const panItem = this._getPanItem();
-    const previousSlide = this._getPreviousSlide();
-    const nextSlide = this._getNextSlide();
     const currentIndex = this._getImageIndexInContext(this.activeId);
 
     this._hammer = new Hammer(panItem);
     this._hammer.get("pan").set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
-    let currentX = 0; // Track the current translation
-    const friction = 0.5; // Resistance factor to reduce sensitivity of the swipe
+    let lastPanTime = 0;
+
+    const throttle = (callback, delay) => {
+      return function(...args) {
+        const now = Date.now();
+        if (now - lastPanTime >= delay) {
+          lastPanTime = now;
+          callback.apply(this, args);
+        }
+      };
+    };
+
+    this._hammer.on("panstart", ev => {
+      if (this._cannotPanDueToBoundary(ev.deltaX)) {
+        this._hammer.stop(true);
+        this._panningAllowed = false;
+        return;
+      }
+
+      this._panningAllowed = true;
+      this._adjacentSlidePanStart(ev.deltaX);
+      this._currentSlidePanStart(ev.deltaX);
+    });
+
+    this._hammer.on("pancancel", ev => {
+      this._adjacentSlidePanReset();
+      this._currentSlidePanReset();
+    });
 
     // Handle pan movement
     this._hammer.on("panmove", ev => {
-      let deltaX = ev.deltaX * friction;
+      let deltaX = ev.deltaX;
 
-      // Check if we're at the boundaries
-      const isFirstSlide = currentIndex === 0;
-      const isLastSlide = currentIndex === this.navigationContext.length - 1;
-
-      // Prevent panning to the right on the first slide
-      if (isFirstSlide && deltaX > 0) {
-        deltaX = 0;
+      if (this._cannotPanDueToBoundary(deltaX) || !this._panningAllowed) {
+        return;
       }
 
-      // Prevent panning to the left on the last slide
-      if (isLastSlide && deltaX < 0) {
-        deltaX = 0;
-      }
-
-      // Apply transformation to the current slide
-      panItem.style.transform = `translateX(${currentX + deltaX}px)`;
-
-      // Apply transformation to the adjacent slides
-      if (deltaX < 0 && nextSlide && !isLastSlide) {
-        // Swipe left - Move next slide into view
-        nextSlide.style.transform = `translateX(${100 + deltaX / window.innerWidth * 100}%)`;
-      } else if (deltaX > 0 && previousSlide && !isFirstSlide) {
-        // Swipe right - Move previous slide into view
-        previousSlide.style.transform = `translateX(${-100 + deltaX / window.innerWidth * 100}%)`;
-      }
+      this._currentSlidePanMove(deltaX);
+      this._adjacentSlidePanMove(deltaX);
     });
 
     // Handle end of pan (swipe release)
     this._hammer.on("panend", ev => {
-      const totalDeltaX = ev.deltaX * friction;
+      if (!this._panningAllowed) {
+        return;
+      }
+
+      const totalDeltaX = ev.deltaX;
       const threshold = window.innerWidth / 3; // Set swipe threshold
       const direction = Math.sign(totalDeltaX); // Detect swipe direction
-
-      const isFirstSlide = currentIndex === 0;
-      const isLastSlide = currentIndex === this.navigationContext.length - 1;
 
       if (Math.abs(totalDeltaX) > threshold) {
         // If swipe is beyond threshold, complete the transition
         const targetX = direction > 0 ? window.innerWidth : -window.innerWidth;
+        const isFirstSlide = currentIndex === 0;
+        const isLastSlide = currentIndex === this.navigationContext.length - 1;
 
-        panItem.style.transition = "transform 0.3s ease";
-        panItem.style.transform = `translateX(${targetX}px)`;
+        this._currentSlidePanMove(targetX);
 
-        // Apply transition to adjacent slides
-        if (direction < 0 && nextSlide && !isLastSlide) {
-          nextSlide.style.transition = "transform 0.3s ease";
-          nextSlide.style.transform = `translateX(0)`; // Move next slide into position
-        } else if (direction > 0 && previousSlide && !isFirstSlide) {
-          previousSlide.style.transition = "transform 0.3s ease";
-          previousSlide.style.transform = `translateX(0)`; // Move previous slide into position
+        if (direction < 0 && !isLastSlide) {
+          this.carousel.next(); // Swipe left to go to the next slide
+        } else if (direction > 0 && !isFirstSlide) {
+          this.carousel.prev(); // Swipe right to go to the previous slide
         }
 
-        // Wait for the transition to finish before navigating
-        this.utilsService.delay(300).subscribe(() => {
-          currentX = 0; // Reset the X position after transition
-          panItem.style.transition = "";
-          panItem.style.transform = `translateX(${currentX}px)`;
-
-          if (direction < 0 && !isLastSlide) {
-            this.carousel.next(); // Swipe left to go to the next slide
-          } else if (direction > 0 && !isFirstSlide) {
-            this.carousel.prev(); // Swipe right to go to the previous slide
-          }
-
-          // Reset adjacent slides
-          if (nextSlide) {
-            nextSlide.style.transition = "";
-            nextSlide.style.transform = `translateX(100%)`; // Move next slide back to the right
-          }
-          if (previousSlide) {
-            previousSlide.style.transition = "";
-            previousSlide.style.transform = `translateX(-100%)`; // Move previous slide back to the left
-          }
+        this.utilsService.delay(350).subscribe(() => {
+          this._adjacentSlidePanReset();
+          this._currentSlidePanReset();
         });
       } else {
         // If swipe didn't reach threshold, reset to original position
-        panItem.style.transition = "transform 0.3s ease";
-        panItem.style.transform = `translateX(${currentX}px)`;
-
-        // Reset adjacent slides
-        if (nextSlide) {
-          nextSlide.style.transition = "transform 0.3s ease";
-          nextSlide.style.transform = `translateX(100%)`; // Move next slide back to the right
-        }
-        if (previousSlide) {
-          previousSlide.style.transition = "transform 0.3s ease";
-          previousSlide.style.transform = `translateX(-100%)`; // Move previous slide back to the left
-        }
-
-        // Remove the transition after it's done
-        this.utilsService.delay(300).subscribe(() => {
-          panItem.style.transition = "";
-          if (nextSlide) {
-            nextSlide.style.transition = "";
-          }
-          if (previousSlide) {
-            previousSlide.style.transition = "";
-          }
-        });
+        this._adjacentSlidePanReset();
+        this._currentSlidePanReset();
       }
     });
   }
 
+  private _cannotPanDueToBoundary(deltaX: number): boolean {
+    const index = this._getImageIndexInContext(this.activeId);
+    const isFirstSlide = index === 0;
+    const isLastSlide = index === this.navigationContext.length - 1;
+
+    // Prevent panning to the right on the first slide
+    if (isFirstSlide && deltaX > 0) {
+      return true;
+    }
+
+    // Prevent panning to the left on the last slide
+    return isLastSlide && deltaX < 0;
+  }
+
+  private _currentSlidePanStart(deltaX: number) {
+    const slide = this._getCurrentSlide();
+    this.renderer.setStyle(slide, "transition", "transform 0.3s ease");
+    this.renderer.setStyle(slide, "transform", `translateX(${deltaX}px)`);
+  }
+
+  private _adjacentSlidePanStart(deltaX: number) {
+    const slide = this._getAdjacentSlide(deltaX);
+    this.renderer.setStyle(slide, "transition", "transform 0.3s ease, opacity 0.3s ease");
+    this.renderer.setStyle(slide, "display", "block");
+    this.renderer.setStyle(slide, "margin-right", "0");
+    this.renderer.setStyle(slide, "transform", "scale(0.75)");
+    this.renderer.setStyle(slide, "opacity", "0.1");
+    this.renderer.setStyle(slide, "position", "absolute");
+  }
+
+  private _adjacentSlidePanReset() {
+    const previousSlide = this._getPreviousSlide();
+    const nextSlide = this._getNextSlide();
+
+    for (const slide of [previousSlide, nextSlide]) {
+      if (slide) {
+        this.renderer.setStyle(slide, "transition", "unset");
+        this.renderer.setStyle(slide, "display", "none");
+        this.renderer.setStyle(slide, "margin-right", "-100%");
+        this.renderer.setStyle(slide, "transform", "unset");
+        this.renderer.setStyle(slide, "opacity", "unset");
+        this.renderer.setStyle(slide, "position", "relative");
+      }
+    }
+  }
+
+  private _currentSlidePanReset() {
+    const slide = this._getCurrentSlide();
+    this.renderer.setStyle(slide, "transform", "scale(1)");
+    this.renderer.setStyle(slide, "opacity", "1");
+
+    this.utilsService.delay(300).subscribe(() => {
+      this.renderer.setStyle(slide, "transition", "unset");
+      this.renderer.setStyle(slide, "transform", "unset");
+      this.renderer.setStyle(slide, "opacity", "unset");
+      this.renderer.setStyle(slide, "position", "relative");
+    });
+  }
+
+  private _currentSlidePanMove(deltaX: number) {
+    const slide = this._getCurrentSlide();
+    this.renderer.setStyle(slide, "transform", `translateX(${deltaX}px)`);
+  }
+
+  private _adjacentSlidePanMove(deltaX: number) {
+    const adjacentSlide = this._getAdjacentSlide(deltaX);
+
+    if (adjacentSlide) {
+      // Calculate the percentage of movement based on the window width
+      const movementPercentage = Math.min(Math.abs(deltaX) / this.windowRefService.nativeWindow.innerWidth, 1) * 100;
+
+      // Calculate opacity: Start at 0.25 and approach 1 as movementPercentage approaches 100
+      const opacity = 0.25 + (movementPercentage / 100) * 0.75;
+
+      // Calculate scale: Start at 0.75 and approach 1 as movementPercentage approaches 100
+      const scale = 0.75 + (movementPercentage / 100) * 0.25;
+
+      // Apply styles to the adjacent slide
+      this.renderer.setStyle(adjacentSlide, "transform", `scale(${scale})`);
+      this.renderer.setStyle(adjacentSlide, "opacity", `${opacity}`);
+    }
+  }
+
+
+  private _getCurrentSlide(): HTMLElement {
+    return this.elementRef.nativeElement.querySelector(`#slide-${this.activeId}`);
+  }
+
+  private _getAdjacentSlide(deltaX: number) {
+    if (deltaX > 0) {
+      return this._getPreviousSlide();
+    }
+    return this._getNextSlide();
+  }
 
   private _getPreviousSlide(): HTMLElement | null {
     const index = this._getImageIndexInContext(this.activeId);
     if (index > 0) {
       return this.elementRef.nativeElement.querySelector(
-        `#slide-${this.navigationContext[index - 1].imageId} .pan-container`
+        `#slide-${this.navigationContext[index - 1].imageId}`
       );
     }
     return null;
@@ -452,7 +502,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     const index = this._getImageIndexInContext(this.activeId);
     if (index < this.navigationContext.length - 1) {
       return this.elementRef.nativeElement.querySelector(
-        `#slide-${this.navigationContext[index + 1].imageId} .pan-container`
+        `#slide-${this.navigationContext[index + 1].imageId}`
       );
     }
     return null;
@@ -460,5 +510,15 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   private _getPanItem(): HTMLElement {
     return this.elementRef.nativeElement.querySelector(`#slide-${this.activeId} .pan-container`);
+  }
+
+  private _removeWillChange(element: HTMLElement) {
+    this.renderer.removeStyle(element, 'will-change');
+    if (this._getNextSlide()) {
+      this.renderer.removeStyle(this._getNextSlide(), 'will-change');
+    }
+    if (this._getPreviousSlide()) {
+      this.renderer.removeStyle(this._getPreviousSlide(), 'will-change');
+    }
   }
 }

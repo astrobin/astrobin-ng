@@ -94,17 +94,9 @@ $background: rgba(0, 0, 0, 0.95);
       }
 
       .carousel-item {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        transition: transform 0.3s ease;
-        will-change: transform;
-        display: block;
+        will-change: transform, opacity, display;
 
         &.active {
-          position: relative;
           z-index: 2;
         }
       }
