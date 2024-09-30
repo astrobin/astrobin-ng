@@ -73,7 +73,10 @@ export class ImageViewerComponent
   nextClick = new EventEmitter<void>();
 
   @Output()
-  fullscreenMode = new EventEmitter<boolean>();
+  toggleFullscreen = new EventEmitter<boolean>();
+
+  @Output()
+  revisionSelected = new EventEmitter<ImageRevisionInterface["label"]>();
 
   @ViewChild("mainArea")
   mainArea: ElementRef;
@@ -217,8 +220,8 @@ export class ImageViewerComponent
 
   @HostListener("window:popstate", ["$event"])
   onPopState(event: PopStateEvent) {
-    if (event.state?.fullscreen) {
-      this.exitFullscreen(false);
+    if (this.standalone && this.viewingFullscreenImage) {
+      this.exitFullscreen();
     }
   }
 
@@ -230,7 +233,7 @@ export class ImageViewerComponent
     }
 
     if (this.viewingFullscreenImage) {
-      this.exitFullscreen(true);
+      this.exitFullscreen();
       return;
     }
 
@@ -284,29 +287,9 @@ export class ImageViewerComponent
     this.previousClick.emit();
   }
 
-  private _ignoreNavigationEvent() {
-    return (
-      !this.active ||
-      this.offcanvasService.hasOpenOffcanvas() ||
-      this.modalService.hasOpenModals() ||
-      this.viewingFullscreenImage ||
-      this.isLightBoxOpen
-    );
-  }
-
-  private _scrollToTop() {
-    if (this.dataArea) {
-      this.renderer.setProperty(this.dataArea.nativeElement, "scrollTop", 0);
-
-      if (this.deviceService.mdMax()) {
-        this.renderer.setProperty(this.mainArea.nativeElement, "scrollTop", 0);
-      }
-    }
-  }
-
   setImage(
     image: ImageInterface,
-    revisionLabel: ImageRevisionInterface["label"],
+    revisionLabel: ImageRevisionInterface["label"]
   ): void {
     this._scrollToTop();
 
@@ -353,14 +336,28 @@ export class ImageViewerComponent
     this.imageArea.nativeElement.classList.remove("hover");
   }
 
-  protected onRevisionSelected(revisionLabel: ImageRevisionInterface["label"]): void {
+  protected onRevisionSelected(revisionLabel: ImageRevisionInterface["label"], pushState: boolean): void {
     if (this.revisionLabel === revisionLabel) {
       return;
     }
 
     this.revisionLabel = revisionLabel;
+
+    if (pushState) {
+      let url = this.location.path();
+      url = UtilsService.addOrUpdateUrlParam(url, "r", revisionLabel);
+      this.windowRefService.pushState(
+        {
+          imageId: this.image.hash || this.image.pk,
+          revisionLabel
+        },
+        url
+      )
+    }
+
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     this._setMouseHoverImage();
+    this.revisionSelected.emit(revisionLabel);
   }
 
   protected toggleViewMouseHover(): void {
@@ -375,27 +372,31 @@ export class ImageViewerComponent
     if (this.supportsFullscreen) {
       this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
       this.viewingFullscreenImage = true;
-      this.fullscreenMode.emit(true);
+      this.toggleFullscreen.emit(true);
 
       if (isPlatformBrowser(this.platformId)) {
         const location_ = this.windowRefService.nativeWindow.location;
         this.windowRefService.pushState(
-          null,
+          {
+            imageId: this.image.hash || this.image.pk,
+            revisionLabel: this.revisionLabel,
+            fullscreen: true
+          },
           `${location_.pathname}${location_.search}#fullscreen`
         );
       }
     }
   }
 
-  protected exitFullscreen(replaceState: boolean): void {
+  protected exitFullscreen(): void {
     this.store$.dispatch(new HideFullscreenImage());
     this.viewingFullscreenImage = false;
-    this.fullscreenMode.emit(false);
+    this.toggleFullscreen.emit(false);
 
-    if (replaceState && isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId)) {
       const location_ = this.windowRefService.nativeWindow.location;
       this.windowRefService.replaceState(
-        null,
+        {},
         `${location_.pathname}${location_.search}`
       );
     }
@@ -425,6 +426,26 @@ export class ImageViewerComponent
 
         this.isLightBoxOpen = true;
         this.lightbox.open([{ src, thumb }], 0);
+      }
+    }
+  }
+
+  private _ignoreNavigationEvent() {
+    return (
+      !this.active ||
+      this.offcanvasService.hasOpenOffcanvas() ||
+      this.modalService.hasOpenModals() ||
+      this.viewingFullscreenImage ||
+      this.isLightBoxOpen
+    );
+  }
+
+  private _scrollToTop() {
+    if (this.dataArea) {
+      this.renderer.setProperty(this.dataArea.nativeElement, "scrollTop", 0);
+
+      if (this.deviceService.mdMax()) {
+        this.renderer.setProperty(this.mainArea.nativeElement, "scrollTop", 0);
       }
     }
   }
@@ -656,9 +677,9 @@ export class ImageViewerComponent
   private _initRevision() {
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     if (this.revision.hasOwnProperty("label")) {
-      this.onRevisionSelected((this.revision as ImageRevisionInterface).label);
+      this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
     } else {
-      this.onRevisionSelected(ORIGINAL_REVISION_LABEL);
+      this.onRevisionSelected(ORIGINAL_REVISION_LABEL, false);
     }
   }
 
@@ -710,7 +731,7 @@ export class ImageViewerComponent
         translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
       } else {
         // The position is relative to the main area.
-        translateYValue = `${globalLoadingIndicatorHeight + siteHeaderHeight +  mobileMenuHeight - 1}px`;
+        translateYValue = `${globalLoadingIndicatorHeight + siteHeaderHeight + mobileMenuHeight - 1}px`;
       }
 
       this.renderer.setStyle(floatingTitle, "transform", `translateY(${translateYValue})`);

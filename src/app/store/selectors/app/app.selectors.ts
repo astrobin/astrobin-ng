@@ -25,3 +25,7 @@ export const selectIotdMaxFutureIotds = createSelector(
   selectBackendConfig,
   (backendConfig): number => backendConfig.IOTD_JUDGEMENT_MAX_FUTURE_DAYS
 );
+
+export const selectCurrentFullscreenImage = createSelector(
+  selectApp, state => state.currentFullscreenImage
+);

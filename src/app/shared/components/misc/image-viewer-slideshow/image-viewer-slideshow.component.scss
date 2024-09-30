@@ -94,7 +94,7 @@ $background: rgba(0, 0, 0, 0.95);
       }
 
       .carousel-item {
-        will-change: transform, opacity, display;
+        transition: transform 0.3s ease-in-out;
 
         &.active {
           z-index: 2;

@@ -1,6 +1,6 @@
 import { isPlatformBrowser, Location } from "@angular/common";
 import { ComponentRef, Inject, Injectable, PLATFORM_ID, ViewContainerRef } from "@angular/core";
-import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Store } from "@ngrx/store";
@@ -55,7 +55,7 @@ export class ImageViewerService extends BaseService {
       takeUntil(this.destroyed$),
       map((action: DeleteImageSuccess) => action.payload.pk)
     ).subscribe((pk: ImageInterface["pk"]) => {
-      if (this.slideshow && this.slideshow.instance.activeImage().pk === pk) {
+      if (this.slideshow && this.slideshow.instance.activeImage.pk === pk) {
         this.closeSlideShow(true);
       }
     });
@@ -74,6 +74,7 @@ export class ImageViewerService extends BaseService {
 
       this.openSlideshow(
         queryParams["i"],
+        queryParams["r"] || FINAL_REVISION_LABEL,
         [],
         viewContainerRef,
         false
@@ -83,6 +84,7 @@ export class ImageViewerService extends BaseService {
 
   openSlideshow(
     imageId: ImageInterface["hash"] | ImageInterface["pk"],
+    revisionLabel: ImageRevisionInterface["label"],
     navigationContext: ImageViewerNavigationContext,
     viewContainerRef: ViewContainerRef,
     pushState: boolean
@@ -119,7 +121,7 @@ export class ImageViewerService extends BaseService {
     }
 
     this.slideshow.instance.setNavigationContext(navigationContext);
-    this.slideshow.instance.setImage(imageId, pushState);
+    this.slideshow.instance.setImage(imageId, revisionLabel, pushState);
     return this.slideshow;
   }
 

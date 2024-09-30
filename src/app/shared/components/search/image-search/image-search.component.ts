@@ -21,6 +21,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
 import { DeviceService } from "@shared/services/device.service";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-image-search",
@@ -216,6 +217,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   private _openImageByImageViewer(image: ImageSearchInterface): void {
     const slideshow = this.imageViewerService.openSlideshow(
       image.hash || image.objectId,
+      FINAL_REVISION_LABEL,
       this.results.map(result => ({
         imageId: result.hash || result.objectId,
         thumbnailUrl: result.galleryThumbnail

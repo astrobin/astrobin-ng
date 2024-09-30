@@ -1,5 +1,5 @@
-import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnDestroy, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnDestroy, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -14,6 +14,8 @@ import { NavigationEnd, Router } from "@angular/router";
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { DeviceService } from "@shared/services/device.service";
+import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { isPlatformBrowser } from "@angular/common";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
@@ -21,14 +23,14 @@ const SLIDESHOW_WINDOW = 3;
 @Component({
   selector: "astrobin-image-viewer-slideshow",
   template: `
-    <div #carouselContainer class="carousel-container">
+    <div #carouselContainer *ngIf="!fullscreen" class="carousel-container">
       <div class="carousel-area">
         <ngb-carousel
           #carousel
-          *ngIf="navigationContext.length > 0; else loadingTemplate"
+          *ngIf="visibleContext.length > 0; else loadingTemplate"
           (slide)="onSlide($event)"
           [animation]="animateCarousel"
-          [activeId]="this.activeId"
+          [activeId]="activeId"
           [interval]="0"
           [showNavigationArrows]="false"
           [showNavigationIndicators]="false"
@@ -39,8 +41,8 @@ const SLIDESHOW_WINDOW = 3;
         >
           <ng-template
             ngbSlide
-            *ngFor="let item of navigationContext; let i = index; trackBy: contextTrackByFn"
-            id="{{ item.imageId }}"
+            *ngFor="let item of visibleContext; let i = index; trackBy: contextTrackByFn"
+            [attr.id]="item.imageId"
           >
             <div
               class="pan-container"
@@ -49,15 +51,17 @@ const SLIDESHOW_WINDOW = 3;
             >
               <astrobin-image-viewer
                 *ngIf="item.image; else loadingTemplate"
+                (closeClick)="closeSlideshow.emit(true)"
+                (nextClick)="onNextClick()"
+                (previousClick)="onPreviousClick()"
+                (revisionSelected)="onRevisionSelected($event)"
                 [active]="item.imageId === activeId"
                 [image]="item.image"
+                [revisionLabel]="activeImageRevisionLabel"
                 [showCloseButton]="true"
                 [showPreviousButton]="activeId !== navigationContext[0].imageId"
                 [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
                 [standalone]="false"
-                (closeClick)="closeSlideshow.emit(true)"
-                (nextClick)="onNextClick()"
-                (previousClick)="onPreviousClick()"
               ></astrobin-image-viewer>
             </div>
           </ng-template>
@@ -68,11 +72,19 @@ const SLIDESHOW_WINDOW = 3;
         <astrobin-image-viewer-slideshow-context
           [navigationContext]="navigationContext"
           [activeId]="activeId"
-          (itemSelected)="carousel.select($event.toString())"
+          (itemSelected)="setImage($event)"
           (nearEndOfContext)="nearEndOfContext.emit($event)"
         ></astrobin-image-viewer-slideshow-context>
       </div>
     </div>
+
+    <astrobin-fullscreen-image-viewer
+      *ngIf="activeImage"
+      [id]="activeImage.pk"
+      [revision]="activeImageRevisionLabel"
+      (enterFullscreen)="onEnterFullscreen()"
+      (exitFullscreen)="onExitFullscreen()"
+    ></astrobin-fullscreen-image-viewer>
 
     <ng-template #loadingTemplate>
       <astrobin-loading-indicator></astrobin-loading-indicator>
@@ -97,6 +109,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   imageChange = new EventEmitter<ImageInterface>();
 
   activeId: ImageInterface["pk"] | ImageInterface["hash"];
+  activeImage: ImageInterface;
+  activeImageRevisionLabel: ImageRevisionInterface["label"] = FINAL_REVISION_LABEL;
 
   @ViewChild("carousel", { static: false, read: NgbCarousel })
   protected carousel: NgbCarousel;
@@ -105,7 +119,9 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   protected carouselContainer: ElementRef;
 
   protected animateCarousel = false;
-
+  protected visibleContext: ImageViewerNavigationContext = [];
+  protected fullscreen = false;
+  protected readonly revisionLabel = FINAL_REVISION_LABEL;
   private _delayedLoadSubscription: Subscription = new Subscription();
   private _skipSlideEvent = false;
 
@@ -118,31 +134,41 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly elementRef: ElementRef,
     public readonly deviceService: DeviceService,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
 
-    router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map((event: NavigationEnd) => event.urlAfterRedirects),
-      distinctUntilChanged(),
-      takeUntil(this.destroyed$)
-    ).subscribe(url => {
-      const imageId = this.router.parseUrl(url).queryParams["i"];
-      if (imageId) {
-        this.setImage(imageId, false);
-      }
-    });
+    router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        map((event: NavigationEnd) => event.urlAfterRedirects),
+        distinctUntilChanged(),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(url => {
+        const imageId = this.router.parseUrl(url).queryParams["i"];
+        const revisionLabel = this.router.parseUrl(url).queryParams["r"] || FINAL_REVISION_LABEL;
+        if (imageId) {
+          this.setImage(imageId, revisionLabel, false);
+        }
+      });
 
     const viewPortAspectRatio = this.windowRefService.getViewPortAspectRatio();
     const sideToSideLayout = this.deviceService.lgMin() || viewPortAspectRatio > 1;
-    this.animateCarousel = this.deviceService.xsMax() && this.deviceService.isTouchEnabled() && !sideToSideLayout;
+    this.animateCarousel =
+      this.deviceService.xsMax() &&
+      this.deviceService.isTouchEnabled() &&
+      !sideToSideLayout;
   }
 
   @HostListener("window:popstate", ["$event"])
   onPopState(event: PopStateEvent) {
-    if (event.state?.imageId && this.activeId !== event.state.imageId && !event.state?.fullscreen) {
-      this.setImage(event.state.imageId, false);
+    if (this.fullscreen) {
+      this.store$.dispatch(new HideFullscreenImage());
+      this.onExitFullscreen();
+    } else if (event.state?.imageId && this.activeId !== event.state.imageId) {
+      this.setImage(event.state.imageId, event.state.revisionLabel || FINAL_REVISION_LABEL, false);
     } else {
       this.closeSlideshow.emit(false);
     }
@@ -150,10 +176,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   ngOnDestroy() {
     this._delayedLoadSubscription.unsubscribe();
-  }
-
-  activeImage(): ImageInterface {
-    return this.navigationContext.find(item => item.imageId === this.activeId).image;
   }
 
   setNavigationContext(newContext: ImageViewerNavigationContext) {
@@ -169,9 +191,14 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     } else {
       this.navigationContext = newContext;
     }
+
+    this._updateVisibleContext();
   }
 
-  setImage(imageId: ImageInterface["pk"] | ImageInterface["hash"], emitChange: boolean = true) {
+  setImage(
+    imageId: ImageInterface["pk"] | ImageInterface["hash"],
+    revisionLabel: ImageRevisionInterface["label"],
+    emitChange: boolean = true) {
     this._loadImage(imageId).subscribe(image => {
       if (this.carousel) {
         this._skipSlideEvent = true;
@@ -182,6 +209,9 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       }
 
       this.activeId = imageId;
+      this.activeImage = image;
+      this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
+      this._updateVisibleContext();
       this._loadImagesAround();
       this._dropImagesTooFarFromIndex();
 
@@ -192,6 +222,27 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this.utilsService.delay(10).subscribe(() => {
         this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
       });
+    });
+  }
+
+  protected onEnterFullscreen() {
+    this.fullscreen = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  protected onExitFullscreen() {
+    if (isPlatformBrowser(this.platformId)) {
+      const location_ = this.windowRefService.nativeWindow.location;
+      this.windowRefService.replaceState(
+        {},
+        `${location_.pathname}${location_.search}`
+      );
+    }
+
+    this.utilsService.delay(50).subscribe(() => {
+      this.fullscreen = false;
+      this.changeDetectorRef.detectChanges();
+      this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
     });
   }
 
@@ -208,7 +259,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       return;
     }
 
-    this.setImage(event.current);
+    this.setImage(event.current, FINAL_REVISION_LABEL);
   }
 
   protected onNextClick() {
@@ -219,8 +270,25 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     this.carousel.prev();
   }
 
+  protected onRevisionSelected(revisionLabel: ImageRevisionInterface["label"]) {
+    this.activeImageRevisionLabel = revisionLabel;
+    this.changeDetectorRef.detectChanges();
+  }
+
   protected contextTrackByFn(index: number, item: ImageViewerNavigationContextItem) {
     return item.imageId;
+  }
+
+  private _updateVisibleContext() {
+    const currentIndex = this._getImageIndexInContext(this.activeId);
+    if (currentIndex === -1) {
+      this.visibleContext = [];
+      return;
+    }
+
+    const start = Math.max(currentIndex - 1, 0);
+    const end = Math.min(currentIndex + 1, this.navigationContext.length - 1);
+    this.visibleContext = this.navigationContext.slice(start, end + 1);
   }
 
   private _loadImagesAround() {
@@ -233,22 +301,13 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   }
 
   private _dropImagesTooFarFromIndex() {
-    // We do this for memory management reasons.
     const index = this._getImageIndexInContext(this.activeId);
-    for (let i = 0; i < this.navigationContext.length; i++) {
+    this.navigationContext = this.navigationContext.map((item, i) => {
       if (Math.abs(index - i) > SLIDESHOW_WINDOW) {
-        this.navigationContext = this.navigationContext.map(item => {
-          if (item.imageId === this.navigationContext[i].imageId) {
-            return {
-              ...item,
-              image: undefined
-            };
-          }
-
-          return item;
-        });
+        return { ...item, image: undefined };
       }
-    }
+      return item;
+    });
   }
 
   private _loadImage(
@@ -264,33 +323,35 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         return;
       }
 
-      this._delayedLoadSubscription.add(this.utilsService.delay(delay).pipe(
-        switchMap(() => this.imageService.loadImage(imageId))
-      ).subscribe(image => {
-        if (!this.navigationContext || !this.navigationContext.length) {
-          this.navigationContext = [
-            {
-              imageId,
-              thumbnailUrl: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
-              image
-            }
-          ];
-        } else {
-          this.navigationContext = this.navigationContext.map(item => {
-            if (item.imageId === imageId) {
-              return {
-                ...item,
+      this._delayedLoadSubscription.add(
+        this.utilsService.delay(delay).pipe(
+          switchMap(() => this.imageService.loadImage(imageId))
+        ).subscribe(image => {
+          if (!this.navigationContext || !this.navigationContext.length) {
+            this.navigationContext = [
+              {
+                imageId,
+                thumbnailUrl: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
                 image
-              };
-            }
+              }
+            ];
+          } else {
+            this.navigationContext = this.navigationContext.map(item => {
+              if (item.imageId === imageId) {
+                return {
+                  ...item,
+                  image
+                };
+              }
 
-            return item;
-          });
-        }
+              return item;
+            });
+          }
 
-        subscriber.next(image);
-        subscriber.complete();
-      }));
+          subscriber.next(image);
+          subscriber.complete();
+        })
+      );
     });
   }
 

@@ -122,10 +122,10 @@
       </button>
 
       <astrobin-fullscreen-image-viewer
-        *ngIf="supportsFullscreen"
+        *ngIf="standalone && supportsFullscreen"
         [id]="image.pk"
         [revision]="revisionLabel"
-        (exitFullscreen)="exitFullscreen(true)"
+        (exitFullscreen)="exitFullscreen()"
       ></astrobin-fullscreen-image-viewer>
 
       <astrobin-image
@@ -184,7 +184,7 @@
       <astrobin-image-viewer-revisions
         [image]="image"
         [activeLabel]="revisionLabel"
-        (revisionSelected)="onRevisionSelected($event)"
+        (revisionSelected)="onRevisionSelected($event, true)"
         [class.show]="showRevisions"
       ></astrobin-image-viewer-revisions>
 

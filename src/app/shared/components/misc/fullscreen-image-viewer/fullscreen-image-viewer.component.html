@@ -164,11 +164,11 @@
   </div>
 </ng-template>
 
-<ng-container *ngIf="(show$ | async) === true">
+<ng-container *ngIf="show">
   <ng-container
     *ngIf="{
-      hd: hdThumbnail$ | async,
-      real: realThumbnail$ | async
+      hd: hdThumbnail,
+      real: realThumbnail
     } as thumbnails"
   >
     <ng-container
