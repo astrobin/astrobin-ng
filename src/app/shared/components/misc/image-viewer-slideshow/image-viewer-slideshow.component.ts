@@ -207,7 +207,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         this.activeImage = image;
         this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
         this._updateVisibleContext();
-        this._loadImagesAround();
+        this._loadAdjacentImages();
         this._dropImagesTooFarFromIndex();
 
         this.utilsService.delay(100).subscribe(() => {
@@ -330,11 +330,13 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     console.log("Middle image in context: ", this.visibleContext);
   }
 
-  private _loadImagesAround() {
+  private _loadAdjacentImages() {
     const index = this._getImageIndexInContext(this.activeId);
     for (let i = index - SLIDESHOW_BUFFER; i <= index + SLIDESHOW_BUFFER; i++) {
       if (i >= 0 && i < this.navigationContext.length && i !== index) {
-        this._loadImage(this.navigationContext[i].imageId, Math.abs(index - i) * 100).subscribe();
+        this._loadImage(this.navigationContext[i].imageId, Math.abs(index - i) * 100).subscribe(() => {
+          this._updateVisibleContext();
+        });
       }
     }
   }
