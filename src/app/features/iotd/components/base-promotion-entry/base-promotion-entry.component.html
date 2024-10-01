@@ -18,8 +18,10 @@
 
 <div [hidden]="hidden" class="card-body">
   <div [class.promoted]="isPromoted" class="promotion-queue-entry">
-    <astrobin-fullscreen-image-viewer [anonymized]="anonymizedThumbnails"
-                                      [id]="entry.pk"></astrobin-fullscreen-image-viewer>
+    <astrobin-fullscreen-image-viewer
+      [anonymized]="anonymizedThumbnails"
+      [id]="entry.pk"
+    ></astrobin-fullscreen-image-viewer>
 
     <div class="col-image">
       <astrobin-image
@@ -49,21 +51,25 @@
 
     <div *ngIf="showMetadata" class="col-metadata">
       <p>
-        <strong>{{ "Imaging telescopes" | translate }}:</strong>
+        <strong>{{ "Imaging telescopes" | translate }}:&nbsp;</strong>
         <ng-container *ngIf="entry.imagingTelescopes2?.length > 0; else noneSpecified">
           <astrobin-equipment-item-display-name
-            *ngFor="let telescope of entry.imagingTelescopes2"
-            [item]="selectItem(EquipmentItemType.TELESCOPE, telescope) | async"
+            *ngFor="let telescopeId of entry.imagingTelescopes2"
+            [item]="selectItem(EquipmentItemType.TELESCOPE, telescopeId) | async"
+            [showFrozenAsAmbiguous]="false"
+            [showItemUnapprovedInfo]="false"
           ></astrobin-equipment-item-display-name>
         </ng-container>
       </p>
 
       <p>
-        <strong>{{ "Imaging cameras" | translate }}:</strong>
+        <strong>{{ "Imaging cameras" | translate }}:&nbsp;</strong>
         <ng-container *ngIf="entry.imagingCameras2?.length > 0; else noneSpecified">
           <astrobin-equipment-item-display-name
-            *ngFor="let camera of entry.imagingCameras2"
-            [item]="selectItem(EquipmentItemType.CAMERA, camera) | async"
+            *ngFor="let cameraId of entry.imagingCameras2"
+            [item]="selectItem(EquipmentItemType.CAMERA, cameraId) | async"
+            [showFrozenAsAmbiguous]="false"
+            [showItemUnapprovedInfo]="false"
           ></astrobin-equipment-item-display-name>
         </ng-container>
       </p>
