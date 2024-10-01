@@ -29,7 +29,7 @@ const SLIDESHOW_WINDOW = 3;
           #carousel
           *ngIf="visibleContext.length > 0; else loadingTemplate"
           (slide)="onSlide($event)"
-          [animation]="animateCarousel"
+          [animation]="false"
           [activeId]="activeId"
           [interval]="0"
           [showNavigationArrows]="false"
@@ -72,7 +72,7 @@ const SLIDESHOW_WINDOW = 3;
         <astrobin-image-viewer-slideshow-context
           [navigationContext]="navigationContext"
           [activeId]="activeId"
-          (itemSelected)="setImage($event, FINAL_REVISION_LABEL)"
+          (itemSelected)="setImage($event, FINAL_REVISION_LABEL).subscribe()"
           (nearEndOfContext)="nearEndOfContext.emit($event)"
         ></astrobin-image-viewer-slideshow-context>
       </div>
@@ -118,13 +118,15 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   @ViewChild("carouselContainer")
   protected carouselContainer: ElementRef;
 
-  protected animateCarousel = false;
+  protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
+
   protected visibleContext: ImageViewerNavigationContext = [];
   protected fullscreen = false;
-  protected readonly revisionLabel = FINAL_REVISION_LABEL;
-  protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
+
+  private _loadingImage = false;
   private _delayedLoadSubscription: Subscription = new Subscription();
   private _skipSlideEvent = false;
+  private _navigationInProgress = false;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -151,16 +153,9 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         const imageId = this.router.parseUrl(url).queryParams["i"];
         const revisionLabel = this.router.parseUrl(url).queryParams["r"] || FINAL_REVISION_LABEL;
         if (imageId) {
-          this.setImage(imageId, revisionLabel, false);
+          this.setImage(imageId, revisionLabel, false).subscribe();
         }
       });
-
-    const viewPortAspectRatio = this.windowRefService.getViewPortAspectRatio();
-    const sideToSideLayout = this.deviceService.lgMin() || viewPortAspectRatio > 1;
-    this.animateCarousel =
-      this.deviceService.xsMax() &&
-      this.deviceService.isTouchEnabled() &&
-      !sideToSideLayout;
   }
 
   @HostListener("window:popstate", ["$event"])
@@ -169,7 +164,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this.store$.dispatch(new HideFullscreenImage());
       this.onExitFullscreen();
     } else if (event.state?.imageId && this.activeId !== event.state.imageId) {
-      this.setImage(event.state.imageId, event.state.revisionLabel || FINAL_REVISION_LABEL, false);
+      this.setImage(
+        event.state.imageId,
+        event.state.revisionLabel || FINAL_REVISION_LABEL,
+        false).subscribe();
     } else {
       this.closeSlideshow.emit(false);
     }
@@ -199,29 +197,33 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   setImage(
     imageId: ImageInterface["pk"] | ImageInterface["hash"],
     revisionLabel: ImageRevisionInterface["label"],
-    emitChange: boolean = true) {
-    this._loadImage(imageId).subscribe(image => {
-      if (this.carousel) {
-        this._skipSlideEvent = true;
-        this.carousel.select(imageId.toString());
-        this._skipSlideEvent = false;
+    emitChange: boolean = true): Observable<ImageInterface> {
+    this._loadingImage = true;
 
-        this.carousel.focus();
-      }
+    return new Observable(subscriber => {
+      this._loadImage(imageId).subscribe(image => {
+        this._loadingImage = false;
+        this.activeId = imageId;
+        this.activeImage = image;
+        this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
+        this._updateVisibleContext();
+        this._loadImagesAround();
+        this._dropImagesTooFarFromIndex();
 
-      this.activeId = imageId;
-      this.activeImage = image;
-      this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
-      this._updateVisibleContext();
-      this._loadImagesAround();
-      this._dropImagesTooFarFromIndex();
+        this.utilsService.delay(100).subscribe(() => {
+          this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
+          this._skipSlideEvent = true;
+          this.carousel.select(imageId.toString());
+          this._skipSlideEvent = false;
+          this.carousel.focus();
 
-      if (emitChange) {
-        this.imageChange.emit(image);
-      }
+          if (emitChange) {
+            this.imageChange.emit(image);
+          }
 
-      this.utilsService.delay(this.animateCarousel ? 400 : 100).subscribe(() => {
-        this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
+          subscriber.next(image);
+          subscriber.complete();
+        });
       });
     });
   }
@@ -247,28 +249,46 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     });
   }
 
-  protected onSlide(event: NgbSlideEvent) {
-    if (this._skipSlideEvent) {
-      return;
-    }
-
-    if (!event.current) {
-      return;
-    }
-
-    if (this.activeId === event.current) {
-      return;
-    }
-
-    this.setImage(event.current, FINAL_REVISION_LABEL);
-  }
-
   protected onNextClick() {
+    if (this._loadingImage || this._navigationInProgress) {
+      return;
+    }
+
+    this._navigationInProgress = true;
     this.carousel.next();
+
+    this.utilsService.delay(250).subscribe(() => {
+      this._navigationInProgress = false;
+    });
   }
 
   protected onPreviousClick() {
+    if (this._loadingImage || this._navigationInProgress) {
+      return;
+    }
+
+    this._navigationInProgress = true;
     this.carousel.prev();
+
+    this.utilsService.delay(250).subscribe(() => {
+      this._navigationInProgress = false;
+    });
+  }
+
+  protected onSlide(event: NgbSlideEvent) {
+    if (this._skipSlideEvent) {
+      this._navigationInProgress = false;
+      return;
+    }
+
+    if (!event.current || this.activeId === event.current) {
+      this._navigationInProgress = false;
+      return;
+    }
+
+    this.setImage(event.current, FINAL_REVISION_LABEL).subscribe(() => {
+      this._navigationInProgress = false;
+    });
   }
 
   protected onRevisionSelected(revisionLabel: ImageRevisionInterface["label"]) {
@@ -284,25 +304,30 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     const currentIndex = this._getImageIndexInContext(this.activeId);
     if (currentIndex === -1) {
       this.visibleContext = [];
+      console.error("Image not found in context");
       return;
     }
 
     if (this.navigationContext.length === 1) {
       this.visibleContext = [this.navigationContext[0]];
+      console.log("Only one image in context");
       return;
     }
 
     if (currentIndex === 0) {
       this.visibleContext = this.navigationContext.slice(0, 2);
+      console.log("First image in context");
       return;
     }
 
     if (currentIndex === this.navigationContext.length - 1) {
       this.visibleContext = this.navigationContext.slice(-2);
+      console.log("Last image in context");
       return;
     }
 
     this.visibleContext = this.navigationContext.slice(currentIndex - 1, currentIndex + 2);
+    console.log("Middle image in context: ", this.visibleContext);
   }
 
   private _loadImagesAround() {
