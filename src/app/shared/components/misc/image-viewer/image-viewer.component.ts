@@ -681,7 +681,7 @@ export class ImageViewerComponent
       return;
     }
 
-    if (this.revisionLabel === FINAL_REVISION_LABEL) {
+    if (this.revisionLabel === FINAL_REVISION_LABEL || this.revisionLabel === null || this.revisionLabel === undefined) {
       this.revision = this.imageService.getFinalRevision(this.image);
       this.onRevisionSelected(FINAL_REVISION_LABEL, false);
       return;
