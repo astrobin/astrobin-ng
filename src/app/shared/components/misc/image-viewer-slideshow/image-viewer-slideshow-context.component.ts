@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
 import { fromEvent, Subscription, throttleTime } from "rxjs";
 
@@ -43,7 +43,7 @@ import { fromEvent, Subscription, throttleTime } from "rxjs";
   `,
   styleUrls: ["./image-viewer-slideshow-context.component.scss"]
 })
-export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDestroy {
+export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input()
   navigationContext: ImageViewerNavigationContext;
 
@@ -102,6 +102,12 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.activeId) {
+      this.scrollToActiveId();
+    }
+  }
+
   protected trackByFn(index: number, item: ImageViewerNavigationContextItem) {
     return item.imageId;
   }
@@ -121,4 +127,20 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
       behavior: "smooth"
     });
   }
+
+  protected scrollToActiveId(): void {
+    const el = this.navigationContextElement.nativeElement;
+    const activeElement = el.querySelector(`#image-viewer-context-${this.activeId}`);
+
+    if (activeElement) {
+      const targetScrollPosition = activeElement.offsetLeft - el.clientWidth / 2 + activeElement.clientWidth / 2;
+
+      // Use the smooth scrolling behavior
+      el.scrollTo({
+        left: targetScrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  }
+
 }
