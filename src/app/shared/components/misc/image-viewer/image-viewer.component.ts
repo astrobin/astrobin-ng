@@ -352,7 +352,7 @@ export class ImageViewerComponent
           revisionLabel
         },
         url
-      )
+      );
     }
 
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
@@ -675,12 +675,20 @@ export class ImageViewerComponent
   }
 
   private _initRevision() {
-    this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-    if (this.revision.hasOwnProperty("label")) {
-      this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
-    } else {
+    if (this.revisionLabel === ORIGINAL_REVISION_LABEL) {
+      this.revision = this.image;
       this.onRevisionSelected(ORIGINAL_REVISION_LABEL, false);
+      return;
     }
+
+    if (this.revisionLabel === FINAL_REVISION_LABEL) {
+      this.revision = this.imageService.getFinalRevision(this.image);
+      this.onRevisionSelected(FINAL_REVISION_LABEL, false);
+      return;
+    }
+
+    this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+    this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
   }
 
   private _updateSupportsFullscreen(): void {

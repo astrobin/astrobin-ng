@@ -122,63 +122,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       throw new Error("Attribute 'id' is required");
     }
 
-    if (this._imageSubscription) {
-      this._imageSubscription.unsubscribe();
-    }
-
-    this._imageSubscription = this.store$.pipe(
-      select(selectImage, this.id),
-      filter(image => !!image),
-      take(1)
-    ).subscribe(image => {
-      const revision = this.imageService.getRevision(image, this.revision);
-      this.isLargeEnough = (
-        revision.w > this.windowRef.nativeWindow.innerWidth ||
-        revision.h > this.windowRef.nativeWindow.innerHeight
-      );
-    });
-
-    if (this._hdThumbnailSubscription) {
-      this._hdThumbnailSubscription.unsubscribe();
-    }
-
-    this._hdThumbnailSubscription = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
-      tap(() => (this.hdThumbnailLoading = true)),
-      filter(thumbnail => !!thumbnail),
-      switchMap(thumbnail =>
-        this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
-          this._hdLoadingProgressSubject.next(progress);
-          if (progress >= 100) {
-            this.hdThumbnailLoading = false;
-          }
-        })
-      ),
-      map(url => this.domSanitizer.bypassSecurityTrustUrl(url)),
-      tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false })))
-    ).subscribe(url => {
-      this.hdThumbnail = url;
-    });
-
-    if (this._realThumbnailSubscription) {
-      this._realThumbnailSubscription.unsubscribe();
-    }
-
-    this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
-      tap(() => (this.realThumbnailLoading = true)),
-      filter(thumbnail => !!thumbnail),
-      switchMap(thumbnail =>
-        this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
-          this._realLoadingProgressSubject.next(progress);
-          if (progress >= 100) {
-            this.realThumbnailLoading = false;
-          }
-        })
-      ),
-      map(url => this.domSanitizer.bypassSecurityTrustUrl(url))
-    ).subscribe(url => {
-      this.realThumbnail = url;
-    });
-
     if (this._currentFullscreenImageSubscription) {
       this._currentFullscreenImageSubscription.unsubscribe();
     }
@@ -192,6 +135,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         ofType(AppActionTypes.HIDE_FULLSCREEN_IMAGE),
         take(1)
       ).subscribe(() => {
+        this._resetThumbnailSubscriptions();
         this.show = false;
         this.klass = "d-none";
         this.hdThumbnail = null;
@@ -202,7 +146,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.show = true;
       this.klass = "d-flex";
       this.enterFullscreen.emit();
-      this.store$.dispatch(new LoadThumbnail({ data: this._getHdOptions(), bustCache: false }));
+      this._initThumbnailSubscriptions();
     });
   }
 
@@ -292,8 +236,81 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.store$.dispatch(new HideFullscreenImage());
+  }
+
+  private _resetThumbnailSubscriptions() {
+    if (this._hdThumbnailSubscription) {
+      this._hdThumbnailSubscription.unsubscribe();
+    }
+
+    if (this._realThumbnailSubscription) {
+      this._realThumbnailSubscription.unsubscribe();
+    }
+
     this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getHdOptions() }));
     this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getRealOptions() }));
+
+    this.hdThumbnail = null;
+    this.realThumbnail = null;
+  }
+
+  private _initThumbnailSubscriptions() {
+    if (this._imageSubscription) {
+      this._imageSubscription.unsubscribe();
+    }
+
+    this._imageSubscription = this.store$.pipe(
+      select(selectImage, this.id),
+      filter(image => !!image),
+      take(1)
+    ).subscribe(image => {
+      const revision = this.imageService.getRevision(image, this.revision);
+      this.isLargeEnough = (
+        revision.w > this.windowRef.nativeWindow.innerWidth ||
+        revision.h > this.windowRef.nativeWindow.innerHeight
+      );
+    });
+
+    if (this._hdThumbnailSubscription) {
+      this._hdThumbnailSubscription.unsubscribe();
+    }
+
+    this._hdThumbnailSubscription = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
+      tap(() => (this.hdThumbnailLoading = true)),
+      filter(thumbnail => !!thumbnail),
+      switchMap(thumbnail =>
+        this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
+          this._hdLoadingProgressSubject.next(progress);
+          if (progress >= 100) {
+            this.hdThumbnailLoading = false;
+          }
+        })
+      ),
+      map(url => this.domSanitizer.bypassSecurityTrustUrl(url)),
+      tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false })))
+    ).subscribe(url => {
+      this.hdThumbnail = url;
+    });
+
+    if (this._realThumbnailSubscription) {
+      this._realThumbnailSubscription.unsubscribe();
+    }
+
+    this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
+      tap(() => (this.realThumbnailLoading = true)),
+      filter(thumbnail => !!thumbnail),
+      switchMap(thumbnail =>
+        this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
+          this._realLoadingProgressSubject.next(progress);
+          if (progress >= 100) {
+            this.realThumbnailLoading = false;
+          }
+        })
+      ),
+      map(url => this.domSanitizer.bypassSecurityTrustUrl(url))
+    ).subscribe(url => {
+      this.realThumbnail = url;
+    });
   }
 
   private _setZoomLensSize(): void {

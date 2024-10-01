@@ -14,75 +14,94 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
 
 @Injectable()
 export class ThumbnailEffects {
-  private _loadThumbnailCancelSubject: Subject<Omit<ImageThumbnailInterface, "url">> =
-    new Subject<Omit<ImageThumbnailInterface, "url">>();
-  LoadThumbnail: Observable<LoadThumbnailSuccess | LoadThumbnail> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AppActionTypes.LOAD_THUMBNAIL),
-      takeUntil(this._loadThumbnailCancelSubject),
-      mergeMap(action =>
-        this.store$.select(selectThumbnail, action.payload.data).pipe(
-          mergeMap(thumbnailFromStore =>
-            (
-              thumbnailFromStore !== null &&
-              thumbnailFromStore.url &&
-              thumbnailFromStore.url.indexOf("placeholder") === -1
-            ) ? of(thumbnailFromStore)
-              : this.store$.select(selectImage, action.payload.data.id).pipe(
-                take(1),
-                mergeMap(imageFromStore => {
-                  if (imageFromStore !== null) {
-                    return this.imageApiService.getThumbnail(
-                      imageFromStore.hash || imageFromStore.pk,
-                      action.payload.data.revision,
-                      action.payload.data.alias,
-                      action.payload.bustCache
-                    );
-                  }
+  private _thumbnailCancelSubjects: Map<string, Subject<void>> = new Map();
 
-                  this.store$.dispatch(new LoadImage({ imageId: action.payload.data.id }));
+  LoadThumbnail: Observable<LoadThumbnailSuccess | LoadThumbnail> = createEffect(() => {
+      return this.actions$.pipe(
+        ofType(AppActionTypes.LOAD_THUMBNAIL),
+        mergeMap(action => {
+          const key = this._createThumbnailKey(action.payload.data); // Create a unique key for each thumbnail
+          const cancelSubject = new Subject<void>();  // Create a cancel subject for this thumbnail load
+          this._thumbnailCancelSubjects.set(key, cancelSubject); // Store the cancel subject
 
-                  return this.store$.select(selectImage, action.payload.data.id).pipe(
-                    filter(image => !!image),
-                    mergeMap(image =>
-                      this.imageApiService.getThumbnail(
-                        image.hash || image.pk,
+          return this.store$.select(selectThumbnail, action.payload.data).pipe(
+            takeUntil(cancelSubject), // Cancel if the corresponding subject emits
+            mergeMap(thumbnailFromStore =>
+              (
+                thumbnailFromStore !== null &&
+                thumbnailFromStore.url &&
+                thumbnailFromStore.url.indexOf("placeholder") === -1
+              ) ? of(thumbnailFromStore)
+                : this.store$.select(selectImage, action.payload.data.id).pipe(
+                  take(1),
+                  mergeMap(imageFromStore => {
+                    if (imageFromStore !== null) {
+                      return this.imageApiService.getThumbnail(
+                        imageFromStore.hash || imageFromStore.pk,
                         action.payload.data.revision,
                         action.payload.data.alias,
                         action.payload.bustCache
+                      );
+                    }
+
+                    this.store$.dispatch(new LoadImage({ imageId: action.payload.data.id }));
+
+                    return this.store$.select(selectImage, action.payload.data.id).pipe(
+                      filter(image => !!image),
+                      mergeMap(image =>
+                        this.imageApiService.getThumbnail(
+                          image.hash || image.pk,
+                          action.payload.data.revision,
+                          action.payload.data.alias,
+                          action.payload.bustCache
+                        )
                       )
-                    )
-                  );
-                })
-              )
-          )
-        )
-      ),
-      mergeMap(thumbnail => {
-        if (thumbnail.url.toLowerCase().indexOf("placeholder") !== -1) {
-          return of(void 0).pipe(
-            delay(1000),
-            map(() =>
-              new LoadThumbnail({
-                data: { id: thumbnail.id, revision: thumbnail.revision, alias: thumbnail.alias },
-                bustCache: true
-              }))
+                    );
+                  })
+                )
+            ),
+            mergeMap(thumbnail => {
+              if (thumbnail.url.toLowerCase().indexOf("placeholder") !== -1) {
+                return of(void 0).pipe(
+                  delay(1000),
+                  takeUntil(cancelSubject), // Cancel if the corresponding subject emits
+                  map(() =>
+                    new LoadThumbnail({
+                      data: { id: thumbnail.id, revision: thumbnail.revision, alias: thumbnail.alias },
+                      bustCache: true
+                    })
+                  )
+                );
+              } else {
+                return of(thumbnail).pipe(
+                  map(() => new LoadThumbnailSuccess(thumbnail)),
+                  catchError(() => EMPTY),
+                  tap(() => this._thumbnailCancelSubjects.delete(key)) // Clean up after success
+                );
+              }
+            }),
+            catchError(() => {
+              this._thumbnailCancelSubjects.delete(key);  // Clean up on error
+              return EMPTY;
+            })
           );
-        } else {
-          return of(thumbnail).pipe(
-            map(() => new LoadThumbnailSuccess(thumbnail)),
-            catchError(() => EMPTY)
-          );
-        }
-      })
-    )
+        })
+      );
+    }
   );
 
   LoadThumbnailCancel: Observable<Omit<ImageThumbnailInterface, "url">> = createEffect(() =>
       this.actions$.pipe(
         ofType(AppActionTypes.LOAD_THUMBNAIL_CANCEL),
         map((action: LoadThumbnailCancel) => action.payload.thumbnail),
-        tap(thumbnail => this._loadThumbnailCancelSubject.next(thumbnail))
+        tap(thumbnail => {
+          const key = this._createThumbnailKey(thumbnail); // Create the composite key
+          const cancelSubject = this._thumbnailCancelSubjects.get(key); // Get the cancel subject based on the key
+          if (cancelSubject) {
+            cancelSubject.next();  // Cancel the thumbnail load
+            this._thumbnailCancelSubjects.delete(key);  // Clean up after cancel
+          }
+        })
       ),
     { dispatch: false }
   );
@@ -92,5 +111,9 @@ export class ThumbnailEffects {
     public readonly actions$: Actions<All>,
     public readonly imageApiService: ImageApiService
   ) {
+  }
+
+  private _createThumbnailKey(thumbnail: Omit<ImageThumbnailInterface, "url">): string {
+    return `${thumbnail.id}_${thumbnail.alias}_${thumbnail.revision}`;
   }
 }

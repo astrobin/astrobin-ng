@@ -16,7 +16,7 @@ export interface LoadImageOptionsInterface {
 export class ForceCheckImageAutoLoad implements PayloadActionInterface {
   readonly type = AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD;
 
-  constructor(public payload: { imageId: ImageInterface["pk"] }) {
+  constructor(public payload: { imageId: ImageInterface["pk"] | ImageInterface["hash"] }) {
   }
 }
 

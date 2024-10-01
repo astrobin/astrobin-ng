@@ -29,7 +29,7 @@ declare const videojs: any;
 export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input()
   @HostBinding("attr.data-id")
-  id: number;
+  id: ImageInterface["pk"];
 
   @Input()
   image: ImageInterface;
@@ -330,7 +330,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       const forceCheck$ = this.actions$.pipe(
         ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD),
         map((action: ForceCheckImageAutoLoad) => action.payload),
-        filter(payload => payload.imageId === this.id),
+        filter(payload => payload.imageId === this.id || (payload.imageId as string) === this.image?.hash),
         tap(() => (this.forceLoad = true))
       );
 

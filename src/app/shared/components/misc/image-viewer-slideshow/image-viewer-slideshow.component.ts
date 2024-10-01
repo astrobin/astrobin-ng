@@ -72,7 +72,7 @@ const SLIDESHOW_WINDOW = 3;
         <astrobin-image-viewer-slideshow-context
           [navigationContext]="navigationContext"
           [activeId]="activeId"
-          (itemSelected)="setImage($event)"
+          (itemSelected)="setImage($event, FINAL_REVISION_LABEL)"
           (nearEndOfContext)="nearEndOfContext.emit($event)"
         ></astrobin-image-viewer-slideshow-context>
       </div>
@@ -122,6 +122,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   protected visibleContext: ImageViewerNavigationContext = [];
   protected fullscreen = false;
   protected readonly revisionLabel = FINAL_REVISION_LABEL;
+  protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
   private _delayedLoadSubscription: Subscription = new Subscription();
   private _skipSlideEvent = false;
 
@@ -219,7 +220,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         this.imageChange.emit(image);
       }
 
-      this.utilsService.delay(10).subscribe(() => {
+      this.utilsService.delay(this.animateCarousel ? 400 : 100).subscribe(() => {
         this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
       });
     });
@@ -286,9 +287,22 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       return;
     }
 
-    const start = Math.max(currentIndex - 1, 0);
-    const end = Math.min(currentIndex + 1, this.navigationContext.length - 1);
-    this.visibleContext = this.navigationContext.slice(start, end + 1);
+    if (this.navigationContext.length === 1) {
+      this.visibleContext = [this.navigationContext[0]];
+      return;
+    }
+
+    if (currentIndex === 0) {
+      this.visibleContext = this.navigationContext.slice(0, 2);
+      return;
+    }
+
+    if (currentIndex === this.navigationContext.length - 1) {
+      this.visibleContext = this.navigationContext.slice(-2);
+      return;
+    }
+
+    this.visibleContext = this.navigationContext.slice(currentIndex - 1, currentIndex + 2);
   }
 
   private _loadImagesAround() {
