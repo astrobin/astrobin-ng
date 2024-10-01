@@ -672,6 +672,17 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
       };
     }
 
+    case AppActionTypes.LOAD_IMAGE_SUCCESS: {
+      return {
+        ...state,
+        equipmentItems: arrayUniqueEquipmentItems([
+          ...state.equipmentItems,
+          ...action.payload.imagingTelescopes2,
+          ...action.payload.imagingCameras2,
+        ])
+      };
+    }
+
     default: {
       return state;
     }
