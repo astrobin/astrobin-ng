@@ -95,7 +95,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       offcanvasService
     );
 
-    this.imageViewerService.autoOpenSlideshow(this.activatedRoute, this.viewContainerRef);
+    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
   }
 
   ngOnInit(): void {

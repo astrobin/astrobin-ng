@@ -50,7 +50,7 @@ const SLIDESHOW_WINDOW = 3;
               (swiperight)="onPreviousClick()"
             >
               <astrobin-image-viewer
-                *ngIf="item.image; else loadingTemplate"
+                *ngIf="item.image && !loadingImage; else loadingTemplate"
                 (closeClick)="closeSlideshow.emit(true)"
                 (nextClick)="onNextClick()"
                 (previousClick)="onPreviousClick()"
@@ -70,8 +70,9 @@ const SLIDESHOW_WINDOW = 3;
 
       <div *ngIf="navigationContext?.length > 1" class="context-area">
         <astrobin-image-viewer-slideshow-context
-          [navigationContext]="navigationContext"
           [activeId]="activeId"
+          [callerComponentId]="callerComponentId"
+          [navigationContext]="navigationContext"
           (itemSelected)="setImage($event, FINAL_REVISION_LABEL).subscribe()"
           (nearEndOfContext)="nearEndOfContext.emit($event)"
         ></astrobin-image-viewer-slideshow-context>
@@ -122,8 +123,9 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   protected visibleContext: ImageViewerNavigationContext = [];
   protected fullscreen = false;
+  protected loadingImage = false;
+  protected callerComponentId: string;
 
-  private _loadingImage = false;
   private _delayedLoadSubscription: Subscription = new Subscription();
   private _skipSlideEvent = false;
   private _navigationInProgress = false;
@@ -177,6 +179,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     this._delayedLoadSubscription.unsubscribe();
   }
 
+  setCallerComponentId(callerComponentId: string) {
+    this.callerComponentId = callerComponentId;
+  }
+
   setNavigationContext(newContext: ImageViewerNavigationContext) {
     if (this.navigationContext) {
       this.navigationContext = newContext.map((item, index) => {
@@ -198,11 +204,11 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     imageId: ImageInterface["pk"] | ImageInterface["hash"],
     revisionLabel: ImageRevisionInterface["label"],
     emitChange: boolean = true): Observable<ImageInterface> {
-    this._loadingImage = true;
+    this.loadingImage = true;
 
     return new Observable(subscriber => {
       this._loadImage(imageId).subscribe(image => {
-        this._loadingImage = false;
+        this.loadingImage = false;
         this.activeId = imageId;
         this.activeImage = image;
         this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
@@ -210,12 +216,15 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         this._loadAdjacentImages();
         this._dropImagesTooFarFromIndex();
 
-        this.utilsService.delay(100).subscribe(() => {
+        this.utilsService.delay(200).subscribe(() => {
           this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
-          this._skipSlideEvent = true;
-          this.carousel.select(imageId.toString());
-          this._skipSlideEvent = false;
-          this.carousel.focus();
+
+          if (this.carousel) {
+            this._skipSlideEvent = true;
+            this.carousel.select(imageId.toString());
+            this._skipSlideEvent = false;
+            this.carousel.focus();
+          }
 
           if (emitChange) {
             this.imageChange.emit(image);
@@ -250,7 +259,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   }
 
   protected onNextClick() {
-    if (this._loadingImage || this._navigationInProgress) {
+    if (this.loadingImage || this._navigationInProgress) {
       return;
     }
 
@@ -263,7 +272,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   }
 
   protected onPreviousClick() {
-    if (this._loadingImage || this._navigationInProgress) {
+    if (this.loadingImage || this._navigationInProgress) {
       return;
     }
 
@@ -303,8 +312,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   private _updateVisibleContext() {
     const currentIndex = this._getImageIndexInContext(this.activeId);
     if (currentIndex === -1) {
-      this.visibleContext = [];
-      console.error("Image not found in context");
+      this.visibleContext = [...this.navigationContext];
       return;
     }
 

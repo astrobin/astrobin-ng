@@ -4,14 +4,14 @@ import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { take, takeUntil, tap } from "rxjs/operators";
+import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -35,6 +35,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
   @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
+
   protected readonly ImageAlias = ImageAlias;
   protected gridItems: Array<ImageSearchInterface & { displayHeight: number, displayWidth: number }> = [];
   protected allowFullRetailerIntegration = false;
@@ -42,6 +43,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
   protected averageHeight: number = 200;
+
+  private _nearEndOfContextSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -216,6 +219,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
   private _openImageByImageViewer(image: ImageSearchInterface): void {
     const slideshow = this.imageViewerService.openSlideshow(
+      this.componentId,
       image.hash || image.objectId,
       FINAL_REVISION_LABEL,
       this.results.map(result => ({
@@ -226,16 +230,24 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       true
     );
 
-    slideshow.instance.nearEndOfContext.subscribe(() => {
-      this.loadMore().subscribe(() => {
-        slideshow.instance.setNavigationContext(
-          this.results.map(result => ({
-            imageId: result.hash || result.objectId,
-            thumbnailUrl: result.galleryThumbnail
-          }))
-        );
+    if (this._nearEndOfContextSubscription) {
+      this._nearEndOfContextSubscription.unsubscribe();
+    }
+
+    this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
+      .pipe(
+        filter(callerComponentId => callerComponentId === this.componentId)
+      )
+      .subscribe(() => {
+        this.loadMore().subscribe(() => {
+          slideshow.instance.setNavigationContext(
+            this.results.map(result => ({
+              imageId: result.hash || result.objectId,
+              thumbnailUrl: result.galleryThumbnail
+            }))
+          );
+        });
       });
-    });
   }
 
   private _getRandomDimensions(

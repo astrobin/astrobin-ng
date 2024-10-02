@@ -12,7 +12,7 @@ import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@s
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { delay, filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { fromEvent, interval, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
@@ -77,6 +77,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   private _autoLoadSubscription: Subscription;
   private _pollingVideEncoderProgress = false;
   private _stopPollingVideoEncoderProgress = new Subject<void>();
+  private _retrySetWidthAndHeight = new Subject<void>();
 
   // New private properties to store previous values
   private _previousThumbnailUrl: string;
@@ -96,6 +97,15 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     public readonly imageApiService: ImageApiService
   ) {
     super(store$);
+
+    this._retrySetWidthAndHeight.pipe(
+      delay(200),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      if (this.revision) {
+        this._setWidthAndHeight(this.revision.w, this.revision.h);
+      }
+    });
   }
 
   get videoSetup(): string {
@@ -308,6 +318,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   private _setWidthAndHeight(imageWidth: number, imageHeight: number) {
     const containerWidth = this.elementRef.nativeElement.offsetWidth;
+
+    if (!containerWidth) {
+      this._retrySetWidthAndHeight.next();
+      return;
+    }
 
     if (imageWidth > containerWidth) {
       if (this.autoHeight) {

@@ -134,9 +134,10 @@
         (loaded)="onImageLoaded()"
         (imageMouseEnter)="onImageMouseEnter($event)"
         (imageMouseLeave)="onImageMouseLeave($event)"
-        [forceLoad]="true"
         [alias]="alias"
+        [autoHeight]="!image.videoFile"
         [class.supports-fullscreen]="supportsFullscreen"
+        [forceLoad]="true"
         [image]="image"
         [revisionLabel]="revisionLabel"
       ></astrobin-image>

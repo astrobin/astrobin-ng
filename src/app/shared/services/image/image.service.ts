@@ -413,7 +413,10 @@ export class ImageService extends BaseService {
       }, 0);
 
       const bortle = totalDuration > 0 ? totalWeightedBortle / totalDuration : null;
-      return parseFloat(bortle.toFixed(2));
+
+      if (bortle !== null) {
+        return parseFloat(bortle.toFixed(2));
+      }
     }
 
     return null;

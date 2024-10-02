@@ -6,7 +6,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { DeleteImageSuccess } from "@app/store/actions/image.actions";
-import { map, takeUntil } from "rxjs/operators";
+import { map, take, takeUntil } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { DeviceService } from "@shared/services/device.service";
 import { Actions, ofType } from "@ngrx/effects";
@@ -62,7 +62,11 @@ export class ImageViewerService extends BaseService {
   }
 
 
-  autoOpenSlideshow(activatedRoute: ActivatedRoute, viewContainerRef: ViewContainerRef): void {
+  autoOpenSlideshow(
+    callerComponentId: string,
+    activatedRoute: ActivatedRoute,
+    viewContainerRef: ViewContainerRef
+  ): void {
     const queryParams = activatedRoute.snapshot.queryParams;
 
     if (queryParams["i"]) {
@@ -73,6 +77,7 @@ export class ImageViewerService extends BaseService {
       }
 
       this.openSlideshow(
+        callerComponentId,
         queryParams["i"],
         queryParams["r"] || FINAL_REVISION_LABEL,
         [],
@@ -83,6 +88,7 @@ export class ImageViewerService extends BaseService {
   }
 
   openSlideshow(
+    callerComponentId: string,
     imageId: ImageInterface["hash"] | ImageInterface["pk"],
     revisionLabel: ImageRevisionInterface["label"],
     navigationContext: ImageViewerNavigationContext,
@@ -93,11 +99,12 @@ export class ImageViewerService extends BaseService {
       this._previousTitle = this.titleService.getTitle();
       this._previousDescription = this.titleService.getDescription();
       this._previousUrl = this.windowRefService.getCurrentUrl().toString();
+
       this.slideshow = viewContainerRef.createComponent(ImageViewerSlideshowComponent);
 
       this._stopBodyScrolling();
 
-      this.slideshow.instance.closeSlideshow.subscribe(pushState => {
+      this.slideshow.instance.closeSlideshow.pipe(take(1)).subscribe(pushState => {
         this.closeSlideShow(pushState);
         this.titleService.setTitle(this._previousTitle);
         this.titleService.setDescription(this._previousDescription);
@@ -120,6 +127,7 @@ export class ImageViewerService extends BaseService {
       });
     }
 
+    this.slideshow.instance.setCallerComponentId(callerComponentId);
     this.slideshow.instance.setNavigationContext(navigationContext);
     this.slideshow.instance.setImage(imageId, revisionLabel, pushState).subscribe();
     return this.slideshow;

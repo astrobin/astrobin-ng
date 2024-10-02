@@ -6,7 +6,7 @@
           #videoPlayerElement
           [attr.data-setup]='videoSetup'
           [attr.poster]="thumbnailUrl"
-          [style.height]="!!height ? height + 'px' : 'auto'"
+          [style.height]="!!height ? height + 'px !important' : 'auto'"
           class="video-js vjs-default-skin"
           controls
           preload="auto"

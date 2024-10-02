@@ -50,11 +50,14 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
   @Input()
   activeId: ImageViewerNavigationContextItem["imageId"];
 
+  @Input()
+  callerComponentId: string;
+
   @Output()
   itemSelected = new EventEmitter<ImageViewerNavigationContextItem["imageId"]>();
 
   @Output()
-  nearEndOfContext = new EventEmitter<ImageViewerNavigationContextItem["imageId"]>();
+  nearEndOfContext = new EventEmitter<string>();
 
   @ViewChild("navigationContextElement", { static: true })
   navigationContextElement: ElementRef;
@@ -76,7 +79,7 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
         const currentScrollLeft = el.scrollLeft + el.clientWidth;
 
         if (currentScrollLeft >= maxScrollLeft - el.clientWidth * 2) {
-          this.nearEndOfContext.emit(this.activeId);
+          this.nearEndOfContext.emit(this.callerComponentId);
         }
       });
 

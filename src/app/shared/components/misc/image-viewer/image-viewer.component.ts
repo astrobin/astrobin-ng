@@ -6,14 +6,14 @@ import { select, Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { DeviceService } from "@shared/services/device.service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
+import { delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageService } from "@shared/services/image/image.service";
 import { ActivatedRoute } from "@angular/router";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { animationFrameScheduler, combineLatest, fromEvent, Observable, of, Subscription, throttleTime } from "rxjs";
+import { animationFrameScheduler, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
@@ -139,6 +139,7 @@ export class ImageViewerComponent
   protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
 
   private _dataAreaScrollEventSubscription: Subscription;
+  private _retryAdjustSvgOverlay: Subject<void> = new Subject();
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -183,8 +184,15 @@ export class ImageViewerComponent
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
-      fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
-        throttleTime(300)
+      merge(
+        this._retryAdjustSvgOverlay.pipe(
+          delay(100),
+          takeUntil(this.destroyed$)
+        ),
+        fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
+          throttleTime(300),
+          takeUntil(this.destroyed$)
+        )
       ).subscribe(() => {
         this._adjustSvgOverlay();
 
@@ -545,10 +553,12 @@ export class ImageViewerComponent
   }
 
   private _adjustSvgOverlay(): void {
+    if (!this.inlineSvg) {
+      return;
+    }
+
     if (!this.imageArea) {
-      this.utilsService.delay(100).subscribe(() => {
-        this._adjustSvgOverlay();
-      });
+      this._retryAdjustSvgOverlay.next();
       return;
     }
 
@@ -556,9 +566,7 @@ export class ImageViewerComponent
     const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-svg-container") as HTMLElement;
 
     if (!overlaySvgElement) {
-      this.utilsService.delay(100).subscribe(() => {
-        this._adjustSvgOverlay();
-      });
+      this._retryAdjustSvgOverlay.next();
       return;
     }
 
@@ -607,6 +615,10 @@ export class ImageViewerComponent
       sideToSideLayout
     } = this.imageViewerService.getScrollArea();
     const hasMobileMenu = this.deviceService.mdMax();
+
+    if (!scrollArea) {
+      return;
+    }
 
     this._dataAreaScrollEventSubscription = fromEvent<Event>(scrollArea, "scroll")
       .pipe(

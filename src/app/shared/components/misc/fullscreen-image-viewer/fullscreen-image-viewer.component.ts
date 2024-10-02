@@ -49,6 +49,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @HostBinding("class")
   klass = "d-none";
 
+  @HostBinding("class.disable-zoom")
+  get disableZoomClass() {
+    return this.realThumbnailLoading || this.hdThumbnailLoading;
+  }
+
   @ViewChild("ngxImageZoom", { static: false, read: NgxImageZoomComponent })
   ngxImageZoom: NgxImageZoomComponent;
 
@@ -311,6 +316,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     ).subscribe(url => {
       this.realThumbnail = url;
     });
+
+    this.store$.dispatch(new LoadThumbnail({ data: this._getHdOptions(), bustCache: false }));
   }
 
   private _setZoomLensSize(): void {
