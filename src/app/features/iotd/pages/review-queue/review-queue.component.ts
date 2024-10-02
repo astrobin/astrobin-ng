@@ -93,8 +93,6 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
   }
 
   ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-
     if (isPlatformBrowser(this.platformId)) {
       fromEvent(this.windowRefService.nativeWindow, "scroll")
         .pipe(takeUntil(this.destroyed$), throttleTime(100))

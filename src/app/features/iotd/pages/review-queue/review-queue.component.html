@@ -25,9 +25,9 @@
       <ng-container *ngIf="promotions$ | async as promotions">
         <ng-container *ngIf="queue?.count > 0; else noEntries">
           <astrobin-review-slots
-            #promotionSlots
             (slotClick)="scrollToEntry($event)"
             [availableEntries]="queue.results"
+            astrobinSticky
           >
           </astrobin-review-slots>
 

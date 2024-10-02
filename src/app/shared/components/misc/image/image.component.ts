@@ -156,7 +156,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       this._stopPollingVideoEncoderProgress.next();
       this._disposeVideoJsPlayer();
 
-      this.load(0);
+      // Delay this because there might be the fullscreen viewer in front that cause the image not to be in the
+      // visible viewport. A delay of a few ms causes the fullscreen viewer to have time to auto-hide.
+      this.utilsService.delay(10).subscribe(() => {
+        this.load();
+      });
     }
 
     this._previousThumbnailUrl = newThumbnailUrl;
@@ -189,7 +193,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     super.ngOnDestroy();
   }
 
-  load(delay = null) {
+  load() {
     const noNeedToLoad = () =>
       !this.utilsService.isNearOrInViewport(this.elementRef.nativeElement) || this.loading;
 
@@ -445,7 +449,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
               take(1)
             )
             .subscribe(image => {
-              this.load(0);
+              this.load();
             });
         }
       });

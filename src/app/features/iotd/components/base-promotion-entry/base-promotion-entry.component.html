@@ -18,10 +18,6 @@
 
 <div [hidden]="hidden" class="card-body">
   <div [class.promoted]="isPromoted" class="promotion-queue-entry">
-    <astrobin-fullscreen-image-viewer
-      [anonymized]="anonymizedThumbnails"
-      [id]="entry.pk"
-    ></astrobin-fullscreen-image-viewer>
 
     <div class="col-image">
       <astrobin-image
@@ -43,6 +39,11 @@
         class="promotion-image-hover"
       >
       </astrobin-image>
+
+      <astrobin-fullscreen-image-viewer
+        [anonymized]="anonymizedThumbnails"
+        [id]="entry.pk"
+      ></astrobin-fullscreen-image-viewer>
 
       <div class="promotion-image-hover-label">
         100%

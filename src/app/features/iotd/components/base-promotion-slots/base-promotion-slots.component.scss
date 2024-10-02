@@ -4,7 +4,7 @@
   display: flex;
   justify-content: space-between;
   position: sticky;
-  top: 3.5rem;
+  top: 4.5rem;
   z-index: 4;
 
   .promotion-slot-container {
@@ -14,6 +14,7 @@
     align-items: center;
     text-align: center;
     width: 100%;
+    transition: transform .3s ease-in-out;
 
     .promotion-slot {
       width: 100%;
@@ -51,10 +52,14 @@
     .futureDate {
       color: var(--lighterGrey);
       margin-top: 1rem;
+      opacity: 1;
+      transition: opacity .3s ease-in-out;
     }
 
     .buttons {
       margin-top: 1rem;
+      opacity: 1;
+      transition: opacity .3s ease-in-out;
 
       .btn {
         font-size: .85rem;
@@ -66,6 +71,17 @@
           top: -0.5rem;
           background-color: var(--dangerColor);
         }
+      }
+    }
+  }
+
+  &.sticky-active {
+    .promotion-slot-container {
+      transform: scale(.75);
+
+      .futureDate,
+      .buttons {
+        opacity: 0;
       }
     }
   }
