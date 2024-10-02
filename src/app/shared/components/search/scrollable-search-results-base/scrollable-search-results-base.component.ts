@@ -165,9 +165,6 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
           observer.next(response.results);
           observer.complete();
         });
-      } else {
-        observer.next([]);
-        observer.complete();
       }
     });
   }

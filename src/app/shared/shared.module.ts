@@ -8,7 +8,7 @@ import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { MainState } from "@app/store/state";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NgbAccordionModule, NgbDropdownModule, NgbModule, NgbNavModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbAccordionModule, NgbCarouselModule, NgbDropdownModule, NgbModule, NgbNavModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -79,9 +79,18 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
 @Injectable()
 export class AstroBinHammerConfig extends HammerGestureConfig {
   override overrides = {
-    swipe: { direction: 31 }, // 31 corresponds to Hammer.DIRECTION_ALL
-    pinch: { enable: false },
-    rotate: { enable: false }
+    swipe: {
+      enable: true
+    },
+    pinch: {
+      enable: false
+    },
+    rotate: {
+      enable: false
+    },
+    pan: {
+      enable: false
+    }
   };
 }
 
@@ -113,6 +122,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     ImageCropperModule,
     NgbModule,
     NgbAccordionModule,
+    NgbCarouselModule,
     NgbDropdownModule,
     NgbNavModule,
     NgbPaginationModule,
@@ -179,6 +189,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     ImageCropperModule,
     NgbModule,
     NgbAccordionModule,
+    NgbCarouselModule,
     NgbDropdownModule,
     NgbNavModule,
     NgbPaginationModule,

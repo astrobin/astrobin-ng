@@ -55,6 +55,8 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   replyFields: FormlyFieldConfig[];
   showReplyForm = false;
 
+  private _elementWidth: number;
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
@@ -77,8 +79,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   }
 
   ngAfterViewInit() {
-    const window = this.windowRefService.nativeWindow as any;
-    if (typeof window.hljs !== undefined) {
+    const _win = this.windowRefService.nativeWindow as any;
+
+    if (typeof _win.hljs !== undefined) {
       const $elements = this.elementRef.nativeElement.querySelectorAll("pre code");
       for (const $element of $elements) {
         const brPlugin = {
@@ -90,17 +93,22 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
           }
         };
 
-        window.hljs.addPlugin(brPlugin);
-        window.hljs.highlightElement($element);
-        window.hljs.initLineNumbersOnLoad();
+        _win.hljs.addPlugin(brPlugin);
+        _win.hljs.highlightElement($element);
+        _win.hljs.initLineNumbersOnLoad();
       }
     }
+
+    this._elementWidth = this.elementRef.nativeElement.getBoundingClientRect().width;
   }
 
   getMarginLeft(depth: number): string {
-    const width = this.elementRef.nativeElement.getBoundingClientRect().width;
+    if (!this._elementWidth) {
+      return `0px`;
+    }
+
     const minContentWidth = 300;
-    const maxMargin = width - minContentWidth;
+    const maxMargin = this._elementWidth - minContentWidth;
     const margin = Math.min(maxMargin, (depth - 1) * 16);
     return `${margin}px`;
   }

@@ -18,7 +18,6 @@
   <div
     #mainArea
     class="main-area"
-    [class.has-context]="!!navigationContext && navigationContext.length > 1"
   >
     <ng-container [ngTemplateOutlet]="imageAreaTemplate"></ng-container>
 
@@ -26,11 +25,6 @@
       <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
     </div> <!-- data-area-container -->
   </div>
-
-  <ng-container
-    *ngIf="navigationContext && navigationContext.length > 1"
-    [ngTemplateOutlet]="navigationContextTemplate"
-  ></ng-container>
 
   <astrobin-scroll-to-top
     #scrollToTopMdMax
@@ -59,7 +53,7 @@
     [revisionLabel]="revisionLabel"
     class="me-2"
   ></astrobin-image-viewer-share-button>
-  <button *ngIf="showCloseButton" (click)="close()" class="btn btn-link btn-no-block text-white">
+  <button *ngIf="showCloseButton" (click)="closeClick.emit()" class="btn btn-link btn-no-block text-white">
     <fa-icon icon="times"></fa-icon>
   </button>
 </ng-template>
@@ -102,7 +96,7 @@
       <ng-container *ngIf="!adjustmentEditorVisible">
         <astrobin-image-viewer-close-button
           *ngIf="showCloseButton"
-          (closeClick)="close()"
+          (closeClick)="closeClick.emit()"
           class="close-button d-none d-md-block"
         ></astrobin-image-viewer-close-button>
 
@@ -120,18 +114,18 @@
       </ng-container>
 
       <button
-        *ngIf="currentIndex > 0"
-        (click)="onPreviousClicked()"
+        *ngIf="showPreviousButton"
+        (click)="previousClick.emit()"
         class="previous-button"
       >
-        <fa-icon icon="chevron-circle-left"></fa-icon>
+        <fa-icon icon="chevron-left"></fa-icon>
       </button>
 
       <astrobin-fullscreen-image-viewer
-        *ngIf="supportsFullscreen"
+        *ngIf="standalone && supportsFullscreen"
         [id]="image.pk"
         [revision]="revisionLabel"
-        (exitFullscreen)="exitFullscreen(true)"
+        (exitFullscreen)="exitFullscreen()"
       ></astrobin-fullscreen-image-viewer>
 
       <astrobin-image
@@ -140,11 +134,10 @@
         (loaded)="onImageLoaded()"
         (imageMouseEnter)="onImageMouseEnter($event)"
         (imageMouseLeave)="onImageMouseLeave($event)"
-        (swipeleft)="onNextClicked()"
-        (swiperight)="onPreviousClicked()"
-        (swipedown)="close()"
         [alias]="alias"
+        [autoHeight]="!image.videoFile"
         [class.supports-fullscreen]="supportsFullscreen"
+        [forceLoad]="true"
         [image]="image"
         [revisionLabel]="revisionLabel"
       ></astrobin-image>
@@ -157,9 +150,6 @@
         <img
           (mouseenter)="onImageMouseEnter($event)"
           (mouseleave)="onImageMouseLeave($event)"
-          (swipeleft)="onNextClicked()"
-          (swiperight)="onPreviousClicked()"
-          (swipedown)="close()"
           alt=""
           class="mouse-hover ready"
           src="{{ mouseHoverImage }}"
@@ -174,9 +164,6 @@
         <div
           (mouseenter)="onImageMouseEnter($event)"
           (mouseleave)="onImageMouseLeave($event)"
-          (swipeleft)="onNextClicked()"
-          (swiperight)="onPreviousClicked()"
-          (swipedown)="close()"
           [innerHTML]="inlineSvg"
           [id]="'mouse-hover-svg-' + image.pk"
           class="mouse-hover w-100 position-relative"
@@ -187,20 +174,20 @@
         </div>
       </div>
 
+      <button
+        *ngIf="showNextButton"
+        (click)="nextClick.emit()"
+        class="next-button"
+      >
+        <fa-icon icon="chevron-right"></fa-icon>
+      </button>
+
       <astrobin-image-viewer-revisions
         [image]="image"
         [activeLabel]="revisionLabel"
         (revisionSelected)="onRevisionSelected($event, true)"
         [class.show]="showRevisions"
       ></astrobin-image-viewer-revisions>
-
-      <button
-        *ngIf="currentIndex < navigationContext?.length - 1"
-        (click)="onNextClicked()"
-        class="next-button"
-      >
-        <fa-icon icon="chevron-circle-right"></fa-icon>
-      </button>
 
       <button
         *ngIf="image?.revisions?.length"
@@ -388,31 +375,4 @@
       [showCloseButton]="false"
     ></astrobin-nested-comments>
   </ng-container>
-</ng-template>
-
-<ng-template #navigationContextTemplate>
-  <div class="navigation-context-wrapper">
-    <button (click)="scrollNavigationContextLeft()" class="scroll-left">
-      <fa-icon icon="chevron-circle-left"></fa-icon>
-    </button>
-
-    <div #navigationContextElement class="navigation-context">
-      <div
-        *ngFor="let context of navigationContext; let i = index; trackBy: navigationContextTrackByFn"
-        (click)="onNavigationContextClicked(i)"
-        class="navigation-context-item"
-        [class.active]="context.imageId === image.pk || context.imageId === image.hash"
-      >
-        <img
-          [id]="'image-viewer-context-' + context.imageId"
-          [src]="context.thumbnailUrl"
-          alt=""
-        />
-      </div>
-    </div>
-
-    <button (click)="scrollNavigationContextRight()" class="scroll-right">
-      <fa-icon icon="chevron-circle-right"></fa-icon>
-    </button>
-  </div>
 </ng-template>

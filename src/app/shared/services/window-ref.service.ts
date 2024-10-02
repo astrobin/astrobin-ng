@@ -43,8 +43,12 @@ export class WindowRefService extends BaseService {
     return this._doc.defaultView;
   }
 
-  get isMobile$() {
-    return this._isMobile.asObservable();
+  getViewPortAspectRatio(): number {
+    if (!isPlatformBrowser(this.platformId)) {
+      return 1;
+    }
+
+    return window.innerWidth / window.innerHeight;
   }
 
   scroll(options: any) {

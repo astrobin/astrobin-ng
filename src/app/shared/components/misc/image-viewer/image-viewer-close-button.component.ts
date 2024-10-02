@@ -7,7 +7,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
       <fa-icon
         [ngbTooltip]="'Close' | translate"
         container="body"
-        icon="times-circle"
+        icon="times"
       ></fa-icon>
     </button>
   `

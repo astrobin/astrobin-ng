@@ -141,7 +141,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       filter((action: HideImageSuccess) => action.payload.hiddenImage.id === pk),
       take(1)
     ).subscribe(() => {
-      this.store$.dispatch(new ForceCheckImageAutoLoad());
+      this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: pk }));
     });
     this.store$.dispatch(new HideImage({ id: pk }));
   }
@@ -153,7 +153,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
         filter((action: DismissImageSuccess) => action.payload.dismissedImage.id === pk),
         take(1)
       ).subscribe(() => {
-        this.store$.dispatch(new ForceCheckImageAutoLoad());
+        this.store$.dispatch(new ForceCheckImageAutoLoad({ imageId: pk }));
       });
       this.store$.dispatch(new DismissImage({ id: pk }));
     };

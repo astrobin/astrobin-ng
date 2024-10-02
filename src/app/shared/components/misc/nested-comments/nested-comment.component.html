@@ -72,6 +72,7 @@
           [objectId]="comment.id"
           [userId]="currentUserWrapper.user?.id"
           [showLabel]="true"
+          [toggled]="comment.likes.includes(currentUserWrapper.user?.id)"
           btnClass="btn btn-sm btn-primary"
           class="btn-no-block"
           propertyType="like"

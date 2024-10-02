@@ -19,7 +19,7 @@ export class LoadThumbnailSuccess implements PayloadActionInterface {
 }
 
 export class LoadThumbnailCancel implements PayloadActionInterface {
-  readonly type = AppActionTypes.LOAD_THUMBNAIL_CANCELED;
+  readonly type = AppActionTypes.LOAD_THUMBNAIL_CANCEL;
 
   constructor(public payload: { thumbnail: Omit<ImageThumbnailInterface, "url"> }) {
   }

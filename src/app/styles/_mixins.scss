@@ -29,3 +29,36 @@
     text-decoration: none;
   }
 }
+
+@mixin custom-scrollbar(
+  $track-color: var(--darkGrey),
+  $thumb-color: var(--lightGrey),
+  $thumb-hover-color: var(--lighterGrey),
+  $scrollbar-width: 6px
+) {
+  /* For WebKit-based browsers (Chrome, Safari, Edge) */
+  &::-webkit-scrollbar {
+    width: $scrollbar-width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb-color;
+    border-radius: 3px;
+    border: 1px solid $track-color;
+    transition: background-color 0.3s ease; /* Smooth transition for hover */
+
+    &:hover {
+      background: $thumb-hover-color;
+    }
+  }
+
+  /* For Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: $thumb-color $track-color;
+}
+
+

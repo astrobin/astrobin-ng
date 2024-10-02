@@ -1,0 +1,122 @@
+@import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
+
+$contextAreaHeight: 1.5rem;
+$background: rgba(0, 0, 0, 0.95);
+
+:host {
+  position: fixed;
+  top: 6px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: calc(100% - 6px);
+  z-index: 1030;
+  overflow: hidden;
+  background: $background;
+
+  @media (hover: none) and (pointer: coarse) {
+    height: 100%;
+  }
+
+  .carousel-container {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 .5rem var(--black);
+  }
+
+  .carousel-area {
+    flex-grow: 1;
+    overflow: hidden;
+
+    .pan-container {
+      width: 100%;
+      height: 100%;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    ::ng-deep {
+      .carousel,
+      .carousel-inner,
+      .carousel-item {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .carousel-control-prev,
+      .carousel-control-next {
+        @include darkest-background-texture;
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 2rem;
+        width: 2rem;
+        border-radius: 50%;
+        border: 1px solid var(--grey);
+        filter: drop-shadow(.15rem .15rem .25rem var(--black));
+        opacity: 1;
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+          width: 1.25rem;
+          height: 1.25rem;
+          transition: transform 0.3s ease-in-out;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
+      }
+
+      .carousel-control-prev {
+        left: .5rem;
+      }
+
+      .carousel-control-next {
+        right: calc(40vw + .5rem);
+      }
+
+      .carousel.is-on-first {
+        .carousel-control-prev {
+          display: none;
+        }
+      }
+
+      .carousel.is-on-last {
+        .carousel-control-next {
+          display: none;
+        }
+      }
+
+      .carousel-item {
+        transition: transform 0.3s ease-in-out;
+
+        &.active {
+          z-index: 2;
+        }
+      }
+    }
+  }
+
+  .context-area {
+    height: $contextAreaHeight;
+    width: 100vw;
+    transition: height 0.3s ease-in-out;
+
+    @media (hover: none) and (pointer: coarse) {
+      height: 0;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        z-index: 1031;
+        height: 6rem;
+      }
+    }
+  }
+}

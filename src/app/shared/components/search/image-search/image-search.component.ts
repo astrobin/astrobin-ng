@@ -4,13 +4,12 @@ import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
@@ -22,7 +21,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
 import { DeviceService } from "@shared/services/device.service";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { ImageService } from "@shared/services/image/image.service";
+import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-image-search",
@@ -32,19 +31,20 @@ import { ImageService } from "@shared/services/image/image.service";
 export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
-  protected readonly ImageAlias = ImageAlias;
-
   @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
   @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
 
+  protected readonly ImageAlias = ImageAlias;
   protected gridItems: Array<ImageSearchInterface & { displayHeight: number, displayWidth: number }> = [];
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
   protected averageHeight: number = 200;
+
+  private _nearEndOfContextSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -60,8 +60,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly loadingService: LoadingService,
     public readonly searchService: SearchService,
     public readonly deviceService: DeviceService,
-    public readonly changeDetectorRef: ChangeDetectorRef,
-    public readonly imageService: ImageService
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, windowRefService, elementRef, platformId, translateService);
     this.dataFetched.pipe(
@@ -219,56 +218,36 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   private _openImageByImageViewer(image: ImageSearchInterface): void {
-    let activeImageViewer = this.imageViewerService.activeImageViewer;
+    const slideshow = this.imageViewerService.openSlideshow(
+      this.componentId,
+      image.hash || image.objectId,
+      FINAL_REVISION_LABEL,
+      this.results.map(result => ({
+        imageId: result.hash || result.objectId,
+        thumbnailUrl: result.galleryThumbnail
+      })),
+      this.viewContainerRef,
+      true
+    );
 
-    if (!activeImageViewer) {
-      activeImageViewer = this.imageViewerService.openImageViewer(
-        image.hash || image.objectId,
-        FINAL_REVISION_LABEL,
-        false,
-        this.componentId,
-        this.results.map(result => ({
-          imageId: result.hash || result.objectId,
-          thumbnailUrl: result.galleryThumbnail
-        })),
-        this.viewContainerRef
-      );
-    } else {
-      this.loadingService.setLoading(true);
-      this.imageService.loadImage(image.hash || image.objectId).subscribe({
-        next: image => {
-          activeImageViewer.instance.searchComponentId = this.componentId;
-          activeImageViewer.instance.setImage(
-            image,
-            FINAL_REVISION_LABEL,
-            false,
+    if (this._nearEndOfContextSubscription) {
+      this._nearEndOfContextSubscription.unsubscribe();
+    }
+
+    this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
+      .pipe(
+        filter(callerComponentId => callerComponentId === this.componentId)
+      )
+      .subscribe(() => {
+        this.loadMore().subscribe(() => {
+          slideshow.instance.setNavigationContext(
             this.results.map(result => ({
               imageId: result.hash || result.objectId,
               thumbnailUrl: result.galleryThumbnail
-            })),
-            true
+            }))
           );
-          this.loadingService.setLoading(false);
-        },
-        error: () => {
-          this.router.navigateByUrl("/404", { skipLocationChange: true });
-        }
+        });
       });
-    }
-
-    activeImageViewer.instance.nearEndOfContext.pipe(
-      filter((searchComponentId: string) => searchComponentId === this.componentId),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.loadMore().subscribe(() => {
-        activeImageViewer.instance.setNavigationContext([
-          ...this.results.map(result => ({
-            imageId: result.hash || result.objectId,
-            thumbnailUrl: result.galleryThumbnail
-          }))
-        ]);
-      });
-    });
   }
 
   private _getRandomDimensions(

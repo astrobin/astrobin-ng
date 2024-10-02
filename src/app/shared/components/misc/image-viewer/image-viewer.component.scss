@@ -2,7 +2,8 @@
 @import "src/app/styles/mixins";
 
 $portraitLayoutBreakpoint: $md-max;
-$maxAspectRatio: 1/1;
+$maxAspectRatio: 1;
+$globalLoadingIndicatorHeight: 6px;
 
 @mixin clickableMetadata {
   color: var(--lightestGrey);
@@ -176,18 +177,15 @@ $maxAspectRatio: 1/1;
     }
   }
 
-  position: fixed;
-  top: 4rem;
-  left: 0;
   width: 100%;
-  height: calc(100% - 4rem);
+  height: 100%;
   background-color: var(--black);
   display: flex;
   flex-direction: column;
   z-index: 1;
 
   .image-loading-container {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -214,6 +212,10 @@ $maxAspectRatio: 1/1;
     width: 100%;
     height: 100%;
     overflow: hidden;
+
+    .pan-container {
+      transition: transform 0.3s ease;
+    }
 
     .image-area {
       display: flex;
@@ -307,13 +309,14 @@ $maxAspectRatio: 1/1;
 
         @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
           position: fixed;
-          opacity: 1 !important;
-          font-size: 2rem !important;
+          opacity: .8 !important;
+          font-size: 1.25rem !important;
           border-radius: 50%;
-          height: 3.5rem;
-          width: 3.5rem;
+          height: 2rem;
+          width: 2rem;
           background: rgba(0, 0, 0, .75);
           padding: 0;
+          filter: drop-shadow(0 0 .25rem var(--black));
         }
 
         &:focus-visible {
@@ -389,9 +392,15 @@ $maxAspectRatio: 1/1;
 
         .video-js {
           width: 100%;
-          height: 100%;
+          height: 100% !important;
           max-width: 100%;
           max-height: 100%;
+
+          video {
+            height: 100% !important;
+            max-height: 100%;
+            object-fit: contain;
+          }
         }
 
         &.supports-fullscreen {
@@ -414,6 +423,8 @@ $maxAspectRatio: 1/1;
         max-height: 100%;
 
         .mouse-hover {
+          width: 100%;
+          height: 100%;
           max-width: 100%;
           max-height: 100%;
           object-fit: contain;
@@ -643,6 +654,7 @@ $maxAspectRatio: 1/1;
 
         @media (min-width: $lg-min) {
           overflow-y: auto;
+          @include custom-scrollbar;
         }
 
         @media (min-width: $xl-min) {
@@ -670,159 +682,31 @@ $maxAspectRatio: 1/1;
       overflow-y: auto;
       flex-direction: column;
       justify-content: flex-start;
+      overscroll-behavior: none;
+      @include custom-scrollbar;
     }
   }
 
-  .navigation-context-wrapper {
-    height: 2rem;
+  &.standalone {
+    position: fixed;
+    top: 63px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100% - 63px);
+    width: 100%;
     overflow: hidden;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--grey);
-    transition: height 0.3s ease;
-
-    .scroll-left,
-    .scroll-right {
-      background: transparent;
-      color: var(--white);
-      cursor: pointer;
-      font-size: 1.5rem;
-      padding: 0 2rem;
-      border: 0;
-      border-radius: 50%;
-      transition: transform 0.3s ease-in-out;
-
-      &:focus-visible {
-        outline: none !important;
-      }
-    }
-
-    .scroll-left {
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          transform: translateX(-.125rem);
-        }
-      }
-    }
-
-    .scroll-right {
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          transform: translateX(.125rem);
-        }
-      }
-    }
-
-    .navigation-context {
-      flex-grow: 1;
-      height: 100%;
-      overflow: hidden;
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-
-      &::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, and Opera */
-      }
-
-      .navigation-context-item {
-        height: 100%;
-        display: inline-flex;
-        align-items: center;
-        cursor: pointer;
-        padding: 0 .5rem;
-
-        img {
-          width: 80px;
-          height: 80px;
-          object-fit: cover;
-
-          &:hover {
-            filter: brightness(1.5);
-          }
-        }
-
-        &.active {
-          background: var(--grey);
-        }
-      }
-    }
-
-    @mixin navigation-context-wrapper-hover {
-      height: 6rem;
-
-      .scroll-left,
-      .scroll-right {
-        padding: 1rem 2rem;
-      }
-
-      .navigation-context {
-        overflow-x: auto;
-        overflow-y: hidden;
-
-        .navigation-context-item {
-          padding: 1rem 0.5rem;
-        }
-      }
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        @include navigation-context-wrapper-hover;
-      }
-    }
-
-    @media (hover: none) and (pointer: coarse) {
-      @include navigation-context-wrapper-hover;
-    }
-
-    @media (max-width: $md-max) {
-      display: none;
-    }
-  }
-
-  &.fullscreen-mode {
-    top: .325rem;
-    height: calc(100% - .325rem);
     z-index: 1030;
-
-    @media (max-width: $sm-max) {
-      &::ng-deep {
-        astrobin-mobile-menu {
-          top: .3rem;
-          z-index: 1031;
-        }
-      }
-    }
-
-    @media (max-width: $sm-max) {
-      // Leave room for the mobile menu
-      top: calc(3rem + 6px);
-      height: calc(100% - 3rem - 6px);
-
-      &::ng-deep {
-        astrobin-mobile-menu {
-          top: .325rem;
-          z-index: 1031;
-        }
-      }
-    }
   }
 
-  &:not(.fullscreen-mode) {
-    @media (max-width: $sm-max) {
-      // Leave room for the mobile menu
-      top: calc(.3rem + 3.5rem + 3rem);
-      height: calc(100vh - 108px);
-    }
-
-    @media (min-width: $lg-min) or (min-aspect-ratio: 1/1) {
-      ::ng-deep {
-        astrobin-image-viewer-floating-title {
-          right: 1rem;
-          width: calc(100% - 1rem);
-        }
+  @media (max-width: $sm-max) {
+    &::ng-deep {
+      astrobin-mobile-menu {
+        top: unset;
+        left: unset;
+        right: unset;
+        position: unset;
+        z-index: 1031;
       }
     }
   }

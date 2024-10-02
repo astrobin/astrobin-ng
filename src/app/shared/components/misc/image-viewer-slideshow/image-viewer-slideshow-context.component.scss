@@ -1,0 +1,105 @@
+@import "../../../../styles/breakpoints";
+
+.navigation-context-wrapper {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.95);
+  height: 100%;
+  transition: filter 0.3s ease-in-out;
+  filter: brightness(0.25);
+
+  .scroll-left,
+  .scroll-right {
+    background: transparent;
+    color: var(--white);
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0 2rem;
+    border: 0;
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
+
+    &:focus-visible {
+      outline: none !important;
+    }
+  }
+
+  .scroll-left {
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        transform: translateX(-.125rem);
+      }
+    }
+  }
+
+  .scroll-right {
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        transform: translateX(.125rem);
+      }
+    }
+  }
+
+  .navigation-context {
+    flex-grow: 1;
+    height: 100%;
+    overflow-x: hidden;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    display: flex;
+    align-items: center;
+
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, and Opera */
+    }
+
+    .navigation-context-item {
+      height: 100%;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      padding: .25rem;
+
+      img {
+        height: 5rem;
+        width: 5rem;
+        object-fit: contain;
+        transition: filter 0.1s ease, transform 0.1s ease;
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            filter: brightness(1.5);
+          }
+        }
+      }
+
+      &.active {
+        background: var(--lightestGrey);
+      }
+    }
+  }
+
+  @mixin navigation-context-wrapper-hover {
+    .navigation-context {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @include navigation-context-wrapper-hover;
+      filter: brightness(1);
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    @include navigation-context-wrapper-hover;
+  }
+
+  @media (max-width: $md-max) {
+    display: none;
+  }
+}

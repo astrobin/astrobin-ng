@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { LoadImage, LoadImages } from "@app/store/actions/image.actions";
+import { ForceCheckImageAutoLoad, LoadImage, LoadImages } from "@app/store/actions/image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
@@ -8,11 +8,11 @@ import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { filter, first, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { delay, filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { fromEvent, interval, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
@@ -29,7 +29,7 @@ declare const videojs: any;
 export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input()
   @HostBinding("attr.data-id")
-  id: number;
+  id: ImageInterface["pk"];
 
   @Input()
   image: ImageInterface;
@@ -42,6 +42,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   @Input()
   autoHeight = true;
+
+  @Input()
+  forceLoad = false;
 
   @Output()
   loaded = new EventEmitter();
@@ -74,6 +77,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   private _autoLoadSubscription: Subscription;
   private _pollingVideEncoderProgress = false;
   private _stopPollingVideoEncoderProgress = new Subject<void>();
+  private _retrySetWidthAndHeight = new Subject<void>();
 
   // New private properties to store previous values
   private _previousThumbnailUrl: string;
@@ -93,6 +97,15 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     public readonly imageApiService: ImageApiService
   ) {
     super(store$);
+
+    this._retrySetWidthAndHeight.pipe(
+      delay(200),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      if (this.revision) {
+        this._setWidthAndHeight(this.revision.w, this.revision.h);
+      }
+    });
   }
 
   get videoSetup(): string {
@@ -178,9 +191,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   load(delay = null) {
     const noNeedToLoad = () =>
-      !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement) || this.loading;
+      !this.utilsService.isNearOrInViewport(this.elementRef.nativeElement) || this.loading;
 
-    if (noNeedToLoad()) {
+    if (!this.forceLoad && noNeedToLoad()) {
       return;
     }
 
@@ -306,6 +319,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   private _setWidthAndHeight(imageWidth: number, imageHeight: number) {
     const containerWidth = this.elementRef.nativeElement.offsetWidth;
 
+    if (!containerWidth) {
+      this._retrySetWidthAndHeight.next();
+      return;
+    }
+
     if (imageWidth > containerWidth) {
       if (this.autoHeight) {
         this.width = containerWidth;
@@ -322,12 +340,17 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   private _setupAutoLoad() {
     if (isPlatformBrowser(this.platformId)) {
-      const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll");
-      const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize");
-      const forceCheck$ = this.actions$.pipe(ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD));
+      const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(throttleTime(100));
+      const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize").pipe(throttleTime(100));
+      const forceCheck$ = this.actions$.pipe(
+        ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD),
+        map((action: ForceCheckImageAutoLoad) => action.payload),
+        filter(payload => payload.imageId === this.id || (payload.imageId as string) === this.image?.hash),
+        tap(() => (this.forceLoad = true))
+      );
 
       this._autoLoadSubscription = merge(scroll$, resize$, forceCheck$)
-        .pipe(takeUntil(this.destroyed$), throttleTime(100))
+        .pipe(takeUntil(this.destroyed$))
         .subscribe(() => this.load());
     }
   }

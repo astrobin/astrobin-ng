@@ -5,23 +5,17 @@ import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { DeviceService } from "@shared/services/device.service";
-import { LoadImage } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
+import { delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageService } from "@shared/services/image/image.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { SearchService } from "@features/search/services/search.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { animationFrameScheduler, combineLatest, fromEvent, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
+import { animationFrameScheduler, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -29,19 +23,13 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "@env/environment";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
-import { LoadingService } from "@shared/services/loading.service";
 import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
+import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
-
-export interface ImageViewerNavigationContextItem {
-  imageId: ImageInterface["hash"] | ImageInterface["pk"];
-  thumbnailUrl: string;
-}
-
-export type ImageViewerNavigationContext = ImageViewerNavigationContextItem[];
 
 @Component({
   selector: "astrobin-image-viewer",
@@ -58,26 +46,37 @@ export class ImageViewerComponent
   revisionLabel = FINAL_REVISION_LABEL;
 
   @Input()
-  searchComponentId: string;
-
-  @Input()
-  navigationContext: ImageViewerNavigationContext;
-
-  // This is used to determine whether the view is fixed and occupying the entire screen.
-  @Input()
-  fullscreenMode = false;
-
-  @Input()
   showCloseButton = false;
 
-  @Output()
-  closeViewer = new EventEmitter<void>();
+  @Input()
+  showPreviousButton = false;
+
+  @Input()
+  showNextButton = false;
+
+  @Input()
+  standalone = true;
+
+  @Input()
+  active = true;
 
   @Output()
   initialized = new EventEmitter<void>();
 
   @Output()
-  nearEndOfContext = new EventEmitter<string>();
+  closeClick = new EventEmitter<void>();
+
+  @Output()
+  previousClick = new EventEmitter<void>();
+
+  @Output()
+  nextClick = new EventEmitter<void>();
+
+  @Output()
+  toggleFullscreen = new EventEmitter<boolean>();
+
+  @Output()
+  revisionSelected = new EventEmitter<ImageRevisionInterface["label"]>();
 
   @ViewChild("mainArea")
   mainArea: ElementRef;
@@ -97,9 +96,6 @@ export class ImageViewerComponent
   @ViewChild("scrollToTopLgMin", { static: false, read: ElementRef })
   scrollToTopLgMin: ElementRef;
 
-  @ViewChild("navigationContextElement")
-  navigationContextElement: ElementRef;
-
   @ViewChild("nestedCommentsTemplate")
   nestedCommentsTemplate: TemplateRef<any>;
 
@@ -107,17 +103,13 @@ export class ImageViewerComponent
   mouseHoverSvgObject: ElementRef;
 
   protected readonly ImageAlias = ImageAlias;
-  protected readonly NestedCommentsAutoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy;
   protected readonly isPlatformBrowser = isPlatformBrowser;
 
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;
   protected imageObjectLoaded = false;
   protected imageFileLoaded = false;
-  protected firstImageLoaded = false;
   protected alias: ImageAlias = ImageAlias.QHD;
-  protected hasOtherImages = false;
-  protected currentIndex = null;
   protected imageContentType: ContentTypeInterface;
   protected userContentType: ContentTypeInterface;
   protected supportsFullscreen: boolean;
@@ -126,7 +118,6 @@ export class ImageViewerComponent
   protected mouseHoverImage: string;
   protected forceViewMouseHover = false;
   protected inlineSvg: SafeHtml;
-
   protected isLightBoxOpen = false;
   protected showUpgradeToPlateSolveBanner$ = combineLatest([
     this.currentUser$,
@@ -146,26 +137,16 @@ export class ImageViewerComponent
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
   protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
-  private _imageChangedSubject = new Subject<ImageInterface>();
-  private _imageChanged$ = this._imageChangedSubject.asObservable();
-  private _navigationContextChangedSubject = new Subject<void>();
-  public navigationContextChanged$ = this._navigationContextChangedSubject.asObservable();
-  private _navigationContextWheelEventSubscription: Subscription;
-  private _navigationContextScrollEventSubscription: Subscription;
+
   private _dataAreaScrollEventSubscription: Subscription;
+  private _retryAdjustSvgOverlay: Subject<void> = new Subject();
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly deviceService: DeviceService,
     public readonly imageService: ImageService,
-    public readonly classicRoutesService: ClassicRoutesService,
-    public readonly searchService: SearchService,
-    public readonly router: Router,
-    public readonly modalService: NgbModal,
     public readonly jsonApiService: JsonApiService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
-    public readonly offcanvasService: NgbOffcanvas,
-    public readonly imageApiService: ImageApiService,
     public readonly domSanitizer: DomSanitizer,
     public readonly windowRefService: WindowRefService,
     public readonly utilsService: UtilsService,
@@ -173,73 +154,47 @@ export class ImageViewerComponent
     public readonly translateService: TranslateService,
     public readonly location: Location,
     public readonly titleService: TitleService,
-    public readonly loadingService: LoadingService,
     public readonly renderer: Renderer2,
     public readonly lightbox: Lightbox,
     public readonly lightboxEvent: LightboxEvent,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly activatedRoute: ActivatedRoute,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe
+    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe,
+    public readonly imageViewerService: ImageViewerService,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
 
-  @HostBinding("class.fullscreen-mode")
-  get isFullscreenMode() {
-    return this.fullscreenMode || this.viewingFullscreenImage;
+  @HostBinding("class.standalone")
+  get isStandalone() {
+    return this.standalone;
   }
 
   ngOnInit(): void {
-    if (this.deviceService.lgMax()) {
-      this.alias = ImageAlias.HD;
-    } else if (this.deviceService.xlMin()) {
-      this.alias = ImageAlias.QHD;
-    }
-
-    if (
-      this.activatedRoute.snapshot.queryParams["brightness"] ||
-      this.activatedRoute.snapshot.queryParams["contrast"] ||
-      this.activatedRoute.snapshot.queryParams["saturation"]
-    ) {
-      this.adjustmentEditorVisible = true;
-    }
-
-    this.store$.pipe(
-      select(selectContentType, { appLabel: "astrobin", model: "image" }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      this.imageContentType = contentType;
-    });
-
-    this.store$.pipe(
-      select(selectContentType, { appLabel: "auth", model: "user" }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      this.userContentType = contentType;
-    });
-
-    this.store$.dispatch(new LoadContentType({
-      appLabel: "astrobin",
-      model: "image"
-    }));
-
-    this.store$.dispatch(new LoadContentType({
-      appLabel: "auth",
-      model: "user"
-    }));
+    this._initImageAlias();
+    this._initAdjustmentEditor();
+    this._initContentTypes();
+    this.setImage(this.image, this.revisionLabel);
 
     this.initialized.emit();
   }
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
-      fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
-        throttleTime(300)
+      merge(
+        this._retryAdjustSvgOverlay.pipe(
+          delay(100),
+          takeUntil(this.destroyed$)
+        ),
+        fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
+          throttleTime(300),
+          takeUntil(this.destroyed$)
+        )
       ).subscribe(() => {
-        this.adjustSvgOverlay();
+        this._adjustSvgOverlay();
 
         if (this.adManagerComponent) {
           this._setAd();
@@ -247,31 +202,23 @@ export class ImageViewerComponent
 
         if (this._dataAreaScrollEventSubscription) {
           this._dataAreaScrollEventSubscription.unsubscribe();
-          this.initDataAreaScrollHandling();
+          this._initDataAreaScrollHandling();
         }
       });
+
+      this._initAutoOpenFullscreen();
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   ngAfterViewChecked() {
-    if (this.navigationContextElement && !this._navigationContextWheelEventSubscription) {
-      this.initNavigationScrollHandling();
-    }
-
     if (this.mainArea && this.dataArea && !this._dataAreaScrollEventSubscription) {
-      this.initDataAreaScrollHandling();
+      this._initDataAreaScrollHandling();
     }
   }
 
   ngOnDestroy() {
-    if (this._navigationContextWheelEventSubscription) {
-      this._navigationContextWheelEventSubscription.unsubscribe();
-    }
-
-    if (this._navigationContextScrollEventSubscription) {
-      this._navigationContextScrollEventSubscription.unsubscribe();
-    }
-
     if (this._dataAreaScrollEventSubscription) {
       this._dataAreaScrollEventSubscription.unsubscribe();
     }
@@ -279,69 +226,191 @@ export class ImageViewerComponent
     super.ngOnDestroy();
   }
 
-  initNavigationScrollHandling() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    if (this.navigationContextElement) {
-      const el = this.navigationContextElement.nativeElement;
-
-      this._navigationContextWheelEventSubscription = fromEvent<WheelEvent>(el, "wheel")
-        .subscribe(event => {
-          const scrollAmount = event.deltaY;
-          if (scrollAmount) {
-            el.scrollLeft += scrollAmount;
-          }
-        });
-
-      this._navigationContextScrollEventSubscription = fromEvent<Event>(el, "scroll")
-        .pipe(throttleTime(200))
-        .subscribe(() => {
-          const maxScrollLeft = el.scrollWidth;
-          const currentScrollLeft = el.scrollLeft + el.clientWidth;
-
-          if (currentScrollLeft >= maxScrollLeft - el.clientWidth * 2) {
-            this.nearEndOfContext.emit(this.searchComponentId);
-          }
-        });
-
-      // Ensure that change detection runs to update the view
-      this.changeDetectorRef.detectChanges();
+  @HostListener("window:popstate", ["$event"])
+  onPopState(event: PopStateEvent) {
+    if (this.standalone && this.viewingFullscreenImage) {
+      this.exitFullscreen();
     }
   }
 
-  initDataAreaScrollHandling() {
-    if (!isPlatformBrowser(this.platformId)) {
+  @HostListener("document:keydown.escape", ["$event"])
+  handleEscapeKey(event: KeyboardEvent) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    if (this.viewingFullscreenImage) {
+      this.exitFullscreen();
       return;
     }
 
-    let scrollArea: HTMLElement;
-    const windowWidth = this.windowRefService.nativeWindow.innerWidth;
-    const windowHeight = this.windowRefService.nativeWindow.innerHeight;
-    const viewPortAspectRatio = windowWidth / windowHeight;
-    const sideToSideLayout = this.deviceService.lgMin() || viewPortAspectRatio > 1;
-    const hasMobileMenu = this.deviceService.mdMax();
-    const hasSiteHeader = !this.fullscreenMode;
-
-    if (sideToSideLayout) {
-      scrollArea = this.dataArea.nativeElement;
-    } else {
-      scrollArea = this.mainArea.nativeElement;
+    if (this.adjustmentEditorVisible) {
+      this.adjustmentEditorVisible = false;
+      return;
     }
 
-    this._dataAreaScrollEventSubscription = fromEvent<Event>(scrollArea, "scroll")
-      .pipe(
-        throttleTime(30, animationFrameScheduler, { leading: true, trailing: true }),
-        observeOn(animationFrameScheduler)
-      )
-      .subscribe(() => {
-        this._handleNavigationButtonsVisibility(scrollArea);
-        this._handleFloatingTitleOnScroll(scrollArea, hasSiteHeader, hasMobileMenu, sideToSideLayout);
-      });
+    if (this.offcanvasService.hasOpenOffcanvas()) {
+      this.offcanvasService.dismiss();
+      return;
+    }
+
+    if (this.modalService.hasOpenModals()) {
+      this.modalService.dismissAll();
+      return;
+    }
+
+    if (this._ignoreNavigationEvent()) {
+      return;
+    }
+
+    this.closeClick.emit();
   }
 
-  onDescriptionClicked(event: MouseEvent) {
+  @HostListener("document:keyup.arrowRight", ["$event"])
+  onArrowRight(event: KeyboardEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    if (this._ignoreNavigationEvent()) {
+      return;
+    }
+
+    this.nextClick.emit();
+  }
+
+  @HostListener("document:keyup.arrowLeft", ["$event"])
+  onArrowLeft(event: KeyboardEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    if (this._ignoreNavigationEvent()) {
+      return;
+    }
+
+    this.previousClick.emit();
+  }
+
+  setImage(
+    image: ImageInterface,
+    revisionLabel: ImageRevisionInterface["label"]
+  ): void {
+    this._scrollToTop();
+
+    this.imageService.removeInvalidImageNotification();
+    this.imageObjectLoaded = true;
+    this.imageFileLoaded = false;
+    this.image = image;
+    this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
+
+    this._initRevision();
+    this._updateSupportsFullscreen();
+    this._setMouseHoverImage();
+    this._recordHit();
+    this._setAd();
+    this._setMetaTags();
+
+    // Updates to the current image.
+    this.store$.pipe(
+      select(selectImage, image.pk),
+      filter(image => !!image),
+      takeUntil(this.destroyed$)
+    ).subscribe((image: ImageInterface) => {
+      this.image = { ...image };
+      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+      this._setMouseHoverImage();
+    });
+
+    this.changeDetectorRef.detectChanges();
+  }
+
+  protected onImageLoaded(): void {
+    this.imageFileLoaded = true;
+  }
+
+  protected onImageMouseEnter(event: MouseEvent): void {
+    event.preventDefault();
+    if (!this.deviceService.isTouchEnabled()) {
+      this.imageArea.nativeElement.classList.add("hover");
+    }
+  }
+
+  protected onImageMouseLeave(event: MouseEvent): void {
+    event.preventDefault();
+    this.imageArea.nativeElement.classList.remove("hover");
+  }
+
+  protected onRevisionSelected(revisionLabel: ImageRevisionInterface["label"], pushState: boolean): void {
+    if (this.revisionLabel === revisionLabel) {
+      return;
+    }
+
+    this.revisionLabel = revisionLabel;
+
+    if (pushState) {
+      let url = this.location.path();
+      url = UtilsService.addOrUpdateUrlParam(url, "r", revisionLabel);
+      this.windowRefService.pushState(
+        {
+          imageId: this.image.hash || this.image.pk,
+          revisionLabel
+        },
+        url
+      );
+    }
+
+    this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+    this._setMouseHoverImage();
+    this.revisionSelected.emit(revisionLabel);
+  }
+
+  protected toggleViewMouseHover(): void {
+    this.forceViewMouseHover = !this.forceViewMouseHover;
+  }
+
+  protected enterFullscreen(event: MouseEvent | null): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (this.supportsFullscreen) {
+      this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
+      this.viewingFullscreenImage = true;
+      this.toggleFullscreen.emit(true);
+
+      if (isPlatformBrowser(this.platformId)) {
+        const location_ = this.windowRefService.nativeWindow.location;
+        this.windowRefService.pushState(
+          {
+            imageId: this.image.hash || this.image.pk,
+            revisionLabel: this.revisionLabel,
+            fullscreen: true
+          },
+          `${location_.pathname}${location_.search}#fullscreen`
+        );
+      }
+    }
+  }
+
+  protected exitFullscreen(): void {
+    this.store$.dispatch(new HideFullscreenImage());
+    this.viewingFullscreenImage = false;
+    this.toggleFullscreen.emit(false);
+
+    if (isPlatformBrowser(this.platformId)) {
+      const location_ = this.windowRefService.nativeWindow.location;
+      this.windowRefService.replaceState(
+        {},
+        `${location_.pathname}${location_.search}`
+      );
+    }
+  }
+
+  protected onDescriptionClicked(event: MouseEvent) {
     if (this.isLightBoxOpen) {
       return;
     }
@@ -369,38 +438,17 @@ export class ImageViewerComponent
     }
   }
 
-  setNavigationContext(navigationContext: ImageViewerNavigationContext): void {
-    let currentScrollLeft = null;
-    const navigationContextLength = navigationContext.length;
-
-    if (this.navigationContextElement) {
-      currentScrollLeft = this.navigationContextElement.nativeElement.scrollLeft;
-    }
-
-    if (this.navigationContext) {
-      this.navigationContext.splice(0, this.navigationContext.length, ...navigationContext);
-    } else {
-      this.navigationContext = navigationContext;
-    }
-
-    if (currentScrollLeft !== null && navigationContextLength !== this.navigationContext.length) {
-      this.utilsService.delay(1).subscribe(() => {
-        this.navigationContextElement.nativeElement.scrollLeft = currentScrollLeft;
-      });
-    }
-
-    this._updateNavigationContextInformation();
-
-    this._navigationContextChangedSubject.next();
+  private _ignoreNavigationEvent() {
+    return (
+      !this.active ||
+      this.offcanvasService.hasOpenOffcanvas() ||
+      this.modalService.hasOpenModals() ||
+      this.viewingFullscreenImage ||
+      this.isLightBoxOpen
+    );
   }
 
-  setImage(
-    image: ImageInterface,
-    revisionLabel: ImageRevisionInterface["label"],
-    fullscreenMode: boolean,
-    navigationContext: ImageViewerNavigationContext,
-    pushState: boolean
-  ): void {
+  private _scrollToTop() {
     if (this.dataArea) {
       this.renderer.setProperty(this.dataArea.nativeElement, "scrollTop", 0);
 
@@ -408,98 +456,9 @@ export class ImageViewerComponent
         this.renderer.setProperty(this.mainArea.nativeElement, "scrollTop", 0);
       }
     }
-
-    if (image === null) {
-      this.imageObjectLoaded = false;
-      this.imageFileLoaded = false;
-      this.image = null;
-      this.revisionLabel = null;
-      this.revision = null;
-      this.mouseHoverImage = null;
-      this.inlineSvg = null;
-      this.supportsFullscreen = false;
-      this.viewingFullscreenImage = false;
-      this.showRevisions = false;
-      this.imageService.showInvalidImageNotification();
-      this.close();
-      return;
-    }
-
-    this.imageService.removeInvalidImageNotification();
-    this.imageObjectLoaded = true;
-    this.imageFileLoaded = false;
-    this.image = image;
-    this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
-
-    this.windowRefService.replaceState(
-      {
-        imageId: image.hash || image.pk,
-        revisionLabel: this.revisionLabel,
-        fullscreenMode
-      },
-      this._getPath(image, this.revisionLabel, fullscreenMode)
-    );
-
-    this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-
-    this.updateSupportsFullscreen();
-
-    if (this.revision.hasOwnProperty("label")) {
-      this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
-    } else {
-      this.onRevisionSelected(ORIGINAL_REVISION_LABEL, false);
-    }
-
-    if (fullscreenMode) {
-      this.enterFullscreen(null);
-    }
-
-    this.setMouseHoverImage();
-    this.setNavigationContext(navigationContext);
-    this._recordHit();
-    this._setAd();
-
-    if (this.navigationContextElement) {
-      this.windowRefService.scrollToElement(
-        `#image-viewer-context-${image.hash || image.pk}`,
-        {
-          behavior: "smooth",
-          block: "center",
-          inline: "center"
-        }
-      );
-    }
-
-    this._imageChangedSubject.next(image);
-
-    // Updates to the current image.
-    this.store$.pipe(
-      select(selectImage, image.pk),
-      filter(image => !!image),
-      takeUntil(this._imageChanged$)
-    ).subscribe((image: ImageInterface) => {
-      this.image = { ...image };
-      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-      this.setMouseHoverImage();
-    });
-
-    this.changeDetectorRef.detectChanges();
-
-    if (pushState) {
-      this.windowRefService.pushState(
-        {
-          imageId: image.hash || image.pk,
-          revisionLabel: this.revisionLabel,
-          fullscreenMode
-        },
-        this._getPath(image, this.revisionLabel, fullscreenMode)
-      );
-    }
-
-    this._setMetaTags();
   }
 
-  setMouseHoverImage() {
+  private _setMouseHoverImage() {
     if (!this.revision) {
       return;
     }
@@ -513,7 +472,7 @@ export class ImageViewerComponent
       case MouseHoverImageOptions.SOLUTION:
         if (this.revision?.solution?.pixinsightSvgAnnotationRegular) {
           this.mouseHoverImage = null;
-          this.loadInlineSvg$(
+          this._loadInlineSvg$(
             environment.classicBaseUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
           ).subscribe(inlineSvg => {
             this.inlineSvg = inlineSvg;
@@ -552,181 +511,16 @@ export class ImageViewerComponent
     }
   }
 
-  @HostListener("window:popstate", ["$event"])
-  onPopState(event: any) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (this.viewingFullscreenImage) {
-      this.exitFullscreen(false);
-    } else {
-      if (event.state?.imageId && event.state?.imageId !== (this.image.hash || this.image.pk)) {
-        this._navigateToImage(
-          event.state.imageId,
-          event.state.revisionLabel || FINAL_REVISION_LABEL,
-          !!event.state.fullscreen,
-          false);
-      } else {
-        this.close();
-      }
-    }
-  }
-
-  @HostListener("document:keydown.escape", ["$event"])
-  handleEscapeKey(event: KeyboardEvent) {
-    if (this.viewingFullscreenImage) {
-      this.exitFullscreen(true);
-      return;
-    }
-
-    if (this.adjustmentEditorVisible) {
-      this.adjustmentEditorVisible = false;
-      return;
-    }
-
-    if (this._ignoreNavigationEvent()) {
-      return;
-    }
-
-    this.close();
-  }
-
-  @HostListener("document:keydown.arrowRight", ["$event"])
-  onNextClicked(): void {
-    if (this._ignoreNavigationEvent()) {
-      return;
-    }
-
-    const contextItem = this.navigationContext[this.currentIndex + 1];
-
-    if (!contextItem) {
-      return;
-    }
-
-    this._navigateToImage(contextItem.imageId, FINAL_REVISION_LABEL, false, true);
-  }
-
-  @HostListener("document:keydown.arrowLeft", ["$event"])
-  onPreviousClicked(): void {
-    if (this._ignoreNavigationEvent()) {
-      return;
-    }
-
-    const contextItem = this.navigationContext[this.currentIndex - 1];
-
-    if (!contextItem) {
-      return;
-    }
-
-    this._navigateToImage(contextItem.imageId, FINAL_REVISION_LABEL, false, true);
-  }
-
-  onImageLoaded(): void {
-    this.imageFileLoaded = true;
-    this.firstImageLoaded = true;
-  }
-
-  onImageMouseEnter(event: MouseEvent): void {
-    event.preventDefault();
-    if (!this.deviceService.isTouchEnabled()) {
-      this.imageArea.nativeElement.classList.add("hover");
-    }
-  }
-
-  onImageMouseLeave(event: MouseEvent): void {
-    event.preventDefault();
-    this.imageArea.nativeElement.classList.remove("hover");
-  }
-
-  onRevisionSelected(revisionLabel: ImageRevisionInterface["label"], pushState: boolean): void {
-    if (this.revisionLabel === revisionLabel) {
-      return;
-    }
-
-    this.revisionLabel = revisionLabel;
-    this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-    this.setMouseHoverImage();
-
-    if (pushState) {
-      this.windowRefService.pushState(
-        {
-          imageId: this.image.hash || this.image.pk,
-          revisionLabel
-        },
-        this._getPath(this.image, revisionLabel)
-      );
-    }
-  }
-
-  toggleViewMouseHover(): void {
-    this.forceViewMouseHover = !this.forceViewMouseHover;
-  }
-
-  updateSupportsFullscreen(): void {
-    this.supportsFullscreen = (
-      this.revision &&
-      !this.revision.videoFile &&
-      (
-        !this.revision.imageFile ||
-        !this.revision.imageFile.toLowerCase().endsWith(".gif")
-      )
-    );
-  }
-
-  enterFullscreen(event: MouseEvent | null): void {
-    if (event) {
-      event.preventDefault();
-    }
-
-    if (this.supportsFullscreen) {
-      this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
-      this.viewingFullscreenImage = true;
-
-      this.windowRefService.pushState(
-        {
-          imageId: this.image.hash || this.image.pk,
-          revisionLabel: this.revisionLabel,
-          fullscreen: true
-        },
-        this._getPath(this.image, this.revisionLabel, true)
-      );
-    }
-  }
-
-  exitFullscreen(pushState: boolean): void {
-    if (this.viewingFullscreenImage) {
-      this.store$.dispatch(new HideFullscreenImage());
-      this.viewingFullscreenImage = false;
-
-      if (pushState) {
-        this.windowRefService.pushState(
-          {
-            imageId: this.image.hash || this.image.pk,
-            revisionLabel: this.revisionLabel
-          },
-          this._getPath(this.image, this.revisionLabel)
-        );
-      }
-    }
-  }
-
-  close(): void {
-    this.exitFullscreen(true);
-    this.modalService.dismissAll();
-    this.offcanvasService.dismiss();
-    this.closeViewer.emit();
-  }
-
-  loadInlineSvg$(svgUrl: string): Observable<SafeHtml> {
+  private _loadInlineSvg$(svgUrl: string): Observable<SafeHtml> {
     return this.http.get(svgUrl, { responseType: "text" }).pipe(
       map(svgContent => {
-        this.onMouseHoverSvgLoad();
+        this._onMouseHoverSvgLoad();
         return this.domSanitizer.bypassSecurityTrustHtml(svgContent);
       })
     );
   }
 
-  onMouseHoverSvgLoad(): void {
+  private _onMouseHoverSvgLoad(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.utilsService.delay(100).subscribe(() => {
         const _doc = this.windowRefService.nativeWindow.document;
@@ -753,16 +547,18 @@ export class ImageViewerComponent
           );
         }
 
-        this.adjustSvgOverlay();
+        this._adjustSvgOverlay();
       });
     }
   }
 
-  adjustSvgOverlay(): void {
+  private _adjustSvgOverlay(): void {
+    if (!this.inlineSvg) {
+      return;
+    }
+
     if (!this.imageArea) {
-      this.utilsService.delay(100).subscribe(() => {
-        this.adjustSvgOverlay();
-      });
+      this._retryAdjustSvgOverlay.next();
       return;
     }
 
@@ -770,9 +566,7 @@ export class ImageViewerComponent
     const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-svg-container") as HTMLElement;
 
     if (!overlaySvgElement) {
-      this.utilsService.delay(100).subscribe(() => {
-        this.adjustSvgOverlay();
-      });
+      this._retryAdjustSvgOverlay.next();
       return;
     }
 
@@ -811,35 +605,121 @@ export class ImageViewerComponent
     overlaySvgElement.querySelector(".mouse-hover").classList.add("ready");
   }
 
-  protected navigationContextTrackByFn(
-    index: number,
-    item: ImageViewerNavigationContextItem
-  ): ImageViewerNavigationContextItem["imageId"] {
-    return item.imageId;
+  private _initDataAreaScrollHandling() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const {
+      scrollArea,
+      sideToSideLayout
+    } = this.imageViewerService.getScrollArea();
+    const hasMobileMenu = this.deviceService.mdMax();
+
+    if (!scrollArea) {
+      return;
+    }
+
+    this._dataAreaScrollEventSubscription = fromEvent<Event>(scrollArea, "scroll")
+      .pipe(
+        throttleTime(100, animationFrameScheduler, { leading: true, trailing: true }),
+        observeOn(animationFrameScheduler)
+      )
+      .subscribe(() => {
+        this._handleFloatingTitleOnScroll(scrollArea, this.standalone, hasMobileMenu, sideToSideLayout);
+        this._handleNavigationButtonsVisibility(scrollArea);
+      });
   }
 
-  protected onNavigationContextClicked(index: number) {
-    const imageId = this.navigationContext[index].imageId;
-    this._navigateToImage(imageId, FINAL_REVISION_LABEL, false, true);
+  private _initImageAlias() {
+    if (this.deviceService.lgMax()) {
+      this.alias = ImageAlias.HD;
+    } else if (this.deviceService.xlMin()) {
+      this.alias = ImageAlias.QHD;
+    }
   }
 
-  protected scrollNavigationContextLeft(): void {
-    const el = this.navigationContextElement.nativeElement;
-    el.scrollBy({
-      left: -el.clientWidth,
-      behavior: "smooth"
+  private _initAdjustmentEditor() {
+    if (
+      this.activatedRoute.snapshot.queryParams["brightness"] ||
+      this.activatedRoute.snapshot.queryParams["contrast"] ||
+      this.activatedRoute.snapshot.queryParams["saturation"]
+    ) {
+      this.adjustmentEditorVisible = true;
+    }
+  }
+
+  private _initAutoOpenFullscreen() {
+    if (isPlatformBrowser(this.platformId)) {
+      const hash = this.windowRefService.nativeWindow.location.hash;
+      if (hash === "#fullscreen") {
+        this.enterFullscreen(null);
+      }
+    }
+  }
+
+  private _initContentTypes() {
+    this.store$.pipe(
+      select(selectContentType, { appLabel: "astrobin", model: "image" }),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      this.imageContentType = contentType;
     });
-  }
 
-  protected scrollNavigationContextRight(): void {
-    const el = this.navigationContextElement.nativeElement;
-    el.scrollBy({
-      left: el.clientWidth,
-      behavior: "smooth"
+    this.store$.pipe(
+      select(selectContentType, { appLabel: "auth", model: "user" }),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      this.userContentType = contentType;
     });
+
+    this.store$.dispatch(new LoadContentType({
+      appLabel: "astrobin",
+      model: "image"
+    }));
+
+    this.store$.dispatch(new LoadContentType({
+      appLabel: "auth",
+      model: "user"
+    }));
   }
 
-  private _handleFloatingTitleOnScroll(scrollArea: HTMLElement, hasSiteHeader: boolean, hasMobileMenu: boolean, sideToSideLayout: boolean) {
+  private _initRevision() {
+    if (this.revisionLabel === ORIGINAL_REVISION_LABEL) {
+      this.revision = this.image;
+      this.onRevisionSelected(ORIGINAL_REVISION_LABEL, false);
+      return;
+    }
+
+    if (this.revisionLabel === FINAL_REVISION_LABEL || this.revisionLabel === null || this.revisionLabel === undefined) {
+      this.revision = this.imageService.getFinalRevision(this.image);
+      this.onRevisionSelected(FINAL_REVISION_LABEL, false);
+      return;
+    }
+
+    this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+    this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
+  }
+
+  private _updateSupportsFullscreen(): void {
+    this.supportsFullscreen = (
+      this.revision &&
+      !this.revision.videoFile &&
+      (
+        !this.revision.imageFile ||
+        !this.revision.imageFile.toLowerCase().endsWith(".gif")
+      )
+    );
+  }
+
+  private _handleFloatingTitleOnScroll(
+    scrollArea: HTMLElement,
+    hasSiteHeader: boolean,
+    hasMobileMenu: boolean,
+    sideToSideLayout: boolean
+  ) {
     const socialButtons = scrollArea.querySelector(
       "astrobin-image-viewer-photographers astrobin-image-viewer-social-buttons"
     ) as HTMLElement | null;
@@ -864,19 +744,19 @@ export class ImageViewerComponent
     const socialButtonsAboveViewport = socialButtonsRect.bottom < scrollAreaRect.top;
 
     if (socialButtonsAboveViewport) {
-      let translateYValue;
+      let translateYValue: string;
 
       if (sideToSideLayout) {
         // The position is relative to the data area.
         translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
       } else {
         // The position is relative to the main area.
-        translateYValue = `${siteHeaderHeight + globalLoadingIndicatorHeight + mobileMenuHeight - 1}px`;
+        translateYValue = `${globalLoadingIndicatorHeight + siteHeaderHeight + mobileMenuHeight - 1}px`;
       }
 
       this.renderer.setStyle(floatingTitle, "transform", `translateY(${translateYValue})`);
     } else {
-      this.renderer.setStyle(floatingTitle, "transform", "translateY(-100%)");
+      this.renderer.setStyle(floatingTitle, "transform", "translateY(-120%)");
     }
   }
 
@@ -945,82 +825,6 @@ export class ImageViewerComponent
     });
   }
 
-  private _ignoreNavigationEvent() {
-    return this.offcanvasService.hasOpenOffcanvas() ||
-      this.modalService.hasOpenModals() ||
-      this.isLightBoxOpen;
-  }
-
-  private _navigateToImage(
-    imageId: ImageInterface["hash"] | ImageInterface["pk"],
-    revisionLabel: ImageRevisionInterface["label"],
-    fullscreenMode: boolean,
-    pushState: boolean
-  ): void {
-    this.modalService.dismissAll();
-    this.offcanvasService.dismiss();
-    this.exitFullscreen(false);
-    this.imageObjectLoaded = false;
-    this.imageFileLoaded = false;
-
-    this.imageService.loadImage(imageId).subscribe({
-      next: image => {
-        this.setImage(
-          image,
-          revisionLabel,
-          fullscreenMode,
-          this.navigationContext,
-          pushState
-        );
-      },
-      error: err => {
-        this.setImage(
-          null,
-          null,
-          fullscreenMode,
-          this.navigationContext,
-          pushState
-        );
-      }
-    });
-    this.store$.dispatch(new LoadImage({ imageId }));
-  }
-
-  private _updateCurrentImageIndexInNavigationContext(): void {
-    const byHash = this.navigationContext.findIndex(item => item.imageId === this.image.hash);
-    const byPk = this.navigationContext.findIndex(item => {
-        try {
-          const itemImageIdAsNumber = parseInt(item.imageId + "", 10);
-          const imagePkAsNumber = parseInt(this.image.pk + "", 10);
-          return itemImageIdAsNumber === imagePkAsNumber;
-        } catch (e) {
-          return -1;
-        }
-      }
-    );
-
-    this.currentIndex = byHash !== -1 ? byHash : byPk;
-  }
-
-  private _updateNavigationContextInformation(): void {
-    const previousIndex = this.currentIndex;
-
-    this._updateCurrentImageIndexInNavigationContext();
-
-    this.hasOtherImages = this.navigationContext.filter(item =>
-      item.imageId !== this.image.hash &&
-      item.imageId !== this.image.pk
-    ).length > 0;
-
-    if (
-      this.currentIndex > previousIndex &&
-      this.navigationContext.length > 5
-      && this.currentIndex === this.navigationContext.length - 5
-    ) {
-      this.nearEndOfContext.emit(this.searchComponentId);
-    }
-  }
-
   private _recordHit() {
     const contentTypePayload = {
       appLabel: "astrobin",
@@ -1081,35 +885,5 @@ export class ImageViewerComponent
       property: "og:url",
       content: this.windowRefService.getCurrentUrl().toString()
     });
-  }
-
-  private _getPath(
-    image: ImageInterface,
-    revisionLabel: ImageRevisionInterface["label"],
-    fullscreenMode = false
-  ): string {
-    let path = this.location.path().split("#")[0];
-
-    if (!path.includes(image.hash || image.pk + "")) {
-      path = UtilsService.addOrUpdateUrlParam(path, "i", image.hash || ("" + image.pk));
-    }
-
-    if (
-      revisionLabel !== FINAL_REVISION_LABEL &&
-      (
-        image.isFinal === false ||
-        revisionLabel !== ORIGINAL_REVISION_LABEL
-      )
-    ) {
-      path = UtilsService.addOrUpdateUrlParam(path, "r", revisionLabel);
-    } else {
-      path = UtilsService.removeUrlParam(path, "r");
-    }
-
-    if (fullscreenMode) {
-      path += `#fullscreen`;
-    }
-
-    return path;
   }
 }
