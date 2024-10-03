@@ -34,6 +34,14 @@ export class UtilsService {
   ) {
   }
 
+  static padNumber(num: number, size: number = 2): string {
+    let s = num + "";
+    while (s.length < size) {
+      s = "0" + s;
+    }
+    return s;
+  }
+
   static removeQuotes(str: string): string {
     if (str.length >= 2 && str.startsWith("\"") && str.endsWith("\"")) {
       return str.slice(1, -1);

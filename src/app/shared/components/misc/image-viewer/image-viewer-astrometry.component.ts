@@ -12,6 +12,7 @@ import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
 import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-image-viewer-astrometry",
@@ -57,7 +58,7 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
         </div>
         <div class="metadata-label">
           <span
-            (click)="openFindImagesInTheSameArea()"
+            (click)="openMoreInfo($event)"
             [innerHTML]="coordinates"
             astrobinEventPreventDefault
             class="coordinates"
@@ -90,19 +91,6 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
           ></fa-icon>
         </div>
         <div [innerHTML]="pixelScale" class="metadata-label">
-        </div>
-      </div>
-
-      <div class="metadata-item">
-        <div class="metadata-icon">
-          <fa-icon
-            [ngbTooltip]="'More info' | translate"
-            triggers="hover"
-            container="body"
-            (click)="openMoreInfo($event)"
-            data-toggle="offcanvas"
-            icon="circle-info"
-          ></fa-icon>
         </div>
       </div>
     </div>
@@ -151,16 +139,26 @@ import { SearchCoordsFilterComponent } from "@features/search/components/filters
           </tr>
           </tbody>
         </table>
-      </div>
-    </ng-template>
 
-    <ng-template #findImagesInTheSameAreaOffcanvas let-offcanvas>
-      <div class="offcanvas-header">
-        <h4 class="offcanvas-title">{{ "Find images in the same area" | translate }}</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
-      </div>
-      <div class="offcanvas-body">
-        <p>
+        <hr class="my-4" />
+
+        <h5 class="offcanvas-title">{{ "Copy coordinates" | translate }}</h5>
+
+        <p class="mt-1">
+          {{ "Copy the coordinates in decimal or sexagesimal format to your clipboard." | translate }}
+        </p>
+
+        <textarea
+          class="form-control mt-1"
+          rows="6"
+          readonly
+        >{{ coordinatesTextArea }}</textarea>
+
+        <hr class="my-4" />
+
+        <h5 class="offcanvas-title">{{ "Find images in the same area" | translate }}</h5>
+
+        <p class="mt-2">
           {{
             "Select how many degrees around the center coordinates you'd like to search for astro images, " +
             "ranging from 1 to 5 degrees." | translate
@@ -186,6 +184,7 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   celestialHemisphere: string;
   constellation: string;
   coordinates: string;
+  coordinatesTextArea: string;
   fieldRadius: string;
   pixelScale: string;
   orientation: string;
@@ -193,9 +192,6 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
 
   @ViewChild("moreInfoTemplate")
   moreInfoTemplate: TemplateRef<any>;
-
-  @ViewChild("findImagesInTheSameAreaOffcanvas")
-  findImagesInTheSameAreaOffcanvas: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -207,6 +203,7 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     public readonly deviceService: DeviceService,
     public readonly windowRefService: WindowRefService,
     public readonly astroUtilsService: AstroUtilsService,
+    public readonly translateService: TranslateService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -218,6 +215,11 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
       this.celestialHemisphere = this.imageService.getCelestialHemisphere(image, this.revisionLabel);
       this.constellation = this.imageService.getConstellation(image, this.revisionLabel);
       this.coordinates = this.imageService.getCoordinates(image, this.revisionLabel);
+      this.coordinatesTextArea =
+        this.translateService.instant("Decimal") + ": \n" +
+        this.imageService.getCoordinatesInDecimalFormat(image, this.revisionLabel) + "\n\n" +
+        this.translateService.instant("Sexagesimal") + ": \n" +
+        this.imageService.getCoordinates(image, this.revisionLabel, false, false, true, 2);
       this.fieldRadius = this.imageService.getFieldRadius(image, this.revisionLabel);
       this.pixelScale = this.imageService.getPixelScale(image, this.revisionLabel);
       this.orientation = this.imageService.getOrientation(image, this.revisionLabel);
@@ -239,12 +241,6 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     });
   }
 
-  openFindImagesInTheSameArea(): void {
-    this.offcanvasService.open(this.findImagesInTheSameAreaOffcanvas, {
-      panelClass: "offcanvas-find-images-in-the-same-area",
-      position: this.deviceService.offcanvasPosition()
-    });
-  }
 
   findImagesInTheSameArea(degree: number): void {
     this.offcanvasService.dismiss();
