@@ -142,21 +142,22 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       return;
     }
 
-    const nativeWindow = this.windowRefService.nativeWindow;
-    const document = nativeWindow.document;
+    const _win = this.windowRefService.nativeWindow;
+    const _doc = _win.document;
+    const imageId = this.image.hash || this.image.pk;
 
-    const adManagerElement: HTMLElement | null = document.querySelector(
-      "astrobin-image-viewer .data-area astrobin-ad-manager"
+    const adManagerElement: HTMLElement | null = _doc.querySelector(
+      `#image-viewer-${imageId} .data-area astrobin-ad-manager`
     );
 
-    const floatingTitleElement: HTMLElement | null = document.querySelector(
-      "astrobin-image-viewer astrobin-image-viewer-floating-title"
+    const floatingTitleElement: HTMLElement | null = _doc.querySelector(
+      `#image-viewer-${imageId} astrobin-image-viewer-floating-title`
     );
 
     let offsetHeight = 0;
 
     if (adManagerElement) {
-      const computedStyle = nativeWindow.getComputedStyle(adManagerElement);
+      const computedStyle = _win.getComputedStyle(adManagerElement);
       if (computedStyle.position === "sticky" || computedStyle.position === "fixed") {
         offsetHeight += adManagerElement.offsetHeight;
       }
@@ -166,8 +167,10 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       offsetHeight += floatingTitleElement.offsetHeight;
     }
 
-    const commentsSection: HTMLElement | null = document.getElementById("image-viewer-comments-header");
-    const scrollArea: HTMLElement | null = this.imageViewerService.getScrollArea().scrollArea;
+    const commentsSection: HTMLElement | null = _doc.querySelector(
+      `#image-viewer-${imageId} .image-viewer-comments-header`
+    );
+    const scrollArea: HTMLElement | null = this.imageViewerService.getScrollArea(this.image.hash || this.image.pk).scrollArea;
 
     if (commentsSection && scrollArea) {
       // Calculate the position of commentsSection relative to scrollArea

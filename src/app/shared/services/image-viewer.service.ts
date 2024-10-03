@@ -154,7 +154,7 @@ export class ImageViewerService extends BaseService {
     }
   }
 
-  getScrollArea(): {
+  getScrollArea(imageId: ImageInterface["hash"] | ImageInterface["pk"]): {
     scrollArea: HTMLElement;
     windowWidth: number;
     windowHeight: number;
@@ -170,11 +170,11 @@ export class ImageViewerService extends BaseService {
 
     if (sideToSideLayout) {
       scrollArea = this.windowRefService.nativeWindow.document.querySelector(
-        "astrobin-image-viewer > .main-area-container > .main-area > .data-area-container > .data-area"
+        `#image-viewer-${imageId} > .main-area-container > .main-area > .data-area-container > .data-area`
       );
     } else {
       scrollArea = this.windowRefService.nativeWindow.document.querySelector(
-        "astrobin-image-viewer > .main-area-container > .main-area"
+        `#image-viewer-${imageId} > .main-area-container > .main-area`
       );
     }
 

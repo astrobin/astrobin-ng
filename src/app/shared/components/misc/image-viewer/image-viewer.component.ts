@@ -102,6 +102,11 @@ export class ImageViewerComponent
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
 
+  @HostBinding("id")
+  get id() {
+    return this.image ? `image-viewer-${this.image.hash || this.image.pk}` : null;
+  }
+
   protected readonly ImageAlias = ImageAlias;
   protected readonly isPlatformBrowser = isPlatformBrowser;
 
@@ -613,7 +618,7 @@ export class ImageViewerComponent
     const {
       scrollArea,
       sideToSideLayout
-    } = this.imageViewerService.getScrollArea();
+    } = this.imageViewerService.getScrollArea(this.image.hash || this.image.pk);
     const hasMobileMenu = this.deviceService.mdMax();
 
     if (!scrollArea) {
