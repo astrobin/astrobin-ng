@@ -15,7 +15,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { delay, filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { fromEvent, interval, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
-import { isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { isPlatformBrowser } from "@angular/common";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 
@@ -73,6 +73,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   protected videoJsReady = false;
   protected revision: ImageInterface | ImageRevisionInterface;
 
+  private readonly _isBrowser: boolean;
   private _videoJsPlayer: any;
   private _autoLoadSubscription: Subscription;
   private _pollingVideEncoderProgress = false;
@@ -97,6 +98,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     public readonly imageApiService: ImageApiService
   ) {
     super(store$);
+
+    this._isBrowser = isPlatformBrowser(this.platformId);
 
     this._retrySetWidthAndHeight.pipe(
       delay(200),
@@ -169,7 +172,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
 
   ngOnDestroy(): void {
-    if (this.thumbnailUrl) {
+    if (this.thumbnailUrl && this._isBrowser) {
       (this.windowRefService.nativeWindow as any).URL.revokeObjectURL(this.thumbnailUrl as string);
     }
 
@@ -195,7 +198,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   load() {
     const noNeedToLoad = () =>
-      !this.utilsService.isNearOrInViewport(this.elementRef.nativeElement) || this.loading;
+      !this.utilsService.isNearOrInViewport(this.elementRef.nativeElement) ||
+      this.loading ||
+      !this._isBrowser;
 
     if (!this.forceLoad && noNeedToLoad()) {
       return;
@@ -321,6 +326,10 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _setWidthAndHeight(imageWidth: number, imageHeight: number) {
+    if (!this._isBrowser) {
+      return;
+    }
+
     const containerWidth = this.elementRef.nativeElement.offsetWidth;
 
     if (!containerWidth) {
@@ -343,7 +352,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _setupAutoLoad() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this._isBrowser) {
       const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(throttleTime(100));
       const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize").pipe(throttleTime(100));
       const forceCheck$ = this.actions$.pipe(
@@ -360,7 +369,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _insertVideoJs() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this._isBrowser) {
       this.utilsService.insertStylesheet("https://vjs.zencdn.net/8.3.0/video-js.min.css", this.renderer, () => {
         this.utilsService.insertScript("https://vjs.zencdn.net/8.3.0/video.min.js", this.renderer, () => {
           this.videoJsReady = true;
@@ -421,7 +430,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _pollingVideoEncodingProgress() {
-    if (this._pollingVideEncoderProgress || isPlatformServer(this.platformId)) {
+    if (this._pollingVideEncoderProgress || !this._isBrowser) {
       return;
     }
 
