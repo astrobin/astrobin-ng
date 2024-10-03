@@ -19,6 +19,8 @@ interface FilterSummary {
   totalIntegration: number;
   dates: string[];
   averageMoonIllumination: number;
+  number: number;
+  duration: string;
 }
 
 // This includes each session.
@@ -79,6 +81,8 @@ interface DetailedFilterSummary {
             {{ "Integration" | translate }}
           </th>
 
+          <th>&nbsp;</th>
+
           <th>
             <span
               *ngIf="deepSkyIntegrationTime"
@@ -120,6 +124,30 @@ interface DetailedFilterSummary {
                 >
                   {{ humanizeFilterType(filterSummary.filterType) }}
                 </a>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div class="metadata-item">
+              <div class="metadata-label">
+                <span
+                  *ngIf="filterSummary.summary.number && filterSummary.summary.duration"
+                  [innerHTML]="filterSummary.summary.number + ' &times; ' + filterSummary.summary.duration + '&Prime;'"
+                  class="no-wrap"
+                ></span>
+                <span
+                  *ngIf="!filterSummary.summary.number || !filterSummary.summary.duration"
+                >
+                  <fa-icon
+                    icon="bars-staggered"
+                    [ngbTooltip]="'Mix of multiple exposure times' | translate"
+                    triggers="hover click"
+                    container="body"
+                    data-toggle="offcanvas"
+                    (click)="openDeepSkyIntegrationDetails($event)"
+                  ></fa-icon>
+                </span>
               </div>
             </div>
           </td>
@@ -181,7 +209,8 @@ interface DetailedFilterSummary {
               </th>
               <th></th>
               <th>
-                <span [innerHTML]="imageService.formatIntegration(detailedFilterSummaries[filterType].totalIntegration)">
+                <span
+                  [innerHTML]="imageService.formatIntegration(detailedFilterSummaries[filterType].totalIntegration)">
                 </span>
               </th>
             </tr>
@@ -228,7 +257,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
   deepSkyIntegrationTime: string;
   solarSystemIntegration: string;
   filterTypes: string[];
-  filterSummaries:  { filterType: string, summary: FilterSummary }[] = [];
+  filterSummaries: { filterType: string, summary: FilterSummary }[] = [];
   detailedFilterSummaries: { [key: string]: DetailedFilterSummary } = {};
 
   @ViewChild("deepSkyIntegrationDetailsTemplate")
@@ -259,7 +288,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
       this.setDeepSkyIntegrationTime(image);
       this.setSolarSystemFrames(image);
 
-      this.filterSummaries = this.buildFilterSummaries();
+      this.filterSummaries = this._buildFilterSummaries();
     }
   }
 
@@ -275,23 +304,61 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     this.solarSystemIntegration = this.imageService.getSolarSystemIntegration(image);
   }
 
-  buildFilterSummaries(): { filterType: string, summary: FilterSummary }[] {
+  humanizeFilterType(filterType: string): string {
+    if (filterType === "UNKNOWN") {
+      return this.translateService.instant("Unknown or no filter");
+    }
+
+    return this.filterService.humanizeType(filterType as FilterType);
+  }
+
+  openDeepSkyIntegrationDetails(event: MouseEvent): void {
+    event.preventDefault();
+    this.detailedFilterSummaries = this._buildDetailedFilterSummaries();
+    this.filterTypes = Object.keys(this.detailedFilterSummaries);
+
+    this.filterTypes.sort((a, b) => {
+      const priorityA = FilterTypePriority[a as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
+      const priorityB = FilterTypePriority[b as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
+      return priorityA - priorityB;
+    });
+
+    this.offcanvasService.open(this.deepSkyIntegrationDetailsTemplate, {
+      panelClass: "offcanvas-deep-sky-integration-details",
+      position: this.deviceService.offcanvasPosition()
+    });
+  }
+
+  private _buildFilterSummaries(): { filterType: string, summary: FilterSummary }[] {
     const filterSummaries: { [key: string]: FilterSummary } = {};
 
     this.image.deepSkyAcquisitions.forEach(acquisition => {
       const filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
       const date = acquisition.date;
+      const duration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
 
       if (!filterSummaries[filterType]) {
         filterSummaries[filterType] = {
           totalIntegration: 0,
           dates: [],
-          averageMoonIllumination: null
+          averageMoonIllumination: null,
+          number: acquisition.number,
+          duration
         };
       }
 
       if (acquisition.number !== null && acquisition.duration !== null) {
         filterSummaries[filterType].totalIntegration += acquisition.number * parseFloat(acquisition.duration);
+
+        const fixedAcquisitionDuration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
+        const filterExistingDuration = parseFloat(filterSummaries[filterType].duration).toFixed(2).replace(".00", "");
+
+        if (filterExistingDuration === fixedAcquisitionDuration) {
+          filterSummaries[filterType].number += acquisition.number;
+        } else {
+          filterSummaries[filterType].number = null;
+          filterSummaries[filterType].duration = null;
+        }
       }
 
       if (date) {
@@ -332,7 +399,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     return filterSummaryArray;
   }
 
-  buildDetailedFilterSummaries(): { [key: string]: DetailedFilterSummary } {
+  private _buildDetailedFilterSummaries(): { [key: string]: DetailedFilterSummary } {
     const detailedFilterSummaries: { [key: string]: DetailedFilterSummary } = {};
 
     this.image.deepSkyAcquisitions.forEach(acquisition => {
@@ -341,7 +408,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
       const brand = acquisition.filter2Brand || acquisition.filterMake || this.translateService.instant("DIY");
       const date = acquisition.date;
       const duration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
-      const key = `${date}_${brand}_${name || 'UNKNOWN'}_${duration}`;
+      const key = `${date}_${brand}_${name || "UNKNOWN"}_${duration}`;
 
       if (!detailedFilterSummaries[filterType]) {
         detailedFilterSummaries[filterType] = {
@@ -371,30 +438,5 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     });
 
     return detailedFilterSummaries;
-  }
-
-  humanizeFilterType(filterType: string): string {
-    if (filterType === "UNKNOWN") {
-      return this.translateService.instant("Unknown or no filter");
-    }
-
-    return this.filterService.humanizeType(filterType as FilterType);
-  }
-
-  openDeepSkyIntegrationDetails(event: MouseEvent): void {
-    event.preventDefault();
-    this.detailedFilterSummaries = this.buildDetailedFilterSummaries();
-    this.filterTypes = Object.keys(this.detailedFilterSummaries);
-
-    this.filterTypes.sort((a, b) => {
-      const priorityA = FilterTypePriority[a as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
-      const priorityB = FilterTypePriority[b as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
-      return priorityA - priorityB;
-    });
-
-    this.offcanvasService.open(this.deepSkyIntegrationDetailsTemplate, {
-      panelClass: "offcanvas-deep-sky-integration-details",
-      position: this.deviceService.offcanvasPosition()
-    });
   }
 }
