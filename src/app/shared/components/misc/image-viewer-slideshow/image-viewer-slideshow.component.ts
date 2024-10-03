@@ -318,24 +318,20 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
     if (this.navigationContext.length === 1) {
       this.visibleContext = [this.navigationContext[0]];
-      console.log("Only one image in context");
       return;
     }
 
     if (currentIndex === 0) {
       this.visibleContext = this.navigationContext.slice(0, 2);
-      console.log("First image in context");
       return;
     }
 
     if (currentIndex === this.navigationContext.length - 1) {
       this.visibleContext = this.navigationContext.slice(-2);
-      console.log("Last image in context");
       return;
     }
 
     this.visibleContext = this.navigationContext.slice(currentIndex - 1, currentIndex + 2);
-    console.log("Middle image in context: ", this.visibleContext);
   }
 
   private _loadAdjacentImages() {

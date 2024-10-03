@@ -1,12 +1,10 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
-import { LoadUser } from "@features/account/store/auth.actions";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -21,6 +19,7 @@ import { CreateTogglePropertySuccess, DeleteTogglePropertySuccess } from "@app/s
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -55,6 +54,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   replyFields: FormlyFieldConfig[];
   showReplyForm = false;
 
+  private readonly _isBrowser: boolean;
   private _elementWidth: number;
 
   constructor(
@@ -65,9 +65,11 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly windowRefService: WindowRefService,
     public readonly routerService: RouterService,
     public readonly elementRef: ElementRef,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
+    this._isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit(): void {
@@ -79,26 +81,11 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   }
 
   ngAfterViewInit() {
-    const _win = this.windowRefService.nativeWindow as any;
-
-    if (typeof _win.hljs !== undefined) {
-      const $elements = this.elementRef.nativeElement.querySelectorAll("pre code");
-      for (const $element of $elements) {
-        const brPlugin = {
-          "before:highlightBlock": ({ block }) => {
-            block.innerHTML = block.innerHTML.replace(/<br[ /]*>/g, "\n");
-          },
-          "after:highlightBlock": ({ result }) => {
-            result.value = result.value.replace(/\n/g, "<br>");
-          }
-        };
-
-        _win.hljs.addPlugin(brPlugin);
-        _win.hljs.highlightElement($element);
-        _win.hljs.initLineNumbersOnLoad();
-      }
+    if (!this._isBrowser) {
+      return;
     }
 
+    this._initHighlightJs();
     this._elementWidth = this.elementRef.nativeElement.getBoundingClientRect().width;
   }
 
@@ -168,6 +155,32 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     });
   }
 
+  _initHighlightJs() {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    const _win = this.windowRefService.nativeWindow as any;
+
+    if (typeof _win.hljs !== undefined) {
+      const $elements = this.elementRef.nativeElement.querySelectorAll("pre code");
+      for (const $element of $elements) {
+        const brPlugin = {
+          "before:highlightBlock": ({ block }) => {
+            block.innerHTML = block.innerHTML.replace(/<br[ /]*>/g, "\n");
+          },
+          "after:highlightBlock": ({ result }) => {
+            result.value = result.value.replace(/\n/g, "<br>");
+          }
+        };
+
+        _win.hljs.addPlugin(brPlugin);
+        _win.hljs.highlightElement($element);
+        _win.hljs.initLineNumbersOnLoad();
+      }
+    }
+  }
+
   _listenToLikes() {
     this.actions$.pipe(
       ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS),
@@ -181,7 +194,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       this.comment.likes = [
         ...this.comment.likes,
         toggleProperty.user
-      ]
+      ];
     });
 
     this.actions$.pipe(

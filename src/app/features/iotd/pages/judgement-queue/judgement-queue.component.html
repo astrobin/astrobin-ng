@@ -24,8 +24,11 @@
     <ng-container *ngIf="hiddenImages$ | async as hiddenImages">
       <ng-container *ngIf="promotions$ | async as promotions">
         <ng-container *ngIf="queue?.count > 0; else noEntries">
-          <astrobin-future-iotd-slots (slotClick)="scrollToEntry($event)" [availableEntries]="queue.results">
-          </astrobin-future-iotd-slots>
+          <astrobin-future-iotd-slots
+            (slotClick)="scrollToEntry($event)"
+            [availableEntries]="queue.results"
+            astrobinSticky
+          ></astrobin-future-iotd-slots>
 
           <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
 
