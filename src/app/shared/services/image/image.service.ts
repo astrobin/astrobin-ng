@@ -403,12 +403,16 @@ export class ImageService extends BaseService {
   }
 
   getAverageBortleScale(image: ImageInterface): number {
-    if (image.deepSkyAcquisitions?.length > 0) {
-      const totalWeightedBortle = image.deepSkyAcquisitions.reduce((acc, acquisition) => {
+    const acquisitionsWithBortleScale = image.deepSkyAcquisitions?.filter(
+      acquisition => !!acquisition.bortle
+    );
+
+    if (acquisitionsWithBortleScale.length > 0) {
+      const totalWeightedBortle = acquisitionsWithBortleScale.reduce((acc, acquisition) => {
         return acc + (acquisition.bortle * parseFloat(acquisition.duration));
       }, 0);
 
-      const totalDuration = image.deepSkyAcquisitions.reduce((acc, acquisition) => {
+      const totalDuration = acquisitionsWithBortleScale.reduce((acc, acquisition) => {
         return acc + parseFloat(acquisition.duration);
       }, 0);
 
