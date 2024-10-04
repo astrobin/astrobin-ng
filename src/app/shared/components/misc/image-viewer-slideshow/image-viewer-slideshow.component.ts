@@ -16,6 +16,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { DeviceService } from "@shared/services/device.service";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { isPlatformBrowser } from "@angular/common";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
@@ -73,7 +75,7 @@ const SLIDESHOW_WINDOW = 3;
           [activeId]="activeId"
           [callerComponentId]="callerComponentId"
           [navigationContext]="navigationContext"
-          (itemSelected)="setImage($event, FINAL_REVISION_LABEL).subscribe()"
+          (itemSelected)="onNavigationContextItemSelected($event)"
           (nearEndOfContext)="nearEndOfContext.emit($event)"
         ></astrobin-image-viewer-slideshow-context>
       </div>
@@ -140,7 +142,9 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     public readonly elementRef: ElementRef,
     public readonly deviceService: DeviceService,
     public readonly renderer: Renderer2,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
 
@@ -155,7 +159,11 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         const imageId = this.router.parseUrl(url).queryParams["i"];
         const revisionLabel = this.router.parseUrl(url).queryParams["r"] || FINAL_REVISION_LABEL;
         if (imageId) {
-          this.setImage(imageId, revisionLabel, false).subscribe();
+          this.setImage(imageId, revisionLabel, false).subscribe(
+            error => {
+              this.closeSlideshow.emit(false);
+            }
+          );
         }
       });
   }
@@ -207,32 +215,44 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     this.loadingImage = true;
 
     return new Observable(subscriber => {
-      this._loadImage(imageId).subscribe(image => {
-        this.loadingImage = false;
-        this.activeId = imageId;
-        this.activeImage = image;
-        this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
-        this._updateVisibleContext();
-        this._loadAdjacentImages();
-        this._dropImagesTooFarFromIndex();
+      this._loadImage(imageId).subscribe({
+        next: image => {
+          this.loadingImage = false;
+          this.activeId = imageId;
+          this.activeImage = image;
+          this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
+          this._updateVisibleContext();
+          this._loadAdjacentImages();
+          this._dropImagesTooFarFromIndex();
 
-        this.utilsService.delay(200).subscribe(() => {
-          this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
+          this.utilsService.delay(200).subscribe(() => {
+            this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
 
-          if (this.carousel) {
-            this._skipSlideEvent = true;
-            this.carousel.select(imageId.toString());
-            this._skipSlideEvent = false;
-            this.carousel.focus();
-          }
+            if (this.carousel) {
+              this._skipSlideEvent = true;
+              this.carousel.select(imageId.toString());
+              this._skipSlideEvent = false;
+              this.carousel.focus();
+            }
 
-          if (emitChange) {
-            this.imageChange.emit(image);
-          }
+            if (emitChange) {
+              this.imageChange.emit(image);
+            }
 
-          subscriber.next(image);
+            subscriber.next(image);
+            subscriber.complete();
+          });
+        },
+        error: error => {
+          this.loadingImage = false;
+          this.popNotificationsService.error(
+            this.translateService.instant(
+              "An error occurred while loading the image. Probably the photographer deleted it."
+            )
+          );
+          subscriber.error(error);
           subscriber.complete();
-        });
+        }
       });
     });
   }
@@ -295,8 +315,14 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       return;
     }
 
-    this.setImage(event.current, FINAL_REVISION_LABEL).subscribe(() => {
-      this._navigationInProgress = false;
+    this.setImage(event.current, FINAL_REVISION_LABEL).subscribe({
+      next: () => {
+        this._navigationInProgress = false;
+      },
+      error: () => {
+        this._navigationInProgress = false;
+        this.closeSlideshow.emit(false);
+      }
     });
   }
 
@@ -304,6 +330,15 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     this.activeImageRevisionLabel = revisionLabel;
     this.changeDetectorRef.detectChanges();
   }
+
+  protected onNavigationContextItemSelected(imageId: ImageInterface["pk"] | ImageInterface["hash"]) {
+    this.setImage(imageId, FINAL_REVISION_LABEL).subscribe({
+      error: () => {
+        this.closeSlideshow.emit(false);
+      }
+    });
+  }
+
 
   protected contextTrackByFn(index: number, item: ImageViewerNavigationContextItem) {
     return item.imageId;
@@ -371,30 +406,36 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this._delayedLoadSubscription.add(
         this.utilsService.delay(delay).pipe(
           switchMap(() => this.imageService.loadImage(imageId))
-        ).subscribe(image => {
-          if (!this.navigationContext || !this.navigationContext.length) {
-            this.navigationContext = [
-              {
-                imageId,
-                thumbnailUrl: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
-                image
-              }
-            ];
-          } else {
-            this.navigationContext = this.navigationContext.map(item => {
-              if (item.imageId === imageId) {
-                return {
-                  ...item,
+        ).subscribe({
+          next: image => {
+            if (!this.navigationContext || !this.navigationContext.length) {
+              this.navigationContext = [
+                {
+                  imageId,
+                  thumbnailUrl: image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url,
                   image
-                };
-              }
+                }
+              ];
+            } else {
+              this.navigationContext = this.navigationContext.map(item => {
+                if (item.imageId === imageId) {
+                  return {
+                    ...item,
+                    image
+                  };
+                }
 
-              return item;
-            });
+                return item;
+              });
+            }
+
+            subscriber.next(image);
+            subscriber.complete();
+          },
+          error: error => {
+            subscriber.error(error);
+            subscriber.complete();
           }
-
-          subscriber.next(image);
-          subscriber.complete();
         })
       );
     });
