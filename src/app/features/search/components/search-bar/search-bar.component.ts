@@ -657,7 +657,9 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     const modalRef = this.modalService.open(SearchFilterSelectionModalComponent);
     modalRef.closed.subscribe((componentType: Type<SearchBaseFilterComponent>) => {
-      this.createAndEditFilter(componentType);
+      if (componentType) {
+        this.createAndEditFilter(componentType);
+      }
     });
   }
 
