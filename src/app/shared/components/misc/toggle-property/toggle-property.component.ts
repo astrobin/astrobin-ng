@@ -56,9 +56,6 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   showLabel = true;
 
   @Input()
-  showIcon = true;
-
-  @Input()
   count: number;
 
   // Optionally provided, in case the parent component has this information at hand.

@@ -51,7 +51,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
+      this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
     });
   }
 

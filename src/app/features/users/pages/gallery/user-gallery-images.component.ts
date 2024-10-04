@@ -187,45 +187,21 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   }
 
   openImage(item: MasonryLayoutGridItem): void {
-    let activeImageViewer = this.imageViewerService.activeImageViewer;
     const image = item as ImageInterface;
-
     const imageId = image.hash || image.pk;
-    const thumbnails = this.images.map(image => ({
+    const navigationContext = this.images.map(image => ({
       imageId: image.hash || image.pk,
       thumbnailUrl: image.finalGalleryThumbnail
     }));
 
-    if (!activeImageViewer) {
-      activeImageViewer = this.imageViewerService.openImageViewer(
-        imageId,
-        FINAL_REVISION_LABEL,
-        false,
-        this.componentId,
-        thumbnails,
-        this.viewContainerRef
-      );
-    } else {
-      this.loadingService.setLoading(true);
-      this.imageService.loadImage(imageId).subscribe({
-        next: loadedImage => {
-          activeImageViewer.instance.searchComponentId = this.componentId;
-          activeImageViewer.instance.setImage(
-            loadedImage,
-            FINAL_REVISION_LABEL,
-            false,
-            thumbnails,
-            true
-          );
-          this.loadingService.setLoading(false);
-        },
-        error: () => {
-          this.router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
-            this.loadingService.setLoading(false);
-          });
-        }
-      });
-    }
+    const slideshow = this.imageViewerService.openSlideshow(
+      this.componentId,
+      imageId,
+      FINAL_REVISION_LABEL,
+      navigationContext,
+      this.viewContainerRef,
+      true
+    );
   }
 
   private _getImages(): void {
