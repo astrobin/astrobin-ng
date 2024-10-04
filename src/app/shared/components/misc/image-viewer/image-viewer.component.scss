@@ -172,6 +172,11 @@ $globalLoadingIndicatorHeight: 6px;
           &.search {
             cursor: url("/assets/images/search-white.png") 16 16, pointer;
           }
+
+          &.metadata-link-sponsor {
+            color: var(--gold);
+            text-decoration-color: var(--gold);
+          }
         }
       }
     }
