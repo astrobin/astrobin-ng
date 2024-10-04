@@ -48,9 +48,9 @@ interface RevisionDataInterface {
 
           <div
             *ngIf="currentUserWrapper.user?.id === image.user"
-            class="no-toggle"
+            class="no-toggle z-index-1"
             ngbDropdown
-            placement="top"
+            container="body"
           >
             <fa-icon
               astrobinEventStopPropagation

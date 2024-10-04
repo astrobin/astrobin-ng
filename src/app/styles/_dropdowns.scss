@@ -3,15 +3,12 @@
 .dropdown,
 .dropup {
   @media (max-width: $xs-max) {
-    &:not(.btn-no-block) {
-      display: block;
-      width: 100%;
-      padding-top: .75rem;
-      padding-bottom: .75rem;
+    display: block;
+    padding-top: .75rem;
+    padding-bottom: .75rem;
 
-      &:not(:last-child) {
-        margin-bottom: .5rem;
-      }
+    &:not(:last-child) {
+      margin-bottom: .5rem;
     }
   }
 
@@ -68,7 +65,7 @@
     }
 
     @media (max-width: $xs-max) {
-      padding: 1rem;
+      padding: .5rem .75rem;
     }
   }
 }
