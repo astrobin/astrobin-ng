@@ -1,13 +1,10 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import { Observable } from "rxjs";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
-import { LoadUser } from "@features/account/store/auth.actions";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -18,10 +15,11 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { CreateTogglePropertySuccess, DeleteTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -51,14 +49,13 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   @Input()
   restrictReplyToUserId: UserInterface["id"];
 
-  user$: Observable<UserInterface>;
   replyModel: { topLevelComment: string };
   replyForm = new FormGroup({});
   replyFields: FormlyFieldConfig[];
   showReplyForm = false;
 
-  @ViewChild("commentText", { read: ElementRef })
-  private _commentText: ElementRef;
+  private readonly _isBrowser: boolean;
+  private _elementWidth: number;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -66,40 +63,45 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
     public readonly windowRefService: WindowRefService,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    public readonly elementRef: ElementRef,
+    public readonly classicRoutesService: ClassicRoutesService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
+    this._isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.store$.dispatch(new LoadUser({ id: this.comment.author }));
-    this.user$ = this.store$.select(selectUser, this.comment.author).pipe(takeUntil(this.destroyed$));
     this._initReplyFields();
     this._initHighlighted();
     this._listenToLikes();
   }
 
   ngAfterViewInit() {
-    const window = this.windowRefService.nativeWindow as any;
-    if (typeof window.hljs !== undefined) {
-      const $elements = this._commentText.nativeElement.querySelectorAll("pre code");
-      for (const $element of $elements) {
-        const brPlugin = {
-          "before:highlightBlock": ({ block }) => {
-            block.innerHTML = block.innerHTML.replace(/<br[ /]*>/g, "\n");
-          },
-          "after:highlightBlock": ({ result }) => {
-            result.value = result.value.replace(/\n/g, "<br>");
-          }
-        };
-
-        window.hljs.addPlugin(brPlugin);
-        window.hljs.highlightElement($element);
-        window.hljs.initLineNumbersOnLoad();
-      }
+    if (!this._isBrowser) {
+      return;
     }
+
+    this._initHighlightJs();
+    this._elementWidth = this.elementRef.nativeElement.getBoundingClientRect().width;
+  }
+
+  getMarginLeft(depth: number): string {
+    if (!this._elementWidth) {
+      return `0px`;
+    }
+
+    const minContentWidth = 300;
+    const maxMargin = this._elementWidth - minContentWidth;
+    const margin = Math.min(maxMargin, (depth - 1) * 16);
+    return `${margin}px`;
+  }
+
+  getAvatarUrl(avatar: string) {
+    return UtilsService.convertDefaultAvatar(avatar);
   }
 
   getLink(): string {
@@ -153,6 +155,32 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     });
   }
 
+  _initHighlightJs() {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    const _win = this.windowRefService.nativeWindow as any;
+
+    if (typeof _win.hljs !== undefined) {
+      const $elements = this.elementRef.nativeElement.querySelectorAll("pre code");
+      for (const $element of $elements) {
+        const brPlugin = {
+          "before:highlightBlock": ({ block }) => {
+            block.innerHTML = block.innerHTML.replace(/<br[ /]*>/g, "\n");
+          },
+          "after:highlightBlock": ({ result }) => {
+            result.value = result.value.replace(/\n/g, "<br>");
+          }
+        };
+
+        _win.hljs.addPlugin(brPlugin);
+        _win.hljs.highlightElement($element);
+        _win.hljs.initLineNumbersOnLoad();
+      }
+    }
+  }
+
   _listenToLikes() {
     this.actions$.pipe(
       ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS),
@@ -166,7 +194,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       this.comment.likes = [
         ...this.comment.likes,
         toggleProperty.user
-      ]
+      ];
     });
 
     this.actions$.pipe(

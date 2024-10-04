@@ -8,6 +8,15 @@
         >
           <div class="card-header">
               <h4 [innerHTML]="(user.displayName || user.username) | highlight:model.text?.value"></h4>
+              <small>
+                <span
+                  *ngIf="user.displayName && user.displayName !== user.username"
+                  [innerHTML]="user.username | highlight:model.text?.value"
+                ></span>
+                <span *ngIf="!user.displayName || user.displayName === user.username">
+                  &nbsp;
+                </span>
+              </small>
           </div>
           <div class="card-body">
             <img [src]="avatarUrl(user)" [alt]="user.displayName" class="avatar" />

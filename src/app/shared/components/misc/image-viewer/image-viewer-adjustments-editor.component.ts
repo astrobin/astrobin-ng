@@ -231,10 +231,12 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
       shareUrl: url
     };
 
-    this.imageComponent.elementRef.nativeElement.style.filter =
-      `brightness(${this.brightness}%) ` +
-      `contrast(${this.contrast}%) ` +
-      `saturate(${this.saturation}%)`;
+    if (this.imageComponent) {
+      this.imageComponent.elementRef.nativeElement.style.filter =
+        `brightness(${this.brightness}%) ` +
+        `contrast(${this.contrast}%) ` +
+        `saturate(${this.saturation}%)`;
+    }
   }
 
   reset() {

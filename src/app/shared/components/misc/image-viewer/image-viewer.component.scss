@@ -1,6 +1,10 @@
 @import "src/app/styles/breakpoints";
 @import "src/app/styles/mixins";
 
+$portraitLayoutBreakpoint: $md-max;
+$maxAspectRatio: 1;
+$globalLoadingIndicatorHeight: 6px;
+
 @mixin clickableMetadata {
   color: var(--lightestGrey);
   cursor: pointer;
@@ -72,10 +76,14 @@
 
     .metadata-header {
       @include darkest-background-texture;
-      margin: 1.75rem 0 0.25rem;
+      margin: 2.5rem 0 0.25rem;
       padding: .5rem .75rem;
       color: var(--lightestGrey);
       border-radius: var(--bs-border-radius);
+
+      + .metadata-section {
+        padding-top: .5rem;
+      }
     }
 
     .metadata-section {
@@ -164,20 +172,44 @@
           &.search {
             cursor: url("/assets/images/search-white.png") 16 16, pointer;
           }
+
+          &.metadata-link-sponsor {
+            color: var(--gold);
+            text-decoration-color: var(--gold);
+          }
         }
       }
     }
   }
 
-  position: fixed;
-  top: 4rem;
-  left: 0;
   width: 100%;
-  height: calc(100% - 4rem);
+  height: 100%;
   background-color: var(--black);
   display: flex;
   flex-direction: column;
   z-index: 1;
+
+  .image-loading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .75);
+    z-index: 1040;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+
+    &.loading {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (min-width: $lg-min) or (min-aspect-ratio: 1/1) {
+      display: none;
+    }
+  }
 
   .main-area {
     display: flex;
@@ -186,22 +218,43 @@
     height: 100%;
     overflow: hidden;
 
+    .pan-container {
+      transition: transform 0.3s ease;
+    }
+
     .image-area {
+      display: flex;
+      flex-direction: column;
       position: relative;
       width: 60%;
       height: 100%;
       touch-action: manipulation;
       pointer-events: auto;
       background: black; // Real black as opposed to var(--black), for maximum contrast.
+      transition: height 0.3s ease;
 
       @media (max-width: $lg-max) {
         width: 50%;
       }
 
-      @media (max-width: $md-max) {
+      @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
         width: 100%;
+        max-height: calc(70vh - 3rem);
         height: unset;
-        min-height: calc(50vh - 4rem);
+        flex-direction: column;
+      }
+
+      .image-area-body {
+        position: relative;
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        height: 100%;
+        max-height: inherit;
+      }
+
+      &.has-top-banner .image-area-body {
+        height: calc(100% - 3rem);
       }
 
       .adjustment-editor {
@@ -257,7 +310,19 @@
       .previous-button {
         padding: 1rem .75rem;
         border-radius: .75rem;
-        z-index: 1030; // Lower than the other buttons because they are tall.
+        z-index: 1030;
+
+        @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
+          position: fixed;
+          opacity: .8 !important;
+          font-size: 1.25rem !important;
+          border-radius: 50%;
+          height: 2rem;
+          width: 2rem;
+          background: rgba(0, 0, 0, .75);
+          padding: 0;
+          filter: drop-shadow(0 0 .25rem var(--black));
+        }
 
         &:focus-visible {
           outline: none !important;
@@ -284,7 +349,7 @@
       }
 
       .next-button {
-        right: .125rem;
+        right: .25rem;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
@@ -294,7 +359,7 @@
       }
 
       .previous-button {
-        left: .125rem;
+        left: .25rem;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
@@ -308,6 +373,10 @@
         left: 0;
         right: 0;
         margin: 0 auto;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        border: 1px solid var(--grey);
         font-size: 1.5rem;
         display: none;
 
@@ -328,9 +397,15 @@
 
         .video-js {
           width: 100%;
-          height: 100%;
+          height: 100% !important;
           max-width: 100%;
           max-height: 100%;
+
+          video {
+            height: 100% !important;
+            max-height: 100%;
+            object-fit: contain;
+          }
         }
 
         &.supports-fullscreen {
@@ -353,6 +428,8 @@
         max-height: 100%;
 
         .mouse-hover {
+          width: 100%;
+          height: 100%;
           max-width: 100%;
           max-height: 100%;
           object-fit: contain;
@@ -414,8 +491,8 @@
       }
 
       &.hover:not(.adjustments-editor-visible) {
-        .mouse-hover,
-        .mouse-hover-svg-overlay {
+        .mouse-hover.ready,
+        .mouse-hover.ready + .mouse-hover-svg-overlay {
           opacity: 1 !important;
           pointer-events: auto;
         }
@@ -423,8 +500,8 @@
 
       &.force-view-mousehover {
         @media (hover: none) and (pointer: coarse) {
-          .mouse-hover,
-          .mouse-hover-svg-overlay {
+          .mouse-hover.ready,
+          .mouse-hover.ready + .mouse-hover-svg-overlay {
             opacity: 1 !important;
             pointer-events: auto;
           }
@@ -560,12 +637,29 @@
           }
         }
 
+        astrobin-nested-comments ::ng-deep {
+          .card {
+            box-shadow: none;
+            border: 0;
+            background: transparent;
+
+            .card-header {
+              display: none;
+            }
+
+            .card-body {
+              padding: 0;
+            }
+          }
+        }
+
         @media (max-width: $md-max) {
           padding: 1rem .75rem;
         }
 
         @media (min-width: $lg-min) {
           overflow-y: auto;
+          @include custom-scrollbar;
         }
 
         @media (min-width: $xl-min) {
@@ -574,270 +668,56 @@
         }
       }
 
-      .buttons-area {
-        background: var(--black);
-        border-top: 1px solid var(--grey);
-        width: 100%;
-        padding: 1rem;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        gap: 1rem;
-        font-size: 1.25rem;
-        transition: transform 0.3s ease;
-
-        .like,
-        .bookmark,
-        .follow,
-        .comment {
-          display: flex;
-          align-items: center;
-
-          ::ng-deep {
-            .ng-fa-icon,
-            .btn-link {
-              margin: 0 !important;
-              &:hover {
-                color: var(--lighterGrey);
-              }
-            }
-          }
-
-          > astrobin-toggle-property::ng-deep .btn,
-          > .btn {
-            height: 2.25rem;
-            padding: .5rem 1rem;
-
-            &:hover {
-              .ng-fa-icon,
-              .btn-link {
-                color: var(--lighterGrey);
-              }
-            }
-          }
-
-          > .count {
-            font-size: .85rem;
-            color: var(--lightGrey);
-            line-height: 1.25rem;
-          }
-        }
-
-        @media (max-width: $md-max) {
-          position: sticky;
-          bottom: 0;
-          padding: .5rem;
-          transform: translateY(100%); // Initially hidden
-          transition: none;  // Prevent any transition initially
-
-          astrobin-toggle-property {
-            margin-bottom: 0;
-          }
-        }
-      }
-
       @media (max-width: $lg-max) {
         width: 50%;
       }
 
-      @media (max-width: $md-max) {
+      @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
         width: 100%;
         height: unset;
+
+        .data-area {
+          // This makes it so the search components don't think this is the scrollable area.
+          overflow-y: hidden;
+        }
       }
     }
 
-    @media (max-width: $md-max) {
+    @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
       overflow-y: auto;
       flex-direction: column;
       justify-content: flex-start;
+      overscroll-behavior: none;
+      @include custom-scrollbar;
     }
   }
 
-  .navigation-context-wrapper {
-    height: 2rem;
+  &.standalone {
+    position: fixed;
+    top: 63px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100% - 63px);
+    width: 100%;
     overflow: hidden;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--grey);
-    transition: height 0.3s ease;
-
-    .scroll-left,
-    .scroll-right {
-      background: transparent;
-      color: var(--white);
-      cursor: pointer;
-      font-size: 1.5rem;
-      padding: 0 2rem;
-      border: 0;
-      border-radius: 50%;
-      transition: transform 0.3s ease-in-out;
-
-      &:focus-visible {
-        outline: none !important;
-      }
-    }
-
-    .scroll-left {
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          transform: translateX(-.125rem);
-        }
-      }
-    }
-
-    .scroll-right {
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          transform: translateX(.125rem);
-        }
-      }
-    }
-
-    .navigation-context {
-      flex-grow: 1;
-      height: 100%;
-      overflow: hidden;
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-
-      &::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, and Opera */
-      }
-
-      .navigation-context-item {
-        height: 100%;
-        display: inline-flex;
-        align-items: center;
-        cursor: pointer;
-        padding: 0 .5rem;
-
-        img {
-          width: 80px;
-          height: 80px;
-          object-fit: cover;
-
-          &:hover {
-            filter: brightness(1.5);
-          }
-        }
-
-        &.active {
-          background: var(--grey);
-        }
-      }
-    }
-
-    @mixin navigation-context-wrapper-hover {
-      height: 6rem;
-
-      .scroll-left,
-      .scroll-right {
-        padding: 1rem 2rem;
-      }
-
-      .navigation-context {
-        overflow-x: auto;
-        overflow-y: hidden;
-
-        .navigation-context-item {
-          padding: 1rem 0.5rem;
-        }
-      }
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        @include navigation-context-wrapper-hover;
-      }
-    }
-
-    @media (hover: none) and (pointer: coarse) {
-      @include navigation-context-wrapper-hover;
-    }
-
-    @media (max-width: $md-max) {
-      display: none;
-    }
-  }
-
-  &.fullscreen-mode {
-    top: .325rem;
-    height: calc(100% - .325rem);
     z-index: 1030;
-
-    @media (max-width: $md-max) {
-      // Leave room for the site header
-      top: calc(3rem + 14px);
-      height: calc(100% - 3rem - 14px);
-
-      &::ng-deep {
-        astrobin-mobile-menu {
-          top: .3rem;
-          z-index: 1031;
-        }
-      }
-    }
-
-    @media (max-width: $sm-max) {
-      // Leave room for the mobile menu
-      top: calc(3rem + 6px);
-      height: calc(100% - 3rem - 6px);
-
-      &::ng-deep {
-        astrobin-mobile-menu {
-          top: .325rem;
-          z-index: 1031;
-        }
-      }
-    }
   }
 
-  &:not(.fullscreen-mode) {
-    @media (max-width: $md-max) {
-      top: calc(.3rem + 3.5rem + 3rem);
-      height: calc(100vh - 108px);
-    }
-  }
-
-  ::ng-deep {
-    astrobin-scroll-to-top {
-      transition: transform 0.3s ease-in-out;
-
-      .btn {
-        bottom: .75rem !important;
-        right: 1rem !important;
-      }
-
-      @media (min-width: $lg-min) {
-        position: absolute;
-
-        .btn {
-          bottom: calc(.5rem + 77px) !important;
-        }
+  @media (max-width: $sm-max) {
+    &::ng-deep {
+      astrobin-mobile-menu {
+        top: unset;
+        left: unset;
+        right: unset;
+        position: unset;
+        z-index: 1031;
       }
     }
   }
 }
 
 ::ng-deep {
-  .image-viewer-nested-comments-offcanvas {
-    &:not(.offcanvas-bottom) {
-      width: 40% !important;
-    }
-
-    .offcanvas-body {
-      padding: 0;
-    }
-
-    .card {
-      background: transparent;
-      box-shadow: none;
-      border: none;
-    }
-  }
-
   .image-viewer-share-offcanvas {
     &:not(.offcanvas-bottom) {
       width: 40% !important;

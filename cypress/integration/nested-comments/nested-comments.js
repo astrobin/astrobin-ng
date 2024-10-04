@@ -2,9 +2,6 @@ context("Nested comments", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-
-    cy.route("**/api/v2/common/users/1/", "fixture:api/common/users_1.json").as("getUser1");
-    cy.route("**/api/v2/common/users/2/", "fixture:api/common/users_2.json").as("getUser2");
   });
 
   it("should show 'no comments yet' message", () => {
@@ -20,6 +17,9 @@ context("Nested comments", () => {
       {
         id: 1,
         author: 2,
+        author_username: "astrobin_dev2",
+        author_avatar: "https://www.astrobin.com/avatars/2.jpg",
+        author_display_name: "astrobin_dev2",
         content_type: 108,
         object_id: 1,
         text: "Test comment 1 [b]with bbcode[/b]",
@@ -35,6 +35,9 @@ context("Nested comments", () => {
       {
         id: 2,
         author: 2,
+        author_username: "astrobin_dev2",
+        author_display_name: "astrobin_dev2",
+        author_avatar: "https://www.astrobin.com/avatars/2.jpg",
         content_type: 108,
         object_id: 1,
         text: "Additional top-level comment with time between first comment and reply",
@@ -50,6 +53,9 @@ context("Nested comments", () => {
       {
         id: 3,
         author: 1,
+        author_username: "astrobin_dev",
+        author_display_name: "astrobin_dev",
+        author_avatar: "https://www.astrobin.com/avatars/1.jpg",
         content_type: 108,
         object_id: 1,
         text: "Comment reply",
@@ -67,8 +73,6 @@ context("Nested comments", () => {
     cy.get(".nested-comments [data-test='refresh']").click();
 
     cy.wait("@findNestedComments");
-    cy.wait("@getUser1");
-    cy.wait("@getUser2");
 
     cy.get("#c1").should("be.visible");
     cy.get("#c2").should("be.visible");
@@ -104,18 +108,18 @@ context("Nested comments", () => {
   it("should show usernames", () => {
     cy.get(".nested-comment")
       .eq(0)
-      .find("astrobin-username .username")
-      .should("contain.text", "astrobin_dev");
-
-    cy.get(".nested-comment")
-      .eq(1)
-      .find("astrobin-username .username")
+      .find(".username")
       .should("contain.text", "astrobin_dev2");
 
     cy.get(".nested-comment")
-      .eq(0)
-      .find("astrobin-username .username")
+      .eq(1)
+      .find(".username")
       .should("contain.text", "astrobin_dev");
+
+    cy.get(".nested-comment")
+      .eq(2)
+      .find(".username")
+      .should("contain.text", "astrobin_dev2");
   });
 
   it("should show timestamps", () => {

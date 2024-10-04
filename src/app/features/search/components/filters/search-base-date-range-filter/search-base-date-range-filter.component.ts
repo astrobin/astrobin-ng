@@ -101,12 +101,6 @@ export abstract class SearchBaseDateRangeFilterComponent extends SearchBaseFilte
                   }
                 },
                 {
-                  name: "max-date",
-                  options: {
-                    value: new Date()
-                  }
-                },
-                {
                   name: "max-greater-equal-than-min",
                   options: {
                     model: this.editModel,

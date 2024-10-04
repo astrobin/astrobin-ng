@@ -95,7 +95,7 @@ type LegacyEquipmentItem =
           *ngFor="let item of this[attr]"
           href="#"
           (click)="legacyEquipmentItemClicked($event, item)"
-          class="value"
+          class="value legacy-equipment"
         >
           <img class="klass-icon" src="/assets/images/{{ attrToIcon[attr] }}-white.png?v=1" alt="" />
           <span>{{ item.make }} {{ item.name }}</span>
@@ -210,7 +210,7 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
   equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {
     event.preventDefault();
     this.router.navigateByUrl(`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`).then(() => {
-      this.imageViewerService.closeActiveImageViewer(false);
+      this.imageViewerService.closeSlideShow(false);
       this.windowRefService.scroll({ top: 0 });
     });
   }

@@ -43,8 +43,12 @@ export class WindowRefService extends BaseService {
     return this._doc.defaultView;
   }
 
-  get isMobile$() {
-    return this._isMobile.asObservable();
+  getViewPortAspectRatio(): number {
+    if (!isPlatformBrowser(this.platformId)) {
+      return 1;
+    }
+
+    return window.innerWidth / window.innerHeight;
   }
 
   scroll(options: any) {
@@ -163,22 +167,11 @@ export class WindowRefService extends BaseService {
   }
 
   pushState(data: any, url: string) {
-    if (isPlatformServer(this.platformId)) {
-      return;
-    }
+    this._pushOrReplaceState("pushState", data, url);
+  }
 
-    const _history = this.nativeWindow.history;
-    const currentState = _history.state;
-
-    if (
-      currentState &&
-      currentState.url === url &&
-      JSON.stringify(currentState.data) === JSON.stringify(data)
-    ) {
-      return;
-    }
-
-    _history.pushState(data, "", url);
+  replaceState(data: any, url: string) {
+    this._pushOrReplaceState("replaceState", data, url);
   }
 
   changeBodyOverflow(value: "hidden" | "auto"): void {
@@ -188,5 +181,24 @@ export class WindowRefService extends BaseService {
         _document.body.classList.toggle("overflow-hidden", value === "hidden");
       }
     }
+  }
+
+  private _pushOrReplaceState(method: "pushState" | "replaceState", data: any, url: string) {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
+    const _history = this.nativeWindow.history;
+    const currentState = JSON.parse(JSON.stringify(_history.state));
+
+    if (
+      currentState &&
+      currentState.url === url &&
+      JSON.stringify(currentState.data) === JSON.stringify(data)
+    ) {
+      return;
+    }
+
+    _history[method](data, "", url);
   }
 }

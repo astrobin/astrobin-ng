@@ -1,12 +1,7 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { MainState } from "@app/store/state";
-import {
-  HiddenImage,
-  IotdInterface,
-  SubmissionInterface,
-  VoteInterface
-} from "@features/iotd/services/iotd-api.service";
+import { HiddenImage, IotdInterface, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { LoadHiddenImages } from "@features/iotd/store/iotd.actions";
 import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
@@ -18,14 +13,13 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { fromEvent, merge, Observable } from "rxjs";
-import { debounceTime, distinctUntilChanged, map, switchMap, takeUntil } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
-import { isPlatformBrowser } from "@angular/common";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 
 const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
@@ -35,7 +29,7 @@ const IOTD_PROMOTION_QUEUE_DISPLAY_HIDDEN_IMAGES_COOKIE = "astrobin-iotd-promoti
   selector: "astrobin-base-promotion-queue",
   template: ""
 })
-export abstract class BasePromotionQueueComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export abstract class BasePromotionQueueComponent extends BaseComponentDirective implements OnInit {
   ImageAlias = ImageAlias;
 
   @Input()
@@ -50,7 +44,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   hiddenImages$: Observable<HiddenImage[]> = this.store$.select(selectHiddenImages).pipe(takeUntil(this.destroyed$));
   displayHiddenImages = true;
 
-  isDismissed: boolean;
   loadingQueue: boolean;
   markingAsSeen: ImageInterface["pk"][] = [];
 
@@ -59,11 +52,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
 
   @ViewChildren("promotionQueueEntries")
   promotionQueueEntries: QueryList<any>;
-
-  @ViewChildren("promotionSlots", { read: ElementRef })
-  promotionSlots: QueryList<ElementRef>;
-
-  private _initialPromotionSlotsTopOffset: number;
 
   protected constructor(
     public readonly store$: Store<MainState>,
@@ -135,43 +123,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
       });
 
     this.refresh();
-  }
-
-  ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.promotionSlots.changes.subscribe(() => {
-        if (
-          this.promotionSlots.length > 0 &&
-          typeof (this.promotionSlots.first.nativeElement?.getBoundingClientRect) !== undefined
-        ) {
-          this._initialPromotionSlotsTopOffset = this.promotionSlots.first.nativeElement.getBoundingClientRect().top;
-        }
-      });
-
-      merge(
-        fromEvent(this.windowRefService.nativeWindow, "scroll"),
-        fromEvent(this.windowRefService.nativeWindow, "resize")
-      ).pipe(
-        takeUntil(this.destroyed$),
-        debounceTime(200),
-        distinctUntilChanged()
-      ).subscribe(() => {
-        if (!this.promotionSlots || this.promotionSlots.length === 0) {
-          return;
-        }
-
-        const nativeElement = this.promotionSlots.first.nativeElement;
-        const currentScrollPosition =
-          this.windowRefService.nativeWindow.pageYOffset ||
-          this.windowRefService.nativeWindow.document.documentElement.scrollTop;
-
-        if (currentScrollPosition >= this._initialPromotionSlotsTopOffset) {
-          nativeElement.classList.add("sticky");
-        } else {
-          nativeElement.classList.remove("sticky");
-        }
-      });
-    }
   }
 
   refresh(sort: "newest" | "oldest" | "default" = "default"): void {

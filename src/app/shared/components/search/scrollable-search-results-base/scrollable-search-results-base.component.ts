@@ -47,7 +47,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     super.ngOnInit();
 
     if (isPlatformBrowser(this.platformId)) {
-      const scrollElement = this._getScrollableParent(this.elementRef.nativeElement) || this.windowRefService.nativeWindow;
+      const scrollElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
 
       fromEvent(scrollElement, "scroll")
         .pipe(takeUntil(this.destroyed$), throttleTime(200))
@@ -166,9 +166,6 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
           observer.next(response.results);
           observer.complete();
         });
-      } else {
-        observer.next([]);
-        observer.complete();
       }
     });
   }

@@ -10,8 +10,8 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
   @Input() enabled = true;  // Whether the directive is enabled
   @Input() topElement!: HTMLElement;   // Optional: Top element to show/hide
   @Input() bottomElement!: HTMLElement; // Optional: Bottom element to show/hide
-  @Input() throttle = 30;  // Throttle time (default is 100ms)
-  @Input() hideThreshold = 10;  // Scroll distance threshold (default is 50px)
+  @Input() throttle = 30;  // Throttle time (default is 30ms)
+  @Input() hideThreshold = 10;  // Scroll distance threshold (default is 10px)
   @Input() globalScroll = false;  // Whether to listen on window (global) scroll
 
   @Output() showTopElement = new EventEmitter<void>();
@@ -37,7 +37,7 @@ export class ScrollToggleDirective implements AfterViewInit, AfterViewChecked, O
   }
 
   ngAfterViewChecked(): void {
-    if (!this.enabled || this.initialized || !this.bottomElement) {
+    if (!this.enabled || this.initialized || !this.bottomElement || !this.topElement) {
       return;
     }
 

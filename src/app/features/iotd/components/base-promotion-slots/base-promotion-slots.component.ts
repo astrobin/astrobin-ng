@@ -6,7 +6,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { Observable } from "rxjs";
-import { filter, map, take, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
@@ -18,6 +18,7 @@ import { ActivatedRoute } from "@angular/router";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
+import { LoadNestedComments } from "@app/store/actions/nested-comments.actions";
 
 interface Slot {
   id: number;
@@ -92,7 +93,15 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
       this.store$.dispatch(new LoadContentType(contentTypeDescription));
       this.iotdContentType$ = this.store$.select(selectContentType, contentTypeDescription).pipe(
         filter(contentType => !!contentType),
-        take(1)
+        take(1),
+        tap(contentType => {
+          this.slots.filter(slot => !!slot.promotion).forEach((slot: Slot, index: number) => {
+            this.store$.dispatch(new LoadNestedComments({
+              contentTypeId: contentType.id,
+              objectId: slot.promotion.id
+            }));
+          });
+        })
       );
     }
 

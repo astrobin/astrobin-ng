@@ -21,7 +21,7 @@ export interface AppState {
 
   breadcrumb: BreadcrumbInterface[];
 
-  currentFullscreenImage: number | null;
+  currentFullscreenImage: ImageInterface["pk"] | null;
 
   // The user's language.
   language: string;

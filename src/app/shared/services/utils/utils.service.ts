@@ -14,6 +14,14 @@ import msgpack from "msgpack-lite";
 import pako from "pako";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
+
+interface ViewportCheckOptions {
+  shouldCheckVertical?: boolean;
+  shouldCheckHorizontal?: boolean;
+  verticalTolerance?: number;
+  horizontalTolerance?: number;
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -24,6 +32,14 @@ export class UtilsService {
     public readonly cookieService: CookieService,
     @Inject(PLATFORM_ID) public readonly platformId
   ) {
+  }
+
+  static padNumber(num: number, size: number = 2): string {
+    let s = num + "";
+    while (s.length < size) {
+      s = "0" + s;
+    }
+    return s;
   }
 
   static removeQuotes(str: string): string {
@@ -933,6 +949,14 @@ export class UtilsService {
     return value;
   }
 
+  static convertDefaultAvatar(avatar: string): string {
+    if (!avatar || avatar === "" || avatar.indexOf("default-avatar") > -1) {
+      return "/assets/images/default-avatar.jpeg?v=2";
+    }
+
+    return avatar;
+  }
+
   supportsDateInput() {
     if (isPlatformServer(this.platformId)) {
       return false;
@@ -992,22 +1016,89 @@ export class UtilsService {
     renderer.appendChild(document.head, link);
   }
 
-  isNearBelowViewport(element: HTMLElement): boolean {
+  isElementVisibleInContainer(child: HTMLElement, container: HTMLElement): boolean {
     if (!isPlatformBrowser(this.platformId)) {
       return false;
     }
 
-    const maxVerticalDistance = 500;
-    const maxHorizontalDistance = 100;
-    const rect = element.getBoundingClientRect();
+    const childRect = child.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
 
     return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || window.document.documentElement.clientHeight) + maxVerticalDistance &&
-      rect.right <= (window.innerWidth || window.document.documentElement.clientWidth) + maxHorizontalDistance
+      childRect.bottom > containerRect.top &&
+      childRect.top < containerRect.bottom
     );
   }
+
+  static getScrollableParent(element: HTMLElement, windowRefService: WindowRefService): HTMLElement | Window {
+    if (!element) {
+      return null;
+    }
+
+    let parent = element.parentElement;
+
+    while (parent) {
+      const overflowY = windowRefService.nativeWindow.getComputedStyle(parent).overflowY;
+      if (overflowY === "auto" || overflowY === "scroll") {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+
+    return windowRefService.nativeWindow;
+  }
+
+  isNearOrInViewport(
+    element: HTMLElement,
+    options: ViewportCheckOptions = {}
+  ): boolean {
+    // Ensure the code runs only in the browser environment
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    // Destructure options with default values and improved naming
+    const {
+      shouldCheckVertical = true,
+      shouldCheckHorizontal = true,
+      verticalTolerance = 2000,
+      horizontalTolerance = 10,
+    } = options;
+
+    // Get the bounding rectangle of the element
+    const rect = element.getBoundingClientRect();
+
+    // If the element has no dimensions or position (all rect values are zero), return false
+    if (
+      rect.width === 0 ||
+      rect.height === 0 ||
+      (rect.top === 0 && rect.bottom === 0 && rect.left === 0 && rect.right === 0)
+    ) {
+      return false;
+    }
+
+    // Initialize check results to true
+    let isWithinVerticalTolerance = true;
+    let isWithinHorizontalTolerance = true;
+
+    // Perform vertical distance check if enabled
+    if (shouldCheckVertical) {
+      isWithinVerticalTolerance =
+        rect.top <= (window.innerHeight || document.documentElement.clientHeight) + verticalTolerance &&
+        rect.bottom >= -verticalTolerance;
+    }
+
+    // Perform horizontal distance check if enabled
+    if (shouldCheckHorizontal) {
+      isWithinHorizontalTolerance =
+        rect.left <= (window.innerWidth || document.documentElement.clientWidth) + horizontalTolerance &&
+        rect.right >= -horizontalTolerance;
+    }
+
+    // Return true only if all enabled checks pass
+    return isWithinVerticalTolerance && isWithinHorizontalTolerance;
+  }
+
 
   isNearTop(windowRefService: WindowRefService, elementRef: ElementRef): boolean {
     if (!isPlatformBrowser(this.platformId)) {

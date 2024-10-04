@@ -18,6 +18,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadImage, LoadImageFailure } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: "root"
@@ -402,27 +403,25 @@ export class ImageService extends BaseService {
     return revision.constellation;
   }
 
-  getIntegration(image: ImageInterface): string {
-    if (image.deepSkyAcquisitions?.length > 0) {
-      return this.getDeepSkyIntegration(image);
-    } else if (image.solarSystemAcquisitions?.length > 0) {
-      return this.getSolarSystemIntegration(image);
-    }
-
-    return null;
-  }
-
   getAverageBortleScale(image: ImageInterface): number {
-    if (image.deepSkyAcquisitions?.length > 0) {
-      const totalWeightedBortle = image.deepSkyAcquisitions.reduce((acc, acquisition) => {
+    const acquisitionsWithBortleScale = image.deepSkyAcquisitions?.filter(
+      acquisition => !!acquisition.bortle
+    );
+
+    if (acquisitionsWithBortleScale.length > 0) {
+      const totalWeightedBortle = acquisitionsWithBortleScale.reduce((acc, acquisition) => {
         return acc + (acquisition.bortle * parseFloat(acquisition.duration));
       }, 0);
 
-      const totalDuration = image.deepSkyAcquisitions.reduce((acc, acquisition) => {
+      const totalDuration = acquisitionsWithBortleScale.reduce((acc, acquisition) => {
         return acc + parseFloat(acquisition.duration);
       }, 0);
 
-      return totalDuration > 0 ? totalWeightedBortle / totalDuration : null;
+      const bortle = totalDuration > 0 ? totalWeightedBortle / totalDuration : null;
+
+      if (bortle !== null) {
+        return parseFloat(bortle.toFixed(2));
+      }
     }
 
     return null;
@@ -458,6 +457,9 @@ export class ImageService extends BaseService {
 
   getDeepSkyIntegration(image: ImageInterface): string {
     const getIntegration = (acquisition: DeepSkyAcquisitionInterface): number => {
+      if (acquisition.number === null || acquisition.duration === null) {
+        return 0;
+      }
       return acquisition.number * parseFloat(acquisition.duration);
     };
 
@@ -490,41 +492,129 @@ export class ImageService extends BaseService {
     return final.uploaded;
   }
 
-  getCoordinates(image: ImageInterface, revisionLabel: string): string {
+  getCoordinates(
+    image: ImageInterface,
+    revisionLabel: string,
+    html = true,
+    symbols = true,
+    pad = false,
+    precision = 0
+  ): string {
     const revision = this.getRevision(image, revisionLabel);
 
     if (!revision.solution || !revision.solution.ra || !revision.solution.dec) {
       return null;
     }
 
-    const ra = this.formatRightAscension(parseFloat(revision.solution.advancedRa || revision.solution.ra));
-    const dec = this.formatDeclination(parseFloat(revision.solution.advancedDec || revision.solution.dec));
+    const ra = this.formatRightAscension(
+      parseFloat(revision.solution.advancedRa || revision.solution.ra),
+      html,
+      symbols,
+      pad,
+      precision
+    );
+    const dec = this.formatDeclination(
+      parseFloat(revision.solution.advancedDec || revision.solution.dec),
+      html,
+      symbols,
+      pad,
+      precision
+    );
 
-    return `<span class="ra">${ra}</span><span class="separator">&middot;</span><span class="dec">${dec}</span>`;
+    if (html) {
+      return `<span class="ra">${ra}</span><span class="separator">&middot;</span><span class="dec">${dec}</span>`;
+    }
+
+    return `${ra}, ${dec}`;
   }
 
-  formatRightAscension(ra: number): string {
+  getCoordinatesInDecimalFormat(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+
+    if (!revision.solution || !revision.solution.ra || !revision.solution.dec) {
+      return null;
+    }
+
+    const ra = parseFloat(revision.solution.advancedRa || revision.solution.ra);
+    const dec = parseFloat(revision.solution.advancedDec || revision.solution.dec);
+
+    return `${ra.toFixed(6)}, ${dec.toFixed(6)}`;
+  }
+
+  formatRightAscension(
+    ra: number,
+    html = true,
+    symbols = true,
+    pad = false,
+    precision = 0
+  ): string {
     const hours = Math.floor(ra / 15);
     const minutes = Math.floor((ra % 15) * 4);
-    const seconds = Math.round(((ra % 15) * 4 - minutes) * 60);
+    const seconds = Number((((ra % 15) * 4 - minutes) * 60).toFixed(precision));
 
-    return `
-      <span class="hours">${hours}<span class="symbol">h</span></span>
-      <span class="minutes">${minutes}<span class="symbol">m</span></span>
-      <span class="seconds">${seconds}<span class="symbol">s</span></span>
+    const paddedHours = pad ? UtilsService.padNumber(hours) : hours;
+    const paddedMinutes = pad ? UtilsService.padNumber(minutes) : minutes;
+    const paddedSeconds = pad ? UtilsService.padNumber(seconds) : seconds;
+
+    if (html && symbols) {
+      return `
+      <span class="hours">${paddedHours}<span class="symbol">h</span></span>
+      <span class="minutes">${paddedMinutes}<span class="symbol">m</span></span>
+      <span class="seconds">${paddedSeconds}<span class="symbol">s</span></span>
     `;
+    }
+
+    if (html) {
+      return `
+      <span class="hours">${paddedHours}</span>
+      <span class="minutes">${paddedMinutes}</span>
+      <span class="seconds">${paddedSeconds}</span>`;
+    }
+
+    if (symbols) {
+      return `${paddedHours}h ${paddedMinutes}m ${paddedSeconds}s`;
+    }
+
+    return `${paddedHours} ${paddedMinutes} ${paddedSeconds}`;
   }
 
-  formatDeclination(dec: number): string {
+  formatDeclination(
+    dec: number,
+    html = true,
+    symbols = true,
+    pad = false,
+    precision = 0
+  ): string {
     const degrees = Math.floor(dec);
     const minutes = Math.floor((dec - degrees) * 60);
-    const seconds = Math.round(((dec - degrees) * 60 - minutes) * 60);
+    const seconds = Number((((dec - degrees) * 60 - minutes) * 60).toFixed(precision));
 
-    return `
-      <span class="degrees">${degrees}<span class="symbol">&deg;</span></span>
-      <span class="minutes">${minutes}<span class="symbol">&prime;</span></span>
-      <span class="seconds">${seconds}<span class="symbol">&Prime;</span></span>
+    const paddedDegrees = pad ? UtilsService.padNumber(degrees) : degrees;
+    const paddedMinutes = pad ? UtilsService.padNumber(minutes) : minutes;
+    const paddedSeconds = pad ? UtilsService.padNumber(seconds) : seconds;
+
+    const formattedDegrees = degrees >= 0 ? `+${paddedDegrees}` : paddedDegrees;
+
+    if (html && symbols) {
+      return `
+      <span class="degrees">${formattedDegrees}<span class="symbol">&deg;</span></span>
+      <span class="minutes">${paddedMinutes}<span class="symbol">&prime;</span></span>
+      <span class="seconds">${paddedSeconds}<span class="symbol">&Prime;</span></span>
     `;
+    }
+
+    if (html) {
+      return `
+      <span class="degrees">${formattedDegrees}</span>
+      <span class="minutes">${paddedMinutes}</span>
+      <span class="seconds">${paddedSeconds}</span>`;
+    }
+
+    if (symbols) {
+      return `${formattedDegrees}° ${paddedMinutes}' ${paddedSeconds}"`;
+    }
+
+    return `${formattedDegrees} ${paddedMinutes} ${paddedSeconds}`;
   }
 
   getPixelScale(image: ImageInterface, revisionLabel: string): string {
@@ -566,7 +656,22 @@ export class ImageService extends BaseService {
     return `${value}${symbol}`;
   }
 
+  validateRevisionLabel(image: ImageInterface, revisionLabel: string): string {
+    if (
+      revisionLabel !== null &&
+      revisionLabel !== ORIGINAL_REVISION_LABEL &&
+      revisionLabel !== FINAL_REVISION_LABEL &&
+      !image.revisions.find(revision => revision.label === revisionLabel)
+    ) {
+      return FINAL_REVISION_LABEL;
+    }
+
+    return revisionLabel;
+  }
+
   getRevision(image: ImageInterface, revisionLabel: string): ImageInterface | ImageRevisionInterface {
+    revisionLabel = this.validateRevisionLabel(image, revisionLabel);
+
     if (revisionLabel === null || revisionLabel === ORIGINAL_REVISION_LABEL) {
       return image;
     }
@@ -575,14 +680,9 @@ export class ImageService extends BaseService {
       return this.getFinalRevision(image);
     }
 
-    if (image.revisions && image.revisions.length > 0) {
-      const revisionByLabel = image.revisions.find(revision => revision.label === revisionLabel);
-      if (revisionByLabel) {
-        return revisionByLabel;
-      }
-    }
+    const revisionByLabel = image.revisions?.find(revision => revision.label === revisionLabel);
 
-    return image;
+    return revisionByLabel || this.getFinalRevision(image);
   }
 
   getFinalRevision(image: ImageInterface): ImageInterface | ImageRevisionInterface {
@@ -711,9 +811,9 @@ export class ImageService extends BaseService {
     }
 
     return new Observable<string>(observer => {
-      if (typeof XMLHttpRequest === 'undefined') {
+      if (typeof XMLHttpRequest === "undefined") {
         // Fallback for environments without XMLHttpRequest
-        this.http.get(url, { responseType: 'blob' }).pipe(
+        this.http.get(url, { responseType: "blob" }).pipe(
           tap(() => progressCallback(100)),
           map(blob => this._createObjectURL(blob))
         ).subscribe(
@@ -819,9 +919,10 @@ export class ImageService extends BaseService {
   }
 
   private _createObjectURL(blob: Blob): string {
-    if (typeof URL !== 'undefined' && URL.createObjectURL) {
+    if (typeof URL !== "undefined" && URL.createObjectURL) {
       return URL.createObjectURL(blob);
     }
     // Fallback for environments without URL.createObjectURL
-    return '';
-  }}
+    return "";
+  }
+}

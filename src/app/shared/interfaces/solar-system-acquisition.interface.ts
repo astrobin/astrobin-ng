@@ -35,4 +35,5 @@ export interface SolarSystemAcquisitionInterface {
   seeing: SeeingScale | null;
   transparency: TransparencyScale | null;
   time: string | null;
+  moonIllumination?: number | null;
 }

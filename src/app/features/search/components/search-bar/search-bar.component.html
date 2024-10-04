@@ -37,7 +37,7 @@
       <div
         *ngIf="
           !showAutoCompleteGroups &&
-          model.searchType === SearchType.IMAGE &&
+          (model.searchType === SearchType.IMAGE || model.searchType === undefined) &&
           model.text?.value?.length > 2 &&
           searchInputNgModel?.dirty
         "
@@ -235,7 +235,7 @@
             ngbDropdownItem
             (click)="onOrderingChanged('-field_radius')"
           >
-            <fa-icon icon="circle"></fa-icon>
+            <fa-icon icon="arrows-left-right-to-line"></fa-icon>
             <span>{{ "Field radius (large first)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-field_radius'"></fa-icon>
           </button>
@@ -244,7 +244,7 @@
             ngbDropdownItem
             (click)="onOrderingChanged('field_radius')"
           >
-            <fa-icon icon="circle"></fa-icon>
+            <fa-icon icon="arrows-left-right-to-line"></fa-icon>
             <span>{{ "Field radius (small first)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === 'field_radius'"></fa-icon>
           </button>
@@ -255,7 +255,7 @@
             ngbDropdownItem
             (click)="onOrderingChanged('-pixel_scale')"
           >
-            <fa-icon icon="dot-circle"></fa-icon>
+            <fa-icon icon="square"></fa-icon>
             <span>{{ "Pixel scale (large first)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === '-pixel_scale'"></fa-icon>
           </button>
@@ -264,9 +264,49 @@
             ngbDropdownItem
             (click)="onOrderingChanged('pixel_scale')"
           >
-            <fa-icon icon="dot-circle"></fa-icon>
+            <fa-icon icon="square"></fa-icon>
             <span>{{ "Pixel scale (small first)" | translate }}</span>
             <fa-icon icon="check" *ngIf="model.ordering === 'pixel_scale'"></fa-icon>
+          </button>
+
+          <hr />
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-coord_ra_min')"
+          >
+            <fa-icon icon="crosshairs"></fa-icon>
+            <span>{{ "Right ascension (descending)" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-coord_ra_min'"></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('coord_ra_min')"
+          >
+            <fa-icon icon="crosshairs"></fa-icon>
+            <span>{{ "Right ascension (ascending)" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === 'coord_ra_min'"></fa-icon>
+          </button>
+
+          <hr />
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('-coord_dec_min')"
+          >
+            <fa-icon icon="crosshairs"></fa-icon>
+            <span>{{ "Declination (descending)" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === '-coord_dec_min'"></fa-icon>
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="onOrderingChanged('coord_dec_min')"
+          >
+            <fa-icon icon="crosshairs"></fa-icon>
+            <span>{{ "Declination (ascending)" | translate }}</span>
+            <fa-icon icon="check" *ngIf="model.ordering === 'coord_dec_min'"></fa-icon>
           </button>
         </div>
       </div>

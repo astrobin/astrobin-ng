@@ -63,13 +63,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
       </div>
     </ng-template>
   `,
-  styles: [
-    `
-      .image-viewer-banner {
-        font-size: .9rem;
-      }
-    `
-  ]
+  styleUrls: ["./image-viewer-wip-banner.component.scss"]
 })
 export class ImageViewerWipBannerComponent extends ImageViewerSectionBaseComponent implements OnInit {
   readonly model = {

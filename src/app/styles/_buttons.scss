@@ -96,6 +96,12 @@ astrobin-toggle-property {
     .badge {
       display: none;
     }
+
+    .count,
+    .btn-text {
+      color: transparent !important;
+      text-shadow: none !important;
+    }
   }
 
   &.success {

@@ -5,6 +5,7 @@ import { EventPreventDefaultDirective } from "@shared/directives/event-prevent-d
 import { GtagOutboundClickEventDirective } from "@shared/directives/gtag-outbound-click-event/gtag-outbound-click-event.directive";
 import { NoScrollDirective } from "@shared/directives/no-scroll/no-scroll.directive";
 import { ScrollToggleDirective } from "@shared/directives/scroll-toggle.directive";
+import { StickyDirective } from "@shared/directives/sticky-active.directive";
 import { MasonryLayoutDirective } from "@shared/directives/masonry-layout.directive";
 
 @NgModule({
@@ -14,6 +15,7 @@ import { MasonryLayoutDirective } from "@shared/directives/masonry-layout.direct
     GtagOutboundClickEventDirective,
     NoScrollDirective,
     ScrollToggleDirective,
+    StickyDirective,
     MasonryLayoutDirective
   ],
   exports: [
@@ -22,6 +24,7 @@ import { MasonryLayoutDirective } from "@shared/directives/masonry-layout.direct
     GtagOutboundClickEventDirective,
     NoScrollDirective,
     ScrollToggleDirective,
+    StickyDirective,
     MasonryLayoutDirective
   ],
   imports: [CommonModule]

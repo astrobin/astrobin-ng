@@ -1,16 +1,18 @@
-import { Component, HostBinding, Input, OnChanges } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnChanges } from "@angular/core";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { Observable } from "rxjs";
-import { LoadNestedComments } from "@app/store/actions/nested-comments.actions";
+import { Subscription } from "rxjs";
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
 import { filter, map, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-nested-comments-count",
-  templateUrl: "./nested-comments-count.component.html"
+  template: `
+    <span class="count">{{ count }}</span>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NestedCommentsCountComponent extends BaseComponentDirective implements OnChanges {
   @Input()
@@ -25,9 +27,14 @@ export class NestedCommentsCountComponent extends BaseComponentDirective impleme
   @HostBinding("class.d-none")
   hide = false;
 
-  count$: Observable<number>;
+  protected count: number;
 
-  constructor(public readonly store$: Store<MainState>) {
+  private _storeSubscription: Subscription;
+
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly changeDetectorRef: ChangeDetectorRef
+  ) {
     super(store$);
   }
 
@@ -36,15 +43,22 @@ export class NestedCommentsCountComponent extends BaseComponentDirective impleme
       return;
     }
 
-    const data = { contentTypeId: this.contentType.id, objectId: this.objectId };
-    this.store$.dispatch(new LoadNestedComments(data));
-    this.count$ = this.store$.select(
+    if (this._storeSubscription) {
+      this._storeSubscription.unsubscribe();
+    }
+
+    // Assume that the nested comments are already loaded.
+    this._storeSubscription = this.store$.select(
       selectNestedCommentsByContentTypeIdAndObjectId(this.contentType.id, this.objectId)
     ).pipe(
       filter(nestedComments => nestedComments !== null),
       map(nestedComments => nestedComments.length),
-      tap(count => (this.hide = count === 0 && this.hideZero)),
+      tap(count => {
+        this.count = count;
+        this.hide = count === 0 && this.hideZero;
+        this.changeDetectorRef.markForCheck();
+      }),
       takeUntil(this.destroyed$)
-    );
+    ).subscribe();
   }
 }

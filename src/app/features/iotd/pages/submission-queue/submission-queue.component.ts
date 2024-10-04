@@ -103,8 +103,6 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
   }
 
   ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-
     if (isPlatformBrowser(this.platformId)) {
       fromEvent(this.windowRefService.nativeWindow, "scroll")
         .pipe(takeUntil(this.destroyed$), throttleTime(100))

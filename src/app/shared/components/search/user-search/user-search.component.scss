@@ -5,6 +5,13 @@
   flex-wrap: wrap;
   gap: 1rem;
 
+  ::ng-deep .highlight {
+    background-color: var(--gold);
+    color: var(--black);
+    padding: .125rem;
+    border-radius: .125rem;
+  }
+
   .card {
     cursor: pointer;
     width: calc(100% / 5 - 1rem);
@@ -18,13 +25,18 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        margin: 0;
+      }
 
-        .highlight {
-          background-color: var(--gold);
-          color: var(--black);
-          padding: .125rem;
-          border-radius: .125rem;
-        }
+      small {
+        display: block;
+        font-size: .85rem;
+        color: var(--lighterGrey);
+        font-weight: normal;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: .25rem;
       }
     }
 

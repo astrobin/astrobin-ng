@@ -6,6 +6,7 @@
           #videoPlayerElement
           [attr.data-setup]='videoSetup'
           [attr.poster]="thumbnailUrl"
+          [style.height]="!!height ? height + 'px !important' : 'auto'"
           class="video-js vjs-default-skin"
           controls
           preload="auto"
@@ -26,6 +27,7 @@
     [alt]="image.title"
     [src]="thumbnailUrl"
     class="astrobin-image"
+    [style.height]="!!height ? height + 'px' : 'auto'"
     id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revisionLabel }}-{{ alias }}"
   >
 </ng-template>
@@ -53,7 +55,7 @@
 <ng-template #stillProcessingTemplate>
   <div class="loading-container">
     <astrobin-loading-indicator
-      class="video-still-processing"
+      class="video-still-processing py-5"
       [progress]="videoEncodingProgress"
       [message]="'This video is still processing, please return to this page later.' | translate"
     ></astrobin-loading-indicator>

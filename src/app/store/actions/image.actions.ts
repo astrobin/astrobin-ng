@@ -14,8 +14,15 @@ export interface LoadImageOptionsInterface {
   skipThumbnails: boolean;
 }
 
-export class ForceCheckImageAutoLoad implements Action {
+export class ForceCheckImageAutoLoad implements PayloadActionInterface {
   readonly type = AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD;
+
+  constructor(public payload: { imageId: ImageInterface["pk"] | ImageInterface["hash"] }) {
+  }
+}
+
+export class ForceCheckTogglePropertyAutoLoad implements Action {
+  readonly type = AppActionTypes.FORCE_CHECK_TOGGLE_PROPERTY_AUTO_LOAD;
 }
 
 export class LoadImage implements PayloadActionInterface {

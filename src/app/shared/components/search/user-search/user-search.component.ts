@@ -39,11 +39,7 @@ export class UserSearchComponent extends ScrollableSearchResultsBaseComponent<Us
   }
 
   avatarUrl(user: UserSearchInterface): string {
-    if (!user.avatarUrl || user.avatarUrl === "" || user.avatarUrl.indexOf("default-avatar") > -1) {
-      return "/assets/images/default-avatar.jpeg?v=2";
-    }
-
-    return user.avatarUrl;
+    return UtilsService.convertDefaultAvatar(user.avatarUrl);
   }
 
   openUser(user: UserSearchInterface) {

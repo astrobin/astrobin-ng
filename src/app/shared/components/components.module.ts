@@ -4,16 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { formlyConfig } from "@app/formly.config";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import {
-  NgbAccordionModule,
-  NgbCollapseModule,
-  NgbDropdownModule,
-  NgbModalConfig,
-  NgbModalModule, NgbNavModule, NgbOffcanvasModule,
-  NgbPopoverModule,
-  NgbProgressbarModule,
-  NgbTooltipModule
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbAccordionModule, NgbCarouselModule, NgbCollapseModule, NgbDropdownModule, NgbModalConfig, NgbModalModule, NgbNavModule, NgbOffcanvasModule, NgbPopoverModule, NgbProgressbarModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";
@@ -131,7 +122,7 @@ import { ImageViewerRevisionsComponent } from "@shared/components/misc/image-vie
 import { HammerModule } from "@angular/platform-browser";
 import { LightboxModule } from "ngx-lightbox";
 import { ImageViewerWipBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-wip-banner.component";
-import { ImageViewerMenuComponent } from "@shared/components/misc/image-viewer/image-viewer-menu";
+import { ImageViewerMenuComponent } from "@shared/components/misc/image-viewer/image-viewer-menu.component";
 import { LoadingDialogComponent } from "@shared/components/misc/loading-dialog/loading-dialog.component";
 import { ImageViewerGroupsAndCollectionsComponent } from "@shared/components/misc/image-viewer/image-viewer-groups-and-collections.component";
 import { ImageViewerCustomMessageBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-custom-message-banner.component";
@@ -144,6 +135,12 @@ import { AutoSizeInputModule } from "ngx-autosize-input";
 import { ImageViewerObjectsComponent } from "@shared/components/misc/image-viewer/image-viewer-objects.component";
 import { UserSearchComponent } from "@shared/components/search/user-search/user-search.component";
 import { ImageViewerRevisionSummaryComponent } from "@shared/components/misc/image-viewer/image-viewer-revision-summary.component";
+import { ImageViewerSocialButtonsComponent } from "@shared/components/misc/image-viewer/image-viewer-social-buttons.component";
+import { ImageViewerFloatingTitleComponent } from "@shared/components/misc/image-viewer/image-viewer-floating-title.component";
+import { ImageViewerShareButtonComponent } from "@shared/components/misc/image-viewer/image-viewer-share-button.component";
+import { ImageViewerIotdBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-banner.component";
+import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
+import { ImageViewerSlideshowContextComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow-context.component";
 import { ImageLoadingIndicatorComponent } from "@shared/components/misc/image-loading-indicator/image-loading-indicator.component";
 import { MarketplaceListingCardComponent } from "@shared/components/equipment/marketplace-listing-card/marketplace-listing-card.component";
 import { MarketplaceListingCardsComponent } from "@shared/components/equipment/marketplace-listing-cards/marketplace-listing-cards.component";
@@ -160,6 +157,7 @@ const modules = [
   ImageCropperModule,
   LightboxModule,
   NgbAccordionModule,
+  NgbCarouselModule,
   NgbCollapseModule,
   NgbDropdownModule,
   NgbNavModule,
@@ -226,12 +224,17 @@ const components = [
   ImageLoadingIndicatorComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,
+  ImageViewerSlideshowComponent,
+  ImageViewerSlideshowContextComponent,
   ImageViewerComponent,
   ImageViewerMenuComponent,
   ImageViewerCustomMessageBannerComponent,
   ImageViewerWipBannerComponent,
   ImageViewerTitleComponent,
+  ImageViewerFloatingTitleComponent,
   ImageViewerPhotographersComponent,
+  ImageViewerSocialButtonsComponent,
+  ImageViewerShareButtonComponent,
   ImageViewerDataSourceComponent,
   ImageViewerAcquisitionComponent,
   ImageViewerAcquisitionDatesComponent,
@@ -245,6 +248,7 @@ const components = [
   ImageViewerCloseButtonComponent,
   ImageViewerAdditionalButtonComponent,
   ImageViewerAdjustmentsEditorComponent,
+  ImageViewerIotdBannerComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,
