@@ -100,7 +100,7 @@ const DEFAULT_SATURATION = 100;
         <p class="alert alert-dark mb-5">
           <fa-icon icon="info-circle"></fa-icon>
           {{
-            "These settings do not really the image, but only the way it is displayed in your browser. You " +
+            "These settings do not really alter the image, but only the way it is displayed in your browser. You " +
             "can share a link to this page with these settings applied." | translate
           }}
         </p>
