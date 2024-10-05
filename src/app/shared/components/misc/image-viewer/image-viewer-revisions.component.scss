@@ -12,13 +12,13 @@
     align-items: center;
     flex-wrap: wrap;
     gap: .5rem;
-    padding: 0 1rem;
+    padding: 1rem 1rem 0 1rem;
 
     .revision {
-      width: 2.5rem;
-      height: 2.5rem;
-      transition: transform .2s ease-in-out, width .2s ease-in-out, height .2s ease-in-out;
+      width: 3rem;
+      height: 3rem;
       position: relative;
+      transition: transform .2s ease-in-out;
 
       img {
         width: 100%;
@@ -61,19 +61,19 @@
         transition: background .2s ease-in-out;
       }
 
-      .dropup {
+      .dropdown {
         position: absolute;
-        top: -2rem;
+        top: -2.5rem;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, .85);
-        border: 1px solid var(--lightGrey);
+        background: rgba(0, 0, 0, .5);
         color: var(--white);
         opacity: 0;
         transition: opacity .2s ease-in-out;
+        border-radius: .5rem;
 
         .ng-fa-icon {
-          padding: .5rem;
+          padding: .75rem;
           font-size: 1.25rem;
           color: var(--white);
         }
@@ -101,41 +101,24 @@
         &:hover {
           transform: translateY(-.25rem);
 
-          .dropup {
+          .dropdown {
             opacity: 1;
           }
         }
       }
 
       @media (hover: none) and (pointer: coarse) {
-        .dropup {
+        .dropdown {
           opacity: 1;
           text-align: center;
-          padding: .15rem 0;
-          top: -2.25rem;
-          border-radius: .5rem;
-        }
-      }
-    }
+          padding: .25rem 0;
+          width: 2rem;
+          top: -2.5rem;
+          border-radius: 50%;
 
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        .revision {
-          width: 5rem;
-          height: 5rem;
-
-          img,
-          .add-revision {
-            border-radius: 20px;
-          }
-
-          .label {
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-          }
-
-          &.active::after {
-            transform: scale(1.5);
+          .ng-fa-icon {
+            padding: .5rem;
+            font-size: 1rem;
           }
         }
       }

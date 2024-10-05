@@ -111,6 +111,10 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
   }
 
   onSelect(filter: FilterType) {
+    if (!filter) {
+      return;
+    }
+
     filter.allow$.subscribe(allow => {
       if (!allow) {
         this.modal.close();

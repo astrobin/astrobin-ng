@@ -343,20 +343,38 @@ export class SearchService extends BaseService {
   allowFilter$(minimumSubscription: PayableProductInterface): Observable<boolean> {
     return forkJoin([
       this.userSubscriptionService.isLite$(),
+      this.userSubscriptionService.isClassicLite$(),
       this.userSubscriptionService.isPremium$(),
+      this.userSubscriptionService.isClassicPremium$(),
       this.userSubscriptionService.isUltimate$()
     ]).pipe(
-      map(([isLite, isPremium, isUltimate]) => ({
+      map(([
         isLite,
+        isClassicLite,
         isPremium,
+        isClassicPremium,
+        isUltimate
+      ]) => ({
+        isLite,
+        isClassicLite,
+        isPremium,
+        isClassicPremium,
         isUltimate
       })),
-      map(({ isLite, isPremium, isUltimate }) => {
+      map(({
+        isLite,
+        isClassicLite,
+        isPremium,
+        isClassicPremium,
+        isUltimate
+      }) => {
         return (
           (minimumSubscription === null || minimumSubscription === undefined) ||
           (minimumSubscription === PayableProductInterface.LITE && (isLite || isPremium || isUltimate)) ||
           (minimumSubscription === PayableProductInterface.PREMIUM && (isPremium || isUltimate)) ||
-          (minimumSubscription === PayableProductInterface.ULTIMATE && isUltimate)
+          (minimumSubscription === PayableProductInterface.ULTIMATE && (
+            isClassicLite || isClassicPremium || isUltimate) // Grandfathered users + Ultimate.
+          )
         );
       })
     );
