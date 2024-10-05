@@ -133,9 +133,13 @@ interface DetailedFilterSummary {
               <div class="metadata-label">
                 <span
                   *ngIf="filterSummary.summary.number && filterSummary.summary.duration"
-                  [innerHTML]="filterSummary.summary.number + ' &times; ' + filterSummary.summary.duration + '&Prime;'"
                   class="no-wrap"
-                ></span>
+                >
+                  <span class="number">{{ filterSummary.summary.number }}</span>
+                  <span class="symbol px-1">&times;</span>
+                  <span class="duration">{{ filterSummary.summary.duration }}</span>
+                  <span class="symbol">&Prime;</span>
+                </span>
                 <span
                   *ngIf="!filterSummary.summary.number || !filterSummary.summary.duration"
                 >
