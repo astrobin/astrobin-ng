@@ -7,27 +7,41 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { FindImages, FindImagesSuccess, UndeleteImage, UndeleteImageSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { map, takeUntil } from "rxjs/operators";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { fromEvent, throttleTime } from "rxjs";
+import { fromEvent, Observable, throttleTime } from "rxjs";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { SubscriptionName } from "@shared/types/subscription-name.type";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 
 @Component({
   selector: "astrobin-user-gallery-trash",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper; else accessDeniedTemplate">
-      <ng-container *ngIf="!loading; else loadingTemplate">
-        <ng-container *ngIf="images.length > 0; else nothingHereTemplate">
-          <ng-container [ngTemplateOutlet]="trashTemplate"></ng-container>
+      <ng-container *ngIf="permission$ | async as permission">
+        <ng-container *ngIf="permission.mayAccess; else ultimateRequiredTemplate">
+          <ng-container *ngIf="!loading; else loadingTemplate">
+            <ng-container *ngIf="images.length > 0; else nothingHereTemplate">
+              <ng-container [ngTemplateOutlet]="trashTemplate"></ng-container>
+            </ng-container>
+          </ng-container>
         </ng-container>
       </ng-container>
     </ng-container>
 
     <ng-template #accessDeniedTemplate>
       <p translate>Access denied.</p>
+    </ng-template>
+
+    <ng-template #ultimateRequiredTemplate>
+      <p>
+        <span translate>Access to this feature is part of the AstroBin Ultimate plan.</span>&nbsp;
+        <a href="https://welcome.astrobin.com/pricing" translate>Upgrade now!</a>
+      </p>
+
     </ng-template>
 
     <ng-template #loadingTemplate>
@@ -51,17 +65,22 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let image of images">
+          <tr *ngFor="let image of images" [class.loading]="restoringImage === image.pk">
             <td class="thumbnail">
               <img [src]="image.finalGalleryThumbnail" alt="" />
             </td>
             <td class="title" [attr.data-label]="'Title' | translate">{{ image.title }}</td>
-            <td class="uploaded" [attr.data-label]="'Uploaded' | translate">{{ image.uploaded | localDate | date: 'mediumDate' }}</td>
-            <td class="deleted" [attr.data-label]="'Deleted' | translate">{{ image.deleted | localDate | date: 'mediumDate' }}</td>
+            <td class="uploaded"
+                [attr.data-label]="'Uploaded' | translate">{{ image.uploaded | localDate | date: 'mediumDate' }}
+            </td>
+            <td class="deleted"
+                [attr.data-label]="'Deleted' | translate">{{ image.deleted | localDate | date: 'mediumDate' }}
+            </td>
             <td class="restore">
               <button
                 (click)="restoreImage(image)"
                 class="btn btn-link btn-no-block link-primary"
+                [class.loading]="restoringImage === image.pk"
                 translate="Restore"
               >
               </button>
@@ -70,7 +89,6 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
           </tbody>
         </table>
       </div>
-
     </ng-template>
   `,
   styleUrls: ["./user-gallery-trash.component.scss"]
@@ -79,11 +97,22 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
+  protected permission$: Observable<{ mayAccess: boolean }> = this.currentUserProfile$.pipe(
+    switchMap(profile =>
+      this.userSubscriptionService.hasValidSubscription$(profile, [
+        SubscriptionName.ASTROBIN_ULTIMATE_2020,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+      ])
+    ),
+    map(isUltimate => ({ mayAccess: isUltimate }))
+  );
   protected next: string | null = null;
   protected page = 1;
   protected images: ImageInterface[] = [];
   protected loading = false;
   protected loadingMore = false;
+  protected restoringImage = null;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -92,7 +121,8 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$);
 
@@ -117,6 +147,16 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
       takeUntil(this.destroyed$)
     ).subscribe(pk => {
       this.images = this.images.filter(image => image.pk !== pk);
+      this.restoringImage = null;
+    });
+
+
+    actions$.pipe(
+      ofType(AppActionTypes.UNDELETE_IMAGE_FAILURE),
+      map((action: UndeleteImageSuccess) => action.payload.pk),
+      takeUntil(this.destroyed$)
+    ).subscribe(pk => {
+      this.restoringImage = null;
     });
   }
 
@@ -136,6 +176,11 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
     }
   }
 
+  protected restoreImage(image: ImageInterface): void {
+    this.store$.dispatch(new UndeleteImage({ pk: image.pk }));
+    this.restoringImage = image.pk;
+  }
+
   private _getImages(): void {
     if (this.page > 1) {
       this.loadingMore = true;
@@ -147,12 +192,8 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
       userId: this.user.id,
       gallerySerializer: true,
       page: this.page,
-      trash: true,
+      trash: true
     }));
-  }
-
-  protected restoreImage(image: ImageInterface): void {
-    this.store$.dispatch(new UndeleteImage({ pk: image.pk }));
   }
 
   private _onScroll() {

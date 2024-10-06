@@ -5,6 +5,13 @@
   width: 100%;
   max-width: 100%;
 
+  tr {
+    &.loading {
+      opacity: .5;
+      pointer-events: none;
+    }
+  }
+
   td, th {
     vertical-align: middle;
     padding: .5rem .75rem;
