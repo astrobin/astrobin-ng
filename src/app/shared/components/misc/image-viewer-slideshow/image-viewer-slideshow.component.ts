@@ -160,6 +160,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         const revisionLabel = this.router.parseUrl(url).queryParams["r"] || FINAL_REVISION_LABEL;
         if (imageId) {
           this.setImage(imageId, revisionLabel, false).subscribe(
+            () => {},
             error => {
               this.closeSlideshow.emit(false);
             }
@@ -333,6 +334,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   protected onNavigationContextItemSelected(imageId: ImageInterface["pk"] | ImageInterface["hash"]) {
     this.setImage(imageId, FINAL_REVISION_LABEL).subscribe({
+      next: () => {},
       error: () => {
         this.closeSlideshow.emit(false);
       }

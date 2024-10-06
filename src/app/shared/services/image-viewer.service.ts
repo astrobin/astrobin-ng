@@ -130,6 +130,7 @@ export class ImageViewerService extends BaseService {
     this.slideshow.instance.setCallerComponentId(callerComponentId);
     this.slideshow.instance.setNavigationContext(navigationContext);
     this.slideshow.instance.setImage(imageId, revisionLabel, pushState).subscribe({
+      next: () => {},
       error: () => {
         this.closeSlideShow(false);
       }
