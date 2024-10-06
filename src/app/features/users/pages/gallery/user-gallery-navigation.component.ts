@@ -88,6 +88,24 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
             ></astrobin-user-gallery-about>
           </ng-template>
         </li>
+
+        <ng-container *ngIf="currentUserWrapper.user?.id === user.id">
+          <!-- spacer -->
+          <li class="flex-grow-1"></li>
+
+          <li ngbNavItem="trash">
+            <a ngbNavLink>
+              <fa-icon icon="trash" class="me-2"></fa-icon>
+              <span translate="Trash"></span>
+            </a>
+            <ng-template ngbNavContent>
+              <astrobin-user-gallery-trash
+                [user]="user"
+                [userProfile]="userProfile"
+              ></astrobin-user-gallery-trash>
+            </ng-template>
+          </li>
+        </ng-container>
       </ul>
 
       <div [ngbNavOutlet]="nav"></div>

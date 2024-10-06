@@ -461,6 +461,26 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.UNDELETE_IMAGE_SUCCESS: {
+      const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
+
+      if (imageIndex === -1) {
+        return state;
+      } // If the image is not found, return the original state
+
+      const image = { ...state.images[imageIndex] };
+      image.deleted = null;
+
+      return {
+        ...state,
+        images: [
+          ...state.images.slice(0, imageIndex),
+          image,
+          ...state.images.slice(imageIndex + 1)
+        ]
+      };
+    }
+
     case AppActionTypes.LOAD_THUMBNAIL_SUCCESS: {
       return {
         ...state,

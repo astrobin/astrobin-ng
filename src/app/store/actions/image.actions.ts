@@ -261,6 +261,27 @@ export class DeleteImageFailure implements PayloadActionInterface {
   }
 }
 
+export class UndeleteImage implements PayloadActionInterface {
+  readonly type = AppActionTypes.UNDELETE_IMAGE;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class UndeleteImageSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.UNDELETE_IMAGE_SUCCESS;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class UndeleteImageFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.UNDELETE_IMAGE_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
+  }
+}
+
 export class DeleteImageUncompressedSourceFile implements PayloadActionInterface {
   readonly type = AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE;
 

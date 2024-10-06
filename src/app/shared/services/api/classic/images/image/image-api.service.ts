@@ -26,6 +26,7 @@ export interface FindImagesOptionsInterface {
   gallerySerializer?: boolean,
   includeStagingArea?: boolean,
   onlyStagingArea?: boolean
+  trash?: boolean
 }
 
 @Injectable({
@@ -85,6 +86,7 @@ export class ImageApiService extends BaseClassicApiService {
       "gallery-serializer": options.gallerySerializer ? "1" : null,
       "include-staging-area": options.includeStagingArea ? "true" : null,
       "only-staging-area": options.onlyStagingArea ? "true" : null,
+      'trash': options.trash ? "true" : null
     };
 
     // Filter out null or undefined values
@@ -149,6 +151,10 @@ export class ImageApiService extends BaseClassicApiService {
 
   delete(pk: ImageInterface["pk"]): Observable<ImageInterface> {
     return this.http.delete<ImageInterface>(`${this.configUrl}/image/${pk}/`);
+  }
+
+  undelete(pk: ImageInterface["pk"]): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/undelete/`, {});
   }
 
   download(

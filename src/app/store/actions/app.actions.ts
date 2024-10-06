@@ -5,7 +5,7 @@ import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import {
-  AcceptCollaboratorRequest, AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequest, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, FindImages, FindImagesFailure, FindImagesSuccess, ForceCheckImageAutoLoad, ForceCheckTogglePropertyAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, RemoveCollaborator, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
+  AcceptCollaboratorRequest, AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequest, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, FindImages, FindImagesFailure, FindImagesSuccess, ForceCheckImageAutoLoad, ForceCheckTogglePropertyAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, RemoveCollaborator, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UndeleteImage, UndeleteImageFailure, UndeleteImageSuccess, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
 } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
@@ -85,6 +85,10 @@ export enum AppActionTypes {
   DELETE_IMAGE = "[App] Delete image",
   DELETE_IMAGE_SUCCESS = "[App] Delete image success",
   DELETE_IMAGE_FAILURE = "[App] Delete image failure",
+
+  UNDELETE_IMAGE = "[App] Undelete image",
+  UNDELETE_IMAGE_SUCCESS = "[App] Undelete image success",
+  UNDELETE_IMAGE_FAILURE = "[App] Undelete image failure",
 
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_CANCEL = "[App] Load thumbnail cancel",
@@ -203,6 +207,9 @@ export type All =
   | DeleteImage
   | DeleteImageSuccess
   | DeleteImageFailure
+  | UndeleteImage
+  | UndeleteImageSuccess
+  | UndeleteImageFailure
   | LoadThumbnail
   | LoadThumbnailCancel
   | LoadThumbnailSuccess
