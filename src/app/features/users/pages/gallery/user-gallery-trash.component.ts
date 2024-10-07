@@ -16,6 +16,9 @@ import { fromEvent, Observable, throttleTime } from "rxjs";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-user-gallery-trash",
@@ -53,6 +56,13 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
     </ng-template>
 
     <ng-template #trashTemplate>
+      <button
+        class="btn btn-secondary mb-3 float-md-end"
+        [class.loading]="loading || loadingMore"
+        (click)="emptyTrash()"
+        translate="Empty trash"
+      ></button>
+
       <div class="table-container">
         <table class="table table-striped">
           <thead>
@@ -122,7 +132,10 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
     public readonly elementRef: ElementRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly utilsService: UtilsService,
-    public readonly userSubscriptionService: UserSubscriptionService
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly commonApiService: CommonApiService,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
 
@@ -179,6 +192,21 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
   protected restoreImage(image: ImageInterface): void {
     this.store$.dispatch(new UndeleteImage({ pk: image.pk }));
     this.restoringImage = image.pk;
+  }
+
+  protected emptyTrash(): void {
+    this.loading = true;
+    this.commonApiService.emptyTrash(this.user.id).subscribe({
+      next: () => {
+        this.images = [];
+        this.loading = false;
+        this.popNotificationsService.success(this.translateService.instant("Trash emptied."));
+      },
+      error: () => {
+        this.loading = false;
+        this.popNotificationsService.error(this.translateService.instant("An error occurred."));
+      }
+    });
   }
 
   private _getImages(): void {

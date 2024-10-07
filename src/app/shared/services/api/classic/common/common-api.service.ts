@@ -72,6 +72,10 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     }
   }
 
+  emptyTrash(userId: UserInterface["id"]): Observable<void> {
+    return this.http.post<void>(`${this.configUrl}/users/${userId}/empty-trash/`, {});
+  }
+
   getUserProfile(id: UserProfileInterface["id"]): Observable<UserProfileInterface> {
     return this.http
       .get<BackendUserProfileInterface>(`${this.configUrl}/userprofiles/${id}/`)
