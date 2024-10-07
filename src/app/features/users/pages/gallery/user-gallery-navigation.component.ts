@@ -66,6 +66,9 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
             <span translate="Collections"></span>
           </a>
           <ng-template ngbNavContent>
+            <astrobin-user-gallery-collections
+              [user]="user"
+            ></astrobin-user-gallery-collections>
           </ng-template>
         </li>
 

@@ -12,6 +12,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 export interface GetCollectionsParamsInterface {
   user?: UserInterface["id"];
   ids?: CollectionInterface["id"][];
+  parent?: CollectionInterface["id"];
 }
 
 @Injectable({
@@ -33,6 +34,14 @@ export class CollectionApiService extends BaseClassicApiService {
 
     if (params.ids !== undefined && params.ids.length > 0) {
       url = UtilsService.addOrUpdateUrlParam(url, 'ids', params.ids.join(","));
+    }
+
+    if (params.parent !== undefined) {
+      if (params.parent === null) {
+        url = UtilsService.addOrUpdateUrlParam(url, 'parent', 'null');
+      } else {
+        url = UtilsService.addOrUpdateUrlParam(url, 'parent', params.parent.toString());
+      }
     }
 
     return this.http.get<PaginatedApiResultInterface<CollectionInterface>>(url).pipe(
