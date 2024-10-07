@@ -1,20 +1,32 @@
 @import '../../../../styles/mixins';
+@import "../../../../styles/breakpoints";
 
 :host {
   display: block;
   margin: 0 -2rem;
+  position: relative;
 
   .nav-tabs {
     @include darkest-background-texture;
     position: sticky;
-    top: 63px;
+    top: 61px;
     z-index: 1;
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .5);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     .nav-link {
       border: 0;
       border-radius: 0;
       color: var(--lightestGrey);
+      white-space: nowrap;
 
       &.active {
         color: var(--white);
@@ -27,7 +39,31 @@
     }
   }
 
+  .nav-tabs-fade {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: calc(100% / 3);
+    height: 2.5rem;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to left, rgba(0, 0, 0, .8), transparent);
+    opacity: 0;
+    transition: opacity .5s;
+  }
+
   .tab-content {
     padding: 2rem;
+  }
+}
+
+@media (max-width: $md-max) {
+  :host {
+    margin: 0 -.5rem;
+
+    .tab-content {
+      padding: 1rem .5rem;
+    }
   }
 }

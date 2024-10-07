@@ -1,7 +1,16 @@
+@import "../../../../styles/breakpoints";
+
 astrobin-user-gallery-header {
   display: block;
   margin: -2rem -2rem 0;
   padding: 0;
   width: calc(100% + 4rem);
   height: 14rem;
+}
+
+@media (max-width: $md-max) {
+  astrobin-user-gallery-header {
+    margin: -2rem -.5rem 0;
+    width: calc(100% + 1rem)
+  }
 }

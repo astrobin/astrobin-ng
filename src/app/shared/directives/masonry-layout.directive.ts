@@ -46,9 +46,9 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
       this.averageHeight = 80;
     } else if (this.alias === ImageAlias.REGULAR) {
       if (this.deviceService.xsMax()) {
-        this.averageHeight = 80;
-      } else if (this.deviceService.smMax()) {
         this.averageHeight = 100;
+      } else if (this.deviceService.smMax()) {
+        this.averageHeight = 125;
       } else if (this.deviceService.mdMax()) {
         this.averageHeight = 150;
       } else {

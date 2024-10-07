@@ -46,18 +46,25 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
                 propertyType="follow"
               ></astrobin-toggle-property>
             </div>
-            <div class="d-flex gap-3 align-items-center images-and-followers">
+            <div class="d-flex gap-3 align-items-center images-and-followers flex-wrap">
               <span [translate]="'{{ 0 }} images'" [translateParams]="{'0': userProfile.imageCount}"></span>
               <span
                 *ngIf="userProfile.wipImageCount && currentUserWrapper.user?.id === user.id"
                 [translate]="'({{ 0 }} in staging)'"
-                [translateParams]="{'0': userProfile.wipImageCount}"></span>
-              <span [translate]="'{{ 0 }} followers'" [translateParams]="{'0': userProfile.followersCount}"></span>
-              <span [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"></span>
+                [translateParams]="{'0': userProfile.wipImageCount}"
+                class="d-none d-sm-inline"
+              ></span>
+              <span
+                [translate]="'{{ 0 }} followers'" [translateParams]="{'0': userProfile.followersCount}"
+              ></span>
+              <span
+                [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
+                class="d-none d-sm-inline"
+              ></span>
               <a
                 (click)="openStatsOffcanvas()"
                 astrobinEventPreventDefault
-                class="btn btn-xs btn-outline-secondary"
+                class="btn btn-xs btn-outline-secondary btn-no-block"
                 href=""
                 translate="More"
               ></a>

@@ -49,6 +49,10 @@
     .images-and-followers {
       font-size: .85rem;
       color: var(--lighterGrey);
+
+      span {
+        white-space: nowrap;
+      }
     }
   }
 }
