@@ -37,7 +37,7 @@ export const imageRoutes: Routes = [
       advancedSettings: PlateSolvingAdvancedSettingsResolver
     },
     data: {
-      skipThumbnails: false
+      skipThumbnails: true
     }
   },
   {
