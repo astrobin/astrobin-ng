@@ -1,0 +1,33 @@
+$size: 150px;
+
+.collection-container {
+  position: relative;
+
+  .collection-background {
+    background: url("/assets/images/polaroids.png?v=20241008") no-repeat center;
+    background-size: $size;
+    height: $size;
+    width: $size;
+    position: relative;
+
+    img {
+      position: absolute;
+      top: 7px !important;
+      left: 17px !important;
+      width: calc(100% - 32px) !important;
+      height: calc(100% - 33px) !important;
+      object-fit: cover;
+
+      &.empty-collection-thumbnail {
+        object-fit: none;
+      }
+    }
+  }
+
+  .collection-name {
+    padding: .5rem 1rem;
+    text-align: center;
+    color: var(--lightestGrey);
+    font-weight: bold;
+  }
+}

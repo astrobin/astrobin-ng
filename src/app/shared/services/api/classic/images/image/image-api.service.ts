@@ -16,17 +16,19 @@ import { ImageEditModelInterface } from "@features/image/services/image-edit.ser
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
 import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
+import { CollectionInterface } from "@shared/interfaces/collection.interface";
 
 export interface FindImagesOptionsInterface {
-  userId?: UserInterface["id"],
-  q?: string,
-  hasDeepSkyAcquisitions?: boolean,
-  hasSolarSystemAcquisitions?: boolean,
-  page?: number,
-  gallerySerializer?: boolean,
-  includeStagingArea?: boolean,
-  onlyStagingArea?: boolean
-  trash?: boolean
+  userId?: UserInterface["id"];
+  q?: string;
+  hasDeepSkyAcquisitions?: boolean;
+  hasSolarSystemAcquisitions?: boolean;
+  page?: number;
+  gallerySerializer?: boolean;
+  includeStagingArea?: boolean;
+  onlyStagingArea?: boolean;
+  trash?: boolean;
+  collection?: CollectionInterface["id"];
 }
 
 @Injectable({

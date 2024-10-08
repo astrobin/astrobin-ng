@@ -7,6 +7,7 @@ import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { selectCollections } from "@app/store/selectors/app/collection.selectors";
 import { takeUntil } from "rxjs/operators";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-user-gallery-collections",
@@ -22,13 +23,28 @@ import { takeUntil } from "rxjs/operators";
         [withInfoSign]="false"
       ></astrobin-nothing-here>
 
+      <div *ngIf="!loading && activeCollection">
+        <astrobin-user-gallery-collection
+          [user]="user"
+          [collection]="activeCollection"
+        ></astrobin-user-gallery-collection>
+      </div>
+
       <div
-        *ngIf="!loading && collections?.length > 0"
+        *ngIf="!loading && !activeCollection && collections?.length > 0"
+        class="d-flex flex-wrap gap-4"
       >
         <a
           *ngFor="let collection of collections"
+          (click)="openCollection(collection)"
+          astrobinEventPreventDefault
+          astrobinEventStopPropagation
+          class="d-block"
         >
-          {{ collection.name }}
+          <astrobin-user-gallery-collection-thumbnail
+            [user]="user"
+            [collection]="collection"
+          ></astrobin-user-gallery-collection-thumbnail>
         </a>
       </div>
     </ng-container>
@@ -39,12 +55,17 @@ export class UserGalleryCollectionsComponent
   extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() user: UserInterface;
 
-  parent: CollectionInterface["id"] | null = null;
+  protected activeCollection: CollectionInterface | null = null;
   protected collections: CollectionInterface[] = [];
   protected loading = false;
 
+  private _parent: CollectionInterface["id"] | null = null;
+
+
   constructor(
-    public readonly store$: Store<MainState>
+    public readonly store$: Store<MainState>,
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -53,7 +74,7 @@ export class UserGalleryCollectionsComponent
     super.ngOnInit();
 
     this.store$.pipe(
-      select(selectCollections, { user: this.user.id, parent: this.parent }),
+      select(selectCollections, { user: this.user.id, parent: this._parent }),
       takeUntil(this.destroyed$)
     ).subscribe(collections => {
       this.collections = collections;
@@ -67,9 +88,14 @@ export class UserGalleryCollectionsComponent
       this.store$.dispatch(new LoadCollections({
         params: {
           user: this.user.id,
-          parent: this.parent
+          parent: this._parent
         }
       }));
     }
+  }
+
+  openCollection(collection: CollectionInterface) {
+    // Replace fragment with collection-id
+    this.router.navigate([], { fragment: collection.id.toString(), relativeTo: this.activatedRoute });
   }
 }
