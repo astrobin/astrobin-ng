@@ -206,7 +206,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this.navigationContext = newContext;
     }
 
-    this._updateVisibleContext();
+    this._updateVisibleContext(this.activeId);
   }
 
   setImage(
@@ -219,12 +219,11 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this._loadImage(imageId).subscribe({
         next: image => {
           this.loadingImage = false;
-          this.activeId = imageId;
           this.activeImage = image;
           this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
-          this._updateVisibleContext();
-          this._loadAdjacentImages();
-          this._dropImagesTooFarFromIndex();
+          this._updateVisibleContext(imageId);
+          this._loadAdjacentImages(imageId);
+          this._dropImagesTooFarFromIndex(imageId);
 
           this.utilsService.delay(200).subscribe(() => {
             this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
@@ -234,6 +233,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
               this.carousel.select(imageId.toString());
               this._skipSlideEvent = false;
               this.carousel.focus();
+              this.activeId = imageId;
             }
 
             if (emitChange) {
@@ -346,8 +346,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     return item.imageId;
   }
 
-  private _updateVisibleContext() {
-    const currentIndex = this._getImageIndexInContext(this.activeId);
+  private _updateVisibleContext(activeId: ImageInterface["pk"] | ImageInterface["hash"]) {
+    const currentIndex = this._getImageIndexInContext(activeId);
     if (currentIndex === -1) {
       this.visibleContext = [...this.navigationContext];
       return;
@@ -371,19 +371,19 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     this.visibleContext = this.navigationContext.slice(currentIndex - 1, currentIndex + 2);
   }
 
-  private _loadAdjacentImages() {
-    const index = this._getImageIndexInContext(this.activeId);
+  private _loadAdjacentImages(activeId: ImageInterface["pk"] | ImageInterface["hash"]) {
+    const index = this._getImageIndexInContext(activeId);
     for (let i = index - SLIDESHOW_BUFFER; i <= index + SLIDESHOW_BUFFER; i++) {
       if (i >= 0 && i < this.navigationContext.length && i !== index) {
         this._loadImage(this.navigationContext[i].imageId, Math.abs(index - i) * 100).subscribe(() => {
-          this._updateVisibleContext();
+          this._updateVisibleContext(activeId);
         });
       }
     }
   }
 
-  private _dropImagesTooFarFromIndex() {
-    const index = this._getImageIndexInContext(this.activeId);
+  private _dropImagesTooFarFromIndex(activeId: ImageInterface["pk"] | ImageInterface["hash"]) {
+    const index = this._getImageIndexInContext(activeId);
     this.navigationContext = this.navigationContext.map((item, i) => {
       if (Math.abs(index - i) > SLIDESHOW_WINDOW) {
         return { ...item, image: undefined };
