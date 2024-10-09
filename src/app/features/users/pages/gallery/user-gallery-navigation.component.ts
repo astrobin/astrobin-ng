@@ -10,6 +10,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { fromEvent, throttleTime } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { startWith, takeUntil } from "rxjs/operators";
+import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 
 type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about";
 
@@ -23,6 +24,7 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
         #nav="ngbNav"
         (click)="onTabClick(active)"
         [(activeId)]="active"
+        [animation]="false"
         class="nav-tabs"
       >
         <li ngbNavItem="recent">
@@ -31,7 +33,9 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
             <span translate="Recent images"></span>
           </a>
           <ng-template ngbNavContent>
+            <astrobin-user-gallery-buttons [(activeLayout)]="activeLayout"></astrobin-user-gallery-buttons>
             <astrobin-user-gallery-images
+              [activeLayout]="activeLayout"
               [user]="user"
               [userProfile]="userProfile"
               [options]="{
@@ -52,7 +56,9 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
             <span translate="Staging area"></span>
           </a>
           <ng-template ngbNavContent>
+            <astrobin-user-gallery-buttons [(activeLayout)]="activeLayout"></astrobin-user-gallery-buttons>
             <astrobin-user-gallery-images
+              [activeLayout]="activeLayout"
               [user]="user"
               [userProfile]="userProfile"
               [options]="{ onlyStagingArea: currentUserWrapper.user?.id === user.id }"
@@ -68,6 +74,7 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
           <ng-template ngbNavContent>
             <astrobin-user-gallery-collections
               [user]="user"
+              [userProfile]="userProfile"
             ></astrobin-user-gallery-collections>
           </ng-template>
         </li>
@@ -125,8 +132,9 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
-  protected active: GalleryNavigationComponent = "recent";
   protected readonly ImageAlias = ImageAlias;
+  protected active: GalleryNavigationComponent = "recent";
+  protected activeLayout = UserGalleryActiveLayout.SMALL;
   private readonly _isBrowser: boolean;
 
   constructor(

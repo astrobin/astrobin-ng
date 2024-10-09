@@ -30,6 +30,10 @@ import { FindImages } from "@app/store/actions/image.actions";
         <div class="collection-name">
           {{ collection.name }}
         </div>
+
+        <div class="collection-count">
+          {{ "{{ 0 }} images" | translate: { "0": collection.imageCount } }}
+        </div>
       </div>
     </ng-container>
   `,

@@ -13,4 +13,5 @@ export interface CollectionInterface {
   cover: ImageInterface["pk"] | null;
   coverThumbnail: string | null;
   orderByTag: string | null;
+  imageCount?: number;
 }

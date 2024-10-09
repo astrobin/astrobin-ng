@@ -2,6 +2,8 @@ $size: 150px;
 
 .collection-container {
   position: relative;
+  cursor: pointer;
+  transition: filter 0.3s ease;
 
   .collection-background {
     background: url("/assets/images/polaroids.png?v=20241008") no-repeat center;
@@ -25,9 +27,22 @@ $size: 150px;
   }
 
   .collection-name {
-    padding: .5rem 1rem;
+    padding: .5rem 1rem .25rem 1rem;
     text-align: center;
-    color: var(--lightestGrey);
+    color: var(--white);
     font-weight: bold;
+  }
+
+  .collection-count {
+    padding: 0 1rem;
+    text-align: center;
+    color: var(--lighterGrey);
+    font-size: .85rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      filter: brightness(1.5);
+    }
   }
 }

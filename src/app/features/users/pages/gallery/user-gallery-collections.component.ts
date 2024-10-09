@@ -6,8 +6,10 @@ import { MainState } from "@app/store/state";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { selectCollections } from "@app/store/selectors/app/collection.selectors";
-import { takeUntil } from "rxjs/operators";
-import { ActivatedRoute, Router } from "@angular/router";
+import { filter, takeUntil } from "rxjs/operators";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { Actions } from "@ngrx/effects";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-user-gallery-collections",
@@ -26,6 +28,7 @@ import { ActivatedRoute, Router } from "@angular/router";
       <div *ngIf="!loading && activeCollection">
         <astrobin-user-gallery-collection
           [user]="user"
+          [userProfile]="userProfile"
           [collection]="activeCollection"
         ></astrobin-user-gallery-collection>
       </div>
@@ -51,9 +54,9 @@ import { ActivatedRoute, Router } from "@angular/router";
   `,
   styleUrls: ["./user-gallery-images.component.scss"]
 })
-export class UserGalleryCollectionsComponent
-  extends BaseComponentDirective implements OnInit, OnChanges {
+export class UserGalleryCollectionsComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() user: UserInterface;
+  @Input() userProfile: UserProfileInterface
 
   protected activeCollection: CollectionInterface | null = null;
   protected collections: CollectionInterface[] = [];
@@ -64,10 +67,18 @@ export class UserGalleryCollectionsComponent
 
   constructor(
     public readonly store$: Store<MainState>,
+    public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router
   ) {
     super(store$);
+
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this._setActiveCollectionFromRoute();
+    });
   }
 
   ngOnInit() {
@@ -78,8 +89,9 @@ export class UserGalleryCollectionsComponent
       takeUntil(this.destroyed$)
     ).subscribe(collections => {
       this.collections = collections;
+      this._setActiveCollectionFromRoute();
       this.loading = false;
-    })
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -95,7 +107,23 @@ export class UserGalleryCollectionsComponent
   }
 
   openCollection(collection: CollectionInterface) {
-    // Replace fragment with collection-id
-    this.router.navigate([], { fragment: collection.id.toString(), relativeTo: this.activatedRoute });
+    this.router.navigate(
+      [],
+      {
+        fragment: "collections",
+        queryParams: { collection: collection.id },
+        relativeTo: this.activatedRoute
+      }
+    ).then(() => {
+      this.activeCollection = collection;
+    });
+  }
+
+  private _setActiveCollectionFromRoute() {
+    const collectionId = this.activatedRoute.snapshot.queryParams.collection;
+
+    if (this.collections && this.collections.length > 0) {
+      this.activeCollection = this.collections.find(collection => collection.id === +collectionId) || null;
+    }
   }
 }

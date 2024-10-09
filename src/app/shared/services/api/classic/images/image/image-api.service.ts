@@ -88,7 +88,8 @@ export class ImageApiService extends BaseClassicApiService {
       "gallery-serializer": options.gallerySerializer ? "1" : null,
       "include-staging-area": options.includeStagingArea ? "true" : null,
       "only-staging-area": options.onlyStagingArea ? "true" : null,
-      'trash': options.trash ? "true" : null
+      'trash': options.trash ? "true" : null,
+      'collection': options.collection
     };
 
     // Filter out null or undefined values

@@ -1,0 +1,11 @@
+@import "../../../../styles/mixins";
+
+:host {
+  @include darkest-background-texture;
+  display: block;
+  margin: -2rem -2rem 1rem;
+  padding: .75rem 1rem;
+  position: sticky;
+  top: 101px;
+  z-index: 1;
+}

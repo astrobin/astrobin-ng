@@ -21,6 +21,7 @@ import { fromEvent, throttleTime } from "rxjs";
 import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 
 @Component({
   selector: "astrobin-user-gallery-images",
@@ -28,9 +29,13 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <ng-container *ngIf="loading">
         <astrobin-user-gallery-loading
-          *ngIf="loadingPlaceholdersCount"
+          *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
           [numberOfImages]="loadingPlaceholdersCount"
         ></astrobin-user-gallery-loading>
+
+        <astrobin-loading-indicator
+          *ngIf="!loadingPlaceholdersCount || loadingPlaceholdersCount <= 10"
+        ></astrobin-loading-indicator>
       </ng-container>
 
       <astrobin-nothing-here
@@ -114,6 +119,8 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
   @Input() options: FindImagesOptionsInterface;
+  @Input() expectedImagesCount: number;
+  @Input() activeLayout: UserGalleryActiveLayout;
 
   protected readonly ImageAlias = ImageAlias;
 
@@ -174,10 +181,19 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }
 
     if (changes.userProfile && changes.userProfile.currentValue) {
-      this.loadingPlaceholdersCount = Math.min(
-        changes.userProfile.currentValue.imageCount,
-        this.paginationConfig.pageSize
-      );
+      if (this.expectedImagesCount === 0) {
+        this.loadingPlaceholdersCount = 0;
+      } else {
+        this.loadingPlaceholdersCount = Math.min(
+          this.expectedImagesCount || Number.MAX_SAFE_INTEGER,
+          changes.userProfile.currentValue.imageCount,
+          this.paginationConfig.pageSize
+        );
+      }
+    }
+
+    if (changes.activeLayout) {
+      this._updateAverageHeight(this.activeLayout);
     }
   }
 
@@ -202,6 +218,14 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       this.viewContainerRef,
       true
     );
+  }
+
+  private _updateAverageHeight(layout: UserGalleryActiveLayout): void {
+    if (layout === UserGalleryActiveLayout.LARGE) {
+      this.averageHeight = 500;
+    } else {
+      this.averageHeight = 200;
+    }
   }
 
   private _getImages(): void {
