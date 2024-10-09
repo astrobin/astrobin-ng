@@ -284,7 +284,7 @@ export class ImagePlateSolvingSettingsPageComponent
             key: "downsampleFactor",
             type: "input",
             wrappers: ["default-wrapper"],
-            className: "col-12 col-lg-4",
+            className: "col-12 col-lg-6",
             props: {
               label: this.translateService.instant("Downsample factor"),
               description: this.translateService.instant(
@@ -296,7 +296,7 @@ export class ImagePlateSolvingSettingsPageComponent
             key: "useSextractor",
             type: "toggle",
             wrappers: ["default-wrapper"],
-            className: "col-12 col-lg-4",
+            className: "col-12 col-lg-6",
             props: {
               lineHeight: "36px",
               label: this.translateService.instant("Star detection"),
@@ -309,12 +309,33 @@ export class ImagePlateSolvingSettingsPageComponent
                 this.translateService.instant("Learn more") +
                 ".</a>"
             }
+          }
+        ]
+      },
+      {
+        key: "",
+        fieldGroupClassName: "row",
+        fieldGroup: [
+          {
+            key: "astrometryNetPubliclyVisible",
+            type: "toggle",
+            wrappers: ["default-wrapper"],
+            className: "col-12 col-lg-6",
+            props: {
+              lineHeight: "36px",
+              label: this.translateService.instant("Astrometry.net publicly visible"),
+              description: this.translateService.instant(
+                "If checked, the astrometry.net submission will be publicly visible. If you leave this unchecked," +
+                "you won't be able to see the full log of the astrometry.net submission, but the image will still" +
+                "be plate-solved and annotated."
+              )
+            }
           },
           {
             key: "blind",
             type: "toggle",
             wrappers: ["default-wrapper"],
-            className: "col-12 col-lg-4",
+            className: "col-12 col-lg-6",
             props: {
               lineHeight: "36px",
               label: this.translateService.instant("Plate-solving method"),

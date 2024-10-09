@@ -3,6 +3,7 @@ import { SolutionInterface } from "@shared/interfaces/solution.interface";
 export interface PlateSolvingSettingsInterface {
   id: number;
   solution: SolutionInterface["id"];
+  astrometryNetPubliclyVisible: boolean;
   blind: boolean;
   scaleUnits: string | null;
   scaleMin: string | null;

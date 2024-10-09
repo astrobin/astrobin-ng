@@ -49,7 +49,7 @@ export class ImageApiService extends BaseClassicApiService {
     id: ImageInterface["pk"] | ImageInterface["hash"],
     options: LoadImageOptionsInterface = { skipThumbnails: false }
   ): Observable<ImageInterface> {
-    if (isNaN(Number(id))) {
+    if (!UtilsService.isNumeric(id.toString())) {
       let url = `${this.configUrl}/image/`;
 
       url = UtilsService.addOrUpdateUrlParam(url, "hash", `${id}`);
