@@ -4,6 +4,7 @@ $size: 150px;
   position: relative;
   cursor: pointer;
   transition: filter 0.3s ease;
+  width: $size;
 
   .collection-background {
     background: url("/assets/images/polaroids.png?v=20241008") no-repeat center;

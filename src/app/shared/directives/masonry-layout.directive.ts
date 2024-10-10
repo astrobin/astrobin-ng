@@ -135,7 +135,12 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
       return '50% 50%'; // Fallback to center if parsing failed
     }
 
-    const [x1, y1, x2, y2] = coords;
+    let [x1, y1, x2, y2] = coords;
+
+    x1 = Math.max(0, x1);
+    y1 = Math.max(0, y1);
+    x2 = Math.min(this._getW(image), x2);
+    y2 = Math.min(this._getH(image), y2);
 
     // Calculate the center of the cropping square
     const centerX = (x1 + x2) / 2;

@@ -2,6 +2,7 @@
   width: 100%;
   height: 100%;
   position: relative;
+  overflow: hidden;
 
   .no-image {
     background: var(--black);
@@ -11,7 +12,7 @@
 
   img {
     object-fit: cover;
-    filter: blur(10px);
+    filter: blur(4px);
   }
 
   .user-info {

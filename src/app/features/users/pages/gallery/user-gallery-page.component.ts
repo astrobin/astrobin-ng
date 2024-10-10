@@ -3,15 +3,16 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Actions } from "@ngrx/effects";
+import { Actions, ofType } from "@ngrx/effects";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { filter, takeUntil } from "rxjs/operators";
+import { filter, map, takeUntil } from "rxjs/operators";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { LoadCollections } from "@app/store/actions/collection.actions";
+import { FindCollections, FindCollectionsSuccess, LoadCollections } from "@app/store/actions/collection.actions";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 
 @Component({
   selector: "astrobin-user-gallery-page",
@@ -59,6 +60,19 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
   ngOnInit(): void {
     super.ngOnInit();
 
+    this.actions$.pipe(
+      ofType(AppActionTypes.FIND_COLLECTIONS_SUCCESS),
+      map((action: FindCollectionsSuccess) => action.payload.response),
+      takeUntil(this.destroyed$)
+    ).subscribe( response => {
+      if (response.next) {
+        const page = response.next.match(/page=(\d+)/)[1];
+        if (page) {
+          this.store$.dispatch(new FindCollections({ params: { user: this.user.id, page: +page } }));
+        }
+      }
+    })
+
     this.route.data.pipe(takeUntil(this.destroyed$)).subscribe((data: {
       userData: {
         user: UserInterface, userProfile: UserProfileInterface
@@ -67,7 +81,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       this.user = data.userData.user;
       this.userProfile = data.userData.userProfile;
 
-      this.store$.dispatch(new LoadCollections({ params: { user: this.user.id } }));
+      this.store$.dispatch(new FindCollections({ params: { user: this.user.id } }));
     });
 
     this._setMetaTags();

@@ -16,7 +16,6 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
 @Component({
   selector: "astrobin-user-gallery-header",
   template: `
-
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="user-gallery-header">
       <img *ngIf="userProfile.galleryHeaderImage" [ngSrc]="userProfile.galleryHeaderImage" fill alt="" />
       <div *ngIf="!userProfile.galleryHeaderImage" class="no-image"></div>

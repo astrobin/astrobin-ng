@@ -2,6 +2,7 @@ import { GetCollectionsParamsInterface } from "@shared/services/api/classic/coll
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 
 export class LoadCollections implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_COLLECTIONS;
@@ -19,6 +20,30 @@ export class LoadCollectionsSuccess implements PayloadActionInterface {
 
 export class LoadCollectionsFailure implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_COLLECTIONS_FAILURE;
+
+  constructor(public payload: { params: GetCollectionsParamsInterface, error: any }) {
+  }
+}
+
+export class FindCollections implements PayloadActionInterface {
+  readonly type = AppActionTypes.FIND_COLLECTIONS;
+
+  constructor(public payload: { params: GetCollectionsParamsInterface }) {
+  }
+}
+
+export class FindCollectionsSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.FIND_COLLECTIONS_SUCCESS;
+
+  constructor(public payload: {
+    params: GetCollectionsParamsInterface,
+    response: PaginatedApiResultInterface<CollectionInterface>
+  }) {
+  }
+}
+
+export class FindCollectionsFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.FIND_COLLECTIONS_FAILURE;
 
   constructor(public payload: { params: GetCollectionsParamsInterface, error: any }) {
   }
