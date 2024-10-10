@@ -28,7 +28,7 @@ import { CollectionInterface } from "@shared/interfaces/collection.interface";
         </div>
 
         <div class="collection-count">
-          {{ "{{ 0  }} images" | translate: { "0": collection.imageCount } }}
+          {{ "{{ 0 }} images" | translate: { "0": collection.imageCount } }}
         </div>
       </div>
     </ng-container>

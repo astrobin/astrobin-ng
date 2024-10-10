@@ -21,7 +21,7 @@ import { Subscription } from "rxjs";
 
       <div *ngIf="!loading && parentCollection" class="collection-header">
         <h2>{{ parentCollection.name }}</h2>
-        <small>{{ "A collection by {{ 0  }}" | translate: {"0": user.displayName} }}</small>
+        <small>{{ "A collection by {{ 0 }}" | translate: {"0": user.displayName} }}</small>
         <p *ngIf="parentCollection.description" [innerHTML]="parentCollection.description"></p>
       </div>
 
