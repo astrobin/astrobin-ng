@@ -7,7 +7,7 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { FindImages, FindImagesSuccess, UndeleteImage, UndeleteImageSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { map, switchMap, takeUntil } from "rxjs/operators";
+import { filter, map, switchMap, takeUntil } from "rxjs/operators";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -142,14 +142,21 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
     actions$.pipe(
       ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
       map((action: FindImagesSuccess) => action.payload),
+      filter(payload => JSON.stringify(payload.options) === JSON.stringify({
+        userId: this.user.id,
+        gallerySerializer: true,
+        page: this.page,
+        trash: true
+      })),
+      map(payload => payload.response),
       takeUntil(this.destroyed$)
-    ).subscribe(payload => {
-      if (payload.prev !== null) {
-        this.images = [...this.images, ...payload.results];
+    ).subscribe(response => {
+      if (!!response.prev) {
+        this.images = [...this.images, ...response.results];
       } else {
-        this.images = payload.results;
+        this.images = response.results;
       }
-      this.next = payload.next;
+      this.next = response.next;
       this.loadingMore = false;
       this.loading = false;
     });
@@ -217,10 +224,12 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
     }
 
     this.store$.dispatch(new FindImages({
-      userId: this.user.id,
-      gallerySerializer: true,
-      page: this.page,
-      trash: true
+      options: {
+        userId: this.user.id,
+        gallerySerializer: true,
+        page: this.page,
+        trash: true
+      }
     }));
   }
 

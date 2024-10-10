@@ -4,12 +4,12 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
-import { LoadCollections } from "@app/store/actions/collection.actions";
-import { selectCollections } from "@app/store/selectors/app/collection.selectors";
-import { filter, takeUntil } from "rxjs/operators";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { selectCollections, selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
+import { filter, map, takeUntil } from "rxjs/operators";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Actions } from "@ngrx/effects";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "astrobin-user-gallery-collections",
@@ -19,23 +19,15 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
         <astrobin-loading-indicator></astrobin-loading-indicator>
       </ng-container>
 
-      <astrobin-nothing-here
-        *ngIf="!loading && collections?.length === 0"
-        [withAlert]="false"
-        [withInfoSign]="false"
-      ></astrobin-nothing-here>
-
-      <div *ngIf="!loading && activeCollection">
-        <astrobin-user-gallery-collection
-          [user]="user"
-          [userProfile]="userProfile"
-          [collection]="activeCollection"
-        ></astrobin-user-gallery-collection>
+      <div *ngIf="!loading && parentCollection" class="collection-header">
+        <h2>{{ parentCollection.name }}</h2>
+        <small>{{ "A collection by {{ 0  }}" | translate: {"0": user.displayName} }}</small>
+        <p *ngIf="parentCollection.description" [innerHTML]="parentCollection.description"></p>
       </div>
 
       <div
-        *ngIf="!loading && !activeCollection && collections?.length > 0"
-        class="d-flex flex-wrap gap-4"
+        *ngIf="!loading && collections?.length > 0"
+        class="d-flex flex-wrap gap-4 justify-content-center"
       >
         <a
           *ngFor="let collection of collections"
@@ -52,18 +44,19 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
       </div>
     </ng-container>
   `,
-  styleUrls: ["./user-gallery-images.component.scss"]
+  styleUrls: ["./user-gallery-collections.component.scss"]
 })
 export class UserGalleryCollectionsComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() user: UserInterface;
-  @Input() userProfile: UserProfileInterface
+  @Input() userProfile: UserProfileInterface;
+  @Input() parent: CollectionInterface["id"] | null = null;
 
-  protected activeCollection: CollectionInterface | null = null;
-  protected collections: CollectionInterface[] = [];
+  protected collections: CollectionInterface[] = null;
+  protected parentCollection: CollectionInterface = null;
   protected loading = false;
 
-  private _parent: CollectionInterface["id"] | null = null;
-
+  private _collectionsSubscription: Subscription;
+  private _parentCollectionSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -72,37 +65,45 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     public readonly router: Router
   ) {
     super(store$);
-
-    router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this._setActiveCollectionFromRoute();
-    });
   }
 
   ngOnInit() {
     super.ngOnInit();
-
-    this.store$.pipe(
-      select(selectCollections, { user: this.user.id, parent: this._parent }),
-      takeUntil(this.destroyed$)
-    ).subscribe(collections => {
-      this.collections = collections;
-      this._setActiveCollectionFromRoute();
-      this.loading = false;
-    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.user) {
-      this.loading = true;
-      this.store$.dispatch(new LoadCollections({
-        params: {
-          user: this.user.id,
-          parent: this._parent
-        }
-      }));
+    this.parentCollection = null;
+
+    if (this._collectionsSubscription) {
+      this._collectionsSubscription.unsubscribe();
+    }
+
+    this._collectionsSubscription = this.store$.pipe(
+      select(selectCollectionsByParams({
+        user: this.user.id,
+        parent: this.activatedRoute.snapshot.queryParams.collection
+          ? parseInt(this.activatedRoute.snapshot.queryParams.collection, 10)
+          : null
+      })),
+      takeUntil(this.destroyed$)
+    ).subscribe(collections => {
+      this.collections = collections;
+      this.loading = false;
+    });
+
+    if (this.parent) {
+      if (this._parentCollectionSubscription) {
+        this._parentCollectionSubscription.unsubscribe();
+      }
+
+      this._parentCollectionSubscription = this.store$.pipe(
+        select(selectCollections),
+        filter(collections => collections?.length > 0),
+        map(collections => collections.filter(collection => collection.id === this.parent)),
+        takeUntil(this.destroyed$)
+      ).subscribe(collections => {
+        this.parentCollection = collections[0];
+      });
     }
   }
 
@@ -110,20 +111,10 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     this.router.navigate(
       [],
       {
-        fragment: "collections",
+        fragment: "gallery",
         queryParams: { collection: collection.id },
         relativeTo: this.activatedRoute
       }
-    ).then(() => {
-      this.activeCollection = collection;
-    });
-  }
-
-  private _setActiveCollectionFromRoute() {
-    const collectionId = this.activatedRoute.snapshot.queryParams.collection;
-
-    if (this.collections && this.collections.length > 0) {
-      this.activeCollection = this.collections.find(collection => collection.id === +collectionId) || null;
-    }
+    );
   }
 }

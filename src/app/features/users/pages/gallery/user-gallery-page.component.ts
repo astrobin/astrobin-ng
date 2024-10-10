@@ -11,6 +11,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { filter, takeUntil } from "rxjs/operators";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { LoadCollections } from "@app/store/actions/collection.actions";
 
 @Component({
   selector: "astrobin-user-gallery-page",
@@ -65,6 +66,8 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     }) => {
       this.user = data.userData.user;
       this.userProfile = data.userData.userProfile;
+
+      this.store$.dispatch(new LoadCollections({ params: { user: this.user.id } }));
     });
 
     this._setMetaTags();
@@ -72,7 +75,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
 
   private _setMetaTags() {
     const title = this.user.displayName;
-    const description = this.translateService.instant("An gallery on AstroBin.");
+    const description = this.translateService.instant("A gallery on AstroBin.");
 
     this.titleService.setTitle(title);
     this.titleService.setDescription(description);

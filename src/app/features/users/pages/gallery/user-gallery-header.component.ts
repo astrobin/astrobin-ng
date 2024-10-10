@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -7,11 +6,8 @@ import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { filter, map, take } from "rxjs/operators";
+import { filter, take } from "rxjs/operators";
 import { UserProfileInterface, UserProfileStatsInterface } from "@shared/interfaces/user-profile.interface";
-import { FindImages, FindImagesSuccess, LoadImages } from "@app/store/actions/image.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
@@ -129,7 +125,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       this.statsOffcanvas, {
         position: this.deviceService.offcanvasPosition()
       }
-    )
+    );
 
     if (!this.stats) {
       this.commonApiService.getUserProfileStats(this.userProfile.id).subscribe(stats => {

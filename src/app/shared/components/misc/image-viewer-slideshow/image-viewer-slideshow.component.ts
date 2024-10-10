@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnDestroy, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -18,6 +18,7 @@ import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions
 import { isPlatformBrowser } from "@angular/common";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
+import { fadeInOut } from "@shared/animations";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
@@ -93,9 +94,12 @@ const SLIDESHOW_WINDOW = 3;
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-slideshow.component.scss"]
+  styleUrls: ["./image-viewer-slideshow.component.scss"],
+  animations: [fadeInOut]
 })
 export class ImageViewerSlideshowComponent extends BaseComponentDirective implements OnDestroy {
+  @HostBinding('@fadeInOut') fadeInOut = true;
+
   @Input()
   imageId: ImageInterface["pk"] | ImageInterface["hash"];
 

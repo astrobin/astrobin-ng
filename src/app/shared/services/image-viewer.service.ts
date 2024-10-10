@@ -114,14 +114,7 @@ export class ImageViewerService extends BaseService {
       this.slideshow.instance.imageChange.subscribe((image: ImageInterface) => {
         if (isPlatformBrowser(this.platformId)) {
           let url = this.windowRefService.getCurrentUrl().href;
-          const fragment = url.split("#")[1];
-
           url = UtilsService.addOrUpdateUrlParam(url, "i", image.hash || image.pk.toString());
-
-          if (fragment) {
-            url += "#" + fragment;
-          }
-
           this.windowRefService.pushState({ imageId: image.hash || image.pk }, url);
         }
       });

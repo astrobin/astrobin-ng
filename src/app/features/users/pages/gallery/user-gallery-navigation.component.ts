@@ -5,14 +5,16 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { fromEvent, throttleTime } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
-import { startWith, takeUntil } from "rxjs/operators";
+import { filter, map, startWith, take, takeUntil } from "rxjs/operators";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
+import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { selectCollections } from "@app/store/selectors/app/collection.selectors";
 
-type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about";
+type GalleryNavigationComponent = "gallery" | "staging" | "about";
 
 @Component({
   selector: "astrobin-user-gallery-navigation",
@@ -22,26 +24,35 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
       <ul
         ngbNav
         #nav="ngbNav"
-        (click)="onTabClick(active)"
-        [(activeId)]="active"
-        [animation]="false"
+        (click)="onTabClick(activeTab)"
+        [(activeId)]="activeTab"
         class="nav-tabs"
       >
-        <li ngbNavItem="recent">
+        <li ngbNavItem="gallery">
           <a ngbNavLink>
             <fa-icon icon="images" class="me-2"></fa-icon>
-            <span translate="Recent images"></span>
+            <span translate="Gallery"></span>
           </a>
           <ng-template ngbNavContent>
             <astrobin-user-gallery-buttons [(activeLayout)]="activeLayout"></astrobin-user-gallery-buttons>
+
+            <astrobin-user-gallery-collections
+              class="d-block mb-5"
+              [user]="user"
+              [userProfile]="userProfile"
+              [parent]="collectionId"
+            ></astrobin-user-gallery-collections>
+
             <astrobin-user-gallery-images
               [activeLayout]="activeLayout"
+              [expectedImageCount]="activeCollection ? activeCollection.imageCount : userProfile.imageCount"
               [user]="user"
               [userProfile]="userProfile"
               [options]="{
                 includeStagingArea:
                   currentUserWrapper.user?.id === user.id &&
-                  userProfile.displayWipImagesOnPublicGallery
+                  userProfile.displayWipImagesOnPublicGallery,
+                collection: collectionId
               }"
             ></astrobin-user-gallery-images>
           </ng-template>
@@ -63,19 +74,6 @@ type GalleryNavigationComponent = "recent" | "collections" | "staging" | "about"
               [userProfile]="userProfile"
               [options]="{ onlyStagingArea: currentUserWrapper.user?.id === user.id }"
             ></astrobin-user-gallery-images>
-          </ng-template>
-        </li>
-
-        <li ngbNavItem="collections">
-          <a ngbNavLink>
-            <fa-icon icon="folder" class="me-2"></fa-icon>
-            <span translate="Collections"></span>
-          </a>
-          <ng-template ngbNavContent>
-            <astrobin-user-gallery-collections
-              [user]="user"
-              [userProfile]="userProfile"
-            ></astrobin-user-gallery-collections>
           </ng-template>
         </li>
 
@@ -133,8 +131,10 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   @Input() userProfile: UserProfileInterface;
 
   protected readonly ImageAlias = ImageAlias;
-  protected active: GalleryNavigationComponent = "recent";
+  protected activeTab: GalleryNavigationComponent = "gallery";
   protected activeLayout = UserGalleryActiveLayout.SMALL;
+  protected collectionId: CollectionInterface["id"] | null = null;
+  protected activeCollection: CollectionInterface | null = null;
   private readonly _isBrowser: boolean;
 
   constructor(
@@ -152,11 +152,20 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   ngOnInit(): void {
-    this.route.fragment.subscribe((fragment: string | null) => {
+    this.route.fragment.pipe(takeUntil(this.destroyed$)).subscribe((fragment: string | null) => {
       if (fragment) {
-        this.active = fragment as GalleryNavigationComponent;
+        this.activeTab = fragment as GalleryNavigationComponent;
       }
     });
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this._setCollectionFromRoute();
+    });
+
+    this._setCollectionFromRoute();
   }
 
   ngAfterViewInit() {
@@ -180,7 +189,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
         .pipe(
           startWith(null),
           throttleTime(300),
-          takeUntil(this.destroyed$),
+          takeUntil(this.destroyed$)
         )
         .subscribe(() => {
           updateFadeVisibility();
@@ -192,8 +201,26 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     }
   }
 
-
   onTabClick(tab: GalleryNavigationComponent) {
     this.router.navigate([], { fragment: tab });
+  }
+
+  private _setCollectionFromRoute() {
+    this.collectionId = this.route.snapshot.queryParams.collection
+      ? parseInt(this.route.snapshot.queryParams.collection, 10)
+      : null;
+
+    if (this.collectionId) {
+      this.store$.select(selectCollections).pipe(
+        filter(collections => collections?.length > 0),
+        map(collections => collections.find(collection => collection.id === this.collectionId)),
+        filter(collection => !!collection),
+        take(1)
+      ).subscribe(collection => {
+        this.activeCollection = collection;
+      });
+    } else {
+      this.activeCollection = null;
+    }
   }
 }

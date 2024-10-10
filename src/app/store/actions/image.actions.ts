@@ -72,21 +72,26 @@ export class LoadImagesSuccess implements PayloadActionInterface {
 export class FindImages implements PayloadActionInterface {
   readonly type = AppActionTypes.FIND_IMAGES;
 
-  constructor(public payload: FindImagesOptionsInterface) {
+  constructor(public payload: {
+    options: FindImagesOptionsInterface
+  }) {
   }
 }
 
 export class FindImagesSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.FIND_IMAGES_SUCCESS;
 
-  constructor(public payload: PaginatedApiResultInterface<ImageInterface>) {
+  constructor(public payload: {
+    options: FindImagesOptionsInterface,
+    response: PaginatedApiResultInterface<ImageInterface>
+  }) {
   }
 }
 
 export class FindImagesFailure implements PayloadActionInterface {
   readonly type = AppActionTypes.FIND_IMAGES_FAILURE;
 
-  constructor(public payload: { error: any }) {
+  constructor(public payload: { options: FindImagesOptionsInterface, error: any }) {
   }
 }
 

@@ -603,7 +603,10 @@ export function appReducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_COLLECTIONS_SUCCESS: {
       return {
         ...state,
-        collections: action.payload.collections
+        collections: UtilsService.arrayUniqueObjects(
+          [...state.collections || [], ...action.payload.collections],
+          "id"
+        ).sort((a, b) => a.name.localeCompare(b.name))
       };
     }
 

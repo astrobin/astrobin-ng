@@ -12,15 +12,17 @@ import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directi
       [alias]="ImageAlias.REGULAR"
       (gridItemsChange)="onGridItemsChange($event)"
     >
-      <astrobin-image-loading-indicator
-        *ngFor="let item of gridItems"
-        [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
-        [style.height.px]="averageHeight"
-        [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
-        [style.min-width.px]="averageHeight"
-        [style.min-height.px]="averageHeight"
-      >
-      </astrobin-image-loading-indicator>
+      <ng-container *ngIf="gridItems?.length > 0">
+        <astrobin-image-loading-indicator
+          *ngFor="let item of gridItems"
+          [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
+          [style.height.px]="averageHeight"
+          [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
+          [style.min-width.px]="averageHeight"
+          [style.min-height.px]="averageHeight"
+        >
+        </astrobin-image-loading-indicator>
+      </ng-container>
     </div>
   `,
   styleUrls: ["./user-gallery-loading.component.scss"]

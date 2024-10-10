@@ -45,9 +45,9 @@ export class ImageEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.FIND_IMAGES),
       mergeMap(action =>
-        this.imageApiService.findImages(action.payload).pipe(
-          map(response => new FindImagesSuccess(response)),
-          catchError(error => of(new FindImagesFailure({error})))
+        this.imageApiService.findImages(action.payload.options).pipe(
+          map(response => new FindImagesSuccess({options: action.payload.options, response })),
+          catchError(error => of(new FindImagesFailure({options: action.payload.options, error})))
         )
       )
     )
