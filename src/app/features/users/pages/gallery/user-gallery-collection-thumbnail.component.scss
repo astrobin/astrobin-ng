@@ -26,6 +26,38 @@ $size: 150px;
     }
   }
 
+  .collection-menu {
+    position: absolute;
+    top: -.5rem;
+    right: 0;
+    margin: 0;
+    padding: .5rem;
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--lightGrey);
+    cursor: pointer;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    line-height: 1rem;
+    z-index: 1;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .btn {
+      color: var(--lightestGrey);
+      margin: 0;
+
+      .ng-fa-icon {
+        margin: 0;
+      }
+    }
+  }
+
   .collection-name {
     padding: .5rem 1rem .25rem 1rem;
     text-align: center;
@@ -43,6 +75,18 @@ $size: 150px;
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       filter: brightness(1.5);
+
+      .collection-menu {
+        opacity: 1;
+        pointer-events: all;
+      }
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .collection-menu {
+      opacity: 1;
+      pointer-events: all;
     }
   }
 }

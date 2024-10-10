@@ -1,12 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
 import { of } from "rxjs";
-import { catchError, map, mergeMap } from "rxjs/operators";
-import { MainState } from "@app/store/state";
+import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import { CollectionApiService } from "@shared/services/api/classic/collections/collection-api.service";
-import { LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess } from "@app/store/actions/collection.actions";
+import { LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadingService } from "@shared/services/loading.service";
 
 @Injectable()
 export class CollectionEffects {
@@ -23,10 +22,41 @@ export class CollectionEffects {
     )
   );
 
+  updateCollection$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.UPDATE_COLLECTION),
+      mergeMap((action: UpdateCollection) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.update(action.payload.collection).pipe(
+            map(collection => new UpdateCollectionSuccess({ collection })),
+            catchError(error => of(new UpdateCollectionFailure({ collection: action.payload.collection, error })))
+          );
+        }
+      )
+    )
+  );
+
+  updateCollectionSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.UPDATE_COLLECTION_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  updateCollectionFailure$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.UPDATE_COLLECTION_FAILURE),
+      tap(() => this.loadingService.setLoading(false))
+    ),
+    { dispatch: false }
+  );
+
+
   constructor(
     private actions$: Actions,
-    private store: Store<MainState>,
-    private collectionApiService: CollectionApiService
+    private collectionApiService: CollectionApiService,
+    public readonly loadingService: LoadingService
   ) {
   }
 }

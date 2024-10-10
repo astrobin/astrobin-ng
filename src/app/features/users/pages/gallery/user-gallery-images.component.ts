@@ -52,7 +52,6 @@ import { fadeInOut } from "@shared/animations";
         [astrobinMasonryLayout]="images"
         [alias]="ImageAlias.REGULAR"
         class="masonry-layout-container"
-
       >
         <ng-container *ngIf="gridItems?.length > 0">
           <a

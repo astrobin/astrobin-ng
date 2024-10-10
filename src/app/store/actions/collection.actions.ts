@@ -23,3 +23,24 @@ export class LoadCollectionsFailure implements PayloadActionInterface {
   constructor(public payload: { params: GetCollectionsParamsInterface, error: any }) {
   }
 }
+
+export class UpdateCollection implements PayloadActionInterface {
+  readonly type = AppActionTypes.UPDATE_COLLECTION;
+
+  constructor(public payload: { collection: CollectionInterface }) {
+  }
+}
+
+export class UpdateCollectionSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.UPDATE_COLLECTION_SUCCESS;
+
+  constructor(public payload: { collection: CollectionInterface }) {
+  }
+}
+
+export class UpdateCollectionFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.UPDATE_COLLECTION_FAILURE;
+
+  constructor(public payload: { collection: CollectionInterface, error: any }) {
+  }
+}

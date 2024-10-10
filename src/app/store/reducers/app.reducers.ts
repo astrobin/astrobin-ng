@@ -484,7 +484,7 @@ export function appReducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_THUMBNAIL_SUCCESS: {
       return {
         ...state,
-        thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, action.payload], null, false),
+        thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, action.payload], null, false)
       };
     }
 
@@ -605,6 +605,19 @@ export function appReducer(state = initialAppState, action: All): AppState {
         ...state,
         collections: UtilsService.arrayUniqueObjects(
           [...state.collections || [], ...action.payload.collections],
+          "id"
+        ).sort((a, b) => a.name.localeCompare(b.name))
+      };
+    }
+
+    case AppActionTypes.UPDATE_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: UtilsService.arrayUniqueObjects(
+          [
+            ...state.collections.filter(i => i.id !== action.payload.collection.id),
+            action.payload.collection
+          ],
           "id"
         ).sort((a, b) => a.name.localeCompare(b.name))
       };

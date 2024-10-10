@@ -53,4 +53,8 @@ export class CollectionApiService extends BaseClassicApiService {
       )
     );
   }
+
+  update(collection: CollectionInterface): Observable<CollectionInterface> {
+    return this.http.put<CollectionInterface>(`${this.configUrl}${collection.id}/`, collection);
+  }
 }
