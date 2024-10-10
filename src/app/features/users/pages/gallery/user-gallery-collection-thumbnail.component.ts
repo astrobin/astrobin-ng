@@ -11,7 +11,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { map, take } from "rxjs/operators";
-import { UpdateCollection, UpdateCollectionFailure } from "@app/store/actions/collection.actions";
+import { DeleteCollection, DeleteCollectionFailure, UpdateCollection, UpdateCollectionFailure } from "@app/store/actions/collection.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -56,6 +56,10 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
             <a href="#" class="dropdown-item" (click)="editCollection()" astrobinEventPreventDefault>
               {{ "Edit" | translate }}
             </a>
+
+            <a href="#" class="dropdown-item text-danger" (click)="deleteCollection()" astrobinEventPreventDefault>
+              {{ "Delete" | translate }}
+            </a>
           </div>
         </div>
 
@@ -83,6 +87,21 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
           </form>
         </div>
       </ng-template>
+
+      <ng-template #deleteCollectionConfirmationOffcanvas let-offcanvas>
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title">{{ "Delete collection" | translate }}</h5>
+          <button class="btn-close" (click)="offcanvas.dismiss()"></button>
+        </div>
+        <div class="offcanvas-body">
+          <p>{{ "Are you sure you want to delete this collection?" | translate }}</p>
+          <p>{{ "The images in the collection will not be deleted." | translate }}</p>
+          <div class="form-actions">
+            <button (click)="offcanvas.dismiss()" class="btn btn-secondary">{{ "Cancel" | translate }}</button>
+            <button (click)="submitDeleteCollection()" class="btn btn-danger">{{ "Delete" | translate }}</button>
+          </div>
+        </div>
+      </ng-template>
     </ng-container>
   `,
   styleUrls: ["./user-gallery-collection-thumbnail.component.scss"]
@@ -93,6 +112,7 @@ export class UserGalleryCollectionThumbnailComponent
   @Input() collection: CollectionInterface;
 
   @ViewChild("editCollectionOffcanvas") editCollectionOffcanvas: TemplateRef<any>;
+  @ViewChild("deleteCollectionConfirmationOffcanvas") deleteCollectionConfirmationOffcanvas: TemplateRef<any>;
 
   protected editCollectionModel: CollectionInterface;
   protected editCollectionForm: FormGroup = new FormGroup({});
@@ -142,6 +162,33 @@ export class UserGalleryCollectionThumbnailComponent
     });
 
     this.store$.dispatch(new UpdateCollection({ collection: this.editCollectionModel }));
+  }
+
+  protected deleteCollection(): void {
+    this.offcanvasService.open(this.deleteCollectionConfirmationOffcanvas, {
+      position: this.deviceService.offcanvasPosition()
+    });
+  }
+
+  protected submitDeleteCollection(): void {
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_COLLECTION_SUCCESS),
+      take(1)
+    ).subscribe(() => {
+      this.offcanvasService.dismiss();
+      this.popNotificationsService.success(this.translateService.instant("Collection deleted"));
+    });
+
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_COLLECTION_FAILURE),
+      map((action: DeleteCollectionFailure) => action.payload.error),
+      take(1)
+    ).subscribe(error => {
+      this.popNotificationsService.error(
+        this.translateService.instant("Error deleting collection") + ": " + JSON.stringify(error));
+    });
+
+    this.store$.dispatch(new DeleteCollection({ collectionId: this.collection.id }));
   }
 
   private _initEditCollectionFields(): void {

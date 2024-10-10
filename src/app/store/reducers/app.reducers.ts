@@ -623,6 +623,13 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.DELETE_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: state.collections.filter(collection => collection.id !== action.payload.collectionId)
+      };
+    }
+
     default: {
       return state;
     }

@@ -57,4 +57,8 @@ export class CollectionApiService extends BaseClassicApiService {
   update(collection: CollectionInterface): Observable<CollectionInterface> {
     return this.http.put<CollectionInterface>(`${this.configUrl}${collection.id}/`, collection);
   }
+
+  delete(collectionId: CollectionInterface["id"]): Observable<void> {
+    return this.http.delete<void>(`${this.configUrl}${collectionId}/`);
+  }
 }

@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import { CollectionApiService } from "@shared/services/api/classic/collections/collection-api.service";
-import { LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
+import { DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadingService } from "@shared/services/loading.service";
 
@@ -47,6 +47,36 @@ export class CollectionEffects {
   updateCollectionFailure$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.UPDATE_COLLECTION_FAILURE),
+      tap(() => this.loadingService.setLoading(false))
+    ),
+    { dispatch: false }
+  );
+
+  deleteCollection$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_COLLECTION),
+      mergeMap((action: DeleteCollection) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.delete(action.payload.collectionId).pipe(
+            map(() => new DeleteCollectionSuccess({ collectionId: action.payload.collectionId })),
+            catchError(error => of(new DeleteCollectionFailure({ collectionId: action.payload.collectionId, error })))
+          );
+        }
+      )
+    )
+  );
+
+  deleteCollectionSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_COLLECTION_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  deleteCollectionFailure$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_COLLECTION_FAILURE),
       tap(() => this.loadingService.setLoading(false))
     ),
     { dispatch: false }

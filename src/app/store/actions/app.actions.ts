@@ -15,7 +15,7 @@ import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@ap
 import { CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { LoadRemoteSourceAffiliates, LoadRemoteSourceAffiliatesFailure, LoadRemoteSourceAffiliatesSuccess } from "@app/store/actions/remote-source-affiliates.actions";
-import { LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
+import { DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
 
 export enum AppActionTypes {
@@ -149,6 +149,10 @@ export enum AppActionTypes {
   UPDATE_COLLECTION_SUCCESS = "[App] Update collection success",
   UPDATE_COLLECTION_FAILURE = "[App] Update collection failure",
 
+  DELETE_COLLECTION = "[App] Delete collection",
+  DELETE_COLLECTION_SUCCESS = "[App] Delete collection success",
+  DELETE_COLLECTION_FAILURE = "[App] Delete collection failure",
+
   DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE = "[App] Delete image uncompressed source file",
   DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS = "[App] Delete image uncompressed source file success",
   DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE = "[App] Delete image uncompressed source file failure",
@@ -258,6 +262,9 @@ export type All =
   | UpdateCollection
   | UpdateCollectionSuccess
   | UpdateCollectionFailure
+  | DeleteCollection
+  | DeleteCollectionSuccess
+  | DeleteCollectionFailure
   | DeleteImageUncompressedSourceFile
   | DeleteImageUncompressedSourceFileSuccess
   | DeleteImageUncompressedSourceFileFailure

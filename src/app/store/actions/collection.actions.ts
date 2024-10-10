@@ -44,3 +44,24 @@ export class UpdateCollectionFailure implements PayloadActionInterface {
   constructor(public payload: { collection: CollectionInterface, error: any }) {
   }
 }
+
+export class DeleteCollection implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_COLLECTION;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"] }) {
+  }
+}
+
+export class DeleteCollectionSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_COLLECTION_SUCCESS;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"] }) {
+  }
+}
+
+export class DeleteCollectionFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_COLLECTION_FAILURE;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"], error: any }) {
+  }
+}
