@@ -4,6 +4,7 @@ import { DeviceService } from "@shared/services/device.service";
 import { DOCUMENT } from "@angular/common";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 
 export type MasonryLayoutGridItem =
   (ImageSearchInterface | ImageInterface) & { objectPosition?: string, displayHeight?: number, displayWidth?: number };
@@ -13,14 +14,13 @@ export type MasonryLayoutGridItem =
 })
 export class MasonryLayoutDirective implements OnInit, OnChanges {
   @Input("astrobinMasonryLayout") items: MasonryLayoutGridItem[] = [];
-  @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
+  @Input() activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.TINY;
   @Output() gridItemsChange = new EventEmitter<{ gridItems: MasonryLayoutGridItem[], averageHeight: number}>();
 
   averageHeight: number = 200;
 
   constructor(
     private deviceService: DeviceService,
-    private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -42,9 +42,9 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
   }
 
   private _setAverageSizeForAlias(): void {
-    if (this.alias === ImageAlias.GALLERY) {
+    if (this.activeLayout === UserGalleryActiveLayout.TINY) {
       this.averageHeight = 80;
-    } else if (this.alias === ImageAlias.REGULAR) {
+    } else if (this.activeLayout === UserGalleryActiveLayout.SMALL) {
       if (this.deviceService.xsMax()) {
         this.averageHeight = 100;
       } else if (this.deviceService.smMax()) {
@@ -54,6 +54,8 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
       } else {
         this.averageHeight = 200;
       }
+    } else if (this.activeLayout === UserGalleryActiveLayout.LARGE) {
+      this.averageHeight = 300;
     }
   }
 
@@ -70,7 +72,17 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
       const w = this._getW(image);
       const h = this._getH(image);
       const imageAspectRatio = w && h ? w / h : 1.0;
-      const { width, height } = this._getRandomDimensions(MIN_ASPECT_RATIO, MAX_ASPECT_RATIO, imageAspectRatio);
+      let width: number;
+      let height: number;
+
+      if (this.activeLayout === UserGalleryActiveLayout.TINY) {
+        width = 130;
+        height = 130;
+      } else {
+        const dimensions = this._getRandomDimensions(MIN_ASPECT_RATIO, MAX_ASPECT_RATIO, imageAspectRatio);
+        width = dimensions.width;
+        height = dimensions.height;
+      }
 
       gridItems.push({
         ...image,

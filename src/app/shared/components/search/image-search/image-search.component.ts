@@ -25,6 +25,7 @@ import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directi
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageService } from "@shared/services/image/image.service";
+import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 
 @Component({
   selector: "astrobin-image-search",
@@ -38,7 +39,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
   @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
+
   protected readonly ImageAlias = ImageAlias;
+  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
+
   protected gridItems: MasonryLayoutGridItem[] = [];
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];

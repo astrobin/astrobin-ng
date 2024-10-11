@@ -1,3 +1,5 @@
+@import "breakpoints";
+
 .masonry-layout-container {
   $gap: .75rem;
 
@@ -17,6 +19,7 @@
     overflow: hidden;
     position: relative;
 
+    > .image-container,
     > img {
       position: absolute;
       top: 0;
@@ -92,6 +95,7 @@
       border-bottom-left-radius: .75rem;
       border-bottom-right-radius: .75rem;
       font-size: .85rem;
+      z-index: 2;
 
       .title {
         color: var(--lightestGrey);
@@ -125,6 +129,7 @@
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
+        > .image-container,
         > img {
           filter: brightness(1.5);
         }
@@ -168,5 +173,9 @@
   + .loading {
     width: 100%;
     margin: 2rem 0;
+  }
+
+  @media (max-width: $xs-max) {
+    justify-content: center;
   }
 }

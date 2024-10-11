@@ -132,7 +132,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
 
   protected readonly ImageAlias = ImageAlias;
   protected activeTab: GalleryNavigationComponent = "gallery";
-  protected activeLayout = UserGalleryActiveLayout.SMALL;
+  protected activeLayout = UserGalleryActiveLayout.TINY;
   protected collectionId: CollectionInterface["id"] | null = null;
   protected activeCollection: CollectionInterface | null = null;
   private readonly _isBrowser: boolean;

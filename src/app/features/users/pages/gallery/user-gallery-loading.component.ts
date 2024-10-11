@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, Input } from "@angular/core";
+import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
+import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 
 @Component({
   selector: "astrobin-user-gallery-loading",
@@ -9,7 +10,7 @@ import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directi
     <div
       class="masonry-layout-container"
       [astrobinMasonryLayout]="placeholders"
-      [alias]="ImageAlias.REGULAR"
+      [activeLayout]="activeLayout"
       (gridItemsChange)="onGridItemsChange($event)"
     >
       <ng-container *ngIf="gridItems?.length > 0">
@@ -27,14 +28,31 @@ import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directi
   `,
   styleUrls: ["./user-gallery-loading.component.scss"]
 })
-export class UserGalleryLoadingComponent extends BaseComponentDirective implements AfterViewInit {
+export class UserGalleryLoadingComponent extends BaseComponentDirective implements AfterViewInit, OnInit {
   @Input() numberOfImages: number;
+  @Input() activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.TINY;
 
   protected readonly ImageAlias = ImageAlias;
 
   protected gridItems: MasonryLayoutGridItem[] = [];
   protected averageHeight = 200;
   protected placeholders: any[] = []; // All we need is w and h.
+
+  ngOnInit() {
+    super.ngOnInit();
+
+    if (this.activeLayout === UserGalleryActiveLayout.TINY) {
+      this.averageHeight = 130;
+    }
+
+    if (this.activeLayout === UserGalleryActiveLayout.SMALL) {
+      this.averageHeight = 200;
+    }
+
+    if (this.activeLayout === UserGalleryActiveLayout.LARGE) {
+      this.averageHeight = 300;
+    }
+  }
 
   ngAfterViewInit() {
     this.placeholders = Array.from({ length: this.numberOfImages }).map(() => ({

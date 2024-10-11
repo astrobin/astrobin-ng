@@ -37,6 +37,7 @@ import { fadeInOut } from "@shared/animations";
       <astrobin-user-gallery-loading
         *ngIf="loading && loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
         @fadeInOut
+        [activeLayout]="activeLayout"
         [numberOfImages]="loadingPlaceholdersCount"
       ></astrobin-user-gallery-loading>
 
@@ -46,11 +47,11 @@ import { fadeInOut } from "@shared/animations";
       ></astrobin-loading-indicator>
 
       <div
-        *ngIf="!loading && images.length > 0"
+        *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TINY"
         @fadeInOut
         (gridItemsChange)="onGridItemsChange($event)"
         [astrobinMasonryLayout]="images"
-        [alias]="ImageAlias.REGULAR"
+        [activeLayout]="activeLayout"
         class="masonry-layout-container"
       >
         <ng-container *ngIf="gridItems?.length > 0">
@@ -72,52 +73,85 @@ import { fadeInOut } from "@shared/animations";
               [style.object-position]="item.objectPosition"
               fill
             />
-
-            <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
-
-            <div class="badges">
-              <fa-icon *ngIf="item.isIotd" class="iotd" icon="trophy"></fa-icon>
-              <fa-icon *ngIf="item.isTopPick" class="top-pick" icon="star"></fa-icon>
-              <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
-            </div>
-
-            <div *ngIf="averageHeight >= 150" class="hover d-flex align-items-center gap-2">
-              <div class="flex-grow-1">
-                <div class="title">{{ item.title }}</div>
-                <div *ngIf="item.published" class="published">{{ item.published | localDate | timeago }}</div>
-                <div *ngIf="!item.published && item.uploaded"
-                     class="uploaded">{{ item.uploaded | localDate | timeago }}
-                </div>
-              </div>
-
-              <div class="counters d-flex flex-column gap-1">
-                <div class="counter likes">
-                  <fa-icon icon="thumbs-up"></fa-icon>
-                  <span class="value">{{ item.likeCount }}</span>
-                </div>
-                <div class="counter bookmarks">
-                  <fa-icon icon="bookmark"></fa-icon>
-                  <span class="value">{{ item.bookmarkCount }}</span>
-                </div>
-                <div class="counter comments">
-                  <fa-icon icon="comment"></fa-icon>
-                  <span class="value">{{ item.commentCount }}</span>
-                </div>
-              </div>
-            </div>
-
-            <fa-icon
-              *ngIf="item.isWip"
-              [ngbTooltip]="'This image is in your staging area' | translate"
-              container="body"
-              triggers="hover click"
-              icon="lock"
-              class="wip-icon"
-            ></fa-icon>
+            <ng-container *ngTemplateOutlet="iconsTemplate; context: { image: item }"></ng-container>
+            <ng-container *ngTemplateOutlet="hoverTemplate; context: { image: item }"></ng-container>
           </a>
         </ng-container>
       </div>
+
+      <div
+        *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TINY"
+        @fadeInOut
+        class="masonry-layout-container"
+      >
+        <a
+          *ngFor="let image of images"
+          (click)="openImage(image)"
+          [class.wip]="image.isWip"
+          [href]="'/i/' + (image.hash || image.pk)"
+          astrobinEventPreventDefault
+          class="image-link"
+        >
+          <img
+            [ngSrc]="image.finalGalleryThumbnail"
+            [alt]="image.title"
+            [title]="image.title"
+            [loading]="'lazy'"
+            [width]="130"
+            [height]="130"
+          />
+
+          <ng-container *ngTemplateOutlet="iconsTemplate; context: { image: image }"></ng-container>
+          <ng-container *ngTemplateOutlet="hoverTemplate; context: { image: image }"></ng-container>
+        </a>
+      </div>
     </ng-container>
+
+    <ng-template #iconsTemplate let-image="image">
+      <fa-icon *ngIf="image.videoFile" icon="play"></fa-icon>
+
+      <fa-icon
+        *ngIf="image.isWip"
+        [ngbTooltip]="'This image is in your staging area' | translate"
+        container="body"
+        triggers="hover click"
+        icon="lock"
+        class="wip-icon"
+      ></fa-icon>
+
+      <div class="badges">
+        <fa-icon *ngIf="image.isIotd" class="iotd" icon="trophy"></fa-icon>
+        <fa-icon *ngIf="image.isTopPick" class="top-pick" icon="star"></fa-icon>
+        <fa-icon *ngIf="image.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
+      </div>
+    </ng-template>
+
+    <ng-template #hoverTemplate let-image="image">
+      <div class="hover d-flex align-items-center gap-2">
+        <div class="flex-grow-1">
+          <div class="title">{{ image.title }}</div>
+          <div *ngIf="image.published" class="published">{{ image.published | localDate | timeago }}</div>
+          <div *ngIf="!image.published && image.uploaded"
+               class="uploaded">{{ image.uploaded | localDate | timeago }}
+          </div>
+        </div>
+
+        <div class="counters d-flex flex-column gap-1">
+          <div class="counter likes">
+            <fa-icon icon="thumbs-up"></fa-icon>
+            <span class="value">{{ image.likeCount }}</span>
+          </div>
+          <div class="counter bookmarks">
+            <fa-icon icon="bookmark"></fa-icon>
+            <span class="value">{{ image.bookmarkCount }}</span>
+          </div>
+          <div class="counter comments">
+            <fa-icon icon="comment"></fa-icon>
+            <span class="value">{{ image.commentCount }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
   `,
   styleUrls: ["./user-gallery-images.component.scss"],
   animations: [fadeInOut]
@@ -130,6 +164,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   @Input() activeLayout: UserGalleryActiveLayout;
 
   protected readonly ImageAlias = ImageAlias;
+  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
 
   protected next: string | null = null;
   protected page = 1;
@@ -262,7 +297,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
 
   private _updateAverageHeight(layout: UserGalleryActiveLayout): void {
     if (layout === UserGalleryActiveLayout.LARGE) {
-      this.averageHeight = 500;
+      this.averageHeight = 300;
     } else {
       this.averageHeight = 200;
     }
