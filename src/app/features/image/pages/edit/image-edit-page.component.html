@@ -103,7 +103,7 @@
   </button>
 
   <ng-container *ngIf="currentUser$ | async as user">
-    <div *ngIf="!editingExistingImage" ngbDropdown placement="top-right">
+    <div *ngIf="!editingExistingImage" ngbDropdown>
       <button
         [class.loading]="loadingService.loading$ | async"
         class="btn btn-primary"
