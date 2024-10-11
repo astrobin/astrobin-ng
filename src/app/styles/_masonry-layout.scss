@@ -78,6 +78,11 @@
           background-color: var(--bronze);
           box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--bronze) 0 0 10px;
         }
+
+        &.collaborators {
+          background-color: var(--secondaryAccentColor);
+          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--bronze) 0 0 10px;
+        }
       }
     }
 

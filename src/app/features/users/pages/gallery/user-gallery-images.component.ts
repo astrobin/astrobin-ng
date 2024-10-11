@@ -123,6 +123,7 @@ import { fadeInOut } from "@shared/animations";
         <fa-icon *ngIf="image.isIotd" class="iotd" icon="trophy"></fa-icon>
         <fa-icon *ngIf="image.isTopPick" class="top-pick" icon="star"></fa-icon>
         <fa-icon *ngIf="image.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
+        <fa-icon *ngIf="image.collaborators?.length" class="collaborators" icon="users"></fa-icon>
       </div>
     </ng-template>
 
