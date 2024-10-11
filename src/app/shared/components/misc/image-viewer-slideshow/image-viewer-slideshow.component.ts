@@ -226,8 +226,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
           this._dropImagesTooFarFromIndex(imageId);
 
           this.utilsService.delay(200).subscribe(() => {
-            this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
-
             if (this.carousel) {
               this._skipSlideEvent = true;
               this.carousel.select(imageId.toString());
@@ -242,6 +240,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
             subscriber.next(image);
             subscriber.complete();
+
+            this.utilsService.delay(50).subscribe(() => {
+              this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
+            });
           });
         },
         error: error => {
