@@ -25,7 +25,7 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
           <astrobin-avatar [user]="user" [link]="false"></astrobin-avatar>
 
           <div class="d-flex flex-column gap-1">
-            <div class="d-flex flex-column flex-lg-row gap-lg-3 align-items-lg-center">
+            <div class="d-flex flex-column flex-sm-row gap-sm-3 align-items-sm-center">
               <astrobin-username [user]="user" [link]="false"></astrobin-username>
               <div *ngIf="user.displayName !== user.username" class="username">({{ user.username }})</div>
               <astrobin-toggle-property

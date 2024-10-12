@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 .user-gallery-header {
   width: 100%;
   height: 100%;
@@ -53,6 +55,16 @@
 
       span {
         white-space: nowrap;
+      }
+    }
+  }
+}
+
+@media (max-width: $sm-max) {
+  .user-gallery-header {
+    .user-info  {
+      astrobin-username {
+        font-size: 1.25rem;
       }
     }
   }

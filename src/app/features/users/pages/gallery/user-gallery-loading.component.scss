@@ -1,5 +1,39 @@
+@import "../../../../styles/breakpoints";
+
+
 astrobin-image-loading-indicator ::ng-deep {
   .load-wrapper {
     border-radius: 20px;
+  }
+}
+
+astrobin-image-loading-indicator.tiny {
+  display: inline-block;
+  width: 143px;
+  height: 143px;
+
+  @media (max-width: $xl-max) {
+    width: 140px;
+    height: 140px;
+  }
+
+  @media (max-width: $lg-max) {
+    width: 135px;
+    height: 135px;
+  }
+
+  @media (max-width: $md-max) {
+    width: calc(100vw / 7 - 1rem);
+    height: calc(100vw / 7 - 1rem);
+  }
+
+  @media (max-width: $sm-max) {
+    width: calc(100vw / 5 - 1rem);
+    height: calc(100vw / 5 - 1rem);
+  }
+
+  @media (max-width: $xs-max) {
+    width: calc(100vw / 3 - 1.25rem);
+    height: calc(100vw / 3 - 1.25rem);
   }
 }

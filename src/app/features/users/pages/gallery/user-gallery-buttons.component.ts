@@ -41,7 +41,7 @@ export enum UserGalleryActiveLayout {
         [ngSrc]="'/assets/images/layout-small.png?v=20241008'"
         [ngbTooltip]="'Small layout' | translate"
         alt="{{ 'Small layout' | translate }}"
-        class="cursor-pointer"
+        class="cursor-pointer d-none d-lg-inline"
         container="body"
         height="{{ ICON_SIZE }}"
         width="{{ ICON_SIZE }}"

@@ -14,15 +14,24 @@ import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gall
       (gridItemsChange)="onGridItemsChange($event)"
     >
       <ng-container *ngIf="gridItems?.length > 0">
-        <astrobin-image-loading-indicator
-          *ngFor="let item of gridItems"
-          [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
-          [style.height.px]="averageHeight"
-          [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
-          [style.min-width.px]="averageHeight"
-          [style.min-height.px]="averageHeight"
-        >
-        </astrobin-image-loading-indicator>
+        <ng-container *ngIf="activeLayout === UserGalleryActiveLayout.TINY">
+          <astrobin-image-loading-indicator
+            *ngFor="let item of gridItems"
+            class="tiny"
+          ></astrobin-image-loading-indicator>
+        </ng-container>
+
+        <ng-container *ngIf="activeLayout !== UserGalleryActiveLayout.TINY">
+          <astrobin-image-loading-indicator
+            *ngFor="let item of gridItems"
+            [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
+            [style.height.px]="averageHeight"
+            [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
+            [style.min-width.px]="averageHeight"
+            [style.min-height.px]="averageHeight"
+          >
+          </astrobin-image-loading-indicator>
+        </ng-container>
       </ng-container>
     </div>
   `,
@@ -42,7 +51,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     super.ngOnInit();
 
     if (this.activeLayout === UserGalleryActiveLayout.TINY) {
-      this.averageHeight = 130;
+      this.averageHeight = 150;
     }
 
     if (this.activeLayout === UserGalleryActiveLayout.SMALL) {
@@ -65,4 +74,6 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     this.gridItems = event.gridItems;
     this.averageHeight = event.averageHeight;
   }
+
+  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
 }
