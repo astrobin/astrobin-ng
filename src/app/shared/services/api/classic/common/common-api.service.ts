@@ -6,12 +6,7 @@ import { SubscriptionInterface } from "@shared/interfaces/subscription.interface
 import { UserProfileInterface, UserProfileStatsInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import {
-  BackendTogglePropertyInterface,
-  BackendUserInterface,
-  BackendUserProfileInterface,
-  CommonApiAdaptorService
-} from "@shared/services/api/classic/common/common-api-adaptor.service";
+import { BackendTogglePropertyInterface, BackendUserInterface, BackendUserProfileInterface, CommonApiAdaptorService } from "@shared/services/api/classic/common/common-api-adaptor.service";
 import { CommonApiServiceInterface } from "@shared/services/api/classic/common/common-api.service-interface";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
@@ -19,6 +14,7 @@ import { catchError, map } from "rxjs/operators";
 import { BaseClassicApiService } from "../base-classic-api.service";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 @Injectable({
   providedIn: "root"
@@ -126,6 +122,18 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     data: Partial<UserProfileInterface>
   ): Observable<UserProfileInterface> {
     return this.http.put<UserProfileInterface>(this.configUrl + `/userprofiles/${userProfileId}/partial/`, data);
+  }
+
+  changeUserProfileGalleryHeaderImage(
+    userProfileId: UserProfileInterface["id"],
+    imageId: ImageInterface["hash"] | ImageInterface["pk"]
+  ): Observable<UserProfileInterface> {
+    return this.http.put<BackendUserProfileInterface>(
+      this.configUrl + `/userprofiles/${userProfileId}/change-gallery-header-image/${imageId}/`,
+      {}
+    ).pipe(
+      map(response => this.commonApiAdaptorService.userProfileFromBackend(response))
+    );
   }
 
   getSubscriptions(): Observable<SubscriptionInterface[]> {

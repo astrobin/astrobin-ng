@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -17,7 +17,13 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
   selector: "astrobin-user-gallery-header",
   template: `
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="user-gallery-header">
-      <img *ngIf="userProfile.galleryHeaderImage" [ngSrc]="userProfile.galleryHeaderImage" fill alt="" />
+      <button
+        *ngIf="currentUserWrapper.user?.id === user.id"
+        (click)="openChangeHeaderImageOffcanvas()"
+        class="btn btn-link btn-no-block btn-change-header-image"
+        translate="Change header image"
+      ></button>
+      <img *ngIf="userProfile.galleryHeaderImage" [src]="userProfile.galleryHeaderImage" alt="" />
       <div *ngIf="!userProfile.galleryHeaderImage" class="no-image"></div>
 
       <div class="user-info d-flex justify-content-between">
@@ -89,17 +95,32 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
       </div>
     </ng-template>
 
+    <ng-template #changeHeaderImageOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" translate="Change header image"></h5>
+        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <astrobin-user-gallery-header-change-image
+          [user]="user"
+          [userProfile]="userProfile"
+          (imageChange)="offcanvas.close()"
+        ></astrobin-user-gallery-header-change-image>
+      </div>
+    </ng-template>
+
     <ng-template #loadingTemplate>
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
   styleUrls: ["./user-gallery-header.component.scss"]
 })
-export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit {
+export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
   @ViewChild("statsOffcanvas") statsOffcanvas: TemplateRef<any>;
+  @ViewChild("changeHeaderImageOffcanvas") changeHeaderImageOffcanvas: TemplateRef<any>;
 
   protected userContentType: ContentTypeInterface;
   protected stats: UserProfileStatsInterface;
@@ -119,6 +140,10 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     super.ngOnInit();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    console.log("Changes: ", changes);
+  }
+
   protected openStatsOffcanvas() {
     this.offcanvasService.open(
       this.statsOffcanvas, {
@@ -131,6 +156,14 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
         this.stats = stats;
       });
     }
+  }
+
+  protected openChangeHeaderImageOffcanvas() {
+    this.offcanvasService.open(
+      this.changeHeaderImageOffcanvas, {
+        position: this.deviceService.offcanvasPosition()
+      }
+    );
   }
 
   private _setUserContentType() {

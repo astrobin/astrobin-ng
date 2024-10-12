@@ -18,11 +18,13 @@ import { UserGalleryTrashComponent } from "@features/users/pages/gallery/user-ga
 import { UserGalleryCollectionsComponent } from "@features/users/pages/gallery/user-gallery-collections.component";
 import { UserGalleryCollectionThumbnailComponent } from "@features/users/pages/gallery/user-gallery-collection-thumbnail.component";
 import { UserGalleryButtonsComponent } from "@features/users/pages/gallery/user-gallery-buttons.component";
+import { UserGalleryHeaderChangeImageComponent } from "@features/users/pages/gallery/user-gallery-header-change-image.component";
 
 @NgModule({
   declarations: [
     UserGalleryPageComponent,
     UserGalleryHeaderComponent,
+    UserGalleryHeaderChangeImageComponent,
     UserGalleryNavigationComponent,
     UserGalleryImagesComponent,
     UserGalleryLoadingComponent,

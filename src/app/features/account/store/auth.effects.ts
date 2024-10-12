@@ -1,22 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { setTimeagoIntl } from "@app/translate-loader";
-import {
-  AuthActionTypes,
-  InitializeAuthSuccess,
-  LoadUser,
-  LoadUserFailure,
-  LoadUserProfile,
-  LoadUserProfileFailure,
-  LoadUserProfileSuccess,
-  LoadUserSuccess,
-  Login,
-  LoginFailure,
-  LoginSuccess,
-  LogoutSuccess,
-  UpdateUserProfile,
-  UpdateUserProfileSuccess
-} from "@features/account/store/auth.actions";
+import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage, ChangeUserProfileGalleryHeaderImageFailure, ChangeUserProfileGalleryHeaderImageSuccess, InitializeAuthSuccess, LoadUser, LoadUserFailure, LoadUserProfile, LoadUserProfileFailure, LoadUserProfileSuccess, LoadUserSuccess, Login, LoginFailure, LoginSuccess, LogoutSuccess, UpdateUserProfile, UpdateUserProfileSuccess } from "@features/account/store/auth.actions";
 import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
@@ -130,14 +115,54 @@ export class AuthEffects {
               )
               : this.commonApiService.getUserProfile(payload.id).pipe(
                 map(userProfile => new LoadUserProfileSuccess({ userProfile }),
-                catchError(error => of(new LoadUserProfileFailure({ id: payload.id, error })))
+                  catchError(error => of(new LoadUserProfileFailure({ id: payload.id, error })))
+                )
               )
-            )
           )
         )
       )
     )
   );
+
+  ChangeUserProfileGalleryHeaderImage: Observable<ChangeUserProfileGalleryHeaderImageSuccess | ChangeUserProfileGalleryHeaderImageFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE),
+      map((action: ChangeUserProfileGalleryHeaderImage) => action.payload),
+      switchMap(payload =>
+        this.commonApiService.changeUserProfileGalleryHeaderImage(payload.id, payload.imageId).pipe(
+          tap(() => this.loadingService.setLoading(true)),
+          map(userProfile =>
+            new ChangeUserProfileGalleryHeaderImageSuccess({ userProfile, imageId: payload.imageId })),
+          catchError(error => of(new ChangeUserProfileGalleryHeaderImageFailure({
+            id: payload.id, imageId: payload.imageId, error
+          })))
+        )
+      )
+    )
+  );
+
+  ChangeUserProfileGalleryHeaderImageSuccess: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_SUCCESS),
+        tap(() => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  ChangeUserProfileGalleryHeaderImageFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_FAILURE),
+        tap(() => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
   private _getCurrentUser$: Observable<{
     user: UserInterface;
     userProfile: UserProfileInterface;
@@ -155,6 +180,7 @@ export class AuthEffects {
       return of(null);
     })
   );
+
   private _getData$: Observable<{
     user: UserInterface;
     userProfile: UserProfileInterface;
@@ -175,6 +201,7 @@ export class AuthEffects {
       );
     })
   );
+
   Login: Observable<LoginSuccess | LoginFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.LOGIN),
@@ -214,6 +241,7 @@ export class AuthEffects {
       )
     )
   );
+
   Initialize: Observable<InitializeAuthSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.INITIALIZE),

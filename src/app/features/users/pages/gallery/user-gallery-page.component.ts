@@ -11,8 +11,9 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { filter, map, takeUntil } from "rxjs/operators";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { FindCollections, FindCollectionsSuccess, LoadCollections } from "@app/store/actions/collection.actions";
+import { FindCollections, FindCollectionsSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import { selectCurrentUser, selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
 
 @Component({
   selector: "astrobin-user-gallery-page",
@@ -64,14 +65,14 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       ofType(AppActionTypes.FIND_COLLECTIONS_SUCCESS),
       map((action: FindCollectionsSuccess) => action.payload.response),
       takeUntil(this.destroyed$)
-    ).subscribe( response => {
+    ).subscribe(response => {
       if (response.next) {
         const page = response.next.match(/page=(\d+)/)[1];
         if (page) {
           this.store$.dispatch(new FindCollections({ params: { user: this.user.id, page: +page } }));
         }
       }
-    })
+    });
 
     this.route.data.pipe(takeUntil(this.destroyed$)).subscribe((data: {
       userData: {
@@ -81,10 +82,55 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       this.user = data.userData.user;
       this.userProfile = data.userData.userProfile;
 
+      this._listenToUserChanges();
       this.store$.dispatch(new FindCollections({ params: { user: this.user.id } }));
     });
 
     this._setMetaTags();
+  }
+
+  private _listenToUserChanges() {
+    this.store$
+      .select(selectCurrentUserProfile)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(userProfile => {
+        if (userProfile?.id === this.userProfile.id) {
+          this.userProfile = { ...userProfile };
+        }
+      });
+
+    this.store$
+      .select(selectCurrentUser)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(user => {
+        if (user?.id === this.user.id) {
+          this.user = { ...user };
+        }
+      });
+
+    this.store$
+      .select(selectUserProfile, this.userProfile.id)
+      .pipe(
+        filter(userProfile => !!userProfile),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(userProfile => {
+        if (userProfile) {
+          this.userProfile = { ...userProfile };
+        }
+      });
+
+    this.store$
+      .select(selectUser, this.user.id)
+      .pipe(
+        filter(user => !!user),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(user => {
+        if (user) {
+          this.user = { ...user };
+        }
+      });
   }
 
   private _setMetaTags() {
