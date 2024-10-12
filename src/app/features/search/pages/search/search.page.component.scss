@@ -2,9 +2,7 @@
 
 astrobin-search-bar ::ng-deep {
   display: block;
-  position: sticky;
   z-index: 3;
-  top: 60px;
   opacity: .99;
 
   .search-bar-wrapper {
@@ -28,6 +26,9 @@ astrobin-search-bar ::ng-deep {
     }
 
     @media (max-width: $sm-max) {
+      position: sticky;
+      top: 60px;
+
       ::ng-deep {
         .search-bar-input-container {
           border-top-left-radius: 0;
@@ -38,6 +39,7 @@ astrobin-search-bar ::ng-deep {
   }
 
   @media (min-width: $lg-min) {
+    position: sticky;
     top: 63px;
   }
 }
