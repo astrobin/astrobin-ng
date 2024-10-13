@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -64,7 +64,7 @@ import { LoadingService } from "@shared/services/loading.service";
   `,
   styleUrls: ["./user-gallery-header-change-image.component.scss"]
 })
-export class UserGalleryHeaderChangeImageComponent extends BaseComponentDirective implements OnInit {
+export class UserGalleryHeaderChangeImageComponent extends BaseComponentDirective implements AfterViewInit {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
@@ -89,8 +89,7 @@ export class UserGalleryHeaderChangeImageComponent extends BaseComponentDirectiv
     super(store$);
   }
 
-  ngOnInit() {
-    super.ngOnInit();
+  ngAfterViewInit() {
     this._initFields();
   }
 
