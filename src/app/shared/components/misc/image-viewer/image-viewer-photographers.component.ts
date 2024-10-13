@@ -18,7 +18,7 @@ import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { forkJoin } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
-import { AcceptCollaboratorRequest, DenyCollaboratorRequest, RemoveCollaborator } from "@app/store/actions/image.actions";
+import { AcceptCollaboratorRequest, DenyCollaboratorRequest, ForceCheckTogglePropertyAutoLoad, RemoveCollaborator } from "@app/store/actions/image.actions";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
@@ -238,7 +238,8 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
     public readonly windowRefService: WindowRefService,
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    public readonly utilsService: UtilsService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -320,6 +321,9 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
     this.offcanvasService.open(this.collaboratorsTemplate, {
       panelClass: "offcanvas-collaborators",
       position: this.deviceService.offcanvasPosition()
+    });
+    this.utilsService.delay(500).subscribe(() => {
+      this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad())
     });
   }
 
