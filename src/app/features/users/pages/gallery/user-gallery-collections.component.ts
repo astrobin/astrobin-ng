@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -10,6 +10,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Actions } from "@ngrx/effects";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { Subscription } from "rxjs";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-user-gallery-collections",
@@ -50,8 +52,37 @@ import { Subscription } from "rxjs";
             [collection]="collection"
           ></astrobin-user-gallery-collection-thumbnail>
         </a>
+
+        <a
+          *ngIf="currentUserWrapper.user?.id === user.id"
+          (click)="createCollection()"
+          astrobinEventPreventDefault
+          astrobinEventStopPropagation
+          class="create-collection-button"
+        >
+          <fa-icon
+            icon="plus"
+            [ngbTooltip]="'Create new collection'"
+          ></fa-icon>
+        </a>
       </div>
     </ng-container>
+
+    <ng-template #createCollectionOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">{{ "Create new collection" | translate }}</h5>
+        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <astrobin-user-gallery-collection-create
+          [user]="user"
+          [userProfile]="userProfile"
+          [parent]="parentCollection"
+          (cancelClick)="offcanvas.close()"
+          (collectionCreate)="offcanvas.close()"
+        ></astrobin-user-gallery-collection-create>
+      </div>
+    </ng-template>
   `,
   styleUrls: ["./user-gallery-collections.component.scss"]
 })
@@ -59,6 +90,8 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
   @Input() parent: CollectionInterface["id"] | null = null;
+
+  @ViewChild("createCollectionOffcanvas") createCollectionOffcanvas: TemplateRef<any>;
 
   protected collections: CollectionInterface[] = null;
   protected parentCollection: CollectionInterface = null;
@@ -71,7 +104,9 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
   }
@@ -116,7 +151,7 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     }
   }
 
-  openCollection(collection: CollectionInterface) {
+  protected openCollection(collection: CollectionInterface) {
     this.router.navigate(
       [],
       {
@@ -125,6 +160,12 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
         relativeTo: this.activatedRoute
       }
     );
+  }
+
+  protected createCollection() {
+    this.offcanvasService.open(this.createCollectionOffcanvas, {
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 
   protected collectionTrackByFn(index: number, item: CollectionInterface): CollectionInterface["id"] {

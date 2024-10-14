@@ -55,3 +55,20 @@
     margin-bottom: 1rem;
   }
 }
+
+.create-collection-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  width: 120px;
+  border: 2px dashed var(--lightGrey);
+  margin-top: 14px;
+  margin-left: 1rem;
+  cursor: pointer;
+
+  .ng-fa-icon {
+    font-size: 2rem;
+    color: var(--lightGrey);
+  }
+}

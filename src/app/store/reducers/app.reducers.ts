@@ -620,6 +620,16 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.CREATE_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: UtilsService.arrayUniqueObjects(
+          [...state.collections || [], action.payload.collection],
+          "id"
+        ).sort((a, b) => a.name.localeCompare(b.name))
+      };
+    }
+
     case AppActionTypes.UPDATE_COLLECTION_SUCCESS: {
       return {
         ...state,

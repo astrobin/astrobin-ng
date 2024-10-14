@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import { CollectionApiService } from "@shared/services/api/classic/collections/collection-api.service";
-import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
+import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -94,6 +94,41 @@ export class CollectionEffects {
   updateCollectionFailure$ = createEffect(() =>
       this.actions$.pipe(
         ofType(AppActionTypes.UPDATE_COLLECTION_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  createCollection$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.CREATE_COLLECTION),
+      mergeMap((action: CreateCollection) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.create(
+            action.payload.parent,
+            action.payload.name,
+            action.payload.description,
+            action.payload.orderByTag
+          ).pipe(
+            map(collection => new CreateCollectionSuccess({ collection })),
+            catchError(error => of(new CreateCollectionFailure({ error })))
+          );
+        }
+      )
+    )
+  );
+
+  createCollectionSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.CREATE_COLLECTION_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  createCollectionFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.CREATE_COLLECTION_FAILURE),
         tap(() => this.loadingService.setLoading(false))
       ),
     { dispatch: false }

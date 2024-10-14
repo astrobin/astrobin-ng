@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -13,6 +13,8 @@ import { filter, map, startWith, take, takeUntil } from "rxjs/operators";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollections } from "@app/store/selectors/app/collection.selectors";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { DeviceService } from "@shared/services/device.service";
 
 type GalleryNavigationComponent = "gallery" | "staging" | "about";
 
@@ -32,6 +34,32 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
           <a ngbNavLink>
             <fa-icon icon="images" class="me-2"></fa-icon>
             <span translate="Gallery"></span>
+
+            <div
+              *ngIf="currentUserWrapper.user?.id === user.id"
+              ngbDropdown
+              container="body"
+              class="d-inline-block ms-2"
+            >
+              <a
+                ngbDropdownToggle
+                [class.active]="activeCollection === null"
+                class="btn btn-sm btn-link no-toggle text-white"
+              >
+                <fa-icon icon="caret-down"></fa-icon>
+              </a>
+              <div ngbDropdownMenu>
+                <a
+                  (click)="createCollection()"
+                  ngbDropdownItem
+                  astrobinEventPreventDefault
+                  astrobinEventStopPropagation
+                  href="#"
+                >
+                  {{ "Create new collection" | translate }}
+                </a>
+              </div>
+            </div>
           </a>
           <ng-template ngbNavContent>
             <astrobin-user-gallery-buttons [(activeLayout)]="activeLayout"></astrobin-user-gallery-buttons>
@@ -123,6 +151,22 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
 
       <div [ngbNavOutlet]="nav"></div>
     </ng-container>
+
+    <ng-template #createCollectionOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">{{ "Create new collection" | translate }}</h5>
+        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <astrobin-user-gallery-collection-create
+          [user]="user"
+          [userProfile]="userProfile"
+          [parent]="null"
+          (cancelClick)="offcanvas.close()"
+          (collectionCreate)="offcanvas.close()"
+        ></astrobin-user-gallery-collection-create>
+      </div>
+    </ng-template>
   `,
   styleUrls: ["./user-gallery-navigation.component.scss"]
 })
@@ -130,11 +174,14 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
+  @ViewChild("createCollectionOffcanvas") createCollectionOffcanvas: TemplateRef<any>;
+
   protected readonly ImageAlias = ImageAlias;
   protected activeTab: GalleryNavigationComponent = "gallery";
   protected activeLayout = UserGalleryActiveLayout.TINY;
   protected collectionId: CollectionInterface["id"] | null = null;
   protected activeCollection: CollectionInterface | null = null;
+
   private readonly _isBrowser: boolean;
 
   constructor(
@@ -144,7 +191,9 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly elementRef: ElementRef,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
 
@@ -203,6 +252,12 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
 
   onTabClick(tab: GalleryNavigationComponent) {
     this.router.navigate([], { fragment: tab });
+  }
+
+  protected createCollection() {
+    this.offcanvasService.open(this.createCollectionOffcanvas, {
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 
   private _setCollectionFromRoute() {

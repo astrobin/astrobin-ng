@@ -49,6 +49,32 @@ export class FindCollectionsFailure implements PayloadActionInterface {
   }
 }
 
+export class CreateCollection implements PayloadActionInterface {
+  readonly type = AppActionTypes.CREATE_COLLECTION;
+
+  constructor(public payload: {
+    parent: CollectionInterface["id"] | null,
+    name: CollectionInterface["name"],
+    description: CollectionInterface["description"] | null,
+    orderByTag: CollectionInterface["orderByTag"] | null
+  }) {
+  }
+}
+
+export class CreateCollectionSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.CREATE_COLLECTION_SUCCESS;
+
+  constructor(public payload: { collection: CollectionInterface }) {
+  }
+}
+
+export class CreateCollectionFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.CREATE_COLLECTION_FAILURE;
+
+  constructor(public payload: { error: any }) {
+  }
+}
+
 export class UpdateCollection implements PayloadActionInterface {
   readonly type = AppActionTypes.UPDATE_COLLECTION;
 

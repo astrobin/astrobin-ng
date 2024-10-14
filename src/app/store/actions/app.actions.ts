@@ -15,7 +15,7 @@ import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@ap
 import { CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { LoadRemoteSourceAffiliates, LoadRemoteSourceAffiliatesFailure, LoadRemoteSourceAffiliatesSuccess } from "@app/store/actions/remote-source-affiliates.actions";
-import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
+import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
 
 export enum AppActionTypes {
@@ -149,6 +149,10 @@ export enum AppActionTypes {
   FIND_COLLECTIONS_SUCCESS = "[App] Find collections success",
   FIND_COLLECTIONS_FAILURE = "[App] Find collections failure",
 
+  CREATE_COLLECTION = "[App] Create collection",
+  CREATE_COLLECTION_SUCCESS = "[App] Create collection success",
+  CREATE_COLLECTION_FAILURE = "[App] Create collection failure",
+
   UPDATE_COLLECTION = "[App] Update collection",
   UPDATE_COLLECTION_SUCCESS = "[App] Update collection success",
   UPDATE_COLLECTION_FAILURE = "[App] Update collection failure",
@@ -274,6 +278,9 @@ export type All =
   | FindCollections
   | FindCollectionsSuccess
   | FindCollectionsFailure
+  | CreateCollection
+  | CreateCollectionSuccess
+  | CreateCollectionFailure
   | UpdateCollection
   | UpdateCollectionSuccess
   | UpdateCollectionFailure

@@ -46,6 +46,15 @@ export class CollectionApiService extends BaseClassicApiService {
     return this.http.get<PaginatedApiResultInterface<CollectionInterface>>(url);
   }
 
+  create(
+    parent: CollectionInterface["id"] | null,
+    name: CollectionInterface["name"],
+    description: CollectionInterface["description"] | null,
+    orderByTag: CollectionInterface["orderByTag"] | null
+  ): Observable<CollectionInterface> {
+    return this.http.post<CollectionInterface>(this.configUrl, { parent, name, description, orderByTag });
+  }
+
   update(collection: CollectionInterface): Observable<CollectionInterface> {
     return this.http.put<CollectionInterface>(`${this.configUrl}${collection.id}/`, collection);
   }
