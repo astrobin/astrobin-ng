@@ -20,7 +20,15 @@ import { Subscription } from "rxjs";
       </ng-container>
 
       <div *ngIf="!loading && parentCollection" class="collection-header">
-        <h2>{{ parentCollection.name }}</h2>
+        <h2>
+          {{ parentCollection.name }}
+          <astrobin-user-gallery-collection-menu
+            *ngIf="currentUserWrapper.user?.id === user.id"
+            [user]="user"
+            [userProfile]="userProfile"
+            [collection]="parentCollection"
+          ></astrobin-user-gallery-collection-menu>
+        </h2>
         <small>{{ "A collection by {{ 0 }}" | translate: {"0": user.displayName} }}</small>
         <p *ngIf="parentCollection.description" [innerHTML]="parentCollection.description"></p>
       </div>

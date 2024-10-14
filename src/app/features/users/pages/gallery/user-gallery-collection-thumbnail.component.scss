@@ -27,7 +27,7 @@ $size: 150px;
     }
   }
 
-  .collection-menu {
+  astrobin-user-gallery-collection-menu {
     position: absolute;
     top: -.5rem;
     right: 0;
@@ -40,7 +40,6 @@ $size: 150px;
     border-radius: 50%;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
     line-height: 1rem;
     z-index: 1;
     width: 2rem;
@@ -48,8 +47,15 @@ $size: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: opacity 0.3s ease, filter 0.3s ease;
 
-    .btn {
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        filter: brightness(1.5);
+      }
+    }
+
+    ::ng-deep .btn {
       color: var(--lightestGrey);
       margin: 0;
 
@@ -77,7 +83,7 @@ $size: 150px;
     &:hover {
       filter: brightness(1.5);
 
-      .collection-menu {
+      astrobin-user-gallery-collection-menu {
         opacity: 1;
         pointer-events: all;
       }
@@ -85,7 +91,7 @@ $size: 150px;
   }
 
   @media (hover: none) and (pointer: coarse) {
-    .collection-menu {
+    astrobin-user-gallery-collection-menu {
       opacity: 1;
       pointer-events: all;
     }
