@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -115,7 +115,7 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
   `,
   styleUrls: ["./user-gallery-header.component.scss"]
 })
-export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
@@ -138,10 +138,6 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
 
   ngOnInit() {
     super.ngOnInit();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    console.log("Changes: ", changes);
   }
 
   protected openStatsOffcanvas() {

@@ -90,3 +90,45 @@ export class DeleteCollectionFailure implements PayloadActionInterface {
   constructor(public payload: { collectionId: CollectionInterface["id"], error: any }) {
   }
 }
+
+export class AddImageToCollection implements PayloadActionInterface {
+  readonly type = AppActionTypes.ADD_IMAGE_TO_COLLECTION;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number }) {
+  }
+}
+
+export class AddImageToCollectionSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number }) {
+  }
+}
+
+export class AddImageToCollectionFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.ADD_IMAGE_TO_COLLECTION_FAILURE;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number, error: any }) {
+  }
+}
+
+export class RemoveImageFromCollection implements PayloadActionInterface {
+  readonly type = AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number }) {
+  }
+}
+
+export class RemoveImageFromCollectionSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number }) {
+  }
+}
+
+export class RemoveImageFromCollectionFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_FAILURE;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number, error: any }) {
+  }
+}

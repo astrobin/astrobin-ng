@@ -14,4 +14,5 @@ export interface CollectionInterface {
   coverThumbnail: string | null;
   orderByTag: string | null;
   imageCount?: number;
+  imageCountIncludingWip?: number;
 }

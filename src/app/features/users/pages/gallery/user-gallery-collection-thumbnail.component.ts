@@ -15,6 +15,7 @@ import { DeleteCollection, DeleteCollectionFailure, UpdateCollection, UpdateColl
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-user-gallery-collection-thumbnail",
@@ -57,6 +58,10 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
               {{ "Edit" | translate }}
             </a>
 
+            <a href="#" class="dropdown-item" (click)="addRemoveImages()" astrobinEventPreventDefault>
+              {{ "Add/Remove images" | translate }}
+            </a>
+
             <a href="#" class="dropdown-item text-danger" (click)="deleteCollection()" astrobinEventPreventDefault>
               {{ "Delete" | translate }}
             </a>
@@ -68,7 +73,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
         </div>
 
         <div class="collection-count">
-          {{ "{{ 0  }} images" | translate: { "0": collection.imageCount } }}
+          {{ "{{ 0  }} images" | translate: { "0": currentUserWrapper.user?.id === collection.user ? collection.imageCountIncludingWip : collection.imageCount } }}
         </div>
       </div>
 
@@ -85,6 +90,20 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
               <button type="submit" class="btn btn-primary">{{ "Save" | translate }}</button>
             </div>
           </form>
+        </div>
+      </ng-template>
+
+      <ng-template #addRemoveImagesOffcanvas let-offcanvas>
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title">{{ "Add/remove images" | translate }}</h5>
+          <button class="btn-close" (click)="offcanvas.dismiss()"></button>
+        </div>
+        <div class="offcanvas-body">
+          <astrobin-user-gallery-collection-add-remove-images
+            [user]="user"
+            [userProfile]="userProfile"
+            [collection]="collection"
+          ></astrobin-user-gallery-collection-add-remove-images>
         </div>
       </ng-template>
 
@@ -109,9 +128,11 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 export class UserGalleryCollectionThumbnailComponent
   extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() user: UserInterface;
+  @Input() userProfile: UserProfileInterface;
   @Input() collection: CollectionInterface;
 
   @ViewChild("editCollectionOffcanvas") editCollectionOffcanvas: TemplateRef<any>;
+  @ViewChild("addRemoveImagesOffcanvas") addRemoveImagesOffcanvas: TemplateRef<any>;
   @ViewChild("deleteCollectionConfirmationOffcanvas") deleteCollectionConfirmationOffcanvas: TemplateRef<any>;
 
   protected editCollectionModel: CollectionInterface;
@@ -139,6 +160,12 @@ export class UserGalleryCollectionThumbnailComponent
 
   protected editCollection(): void {
     this.offcanvasService.open(this.editCollectionOffcanvas, {
+      position: this.deviceService.offcanvasPosition()
+    });
+  }
+
+  protected addRemoveImages(): void {
+    this.offcanvasService.open(this.addRemoveImagesOffcanvas, {
       position: this.deviceService.offcanvasPosition()
     });
   }

@@ -8,12 +8,14 @@ import { expand, reduce } from "rxjs/operators";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 export interface GetCollectionsParamsInterface {
   user?: UserInterface["id"];
   ids?: CollectionInterface["id"][];
   parent?: CollectionInterface["id"];
   page?: number;
+  action?: "add-remove-images";
 }
 
 @Injectable({
@@ -52,6 +54,14 @@ export class CollectionApiService extends BaseClassicApiService {
     return this.http.delete<void>(`${this.configUrl}${collectionId}/`);
   }
 
+  addImage(collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"]): Observable<void> {
+    return this.http.post<void>(`${this.configUrl}${collectionId}/add-image/`, { image: imageId });
+  }
+
+  removeImage(collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"]): Observable<void> {
+    return this.http.post<void>(`${this.configUrl}${collectionId}/remove-image/`, { image: imageId });
+  }
+
   private _buildFindUrl(params: GetCollectionsParamsInterface): string {
     let url = this.configUrl;
 
@@ -73,6 +83,10 @@ export class CollectionApiService extends BaseClassicApiService {
 
     if (params.page !== undefined) {
       url = UtilsService.addOrUpdateUrlParam(url, "page", params.page.toString());
+    }
+
+    if (params.action !== undefined) {
+      url = UtilsService.addOrUpdateUrlParam(url, "action", params.action);
     }
 
     return url;

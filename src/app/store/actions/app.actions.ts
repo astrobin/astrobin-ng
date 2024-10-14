@@ -15,7 +15,7 @@ import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@ap
 import { CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { LoadRemoteSourceAffiliates, LoadRemoteSourceAffiliatesFailure, LoadRemoteSourceAffiliatesSuccess } from "@app/store/actions/remote-source-affiliates.actions";
-import { DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
+import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
 
 export enum AppActionTypes {
@@ -157,6 +157,14 @@ export enum AppActionTypes {
   DELETE_COLLECTION_SUCCESS = "[App] Delete collection success",
   DELETE_COLLECTION_FAILURE = "[App] Delete collection failure",
 
+  ADD_IMAGE_TO_COLLECTION = "[App] Add image to collection",
+  ADD_IMAGE_TO_COLLECTION_SUCCESS = "[App] Add image to collection success",
+  ADD_IMAGE_TO_COLLECTION_FAILURE = "[App] Add image to collection failure",
+
+  REMOVE_IMAGE_FROM_COLLECTION = "[App] Remove image from collection",
+  REMOVE_IMAGE_FROM_COLLECTION_SUCCESS = "[App] Remove image from collection success",
+  REMOVE_IMAGE_FROM_COLLECTION_FAILURE = "[App] Remove image from collection failure",
+
   DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE = "[App] Delete image uncompressed source file",
   DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS = "[App] Delete image uncompressed source file success",
   DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE = "[App] Delete image uncompressed source file failure",
@@ -269,6 +277,12 @@ export type All =
   | UpdateCollection
   | UpdateCollectionSuccess
   | UpdateCollectionFailure
+  | AddImageToCollection
+  | AddImageToCollectionSuccess
+  | AddImageToCollectionFailure
+  | RemoveImageFromCollection
+  | RemoveImageFromCollectionSuccess
+  | RemoveImageFromCollectionFailure
   | DeleteCollection
   | DeleteCollectionSuccess
   | DeleteCollectionFailure

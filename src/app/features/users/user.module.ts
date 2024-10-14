@@ -19,6 +19,7 @@ import { UserGalleryCollectionsComponent } from "@features/users/pages/gallery/u
 import { UserGalleryCollectionThumbnailComponent } from "@features/users/pages/gallery/user-gallery-collection-thumbnail.component";
 import { UserGalleryButtonsComponent } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { UserGalleryHeaderChangeImageComponent } from "@features/users/pages/gallery/user-gallery-header-change-image.component";
+import { UserGalleryCollectionAddRemoveImagesComponent } from "@features/users/pages/gallery/user-gallery-collection-add-remove-images.component";
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { UserGalleryHeaderChangeImageComponent } from "@features/users/pages/gal
     UserGalleryTrashComponent,
     UserGalleryCollectionsComponent,
     UserGalleryCollectionThumbnailComponent,
+    UserGalleryCollectionAddRemoveImagesComponent,
     UserGalleryButtonsComponent
   ],
   imports: [

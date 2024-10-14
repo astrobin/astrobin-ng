@@ -30,7 +30,7 @@ import { Subscription } from "rxjs";
         class="d-flex flex-wrap gap-4 justify-content-center"
       >
         <a
-          *ngFor="let collection of collections"
+          *ngFor="let collection of collections; trackBy: collectionTrackByFn"
           (click)="openCollection(collection)"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
@@ -38,6 +38,7 @@ import { Subscription } from "rxjs";
         >
           <astrobin-user-gallery-collection-thumbnail
             [user]="user"
+            [userProfile]="userProfile"
             [collection]="collection"
           ></astrobin-user-gallery-collection-thumbnail>
         </a>
@@ -116,5 +117,9 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
         relativeTo: this.activatedRoute
       }
     );
+  }
+
+  protected collectionTrackByFn(index: number, item: CollectionInterface): CollectionInterface["id"] {
+    return item.id;
   }
 }

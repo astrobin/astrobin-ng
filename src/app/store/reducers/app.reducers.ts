@@ -633,6 +633,36 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: state.collections.map(collection =>
+          collection.id === action.payload.collectionId
+            ? {
+              ...collection,
+              images: [...(collection.images || []), action.payload.imageId],
+              imageCountIncludingWip: collection.imageCountIncludingWip + 1
+            }
+            : collection
+        )
+      };
+    }
+
+    case AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: state.collections.map(collection =>
+          collection.id === action.payload.collectionId
+            ? {
+              ...collection,
+              images: (collection.images || []).filter(i => i !== action.payload.imageId),
+              imageCountIncludingWip: collection.imageCountIncludingWip - 1
+            }
+            : collection
+        )
+      };
+    }
+
     case AppActionTypes.DELETE_COLLECTION_SUCCESS: {
       return {
         ...state,
