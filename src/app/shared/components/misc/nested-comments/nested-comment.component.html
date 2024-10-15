@@ -40,7 +40,10 @@
         ></span>
       </div>
 
-      <div [innerHTML]="comment.html" class="text"></div>
+      <div *ngIf="!comment.pendingModeration" [innerHTML]="comment.html" class="text"></div>
+      <div *ngIf="comment.pendingModeration" class="text">
+        <p>{{ "This comment is pending moderation." | translate }}</p>
+      </div>
 
       <div class="actions">
         <a [href]="getLink()" class="link">
