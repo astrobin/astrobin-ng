@@ -24,6 +24,7 @@ import { DeviceService } from "@shared/services/device.service";
       <div *ngIf="!loading && parentCollection" class="collection-header">
         <h2>
           {{ parentCollection.name }}
+
           <astrobin-user-gallery-collection-menu
             *ngIf="currentUserWrapper.user?.id === user.id"
             [user]="user"

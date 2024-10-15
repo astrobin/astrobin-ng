@@ -15,4 +15,5 @@ export interface CollectionInterface {
   orderByTag: string | null;
   imageCount?: number;
   imageCountIncludingWip?: number;
+  nestedCollectionCount?: number;
 }

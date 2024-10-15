@@ -23,7 +23,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div
-        *ngIf="currentUserWrapper.user?.id === collection.user"
         ngbDropdown
         container="body"
         class="collection-menu"

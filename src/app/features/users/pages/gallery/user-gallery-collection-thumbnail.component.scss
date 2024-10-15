@@ -72,11 +72,12 @@ $size: 150px;
     font-weight: bold;
   }
 
-  .collection-count {
+  .image-count,
+  .nested-collection-count {
     padding: 0 1rem;
     text-align: center;
     color: var(--lighterGrey);
-    font-size: .85rem;
+    font-size: .8rem;
   }
 
   @media (hover: hover) and (pointer: fine) {

@@ -25,6 +25,7 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
         </div>
 
         <astrobin-user-gallery-collection-menu
+          *ngIf="currentUserWrapper.user?.id === collection.user"
           [user]="user"
           [userProfile]="userProfile"
           [collection]="collection"
@@ -34,10 +35,44 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
           {{ collection.name }}
         </div>
 
-        <div class="collection-count">
-          {{ "{{ 0 }} images" | translate: {
-          "0": currentUserWrapper.user?.id === collection.user ? collection.imageCountIncludingWip : collection.imageCount
-          } }}
+        <div class="image-count">
+          <ng-container *ngIf="currentUserWrapper.user?.id === collection.user">
+            <ng-container *ngIf="collection.imageCountIncludingWip === 0">
+              {{ "No images" | translate }}
+            </ng-container>
+
+            <ng-container *ngIf="collection.imageCountIncludingWip === 1">
+              {{ "1 image" | translate }}
+            </ng-container>
+
+            <ng-container *ngIf="collection.imageCountIncludingWip > 1">
+              {{ "{{ 0 }} images" | translate: { "0": collection.imageCountIncludingWip } }}
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="currentUserWrapper.user?.id !== collection.user">
+            <ng-container *ngIf="collection.imageCount === 0">
+              {{ "No images" | translate }}
+            </ng-container>
+
+            <ng-container *ngIf="collection.imageCount === 1">
+              {{ "1 image" | translate }}
+            </ng-container>
+
+            <ng-container *ngIf="collection.imageCount > 1">
+              {{ "{{ 0 }} images" | translate: { "0": collection.imageCount } }}
+            </ng-container>
+          </ng-container>
+        </div>
+
+        <div *ngIf="collection.nestedCollectionCount" class="nested-collection-count">
+          <ng-container *ngIf="collection.nestedCollectionCount === 1">
+            {{ "1 collection" | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="collection.nestedCollectionCount > 1">
+            {{ "{{ 0 }} collections" | translate: { "0": collection.nestedCollectionCount } }}
+          </ng-container>
         </div>
       </div>
     </ng-container>
