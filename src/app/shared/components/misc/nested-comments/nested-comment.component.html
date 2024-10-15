@@ -12,10 +12,15 @@
     <div class="nested-comment-content">
       <div class="meta">
         <a
+          *ngIf="!comment.deleted"
           [href]="classicRoutesService.GALLERY(comment.authorUsername)" class="username"
         >
           {{ comment.authorDisplayName }}
         </a>
+
+        <span *ngIf="comment.deleted" class="username">
+          {{ "(deleted)" | translate }}
+        </span>
 
         <span [attr.data-test-value]="comment.created" class="timestamp">
           {{ comment.created | localDate | timeago: true }}
@@ -35,7 +40,10 @@
         ></span>
       </div>
 
-      <div [innerHTML]="comment.html" class="text"></div>
+      <div *ngIf="!comment.pendingModeration" [innerHTML]="comment.html" class="text"></div>
+      <div *ngIf="comment.pendingModeration" class="text">
+        <p>{{ "This comment is pending moderation." | translate }}</p>
+      </div>
 
       <div class="actions">
         <a [href]="getLink()" class="link">
@@ -46,6 +54,7 @@
         <button
           (click)="onReplyClicked($event)"
           *ngIf="
+            !comment.deleted &&
             showReplyButton && (
               (
                 currentUserWrapper.user?.id !== comment.author &&
@@ -67,7 +76,7 @@
         </button>
 
         <astrobin-toggle-property
-          *ngIf="commentContentType && currentUserWrapper.user?.id && currentUserWrapper.user.id !== comment.author"
+          *ngIf="!comment.deleted && commentContentType && currentUserWrapper.user?.id && currentUserWrapper.user.id !== comment.author"
           [contentType]="commentContentType.id"
           [objectId]="comment.id"
           [userId]="currentUserWrapper.user?.id"
