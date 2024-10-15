@@ -62,7 +62,7 @@ import { fadeInOut } from "@shared/animations";
             [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight * .5"
             [style.min-width.px]="averageHeight"
             [style.min-height.px]="averageHeight"
-            [href]="'/i/' + (item.hash || item.id)"
+            [href]="'/i/' + (item.hash || item.pk)"
             astrobinEventPreventDefault
             [class.wip]="item.isWip"
           >
@@ -88,7 +88,7 @@ import { fadeInOut } from "@shared/animations";
           *ngFor="let image of images"
           (click)="openImage(image)"
           [class.wip]="image.isWip"
-          [href]="'/i/' + (image.hash || image.pk)"
+          [href]="'/i/' + (image.hash || image.pk.toString())"
           astrobinEventPreventDefault
           class="image-link"
         >
@@ -280,13 +280,13 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
 
   openImage(item: MasonryLayoutGridItem): void {
     const image = item as ImageInterface;
-    const imageId = image.hash || image.pk;
+    const imageId = image.hash || image.pk.toString();
     const navigationContext = this.images.map(image => ({
-      imageId: image.hash || image.pk,
+      imageId: image.hash || image.pk.toString(),
       thumbnailUrl: image.finalGalleryThumbnail
     }));
 
-    const slideshow = this.imageViewerService.openSlideshow(
+    this.imageViewerService.openSlideshow(
       this.componentId,
       imageId,
       FINAL_REVISION_LABEL,

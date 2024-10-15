@@ -353,6 +353,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   }
 
   private _updateVisibleContext(activeId: ImageInterface["pk"] | ImageInterface["hash"]) {
+    if (!activeId) {
+      return;
+    }
+
     const currentIndex = this._getImageIndexInContext(activeId);
     if (currentIndex === -1) {
       this.visibleContext = [...this.navigationContext];
@@ -450,6 +454,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   }
 
   private _getImageIndexInContext(imageId: ImageInterface["pk"] | ImageInterface["hash"]): number {
-    return this.navigationContext.findIndex(item => item.imageId === imageId);
+    return this.navigationContext.findIndex(item => item.imageId === imageId.toString());
   }
 }
