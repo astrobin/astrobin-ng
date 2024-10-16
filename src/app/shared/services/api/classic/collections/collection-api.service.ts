@@ -71,6 +71,10 @@ export class CollectionApiService extends BaseClassicApiService {
     return this.http.post<void>(`${this.configUrl}${collectionId}/remove-image/`, { image: imageId });
   }
 
+  setCoverImage(collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"]): Observable<CollectionInterface> {
+    return this.http.post<CollectionInterface>(`${this.configUrl}${collectionId}/set-cover-image/`, { image: imageId });
+  }
+
   private _buildFindUrl(params: GetCollectionsParamsInterface): string {
     let url = this.configUrl;
 

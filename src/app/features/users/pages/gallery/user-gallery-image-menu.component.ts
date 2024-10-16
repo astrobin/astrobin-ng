@@ -15,7 +15,7 @@ import { ModalService } from "@shared/services/modal.service";
 import { TranslateService } from "@ngx-translate/core";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { ActivatedRoute } from "@angular/router";
-import { RemoveImageFromCollection } from "@app/store/actions/collection.actions";
+import { RemoveImageFromCollection, SetCollectionCoverImage } from "@app/store/actions/collection.actions";
 
 @Component({
   selector: "astrobin-user-gallery-image-menu",
@@ -42,6 +42,15 @@ import { RemoveImageFromCollection } from "@app/store/actions/collection.actions
         >
           <a class="dropdown-item" [routerLink]="['/i', image.hash || image.pk, 'edit']">
             {{ "Edit" | translate }}
+          </a>
+
+          <a
+            *ngIf="collectionId"
+            (click)="setAsCoverImage()"
+            class="dropdown-item"
+            astrobinEventPreventDefault
+          >
+            {{ "Set as cover image" | translate }}
           </a>
 
           <a class="dropdown-item text-danger" astrobinEventPreventDefault (click)="delete()">
@@ -88,6 +97,13 @@ export class UserGalleryImageMenuComponent extends BaseComponentDirective implem
   ngOnInit() {
     super.ngOnInit();
     this.collectionId = parseInt(this.activatedRoute.snapshot.queryParamMap.get("collection"), 10);
+  }
+
+  protected setAsCoverImage() {
+    this.store$.dispatch(new SetCollectionCoverImage({
+      collectionId: this.collectionId,
+      imageId: this.image.pk
+    }));
   }
 
   protected delete() {

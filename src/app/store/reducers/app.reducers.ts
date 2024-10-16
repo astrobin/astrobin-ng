@@ -673,6 +673,20 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.SET_COLLECTION_COVER_IMAGE_SUCCESS: {
+      return {
+        ...state,
+        collections: state.collections.map(collection =>
+          collection.id === action.payload.collectionId
+            ? {
+              ...collection,
+              coverThumbnail: action.payload.coverThumbnail
+            }
+            : collection
+        )
+      };
+    }
+
     case AppActionTypes.DELETE_COLLECTION_SUCCESS: {
       return {
         ...state,

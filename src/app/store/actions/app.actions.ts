@@ -15,7 +15,7 @@ import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@ap
 import { CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { LoadRemoteSourceAffiliates, LoadRemoteSourceAffiliatesFailure, LoadRemoteSourceAffiliatesSuccess } from "@app/store/actions/remote-source-affiliates.actions";
-import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
+import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, SetCollectionCoverImage, SetCollectionCoverImageFailure, SetCollectionCoverImageSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
 
 export enum AppActionTypes {
@@ -165,6 +165,10 @@ export enum AppActionTypes {
   ADD_IMAGE_TO_COLLECTION_SUCCESS = "[App] Add image to collection success",
   ADD_IMAGE_TO_COLLECTION_FAILURE = "[App] Add image to collection failure",
 
+  SET_COLLECTION_COVER_IMAGE = "[App] Set collection cover image",
+  SET_COLLECTION_COVER_IMAGE_SUCCESS = "[App] Set collection cover image success",
+  SET_COLLECTION_COVER_IMAGE_FAILURE = "[App] Set collection cover image failure",
+
   REMOVE_IMAGE_FROM_COLLECTION = "[App] Remove image from collection",
   REMOVE_IMAGE_FROM_COLLECTION_SUCCESS = "[App] Remove image from collection success",
   REMOVE_IMAGE_FROM_COLLECTION_FAILURE = "[App] Remove image from collection failure",
@@ -290,6 +294,9 @@ export type All =
   | RemoveImageFromCollection
   | RemoveImageFromCollectionSuccess
   | RemoveImageFromCollectionFailure
+  | SetCollectionCoverImage
+  | SetCollectionCoverImageSuccess
+  | SetCollectionCoverImageFailure
   | DeleteCollection
   | DeleteCollectionSuccess
   | DeleteCollectionFailure

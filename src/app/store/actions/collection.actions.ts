@@ -159,3 +159,28 @@ export class RemoveImageFromCollectionFailure implements PayloadActionInterface 
   constructor(public payload: { collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"], error: any }) {
   }
 }
+
+export class SetCollectionCoverImage implements PayloadActionInterface {
+  readonly type = AppActionTypes.SET_COLLECTION_COVER_IMAGE;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"] }) {
+  }
+}
+
+export class SetCollectionCoverImageSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.SET_COLLECTION_COVER_IMAGE_SUCCESS;
+
+  constructor(public payload: {
+    collectionId: CollectionInterface["id"],
+    imageId: ImageInterface["pk"],
+    coverThumbnail: string
+  }) {
+  }
+}
+
+export class SetCollectionCoverImageFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.SET_COLLECTION_COVER_IMAGE_FAILURE;
+
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"], error: any }) {
+  }
+}

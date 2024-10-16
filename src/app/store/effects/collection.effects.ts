@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import { CollectionApiService } from "@shared/services/api/classic/collections/collection-api.service";
-import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
+import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, SetCollectionCoverImage, SetCollectionCoverImageFailure, SetCollectionCoverImageSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -241,6 +241,54 @@ export class CollectionEffects {
         tap(() => {
           this.popNotificationsService.error(
             this.translateService.instant("An error occurred while removing the image from the collection.")
+          );
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  setCoverImage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.SET_COLLECTION_COVER_IMAGE),
+      mergeMap((action: SetCollectionCoverImage) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.setCoverImage(action.payload.collectionId, action.payload.imageId).pipe(
+            map(collection => new SetCollectionCoverImageSuccess({
+              collectionId: action.payload.collectionId,
+              imageId: action.payload.imageId,
+              coverThumbnail: collection.coverThumbnail
+            })),
+            catchError(error => of(new SetCollectionCoverImageFailure({
+              collectionId: action.payload.collectionId,
+              imageId: action.payload.imageId,
+              error
+            })))
+          );
+        }
+      )
+    )
+  );
+
+  setCoverImageSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.SET_COLLECTION_COVER_IMAGE_SUCCESS),
+        tap(() => {
+          this.popNotificationsService.success(
+            this.translateService.instant("Cover image set successfully.")
+          );
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  setCoverImageFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.SET_COLLECTION_COVER_IMAGE_FAILURE),
+        tap(() => {
+          this.popNotificationsService.error(
+            this.translateService.instant("An error occurred while setting the cover image.")
           );
           this.loadingService.setLoading(false);
         })
