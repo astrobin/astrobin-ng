@@ -23,6 +23,7 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { fadeInOut } from "@shared/animations";
+import { CollectionInterface } from "@shared/interfaces/collection.interface";
 
 @Component({
   selector: "astrobin-user-gallery-images",
@@ -161,6 +162,7 @@ import { fadeInOut } from "@shared/animations";
     <ng-template #menuTemplate let-image="image">
       <astrobin-user-gallery-image-menu
         (imageDeleted)="onImageDeleted($event)"
+        (imageRemovedFromCollection)="onImageRemovedFromCollection($event)"
         [user]="user"
         [userProfile]="userProfile"
         [image]="image"
@@ -311,6 +313,15 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
 
   protected onImageDeleted(imageId: ImageInterface["pk"]): void {
     this.images = this.images.filter(image => image.pk !== imageId);
+    this.changeDetectorRef.detectChanges();
+  }
+
+  protected onImageRemovedFromCollection(event: { imageId: ImageInterface["pk"]; collectionId: CollectionInterface["id"] }): void {
+    if (event.collectionId !== this.options.collection) {
+      return;
+    }
+
+    this.images = this.images.filter(image => image.pk !== event.imageId);
     this.changeDetectorRef.detectChanges();
   }
 

@@ -3,6 +3,7 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 export class LoadCollections implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_COLLECTIONS;
@@ -120,41 +121,41 @@ export class DeleteCollectionFailure implements PayloadActionInterface {
 export class AddImageToCollection implements PayloadActionInterface {
   readonly type = AppActionTypes.ADD_IMAGE_TO_COLLECTION;
 
-  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number }) {
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"] }) {
   }
 }
 
 export class AddImageToCollectionSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS;
 
-  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number }) {
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"] }) {
   }
 }
 
 export class AddImageToCollectionFailure implements PayloadActionInterface {
   readonly type = AppActionTypes.ADD_IMAGE_TO_COLLECTION_FAILURE;
 
-  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number, error: any }) {
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"], error: any }) {
   }
 }
 
 export class RemoveImageFromCollection implements PayloadActionInterface {
   readonly type = AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION;
 
-  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number }) {
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"] }) {
   }
 }
 
 export class RemoveImageFromCollectionSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS;
 
-  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number }) {
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"] }) {
   }
 }
 
 export class RemoveImageFromCollectionFailure implements PayloadActionInterface {
   readonly type = AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_FAILURE;
 
-  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: number, error: any }) {
+  constructor(public payload: { collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"], error: any }) {
   }
 }
