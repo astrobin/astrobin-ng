@@ -1,52 +1,91 @@
 @import "../../../../styles/breakpoints";
 
-.image-link {
-  width: 143px;
-  height: 143px;
-
-  @media (max-width: $xl-max) {
-    width: 140px;
-    height: 140px;
-  }
-
-  @media (max-width: $lg-max) {
-    width: 135px;
-    height: 135px;
-  }
-
-  @media (max-width: $md-max) {
-    width: calc(100vw / 7 - 1rem);
-    height: calc(100vw / 7 - 1rem);
-  }
-
-  @media (max-width: $sm-max) {
-    width: calc(100vw / 5 - 1rem);
-    height: calc(100vw / 5 - 1rem);
-  }
-
-  @media (max-width: $xs-max) {
-    width: calc(100vw / 3 - 1.25rem);
-    height: calc(100vw / 3 - 1.25rem);
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-.wip {
-  img {
-    opacity: 0.25;
-  }
-
-  .wip-icon {
+:host {
+  astrobin-user-gallery-image-menu {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    color: var(--white);
+    top: .25rem;
+    right: .25rem;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+    line-height: 1rem;
+    z-index: 1;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+    background: rgba(0, 0, 0, .5);
+    border-radius: 50%;
+    height: 2rem;
+    width: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    ::ng-deep .btn {
+      color: var(--white);
+      margin: 0;
+    }
+  }
+
+  .image-link {
+    width: 143px;
+    height: 143px;
+
+    @media (max-width: $xl-max) {
+      width: 140px;
+      height: 140px;
+    }
+
+    @media (max-width: $lg-max) {
+      width: 135px;
+      height: 135px;
+    }
+
+    @media (max-width: $md-max) {
+      width: calc(100vw / 7 - 1rem);
+      height: calc(100vw / 7 - 1rem);
+    }
+
+    @media (max-width: $sm-max) {
+      width: calc(100vw / 5 - 1rem);
+      height: calc(100vw / 5 - 1rem);
+    }
+
+    @media (max-width: $xs-max) {
+      width: calc(100vw / 3 - 1.25rem);
+      height: calc(100vw / 3 - 1.25rem);
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        astrobin-user-gallery-image-menu {
+          opacity: 1;
+          pointer-events: all;
+        }
+
+        astrobin-user-gallery-image-menu:hover {
+          filter: brightness(1.5);
+        }
+      }
+    }
+  }
+
+  .wip {
+    img {
+      opacity: 0.25;
+    }
+
+    .wip-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      color: var(--white);
+    }
   }
 }

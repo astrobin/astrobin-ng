@@ -376,6 +376,9 @@ export class ImageEffects {
         ofType(AppActionTypes.DELETE_IMAGE_FAILURE),
         tap(error => {
           this.loadingService.setLoading(false);
+          this.popNotificationsService.error(
+            this.translateService.instant("There was an error deleting the image.")
+          );
         })
       ),
     {

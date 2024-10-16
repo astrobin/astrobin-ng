@@ -22,6 +22,7 @@ import { UserGalleryHeaderChangeImageComponent } from "@features/users/pages/gal
 import { UserGalleryCollectionAddRemoveImagesComponent } from "@features/users/pages/gallery/user-gallery-collection-add-remove-images.component";
 import { UserGalleryCollectionMenuComponent } from "@features/users/pages/gallery/user-gallery-collection-menu.component";
 import { UserGalleryCollectionCreateComponent } from "@features/users/pages/gallery/user-gallery-collection-create.component";
+import { UserGalleryImageMenuComponent } from "@features/users/pages/gallery/user-gallery-image-menu.component";
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { UserGalleryCollectionCreateComponent } from "@features/users/pages/gall
     UserGalleryCollectionMenuComponent,
     UserGalleryCollectionAddRemoveImagesComponent,
     UserGalleryCollectionCreateComponent,
-    UserGalleryButtonsComponent
+    UserGalleryButtonsComponent,
+    UserGalleryImageMenuComponent
   ],
   imports: [
     RouterModule.forChild(userRoutes),

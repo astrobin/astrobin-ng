@@ -65,9 +65,11 @@ import { fadeInOut } from "@shared/animations";
             [href]="'/i/' + (item.hash || item.pk)"
             astrobinEventPreventDefault
             [class.wip]="item.isWip"
+            class="image-link"
           >
             <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
             <img
+              *ngIf="item?.thumbnails?.length"
               [alt]="item.title"
               [ngSrc]="item.thumbnails[0].url"
               [style.object-position]="item.objectPosition"
@@ -75,6 +77,7 @@ import { fadeInOut } from "@shared/animations";
             />
             <ng-container *ngTemplateOutlet="iconsTemplate; context: { image: item }"></ng-container>
             <ng-container *ngTemplateOutlet="hoverTemplate; context: { image: item }"></ng-container>
+            <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
           </a>
         </ng-container>
       </div>
@@ -101,8 +104,9 @@ import { fadeInOut } from "@shared/animations";
             [height]="130"
           />
 
-          <ng-container *ngTemplateOutlet="iconsTemplate; context: { image: image }"></ng-container>
-          <ng-container *ngTemplateOutlet="hoverTemplate; context: { image: image }"></ng-container>
+          <ng-container *ngTemplateOutlet="iconsTemplate; context: { image }"></ng-container>
+          <ng-container *ngTemplateOutlet="hoverTemplate; context: { image }"></ng-container>
+          <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
         </a>
       </div>
     </ng-container>
@@ -152,6 +156,15 @@ import { fadeInOut } from "@shared/animations";
           </div>
         </div>
       </div>
+    </ng-template>
+
+    <ng-template #menuTemplate let-image="image">
+      <astrobin-user-gallery-image-menu
+        (imageDeleted)="onImageDeleted($event)"
+        [user]="user"
+        [userProfile]="userProfile"
+        [image]="image"
+      ></astrobin-user-gallery-image-menu>
     </ng-template>
   `,
   styleUrls: ["./user-gallery-images.component.scss"],
@@ -294,6 +307,11 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       this.viewContainerRef,
       true
     );
+  }
+
+  protected onImageDeleted(imageId: ImageInterface["pk"]): void {
+    this.images = this.images.filter(image => image.pk !== imageId);
+    this.changeDetectorRef.detectChanges();
   }
 
   private _updateAverageHeight(layout: UserGalleryActiveLayout): void {
