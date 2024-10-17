@@ -346,7 +346,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
           totalIntegration: 0,
           dates: [],
           averageMoonIllumination: null,
-          number: acquisition.number,
+          number: 0,
           duration
         };
       }
