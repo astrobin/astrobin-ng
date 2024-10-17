@@ -725,6 +725,8 @@ export class ImageViewerComponent
     hasMobileMenu: boolean,
     sideToSideLayout: boolean
   ) {
+    const imageId = this.image.hash || this.image.pk;
+    const imageViewer = document.getElementById(`image-viewer-${imageId}`);
     const socialButtons = scrollArea.querySelector(
       "astrobin-image-viewer-photographers astrobin-image-viewer-social-buttons"
     ) as HTMLElement | null;
@@ -738,7 +740,7 @@ export class ImageViewerComponent
     const adManagerHeight = adManager ? adManager.offsetHeight : 0;
     const siteHeader = document.querySelector("astrobin-header > nav") as HTMLElement | null;
     const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
-    const mobileMenu = document.querySelector("astrobin-mobile-menu") as HTMLElement | null;
+    const mobileMenu = imageViewer.querySelector("astrobin-mobile-menu") as HTMLElement | null;
     const mobileMenuHeight = mobileMenu && hasMobileMenu ? mobileMenu.offsetHeight : 0;
     const globalLoadingIndicator = document.querySelector(".global-loading-indicator") as HTMLElement | null;
     const globalLoadingIndicatorHeight = globalLoadingIndicator ? globalLoadingIndicator.offsetHeight : 0;
