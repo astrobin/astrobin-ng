@@ -1,13 +1,13 @@
 import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, ViewContainerRef } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { filter, map, startWith, takeUntil } from "rxjs/operators";
+import { filter, map, startWith, take, takeUntil } from "rxjs/operators";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
@@ -24,6 +24,8 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { fadeInOut } from "@shared/animations";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { selectCollections, selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
+import { LoadCollections } from "@app/store/actions/collection.actions";
 
 @Component({
   selector: "astrobin-user-gallery-images",
@@ -79,6 +81,7 @@ import { CollectionInterface } from "@shared/interfaces/collection.interface";
             <ng-container *ngTemplateOutlet="iconsTemplate; context: { image: item }"></ng-container>
             <ng-container *ngTemplateOutlet="hoverTemplate; context: { image: item }"></ng-container>
             <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
+            <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image: item }"></ng-container>
           </a>
         </ng-container>
       </div>
@@ -108,6 +111,8 @@ import { CollectionInterface } from "@shared/interfaces/collection.interface";
           <ng-container *ngTemplateOutlet="iconsTemplate; context: { image }"></ng-container>
           <ng-container *ngTemplateOutlet="hoverTemplate; context: { image }"></ng-container>
           <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
+          <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image }"></ng-container>
+
         </a>
       </div>
     </ng-container>
@@ -168,6 +173,16 @@ import { CollectionInterface } from "@shared/interfaces/collection.interface";
         [image]="image"
       ></astrobin-user-gallery-image-menu>
     </ng-template>
+
+    <ng-template #keyValueTagTemplate let-image="image">
+      <div class="key-value-tag" *ngIf="collection?.orderByTag && image.keyValueTags">
+        <span *ngFor="let tag of image.keyValueTags.split(',')">
+          <ng-container *ngIf="tag.split('=')[0] === collection.orderByTag">
+            {{ tag }}
+          </ng-container>
+        </span>
+      </div>
+    </ng-template>
   `,
   styleUrls: ["./user-gallery-images.component.scss"],
   animations: [fadeInOut]
@@ -182,6 +197,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   protected readonly ImageAlias = ImageAlias;
   protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
 
+  protected collection: CollectionInterface;
   protected next: string | null = null;
   protected page = 1;
   protected images: ImageInterface[] = [];
@@ -284,6 +300,20 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
 
     if (changes.activeLayout) {
       this._updateAverageHeight(this.activeLayout);
+    }
+
+    if (changes.options && changes.options.currentValue.collection) {
+      this.store$.pipe(
+        select(selectCollectionsByParams({ ids: [changes.options.currentValue.collection] })),
+        filter(collections => collections?.length > 0),
+        map(collections => collections[0]),
+        take(1),
+        takeUntil(this.destroyed$)
+      ).subscribe(collection => {
+        this.collection = collection;
+      });
+
+      this.store$.dispatch(new LoadCollections({ params: { ids: [changes.options.currentValue.collection] } }));
     }
   }
 

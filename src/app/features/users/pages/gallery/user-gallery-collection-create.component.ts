@@ -142,7 +142,7 @@ export class UserGalleryCollectionCreateComponent extends BaseComponentDirective
         props: {
           label: this.translateService.instant("Order by image tag"),
           description: this.translateService.instant(
-            "If you want to order the images in this collection by a tag, enter the tag here." +
+            "If you want to order the images in this collection by a tag, enter the tag here. " +
             `<a href="https://welcome.astrobin.com/features/image-collections" target="_blank" class="d-inline-block ms-1">` +
             this.translateService.instant("Learn more") +
             "</a>."
