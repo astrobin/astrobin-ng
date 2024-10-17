@@ -6,6 +6,7 @@ export interface ImageSearchInterface {
   title: string | null;
   description: string | null;
   published: string;
+  squareCropping: string | null;
 
   allSensors: string[];
   imagingSensors: string[];

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
 import {

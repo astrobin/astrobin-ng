@@ -13,7 +13,7 @@ import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rx
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { merge, Observable, of, Subscription } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";

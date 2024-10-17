@@ -9,7 +9,7 @@ import { filter, map, switchMap, take } from "rxjs/operators";
 import {
   EquipmentItemDisplayProperty,
   EquipmentItemService
-} from "@features/equipment/services/equipment-item.service";
+} from "@shared/services/equipment-item.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";

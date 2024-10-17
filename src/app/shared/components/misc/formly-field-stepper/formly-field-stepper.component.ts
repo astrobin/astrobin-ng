@@ -72,7 +72,11 @@ export class FormlyFieldStepperComponent
 
   ngOnInit() {
     this._routeFragmentSubscription = this.route.fragment.subscribe((fragment: string) => {
-      this.currentStepIndex = +fragment - 1;
+      if (!fragment) {
+        this.currentStepIndex = 0;
+      } else {
+        this.currentStepIndex = +fragment - 1;
+      }
       this.ngWizardService.show(this.currentStepIndex);
     });
   }
@@ -107,6 +111,10 @@ export class FormlyFieldStepperComponent
   }
 
   onStepChanged(event?: StepChangedArgs) {
+    if (!event.previousStep) {
+      return;
+    }
+
     this.router.navigate([], { fragment: "" + (event.step.index + 1) }).then(() => {
       this.markPreviousStepsAsDone(event.step.index);
       this.setHighestVisitedStep(event.step.index);

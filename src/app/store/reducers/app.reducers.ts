@@ -461,10 +461,30 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.UNDELETE_IMAGE_SUCCESS: {
+      const imageIndex = state.images.findIndex(image => image.pk === action.payload.pk);
+
+      if (imageIndex === -1) {
+        return state;
+      } // If the image is not found, return the original state
+
+      const image = { ...state.images[imageIndex] };
+      image.deleted = null;
+
+      return {
+        ...state,
+        images: [
+          ...state.images.slice(0, imageIndex),
+          image,
+          ...state.images.slice(imageIndex + 1)
+        ]
+      };
+    }
+
     case AppActionTypes.LOAD_THUMBNAIL_SUCCESS: {
       return {
         ...state,
-        thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, action.payload], null, false),
+        thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, action.payload], null, false)
       };
     }
 
@@ -583,7 +603,94 @@ export function appReducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_COLLECTIONS_SUCCESS: {
       return {
         ...state,
-        collections: action.payload.collections
+        collections: UtilsService.arrayUniqueObjects(
+          [...state.collections || [], ...action.payload.collections],
+          "id"
+        ).sort((a, b) => a.name.localeCompare(b.name))
+      };
+    }
+
+    case AppActionTypes.FIND_COLLECTIONS_SUCCESS: {
+      return {
+        ...state,
+        collections: UtilsService.arrayUniqueObjects(
+          [...state.collections || [], ...action.payload.response.results],
+          "id"
+        ).sort((a, b) => a.name.localeCompare(b.name))
+      };
+    }
+
+    case AppActionTypes.CREATE_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: UtilsService.arrayUniqueObjects(
+          [...state.collections || [], action.payload.collection],
+          "id"
+        ).sort((a, b) => a.name.localeCompare(b.name))
+      };
+    }
+
+    case AppActionTypes.UPDATE_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: UtilsService.arrayUniqueObjects(
+          [
+            ...state.collections.filter(i => i.id !== action.payload.collection.id),
+            action.payload.collection
+          ],
+          "id"
+        ).sort((a, b) => a.name.localeCompare(b.name))
+      };
+    }
+
+    case AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: state.collections.map(collection =>
+          collection.id === action.payload.collectionId
+            ? {
+              ...collection,
+              images: [...(collection.images || []), action.payload.imageId],
+              imageCountIncludingWip: collection.imageCountIncludingWip + 1
+            }
+            : collection
+        )
+      };
+    }
+
+    case AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: state.collections.map(collection =>
+          collection.id === action.payload.collectionId
+            ? {
+              ...collection,
+              images: (collection.images || []).filter(i => i !== action.payload.imageId),
+              imageCountIncludingWip: collection.imageCountIncludingWip - 1
+            }
+            : collection
+        )
+      };
+    }
+
+    case AppActionTypes.SET_COLLECTION_COVER_IMAGE_SUCCESS: {
+      return {
+        ...state,
+        collections: state.collections.map(collection =>
+          collection.id === action.payload.collectionId
+            ? {
+              ...collection,
+              coverThumbnail: action.payload.coverThumbnail
+            }
+            : collection
+        )
+      };
+    }
+
+    case AppActionTypes.DELETE_COLLECTION_SUCCESS: {
+      return {
+        ...state,
+        collections: state.collections.filter(collection => collection.id !== action.payload.collectionId)
       };
     }
 

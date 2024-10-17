@@ -16,17 +16,23 @@ export const selectCollectionsByParams = (params: GetCollectionsParamsInterface)
       return null;
     }
 
+    let result: CollectionInterface[] = collections;
+
     if (params.user !== undefined) {
       // Filter collections by the user id
-      return collections.filter(collection => collection.user === params.user);
+      result = result.filter(collection => collection.user === params.user);
     }
 
     if (params.ids !== undefined && params.ids.length > 0) {
       // Filter collections by the ids
-      return collections.filter(collection => params.ids.includes(collection.id));
+      result = result.filter(collection => params.ids.includes(collection.id));
     }
 
-    // Return all collections if no filter applied
-    return collections;
+    if (params.parent !== undefined) {
+      // Filter collections by the parent id
+      result = result.filter(collection => collection.parent === params.parent);
+    }
+
+    return result;
   }
 );

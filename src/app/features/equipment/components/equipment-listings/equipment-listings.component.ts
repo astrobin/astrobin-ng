@@ -9,7 +9,7 @@ import {
   EquipmentListingsInterface
 } from "@features/equipment/types/equipment-listings.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";

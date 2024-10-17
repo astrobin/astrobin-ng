@@ -16,7 +16,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { catchError, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { Router } from "@angular/router";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";

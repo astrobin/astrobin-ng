@@ -7,7 +7,7 @@ import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-variant-selector-modal",

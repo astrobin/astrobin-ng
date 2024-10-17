@@ -22,7 +22,7 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { MainState } from "@app/store/state";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { GearService } from "@shared/services/gear/gear.service";
 import {
   ItemBrowserComponent,
