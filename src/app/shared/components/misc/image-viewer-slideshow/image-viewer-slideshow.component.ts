@@ -47,26 +47,20 @@ const SLIDESHOW_WINDOW = 3;
             *ngFor="let item of visibleContext; let i = index; trackBy: contextTrackByFn"
             [attr.id]="item.imageId"
           >
-            <div
-              class="pan-container"
-              (swipeleft)="onNextClick()"
-              (swiperight)="onPreviousClick()"
-            >
-              <astrobin-image-viewer
-                *ngIf="item.image && !loadingImage; else loadingTemplate"
-                (closeClick)="closeSlideshow.emit(true)"
-                (nextClick)="onNextClick()"
-                (previousClick)="onPreviousClick()"
-                (revisionSelected)="onRevisionSelected($event)"
-                [active]="item.imageId === activeId"
-                [image]="item.image"
-                [revisionLabel]="activeImageRevisionLabel"
-                [showCloseButton]="true"
-                [showPreviousButton]="activeId !== navigationContext[0].imageId"
-                [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
-                [standalone]="false"
-              ></astrobin-image-viewer>
-            </div>
+            <astrobin-image-viewer
+              *ngIf="item.image && !loadingImage; else loadingTemplate"
+              (closeClick)="closeSlideshow.emit(true)"
+              (nextClick)="onNextClick()"
+              (previousClick)="onPreviousClick()"
+              (revisionSelected)="onRevisionSelected($event)"
+              [active]="item.imageId === activeId"
+              [image]="item.image"
+              [revisionLabel]="activeImageRevisionLabel"
+              [showCloseButton]="true"
+              [showPreviousButton]="activeId !== navigationContext[0].imageId"
+              [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
+              [standalone]="false"
+            ></astrobin-image-viewer>
           </ng-template>
         </ngb-carousel>
       </div>
