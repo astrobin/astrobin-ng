@@ -80,7 +80,7 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
 export class AstroBinHammerConfig extends HammerGestureConfig {
   override overrides = {
     swipe: {
-      enable: true
+      enable: false
     },
     pinch: {
       enable: false

@@ -218,10 +218,6 @@ $globalLoadingIndicatorHeight: 6px;
     height: 100%;
     overflow: hidden;
 
-    .pan-container {
-      transition: transform 0.3s ease;
-    }
-
     .image-area {
       display: flex;
       flex-direction: column;
