@@ -48,6 +48,10 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             {{ "Add/Remove images" | translate }}
           </a>
 
+          <a href="#" class="dropdown-item" (click)="createCollection()" astrobinEventPreventDefault>
+            {{ "Create nested collection" | translate }}
+          </a>
+
           <a href="#" class="dropdown-item text-danger" (click)="deleteCollection()" astrobinEventPreventDefault>
             {{ "Delete" | translate }}
           </a>
@@ -82,6 +86,30 @@ import { WindowRefService } from "@shared/services/window-ref.service";
           [userProfile]="userProfile"
           [collection]="collection"
         ></astrobin-user-gallery-collection-add-remove-images>
+
+        <div class="d-flex justify-content-center mt-4">
+          <button
+            class="btn btn-secondary"
+            (click)="offcanvas.dismiss()"
+            translate="Close"
+            type="button"
+          ></button>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #createCollectionOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">{{ "Create new collection" | translate }}</h5>
+        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <astrobin-user-gallery-collection-create
+          [user]="user"
+          [userProfile]="userProfile"
+          [parent]="collection"
+          (cancelClick)="offcanvas.close()"
+        ></astrobin-user-gallery-collection-create>
       </div>
     </ng-template>
 
@@ -110,6 +138,7 @@ export class UserGalleryCollectionMenuComponent
 
   @ViewChild("editCollectionOffcanvas") editCollectionOffcanvas: TemplateRef<any>;
   @ViewChild("addRemoveImagesOffcanvas") addRemoveImagesOffcanvas: TemplateRef<any>;
+  @ViewChild("createCollectionOffcanvas") createCollectionOffcanvas: TemplateRef<any>;
   @ViewChild("deleteCollectionConfirmationOffcanvas") deleteCollectionConfirmationOffcanvas: TemplateRef<any>;
 
   protected editCollectionModel: CollectionInterface;
@@ -189,6 +218,12 @@ export class UserGalleryCollectionMenuComponent
     });
 
     this.store$.dispatch(new UpdateCollection({ collection: this.editCollectionModel }));
+  }
+
+  protected createCollection() {
+    this.offcanvasService.open(this.createCollectionOffcanvas, {
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 
   protected deleteCollection(): void {

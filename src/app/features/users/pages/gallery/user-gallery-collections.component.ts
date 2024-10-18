@@ -22,6 +22,16 @@ import { DeviceService } from "@shared/services/device.service";
       </ng-container>
 
       <div *ngIf="!loading && parentCollection" class="collection-header">
+        <div class="mb-2 up">
+          <a
+            [routerLink]="['/u', user.username]"
+            [queryParams]="{ collection: parentCollection.parent }"
+            fragment="gallery"
+          >
+            <fa-icon icon="arrow-circle-up"></fa-icon>
+          </a>
+        </div>
+
         <h2>
           {{ parentCollection.name }}
 
@@ -80,7 +90,6 @@ import { DeviceService } from "@shared/services/device.service";
           [userProfile]="userProfile"
           [parent]="parentCollection"
           (cancelClick)="offcanvas.close()"
-          (collectionCreate)="offcanvas.close()"
         ></astrobin-user-gallery-collection-create>
       </div>
     </ng-template>

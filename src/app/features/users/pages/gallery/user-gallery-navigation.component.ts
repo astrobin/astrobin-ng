@@ -163,7 +163,6 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
           [userProfile]="userProfile"
           [parent]="null"
           (cancelClick)="offcanvas.close()"
-          (collectionCreate)="offcanvas.close()"
         ></astrobin-user-gallery-collection-create>
       </div>
     </ng-template>

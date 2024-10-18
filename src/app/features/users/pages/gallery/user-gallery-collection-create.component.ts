@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, Output } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -14,13 +14,13 @@ import { LoadingService } from "@shared/services/loading.service";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { map, take, takeUntil } from "rxjs/operators";
-import { CreateCollection } from "@app/store/actions/collection.actions";
+import { CreateCollection, CreateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 
 @Component({
   selector: "astrobin-user-gallery-collection-create",
   template: `
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form *ngIf="!createdCollection" [formGroup]="form" (ngSubmit)="onSubmit()">
       <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
       <div class="d-flex justify-content-end mt-4">
         <button
@@ -38,8 +38,25 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
         ></button>
       </div>
     </form>
+
+    <ng-container *ngIf="createdCollection">
+      <astrobin-user-gallery-collection-add-remove-images
+        [user]="user"
+        [userProfile]="userProfile"
+        [collection]="createdCollection"
+      ></astrobin-user-gallery-collection-add-remove-images>
+
+      <div class="d-flex justify-content-center mt-4">
+        <button
+          class="btn btn-secondary"
+          (click)="cancelClick.emit(null)"
+          translate="Close"
+          type="button"
+        ></button>
+      </div>
+    </ng-container>
   `,
-  styleUrls: ["./user-gallery-header-change-image.component.scss"]
+  styleUrls: ["./user-gallery-collection-create.component.scss"]
 })
 export class UserGalleryCollectionCreateComponent extends BaseComponentDirective implements AfterViewInit {
   @Input() user: UserInterface;
@@ -52,6 +69,7 @@ export class UserGalleryCollectionCreateComponent extends BaseComponentDirective
   protected model: Partial<CollectionInterface> = {};
   protected form: FormGroup = new FormGroup({});
   protected fields: FormlyFieldConfig[] = [];
+  protected createdCollection: CollectionInterface;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -59,7 +77,8 @@ export class UserGalleryCollectionCreateComponent extends BaseComponentDirective
     public readonly translateService: TranslateService,
     public readonly imageApiService: ImageApiService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -75,9 +94,12 @@ export class UserGalleryCollectionCreateComponent extends BaseComponentDirective
 
     this.action$.pipe(
       ofType(AppActionTypes.CREATE_COLLECTION_SUCCESS),
+      map((action: CreateCollectionSuccess) => action.payload.collection),
       take(1)
-    ).subscribe((action: any) => {
-      this.collectionCreate.emit(action.payload.collection);
+    ).subscribe(collection => {
+      this.createdCollection = collection
+      this.changeDetectorRef.detectChanges();
+      this.collectionCreate.emit(collection);
     });
 
     this.store$.dispatch(new CreateCollection({

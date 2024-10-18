@@ -11,17 +11,21 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 import { fromEvent, throttleTime } from "rxjs";
-import { map, take, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { fadeInOut } from "@shared/animations";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { AddImageToCollection, LoadCollections, RemoveImageFromCollection } from "@app/store/actions/collection.actions";
+import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, LoadCollections, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess } from "@app/store/actions/collection.actions";
 import { CollectionApiService } from "@shared/services/api/classic/collections/collection-api.service";
 
 @Component({
   selector: "astrobin-user-gallery-collection-add-remove-images",
   template: `
     <div class="d-flex flex-wrap gap-2 justify-content-center">
+      <p class="mb-3">
+        {{ "Click on images to add/remove them." | translate }}
+      </p>
+
       <astrobin-loading-indicator
         *ngIf="loadingImages"
         @fadeInOut
@@ -75,8 +79,7 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
     public readonly elementRef: ElementRef,
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) private platformId: Object,
-    public readonly utilsService: UtilsService,
-    public readonly collectionApiService: CollectionApiService
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
@@ -128,9 +131,33 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
         AppActionTypes.ADD_IMAGE_TO_COLLECTION_FAILURE,
         AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_FAILURE
       ),
+      filter((action:
+        AddImageToCollectionSuccess |
+        AddImageToCollectionFailure |
+        RemoveImageFromCollectionSuccess |
+        RemoveImageFromCollectionFailure) => (action.payload.collectionId === this.collection.id)
+      ),
       take(1)
     ).subscribe(() => {
       this.togglingImages = this.togglingImages.filter(pk => pk !== image.pk);
+    });
+
+    this.action$.pipe(
+      ofType(AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS),
+      map((action: AddImageToCollectionSuccess) => action.payload.collectionId),
+      filter(collectionId => collectionId === this.collection.id),
+      take(1)
+    ).subscribe(() => {
+      this.collection.images = [...(this.collection.images || []), image.pk];
+    });
+
+    this.action$.pipe(
+      ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS),
+      map((action: RemoveImageFromCollectionSuccess) => action.payload.collectionId),
+      filter(collectionId => collectionId === this.collection.id),
+      take(1)
+    ).subscribe(() => {
+      this.collection.images = (this.collection.images || []).filter(pk => pk !== image.pk);
     });
 
     if (this.collection.images?.includes(image.pk)) {
