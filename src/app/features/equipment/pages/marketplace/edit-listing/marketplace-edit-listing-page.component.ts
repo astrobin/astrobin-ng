@@ -15,7 +15,7 @@ import {
   UpdateMarketplaceListingSuccess
 } from "@features/equipment/store/equipment.actions";
 import { map, take } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",

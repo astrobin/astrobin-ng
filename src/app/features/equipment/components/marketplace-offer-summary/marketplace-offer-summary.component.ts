@@ -15,7 +15,7 @@ import { select, Store } from "@ngrx/store";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 import { Actions, ofType } from "@ngrx/effects";
 import {
   AcceptMarketplaceOffer,

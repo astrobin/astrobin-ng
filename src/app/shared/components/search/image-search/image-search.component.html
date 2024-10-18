@@ -78,8 +78,8 @@
               />
 
               <span *ngIf="!item.images || item.images.length === 0" class="item-name">
-                  {{ item.itemName }}
-                </span>
+                {{ item.itemName }}
+              </span>
             </a>
           </div>
         </div>
@@ -89,7 +89,12 @@
         <span [innerHTML]="lastResultsCount"></span>
       </div>
 
-      <div class="search-results">
+      <div
+        class="masonry-layout-container"
+        [astrobinMasonryLayout]="results"
+        [activeLayout]="alias === ImageAlias.GALLERY ? UserGalleryActiveLayout.TINY : UserGalleryActiveLayout.SMALL"
+        (gridItemsChange)="onGridItemsChange($event)"
+      >
         <a
           *ngFor="let item of gridItems"
           (click)="openImage($event, item)"
@@ -99,10 +104,15 @@
           [style.min-height.px]="averageHeight"
           [href]="getImageLink(item)"
         >
-          <img
-            [alt]="item.title"
-            [src]="alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail"
-          />
+          <div
+            class="image-container"
+            [ngStyle]="{
+              'background-image': 'url(' + (alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail) + ')',
+              'background-position': item.objectPosition || '50% 50%',
+              'background-repeat': 'no-repeat',
+              'background-size': 'cover'
+            }"
+          ></div>
 
           <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
 

@@ -17,7 +17,7 @@ import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipmen
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { CookieService } from "ngx-cookie";

@@ -12,7 +12,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { LoadingService } from "@shared/services/loading.service";
 import { Actions } from "@ngrx/effects";
 import { take, takeUntil } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 import {
   MarketplaceLineItemInterface,
   MarketplaceShippingCostType

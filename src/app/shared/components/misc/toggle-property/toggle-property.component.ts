@@ -50,10 +50,10 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   btnClass: string = "btn btn-secondary";
 
   @Input()
-  showLabel = true;
+  showIcon = true;
 
   @Input()
-  showIcon = true;
+  showLabel = true;
 
   @Input()
   count: number;

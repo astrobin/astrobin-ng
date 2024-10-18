@@ -106,6 +106,12 @@ export interface BackendUserProfileInterface {
   agreed_to_marketplace_terms?: string;
   enable_new_search_experience?: boolean;
   agreed_to_iotd_tp_rules_and_guidelines?: boolean;
+  gallery_header_image?: string;
+  image_count?: number;
+  wip_image_count?: number;
+  followers_count?: number;
+  following_count?: number;
+  display_wip_images_on_public_gallery?: boolean;
 }
 
 export interface BackendTogglePropertyInterface {
@@ -224,7 +230,13 @@ export class CommonApiAdaptorService extends BaseService {
       signUpCountry: userProfile.signup_country,
       agreedToMarketplaceTerms: userProfile.agreed_to_marketplace_terms,
       enableNewSearchExperience: userProfile.enable_new_search_experience,
-      agreedToIotdTpRulesAndGuidelines: userProfile.agreed_to_iotd_tp_rules_and_guidelines
+      agreedToIotdTpRulesAndGuidelines: userProfile.agreed_to_iotd_tp_rules_and_guidelines,
+      galleryHeaderImage: userProfile.gallery_header_image,
+      imageCount: userProfile.image_count,
+      wipImageCount: userProfile.wip_image_count,
+      followersCount: userProfile.followers_count,
+      followingCount: userProfile.following_count,
+      displayWipImagesOnPublicGallery: userProfile.display_wip_images_on_public_gallery
     };
   }
 

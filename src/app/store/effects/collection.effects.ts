@@ -1,41 +1,307 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { select, Store } from "@ngrx/store";
 import { of } from "rxjs";
-import { catchError, map, switchMap, take } from "rxjs/operators";
-import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
-import { MainState } from "@app/store/state";
+import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import { CollectionApiService } from "@shared/services/api/classic/collections/collection-api.service";
-import { LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess } from "@app/store/actions/collection.actions";
+import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, SetCollectionCoverImage, SetCollectionCoverImageFailure, SetCollectionCoverImageSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadingService } from "@shared/services/loading.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Injectable()
 export class CollectionEffects {
-
   loadCollections$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.LOAD_COLLECTIONS),
-      switchMap((action: LoadCollections) =>
-        this.store.pipe(
-          select(selectCollectionsByParams(action.payload.params)),
-          take(1),
-          switchMap(storedCollections =>
-            storedCollections && storedCollections.length > 0
-              ? of(new LoadCollectionsSuccess({ params: action.payload.params, collections: storedCollections }))
-              : this.collectionApiService.getAll(action.payload.params).pipe(
-                map(collections => new LoadCollectionsSuccess({ params: action.payload.params, collections })),
-                catchError(error => of(new LoadCollectionsFailure({ params: action.payload.params, error })))
-              )
-          )
+      mergeMap((action: LoadCollections) =>
+        this.collectionApiService.getAll(action.payload.params).pipe(
+          tap(() => this.loadingService.setLoading(true)),
+          map(collections => new LoadCollectionsSuccess({ params: action.payload.params, collections })),
+          catchError(error => of(new LoadCollectionsFailure({ params: action.payload.params, error })))
         )
       )
     )
   );
 
+  loadCollectionsSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.LOAD_COLLECTIONS_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  loadCollectionsFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.LOAD_COLLECTIONS_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  findCollections$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.FIND_COLLECTIONS),
+      mergeMap((action: FindCollections) =>
+        this.collectionApiService.find(action.payload.params).pipe(
+          tap(() => this.loadingService.setLoading(true)),
+          map(response => new FindCollectionsSuccess({ params: action.payload.params, response })),
+          catchError(error => of(new FindCollectionsFailure({ params: action.payload.params, error })))
+        )
+      )
+    )
+  );
+
+  findCollectionsSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.FIND_COLLECTIONS_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  findCollectionsFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.FIND_COLLECTIONS_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  updateCollection$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.UPDATE_COLLECTION),
+      mergeMap((action: UpdateCollection) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.update(action.payload.collection).pipe(
+            map(collection => new UpdateCollectionSuccess({ collection })),
+            catchError(error => of(new UpdateCollectionFailure({ collection: action.payload.collection, error })))
+          );
+        }
+      )
+    )
+  );
+
+  updateCollectionSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.UPDATE_COLLECTION_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  updateCollectionFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.UPDATE_COLLECTION_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  createCollection$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.CREATE_COLLECTION),
+      mergeMap((action: CreateCollection) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.create(
+            action.payload.parent,
+            action.payload.name,
+            action.payload.description,
+            action.payload.orderByTag
+          ).pipe(
+            map(collection => new CreateCollectionSuccess({ collection })),
+            catchError(error => of(new CreateCollectionFailure({ error })))
+          );
+        }
+      )
+    )
+  );
+
+  createCollectionSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.CREATE_COLLECTION_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  createCollectionFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.CREATE_COLLECTION_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  deleteCollection$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_COLLECTION),
+      mergeMap((action: DeleteCollection) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.delete(action.payload.collectionId).pipe(
+            map(() => new DeleteCollectionSuccess({ collectionId: action.payload.collectionId })),
+            catchError(error => of(new DeleteCollectionFailure({ collectionId: action.payload.collectionId, error })))
+          );
+        }
+      )
+    )
+  );
+
+  deleteCollectionSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_COLLECTION_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  deleteCollectionFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.DELETE_COLLECTION_FAILURE),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  addImage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.ADD_IMAGE_TO_COLLECTION),
+      mergeMap((action: AddImageToCollection) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.addImage(action.payload.collectionId, action.payload.imageId).pipe(
+            map(() => new AddImageToCollectionSuccess({
+              collectionId: action.payload.collectionId,
+              imageId: action.payload.imageId
+            })),
+            catchError(error => of(new AddImageToCollectionFailure({
+              collectionId: action.payload.collectionId,
+              imageId: action.payload.imageId,
+              error
+            })))
+          );
+        }
+      )
+    )
+  );
+
+  addImageSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.ADD_IMAGE_TO_COLLECTION_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  addImageFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.ADD_IMAGE_TO_COLLECTION_FAILURE),
+        tap(() => {
+          this.popNotificationsService.error(
+            this.translateService.instant("An error occurred while adding the image to the collection.")
+          );
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  removeImage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION),
+      mergeMap((action: RemoveImageFromCollection) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.removeImage(action.payload.collectionId, action.payload.imageId).pipe(
+            map(() => new RemoveImageFromCollectionSuccess({
+              collectionId: action.payload.collectionId,
+              imageId: action.payload.imageId
+            })),
+            catchError(error => of(new RemoveImageFromCollectionFailure({
+              collectionId: action.payload.collectionId,
+              imageId: action.payload.imageId,
+              error
+            })))
+          );
+        }
+      )
+    )
+  );
+
+  removeImageSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  removeImageFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.REMOVE_IMAGE_FROM_COLLECTION_FAILURE),
+        tap(() => {
+          this.popNotificationsService.error(
+            this.translateService.instant("An error occurred while removing the image from the collection.")
+          );
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  setCoverImage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.SET_COLLECTION_COVER_IMAGE),
+      mergeMap((action: SetCollectionCoverImage) => {
+          this.loadingService.setLoading(true);
+          return this.collectionApiService.setCoverImage(action.payload.collectionId, action.payload.imageId).pipe(
+            map(collection => new SetCollectionCoverImageSuccess({
+              collectionId: action.payload.collectionId,
+              imageId: action.payload.imageId,
+              coverThumbnail: collection.coverThumbnail
+            })),
+            catchError(error => of(new SetCollectionCoverImageFailure({
+              collectionId: action.payload.collectionId,
+              imageId: action.payload.imageId,
+              error
+            })))
+          );
+        }
+      )
+    )
+  );
+
+  setCoverImageSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.SET_COLLECTION_COVER_IMAGE_SUCCESS),
+        tap(() => {
+          this.popNotificationsService.success(
+            this.translateService.instant("Cover image set successfully.")
+          );
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  setCoverImageFailure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.SET_COLLECTION_COVER_IMAGE_FAILURE),
+        tap(() => {
+          this.popNotificationsService.error(
+            this.translateService.instant("An error occurred while setting the cover image.")
+          );
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
   constructor(
-    private actions$: Actions,
-    private store: Store<MainState>,
-    private collectionApiService: CollectionApiService
+    public readonly actions$: Actions,
+    public readonly collectionApiService: CollectionApiService,
+    public readonly loadingService: LoadingService,
+    public readonly translateService: TranslateService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
   }
 }

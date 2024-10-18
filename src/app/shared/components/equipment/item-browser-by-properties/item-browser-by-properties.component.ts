@@ -21,7 +21,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import {
   EquipmentItemDisplayProperty,
   EquipmentItemService
-} from "@features/equipment/services/equipment-item.service";
+} from "@shared/services/equipment-item.service";
 import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { fromEvent, Observable } from "rxjs";

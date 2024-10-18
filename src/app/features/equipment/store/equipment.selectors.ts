@@ -17,7 +17,7 @@ import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/eq
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
