@@ -1,0 +1,57 @@
+$size: 200px;
+
+:host {
+  display: block;
+  padding: 2rem 0;
+}
+
+.smart-folder-category {
+  width: $size;
+  height: $size;
+  position: relative;
+  text-align: center;
+
+  .smart-folder-background {
+    background: url("/assets/images/polaroids.png?v=20241008") no-repeat center;
+    background-size: $size;
+    height: $size;
+    width: $size;
+  }
+
+  .smart-folder-stars {
+    background: url("/assets/images/stars.jpg?v=20241008") no-repeat center;
+    background-size: $size;
+    height: calc($size - 44px);
+    width: calc($size - 44px);
+    position: absolute;
+    top: 10px;
+    left: 22px;
+    opacity: .75;
+    filter: blur(2px);
+  }
+
+  .smart-folder {
+    color: var(--lightestGrey);
+
+    .icon {
+      font-size: 3rem;
+      position: absolute;
+      top: calc(50% - 10px);
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      img {
+        width: 3rem;
+        height: 3rem;
+        object-fit: cover;
+        opacity: .75;
+      }
+    }
+
+    .name {
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+  }
+}
+

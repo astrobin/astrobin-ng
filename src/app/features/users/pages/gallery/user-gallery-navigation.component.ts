@@ -105,6 +105,19 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
           </ng-template>
         </li>
 
+        <li ngbNavItem="smart-folders">
+          <a ngbNavLink>
+            <fa-icon icon="folder-open" class="me-2"></fa-icon>
+            <span translate="Smart folders"></span>
+          </a>
+          <ng-template ngbNavContent>
+            <astrobin-user-gallery-smart-folders
+              [user]="user"
+              [userProfile]="userProfile"
+            ></astrobin-user-gallery-smart-folders>
+          </ng-template>
+        </li>
+
         <li ngbNavItem="marketplace">
           <a ngbNavLink>
             <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
