@@ -14,7 +14,7 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { CookieService } from "ngx-cookie";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemDisplayProperty } from "@shared/services/equipment-item.service";
 import { DeviceService } from "@shared/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 

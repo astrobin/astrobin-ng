@@ -9,7 +9,7 @@ import {
   FindAllEquipmentItemsSuccess,
   FindSimilarInBrand
 } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";

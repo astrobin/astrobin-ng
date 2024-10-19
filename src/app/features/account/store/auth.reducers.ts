@@ -71,6 +71,11 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
         ...state,
         userProfiles: UtilsService.arrayUniqueObjects([...state.userProfiles, ...[action.payload.userProfile]], "id")
       };
+    case AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_SUCCESS:
+      return {
+        ...state,
+        userProfile: action.payload.userProfile
+      };
     case EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_SUCCESS:
       const feedback: MarketplaceFeedbackInterface = action.payload.feedback;
       const userIndex = state.users.findIndex(user => user.id === feedback.recipient);

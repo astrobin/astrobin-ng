@@ -50,7 +50,7 @@ import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equi
 import {
   EquipmentItemDisplayProperty,
   EquipmentItemService
-} from "@features/equipment/services/equipment-item.service";
+} from "@shared/services/equipment-item.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";

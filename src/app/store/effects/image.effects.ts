@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImageFailure, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
+import { AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImageFailure, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, FindImagesFailure, FindImagesSuccess, LoadImageFailure, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImageFailure, PublishImageSuccess, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImageFailure, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UndeleteImage, UndeleteImageFailure, UndeleteImageSuccess, UnpublishImageFailure, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -36,6 +36,18 @@ export class ImageEffects {
         this.imageApiService.getImages(action.payload).pipe(
           map(response => new LoadImagesSuccess(response)),
           catchError(() => EMPTY)
+        )
+      )
+    )
+  );
+
+  FindImages: Observable<FindImagesSuccess | FindImagesFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.FIND_IMAGES),
+      mergeMap(action =>
+        this.imageApiService.findImages(action.payload.options).pipe(
+          map(response => new FindImagesSuccess({options: action.payload.options, response })),
+          catchError(error => of(new FindImagesFailure({options: action.payload.options, error})))
         )
       )
     )
@@ -362,6 +374,51 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_IMAGE_FAILURE),
+        tap(error => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.error(
+            this.translateService.instant("There was an error deleting the image.")
+          );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  UndeleteImage: Observable<UndeleteImageSuccess | UndeleteImageFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.UNDELETE_IMAGE),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap((action: UndeleteImage) =>
+        this.imageApiService.undelete(action.payload.pk).pipe(
+          map(() => new UndeleteImageSuccess({ pk: action.payload.pk })),
+          catchError(error => of(new UndeleteImageFailure({ pk: action.payload.pk, error })))
+        )
+      )
+    )
+  );
+
+  UndeleteImageSuccess: Observable<UndeleteImageSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.UNDELETE_IMAGE_SUCCESS),
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant("The image has been restored.")
+          );
+        })
+      ),
+    {
+      dispatch: false
+    }
+  );
+
+  UndeleteImageFailure: Observable<UndeleteImageFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.UNDELETE_IMAGE_FAILURE),
         tap(error => {
           this.loadingService.setLoading(false);
         })

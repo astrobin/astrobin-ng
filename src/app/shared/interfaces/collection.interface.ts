@@ -9,7 +9,11 @@ export interface CollectionInterface {
   user: UserInterface["id"];
   name: string;
   description: string | null;
-  images: ImageInterface["pk"][];
+  images?: ImageInterface["pk"][];
   cover: ImageInterface["pk"] | null;
+  coverThumbnail: string | null;
   orderByTag: string | null;
+  imageCount?: number;
+  imageCountIncludingWip?: number;
+  nestedCollectionCount?: number;
 }

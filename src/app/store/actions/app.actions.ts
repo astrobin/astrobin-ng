@@ -5,7 +5,7 @@ import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import {
-  AcceptCollaboratorRequest, AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequest, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, ForceCheckImageAutoLoad, ForceCheckTogglePropertyAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, RemoveCollaborator, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
+  AcceptCollaboratorRequest, AcceptCollaboratorRequestFailure, AcceptCollaboratorRequestSuccess, DeleteImage, DeleteImageFailure, DeleteImageRevision, DeleteImageRevisionFailure, DeleteImageRevisionSuccess, DeleteImageSuccess, DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess, DeleteOriginalImage, DeleteOriginalImageFailure, DeleteOriginalImageSuccess, DenyCollaboratorRequest, DenyCollaboratorRequestFailure, DenyCollaboratorRequestSuccess, FindImages, FindImagesFailure, FindImagesSuccess, ForceCheckImageAutoLoad, ForceCheckTogglePropertyAutoLoad, LoadImage, LoadImageFailure, LoadImages, LoadImagesSuccess, LoadImageSuccess, MarkImageAsFinal, MarkImageAsFinalFailure, MarkImageAsFinalSuccess, PublishImage, PublishImageFailure, PublishImageSuccess, RemoveCollaborator, RemoveCollaboratorFailure, RemoveCollaboratorSuccess, SaveImage, SaveImageFailure, SaveImageRevision, SaveImageRevisionFailure, SaveImageRevisionSuccess, SaveImageSuccess, SetImage, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationFailure, SubmitImageForIotdTpConsiderationSuccess, UndeleteImage, UndeleteImageFailure, UndeleteImageSuccess, UnpublishImage, UnpublishImageFailure, UnpublishImageSuccess
 } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
@@ -15,7 +15,7 @@ import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@ap
 import { CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { LoadRemoteSourceAffiliates, LoadRemoteSourceAffiliatesFailure, LoadRemoteSourceAffiliatesSuccess } from "@app/store/actions/remote-source-affiliates.actions";
-import { LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess } from "@app/store/actions/collection.actions";
+import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, SetCollectionCoverImage, SetCollectionCoverImageFailure, SetCollectionCoverImageSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
 import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/actions/group.actions";
 
 export enum AppActionTypes {
@@ -42,8 +42,14 @@ export enum AppActionTypes {
 
   SET_IMAGE = "[App] Set image",
 
+  // This fetches images by ID(s)
   LOAD_IMAGES = "[App] Load images",
   LOAD_IMAGES_SUCCESS = "[App] Load images success",
+
+  // This fetches images by various parameters.
+  FIND_IMAGES = "[App] Find images",
+  FIND_IMAGES_SUCCESS = "[App] Find images success",
+  FIND_IMAGES_FAILURE = "[App] Find images failure",
 
   SAVE_IMAGE = "[App] Save image",
   SAVE_IMAGE_SUCCESS = "[App] Save image success",
@@ -79,6 +85,10 @@ export enum AppActionTypes {
   DELETE_IMAGE = "[App] Delete image",
   DELETE_IMAGE_SUCCESS = "[App] Delete image success",
   DELETE_IMAGE_FAILURE = "[App] Delete image failure",
+
+  UNDELETE_IMAGE = "[App] Undelete image",
+  UNDELETE_IMAGE_SUCCESS = "[App] Undelete image success",
+  UNDELETE_IMAGE_FAILURE = "[App] Undelete image failure",
 
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_CANCEL = "[App] Load thumbnail cancel",
@@ -135,6 +145,34 @@ export enum AppActionTypes {
   LOAD_COLLECTIONS_SUCCESS = "[App] Load collections success",
   LOAD_COLLECTIONS_FAILURE = "[App] Load collections failure",
 
+  FIND_COLLECTIONS = "[App] Find collections",
+  FIND_COLLECTIONS_SUCCESS = "[App] Find collections success",
+  FIND_COLLECTIONS_FAILURE = "[App] Find collections failure",
+
+  CREATE_COLLECTION = "[App] Create collection",
+  CREATE_COLLECTION_SUCCESS = "[App] Create collection success",
+  CREATE_COLLECTION_FAILURE = "[App] Create collection failure",
+
+  UPDATE_COLLECTION = "[App] Update collection",
+  UPDATE_COLLECTION_SUCCESS = "[App] Update collection success",
+  UPDATE_COLLECTION_FAILURE = "[App] Update collection failure",
+
+  DELETE_COLLECTION = "[App] Delete collection",
+  DELETE_COLLECTION_SUCCESS = "[App] Delete collection success",
+  DELETE_COLLECTION_FAILURE = "[App] Delete collection failure",
+
+  ADD_IMAGE_TO_COLLECTION = "[App] Add image to collection",
+  ADD_IMAGE_TO_COLLECTION_SUCCESS = "[App] Add image to collection success",
+  ADD_IMAGE_TO_COLLECTION_FAILURE = "[App] Add image to collection failure",
+
+  SET_COLLECTION_COVER_IMAGE = "[App] Set collection cover image",
+  SET_COLLECTION_COVER_IMAGE_SUCCESS = "[App] Set collection cover image success",
+  SET_COLLECTION_COVER_IMAGE_FAILURE = "[App] Set collection cover image failure",
+
+  REMOVE_IMAGE_FROM_COLLECTION = "[App] Remove image from collection",
+  REMOVE_IMAGE_FROM_COLLECTION_SUCCESS = "[App] Remove image from collection success",
+  REMOVE_IMAGE_FROM_COLLECTION_FAILURE = "[App] Remove image from collection failure",
+
   DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE = "[App] Delete image uncompressed source file",
   DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS = "[App] Delete image uncompressed source file success",
   DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_FAILURE = "[App] Delete image uncompressed source file failure",
@@ -173,6 +211,9 @@ export type All =
   | SaveImageFailure
   | LoadImages
   | LoadImagesSuccess
+  | FindImages
+  | FindImagesSuccess
+  | FindImagesFailure
   | SaveImageRevision
   | SaveImageRevisionSuccess
   | SaveImageRevisionFailure
@@ -194,6 +235,9 @@ export type All =
   | DeleteImage
   | DeleteImageSuccess
   | DeleteImageFailure
+  | UndeleteImage
+  | UndeleteImageSuccess
+  | UndeleteImageFailure
   | LoadThumbnail
   | LoadThumbnailCancel
   | LoadThumbnailSuccess
@@ -235,6 +279,27 @@ export type All =
   | LoadCollections
   | LoadCollectionsSuccess
   | LoadCollectionsFailure
+  | FindCollections
+  | FindCollectionsSuccess
+  | FindCollectionsFailure
+  | CreateCollection
+  | CreateCollectionSuccess
+  | CreateCollectionFailure
+  | UpdateCollection
+  | UpdateCollectionSuccess
+  | UpdateCollectionFailure
+  | AddImageToCollection
+  | AddImageToCollectionSuccess
+  | AddImageToCollectionFailure
+  | RemoveImageFromCollection
+  | RemoveImageFromCollectionSuccess
+  | RemoveImageFromCollectionFailure
+  | SetCollectionCoverImage
+  | SetCollectionCoverImageSuccess
+  | SetCollectionCoverImageFailure
+  | DeleteCollection
+  | DeleteCollectionSuccess
+  | DeleteCollectionFailure
   | DeleteImageUncompressedSourceFile
   | DeleteImageUncompressedSourceFileSuccess
   | DeleteImageUncompressedSourceFileFailure

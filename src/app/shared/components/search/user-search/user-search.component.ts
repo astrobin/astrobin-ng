@@ -28,9 +28,10 @@ export class UserSearchComponent extends ScrollableSearchResultsBaseComponent<Us
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
-    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
+    public readonly utilsService: UtilsService
   ) {
-    super(store$, windowRefService, elementRef, platformId, translateService);
+    super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<UserSearchInterface>> {

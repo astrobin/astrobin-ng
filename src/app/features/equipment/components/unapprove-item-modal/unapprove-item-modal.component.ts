@@ -8,7 +8,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { map, switchMap, take } from "rxjs/operators";
 import { EquipmentActionTypes, UnapproveEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 

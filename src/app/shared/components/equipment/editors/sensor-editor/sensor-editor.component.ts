@@ -11,7 +11,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { MainState } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";

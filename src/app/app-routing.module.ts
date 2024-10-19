@@ -48,6 +48,10 @@ const routes: Routes = [
     loadChildren: () => import("@features/uploader/uploader.module").then(m => m.UploaderModule)
   },
   {
+    path: "u",
+    loadChildren: () => import("@features/users/user.module").then(m => m.UserModule)
+  },
+  {
     path: "**",
     loadChildren: () => import("@features/not-found-404/not-found-404.module").then(m => m.NotFound404Module)
   }

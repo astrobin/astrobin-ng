@@ -16,6 +16,20 @@ import { ImageEditModelInterface } from "@features/image/services/image-edit.ser
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
 import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
+import { CollectionInterface } from "@shared/interfaces/collection.interface";
+
+export interface FindImagesOptionsInterface {
+  userId?: UserInterface["id"];
+  q?: string;
+  hasDeepSkyAcquisitions?: boolean;
+  hasSolarSystemAcquisitions?: boolean;
+  page?: number;
+  gallerySerializer?: boolean;
+  includeStagingArea?: boolean;
+  onlyStagingArea?: boolean;
+  trash?: boolean;
+  collection?: CollectionInterface["id"];
+}
 
 @Injectable({
   providedIn: "root"
@@ -62,29 +76,28 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<number>(`${this.configUrl}/image/public-images-count/?user=${userId}`);
   }
 
-  findImages(options: {
-    userId?: UserInterface["id"],
-    q?: string,
-    hasDeepSkyAcquisitions?: boolean,
-    hasSolarSystemAcquisitions?: boolean
-  }): Observable<PaginatedApiResultInterface<ImageInterface>> {
+  findImages(options: FindImagesOptionsInterface): Observable<PaginatedApiResultInterface<ImageInterface>> {
     let url = `${this.configUrl}/image/`;
 
-    if (!!options.userId) {
-      url = UtilsService.addOrUpdateUrlParam(url, "user", "" + options.userId);
-    }
+    const params: { [key: string]: any } = {
+      user: options.userId,
+      q: options.q,
+      "has-deepsky-acquisitions": options.hasDeepSkyAcquisitions ? "1" : null,
+      "has-solarsystem-acquisitions": options.hasSolarSystemAcquisitions ? "1" : null,
+      page: options.page,
+      "gallery-serializer": options.gallerySerializer ? "1" : null,
+      "include-staging-area": options.includeStagingArea ? "true" : null,
+      "only-staging-area": options.onlyStagingArea ? "true" : null,
+      'trash': options.trash ? "true" : null,
+      'collection': options.collection
+    };
 
-    if (!!options.q) {
-      url = UtilsService.addOrUpdateUrlParam(url, "q", options.q);
-    }
-
-    if (!!options.hasDeepSkyAcquisitions) {
-      url = UtilsService.addOrUpdateUrlParam(url, "has-deepsky-acquisitions", "1");
-    }
-
-    if (!!options.hasSolarSystemAcquisitions) {
-      url = UtilsService.addOrUpdateUrlParam(url, "has-solarsystem-acquisitions", "1");
-    }
+    // Filter out null or undefined values
+    Object.keys(params).forEach(key => {
+      if (params[key]) {
+        url = UtilsService.addOrUpdateUrlParam(url, key, params[key]);
+      }
+    });
 
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url);
   }
@@ -141,6 +154,10 @@ export class ImageApiService extends BaseClassicApiService {
 
   delete(pk: ImageInterface["pk"]): Observable<ImageInterface> {
     return this.http.delete<ImageInterface>(`${this.configUrl}/image/${pk}/`);
+  }
+
+  undelete(pk: ImageInterface["pk"]): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/undelete/`, {});
   }
 
   download(
