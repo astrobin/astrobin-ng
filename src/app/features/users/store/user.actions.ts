@@ -4,6 +4,7 @@ import { PayloadActionInterface } from "@app/store/actions/payload-action.interf
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
 
 export enum UserActionTypes {
   LOAD_GALLERY = "[User] Load Gallery",
@@ -20,7 +21,7 @@ export class LOAD_GALLERY implements PayloadActionInterface {
 export class LOAD_GALLERY_SUCCESS implements PayloadActionInterface {
   readonly type = UserActionTypes.LOAD_GALLERY_SUCCESS;
 
-  constructor(public payload: { userId: UserInterface["id"], gallery: PaginatedApiResultInterface<ImageInterface> }) {}
+  constructor(public payload: { userId: UserInterface["id"], gallery: FindImagesResponseInterface }) {}
 }
 
 export class LOAD_GALLERY_FAILURE implements PayloadActionInterface {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -7,19 +7,26 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
 import { takeUntil } from "rxjs/operators";
+import { fadeInOut } from "@shared/animations";
 
-enum FolderType {
-  YEARS = "years",
-  EQUIPMENT = "equipment",
-  SUBJECT_TYPES = "subject_types",
-  CONSTELLATIONS = "constellations"
+// These need to match the ones in GallerySubsection.
+export enum SmartFolderType {
+  YEAR = "year",
+  GEAR = "gear",
+  SUBJECT = "subject",
+  CONSTELLATION = "constellation",
+  NO_DATA = "nodata"
 }
 
 @Component({
   selector: "astrobin-user-gallery-smart-folders",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div class="d-flex flex-nowrap gap-4 justify-content-center">
+      <div
+        *ngIf="!activeFolderType"
+        @fadeInOut
+        class="d-flex flex-nowrap gap-4 justify-content-center"
+      >
         <a
           *ngFor="let smartFolder of smartFolders"
           [routerLink]="['/u', user.username]"
@@ -38,9 +45,18 @@ enum FolderType {
           </div>
         </a>
       </div>
+
+      <astrobin-user-gallery-smart-folder
+        *ngIf="activeFolderType"
+        @fadeInOut
+        [user]="user"
+        [userProfile]="userProfile"
+        [folderType]="activeFolderType"
+      ></astrobin-user-gallery-smart-folder>
     </ng-container>
   `,
-  styleUrls: ["./user-gallery-smart-folders.component.scss"]
+  styleUrls: ["./user-gallery-smart-folders.component.scss"],
+  animations: [fadeInOut]
 })
 export class UserGallerySmartFoldersComponent extends BaseComponentDirective implements OnInit {
   @Input() user: UserInterface;
@@ -48,28 +64,28 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
 
   public readonly smartFolders = [
     {
-      type: FolderType.YEARS,
+      type: SmartFolderType.YEAR,
       name: this.translateService.instant("Years"),
       icon: "calendar"
     },
     {
-      type: FolderType.EQUIPMENT,
+      type: SmartFolderType.GEAR,
       name: this.translateService.instant("Equipment"),
       icon: "camera"
     },
     {
-      type: FolderType.SUBJECT_TYPES,
+      type: SmartFolderType.SUBJECT,
       name: this.translateService.instant("Subject types"),
       icon: "star"
     },
     {
-      type: FolderType.CONSTELLATIONS,
+      type: SmartFolderType.CONSTELLATION,
       name: this.translateService.instant("Constellations"),
       image: "/assets/images/subject-types/constellation-white.png?v=1"
     }
   ];
 
-  protected activeFolderType: FolderType;
+  protected activeFolderType: SmartFolderType;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -81,7 +97,7 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
 
   ngOnInit() {
     this.activatedRoute.queryParamMap.pipe(takeUntil(this.destroyed$)).subscribe(params => {
-      this.activeFolderType = params.get("folder-type") as FolderType;
+      this.activeFolderType = params.get("folder-type") as SmartFolderType;
     });
   }
 }

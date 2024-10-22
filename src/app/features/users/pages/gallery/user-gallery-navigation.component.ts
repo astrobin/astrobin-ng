@@ -15,6 +15,7 @@ import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollections } from "@app/store/selectors/app/collection.selectors";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
+import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
 
 type GalleryNavigationComponent = "gallery" | "staging" | "about";
 
@@ -115,6 +116,24 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
               [user]="user"
               [userProfile]="userProfile"
             ></astrobin-user-gallery-smart-folders>
+
+
+            {{ activeSmartFolderType | json }}
+            {{ activeSmartFolder | json }}
+
+            <astrobin-user-gallery-images
+              *ngIf="activeSmartFolderType && activeSmartFolder"
+              [activeLayout]="activeLayout"
+              [user]="user"
+              [userProfile]="userProfile"
+              [options]="{
+                includeStagingArea:
+                  currentUserWrapper.user?.id === user.id &&
+                  userProfile.displayWipImagesOnPublicGallery,
+                subsection: activeSmartFolderType,
+                active: activeSmartFolder
+              }"
+            ></astrobin-user-gallery-images>
           </ng-template>
         </li>
 
@@ -193,6 +212,8 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   protected activeLayout = UserGalleryActiveLayout.TINY;
   protected collectionId: CollectionInterface["id"] | null = null;
   protected activeCollection: CollectionInterface | null = null;
+  protected activeSmartFolderType: SmartFolderType | null = null;
+  protected activeSmartFolder: string | null = null;
 
   private readonly _isBrowser: boolean;
 
@@ -224,9 +245,11 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       this._setCollectionFromRoute();
+      this._setSmartFolderFromRoute();
     });
 
     this._setCollectionFromRoute();
+    this._setSmartFolderFromRoute();
   }
 
   ngAfterViewInit() {
@@ -289,5 +312,10 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     } else {
       this.activeCollection = null;
     }
+  }
+
+  private _setSmartFolderFromRoute() {
+    this.activeSmartFolderType = this.route.snapshot.queryParamMap.get("folder-type") as SmartFolderType;
+    this.activeSmartFolder = this.route.snapshot.queryParamMap.get("active");
   }
 }

@@ -8,7 +8,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
 import { Action } from "@ngrx/store";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { FindImagesOptionsInterface, FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
 
 export interface LoadImageOptionsInterface {
   skipThumbnails: boolean;
@@ -65,7 +65,7 @@ export class LoadImages implements PayloadActionInterface {
 export class LoadImagesSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_IMAGES_SUCCESS;
 
-  constructor(public payload: PaginatedApiResultInterface<ImageInterface>) {
+  constructor(public payload: FindImagesResponseInterface) {
   }
 }
 
@@ -83,7 +83,7 @@ export class FindImagesSuccess implements PayloadActionInterface {
 
   constructor(public payload: {
     options: FindImagesOptionsInterface,
-    response: PaginatedApiResultInterface<ImageInterface>
+    response: FindImagesResponseInterface
   }) {
   }
 }

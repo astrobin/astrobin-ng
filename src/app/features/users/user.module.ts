@@ -24,6 +24,7 @@ import { UserGalleryCollectionMenuComponent } from "@features/users/pages/galler
 import { UserGalleryCollectionCreateComponent } from "@features/users/pages/gallery/user-gallery-collection-create.component";
 import { UserGalleryImageMenuComponent } from "@features/users/pages/gallery/user-gallery-image-menu.component";
 import { UserGallerySmartFoldersComponent } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
+import { UserGallerySmartFolderComponent } from "@features/users/pages/gallery/user-gallery-smart-folder.component";
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { UserGallerySmartFoldersComponent } from "@features/users/pages/gallery/
     UserGalleryCollectionCreateComponent,
     UserGalleryButtonsComponent,
     UserGalleryImageMenuComponent,
-    UserGallerySmartFoldersComponent
+    UserGallerySmartFoldersComponent,
+    UserGallerySmartFolderComponent
   ],
   imports: [
     RouterModule.forChild(userRoutes),

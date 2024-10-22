@@ -18,6 +18,22 @@ import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
 import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 
+export type FindImagesResponseInterface = PaginatedApiResultInterface<ImageInterface> & {
+  menu: Array<[string, string]> | null;
+  active: string | null;
+};
+
+export enum GallerySubsection {
+  TITLE = "title",
+  UPLOADED = "uploaded",
+  ACQUIRED = "acquired",
+  YEAR = "year",
+  GEAR = "gear",
+  SUBJECT = "subject",
+  CONSTELLATION = "constellation",
+  NO_DATA = "nodata"
+}
+
 export interface FindImagesOptionsInterface {
   userId?: UserInterface["id"];
   q?: string;
@@ -29,6 +45,8 @@ export interface FindImagesOptionsInterface {
   onlyStagingArea?: boolean;
   trash?: boolean;
   collection?: CollectionInterface["id"];
+  subsection?: string;
+  active?: string;
 }
 
 @Injectable({
@@ -55,7 +73,7 @@ export class ImageApiService extends BaseClassicApiService {
       url = UtilsService.addOrUpdateUrlParam(url, "hash", `${id}`);
       url = UtilsService.addOrUpdateUrlParam(url, "skip-thumbnails", `${options.skipThumbnails}`);
 
-      return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url).pipe(
+      return this.http.get<FindImagesResponseInterface>(url).pipe(
         map(response => {
           if (response.results.length > 0) {
             return response.results[0];
@@ -68,15 +86,15 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<ImageInterface>(`${this.configUrl}/image/${id}/`);
   }
 
-  getImages(ids: ImageInterface["pk"][]): Observable<PaginatedApiResultInterface<ImageInterface>> {
-    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?id=${ids.join(",")}`);
+  getImages(ids: ImageInterface["pk"][]): Observable<FindImagesResponseInterface> {
+    return this.http.get<FindImagesResponseInterface>(`${this.configUrl}/image/?id=${ids.join(",")}`);
   }
 
   getPublicImagesCountByUserId(userId: UserInterface["id"]): Observable<number> {
     return this.http.get<number>(`${this.configUrl}/image/public-images-count/?user=${userId}`);
   }
 
-  findImages(options: FindImagesOptionsInterface): Observable<PaginatedApiResultInterface<ImageInterface>> {
+  findImages(options: FindImagesOptionsInterface): Observable<FindImagesResponseInterface> {
     let url = `${this.configUrl}/image/`;
 
     const params: { [key: string]: any } = {
@@ -88,8 +106,10 @@ export class ImageApiService extends BaseClassicApiService {
       "gallery-serializer": options.gallerySerializer ? "1" : null,
       "include-staging-area": options.includeStagingArea ? "true" : null,
       "only-staging-area": options.onlyStagingArea ? "true" : null,
-      'trash': options.trash ? "true" : null,
-      'collection': options.collection
+      trash: options.trash ? "true" : null,
+      collection: options.collection,
+      subsection: options.subsection,
+      active: options.active
     };
 
     // Filter out null or undefined values
@@ -99,7 +119,7 @@ export class ImageApiService extends BaseClassicApiService {
       }
     });
 
-    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url);
+    return this.http.get<FindImagesResponseInterface>(url);
   }
 
   getThumbnail(
