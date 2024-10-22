@@ -10,9 +10,8 @@ import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smar
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { filter, map, take } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-user-gallery-smart-folder",
@@ -20,22 +19,16 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <astrobin-loading-indicator *ngIf="loading"></astrobin-loading-indicator>
 
-      <div *ngIf="!active" class="d-flex flex-wrap gap-4 justify-content-center">
+      <div class="d-flex flex-wrap gap-2">
         <a
           *ngFor="let item of menu"
+          [class.active]="item[0] === active"
           [routerLink]="['/u', user.username]"
           [queryParams]="{ 'folder-type': folderType, active: item[0] }"
           fragment="smart-folders"
-          class="smart-folder"
+          class="smart-folder badge badge-pill rounded-pill px-3 py-2"
         >
-          <div class="smart-folder-background"></div>
-          <div class="smart-folder-stars"></div>
-          <div class="smart-folder">
-            <div class="icon">
-              <fa-icon icon="star"></fa-icon>
-            </div>
-            <div class="name">{{ item[1] }}</div>
-          </div>
+          {{ item[1] }}
         </a>
       </div>
     </ng-container>
@@ -62,10 +55,19 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.activatedRoute.queryParamMap.pipe(
+      map(queryParamMap => queryParamMap.get("active")),
+      filter(active => active !== this.active),
+      takeUntil(this.destroyed$)
+    ).subscribe(active => {
+      this.active = active;
+    });
+
+    this.active = this.activatedRoute.snapshot.queryParamMap.get("active");
   }
 
   ngOnChanges() {
-    this.active = this.activatedRoute.snapshot.queryParams.folderType;
     if (!this.active) {
       this.actions$.pipe(
         ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
@@ -90,6 +92,8 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       }));
 
       this.loading = true;
+    } else {
+      this.loading = false;
     }
   }
 }

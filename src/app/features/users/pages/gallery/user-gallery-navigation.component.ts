@@ -117,10 +117,6 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
               [userProfile]="userProfile"
             ></astrobin-user-gallery-smart-folders>
 
-
-            {{ activeSmartFolderType | json }}
-            {{ activeSmartFolder | json }}
-
             <astrobin-user-gallery-images
               *ngIf="activeSmartFolderType && activeSmartFolder"
               [activeLayout]="activeLayout"

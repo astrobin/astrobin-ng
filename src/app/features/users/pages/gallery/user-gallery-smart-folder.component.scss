@@ -1,33 +1,18 @@
-$size: 150px;
-
-:host {
-  display: block;
-  padding: 2rem 0;
-}
-
 .smart-folder {
-  width: $size;
-  height: $size;
-  position: relative;
-  text-align: center;
+  background: var(--darkerGrey);
+  color: var(--lightestGrey);
+  font-size: 1rem;
+  font-weight: normal;
+  border: 1px solid var(--lightGrey);
 
-  .smart-folder-background {
-    background: url("/assets/images/polaroids.png?v=20241008") no-repeat center;
-    background-size: $size;
-    height: $size;
-    width: $size;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: var(--darkGrey);
+    }
   }
 
-  .smart-folder-preview {
-    background: url("/assets/images/stars.jpg?v=20241008") no-repeat center;
-    background-size: $size;
-    height: calc($size - 44px);
-    width: calc($size - 44px);
-    position: absolute;
-    top: 10px;
-    left: 22px;
-    opacity: .75;
-    filter: blur(2px);
+  &.active {
+    background: var(--lightestGrey);
+    color: var(--darkestGrey);
   }
 }
-
