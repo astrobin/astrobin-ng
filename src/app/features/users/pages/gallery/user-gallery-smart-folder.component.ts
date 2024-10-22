@@ -31,6 +31,10 @@ import { FindImagesResponseInterface } from "@shared/services/api/classic/images
           {{ item[1] }}
         </a>
       </div>
+
+      <p *ngIf="!loading && !active" class="mt-4 text-muted">
+        {{ "Select a smart folder to see its content." | translate }}
+      </p>
     </ng-container>
   `,
   styleUrls: ["./user-gallery-smart-folder.component.scss"]
