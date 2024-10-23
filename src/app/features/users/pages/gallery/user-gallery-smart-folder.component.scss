@@ -4,6 +4,8 @@
   font-size: 1rem;
   font-weight: normal;
   border: 1px solid var(--lightGrey);
+  white-space: normal;
+  text-align: left;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {

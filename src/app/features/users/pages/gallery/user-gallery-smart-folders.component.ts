@@ -23,7 +23,7 @@ export enum SmartFolderType {
       <div
         *ngIf="!activeFolderType"
         @fadeInOut
-        class="d-flex flex-nowrap gap-4 justify-content-center"
+        class="d-flex flex-wrap gap-4 justify-content-center"
       >
         <a
           *ngFor="let smartFolder of smartFolders"

@@ -36,6 +36,14 @@
         background: none;
         color: var(--accentColor);
       }
+
+      .dropdown {
+        padding: 0;
+
+        .dropdown-toggle {
+          margin: 0;
+        }
+      }
     }
   }
 
@@ -55,6 +63,13 @@
 
   .tab-content {
     padding: 2rem;
+  }
+}
+
+.user-gallery-quick-search {
+  &::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
   }
 }
 

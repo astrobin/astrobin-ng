@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -7,15 +7,16 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { fromEvent, throttleTime } from "rxjs";
+import { fromEvent, Subject, throttleTime } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
-import { filter, map, startWith, take, takeUntil } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, map, startWith, take, takeUntil } from "rxjs/operators";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollections } from "@app/store/selectors/app/collection.selectors";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
+import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
 
 type GalleryNavigationComponent = "gallery" | "staging" | "about";
 
@@ -72,17 +73,14 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
               [parent]="collectionId"
             ></astrobin-user-gallery-collections>
 
+            <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
+
             <astrobin-user-gallery-images
               [activeLayout]="activeLayout"
               [expectedImageCount]="activeCollection ? activeCollection.imageCount : userProfile.imageCount"
               [user]="user"
               [userProfile]="userProfile"
-              [options]="{
-                includeStagingArea:
-                  currentUserWrapper.user?.id === user.id &&
-                  userProfile.displayWipImagesOnPublicGallery,
-                collection: collectionId
-              }"
+              [options]="publicGalleryOptions"
             ></astrobin-user-gallery-images>
           </ng-template>
         </li>
@@ -97,11 +95,12 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
           </a>
           <ng-template ngbNavContent>
             <astrobin-user-gallery-buttons [(activeLayout)]="activeLayout"></astrobin-user-gallery-buttons>
+            <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
             <astrobin-user-gallery-images
               [activeLayout]="activeLayout"
               [user]="user"
               [userProfile]="userProfile"
-              [options]="{ onlyStagingArea: currentUserWrapper.user?.id === user.id }"
+              [options]="stagingAreaOptions"
             ></astrobin-user-gallery-images>
           </ng-template>
         </li>
@@ -127,7 +126,8 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
                   currentUserWrapper.user?.id === user.id &&
                   userProfile.displayWipImagesOnPublicGallery,
                 subsection: activeSmartFolderType,
-                active: activeSmartFolder
+                active: activeSmartFolder,
+                q: searchModel
               }"
             ></astrobin-user-gallery-images>
           </ng-template>
@@ -194,10 +194,20 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
         ></astrobin-user-gallery-collection-create>
       </div>
     </ng-template>
+
+    <ng-template #quickSearchTemplate>
+      <input
+        class="form-control mb-3 user-gallery-quick-search"
+        type="search"
+        placeholder="{{ 'Search' | translate }}"
+        [(ngModel)]="searchModel"
+        (ngModelChange)="onSearchModelChange()"
+      />
+    </ng-template>
   `,
   styleUrls: ["./user-gallery-navigation.component.scss"]
 })
-export class UserGalleryNavigationComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class UserGalleryNavigationComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnChanges {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
@@ -210,8 +220,12 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   protected activeCollection: CollectionInterface | null = null;
   protected activeSmartFolderType: SmartFolderType | null = null;
   protected activeSmartFolder: string | null = null;
+  protected searchModel: string | null = null;
+  protected publicGalleryOptions: FindImagesOptionsInterface;
+  protected stagingAreaOptions: FindImagesOptionsInterface;
 
   private readonly _isBrowser: boolean;
+  private _searchSubject: Subject<string> = new Subject<string>();
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -236,16 +250,57 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       }
     });
 
+    this._searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(searchTerm => {
+      this.publicGalleryOptions = {
+        ...this.publicGalleryOptions,
+        q: searchTerm,
+        page: 1
+      };
+
+      this.stagingAreaOptions = {
+        ...this.stagingAreaOptions,
+        q: searchTerm,
+        page: 1
+      };
+    });
+
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       this._setCollectionFromRoute();
       this._setSmartFolderFromRoute();
+      this._setFindImageOptions();
     });
 
     this._setCollectionFromRoute();
     this._setSmartFolderFromRoute();
+    this._setFindImageOptions();
+  }
+
+  private _setFindImageOptions() {
+    this.searchModel = this.route.snapshot.queryParamMap.get("q");
+    this.currentUserWrapper$.pipe(take(1)).subscribe(currentUserWrapper => {
+      this.publicGalleryOptions = {
+        includeStagingArea:
+          currentUserWrapper.user?.id === this.user.id &&
+          (
+            currentUserWrapper.userProfile?.displayWipImagesOnPublicGallery ||
+            !!this.collectionId
+          ),
+        collection: this.collectionId,
+        q: this.searchModel
+      }
+
+      this.stagingAreaOptions = {
+        onlyStagingArea: currentUserWrapper.user?.id === this.user.id,
+        q: this.searchModel
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -281,6 +336,10 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     }
   }
 
+  ngOnChanges() {
+    this.searchModel = null;
+  }
+
   onTabClick(tab: GalleryNavigationComponent) {
     this.router.navigate([], { fragment: tab });
   }
@@ -289,6 +348,10 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     this.offcanvasService.open(this.createCollectionOffcanvas, {
       position: this.deviceService.offcanvasPosition()
     });
+  }
+
+  protected onSearchModelChange() {
+    this._searchSubject.next(this.searchModel);
   }
 
   private _setCollectionFromRoute() {

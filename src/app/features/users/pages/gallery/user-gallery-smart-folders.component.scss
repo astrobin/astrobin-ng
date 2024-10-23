@@ -6,8 +6,6 @@ $size: 150px;
 }
 
 .smart-folder-category {
-  width: $size;
-  height: $size;
   position: relative;
   text-align: center;
 
@@ -36,7 +34,7 @@ $size: 150px;
     .icon {
       font-size: 3rem;
       position: absolute;
-      top: calc(50% - 10px);
+      top: calc(50% - 2rem);
       left: 50%;
       transform: translate(-50%, -50%);
 
