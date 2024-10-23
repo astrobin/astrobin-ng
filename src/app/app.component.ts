@@ -30,6 +30,8 @@ declare var gtag: any;
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent extends BaseComponentDirective implements OnInit {
+  private readonly _isBrowser: boolean;
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly router: Router,
@@ -51,7 +53,9 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   ) {
     super(store$);
 
-    if (isPlatformServer(this.platformId)) {
+    this._isBrowser = isPlatformBrowser(platformId);
+
+    if (!this._isBrowser) {
       // On the server-side, add the IP to the TransferState
       this.transferState.set(CLIENT_IP_KEY, this.clientIp);
     }
@@ -63,7 +67,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1) {
+    if (this._isBrowser && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1) {
       this.includeAnalytics$().subscribe(includeAnalytics => {
         if (includeAnalytics) {
           this.utilsService.insertScript(
@@ -82,6 +86,10 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   initGtag(): void {
+    if (!this._isBrowser) {
+      return;
+    }
+
     try {
       dataLayer = dataLayer || [];
     } catch (e) {
@@ -127,7 +135,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
         this.setCanonicalUrl(event.urlAfterRedirects);
         this.setMetaTags(event.urlAfterRedirects);
 
-        if (isPlatformBrowser(this.platformId)) {
+        if (this._isBrowser) {
           this.currentUser$.pipe(
             filter(currentUser => !!currentUser),
             take(1)
@@ -155,6 +163,10 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   tagGoogleAnalyticsPage(url: string): void {
+    if (!this._isBrowser) {
+      return;
+    }
+
     if (typeof gtag !== "undefined") {
       this.includeAnalytics$().subscribe(includeAnalytics => {
         if (includeAnalytics) {
@@ -195,13 +207,22 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   markNotificationAsRead() {
-    const url = this.windowRefService.getCurrentUrl();
-
-    if (!!url && url.searchParams.get("utm_medium") === "email") {
-      const fromUserPk = url.searchParams.get("from_user");
-      this.notificationApiService
-        .markAsReadByPathAndUser(url.pathname, fromUserPk !== "None" ? +fromUserPk : null)
-        .subscribe();
+    if (!this._isBrowser) {
+      return;
     }
+
+    this.currentUser$.pipe(
+      filter(currentUser => !!currentUser),
+      take(1)
+    ).subscribe(() => {
+      const url = this.windowRefService.getCurrentUrl();
+
+      if (!!url && url.searchParams.get("utm_medium") === "email") {
+        const fromUserPk = url.searchParams.get("from_user");
+        this.notificationApiService
+          .markAsReadByPathAndUser(url.pathname, fromUserPk !== "None" ? +fromUserPk : null)
+          .subscribe();
+      }
+    });
   }
 }
