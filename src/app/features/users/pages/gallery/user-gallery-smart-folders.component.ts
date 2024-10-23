@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -9,13 +9,11 @@ import { ActivatedRoute } from "@angular/router";
 import { takeUntil } from "rxjs/operators";
 import { fadeInOut } from "@shared/animations";
 
-// These need to match the ones in GallerySubsection.
 export enum SmartFolderType {
   YEAR = "year",
   GEAR = "gear",
   SUBJECT = "subject",
-  CONSTELLATION = "constellation",
-  NO_DATA = "nodata"
+  CONSTELLATION = "constellation"
 }
 
 @Component({

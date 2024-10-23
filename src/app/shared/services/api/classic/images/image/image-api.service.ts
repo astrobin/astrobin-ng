@@ -23,17 +23,6 @@ export type FindImagesResponseInterface = PaginatedApiResultInterface<ImageInter
   active: string | null;
 };
 
-export enum GallerySubsection {
-  TITLE = "title",
-  UPLOADED = "uploaded",
-  ACQUIRED = "acquired",
-  YEAR = "year",
-  GEAR = "gear",
-  SUBJECT = "subject",
-  CONSTELLATION = "constellation",
-  NO_DATA = "nodata"
-}
-
 export interface FindImagesOptionsInterface {
   userId?: UserInterface["id"];
   q?: string;
