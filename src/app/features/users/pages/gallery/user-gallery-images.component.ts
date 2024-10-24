@@ -280,6 +280,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.user && changes.user.currentValue || changes.options) {
+      this.page = 1;
       this._getImages();
     }
 
