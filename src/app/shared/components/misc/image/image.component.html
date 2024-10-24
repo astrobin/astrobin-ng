@@ -6,7 +6,6 @@
           #videoPlayerElement
           [attr.data-setup]='videoSetup'
           [attr.poster]="thumbnailUrl"
-          [style.height]="!!height ? height + 'px !important' : 'auto'"
           class="video-js vjs-default-skin"
           controls
           preload="auto"
@@ -27,14 +26,12 @@
     [alt]="image.title"
     [src]="thumbnailUrl"
     class="astrobin-image"
-    [style.height]="!!height ? height + 'px' : 'auto'"
     id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revisionLabel }}-{{ alias }}"
   >
 </ng-template>
 
 <ng-template #loadingTemplate>
   <div
-    [style.height]="!!height ? height + 'px' : 'auto'"
     [style.padding]="!!height ? 0 : '2rem'"
     class="loading-container"
   >
@@ -44,7 +41,6 @@
 
 <ng-template #simpleLoadingTemplate>
   <div
-    [style.height]="!!height ? height + 'px' : 'auto'"
     [style.padding]="!!height ? 0 : '2rem'"
     class="loading-container"
   >
