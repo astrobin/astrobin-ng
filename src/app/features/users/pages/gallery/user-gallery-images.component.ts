@@ -49,6 +49,14 @@ import { LoadCollections } from "@app/store/actions/collection.actions";
         @fadeInOut
       ></astrobin-loading-indicator>
 
+      <p
+        *ngIf="options.q"
+        class="alert alert-dark"
+      >
+        <fa-icon icon="info-circle"></fa-icon>
+        {{ "You can refine your search by using the advanced search page and filtering by user." | translate }}
+      </p>
+
       <div
         *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TINY"
         @fadeInOut
