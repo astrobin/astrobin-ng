@@ -349,6 +349,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       this.width = imageWidth;
       this.height = imageHeight;
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   private _setupAutoLoad() {
