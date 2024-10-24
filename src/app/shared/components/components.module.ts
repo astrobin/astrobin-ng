@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -141,7 +141,9 @@ import { ImageViewerShareButtonComponent } from "@shared/components/misc/image-v
 import { ImageViewerIotdBannerComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-banner.component";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { ImageViewerSlideshowContextComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow-context.component";
-
+import { ImageLoadingIndicatorComponent } from "@shared/components/misc/image-loading-indicator/image-loading-indicator.component";
+import { MarketplaceListingCardComponent } from "@shared/components/equipment/marketplace-listing-card/marketplace-listing-card.component";
+import { MarketplaceListingCardsComponent } from "@shared/components/equipment/marketplace-listing-cards/marketplace-listing-cards.component";
 
 const modules = [
   CommonModule,
@@ -178,7 +180,8 @@ const modules = [
   TranslateModule,
   FormlyModule,
   UploadxModule,
-  AutoSizeInputModule
+  AutoSizeInputModule,
+  NgOptimizedImage
 ];
 
 const components = [
@@ -218,6 +221,7 @@ const components = [
   HeaderComponent,
   HrComponent,
   ImageComponent,
+  ImageLoadingIndicatorComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,
   ImageViewerSlideshowComponent,
@@ -252,6 +256,8 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  MarketplaceListingCardComponent,
+  MarketplaceListingCardsComponent,
   MobileMenuComponent,
   MoreRelatedItemsModalComponent,
   MostOftenUsedWithModalComponent,

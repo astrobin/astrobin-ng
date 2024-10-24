@@ -1,0 +1,10 @@
+@import "../../../../styles/breakpoints";
+
+:host {
+  display: block;
+  margin-bottom: 2rem;
+
+  @media (max-width: $sm-max) {
+    margin-bottom: 1.5rem;
+  }
+}

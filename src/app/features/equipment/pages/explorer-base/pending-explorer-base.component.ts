@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { DeviceService } from "@shared/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 

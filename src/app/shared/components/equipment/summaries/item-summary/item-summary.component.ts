@@ -28,7 +28,7 @@ import { SensorDisplayProperty, SensorService } from "@features/equipment/servic
 import {
   EquipmentItemDisplayProperty,
   EquipmentItemService
-} from "@features/equipment/services/equipment-item.service";
+} from "@shared/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { instanceOfSensor, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";

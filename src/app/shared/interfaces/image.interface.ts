@@ -221,6 +221,7 @@ export interface ImageInterface {
   software2: SoftwareInterface2[];
   published: string;
   uploaded: string;
+  deleted: string | null;
   license: LicenseOptions;
   description?: string;
   descriptionBbcode?: string;
@@ -269,6 +270,7 @@ export interface ImageInterface {
   averageMoonAge?: number;
   averageMoonIllumination?: number;
   uncompressedSourceFile?: string;
+  finalGalleryThumbnail?: string;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;

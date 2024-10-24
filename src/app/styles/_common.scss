@@ -67,3 +67,15 @@ hr {
   background-color: var(--darkGrey);
   color: var(--lighterGrey);
 }
+
+.fade-wrapper {
+  position: relative;
+  width: 100%;
+  display: block;
+
+  .fade-container {
+    position: relative;
+    width: 100%;
+    display: block;
+  }
+}

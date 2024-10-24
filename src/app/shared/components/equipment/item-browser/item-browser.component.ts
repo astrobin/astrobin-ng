@@ -17,7 +17,7 @@ import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";

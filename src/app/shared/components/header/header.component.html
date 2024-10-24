@@ -200,7 +200,11 @@
           {{ "Public Gallery" | translate }}
         </a>
 
-        <a [href]="classicRoutesService.STAGING_GALLERY(user)" class="dropdown-item">
+        <a
+          *ngIf="!userProfile.displayWipImagesOnPublicGallery"
+          [href]="classicRoutesService.STAGING_GALLERY(user)"
+          class="dropdown-item"
+        >
           <fa-icon icon="lock"></fa-icon>
           {{ "Staging Area" | translate }}
         </a>

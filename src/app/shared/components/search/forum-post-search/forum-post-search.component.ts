@@ -10,6 +10,7 @@ import { ForumPostSearchInterface } from "@shared/interfaces/forum-post-search.i
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ForumPostSearchApiService } from "@shared/services/api/forum/forum-post-search-api.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-forum-post-search",
@@ -27,9 +28,10 @@ export class ForumPostSearchComponent extends ScrollableSearchResultsBaseCompone
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
-    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
+    public readonly utilsService: UtilsService
   ) {
-    super(store$, windowRefService, elementRef, platformId, translateService);
+    super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<ForumPostSearchInterface>> {
