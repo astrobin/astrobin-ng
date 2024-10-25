@@ -239,6 +239,7 @@ $globalLoadingIndicatorHeight: 6px;
         max-height: calc(70vh - 3rem);
         height: unset;
         flex-direction: column;
+        flex-shrink: 0;
       }
 
       .image-area-body {
