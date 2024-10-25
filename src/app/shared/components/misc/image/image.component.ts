@@ -61,6 +61,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   @HostBinding("class.loading")
   loading = false;
 
+  @HostBinding('style.--height')
+  get videoHeight(): string {
+    return this.height ? `${this.height}px` : 'auto';
+  }
+
   @ViewChild("videoPlayerElement", { static: false })
   videoPlayerElement: ElementRef;
 
@@ -80,9 +85,13 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   private _stopPollingVideoEncoderProgress = new Subject<void>();
   private _retrySetWidthAndHeight = new Subject<void>();
 
-  // New private properties to store previous values
   private _previousThumbnailUrl: string;
   private _previousVideoFile: string;
+
+  private _dimensionsRetryCount = 0;
+  private readonly MAX_RETRIES = 5;
+  private readonly RETRY_DELAY = 300;
+  private _dimensionsInterval: any;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -102,7 +111,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this._isBrowser = isPlatformBrowser(this.platformId);
 
     this._retrySetWidthAndHeight.pipe(
-      delay(200),
+      delay(this.RETRY_DELAY),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       if (this.revision) {
@@ -172,6 +181,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
 
   ngOnDestroy(): void {
+    if (this._dimensionsInterval) {
+      clearInterval(this._dimensionsInterval);
+      this._dimensionsInterval = null;
+    }
+
     if (this.thumbnailUrl && this._isBrowser) {
       (this.windowRefService.nativeWindow as any).URL.revokeObjectURL(this.thumbnailUrl as string);
     }
@@ -223,11 +237,14 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
         this.image = image;
         this.id = image.pk;
-        this._setWidthAndHeight(this.revision.w, this.revision.h);
         this._loadThumbnail();
 
         if (this.revision.videoFile && !this.revision.encodedVideoFile) {
           this._pollingVideoEncodingProgress();
+        }
+
+        if (!this.revision.videoFile) {
+          this._setWidthAndHeight(this.revision.w, this.revision.h);
         }
       });
 
@@ -333,8 +350,29 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     const containerWidth = this.elementRef.nativeElement.offsetWidth;
 
     if (!containerWidth) {
-      this._retrySetWidthAndHeight.next();
+      if (this._dimensionsRetryCount < this.MAX_RETRIES) {
+        this._dimensionsRetryCount++;
+        this._retrySetWidthAndHeight.next();
+      } else {
+        if (!this._dimensionsInterval) {
+          this._dimensionsInterval = setInterval(() => {
+            const width = this.elementRef.nativeElement.offsetWidth;
+            if (width) {
+              this._dimensionsRetryCount = 0;
+              clearInterval(this._dimensionsInterval);
+              this._dimensionsInterval = null;
+              this._setWidthAndHeight(imageWidth, imageHeight);
+            }
+          }, 1000);
+        }
+      }
       return;
+    }
+
+    // Clear any existing interval if we successfully got the width
+    if (this._dimensionsInterval) {
+      clearInterval(this._dimensionsInterval);
+      this._dimensionsInterval = null;
     }
 
     if (imageWidth > containerWidth) {
@@ -349,8 +387,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       this.width = imageWidth;
       this.height = imageHeight;
     }
-
-    this.changeDetectorRef.detectChanges();
   }
 
   private _setupAutoLoad() {
@@ -401,6 +437,12 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   private _createVideoJsPlayer() {
     this._videoJsPlayer = videojs(this.videoPlayerElement.nativeElement, {}, () => {
+      this.utilsService.delay(1).subscribe(() => {
+        requestAnimationFrame(() => {
+          this._setWidthAndHeight(this.revision.w, this.revision.h);
+        });
+      });
+
       this._videoJsPlayer.on("fullscreenchange", () => {
         const isFullscreen = this._videoJsPlayer.isFullscreen();
         const el = this._videoJsPlayer.el().firstChild;

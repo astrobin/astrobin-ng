@@ -10,8 +10,13 @@
     max-width: 100%;
   }
 
+  .loading-container,
+  .astrobin-image,
+  .video-js {
+    height: var(--height, 100%) !important;
+  }
+
   .loading-container {
-    height: 100%;
     width: 66.67%;
     text-align: center;
   }
