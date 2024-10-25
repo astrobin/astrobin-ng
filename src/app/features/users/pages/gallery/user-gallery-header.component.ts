@@ -12,6 +12,9 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { SearchService } from "@features/search/services/search.service";
+import { Router } from "@angular/router";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-user-gallery-header",
@@ -69,6 +72,26 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
                 href=""
                 translate="More"
               ></a>
+            </div>
+            <div
+              *ngIf="currentUserWrapper.user?.id === user.id"
+              class="d-flex align-items-center images-and-followers flex-wrap my-bookmarks-and-likes"
+            >
+              <button
+                (click)="searchBookmarks()"
+                class="btn btn-xs btn-outline-secondary btn-no-block"
+              >
+                <fa-icon [icon]="['fas', 'bookmark']"></fa-icon>
+                {{ "My bookmarks" | translate }}
+              </button>
+
+              <button
+                (click)="searchLikedImages()"
+                class="btn btn-xs btn-outline-secondary btn-no-block"
+              >
+                <fa-icon [icon]="['fas', 'thumbs-up']"></fa-icon>
+                {{ "My likes" | translate }}
+              </button>
             </div>
           </div>
         </div>
@@ -130,7 +153,10 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     public readonly imageApiService: ImageApiService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
-    public readonly commonApiService: CommonApiService
+    public readonly commonApiService: CommonApiService,
+    public readonly searchService: SearchService,
+    public readonly router: Router,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
     this._setUserContentType();
@@ -160,6 +186,32 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
         position: this.deviceService.offcanvasPosition()
       }
     );
+  }
+
+  protected searchBookmarks() {
+    const params = this.searchService.modelToParams(
+      {
+        "personal_filters": {
+          "value": [ "my_bookmarks" ],
+        }
+      }
+    );
+    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
+      this.windowRefService.scroll({ top: 0 });
+    });
+  }
+
+  protected searchLikedImages() {
+    const params = this.searchService.modelToParams(
+      {
+        "personal_filters": {
+          "value": [ "my_likes" ],
+        }
+      }
+    );
+    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
+      this.windowRefService.scroll({ top: 0 });
+    });
   }
 
   private _setUserContentType() {
