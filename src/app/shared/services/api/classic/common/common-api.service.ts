@@ -16,6 +16,22 @@ import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.inte
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 
+export interface FollowersInterface {
+  followers: [
+    UserInterface["id"],
+    UserInterface["username"],
+    UserProfileInterface["realName"]
+  ][];
+}
+
+export interface FollowingInterface {
+  following: [
+    UserInterface["id"],
+    UserInterface["username"],
+    UserProfileInterface["realName"]
+  ][];
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -81,6 +97,14 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
   getUserProfileStats(id: UserProfileInterface["id"]): Observable<UserProfileStatsInterface> {
     return this.http
       .get<UserProfileStatsInterface>(`${this.configUrl}/userprofiles/${id}/stats/`);
+  }
+
+  getUserProfileFollowers(id: UserProfileInterface["id"]): Observable<FollowersInterface> {
+    return this.http.get<FollowersInterface>(`${this.configUrl}/userprofiles/${id}/followers/`);
+  }
+
+  getUserProfileFollowing(id: UserProfileInterface["id"]): Observable<FollowingInterface> {
+    return this.http.get<FollowingInterface>(`${this.configUrl}/userprofiles/${id}/following/`);
   }
 
   getUserProfileByUserId(userId: UserInterface["id"]): Observable<UserProfileInterface> {

@@ -11,7 +11,7 @@ import { UserProfileInterface, UserProfileStatsInterface } from "@shared/interfa
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { CommonApiService, FollowersInterface, FollowingInterface } from "@shared/services/api/classic/common/common-api.service";
 import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -59,11 +59,15 @@ import { WindowRefService } from "@shared/services/window-ref.service";
                 class="d-none d-sm-inline"
               ></span>
               <span
+                (click)="openFollowersOffcanvas()"
                 [translate]="'{{ 0 }} followers'" [translateParams]="{'0': userProfile.followersCount}"
+                data-toggle="offcanvas"
               ></span>
               <span
+                (click)="openFollowingOffcanvas()"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
                 class="d-none d-sm-inline"
+                data-toggle="offcanvas"
               ></span>
               <a
                 (click)="openStatsOffcanvas()"
@@ -132,6 +136,34 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       </div>
     </ng-template>
 
+    <ng-template #followersOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" translate="Followers"></h5>
+        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div *ngIf="followers; else loadingTemplate" class="d-flex flex-column gap-1">
+          <a *ngFor="let follower of followers.followers" [routerLink]="['/u', follower[1]]">
+            {{ follower[2] || follower[1] }}
+          </a>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #followingOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" translate="Following"></h5>
+        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div *ngIf="following; else loadingTemplate" class="d-flex flex-column gap-1">
+          <a *ngFor="let following of following.following" [routerLink]="['/u', following[1]]">
+            {{ following[2] || following[1] }}
+          </a>
+        </div>
+      </div>
+    </ng-template>
+
     <ng-template #loadingTemplate>
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
@@ -144,9 +176,13 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
 
   @ViewChild("statsOffcanvas") statsOffcanvas: TemplateRef<any>;
   @ViewChild("changeHeaderImageOffcanvas") changeHeaderImageOffcanvas: TemplateRef<any>;
+  @ViewChild("followersOffcanvas") followersOffcanvas: TemplateRef<any>;
+  @ViewChild("followingOffcanvas") followingOffcanvas: TemplateRef<any>;
 
   protected userContentType: ContentTypeInterface;
   protected stats: UserProfileStatsInterface;
+  protected followers: FollowersInterface;
+  protected following: FollowingInterface
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -183,6 +219,28 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   protected openChangeHeaderImageOffcanvas() {
     this.offcanvasService.open(
       this.changeHeaderImageOffcanvas, {
+        position: this.deviceService.offcanvasPosition()
+      }
+    );
+  }
+
+  protected openFollowersOffcanvas() {
+    this.commonApiService.getUserProfileFollowers(this.userProfile.id).subscribe(followers => {
+      this.followers = followers;
+    });
+    this.offcanvasService.open(
+      this.followersOffcanvas, {
+        position: this.deviceService.offcanvasPosition()
+      }
+    );
+  }
+
+  protected openFollowingOffcanvas() {
+    this.commonApiService.getUserProfileFollowing(this.userProfile.id).subscribe(following => {
+      this.following = following;
+    });
+    this.offcanvasService.open(
+      this.followingOffcanvas, {
         position: this.deviceService.offcanvasPosition()
       }
     );
