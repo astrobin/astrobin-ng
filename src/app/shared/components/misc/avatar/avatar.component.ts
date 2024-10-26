@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -13,7 +13,7 @@ import { filter, take } from "rxjs/operators";
   templateUrl: "./avatar.component.html",
   styleUrls: ["./avatar.component.scss"]
 })
-export class AvatarComponent extends BaseComponentDirective implements OnInit {
+export class AvatarComponent extends BaseComponentDirective implements OnChanges {
   avatarUrl: string = "/assets/images/default-avatar.jpeg?v=2";
 
   @Input()
@@ -25,23 +25,28 @@ export class AvatarComponent extends BaseComponentDirective implements OnInit {
   @Input()
   link = true;
 
-  constructor(public readonly store$: Store<MainState>, public readonly classicRoutesService: ClassicRoutesService) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly classicRoutesService: ClassicRoutesService
+  ) {
     super(store$);
   }
 
-  ngOnInit(): void {
-    if (this.userId && !this.user) {
-      this.store$.select(selectUser, this.userId).pipe(
-        filter(user => !!user),
-        take(1)
-      ).subscribe(user => {
-        this.user = user;
-        this._setAvatar();
-      });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.user || changes.userId) {
+      if (this.userId && !this.user) {
+        this.store$.select(selectUser, this.userId).pipe(
+          filter(user => !!user),
+          take(1)
+        ).subscribe(user => {
+          this.user = user;
+          this._setAvatar();
+        });
 
-      this.store$.dispatch(new LoadUser({ id: this.userId }));
-    } else if (this.user) {
-      this._setAvatar();
+        this.store$.dispatch(new LoadUser({ id: this.userId }));
+      } else if (this.user) {
+        this._setAvatar();
+      }
     }
   }
 
