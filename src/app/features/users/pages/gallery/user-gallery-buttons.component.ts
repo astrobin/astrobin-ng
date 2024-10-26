@@ -31,13 +31,13 @@ export enum UserGalleryActiveLayout {
           </button>
           <button
             class="dropdown-item"
-            (click)="sortChange.emit('publication')"
+            (click)="sortChange.emit('uploaded')"
           >
             {{ "Publication date" | translate }}
           </button>
           <button
             class="dropdown-item"
-            (click)="sortChange.emit('acquisition')"
+            (click)="sortChange.emit('acquired')"
           >
             {{ "Acquisition date" | translate }}
           </button>

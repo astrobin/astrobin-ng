@@ -57,6 +57,8 @@ import { LoadCollections } from "@app/store/actions/collection.actions";
         {{ "You can refine your search by using the advanced search page and filtering by user." | translate }}
       </p>
 
+      <ng-container *ngTemplateOutlet="acquisitionSortingInfoTemplate"></ng-container>
+
       <div
         *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TINY"
         @fadeInOut
@@ -120,7 +122,6 @@ import { LoadCollections } from "@app/store/actions/collection.actions";
           <ng-container *ngTemplateOutlet="hoverTemplate; context: { image }"></ng-container>
           <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
           <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image }"></ng-container>
-
         </a>
       </div>
     </ng-container>
@@ -190,6 +191,12 @@ import { LoadCollections } from "@app/store/actions/collection.actions";
           </ng-container>
         </span>
       </div>
+    </ng-template>
+
+    <ng-template #acquisitionSortingInfoTemplate>
+      <p *ngIf="options?.subsection === 'acquired'" class="alert alert-mini alert-info mb-4">
+        This gallery is sorted by acquisition date. Any images without an acquisition date are not shown here.
+      </p>
     </ng-template>
   `,
   styleUrls: ["./user-gallery-images.component.scss"],
