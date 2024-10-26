@@ -99,12 +99,24 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
       .get<UserProfileStatsInterface>(`${this.configUrl}/userprofiles/${id}/stats/`);
   }
 
-  getUserProfileFollowers(id: UserProfileInterface["id"]): Observable<FollowersInterface> {
-    return this.http.get<FollowersInterface>(`${this.configUrl}/userprofiles/${id}/followers/`);
+  getUserProfileFollowers(id: UserProfileInterface["id"], q?: string): Observable<FollowersInterface> {
+    let url = `${this.configUrl}/userprofiles/${id}/followers/`;
+
+    if (q) {
+      url += `?q=${q}`;
+    }
+
+    return this.http.get<FollowersInterface>(url);
   }
 
-  getUserProfileFollowing(id: UserProfileInterface["id"]): Observable<FollowingInterface> {
-    return this.http.get<FollowingInterface>(`${this.configUrl}/userprofiles/${id}/following/`);
+  getUserProfileFollowing(id: UserProfileInterface["id"], q?: string): Observable<FollowingInterface> {
+    let url = `${this.configUrl}/userprofiles/${id}/following/`;
+
+    if (q) {
+      url += `?q=${q}`;
+    }
+
+    return this.http.get<FollowingInterface>(url);
   }
 
   getUserProfileByUserId(userId: UserInterface["id"]): Observable<UserProfileInterface> {

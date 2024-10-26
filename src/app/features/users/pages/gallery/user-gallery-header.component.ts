@@ -6,7 +6,7 @@ import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { filter, take } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxjs/operators";
 import { UserProfileInterface, UserProfileStatsInterface } from "@shared/interfaces/user-profile.interface";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
@@ -15,6 +15,7 @@ import { CommonApiService, FollowersInterface, FollowingInterface } from "@share
 import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { Subject } from "rxjs";
 
 @Component({
   selector: "astrobin-user-gallery-header",
@@ -143,9 +144,19 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       </div>
       <div class="offcanvas-body">
         <div *ngIf="followers; else loadingTemplate" class="d-flex flex-column gap-1">
-          <a *ngFor="let follower of followers.followers" [routerLink]="['/u', follower[1]]">
-            {{ follower[2] || follower[1] }}
-          </a>
+          <input
+            type="search"
+            class="form-control mb-2"
+            placeholder="{{ 'Search' | translate }}"
+            [ngModelOptions]="{standalone: true}"
+            [(ngModel)]="followersSearch"
+            (ngModelChange)="followersSearchSubject.next($event)"
+          />
+          <ng-container *ngIf="!searching; else loadingTemplate">
+            <a *ngFor="let follower of followers.followers" [routerLink]="['/u', follower[1]]">
+              {{ follower[2] || follower[1] }}
+            </a>
+          </ng-container>
         </div>
       </div>
     </ng-template>
@@ -157,9 +168,19 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       </div>
       <div class="offcanvas-body">
         <div *ngIf="following; else loadingTemplate" class="d-flex flex-column gap-1">
-          <a *ngFor="let following of following.following" [routerLink]="['/u', following[1]]">
-            {{ following[2] || following[1] }}
-          </a>
+          <input
+            type="search"
+            class="form-control mb-2"
+            placeholder="{{ 'Search' | translate }}"
+            [ngModelOptions]="{standalone: true}"
+            [(ngModel)]="followingSearch"
+            (ngModelChange)="followingSearchSubject.next($event)"
+          />
+          <ng-container *ngIf="!searching; else loadingTemplate">
+            <a *ngFor="let following of following.following" [routerLink]="['/u', following[1]]">
+              {{ following[2] || following[1] }}
+            </a>
+          </ng-container>
         </div>
       </div>
     </ng-template>
@@ -183,6 +204,11 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   protected stats: UserProfileStatsInterface;
   protected followers: FollowersInterface;
   protected following: FollowingInterface
+  protected followersSearch: string;
+  protected followingSearch: string;
+  protected followersSearchSubject = new Subject<string>();
+  protected followingSearchSubject = new Subject<string>();
+  protected searching = true;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -200,6 +226,18 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.followersSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(searchTerm => this._searchFollowers(searchTerm));
+
+    this.followingSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(searchTerm => this._searchFollowing(searchTerm));
   }
 
   protected openStatsOffcanvas() {
@@ -225,9 +263,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   }
 
   protected openFollowersOffcanvas() {
-    this.commonApiService.getUserProfileFollowers(this.userProfile.id).subscribe(followers => {
-      this.followers = followers;
-    });
+    this._searchFollowers();
     this.offcanvasService.open(
       this.followersOffcanvas, {
         position: this.deviceService.offcanvasPosition()
@@ -236,9 +272,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   }
 
   protected openFollowingOffcanvas() {
-    this.commonApiService.getUserProfileFollowing(this.userProfile.id).subscribe(following => {
-      this.following = following;
-    });
+    this._searchFollowing();
     this.offcanvasService.open(
       this.followingOffcanvas, {
         position: this.deviceService.offcanvasPosition()
@@ -269,6 +303,22 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     );
     this.router.navigateByUrl(`/search?p=${params}`).then(() => {
       this.windowRefService.scroll({ top: 0 });
+    });
+  }
+
+  private _searchFollowers(searchTerm?: string) {
+    this.searching = true;
+    this.commonApiService.getUserProfileFollowers(this.userProfile.id, searchTerm).subscribe(followers => {
+      this.followers = followers;
+      this.searching = false;
+    });
+  }
+
+  private _searchFollowing(searchTerm?: string) {
+    this.searching = true;
+    this.commonApiService.getUserProfileFollowing(this.userProfile.id, searchTerm).subscribe(following => {
+      this.following = following;
+      this.searching = false;
     });
   }
 
