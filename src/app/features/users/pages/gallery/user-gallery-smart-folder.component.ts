@@ -19,22 +19,25 @@ import { FindImagesResponseInterface } from "@shared/services/api/classic/images
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <astrobin-loading-indicator *ngIf="loading"></astrobin-loading-indicator>
 
-      <div class="d-flex flex-wrap gap-2">
-        <a
-          *ngFor="let item of menu"
-          [class.active]="item[0] === active"
-          [routerLink]="['/u', user.username]"
-          [queryParams]="{ 'folder-type': folderType, active: item[0] }"
-          fragment="smart-folders"
-          class="smart-folder badge badge-pill rounded-pill px-3 py-2"
-        >
-          {{ item[1] }}
-        </a>
-      </div>
+      <ng-container *ngIf="!loading">
+        <h4 class="mb-3">{{ humanizeFolderType() }}</h4>
+        <div class="d-flex flex-wrap gap-2">
+          <a
+            *ngFor="let item of menu"
+            [class.active]="item[0] === active"
+            [routerLink]="['/u', user.username]"
+            [queryParams]="{ 'folder-type': folderType, active: item[0] }"
+            fragment="smart-folders"
+            class="smart-folder badge badge-pill rounded-pill px-3 py-2"
+          >
+            {{ item[1] }}
+          </a>
+        </div>
 
-      <p *ngIf="!loading && !active" class="mt-4 text-muted">
-        {{ "Select a smart folder to see its content." | translate }}
-      </p>
+        <p *ngIf="!loading && !active" class="mt-4 text-muted">
+          {{ "Select a smart folder to see its content." | translate }}
+        </p>
+      </ng-container>
     </ng-container>
   `,
   styleUrls: ["./user-gallery-smart-folder.component.scss"]
@@ -113,6 +116,19 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       this.loading = true;
     } else {
       this.loading = false;
+    }
+  }
+
+  protected humanizeFolderType(): string {
+    switch (this.folderType) {
+      case SmartFolderType.YEAR:
+        return this.translateService.instant("Years");
+      case SmartFolderType.GEAR:
+        return this.translateService.instant("Equipment");
+      case SmartFolderType.SUBJECT:
+        return this.translateService.instant("Subject types");
+      case SmartFolderType.CONSTELLATION:
+        return this.translateService.instant("Constellations");
     }
   }
 }

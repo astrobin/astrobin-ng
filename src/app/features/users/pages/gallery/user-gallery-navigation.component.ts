@@ -64,17 +64,17 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
             </div>
           </a>
           <ng-template ngbNavContent>
-            <astrobin-user-gallery-buttons
-              [(activeLayout)]="activeLayout"
-              (sortChange)="onSortChange($event)"
-            ></astrobin-user-gallery-buttons>
-
             <astrobin-user-gallery-collections
-              class="d-block mb-5"
+              class="d-block mb-3"
               [user]="user"
               [userProfile]="userProfile"
               [parent]="collectionId"
             ></astrobin-user-gallery-collections>
+
+            <astrobin-user-gallery-buttons
+              [(activeLayout)]="activeLayout"
+              (sortChange)="onSortChange($event)"
+            ></astrobin-user-gallery-buttons>
 
             <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
 

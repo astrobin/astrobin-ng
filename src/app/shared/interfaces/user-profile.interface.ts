@@ -2,8 +2,14 @@ import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfac
 import { LocationInterface } from "@shared/interfaces/location.interface";
 
 export enum DefaultGallerySortingOption {
-  PUBLICATION = 0,
-  TITLE = 6
+  PUBLICATION,
+  ACQUISITION,
+  SUBJECT_TYPE,
+  YEAR,
+  GEAR,
+  COLLECTIONS,
+  TITLE,
+  CONSTELLATION
 }
 
 export interface UserProfileInterface {

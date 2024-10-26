@@ -8,7 +8,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { DefaultGallerySortingOption, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { filter, map, takeUntil } from "rxjs/operators";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FindCollections, FindCollectionsSuccess } from "@app/store/actions/collection.actions";
@@ -81,6 +81,33 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     }) => {
       this.user = data.userData.user;
       this.userProfile = data.userData.userProfile;
+
+      switch (this.userProfile.defaultGallerySorting) {
+        case DefaultGallerySortingOption.SUBJECT_TYPE:
+          this.router.navigate([], {
+            queryParams: { "folder-type": "subject" },
+            fragment: "smart-folders"
+          });
+          break;
+        case DefaultGallerySortingOption.YEAR:
+          this.router.navigate([], {
+            queryParams: { "folder-type": "year" },
+            fragment: "smart-folders"
+          });
+          break;
+        case DefaultGallerySortingOption.GEAR:
+          this.router.navigate([], {
+            queryParams: { "folder-type": "gear" },
+            fragment: "smart-folders"
+          });
+          break;
+        case DefaultGallerySortingOption.CONSTELLATION:
+          this.router.navigate([], {
+            queryParams: { "folder-type": "constellation" },
+            fragment: "smart-folders"
+          });
+          break;
+      }
 
       this._listenToUserChanges();
       this.store$.dispatch(new FindCollections({ params: { user: this.user.id } }));
