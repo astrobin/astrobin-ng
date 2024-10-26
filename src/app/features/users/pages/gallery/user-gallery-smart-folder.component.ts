@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -44,6 +44,8 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   @Input() userProfile: UserProfileInterface;
   @Input() folderType: SmartFolderType;
 
+  @Output() readonly activeChange = new EventEmitter<string>();
+
   protected menu: FindImagesResponseInterface["menu"];
   protected active: string | null = null;
   protected loading = true;
@@ -65,10 +67,17 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       filter(active => active !== this.active),
       takeUntil(this.destroyed$)
     ).subscribe(active => {
-      this.active = active;
+      if (active !== this.active) {
+        this.active = active;
+        this.activeChange.emit(active);
+      }
     });
 
     this.active = this.activatedRoute.snapshot.queryParamMap.get("active");
+
+    if (this.active) {
+      this.activeChange.emit(this.active);
+    }
   }
 
   ngOnChanges() {
@@ -83,6 +92,12 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
         take(1)
       ).subscribe(payload => {
         this.menu = payload.response.menu;
+        this.active = payload.response.active;
+
+        if (this.active) {
+          this.activeChange.emit(this.active);
+        }
+
         this.loading = false;
       });
 

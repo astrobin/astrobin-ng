@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -47,6 +47,7 @@ export enum SmartFolderType {
       <astrobin-user-gallery-smart-folder
         *ngIf="activeFolderType"
         @fadeInOut
+        (activeChange)="activeChange.emit($event)"
         [user]="user"
         [userProfile]="userProfile"
         [folderType]="activeFolderType"
@@ -59,6 +60,8 @@ export enum SmartFolderType {
 export class UserGallerySmartFoldersComponent extends BaseComponentDirective implements OnInit {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
+
+  @Output() readonly activeChange = new EventEmitter<string>();
 
   public readonly smartFolders = [
     {

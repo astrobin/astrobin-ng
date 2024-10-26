@@ -115,6 +115,7 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
           </a>
           <ng-template ngbNavContent>
             <astrobin-user-gallery-smart-folders
+              (activeChange)="activeSmartFolder = $event"
               [user]="user"
               [userProfile]="userProfile"
             ></astrobin-user-gallery-smart-folders>
