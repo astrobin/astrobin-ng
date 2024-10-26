@@ -1,6 +1,11 @@
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
 
+export enum DefaultGallerySortingOption {
+  PUBLICATION = 0,
+  TITLE = 6
+}
+
 export interface UserProfileInterface {
   id: number;
   deleted: Date;
@@ -22,7 +27,7 @@ export interface UserProfileInterface {
   avatar: string;
   excludeFromCompetition: boolean;
   defaultFrontPageSection: string;
-  defaultGallerySorting: number;
+  defaultGallerySorting: DefaultGallerySortingOption;
   defaultLicense: number;
   defaultWatermarkText: string;
   defaultWatermark: boolean;

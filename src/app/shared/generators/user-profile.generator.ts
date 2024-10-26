@@ -1,4 +1,4 @@
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { DefaultGallerySortingOption, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 
 export class UserProfileGenerator {
@@ -24,7 +24,7 @@ export class UserProfileGenerator {
       avatar: null,
       excludeFromCompetition: false,
       defaultFrontPageSection: "gobal",
-      defaultGallerySorting: 0,
+      defaultGallerySorting: DefaultGallerySortingOption.PUBLICATION,
       defaultLicense: 0,
       defaultWatermark: false,
       defaultWatermarkText: "Copyright Foo Bar",
@@ -60,7 +60,11 @@ export class UserProfileGenerator {
       contributionIndex: 0.0,
       followers: 0,
       premiumCounter: 0,
-      locations: []
+      locations: [],
+      imageCount: 0,
+      wipImageCount: 0,
+      followersCount: 0,
+      followingCount: 0
     };
   }
 }

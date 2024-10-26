@@ -14,7 +14,30 @@ export enum UserGalleryActiveLayout {
 @Component({
   selector: "astrobin-user-gallery-buttons",
   template: `
-    <div class="d-flex gap-3 justify-content-end">
+    <div class="d-flex gap-3 justify-content-end align-items-center">
+      <div ngbDropdown>
+        <button
+          class="btn btn-outline-secondary btn-sm"
+          ngbDropdownToggle
+        >
+          {{ "Sort" | translate }}
+        </button>
+        <div ngbDropdownMenu>
+          <button
+            class="dropdown-item"
+            (click)="sortChange.emit('title')"
+          >
+            {{ "Title" | translate }}
+          </button>
+          <button
+            class="dropdown-item"
+            (click)="sortChange.emit('publication')"
+          >
+            {{ "Publication" | translate }}
+          </button>
+        </div>
+      </div>
+
       <img
         *ngIf="activeLayout !== UserGalleryActiveLayout.TINY"
         (click)="setLayout(UserGalleryActiveLayout.TINY)"
@@ -85,6 +108,9 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
 
   @Output()
   activeLayoutChange = new EventEmitter<UserGalleryActiveLayout>();
+
+  @Output()
+  sortChange = new EventEmitter<string>();
 
   protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
   protected readonly ICON_SIZE = 16;

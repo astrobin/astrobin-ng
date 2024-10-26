@@ -4,7 +4,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { DefaultGallerySortingOption, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { fromEvent, Subject, throttleTime } from "rxjs";
@@ -64,7 +64,10 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
             </div>
           </a>
           <ng-template ngbNavContent>
-            <astrobin-user-gallery-buttons [(activeLayout)]="activeLayout"></astrobin-user-gallery-buttons>
+            <astrobin-user-gallery-buttons
+              [(activeLayout)]="activeLayout"
+              (sortChange)="onSortChange($event)"
+            ></astrobin-user-gallery-buttons>
 
             <astrobin-user-gallery-collections
               class="d-block mb-5"
@@ -293,7 +296,8 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
             !!this.collectionId
           ),
         collection: this.collectionId,
-        q: this.searchModel
+        q: this.searchModel,
+        subsection: this.userProfile?.defaultGallerySorting === DefaultGallerySortingOption.TITLE ? "title" : null
       }
 
       this.stagingAreaOptions = {
@@ -338,6 +342,17 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
 
   ngOnChanges() {
     this.searchModel = null;
+
+    if (
+      this.userProfile &&
+      this.userProfile.defaultGallerySorting &&
+      this.userProfile.defaultGallerySorting === DefaultGallerySortingOption.TITLE
+    ) {
+      this.publicGalleryOptions = {
+        ...this.publicGalleryOptions,
+        subsection: "title"
+      };
+    }
   }
 
   onTabClick(tab: GalleryNavigationComponent) {
@@ -352,6 +367,18 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
 
   protected onSearchModelChange() {
     this._searchSubject.next(this.searchModel);
+  }
+
+  protected onSortChange(sort: string) {
+    this.publicGalleryOptions = {
+      ...this.publicGalleryOptions,
+      subsection: sort
+    };
+
+    this.stagingAreaOptions = {
+      ...this.stagingAreaOptions,
+      subsection: sort
+    };
   }
 
   private _setCollectionFromRoute() {
