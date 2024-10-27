@@ -11,7 +11,7 @@ import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/t
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { filter, take, tap } from "rxjs/operators";
+import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -187,7 +187,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
     this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
       .pipe(
-        filter(callerComponentId => callerComponentId === this.componentId)
+        filter(callerComponentId => callerComponentId === this.componentId),
+        takeUntil(this.destroyed$)
       )
       .subscribe(() => {
         this.loadMore().subscribe(() => {

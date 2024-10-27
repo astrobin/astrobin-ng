@@ -26,6 +26,7 @@ import { fadeInOut } from "@shared/animations";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { LoadCollections } from "@app/store/actions/collection.actions";
+import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 
 @Component({
   selector: "astrobin-user-gallery-images",
@@ -275,6 +276,8 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   protected loadingPlaceholdersCount: number;
 
   private _findImagesSubscription: Subscription;
+  private _slideshowComponent: ImageViewerSlideshowComponent;
+  private _nearEndOfContextSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -331,6 +334,12 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
         this.loadingMore = false;
         this.loading = false;
         this.changeDetectorRef.detectChanges();
+        if (this._slideshowComponent) {
+          this._slideshowComponent.setNavigationContext(this.images.map(image => ({
+            imageId: image.hash || image.pk.toString(),
+            thumbnailUrl: image.finalGalleryThumbnail
+          })));
+        }
       });
     });
   }
@@ -399,7 +408,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       thumbnailUrl: image.finalGalleryThumbnail
     }));
 
-    this.imageViewerService.openSlideshow(
+    const slideshow = this.imageViewerService.openSlideshow(
       this.componentId,
       imageId,
       FINAL_REVISION_LABEL,
@@ -407,6 +416,29 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       this.viewContainerRef,
       true
     );
+
+    this._slideshowComponent = slideshow.instance;
+
+    if (this._nearEndOfContextSubscription) {
+      this._nearEndOfContextSubscription.unsubscribe();
+    }
+
+    this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
+      .pipe(
+        filter(callerComponentId => callerComponentId === this.componentId)
+      )
+      .subscribe(() => {
+        if (
+          this.loading ||
+          this.loadingMore ||
+          this.next === null
+        ) {
+          return;
+        }
+
+        this.page++;
+        this._getImages();
+      });
   }
 
   protected onImageDeleted(imageId: ImageInterface["pk"]): void {
@@ -448,7 +480,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }));
   }
 
-  private _onScroll() {
+  private _onScroll(){
     if (
       isPlatformServer(this.platformId) ||
       this.loading ||
