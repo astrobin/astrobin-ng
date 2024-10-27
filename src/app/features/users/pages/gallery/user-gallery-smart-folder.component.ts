@@ -20,8 +20,8 @@ import { FindImagesResponseInterface } from "@shared/services/api/classic/images
       <astrobin-loading-indicator *ngIf="loading"></astrobin-loading-indicator>
 
       <ng-container *ngIf="!loading">
-        <h4 class="mb-3">{{ humanizeFolderType() }}</h4>
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <h4 class="mb-0 me-2">{{ humanizeFolderType() }}</h4>
           <a
             *ngFor="let item of menu"
             [class.active]="item[0] === active"

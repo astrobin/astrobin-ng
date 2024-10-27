@@ -55,7 +55,8 @@
     @media screen and (max-width: $md-max) {
       padding: 0;
       max-width: unset;
-      margin-bottom: 3rem; // For the fixed mobile navigation footer
+      // For the fixed mobile navigation footer
+      // margin-bottom: 3rem;
     }
   }
 }

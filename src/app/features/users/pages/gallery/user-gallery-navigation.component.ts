@@ -65,7 +65,7 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
           </a>
           <ng-template ngbNavContent>
             <astrobin-user-gallery-collections
-              class="d-block mb-3"
+              class="d-block mb-5"
               [user]="user"
               [userProfile]="userProfile"
               [parent]="collectionId"
@@ -357,7 +357,9 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   onTabClick(tab: GalleryNavigationComponent) {
-    this.router.navigate([], { fragment: tab });
+    this.router.navigate([], { fragment: tab }).then(() => {
+      this.windowRefService.scroll({ top: 0 });
+    });
   }
 
   protected createCollection() {

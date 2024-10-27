@@ -9,14 +9,14 @@
   .nav-tabs {
     @include darkest-background-texture;
     position: sticky;
-    top: 61px;
-    z-index: 1;
+    top: 60px;
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .5);
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    z-index: 2;
 
     &::-webkit-scrollbar {
       display: none;
@@ -78,7 +78,7 @@
     margin: 0 -.5rem;
 
     .tab-content {
-      padding: 1rem .5rem;
+      padding: 2rem .5rem;
     }
   }
 }

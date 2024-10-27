@@ -15,9 +15,9 @@ export enum UserGalleryActiveLayout {
   selector: "astrobin-user-gallery-buttons",
   template: `
     <div class="d-flex gap-3 justify-content-end align-items-center">
-      <div ngbDropdown>
+      <div ngbDropdown class="mb-0 p-0">
         <button
-          class="btn btn-outline-secondary btn-sm"
+          class="btn btn-outline-secondary btn-sm py-1 mb-0"
           ngbDropdownToggle
         >
           {{ "Sort" | translate }}

@@ -32,7 +32,7 @@ import { LoadCollections } from "@app/store/actions/collection.actions";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <astrobin-nothing-here
-        *ngIf="!loading && images.length === 0 && !options?.collection"
+        *ngIf="!loading && images.length === 0"
         [withAlert]="false"
         [withInfoSign]="false"
       ></astrobin-nothing-here>
