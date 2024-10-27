@@ -22,4 +22,5 @@ export interface UserInterface {
   marketplaceFeedback: number;
   marketplaceFeedbackCount: number;
   marketplaceListingCount: number;
+  validSubscription: string | null;
 }

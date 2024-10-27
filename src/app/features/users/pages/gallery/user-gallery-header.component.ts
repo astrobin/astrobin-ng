@@ -32,7 +32,7 @@ import { Subject } from "rxjs";
 
       <div class="user-info d-flex justify-content-between">
         <div class="d-flex gap-3 align-items-center">
-          <astrobin-avatar [user]="user" [link]="false"></astrobin-avatar>
+          <astrobin-avatar [user]="user" [link]="false" [showPremiumBadge]="true"></astrobin-avatar>
 
           <div class="d-flex flex-column gap-1">
             <div class="d-flex flex-column flex-sm-row gap-sm-3 align-items-sm-center">

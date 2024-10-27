@@ -41,6 +41,7 @@ export interface BackendUserInterface {
   marketplace_feedback: number;
   marketplace_feedback_count: number;
   marketplace_listing_count: number;
+  valid_subscription: string | null;
 }
 
 export interface BackendUserProfileInterface {
@@ -163,7 +164,8 @@ export class CommonApiAdaptorService extends BaseService {
       userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission)),
       marketplaceFeedback: user.marketplace_feedback,
       marketplaceFeedbackCount: user.marketplace_feedback_count,
-      marketplaceListingCount: user.marketplace_listing_count
+      marketplaceListingCount: user.marketplace_listing_count,
+      validSubscription: user.valid_subscription
     };
   }
 

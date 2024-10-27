@@ -7,6 +7,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, take } from "rxjs/operators";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 
 @Component({
   selector: "" + "astrobin-avatar",
@@ -14,7 +15,7 @@ import { filter, take } from "rxjs/operators";
   styleUrls: ["./avatar.component.scss"]
 })
 export class AvatarComponent extends BaseComponentDirective implements OnChanges {
-  avatarUrl: string = "/assets/images/default-avatar.jpeg?v=2";
+  protected avatarUrl: string = "/assets/images/default-avatar.jpeg?v=2";
 
   @Input()
   user: UserInterface;
@@ -25,9 +26,13 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
   @Input()
   link = true;
 
+  @Input()
+  showPremiumBadge = false;
+
   constructor(
     public readonly store$: Store<MainState>,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$);
   }
