@@ -64,7 +64,7 @@ import { TranslateService } from "@ngx-translate/core";
       ></button>
 
       <div class="table-container">
-        <table class="table table-striped">
+        <table class="table table-striped table-mobile-support">
           <thead>
           <tr>
             <th class="thumbnail"></th>

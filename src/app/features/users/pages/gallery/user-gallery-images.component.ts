@@ -138,7 +138,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
         @fadeInOut
         class="table-layout-container"
       >
-        <table class="table table-striped table-hover">
+        <table class="table table-striped table-mobile-support">
           <thead>
           <tr>
             <th>{{ "Title" | translate }}</th>
@@ -151,28 +151,28 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
           <tbody>
           <tr
             *ngFor="let image of images"
-            (click)="openImage(image)"
             [class.wip]="image.isWip"
           >
-            <td>
+            <td [attr.data-label]="'Title' | translate">
               <a
                 (click)="openImage(image)"
                 [href]="'/i/' + (image.hash || image.pk.toString())"
                 astrobinEventPreventDefault
               >
                 {{ image.title }}
+                <fa-icon *ngIf="image.isWip" class="ms-2" icon="lock"></fa-icon>
               </a>
               <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
             </td>
-            <td class="no-wrap">
+            <td [attr.data-label]="'Published' | translate" class="no-wrap">
               <abbr [attr.title]="(image.published || image.uploaded) | localDate">
                 {{ (image.published || image.uploaded) | localDate | timeago: true }}
               </abbr>
             </td>
-            <td>{{ image.viewCount }}</td>
-            <td>{{ image.likeCount }}</td>
-            <td>{{ image.bookmarkCount }}</td>
-            <td>{{ image.commentCount }}</td>
+            <td [attr.data-label]="'Views' | translate">{{ image.viewCount }}</td>
+            <td [attr.data-label]="'Likes' | translate">{{ image.likeCount }}</td>
+            <td [attr.data-label]="'Bookmarks' | translate">{{ image.bookmarkCount }}</td>
+            <td [attr.data-label]="'Comments' | translate">{{ image.commentCount }}</td>
           </tr>
           </tbody>
         </table>
