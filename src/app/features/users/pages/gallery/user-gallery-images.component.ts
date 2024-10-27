@@ -24,7 +24,7 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { fadeInOut } from "@shared/animations";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
-import { selectCollections, selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
+import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 
 @Component({
@@ -60,7 +60,14 @@ import { LoadCollections } from "@app/store/actions/collection.actions";
       <ng-container *ngTemplateOutlet="acquisitionSortingInfoTemplate"></ng-container>
 
       <div
-        *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TINY"
+        *ngIf="
+          !loading &&
+          images.length > 0 &&
+          (
+            activeLayout === UserGalleryActiveLayout.SMALL ||
+            activeLayout === UserGalleryActiveLayout.LARGE
+          )
+        "
         @fadeInOut
         (gridItemsChange)="onGridItemsChange($event)"
         [astrobinMasonryLayout]="images"
@@ -123,6 +130,51 @@ import { LoadCollections } from "@app/store/actions/collection.actions";
           <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
           <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image }"></ng-container>
         </a>
+      </div>
+
+      <div
+        *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TABLE"
+        @fadeInOut
+        class="table-layout-container"
+      >
+        <table class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>{{ "Title" | translate }}</th>
+            <th>{{ "Published" | translate }}</th>
+            <th>{{ "Views" | translate }}</th>
+            <th>{{ "Likes" | translate }}</th>
+            <th>{{ "Bookmarks" | translate }}</th>
+            <th>{{ "Comments" | translate }}</th>
+          </thead>
+          <tbody>
+          <tr
+            *ngFor="let image of images"
+            (click)="openImage(image)"
+            [class.wip]="image.isWip"
+          >
+            <td>
+              <a
+                (click)="openImage(image)"
+                [href]="'/i/' + (image.hash || image.pk.toString())"
+                astrobinEventPreventDefault
+              >
+                {{ image.title }}
+              </a>
+              <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
+            </td>
+            <td class="no-wrap">
+              <abbr [attr.title]="(image.published || image.uploaded) | localDate">
+                {{ (image.published || image.uploaded) | localDate | timeago: true }}
+              </abbr>
+            </td>
+            <td>{{ image.viewCount }}</td>
+            <td>{{ image.likeCount }}</td>
+            <td>{{ image.bookmarkCount }}</td>
+            <td>{{ image.commentCount }}</td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </ng-container>
 

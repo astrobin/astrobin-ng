@@ -21,7 +21,9 @@ import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gall
           ></astrobin-image-loading-indicator>
         </ng-container>
 
-        <ng-container *ngIf="activeLayout !== UserGalleryActiveLayout.TINY">
+        <ng-container
+          *ngIf="activeLayout === UserGalleryActiveLayout.SMALL || activeLayout === UserGalleryActiveLayout.LARGE"
+        >
           <astrobin-image-loading-indicator
             *ngFor="let item of gridItems"
             [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
@@ -31,6 +33,10 @@ import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gall
             [style.min-height.px]="averageHeight"
           >
           </astrobin-image-loading-indicator>
+        </ng-container>
+
+        <ng-container *ngIf="activeLayout === UserGalleryActiveLayout.TABLE">
+          <astrobin-loading-indicator></astrobin-loading-indicator>
         </ng-container>
       </ng-container>
     </div>

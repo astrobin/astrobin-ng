@@ -2,9 +2,15 @@
 
 :host {
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom:  1rem;
 
   @media (max-width: $sm-max) {
     margin-bottom: .75rem;
+  }
+
+  .ng-fa-icon {
+    &.active {
+      color: var(--accentColor);
+    }
   }
 }

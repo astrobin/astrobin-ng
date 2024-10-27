@@ -8,7 +8,8 @@ import { isPlatformBrowser } from "@angular/common";
 export enum UserGalleryActiveLayout {
   TINY = "tiny",
   SMALL = "small",
-  LARGE = "large"
+  LARGE = "large",
+  TABLE = "table"
 }
 
 @Component({
@@ -104,6 +105,21 @@ export enum UserGalleryActiveLayout {
         height="{{ ICON_SIZE }}"
         width="{{ ICON_SIZE }}"
       />
+      <fa-icon
+        *ngIf="activeLayout !== UserGalleryActiveLayout.TABLE"
+        (click)="setLayout(UserGalleryActiveLayout.TABLE)"
+        [icon]="['fas', 'bars']"
+        [ngbTooltip]="'Table layout' | translate"
+        class="cursor-pointer"
+        container="body"
+      ></fa-icon>
+      <fa-icon
+        *ngIf="activeLayout === UserGalleryActiveLayout.TABLE"
+        [icon]="['fas', 'bars']"
+        [ngbTooltip]="'Table layout' | translate"
+        container="body"
+        class="active"
+      ></fa-icon>
     </div>
   `,
   styleUrls: ["./user-gallery-buttons.component.scss"]
