@@ -32,6 +32,14 @@ export interface FollowingInterface {
   ][];
 }
 
+export interface MutualFollowersInterface {
+  "mutual-followers": [
+    UserInterface["id"],
+    UserInterface["username"],
+    UserProfileInterface["realName"]
+  ][];
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -117,6 +125,16 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     }
 
     return this.http.get<FollowingInterface>(url);
+  }
+
+  getUserProfileMutualFollowers(id: UserProfileInterface["id"], q?: string): Observable<MutualFollowersInterface> {
+    let url = `${this.configUrl}/userprofiles/${id}/mutual-followers/`;
+
+    if (q) {
+      url += `?q=${q}`;
+    }
+
+    return this.http.get<MutualFollowersInterface>(url);
   }
 
   getUserProfileByUserId(userId: UserInterface["id"]): Observable<UserProfileInterface> {

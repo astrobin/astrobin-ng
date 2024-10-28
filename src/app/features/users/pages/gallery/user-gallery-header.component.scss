@@ -87,11 +87,48 @@
       }
     }
   }
+
+  .edit-avatar {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+
+    .ng-fa-icon {
+      font-size: 1rem;
+      color: var(--white);
+      background: rgba(0, 0, 0, 0.75);
+      box-shadow: 0 .25rem .25rem rgba(0, 0, 0, 0.5);
+      padding: .5rem;
+      margin: 0;
+      border-radius: 50%;
+      display: flex;
+      width: 2.25rem;
+      height: 2.25rem;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      opacity: 1;
+    }
+  }
 }
 
 @media (max-width: $sm-max) {
   .user-gallery-header {
-    .user-info  {
+    .user-info {
       astrobin-username {
         font-size: 1.25rem;
       }

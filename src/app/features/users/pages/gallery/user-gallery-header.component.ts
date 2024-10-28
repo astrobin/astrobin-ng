@@ -11,11 +11,12 @@ import { UserProfileInterface, UserProfileStatsInterface } from "@shared/interfa
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
-import { CommonApiService, FollowersInterface, FollowingInterface } from "@shared/services/api/classic/common/common-api.service";
+import { CommonApiService, FollowersInterface, FollowingInterface, MutualFollowersInterface } from "@shared/services/api/classic/common/common-api.service";
 import { SearchService } from "@features/search/services/search.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Subject } from "rxjs";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-user-gallery-header",
@@ -32,7 +33,14 @@ import { Subject } from "rxjs";
 
       <div class="user-info d-flex justify-content-between">
         <div class="d-flex gap-3 align-items-center">
-          <astrobin-avatar [user]="user" [link]="false" [showPremiumBadge]="true"></astrobin-avatar>
+          <div class="avatar-container position-relative">
+            <astrobin-avatar [user]="user" [link]="false" [showPremiumBadge]="true"></astrobin-avatar>
+            <div class="edit-avatar" *ngIf="currentUserWrapper.user?.id === user.id">
+              <a [href]="classicRoutesService.SETTINGS_AVATAR">
+                <fa-icon icon="pencil"></fa-icon>
+              </a>
+            </div>
+          </div>
 
           <div class="d-flex flex-column gap-1">
             <div class="d-flex flex-column flex-sm-row gap-sm-3 align-items-sm-center">
@@ -67,6 +75,12 @@ import { Subject } from "rxjs";
               <span
                 (click)="openFollowingOffcanvas()"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
+                class="d-none d-sm-inline"
+                data-toggle="offcanvas"
+              ></span>
+              <span
+                (click)="openMutualFollowersOffcanvas()"
+                translate="(view mutual)"
                 class="d-none d-sm-inline"
                 data-toggle="offcanvas"
               ></span>
@@ -185,6 +199,30 @@ import { Subject } from "rxjs";
       </div>
     </ng-template>
 
+    <ng-template #mutualFollowersOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" translate="Mutual followers"></h5>
+        <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div *ngIf="mutualFollowers; else loadingTemplate" class="d-flex flex-column gap-1">
+          <input
+            type="search"
+            class="form-control mb-2"
+            placeholder="{{ 'Search' | translate }}"
+            [ngModelOptions]="{standalone: true}"
+            [(ngModel)]="mutualFollowersSearch"
+            (ngModelChange)="mutualFollowersSearchSubject.next($event)"
+          />
+          <ng-container *ngIf="!searching; else loadingTemplate">
+            <a *ngFor="let follower of mutualFollowers['mutual-followers']" [routerLink]="['/u', follower[1]]">
+              {{ follower[2] || follower[1] }}
+            </a>
+          </ng-container>
+        </div>
+      </div>
+    </ng-template>
+
     <ng-template #loadingTemplate>
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
@@ -199,15 +237,19 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   @ViewChild("changeHeaderImageOffcanvas") changeHeaderImageOffcanvas: TemplateRef<any>;
   @ViewChild("followersOffcanvas") followersOffcanvas: TemplateRef<any>;
   @ViewChild("followingOffcanvas") followingOffcanvas: TemplateRef<any>;
+  @ViewChild("mutualFollowersOffcanvas") mutualFollowersOffcanvas: TemplateRef<any>;
 
   protected userContentType: ContentTypeInterface;
   protected stats: UserProfileStatsInterface;
   protected followers: FollowersInterface;
-  protected following: FollowingInterface
+  protected following: FollowingInterface;
+  protected mutualFollowers: MutualFollowersInterface;
   protected followersSearch: string;
   protected followingSearch: string;
+  protected mutualFollowersSearch: string;
   protected followersSearchSubject = new Subject<string>();
   protected followingSearchSubject = new Subject<string>();
+  protected mutualFollowersSearchSubject = new Subject<string>();
   protected searching = true;
 
   constructor(
@@ -219,7 +261,8 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     public readonly searchService: SearchService,
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
     this._setUserContentType();
@@ -239,6 +282,12 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       distinctUntilChanged(),
       takeUntil(this.destroyed$)
     ).subscribe(searchTerm => this._searchFollowing(searchTerm));
+
+    this.mutualFollowersSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(searchTerm => this._searchMutualFollowers(searchTerm));
   }
 
   ngAfterViewInit() {
@@ -246,6 +295,8 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       this.openFollowersOffcanvas();
     } else if (this.activatedRoute.snapshot.queryParamMap.has("following")) {
       this.openFollowingOffcanvas();
+    } else if (this.activatedRoute.snapshot.queryParamMap.has("mutual-followers")) {
+      this.openMutualFollowersOffcanvas();
     }
   }
 
@@ -289,6 +340,15 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     );
   }
 
+  protected openMutualFollowersOffcanvas() {
+    this._searchMutualFollowers();
+    this.offcanvasService.open(
+      this.mutualFollowersOffcanvas, {
+        position: this.deviceService.offcanvasPosition()
+      }
+    );
+  }
+
   protected searchBookmarks() {
     const params = this.searchService.modelToParams(
       {
@@ -327,6 +387,14 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     this.searching = true;
     this.commonApiService.getUserProfileFollowing(this.userProfile.id, searchTerm).subscribe(following => {
       this.following = following;
+      this.searching = false;
+    });
+  }
+
+  private _searchMutualFollowers(searchTerm?: string) {
+    this.searching = true;
+    this.commonApiService.getUserProfileMutualFollowers(this.userProfile.id, searchTerm).subscribe(mutualFollowers => {
+      this.mutualFollowers = mutualFollowers;
       this.searching = false;
     });
   }
