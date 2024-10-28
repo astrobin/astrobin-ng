@@ -42,7 +42,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
             </div>
           </div>
 
-          <div class="d-flex flex-column gap-1">
+          <div class="d-flex flex-column gap-2">
             <div class="d-flex flex-column flex-sm-row gap-sm-3 align-items-sm-center">
               <astrobin-username [user]="user" [link]="false"></astrobin-username>
               <div *ngIf="user.displayName !== user.username" class="username">({{ user.username }})</div>

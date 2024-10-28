@@ -78,8 +78,8 @@
     }
 
     @media (max-width: $xs-max) {
-      flex-direction: column;
       align-items: start !important;
+      gap: .25rem;
 
       .btn:first-child {
         margin-right: 0;
