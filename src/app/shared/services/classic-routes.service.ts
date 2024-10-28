@@ -19,6 +19,7 @@ export class ClassicRoutesService extends BaseService {
   PRICING = "https://welcome.astrobin.com/pricing";
   UPLOAD = BASE_URL + "/upload/";
   INBOX = BASE_URL + "/messages/inbox/";
+  SEND_MESSAGE = (username: UserInterface["username"]) => BASE_URL + "/messages/compose/" + username + "/";
   SETTINGS = BASE_URL + "/profile/edit/basic/";
   SETTINGS_PREFERENCES = BASE_URL + "/profile/edit/preferences/";
   SETTINGS_AVATAR = BASE_URL + "/avatar/change/";

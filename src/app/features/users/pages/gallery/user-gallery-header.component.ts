@@ -44,8 +44,44 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
           <div class="d-flex flex-column gap-2">
             <div class="d-flex flex-column flex-sm-row gap-sm-3 align-items-sm-center">
-              <astrobin-username [user]="user" [link]="false"></astrobin-username>
-              <div *ngIf="user.displayName !== user.username" class="username">({{ user.username }})</div>
+              <div class="d-flex flex-row align-items-center gap-3">
+                <astrobin-username
+                  [user]="user" [link]="false"
+                  class="d-inline-block"
+                ></astrobin-username>
+
+                <div
+                  *ngIf="user.displayName !== user.username"
+                  class="username d-none d-sm-block"
+                >
+                  ({{ user.username }})
+                </div>
+
+                <div ngbDropdown class="d-inline-block py-0">
+                  <button
+                    class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2"
+                    id="user-gallery-dropdown"
+                    ngbDropdownToggle
+                  >
+                    <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
+                  </button>
+                  <div ngbDropdownMenu aria-labelledby="user-gallery-dropdown">
+                    <a
+                      *ngIf="currentUserWrapper.user?.id === user.id"
+                      [href]="classicRoutesService.SETTINGS"
+                      class="dropdown-item"
+                      translate="My settings"
+                    ></a>
+                    <a
+                      *ngIf="currentUserWrapper.user?.id !== user.id"
+                      [href]="classicRoutesService.SEND_MESSAGE(user.username)"
+                      class="dropdown-item"
+                      translate="Send private message"
+                    ></a>
+                  </div>
+                </div>
+              </div>
+
               <astrobin-toggle-property
                 *ngIf="userContentType && currentUserWrapper.user?.id !== user.id"
                 [contentType]="userContentType.id"
