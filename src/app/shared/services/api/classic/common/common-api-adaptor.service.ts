@@ -106,6 +106,7 @@ export interface BackendUserProfileInterface {
   signup_country?: string;
   agreed_to_marketplace_terms?: string;
   enable_new_search_experience?: boolean;
+  enable_new_gallery_experience?: boolean;
   agreed_to_iotd_tp_rules_and_guidelines?: boolean;
   gallery_header_image?: string;
   image_count?: number;
@@ -232,6 +233,7 @@ export class CommonApiAdaptorService extends BaseService {
       signUpCountry: userProfile.signup_country,
       agreedToMarketplaceTerms: userProfile.agreed_to_marketplace_terms,
       enableNewSearchExperience: userProfile.enable_new_search_experience,
+      enableNewGalleryExperience: userProfile.enable_new_gallery_experience,
       agreedToIotdTpRulesAndGuidelines: userProfile.agreed_to_iotd_tp_rules_and_guidelines,
       galleryHeaderImage: userProfile.gallery_header_image,
       imageCount: userProfile.image_count,

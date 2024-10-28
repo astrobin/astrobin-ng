@@ -74,6 +74,7 @@ export interface UserProfileInterface {
   signUpCountry?: string;
   agreedToMarketplaceTerms?: string;
   enableNewSearchExperience?: boolean;
+  enableNewGalleryExperience?: boolean;
   agreedToIotdTpRulesAndGuidelines?: boolean;
   galleryHeaderImage?: string;
   imageCount: number;

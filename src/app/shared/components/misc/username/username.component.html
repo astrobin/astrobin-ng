@@ -1,11 +1,15 @@
-<a
-  *ngIf="user && link"
-  [href]="classicRoutesService.GALLERY(user.username)"
-  [target]="linkTarget"
-  astrobinEventStopPropagation
->
-  <ng-container [ngTemplateOutlet]="usernameTemplate"></ng-container>
-</a>
+<ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper; else loadingTemplate">
+  <a
+    *ngIf="user && link"
+    (click)="userService.openGallery(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+    [href]="userService.getGalleryUrl(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+    [target]="linkTarget"
+    astrobinEventPreventDefault
+    astrobinEventStopPropagation
+  >
+    <ng-container [ngTemplateOutlet]="usernameTemplate"></ng-container>
+  </a>
+</ng-container>
 
 <ng-container [ngTemplateOutlet]="usernameTemplate" *ngIf="!link"></ng-container>
 

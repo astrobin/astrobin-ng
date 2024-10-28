@@ -8,6 +8,9 @@ import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, take } from "rxjs/operators";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { Router } from "@angular/router";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { UserService } from "@shared/services/user.service";
 
 @Component({
   selector: "" + "astrobin-avatar",
@@ -16,6 +19,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 })
 export class AvatarComponent extends BaseComponentDirective implements OnChanges {
   protected avatarUrl: string = "/assets/images/default-avatar.jpeg?v=2";
+  protected url: string;
 
   @Input()
   user: UserInterface;
@@ -32,7 +36,10 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
   constructor(
     public readonly store$: Store<MainState>,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly userSubscriptionService: UserSubscriptionService
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly router: Router,
+    public readonly windowRefService: WindowRefService,
+    public readonly userService: UserService
   ) {
     super(store$);
   }
@@ -46,13 +53,21 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
         ).subscribe(user => {
           this.user = user;
           this._setAvatar();
+          this._setUrl();
         });
 
         this.store$.dispatch(new LoadUser({ id: this.userId }));
       } else if (this.user) {
         this._setAvatar();
+        this._setUrl();
       }
     }
+  }
+
+  protected openGallery(): void {
+    this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
+      this.userService.openGallery(this.user.username, currentUserProfile?.enableNewGalleryExperience);
+    });
   }
 
   private _setAvatar(): void {
@@ -65,5 +80,11 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
     } else {
       this.avatarUrl = this.user.largeAvatar;
     }
+  }
+
+  private _setUrl(): void {
+    this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
+     return this.userService.getGalleryUrl(this.user.username, currentUserProfile?.enableNewGalleryExperience);
+    });
   }
 }

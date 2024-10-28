@@ -13,7 +13,10 @@
       <div class="meta">
         <a
           *ngIf="!comment.deleted"
-          [href]="classicRoutesService.GALLERY(comment.authorUsername)" class="username"
+          (click)="userService.openGallery(comment.authorUsername, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+          [href]="userService.getGalleryUrl(comment.authorUsername, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+          astrobinEventPreventDefault
+          class="username"
         >
           {{ comment.authorDisplayName }}
         </a>

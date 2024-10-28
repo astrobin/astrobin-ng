@@ -46,7 +46,11 @@
               </h4>
 
               <h5>
-                <a [href]="classicRoutesService.GALLERY(group.value[0].userObj.username)">
+                <a
+                  (click)="userService.openGallery(group.value[0].userObj.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                  [href]="userService.getGalleryUrl(group.value[0].userObj.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                  astrobinEventPreventDefault
+                >
                   {{ group.value[0].userDisplayName }}
                 </a>
               </h5>

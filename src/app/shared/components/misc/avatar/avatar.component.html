@@ -1,6 +1,6 @@
 <ng-container *ngIf="!!user; else loadingTemplate">
   <ng-container *ngIf="link; else noLinkTemplate">
-    <a [href]="classicRoutesService.GALLERY(user.username)">
+    <a [href]="url" (click)="openGallery()" astrobinEventPreventDefault>
       <ng-container [ngTemplateOutlet]="imageTemplate"></ng-container>
     </a>
   </ng-container>

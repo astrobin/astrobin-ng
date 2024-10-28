@@ -20,6 +20,7 @@ import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.inte
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
+import { UserService } from "@shared/services/user.service";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -66,6 +67,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly routerService: RouterService,
     public readonly elementRef: ElementRef,
     public readonly classicRoutesService: ClassicRoutesService,
+    public readonly userService: UserService,
     @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);

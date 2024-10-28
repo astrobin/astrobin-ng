@@ -13,7 +13,8 @@ export enum SmartFolderType {
   YEAR = "year",
   GEAR = "gear",
   SUBJECT = "subject",
-  CONSTELLATION = "constellation"
+  CONSTELLATION = "constellation",
+  NO_DATA = 'nodata'
 }
 
 @Component({
@@ -25,23 +26,34 @@ export enum SmartFolderType {
         @fadeInOut
         class="d-flex flex-wrap gap-4 justify-content-center"
       >
-        <a
-          *ngFor="let smartFolder of smartFolders"
-          [routerLink]="['/u', user.username]"
-          [queryParams]="{ 'folder-type': smartFolder.type }"
-          fragment="smart-folders"
-          class="smart-folder-category"
-        >
-          <div class="smart-folder-background"></div>
-          <div class="smart-folder-stars"></div>
-          <div class="smart-folder" [routerLink]="['/u', user.username, 'gallery', 'smart', smartFolder.name]">
-            <div class="icon">
-              <fa-icon *ngIf="smartFolder.icon" [icon]="smartFolder.icon"></fa-icon>
-              <img *ngIf="smartFolder.image" [src]="smartFolder.image" alt="" />
+        <ng-container *ngFor="let smartFolder of smartFolders">
+          <a
+            *ngIf="!smartFolder.onlyOwner || currentUserWrapper.user?.id === user.id"
+            [routerLink]="['/u', user.username]"
+            [queryParams]="{ 'folder-type': smartFolder.type }"
+            fragment="smart-folders"
+            class="smart-folder-category"
+          >
+            <div class="smart-folder-background"></div>
+            <div class="smart-folder-stars"></div>
+            <div class="smart-folder" [routerLink]="['/u', user.username, 'gallery', 'smart', smartFolder.name]">
+              <div class="icon">
+                <fa-icon *ngIf="smartFolder.icon" [icon]="smartFolder.icon"></fa-icon>
+                <img *ngIf="smartFolder.image" [src]="smartFolder.image" alt="" />
+              </div>
+              <div class="name">
+                {{ smartFolder.name }}
+                <fa-icon
+                  *ngIf="smartFolder.onlyOwner"
+                  [ngbTooltip]="'Only you can see this folder.' | translate"
+                  class="ms-2"
+                  container="body"
+                  icon="lock"
+                ></fa-icon>
+              </div>
             </div>
-            <div class="name">{{ smartFolder.name }}</div>
-          </div>
-        </a>
+          </a>
+        </ng-container>
       </div>
 
       <astrobin-user-gallery-smart-folder
@@ -83,6 +95,12 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
       type: SmartFolderType.CONSTELLATION,
       name: this.translateService.instant("Constellations"),
       image: "/assets/images/subject-types/constellation-white.png?v=1"
+    },
+    {
+      type: SmartFolderType.NO_DATA,
+      name: this.translateService.instant("Lacking data"),
+      icon: "frown",
+      onlyOwner: true
     }
   ];
 

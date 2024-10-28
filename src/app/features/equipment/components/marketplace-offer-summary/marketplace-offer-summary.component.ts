@@ -39,6 +39,7 @@ import { MarketplaceMasterOfferInterface } from "@features/equipment/types/marke
 import { selectUser } from "@features/account/store/auth.selectors";
 import { Subscription } from "rxjs";
 import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
+import { UserService } from "@shared/services/user.service";
 
 interface OfferGroup {
   [key: MarketplaceMasterOfferInterface["id"]]: (MarketplaceOfferInterface & {
@@ -82,7 +83,8 @@ export class MarketplaceOfferSummaryComponent extends BaseComponentDirective imp
     public readonly modalService: NgbModal,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly userService: UserService
   ) {
     super(store$);
   }

@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
@@ -34,7 +34,7 @@ import { FindImagesResponseInterface } from "@shared/services/api/classic/images
           </a>
         </div>
 
-        <p *ngIf="!loading && !active" class="mt-4 text-muted">
+        <p *ngIf="!loading && !active" class="mt-4 text- muted">
           {{ "Select a smart folder to see its content." | translate }}
         </p>
       </ng-container>
@@ -57,7 +57,8 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly translateService: TranslateService,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -84,39 +85,46 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   }
 
   ngOnChanges() {
-    if (!this.active) {
-      this.actions$.pipe(
-        ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
-        map((action: FindImagesSuccess) => action.payload),
-        filter(payload =>
-          payload.options.userId === this.user.id &&
-          payload.options.subsection === this.folderType
-        ),
-        take(1)
-      ).subscribe(payload => {
-        this.menu = payload.response.menu;
-        this.active = payload.response.active;
+    this.currentUser$.pipe(take(1)).subscribe(currentUser => {
+      if (this.folderType === SmartFolderType.NO_DATA && currentUser?.id !== this.user.id) {
+        this.router.navigateByUrl("/permission-denied", { skipLocationChange: true });
+        return;
+      }
 
-        if (this.active) {
-          this.activeChange.emit(this.active);
-        }
+      if (!this.active) {
+        this.actions$.pipe(
+          ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
+          map((action: FindImagesSuccess) => action.payload),
+          filter(payload =>
+            payload.options.userId === this.user.id &&
+            payload.options.subsection === this.folderType
+          ),
+          take(1)
+        ).subscribe(payload => {
+          this.menu = payload.response.menu;
+          this.active = payload.response.active;
 
+          if (this.active) {
+            this.activeChange.emit(this.active);
+          }
+
+          this.loading = false;
+        });
+
+        this.store$.dispatch(new FindImages({
+          options: {
+            userId: this.user.id,
+            page: 1,
+            subsection: this.folderType,
+            gallerySerializer: true
+          }
+        }));
+
+        this.loading = true;
+      } else {
         this.loading = false;
-      });
-
-      this.store$.dispatch(new FindImages({
-        options: {
-          userId: this.user.id,
-          page: 1,
-          subsection: this.folderType,
-          gallerySerializer: true
-        }
-      }));
-
-      this.loading = true;
-    } else {
-      this.loading = false;
-    }
+      }
+    });
   }
 
   protected humanizeFolderType(): string {
@@ -129,6 +137,10 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
         return this.translateService.instant("Subject types");
       case SmartFolderType.CONSTELLATION:
         return this.translateService.instant("Constellations");
+      case SmartFolderType.NO_DATA:
+        return this.translateService.instant("Lacking data");
     }
   }
+
+  protected readonly SmartFolderType = SmartFolderType;
 }

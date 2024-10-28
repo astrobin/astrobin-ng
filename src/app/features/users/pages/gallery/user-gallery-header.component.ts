@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -13,7 +13,7 @@ import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { CommonApiService, FollowersInterface, FollowingInterface } from "@shared/services/api/classic/common/common-api.service";
 import { SearchService } from "@features/search/services/search.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Subject } from "rxjs";
 
@@ -191,7 +191,7 @@ import { Subject } from "rxjs";
   `,
   styleUrls: ["./user-gallery-header.component.scss"]
 })
-export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit {
+export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
@@ -218,7 +218,8 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     public readonly commonApiService: CommonApiService,
     public readonly searchService: SearchService,
     public readonly router: Router,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);
     this._setUserContentType();
@@ -238,6 +239,14 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       distinctUntilChanged(),
       takeUntil(this.destroyed$)
     ).subscribe(searchTerm => this._searchFollowing(searchTerm));
+  }
+
+  ngAfterViewInit() {
+    if (this.activatedRoute.snapshot.queryParamMap.has("followers")) {
+      this.openFollowersOffcanvas();
+    } else if (this.activatedRoute.snapshot.queryParamMap.has("following")) {
+      this.openFollowingOffcanvas();
+    }
   }
 
   protected openStatsOffcanvas() {

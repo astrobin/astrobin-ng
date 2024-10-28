@@ -13,6 +13,7 @@ import { selectCollectionsByParams } from "@app/store/selectors/app/collection.s
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
+import { UserService } from "@shared/services/user.service";
 
 @Component({
   selector: "astrobin-image-viewer-groups-and-collections",
@@ -87,13 +88,19 @@ import { DeviceService } from "@shared/services/device.service";
         </button>
       </div>
       <div class="offcanvas-body">
-        <div *ngIf="collections; else loadingTemplate" class="d-flex flex-column gap-2">
-          <div *ngFor="let collection of collections" class="w-100">
-            <a [href]="classicRoutesService.GALLERY(image.username) + 'collections/' + collection.id">
-              {{ collection.name }}
-            </a>
+        <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+          <div *ngIf="collections; else loadingTemplate" class="d-flex flex-column gap-2">
+            <div *ngFor="let collection of collections" class="w-100">
+              <a
+                (click)="userService.openCollection(image.username, collection.id, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                [href]="userService.getCollectionUrl(image.username, collection.id, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                astrobinEventPreventDefault
+              >
+                {{ collection.name }}
+              </a>
+            </div>
           </div>
-        </div>
+        </ng-container>
       </div>
     </ng-template>
 
@@ -115,7 +122,8 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
     public readonly store$: Store<MainState>,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly userService: UserService
   ) {
     super(store$);
   }

@@ -172,7 +172,10 @@
         <ng-container [ngTemplateOutlet]="userMenubarTemplate"></ng-container>
       </ul>
 
-      <div aria-labelledby="user-dropdown" ngbDropdownMenu>
+      <div
+        aria-labelledby="user-dropdown"
+        ngbDropdownMenu
+      >
         <a class="dropdown-item" routerLink="/subscriptions/options">
           <fa-icon icon="asterisk"></fa-icon>
           {{ "Subscription plans" | translate }}
@@ -195,23 +198,25 @@
           {{ "Commercial products" | translate }}
         </a>
 
-        <a [href]="classicRoutesService.GALLERY(user.username)" class="dropdown-item">
+        <a
+          (click)="userService.openGallery(user.username, userProfile.enableNewGalleryExperience)"
+          [href]="userService.getGalleryUrl(user.username, userProfile.enableNewGalleryExperience)"
+          astrobinEventPreventDefault
+          class="dropdown-item"
+        >
           <fa-icon icon="image"></fa-icon>
           {{ "Public Gallery" | translate }}
         </a>
 
         <a
           *ngIf="!userProfile.displayWipImagesOnPublicGallery"
-          [href]="classicRoutesService.STAGING_GALLERY(user)"
+          (click)="userService.openStaging(user.username, userProfile.enableNewGalleryExperience)"
+          [href]="userService.getStagingUrl(user.username, userProfile.enableNewGalleryExperience)"
+          astrobinEventPreventDefault
           class="dropdown-item"
         >
           <fa-icon icon="lock"></fa-icon>
           {{ "Staging Area" | translate }}
-        </a>
-
-        <a [href]="classicRoutesService.BOOKMARKS(user)" class="dropdown-item">
-          <fa-icon icon="bookmark"></fa-icon>
-          {{ "Bookmarks" | translate }}
         </a>
 
         <div class="dropdown-divider"></div>
@@ -638,13 +643,22 @@
       </li>
 
       <li class="nav-item">
-        <a [href]="classicRoutesService.GALLERY(user.username)" class="nav-link">
+        <a
+          (click)="userService.openGallery(user.username, userProfile.enableNewGalleryExperience)"
+          [href]="userService.getGalleryUrl(user.username, userProfile.enableNewGalleryExperience)"
+          astrobinEventPreventDefault
+          class="nav-link"
+        >
           {{ "Public Gallery" | translate }}
         </a>
       </li>
 
       <li class="nav-item">
-        <a [href]="classicRoutesService.STAGING_GALLERY(user)" class="nav-link">
+        <a
+          (click)="userService.openStaging(user.username, userProfile.enableNewGalleryExperience)"
+          [href]="userService.getStagingUrl(user.username, userProfile.enableNewGalleryExperience)"
+          class="nav-link"
+        >
           {{ "Staging Area" | translate }}
         </a>
       </li>

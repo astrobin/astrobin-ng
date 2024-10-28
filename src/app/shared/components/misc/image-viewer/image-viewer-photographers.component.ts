@@ -21,6 +21,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { AcceptCollaboratorRequest, DenyCollaboratorRequest, ForceCheckTogglePropertyAutoLoad, RemoveCollaborator } from "@app/store/actions/image.actions";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { UserService } from "@shared/services/user.service";
 
 
 @Component({
@@ -76,7 +77,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
               <a
                 *ngFor="let user of photographers"
                 (click)="avatarClicked($event, user)"
-                [href]="classicRoutesService.GALLERY(user.username)"
+                [href]="userService.getGalleryUrl(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                 class="position-relative"
               >
                 <img [src]="user.avatar" alt="" class="avatar" />
@@ -117,7 +118,9 @@ import { UtilsService } from "@shared/services/utils/utils.service";
               "
             >
               <a
-                [href]="classicRoutesService.GALLERY(photographers[0].username)"
+                (click)="userService.openGallery(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                [href]="userService.getGalleryUrl(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                astrobinEventPreventDefault
                 class="position-relative"
               >
                 <img [src]="photographers[0].avatar" alt="" class="avatar" />
@@ -125,7 +128,9 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
               <div class="text-center text-sm-start">
                 <a
-                  [href]="classicRoutesService.GALLERY(photographers[0].username)"
+                  (click)="userService.openGallery(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                  [href]="userService.getGalleryUrl(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                  astrobinEventPreventDefault
                   class="d-inline me-2"
                 >
                   {{ photographers[0].displayName }}
@@ -170,17 +175,23 @@ import { UtilsService } from "@shared/services/utils/utils.service";
         <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
       </div>
       <div class="offcanvas-body offcanvas-users">
-        <div class="users">
+        <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="users">
           <div
             *ngFor="let user of photographers"
             class="user"
           >
-            <a [href]="classicRoutesService.GALLERY(user.username)">
+            <a
+              (click)="userService.openGallery(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+              [href]="userService.getGalleryUrl(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+              astrobinEventPreventDefault
+            >
               <img [src]="user.avatar" alt="" />
             </a>
 
             <a
-              [href]="classicRoutesService.GALLERY(user.username)"
+              (click)="userService.openGallery(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+              [href]="userService.getGalleryUrl(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+              astrobinEventPreventDefault
               class="d-block flex-grow-1 text-start no-wrap"
             >
               {{ user.displayName }}
@@ -239,7 +250,8 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
     public readonly renderer: Renderer2,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly userService: UserService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
