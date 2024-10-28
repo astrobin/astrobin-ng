@@ -82,6 +82,7 @@ export interface UserProfileInterface {
   followersCount: number;
   followingCount: number;
   displayWipImagesOnPublicGallery?: boolean;
+  allowAds?: boolean;
 }
 
 export interface UserProfileStatsInterface {

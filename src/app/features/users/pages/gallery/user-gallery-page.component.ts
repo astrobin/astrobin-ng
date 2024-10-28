@@ -9,16 +9,19 @@ import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { DefaultGallerySortingOption, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { filter, map, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { FindCollections, FindCollectionsSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { selectCurrentUser, selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 
 @Component({
   selector: "astrobin-user-gallery-page",
   template: `
     <div class="page">
+      <astrobin-ad-manager #ad *ngIf="showAd" configName="wide"></astrobin-ad-manager>
+
       <astrobin-user-gallery-header
         [user]="user"
         [userProfile]="userProfile"
@@ -35,6 +38,7 @@ import { selectCurrentUser, selectCurrentUserProfile, selectUser, selectUserProf
 export class UserGalleryPageComponent extends BaseComponentDirective implements OnInit {
   protected user: UserInterface;
   protected userProfile: UserProfileInterface;
+  protected showAd: boolean;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -46,7 +50,8 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
     public readonly activatedRoute: ActivatedRoute,
-    public readonly viewContainerRef: ViewContainerRef
+    public readonly viewContainerRef: ViewContainerRef,
+    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$);
 
@@ -81,6 +86,15 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     }) => {
       this.user = data.userData.user;
       this.userProfile = data.userData.userProfile;
+
+      this.userSubscriptionService.displayAds$().pipe(
+        filter(showAd => typeof showAd !== "undefined"),
+        take(1)
+      ).subscribe(showAd => {
+        // showAd = if the viewer gets ads.
+        // this.userProfile.allowAds = if the user allows ads to be shown on their profile.
+        this.showAd = showAd && this.userProfile.allowAds;
+      });
 
       switch (this.userProfile.defaultGallerySorting) {
         case DefaultGallerySortingOption.SUBJECT_TYPE:
