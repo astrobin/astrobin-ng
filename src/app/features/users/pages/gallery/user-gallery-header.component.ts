@@ -115,6 +115,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
                 data-toggle="offcanvas"
               ></span>
               <span
+                *ngIf="currentUserWrapper.user?.id === user.id"
                 (click)="openMutualFollowersOffcanvas()"
                 translate="(view mutual)"
                 class="d-none d-sm-inline"
