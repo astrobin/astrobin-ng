@@ -19,7 +19,7 @@ import { Month } from "@shared/enums/month.enum";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { AcquisitionType, DataSource, LicenseOptions, RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
-import { ColorOrMono } from "@features/equipment/types/sensor.interface";
+import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
 import { CountryService } from "@shared/services/country.service";
 import { SearchMinimumDataFilterValue } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.value";
@@ -49,6 +49,7 @@ export enum SearchAutoCompleteType {
   SEARCH_FILTER = "search_filter",
   SUBJECTS = "subjects",
   TELESCOPE = "telescope",
+  SENSOR = "sensor",
   CAMERA = "camera",
   MOUNT = "mount",
   FILTER = "filter",
@@ -111,6 +112,7 @@ export class SearchService extends BaseService {
   searchComplete$: Observable<SearchPaginatedApiResultInterface<any>>;
   private _autoCompleteItemsLimit = 15;
   private _autoCompleteTelescopeCache: { [query: string]: SearchAutoCompleteItem[] } = {};
+  private _autoCompleteSensorCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteCameraCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteMountCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteFilterCache: { [query: string]: SearchAutoCompleteItem[] } = {};
@@ -235,6 +237,8 @@ export class SearchService extends BaseService {
         return this.translateService.instant("Subject type");
       case SearchAutoCompleteType.TELESCOPE:
         return this.translateService.instant("Telescopes or lenses");
+      case SearchAutoCompleteType.SENSOR:
+        return this.translateService.instant("Sensors");
       case SearchAutoCompleteType.CAMERA:
         return this.translateService.instant("Cameras");
       case SearchAutoCompleteType.MOUNT:
@@ -519,6 +523,49 @@ export class SearchService extends BaseService {
           }),
           tap(items => {
             this._autoCompleteTelescopeCache[query] = items;
+          })
+        ).subscribe(items => {
+        observer.next(items);
+        observer.complete();
+      });
+    });
+  }
+
+  autoCompleteSensors$(query: string): Observable<SearchAutoCompleteItem[]> {
+    if (this._autoCompleteSensorCache[query]) {
+      return of(this._autoCompleteSensorCache[query]);
+    }
+
+    return new Observable<SearchAutoCompleteItem[]>(observer => {
+      observer.next(null); // Indicates loading.
+
+      this.equipmentApiService
+        .findAllEquipmentItems(EquipmentItemType.SENSOR, {
+          query,
+          limit: this._autoCompleteItemsLimit
+        })
+        .pipe(
+          map((response: PaginatedApiResultInterface<SensorInterface>) => {
+            return response.results.map(sensor => {
+              const label = `${sensor.brandName || this.translateService.instant("(DIY)")} ${sensor.name}`;
+              const value = {
+                id: sensor.id,
+                name: label
+              };
+
+              return {
+                type: SearchAutoCompleteType.SENSOR,
+                label,
+                value: {
+                  value: [value],
+                  matchType: null
+                },
+                minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.SENSOR)
+              };
+            });
+          }),
+          tap(items => {
+            this._autoCompleteSensorCache[query] = items;
           })
         ).subscribe(items => {
         observer.next(items);
