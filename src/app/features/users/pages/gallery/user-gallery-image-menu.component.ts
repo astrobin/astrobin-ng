@@ -22,6 +22,7 @@ import { RemoveImageFromCollection, SetCollectionCoverImage } from "@app/store/a
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div
+        *ngIf="currentUserWrapper.user?.id === user.id"
         ngbDropdown
         container="body"
         class="image-menu"

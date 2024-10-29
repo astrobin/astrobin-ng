@@ -107,7 +107,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
       <div
         *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TINY"
         @fadeInOut
-        class="masonry-layout-container"
+        class="masonry-layout-container tiny"
       >
         <a
           *ngFor="let image of images"
@@ -200,9 +200,9 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
     </ng-template>
 
     <ng-template #hoverTemplate let-image="image">
-      <div class="hover d-flex align-items-center gap-2">
+      <div class="hover d-flex align-items-end gap-2">
         <div class="flex-grow-1">
-          <div class="title">{{ image.title }}</div>
+          <div class="title">{{ image.title|truncate:30 }}</div>
           <div *ngIf="image.published" class="published">{{ image.published | localDate | timeago }}</div>
           <div *ngIf="!image.published && image.uploaded"
                class="uploaded">{{ image.uploaded | localDate | timeago }}

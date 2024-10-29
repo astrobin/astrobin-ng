@@ -180,6 +180,20 @@
     margin: 2rem 0;
   }
 
+  &.tiny {
+    a {
+      > .hover {
+        font-size: .75rem;
+        border-bottom-left-radius: 1.75rem;
+        border-bottom-right-radius: 1.75rem;
+      }
+
+      > img {
+        border-radius: 1.75rem;
+      }
+    }
+  }
+
   @media (max-width: $xs-max) {
     justify-content: center;
 

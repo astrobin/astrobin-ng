@@ -37,7 +37,8 @@ export class UserGenerator {
       userPermissions: source.userPermissions || [],
       marketplaceFeedback: source.marketplaceFeedback || null,
       marketplaceFeedbackCount: source.marketplaceFeedbackCount || 0,
-      marketplaceListingCount: source.marketplaceListingCount || 0
+      marketplaceListingCount: source.marketplaceListingCount || 0,
+      validSubscription: source.validSubscription || null,
     };
   }
 }
