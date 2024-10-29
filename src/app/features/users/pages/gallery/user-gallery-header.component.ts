@@ -104,15 +104,21 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
                 class="d-none d-sm-inline"
               ></span>
               <span
-                (click)="openFollowersOffcanvas()"
+                (click)="userProfile.followersCount ? openFollowersOffcanvas() : null"
                 [translate]="'{{ 0 }} followers'" [translateParams]="{'0': userProfile.followersCount}"
-                data-toggle="offcanvas"
+                [attr.data-toggle]="userProfile.followersCount ? 'offcanvas' : ''"
               ></span>
               <span
-                (click)="openFollowingOffcanvas()"
+                *ngIf="currentUserWrapper.user?.id === user.id"
+                (click)="userProfile.followingCount ? openFollowingOffcanvas() : null"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
                 class="d-none d-sm-inline"
-                data-toggle="offcanvas"
+                [attr.data-toggle]="userProfile.followingCount ? 'offcanvas' : ''"
+              ></span>
+              <span
+                *ngIf="currentUserWrapper.user?.id !== user.id"
+                [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
+                class="d-none d-sm-inline"
               ></span>
               <span
                 *ngIf="currentUserWrapper.user?.id === user.id"
@@ -369,21 +375,31 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   }
 
   protected openFollowingOffcanvas() {
-    this._searchFollowing();
-    this.offcanvasService.open(
-      this.followingOffcanvas, {
-        position: this.deviceService.offcanvasPosition()
-      }
-    );
+    this.currentUser$.pipe(
+      take(1),
+      filter(currentUser => currentUser?.id === this.user.id)
+    ).subscribe(() => {
+      this._searchFollowing();
+      this.offcanvasService.open(
+        this.followingOffcanvas, {
+          position: this.deviceService.offcanvasPosition()
+        }
+      );
+    });
   }
 
   protected openMutualFollowersOffcanvas() {
-    this._searchMutualFollowers();
-    this.offcanvasService.open(
-      this.mutualFollowersOffcanvas, {
-        position: this.deviceService.offcanvasPosition()
-      }
-    );
+    this.currentUser$.pipe(
+      take(1),
+      filter(currentUser => currentUser?.id === this.user.id)
+    ).subscribe(() => {
+      this._searchMutualFollowers();
+      this.offcanvasService.open(
+        this.mutualFollowersOffcanvas, {
+          position: this.deviceService.offcanvasPosition()
+        }
+      );
+    });
   }
 
   protected searchBookmarks() {
