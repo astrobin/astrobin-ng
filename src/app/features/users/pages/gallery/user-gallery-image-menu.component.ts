@@ -38,7 +38,7 @@ import { RemoveImageFromCollection, SetCollectionCoverImage } from "@app/store/a
         </button>
 
         <div
-          aria-labelledby="image-menu-dropdown-button-{{ image.hash || image.pk }}"
+          [attr.aria-labelledby]="'image-menu-dropdown-button-' + (image.hash || image.pk)"
           ngbDropdownMenu
         >
           <a class="dropdown-item" [routerLink]="['/i', image.hash || image.pk, 'edit']">

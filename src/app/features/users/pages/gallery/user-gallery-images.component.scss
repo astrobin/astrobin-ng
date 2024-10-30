@@ -1,32 +1,6 @@
 @import "../../../../styles/breakpoints";
 
 :host {
-  astrobin-user-gallery-image-menu {
-    .dropdown {
-      position: absolute;
-      top: .25rem;
-      right: .25rem;
-      margin: 0;
-      opacity: 0;
-      pointer-events: none;
-      line-height: 1rem;
-      z-index: 1;
-      transition: opacity 0.3s ease, filter 0.3s ease;
-      background: rgba(0, 0, 0, .5);
-      border-radius: 50%;
-      height: 2rem;
-      width: 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      ::ng-deep .btn {
-        color: var(--white);
-        margin: 0;
-      }
-    }
-  }
-
   .image-link {
     width: 143px;
     height: 143px;
@@ -54,6 +28,35 @@
     @media (max-width: $xs-max) {
       width: calc(100vw / 3 - 1.25rem);
       height: calc(100vw / 3 - 1.25rem);
+    }
+
+    astrobin-user-gallery-image-menu {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      top: .25rem;
+      right: .25rem;
+      margin: 0;
+      line-height: 1rem;
+      z-index: 1;
+      transition: opacity 0.3s ease, filter 0.3s ease;
+
+      ::ng-deep {
+        .dropdown {
+          background: rgba(0, 0, 0, .5);
+          border-radius: 50%;
+          height: 2rem;
+          width: 2rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .btn {
+          color: var(--white);
+          margin: 0;
+        }
+      }
     }
 
     img {

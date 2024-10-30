@@ -37,7 +37,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </button>
 
         <div
-          aria-labelledby="collection-menu-dropdown-button-{{ collection.id }}"
+          [attr.aria-labelledby]="'collection-menu-dropdown-button-' + collection.id"
           ngbDropdownMenu
         >
           <a href="#" class="dropdown-item" (click)="editCollection()" astrobinEventPreventDefault>

@@ -122,7 +122,7 @@
               {{ "Mark as" | translate }}&hellip;
             </button>
 
-            <div aria-labelledby="mark-as-dropdown-button" ngbDropdownMenu>
+            <div [attr.aria-labelledby]="'mark-as-dropdown-button'" ngbDropdownMenu>
               <a href="" class="dropdown-item" (click)="markAsMultiple($event, randomNonMigrated.item)">
                 {{ "Multiple items" | translate }}
                 <span class="help-tooltip" [ngbTooltip]="multipleTooltip()">

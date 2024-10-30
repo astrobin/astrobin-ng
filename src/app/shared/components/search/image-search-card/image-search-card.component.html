@@ -18,7 +18,7 @@
           {{ "Usage" | translate }}
         </button>
 
-        <div aria-labelledby="sort-search-results" ngbDropdownMenu>
+        <div [attr.aria-labelledby]="'sort-search-results'" ngbDropdownMenu>
           <button (click)="setUsageType(null)" ngbDropdownItem>
             <fa-icon
               *ngIf="!model.usageType; else notSelected"
@@ -53,7 +53,7 @@
           {{ "Sort" | translate }}
         </button>
 
-        <div aria-labelledby="sort-search-results" ngbDropdownMenu>
+        <div [attr.aria-labelledby]="'sort-search-results'" ngbDropdownMenu>
           <button (click)="sortBy('-likes')" ngbDropdownItem>
             <fa-icon *ngIf="model.ordering === '-likes'; else notSelected" icon="check"></fa-icon>
             {{ "Most liked" | translate }}

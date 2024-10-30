@@ -113,7 +113,7 @@
       <button class="btn btn-link no-triangle" id="languageDropdown" ngbDropdownToggle>
         {{ currentLanguageCodeDisplay }}
       </button>
-      <div aria-labelledby="languageDropdown" ngbDropdownMenu>
+      <div [attr.aria-labelledby]="'languageDropdown'" ngbDropdownMenu>
         <ng-container *ngFor="let language of languages">
           <a *ngIf="language.code !== '-'" [href]="getSetLanguageUrl(language.code)" class="dropdown-item">
             {{ language.label }}
@@ -173,7 +173,7 @@
       </ul>
 
       <div
-        aria-labelledby="user-dropdown"
+        [attr.aria-labelledby]="'user-dropdown'"
         ngbDropdownMenu
       >
         <a class="dropdown-item" routerLink="/subscriptions/options">
@@ -321,7 +321,7 @@
           <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>
             Moderate
           </button>
-          <div aria-labelledby="moderateDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'moderateDropdown'" ngbDropdownMenu>
             <h6 class="dropdown-header" translate>Images</h6>
 
             <a *ngIf="user | isImageModerator" [href]="classicRoutesService.MODERATE_IMAGE_QUEUE" class="dropdown-item">
@@ -395,7 +395,7 @@
           <button class="btn btn-link" id="forumDropdown" ngbDropdownToggle translate>
             Forum
           </button>
-          <div aria-labelledby="forumDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'forumDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.FORUM_HOME" class="dropdown-item">
               <fa-icon icon="comments"></fa-icon>
               {{ "Home" | translate }}
@@ -421,7 +421,7 @@
           <button class="btn btn-link" id="marketplaceDropdown" ngbDropdownToggle translate>
             Marketplace
           </button>
-          <div aria-labelledby="marketplaceDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'marketplaceDropdown'" ngbDropdownMenu>
             <a
               [routerLink]="['equipment', 'marketplace']"
               class="dropdown-item"
@@ -464,7 +464,7 @@
           <button class="btn btn-link" id="exploreDropdown" ngbDropdownToggle translate>
             Explore
           </button>
-          <div aria-labelledby="exploreDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'exploreDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.SEARCH + '?d=i'" class="dropdown-item">
               <fa-icon icon="search"></fa-icon>
               {{ "Advanced search" | translate }}
@@ -534,7 +534,7 @@
           <button class="btn btn-link" id="helpDropdown" ngbDropdownToggle translate>
             Help
           </button>
-          <div aria-labelledby="helpDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'helpDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.ABOUT" class="dropdown-item">
               <fa-icon icon="info"></fa-icon>
               {{ "What is this site?" | translate }}

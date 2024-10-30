@@ -24,7 +24,7 @@ import { FindImagesResponseInterface } from "@shared/services/api/classic/images
           <h4 class="mb-0 me-2">{{ humanizeFolderType() }}</h4>
           <a
             *ngFor="let item of menu"
-            [class.active]="item[0] === active"
+            [class.active]="item[0].toString() === active.toString()"
             [routerLink]="['/u', user.username]"
             [queryParams]="{ 'folder-type': folderType, active: item[0] }"
             fragment="smart-folders"
@@ -52,6 +52,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   protected menu: FindImagesResponseInterface["menu"];
   protected active: string | null = null;
   protected loading = true;
+  protected readonly SmartFolderType = SmartFolderType;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -71,17 +72,9 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       filter(active => active !== this.active),
       takeUntil(this.destroyed$)
     ).subscribe(active => {
-      if (active !== this.active) {
-        this.active = active;
-        this.activeChange.emit(active);
-      }
+      this.active = active;
+      this.activeChange.emit(active);
     });
-
-    this.active = this.activatedRoute.snapshot.queryParamMap.get("active");
-
-    if (this.active) {
-      this.activeChange.emit(this.active);
-    }
   }
 
   ngOnChanges() {
@@ -91,39 +84,38 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
         return;
       }
 
-      if (!this.active) {
-        this.actions$.pipe(
-          ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
-          map((action: FindImagesSuccess) => action.payload),
-          filter(payload =>
-            payload.options.userId === this.user.id &&
-            payload.options.subsection === this.folderType
-          ),
-          take(1)
-        ).subscribe(payload => {
-          this.menu = payload.response.menu;
+      this.active = this.activatedRoute.snapshot.queryParamMap.get("active");
+      this.activeChange.emit(this.active);
+
+      this.actions$.pipe(
+        ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
+        map((action: FindImagesSuccess) => action.payload),
+        filter(payload =>
+          payload.options.userId === this.user.id &&
+          payload.options.subsection === this.folderType
+        ),
+        take(1)
+      ).subscribe(payload => {
+        this.menu = payload.response.menu;
+
+        if (!this.active) {
           this.active = payload.response.active;
+          this.activeChange.emit(this.active);
+        }
 
-          if (this.active) {
-            this.activeChange.emit(this.active);
-          }
-
-          this.loading = false;
-        });
-
-        this.store$.dispatch(new FindImages({
-          options: {
-            userId: this.user.id,
-            page: 1,
-            subsection: this.folderType,
-            gallerySerializer: true
-          }
-        }));
-
-        this.loading = true;
-      } else {
         this.loading = false;
-      }
+      });
+
+      this.store$.dispatch(new FindImages({
+        options: {
+          userId: this.user.id,
+          page: 1,
+          subsection: this.folderType,
+          gallerySerializer: true
+        }
+      }));
+
+      this.loading = true;
     });
   }
 
@@ -141,6 +133,4 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
         return this.translateService.instant("Lacking data");
     }
   }
-
-  protected readonly SmartFolderType = SmartFolderType;
 }

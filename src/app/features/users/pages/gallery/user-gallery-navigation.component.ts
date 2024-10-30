@@ -23,109 +23,110 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
 @Component({
   selector: "astrobin-user-gallery-navigation",
   template: `
-    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div class="nav-tabs-fade"></div>
-      <ul
-        ngbNav
-        #nav="ngbNav"
-        (click)="onTabClick(activeTab)"
-        [(activeId)]="activeTab"
-        class="nav-tabs"
-      >
-        <li ngbNavItem="gallery">
-          <a ngbNavLink>
-            <fa-icon icon="images" class="me-2"></fa-icon>
-            <span translate="Gallery"></span>
-
-            <div
-              *ngIf="currentUserWrapper.user?.id === user.id"
-              ngbDropdown
-              container="body"
-              class="d-inline-block ms-2"
-            >
-              <a
-                ngbDropdownToggle
-                [class.active]="activeCollection === null"
-                class="btn btn-sm btn-link no-toggle text-white"
-              >
-                <fa-icon icon="caret-down"></fa-icon>
-              </a>
-              <div ngbDropdownMenu>
-                <a
-                  (click)="createCollection()"
-                  ngbDropdownItem
-                  astrobinEventPreventDefault
-                  astrobinEventStopPropagation
-                  href="#"
-                >
-                  {{ "Create new collection" | translate }}
-                </a>
-              </div>
-            </div>
-          </a>
-          <ng-template ngbNavContent>
-            <astrobin-user-gallery-collections
-              class="d-block mb-5"
-              [user]="user"
-              [userProfile]="userProfile"
-              [parent]="collectionId"
-            ></astrobin-user-gallery-collections>
-
-            <astrobin-user-gallery-buttons
-              [(activeLayout)]="activeLayout"
-              (sortChange)="onSortChange($event)"
-            ></astrobin-user-gallery-buttons>
-
-            <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
-
-            <astrobin-user-gallery-images
-              [activeLayout]="activeLayout"
-              [expectedImageCount]="activeCollection ? activeCollection.imageCount : userProfile.imageCount"
-              [user]="user"
-              [userProfile]="userProfile"
-              [options]="publicGalleryOptions"
-            ></astrobin-user-gallery-images>
-          </ng-template>
-        </li>
-
-        <li
-          *ngIf="currentUserWrapper.user?.id === user.id && !userProfile.displayWipImagesOnPublicGallery"
-          ngbNavItem="staging"
+    <ng-container *ngIf="isBrowser; else loadingTemplate">
+      <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+        <div class="nav-tabs-fade"></div>
+        <ul
+          ngbNav
+          #nav="ngbNav"
+          (click)="onTabClick(activeTab)"
+          [(activeId)]="activeTab"
+          class="nav-tabs"
         >
-          <a ngbNavLink>
-            <fa-icon icon="lock" class="me-2"></fa-icon>
-            <span translate="Staging area"></span>
-          </a>
-          <ng-template ngbNavContent>
-            <astrobin-user-gallery-buttons [(activeLayout)]="activeLayout"></astrobin-user-gallery-buttons>
-            <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
-            <astrobin-user-gallery-images
-              [activeLayout]="activeLayout"
-              [user]="user"
-              [userProfile]="userProfile"
-              [options]="stagingAreaOptions"
-            ></astrobin-user-gallery-images>
-          </ng-template>
-        </li>
+          <li ngbNavItem="gallery">
+            <a ngbNavLink>
+              <fa-icon icon="images" class="me-2"></fa-icon>
+              <span translate="Gallery"></span>
 
-        <li ngbNavItem="smart-folders">
-          <a ngbNavLink>
-            <fa-icon icon="folder-open" class="me-2"></fa-icon>
-            <span translate="Smart folders"></span>
-          </a>
-          <ng-template ngbNavContent>
-            <astrobin-user-gallery-smart-folders
-              (activeChange)="activeSmartFolder = $event"
-              [user]="user"
-              [userProfile]="userProfile"
-            ></astrobin-user-gallery-smart-folders>
+              <div
+                *ngIf="currentUserWrapper.user?.id === user.id"
+                ngbDropdown
+                container="body"
+                class="d-inline-block ms-2"
+              >
+                <a
+                  ngbDropdownToggle
+                  [class.active]="activeCollection === null"
+                  class="btn btn-sm btn-link no-toggle text-white"
+                >
+                  <fa-icon icon="caret-down"></fa-icon>
+                </a>
+                <div ngbDropdownMenu>
+                  <a
+                    (click)="createCollection()"
+                    ngbDropdownItem
+                    astrobinEventPreventDefault
+                    astrobinEventStopPropagation
+                    href="#"
+                  >
+                    {{ "Create new collection" | translate }}
+                  </a>
+                </div>
+              </div>
+            </a>
+            <ng-template ngbNavContent>
+              <astrobin-user-gallery-collections
+                class="d-block mb-5"
+                [user]="user"
+                [userProfile]="userProfile"
+                [parent]="collectionId"
+              ></astrobin-user-gallery-collections>
 
-            <astrobin-user-gallery-images
-              *ngIf="activeSmartFolderType && activeSmartFolder"
-              [activeLayout]="activeLayout"
-              [user]="user"
-              [userProfile]="userProfile"
-              [options]="{
+              <astrobin-user-gallery-buttons
+                [(activeLayout)]="activeLayout"
+                (sortChange)="onSortChange($event)"
+              ></astrobin-user-gallery-buttons>
+
+              <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
+
+              <astrobin-user-gallery-images
+                [activeLayout]="activeLayout"
+                [expectedImageCount]="activeCollection ? activeCollection.imageCount : userProfile.imageCount"
+                [user]="user"
+                [userProfile]="userProfile"
+                [options]="publicGalleryOptions"
+              ></astrobin-user-gallery-images>
+            </ng-template>
+          </li>
+
+          <li
+            *ngIf="currentUserWrapper.user?.id === user.id && !userProfile.displayWipImagesOnPublicGallery"
+            ngbNavItem="staging"
+          >
+            <a ngbNavLink>
+              <fa-icon icon="lock" class="me-2"></fa-icon>
+              <span translate="Staging area"></span>
+            </a>
+            <ng-template ngbNavContent>
+              <astrobin-user-gallery-buttons [(activeLayout)]="activeLayout"></astrobin-user-gallery-buttons>
+              <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
+              <astrobin-user-gallery-images
+                [activeLayout]="activeLayout"
+                [user]="user"
+                [userProfile]="userProfile"
+                [options]="stagingAreaOptions"
+              ></astrobin-user-gallery-images>
+            </ng-template>
+          </li>
+
+          <li ngbNavItem="smart-folders">
+            <a ngbNavLink>
+              <fa-icon icon="folder-open" class="me-2"></fa-icon>
+              <span translate="Smart folders"></span>
+            </a>
+            <ng-template ngbNavContent>
+              <astrobin-user-gallery-smart-folders
+                (activeChange)="activeSmartFolder = $event"
+                [user]="user"
+                [userProfile]="userProfile"
+              ></astrobin-user-gallery-smart-folders>
+
+              <astrobin-user-gallery-images
+                *ngIf="activeSmartFolderType && activeSmartFolder"
+                [activeLayout]="activeLayout"
+                [user]="user"
+                [userProfile]="userProfile"
+                [options]="{
                 includeStagingArea:
                   currentUserWrapper.user?.id === user.id &&
                   userProfile.displayWipImagesOnPublicGallery,
@@ -133,56 +134,61 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
                 active: activeSmartFolder,
                 q: searchModel
               }"
-            ></astrobin-user-gallery-images>
-          </ng-template>
-        </li>
-
-        <li ngbNavItem="marketplace">
-          <a ngbNavLink>
-            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-            <span translate="Marketplace"></span>
-          </a>
-          <ng-template ngbNavContent>
-            <astrobin-user-gallery-marketplace
-              [user]="user"
-            ></astrobin-user-gallery-marketplace>
-          </ng-template>
-        </li>
-
-        <li ngbNavItem="about">
-          <a ngbNavLink>
-            <fa-icon icon="user" class="me-2"></fa-icon>
-            <span translate="About"></span>
-          </a>
-          <ng-template ngbNavContent>
-            <astrobin-user-gallery-about
-              [user]="user"
-              [userProfile]="userProfile"
-            ></astrobin-user-gallery-about>
-          </ng-template>
-        </li>
-
-        <ng-container *ngIf="currentUserWrapper.user?.id === user.id">
-          <!-- spacer -->
-          <li class="flex-grow-1"></li>
-
-          <li ngbNavItem="trash">
-            <a ngbNavLink>
-              <fa-icon icon="trash" class="me-2"></fa-icon>
-              <span translate="Trash"></span>
-            </a>
-            <ng-template ngbNavContent>
-              <astrobin-user-gallery-trash
-                [user]="user"
-                [userProfile]="userProfile"
-              ></astrobin-user-gallery-trash>
+              ></astrobin-user-gallery-images>
             </ng-template>
           </li>
-        </ng-container>
-      </ul>
 
-      <div [ngbNavOutlet]="nav"></div>
+          <li ngbNavItem="marketplace">
+            <a ngbNavLink>
+              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+              <span translate="Marketplace"></span>
+            </a>
+            <ng-template ngbNavContent>
+              <astrobin-user-gallery-marketplace
+                [user]="user"
+              ></astrobin-user-gallery-marketplace>
+            </ng-template>
+          </li>
+
+          <li ngbNavItem="about">
+            <a ngbNavLink>
+              <fa-icon icon="user" class="me-2"></fa-icon>
+              <span translate="About"></span>
+            </a>
+            <ng-template ngbNavContent>
+              <astrobin-user-gallery-about
+                [user]="user"
+                [userProfile]="userProfile"
+              ></astrobin-user-gallery-about>
+            </ng-template>
+          </li>
+
+          <ng-container *ngIf="currentUserWrapper.user?.id === user.id">
+            <!-- spacer -->
+            <li class="flex-grow-1"></li>
+
+            <li ngbNavItem="trash">
+              <a ngbNavLink>
+                <fa-icon icon="trash" class="me-2"></fa-icon>
+                <span translate="Trash"></span>
+              </a>
+              <ng-template ngbNavContent>
+                <astrobin-user-gallery-trash
+                  [user]="user"
+                  [userProfile]="userProfile"
+                ></astrobin-user-gallery-trash>
+              </ng-template>
+            </li>
+          </ng-container>
+        </ul>
+
+        <div [ngbNavOutlet]="nav"></div>
+      </ng-container>
     </ng-container>
+
+    <ng-template #loadingTemplate>
+      <astrobin-loading-indicator class="mt-4"></astrobin-loading-indicator>
+    </ng-template>
 
     <ng-template #createCollectionOffcanvas let-offcanvas>
       <div class="offcanvas-header">
@@ -218,6 +224,8 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   @ViewChild("createCollectionOffcanvas") createCollectionOffcanvas: TemplateRef<any>;
 
   protected readonly ImageAlias = ImageAlias;
+  protected readonly isBrowser: boolean;
+
   protected activeTab: GalleryNavigationComponent = "gallery";
   protected activeLayout = UserGalleryActiveLayout.TINY;
   protected collectionId: CollectionInterface["id"] | null = null;
@@ -228,7 +236,6 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   protected publicGalleryOptions: FindImagesOptionsInterface;
   protected stagingAreaOptions: FindImagesOptionsInterface;
 
-  private readonly _isBrowser: boolean;
   private _searchSubject: Subject<string> = new Subject<string>();
 
   constructor(
@@ -244,14 +251,12 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   ) {
     super(store$);
 
-    this._isBrowser = isPlatformBrowser(platformId);
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit(): void {
     this.route.fragment.pipe(takeUntil(this.destroyed$)).subscribe((fragment: string | null) => {
-      if (fragment) {
-        this.activeTab = fragment as GalleryNavigationComponent;
-      }
+      this._setActiveTabFromRoute();
     });
 
     this._searchSubject.pipe(
@@ -281,6 +286,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       this._setFindImageOptions();
     });
 
+    this._setActiveTabFromRoute();
     this._setCollectionFromRoute();
     this._setSmartFolderFromRoute();
     this._setFindImageOptions();
@@ -309,7 +315,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   ngAfterViewInit() {
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       const navTabsElement = this.elementRef.nativeElement.querySelector(".nav-tabs");
       const navTabsFadeElement = this.elementRef.nativeElement.querySelector(".nav-tabs-fade");
 
@@ -382,6 +388,13 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       ...this.stagingAreaOptions,
       subsection: sort
     };
+  }
+
+  private _setActiveTabFromRoute() {
+    const fragment = this.route.snapshot.fragment;
+    if (fragment) {
+      this.activeTab = fragment as GalleryNavigationComponent;
+    }
   }
 
   private _setCollectionFromRoute() {

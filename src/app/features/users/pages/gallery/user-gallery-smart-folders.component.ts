@@ -115,8 +115,14 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
   }
 
   ngOnInit() {
-    this.activatedRoute.queryParamMap.pipe(takeUntil(this.destroyed$)).subscribe(params => {
-      this.activeFolderType = params.get("folder-type") as SmartFolderType;
+    this.activatedRoute.queryParamMap.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+      this._setActiveFolderTypeFromRoute();
     });
+
+    this._setActiveFolderTypeFromRoute();
+  }
+
+  private _setActiveFolderTypeFromRoute(): void {
+    this.activeFolderType = this.activatedRoute.snapshot.queryParamMap.get("folder-type") as SmartFolderType;
   }
 }

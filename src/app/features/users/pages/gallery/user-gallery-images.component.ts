@@ -118,10 +118,9 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
           class="image-link"
         >
           <img
-            [ngSrc]="image.finalGalleryThumbnail"
+            [ngSrc]="image.finalGalleryThumbnail || '/assets/images/loading.gif?v=20241030'"
             [alt]="image.title"
             [title]="image.title"
-            [loading]="'lazy'"
             [width]="130"
             [height]="130"
           />

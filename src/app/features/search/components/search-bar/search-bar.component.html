@@ -169,7 +169,7 @@
           ></fa-icon>
         </button>
 
-        <div aria-labelledby="ordering-button" ngbDropdownMenu class="ordering-menu">
+        <div [attr.aria-labelledby]="'ordering-button'" ngbDropdownMenu class="ordering-menu">
           <div class="dropdown-header">
             {{ "Sort by" | translate }}
           </div>
@@ -331,7 +331,7 @@
           ></fa-icon>
         </button>
 
-        <div aria-labelledby="search-type-button" ngbDropdownMenu class="search-type-menu">
+        <div [attr.aria-labelledby]="'search-type-button'" ngbDropdownMenu class="search-type-menu">
           <div class="dropdown-header">
             {{ "Search area" | translate }}
           </div>

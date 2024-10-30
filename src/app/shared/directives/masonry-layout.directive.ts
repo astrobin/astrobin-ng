@@ -1,5 +1,4 @@
 import { Directive, Input, Output, EventEmitter, OnChanges, SimpleChanges, Renderer2, Inject, OnInit, HostListener } from "@angular/core";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { DeviceService } from "@shared/services/device.service";
 import { DOCUMENT } from "@angular/common";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";

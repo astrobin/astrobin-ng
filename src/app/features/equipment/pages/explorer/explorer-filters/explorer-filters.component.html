@@ -7,7 +7,7 @@
           <button type="button" class="btn btn-outline-primary btn-xs btn-no-block" id="add-filter" ngbDropdownToggle>
             {{ "Filter results" | translate }}
           </button>
-          <div ngbDropdownMenu aria-labelledby="add-filter" class="fullscreen-on-mobile">
+          <div ngbDropdownMenu [attr.aria-labelledby]="'add-filter'" class="fullscreen-on-mobile">
             <button
               *ngIf="!permissions.mayAccess"
               ngbDropdownItem

@@ -197,7 +197,7 @@
                 {{ "Moderate" | translate }}
               </button>
 
-              <div aria-labelledby="moderate-menu" ngbDropdownMenu>
+              <div [attr.aria-labelledby]="'moderate-menu'" ngbDropdownMenu>
                 <button
                   (click)="startMigrationMode()"
                   *ngIf="typeSupportsMigrateInto()"

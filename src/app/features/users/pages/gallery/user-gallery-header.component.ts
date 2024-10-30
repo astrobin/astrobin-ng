@@ -65,7 +65,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
                   >
                     <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
                   </button>
-                  <div ngbDropdownMenu aria-labelledby="user-gallery-dropdown">
+                  <div ngbDropdownMenu [attr.aria-labelledby]="'user-gallery-dropdown'">
                     <a
                       *ngIf="currentUserWrapper.user?.id === user.id"
                       [href]="classicRoutesService.SETTINGS"
