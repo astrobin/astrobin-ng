@@ -48,7 +48,7 @@ import { DeviceService } from "@shared/services/device.service";
 
       <div
         *ngIf="!loading && collections?.length > 0"
-        class="d-flex flex-wrap gap-4 justify-content-center"
+        class="d-flex flex-wrap gap-4 justify-content-center mb-5"
       >
         <a
           *ngFor="let collection of collections; trackBy: collectionTrackByFn"

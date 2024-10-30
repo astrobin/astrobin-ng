@@ -66,7 +66,6 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
             </a>
             <ng-template ngbNavContent>
               <astrobin-user-gallery-collections
-                class="d-block mb-5"
                 [user]="user"
                 [userProfile]="userProfile"
                 [parent]="collectionId"
