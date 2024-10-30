@@ -363,9 +363,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   onTabClick(tab: GalleryNavigationComponent) {
-    this.router.navigate([], { fragment: tab }).then(() => {
-      this.windowRefService.scroll({ top: 0 });
-    });
+    this.router.navigate([], { fragment: tab });
   }
 
   protected createCollection() {
