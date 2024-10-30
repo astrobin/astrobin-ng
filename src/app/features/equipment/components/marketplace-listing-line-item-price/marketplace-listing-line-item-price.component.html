@@ -35,7 +35,7 @@
     class="badge rounded-pill bg-warning border border-light reserved-badge"
   >
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <ng-container [ngSwitch]="currentUserWrapper.user.id">
+      <ng-container [ngSwitch]="currentUserWrapper.user?.id">
         <ng-container *ngSwitchCase="lineItem.reservedTo">
           {{ "Reserved to you" | translate }}
         </ng-container>
