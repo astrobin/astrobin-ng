@@ -16,9 +16,6 @@ import { filter, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { isPlatformBrowser } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
 

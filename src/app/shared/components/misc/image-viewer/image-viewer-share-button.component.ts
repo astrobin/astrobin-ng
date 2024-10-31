@@ -52,7 +52,7 @@ enum SharingMode {
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-social-buttons.component.scss"]
+  styleUrls: ["./image-viewer-share-button.component.scss"]
 })
 export class ImageViewerShareButtonComponent implements OnChanges {
   @Input()

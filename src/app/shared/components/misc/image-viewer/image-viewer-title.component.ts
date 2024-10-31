@@ -76,7 +76,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
       <div ngbDropdown class="dropdown w-auto d-none d-md-block mt-1">
         <fa-icon
           ngbDropdownToggle
-          icon="bars"
+          icon="ellipsis-v"
           class="dropdown-toggle no-toggle"
           aria-haspopup="true"
           aria-expanded="false"
