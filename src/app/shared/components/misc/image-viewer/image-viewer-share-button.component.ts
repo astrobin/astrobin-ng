@@ -25,6 +25,7 @@ enum SharingMode {
       <fa-icon
         [ngbTooltip]="'Share' | translate"
         triggers="hover click"
+        class="m-0"
         container="body"
         icon="share"
       ></fa-icon>
