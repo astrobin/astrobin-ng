@@ -64,3 +64,45 @@ export class CreateNestedCommentFailure implements PayloadActionInterface {
   constructor(public payload: { nestedComment: Partial<NestedCommentInterface> }) {
   }
 }
+
+export class ApproveNestedComment implements PayloadActionInterface {
+  readonly type = AppActionTypes.APPROVE_NESTED_COMMENT;
+
+  constructor(public payload: { id: NestedCommentInterface["id"] }) {
+  }
+}
+
+export class ApproveNestedCommentSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.APPROVE_NESTED_COMMENT_SUCCESS;
+
+  constructor(public payload: { nestedComment: NestedCommentInterface }) {
+  }
+}
+
+export class ApproveNestedCommentFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.APPROVE_NESTED_COMMENT_FAILURE;
+
+  constructor(public payload: { id: NestedCommentInterface["id"], error: any }) {
+  }
+}
+
+export class DeleteNestedComment implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_NESTED_COMMENT;
+
+  constructor(public payload: { id: NestedCommentInterface["id"] }) {
+  }
+}
+
+export class DeleteNestedCommentSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_NESTED_COMMENT_SUCCESS;
+
+  constructor(public payload: { id: NestedCommentInterface["id"] }) {
+  }
+}
+
+export class DeleteNestedCommentFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.DELETE_NESTED_COMMENT_FAILURE;
+
+  constructor(public payload: { id: NestedCommentInterface["id"], error: any }) {
+  }
+}

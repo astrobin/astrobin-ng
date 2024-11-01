@@ -1,5 +1,4 @@
 <div *ngIf="comments$ | async as comments" class="nested-comments card">
-
   <div class="card-header">
     {{ title }}
 
@@ -104,6 +103,7 @@
 
 <ng-template #commentsTpl let-comment="comment">
   <astrobin-nested-comment
+    [allowModeration]="allowModeration"
     [allowSelfReply]="allowSelfReply"
     [comment]="comment"
     [highlighted]="comment.id === highlightId"

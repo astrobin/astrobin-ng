@@ -54,6 +54,9 @@ export class NestedCommentsModalComponent extends BaseComponentDirective {
   @Input()
   allowSelfReply = true;
 
+  @Input()
+  allowModeration = false;
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,

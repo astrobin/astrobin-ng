@@ -12,7 +12,7 @@ import { LoadSolution, LoadSolutionFailure, LoadSolutions, LoadSolutionsSuccess,
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
 import { LoadThumbnail, LoadThumbnailCancel, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
 import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
-import { CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
+import { ApproveNestedComment, ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedComment, CreateNestedCommentFailure, CreateNestedCommentSuccess, DeleteNestedComment, DeleteNestedCommentFailure, DeleteNestedCommentSuccess, LoadNestedComment, LoadNestedCommentFailure, LoadNestedComments, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { CreateToggleProperty, CreateTogglePropertyFailure, CreateTogglePropertySuccess, DeleteToggleProperty, DeleteTogglePropertyFailure, DeleteTogglePropertySuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { LoadRemoteSourceAffiliates, LoadRemoteSourceAffiliatesFailure, LoadRemoteSourceAffiliatesSuccess } from "@app/store/actions/remote-source-affiliates.actions";
 import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, CreateCollection, CreateCollectionFailure, CreateCollectionSuccess, DeleteCollection, DeleteCollectionFailure, DeleteCollectionSuccess, FindCollections, FindCollectionsFailure, FindCollectionsSuccess, LoadCollections, LoadCollectionsFailure, LoadCollectionsSuccess, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess, SetCollectionCoverImage, SetCollectionCoverImageFailure, SetCollectionCoverImageSuccess, UpdateCollection, UpdateCollectionFailure, UpdateCollectionSuccess } from "@app/store/actions/collection.actions";
@@ -122,6 +122,14 @@ export enum AppActionTypes {
   CREATE_NESTED_COMMENT = "[App] Save nested comment",
   CREATE_NESTED_COMMENT_SUCCESS = "[App] Save nested comment success",
   CREATE_NESTED_COMMENT_FAILURE = "[App] Save nested comment failure",
+
+  APPROVE_NESTED_COMMENT = "[App] Approve nested comment",
+  APPROVE_NESTED_COMMENT_SUCCESS = "[App] Approve nested comment success",
+  APPROVE_NESTED_COMMENT_FAILURE = "[App] Approve nested comment failure",
+
+  DELETE_NESTED_COMMENT = "[App] Delete nested comment",
+  DELETE_NESTED_COMMENT_SUCCESS = "[App] Delete nested comment success",
+  DELETE_NESTED_COMMENT_FAILURE = "[App] Delete nested comment failure",
 
   CREATE_TOGGLE_PROPERTY = "[App] Create toggle property",
   CREATE_TOGGLE_PROPERTY_SUCCESS = "[App] Create toggle property success",
@@ -261,6 +269,12 @@ export type All =
   | CreateNestedComment
   | CreateNestedCommentSuccess
   | CreateNestedCommentFailure
+  | ApproveNestedComment
+  | ApproveNestedCommentSuccess
+  | ApproveNestedCommentFailure
+  | DeleteNestedComment
+  | DeleteNestedCommentSuccess
+  | DeleteNestedCommentFailure
   | CreateToggleProperty
   | CreateTogglePropertySuccess
   | CreateTogglePropertyFailure

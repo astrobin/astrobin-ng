@@ -368,11 +368,14 @@
   </ng-container>
 
   <ng-container *ngIf="image?.allowComments">
-    <astrobin-nested-comments
-      *ngIf="imageContentType; else loadingTemplate"
-      [contentType]="imageContentType"
-      [objectId]="image.pk"
-      [showCloseButton]="false"
-    ></astrobin-nested-comments>
+    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+      <astrobin-nested-comments
+        *ngIf="imageContentType; else loadingTemplate"
+        [allowModeration]="currentUserWrapper.user?.id === image.user"
+        [contentType]="imageContentType"
+        [objectId]="image.pk"
+        [showCloseButton]="false"
+      ></astrobin-nested-comments>
+    </ng-container>
   </ng-container>
 </ng-template>

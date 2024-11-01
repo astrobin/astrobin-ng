@@ -564,6 +564,27 @@ export function appReducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.APPROVE_NESTED_COMMENT_SUCCESS: {
+      return {
+        ...state,
+        nestedComments: state.nestedComments.map(comment =>
+          comment.id === action.payload.nestedComment.id
+            ? {
+              ...comment,
+              pendingModeration: false
+            }
+            : comment
+        )
+      };
+    }
+
+    case AppActionTypes.DELETE_NESTED_COMMENT_SUCCESS: {
+      return {
+        ...state,
+        nestedComments: state.nestedComments.filter(comment => comment.id !== action.payload.id)
+      };
+    }
+
     case AppActionTypes.LOAD_TOGGLE_PROPERTY_SUCCESS: {
       if (action.payload.toggleProperty !== null) {
         return {
