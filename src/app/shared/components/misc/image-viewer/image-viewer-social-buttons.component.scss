@@ -10,12 +10,11 @@
       align-items: center;
       gap: .5rem;
       background: var(--accentColor);
-      color: var(--white);
+      color: var(--textOnAccentColor);
       border-radius: .25rem;
 
       &.toggled {
         box-shadow: 3px 3px 6px rgba(0, 0, 0, .5) inset;
-        color: var(--lighterAccentColor);
       }
 
       &.loading {
