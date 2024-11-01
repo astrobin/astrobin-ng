@@ -37,7 +37,7 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <a
-        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString())"
+        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
         [class]="itemClass"
       >
         {{ "Classic view" | translate }}
