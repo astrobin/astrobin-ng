@@ -9,7 +9,7 @@
     }
   }
 
-  .btn-link.toggled .ng-fa-icon {
-    color: var(--accentColor);
+  .btn.toggled .ng-fa-icon {
+    opacity: .5;
   }
 }

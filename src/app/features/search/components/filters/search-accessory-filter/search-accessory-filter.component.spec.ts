@@ -6,7 +6,7 @@ import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 
-describe("SearchTelescopeFilterComponent", () => {
+describe("SearchAccessoryFilterComponent", () => {
   let component: SearchAccessoryFilterComponent;
   let fixture: ComponentFixture<SearchAccessoryFilterComponent>;
 
