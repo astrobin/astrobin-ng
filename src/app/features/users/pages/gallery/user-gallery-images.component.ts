@@ -179,7 +179,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
     </ng-container>
 
     <ng-template #iconsTemplate let-image="image">
-      <fa-icon *ngIf="image.videoFile" icon="play"></fa-icon>
+      <fa-icon *ngIf="image.isPlayable" icon="play"></fa-icon>
 
       <fa-icon
         *ngIf="image.isWip"

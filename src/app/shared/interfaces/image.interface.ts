@@ -271,6 +271,7 @@ export interface ImageInterface {
   averageMoonIllumination?: number;
   uncompressedSourceFile?: string;
   finalGalleryThumbnail?: string;
+  isPlayable?: boolean;  // Only set by the gallery serializer.
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;
