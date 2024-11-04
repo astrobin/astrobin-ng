@@ -15,6 +15,10 @@ astrobin-user-gallery-header {
 }
 
 @media (max-width: $md-max) {
+  astrobin-ad-manager {
+    margin: -2rem -.5rem 2rem;
+  }
+
   astrobin-user-gallery-header {
     margin: -2rem -.5rem 0;
     width: calc(100% + 1rem)
