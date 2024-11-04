@@ -40,6 +40,8 @@
     border-bottom: 1px dashed var(--darkerAccentColor);
     font-size: .9rem;
     cursor: pointer;
+    display: flex;
+    flex-wrap: nowrap;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {

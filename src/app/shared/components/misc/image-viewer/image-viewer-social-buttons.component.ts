@@ -115,12 +115,12 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
             [(ngModel)]="likeThisSearch"
             (ngModelChange)="likeThisSearchSubject.next($event)"
           />
+          <ng-container *ngIf="!searching; else loadingTemplate">
+            <a *ngFor="let user of likeThis" [routerLink]="['/u', user.username]">
+              {{ user.displayName || user.username }}
+            </a>
+          </ng-container>
         </div>
-        <ng-container *ngIf="!searching; else loadingTemplate">
-          <a *ngFor="let user of likeThis" [routerLink]="['/u', user.username]">
-            {{ user.displayName || user.username }}
-          </a>
-        </ng-container>
       </div>
     </ng-template>
 
