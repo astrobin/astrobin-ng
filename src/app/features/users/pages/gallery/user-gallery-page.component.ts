@@ -97,31 +97,43 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
         this.showAd = showAd && this.userProfile.allowAds;
       });
 
-      switch (this.userProfile.defaultGallerySorting) {
-        case DefaultGallerySortingOption.SUBJECT_TYPE:
-          this.router.navigate([], {
-            queryParams: { "folder-type": "subject" },
-            fragment: "smart-folders"
-          });
-          break;
-        case DefaultGallerySortingOption.YEAR:
-          this.router.navigate([], {
-            queryParams: { "folder-type": "year" },
-            fragment: "smart-folders"
-          });
-          break;
-        case DefaultGallerySortingOption.GEAR:
-          this.router.navigate([], {
-            queryParams: { "folder-type": "gear" },
-            fragment: "smart-folders"
-          });
-          break;
-        case DefaultGallerySortingOption.CONSTELLATION:
-          this.router.navigate([], {
-            queryParams: { "folder-type": "constellation" },
-            fragment: "smart-folders"
-          });
-          break;
+      if (!this.activatedRoute.snapshot.fragment) {
+        switch (this.userProfile.defaultGallerySorting) {
+          case DefaultGallerySortingOption.PUBLICATION:
+            this.router.navigate([], {
+              fragment: "gallery",
+              skipLocationChange: true
+            });
+            break;
+          case DefaultGallerySortingOption.SUBJECT_TYPE:
+            this.router.navigate([], {
+              queryParams: { "folder-type": "subject" },
+              fragment: "smart-folders",
+              skipLocationChange: true
+            });
+            break;
+          case DefaultGallerySortingOption.YEAR:
+            this.router.navigate([], {
+              queryParams: { "folder-type": "year" },
+              fragment: "smart-folders",
+              skipLocationChange: true
+            });
+            break;
+          case DefaultGallerySortingOption.GEAR:
+            this.router.navigate([], {
+              queryParams: { "folder-type": "gear" },
+              fragment: "smart-folders",
+              skipLocationChange: true
+            });
+            break;
+          case DefaultGallerySortingOption.CONSTELLATION:
+            this.router.navigate([], {
+              queryParams: { "folder-type": "constellation" },
+              fragment: "smart-folders",
+              skipLocationChange: true
+            });
+            break;
+        }
       }
 
       this._listenToUserChanges();
