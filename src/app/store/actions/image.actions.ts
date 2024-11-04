@@ -12,6 +12,7 @@ import { FindImagesOptionsInterface, FindImagesResponseInterface } from "@shared
 
 export interface LoadImageOptionsInterface {
   skipThumbnails: boolean;
+  skipStoreCache?: boolean;
 }
 
 export class ForceCheckImageAutoLoad implements PayloadActionInterface {

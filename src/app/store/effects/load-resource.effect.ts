@@ -28,7 +28,7 @@ export function loadResourceEffect<T, K>(
           select(state => resourceSelector(state, resourceId)),
           take(1),
           switchMap(resourceFromStore => {
-            if (resourceFromStore) {
+            if (resourceFromStore && !(action as any).payload.options?.skipStoreCache) {
               return of(successActionCreator(resourceFromStore));
             }
 

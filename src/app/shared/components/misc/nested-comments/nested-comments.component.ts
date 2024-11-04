@@ -196,7 +196,6 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         map(comments => UtilsService.sortParent(comments) as NestedCommentInterface[]),
         tap(() => this.loadingService.setLoading(false)),
         tap(comments => {
-          console.log(comments);
           this._lastFetchedComments = comments;
 
           this.utilsService.delay(200).subscribe(() => {

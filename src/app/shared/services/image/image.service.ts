@@ -16,7 +16,7 @@ import { select, Store } from "@ngrx/store";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadImage, LoadImageFailure } from "@app/store/actions/image.actions";
+import { LoadImage, LoadImageFailure, LoadImageOptionsInterface } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
@@ -776,7 +776,7 @@ export class ImageService extends BaseService {
     return new Observable<ImageInterface>(observer => {
       this.store$.pipe(
         select(selectImage, imageId),
-        filter(image => !!image),
+        filter(image => !!image && !!image.thumbnails),
         take(1)
       ).subscribe({
         next: image => {
@@ -800,7 +800,7 @@ export class ImageService extends BaseService {
         }
       });
 
-      this.store$.dispatch(new LoadImage({ imageId }));
+      this.store$.dispatch(new LoadImage({ imageId, options: { skipThumbnails: false, skipStoreCache: true } }));
     });
   }
 
