@@ -16,6 +16,7 @@
     padding: .5rem 1rem;
     background: rgba(0, 0, 0, 0.75);
     color: var(--lighterGrey);
+    text-shadow: 0 .15rem .15rem rgba(0, 0, 0, 0.5);
     font-size: .9rem;
   }
 
@@ -30,12 +31,20 @@
     filter: blur(4px);
   }
 
+  .header-gradient {
+    background: linear-gradient(180deg, transparent 0, rgba(0, 0, 0, .03) 8%, rgba(0, 0, 0, .11) 21%, rgba(0, 0, 0, .61) 78%, rgba(0, 0, 0, .7) 95%, rgba(0, 0, 0, .7));
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
   .user-info {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.7);
     padding: 2rem;
     z-index: 1;
 
@@ -58,13 +67,13 @@
     }
 
     .username {
-      color: var(--lighterGrey);
+      color: var(--white);
       font-size: .85rem;
     }
 
     .images-and-followers {
       font-size: .85rem;
-      color: var(--lighterGrey);
+      color: var(--white);
 
       span {
         white-space: nowrap;

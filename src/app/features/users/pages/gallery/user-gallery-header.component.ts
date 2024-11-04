@@ -30,7 +30,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
       ></button>
       <img *ngIf="userProfile.galleryHeaderImage" [src]="userProfile.galleryHeaderImage" alt="" />
       <div *ngIf="!userProfile.galleryHeaderImage" class="no-image"></div>
-
+      <div class="header-gradient"></div>
       <div class="user-info d-flex justify-content-between">
         <div class="d-flex gap-3 align-items-center">
           <div class="avatar-container position-relative">
