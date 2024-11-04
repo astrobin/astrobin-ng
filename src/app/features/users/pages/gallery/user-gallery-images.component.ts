@@ -118,7 +118,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
           class="image-link"
         >
           <img
-            [ngSrc]="image.finalGalleryThumbnail || '/assets/images/loading.gif?v=20241030'"
+            [ngSrc]="imageService.getGalleryThumbnail(image)"
             [alt]="image.title"
             [title]="image.title"
             [width]="130"
@@ -336,7 +336,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
         if (this._slideshowComponent) {
           this._slideshowComponent.setNavigationContext(this.images.map(image => ({
             imageId: image.hash || image.pk.toString(),
-            thumbnailUrl: image.finalGalleryThumbnail
+            thumbnailUrl: this.imageService.getGalleryThumbnail(image)
           })));
         }
       });
@@ -404,7 +404,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     const imageId = image.hash || image.pk.toString();
     const navigationContext = this.images.map(image => ({
       imageId: image.hash || image.pk.toString(),
-      thumbnailUrl: image.finalGalleryThumbnail
+      thumbnailUrl: this.imageService.getGalleryThumbnail(image)
     }));
 
     const slideshow = this.imageViewerService.openSlideshow(

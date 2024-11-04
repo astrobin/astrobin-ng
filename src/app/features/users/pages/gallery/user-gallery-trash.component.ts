@@ -19,6 +19,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-user-gallery-trash",
@@ -77,7 +78,7 @@ import { TranslateService } from "@ngx-translate/core";
           <tbody>
           <tr *ngFor="let image of images" [class.loading]="restoringImage === image.pk">
             <td class="thumbnail">
-              <img [src]="image.finalGalleryThumbnail" alt="" />
+              <img [src]="imageService.getGalleryThumbnail(image)" alt="" />
             </td>
             <td class="title" [attr.data-label]="'Title' | translate">{{ image.title }}</td>
             <td class="uploaded"
@@ -135,7 +136,8 @@ export class UserGalleryTrashComponent extends BaseComponentDirective implements
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly commonApiService: CommonApiService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly imageService: ImageService
   ) {
     super(store$);
 

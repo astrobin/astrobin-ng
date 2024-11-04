@@ -16,7 +16,7 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { fadeInOut } from "@shared/animations";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, LoadCollections, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess } from "@app/store/actions/collection.actions";
-import { CollectionApiService } from "@shared/services/api/classic/collections/collection-api.service";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-user-gallery-collection-add-remove-images",
@@ -43,7 +43,7 @@ import { CollectionApiService } from "@shared/services/api/classic/collections/c
         class="image"
         container="body"
       >
-        <img [src]="image.finalGalleryThumbnail" alt="" />
+        <img [src]="imageService.getGalleryThumbnail(image)" alt="" />
         <fa-icon class="check" icon="circle-check"></fa-icon>
         <fa-icon class="loading-indicator" icon="circle-notch" animation="spin"></fa-icon>
         <fa-icon class="wip" icon="lock"></fa-icon>
@@ -79,7 +79,8 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
     public readonly elementRef: ElementRef,
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) private platformId: Object,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly imageService: ImageService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);

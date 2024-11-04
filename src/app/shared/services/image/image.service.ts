@@ -19,6 +19,7 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadImage, LoadImageFailure, LoadImageOptionsInterface } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Injectable({
   providedIn: "root"
@@ -879,6 +880,31 @@ export class ImageService extends BaseService {
 
       xhr.send();
     });
+  }
+
+  getGalleryThumbnail(image: ImageInterface): string {
+    if (image.finalGalleryThumbnail) {
+      return image.finalGalleryThumbnail;
+    }
+
+    const galleryThumbnail =
+      image.thumbnails &&
+      image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY);
+
+    if (galleryThumbnail) {
+      return galleryThumbnail.url;
+    }
+
+    const regularThumbnail =
+      image.thumbnails &&
+      image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR);
+
+    if (regularThumbnail) {
+      return regularThumbnail.url;
+    }
+
+
+    return "/assets/images/loading.gif?v=20241030";
   }
 
   showInvalidImageNotification(): void {
