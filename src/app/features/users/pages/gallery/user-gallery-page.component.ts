@@ -102,35 +102,40 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
           case DefaultGallerySortingOption.PUBLICATION:
             this.router.navigate([], {
               fragment: "gallery",
-              skipLocationChange: true
+              replaceUrl: true,
+              queryParamsHandling: "merge"
             });
             break;
           case DefaultGallerySortingOption.SUBJECT_TYPE:
             this.router.navigate([], {
               queryParams: { "folder-type": "subject" },
               fragment: "smart-folders",
-              skipLocationChange: true
+              replaceUrl: true,
+              queryParamsHandling: "merge"
             });
             break;
           case DefaultGallerySortingOption.YEAR:
             this.router.navigate([], {
               queryParams: { "folder-type": "year" },
               fragment: "smart-folders",
-              skipLocationChange: true
+              replaceUrl: true,
+              queryParamsHandling: "merge"
             });
             break;
           case DefaultGallerySortingOption.GEAR:
             this.router.navigate([], {
               queryParams: { "folder-type": "gear" },
               fragment: "smart-folders",
-              skipLocationChange: true
+              replaceUrl: true,
+              queryParamsHandling: "merge"
             });
             break;
           case DefaultGallerySortingOption.CONSTELLATION:
             this.router.navigate([], {
               queryParams: { "folder-type": "constellation" },
               fragment: "smart-folders",
-              skipLocationChange: true
+              replaceUrl: true,
+              queryParamsHandling: "merge"
             });
             break;
         }

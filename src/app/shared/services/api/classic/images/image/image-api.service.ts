@@ -223,4 +223,20 @@ export class ImageApiService extends BaseClassicApiService {
   removeCollaborator(pk: ImageInterface["pk"], userId: UserInterface["id"]): Observable<ImageInterface> {
     return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/remove-collaborator/`, { userId });
   }
+
+  getUsersWhoLikeImage(pk: ImageInterface["pk"], q: string): Observable<{
+    username: string;
+    displayName: string;
+  }[]> {
+    let url = `${this.configUrl}/image/${pk}/users-who-like/`;
+
+    if (q) {
+      url += `?users-who-like-q=${q}`;
+    }
+
+    return this.http.get<{
+      username: string;
+      displayName: string;
+    }[]>(url);
+  }
 }

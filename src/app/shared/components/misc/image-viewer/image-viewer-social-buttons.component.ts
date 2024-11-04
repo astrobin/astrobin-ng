@@ -1,4 +1,4 @@
-import { Component, Inject, Input, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
+import { Component, Inject, Input, OnInit, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageService } from "@shared/services/image/image.service";
@@ -12,12 +12,14 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { filter, take } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { isPlatformBrowser } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { Subject } from "rxjs";
+import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 
 
 @Component({
@@ -28,8 +30,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
         <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
           <div *ngIf="showLike" class="like">
             <astrobin-toggle-property
+              *ngIf="!!image && !!currentUserWrapper.user && currentUserWrapper.user.id !== image.user"
               [contentType]="imageContentType.id"
-              [disabled]="image && currentUserWrapper.user?.id === image.user"
               [objectId]="image?.pk"
               [showLabel]="false"
               [userId]="currentUserWrapper.user?.id"
@@ -38,6 +40,15 @@ import { UtilsService } from "@shared/services/utils/utils.service";
               btnClass="btn btn-no-block {{ btnExtraClasses }}"
               propertyType="like"
             ></astrobin-toggle-property>
+
+            <div
+              *ngIf="!!image && !!currentUserWrapper.user && currentUserWrapper.user.id === image.user"
+              (click)="openLikeThisOffcanvas()"
+              class="like-count me-3"
+            >
+              <fa-icon icon="thumbs-up"></fa-icon>
+              <span class="ms-2">{{ image.likeCount }}</span>
+            </div>
           </div>
 
           <div *ngIf="showBookmark" class="bookmark">
@@ -83,10 +94,43 @@ import { UtilsService } from "@shared/services/utils/utils.service";
         </ng-container>
       </div>
     </ng-container>
+
+    <ng-template #likeThisOffcanvas let-offcanvas="offcanvas">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" translate="People who like this"></h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="offcanvas.close()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <div *ngIf="likeThis; else loadingTemplate" class="d-flex flex-column gap-1">
+          <input
+            type="search"
+            class="form-control mb-2"
+            placeholder="{{ 'Search' | translate }}"
+            [ngModelOptions]="{standalone: true}"
+            [(ngModel)]="likeThisSearch"
+            (ngModelChange)="likeThisSearchSubject.next($event)"
+          />
+        </div>
+        <ng-container *ngIf="!searching; else loadingTemplate">
+          <a *ngFor="let user of likeThis" [routerLink]="['/u', user.username]">
+            {{ user.displayName || user.username }}
+          </a>
+        </ng-container>
+      </div>
+    </ng-template>
+
+    <ng-template #loadingTemplate>
+      <astrobin-loading-indicator></astrobin-loading-indicator>
+    </ng-template>
   `,
   styleUrls: ["./image-viewer-social-buttons.component.scss"]
 })
-export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseComponent {
+export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseComponent implements OnInit {
   @Input()
   image: ImageInterface;
 
@@ -99,10 +143,14 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
   @Input() showShare = true;
   @Input() btnExtraClasses = ""
 
-  @ViewChild("shareTemplate")
-  shareTemplate: TemplateRef<any>;
+  @ViewChild("shareTemplate") shareTemplate: TemplateRef<any>;
+  @ViewChild("likeThisOffcanvas") likeThisOffcanvas: TemplateRef<any>;
 
   protected imageContentType: ContentTypeInterface;
+  protected searching = false;
+  protected likeThis: {username: string; displayName: string}[] = [];
+  protected likeThisSearch: string;
+  protected likeThisSearchSubject = new Subject<string>();
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -116,7 +164,8 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
     public readonly windowRefService: WindowRefService,
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly imageApiService: ImageApiService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
 
@@ -132,6 +181,18 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       appLabel: "astrobin",
       model: "image"
     }));
+  }
+
+  ngOnInit() {
+    super.ngOnInit();
+
+    this.likeThisSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(search => {
+      this._searchUsersWhoLikeThis(search);
+    });
   }
 
   protected scrollToComments(event: MouseEvent) {
@@ -180,5 +241,22 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
         behavior: "smooth"
       });
     }
+  }
+
+  protected openLikeThisOffcanvas() {
+    this._searchUsersWhoLikeThis(null);
+    this.offcanvasService.open(
+      this.likeThisOffcanvas, {
+        position: this.deviceService.offcanvasPosition()
+      }
+    );
+  }
+
+  private _searchUsersWhoLikeThis(q: string) {
+    this.searching = true;
+    this.imageApiService.getUsersWhoLikeImage(this.image.pk, q).subscribe(users => {
+      this.likeThis = users;
+      this.searching = false;
+    })
   }
 }

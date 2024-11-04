@@ -35,6 +35,19 @@
     }
   }
 
+  .like-count {
+    color: var(--accentColor);
+    border-bottom: 1px dashed var(--darkerAccentColor);
+    font-size: .9rem;
+    cursor: pointer;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        filter: brightness(1.1);
+      }
+    }
+  }
+
   @media (hover: hover) and (pointer: fine) {
     ::ng-deep .btn {
       &:hover {
