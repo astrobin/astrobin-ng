@@ -41,6 +41,9 @@ describe("FormlyFieldStepperComponent", () => {
       jest.spyOn(component, "setHighestVisitedStep");
 
       component.onStepChanged({
+        previousStep: {
+          index: 1
+        },
         step: {
           index: 2
         }

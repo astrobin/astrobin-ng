@@ -77,6 +77,7 @@ export class ImageGenerator {
       bookmarkCount: source.bookmarkCount || 0,
       commentCount: source.commentCount || 0,
       userFollowerCount: source.userFollowerCount || 0,
+      deleted: source.deleted || null
     };
   }
 }

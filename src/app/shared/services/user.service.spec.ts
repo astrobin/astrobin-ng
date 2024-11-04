@@ -6,12 +6,16 @@ import { MockBuilder } from "ng-mocks";
 import { UserService } from "./user.service";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("UserService", () => {
   let service: UserService;
 
   beforeEach(async () => {
-    await MockBuilder(UserService).provide(provideMockStore({ initialState: initialMainState }));
+    await MockBuilder(UserService).provide([
+      WindowRefService,
+      provideMockStore({ initialState: initialMainState })
+    ]);
     service = TestBed.inject(UserService);
   });
 

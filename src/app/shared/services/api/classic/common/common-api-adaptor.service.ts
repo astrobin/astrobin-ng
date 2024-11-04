@@ -41,7 +41,7 @@ export interface BackendUserInterface {
   marketplace_feedback: number;
   marketplace_feedback_count: number;
   marketplace_listing_count: number;
-  valid_subscription: string | null;
+  valid_subscription?: string | null;
 }
 
 export interface BackendUserProfileInterface {
