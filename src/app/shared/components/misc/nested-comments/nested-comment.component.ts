@@ -9,7 +9,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@shared/services/loading.service";
-import { CreateNestedComment } from "@app/store/actions/nested-comments.actions";
+import { ApproveNestedComment, ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedComment, DeleteNestedComment } from "@app/store/actions/nested-comments.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -20,6 +20,7 @@ import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.inte
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
+import { UserService } from "@shared/services/user.service";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -41,6 +42,10 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   @Input()
   allowSelfReply = true;
 
+  // Weather the user can moderate the comment.
+  @Input()
+  allowModeration = false;
+
   @Input()
   commentContentType: ContentTypeInterface;
 
@@ -54,6 +59,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   replyFields: FormlyFieldConfig[];
   showReplyForm = false;
 
+  protected approving = false;
+  protected deleting = false;
+
   private readonly _isBrowser: boolean;
   private _elementWidth: number;
 
@@ -66,7 +74,8 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly routerService: RouterService,
     public readonly elementRef: ElementRef,
     public readonly classicRoutesService: ClassicRoutesService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    public readonly userService: UserService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
@@ -143,8 +152,63 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     });
   }
 
+  onApproveClicked(event: Event) {
+    event.preventDefault();
+
+    if (!this.comment.pendingModeration) {
+      return;
+    }
+
+    this.approving = true;
+
+    this.actions$.pipe(
+      ofType(AppActionTypes.APPROVE_NESTED_COMMENT_SUCCESS),
+      map((action: ApproveNestedCommentSuccess) => action.payload),
+      filter(payload => payload.nestedComment.id === this.comment.id),
+      take(1)
+    ).subscribe(() => {
+      this.approving = false;
+    });
+
+    this.actions$.pipe(
+      ofType(AppActionTypes.APPROVE_NESTED_COMMENT_FAILURE),
+      map((action: ApproveNestedCommentFailure) => action.payload),
+      filter(payload => payload.id === this.comment.id),
+      take(1)
+    ).subscribe(() => {
+      this.approving = false;
+    })
+
+    this.store$.dispatch(new ApproveNestedComment({ id: this.comment.id }));
+  }
+
+  onDeleteClicked(event: Event) {
+    event.preventDefault();
+
+    if (this.comment.deleted) {
+      return;
+    }
+
+    this.deleting = true;
+
+    this.actions$.pipe(
+      ofType(AppActionTypes.DELETE_NESTED_COMMENT_SUCCESS, AppActionTypes.DELETE_NESTED_COMMENT_FAILURE),
+      map(() => this.comment.id),
+      filter(id => id === this.comment.id),
+      take(1)
+    ).subscribe(() => {
+      this.deleting = false;
+    });
+
+    this.store$.dispatch(new DeleteNestedComment({ id: this.comment.id }));
+  }
+
   onReplyClicked(event: Event) {
     event.preventDefault();
+
+    if (this.comment.deleted || this.comment.pendingModeration) {
+      return;
+    }
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {

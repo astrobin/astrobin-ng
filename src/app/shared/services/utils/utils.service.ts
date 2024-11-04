@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { ElementRef, Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
@@ -1099,6 +1099,28 @@ export class UtilsService {
     return isWithinVerticalTolerance && isWithinHorizontalTolerance;
   }
 
+
+  isNearTop(windowRefService: WindowRefService, elementRef: ElementRef): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const window = windowRefService.nativeWindow;
+    const rect = elementRef.nativeElement.getBoundingClientRect();
+
+    return rect.top < window.innerHeight + 2000;
+  }
+
+  isNearBottom(windowRefService: WindowRefService, elementRef: ElementRef): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const window = windowRefService.nativeWindow;
+    const rect = elementRef.nativeElement.getBoundingClientRect();
+
+    return rect.bottom < window.innerHeight + 2000;
+  }
 
   delay(ms: number): Observable<void> {
     return new Observable<void>(observer => {

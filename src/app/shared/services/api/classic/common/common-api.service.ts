@@ -3,15 +3,10 @@ import { Injectable } from "@angular/core";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { PaymentInterface } from "@shared/interfaces/payment.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface, UserProfileStatsInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import {
-  BackendTogglePropertyInterface,
-  BackendUserInterface,
-  BackendUserProfileInterface,
-  CommonApiAdaptorService
-} from "@shared/services/api/classic/common/common-api-adaptor.service";
+import { BackendTogglePropertyInterface, BackendUserInterface, BackendUserProfileInterface, CommonApiAdaptorService } from "@shared/services/api/classic/common/common-api-adaptor.service";
 import { CommonApiServiceInterface } from "@shared/services/api/classic/common/common-api.service-interface";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
@@ -19,6 +14,31 @@ import { catchError, map } from "rxjs/operators";
 import { BaseClassicApiService } from "../base-classic-api.service";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
+
+export interface FollowersInterface {
+  followers: [
+    UserInterface["id"],
+    UserInterface["username"],
+    UserProfileInterface["realName"]
+  ][];
+}
+
+export interface FollowingInterface {
+  following: [
+    UserInterface["id"],
+    UserInterface["username"],
+    UserProfileInterface["realName"]
+  ][];
+}
+
+export interface MutualFollowersInterface {
+  "mutual-followers": [
+    UserInterface["id"],
+    UserInterface["username"],
+    UserProfileInterface["realName"]
+  ][];
+}
 
 @Injectable({
   providedIn: "root"
@@ -72,10 +92,49 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     }
   }
 
+  emptyTrash(userId: UserInterface["id"]): Observable<void> {
+    return this.http.post<void>(`${this.configUrl}/users/${userId}/empty-trash/`, {});
+  }
+
   getUserProfile(id: UserProfileInterface["id"]): Observable<UserProfileInterface> {
     return this.http
       .get<BackendUserProfileInterface>(`${this.configUrl}/userprofiles/${id}/`)
       .pipe(map((user: BackendUserProfileInterface) => this.commonApiAdaptorService.userProfileFromBackend(user)));
+  }
+
+  getUserProfileStats(id: UserProfileInterface["id"]): Observable<UserProfileStatsInterface> {
+    return this.http
+      .get<UserProfileStatsInterface>(`${this.configUrl}/userprofiles/${id}/stats/`);
+  }
+
+  getUserProfileFollowers(id: UserProfileInterface["id"], q?: string): Observable<FollowersInterface> {
+    let url = `${this.configUrl}/userprofiles/${id}/followers/`;
+
+    if (q) {
+      url += `?q=${q}`;
+    }
+
+    return this.http.get<FollowersInterface>(url);
+  }
+
+  getUserProfileFollowing(id: UserProfileInterface["id"], q?: string): Observable<FollowingInterface> {
+    let url = `${this.configUrl}/userprofiles/${id}/following/`;
+
+    if (q) {
+      url += `?q=${q}`;
+    }
+
+    return this.http.get<FollowingInterface>(url);
+  }
+
+  getUserProfileMutualFollowers(id: UserProfileInterface["id"], q?: string): Observable<MutualFollowersInterface> {
+    let url = `${this.configUrl}/userprofiles/${id}/mutual-followers/`;
+
+    if (q) {
+      url += `?q=${q}`;
+    }
+
+    return this.http.get<MutualFollowersInterface>(url);
   }
 
   getUserProfileByUserId(userId: UserInterface["id"]): Observable<UserProfileInterface> {
@@ -117,6 +176,18 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     data: Partial<UserProfileInterface>
   ): Observable<UserProfileInterface> {
     return this.http.put<UserProfileInterface>(this.configUrl + `/userprofiles/${userProfileId}/partial/`, data);
+  }
+
+  changeUserProfileGalleryHeaderImage(
+    userProfileId: UserProfileInterface["id"],
+    imageId: ImageInterface["hash"] | ImageInterface["pk"]
+  ): Observable<UserProfileInterface> {
+    return this.http.put<BackendUserProfileInterface>(
+      this.configUrl + `/userprofiles/${userProfileId}/change-gallery-header-image/${imageId}/`,
+      {}
+    ).pipe(
+      map(response => this.commonApiAdaptorService.userProfileFromBackend(response))
+    );
   }
 
   getSubscriptions(): Observable<SubscriptionInterface[]> {

@@ -1,15 +1,11 @@
 /* eslint-disable max-classes-per-file */
 
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import {
-  InitializeAuthSuccessInterface,
-  LoginFailureInterface,
-  LoginPayloadInterface,
-  LoginSuccessInterface
-} from "@features/account/store/auth.actions.interfaces";
+import { InitializeAuthSuccessInterface, LoginFailureInterface, LoginPayloadInterface, LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
 import { Action } from "@ngrx/store";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 export enum AuthActionTypes {
   INITIALIZE = "[Auth] Initialize",
@@ -25,7 +21,11 @@ export enum AuthActionTypes {
   LOAD_USER_SUCCESS = "[Auth] Load user success",
   LOAD_USER_FAILURE = "[Auth] Load user failure",
   LOAD_USER_PROFILE = "[Auth] Load user profile",
-  LOAD_USER_PROFILE_SUCCESS = "[Auth] Load user profile success"
+  LOAD_USER_PROFILE_SUCCESS = "[Auth] Load user profile success",
+  LOAD_USER_PROFILE_FAILURE = "[Auth] Load user profile failure",
+  CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE = "[Auth] Change user profile gallery header image",
+  CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_SUCCESS = "[Auth] Change user profile gallery header image success",
+  CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_FAILURE = "[Auth] Change user profile gallery header image failure"
 }
 
 export class InitializeAuth implements Action {
@@ -123,6 +123,44 @@ export class LoadUserProfileSuccess implements PayloadActionInterface {
   }
 }
 
+export class LoadUserProfileFailure implements PayloadActionInterface {
+  readonly type = AuthActionTypes.LOAD_USER_PROFILE_FAILURE;
+
+  constructor(public payload: { id: UserProfileInterface["id"], error: any }) {
+  }
+}
+
+export class ChangeUserProfileGalleryHeaderImage implements PayloadActionInterface {
+  readonly type = AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE;
+
+  constructor(public payload: {
+    id: UserProfileInterface["id"],
+    imageId: ImageInterface["hash"] | ImageInterface["pk"]
+  }) {
+  }
+}
+
+export class ChangeUserProfileGalleryHeaderImageSuccess implements PayloadActionInterface {
+  readonly type = AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_SUCCESS;
+
+  constructor(public payload: {
+    userProfile: UserProfileInterface,
+    imageId: ImageInterface["hash"] | ImageInterface["pk"]
+  }) {
+  }
+}
+
+export class ChangeUserProfileGalleryHeaderImageFailure implements PayloadActionInterface {
+  readonly type = AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_FAILURE;
+
+  constructor(public payload: {
+    id: UserProfileInterface["id"],
+    imageId: ImageInterface["hash"] | ImageInterface["pk"],
+    error: any
+  }) {
+  }
+}
+
 export type All =
   | InitializeAuth
   | InitializeAuthSuccess
@@ -136,4 +174,8 @@ export type All =
   | LoadUser
   | LoadUserSuccess
   | LoadUserProfile
-  | LoadUserProfileSuccess;
+  | LoadUserProfileSuccess
+  | LoadUserProfileFailure
+  | ChangeUserProfileGalleryHeaderImage
+  | ChangeUserProfileGalleryHeaderImageSuccess
+  | ChangeUserProfileGalleryHeaderImageFailure;

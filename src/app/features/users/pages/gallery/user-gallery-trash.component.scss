@@ -1,0 +1,52 @@
+@import "../../../../styles/breakpoints";
+
+.table {
+  table-layout: auto;
+  width: 100%;
+  max-width: 100%;
+
+  tr {
+    &.loading {
+      opacity: .5;
+      pointer-events: none;
+    }
+  }
+
+  td, th {
+    vertical-align: middle;
+    padding: .5rem .75rem;
+
+    &.title {
+      width: 100%;
+    }
+
+    &:not(.title) {
+      width: 1%;
+      white-space: nowrap;
+    }
+
+    img {
+      height: 2rem;
+    }
+  }
+
+  td {
+    color: var(--lightestGrey);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    tr:hover > .restore > .btn {
+      visibility: visible;
+    }
+
+    .restore > .btn {
+      visibility: hidden;
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .restore > .btn {
+      visibility: visible;
+    }
+  }
+}

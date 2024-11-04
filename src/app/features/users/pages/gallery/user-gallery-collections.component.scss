@@ -1,0 +1,81 @@
+.collection-header {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .up {
+    .ng-fa-icon {
+      font-size: 1.5rem;
+      color: var(--lighterGrey);
+    }
+  }
+
+  h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  astrobin-user-gallery-collection-menu {
+    margin: 1rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+    font-size: 1rem;
+    border: 1px solid var(--lightGrey);
+    cursor: pointer;
+    border-radius: 50%;
+    line-height: 2rem;
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: filter 0.3s ease;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        filter: brightness(1.5);
+      }
+    }
+
+    ::ng-deep .btn {
+      color: var(--lightestGrey);
+      margin: 0;
+
+      .ng-fa-icon {
+        margin: 0;
+      }
+    }
+  }
+
+  small {
+    margin-top: -.25rem;
+    font-size: .85rem;
+    color: var(--lighterGrey);
+    display: block;
+  }
+
+  p {
+    margin-top: .5rem;
+    color: var(--lighestGrey);
+    padding: 1rem;
+    border-top: 1px solid var(--grey);
+    margin-bottom: 1rem;
+  }
+}
+
+.create-collection-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  width: 120px;
+  border: 2px dashed var(--lightGrey);
+  margin-top: 14px;
+  margin-left: 1rem;
+  cursor: pointer;
+
+  .ng-fa-icon {
+    font-size: 2rem;
+    color: var(--lightGrey);
+  }
+}

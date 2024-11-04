@@ -8,6 +8,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, switchMap, take, tap } from "rxjs/operators";
 import { LoadUser } from "@features/account/store/auth.actions";
+import { UserService } from "@shared/services/user.service";
 
 @Component({
   selector: "astrobin-username",
@@ -33,7 +34,8 @@ export class UsernameComponent extends BaseComponentDirective implements OnInit,
   constructor(
     public readonly store$: Store<MainState>,
     public readonly usernameService: UsernameService,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly userService: UserService
   ) {
     super(store$);
   }

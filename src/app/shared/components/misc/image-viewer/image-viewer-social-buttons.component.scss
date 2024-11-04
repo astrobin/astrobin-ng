@@ -28,17 +28,17 @@
         opacity: .5;
       }
 
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          &:hover {
-            filter: brightness(1.25);
-          }
-        }
-      }
-
       .count {
         font-size: .75rem;
         opacity: .65;
+      }
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    ::ng-deep .btn {
+      &:hover {
+        color: var(--white);
       }
     }
   }

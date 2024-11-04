@@ -108,7 +108,7 @@
       </ng-container>
     </button>
 
-    <span aria-labelledby="region-selector" ngbDropdownMenu>
+    <span [attr.aria-labelledby]="'region-selector'" ngbDropdownMenu>
       <button (click)="setRegion($event, WORLDWIDE)" ngbDropdownItem>
         <fa-icon icon="globe"></fa-icon>
         {{ "Worldwide" | translate }}

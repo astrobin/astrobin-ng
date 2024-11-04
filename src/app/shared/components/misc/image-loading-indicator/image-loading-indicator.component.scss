@@ -1,0 +1,36 @@
+@import "../../../../styles/mixins";
+
+:host {
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  .load-wrapper{
+    @include darkest-background-texture;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    .activity{
+      position: absolute;
+      left: -45%;
+      height: 100%;
+      width: 45%;
+      background-image: linear-gradient(to left, rgba(50,50,50, .05), rgba(50,50,50, .3), rgba(50,50,50, .6), rgba(50,50,50, .3), rgba(50,50,50, .05));
+      background-image: -moz-linear-gradient(to left, rgba(50,50,50, .05), rgba(50,50,50, .3), rgba(50,50,50, .6), rgba(50,50,50, .3), rgba(50,50,50, .05));
+      background-image: -webkit-linear-gradient(to left, rgba(50,50,50, .05), rgba(50,50,50, .3), rgba(50,50,50, .6), rgba(50,50,50, .3), rgba(50,50,50, .05));
+      animation: loading 1s infinite;
+      z-index: 1;
+    }
+
+    @keyframes loading {
+      0%{
+        left: -45%;
+      }
+      100%{
+        left: 100%;
+      }
+    }
+  }
+}

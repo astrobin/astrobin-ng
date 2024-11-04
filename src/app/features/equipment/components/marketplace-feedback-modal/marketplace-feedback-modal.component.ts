@@ -19,7 +19,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { Actions, ofType } from "@ngrx/effects";
 import { CreateMarketplaceFeedback, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-feedback-modal",

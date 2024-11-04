@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  margin-bottom: 2rem;
+
+  .smart-folder {
+    background: var(--darkerGrey);
+    color: var(--lightestGrey);
+    font-size: 1rem;
+    font-weight: normal;
+    border: 1px solid var(--lightGrey);
+    white-space: normal;
+    text-align: left;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: var(--darkGrey);
+      }
+    }
+
+    &.active {
+      background: var(--lightestGrey);
+      color: var(--darkestGrey);
+    }
+  }
+}

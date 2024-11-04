@@ -6,7 +6,7 @@ import {
 } from "@features/equipment/types/marketplace-feedback.interface";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";

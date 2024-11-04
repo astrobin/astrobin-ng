@@ -37,7 +37,7 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <a
-        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString())"
+        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
         [class]="itemClass"
       >
         {{ "Classic view" | translate }}
@@ -54,6 +54,17 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
         </a>
 
         <a
+          *ngIf="revision.label"
+          [routerLink]="['/i', image.hash || image.pk.toString(), revisionLabel, 'edit']"
+          [class]="itemClass"
+        >
+          {{ "Edit revision" | translate }}
+          <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark">
+            {{ revision.label }}
+          </span>
+        </a>
+
+        <a
           *ngIf="image.solution"
           [routerLink]="['/i', image.hash || image.pk.toString(), 'plate-solving-settings']"
           [queryParams]="{ r: revisionLabel }"
@@ -61,8 +72,8 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
         >
           {{ "Edit plate-solving settings" | translate }}
           <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark">
-            <ng-container *ngIf="revisionLabel !== ORIGINAL_REVISION_LABEL">
-              {{ "Revision" | translate }}: {{ revisionLabel }}
+            <ng-container *ngIf="revision.label">
+              {{ "Revision" | translate }}: {{ revision.label }}
             </ng-container>
           </span>
         </a>

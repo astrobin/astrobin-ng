@@ -6,14 +6,17 @@
     id="c{{ comment.id }}"
   >
     <div class="avatar">
-      <img [src]="getAvatarUrl(comment.authorAvatar)" alt="" >
+      <img [src]="getAvatarUrl(comment.authorAvatar)" alt="">
     </div>
 
     <div class="nested-comment-content">
       <div class="meta">
         <a
           *ngIf="!comment.deleted"
-          [href]="classicRoutesService.GALLERY(comment.authorUsername)" class="username"
+          (click)="userService.openGallery(comment.authorUsername, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+          [href]="userService.getGalleryUrl(comment.authorUsername, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+          astrobinEventPreventDefault
+          class="username"
         >
           {{ comment.authorDisplayName }}
         </a>
@@ -40,13 +43,42 @@
         ></span>
       </div>
 
-      <div *ngIf="!comment.pendingModeration" [innerHTML]="comment.html" class="text"></div>
+      <div
+        *ngIf="!comment.pendingModeration"
+        [innerHTML]="comment.html"
+        class="text"
+      ></div>
+
       <div *ngIf="comment.pendingModeration" class="text">
-        <p>{{ "This comment is pending moderation." | translate }}</p>
+        <p class="alert alert-dark alert-mini w-100">
+          <fa-icon icon="info-circle"></fa-icon>
+          {{ "This comment is pending moderation." | translate }}
+        </p>
+        <div *ngIf="allowModeration">
+          <p [innerHTML]="comment.html" class="text"></p>
+          <button
+            (click)="onApproveClicked($event)"
+            [class.loading]="approving"
+            class="btn btn-outline-light btn-xs btn-no-block me-2"
+          >
+            {{ "Approve" | translate }}
+          </button>
+          <button
+            (click)="onDeleteClicked($event)"
+            [class.loading]="loadingService.loading$ | async"
+            class="btn btn-outline-danger btn-xs btn-no-block"
+          >
+            {{ "Delete" | translate }}
+          </button>
+        </div>
       </div>
 
       <div class="actions">
-        <a [href]="getLink()" class="link">
+        <a
+          *ngIf="!comment.pendingModeration && !comment.deleted"
+          [href]="getLink()"
+          class="link"
+        >
           <fa-icon icon="link"></fa-icon>
           {{ "Link" | translate }}
         </a>
@@ -54,6 +86,7 @@
         <button
           (click)="onReplyClicked($event)"
           *ngIf="
+            !comment.pendingModeration &&
             !comment.deleted &&
             showReplyButton && (
               (
@@ -76,7 +109,13 @@
         </button>
 
         <astrobin-toggle-property
-          *ngIf="!comment.deleted && commentContentType && currentUserWrapper.user?.id && currentUserWrapper.user.id !== comment.author"
+          *ngIf="
+            !comment.pendingModeration &&
+            !comment.deleted &&
+            commentContentType &&
+            currentUserWrapper.user?.id &&
+            currentUserWrapper.user.id !== comment.author
+          "
           [contentType]="commentContentType.id"
           [objectId]="comment.id"
           [userId]="currentUserWrapper.user?.id"

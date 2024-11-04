@@ -8,10 +8,14 @@ import { expand, reduce } from "rxjs/operators";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 export interface GetCollectionsParamsInterface {
   user?: UserInterface["id"];
   ids?: CollectionInterface["id"][];
+  parent?: CollectionInterface["id"];
+  page?: number;
+  action?: "add-remove-images";
 }
 
 @Injectable({
@@ -25,15 +29,7 @@ export class CollectionApiService extends BaseClassicApiService {
   }
 
   getAll(params: GetCollectionsParamsInterface): Observable<CollectionInterface[]> {
-    let url = this.configUrl;
-
-    if (params.user !== undefined) {
-      url = UtilsService.addOrUpdateUrlParam(url, 'user', params.user.toString());
-    }
-
-    if (params.ids !== undefined && params.ids.length > 0) {
-      url = UtilsService.addOrUpdateUrlParam(url, 'ids', params.ids.join(","));
-    }
+    const url = this._buildFindUrl(params);
 
     return this.http.get<PaginatedApiResultInterface<CollectionInterface>>(url).pipe(
       expand(response => (response.next ? this.http.get(response.next) : EMPTY)),
@@ -43,5 +39,69 @@ export class CollectionApiService extends BaseClassicApiService {
         []
       )
     );
+  }
+
+  find(params: GetCollectionsParamsInterface): Observable<PaginatedApiResultInterface<CollectionInterface>> {
+    const url = this._buildFindUrl(params);
+    return this.http.get<PaginatedApiResultInterface<CollectionInterface>>(url);
+  }
+
+  create(
+    parent: CollectionInterface["id"] | null,
+    name: CollectionInterface["name"],
+    description: CollectionInterface["description"] | null,
+    orderByTag: CollectionInterface["orderByTag"] | null
+  ): Observable<CollectionInterface> {
+    return this.http.post<CollectionInterface>(this.configUrl, { parent, name, description, orderByTag });
+  }
+
+  update(collection: CollectionInterface): Observable<CollectionInterface> {
+    return this.http.put<CollectionInterface>(`${this.configUrl}${collection.id}/`, collection);
+  }
+
+  delete(collectionId: CollectionInterface["id"]): Observable<void> {
+    return this.http.delete<void>(`${this.configUrl}${collectionId}/`);
+  }
+
+  addImage(collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"]): Observable<void> {
+    return this.http.post<void>(`${this.configUrl}${collectionId}/add-image/`, { image: imageId });
+  }
+
+  removeImage(collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"]): Observable<void> {
+    return this.http.post<void>(`${this.configUrl}${collectionId}/remove-image/`, { image: imageId });
+  }
+
+  setCoverImage(collectionId: CollectionInterface["id"], imageId: ImageInterface["pk"]): Observable<CollectionInterface> {
+    return this.http.post<CollectionInterface>(`${this.configUrl}${collectionId}/set-cover-image/`, { image: imageId });
+  }
+
+  private _buildFindUrl(params: GetCollectionsParamsInterface): string {
+    let url = this.configUrl;
+
+    if (params.user !== undefined) {
+      url = UtilsService.addOrUpdateUrlParam(url, "user", params.user.toString());
+    }
+
+    if (params.ids !== undefined && params.ids.length > 0) {
+      url = UtilsService.addOrUpdateUrlParam(url, "ids", params.ids.join(","));
+    }
+
+    if (params.parent !== undefined) {
+      if (params.parent === null) {
+        url = UtilsService.addOrUpdateUrlParam(url, "parent", "null");
+      } else {
+        url = UtilsService.addOrUpdateUrlParam(url, "parent", params.parent.toString());
+      }
+    }
+
+    if (params.page !== undefined) {
+      url = UtilsService.addOrUpdateUrlParam(url, "page", params.page.toString());
+    }
+
+    if (params.action !== undefined) {
+      url = UtilsService.addOrUpdateUrlParam(url, "action", params.action);
+    }
+
+    return url;
   }
 }

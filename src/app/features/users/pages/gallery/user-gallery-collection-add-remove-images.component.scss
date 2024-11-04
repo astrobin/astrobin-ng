@@ -1,0 +1,62 @@
+.image {
+  position: relative;
+  cursor: pointer;
+  transition: filter 0.2s ease-in-out;
+
+  img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .ng-fa-icon.check,
+  .ng-fa-icon.loading-indicator {
+    display: none;
+    position: absolute;
+    top: -.75rem;
+    right: -.5rem;
+    z-index: 1;
+    font-size: 22px;
+    line-height: 1rem;
+    background: white;
+    color: var(--successColor);
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+    border: 1px solid white;
+  }
+
+  .ng-fa-icon.wip {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    font-size: 2rem;
+    color: var(--lightestGrey);
+  }
+
+  &.selected {
+    .ng-fa-icon[icon="circle-check"] {
+      display: block;
+    }
+  }
+
+  &.toggling {
+    .ng-fa-icon[icon="circle-notch"] {
+      display: block;
+    }
+  }
+
+  &.wip {
+    .ng-fa-icon.wip {
+      display: block;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      filter: brightness(1.5);
+    }
+  }
+}

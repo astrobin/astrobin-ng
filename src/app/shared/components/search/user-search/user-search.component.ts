@@ -11,6 +11,8 @@ import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/
 import { UserSearchInterface } from "@shared/interfaces/user-search.interface";
 import { UserSearchApiService } from "@shared/services/api/classic/users/user-search-api.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { UserService } from "@shared/services/user.service";
+import { take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-user-search",
@@ -28,9 +30,11 @@ export class UserSearchComponent extends ScrollableSearchResultsBaseComponent<Us
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
-    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
+    public readonly utilsService: UtilsService,
+    public readonly userService: UserService
   ) {
-    super(store$, windowRefService, elementRef, platformId, translateService);
+    super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<UserSearchInterface>> {
@@ -42,9 +46,8 @@ export class UserSearchComponent extends ScrollableSearchResultsBaseComponent<Us
   }
 
   openUser(user: UserSearchInterface) {
-    this.windowRefService.nativeWindow.open(
-      this.classicRoutesService.GALLERY(user.username),
-      "_self"
-    );
+    this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
+      this.userService.openGallery(user.username, currentUserProfile?.enableNewGalleryExperience);
+    });
   }
 }

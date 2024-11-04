@@ -8,6 +8,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
 import { Action } from "@ngrx/store";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { FindImagesOptionsInterface, FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
 
 export interface LoadImageOptionsInterface {
   skipThumbnails: boolean;
@@ -64,7 +65,33 @@ export class LoadImages implements PayloadActionInterface {
 export class LoadImagesSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_IMAGES_SUCCESS;
 
-  constructor(public payload: PaginatedApiResultInterface<ImageInterface>) {
+  constructor(public payload: FindImagesResponseInterface) {
+  }
+}
+
+export class FindImages implements PayloadActionInterface {
+  readonly type = AppActionTypes.FIND_IMAGES;
+
+  constructor(public payload: {
+    options: FindImagesOptionsInterface
+  }) {
+  }
+}
+
+export class FindImagesSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.FIND_IMAGES_SUCCESS;
+
+  constructor(public payload: {
+    options: FindImagesOptionsInterface,
+    response: FindImagesResponseInterface
+  }) {
+  }
+}
+
+export class FindImagesFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.FIND_IMAGES_FAILURE;
+
+  constructor(public payload: { options: FindImagesOptionsInterface, error: any }) {
   }
 }
 
@@ -234,6 +261,27 @@ export class DeleteImageSuccess implements PayloadActionInterface {
 
 export class DeleteImageFailure implements PayloadActionInterface {
   readonly type = AppActionTypes.DELETE_IMAGE_FAILURE;
+
+  constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
+  }
+}
+
+export class UndeleteImage implements PayloadActionInterface {
+  readonly type = AppActionTypes.UNDELETE_IMAGE;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class UndeleteImageSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.UNDELETE_IMAGE_SUCCESS;
+
+  constructor(public payload: { pk: ImageInterface["pk"] }) {
+  }
+}
+
+export class UndeleteImageFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.UNDELETE_IMAGE_FAILURE;
 
   constructor(public payload: { pk: ImageInterface["pk"]; error: any }) {
   }

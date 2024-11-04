@@ -201,12 +201,8 @@ export class ImageEditPageComponent
 
     this.store$.dispatch(new FindEquipmentPresets());
 
-    this.route.fragment.subscribe((fragment: string) => {
-      if (!fragment) {
-        this.router.navigate([`/i/${this.imageEditService.model.hash || this.imageEditService.model.pk}/edit`], {
-          fragment: "1"
-        });
-      } else if (fragment === "3") {
+    this.route.fragment.pipe(takeUntil(this.destroyed$)).subscribe((fragment: string) => {
+      if (fragment === "3") {
         this.store$.dispatch(new ImageEditorSetCropperShown(true));
       }
     });

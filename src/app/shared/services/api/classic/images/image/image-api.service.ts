@@ -16,6 +16,27 @@ import { ImageEditModelInterface } from "@features/image/services/image-edit.ser
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
 import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
+import { CollectionInterface } from "@shared/interfaces/collection.interface";
+
+export type FindImagesResponseInterface = PaginatedApiResultInterface<ImageInterface> & {
+  menu: Array<[string, string]> | null;
+  active: string | null;
+};
+
+export interface FindImagesOptionsInterface {
+  userId?: UserInterface["id"];
+  q?: string;
+  hasDeepSkyAcquisitions?: boolean;
+  hasSolarSystemAcquisitions?: boolean;
+  page?: number;
+  gallerySerializer?: boolean;
+  includeStagingArea?: boolean;
+  onlyStagingArea?: boolean;
+  trash?: boolean;
+  collection?: CollectionInterface["id"];
+  subsection?: string;
+  active?: string;
+}
 
 @Injectable({
   providedIn: "root"
@@ -41,7 +62,7 @@ export class ImageApiService extends BaseClassicApiService {
       url = UtilsService.addOrUpdateUrlParam(url, "hash", `${id}`);
       url = UtilsService.addOrUpdateUrlParam(url, "skip-thumbnails", `${options.skipThumbnails}`);
 
-      return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url).pipe(
+      return this.http.get<FindImagesResponseInterface>(url).pipe(
         map(response => {
           if (response.results.length > 0) {
             return response.results[0];
@@ -54,39 +75,40 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<ImageInterface>(`${this.configUrl}/image/${id}/`);
   }
 
-  getImages(ids: ImageInterface["pk"][]): Observable<PaginatedApiResultInterface<ImageInterface>> {
-    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?id=${ids.join(",")}`);
+  getImages(ids: ImageInterface["pk"][]): Observable<FindImagesResponseInterface> {
+    return this.http.get<FindImagesResponseInterface>(`${this.configUrl}/image/?id=${ids.join(",")}`);
   }
 
   getPublicImagesCountByUserId(userId: UserInterface["id"]): Observable<number> {
     return this.http.get<number>(`${this.configUrl}/image/public-images-count/?user=${userId}`);
   }
 
-  findImages(options: {
-    userId?: UserInterface["id"],
-    q?: string,
-    hasDeepSkyAcquisitions?: boolean,
-    hasSolarSystemAcquisitions?: boolean
-  }): Observable<PaginatedApiResultInterface<ImageInterface>> {
+  findImages(options: FindImagesOptionsInterface): Observable<FindImagesResponseInterface> {
     let url = `${this.configUrl}/image/`;
 
-    if (!!options.userId) {
-      url = UtilsService.addOrUpdateUrlParam(url, "user", "" + options.userId);
-    }
+    const params: { [key: string]: any } = {
+      user: options.userId,
+      q: options.q,
+      "has-deepsky-acquisitions": options.hasDeepSkyAcquisitions ? "1" : null,
+      "has-solarsystem-acquisitions": options.hasSolarSystemAcquisitions ? "1" : null,
+      page: options.page,
+      "gallery-serializer": options.gallerySerializer ? "1" : null,
+      "include-staging-area": options.includeStagingArea ? "true" : null,
+      "only-staging-area": options.onlyStagingArea ? "true" : null,
+      trash: options.trash ? "true" : null,
+      collection: options.collection,
+      subsection: options.subsection,
+      active: options.active
+    };
 
-    if (!!options.q) {
-      url = UtilsService.addOrUpdateUrlParam(url, "q", options.q);
-    }
+    // Filter out null or undefined values
+    Object.keys(params).forEach(key => {
+      if (params[key]) {
+        url = UtilsService.addOrUpdateUrlParam(url, key, params[key]);
+      }
+    });
 
-    if (!!options.hasDeepSkyAcquisitions) {
-      url = UtilsService.addOrUpdateUrlParam(url, "has-deepsky-acquisitions", "1");
-    }
-
-    if (!!options.hasSolarSystemAcquisitions) {
-      url = UtilsService.addOrUpdateUrlParam(url, "has-solarsystem-acquisitions", "1");
-    }
-
-    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url);
+    return this.http.get<FindImagesResponseInterface>(url);
   }
 
   getThumbnail(
@@ -141,6 +163,10 @@ export class ImageApiService extends BaseClassicApiService {
 
   delete(pk: ImageInterface["pk"]): Observable<ImageInterface> {
     return this.http.delete<ImageInterface>(`${this.configUrl}/image/${pk}/`);
+  }
+
+  undelete(pk: ImageInterface["pk"]): Observable<ImageInterface> {
+    return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/undelete/`, {});
   }
 
   download(

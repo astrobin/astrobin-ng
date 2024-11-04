@@ -25,6 +25,7 @@ enum SharingMode {
       <fa-icon
         [ngbTooltip]="'Share' | translate"
         triggers="hover click"
+        class="m-0"
         container="body"
         icon="share"
       ></fa-icon>
@@ -51,7 +52,7 @@ enum SharingMode {
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-social-buttons.component.scss"]
+  styleUrls: ["./image-viewer-share-button.component.scss"]
 })
 export class ImageViewerShareButtonComponent implements OnChanges {
   @Input()

@@ -135,6 +135,15 @@
   }
 }
 
+.ng-wizard-loading::before {
+  width: 1rem;
+  height: 1rem;
+}
+
+.ng-wizard-loading::after {
+  display: none;
+}
+
 @media (max-width: $md-max) {
   .ng-wizard-main {
     margin-top: -2rem;

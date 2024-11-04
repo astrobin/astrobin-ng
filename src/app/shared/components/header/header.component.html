@@ -113,7 +113,7 @@
       <button class="btn btn-link no-triangle" id="languageDropdown" ngbDropdownToggle>
         {{ currentLanguageCodeDisplay }}
       </button>
-      <div aria-labelledby="languageDropdown" ngbDropdownMenu>
+      <div [attr.aria-labelledby]="'languageDropdown'" ngbDropdownMenu>
         <ng-container *ngFor="let language of languages">
           <a *ngIf="language.code !== '-'" [href]="getSetLanguageUrl(language.code)" class="dropdown-item">
             {{ language.label }}
@@ -172,7 +172,10 @@
         <ng-container [ngTemplateOutlet]="userMenubarTemplate"></ng-container>
       </ul>
 
-      <div aria-labelledby="user-dropdown" ngbDropdownMenu>
+      <div
+        [attr.aria-labelledby]="'user-dropdown'"
+        ngbDropdownMenu
+      >
         <a class="dropdown-item" routerLink="/subscriptions/options">
           <fa-icon icon="asterisk"></fa-icon>
           {{ "Subscription plans" | translate }}
@@ -195,19 +198,25 @@
           {{ "Commercial products" | translate }}
         </a>
 
-        <a [href]="classicRoutesService.GALLERY(user.username)" class="dropdown-item">
+        <a
+          (click)="userService.openGallery(user.username, userProfile.enableNewGalleryExperience)"
+          [href]="userService.getGalleryUrl(user.username, userProfile.enableNewGalleryExperience)"
+          astrobinEventPreventDefault
+          class="dropdown-item"
+        >
           <fa-icon icon="image"></fa-icon>
           {{ "Public Gallery" | translate }}
         </a>
 
-        <a [href]="classicRoutesService.STAGING_GALLERY(user)" class="dropdown-item">
+        <a
+          *ngIf="!userProfile.displayWipImagesOnPublicGallery"
+          (click)="userService.openStaging(user.username, userProfile.enableNewGalleryExperience)"
+          [href]="userService.getStagingUrl(user.username, userProfile.enableNewGalleryExperience)"
+          astrobinEventPreventDefault
+          class="dropdown-item"
+        >
           <fa-icon icon="lock"></fa-icon>
           {{ "Staging Area" | translate }}
-        </a>
-
-        <a [href]="classicRoutesService.BOOKMARKS(user)" class="dropdown-item">
-          <fa-icon icon="bookmark"></fa-icon>
-          {{ "Bookmarks" | translate }}
         </a>
 
         <div class="dropdown-divider"></div>
@@ -312,7 +321,7 @@
           <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>
             Moderate
           </button>
-          <div aria-labelledby="moderateDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'moderateDropdown'" ngbDropdownMenu>
             <h6 class="dropdown-header" translate>Images</h6>
 
             <a *ngIf="user | isImageModerator" [href]="classicRoutesService.MODERATE_IMAGE_QUEUE" class="dropdown-item">
@@ -386,7 +395,7 @@
           <button class="btn btn-link" id="forumDropdown" ngbDropdownToggle translate>
             Forum
           </button>
-          <div aria-labelledby="forumDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'forumDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.FORUM_HOME" class="dropdown-item">
               <fa-icon icon="comments"></fa-icon>
               {{ "Home" | translate }}
@@ -412,7 +421,7 @@
           <button class="btn btn-link" id="marketplaceDropdown" ngbDropdownToggle translate>
             Marketplace
           </button>
-          <div aria-labelledby="marketplaceDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'marketplaceDropdown'" ngbDropdownMenu>
             <a
               [routerLink]="['equipment', 'marketplace']"
               class="dropdown-item"
@@ -455,7 +464,7 @@
           <button class="btn btn-link" id="exploreDropdown" ngbDropdownToggle translate>
             Explore
           </button>
-          <div aria-labelledby="exploreDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'exploreDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.SEARCH + '?d=i'" class="dropdown-item">
               <fa-icon icon="search"></fa-icon>
               {{ "Advanced search" | translate }}
@@ -525,7 +534,7 @@
           <button class="btn btn-link" id="helpDropdown" ngbDropdownToggle translate>
             Help
           </button>
-          <div aria-labelledby="helpDropdown" ngbDropdownMenu>
+          <div [attr.aria-labelledby]="'helpDropdown'" ngbDropdownMenu>
             <a [href]="classicRoutesService.ABOUT" class="dropdown-item">
               <fa-icon icon="info"></fa-icon>
               {{ "What is this site?" | translate }}
@@ -634,13 +643,22 @@
       </li>
 
       <li class="nav-item">
-        <a [href]="classicRoutesService.GALLERY(user.username)" class="nav-link">
+        <a
+          (click)="userService.openGallery(user.username, userProfile.enableNewGalleryExperience)"
+          [href]="userService.getGalleryUrl(user.username, userProfile.enableNewGalleryExperience)"
+          astrobinEventPreventDefault
+          class="nav-link"
+        >
           {{ "Public Gallery" | translate }}
         </a>
       </li>
 
       <li class="nav-item">
-        <a [href]="classicRoutesService.STAGING_GALLERY(user)" class="nav-link">
+        <a
+          (click)="userService.openStaging(user.username, userProfile.enableNewGalleryExperience)"
+          [href]="userService.getStagingUrl(user.username, userProfile.enableNewGalleryExperience)"
+          class="nav-link"
+        >
           {{ "Staging Area" | translate }}
         </a>
       </li>

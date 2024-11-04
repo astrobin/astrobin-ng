@@ -1,6 +1,17 @@
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
 
+export enum DefaultGallerySortingOption {
+  PUBLICATION,
+  ACQUISITION,
+  SUBJECT_TYPE,
+  YEAR,
+  GEAR,
+  COLLECTIONS,
+  TITLE,
+  CONSTELLATION
+}
+
 export interface UserProfileInterface {
   id: number;
   deleted: Date;
@@ -22,7 +33,7 @@ export interface UserProfileInterface {
   avatar: string;
   excludeFromCompetition: boolean;
   defaultFrontPageSection: string;
-  defaultGallerySorting: number;
+  defaultGallerySorting: DefaultGallerySortingOption;
   defaultLicense: number;
   defaultWatermarkText: string;
   defaultWatermark: boolean;
@@ -63,5 +74,17 @@ export interface UserProfileInterface {
   signUpCountry?: string;
   agreedToMarketplaceTerms?: string;
   enableNewSearchExperience?: boolean;
+  enableNewGalleryExperience?: boolean;
   agreedToIotdTpRulesAndGuidelines?: boolean;
+  galleryHeaderImage?: string;
+  imageCount: number;
+  wipImageCount: number;
+  followersCount: number;
+  followingCount: number;
+  displayWipImagesOnPublicGallery?: boolean;
+  allowAds?: boolean;
+}
+
+export interface UserProfileStatsInterface {
+  stats: { 0: string, 1: string, 2?: string }[];
 }

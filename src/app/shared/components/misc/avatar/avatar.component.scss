@@ -1,3 +1,7 @@
+:host {
+  position: relative;
+}
+
 img {
   &:hover {
     img {
@@ -9,4 +13,21 @@ img {
   box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
   width: 100%;
   transition: all .1s ease-in-out;
+}
+
+.badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 1.5rem;
+  width: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--successColor);
+  color: var(--white);
+  font-size: .75rem;
+  border-radius: 50%;
+  border: 1px solid var(--white);
+  box-shadow: 0 2px .5rem rgba(0, 0, 0, .75);
 }

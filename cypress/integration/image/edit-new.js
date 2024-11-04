@@ -51,10 +51,6 @@ context("Image edit (new)", () => {
     cy.get("#image-stepper-field .nav-item.danger.done").should("not.exist");
   });
 
-  it("should have the #1 fragment", () => {
-    cy.url().should("contain", "#1");
-  });
-
   it("should not show the Save button", () => {
     cy.get("#save-dropdown").should("be.visible");
   });

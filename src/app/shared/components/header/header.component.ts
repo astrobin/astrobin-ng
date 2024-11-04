@@ -21,6 +21,7 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { NavigationEnd, Router } from "@angular/router";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { UserService } from "@shared/services/user.service";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -105,7 +106,8 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     public readonly themeService: ThemeService,
     public readonly jsonApiService: JsonApiService,
     public readonly router: Router,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly userService: UserService
   ) {
     super(store$);
   }

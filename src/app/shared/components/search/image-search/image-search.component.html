@@ -1,143 +1,161 @@
-<ng-container *ngIf="!initialLoading; else loadingTemplate">
-  <ng-container *ngIf="results !== null && !scheduledLoadingTimeout; else loadingTemplate">
-    <ng-container *ngIf="results.length > 0; else noImagesTemplate">
-      <div
-        *ngIf="
-          (showRetailers && allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)) ||
-          (showMarketplaceItems && marketplaceLineItems?.length)
-        "
-        class="mb-4"
-      >
+<ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+  <ng-container *ngIf="!initialLoading; else loadingTemplate">
+    <ng-container *ngIf="results !== null && !scheduledLoadingTimeout; else loadingTemplate">
+      <ng-container *ngIf="results.length > 0; else noImagesTemplate">
         <div
-          *ngIf="allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)"
-          class="alert alert-light retailers"
+          *ngIf="
+            (showRetailers && allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)) ||
+            (showMarketplaceItems && marketplaceLineItems?.length)
+          "
+          class="mb-4"
         >
-          <ng-container *ngIf="itemListings?.length">
-            <div>
-              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-              <span
-                [innerHTML]="getItemListingsMessage(itemListings[0])"
-                class="me-2"
-              ></span>
-            </div>
-            <div class="list">
-              <a
-                *ngFor="let item of itemListings"
-                [href]="item.url"
-                class="link"
-                target="_blank"
-              >
-                <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
-              </a>
-            </div>
-          </ng-container>
+          <div
+            *ngIf="allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)"
+            class="alert alert-light retailers"
+          >
+            <ng-container *ngIf="itemListings?.length">
+              <div>
+                <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+                <span
+                  [innerHTML]="getItemListingsMessage(itemListings[0])"
+                  class="me-2"
+                ></span>
+              </div>
+              <div class="list">
+                <a
+                  *ngFor="let item of itemListings"
+                  [href]="item.url"
+                  class="link"
+                  target="_blank"
+                >
+                  <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
+                </a>
+              </div>
+            </ng-container>
 
-          <ng-container *ngIf="(!itemListings || itemListings.length === 0) && brandListings?.length > 0">
-            <div>
-              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-              <span
-                [innerHTML]="getBrandListingsMessage(brandListings[0].brand)"
-                class="me-2"
-              ></span>
-            </div>
-            <div class="list">
-              <a
-                *ngFor="let item of brandListings"
-                [href]="item.url"
-                class="link"
-                target="_blank"
-              >
-                <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
-              </a>
-            </div>
-          </ng-container>
-        </div>
-
-        <div
-          *ngIf="marketplaceLineItems?.length"
-          class="alert alert-light marketplace-listings"
-        >
-          <div>
-            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-            <span
-              [innerHTML]="getMarketplaceMessage()"
-              class="me-2"
-            ></span>
+            <ng-container *ngIf="(!itemListings || itemListings.length === 0) && brandListings?.length > 0">
+              <div>
+                <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+                <span
+                  [innerHTML]="getBrandListingsMessage(brandListings[0].brand)"
+                  class="me-2"
+                ></span>
+              </div>
+              <div class="list">
+                <a
+                  *ngFor="let item of brandListings"
+                  [href]="item.url"
+                  class="link"
+                  target="_blank"
+                >
+                  <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
+                </a>
+              </div>
+            </ng-container>
           </div>
-          <div class="list">
-            <a
-              *ngFor="let item of marketplaceLineItems"
-              [routerLink]="['/equipment/marketplace/listing', item.listingHash]"
-              class="link"
-            >
-              <img
-                *ngIf="item.images?.length"
-                [src]="item.images[0].thumbnailFile"
-                [alt]="item.itemName"
-                class="image"
-              />
 
-              <span *ngIf="!item.images || item.images.length === 0" class="item-name">
+          <div
+            *ngIf="marketplaceLineItems?.length"
+            class="alert alert-light marketplace-listings"
+          >
+            <div>
+              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+              <span
+                [innerHTML]="getMarketplaceMessage()"
+                class="me-2"
+              ></span>
+            </div>
+            <div class="list">
+              <a
+                *ngFor="let item of marketplaceLineItems"
+                [routerLink]="['/equipment/marketplace/listing', item.listingHash]"
+                class="link"
+              >
+                <img
+                  *ngIf="item.images?.length"
+                  [src]="item.images[0].thumbnailFile"
+                  [alt]="item.itemName"
+                  class="image"
+                />
+
+                <span *ngIf="!item.images || item.images.length === 0" class="item-name">
                   {{ item.itemName }}
                 </span>
-            </a>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="results-count" *ngIf="showResultsCount && lastResultsCount">
-        <span [innerHTML]="lastResultsCount"></span>
-      </div>
+        <div class="results-count" *ngIf="showResultsCount && lastResultsCount">
+          <span [innerHTML]="lastResultsCount"></span>
+        </div>
 
-      <div class="search-results">
-        <a
-          *ngFor="let item of gridItems"
-          (click)="openImage($event, item)"
-          [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
-          [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
-          [style.min-width.px]="averageHeight"
-          [style.min-height.px]="averageHeight"
-          [href]="getImageLink(item)"
+        <div
+          class="masonry-layout-container"
+          [astrobinMasonryLayout]="results"
+          [activeLayout]="alias === ImageAlias.GALLERY ? UserGalleryActiveLayout.TINY : UserGalleryActiveLayout.SMALL"
+          (gridItemsChange)="onGridItemsChange($event)"
         >
-          <img
-            [alt]="item.title"
-            [src]="alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail"
-          />
+          <a
+            *ngFor="let item of gridItems"
+            (click)="openImage($event, item)"
+            [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
+            [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
+            [style.min-width.px]="averageHeight"
+            [style.min-height.px]="averageHeight"
+            [href]="getImageLink(item)"
+          >
+            <div
+              class="image-container"
+              [ngStyle]="{
+                'background-image': 'url(' + (alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail) + ')',
+                'background-position': item.objectPosition || '50% 50%',
+                'background-repeat': 'no-repeat',
+                'background-size': 'cover'
+              }"
+            ></div>
 
-          <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
+            <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
 
-          <div class="badges">
-            <fa-icon *ngIf="item.isIotd" class="iotd" icon="trophy"></fa-icon>
-            <fa-icon *ngIf="item.isTopPick" class="top-pick" icon="star"></fa-icon>
-            <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
-          </div>
-
-          <div *ngIf="averageHeight >= 150" class="hover d-flex align-items-center gap-2">
-            <div class="flex-grow-1">
-              <div *ngIf="item.username && item.userDisplayName" class="user">
-                <a [href]="classicRoutesService.GALLERY(item.username)">{{ item.userDisplayName }}</a>
-              </div>
-              <div class="title">{{ item.title }}</div>
-              <div *ngIf="item.published" class="published">{{ item.published | localDate | timeago }}</div>
+            <div class="badges">
+              <fa-icon *ngIf="item.isIotd" class="iotd" icon="trophy"></fa-icon>
+              <fa-icon *ngIf="item.isTopPick" class="top-pick" icon="star"></fa-icon>
+              <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
             </div>
 
-            <div class="counters d-flex flex-column gap-1">
-              <div class="counter likes">
-                <fa-icon icon="thumbs-up"></fa-icon>
-                <span class="value">{{ item.likes }}</span>
+            <div *ngIf="averageHeight >= 150" class="hover d-flex align-items-center gap-2">
+              <div class="flex-grow-1">
+                <div *ngIf="item.username && item.userDisplayName" class="user">
+                  <a
+                    (click)="userService.openGallery(item.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                    [href]="userService.getGalleryUrl(item.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                    astrobinEventPreventDefault
+                  >
+                    {{ item.userDisplayName }}
+                  </a>
+                </div>
+                <div class="title">{{ item.title }}</div>
+                <div *ngIf="item.published" class="published">{{ item.published | localDate | timeago }}</div>
               </div>
-              <div class="counter bookmarks">
-                <fa-icon icon="bookmark"></fa-icon>
-                <span class="value">{{ item.bookmarks }}</span>
-              </div>
-              <div class="counter comments">
-                <fa-icon icon="comment"></fa-icon>
-                <span class="value">{{ item.comments }}</span>
+
+              <div class="counters d-flex flex-column gap-1">
+                <div class="counter likes">
+                  <fa-icon icon="thumbs-up"></fa-icon>
+                  <span class="value">{{ item.likes }}</span>
+                </div>
+                <div class="counter bookmarks">
+                  <fa-icon icon="bookmark"></fa-icon>
+                  <span class="value">{{ item.bookmarks }}</span>
+                </div>
+                <div class="counter comments">
+                  <fa-icon icon="comment"></fa-icon>
+                  <span class="value">{{ item.comments }}</span>
+                </div>
               </div>
             </div>
-          </div>
-        </a>
-      </div>
+          </a>
+        </div>
+      </ng-container>
     </ng-container>
   </ng-container>
 </ng-container>

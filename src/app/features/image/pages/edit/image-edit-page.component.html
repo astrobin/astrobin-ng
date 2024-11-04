@@ -112,7 +112,7 @@
       >
         {{ "Save" | translate }}&hellip;
       </button>
-      <div aria-labelledby="save-dropdown" ngbDropdownMenu>
+      <div [attr.aria-labelledby]="'save-dropdown'" ngbDropdownMenu>
         <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
 
         <button

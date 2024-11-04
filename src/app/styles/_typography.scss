@@ -81,3 +81,15 @@ pre {
 .no-wrap {
   white-space: nowrap;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+[data-toggle="offcanvas"] {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}

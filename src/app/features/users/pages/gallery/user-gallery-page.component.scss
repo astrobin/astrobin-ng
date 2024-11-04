@@ -1,0 +1,21 @@
+@import "../../../../styles/breakpoints";
+
+astrobin-ad-manager {
+  margin: -2rem -2rem 2rem;
+  display: block;
+}
+
+astrobin-user-gallery-header {
+  display: block;
+  margin: -2rem -2rem 0;
+  padding: 0;
+  width: calc(100% + 4rem);
+  height: 16rem;
+}
+
+@media (max-width: $md-max) {
+  astrobin-user-gallery-header {
+    margin: -2rem -.5rem 0;
+    width: calc(100% + 1rem)
+  }
+}

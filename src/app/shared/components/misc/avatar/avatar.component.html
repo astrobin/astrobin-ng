@@ -1,6 +1,6 @@
 <ng-container *ngIf="!!user; else loadingTemplate">
   <ng-container *ngIf="link; else noLinkTemplate">
-    <a [href]="classicRoutesService.GALLERY(user.username)">
+    <a [href]="url" (click)="openGallery()" astrobinEventPreventDefault>
       <ng-container [ngTemplateOutlet]="imageTemplate"></ng-container>
     </a>
   </ng-container>
@@ -11,6 +11,14 @@
 
   <ng-template #imageTemplate>
     <img [alt]="user.username" [src]="avatarUrl" />
+    <div
+      *ngIf="showPremiumBadge && user?.validSubscription"
+      [ngbTooltip]="'Supporting member' | translate"
+      class="badge"
+      container="body"
+    >
+      <fa-icon icon="asterisk"></fa-icon>
+    </div>
   </ng-template>
 
 </ng-container>

@@ -9,7 +9,7 @@
     {{ "Sort" | translate }}
   </button>
 
-  <div aria-labelledby="sort-dropdown-button" ngbDropdownMenu>
+  <div [attr.aria-labelledby]="'sort-dropdown-button'" ngbDropdownMenu>
     <button class="dropdown-item" (click)="queueSortOrderChanged.emit('newest')">
       <fa-icon *ngIf="(newestFirst$ | async) === true" icon="dot-circle"></fa-icon>
       <fa-icon *ngIf="(newestFirst$ | async) === false" icon="circle"></fa-icon>

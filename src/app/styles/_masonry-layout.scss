@@ -1,0 +1,204 @@
+@import "breakpoints";
+
+.masonry-layout-container {
+  $gap: .75rem;
+
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: $gap;
+
+  &::after {
+    content: "";
+    flex-grow: 999999999999;
+  }
+
+  > a {
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+
+    > .image-container,
+    > img {
+      position: absolute;
+      top: 0;
+      vertical-align: bottom;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: .75rem;
+      transition: filter .25s ease-in-out;
+    }
+
+    > [icon="play"] {
+      position: absolute;
+      font-size: 2rem;
+      line-height: 1rem;
+      color: var(--lightestGrey);
+      top: calc(50% - 1rem);
+      left: calc(50% - .75rem);
+      opacity: .75;
+    }
+
+    > .badges {
+      display: flex;
+      justify-content: flex-start;
+      gap: .25rem;
+      position: absolute;
+      top: .375rem;
+      left: .375rem;
+
+      [icon] {
+        font-size: .75rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 1rem;
+        text-align: center;
+        line-height: 1.5rem;
+        color: var(--brightWhite);
+        border: 1px solid var(--brightWhite);
+
+        ::ng-deep svg {
+          filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .4));
+        }
+
+        &.iotd {
+          background-color: var(--gold);
+          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--gold) 0 0 10px;
+        }
+
+        &.top-pick {
+          line-height: 1.35rem;
+          background-color: var(--silver);
+          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--silver) 0 0 10px;
+        }
+
+        &.top-pick-nomination {
+          background-color: var(--bronze);
+          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--bronze) 0 0 10px;
+        }
+
+        &.collaborators {
+          background-color: var(--secondaryAccentColor);
+          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--bronze) 0 0 10px;
+        }
+      }
+    }
+
+    > .hover {
+      opacity: 0;
+      position: absolute;
+      bottom: 0;
+      padding: .75rem;
+      width: 100%;
+      max-height: 80%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: rgba(0, 0, 0, .75);
+      transition: opacity .25s ease-in-out;
+      border-bottom-left-radius: .75rem;
+      border-bottom-right-radius: .75rem;
+      font-size: .85rem;
+      z-index: 2;
+
+      .title {
+        color: var(--lightestGrey);
+      }
+
+      .published,
+      .uploaded {
+        color: var(--lighterGrey);
+        font-size: .7rem;
+      }
+
+      .counters {
+        .counter {
+          color: var(--lighterGrey);
+          font-size: .7rem;
+          white-space: nowrap;
+
+          .ng-fa-icon {
+            width: 1rem;
+            display: inline-block;
+            text-align: center;
+            margin-right: .25rem;
+          }
+
+          > .value {
+            color: var(--white);
+          }
+        }
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        > .image-container,
+        > img {
+          filter: brightness(1.5);
+        }
+
+        > .hover {
+          opacity: 1;
+        }
+      }
+    }
+
+    @media (max-width: $sm-max) {
+      &.wide {
+        grid-column: span 6;
+      }
+
+      &.medium {
+        grid-column: span 3;
+      }
+
+      &.normal {
+        grid-column: span 3;
+      }
+    }
+
+    @media (max-width: $xs-max) {
+      &.wide {
+        grid-column: span 6;
+      }
+
+      &.medium {
+        grid-column: span 6;
+      }
+
+      &.normal {
+        grid-column: span 6;
+      }
+    }
+  }
+
+  .loading,
+  + .loading {
+    width: 100%;
+    margin: 2rem 0;
+  }
+
+  &.tiny {
+    a {
+      > .hover {
+        font-size: .75rem;
+        border-bottom-left-radius: 1.75rem;
+        border-bottom-right-radius: 1.75rem;
+      }
+
+      > img {
+        border-radius: 1.75rem;
+      }
+    }
+  }
+
+  @media (max-width: $xs-max) {
+    justify-content: center;
+
+    &::after {
+      display: none;
+    }
+  }
+}

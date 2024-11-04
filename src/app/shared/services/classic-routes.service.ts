@@ -19,8 +19,10 @@ export class ClassicRoutesService extends BaseService {
   PRICING = "https://welcome.astrobin.com/pricing";
   UPLOAD = BASE_URL + "/upload/";
   INBOX = BASE_URL + "/messages/inbox/";
+  SEND_MESSAGE = (username: UserInterface["username"]) => BASE_URL + "/messages/compose/" + username + "/";
   SETTINGS = BASE_URL + "/profile/edit/basic/";
   SETTINGS_PREFERENCES = BASE_URL + "/profile/edit/preferences/";
+  SETTINGS_AVATAR = BASE_URL + "/avatar/change/";
   FORUM_HOME = BASE_URL + "/forum/";
   FORUM_LATEST = BASE_URL + "/forum/topic/latest/";
   FORUM_SUBSCRIBED = BASE_URL + "/forum/topic/subscribed";
@@ -47,7 +49,7 @@ export class ClassicRoutesService extends BaseService {
 
   GALLERY = (username: UserInterface["username"]) => BASE_URL + `/users/${username}/`;
 
-  STAGING_GALLERY = (user: UserInterface) => BASE_URL + `/users/${user?.username}/?staging`;
+  STAGING_GALLERY = (username: UserInterface["username"]) => BASE_URL + `/users/${username}/?staging`;
 
   BOOKMARKS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/bookmarks/`;
 

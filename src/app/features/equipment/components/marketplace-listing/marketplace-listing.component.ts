@@ -8,9 +8,9 @@ import {
 } from "@features/equipment/types/marketplace-listing.interface";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 import { CountryService } from "@shared/services/country.service";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@shared/services/equipment-item.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
 import { MARKETPLACE_SALE_TYPE } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
 
 @Component({

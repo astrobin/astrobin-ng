@@ -71,10 +71,6 @@ context("Image edit (existing)", () => {
     cy.get("#image-stepper-field .nav-link").should("have.length", 7);
   });
 
-  it("should have the #1 fragment", () => {
-    cy.url().should("contain", "#1");
-  });
-
   it("should show the Save button", () => {
     cy.get("#save-dropdown").should("not.exist");
     cy.get("#save-button").should("be.visible");

@@ -1,0 +1,101 @@
+$size: 150px;
+
+.collection-container {
+  position: relative;
+  cursor: pointer;
+  transition: filter 0.3s ease;
+  width: $size;
+
+  .collection-background {
+    background: url("/assets/images/polaroids.png?v=20241008") no-repeat center;
+    background-size: $size;
+    height: $size;
+    width: $size;
+    position: relative;
+
+    img {
+      position: absolute;
+      top: 7px !important;
+      left: 17px !important;
+      width: calc(100% - 32px) !important;
+      height: calc(100% - 33px) !important;
+      object-fit: cover;
+
+      &.empty-collection-thumbnail {
+        object-fit: none;
+      }
+    }
+  }
+
+  astrobin-user-gallery-collection-menu {
+    position: absolute;
+    top: -.5rem;
+    right: 0;
+    margin: 0;
+    padding: .5rem;
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--lightGrey);
+    cursor: pointer;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    line-height: 1rem;
+    z-index: 1;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        filter: brightness(1.5);
+      }
+    }
+
+    ::ng-deep .btn {
+      color: var(--lightestGrey);
+      margin: 0;
+
+      .ng-fa-icon {
+        margin: 0;
+      }
+    }
+  }
+
+  .collection-name {
+    padding: .5rem 1rem .25rem 1rem;
+    text-align: center;
+    color: var(--white);
+    font-weight: bold;
+    word-break: break-word;
+  }
+
+  .image-count,
+  .nested-collection-count {
+    padding: 0 1rem;
+    text-align: center;
+    color: var(--lighterGrey);
+    font-size: .8rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      filter: brightness(1.5);
+
+      astrobin-user-gallery-collection-menu {
+        opacity: 1;
+        pointer-events: all;
+      }
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    astrobin-user-gallery-collection-menu {
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
+}
