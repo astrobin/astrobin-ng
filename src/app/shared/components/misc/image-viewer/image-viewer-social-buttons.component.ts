@@ -244,6 +244,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
   }
 
   protected openLikeThisOffcanvas() {
+    this.likeThisSearch = "";
     this._searchUsersWhoLikeThis(null);
     this.offcanvasService.open(
       this.likeThisOffcanvas, {

@@ -366,6 +366,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   }
 
   protected openFollowersOffcanvas() {
+    this.followersSearch = "";
     this._searchFollowers();
     this.offcanvasService.open(
       this.followersOffcanvas, {
@@ -379,6 +380,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       take(1),
       filter(currentUser => currentUser?.id === this.user.id)
     ).subscribe(() => {
+      this.followingSearch = "";
       this._searchFollowing();
       this.offcanvasService.open(
         this.followingOffcanvas, {
@@ -393,6 +395,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       take(1),
       filter(currentUser => currentUser?.id === this.user.id)
     ).subscribe(() => {
+      this.mutualFollowersSearch = "";
       this._searchMutualFollowers();
       this.offcanvasService.open(
         this.mutualFollowersOffcanvas, {
