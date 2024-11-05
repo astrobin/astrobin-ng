@@ -43,7 +43,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
           </div>
 
           <div class="d-flex flex-column gap-2">
-            <div class="d-flex flex-column flex-sm-row gap-sm-3 align-items-sm-center">
+            <div class="d-flex flex-column flex-sm-row gap-2 gap-sm-3 align-items-sm-center">
               <div class="d-flex flex-row align-items-center gap-3">
                 <astrobin-username
                   [user]="user" [link]="false"
@@ -90,7 +90,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
                 [showIcon]="false"
                 [setLabel]="'Follow' | translate"
                 [unsetLabel]="'Unfollow' | translate"
-                class="w-auto"
+                class="w-auto p-0"
                 btnClass="btn btn-outline-secondary btn-no-block"
                 propertyType="follow"
               ></astrobin-toggle-property>
@@ -130,7 +130,8 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
               <a
                 (click)="openStatsOffcanvas()"
                 astrobinEventPreventDefault
-                class="btn btn-xs btn-outline-secondary btn-no-block"
+                class="btn btn-xs btn-link btn-no-block p-0 p-md-2 text-muted"
+                data-toggle="offcanvas"
                 href=""
                 translate="More"
               ></a>

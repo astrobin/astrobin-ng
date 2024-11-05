@@ -59,7 +59,7 @@
 
     astrobin-username {
       display: block;
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       color: white;
       font-weight: 700;
 
@@ -69,7 +69,7 @@
     }
 
     .username {
-      color: var(--white);
+      color: var(--lightestGrey);
       font-size: .85rem;
     }
 
@@ -141,7 +141,7 @@
   .user-gallery-header {
     .user-info {
       astrobin-username {
-        font-size: 1.25rem;
+        font-size: 1rem;
       }
     }
   }
