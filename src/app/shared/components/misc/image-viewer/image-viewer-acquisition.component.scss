@@ -1,71 +1,74 @@
-@import '../../../../styles/mixins.scss';
+@import '../../../../styles/mixins';
+@import '../../../../styles/breakpoints';
 
-.table {
-  color: var(--lightestGrey);
-  margin-bottom: 0;
-  margin-top: 1.75rem;
+@media (min-width: $md-min) {
+  .table {
+    color: var(--lightestGrey);
+    margin-bottom: 0;
+    margin-top: 1.75rem;
 
-  thead > tr {
-    border-top-left-radius: var(--bs-border-radius);
-    border-top-right-radius: var(--bs-border-radius);
+    thead > tr {
+      border-top-left-radius: var(--bs-border-radius);
+      border-top-right-radius: var(--bs-border-radius);
 
-    > th {
-      font-weight: normal;
+      > th {
+        font-weight: normal;
+
+        &:first-child {
+          border-top-left-radius: var(--bs-border-radius);
+          border-bottom-left-radius: var(--bs-border-radius);
+        }
+
+        &:last-child {
+          text-align: right;
+          border-top-right-radius: var(--bs-border-radius);
+          border-bottom-right-radius: var(--bs-border-radius);
+        }
+      }
+    }
+
+    td,
+    th {
+      padding: .5rem;
 
       &:first-child {
-        border-top-left-radius: var(--bs-border-radius);
-        border-bottom-left-radius: var(--bs-border-radius);
+        padding-left: 1rem;
       }
 
       &:last-child {
-        text-align: right;
-        border-top-right-radius: var(--bs-border-radius);
-        border-bottom-right-radius: var(--bs-border-radius);
-      }
-    }
-  }
-
-  td,
-  th {
-    padding: .5rem;
-
-    &:first-child {
-      padding-left: 1rem;
-    }
-
-    &:last-child {
-      padding-right: 1rem;
-    }
-
-    .ng-fa-icon {
-      margin-right: .25rem;
-      color: var(--lightGrey);
-    }
-
-    .metadata-label {
-      flex-grow: 1;
-    }
-  }
-
-  tbody {
-    // 2 to skip the spacer row
-    tr:nth-child(2) {
-      td:first-child {
-        border-top-left-radius: var(--bs-border-radius);
+        padding-right: 1rem;
       }
 
-      td:last-child {
-        border-top-right-radius: var(--bs-border-radius);
+      .ng-fa-icon {
+        margin-right: .25rem;
+        color: var(--lightGrey);
+      }
+
+      .metadata-label {
+        flex-grow: 1;
       }
     }
 
-    tr:last-child {
-      td:first-child {
-        border-bottom-left-radius: var(--bs-border-radius);
+    tbody {
+      // 2 to skip the spacer row
+      tr:nth-child(2) {
+        td:first-child {
+          border-top-left-radius: var(--bs-border-radius);
+        }
+
+        td:last-child {
+          border-top-right-radius: var(--bs-border-radius);
+        }
       }
 
-      td:last-child {
-        border-bottom-right-radius: var(--bs-border-radius);
+      tr:last-child {
+        td:first-child {
+          border-bottom-left-radius: var(--bs-border-radius);
+        }
+
+        td:last-child {
+          border-bottom-right-radius: var(--bs-border-radius);
+        }
       }
     }
   }

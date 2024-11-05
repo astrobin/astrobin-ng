@@ -76,6 +76,10 @@
     margin-bottom: 2rem;
   }
 
+  .table tbody:last-child tr:last-child {
+    margin-bottom: 0;
+  }
+
   .table tbody tr td {
     display: flex;
     gap: .5rem;

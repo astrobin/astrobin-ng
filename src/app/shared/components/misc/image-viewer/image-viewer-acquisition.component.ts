@@ -70,11 +70,12 @@ interface DetailedFilterSummary {
       </div>
     </ng-container>
 
+    <div class="metadata-header d-md-none">{{ "Integration" | translate }}</div>
     <div
       *ngIf="image.deepSkyAcquisitions?.length && !image.solarSystemAcquisitions?.length"
       class="metadata-section"
     >
-      <table class="table">
+      <table class="table table-mobile-support mb-0">
         <thead>
         <tr>
           <th>
@@ -109,12 +110,12 @@ interface DetailedFilterSummary {
         </thead>
 
         <tbody>
-        <tr class="spacer-row">
+        <tr class="spacer-row d-none d-md-block">
           <td colspan="4"></td>
         </tr>
 
         <tr *ngFor="let filterSummary of filterSummaries">
-          <td>
+          <td [attr.data-label]="'Filter type' | translate">
             <div class="metadata-item">
               <div class="metadata-label">
                 <a
@@ -128,7 +129,7 @@ interface DetailedFilterSummary {
             </div>
           </td>
 
-          <td>
+          <td [attr.data-label]="'Frames' | translate">
             <div class="metadata-item">
               <div class="metadata-label">
                 <span
@@ -142,21 +143,23 @@ interface DetailedFilterSummary {
                 </span>
                 <span
                   *ngIf="!filterSummary.summary.number || !filterSummary.summary.duration"
+                  (click)="openDeepSkyIntegrationDetails($event)"
+                  data-toggle="offcanvas"
                 >
                   <fa-icon
-                    icon="bars-staggered"
                     [ngbTooltip]="'Mix of multiple exposure times' | translate"
-                    triggers="hover click"
+                    class="d-none d-md-inline"
                     container="body"
-                    data-toggle="offcanvas"
-                    (click)="openDeepSkyIntegrationDetails($event)"
+                    icon="bars-staggered"
+                    triggers="hover click"
                   ></fa-icon>
+                  <span class="d-md-none">{{ "Mix of multiple exposure times" | translate }}</span>
                 </span>
               </div>
             </div>
           </td>
 
-          <td>
+          <td [attr.data-label]="'Integration' | translate">
             <div class="metadata-item">
               <div class="metadata-label">
                 <span
@@ -167,7 +170,7 @@ interface DetailedFilterSummary {
             </div>
           </td>
 
-          <td *ngIf="dates?.length" class="d-none d-md-table-cell">
+          <td *ngIf="dates?.length" [attr.data-label]="'Dates' | translate" class="d-none d-md-table-cell">
             <div class="metadata-item">
               <div class="metadata-label">
                 <astrobin-image-viewer-acquisition-dates
@@ -177,7 +180,7 @@ interface DetailedFilterSummary {
             </div>
           </td>
 
-          <td *ngIf="dates?.length">
+          <td *ngIf="dates?.length" [attr.data-label]="'Avg. moon' | translate">
             <div class="metadata-item">
               <div class="metadata-label">
                 <span
@@ -201,7 +204,7 @@ interface DetailedFilterSummary {
         <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
       </div>
       <div class="offcanvas-body offcanvas-users">
-        <table class="table">
+        <table class="table mt-0 table-mobile-support">
           <ng-container *ngFor="let filterType of filterTypes; let i = index">
             <thead>
             <tr *ngIf="i > 0" class="spacer-row">
@@ -211,7 +214,7 @@ interface DetailedFilterSummary {
               <th>
                 {{ humanizeFilterType(filterType) }}
               </th>
-              <th></th>
+              <th class="d-md-none"></th>
               <th>
                 <span
                   [innerHTML]="imageService.formatIntegration(detailedFilterSummaries[filterType].totalIntegration)">
@@ -221,12 +224,12 @@ interface DetailedFilterSummary {
             </thead>
 
             <tbody>
-            <tr class="small-spacer-row">
+            <tr class="small-spacer-row d-none d-md-block">
               <td colspan="3"></td>
             </tr>
 
             <tr *ngFor="let detail of detailedFilterSummaries[filterType].details">
-              <td class="date">
+              <td [attr.data-label]="'Date' | translate" class="date">
                 <ng-container *ngIf="detail.date">
                   {{ detail.date | localDate | date:"mediumDate" }}
                 </ng-container>
@@ -235,14 +238,17 @@ interface DetailedFilterSummary {
                 </ng-container>
               </td>
 
-              <td>
+              <td [attr.data-label]="'Filter' | translate" class="d-md-none">
                 <ng-container *ngIf="detail.name">
                   <span class="brand">{{ detail.brand }}</span>
                   <span class="name">{{ detail.name }}</span>
                 </ng-container>
+                <ng-container *ngIf="!detail.name">
+                  {{ "Unknown or no filter" | translate }}
+                </ng-container>
               </td>
 
-              <td>
+              <td [attr.data-label]="'Frames' | translate">
                 <span class="number">{{ detail.number }}</span>
                 <span class="times">&times;</span>
                 <span class="duration">{{ detail.duration }}&Prime;</span>
