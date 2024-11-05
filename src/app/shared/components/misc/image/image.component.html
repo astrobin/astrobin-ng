@@ -37,7 +37,7 @@
   >
     <astrobin-loading-indicator
       [progress]="imageLoadingProgress"
-      [message]="revision && revision.imageFile.toLowerCase().endsWith('.gif') ? ('Loading GIF animation...' | translate) : ''"
+      [message]="revision && revision.imageFile && revision.imageFile.toLowerCase().endsWith('.gif') ? ('Loading GIF animation...' | translate) : ''"
     ></astrobin-loading-indicator>
   </div>
 </ng-template>
