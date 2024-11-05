@@ -14,7 +14,7 @@ import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { animationFrameScheduler, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
-import { isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
+import { isPlatformBrowser, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -26,7 +26,6 @@ import { TitleService } from "@shared/services/title/title.service";
 import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
-import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
@@ -141,8 +140,7 @@ export class ImageViewerComponent
   protected showAd = false;
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
-  protected readonly ORIGINAL_REVISION_LABEL = ORIGINAL_REVISION_LABEL;
-
+  private readonly _isBrowser: boolean;
   private _dataAreaScrollEventSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
 
@@ -165,12 +163,12 @@ export class ImageViewerComponent
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly activatedRoute: ActivatedRoute,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe,
     public readonly imageViewerService: ImageViewerService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly modalService: NgbModal
   ) {
     super(store$);
+    this._isBrowser = isPlatformBrowser(platformId);
   }
 
   @HostBinding("class.standalone")
@@ -182,13 +180,16 @@ export class ImageViewerComponent
     this._initImageAlias();
     this._initAdjustmentEditor();
     this._initContentTypes();
-    this.setImage(this.image, this.revisionLabel);
+
+    if (this.image) {
+      this.setImage(this.image, this.revisionLabel);
+    }
 
     this.initialized.emit();
   }
 
   ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this._isBrowser) {
       merge(
         this._retryAdjustSvgOverlay.pipe(
           delay(100),
@@ -317,7 +318,8 @@ export class ImageViewerComponent
     this._setMouseHoverImage();
     this._recordHit();
     this._setAd();
-    this._setMetaTags();
+
+    this.imageService.setMetaTags(this.image);
 
     // Updates to the current image.
     this.store$.pipe(
@@ -387,7 +389,7 @@ export class ImageViewerComponent
       this.viewingFullscreenImage = true;
       this.toggleFullscreen.emit(true);
 
-      if (isPlatformBrowser(this.platformId)) {
+      if (this._isBrowser) {
         const location_ = this.windowRefService.nativeWindow.location;
         this.windowRefService.pushState(
           {
@@ -406,7 +408,7 @@ export class ImageViewerComponent
     this.viewingFullscreenImage = false;
     this.toggleFullscreen.emit(false);
 
-    if (isPlatformBrowser(this.platformId)) {
+    if (this._isBrowser) {
       const location_ = this.windowRefService.nativeWindow.location;
       this.windowRefService.replaceState(
         {},
@@ -526,7 +528,7 @@ export class ImageViewerComponent
   }
 
   private _onMouseHoverSvgLoad(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this._isBrowser) {
       this.utilsService.delay(100).subscribe(() => {
         const _doc = this.windowRefService.nativeWindow.document;
         const svgObject = _doc.getElementById("mouse-hover-svg-" + this.image.pk) as HTMLObjectElement;
@@ -611,7 +613,7 @@ export class ImageViewerComponent
   }
 
   private _initDataAreaScrollHandling() {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!this._isBrowser) {
       return;
     }
 
@@ -655,7 +657,7 @@ export class ImageViewerComponent
   }
 
   private _initAutoOpenFullscreen() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this._isBrowser) {
       const hash = this.windowRefService.nativeWindow.location.hash;
       if (hash === "#fullscreen") {
         this.enterFullscreen(null);
@@ -798,7 +800,7 @@ export class ImageViewerComponent
   }
 
   private _setAd() {
-    if (isPlatformServer(this.platformId)) {
+    if (!this._isBrowser) {
       return;
     }
 
@@ -838,7 +840,7 @@ export class ImageViewerComponent
       model: "image"
     };
 
-    if (isPlatformServer(this.platformId)) {
+    if (!this._isBrowser) {
       return;
     }
 
@@ -862,35 +864,5 @@ export class ImageViewerComponent
         take(1)
       )
       .subscribe();
-  }
-
-  private _setMetaTags(): void {
-    const maxDescriptionLength = 200;
-    let description: string;
-    let image: string;
-
-    if (this.image.descriptionBbcode && this.image.descriptionBbcode.length > 0) {
-      description = this.bbCodeToHtmlPipe.transform(this.image.descriptionBbcode).slice(0, maxDescriptionLength) + "...";
-    } else if (this.image.description && this.image.description.length > 0) {
-      description = this.image.description.slice(0, maxDescriptionLength) + "...";
-    } else {
-      description = this.translateService.instant("An image on AstroBin.");
-    }
-
-    if (this.image.thumbnails && this.image.thumbnails.length > 0) {
-      image = this.image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR).url;
-    }
-
-    this.titleService.setTitle(this.image.title);
-    this.titleService.setDescription(description);
-
-    if (image) {
-      this.titleService.addMetaTag({ property: "og:image", content: image });
-    }
-
-    this.titleService.addMetaTag({
-      property: "og:url",
-      content: this.windowRefService.getCurrentUrl().toString()
-    });
   }
 }

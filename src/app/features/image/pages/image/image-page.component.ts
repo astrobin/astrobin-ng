@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { filter, switchMap, take, takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
@@ -15,9 +15,10 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserService } from "@shared/services/user.service";
-import { LoadUser } from "@features/account/store/auth.actions";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { concat, forkJoin } from "rxjs";
+import { forkJoin } from "rxjs";
+import { isPlatformBrowser } from "@angular/common";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-image-page",
@@ -25,9 +26,10 @@ import { concat, forkJoin } from "rxjs";
   styleUrls: ["./image-page.component.scss"]
 })
 export class ImagePageComponent extends BaseComponentDirective implements OnInit {
-  @ViewChild("imageViewer", { static: true })
+  @ViewChild("imageViewer", { static: false })
   imageViewer: ImageViewerComponent;
 
+  protected readonly isBrowser: boolean;
   protected image: ImageInterface;
 
   constructor(
@@ -38,9 +40,13 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly imageService: ImageService,
+    public readonly utilsService: UtilsService,
   ) {
     super(store$);
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit(): void {
@@ -51,13 +57,16 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
       distinctUntilChangedObj()
     ).subscribe(data => {
       this.image = data.image;
+      this.imageService.setMetaTags(this.image);
 
-      if (this.image && this.imageViewer) {
-        this.imageViewer.setImage(
-          this.image,
-          this.route.snapshot.queryParams.r || FINAL_REVISION_LABEL
-        );
-      }
+      this.utilsService.delay(1).subscribe(() => {
+        if (this.image && this.imageViewer) {
+          this.imageViewer.setImage(
+            this.image,
+            this.route.snapshot.queryParams.r || FINAL_REVISION_LABEL
+          );
+        }
+      });
     });
 
     this._setupOnDelete();

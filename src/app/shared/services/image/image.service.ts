@@ -20,6 +20,8 @@ import { LoadImage, LoadImageFailure, LoadImageOptionsInterface } from "@app/sto
 import { MainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { TitleService } from "@shared/services/title/title.service";
+import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 
 @Injectable({
   providedIn: "root"
@@ -36,7 +38,9 @@ export class ImageService extends BaseService {
     public readonly translateService: TranslateService,
     public readonly http: HttpClient,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly titleService: TitleService,
+    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe
   ) {
     super(loadingService);
   }
@@ -950,5 +954,35 @@ export class ImageService extends BaseService {
     }
     // Fallback for environments without URL.createObjectURL
     return "";
+  }
+
+  setMetaTags(image: ImageInterface): void {
+    const maxDescriptionLength = 200;
+    let description: string;
+    let thumbnail: string;
+
+    if (image.descriptionBbcode && image.descriptionBbcode.length > 0) {
+      description = this.bbCodeToHtmlPipe.transform(image.descriptionBbcode).slice(0, maxDescriptionLength) + "...";
+    } else if (image.description && image.description.length > 0) {
+      description = image.description.slice(0, maxDescriptionLength) + "...";
+    } else {
+      description = this.translateService.instant("An image on AstroBin.");
+    }
+
+    if (image.thumbnails && image.thumbnails.length > 0) {
+      thumbnail = image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR).url;
+    }
+
+    this.titleService.setTitle(image.title);
+    this.titleService.setDescription(description);
+
+    if (image) {
+      this.titleService.addMetaTag({ property: "og:image", content: thumbnail });
+    }
+
+    this.titleService.addMetaTag({
+      property: "og:url",
+      content: this.windowRef.getCurrentUrl().toString()
+    });
   }
 }

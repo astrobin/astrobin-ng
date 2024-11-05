@@ -19,9 +19,15 @@ export class ImageEffects {
     this.store$,
     AppActionTypes.LOAD_IMAGE,
     action => action.payload.imageId, // Extracting imageId from action
-    (state, id) => state.app.images.find(
-      image => image.pk === id || image.hash === id
-    ), // Selector for the image
+    (state, id) => {
+      if (!state.app.images) {
+        return null;
+      }
+
+      return state.app.images.find(
+        image => image.pk === id || image.hash === id
+      );
+    }, // Selector for the image
     id => this.imageApiService.getImage(id), // API call to load image
     image => new LoadImageSuccess(image), // Success action
     (imageId, error) => new LoadImageFailure({ imageId, error }), // Failure action

@@ -32,6 +32,7 @@ export type ImageViewerNavigationContext = ImageViewerNavigationContextItem[];
 export class ImageViewerService extends BaseService {
   slideshow: ComponentRef<ImageViewerSlideshowComponent>;
 
+  private readonly _isBrowser: boolean;
   private _previousTitle: string;
   private _previousDescription: string;
   private _previousUrl: string;
@@ -50,6 +51,8 @@ export class ImageViewerService extends BaseService {
   ) {
     super(loadingService);
 
+    this._isBrowser = isPlatformBrowser(platformId);
+
     this.actions$.pipe(
       ofType(AppActionTypes.DELETE_IMAGE_SUCCESS),
       takeUntil(this.destroyed$),
@@ -60,7 +63,6 @@ export class ImageViewerService extends BaseService {
       }
     });
   }
-
 
   autoOpenSlideshow(
     callerComponentId: string,
@@ -95,6 +97,10 @@ export class ImageViewerService extends BaseService {
     viewContainerRef: ViewContainerRef,
     pushState: boolean
   ): ComponentRef<ImageViewerSlideshowComponent> {
+    if (!this._isBrowser) {
+      return;
+    }
+
     if (!this.slideshow) {
       this._previousTitle = this.titleService.getTitle();
       this._previousDescription = this.titleService.getDescription();
@@ -123,7 +129,8 @@ export class ImageViewerService extends BaseService {
     this.slideshow.instance.setCallerComponentId(callerComponentId);
     this.slideshow.instance.setNavigationContext(navigationContext);
     this.slideshow.instance.setImage(imageId, revisionLabel, pushState).subscribe({
-      next: () => {},
+      next: () => {
+      },
       error: () => {
         this.closeSlideShow(false);
       }

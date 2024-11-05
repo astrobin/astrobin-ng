@@ -15,6 +15,7 @@ import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source
 import { GroupInterface } from "@shared/interfaces/group.interface";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 
+
 export interface AppState {
   // Weather the app has been initialized.
   initialized: boolean;

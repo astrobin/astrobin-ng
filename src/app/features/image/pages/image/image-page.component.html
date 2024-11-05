@@ -1,3 +1,4 @@
 <div class="page has-mobile-menu">
-  <astrobin-image-viewer #imageViewer></astrobin-image-viewer>
+  <astrobin-loading-indicator *ngIf="!isBrowser"></astrobin-loading-indicator>
+  <astrobin-image-viewer *ngIf="isBrowser && !!image" #imageViewer></astrobin-image-viewer>
 </div>
