@@ -265,7 +265,7 @@ export class ImageViewerComponent
       return;
     }
 
-    if (this._ignoreNavigationEvent()) {
+    if (this.isLightBoxOpen) {
       return;
     }
 

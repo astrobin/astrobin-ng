@@ -213,6 +213,12 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     emitChange: boolean = true): Observable<ImageInterface> {
     this.loadingImage = true;
 
+    const escapeListener = this.renderer.listen("document", "keydown", (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        this.closeSlideshow.emit(false);
+      }
+    });
+
     return new Observable(subscriber => {
       this._loadImage(imageId).subscribe({
         next: image => {
@@ -253,6 +259,11 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
           );
           subscriber.error(error);
           subscriber.complete();
+        },
+        complete: () => {
+          if (!!escapeListener) {
+            escapeListener();
+          }
         }
       });
     });
