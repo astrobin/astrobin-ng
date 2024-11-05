@@ -145,9 +145,13 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   ngOnChanges(changes: SimpleChanges) {
     const imageChanged = changes.image && !!changes.image.currentValue;
+    const revisionLabelChanged = changes.revisionLabel && !!changes.revisionLabel.currentValue;
 
     if (imageChanged) {
       this.id = this.image.pk;
+    }
+
+    if (imageChanged || revisionLabelChanged) {
       this.revisionLabel = this.imageService.validateRevisionLabel(this.image, this.revisionLabel);
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     }
