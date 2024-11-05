@@ -141,6 +141,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
         }
       }
 
+      this.windowRefService.scroll({ top: 0, behavior: "auto" });
       this._listenToUserChanges();
       this.store$.dispatch(new FindCollections({ params: { user: this.user.id } }));
     });
