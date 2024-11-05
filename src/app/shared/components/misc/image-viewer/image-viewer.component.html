@@ -125,6 +125,7 @@
         *ngIf="standalone && supportsFullscreen"
         [id]="image.pk"
         [revision]="revisionLabel"
+        [standalone]="standalone"
         (exitFullscreen)="exitFullscreen()"
       ></astrobin-fullscreen-image-viewer>
 

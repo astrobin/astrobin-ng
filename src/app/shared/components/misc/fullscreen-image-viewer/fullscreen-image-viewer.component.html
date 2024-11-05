@@ -89,7 +89,7 @@
 </ng-template>
 
 <ng-template #nonTouchDeviceTemplate let-hd="hd" let-real="real">
-  <div class="position-relative">
+  <div class="position-relative w-100 h-100 d-flex justify-content-center">
     <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
     <ng-container *ngIf="hd && !real" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 

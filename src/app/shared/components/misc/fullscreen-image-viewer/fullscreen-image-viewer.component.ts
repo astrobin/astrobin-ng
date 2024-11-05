@@ -40,6 +40,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @Input()
   anonymized = false;
 
+  // We use `standalone = true` when opening a fullscreen image viewer from a standalone image viewer, i.e. an image
+  // viewer that comes from an image page and not a slideshow that's opened dynamically.
+  @Input()
+  standalone = false;
+
   @Output()
   enterFullscreen = new EventEmitter<void>();
 
@@ -52,6 +57,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @HostBinding("class.disable-zoom")
   get disableZoomClass() {
     return this.realThumbnailLoading || this.hdThumbnailLoading;
+  }
+
+  @HostBinding("class.standalone")
+  get standaloneClass() {
+    return this.standalone;
   }
 
   @ViewChild("ngxImageZoom", { static: false, read: NgxImageZoomComponent })
