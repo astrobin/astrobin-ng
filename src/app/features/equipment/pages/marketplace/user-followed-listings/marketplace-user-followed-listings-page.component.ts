@@ -10,7 +10,7 @@ import { takeUntil } from "rxjs/operators";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
 
 @Component({
-  selector: "astrobin-marketplace-my-offers-page",
+  selector: "astrobin-marketplace-followed-listings-page",
   templateUrl: "../listings-base/marketplace-listings-base-page.component.html",
   styleUrls: ["../listings-base/marketplace-listings-base-page.component.scss"]
 })
