@@ -126,6 +126,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   protected loadingImage = false;
   protected callerComponentId: string;
 
+  private readonly _isBrowser: boolean;
   private _delayedLoadSubscription: Subscription = new Subscription();
   private _skipSlideEvent = false;
   private _navigationInProgress = false;
@@ -145,6 +146,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     public readonly translateService: TranslateService
   ) {
     super(store$);
+
+    this._isBrowser = isPlatformBrowser(this.platformId);
 
     router.events
       .pipe(
@@ -210,7 +213,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   setImage(
     imageId: ImageInterface["pk"] | ImageInterface["hash"],
     revisionLabel: ImageRevisionInterface["label"],
-    emitChange: boolean = true): Observable<ImageInterface> {
+    emitChange: boolean = true
+  ): Observable<ImageInterface> {
     this.loadingImage = true;
 
     const escapeListener = this.renderer.listen("document", "keydown", (event: KeyboardEvent) => {
@@ -275,7 +279,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   }
 
   protected onExitFullscreen() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this._isBrowser) {
       const location_ = this.windowRefService.nativeWindow.location;
       this.windowRefService.replaceState(
         {},
