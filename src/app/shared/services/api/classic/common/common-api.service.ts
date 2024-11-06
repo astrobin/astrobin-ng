@@ -83,7 +83,8 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     }
 
     if (username) {
-      return this.http.get<BackendUserInterface[]>(`${this.configUrl}/users/?username=${username}`).pipe(
+      const encodedUsername = encodeURIComponent(username);
+      return this.http.get<BackendUserInterface[]>(`${this.configUrl}/users/?username=${encodedUsername}`).pipe(
         map((users: BackendUserInterface[]) =>
           users.map(user => this.commonApiAdaptorService.userFromBackend(user))
         ),
