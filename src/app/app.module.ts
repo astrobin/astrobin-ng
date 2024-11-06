@@ -21,7 +21,7 @@ import localeChinese from "@angular/common/locales/zh";
 import localeChineseSimplified from "@angular/common/locales/zh-Hans";
 import localeChineseTraditional from "@angular/common/locales/zh-Hant";
 import { ErrorHandler, Inject, NgModule, PLATFORM_ID } from "@angular/core";
-import { BrowserModule, Title, TransferState } from "@angular/platform-browser";
+import { BrowserModule, provideClientHydration, Title, TransferState } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
 import { mainStateEffects, mainStateReducers, metaReducers, setInitialState } from "@app/store/state";
@@ -144,10 +144,11 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
         showDialog: false
       })
     },
-    { provide: CLIENT_IP, useValue: "" } // provide a fallback value for CLIENT_IP
+    { provide: CLIENT_IP, useValue: "" }, // provide a fallback value for CLIENT_IP,
+    provideClientHydration()
   ],
   declarations: [AppComponent],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
   public constructor(

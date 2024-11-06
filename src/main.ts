@@ -13,12 +13,8 @@ if (typeof window !== "undefined") {
   Sentry.init({
     release: environment.buildVersion,
     dsn: `https://${environment.sentryKeys[0]}@${environment.sentryKeys[1]}.ingest.sentry.io/${environment.sentryKeys[2]}`,
-    integrations: [
-      new BrowserTracing({
-        tracingOrigins: ["localhost", "https://app.astrobin.com/", "https://app2.astrobin.com/"],
-        routingInstrumentation: Sentry.routingInstrumentation
-      })
-    ],
+    integrations: [Sentry.browserTracingIntegration()],
+    tracePropagationTargets: ["localhost", "https://app.astrobin.com/", "https://app2.astrobin.com/"],
 
     // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
     // We recommend adjusting this value in production

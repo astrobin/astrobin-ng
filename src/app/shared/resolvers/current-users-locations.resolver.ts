@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
@@ -13,7 +13,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 @Injectable({
   providedIn: "root"
 })
-export class CurrentUsersLocationsResolver implements Resolve<LocationInterface[]> {
+export class CurrentUsersLocationsResolver  {
   constructor(private readonly store$: Store<MainState>, private readonly locationsApiService: UsersLocationsApiService) {
   }
 

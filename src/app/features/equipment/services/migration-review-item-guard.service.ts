@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { combineLatest, EMPTY, Observable, Observer } from "rxjs";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { catchError, map, switchMap } from "rxjs/operators";
@@ -15,7 +15,7 @@ import { GearMigrationStrategyApiService } from "@shared/services/api/classic/as
 @Injectable({
   providedIn: "root"
 })
-export class MigrationReviewItemGuardService extends BaseService implements CanActivate {
+export class MigrationReviewItemGuardService extends BaseService  {
   constructor(
     public readonly loadingService: LoadingService,
     public readonly store$: Store<MainState>,

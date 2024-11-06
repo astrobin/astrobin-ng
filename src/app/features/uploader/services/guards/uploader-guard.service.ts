@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseService } from "@shared/services/base.service";
 import { PremiumSubscriptionGuardService } from "@shared/services/guards/premium-subscription-guard.service";
 import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
@@ -8,7 +8,7 @@ import { concat, Observable } from "rxjs";
 import { reduce, tap } from "rxjs/operators";
 
 @Injectable()
-export class UploaderGuardService extends BaseService implements CanActivate {
+export class UploaderGuardService extends BaseService  {
   constructor(
     public loadingService: LoadingService,
     public premiumGuard: PremiumSubscriptionGuardService,

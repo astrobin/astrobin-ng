@@ -1,6 +1,6 @@
 import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { selectAuth, selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
@@ -12,7 +12,7 @@ import { filter, map, take } from "rxjs/operators";
 import { AuthService } from "../auth.service";
 
 @Injectable()
-export class AstroBinGroupGuardService extends BaseService implements CanActivate {
+export class AstroBinGroupGuardService extends BaseService  {
   constructor(
     public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,

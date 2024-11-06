@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
@@ -15,7 +15,7 @@ import { LoadUser } from "@features/account/store/auth.actions";
 @Injectable({
   providedIn: "root"
 })
-export class ImageUserCollectionsResolver implements Resolve<CollectionInterface[]> {
+export class ImageUserCollectionsResolver  {
   constructor(private readonly store$: Store<MainState>, private readonly collectionApiService: CollectionApiService) {
   }
 

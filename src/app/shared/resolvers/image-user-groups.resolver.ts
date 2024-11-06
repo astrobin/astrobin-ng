@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
@@ -15,7 +15,7 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 @Injectable({
   providedIn: "root"
 })
-export class ImageUserGroupsResolver implements Resolve<GroupInterface[]> {
+export class ImageUserGroupsResolver  {
   constructor(private readonly store$: Store<MainState>, private readonly groupApiService: GroupApiService) {
   }
 

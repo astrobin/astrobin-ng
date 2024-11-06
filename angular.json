@@ -225,7 +225,8 @@
               "outputHashing": "none",
               "optimization": false,
               "sourceMap": true,
-              "extractLicenses": false
+              "extractLicenses": false,
+              "buildOptimizer": false
             },
             "production": {
               "outputHashing": "media",
@@ -241,7 +242,8 @@
                 "scripts": true,
                 "styles": true
               },
-              "extractLicenses": true
+              "extractLicenses": true,
+              "buildOptimizer": true
             },
             "beta": {
               "outputHashing": "media",
@@ -257,7 +259,8 @@
                 "scripts": true,
                 "styles": true
               },
-              "extractLicenses": true
+              "extractLicenses": true,
+              "buildOptimizer": true
             },
             "cypress": {
               "outputHashing": "media",
@@ -273,7 +276,8 @@
                 "scripts": true,
                 "styles": true
               },
-              "extractLicenses": true
+              "extractLicenses": true,
+              "buildOptimizer": true
             },
             "local-production": {
               "outputHashing": "media",
@@ -283,7 +287,8 @@
                 "scripts": true,
                 "styles": true
               },
-              "extractLicenses": true
+              "extractLicenses": true,
+              "buildOptimizer": true
             }
           },
           "defaultConfiguration": "production"
@@ -324,7 +329,6 @@
       }
     }
   },
-  "defaultProject": "frontend",
   "cli": {
     "analytics": "c2a43054-337a-4c13-8020-637c2c52c2ea",
     "schematicCollections": [

@@ -12,6 +12,7 @@ import { ImageEditSettingsFieldsService } from "@features/image/services/image-e
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 describe("ImageEditRevisionComponent", () => {
   let component: ImageEditRevisionPageComponent;
@@ -61,6 +62,7 @@ describe("ImageEditRevisionComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ImageEditRevisionPageComponent, AppModule).provide([
       provideMockStore({ initialState: initialMainState }),
+      UtilsService,
       ImageEditService,
       ImageEditSettingsFieldsService,
       {
@@ -82,7 +84,7 @@ describe("ImageEditRevisionComponent", () => {
     store = TestBed.inject(MockStore);
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fixture = TestBed.createComponent(ImageEditRevisionPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

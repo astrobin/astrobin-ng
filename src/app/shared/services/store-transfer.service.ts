@@ -1,5 +1,4 @@
-import { ApplicationRef, Injectable } from "@angular/core";
-import { makeStateKey, TransferState } from "@angular/platform-browser";
+import { ApplicationRef, Injectable, makeStateKey, TransferState } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { filter, take } from "rxjs/operators";
 
