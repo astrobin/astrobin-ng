@@ -8,6 +8,8 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { fakeAsync, flush } from "@angular/core/testing";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { of } from "rxjs";
+import { NotificationsService } from "@features/notifications/services/notifications.service";
 
 describe("NotificationsPageComponent", () => {
   let component: NotificationsPageComponent;
@@ -37,6 +39,13 @@ describe("NotificationsPageComponent", () => {
           keys: []
         }
       })
+    }));
+
+    MockInstance(NotificationsService, () => ({
+      refresh: jest.fn().mockReturnValue(of(null)),
+      markAsRead: jest.fn().mockReturnValue(of(null)),
+      markAllAsRead: jest.fn().mockReturnValue(of(null)),
+      getAll: jest.fn().mockReturnValue(of(null))
     }));
 
     const fixture = MockRender(NotificationsPageComponent);
