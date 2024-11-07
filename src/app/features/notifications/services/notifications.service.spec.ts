@@ -18,14 +18,15 @@ describe("NotificationsService", () => {
   });
 
   describe("refresh", () => {
-    it("should call getAll and getUnreadCount", () => {
+    it("should call getAll and getUnreadCount", (done) => {
       jest.spyOn(service, "getAll");
       jest.spyOn(service, "getUnreadCount");
 
-      service.refresh();
-
-      expect(service.getAll).toHaveBeenCalled();
-      expect(service.getUnreadCount).toHaveBeenCalled();
+      service.refresh().subscribe(() => {
+        expect(service.getAll).toHaveBeenCalled();
+        expect(service.getUnreadCount).toHaveBeenCalled();
+        done();
+      });
     });
   });
 

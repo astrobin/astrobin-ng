@@ -130,6 +130,7 @@
                     (click)="userService.openGallery(item.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                     [href]="userService.getGalleryUrl(item.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                     astrobinEventPreventDefault
+                    astrobinEventStopPropagation
                   >
                     {{ item.userDisplayName }}
                   </a>

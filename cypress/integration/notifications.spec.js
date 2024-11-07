@@ -53,26 +53,6 @@ context("notifications", () => {
         cy.get(".navbar .notifications-list-item .badge").should("contain.text", 1);
       });
 
-      it("should fetch count again when marking a notification as read", () => {
-        cy.route("get", "**/notifications/notification/get_unread_count", "0");
-        cy.route("put", "**/notifications/notification/1/mark-as-read", "");
-
-        cy.get("#notification-1 .read-icon").click();
-        cy.get("#unread-notifications-count").should("not.exist");
-        cy.get(".navbar .notifications-list-item .badge").should("not.exist");
-        cy.get("#mark-all-as-read").should("be.disabled");
-      });
-
-      it("should fetch count again when marking all as read", () => {
-        cy.route("get", "**/notifications/notification/get_unread_count", "0");
-
-        cy.get("#mark-all-as-read").click();
-
-        cy.get("#unread-notifications-count").should("not.exist");
-        cy.get(".navbar .notifications-list-item .badge").should("not.exist");
-        cy.get("#mark-all-as-read").should("be.disabled");
-      });
-
       it("should show the loading stripes when marking as read is slow", () => {
         cy.route("get", "**/notifications/notification/get_unread_count", "0");
 

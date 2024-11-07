@@ -1,7 +1,3 @@
-:host ng-image-slider ::ng-deep {
-  .next-icon,
-  .prev-icon {
-    background-color: var(--accentColor) !important;
-    color: var(--white) !important;
-  }
+img {
+  cursor: pointer;
 }

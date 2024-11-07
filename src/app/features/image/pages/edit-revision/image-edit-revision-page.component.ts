@@ -23,6 +23,7 @@ import { filter, take } from "rxjs/operators";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-image-edit-revision-page",
@@ -56,7 +57,8 @@ export class ImageEditRevisionPageComponent
     public readonly loadingService: LoadingService,
     public readonly windowRefService: WindowRefService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService
+    public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -93,8 +95,10 @@ export class ImageEditRevisionPageComponent
   }
 
   ngAfterViewInit(): void {
-    this._initFields();
-    this.store$.dispatch(new ImageEditorSetCropperShown(true));
+    this.utilsService.delay(1).subscribe(() => {
+      this._initFields();
+      this.store$.dispatch(new ImageEditorSetCropperShown(true));
+    });
   }
 
   onSave(event: Event) {

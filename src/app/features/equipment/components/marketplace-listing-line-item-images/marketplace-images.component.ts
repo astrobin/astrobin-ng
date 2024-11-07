@@ -4,6 +4,8 @@ import { MarketplaceLineItemInterface } from "@features/equipment/types/marketpl
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { IAlbum, Lightbox } from "ngx-lightbox";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-images",
@@ -13,12 +15,16 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 export class MarketplaceImagesComponent extends BaseComponentDirective implements OnChanges {
   readonly UtilsService = UtilsService;
 
-  sliderImages: Array<object> = [];
+  sliderImages: Array<IAlbum> = [];
 
   @Input()
   images: MarketplaceLineItemInterface["images"];
 
-  constructor(public readonly store$: Store<MainState>) {
+  constructor(
+    public readonly store$: Store<MainState>,
+    public readonly translateService: TranslateService,
+    public readonly lightbox: Lightbox
+  ) {
     super(store$);
   }
 
@@ -28,7 +34,7 @@ export class MarketplaceImagesComponent extends BaseComponentDirective implement
       return;
     }
 
-    this.sliderImages = this.images.map(image => {
+    this.sliderImages = this.images.map((image, index) => {
       let url: string;
       let thumbnailUrl: string;
 
@@ -46,9 +52,14 @@ export class MarketplaceImagesComponent extends BaseComponentDirective implement
       }
 
       return ({
-        image: url,
-        thumbImage: thumbnailUrl
+        src: url,
+        thumb: thumbnailUrl,
+        caption: this.translateService.instant("Image") + " " + (index + 1)
       });
     });
+  }
+
+  protected openImage(index: number) {
+    this.lightbox.open(this.sliderImages, index);
   }
 }

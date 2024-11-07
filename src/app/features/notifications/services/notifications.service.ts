@@ -6,7 +6,7 @@ import { NotificationsApiService } from "@features/notifications/services/notifi
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, ReplaySubject, throwError } from "rxjs";
-import { catchError, switchMap, tap } from "rxjs/operators";
+import { catchError, map, switchMap, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -25,18 +25,20 @@ export class NotificationsService extends BaseService implements NotificationSer
     this.unreadCount$ = this._unreadCountSubject.asObservable();
   }
 
-  refresh(page = 1): void {
+  refresh(page: number = 1): Observable<NotificationListResponseInterface> {
     this.loadingSubject.next(true);
 
-    this.getAll(page)
+    return this.getAll(page)
       .pipe(
-        switchMap(() => this.getUnreadCount()),
+        switchMap(response => this.getUnreadCount().pipe(
+          map(() => response)
+        )),
         catchError(error => {
           this.loadingSubject.next(false);
           return throwError(error.statusText);
-        })
-      )
-      .subscribe(() => this.loadingSubject.next(false));
+        }),
+        tap(() => this.loadingSubject.next(false))
+      );
   }
 
   getAll(page = 1): Observable<NotificationListResponseInterface> {
@@ -63,7 +65,7 @@ export class NotificationsService extends BaseService implements NotificationSer
     notification.read = read;
     return this.api.markAsRead(notification.id, read).pipe(
       tap(() => this.loadingSubject.next(false)),
-      tap(() => this.refresh(this._lastPage))
+      switchMap((result) => this.refresh(this._lastPage).pipe(map(() => result)))
     );
   }
 
@@ -71,7 +73,7 @@ export class NotificationsService extends BaseService implements NotificationSer
     this.loadingSubject.next(true);
     return this.api.markAllAsRead().pipe(
       tap(() => this.loadingSubject.next(false)),
-      tap(() => this.refresh(this._lastPage))
+      switchMap(result => this.refresh(this._lastPage).pipe(map(() => result)))
     );
   }
 }

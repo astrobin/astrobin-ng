@@ -17,33 +17,31 @@
     </ng-select>
   </div>
 
-  <ng-container *ssrExclude>
-    <div
-      *ngFor="let constellation of constellations"
-      class="constellation"
-      id="constellation-{{ constellation.id }}"
-    >
-      <ng-container *ngIf="constellation.data$ | async as constellationData">
-        <div class="row align-items-center">
-          <div class="col-12 col-lg-4">
-            <img [alt]="constellation.name" [src]="constellationData.originalimage?.source"
-                 class="constellation-image" />
-          </div>
-          <div class="col-12 col-lg-8">
-            <h3 class="mt-4 mt-lg-0">
-              <span class="constellation-id">{{ constellation.id }}</span> {{ constellation.name }}
-            </h3>
-            <p>{{ constellationData.extract }}</p>
-            <a
-              (click)="findImages($event, constellation)"
-              [href]="getFindImagesUrl(constellation)"
-              class="btn btn-outline-primary"
-            >
-              {{ "Find images" | translate }}
-            </a>
-          </div>
+  <div
+    *ngFor="let constellation of constellations"
+    class="constellation"
+    id="constellation-{{ constellation.id }}"
+  >
+    <ng-container *ngIf="constellation.data$ | async as constellationData">
+      <div class="row align-items-center">
+        <div class="col-12 col-lg-4">
+          <img [alt]="constellation.name" [src]="constellationData.originalimage?.source"
+               class="constellation-image" />
         </div>
-      </ng-container>
-    </div>
-  </ng-container>
+        <div class="col-12 col-lg-8">
+          <h3 class="mt-4 mt-lg-0">
+            <span class="constellation-id">{{ constellation.id }}</span> {{ constellation.name }}
+          </h3>
+          <p>{{ constellationData.extract }}</p>
+          <a
+            (click)="findImages($event, constellation)"
+            [href]="getFindImagesUrl(constellation)"
+            class="btn btn-outline-primary"
+          >
+            {{ "Find images" | translate }}
+          </a>
+        </div>
+      </div>
+    </ng-container>
+  </div>
 </div>

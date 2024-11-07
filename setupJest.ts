@@ -67,10 +67,18 @@ ngMocks.defaultMock(AuthService, () => ({
   isAuthenticated: jest.fn().mockReturnValue(of(true))
 }));
 
+// setupJest.ts
 ngMocks.defaultMock(WindowRefService, () => ({
-  nativeWindow: MockService(Window, {
-    location: MockService(Location)
-  })
+  nativeWindow: Object.assign(
+    MockService(Window, {
+      location: MockService(Location),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+      document: MockService(Document)
+    }),
+    { __proto__: EventTarget.prototype }
+  )
 }));
 
 // They are not real methods, and we need to provide them manually.

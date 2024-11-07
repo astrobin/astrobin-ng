@@ -1,8 +1,9 @@
-<ng-image-slider
-  *ngIf="sliderImages.length > 0"
-  [animationSpeed]=".2"
-  [imageSize]="{height: 150, width: 150}"
-  [images]="sliderImages"
-  [lazyLoading]="true"
-  [manageImageRatio]="true"
-></ng-image-slider>
+<div *ngIf="sliderImages.length > 0" class="d-flex flex-wrap flex-row gap-2">
+  <img
+    *ngFor="let image of sliderImages; let i = index"
+    (click)="openImage(i)"
+    [alt]="image.caption"
+    [src]="image.thumb"
+    height="150"
+  />
+</div>

@@ -50,7 +50,6 @@ import * as Sentry from "@sentry/angular";
 import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
-import { NgImageSliderModule } from "ng-image-slider";
 import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from "@angular/platform-browser";
@@ -131,7 +130,6 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     NgbProgressbarModule,
     NgSelectModule,
     NgxDatatableModule,
-    NgImageSliderModule,
     NgxSliderModule,
     NgxFilesizeModule,
     NgWizardModule.forRoot({
@@ -196,7 +194,6 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     NgbPaginationModule,
     NgbPopoverModule,
     NgbProgressbarModule,
-    NgImageSliderModule,
     NgOptimizedImage,
     NgSelectModule,
     NgxSliderModule,

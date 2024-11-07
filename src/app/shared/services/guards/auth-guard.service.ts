@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { AuthService } from "@shared/services/auth.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -11,7 +11,7 @@ import { filter, switchMap } from "rxjs/operators";
 import { RouterService } from "@shared/services/router.service";
 
 @Injectable()
-export class AuthGuardService extends BaseService implements CanActivate {
+export class AuthGuardService extends BaseService  {
   constructor(
     public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,

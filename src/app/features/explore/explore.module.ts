@@ -3,7 +3,6 @@ import { ConstellationsPageComponent } from "./pages/constellations-page/constel
 import { SharedModule } from "@shared/shared.module";
 import { RouterModule } from "@angular/router";
 import { exploreRoutes } from "@features/explore/explore.routing";
-import { SSRExcludeModule } from "ngx-ssr-exclude";
 import { SearchModule } from "@features/search/search.module";
 
 @NgModule({
@@ -11,8 +10,7 @@ import { SearchModule } from "@features/search/search.module";
   imports: [
     RouterModule.forChild(exploreRoutes),
     SharedModule,
-    SearchModule,
-    SSRExcludeModule
+    SearchModule
   ]
 })
 export class ExploreModule {

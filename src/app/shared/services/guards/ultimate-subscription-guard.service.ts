@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseService } from "@shared/services/base.service";
@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 import { switchMap, take } from "rxjs/operators";
 
 @Injectable()
-export class UltimateSubscriptionGuardService extends BaseService implements CanActivate {
+export class UltimateSubscriptionGuardService extends BaseService  {
   constructor(
     public readonly store$: Store<MainState>,
     public readonly loadingService: LoadingService,
