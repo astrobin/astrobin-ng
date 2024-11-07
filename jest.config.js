@@ -11,6 +11,7 @@ const esModules = [
 
 module.exports = {
   verbose: true,
+  maxWorkers: 1,
   preset: "jest-preset-angular",
   setupFilesAfterEnv: ["<rootDir>/setupJest.ts"],
   collectCoverageFrom: ["**/*.ts", "!main.ts", "!**/*.module.(t|j)s", "!**/*mock.ts", "!**/*routing.ts"],
