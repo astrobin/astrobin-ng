@@ -208,11 +208,13 @@
           >
             <astrobin-avatar
               (click)="startPrivateConversation(privateConversation, $event)"
+              [link]="false"
               [userId]="privateConversation.user"
             ></astrobin-avatar>
 
             <astrobin-username
               (click)="startPrivateConversation(privateConversation, $event)"
+              [link]="false"
               [userId]="privateConversation.user"
               class="mt-2 d-inline-block"
             ></astrobin-username>
