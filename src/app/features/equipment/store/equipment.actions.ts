@@ -163,6 +163,7 @@ export enum EquipmentActionTypes {
   CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create software edit request proposal",
 
   // Item browser
+  ITEM_BROWSER_CLEAR = "[Equipment] Item browser clear",
   ITEM_BROWSER_ADD = "[Equipment] Item browser add",
   ITEM_BROWSER_SET = "[Equipment] Item browser set",
   ITEM_BROWSER_EXIT_FULLSCREEN = "[Equipment] Item browser exit fullscreen",
@@ -934,6 +935,15 @@ export class CreateSoftwareEditProposalSuccess implements PayloadActionInterface
 /**********************************************************************************************************************
  * Item browser
  *********************************************************************************************************************/
+
+export class ItemBrowserClear implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ITEM_BROWSER_CLEAR;
+
+  constructor(
+    public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType; }
+  ) {
+  }
+}
 
 export class ItemBrowserAdd implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.ITEM_BROWSER_ADD;

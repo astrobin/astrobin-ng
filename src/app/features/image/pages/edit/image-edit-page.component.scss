@@ -39,6 +39,46 @@
     image-cropper {
       padding: 0;
     }
+
+    .preset-wrapper {
+      .btn-delete-preset {
+        border: 1px solid var(--darkerGrey);
+        top: -.5rem;
+        right: -.5rem;
+        padding: .5rem;
+        line-height: 1rem;
+        height: 1rem;
+        width: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            background: var(--dangerColor);
+            color: white;
+          }
+        }
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover .btn-delete-preset{
+          pointer-events: auto;
+          opacity: 1;
+        }
+      }
+
+      @media (hover: none) and (pointer: coarse) {
+        .btn-delete-preset {
+          pointer-events: auto;
+          opacity: 1;
+        }
+      }
+    }
   }
 }
 

@@ -60,10 +60,10 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
         id: "name",
         wrappers: ["default-wrapper"],
         props: {
-          label: this.translateService.instant("Preset name"),
+          label: this.translateService.instant("Setup name"),
           description: this.translateService.instant(
-            `Here you can save an equipment preset so you can easily load it later on a different image <em>(e.g. "Home ` +
-            `observatory", "Solar setup", "Travel setup 2022", etc)</em>`
+            `Here you can save an equipment setup, so you can easily load it later on a different image <em>(e.g. "Home ` +
+            `observatory", "Solar setup", "Travel setup 2022", etc.)</em>`
           ),
           required: true,
           maxLength: 128
@@ -89,8 +89,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
         this.loadingService.setLoading(false);
         this.popNotificationsService.success(
           this.translateService.instant(
-            `Equipment preset created! You can use the "Load preset" button on a different image to assign the
-            same equipment to it.`
+            `Equipment setup created! You will be able to load it later on a different image.`
           )
         );
       });
@@ -127,7 +126,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
           const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
           componentInstance.message = this.translateService.instant(
-            "You will overwrite your existing preset with the same name."
+            "You will overwrite your existing setup with the same name."
           );
 
           modalRef.closed.pipe(take(1)).subscribe(() => {

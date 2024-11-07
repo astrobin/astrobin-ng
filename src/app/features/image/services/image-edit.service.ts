@@ -8,11 +8,11 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { Observable } from "rxjs";
+import { forkJoin, Observable } from "rxjs";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import { map } from "rxjs/operators";
+import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
+import { filter, first, map, take } from "rxjs/operators";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
@@ -22,6 +22,12 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
 import { TranslateService } from "@ngx-translate/core";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { EquipmentItemBaseInterface, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import { DeleteEquipmentPreset, DeleteEquipmentPresetSuccess, EquipmentActionTypes, ItemBrowserClear, ItemBrowserSet, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { Actions, ofType } from "@ngrx/effects";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 export type ImageEditModelInterface = Partial<Omit<ImageInterface,
   | "imagingTelescopes2"
@@ -76,8 +82,11 @@ export class ImageEditService extends BaseService {
 
   constructor(
     public readonly store$: Store<MainState>,
+    public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly modalService: NgbModal,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(loadingService);
   }
@@ -161,6 +170,7 @@ export class ImageEditService extends BaseService {
 
   public currentEquipmentPreset$(): Observable<EquipmentPresetInterface | null> {
     return this.store$.select(selectEquipmentPresets).pipe(
+      take(1),
       map(presets => {
         if (!presets || presets.length === 0) {
           return null;
@@ -188,5 +198,133 @@ export class ImageEditService extends BaseService {
         return null;
       })
     );
+  }
+
+  loadEquipmentPreset(preset: EquipmentPresetInterface): Observable<void> {
+    const load = (preset: EquipmentPresetInterface): Observable<void> => {
+      return new Observable(observer => {
+        for (const klass of [
+          {
+            property: "imagingTelescopes",
+            type: EquipmentItemType.TELESCOPE,
+            usageType: EquipmentItemUsageType.IMAGING
+          },
+          {
+            property: "imagingCameras",
+            type: EquipmentItemType.CAMERA,
+            usageType: EquipmentItemUsageType.IMAGING
+          },
+          {
+            property: "mounts",
+            type: EquipmentItemType.MOUNT
+          },
+          {
+            property: "filters",
+            type: EquipmentItemType.FILTER
+          },
+          {
+            property: "accessories",
+            type: EquipmentItemType.ACCESSORY
+          },
+          {
+            property: "software",
+            type: EquipmentItemType.SOFTWARE
+          },
+          {
+            property: "guidingTelescopes",
+            type: EquipmentItemType.TELESCOPE,
+            usageType: EquipmentItemUsageType.GUIDING
+          },
+          {
+            property: "guidingCameras",
+            type: EquipmentItemType.CAMERA,
+            usageType: EquipmentItemUsageType.GUIDING
+          }
+        ]) {
+          const ids = preset[klass.property] as EquipmentItemBaseInterface["id"][];
+          ids.forEach(id => {
+            this.store$.dispatch(new LoadEquipmentItem({ id, type: klass.type }));
+          });
+
+          this.store$.dispatch(new ItemBrowserClear({ type: klass.type, usageType: klass.usageType }));
+
+          forkJoin(
+            ids.map(id =>
+              this.store$.select(selectEquipmentItem, { id, type: klass.type }).pipe(
+                filter(item => !!item),
+                first()
+              )
+            )
+          ).subscribe(items => {
+            this.store$.dispatch(
+              new ItemBrowserSet({
+                type: klass.type,
+                usageType: klass.usageType,
+                items
+              })
+            );
+
+            this.popNotificationsService.success(
+              this.translateService.instant("Equipment setup loaded.")
+            );
+
+            observer.next();
+            observer.complete();
+          });
+        }
+      });
+    }
+
+    return new Observable(observer => {
+      if (this.hasEquipmentItems()) {
+        const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
+        const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+
+        componentInstance.message = this.translateService.instant(
+          "This operation will overwrite the current equipment selection."
+        );
+
+        modalRef.closed.pipe(take(1)).subscribe(() => {
+          load(preset).subscribe(() => {
+            observer.next();
+            observer.complete();
+          });
+        });
+
+        return;
+      }
+
+      load(preset).subscribe(() => {
+        observer.next();
+        observer.complete();
+      });
+    });
+  }
+
+  deleteEquipmentPreset(preset: EquipmentPresetInterface): Observable<void> {
+    return new Observable(observer => {
+      const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
+      const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+
+      componentInstance.message = this.translateService.instant("This operation cannot be undone.");
+
+      modalRef.closed.pipe(take(1)).subscribe(() => {
+        this.loadingService.setLoading(true);
+        this.store$.dispatch(new DeleteEquipmentPreset({ id: preset.id }));
+        this.actions$.pipe(
+          ofType(EquipmentActionTypes.DELETE_EQUIPMENT_PRESET_SUCCESS),
+          map((action: DeleteEquipmentPresetSuccess) => action.payload.id),
+          filter(id => id === preset.id),
+          take(1)
+        ).subscribe(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.success(
+            this.translateService.instant("Equipment setup deleted.")
+          );
+          observer.next();
+          observer.complete();
+        });
+      });
+    });
   }
 }
