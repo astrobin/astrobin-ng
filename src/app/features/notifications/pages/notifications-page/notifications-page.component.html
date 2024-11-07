@@ -2,13 +2,14 @@
   <h1 class="d-sm-flex justify-content-between align-items-center">
     <span class="flex-fill">
       {{ pageTitle }}
-      <span
-        *ngIf="notificationsService.unreadCount$ | async as unreadCount"
-        class="badge bg-danger badge-pill rounded-pill border border-light d-none d-lg-inline"
-        id="unread-notifications-count"
-      >
-        {{ unreadCount }}
-      </span>
+      <ng-container *ngIf="notificationsService.unreadCount$ | async as unreadCount">
+        <span *ngIf="unreadCount > 0"
+          class="badge bg-danger badge-pill rounded-pill border border-light d-none d-lg-inline"
+          id="unread-notifications-count"
+        >
+          {{ unreadCount }}
+        </span>
+      </ng-container>
     </span>
     <ng-container [ngTemplateOutlet]="markAllAsReadButton"></ng-container>
   </h1>
