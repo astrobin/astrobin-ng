@@ -3,8 +3,7 @@
     *ngFor="let image of sliderImages; let i = index"
     (click)="openImage(i)"
     [alt]="image.caption"
-    [ngSrc]="image.thumb"
+    [src]="image.thumb"
     height="150"
-    width="150"
   />
 </div>
