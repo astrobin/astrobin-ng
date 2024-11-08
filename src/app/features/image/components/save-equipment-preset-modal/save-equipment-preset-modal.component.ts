@@ -110,7 +110,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
       .subscribe(() => {
         this.modal.close();
         this.loadingService.setLoading(false);
-        this.popNotificationsService.success(this.translateService.instant("Equipment preset updated."));
+        this.popNotificationsService.success(this.translateService.instant("Equipment setup updated."));
       });
   }
 
