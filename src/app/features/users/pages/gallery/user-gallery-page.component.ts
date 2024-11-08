@@ -19,7 +19,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 @Component({
   selector: "astrobin-user-gallery-page",
   template: `
-    <div class="page">
+    <div class="page has-infinite-scroll">
       <astrobin-ad-manager #ad *ngIf="showAd" configName="wide"></astrobin-ad-manager>
 
       <astrobin-user-gallery-header

@@ -155,4 +155,8 @@
       text-align: center;
     }
   }
+
+  &.has-infinite-scroll {
+    overflow-anchor: none;
+  }
 }
