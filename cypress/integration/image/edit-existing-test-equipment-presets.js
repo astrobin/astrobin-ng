@@ -250,8 +250,8 @@ context("Image edit (existing), test equipment presets", () => {
   });
 
   it("should delete a preset", () => {
-    cy.get(".preset-wrapper").eq(1).trigger("mouseover");
-    cy.get(".btn-delete-preset").eq(1).click({force: true});
+    cy.get(".preset-wrapper").eq(0).trigger("mouseover");
+    cy.get(".btn-delete-preset").eq(0).click({force: true});
 
     cy.route("delete", "**/api/v2/equipment/equipment-preset/2/", {});
 
