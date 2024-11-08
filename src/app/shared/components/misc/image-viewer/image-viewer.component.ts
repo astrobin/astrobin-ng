@@ -211,8 +211,6 @@ export class ImageViewerComponent
           this._initDataAreaScrollHandling();
         }
       });
-
-      this._initAutoOpenFullscreen();
     }
 
     this.changeDetectorRef.detectChanges();
@@ -315,6 +313,7 @@ export class ImageViewerComponent
 
     this._initRevision();
     this._updateSupportsFullscreen();
+    this._initAutoOpenFullscreen();
     this._setMouseHoverImage();
     this._recordHit();
     this._setAd();
