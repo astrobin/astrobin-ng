@@ -21,7 +21,7 @@ import { DeviceService } from "@shared/services/device.service";
 import { CookieService } from "ngx-cookie";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { FullSizeLimitationDisplayOptions, ImageInterface } from "@shared/interfaces/image.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 
@@ -84,6 +84,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   hdThumbnailLoading = false;
   realThumbnailLoading = false;
   ready = false;
+  allowReal = false;
 
   private _imageSubscription: Subscription;
   private _hdThumbnailSubscription: Subscription;
@@ -113,12 +114,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   ) {
     super(store$);
 
+    this.isTouchDevice = this.deviceService.isTouchEnabled();
+    this.enableLens = this.cookieService.get(this.LENS_ENABLED_COOKIE_NAME) === "true";
     this.hdImageLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
     this.realImageLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
   }
 
   get zoomingEnabled(): boolean {
-    return this.ngxImageZoom && (this.ngxImageZoom as any).zoomingEnabled;
+    return !!this.ngxImageZoom && (this.ngxImageZoom as any).zoomingEnabled;
   }
 
   @HostListener("window:resize", ["$event"])
@@ -127,8 +130,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   ngOnInit() {
-    this.isTouchDevice = this.deviceService.isTouchEnabled();
-    this.enableLens = this.cookieService.get(this.LENS_ENABLED_COOKIE_NAME) === "true";
     this._setZoomLensSize();
   }
 
@@ -263,7 +264,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getHdOptions() }));
-    this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getRealOptions() }));
+
+    if (this.allowReal) {
+      this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getRealOptions() }));
+    }
 
     this.hdThumbnail = null;
     this.realThumbnail = null;
@@ -284,6 +288,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         revision.w > this.windowRef.nativeWindow.innerWidth ||
         revision.h > this.windowRef.nativeWindow.innerHeight
       );
+
+      this.currentUser$.pipe(take(1)).subscribe(user => {
+        const limit = image.fullSizeDisplayLimitation;
+        this.allowReal = (
+          limit === FullSizeLimitationDisplayOptions.EVERYBODY ||
+          (limit === FullSizeLimitationDisplayOptions.MEMBERS && !!user) ||
+          (limit === FullSizeLimitationDisplayOptions.PAYING && !!user && !!user.validSubscription) ||
+          (limit === FullSizeLimitationDisplayOptions.ME && !!user && user.id === image.user)
+        );
+      });
     });
 
     if (this._hdThumbnailSubscription) {
