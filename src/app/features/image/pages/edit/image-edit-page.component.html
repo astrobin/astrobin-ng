@@ -27,6 +27,30 @@
   <span *ngIf="imageEditService.isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
 </ng-template>
 
+<ng-template #equipmentStepPreambleTemplate>
+  <ng-container *ngIf="presets$ | async as presets">
+    <div *ngIf="presets.length > 0" class="alert alert-dark mb-5">
+      <p class="mb-3 text-muted">{{ "Load one of your saved setups or fill in the form below manually." | translate }}</p>
+      <div class="d-flex flex-row flex-wrap gap-2 align-items-center">
+        <div *ngFor="let preset of presets" class="preset-wrapper position-relative">
+          <button
+            (click)="onPresetClicked(preset)"
+            [class.loading]="loadingService.loading$ | async"
+            class="btn btn-outline-secondary"
+          >
+            {{ preset.name }}
+          </button>
+          <button
+            (click)="onPresetDeleteClicked(preset)"
+            [class.loading]="loadingService.loading$ | async"
+            class="btn btn-secondary position-absolute btn-delete-preset"
+          >&times;</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
 <ng-template #equipmentStepButtonsTemplate>
   <button
     (click)="onClearEquipmentClicked()"
@@ -38,27 +62,15 @@
     {{ "Clear" | translate }}
   </button>
 
-  <div class="btn-group" role="group">
-    <button
-      (click)="onLoadEquipmentPresetClicked()"
-      [class.loading]="loadingService.loading$ | async"
-      [disabled]="(presets$ | async)?.length === 0"
-      class="btn btn-outline-secondary"
-      id="load-preset-btn"
-    >
-      {{ "Load preset" | translate }}&hellip;
-    </button>
-
-    <button
-      (click)="onSaveEquipmentPresetClicked()"
-      [class.loading]="loadingService.loading$ | async"
-      [disabled]="!imageEditService.hasEquipmentItems()"
-      class="btn btn-outline-secondary"
-      id="save-preset-btn"
-    >
-      {{ "Save preset" | translate }}&hellip;
-    </button>
-  </div>
+  <button
+    (click)="onSaveEquipmentPresetClicked()"
+    [class.loading]="loadingService.loading$ | async"
+    [disabled]="!imageEditService.hasEquipmentItems()"
+    class="btn btn-outline-secondary"
+    id="save-preset-btn"
+  >
+    {{ "Save setup" | translate }}
+  </button>
 </ng-template>
 
 <ng-template #acquisitionAdditionalButtonsTemplate>

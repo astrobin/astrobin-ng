@@ -126,6 +126,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   creationModel: Partial<EquipmentItem> = {};
 
   currentUserSubscription: Subscription;
+  itemBrowserClearSubscription: Subscription;
   itemBrowserAddSubscription: Subscription;
   itemBrowserSetSubscription: Subscription;
 
@@ -771,7 +772,23 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       .subscribe(() => {
       });
 
-    // The adding and setting here is only happening from the image editor.
+    // The clearing, adding and setting here are only happening from the image editor.
+
+    if (!!this.itemBrowserClearSubscription) {
+      this.itemBrowserClearSubscription.unsubscribe();
+      this.itemBrowserClearSubscription = null;
+    }
+    this.itemBrowserClearSubscription = this.actions$
+      .pipe(
+        takeUntil(this.destroyed$),
+        ofType(EquipmentActionTypes.ITEM_BROWSER_CLEAR),
+        map((action: ItemBrowserSet) => action.payload),
+        filter(payload => payload.type === this.type && payload.usageType === this.usageType),
+      )
+      .subscribe(() => {
+        this.setValue(null);
+      });
+
     if (!!this.itemBrowserAddSubscription) {
       this.itemBrowserAddSubscription.unsubscribe();
       this.itemBrowserAddSubscription = null;

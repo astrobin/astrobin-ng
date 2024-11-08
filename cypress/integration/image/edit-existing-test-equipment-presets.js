@@ -123,15 +123,13 @@ context("Image edit (existing), test equipment presets", () => {
 
   it("should have the preset buttons", () => {
     cy.get("#clear-equipment-btn").should("be.visible");
-    cy.get("#load-preset-btn").should("be.visible");
     cy.get("#save-preset-btn").should("be.visible");
   });
 
   it("should select a preset", () => {
-    cy.get("#load-preset-btn").click();
-    cy.get(".form-check label").contains("Test preset").click();
+    cy.get(".preset-wrapper .btn").contains("Test preset").click();
+
     cy.wait(500);
-    cy.get(".btn-primary").contains("Load").click();
 
     cy.get("#image-imaging-telescopes-field .ng-value").contains("Test Brand Test Telescope 1").should("be.visible");
 
@@ -156,7 +154,7 @@ context("Image edit (existing), test equipment presets", () => {
 
   it("should prefill the name when saving active preset", () => {
     cy.get("#save-preset-btn").click();
-    cy.get(".modal .modal-title").contains("Save equipment preset").should("be.visible");
+    cy.get(".modal .modal-title").contains("Save equipment setup").should("be.visible");
     cy.get(".modal input#name").should("have.value", "Test preset");
   });
 
@@ -171,7 +169,7 @@ context("Image edit (existing), test equipment presets", () => {
     cy.get(".modal .btn").contains("Yes, continue").click();
 
     cy.get(".modal").should("not.exist");
-    cy.get(".toast-message").contains("Equipment preset updated.").should("be.visible").click().should("not.exist");
+    cy.get(".toast-message").contains("Equipment setup updated.").should("be.visible").click().should("not.exist");
   });
 
   it("should clear the equipment", () => {
@@ -236,7 +234,7 @@ context("Image edit (existing), test equipment presets", () => {
 
   it("should save as a new preset", () => {
     cy.get("#save-preset-btn").click();
-    cy.get(".modal .modal-title").contains("Save equipment preset").should("be.visible");
+    cy.get(".modal .modal-title").contains("Save equipment setup").should("be.visible");
     cy.get(".modal input#name").should("have.value", "");
     cy.get(".modal input#name").type("Test preset 2");
 
@@ -244,25 +242,21 @@ context("Image edit (existing), test equipment presets", () => {
     cy.get(".modal .btn").contains("Save").click();
 
     cy.get(".modal").should("not.exist");
-    cy.get(".toast-message").contains("Equipment preset created").should("be.visible").click().should("not.exist");
+    cy.get(".toast-message").contains("Equipment setup created").should("be.visible").click().should("not.exist");
   });
 
-  it("should have updated the presets modal", () => {
-    cy.get("#load-preset-btn").click();
-    cy.get(".form-check label").contains("Test preset 2").should("be.visible");
+  it("should have updated the preset list", () => {
+    cy.get(".preset-wrapper .btn").contains("Test preset 2").should("be.visible");
   });
 
   it("should delete a preset", () => {
-    cy.get(".form-check label").contains("Test preset 2").click();
-
-    cy.get(".btn").contains("Delete").click();
+    cy.get(".preset-wrapper").eq(0).trigger("mouseover");
+    cy.get(".btn-delete-preset").eq(0).click({force: true});
 
     cy.route("delete", "**/api/v2/equipment/equipment-preset/2/", {});
 
     cy.get(".btn").contains("Yes, continue").click();
 
-    cy.get(".form-check label").contains("Test preset 2").should("not.exist");
-
-    cy.get(".btn").contains("Cancel").click();
+    cy.get(".preset-wrapper .btn").contains("Test preset 2").should("not.exist");
   });
 });

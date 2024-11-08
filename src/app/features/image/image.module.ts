@@ -15,7 +15,6 @@ import { ImageEditWatermarkFieldsService } from "@features/image/services/image-
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
-import { LoadEquipmentPresetModalComponent } from "./components/load-equipment-preset-modal/load-equipment-preset-modal.component";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from "./components/additional-deep-sky-acquisition-properties-modal/additional-deep-sky-acquisition-properties-modal.component";
 import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@features/image/components/additional-solar-system-acquisition-properties-modal/additional-solar-system-acquisition-properties-modal.component";
@@ -34,7 +33,6 @@ import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/pl
     ImageEditPageComponent,
     CreateLocationModalComponent,
     SaveEquipmentPresetModalComponent,
-    LoadEquipmentPresetModalComponent,
     AdditionalDeepSkyAcquisitionPropertiesModalComponent,
     AdditionalSolarSystemAcquisitionPropertiesModalComponent,
     CopyAcquisitionSessionsFromAnotherImageModalComponent,

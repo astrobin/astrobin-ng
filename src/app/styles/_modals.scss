@@ -27,6 +27,24 @@
 
   .modal-header {
     @include darkest-background-texture;
+    gap: 1rem;
+
+    .close {
+      border: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      padding: .5rem;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, .5);
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
   }
 
   .modal-footer {

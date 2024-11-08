@@ -21,6 +21,15 @@ export class ConfirmationDialogComponent extends BaseComponentDirective {
   @Input()
   showMessage = true;
 
+  @Input()
+  showAreYouSure = true;
+
+  @Input()
+  cancelLabel = this.translateService.instant("Cancel");
+
+  @Input()
+  confirmLabel = this.translateService.instant("Yes, continue");
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly modal: NgbActiveModal,

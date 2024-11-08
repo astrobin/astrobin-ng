@@ -36,7 +36,7 @@ import { ImageEditSettingsFieldsService } from "@features/image/services/image-e
 import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
 import { forkJoin, Observable, of, switchMap } from "rxjs";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
+import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 import {
   EquipmentActionTypes,
@@ -50,7 +50,6 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
-import { LoadEquipmentPresetModalComponent } from "@features/image/components/load-equipment-preset-modal/load-equipment-preset-modal.component";
 import { UserService } from "@shared/services/user.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { CookieService } from "ngx-cookie";
@@ -69,6 +68,7 @@ import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -86,6 +86,9 @@ export class ImageEditPageComponent
 
   @ViewChild("stepperButtonsTemplate")
   stepperButtonsTemplate: TemplateRef<any>;
+
+  @ViewChild("equipmentStepPreambleTemplate")
+  equipmentStepPreambleTemplate: TemplateRef<any>;
 
   @ViewChild("equipmentStepButtonsTemplate")
   equipmentStepButtonsTemplate: TemplateRef<any>;
@@ -295,14 +298,15 @@ export class ImageEditPageComponent
     }
   }
 
-  onLoadEquipmentPresetClicked() {
-    const modalRef: NgbModalRef = this.modalService.open(LoadEquipmentPresetModalComponent);
-    const componentInstance: LoadEquipmentPresetModalComponent = modalRef.componentInstance;
-
-    componentInstance.alreadyHasEquipment = this.imageEditService.hasEquipmentItems();
+  onPresetClicked(preset: EquipmentPresetInterface) {
+    this.imageEditService.loadEquipmentPreset(preset).subscribe();
   }
 
-  onSaveEquipmentPresetClicked() {
+  onPresetDeleteClicked(preset: EquipmentPresetInterface) {
+    this.imageEditService.deleteEquipmentPreset(preset).subscribe();
+  }
+
+  onSaveEquipmentPresetClicked(cb?: () => void) {
     if (this.imageEditService.hasEquipmentItems()) {
       this.imageEditService
         .currentEquipmentPreset$()
@@ -326,6 +330,12 @@ export class ImageEditPageComponent
           if (!!currentEquipmentPreset) {
             componentInstance.model.name = currentEquipmentPreset.name;
           }
+
+          modalRef.closed.pipe(take(1)).subscribe(() => {
+            if (!!cb) {
+              cb();
+            }
+          });
         });
     }
   }
@@ -534,21 +544,77 @@ export class ImageEditPageComponent
       return;
     }
 
-    this.store$.dispatch(
-      new SaveImage({
-        pk: this.imageEditService.model.pk,
-        image: { ...this.imageEditService.model, ...this.imageEditService.form.value } as ImageEditModelInterface
-      })
-    );
+    const _doSave = () => {
+      this.store$.dispatch(
+        new SaveImage({
+          pk: this.imageEditService.model.pk,
+          image: { ...this.imageEditService.model, ...this.imageEditService.form.value } as ImageEditModelInterface
+        })
+      );
 
-    this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
-      this.imageEditService.form.markAsPristine();
+      this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
+        this.imageEditService.form.markAsPristine();
 
-      if (!!next) {
-        this.loadingService.setLoading(true);
-        UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
+        if (!!next) {
+          this.loadingService.setLoading(true);
+          UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
+        } else {
+          this.popNotificationsService.success(this.translateService.instant("Image saved."));
+        }
+      });
+    }
+
+    this.imageEditService.currentEquipmentPreset$().pipe(take(1)).subscribe(preset => {
+      if (!preset) {
+        const imagingTelescopes = this.imageEditService.model.imagingTelescopes2;
+        const imagingCameras = this.imageEditService.model.imagingCameras2;
+        const mounts = this.imageEditService.model.mounts2;
+        const filters = this.imageEditService.model.filters2;
+        const accessories = this.imageEditService.model.accessories2;
+        const software = this.imageEditService.model.software2;
+
+        forkJoin([
+          ...imagingTelescopes.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.TELESCOPE}).pipe(take(1))),
+          ...imagingCameras.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.CAMERA}).pipe(take(1))),
+          ...mounts.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.MOUNT}).pipe(take(1))),
+          ...filters.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.FILTER}).pipe(take(1))),
+          ...accessories.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.ACCESSORY}).pipe(take(1))),
+          ...software.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.SOFTWARE}).pipe(take(1)))
+        ]).subscribe((equipment: EquipmentItem[]) => {
+          const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+          const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+          componentInstance.title = this.translateService.instant(
+            "Would you like to save this equipment configuration as a setup?"
+          );
+          componentInstance.message = `
+            <p>
+              ${this.translateService.instant(
+            "AstroBin noticed that you have not saved this equipment configuration as a setup. " +
+                "Would you like to save it now, so you can easily load it in the future?"
+              )}
+            </p>
+            <p>
+              ${equipment.map(equipmentItem =>
+                (equipmentItem.brandName || this.translateService.instant("DIY")) + " " + equipmentItem.name).join(" &middot; ")
+              }
+            </p>
+          `;
+          componentInstance.showAreYouSure = false;
+          componentInstance.cancelLabel = this.translateService.instant("No, just save the image");
+          componentInstance.confirmLabel = this.translateService.instant("Yes, save the setup");
+
+          modalRef.closed.subscribe(result => {
+            this.onSaveEquipmentPresetClicked(() => {
+              _doSave();
+            });
+          });
+
+          modalRef.dismissed.subscribe(() => {
+            _doSave();
+          });
+        });
       } else {
-        this.popNotificationsService.success(this.translateService.instant("Image saved."));
+        _doSave();
       }
     });
   }
@@ -619,6 +685,7 @@ export class ImageEditPageComponent
           id: "image-stepper-equipment",
           props: {
             label: this.translateService.instant("Equipment"),
+            stepPreambleTemplate: this.equipmentStepPreambleTemplate,
             stepActionsTemplate: this.equipmentStepButtonsTemplate
           },
           fieldGroup: [

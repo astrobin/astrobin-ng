@@ -9,7 +9,7 @@
 
 <div class="modal-body">
   <p *ngIf="showMessage" [innerHTML]="message || 'This operation requires an additional confirmation.' | translate"></p>
-  <p>{{ "Are you sure that you want to continue?" | translate }}</p>
+  <p *ngIf="showAreYouSure">{{ "Are you sure that you want to continue?" | translate }}</p>
 </div>
 
 <div class="modal-footer">
@@ -19,11 +19,15 @@
     class="btn btn-outline-secondary"
     type="button"
   >
-    {{ "Cancel" | translate }}
+    {{ cancelLabel }}
   </button>
 
-  <button (click)="modal.close()" [class.loading]="loadingService.loading$ | async" class="btn btn-primary"
-          type="button">
-    {{ "Yes, continue" | translate }}
+  <button
+    (click)="modal.close()"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-primary"
+    type="button"
+  >
+    {{ confirmLabel }}
   </button>
 </div>
