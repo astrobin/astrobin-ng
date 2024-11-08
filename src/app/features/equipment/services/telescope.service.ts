@@ -71,7 +71,7 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
         "Catadioptric: ACF Schmidt-Cassegrain"
       ),
       [TelescopeType.CATADIOPTRIC_ROWE_ACKERMAN_SCHMIDT]: this.translateService.instant(
-        "Catadioptric: Rowe-Atkinson Schmidt astrograph"
+        "Catadioptric: Rowe-Ackermann Schmidt astrograph"
       ),
       [TelescopeType.CATADIOPTRIC_RICCARDI_HONDERS]: this.translateService.instant("Catadioptric: Riccardi-Honders"),
       [TelescopeType.CATADIOPTRIC_MODIFIED_HARMER_WYNNE]: this.translateService.instant(
