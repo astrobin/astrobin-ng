@@ -78,6 +78,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
     this.gridItems = event.gridItems;
     this.averageHeight = event.averageHeight;
+    this.changeDetectorRef.detectChanges();
   }
 
   getItemListingsMessage(listing: EquipmentItemListingInterface): string {

@@ -1,8 +1,8 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { fromEvent, Observable, Subject, throttleTime } from "rxjs";
-import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { takeUntil } from "rxjs/operators";
+import { isPlatformBrowser } from "@angular/common";
+import { delay, takeUntil } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -50,7 +50,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
       const scrollElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
 
       fromEvent(scrollElement, "scroll")
-        .pipe(takeUntil(this.destroyed$), throttleTime(200))
+        .pipe(takeUntil(this.destroyed$), throttleTime(200), delay(100))
         .subscribe(() => this._onScroll());
     }
   }

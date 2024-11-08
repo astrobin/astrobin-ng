@@ -7,6 +7,12 @@
   flex-wrap: wrap;
   width: 100%;
   gap: $gap;
+  content-visibility: auto;
+  contain: paint layout;
+  overflow-anchor: none;
+  height: auto !important;
+  align-items: flex-start;
+  justify-content: flex-start;
 
   &::after {
     content: "";
