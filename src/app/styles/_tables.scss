@@ -61,47 +61,48 @@
 }
 
 @media (max-width: $sm-max) {
-  .table-mobile-support,
-  .table tbody {
-    display: block;
-  }
+  .table-mobile-support {
+    .table tbody {
+      display: block;
+    }
 
-  thead {
-    display: none;
-  }
+    thead {
+      display: none;
+    }
 
-  /* Each row as a block element on small screens */
-  .table tbody tr {
-    display: block;
-    margin-bottom: 2rem;
-  }
+    /* Each row as a block element on small screens */
+    .table tbody tr {
+      display: block;
+      margin-bottom: 2rem;
+    }
 
-  .table tbody:last-child tr:last-child {
-    margin-bottom: 0;
-  }
+    .table tbody:last-child tr:last-child {
+      margin-bottom: 0;
+    }
 
-  .table tbody tr td {
-    display: flex;
-    gap: .5rem;
-    padding: .5rem 1rem;
-    width: auto;
-    border-bottom-width: 0;
-  }
+    .table tbody tr td {
+      display: flex;
+      gap: .5rem;
+      padding: .5rem 1rem;
+      width: auto;
+      border-bottom-width: 0;
+    }
 
-  .table tbody tr td:before {
-    content: attr(data-label);
-    color: var(--lighterGrey);
-  }
+    .table tbody tr td:before {
+      content: attr(data-label);
+      color: var(--lighterGrey);
+    }
 
-  .restore .btn {
-    margin-left: -.5rem; // Compensate for gap.
-  }
+    .restore .btn {
+      margin-left: -.5rem; // Compensate for gap.
+    }
 
-  .thumbnail {
-    display: none !important;
-  }
+    .thumbnail {
+      display: none !important;
+    }
 
-  .table-striped > tbody > tr:nth-of-type(even) > * {
-    background-color: var(--darkerGrey);
+    .table-striped > tbody > tr:nth-of-type(even) > * {
+      background-color: var(--darkerGrey);
+    }
   }
 }
