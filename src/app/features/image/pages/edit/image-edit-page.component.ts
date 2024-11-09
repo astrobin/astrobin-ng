@@ -573,6 +573,18 @@ export class ImageEditPageComponent
         const accessories = this.imageEditService.model.accessories2;
         const software = this.imageEditService.model.software2;
 
+        if (
+          !imagingTelescopes.length &&
+          !imagingCameras.length &&
+          !mounts.length &&
+          !filters.length &&
+          !accessories.length &&
+          !software.length
+        ) {
+          _doSave();
+          return;
+        }
+
         forkJoin([
           ...imagingTelescopes.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.TELESCOPE}).pipe(take(1))),
           ...imagingCameras.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.CAMERA}).pipe(take(1))),
