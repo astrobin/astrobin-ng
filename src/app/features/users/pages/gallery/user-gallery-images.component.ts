@@ -201,7 +201,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
     <ng-template #hoverTemplate let-image="image">
       <div class="hover d-flex align-items-end gap-2">
         <div class="flex-grow-1">
-          <div class="title">{{ image.title|truncate:30 }}</div>
+          <div class="title">{{ image.title }}</div>
           <div *ngIf="image.published" class="published">{{ image.published | localDate | timeago }}</div>
           <div *ngIf="!image.published && image.uploaded"
                class="uploaded">{{ image.uploaded | localDate | timeago }}

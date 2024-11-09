@@ -110,18 +110,39 @@
 
       .title {
         color: var(--lightestGrey);
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        line-clamp: 3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* Firefox */
+        display: -moz-box;
+        -moz-box-orient: vertical;
+        word-break: break-word;
+        hyphens: auto;
+      }
+
+      /* Fallback for browsers without line-clamp support */
+      @supports not ((-webkit-line-clamp: 4) or (line-clamp: 4)) {
+        .title {
+          display: block;
+          max-height: 6em; /* Approximate height for 3 lines (1.5em per line) */
+          position: relative;
+          overflow: hidden;
+        }
       }
 
       .published,
       .uploaded {
         color: var(--lighterGrey);
-        font-size: .7rem;
+        font-size: .6rem;
       }
 
       .counters {
         .counter {
           color: var(--lighterGrey);
-          font-size: .7rem;
+          font-size: .65rem;
           white-space: nowrap;
 
           .ng-fa-icon {
