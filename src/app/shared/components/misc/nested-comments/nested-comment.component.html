@@ -1,12 +1,12 @@
 <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
   <div
     [class.highlighted]="highlighted"
-    [ngStyle]="{ 'margin-left': getMarginLeft(comment.depth) }"
+    [ngStyle]="{ 'margin-left': margin }"
     class="nested-comment"
     id="c{{ comment.id }}"
   >
     <div class="avatar">
-      <img [src]="getAvatarUrl(comment.authorAvatar)" alt="">
+      <img [src]="avatarUrl" alt="">
     </div>
 
     <div class="nested-comment-content">
@@ -14,7 +14,7 @@
         <a
           *ngIf="!comment.deleted"
           (click)="userService.openGallery(comment.authorUsername, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-          [href]="userService.getGalleryUrl(comment.authorUsername, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+          [href]="userGalleryUrl"
           astrobinEventPreventDefault
           class="username"
         >
@@ -76,7 +76,7 @@
       <div class="actions">
         <a
           *ngIf="!comment.pendingModeration && !comment.deleted"
-          [href]="getLink()"
+          [href]="link"
           class="link"
         >
           <fa-icon icon="link"></fa-icon>

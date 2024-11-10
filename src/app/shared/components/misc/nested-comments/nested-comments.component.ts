@@ -183,7 +183,11 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     });
   }
 
-  _initComments() {
+  protected commentTrackByFn(index: number, comment: NestedCommentInterface) {
+    return comment.id;
+  }
+
+  private _initComments() {
     this.comments$ = this.store$
       .select(selectNestedCommentsByContentTypeIdAndObjectId(
           this.contentType.id,
@@ -206,7 +210,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
       );
   }
 
-  _autoStartTopLevel() {
+  private _autoStartTopLevel() {
     if (this._autoStartTopLevelRetries >= 10) {
       return;
     }
@@ -235,7 +239,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     }
   }
 
-  _initFields() {
+  private _initFields() {
     this.fields = [
       {
         key: "topLevelComment",

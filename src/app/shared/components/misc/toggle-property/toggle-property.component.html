@@ -1,34 +1,35 @@
 <button
   (click)="onClick($event)"
   [class.loading]="loading || !initialized || toggled === undefined"
-  [class.toggled]="toggled"
+  [class.toggled]="!!toggled"
   [class]="btnClass"
   [disabled]="disabled"
   [ngbTooltip]="
-        !isTouchDevice && !showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : ''
-      "
+    !isTouchDevice &&
+    !showLabel ? (
+      !toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel
+    ) : ''
+  "
   [attr.aria-label]="
-        !showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null
-      "
+    !showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null
+  "
   container="body"
 >
   <ng-container *ngIf="toggled">
     <fa-icon
       *ngIf="showIcon"
-      [animation]="loading || !initialized ? 'spin' : null"
-      [icon]="loading || !initialized ? 'spinner' : togglePropertyIcon"
+      [icon]="togglePropertyIcon"
     ></fa-icon>
-    <span *ngIf="showLabel" class="btn-text">{{ unsetTogglePropertyLabel }}</span>
-    <span *ngIf="count !== undefined" class="count">{{ count  | numberSuffix }}</span>
+    <span *ngIf="showLabel">{{ unsetTogglePropertyLabel }}</span>
+    <span *ngIf="count !== undefined" class="count">{{ count | numberSuffix }}</span>
   </ng-container>
 
   <ng-container *ngIf="!toggled">
     <fa-icon
       *ngIf="showIcon"
-      [animation]="loading || !initialized ? 'spin' : null"
-      [icon]="loading || !initialized ? 'spinner' : togglePropertyIcon"
+      [icon]="togglePropertyIcon"
     ></fa-icon>
-    <span *ngIf="showLabel" class="btn-text">{{ setTogglePropertyLabel }}</span>
+    <span *ngIf="showLabel">{{ setTogglePropertyLabel }}</span>
     <span *ngIf="count !== undefined" class="count">{{ count | numberSuffix }}</span>
   </ng-container>
 </button>

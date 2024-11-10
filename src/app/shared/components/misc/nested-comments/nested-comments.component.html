@@ -27,7 +27,7 @@
 
     <ng-container *ngIf="!loadingComments; else loadingTpl">
       <ng-container
-        *ngFor="let comment of comments"
+        *ngFor="let comment of comments; trackBy: commentTrackByFn"
         [ngTemplateOutletContext]="{comment}"
         [ngTemplateOutlet]="commentsTpl"
       ></ng-container>

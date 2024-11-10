@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -66,9 +66,13 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   protected loading = false;
   protected initialized = false;
   protected isTouchDevice = false;
+  protected setTogglePropertyLabel: string;
+  protected unsetTogglePropertyLabel: string;
+  protected togglePropertyIcon: IconProp;
 
   private _toggleProperty: TogglePropertyInterface;
-  private _subscriptions: Subscription = new Subscription();
+  private _createSubscription: Subscription;
+  private _deleteSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -86,44 +90,55 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     super(store$);
   }
 
-  get unsetTogglePropertyLabel(): string {
+  private _initUnsetTogglePropertyLabel(): void {
     if (this.unsetLabel) {
-      return this.unsetLabel;
+      this.unsetTogglePropertyLabel = this.unsetLabel;
+      return;
     }
 
     switch (this.propertyType) {
       case "like":
-        return this.translateService.instant("Unlike");
+        this.unsetTogglePropertyLabel = this.translateService.instant("Unlike");
+        break;
       case "bookmark":
-        return this.translateService.instant("Remove bookmark");
+        this.unsetTogglePropertyLabel = this.translateService.instant("Remove bookmark");
+        break;
       case "follow":
-        return this.translateService.instant("Unfollow");
+        this.unsetTogglePropertyLabel = this.translateService.instant("Unfollow");
+        break;
     }
   }
 
-  get setTogglePropertyLabel(): string {
+  private _initSetTogglePropertyLabel(): void {
     if (this.setLabel) {
-      return this.setLabel;
+      this.setTogglePropertyLabel = this.setLabel;
+      return;
     }
 
     switch (this.propertyType) {
       case "like":
-        return this.translateService.instant("Like");
+        this.setTogglePropertyLabel = this.translateService.instant("Like");
+        break;
       case "bookmark":
-        return this.translateService.instant("Bookmark");
+        this.setTogglePropertyLabel = this.translateService.instant("Bookmark");
+        break;
       case "follow":
-        return this.translateService.instant("Follow");
+        this.setTogglePropertyLabel = this.translateService.instant("Follow");
+        break;
     }
   }
 
-  get togglePropertyIcon(): IconProp {
+  private _initTogglePropertyIcon(): void {
     switch (this.propertyType) {
       case "like":
-        return "thumbs-up";
+        this.togglePropertyIcon = "thumbs-up";
+        break;
       case "bookmark":
-        return "bookmark";
+        this.togglePropertyIcon = "bookmark";
+        break;
       case "follow":
-        return "bell";
+        this.togglePropertyIcon = "bell";
+        break;
     }
   }
 
@@ -131,9 +146,15 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     this.isTouchDevice = this.deviceService.isTouchEnabled();
   }
 
-  public ngOnChanges(): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     this.initialized = false;
     this.loading = false;
+
+    if (changes.propertyType) {
+      this._initSetTogglePropertyLabel();
+      this._initUnsetTogglePropertyLabel();
+      this._initTogglePropertyIcon();
+    }
 
     if (isPlatformBrowser(this.platformId)) {
       if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, {
@@ -164,7 +185,14 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
 
   public ngOnDestroy(): void {
     super.ngOnDestroy();
-    this._subscriptions.unsubscribe();
+
+    if (this._createSubscription) {
+      this._createSubscription.unsubscribe();
+    }
+
+    if (this._deleteSubscription) {
+      this._deleteSubscription.unsubscribe();
+    }
   }
 
   public onClick(event: MouseEvent | TouchEvent): void {
@@ -248,34 +276,29 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this._initToggleProperty();
     }
 
-    this._subscriptions.unsubscribe();
+    if (this._createSubscription) {
+      this._createSubscription.unsubscribe();
+    }
 
-    this._subscriptions.add(this.actions$.pipe(
-      ofType(
-        AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS,
-        AppActionTypes.DELETE_TOGGLE_PROPERTY_FAILURE
-      ),
-      filter(this._getFilterParams.bind(this)),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.loading = false;
-      this.changeDetectorRef.markForCheck();
-    }));
+    if (this._deleteSubscription) {
+      this._deleteSubscription.unsubscribe();
+    }
 
-    this._subscriptions.add(this.actions$.pipe(
+    this._createSubscription = this.actions$.pipe(
       ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS),
       map((action: CreateTogglePropertySuccess) => action.payload.toggleProperty),
       filter(this._getFilterParams.bind(this)),
       takeUntil(this.destroyed$)
     ).subscribe(toggleProperty => {
       this.utilsService.delay(50).subscribe(() => {
+        this._toggleProperty = toggleProperty;
         this.toggled = true;
         this.loading = false;
         this.changeDetectorRef.markForCheck();
       });
-    }));
+    });
 
-    this._subscriptions.add(this.actions$.pipe(
+    this._deleteSubscription = this.actions$.pipe(
       ofType(AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS),
       map((action: CreateTogglePropertySuccess) => action.payload.toggleProperty),
       filter(this._getFilterParams.bind(this)),
@@ -285,7 +308,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this.toggled = false;
       this.loading = false;
       this.changeDetectorRef.markForCheck();
-    }));
+    });
 
     this.initialized = true;
     this.changeDetectorRef.markForCheck();

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -25,9 +25,10 @@ import { UserService } from "@shared/services/user.service";
 @Component({
   selector: "astrobin-nested-comment",
   templateUrl: "./nested-comment.component.html",
-  styleUrls: ["./nested-comment.component.scss"]
+  styleUrls: ["./nested-comment.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NestedCommentComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class NestedCommentComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnChanges {
   @Input()
   comment: NestedCommentInterface;
 
@@ -61,6 +62,10 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
 
   protected approving = false;
   protected deleting = false;
+  protected link: string;
+  protected margin: string = `0px`;
+  protected userGalleryUrl: string;
+  protected avatarUrl: string;
 
   private readonly _isBrowser: boolean;
   private _elementWidth: number;
@@ -76,6 +81,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly userService: UserService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
@@ -96,32 +102,23 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
 
     this._initHighlightJs();
     this._elementWidth = this.elementRef.nativeElement.getBoundingClientRect().width;
+    this._initMarginLeft();
+    this.changeDetectorRef.markForCheck();
   }
 
-  getMarginLeft(depth: number): string {
-    if (!this._elementWidth) {
-      return `0px`;
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.comment && changes.comment.currentValue) {
+      this._initLink();
+      this._initMarginLeft();
+      this._initUserGalleryUrl();
+      this._initAvatarUrl();
     }
-
-    const minContentWidth = 300;
-    const maxMargin = this._elementWidth - minContentWidth;
-    const margin = Math.min(maxMargin, (depth - 1) * 16);
-    return `${margin}px`;
-  }
-
-  getAvatarUrl(avatar: string) {
-    return UtilsService.convertDefaultAvatar(avatar);
-  }
-
-  getLink(): string {
-    const url = this.windowRefService.getCurrentUrl();
-    url.hash = `c${this.comment.id}`;
-    return url.href;
   }
 
   cancelReply() {
     this.replyForm.reset();
     this.showReplyForm = false;
+    this.changeDetectorRef.markForCheck();
   }
 
   submitReply() {
@@ -148,7 +145,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
           take(1),
           tap(() => this.cancelReply())
         )
-        .subscribe();
+        .subscribe(() => {
+          this.changeDetectorRef.markForCheck();
+        });
     });
   }
 
@@ -168,6 +167,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       take(1)
     ).subscribe(() => {
       this.approving = false;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.actions$.pipe(
@@ -177,9 +177,11 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       take(1)
     ).subscribe(() => {
       this.approving = false;
-    })
+      this.changeDetectorRef.markForCheck();
+    });
 
     this.store$.dispatch(new ApproveNestedComment({ id: this.comment.id }));
+    this.changeDetectorRef.markForCheck();
   }
 
   onDeleteClicked(event: Event) {
@@ -198,9 +200,11 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       take(1)
     ).subscribe(() => {
       this.deleting = false;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.dispatch(new DeleteNestedComment({ id: this.comment.id }));
+    this.changeDetectorRef.markForCheck();
   }
 
   onReplyClicked(event: Event) {
@@ -216,10 +220,15 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
         return;
       }
       this.showReplyForm = true;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
-  _initHighlightJs() {
+  private _initAvatarUrl(): void {
+    this.avatarUrl = UtilsService.convertDefaultAvatar(this.comment.authorAvatar);
+  }
+
+  private _initHighlightJs() {
     if (!this._isBrowser) {
       return;
     }
@@ -245,7 +254,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     }
   }
 
-  _listenToLikes() {
+  private _listenToLikes() {
     this.actions$.pipe(
       ofType(AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS),
       map((action: CreateTogglePropertySuccess) => action.payload.toggleProperty),
@@ -259,6 +268,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
         ...this.comment.likes,
         toggleProperty.user
       ];
+      this.changeDetectorRef.markForCheck();
     });
 
     this.actions$.pipe(
@@ -271,10 +281,11 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       takeUntil(this.destroyed$)
     ).subscribe(toggleProperty => {
       this.comment.likes = this.comment.likes.filter(user => user !== toggleProperty.user);
+      this.changeDetectorRef.markForCheck();
     });
   }
 
-  _initReplyFields() {
+  private _initReplyFields() {
     this.replyFields = [
       {
         key: "commentReply",
@@ -288,7 +299,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     ];
   }
 
-  _initHighlighted() {
+  private _initHighlighted() {
     const hash = this.windowRefService.getCurrentUrl().hash;
 
     if (hash === `#c${this.comment.id}`) {
@@ -298,5 +309,34 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     if (this.highlighted) {
       this.windowRefService.scrollToElement(`#c${this.comment.id}`);
     }
+  }
+
+  private _initMarginLeft(): string {
+    if (!this._elementWidth) {
+      this.margin = `0px`;
+      return;
+    }
+
+    const minContentWidth = 300;
+    const maxMargin = this._elementWidth - minContentWidth;
+    const margin = Math.min(maxMargin, (this.comment.depth - 1) * 16);
+    this.margin = `${margin}px`;
+  }
+
+  private _initLink(): void {
+    const url = this.windowRefService.getCurrentUrl();
+    url.hash = `c${this.comment.id}`;
+    this.link = url.href;
+  }
+
+  private _initUserGalleryUrl(): void {
+    this.currentUserWrapper$.pipe(
+      take(1)
+    ).subscribe(currentUserWrapper => {
+      this.userGalleryUrl = this.userService.getGalleryUrl(
+        this.comment.authorUsername,
+        currentUserWrapper.userProfile?.enableNewGalleryExperience
+      );
+    });
   }
 }
