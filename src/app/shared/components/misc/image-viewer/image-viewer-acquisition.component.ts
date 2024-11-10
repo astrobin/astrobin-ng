@@ -70,7 +70,14 @@ interface DetailedFilterSummary {
       </div>
     </ng-container>
 
-    <div class="metadata-header d-md-none">{{ "Integration" | translate }}</div>
+    <div class="metadata-header d-md-none d-flex justify-content-between">
+      <span>{{ "Integration" | translate }}</span>
+      <span
+        *ngIf="deepSkyIntegrationTime"
+        [innerHTML]="deepSkyIntegrationTime"
+        class="no-wrap"
+      ></span>
+    </div>
     <div
       *ngIf="image.deepSkyAcquisitions?.length && !image.solarSystemAcquisitions?.length"
       class="metadata-section"
