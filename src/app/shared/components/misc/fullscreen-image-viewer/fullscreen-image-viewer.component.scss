@@ -8,12 +8,16 @@ $header-height: 63px;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   z-index: 1040;
   background-color: black;
   justify-content: center;
   align-items: center;
+
+  @supports (height: 100dvh) {
+    height: 100dvh;
+  }
 
   .image-zoom {
     display: flex;
@@ -27,8 +31,13 @@ $header-height: 63px;
         text-align: center;
 
         .ngxImageZoomThumbnail {
-          max-height: 100vh;
           max-width: 100vw;
+          max-height: 100vh;
+          object-fit: contain;
+
+          @supports (max-height: 100dvh) {
+            max-height: 100dvh;
+          }
         }
 
         .ngxImageZoomFullContainer {
@@ -46,17 +55,28 @@ $header-height: 63px;
           justify-content: center;
           align-items: center;
 
+          @supports (height: 100dvh) {
+            height: 100dvh !important;
+          }
+
           .ngxImageZoomThumbnail {
             width: 100vw;
-            max-height: 100vh;
             max-width: 100vw;
-            object-fit: contain;
+            max-height: 100vh;
+
+            @supports (max-height: 100dvh) {
+              max-height: 100dvh;
+            }
           }
 
           .ngxImageZoomFullContainer {
             width: 100vw !important;
             height: 100vh !important;
             border-radius: 0 !important;
+
+            @supports (height: 100dvh) {
+              height: 100dvh !important;
+            }
           }
         }
       }
@@ -121,12 +141,22 @@ $header-height: 63px;
     img {
       max-width: 100vw;
       max-height: 100vh;
+      object-fit: contain;
+
+      @supports (max-height: 100dvh) {
+        max-height: 100dvh;
+      }
     }
   }
 
   .hd-image {
     max-width: 100vw;
     max-height: 100vh;
+    object-fit: contain;
+
+    @supports (max-height: 100dvh) {
+      max-height: 100dvh;
+    }
   }
 
   .enable-lens-toggle,
@@ -174,11 +204,20 @@ $header-height: 63px;
     top: $header-height;
     height: calc(100vh - #{$header-height});
 
+    @supports (height: 100dvh) {
+      height: calc(100dvh - #{$header-height});
+    }
+
     .image-zoom {
       ::ng-deep {
         .ngxImageZoomContainer {
           .ngxImageZoomThumbnail {
             max-height: calc(100vh - #{$header-height});
+            object-fit: contain;
+
+            @supports (max-height: 100dvh) {
+              max-height: calc(100dvh - #{$header-height});
+            }
           }
         }
       }
@@ -188,12 +227,24 @@ $header-height: 63px;
           .ngxImageZoomContainer {
             height: calc(100vh - #{$header-height}) !important;
 
+            @supports (height: 100dvh) {
+              height: calc(100dvh - #{$header-height}) !important;
+            }
+
             .ngxImageZoomThumbnail {
               max-height: calc(100vh - #{$header-height});
+
+              @supports (max-height: 100dvh) {
+                max-height: calc(100dvh - #{$header-height});
+              }
             }
 
             .ngxImageZoomFullContainer {
               height: calc(100vh - #{$header-height}) !important;
+
+              @supports (height: 100dvh) {
+                height: calc(100dvh - #{$header-height}) !important;
+              }
             }
           }
         }
@@ -202,6 +253,10 @@ $header-height: 63px;
 
     .hd-image {
       max-height: calc(100vh - #{$header-height});
+
+      @supports (max-height: 100dvh) {
+        max-height: calc(100dvh - #{$header-height});
+      }
     }
 
     .astrobin-logo {
