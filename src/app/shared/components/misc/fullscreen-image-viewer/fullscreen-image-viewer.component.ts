@@ -24,6 +24,9 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { FullSizeLimitationDisplayOptions, ImageInterface } from "@shared/interfaces/image.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import { TitleService } from "@shared/services/title/title.service";
+
+declare type HammerInput = any;
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -54,38 +57,43 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @HostBinding("class")
   klass = "d-none";
 
-  @HostBinding("class.disable-zoom")
-  get disableZoomClass() {
-    return this.realThumbnailLoading || this.hdThumbnailLoading;
-  }
-
-  @HostBinding("class.standalone")
-  get standaloneClass() {
-    return this.standalone;
-  }
-
   @ViewChild("ngxImageZoom", { static: false, read: NgxImageZoomComponent })
   ngxImageZoom: NgxImageZoomComponent;
 
   @ViewChild("ngxImageZoom", { static: false, read: ElementRef })
   ngxImageZoomEl: ElementRef;
 
-  enableLens = true;
-  zoomLensSize: number;
-  showZoomIndicator = false;
-  isTouchDevice = false;
-  isLargeEnough = false;
+  @ViewChild("touchRealContainer", { static: false })
+  touchRealContainer: ElementRef;
 
-  hdThumbnail: SafeUrl;
-  realThumbnail: SafeUrl;
-  show: boolean = false;
-  hdImageLoadingProgress$: Observable<number>;
-  realImageLoadingProgress$: Observable<number>;
-  hdThumbnailLoading = false;
-  realThumbnailLoading = false;
-  ready = false;
-  allowReal = false;
+  protected enableLens = true;
+  protected zoomLensSize: number;
+  protected showZoomIndicator = false;
+  protected isTouchDevice = false;
+  protected isLargeEnough = false;
+  protected hdThumbnail: SafeUrl;
+  protected realThumbnail: SafeUrl;
+  protected show: boolean = false;
+  protected hdImageLoadingProgress$: Observable<number>;
+  protected realImageLoadingProgress$: Observable<number>;
+  protected hdThumbnailLoading = false;
+  protected realThumbnailLoading = false;
+  protected ready = false;
+  protected allowReal = false;
+  protected touchScale = 1;
+  protected actualTouchZoom: number = null
 
+  private _lastTouchScale = 1;
+  private _touchScaleOffset = { x: 0, y: 0 };
+  private _lastTouchScaleOffset = { x: 0, y: 0 };
+  private _touchScaleStartPoint = { x: 0, y: 0 };
+  private _baseTouchScale: number;
+  private _panVelocity = { x: 0, y: 0 };
+  private _panLastPosition = { x: 0, y: 0 };
+  private _panLastTime: number = 0;
+  private _animationFrame: number = null;
+
+  private _naturalWidth: number;
   private _imageSubscription: Subscription;
   private _hdThumbnailSubscription: Subscription;
   private _realThumbnailSubscription: Subscription;
@@ -110,7 +118,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly deviceService: DeviceService,
     public readonly cookieService: CookieService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly titleService: TitleService
   ) {
     super(store$);
 
@@ -118,6 +127,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.enableLens = this.cookieService.get(this.LENS_ENABLED_COOKIE_NAME) === "true";
     this.hdImageLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
     this.realImageLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
+  }
+
+  @HostBinding("class.disable-zoom")
+  get disableZoomClass() {
+    return this.realThumbnailLoading || this.hdThumbnailLoading;
+  }
+
+  @HostBinding("class.standalone")
+  get standaloneClass() {
+    return this.standalone;
   }
 
   get zoomingEnabled(): boolean {
@@ -156,11 +175,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.klass = "d-none";
         this.hdThumbnail = null;
         this.realThumbnail = null;
+        this._resetTouchZoom();
+        this.titleService.enablePageZoom();
+        cancelAnimationFrame(this._animationFrame);
         this.exitFullscreen.emit();
       });
 
       this.show = true;
       this.klass = "d-flex";
+      this.titleService.disablePageZoom();
       this.enterFullscreen.emit();
       this._initThumbnailSubscriptions();
     });
@@ -203,29 +226,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._setZoomIndicatorTimeout();
   }
 
-  getZoomIndicatorStyle(): { left: string; top: string, transform: string } {
-    if (!this._zoomPosition) {
-      return { left: "0", top: "0", transform: "none" };
-    }
-
-    if (!this.enableLens) {
-      return {
-        top: "1.25rem",
-        left: "3.5rem",
-        transform: "none"
-      };
-    }
-
-    const x = this._zoomPosition.x;
-    const y = this._zoomPosition.y;
-
-    return {
-      top: `calc(${y}px + ${this.zoomLensSize / 2}px)`,
-      left: `${x}px`,
-      transform: `translate(-50%, 20%)`
-    };
-  }
-
   setZoomScroll(scroll: number) {
     this._zoomScroll = scroll;
     this.showZoomIndicator = true;
@@ -252,6 +252,178 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.store$.dispatch(new HideFullscreenImage());
+  }
+
+  getTransform(): string {
+    return `scale(${this.touchScale}) translate(${this._touchScaleOffset.x}px, ${this._touchScaleOffset.y}px)`;
+  }
+
+  protected onPinchStart(event: HammerInput): void {
+    this._lastTouchScale = this.touchScale;
+  }
+
+  protected onPinchMove(event: HammerInput): void {
+    const displayWidth = this.touchRealContainer.nativeElement.offsetWidth;
+    const naturalScale = displayWidth / this._naturalWidth;
+    this.touchScale = Math.min(
+      Math.max(this._lastTouchScale * event.scale, 1),
+      8 / naturalScale
+    );
+    this._updateActualTouchZoom();
+  }
+
+  protected onPinchEnd(): void {
+    this._lastTouchScale = this.touchScale;
+    if (this.touchScale <= 1) {
+      this._resetTouchZoom();
+    }
+  }
+
+  protected onPanStart(event: HammerInput): void {
+    if (this.touchScale <= 1) {
+      return;
+    }
+
+    // Cancel any ongoing momentum animation
+    if (this._animationFrame) {
+      cancelAnimationFrame(this._animationFrame);
+      this._animationFrame = null;
+    }
+
+    this._lastTouchScaleOffset = this._touchScaleOffset;
+    this._touchScaleStartPoint = {
+      x: event.center.x,
+      y: event.center.y
+    };
+
+    // Reset velocity tracking
+    this._panVelocity = { x: 0, y: 0 };
+    this._panLastPosition = {
+      x: event.center.x,
+      y: event.center.y
+    };
+    this._panLastTime = Date.now();
+  }
+
+  protected onPanMove(event: HammerInput): void {
+    if (this.touchScale <= 1) {
+      return;
+    }
+
+    const now = Date.now();
+    const deltaTime = now - this._panLastTime;
+
+    // Calculate velocity
+    if (deltaTime > 0) {
+      this._panVelocity = {
+        x: (event.center.x - this._panLastPosition.x) / deltaTime,
+        y: (event.center.y - this._panLastPosition.y) / deltaTime
+      };
+    }
+
+    this._panLastPosition = { x: event.center.x, y: event.center.y };
+    this._panLastTime = now;
+
+    const deltaX = event.center.x - this._touchScaleStartPoint.x;
+    const deltaY = event.center.y - this._touchScaleStartPoint.y;
+
+    const adjustedDeltaX = deltaX / this.touchScale;
+    const adjustedDeltaY = deltaY / this.touchScale;
+
+    const maxOffsetX = (this.touchScale - 1) * this.touchRealContainer.nativeElement.offsetWidth / 2;
+    const maxOffsetY = (this.touchScale - 1) * this.touchRealContainer.nativeElement.offsetHeight / 2;
+
+    this._touchScaleOffset = {
+      x: Math.min(Math.max(this._lastTouchScaleOffset.x + adjustedDeltaX, -maxOffsetX), maxOffsetX),
+      y: Math.min(Math.max(this._lastTouchScaleOffset.y + adjustedDeltaY, -maxOffsetY), maxOffsetY)
+    };
+  }
+
+  protected onPanEnd(event: HammerInput) {
+    if (this.touchScale <= 1) {
+      return;
+    }
+    this._applyPanMoveMomentum();
+  }
+
+  protected onDoubleTap(event: HammerInput): void {
+    if (this.touchScale > 1) {
+      this._resetTouchZoom();
+    } else {
+      // Zoom to 2x at double tap location
+      this.touchScale = 2;
+      const rect = this.touchRealContainer.nativeElement.getBoundingClientRect();
+      const x = event.center.x - rect.left;
+      const y = event.center.y - rect.top;
+
+      this._touchScaleOffset = {
+        x: (rect.width / 2 - x) * (this.touchScale - 1),
+        y: (rect.height / 2 - y) * (this.touchScale - 1)
+      };
+    }
+  }
+
+  private _applyPanMoveMomentum(): void {
+    const friction = 0.8; // Adjust this value to change how quickly it slows down
+    const minVelocity = 0.01; // Minimum velocity before stopping
+
+    const animate = () => {
+      // Apply friction
+      this._panVelocity.x *= friction;
+      this._panVelocity.y *= friction;
+
+      // Stop if velocity is very low
+      if (Math.abs(this._panVelocity.x) < minVelocity && Math.abs(this._panVelocity.y) < minVelocity) {
+        cancelAnimationFrame(this._animationFrame);
+        this._animationFrame = null;
+        return;
+      }
+
+      // Calculate new position
+      const deltaX = (this._panVelocity.x * 16) / this.touchScale; // 16ms is roughly one frame at 60fps
+      const deltaY = (this._panVelocity.y * 16) / this.touchScale;
+
+      const maxOffsetX = (this.touchScale - 1) * this.touchRealContainer.nativeElement.offsetWidth / 2;
+      const maxOffsetY = (this.touchScale - 1) * this.touchRealContainer.nativeElement.offsetHeight / 2;
+
+      // Update position with bounds checking
+      this._touchScaleOffset = {
+        x: Math.min(Math.max(this._touchScaleOffset.x + deltaX, -maxOffsetX), maxOffsetX),
+        y: Math.min(Math.max(this._touchScaleOffset.y + deltaY, -maxOffsetY), maxOffsetY)
+      };
+
+      // If we hit the bounds, stop the momentum in that direction
+      if (this._touchScaleOffset.x === -maxOffsetX || this._touchScaleOffset.x === maxOffsetX) {
+        this._panVelocity.x = 0;
+      }
+      if (this._touchScaleOffset.y === -maxOffsetY || this._touchScaleOffset.y === maxOffsetY) {
+        this._panVelocity.y = 0;
+      }
+
+      this._animationFrame = requestAnimationFrame(animate);
+    };
+
+    this._animationFrame = requestAnimationFrame(animate);
+  }
+
+
+  private _updateActualTouchZoom(): void {
+    if (!this._naturalWidth || !this.touchRealContainer?.nativeElement?.offsetWidth) {
+      this.actualTouchZoom = null;
+      return;
+    }
+
+    const displayWidth = this.touchRealContainer.nativeElement.offsetWidth;
+    this._baseTouchScale = displayWidth / this._naturalWidth;
+    this.actualTouchZoom = this._baseTouchScale * this.touchScale;
+  }
+
+  private _resetTouchZoom(): void {
+    this.touchScale = 1;
+    this._lastTouchScale = 1;
+    this._touchScaleOffset = { x: 0, y: 0 };
+    this._lastTouchScaleOffset = { x: 0, y: 0 };
+    this._updateActualTouchZoom();
   }
 
   private _resetThumbnailSubscriptions() {
@@ -284,6 +456,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       take(1)
     ).subscribe(image => {
       const revision = this.imageService.getRevision(image, this.revision);
+      this._naturalWidth = revision.w;
       this.isLargeEnough = (
         revision.w > this.windowRef.nativeWindow.innerWidth ||
         revision.h > this.windowRef.nativeWindow.innerHeight

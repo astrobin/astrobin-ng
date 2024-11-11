@@ -4,7 +4,6 @@ import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 import { AppModule } from "@app/app.module";
 import { environment } from "@env/environment";
 import * as Sentry from "@sentry/angular";
-import { BrowserTracing } from "@sentry/tracing";
 import 'hammerjs';
 
 declare const window: any;
