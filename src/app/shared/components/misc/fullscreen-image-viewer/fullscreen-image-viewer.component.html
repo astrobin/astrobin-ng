@@ -90,35 +90,8 @@
     <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
     <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
-    <div
-      *ngIf="real && allowReal"
-      #touchRealContainer
-      class="touch-real-container"
-      (pinchstart)="onPinchStart($event)"
-      (pinchmove)="onPinchMove($event)"
-      (pinchend)="onPinchEnd()"
-      (panstart)="onPanStart($event)"
-      (panmove)="onPanMove($event)"
-      (panend)="onPanEnd($event)"
-      (doubletap)="onDoubleTap($event)"
-    >
-      <div
-        class="touch-real-wrapper"
-        [style.transform]="getTransform()"
-        [style.transition]="touchScale === 1 ? 'transform 0.3s' : 'none'"
-      >
-        <img [src]="real" alt="" />
-      </div>
-
-      <div
-        *ngIf="actualTouchZoom !== null"
-        class="touch-zoom-indicator"
-      >
-        {{ actualTouchZoom | number:'1.2-2' }}x
-      </div>
-    </div>
-
-    <img *ngIf="hd && (!real || !allowReal)" [src]="hd" class="hd-image" alt="" />
+    <img *ngIf="real" [src]="real" alt="" />
+    <img *ngIf="hd && !real" [src]="hd" class="hd-image" alt="" />
 
     <ng-container *ngIf="isLargeEnough && allowReal && real" [ngTemplateOutlet]="real && pinchAndZoomInstructionTemplate"></ng-container>
     <ng-container *ngIf="hd && !isLargeEnough" [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
@@ -158,6 +131,7 @@
     <div
       *ngIf="showZoomIndicator"
       class="image-zoom-indicator"
+      [ngStyle]="getZoomIndicatorStyle()"
     >
       {{ getZoomScroll() | number: "1.2-2" }}x
     </div>

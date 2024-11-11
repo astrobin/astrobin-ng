@@ -57,8 +57,8 @@ const SLIDESHOW_WINDOW = 3;
               [image]="item.image"
               [revisionLabel]="activeImageRevisionLabel"
               [showCloseButton]="true"
-              [showPreviousButton]="activeId !== navigationContext[0].imageId && navigationContext.length > 1"
-              [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId && navigationContext.length > 1"
+              [showPreviousButton]="activeId !== navigationContext[0].imageId"
+              [showNextButton]="activeId !== navigationContext[navigationContext.length - 1].imageId"
               [standalone]="false"
             ></astrobin-image-viewer>
           </ng-template>

@@ -77,18 +77,20 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
 
 @Injectable()
 export class AstroBinHammerConfig extends HammerGestureConfig {
-  override buildHammer(element: HTMLElement) {
-    const mc = new Hammer(element);
-    mc.get('pinch').set({ enable: true });
-
-    const tap = new Hammer.Tap({ event: 'tap' });
-    const doubleTap = new Hammer.Tap({ event: 'doubletap', taps: 2 });
-    mc.add([doubleTap, tap]);
-    doubleTap.recognizeWith(tap);
-    tap.requireFailure(doubleTap);
-
-    return mc;
-  }
+  override overrides = {
+    swipe: {
+      enable: false
+    },
+    pinch: {
+      enable: false
+    },
+    rotate: {
+      enable: false
+    },
+    pan: {
+      enable: false
+    }
+  };
 }
 
 @NgModule({

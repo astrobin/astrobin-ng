@@ -1,9 +1,8 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Meta, MetaDefinition, Title } from "@angular/platform-browser";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TitleServiceInterface } from "@shared/services/title/title.service-interface";
-import { isPlatformBrowser } from "@angular/common";
 
 @Injectable({
   providedIn: "root"
@@ -12,8 +11,7 @@ export class TitleService extends BaseService implements TitleServiceInterface {
   constructor(
     public readonly loadingService: LoadingService,
     public readonly titleService: Title,
-    public readonly meta: Meta,
-    @Inject(PLATFORM_ID) private platformId: Object
+    public readonly meta: Meta
   ) {
     super(loadingService);
   }
@@ -49,28 +47,6 @@ export class TitleService extends BaseService implements TitleServiceInterface {
     this.updateMetaTag({ property: "og:description", content: description });
   }
 
-  public disablePageZoom() {
-    this.updateMetaTag({
-      name: "viewport",
-      content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-    });
-
-    if (isPlatformBrowser(this.platformId)) {
-      document.addEventListener('touchmove', this._preventDefault, { passive: false });
-    }
-  }
-
-  public enablePageZoom() {
-    this.updateMetaTag({
-      name: "viewport",
-      content: "width=device-width, initial-scale=1"
-    });
-
-    if (isPlatformBrowser(this.platformId)) {
-      document.removeEventListener('touchmove', this._preventDefault);
-    }
-  }
-
   private _getExistingMetaTag(tag: MetaDefinition) {
     if (tag.name) {
       return this.meta.getTag(`name="${tag.name}"`);
@@ -90,12 +66,6 @@ export class TitleService extends BaseService implements TitleServiceInterface {
       this.meta.updateTag(tag);
     } else {
       this.meta.addTag(tag);
-    }
-  }
-
-  private _preventDefault(e: TouchEvent) {
-    if (e.touches.length > 1) {
-      e.preventDefault();
     }
   }
 }

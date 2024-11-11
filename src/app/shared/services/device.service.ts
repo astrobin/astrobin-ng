@@ -160,18 +160,12 @@ export class DeviceService extends BaseService {
 
     const _window = this.windowRefService.nativeWindow;
 
-    return (
-      // Primary checks
-      'ontouchstart' in _window ||
-      navigator.maxTouchPoints > 0 ||
-      // Secondary checks (media queries)
-      (
-        _window.matchMedia("(hover: none)").matches &&
-        _window.matchMedia("(pointer: coarse)").matches
-      ) ||
-      // Older Android support
-      (navigator as any).msMaxTouchPoints > 0
-    );
+    // Use media queries to check if the device is currently using touch-based input
+    const hoverQuery = _window.matchMedia("(hover: none)");  // No hover, i.e., touch input
+    const pointerQuery = _window.matchMedia("(pointer: coarse)");  // Coarse pointer, i.e., touch input (finger)
+
+    // Return true if both media queries indicate touch-based input is active
+    return hoverQuery.matches && pointerQuery.matches;
   }
 
   offcanvasPosition(): "bottom" | "end" {
