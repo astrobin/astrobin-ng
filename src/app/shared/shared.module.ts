@@ -54,7 +54,6 @@ import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-grou
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from "@angular/platform-browser";
 import { AutoSizeInputModule } from "ngx-autosize-input";
-import Hammer from 'hammerjs';
 
 export function appInitializer(store: Store<MainState>, actions$: Actions) {
   return () =>

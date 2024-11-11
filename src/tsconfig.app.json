@@ -2,10 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "types": [
-      "googlemaps",
-      "hammerjs"
-    ],
+    "types": ["googlemaps"],
     "resolveJsonModule": true,
   },
   "files": [
