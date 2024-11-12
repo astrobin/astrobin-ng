@@ -153,6 +153,19 @@ $header-height: 63px;
         align-items: center;
         justify-content: center;
         transform-origin: center;
+
+        .display-image,
+        .manipulation-image {
+          position: absolute;
+
+          &.hidden {
+            opacity: 0;
+          }
+        }
+
+        .manipulation-image {
+          will-change: transform;
+        }
       }
     }
 

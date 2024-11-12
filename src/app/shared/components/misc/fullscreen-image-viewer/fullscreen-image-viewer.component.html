@@ -20,7 +20,7 @@
   <div class="instruction-container">
     <div class="instructions">
       <fa-icon [icon]="icon"></fa-icon>
-      <span>{{ message | translate }}</span>
+      <span [innerHTML]="message"></span>
     </div>
   </div>
 </ng-template>
@@ -31,6 +31,16 @@
     [ngTemplateOutletContext]="{
       icon: 'info-circle',
       message: 'Zoom disabled by the image owner.' | translate
+    }"
+  ></ng-container>
+</ng-template>
+
+<ng-template #imageTooLargeToZoomTemplate>
+  <ng-container
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+      icon: 'warning',
+      message: ('Image too large for the interactive zoom.' | translate) + ' ' + ('Click to view full size in a new tab.' | translate)
     }"
   ></ng-container>
 </ng-template>
@@ -90,37 +100,68 @@
     <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
     <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
-    <div
-      *ngIf="real && allowReal"
-      #touchRealContainer
-      class="touch-real-container"
-      (pinchstart)="onPinchStart($event)"
-      (pinchmove)="onPinchMove($event)"
-      (pinchend)="onPinchEnd()"
-      (panstart)="onPanStart($event)"
-      (panmove)="onPanMove($event)"
-      (panend)="onPanEnd($event)"
-      (doubletap)="onDoubleTap($event)"
-    >
+    <ng-container *ngIf="!isVeryLargeImage">
       <div
-        class="touch-real-wrapper"
-        [style.transform]="getTransform()"
-        [style.transition]="touchScale === 1 ? 'transform 0.3s' : 'none'"
+        *ngIf="real && allowReal"
+        #touchRealContainer
+        class="touch-real-container"
+        (pinchstart)="onPinchStart($event)"
+        (pinchmove)="onPinchMove($event)"
+        (pinchend)="onPinchEnd()"
+        (panstart)="onPanStart($event)"
+        (panmove)="onPanMove($event)"
+        (panend)="onPanEnd($event)"
+        (doubletap)="onDoubleTap($event)"
       >
-        <img [src]="real" alt="" />
-      </div>
+        <div
+          #touchRealWrapper
+          class="touch-real-wrapper"
+          [style.transition]="touchScale === 1 ? 'transform 0.3s' : 'none'"
+        >
+          <img
+            [src]="isVeryLargeImage ? hd : real"
+            [class.hidden]="isTransforming"
+            [style.transform]="touchZoomTransform"
+            alt=""
+            class="display-image"
+          />
 
-      <div
-        *ngIf="actualTouchZoom !== null"
-        class="touch-zoom-indicator"
-      >
-        {{ actualTouchZoom | number:'1.2-2' }}x
+          <img
+            [src]="isVeryLargeImage ? hd : real"
+            [class.hidden]="!isTransforming"
+            [style.transform]="touchZoomTransform"
+            alt=""
+            class="manipulation-image"
+          />
+        </div>
+
+        <div
+          *ngIf="actualTouchZoom !== null"
+          class="touch-zoom-indicator"
+        >
+          {{ actualTouchZoom | number:'1.2-2' }}x
+        </div>
       </div>
-    </div>
+    </ng-container>
+
+    <ng-container *ngIf="isVeryLargeImage">
+      <a
+        *ngIf="hd && real && realThumbnailUnsafeUrl"
+        [href]="realThumbnailUnsafeUrl"
+        class="no-external-link-icon d-flex align-items-center"
+        target="_blank"
+      >
+        <img [src]="hd" alt="" class="w-100 "/>
+      </a>
+      <ng-container
+        *ngIf="hd && real && isLargeEnough && allowReal"
+        [ngTemplateOutlet]="imageTooLargeToZoomTemplate"
+      ></ng-container>
+    </ng-container>
 
     <img *ngIf="hd && (!real || !allowReal)" [src]="hd" class="hd-image" alt="" />
 
-    <ng-container *ngIf="isLargeEnough && allowReal && real" [ngTemplateOutlet]="real && pinchAndZoomInstructionTemplate"></ng-container>
+    <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && real" [ngTemplateOutlet]="real && pinchAndZoomInstructionTemplate"></ng-container>
     <ng-container *ngIf="hd && !isLargeEnough" [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
     <ng-container *ngIf="hd && isLargeEnough && !allowReal" [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
   </div>
@@ -131,36 +172,53 @@
     <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
     <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
-    <img *ngIf="hd && !real" [src]="hd" class="hd-image" alt="" />
-    <img *ngIf="real && (!isLargeEnough || !allowReal)" [src]="hd" class="hd-image" alt="" />
+    <ng-container *ngIf="!isVeryLargeImage">
+      <img *ngIf="hd && !real" [src]="hd" class="hd-image" alt="" />
+      <img *ngIf="real && (!isLargeEnough || !allowReal)" [src]="hd" class="hd-image" alt="" />
 
-    <lib-ngx-image-zoom
-      #ngxImageZoom
-      *ngIf="real && isLargeEnough && allowReal"
-      (zoomPosition)="setZoomPosition($event)"
-      (zoomScroll)="setZoomScroll($event)"
-      (imagesLoaded)="onImagesLoaded($event)"
-      [circularLens]="true"
-      [enableLens]="enableLens"
-      [enableScrollZoom]="true"
-      [fullImage]="real"
-      [lensHeight]="zoomLensSize"
-      [lensWidth]="zoomLensSize"
-      [maxZoomRatio]="8"
-      [minZoomRatio]="0.1"
-      [thumbImage]="hd"
-      zoomMode="toggle-click"
-      class="image-zoom"
-      [class.lens-enabled]="enableLens"
-    >
-    </lib-ngx-image-zoom>
+      <lib-ngx-image-zoom
+        #ngxImageZoom
+        *ngIf="real && isLargeEnough && allowReal"
+        (zoomPosition)="setZoomPosition($event)"
+        (zoomScroll)="setZoomScroll($event)"
+        (imagesLoaded)="onImagesLoaded($event)"
+        [circularLens]="true"
+        [enableLens]="enableLens"
+        [enableScrollZoom]="true"
+        [fullImage]="real"
+        [lensHeight]="zoomLensSize"
+        [lensWidth]="zoomLensSize"
+        [maxZoomRatio]="8"
+        [minZoomRatio]="0.1"
+        [thumbImage]="hd"
+        zoomMode="toggle-click"
+        class="image-zoom"
+        [class.lens-enabled]="enableLens"
+      >
+      </lib-ngx-image-zoom>
 
-    <div
-      *ngIf="showZoomIndicator"
-      class="image-zoom-indicator"
-    >
-      {{ getZoomScroll() | number: "1.2-2" }}x
-    </div>
+      <div
+        *ngIf="showZoomIndicator"
+        class="image-zoom-indicator"
+      >
+        {{ getZoomScroll() | number: "1.2-2" }}x
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isVeryLargeImage">
+      <a
+        *ngIf="hd && real && realThumbnailUnsafeUrl"
+        [href]="realThumbnailUnsafeUrl"
+        class="no-external-link-icon d-flex align-items-center"
+        target="_blank"
+      >
+        <img [src]="hd" alt="" class="w-100"/>
+      </a>
+      <ng-container
+        *ngIf="hd && real && isLargeEnough && allowReal"
+        [ngTemplateOutlet]="imageTooLargeToZoomTemplate"
+      ></ng-container>
+    </ng-container>
 
     <ng-container
       *ngIf="hd && real && !isLargeEnough"
@@ -173,7 +231,7 @@
     ></ng-container>
 
 
-    <ng-container *ngIf="isLargeEnough && real && allowReal">
+    <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && real && allowReal">
       <ng-container
         *ngIf="!zoomingEnabled && !showZoomIndicator"
         [ngTemplateOutlet]="clickAndScrollInstructionTemplate"
