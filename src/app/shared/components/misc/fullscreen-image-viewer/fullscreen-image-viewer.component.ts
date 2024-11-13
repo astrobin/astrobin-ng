@@ -43,6 +43,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @Input()
   anonymized = false;
 
+  @Input()
+  respectFullSizeDisplayLimitation = true;
+
   // We use `standalone = true` when opening a fullscreen image viewer from a standalone image viewer, i.e. an image
   // viewer that comes from an image page and not a slideshow that's opened dynamically.
   @Input()
@@ -501,7 +504,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this.currentUser$.pipe(take(1)).subscribe(user => {
         const limit = image.fullSizeDisplayLimitation;
-        this.allowReal = (
+        this.allowReal = !this.respectFullSizeDisplayLimitation || (
           limit === FullSizeLimitationDisplayOptions.EVERYBODY ||
           (limit === FullSizeLimitationDisplayOptions.MEMBERS && !!user) ||
           (limit === FullSizeLimitationDisplayOptions.PAYING && !!user && !!user.validSubscription) ||

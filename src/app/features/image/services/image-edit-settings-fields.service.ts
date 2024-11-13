@@ -8,6 +8,7 @@ import { MainState } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { ImageService } from "@shared/services/image/image.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Injectable({
   providedIn: null
@@ -18,7 +19,8 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly imageService: ImageService,
-    public readonly imageEditService: ImageEditService
+    public readonly imageEditService: ImageEditService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(loadingService);
   }
@@ -247,6 +249,21 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
           name: "enum-value",
           options: { allowedValues: Object.values(FullSizeLimitationDisplayOptions) }
         }]
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.subscribe(value => {
+            if (value !== FullSizeLimitationDisplayOptions.EVERYBODY) {
+              this.popNotificationsService.info(
+                this.translateService.instant(
+                  "Please note: if you submit this image for IOTD/TP consideration, it will be displayed in full size " +
+                  "to members of the IOTD/TP staff, regardless of this setting. This is necessary for them to evaluate " +
+                  "the image properly."
+                )
+              );
+            }
+          });
+        }
       }
     };
   }
