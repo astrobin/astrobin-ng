@@ -72,9 +72,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @ViewChild("touchRealWrapper", { static: false })
   touchRealWrapper: ElementRef;
 
+  protected touchMode?: boolean = undefined;
   protected enableLens = true;
   protected zoomLensSize: number;
   protected showZoomIndicator = false;
+  protected isHybridPC = false;
   protected isTouchDevice = false;
   protected isLargeEnough = false;
   protected hdThumbnail: SafeUrl;
@@ -115,6 +117,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
 
   private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
+  private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
 
   protected get isVeryLargeImage(): boolean {
@@ -139,7 +142,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   ) {
     super(store$);
 
+    this.isHybridPC = this.deviceService.isHybridPC();
     this.isTouchDevice = this.deviceService.isTouchEnabled();
+    this.touchMode = this.cookieService.get(this.TOUCH_OR_MOUSE_MODE_COOKIE_NAME) === "touch";
     this.enableLens = this.cookieService.get(this.LENS_ENABLED_COOKIE_NAME) === "true";
     this.hdImageLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
     this.realImageLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
@@ -251,12 +256,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return this._zoomScroll;
   }
 
-  toggleEnableLens(): void {
+  protected toggleEnableLens(): void {
     this.enableLens = !this.enableLens;
     this.cookieService.put(this.LENS_ENABLED_COOKIE_NAME, this.enableLens.toString());
     if (this.enableLens) {
       this._setZoomLensSize();
     }
+  }
+
+  protected toggleTouchMouseMode(): void {
+    this.touchMode = !this.touchMode;
+    this.cookieService.put(this.TOUCH_OR_MOUSE_MODE_COOKIE_NAME, this.touchMode ? "touch" : "mouse");
   }
 
   @HostListener("window:keyup.escape", ["$event"])

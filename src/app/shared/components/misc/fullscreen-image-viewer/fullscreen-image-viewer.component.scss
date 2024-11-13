@@ -202,7 +202,7 @@ $header-height: 63px;
     }
   }
 
-  .enable-lens-toggle,
+  .zoom-modes,
   .close {
     cursor: pointer;
     position: absolute;
@@ -213,7 +213,9 @@ $header-height: 63px;
     background: rgba(0, 0, 0, .5);
     box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
     opacity: .8;
+  }
 
+  .close {
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         opacity: 1;
@@ -221,9 +223,24 @@ $header-height: 63px;
     }
   }
 
-  .enable-lens-toggle {
+  .zoom-modes {
     right: .75rem;
     transform: scale(.9);
+    display: flex;
+    gap: .5rem;
+
+    > div {
+      &:first-child:not(:last-child) {
+        border-right: 1px solid rgba(255, 255, 255, .25);
+        padding-right: .5rem;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
   }
 
   .astrobin-logo {

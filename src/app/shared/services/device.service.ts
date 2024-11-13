@@ -174,6 +174,18 @@ export class DeviceService extends BaseService {
     );
   }
 
+  isHybridPC(): boolean {
+    if (!this._isBrowser) {
+      return false;
+    }
+
+    const _window = this.windowRefService.nativeWindow;
+    const hasTouch = 'ontouchstart' in _window || navigator.maxTouchPoints > 0;
+    const hasFinePointer = _window.matchMedia("(pointer: fine)").matches;
+
+    return hasTouch && hasFinePointer;
+  }
+
   offcanvasPosition(): "bottom" | "end" {
     return this.smMax() ? "bottom" : "end";
   }
