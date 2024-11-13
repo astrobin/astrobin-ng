@@ -167,6 +167,8 @@
     <ng-container *ngIf="hd && !isLargeEnough" [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
     <ng-container *ngIf="hd && isLargeEnough && !allowReal" [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
   </div>
+
+  <ng-container [ngTemplateOutlet]="zoomModesTemplate" [ngTemplateOutletContext]="{ real }"></ng-container>
 </ng-template>
 
 <ng-template #nonTouchDeviceTemplate let-hd="hd" let-real="real">
@@ -175,7 +177,7 @@
     <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage">
-      <img *ngIf="hd && !real" [src]="hd" class="hd-image" alt="" />
+      <img *ngIf="hd && (!real || !allowReal)" [src]="hd" class="hd-image" alt="" />
 
       <lib-ngx-image-zoom
         #ngxImageZoom
@@ -233,7 +235,6 @@
       [ngTemplateOutlet]="fullSizeLimitationTemplate"
     ></ng-container>
 
-
     <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && real && allowReal">
       <ng-container
         *ngIf="!zoomingEnabled && !showZoomIndicator"
@@ -252,19 +253,38 @@
     </ng-container>
   </div>
 
-  <div
-    *ngIf="isLargeEnough && allowReal && real"
-    (click)="toggleEnableLens()"
-    [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
-    class="enable-lens-toggle"
-    container="body"
-  >
-    <ng-container *ngIf="!enableLens">
-      <span>{{ "Zoom mode" | translate }}</span>
-    </ng-container>
-    <ng-container *ngIf="enableLens">
-      <span>{{ "Lens mode" | translate }}</span>
-    </ng-container>
+  <ng-container [ngTemplateOutlet]="zoomModesTemplate" [ngTemplateOutletContext]="{ real }"></ng-container>
+</ng-template>
+
+<ng-template #zoomModesTemplate let-real="real">
+  <div *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && !!real" class="zoom-modes">
+    <div
+      *ngIf="isHybridPC"
+      (click)="toggleTouchMouseMode()"
+      [ngbTooltip]="'Toggle touch/mouse mode.' | translate"
+      container="body"
+    >
+      <ng-container *ngIf="touchMode">
+        <span>{{ "Touch mode" | translate }}</span>
+      </ng-container>
+      <ng-container *ngIf="!touchMode">
+        <span>{{ "Mouse mode" | translate }}</span>
+      </ng-container>
+    </div>
+
+    <div
+      *ngIf="!isTouchDevice || (isHybridPC && !touchMode)"
+      (click)="toggleEnableLens()"
+      [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
+      container="body"
+    >
+      <ng-container *ngIf="!enableLens">
+        <span>{{ "Zoom mode" | translate }}</span>
+      </ng-container>
+      <ng-container *ngIf="enableLens">
+        <span>{{ "Lens mode" | translate }}</span>
+      </ng-container>
+    </div>
   </div>
 </ng-template>
 
@@ -276,13 +296,13 @@
     } as thumbnails"
   >
     <ng-container
-      *ngIf="isTouchDevice"
+      *ngIf="(isTouchDevice && !isHybridPC) || (isHybridPC && touchMode)"
       [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
       [ngTemplateOutlet]="touchDeviceTemplate"
     >
     </ng-container>
 
-    <ng-container *ngIf="!isTouchDevice">
+    <ng-container *ngIf="(!isTouchDevice && !isHybridPC) || (isHybridPC && !touchMode)">
       <ng-container
         [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
         [ngTemplateOutlet]="nonTouchDeviceTemplate"
@@ -291,13 +311,13 @@
     </ng-container>
   </ng-container>
 
+  <div (click)="hide($event)" class="close">
+    <fa-icon icon="down-left-and-up-right-to-center"></fa-icon>
+  </div>
+
   <div class="astrobin-logo">
     <a [href]="classicRoutesService.HOME">
       <img src="/assets/images/nav-logo.png?v=3" alt="AstroBin" />
     </a>
-  </div>
-
-  <div (click)="hide($event)" class="close">
-    <fa-icon icon="down-left-and-up-right-to-center"></fa-icon>
   </div>
 </ng-container>
