@@ -194,11 +194,44 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
         class="wip-icon"
       ></fa-icon>
 
-      <div class="badges">
-        <fa-icon *ngIf="image.isIotd" class="iotd" icon="trophy"></fa-icon>
-        <fa-icon *ngIf="image.isTopPick" class="top-pick" icon="star"></fa-icon>
-        <fa-icon *ngIf="image.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
-        <fa-icon *ngIf="image.collaborators?.length" class="collaborators" icon="users"></fa-icon>
+      <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="badges">
+        <fa-icon
+          *ngIf="image.isIotd"
+          class="iotd"
+          icon="trophy"
+          [ngbTooltip]="'Image of the Day' | translate"
+          container="body"
+        ></fa-icon>
+
+        <fa-icon
+          *ngIf="!image.isIotd && image.isTopPick"
+          class="top-pick"
+          icon="star"
+          [ngbTooltip]="'Top Pick' | translate"
+          container="body"
+        ></fa-icon>
+
+        <fa-icon
+          *ngIf="!image.isIotd && !image.isTopPick && image.isTopPickNomination"
+          class="top-pick-nomination"
+          icon="arrow-up"
+          [ngbTooltip]="'Top Pick Nomination' | translate"
+          container="body"
+        ></fa-icon>
+
+        <fa-icon
+          *ngIf="currentUserWrapper.user?.id === image.id && !image.isIotd && !image.isTopPick && !image.isTopPickNomination && image.isInIotdQueue"
+          class="in-iotd-queue"
+          icon="gavel"
+          [ngbTooltip]="'Currently in the IOTD/TP queues' | translate"
+          container="body"
+        ></fa-icon>
+
+        <fa-icon
+          *ngIf="image.collaborators?.length"
+          class="collaborators"
+          icon="users"
+        ></fa-icon>
       </div>
     </ng-template>
 

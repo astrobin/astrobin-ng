@@ -16,18 +16,18 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
 
-    <div class="image-viewer-title d-flex flex-row justify-content-between align-items-start gap-2">
-      <h2 class="flex-grow-1 mb-0 text-center text-sm-start">
-        {{ image.title }}
+      <div class="image-viewer-title d-flex flex-row justify-content-between align-items-start gap-2">
+        <h2 class="flex-grow-1 mb-0 text-center text-sm-start">
+          {{ image.title }}
 
-        <small
-          *ngIf="currentUserWrapper.user?.id === image.user && image.uploaderName"
-          class="justify-content-center justify-content-sm-start"
-        >
-          <span class="original-filename" [innerHTML]="image.uploaderName"></span>
-        </small>
+          <small
+            *ngIf="currentUserWrapper.user?.id === image.user && image.uploaderName"
+            class="justify-content-center justify-content-sm-start"
+          >
+            <span class="original-filename" [innerHTML]="image.uploaderName"></span>
+          </small>
 
-        <small class="justify-content-center justify-content-sm-start">
+          <small class="justify-content-center justify-content-sm-start">
           <span *ngIf="publicationDate">
             <fa-icon
               *ngIf="licenseIcon && licenseTooltip"
@@ -40,7 +40,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
             {{ publicationDate | localDate | timeago:true }}
           </span>
 
-          <span class="view-count">
+            <span class="view-count">
             <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
             <span
               *ngIf="image.viewCount > 1"
@@ -49,54 +49,70 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
             ></span>
           </span>
 
-          <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
+            <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
 
-          <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
-        </small>
+            <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
+          </small>
 
-        <div *ngIf="!image.iotdDate && (image.isTopPick || image.isTopPickNomination)" class="iotd-tp">
-          <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
-            <span class="label">
-              <fa-icon icon="star"></fa-icon>
-              {{ "Top Pick" | translate }}
+          <div class="iotd-tp">
+            <div *ngIf="!image.iotdDate && (image.isTopPick || image.isTopPickNomination)">
+              <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
+                <span class="label">
+                  <fa-icon icon="star"></fa-icon>
+                  {{ "Top Pick" | translate }}
+                </span>
+                <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
+              </span>
+
+              <span
+                *ngIf="!image.iotdDate && !image.isTopPick && image.isTopPickNomination"
+                class="top-pick-nomination"
+              >
+                <span class="label">
+                  <fa-icon icon="arrow-up"></fa-icon>
+                  {{ "Top Pick Nomination" | translate }}
+                </span>
+                <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
+              </span>
+            </div>
+
+            <span
+              *ngIf="currentUserWrapper.user?.id === image.user && !image.iotdDate && !image.isTopPick && !image.isTopPickNomination && image.isInIotdQueue"
+              class="in-iotd-queue"
+            >
+              <span class="label">
+                <fa-icon icon="gavel"></fa-icon>
+                {{ "Currently in the IOTD/TP queues" | translate }}
+              </span>
+              <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
             </span>
-            <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
-          </span>
+          </div>
+        </h2>
 
-          <span *ngIf="!image.iotdDate && !image.isTopPick && image.isTopPickNomination" class="top-pick-nomination">
-            <span class="label">
-              <fa-icon icon="arrow-up"></fa-icon>
-              {{ "Top Pick Nomination" | translate }}
-            </span>
-            <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
-          </span>
+        <div ngbDropdown class="dropdown w-auto d-none d-md-block mt-1">
+          <fa-icon
+            ngbDropdownToggle
+            icon="ellipsis-v"
+            class="dropdown-toggle no-toggle"
+            aria-haspopup="true"
+            aria-expanded="false"
+          ></fa-icon>
+          <div ngbDropdownMenu class="dropdown-menu">
+            <astrobin-image-viewer-menu
+              [image]="image"
+              [revisionLabel]="revisionLabel"
+              itemClass="dropdown-item"
+              dividerClass="dropdown-divider"
+            ></astrobin-image-viewer-menu>
+          </div>
         </div>
-      </h2>
 
-      <div ngbDropdown class="dropdown w-auto d-none d-md-block mt-1">
-        <fa-icon
-          ngbDropdownToggle
-          icon="ellipsis-v"
-          class="dropdown-toggle no-toggle"
-          aria-haspopup="true"
-          aria-expanded="false"
-        ></fa-icon>
-        <div ngbDropdownMenu class="dropdown-menu">
-          <astrobin-image-viewer-menu
-            [image]="image"
-            [revisionLabel]="revisionLabel"
-            itemClass="dropdown-item"
-            dividerClass="dropdown-divider"
-          ></astrobin-image-viewer-menu>
-        </div>
+        <astrobin-image-viewer-share-button
+          [image]="image"
+          [revisionLabel]="revisionLabel"
+          class="d-none d-md-block p-1 pe-0"
+        ></astrobin-image-viewer-share-button>
       </div>
-
-      <astrobin-image-viewer-share-button
-        [image]="image"
-        [revisionLabel]="revisionLabel"
-        class="d-none d-md-block p-1 pe-0"
-      ></astrobin-image-viewer-share-button>
-    </div>
     </ng-container>
 
     <ng-template #iotdInfoLinkTemplate>
