@@ -7,7 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
 import { LoadingService } from "@shared/services/loading.service";
 import { CreateToggleProperty, CreateTogglePropertySuccess, DeleteToggleProperty, LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
-import { filter, map, takeUntil, tap } from "rxjs/operators";
+import { debounceTime, filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -15,7 +15,7 @@ import { RouterService } from "@shared/services/router.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { isPlatformBrowser } from "@angular/common";
-import { fromEvent, merge, Subscription, throttleTime } from "rxjs";
+import { fromEvent, merge, Observable, Subscription, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
@@ -168,7 +168,14 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
         );
 
         merge(
-          fromEvent(scrollElement, "scroll").pipe(throttleTime(500)),
+          // Stream 1: Throttled events during scrolling
+          fromEvent(scrollElement, "scroll").pipe(
+            throttleTime(300)
+          ),
+          // Stream 2: Single event when scrolling stops
+          fromEvent(scrollElement, "scroll").pipe(
+            debounceTime(150)
+          ),
           forceCheck$
         ).pipe(
           tap(() => {
@@ -176,6 +183,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
               verticalTolerance: 500
             })) {
               this._initStatus();
+            } else {
             }
           })
         ).subscribe();
@@ -209,10 +217,26 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
 
     this.loading = true;
 
-    if (this._toggleProperty) {
-      this.store$.dispatch(
-        new DeleteToggleProperty({ toggleProperty: this._toggleProperty })
-      );
+    if (this.toggled) {
+      if (this._toggleProperty) {
+        this.store$.dispatch(
+          new DeleteToggleProperty({ toggleProperty: this._toggleProperty })
+        );
+      } else {
+        this._initToggleProperty().pipe(
+          filter(toggleProperty => !!toggleProperty),
+          take(1)
+        ).subscribe(toggleProperty => {
+          if (toggleProperty) {
+            this.store$.dispatch(
+              new DeleteToggleProperty({ toggleProperty })
+            );
+          } else {
+            this.loading = false;
+            this.changeDetectorRef.markForCheck();
+          }
+        });
+      }
     } else {
       this.store$.dispatch(
         new CreateToggleProperty({
@@ -245,18 +269,24 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     };
   }
 
-  private _initToggleProperty() {
-    this.store$.pipe(
-      select(selectToggleProperty(this._getStoreParams())),
-      takeUntil(this.destroyed$),
-      tap(toggleProperty => {
-        this.toggled = !!toggleProperty;
+  private _initToggleProperty(): Observable<TogglePropertyInterface | null>{
+    return new Observable<TogglePropertyInterface | null>(observer => {
+      this.actions$.pipe(
+        ofType(AppActionTypes.LOAD_TOGGLE_PROPERTY_SUCCESS),
+        map((action: CreateTogglePropertySuccess) => action.payload.toggleProperty),
+        filter(this._getStoreParams.bind(this)),
+        take(1),
+      ).subscribe(toggleProperty => {
         this._toggleProperty = toggleProperty;
+        this.toggled = !!toggleProperty;
+        this.initialized = true;
+        observer.next(toggleProperty);
+        observer.complete();
         this.changeDetectorRef.markForCheck();
-      })
-    ).subscribe();
+      });
 
-    this.store$.dispatch(new LoadToggleProperty({ toggleProperty: this._getStoreParams() }));
+      this.store$.dispatch(new LoadToggleProperty({ toggleProperty: this._getStoreParams() }));
+    });
   }
 
   private _initStatus(): void {
@@ -272,8 +302,11 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       return;
     }
 
-    if (this.toggled === undefined) {
-      this._initToggleProperty();
+    if (this.toggled !== undefined) {
+      this.initialized = true;
+      this.changeDetectorRef.markForCheck();
+    } else {
+      this._initToggleProperty().subscribe();
     }
 
     if (this._createSubscription) {
@@ -309,8 +342,5 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this.loading = false;
       this.changeDetectorRef.markForCheck();
     });
-
-    this.initialized = true;
-    this.changeDetectorRef.markForCheck();
   }
 }
