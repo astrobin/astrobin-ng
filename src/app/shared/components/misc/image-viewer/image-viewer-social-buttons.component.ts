@@ -95,7 +95,7 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
       </div>
     </ng-container>
 
-    <ng-template #likeThisOffcanvas let-offcanvas="offcanvas">
+    <ng-template #likeThisOffcanvas let-offcanvas>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" translate="People who like this"></h5>
         <button
