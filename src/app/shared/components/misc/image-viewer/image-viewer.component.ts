@@ -318,8 +318,6 @@ export class ImageViewerComponent
     this._recordHit();
     this._setAd();
 
-    this.imageService.setMetaTags(this.image);
-
     // Updates to the current image.
     this.store$.pipe(
       select(selectImage, image.pk),

@@ -229,6 +229,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
           this.loadingImage = false;
           this.activeImage = image;
           this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
+          this.imageService.setMetaTags(image);
           this._updateVisibleContext(imageId);
           this._loadAdjacentImages(imageId);
           this._dropImagesTooFarFromIndex(imageId);
