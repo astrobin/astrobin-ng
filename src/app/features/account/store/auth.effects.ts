@@ -93,8 +93,8 @@ export class AuthEffects {
                   user => !!user
                     ? new LoadUserSuccess({ user })
                     : new LoadUserFailure(payload),
-                  catchError(error => of(new LoadUserFailure(payload)))
-                )
+                ),
+                catchError(error => of(new LoadUserFailure(payload)))
               )
           )
         );
