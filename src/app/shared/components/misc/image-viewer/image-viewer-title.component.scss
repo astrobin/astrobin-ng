@@ -84,6 +84,12 @@
           color: var(--bronze);
         }
       }
+
+      .in-iotd-queue {
+        .label {
+          color: var(--lighterGrey);
+        }
+      }
     }
 
     .dropdown .ng-fa-icon {

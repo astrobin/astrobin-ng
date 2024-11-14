@@ -61,7 +61,7 @@
         height: 1.5rem;
         border-radius: 1rem;
         text-align: center;
-        line-height: 1.5rem;
+        line-height: 1.35rem;
         color: var(--brightWhite);
         border: 1px solid var(--brightWhite);
 
@@ -83,6 +83,11 @@
         &.top-pick-nomination {
           background-color: var(--bronze);
           box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--bronze) 0 0 10px;
+        }
+
+        &.in-iotd-queue {
+          background-color: var(--successColor);
+          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--successColor) 0 0 10px;
         }
 
         &.collaborators {

@@ -267,6 +267,7 @@ export interface ImageInterface {
   isIotd?: boolean;
   isTopPick?: boolean;
   isTopPickNomination?: boolean;
+  isInIotdQueue?: boolean;
   averageMoonAge?: number;
   averageMoonIllumination?: number;
   uncompressedSourceFile?: string;
