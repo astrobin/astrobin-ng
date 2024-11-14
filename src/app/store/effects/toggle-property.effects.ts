@@ -29,7 +29,10 @@ export class TogglePropertyEffects {
       tap(() => this.loadingService.setLoading(true)),
       mergeMap((toggleProperty: Partial<TogglePropertyInterface>) =>
         this.commonApiService.getToggleProperty(toggleProperty).pipe(
-          map(toggleProperty => new LoadTogglePropertySuccess({ toggleProperty })),
+          map(createdToggleProperty => createdToggleProperty !== null
+            ? new LoadTogglePropertySuccess({ toggleProperty: createdToggleProperty })
+            : new LoadTogglePropertyFailure({ toggleProperty })
+          ),
           catchError(() => of(new LoadTogglePropertyFailure({ toggleProperty })))
         )
       )

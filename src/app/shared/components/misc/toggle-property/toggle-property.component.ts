@@ -4,9 +4,8 @@ import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
 import { LoadingService } from "@shared/services/loading.service";
-import { CreateToggleProperty, CreateTogglePropertySuccess, DeleteToggleProperty, LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
+import { CreateToggleProperty, CreateTogglePropertySuccess, DeleteToggleProperty, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { debounceTime, filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
@@ -253,7 +252,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     this.changeDetectorRef.detectChanges();
   }
 
-  private _getFilterParams(toggleProperty: TogglePropertyInterface): boolean {
+  private _getFilterParams(toggleProperty: Partial<TogglePropertyInterface>): boolean {
     return toggleProperty.propertyType === this.propertyType &&
       toggleProperty.user === this.userId &&
       toggleProperty.objectId === this.objectId &&
@@ -273,14 +272,30 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     return new Observable<TogglePropertyInterface | null>(observer => {
       this.actions$.pipe(
         ofType(AppActionTypes.LOAD_TOGGLE_PROPERTY_SUCCESS),
-        map((action: CreateTogglePropertySuccess) => action.payload.toggleProperty),
-        filter(this._getStoreParams.bind(this)),
+        map((action: LoadTogglePropertySuccess) => action.payload.toggleProperty),
+        filter(toggleProperty => this._getFilterParams(toggleProperty)),
         take(1),
       ).subscribe(toggleProperty => {
         this._toggleProperty = toggleProperty;
-        this.toggled = !!toggleProperty;
+        this.toggled = true;
         this.initialized = true;
+        console.log(`toggleProperty success: ${JSON.stringify(toggleProperty)}, ${this.propertyType}, ${this.userId}, ${this.objectId}, ${this.contentType}`);
         observer.next(toggleProperty);
+        observer.complete();
+        this.changeDetectorRef.markForCheck();
+      });
+
+      this.actions$.pipe(
+        ofType(AppActionTypes.LOAD_TOGGLE_PROPERTY_FAILURE),
+        map((action: LoadTogglePropertyFailure) => action.payload.toggleProperty),
+        filter(toggleProperty => this._getFilterParams(toggleProperty)),
+        take(1),
+      ).subscribe(() => {
+        this._toggleProperty = null;
+        this.toggled = false;
+        this.initialized = true;
+        console.log(`toggleProperty fail: ${this.propertyType}, ${this.userId}, ${this.objectId}, ${this.contentType}`);
+        observer.next(null);
         observer.complete();
         this.changeDetectorRef.markForCheck();
       });
