@@ -178,6 +178,10 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
       </div>
     </ng-container>
 
+    <div *ngIf="loadingMore && !loading" class="loading">
+      <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
+    </div>
+
     <ng-template #iconsTemplate let-image="image">
       <fa-icon *ngIf="image.isPlayable" icon="play"></fa-icon>
 
@@ -249,6 +253,10 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
       <p *ngIf="options?.subsection === 'acquired'" class="alert alert-mini alert-info mb-4">
         This gallery is sorted by acquisition date. Any images without an acquisition date are not shown here.
       </p>
+    </ng-template>
+
+    <ng-template #loadingTemplate>
+      <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
   styleUrls: ["./user-gallery-images.component.scss"],
