@@ -98,6 +98,7 @@ export enum RemoteSource {
   GMO = "Grand Mesa Observatory",
   HAKOS = "Hakos Astro Farm",
   HAWK = "HAWK Observatory",
+  HELLAS = "Hellas-Sky",
   HCRO = "Howling Coyote Remote Observatories (HCRO)",
   HMO = "Heaven's Mirror Observatory",
   IC = "IC Astronomy Observatories",
