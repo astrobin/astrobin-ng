@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -91,8 +91,8 @@ const SLIDESHOW_WINDOW = 3;
   styleUrls: ["./image-viewer-slideshow.component.scss"],
   animations: [fadeInOut]
 })
-export class ImageViewerSlideshowComponent extends BaseComponentDirective implements OnDestroy {
-  @HostBinding('@fadeInOut') fadeInOut = true;
+export class ImageViewerSlideshowComponent extends BaseComponentDirective implements OnInit, OnDestroy {
+  @HostBinding("@fadeInOut") fadeInOut = true;
 
   @Input()
   imageId: ImageInterface["pk"] | ImageInterface["hash"];
@@ -130,6 +130,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   private _delayedLoadSubscription: Subscription = new Subscription();
   private _skipSlideEvent = false;
   private _navigationInProgress = false;
+  private _boundOnKeyDown: (event: KeyboardEvent) => void;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -161,7 +162,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
         const revisionLabel = this.router.parseUrl(url).queryParams["r"] || FINAL_REVISION_LABEL;
         if (imageId) {
           this.setImage(imageId, revisionLabel, false).subscribe(
-            () => {},
+            () => {
+            },
             error => {
               this.closeSlideshow.emit(false);
             }
@@ -185,8 +187,21 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     }
   }
 
+  ngOnInit() {
+    if (this._isBrowser) {
+      const _doc = this.windowRefService.nativeWindow.document;
+      this._boundOnKeyDown = this._onKeyDown.bind(this);
+      _doc.addEventListener("keydown", this._boundOnKeyDown, true);
+    }
+  }
+
   ngOnDestroy() {
     this._delayedLoadSubscription.unsubscribe();
+
+    if (this._isBrowser) {
+      const _doc = this.windowRefService.nativeWindow.document;
+      _doc.removeEventListener("keydown", this._boundOnKeyDown, true);
+    }
   }
 
   setCallerComponentId(callerComponentId: string) {
@@ -350,17 +365,25 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   protected onNavigationContextItemSelected(imageId: ImageInterface["pk"] | ImageInterface["hash"]) {
     this.setImage(imageId, FINAL_REVISION_LABEL).subscribe({
-      next: () => {},
+      next: () => {
+      },
       error: () => {
         this.closeSlideshow.emit(false);
       }
     });
   }
 
-
   protected contextTrackByFn(index: number, item: ImageViewerNavigationContextItem) {
     return item.imageId;
   }
+
+  private _onKeyDown = (event: KeyboardEvent) => {
+    if ((event.key === "ArrowLeft" || event.key === "ArrowRight") &&
+      (event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable")))) {
+      event.stopPropagation();
+    }
+  };
 
   private _updateVisibleContext(activeId: ImageInterface["pk"] | ImageInterface["hash"]) {
     if (!activeId) {

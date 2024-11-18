@@ -27,7 +27,8 @@ import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 
 @Component({
@@ -268,32 +269,50 @@ export class ImageViewerComponent
       return;
     }
 
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target as HTMLElement).classList.contains("cke_wysiwyg_div")
+    ) {
+      const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+      const instance: ConfirmationDialogComponent = modal.componentInstance;
+      instance.message = this.translateService.instant("It looks like you are editing text. Are you sure you want to close this window?");
+      instance.confirmLabel = this.translateService.instant("Yes, close");
+      instance.showAreYouSure = false;
+
+      modal.closed.subscribe(() => {
+        this.closeClick.emit();
+      });
+
+      return;
+    }
+
     this.closeClick.emit();
   }
 
   @HostListener("document:keyup.arrowRight", ["$event"])
-  onArrowRight(event: KeyboardEvent): void {
+  onArrowRight(event: KeyboardEvent): any {
+    if (this._ignoreNavigationEvent(event)) {
+      return true;
+    }
+
     if (event) {
       event.preventDefault();
       event.stopPropagation();
-    }
-
-    if (this._ignoreNavigationEvent()) {
-      return;
     }
 
     this.nextClick.emit();
   }
 
   @HostListener("document:keyup.arrowLeft", ["$event"])
-  onArrowLeft(event: KeyboardEvent): void {
+  onArrowLeft(event: KeyboardEvent): any {
+    if (this._ignoreNavigationEvent(event)) {
+      return true;
+    }
+
     if (event) {
       event.preventDefault();
       event.stopPropagation();
-    }
-
-    if (this._ignoreNavigationEvent()) {
-      return;
     }
 
     this.previousClick.emit();
@@ -442,13 +461,16 @@ export class ImageViewerComponent
     }
   }
 
-  private _ignoreNavigationEvent() {
+  private _ignoreNavigationEvent(event: KeyboardEvent): boolean {
     return (
       !this.active ||
       this.offcanvasService.hasOpenOffcanvas() ||
       this.modalService.hasOpenModals() ||
       this.viewingFullscreenImage ||
-      this.isLightBoxOpen
+      this.isLightBoxOpen ||
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target as HTMLElement).classList.contains("cke_wysiwyg_div")
     );
   }
 
