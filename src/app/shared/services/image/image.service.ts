@@ -479,8 +479,17 @@ export class ImageService extends BaseService {
   getSolarSystemIntegration(image: ImageInterface): string {
     if (image.solarSystemAcquisitions?.length > 0) {
       const acquisition = image.solarSystemAcquisitions[0];
+
       if (acquisition.frames && acquisition.exposurePerFrame) {
         return `${acquisition.frames} &times; ${acquisition.exposurePerFrame}s`;
+      }
+
+      if (acquisition.frames) {
+        return this.translateService.instant("{{ 0 }} frames", { 0: acquisition.frames });
+      }
+
+      if (acquisition.exposurePerFrame) {
+        return `${acquisition.exposurePerFrame}s`;
       }
     }
 
