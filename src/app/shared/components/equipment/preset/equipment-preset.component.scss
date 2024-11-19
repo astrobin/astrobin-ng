@@ -1,3 +1,5 @@
+@import '../../../../styles/breakpoints';
+
 :host {
   display: block;
   position: relative;
@@ -134,6 +136,11 @@
       pointer-events: auto;
       opacity: 1;
     }
+  }
+
+  @media (max-width: $xs-max) {
+    width: calc(33.33vw - 2rem);
+    height: calc(33.33vw - 2rem);
   }
 }
 

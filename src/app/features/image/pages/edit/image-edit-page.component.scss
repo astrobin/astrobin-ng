@@ -88,6 +88,11 @@
       color: var(--lighterGrey);
     }
   }
+
+  @media (max-width: $xs-max) {
+    width: calc(33.33vw - 2rem - 4px);
+    height: calc(33.33vw - 2rem - 4px);
+  }
 }
 
 ::ng-deep .preset-create-offcanvas {
