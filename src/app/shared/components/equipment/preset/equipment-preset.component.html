@@ -1,0 +1,57 @@
+<div
+  (click)="presetClicked.emit(preset)"
+  class="preset-wrapper w-100 h-100"
+>
+  <div class="preset-overlay"></div>
+  <img *ngIf="preset.imageFile" [src]="preset.imageFile" class="preset-image" />
+  <img *ngIf="!preset.imageFile" src="/assets/images/equipment-preset.png?v=1" class="preset-image default">
+  <div class="preset-name">
+    {{ preset.name }}
+  </div>
+  <div class="apply-preset">
+    {{ 'Apply' | translate }}
+  </div>
+</div>
+
+<button
+  (click)="onPresetEditClicked(preset)"
+  [class.loading]="loadingService.loading$ | async"
+  class="btn btn-secondary btn-edit-preset"
+>
+  <fa-icon
+    icon="pencil"
+    [ngbTooltip]="'Edit' | translate"
+    container="body"
+  ></fa-icon>
+</button>
+
+<button
+  (click)="onPresetDeleteClicked(preset)"
+  [class.loading]="loadingService.loading$ | async"
+  class="btn btn-secondary btn-delete-preset"
+>
+  <fa-icon
+    icon="trash"
+    [ngbTooltip]="'Delete' | translate"
+    container="body"
+  ></fa-icon>
+</button>
+
+<ng-template #presetEditOffcanvas let-offcanvas>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">{{ "Edit setup" | translate }}</h5>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="offcanvas.close()"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body">
+    <astrobin-equipment-preset-editor
+      [preset]="preset"
+      (presetSaved)="offcanvas.close()"
+    ></astrobin-equipment-preset-editor>
+  </div>
+</ng-template>

@@ -46,7 +46,7 @@ import {
   LoadEquipmentItemFailure,
   LoadEquipmentItemSuccess
 } from "@features/equipment/store/equipment.actions";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
@@ -69,6 +69,7 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -99,6 +100,9 @@ export class ImageEditPageComponent
   @ViewChild("acquisitionAdditionalButtonsTemplate")
   acquisitionAdditionalButtonsTemplate: TemplateRef<any>;
 
+  @ViewChild("presetCreateOffcanvas")
+  presetCreateOffcanvas: TemplateRef<any>;
+
   editingExistingImage: boolean;
 
   constructor(
@@ -123,10 +127,11 @@ export class ImageEditPageComponent
     public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService,
     public readonly modalService: NgbModal,
     public readonly userService: UserService,
-    public readonly jsonApiService: JsonApiService,
     public readonly cookieService: CookieService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId: any
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
   }
@@ -230,7 +235,8 @@ export class ImageEditPageComponent
       new ItemBrowserSet({
         type: EquipmentItemType.TELESCOPE,
         usageType: EquipmentItemUsageType.IMAGING,
-        items: []
+        items: [],
+        componentId: this.componentId
       })
     );
 
@@ -238,35 +244,40 @@ export class ImageEditPageComponent
       new ItemBrowserSet({
         type: EquipmentItemType.CAMERA,
         usageType: EquipmentItemUsageType.IMAGING,
-        items: []
+        items: [],
+        componentId: this.componentId
       })
     );
 
     this.store$.dispatch(
       new ItemBrowserSet({
         type: EquipmentItemType.MOUNT,
-        items: []
+        items: [],
+        componentId: this.componentId
       })
     );
 
     this.store$.dispatch(
       new ItemBrowserSet({
         type: EquipmentItemType.FILTER,
-        items: []
+        items: [],
+        componentId: this.componentId
       })
     );
 
     this.store$.dispatch(
       new ItemBrowserSet({
         type: EquipmentItemType.ACCESSORY,
-        items: []
+        items: [],
+        componentId: this.componentId
       })
     );
 
     this.store$.dispatch(
       new ItemBrowserSet({
         type: EquipmentItemType.SOFTWARE,
-        items: []
+        items: [],
+        componentId: this.componentId
       })
     );
 
@@ -274,7 +285,8 @@ export class ImageEditPageComponent
       new ItemBrowserSet({
         type: EquipmentItemType.TELESCOPE,
         usageType: EquipmentItemUsageType.GUIDING,
-        items: []
+        items: [],
+        componentId: this.componentId
       })
     );
 
@@ -282,7 +294,8 @@ export class ImageEditPageComponent
       new ItemBrowserSet({
         type: EquipmentItemType.CAMERA,
         usageType: EquipmentItemUsageType.GUIDING,
-        items: []
+        items: [],
+        componentId: this.componentId
       })
     );
   }
@@ -299,11 +312,7 @@ export class ImageEditPageComponent
   }
 
   onPresetClicked(preset: EquipmentPresetInterface) {
-    this.imageEditService.loadEquipmentPreset(preset).subscribe();
-  }
-
-  onPresetDeleteClicked(preset: EquipmentPresetInterface) {
-    this.imageEditService.deleteEquipmentPreset(preset).subscribe();
+    this.imageEditService.loadEquipmentPreset(preset, this.componentId).subscribe();
   }
 
   onSaveEquipmentPresetClicked(cb?: () => void) {
@@ -317,6 +326,7 @@ export class ImageEditPageComponent
 
           componentInstance.initialPreset = {
             name: !!currentEquipmentPreset ? currentEquipmentPreset.name : "",
+            description: "",
             imagingTelescopes: this.imageEditService.model.imagingTelescopes2,
             guidingTelescopes: this.imageEditService.model.guidingTelescopes2,
             imagingCameras: this.imageEditService.model.imagingCameras2,
@@ -350,6 +360,8 @@ export class ImageEditPageComponent
 
     componentInstance.alreadyHasAcquisitions =
       this.imageEditService.hasDeepSkyAcquisitions() || this.imageEditService.hasSolarSystemAcquisitions();
+
+    componentInstance.editPageComponentId = this.componentId;
   }
 
   onImportFromCsvClicked(event: Event) {
@@ -512,6 +524,13 @@ export class ImageEditPageComponent
       } else {
         clearModel();
       }
+    });
+  }
+
+  onPresetCreateClicked() {
+    this.offcanvasService.open(this.presetCreateOffcanvas, {
+      panelClass: "preset-create-offcanvas",
+      position: this.deviceService.offcanvasPosition()
     });
   }
 
@@ -701,15 +720,15 @@ export class ImageEditPageComponent
             stepActionsTemplate: this.equipmentStepButtonsTemplate
           },
           fieldGroup: [
-            this.imageEditEquipmentFieldsService.getImagingTelescopes(),
-            this.imageEditEquipmentFieldsService.getImagingCameras(),
-            this.imageEditEquipmentFieldsService.getMounts(),
-            this.imageEditEquipmentFieldsService.getFilters(),
-            this.imageEditEquipmentFieldsService.getAccessories(),
-            this.imageEditEquipmentFieldsService.getSoftware(),
+            this.imageEditEquipmentFieldsService.getImagingTelescopes(this.componentId),
+            this.imageEditEquipmentFieldsService.getImagingCameras(this.componentId),
+            this.imageEditEquipmentFieldsService.getMounts(this.componentId),
+            this.imageEditEquipmentFieldsService.getFilters(this.componentId),
+            this.imageEditEquipmentFieldsService.getAccessories(this.componentId),
+            this.imageEditEquipmentFieldsService.getSoftware(this.componentId),
             this.imageEditEquipmentFieldsService.getShowGuidingEquipment(),
-            this.imageEditEquipmentFieldsService.getGuidingTelescopes(),
-            this.imageEditEquipmentFieldsService.getGuidingCameras()
+            this.imageEditEquipmentFieldsService.getGuidingTelescopes(this.componentId),
+            this.imageEditEquipmentFieldsService.getGuidingCameras(this.componentId)
           ]
         };
 

@@ -30,21 +30,21 @@
 <ng-template #equipmentStepPreambleTemplate>
   <ng-container *ngIf="presets$ | async as presets">
     <div *ngIf="presets.length > 0" class="alert alert-dark mb-5">
-      <p class="mb-3 text-muted">{{ "Load one of your saved setups or fill in the form below manually." | translate }}</p>
-      <div class="d-flex flex-row flex-wrap gap-2 align-items-center">
-        <div *ngFor="let preset of presets" class="preset-wrapper position-relative">
-          <button
-            (click)="onPresetClicked(preset)"
-            [class.loading]="loadingService.loading$ | async"
-            class="btn btn-outline-secondary"
-          >
-            {{ preset.name }}
-          </button>
-          <button
-            (click)="onPresetDeleteClicked(preset)"
-            [class.loading]="loadingService.loading$ | async"
-            class="btn btn-secondary position-absolute btn-delete-preset"
-          >&times;</button>
+      <p class="mb-3 text-muted">{{ "Apply one of your saved setups, or fill in the form below manually." | translate }}</p>
+      <div class="d-flex flex-row flex-wrap gap-3 align-items-center">
+        <div *ngFor="let preset of presets">
+          <astrobin-equipment-preset
+            [preset]="preset"
+            (presetClicked)="onPresetClicked($event)"
+          ></astrobin-equipment-preset>
+        </div>
+
+        <div
+          (click)="onPresetCreateClicked()"
+          class="create-preset"
+        >
+          <fa-icon icon="plus"></fa-icon>
+          <span translate="Add setup"></span>
         </div>
       </div>
     </div>
@@ -168,4 +168,27 @@
 
 <ng-template #loadingTemplate>
   <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #presetCreateOffcanvas let-offcanvas>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">{{ "Add setup" | translate }}</h5>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="offcanvas.close()"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body">
+    <div class="alert alert-mini alert-info mb-5">
+      {{ "Please note: you can also just add equipment to your image and save it as a setup later." | translate }}
+    </div>
+
+    <astrobin-equipment-preset-editor
+      [preset]="null"
+      (presetSaved)="offcanvas.close()"
+    ></astrobin-equipment-preset-editor>
+  </div>
 </ng-template>

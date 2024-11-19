@@ -1,146 +1,7 @@
 import { Injectable } from "@angular/core";
 import { concat, finalize, forkJoin, last, Observable, of } from "rxjs";
 import {
-  AcceptMarketplaceOffer,
-  AcceptMarketplaceOfferFailure,
-  AcceptMarketplaceOfferSuccess,
-  ApproveEquipmentItem,
-  ApproveEquipmentItemEditProposal,
-  ApproveEquipmentItemEditProposalSuccess,
-  ApproveEquipmentItemSuccess,
-  ApproveMarketplaceListing,
-  ApproveMarketplaceListingFailure,
-  ApproveMarketplaceListingSuccess,
-  AssignEditProposal,
-  AssignEditProposalSuccess,
-  AssignItem,
-  AssignItemSuccess,
-  CreateAccessory,
-  CreateAccessoryEditProposal,
-  CreateAccessoryEditProposalSuccess,
-  CreateAccessorySuccess,
-  CreateBrand,
-  CreateBrandSuccess,
-  CreateCamera,
-  CreateCameraEditProposal,
-  CreateCameraEditProposalSuccess,
-  CreateCameraSuccess,
-  CreateEquipmentPreset,
-  CreateEquipmentPresetSuccess,
-  CreateFilter,
-  CreateFilterEditProposal,
-  CreateFilterEditProposalSuccess,
-  CreateFilterSuccess,
-  CreateMarketplaceFeedback,
-  CreateMarketplaceFeedbackFailure,
-  CreateMarketplaceFeedbackSuccess,
-  CreateMarketplaceListing,
-  CreateMarketplaceListingFailure,
-  CreateMarketplaceListingSuccess,
-  CreateMarketplaceOffer,
-  CreateMarketplaceOfferFailure,
-  CreateMarketplaceOfferSuccess,
-  CreateMarketplacePrivateConversation,
-  CreateMarketplacePrivateConversationFailure,
-  CreateMarketplacePrivateConversationSuccess,
-  CreateMount,
-  CreateMountEditProposal,
-  CreateMountEditProposalSuccess,
-  CreateMountSuccess,
-  CreateSensor,
-  CreateSensorEditProposal,
-  CreateSensorEditProposalSuccess,
-  CreateSensorSuccess,
-  CreateSoftware,
-  CreateSoftwareEditProposal,
-  CreateSoftwareEditProposalSuccess,
-  CreateSoftwareSuccess,
-  CreateTelescope,
-  CreateTelescopeEditProposal,
-  CreateTelescopeEditProposalSuccess,
-  CreateTelescopeSuccess,
-  DeleteEquipmentPreset,
-  DeleteEquipmentPresetSuccess,
-  DeleteMarketplaceListing,
-  DeleteMarketplaceListingFailure,
-  DeleteMarketplaceListingSuccess,
-  DeleteMarketplacePrivateConversation,
-  DeleteMarketplacePrivateConversationFailure,
-  DeleteMarketplacePrivateConversationSuccess,
-  EquipmentActionTypes,
-  FindAllBrands,
-  FindAllBrandsSuccess,
-  FindAllEquipmentItems,
-  FindAllEquipmentItemsSuccess,
-  FindCameraVariants,
-  FindCameraVariantsSuccess,
-  FindEquipmentItemEditProposals,
-  FindEquipmentItemEditProposalsSuccess,
-  FindEquipmentPresetsSuccess,
-  FindRecentlyUsedEquipmentItems,
-  FindRecentlyUsedEquipmentItemsSuccess,
-  FindSimilarInBrand,
-  FindSimilarInBrandSuccess,
-  FreezeEquipmentItemAsAmbiguous,
-  FreezeEquipmentItemAsAmbiguousSuccess,
-  GetAllBrands,
-  GetAllBrandsSuccess,
-  GetAllInBrand,
-  GetAllInBrandSuccess,
-  GetContributorsSuccess,
-  GetMarketplaceFeedback,
-  GetMarketplaceFeedbackFailure,
-  GetMarketplaceFeedbackSuccess,
-  GetMostOftenUsedWith,
-  GetMostOftenUsedWithSuccess,
-  GetOthersInBrand,
-  GetOthersInBrandSuccess,
-  LoadBrand,
-  LoadBrandSuccess,
-  LoadEquipmentItem,
-  LoadEquipmentItemFailure,
-  LoadEquipmentItemSuccess,
-  LoadMarketplaceListing,
-  LoadMarketplaceListingFailure,
-  LoadMarketplaceListings,
-  LoadMarketplaceListingsSuccess,
-  LoadMarketplaceListingSuccess,
-  LoadMarketplacePrivateConversations,
-  LoadMarketplacePrivateConversationsFailure,
-  LoadMarketplacePrivateConversationsSuccess,
-  LoadSensor,
-  LoadSensorSuccess,
-  MarkMarketplaceLineItemAsSold,
-  MarkMarketplaceLineItemAsSoldFailure,
-  MarkMarketplaceLineItemAsSoldSuccess,
-  RejectEquipmentItem,
-  RejectEquipmentItemEditProposal,
-  RejectEquipmentItemEditProposalSuccess,
-  RejectEquipmentItemSuccess,
-  RejectMarketplaceOffer,
-  RejectMarketplaceOfferFailure,
-  RejectMarketplaceOfferSuccess,
-  RenewMarketplaceListing,
-  RenewMarketplaceListingFailure,
-  RenewMarketplaceListingSuccess,
-  RetractMarketplaceOffer,
-  RetractMarketplaceOfferFailure,
-  RetractMarketplaceOfferSuccess,
-  UnapproveEquipmentItem,
-  UnapproveEquipmentItemSuccess,
-  UnfreezeEquipmentItemAsAmbiguous,
-  UnfreezeEquipmentItemAsAmbiguousSuccess,
-  UpdateEquipmentPreset,
-  UpdateEquipmentPresetSuccess,
-  UpdateMarketplaceListing,
-  UpdateMarketplaceListingFailure,
-  UpdateMarketplaceListingSuccess,
-  UpdateMarketplaceOffer,
-  UpdateMarketplaceOfferFailure,
-  UpdateMarketplaceOfferSuccess,
-  UpdateMarketplacePrivateConversation,
-  UpdateMarketplacePrivateConversationFailure,
-  UpdateMarketplacePrivateConversationSuccess
+  AcceptMarketplaceOffer, AcceptMarketplaceOfferFailure, AcceptMarketplaceOfferSuccess, ApproveEquipmentItem, ApproveEquipmentItemEditProposal, ApproveEquipmentItemEditProposalSuccess, ApproveEquipmentItemSuccess, ApproveMarketplaceListing, ApproveMarketplaceListingFailure, ApproveMarketplaceListingSuccess, AssignEditProposal, AssignEditProposalSuccess, AssignItem, AssignItemSuccess, CreateAccessory, CreateAccessoryEditProposal, CreateAccessoryEditProposalSuccess, CreateAccessorySuccess, CreateBrand, CreateBrandSuccess, CreateCamera, CreateCameraEditProposal, CreateCameraEditProposalSuccess, CreateCameraSuccess, CreateEquipmentPreset, CreateEquipmentPresetSuccess, CreateFilter, CreateFilterEditProposal, CreateFilterEditProposalSuccess, CreateFilterSuccess, CreateMarketplaceFeedback, CreateMarketplaceFeedbackFailure, CreateMarketplaceFeedbackSuccess, CreateMarketplaceListing, CreateMarketplaceListingFailure, CreateMarketplaceListingSuccess, CreateMarketplaceOffer, CreateMarketplaceOfferFailure, CreateMarketplaceOfferSuccess, CreateMarketplacePrivateConversation, CreateMarketplacePrivateConversationFailure, CreateMarketplacePrivateConversationSuccess, CreateMount, CreateMountEditProposal, CreateMountEditProposalSuccess, CreateMountSuccess, CreateSensor, CreateSensorEditProposal, CreateSensorEditProposalSuccess, CreateSensorSuccess, CreateSoftware, CreateSoftwareEditProposal, CreateSoftwareEditProposalSuccess, CreateSoftwareSuccess, CreateTelescope, CreateTelescopeEditProposal, CreateTelescopeEditProposalSuccess, CreateTelescopeSuccess, DeleteEquipmentPreset, DeleteEquipmentPresetSuccess, DeleteMarketplaceListing, DeleteMarketplaceListingFailure, DeleteMarketplaceListingSuccess, DeleteMarketplacePrivateConversation, DeleteMarketplacePrivateConversationFailure, DeleteMarketplacePrivateConversationSuccess, EquipmentActionTypes, FindAllBrands, FindAllBrandsSuccess, FindAllEquipmentItems, FindAllEquipmentItemsSuccess, FindCameraVariants, FindCameraVariantsSuccess, FindEquipmentItemEditProposals, FindEquipmentItemEditProposalsSuccess, FindEquipmentPresetsSuccess, FindRecentlyUsedEquipmentItems, FindRecentlyUsedEquipmentItemsSuccess, FindSimilarInBrand, FindSimilarInBrandSuccess, FreezeEquipmentItemAsAmbiguous, FreezeEquipmentItemAsAmbiguousSuccess, GetAllBrands, GetAllBrandsSuccess, GetAllInBrand, GetAllInBrandSuccess, GetContributorsSuccess, GetMarketplaceFeedback, GetMarketplaceFeedbackFailure, GetMarketplaceFeedbackSuccess, GetMostOftenUsedWith, GetMostOftenUsedWithSuccess, GetOthersInBrand, GetOthersInBrandSuccess, LoadBrand, LoadBrandSuccess, LoadEquipmentItem, LoadEquipmentItemFailure, LoadEquipmentItemSuccess, LoadMarketplaceListing, LoadMarketplaceListingFailure, LoadMarketplaceListings, LoadMarketplaceListingsSuccess, LoadMarketplaceListingSuccess, LoadMarketplacePrivateConversations, LoadMarketplacePrivateConversationsFailure, LoadMarketplacePrivateConversationsSuccess, LoadSensor, LoadSensorSuccess, MarkMarketplaceLineItemAsSold, MarkMarketplaceLineItemAsSoldFailure, MarkMarketplaceLineItemAsSoldSuccess, RejectEquipmentItem, RejectEquipmentItemEditProposal, RejectEquipmentItemEditProposalSuccess, RejectEquipmentItemSuccess, RejectMarketplaceOffer, RejectMarketplaceOfferFailure, RejectMarketplaceOfferSuccess, RenewMarketplaceListing, RenewMarketplaceListingFailure, RenewMarketplaceListingSuccess, RetractMarketplaceOffer, RetractMarketplaceOfferFailure, RetractMarketplaceOfferSuccess, UnapproveEquipmentItem, UnapproveEquipmentItemSuccess, UnfreezeEquipmentItemAsAmbiguous, UnfreezeEquipmentItemAsAmbiguousSuccess, UpdateEquipmentPreset, UpdateEquipmentPresetFailure, UpdateEquipmentPresetSuccess, UpdateMarketplaceListing, UpdateMarketplaceListingFailure, UpdateMarketplaceListingSuccess, UpdateMarketplaceOffer, UpdateMarketplaceOfferFailure, UpdateMarketplaceOfferSuccess, UpdateMarketplacePrivateConversation, UpdateMarketplacePrivateConversationFailure, UpdateMarketplacePrivateConversationSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -148,11 +9,7 @@ import { MainState } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { catchError, filter, map, mergeMap, switchMap, tap } from "rxjs/operators";
-import {
-  selectBrand,
-  selectEquipmentItem,
-  selectMarketplaceListing
-} from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectEquipmentItem, selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -540,19 +397,25 @@ export class EquipmentEffects {
       mergeMap(preset =>
         this.equipmentApiService
           .createEquipmentPreset(preset)
-          .pipe(map(savedPreset => new CreateEquipmentPresetSuccess({ preset: savedPreset })))
+          .pipe(
+            map(savedPreset => new CreateEquipmentPresetSuccess({ preset: savedPreset })),
+            catchError(error => of(new CreateEquipmentPresetSuccess({ preset })))
+          )
       )
     )
   );
 
-  UpdateEquipmentPreset: Observable<UpdateEquipmentPresetSuccess> = createEffect(() =>
+  UpdateEquipmentPreset: Observable<UpdateEquipmentPresetSuccess | UpdateEquipmentPresetFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET),
       map((action: UpdateEquipmentPreset) => action.payload.preset),
       mergeMap(preset =>
         this.equipmentApiService
           .updateEquipmentPreset(preset)
-          .pipe(map(updatedPreset => new UpdateEquipmentPresetSuccess({ preset: updatedPreset })))
+          .pipe(
+            map(updatedPreset => new UpdateEquipmentPresetSuccess({ preset: updatedPreset })),
+            catchError(error => of(new UpdateEquipmentPresetFailure({ preset, error })))
+          )
       )
     )
   );

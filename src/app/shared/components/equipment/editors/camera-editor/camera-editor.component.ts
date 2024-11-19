@@ -349,7 +349,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         creationModeEnded: this.endSensorCreation.bind(this),
         enableCreation: true,
         enableFullscreen: true,
-        enableSelectFrozen: false
+        enableSelectFrozen: false,
+        componentId: this.componentId
       }
     };
   }

@@ -110,7 +110,7 @@ export const selectEquipmentPresets = createSelector(selectEquipment, state => s
 
 export const selectEquipmentPreset = createSelector(
   selectEquipmentPresets,
-  (presets: EquipmentPresetInterface[], data: { id: number }) => {
+  (presets: EquipmentPresetInterface[], data: { id: EquipmentPresetInterface["id"] }) => {
     const matching = presets.filter(preset => {
       return preset.id === data.id;
     });

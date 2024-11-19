@@ -30,7 +30,7 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
   onFieldsInitialized(): void {
   }
 
-  getImagingTelescopes(): FormlyFieldConfig {
+  getImagingTelescopes(componentId: string): FormlyFieldConfig {
     return {
       key: "imagingTelescopes2",
       type: "equipment-item-browser",
@@ -47,12 +47,13 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
         enableFullscreen: true,
-        enableSelectFrozen: false
+        enableSelectFrozen: false,
+        componentId
       }
     };
   }
 
-  getImagingCameras(): FormlyFieldConfig {
+  getImagingCameras(componentId: string): FormlyFieldConfig {
     return {
       key: "imagingCameras2",
       type: "equipment-item-browser",
@@ -69,12 +70,13 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
         enableFullscreen: true,
-        enableSelectFrozen: false
+        enableSelectFrozen: false,
+        componentId
       }
     };
   }
 
-  getMounts(): FormlyFieldConfig {
+  getMounts(componentId: string): FormlyFieldConfig {
     return {
       key: "mounts2",
       type: "equipment-item-browser",
@@ -90,12 +92,13 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
         enableFullscreen: true,
-        enableSelectFrozen: false
+        enableSelectFrozen: false,
+        componentId
       }
     };
   }
 
-  getFilters(): FormlyFieldConfig {
+  getFilters(componentId: string): FormlyFieldConfig {
     return {
       key: "filters2",
       type: "equipment-item-browser",
@@ -111,12 +114,13 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
         enableFullscreen: true,
-        enableSelectFrozen: false
+        enableSelectFrozen: false,
+        componentId
       }
     };
   }
 
-  getAccessories(): FormlyFieldConfig {
+  getAccessories(componentId: string): FormlyFieldConfig {
     return {
       key: "accessories2",
       type: "equipment-item-browser",
@@ -132,12 +136,13 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
         enableFullscreen: true,
-        enableSelectFrozen: false
+        enableSelectFrozen: false,
+        componentId
       }
     };
   }
 
-  getSoftware(): FormlyFieldConfig {
+  getSoftware(componentId: string): FormlyFieldConfig {
     return {
       key: "software2",
       type: "equipment-item-browser",
@@ -153,7 +158,8 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
         enableFullscreen: true,
-        enableSelectFrozen: false
+        enableSelectFrozen: false,
+        componentId
       }
     };
   }
@@ -175,7 +181,7 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
     };
   }
 
-  getGuidingTelescopes(): FormlyFieldConfig {
+  getGuidingTelescopes(componentId: string): FormlyFieldConfig {
     return {
       key: "guidingTelescopes2",
       type: "equipment-item-browser",
@@ -193,7 +199,8 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
         enableFullscreen: true,
-        enableSelectFrozen: false
+        enableSelectFrozen: false,
+        componentId
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -216,7 +223,7 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
     };
   }
 
-  getGuidingCameras(): FormlyFieldConfig {
+  getGuidingCameras(componentId: string): FormlyFieldConfig {
     return {
       key: "guidingCameras2",
       type: "equipment-item-browser",
@@ -234,7 +241,8 @@ export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService 
         showPlaceholderImage: true,
         enableCreation: true,
         enableFullscreen: true,
-        enableSelectFrozen: false
+        enableSelectFrozen: false,
+        componentId
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

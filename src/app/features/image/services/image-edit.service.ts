@@ -200,7 +200,7 @@ export class ImageEditService extends BaseService {
     );
   }
 
-  loadEquipmentPreset(preset: EquipmentPresetInterface): Observable<void> {
+  loadEquipmentPreset(preset: EquipmentPresetInterface, componentId: string): Observable<void> {
     const load = (preset: EquipmentPresetInterface): Observable<void> => {
       return new Observable(observer => {
         for (const klass of [
@@ -246,7 +246,7 @@ export class ImageEditService extends BaseService {
             this.store$.dispatch(new LoadEquipmentItem({ id, type: klass.type }));
           });
 
-          this.store$.dispatch(new ItemBrowserClear({ type: klass.type, usageType: klass.usageType }));
+          this.store$.dispatch(new ItemBrowserClear({ type: klass.type, usageType: klass.usageType, componentId }));
 
           forkJoin(
             ids.map(id =>
@@ -260,7 +260,8 @@ export class ImageEditService extends BaseService {
               new ItemBrowserSet({
                 type: klass.type,
                 usageType: klass.usageType,
-                items
+                items,
+                componentId
               })
             );
 
@@ -297,33 +298,6 @@ export class ImageEditService extends BaseService {
       load(preset).subscribe(() => {
         observer.next();
         observer.complete();
-      });
-    });
-  }
-
-  deleteEquipmentPreset(preset: EquipmentPresetInterface): Observable<void> {
-    return new Observable(observer => {
-      const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
-      const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
-
-      componentInstance.message = this.translateService.instant("This operation cannot be undone.");
-
-      modalRef.closed.pipe(take(1)).subscribe(() => {
-        this.loadingService.setLoading(true);
-        this.store$.dispatch(new DeleteEquipmentPreset({ id: preset.id }));
-        this.actions$.pipe(
-          ofType(EquipmentActionTypes.DELETE_EQUIPMENT_PRESET_SUCCESS),
-          map((action: DeleteEquipmentPresetSuccess) => action.payload.id),
-          filter(id => id === preset.id),
-          take(1)
-        ).subscribe(() => {
-          this.loadingService.setLoading(false);
-          this.popNotificationsService.success(
-            this.translateService.instant("Equipment setup deleted.")
-          );
-          observer.next();
-          observer.complete();
-        });
       });
     });
   }

@@ -107,6 +107,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @Input()
   allowedTypes: EquipmentItemType[] = Object.keys(EquipmentItemType).map(key => EquipmentItemType[key]);
 
+  // Used for ItemBrowserAdd
+  @Input()
+  parentComponentId: string;
+
   model: { klass: EquipmentItemType; value: TypeUnion } = {
     klass: null,
     value: null
@@ -446,8 +450,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       } else {
         _doSetValue(itemToAdd);
       }
-
-      this.windowRefService.scrollToElement(`#${this.id}`);
     };
 
     if (this.enableVariantSelection && item.variants?.length > 0) {
@@ -565,7 +567,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   onItemSetByBrowsingByProperties(item: EquipmentItem): void {
     if (this.multiple) {
-      this.store$.dispatch(new ItemBrowserAdd({ type: this.type, usageType: this.usageType, item }));
+      this.store$.dispatch(new ItemBrowserAdd({
+        type: this.type,
+        usageType: this.usageType,
+        item,
+        componentId: this.parentComponentId
+      }));
     } else {
       this.addItem(item);
     }
@@ -783,7 +790,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         takeUntil(this.destroyed$),
         ofType(EquipmentActionTypes.ITEM_BROWSER_CLEAR),
         map((action: ItemBrowserSet) => action.payload),
-        filter(payload => payload.type === this.type && payload.usageType === this.usageType),
+        filter(payload =>
+          payload.componentId === this.parentComponentId &&
+          payload.type === this.type &&
+          payload.usageType === this.usageType
+        ),
       )
       .subscribe(() => {
         this.setValue(null);
@@ -798,7 +809,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         takeUntil(this.destroyed$),
         ofType(EquipmentActionTypes.ITEM_BROWSER_ADD),
         map((action: ItemBrowserAdd) => action.payload),
-        filter(payload => payload.type === this.type && payload.usageType === this.usageType),
+        filter(payload =>
+          payload.componentId === this.parentComponentId &&
+          payload.type === this.type &&
+          payload.usageType === this.usageType
+        ),
         map(payload => payload.item)
       )
       .subscribe(item => {
@@ -814,7 +829,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         takeUntil(this.destroyed$),
         ofType(EquipmentActionTypes.ITEM_BROWSER_SET),
         map((action: ItemBrowserSet) => action.payload),
-        filter(payload => payload.type === this.type && payload.usageType === this.usageType),
+        filter(payload =>
+          payload.componentId === this.parentComponentId &&
+          payload.type === this.type &&
+          payload.usageType === this.usageType
+        ),
         map(payload => payload.items)
       )
       .subscribe(items => {
