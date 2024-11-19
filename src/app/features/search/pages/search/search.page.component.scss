@@ -4,6 +4,7 @@ astrobin-search-bar ::ng-deep {
   display: block;
   z-index: 3;
   opacity: .99;
+  position: relative;
 
   .search-bar-wrapper {
     position: relative;
