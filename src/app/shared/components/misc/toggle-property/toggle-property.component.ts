@@ -279,7 +279,6 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
         this._toggleProperty = toggleProperty;
         this.toggled = true;
         this.initialized = true;
-        console.log(`toggleProperty success: ${JSON.stringify(toggleProperty)}, ${this.propertyType}, ${this.userId}, ${this.objectId}, ${this.contentType}`);
         observer.next(toggleProperty);
         observer.complete();
         this.changeDetectorRef.markForCheck();
@@ -294,7 +293,6 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
         this._toggleProperty = null;
         this.toggled = false;
         this.initialized = true;
-        console.log(`toggleProperty fail: ${this.propertyType}, ${this.userId}, ${this.objectId}, ${this.contentType}`);
         observer.next(null);
         observer.complete();
         this.changeDetectorRef.markForCheck();

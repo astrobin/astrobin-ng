@@ -211,7 +211,9 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
     case EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_SUCCESS: {
       return {
         ...state,
-        presets: UtilsService.arrayUniqueObjects([...state.presets, ...action.payload.presets], "id")
+        presets: UtilsService.arrayUniqueObjects([...state.presets, ...action.payload.presets], "id").sort(
+          (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()
+        )
       };
     }
 
@@ -219,7 +221,9 @@ export function equipmentReducer(state = initialEquipmentState, action: PayloadA
     case EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_SUCCESS: {
       return {
         ...state,
-        presets: UtilsService.arrayUniqueObjects([...state.presets, action.payload.preset], "id")
+        presets: UtilsService.arrayUniqueObjects([...state.presets, action.payload.preset], "id").sort(
+          (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()
+        )
       };
     }
 

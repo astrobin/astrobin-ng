@@ -104,8 +104,10 @@ export enum EquipmentActionTypes {
   FIND_EQUIPMENT_PRESETS_SUCCESS = "[Equipment] Find equipment presets success",
   CREATE_EQUIPMENT_PRESET = "[Equipment] Create equipment preset",
   CREATE_EQUIPMENT_PRESET_SUCCESS = "[Equipment] Create equipment preset success",
+  CREATE_EQUIPMENT_PRESET_FAILURE = "[Equipment] Create equipment preset failure",
   UPDATE_EQUIPMENT_PRESET = "[Equipment] Update equipment preset",
   UPDATE_EQUIPMENT_PRESET_SUCCESS = "[Equipment] Update equipment preset success",
+  UPDATE_EQUIPMENT_PRESET_FAILURE = "[Equipment] Update equipment preset failure",
   DELETE_EQUIPMENT_PRESET = "[Equipment] Delete equipment preset",
   DELETE_EQUIPMENT_PRESET_SUCCESS = "[Equipment] Delete equipment preset success",
 
@@ -666,6 +668,13 @@ export class UpdateEquipmentPresetSuccess implements PayloadActionInterface {
   }
 }
 
+export class UpdateEquipmentPresetFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_FAILURE;
+
+  constructor(public payload: { preset: EquipmentPresetInterface, error: any }) {
+  }
+}
+
 export class DeleteEquipmentPreset implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.DELETE_EQUIPMENT_PRESET;
 
@@ -940,7 +949,11 @@ export class ItemBrowserClear implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.ITEM_BROWSER_CLEAR;
 
   constructor(
-    public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType; }
+    public payload: {
+      type: EquipmentItemType;
+      usageType: EquipmentItemUsageType;
+      componentId: string;
+    }
   ) {
   }
 }
@@ -949,7 +962,12 @@ export class ItemBrowserAdd implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.ITEM_BROWSER_ADD;
 
   constructor(
-    public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType; item: EquipmentItemBaseInterface }
+    public payload: {
+      type: EquipmentItemType;
+      usageType: EquipmentItemUsageType;
+      item: EquipmentItemBaseInterface;
+      componentId: string;
+    }
   ) {
   }
 }
@@ -958,7 +976,12 @@ export class ItemBrowserSet implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.ITEM_BROWSER_SET;
 
   constructor(
-    public payload: { type: EquipmentItemType; usageType?: EquipmentItemUsageType; items: EquipmentItemBaseInterface[] }
+    public payload: {
+      type: EquipmentItemType;
+      usageType?: EquipmentItemUsageType;
+      items: EquipmentItemBaseInterface[];
+      componentId: string;
+    }
   ) {
   }
 }

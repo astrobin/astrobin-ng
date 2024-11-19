@@ -39,46 +39,6 @@
     image-cropper {
       padding: 0;
     }
-
-    .preset-wrapper {
-      .btn-delete-preset {
-        border: 1px solid var(--darkerGrey);
-        top: -.5rem;
-        right: -.5rem;
-        padding: .5rem;
-        line-height: 1rem;
-        height: 1rem;
-        width: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-
-        @media (hover: hover) and (pointer: fine) {
-          &:hover {
-            background: var(--dangerColor);
-            color: white;
-          }
-        }
-      }
-
-      @media (hover: hover) and (pointer: fine) {
-        &:hover .btn-delete-preset{
-          pointer-events: auto;
-          opacity: 1;
-        }
-      }
-
-      @media (hover: none) and (pointer: coarse) {
-        .btn-delete-preset {
-          pointer-events: auto;
-          opacity: 1;
-        }
-      }
-    }
   }
 }
 
@@ -91,4 +51,47 @@
   background: rgba(0, 0, 0, .75);
   backdrop-filter: blur(4px);
   z-index: 1002;
+}
+
+.create-preset {
+  width: 148px;
+  height: 148px;
+  border: 2px dashed var(--lightGrey);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: .5rem;
+  transition: border-color 0.3s ease;
+
+  .ng-fa-icon,
+  span {
+    line-height: 1rem;
+    color: var(--lightGrey);
+    transition: color 0.3s ease;
+  }
+
+  .ng-fa-icon {
+    font-size: 2rem;
+  }
+
+  span {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    border-color: var(--lighterGrey);
+
+    .ng-fa-icon,
+    span {
+      color: var(--lighterGrey);
+    }
+  }
+}
+
+::ng-deep .preset-create-offcanvas {
+  &:not(.offcanvas-bottom) {
+    width: 40vw !important;
+  }
 }

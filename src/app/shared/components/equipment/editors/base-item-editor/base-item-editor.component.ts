@@ -682,7 +682,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         multiple: false,
         enableCreation: false,
         enableVariantSelection: false,
-        excludeId: this.model.id
+        excludeId: this.model.id,
+        componentId: this.componentId
       },
       asyncValidators: {
         sameBrand: {

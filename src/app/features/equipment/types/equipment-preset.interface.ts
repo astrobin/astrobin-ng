@@ -14,6 +14,7 @@ export interface EquipmentPresetInterface {
   user?: UserInterface["id"];
   remoteSource?: string;
   name: string;
+  description: string;
   imagingTelescopes: TelescopeInterface["id"][];
   guidingTelescopes: TelescopeInterface["id"][];
   imagingCameras: CameraInterface["id"][];
@@ -22,4 +23,7 @@ export interface EquipmentPresetInterface {
   filters: FilterInterface["id"][];
   accessories: AccessoryInterface["id"][];
   software: SoftwareInterface["id"][];
+  imageFile?: string | { file: File, url: string  }[];
+  imageCount?: number;
+  totalIntegration?: number;
 }

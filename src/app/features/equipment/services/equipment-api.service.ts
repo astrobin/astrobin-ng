@@ -4,12 +4,7 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { EMPTY, Observable, of } from "rxjs";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemReviewerRejectionReason,
-  EquipmentItemType,
-  EquipmentItemUsageType
-} from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemReviewerRejectionReason, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { catchError, expand, map, reduce, switchMap, take } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -426,12 +421,91 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<EquipmentPresetInterface[]>(`${this.configUrl}/equipment-preset/`);
   }
 
+  private _handleEquipmentPresetImageOperation(
+    preset: EquipmentPresetInterface,
+    updatedPreset: EquipmentPresetInterface
+  ): Observable<EquipmentPresetInterface> {
+    if (preset.imageFile && preset.imageFile.length > 0) {
+      return this.uploadEquipmentPresetImage(
+        updatedPreset.id,
+        (preset.imageFile as { file: File }[])[0].file
+      ).pipe(
+        take(1),
+        catchError(error => {
+          let message = "";
+          if (error?.error?.imageFile?.length > 0) {
+            message = error.error.imageFile[0];
+          }
+
+          this.popNotificationService.warning(
+            this.translateService.instant(
+              `Something went wrong with uploading the image, but this setup was updated anyway. ${message}`
+            )
+          );
+          return of(updatedPreset);
+        }),
+        map(response => ({ ...updatedPreset, ...response }))
+      );
+    } else {
+      return this.clearEquipmentPresetImage(updatedPreset.id).pipe(
+        take(1),
+        catchError(error => {
+          this.popNotificationService.warning(
+            this.translateService.instant(
+              `Something went wrong with clearing the image, but this setup was updated anyway.`
+            )
+          );
+          return of(updatedPreset);
+        }),
+        map(() => ({ ...updatedPreset, imageFile: null }))
+      );
+    }
+  }
+
+  private _saveEquipmentPreset(
+    preset: EquipmentPresetInterface,
+    method: 'post' | 'put'
+  ): Observable<EquipmentPresetInterface> {
+    const { imageFile, ...presetWithoutImage } = preset;
+    const url = method === 'post'
+      ? `${this.configUrl}/equipment-preset/`
+      : `${this.configUrl}/equipment-preset/${preset.id}/`;
+
+    return this.http[method]<EquipmentPresetInterface>(url, presetWithoutImage).pipe(
+      take(1),
+      switchMap(updatedPreset => this._handleEquipmentPresetImageOperation(preset, updatedPreset))
+    );
+  }
+
   createEquipmentPreset(preset: EquipmentPresetInterface): Observable<EquipmentPresetInterface> {
-    return this.http.post<EquipmentPresetInterface>(`${this.configUrl}/equipment-preset/`, preset);
+    return this._saveEquipmentPreset(preset, 'post');
   }
 
   updateEquipmentPreset(preset: EquipmentPresetInterface): Observable<EquipmentPresetInterface> {
-    return this.http.put<EquipmentPresetInterface>(`${this.configUrl}/equipment-preset/${preset.id}/`, preset);
+    return this._saveEquipmentPreset(preset, 'put');
+  }
+
+  uploadEquipmentPresetImage(id: EquipmentPresetInterface["id"], imageFile: File): Observable<EquipmentPresetInterface> {
+    const formData: FormData = new FormData();
+    formData.append("image_file", imageFile);
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        // Unsetting the Content-Type is necessary, so it gets set to multipart/form-data with the correct boundary.
+        "Content-Type": "__unset__",
+        "Content-Disposition": `form-data; name="image_file"; filename=${encodeURIComponent(imageFile.name)}`
+      })
+    };
+
+    return this.http.post<EquipmentPresetInterface>(
+      `${this.configUrl}/equipment-preset/${id}/image/`,
+      formData,
+      httpOptions
+    );
+  }
+
+  clearEquipmentPresetImage(id: EquipmentPresetInterface["id"]): Observable<EquipmentPresetInterface> {
+    return this.http.post<EquipmentPresetInterface>(`${this.configUrl}/equipment-preset/${id}/clear-image/`, {});
   }
 
   deleteEquipmentPreset(id: EquipmentPresetInterface["id"]): Observable<void> {

@@ -42,6 +42,10 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
   @Input()
   alreadyHasAcquisitions = false;
 
+  // Used to update the form with the selected filter.
+  @Input()
+  editPageComponentId: string;
+
   @ViewChild("imageOptionTemplate")
   imageOptionTemplate: TemplateRef<any>;
 
@@ -175,7 +179,12 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
           filter(item => !!item),
           take(1)
         ).subscribe(item => {
-          this.store$.dispatch(new ItemBrowserAdd({ type: EquipmentItemType.FILTER, usageType: undefined, item }));
+          this.store$.dispatch(new ItemBrowserAdd({
+            type: EquipmentItemType.FILTER,
+            usageType: undefined,
+            item,
+            componentId: this.editPageComponentId
+          }));
           processedAcquisitions++;
 
           if (processedAcquisitions == acquisitionWithFilters.length) {

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";

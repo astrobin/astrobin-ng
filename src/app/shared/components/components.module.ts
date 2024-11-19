@@ -144,6 +144,8 @@ import { ImageViewerSlideshowContextComponent } from "@shared/components/misc/im
 import { ImageLoadingIndicatorComponent } from "@shared/components/misc/image-loading-indicator/image-loading-indicator.component";
 import { MarketplaceListingCardComponent } from "@shared/components/equipment/marketplace-listing-card/marketplace-listing-card.component";
 import { MarketplaceListingCardsComponent } from "@shared/components/equipment/marketplace-listing-cards/marketplace-listing-cards.component";
+import { EquipmentPresetComponent } from "@shared/components/equipment/preset/equipment-preset.component";
+import { EquipmentPresetEditorComponent } from "@shared/components/equipment/preset-editor/equipment-preset-editor.component";
 
 const modules = [
   CommonModule,
@@ -290,6 +292,8 @@ const components = [
   CameraEditorComponent,
   ConfirmItemCreationModalComponent,
   EquipmentItemDisplayNameComponent,
+  EquipmentPresetComponent,
+  EquipmentPresetEditorComponent,
   FilterEditorComponent,
   ItemBrowserByPropertiesComponent,
   ItemBrowserComponent,
