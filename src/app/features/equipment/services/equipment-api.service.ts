@@ -431,7 +431,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     preset: EquipmentPresetInterface,
     updatedPreset: EquipmentPresetInterface
   ): Observable<EquipmentPresetInterface> {
-    if (preset.imageFile && preset.imageFile.length > 0) {
+    if (preset.imageFile && UtilsService.isArray(preset.imageFile) && preset.imageFile.length > 0) {
       return this.uploadEquipmentPresetImage(
         updatedPreset.id,
         (preset.imageFile as { file: File }[])[0].file
@@ -452,7 +452,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         }),
         map(response => ({ ...updatedPreset, ...response }))
       );
-    } else {
+    } else if (preset.imageFile && UtilsService.isArray(preset.imageFile) && preset.imageFile.length === 0) {
       return this.clearEquipmentPresetImage(updatedPreset.id).pipe(
         take(1),
         catchError(error => {
@@ -463,8 +463,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
           );
           return of(updatedPreset);
         }),
-        map(() => ({ ...updatedPreset, imageFile: null }))
+        map(() => ({ ...updatedPreset, imageFile: null, thumbnail: null }))
       );
+    } else {
+      return of(updatedPreset);
     }
   }
 
@@ -472,7 +474,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     preset: EquipmentPresetInterface,
     method: 'post' | 'put'
   ): Observable<EquipmentPresetInterface> {
-    const { imageFile, ...presetWithoutImage } = preset;
+    const { imageFile, thumbnail, ...presetWithoutImage } = preset;
     const url = method === 'post'
       ? `${this.configUrl}/equipment-preset/`
       : `${this.configUrl}/equipment-preset/${preset.id}/`;

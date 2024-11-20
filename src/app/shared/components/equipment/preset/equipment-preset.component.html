@@ -7,7 +7,7 @@
   >
     <div class="preset-overlay"></div>
     <img *ngIf="preset.thumbnail || preset.imageFile" [src]="preset.thumbnail || preset.imageFile" class="preset-image" />
-    <img *ngIf="!preset.imageFile" src="/assets/images/equipment-preset.png?v=1" class="preset-image default">
+    <img *ngIf="!preset.thumbnail && !preset.imageFile" src="/assets/images/equipment-preset.png?v=1" class="preset-image default">
     <div class="preset-name">
       {{ preset.name }}
     </div>
