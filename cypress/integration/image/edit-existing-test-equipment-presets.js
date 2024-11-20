@@ -107,7 +107,9 @@ context("Image edit (existing), test equipment presets", () => {
     cy.route("get", /.*\/api\/v2\/equipment\/accessory\/recently-used\//, []).as("getRecentlyUsedAccessory");
     cy.route("get", /.*\/api\/v2\/equipment\/software\/recently-used\//, []).as("getRecentlyUsedSoftware");
 
-    cy.route("get", "**/api/v2/equipment/equipment-preset/", [testEquipmentPreset]);
+    cy.route("get", "**/api/v2/equipment/equipment-preset/?user=1", [testEquipmentPreset]);
+    cy.route("post", "**/api/v2/equipment/equipment-preset/1/clear-image/", {});
+    cy.route("post", "**/api/v2/equipment/equipment-preset/2/clear-image/", {});
 
     cy.route("get", "**/json-api/user/has-legacy-gear/?userId=1", { result: false });
 
@@ -127,7 +129,7 @@ context("Image edit (existing), test equipment presets", () => {
   });
 
   it("should select a preset", () => {
-    cy.get(".preset-wrapper .btn").contains("Test preset").click();
+    cy.get(".preset-wrapper").click();
 
     cy.wait(500);
 
@@ -246,7 +248,7 @@ context("Image edit (existing), test equipment presets", () => {
   });
 
   it("should have updated the preset list", () => {
-    cy.get(".preset-wrapper .btn").contains("Test preset 2").should("be.visible");
+    cy.get(".preset-wrapper .preset-name").contains("Test preset 2").should("be.visible");
   });
 
   it("should delete a preset", () => {
@@ -257,6 +259,6 @@ context("Image edit (existing), test equipment presets", () => {
 
     cy.get(".btn").contains("Yes, continue").click();
 
-    cy.get(".preset-wrapper .btn").contains("Test preset 2").should("not.exist");
+    cy.get(".preset-wrapper .preset-name").contains("Test preset 2").should("not.exist");
   });
 });

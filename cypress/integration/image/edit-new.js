@@ -24,7 +24,7 @@ context("Image edit (new)", () => {
     cy.route("get", "**/api/v2/equipment/accessory/recently-used/*", []);
     cy.route("get", "**/api/v2/equipment/software/recently-used/*", []);
 
-    cy.route("get", "**/api/v2/equipment/equipment-preset/", []);
+    cy.route("get", "**/api/v2/equipment/equipment-preset/?user=1", []);
 
     cy.route("get", "**/json-api/user/has-legacy-gear/?userId=1", { result: false });
 
