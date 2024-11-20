@@ -1,0 +1,16 @@
+@import "../../../../styles/mixins";
+
+::ng-deep {
+  .preset-summary-offcanvas:not(.offcanvas-bottom),
+  .preset-create-offcanvas:not(.offcanvas-bottom) {
+    width: 40vw;
+  }
+}
+
+astrobin-loading-indicator {
+  width: 1rem;
+}
+
+.create-preset {
+  @include create-preset-button();
+}

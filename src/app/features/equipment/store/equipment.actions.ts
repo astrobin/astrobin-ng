@@ -1,12 +1,7 @@
 /* eslint-disable max-classes-per-file */
 
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemReviewerRejectionReason,
-  EquipmentItemType,
-  EquipmentItemUsageType
-} from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemReviewerRejectionReason, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
@@ -22,10 +17,7 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import {
-  AllEquipmentItemsOptionsInterface,
-  EquipmentItemsSortOrder
-} from "@features/equipment/services/equipment-api.service";
+import { AllEquipmentItemsOptionsInterface, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
@@ -102,6 +94,7 @@ export enum EquipmentActionTypes {
 
   FIND_EQUIPMENT_PRESETS = "[Equipment] Find equipment presets",
   FIND_EQUIPMENT_PRESETS_SUCCESS = "[Equipment] Find equipment presets success",
+  FIND_EQUIPMENT_PRESETS_FAILURE = "[Equipment] Find equipment presets failure",
   CREATE_EQUIPMENT_PRESET = "[Equipment] Create equipment preset",
   CREATE_EQUIPMENT_PRESET_SUCCESS = "[Equipment] Create equipment preset success",
   CREATE_EQUIPMENT_PRESET_FAILURE = "[Equipment] Create equipment preset failure",
@@ -629,14 +622,28 @@ export class AssignEditProposalSuccess implements PayloadActionInterface {
  * Equipment presets
  *********************************************************************************************************************/
 
-export class FindEquipmentPresets implements Action {
+export class FindEquipmentPresets implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_EQUIPMENT_PRESETS;
+
+  constructor(public payload: { userId: UserInterface["id"] }) {
+  }
 }
 
 export class FindEquipmentPresetsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_SUCCESS;
 
-  constructor(public payload: { presets: EquipmentPresetInterface[] }) {
+  constructor(public payload: {
+      userId: UserInterface["id"],
+      presets: EquipmentPresetInterface[]
+    }
+  ) {
+  }
+}
+
+export class FindEquipmentPresetsFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_FAILURE;
+
+  constructor(public payload: { userId: UserInterface["id"], error: any }) {
   }
 }
 

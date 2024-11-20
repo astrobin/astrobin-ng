@@ -146,6 +146,7 @@ import { MarketplaceListingCardComponent } from "@shared/components/equipment/ma
 import { MarketplaceListingCardsComponent } from "@shared/components/equipment/marketplace-listing-cards/marketplace-listing-cards.component";
 import { EquipmentPresetComponent } from "@shared/components/equipment/preset/equipment-preset.component";
 import { EquipmentPresetEditorComponent } from "@shared/components/equipment/preset-editor/equipment-preset-editor.component";
+import { EquipmentPresetSummaryComponent } from "@shared/components/equipment/preset-summary/equipment-preset-summary.component";
 
 const modules = [
   CommonModule,
@@ -294,6 +295,7 @@ const components = [
   EquipmentItemDisplayNameComponent,
   EquipmentPresetComponent,
   EquipmentPresetEditorComponent,
+  EquipmentPresetSummaryComponent,
   FilterEditorComponent,
   ItemBrowserByPropertiesComponent,
   ItemBrowserComponent,

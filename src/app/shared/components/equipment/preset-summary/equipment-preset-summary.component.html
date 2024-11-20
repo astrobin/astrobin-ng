@@ -1,0 +1,46 @@
+<div class="equipment-preset-summary">
+  <img
+    *ngIf="preset.imageFile"
+    [src]="preset.imageFile"
+    class="preset-image mb-5"
+    alt=""
+  >
+
+  <div
+    *ngIf="preset.description"
+    [innerHTML]="preset.description | BBCodeToHtml"
+    class="preset-description mb-5"
+  >
+  </div>
+
+  <div
+    *ngFor="let section of equipmentConfigs; let lastSection = last"
+    [class.mb-4]="!lastSection"
+  >
+    <div *ngIf="equipmentItems[section.property].length > 0">
+      <strong class="d-block mb-3">{{ section.displayName }}</strong>
+      <div class="d-flex flex-wrap gap-3">
+        <astrobin-equipment-item-display-name
+          *ngFor="let item of equipmentItems[section.property]"
+          (click)="onEquipmentItemClicked(item)"
+          [item]="item"
+          [enableKlassIcon]="true"
+          [enableBrandLink]="false"
+          [enableNameLink]="false"
+          [enableSummaryModal]="false"
+          [showFrozenAsAmbiguous]="false"
+          [showItemUnapprovedInfo]="false"
+          [showRetailers]="true"
+          class="equipment-item"
+        ></astrobin-equipment-item-display-name>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!!searchModel" class="preset-images mt-5">
+    <h5 class="d-block mb-3">{{ "Imaged with this setup" | translate }}</h5>
+    <astrobin-image-search
+      [model]="searchModel"
+    ></astrobin-image-search>
+  </div>
+</div>

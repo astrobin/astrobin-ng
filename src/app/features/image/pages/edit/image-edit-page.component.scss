@@ -1,4 +1,5 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 :host {
   ::ng-deep {
@@ -54,45 +55,7 @@
 }
 
 .create-preset {
-  width: 148px;
-  height: 148px;
-  border: 2px dashed var(--lightGrey);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border-radius: .5rem;
-  transition: border-color 0.3s ease;
-
-  .ng-fa-icon,
-  span {
-    line-height: 1rem;
-    color: var(--lightGrey);
-    transition: color 0.3s ease;
-  }
-
-  .ng-fa-icon {
-    font-size: 2rem;
-  }
-
-  span {
-    font-size: 1rem;
-  }
-
-  &:hover {
-    border-color: var(--lighterGrey);
-
-    .ng-fa-icon,
-    span {
-      color: var(--lighterGrey);
-    }
-  }
-
-  @media (max-width: $xs-max) {
-    width: calc(33.33vw - 2rem - 4px);
-    height: calc(33.33vw - 2rem - 4px);
-  }
+  @include create-preset-button();
 }
 
 ::ng-deep .preset-create-offcanvas {

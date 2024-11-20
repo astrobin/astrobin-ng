@@ -40,7 +40,7 @@
   }
 
   .preset-name,
-  .apply-preset {
+  .button-overlay {
     transition: opacity 0.3s ease;
     position: absolute;
     width: 100%;
@@ -54,7 +54,7 @@
     padding: .5rem;
   }
 
-  .apply-preset {
+  .button-overlay {
     opacity: 0;
     padding: .5rem;
     background: var(--white);
@@ -96,6 +96,12 @@
         }
       }
     }
+
+    @media (max-width: $xs-max) {
+      padding: .75rem;
+      height: .75rem;
+      width: .75rem;
+    }
   }
 
   .btn-edit-preset {
@@ -110,6 +116,10 @@
         }
       }
     }
+
+    @media (max-width: $xs-max) {
+      right: 2rem;
+    }
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -120,12 +130,14 @@
         opacity: 1;
       }
 
-      .preset-name {
-        opacity: 0;
-      }
+      .has-button-overlay-label {
+        .preset-name {
+          opacity: 0;
+        }
 
-      .apply-preset {
-        opacity: .9;
+        .button-overlay {
+          opacity: .9;
+        }
       }
     }
   }

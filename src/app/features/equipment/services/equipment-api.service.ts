@@ -417,8 +417,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
-  findEquipmentPresets(): Observable<EquipmentPresetInterface[]> {
-    return this.http.get<EquipmentPresetInterface[]>(`${this.configUrl}/equipment-preset/`);
+  findEquipmentPresets(userId?: UserInterface["id"]): Observable<EquipmentPresetInterface[]> {
+    let url = `${this.configUrl}/equipment-preset/`;
+
+    if (userId) {
+      url = UtilsService.addOrUpdateUrlParam(url, "user", userId.toString());
+    }
+
+    return this.http.get<EquipmentPresetInterface[]>(url);
   }
 
   private _handleEquipmentPresetImageOperation(
