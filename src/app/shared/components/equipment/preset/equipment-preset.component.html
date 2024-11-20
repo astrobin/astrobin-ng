@@ -1,5 +1,6 @@
 <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
   <div
+    *ngIf="!!preset"
     (click)="presetClicked.emit(preset)"
     [class.has-button-overlay-label]="!!buttonOverlayLabel"
     class="preset-wrapper w-100 h-100"
@@ -16,7 +17,7 @@
   </div>
 
   <button
-    *ngIf="currentUserWrapper.user.id === preset.user"
+    *ngIf="!!preset && currentUserWrapper.user?.id === preset.user"
     (click)="onPresetEditClicked(preset)"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-secondary btn-edit-preset"
@@ -29,7 +30,7 @@
   </button>
 
   <button
-    *ngIf="currentUserWrapper.user.id === preset.user"
+    *ngIf="!!preset && currentUserWrapper.user?.id === preset.user"
     (click)="onPresetDeleteClicked(preset)"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-secondary btn-delete-preset"
