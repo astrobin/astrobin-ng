@@ -18,17 +18,28 @@ import { Actions, ofType } from "@ngrx/effects";
 @Component({
   selector: "astrobin-user-gallery-equipment",
   template: `
-    <div class="mb-5">
-      <h4 class="mb-3">{{ "Setups" | translate }}</h4>
+    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+      <div class="mb-5">
+        <h4 class="mb-3">{{ "Setups" | translate }}</h4>
 
-      <astrobin-loading-indicator *ngIf="loadingPresets"></astrobin-loading-indicator>
+        <astrobin-loading-indicator *ngIf="loadingPresets"></astrobin-loading-indicator>
 
-      <div *ngIf="!loadingPresets && presets?.length === 0">
-        {{ "No setups found." | translate }}
-      </div>
+        <div *ngIf="!loadingPresets && presets?.length === 0">
+          <span *ngIf="currentUserWrapper.user?.id !== user.id" class="text-muted">
+            {{ "This user doesn't have any equipment setups." | translate }}
+          </span>
 
-      <ng-container *ngIf="!loadingPresets && presets?.length > 0">
-        <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+          <div
+            *ngIf="currentUserWrapper.user?.id === user.id"
+            (click)="onPresetCreateClicked()"
+            class="create-preset"
+          >
+            <fa-icon icon="plus"></fa-icon>
+            <span translate="Add setup"></span>
+          </div>
+        </div>
+
+        <ng-container *ngIf="!loadingPresets && presets?.length > 0">
           <div class="d-flex gap-3">
             <astrobin-equipment-preset
               *ngFor="let preset of presets"
@@ -46,16 +57,16 @@ import { Actions, ofType } from "@ngrx/effects";
             </div>
           </div>
         </ng-container>
-      </ng-container>
-    </div>
+      </div>
 
-    <astrobin-user-gallery-smart-folder
-      (activeChange)="activeEquipmentItemChange.emit($event)"
-      [user]="user"
-      [userProfile]="userProfile"
-      [folderType]="SmartFolderType.GEAR"
-      galleryFragment="equipment"
-    ></astrobin-user-gallery-smart-folder>
+      <astrobin-user-gallery-smart-folder
+        (activeChange)="activeEquipmentItemChange.emit($event)"
+        [user]="user"
+        [userProfile]="userProfile"
+        [folderType]="SmartFolderType.GEAR"
+        galleryFragment="equipment"
+      ></astrobin-user-gallery-smart-folder>
+    </ng-container>
 
     <ng-template #presetSummaryOffcanvas let-offcanvas>
       <div class="offcanvas-header">
