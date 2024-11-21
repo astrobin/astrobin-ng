@@ -1,3 +1,7 @@
+<p class="alert alert-dark mb-5">
+  {{ "Please note: editing a setup will not affect images that have already been saved with this setup." | translate }}
+</p>
+
 <form [formGroup]="form" novalidate>
   <formly-form
     [fields]="fields"
