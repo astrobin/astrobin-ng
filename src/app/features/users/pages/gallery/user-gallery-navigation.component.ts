@@ -305,17 +305,6 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   ngOnInit(): void {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      const navTabsElement = this.elementRef.nativeElement.querySelector(".nav-tabs");
-
-      if (navTabsElement) {
-        navTabsElement.scrollLeft = 0;
-      }
-    });
-
     this.route.fragment.pipe(takeUntil(this.destroyed$)).subscribe((fragment: string | null) => {
       this._setActiveTabFromRoute();
     });
@@ -388,6 +377,11 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
 
   ngOnChanges() {
     this._updateSearchModel();
+
+    const navTabsElement = this.elementRef.nativeElement.querySelector(".nav-tabs");
+    if (navTabsElement) {
+      navTabsElement.scrollLeft = 0;
+    }
   }
 
   onTabClick(tab: GalleryNavigationComponent) {
