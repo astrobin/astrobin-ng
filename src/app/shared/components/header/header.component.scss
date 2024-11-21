@@ -224,9 +224,11 @@
         a {
           color: var(--textOnAccentColor);
 
-          &:hover {
-            color: var(--lighterAccentColor);
-            text-decoration: none;
+          @media (hover: hover) {
+            &:hover {
+              filter: brightness(1.25);
+              text-decoration: none;
+            }
           }
         }
       }
