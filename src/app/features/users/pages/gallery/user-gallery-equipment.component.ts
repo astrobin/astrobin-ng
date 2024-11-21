@@ -40,7 +40,7 @@ import { Actions, ofType } from "@ngrx/effects";
         </div>
 
         <ng-container *ngIf="!loadingPresets && presets?.length > 0">
-          <div class="d-flex gap-3">
+          <div class="d-flex flex-wrap gap-3">
             <astrobin-equipment-preset
               *ngFor="let preset of presets"
               (presetClicked)="onPresetClicked(preset)"

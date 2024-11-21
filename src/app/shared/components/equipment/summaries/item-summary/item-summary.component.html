@@ -89,7 +89,7 @@
 
             <ng-container *ngIf="relatedItems.length > SHOW_MAX_RELATED_ITEMS">
               &middot;
-              <button (click)="viewMoreRelatedItems()" class="btn btn-link">
+              <button (click)="viewMoreRelatedItems()" class="btn btn-link btn-no-block">
                   {{ moreRelatedItemsLabel}}
               </button>
             </ng-container>
@@ -100,7 +100,9 @@
           <tr class="property">
             <th class="property-name">
               {{ "Users" | translate }}
-              <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
+              <astrobin-data-does-not-update-in-real-time
+                *ngIf="showDataDoesNotUpdateInRealTime"
+              ></astrobin-data-does-not-update-in-real-time>
             </th>
             <td class="property-value">{{ item.userCount || 0 }}</td>
           </tr>
@@ -108,7 +110,9 @@
           <tr class="property">
             <th class="property-name">
               {{ "Images" | translate }}
-              <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
+              <astrobin-data-does-not-update-in-real-time
+                *ngIf="showDataDoesNotUpdateInRealTime"
+              ></astrobin-data-does-not-update-in-real-time>
             </th>
             <td class="property-value">{{ item.imageCount || 0 }}</td>
           </tr>
@@ -117,7 +121,9 @@
         <tr *ngIf="showMostOftenUsedWith && itemTypeSupportsMostOftenUsedWith()" class="property">
           <th class="property-name">
             {{ "Most often used with" | translate }}
-            <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
+            <astrobin-data-does-not-update-in-real-time
+              *ngIf="showDataDoesNotUpdateInRealTime"
+            ></astrobin-data-does-not-update-in-real-time>
           </th>
           <td class="property-value most-often-used-with">
             <ng-container *ngIf="mostOftenUsedWith$ | async as mostOftenUsedWith; else loadingTemplate">

@@ -124,7 +124,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       case SmartFolderType.YEAR:
         return this.translateService.instant("Years");
       case SmartFolderType.GEAR:
-        return this.translateService.instant("Equipment");
+        return this.translateService.instant("Optics and cameras");
       case SmartFolderType.SUBJECT:
         return this.translateService.instant("Subject types");
       case SmartFolderType.CONSTELLATION:

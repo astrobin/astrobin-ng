@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { DefaultGallerySortingOption, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
@@ -17,6 +17,10 @@ import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
 import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 type GalleryNavigationComponent =
   "gallery" |
@@ -156,6 +160,16 @@ type GalleryNavigationComponent =
                 [userProfile]="userProfile"
               ></astrobin-user-gallery-equipment>
 
+              <astrobin-equipment-item-summary
+                *ngIf="activeSmartFolderEquipmentItem"
+                [item]="activeSmartFolderEquipmentItem"
+                [showDataDoesNotUpdateInRealTime]="false"
+                [showEditButtons]="false"
+                [showImage]="false"
+                [showMostOftenUsedWith]="true"
+                class="d-block mt-3 mb-5"
+              ></astrobin-equipment-item-summary>
+
               <astrobin-user-gallery-images
                 *ngIf="activeSmartFolder !== null && activeSmartFolder !== undefined"
                 [activeLayout]="activeLayout"
@@ -267,10 +281,11 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   protected activeCollection: CollectionInterface | null = null;
   protected activeSmartFolderType: SmartFolderType | null = null;
   protected activeSmartFolder: string | null = null;
+  protected activeSmartFolderEquipmentItem: EquipmentItem | null = null;
   protected searchModel: string | null = null;
   protected publicGalleryOptions: FindImagesOptionsInterface;
   protected stagingAreaOptions: FindImagesOptionsInterface;
-
+  protected readonly SmartFolderType = SmartFolderType;
   private _searchSubject: Subject<string> = new Subject<string>();
 
   constructor(
@@ -372,18 +387,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   ngOnChanges() {
-    this.searchModel = null;
-
-    if (
-      this.userProfile &&
-      this.userProfile.defaultGallerySorting &&
-      this.userProfile.defaultGallerySorting === DefaultGallerySortingOption.TITLE
-    ) {
-      this.publicGalleryOptions = {
-        ...this.publicGalleryOptions,
-        subsection: "title"
-      };
-    }
+    this._updateSearchModel();
   }
 
   onTabClick(tab: GalleryNavigationComponent) {
@@ -410,6 +414,21 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       ...this.stagingAreaOptions,
       subsection: sort
     };
+  }
+
+  private _updateSearchModel() {
+    this.searchModel = null;
+
+    if (
+      this.userProfile &&
+      this.userProfile.defaultGallerySorting &&
+      this.userProfile.defaultGallerySorting === DefaultGallerySortingOption.TITLE
+    ) {
+      this.publicGalleryOptions = {
+        ...this.publicGalleryOptions,
+        subsection: "title"
+      };
+    }
   }
 
   private _setFindImageOptions() {
@@ -463,7 +482,38 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   private _setSmartFolderFromRoute() {
     this.activeSmartFolderType = this.route.snapshot.queryParamMap.get("folder-type") as SmartFolderType;
     this.activeSmartFolder = this.route.snapshot.queryParamMap.get("active");
-  }
 
-  protected readonly SmartFolderType = SmartFolderType;
+    if (
+      this.activeSmartFolderType === SmartFolderType.GEAR &&
+      this.activeSmartFolder?.length > 0 &&
+      this.activeSmartFolder[0] === "N") {
+      const equipmentTypeShorthand = this.activeSmartFolder[1];
+      let equipmentType: EquipmentItemType | null = null;
+
+      if (equipmentTypeShorthand === "T") {
+        equipmentType = EquipmentItemType.TELESCOPE;
+      } else if (equipmentTypeShorthand === "C") {
+        equipmentType = EquipmentItemType.CAMERA;
+      }
+
+      if (equipmentType) {
+        const itemId = parseInt(this.activeSmartFolder.substring(2), 10);
+        const payload = { id: itemId, type: equipmentType };
+
+        this.store$.pipe(
+          select(selectEquipmentItem, payload),
+          filter(item => !!item),
+          take(1)
+        ).subscribe(item => {
+          this.activeSmartFolderEquipmentItem = item;
+        });
+
+        this.store$.dispatch(new LoadEquipmentItem(payload));
+      } else {
+        this.activeSmartFolderEquipmentItem = null;
+      }
+    } else {
+      this.activeSmartFolderEquipmentItem = null;
+    }
+  }
 }

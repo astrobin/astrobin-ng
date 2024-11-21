@@ -110,6 +110,9 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   @Input()
   showEditButtons = true;
 
+  @Input()
+  showDataDoesNotUpdateInRealTime = true;
+
   @Output()
   editButtonClick = new EventEmitter<EquipmentItem>();
 
