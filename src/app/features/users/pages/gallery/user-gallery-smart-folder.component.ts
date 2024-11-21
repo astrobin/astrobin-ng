@@ -27,14 +27,14 @@ import { FindImagesResponseInterface } from "@shared/services/api/classic/images
             [class.active]="item[0].toString() === active.toString()"
             [routerLink]="['/u', user.username]"
             [queryParams]="{ 'folder-type': folderType, active: item[0] }"
-            fragment="smart-folders"
-            class="smart-folder badge badge-pill rounded-pill px-3 py-2"
+            [fragment]="galleryFragment"
+            class="smart-folder"
           >
             {{ item[1] }}
           </a>
         </div>
 
-        <p *ngIf="!loading && !active" class="mt-4 text- muted">
+        <p *ngIf="!loading && (active === null || active === undefined)" class="mt-4 text- muted">
           {{ "Select a smart folder to see its content." | translate }}
         </p>
       </ng-container>
@@ -46,13 +46,13 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
   @Input() folderType: SmartFolderType;
+  @Input() galleryFragment = "smart-folders";
 
   @Output() readonly activeChange = new EventEmitter<string>();
 
   protected menu: FindImagesResponseInterface["menu"];
   protected active: string | null = null;
   protected loading = true;
-  protected readonly SmartFolderType = SmartFolderType;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -99,7 +99,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
         this.menu = payload.response.menu;
 
         if (!this.active) {
-          this.active = payload.response.active;
+          this.active = payload.response.active || this.menu[0][0];
           this.activeChange.emit(this.active);
         }
 

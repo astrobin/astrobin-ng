@@ -24,6 +24,7 @@ export interface EquipmentPresetInterface {
   accessories: AccessoryInterface["id"][];
   software: SoftwareInterface["id"][];
   imageFile?: string | { file: File, url: string  }[];
+  thumbnail?: string;
   imageCount?: number;
   totalIntegration?: number;
 }

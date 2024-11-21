@@ -78,6 +78,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
     this.loadingService.setLoading(true);
 
     this.store$.dispatch(new CreateEquipmentPreset({ preset }));
+
     this.actions$
       .pipe(
         ofType(EquipmentActionTypes.CREATE_EQUIPMENT_PRESET_SUCCESS),
@@ -93,6 +94,15 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
           )
         );
       });
+
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_EQUIPMENT_PRESET_FAILURE),
+      filter((action: CreateEquipmentPresetSuccess) => action.payload.preset.name === this.model.name),
+      take(1)
+    ).subscribe(() => {
+      this.loadingService.setLoading(false);
+      this.popNotificationsService.error(this.translateService.instant("Failed to create equipment setup."));
+    });
   }
 
   update(preset: EquipmentPresetInterface) {
@@ -101,6 +111,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
     this.loadingService.setLoading(true);
 
     this.store$.dispatch(new UpdateEquipmentPreset({ preset: update }));
+
     this.actions$
       .pipe(
         ofType(EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_SUCCESS),
@@ -112,6 +123,15 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
         this.loadingService.setLoading(false);
         this.popNotificationsService.success(this.translateService.instant("Equipment setup updated."));
       });
+
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_FAILURE),
+      filter((action: UpdateEquipmentPresetSuccess) => action.payload.preset.name === this.model.name),
+      take(1)
+    ).subscribe(() => {
+      this.loadingService.setLoading(false);
+      this.popNotificationsService.error(this.translateService.instant("Failed to update equipment setup."));
+    });
   }
 
   onCreateClicked() {

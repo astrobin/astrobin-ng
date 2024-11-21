@@ -18,6 +18,8 @@ import { takeUntil } from "rxjs/operators";
 export class EquipmentPresetComponent extends BaseComponentDirective implements OnInit {
   @Input() preset: EquipmentPresetInterface;
 
+  @Input() buttonOverlayLabel: string;
+
   @Output() readonly presetClicked = new EventEmitter<EquipmentPresetInterface>();
 
   @ViewChild("presetEditOffcanvas") presetEditOffcanvas: TemplateRef<any>;

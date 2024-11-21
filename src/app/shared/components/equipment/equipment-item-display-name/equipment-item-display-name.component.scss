@@ -21,11 +21,14 @@
     a {
       color: var(--white);
       border-bottom: 1px solid var(--lighterGrey);
+      transition: color .3s, border-color .3s;
 
-      &:hover {
-        text-decoration: none;
-        color: var(--accentColor);
-        border-color: var(--accentColor);
+      @media (hover: hover) {
+        &:hover {
+          text-decoration: none;
+          color: var(--accentColor);
+          border-color: var(--accentColor);
+        }
       }
     }
   }
@@ -74,17 +77,21 @@
     background: var(--grey);
     padding: .5rem .75rem;
     border-radius: .5rem;
+    transition: background .3s;
 
     .brand-name-icons {
       padding-left: .5rem;
       border-left: 1px solid var(--lightGrey);
+      transition: border-color .3s;
     }
 
-    &:hover {
-      background: var(--lightGrey);
+    @media (hover: hover) {
+      &:hover {
+        background: var(--lightGrey);
 
-      .brand-name-icons {
-        border-left-color: var(--lighterGrey);
+        .brand-name-icons {
+          border-left-color: var(--lighterGrey);
+        }
       }
     }
   }

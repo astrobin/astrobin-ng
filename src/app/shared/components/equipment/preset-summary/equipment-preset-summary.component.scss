@@ -1,0 +1,24 @@
+.preset-image {
+  max-width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.preset-description {
+  margin-bottom: 3rem;
+}
+
+.equipment-item {
+  cursor: pointer;
+
+  ::ng-deep {
+    color: var(--lightestGrey);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      ::ng-deep {
+        color: var(--white);
+      }
+    }
+  }
+}

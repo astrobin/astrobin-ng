@@ -34,8 +34,9 @@
       <div class="d-flex flex-row flex-wrap gap-3 align-items-center">
         <div *ngFor="let preset of presets">
           <astrobin-equipment-preset
-            [preset]="preset"
             (presetClicked)="onPresetClicked($event)"
+            [buttonOverlayLabel]="'Apply' | translate"
+            [preset]="preset"
           ></astrobin-equipment-preset>
         </div>
 

@@ -207,7 +207,7 @@ export class ImageEditPageComponent
       })
     );
 
-    this.store$.dispatch(new FindEquipmentPresets());
+    this.store$.dispatch(new FindEquipmentPresets({ userId: this.imageEditService.model.user }));
 
     this.route.fragment.pipe(takeUntil(this.destroyed$)).subscribe((fragment: string) => {
       if (fragment === "3") {

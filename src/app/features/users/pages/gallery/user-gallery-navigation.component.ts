@@ -18,7 +18,14 @@ import { DeviceService } from "@shared/services/device.service";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
 import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
 
-type GalleryNavigationComponent = "gallery" | "staging" | "about";
+type GalleryNavigationComponent =
+  "gallery" |
+  "staging" |
+  "smart-folders" |
+  "equipment" |
+  "marketplace" |
+  "about" |
+  "trash";
 
 @Component({
   selector: "astrobin-user-gallery-navigation",
@@ -121,7 +128,7 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
               ></astrobin-user-gallery-smart-folders>
 
               <astrobin-user-gallery-images
-                *ngIf="activeSmartFolderType && activeSmartFolder"
+                *ngIf="activeSmartFolderType && activeSmartFolder !== null && activeSmartFolder !== undefined"
                 [activeLayout]="activeLayout"
                 [user]="user"
                 [userProfile]="userProfile"
@@ -130,6 +137,35 @@ type GalleryNavigationComponent = "gallery" | "staging" | "about";
                   currentUserWrapper.user?.id === user.id &&
                   userProfile.displayWipImagesOnPublicGallery,
                 subsection: activeSmartFolderType,
+                active: activeSmartFolder,
+                q: searchModel
+              }"
+              ></astrobin-user-gallery-images>
+            </ng-template>
+          </li>
+
+          <li ngbNavItem="equipment">
+            <a ngbNavLink>
+              <fa-icon icon="camera" class="me-2"></fa-icon>
+              <span translate="Equipment"></span>
+            </a>
+            <ng-template ngbNavContent>
+              <astrobin-user-gallery-equipment
+                (activeEquipmentItemChange)="activeSmartFolder = $event"
+                [user]="user"
+                [userProfile]="userProfile"
+              ></astrobin-user-gallery-equipment>
+
+              <astrobin-user-gallery-images
+                *ngIf="activeSmartFolder !== null && activeSmartFolder !== undefined"
+                [activeLayout]="activeLayout"
+                [user]="user"
+                [userProfile]="userProfile"
+                [options]="{
+                includeStagingArea:
+                  currentUserWrapper.user?.id === user.id &&
+                  userProfile.displayWipImagesOnPublicGallery,
+                subsection: SmartFolderType.GEAR,
                 active: activeSmartFolder,
                 q: searchModel
               }"
@@ -302,28 +338,6 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     this._setFindImageOptions();
   }
 
-  private _setFindImageOptions() {
-    this.searchModel = this.route.snapshot.queryParamMap.get("q");
-    this.currentUserWrapper$.pipe(take(1)).subscribe(currentUserWrapper => {
-      this.publicGalleryOptions = {
-        includeStagingArea:
-          currentUserWrapper.user?.id === this.user.id &&
-          (
-            currentUserWrapper.userProfile?.displayWipImagesOnPublicGallery ||
-            !!this.collectionId
-          ),
-        collection: this.collectionId,
-        q: this.searchModel,
-        subsection: this.userProfile?.defaultGallerySorting === DefaultGallerySortingOption.TITLE ? "title" : null
-      }
-
-      this.stagingAreaOptions = {
-        onlyStagingArea: currentUserWrapper.user?.id === this.user.id,
-        q: this.searchModel
-      }
-    });
-  }
-
   ngAfterViewInit() {
     if (this.isBrowser) {
       const navTabsElement = this.elementRef.nativeElement.querySelector(".nav-tabs");
@@ -398,6 +412,28 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     };
   }
 
+  private _setFindImageOptions() {
+    this.searchModel = this.route.snapshot.queryParamMap.get("q");
+    this.currentUserWrapper$.pipe(take(1)).subscribe(currentUserWrapper => {
+      this.publicGalleryOptions = {
+        includeStagingArea:
+          currentUserWrapper.user?.id === this.user.id &&
+          (
+            currentUserWrapper.userProfile?.displayWipImagesOnPublicGallery ||
+            !!this.collectionId
+          ),
+        collection: this.collectionId,
+        q: this.searchModel,
+        subsection: this.userProfile?.defaultGallerySorting === DefaultGallerySortingOption.TITLE ? "title" : null
+      };
+
+      this.stagingAreaOptions = {
+        onlyStagingArea: currentUserWrapper.user?.id === this.user.id,
+        q: this.searchModel
+      };
+    });
+  }
+
   private _setActiveTabFromRoute() {
     const fragment = this.route.snapshot.fragment;
     if (fragment) {
@@ -428,4 +464,6 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     this.activeSmartFolderType = this.route.snapshot.queryParamMap.get("folder-type") as SmartFolderType;
     this.activeSmartFolder = this.route.snapshot.queryParamMap.get("active");
   }
+
+  protected readonly SmartFolderType = SmartFolderType;
 }
