@@ -29,12 +29,12 @@
       white-space: nowrap;
 
       &.active {
-        color: var(--white);
+        color: var(--textOnAccentColor);
       }
 
       &:not(.active):hover {
         background: none;
-        color: var(--accentColor);
+        color: var(--white);
       }
 
       .dropdown {

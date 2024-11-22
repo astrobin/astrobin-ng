@@ -246,12 +246,13 @@
       }
     }
 
-    @media screen and (max-width: $md-max) {
+    @media screen and (max-width: $lg-max) {
       .indexes {
-        color: var(--darkerAccentColor);
+        font-size: 80%;
+        color: var(--lightGrey);
 
         .index {
-          border-bottom-color: var(--darkerAccentColor);
+          border-bottom: 1px dotted var(--textOnAccentColor);
         }
       }
     }
