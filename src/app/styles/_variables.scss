@@ -38,11 +38,9 @@ $bronze: #cd7f32;
 $text-on-info: $white;
 $info-light: lighten($info, 5%);
 
-$success: $success;
-$text-on-success: darken($success, 25%);
+$text-on-success: lighten($success, 15%);
 $successSecondary: lighten($success, 30%);
 
-$warning: $warning;
 $text-on-warning: $black;
 
 $error: $danger;
