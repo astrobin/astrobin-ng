@@ -438,17 +438,17 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     }
 
     if (UtilsService.isImage(filename)) {
-      if (size > 200 * MB) {
+      if (size > 300 * MB) {
         message =
           this.translateService.instant(
             "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
-            "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
-            "~8000x8000 pixels will work. Feel free to give it a shot tho!"
+            "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 500 MB or " +
+            "~16000x16000 pixels will work. Feel free to give it a shot tho!"
           ) +
           " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
           this.translateService.instant("Learn more") +
           "</a>";
-      } else if (size > 25 * MB) {
+      } else if (size > 100 * MB) {
         message =
           this.translateService.instant(
             "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
