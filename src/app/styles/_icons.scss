@@ -11,3 +11,13 @@ fa-icon .fa-2x {
 [icon='arrow-up'] {
   transform: rotate(25deg);
 }
+
+.high-contrast .badges .ng-fa-icon {
+  &.iotd,
+  &.top-pick,
+  &.top-pick-nomination,
+  &.iotd-queue,
+  &.collaborators {
+    color: var(--darkestGrey);
+  }
+}
