@@ -7,6 +7,7 @@ import { NoScrollDirective } from "@shared/directives/no-scroll/no-scroll.direct
 import { ScrollToggleDirective } from "@shared/directives/scroll-toggle.directive";
 import { StickyDirective } from "@shared/directives/sticky-active.directive";
 import { MasonryLayoutDirective } from "@shared/directives/masonry-layout.directive";
+import { DynamicRouterLinkDirective } from "@shared/directives/dynamic-router-link.directive";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { MasonryLayoutDirective } from "@shared/directives/masonry-layout.direct
     NoScrollDirective,
     ScrollToggleDirective,
     StickyDirective,
-    MasonryLayoutDirective
+    MasonryLayoutDirective,
+    DynamicRouterLinkDirective
   ],
   exports: [
     EventPreventDefaultDirective,
@@ -25,7 +27,8 @@ import { MasonryLayoutDirective } from "@shared/directives/masonry-layout.direct
     NoScrollDirective,
     ScrollToggleDirective,
     StickyDirective,
-    MasonryLayoutDirective
+    MasonryLayoutDirective,
+    DynamicRouterLinkDirective
   ],
   imports: [CommonModule]
 })

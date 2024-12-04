@@ -247,14 +247,14 @@ export const equipmentRoutes: Routes = [
         }
       },
       {
-        path: "listing/:hash",
+        path: "listing/:hashOrId",
         component: MarketplaceListingPageComponent,
         resolve: {
           listing: MarketplaceListingResolver
         }
       },
       {
-        path: "listing/:hash/:slug",
+        path: "listing/:hashOrId/:slug",
         component: MarketplaceListingPageComponent,
         resolve: {
           listing: MarketplaceListingResolver

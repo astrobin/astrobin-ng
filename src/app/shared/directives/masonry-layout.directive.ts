@@ -1,12 +1,17 @@
-import { Directive, Input, Output, EventEmitter, OnChanges, SimpleChanges, Renderer2, Inject, OnInit, HostListener } from "@angular/core";
+import { Directive, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { DeviceService } from "@shared/services/device.service";
 import { DOCUMENT } from "@angular/common";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
+import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 
 export type MasonryLayoutGridItem =
-  (ImageSearchInterface | ImageInterface) & { objectPosition?: string, displayHeight?: number, displayWidth?: number };
+  (ImageSearchInterface | ImageInterface | FeedItemInterface) & {
+  objectPosition?: string,
+  displayHeight?: number,
+  displayWidth?: number
+};
 
 @Directive({
   selector: "[astrobinMasonryLayout]"
@@ -14,14 +19,15 @@ export type MasonryLayoutGridItem =
 export class MasonryLayoutDirective implements OnInit, OnChanges {
   @Input("astrobinMasonryLayout") items: MasonryLayoutGridItem[] = [];
   @Input() activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.TINY;
-  @Output() gridItemsChange = new EventEmitter<{ gridItems: MasonryLayoutGridItem[], averageHeight: number}>();
+  @Output() gridItemsChange = new EventEmitter<{ gridItems: MasonryLayoutGridItem[], averageHeight: number }>();
 
   averageHeight: number = 200;
 
   constructor(
     private deviceService: DeviceService,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this._setAverageSizeForAlias();
@@ -34,7 +40,7 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
     }
   }
 
-  @HostListener('window:resize')
+  @HostListener("window:resize")
   onResize(): void {
     this._setAverageSizeForAlias();
     this._assignWidthsToGridItems();
@@ -87,7 +93,7 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
         ...image,
         displayWidth: width,
         displayHeight: height,
-        objectPosition: this._getObjectPosition(image),
+        objectPosition: this._getObjectPosition(image)
       });
     });
 
@@ -103,7 +109,7 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
       160, 180, 200, 220, 240, 280,
       300, 320, 360, 380, 400, 420, 480,
       500, 520, 560, 600, 620, 660, 680,
-      720, 760, 800, 860, 920,
+      720, 760, 800, 860, 920
     ];
 
     let height: number;
@@ -134,16 +140,20 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
     return { width: bestWidth, height };
   }
 
-  private _getObjectPosition(image: ImageSearchInterface | ImageInterface): string {
-    if (!image.squareCropping) {
-      return '50% 50%'; // Fallback to center
+  private _getObjectPosition(image: ImageSearchInterface | ImageInterface | FeedItemInterface): string {
+    if (!image.hasOwnProperty("squareCropping")) {
+      return "50% 50%"; // Fallback to center
     }
 
-    const coords = image.squareCropping.split(',').map(Number);
+    if (!(image as (ImageSearchInterface | ImageInterface)).squareCropping) {
+      return "50% 50%"; // Fallback to center
+    }
+
+    const coords = (image as (ImageSearchInterface | ImageInterface)).squareCropping.split(",").map(Number);
 
     // Validate that we have exactly 4 numeric coordinates
     if (coords.length !== 4 || coords.some(isNaN)) {
-      return '50% 50%'; // Fallback to center if parsing failed
+      return "50% 50%"; // Fallback to center if parsing failed
     }
 
     let [x1, y1, x2, y2] = coords;
@@ -164,19 +174,27 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
     return `${positionX}% ${positionY}%`;
   }
 
-  private _getW(image: ImageSearchInterface | ImageInterface) {
+  private _getW(image: ImageSearchInterface | ImageInterface | FeedItemInterface) {
     if (image.hasOwnProperty("finalW")) {
       return (image as ImageSearchInterface).finalW;
     }
 
-    return image.w;
+    if (image.hasOwnProperty("w")) {
+      return (image as ImageInterface).w;
+    }
+
+    return 200;
   }
 
-  private _getH(image: ImageSearchInterface | ImageInterface) {
+  private _getH(image: ImageSearchInterface | ImageInterface | FeedItemInterface) {
     if (image.hasOwnProperty("finalH")) {
       return (image as ImageSearchInterface).finalH;
     }
 
-    return image.h;
+    if (image.hasOwnProperty("h")) {
+      return (image as ImageInterface).h;
+    }
+
+    return 200;
   }
 }

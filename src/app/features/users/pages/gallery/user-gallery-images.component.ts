@@ -74,6 +74,9 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
         [astrobinMasonryLayout]="images"
         [activeLayout]="activeLayout"
         class="masonry-layout-container"
+        [class.layout-tiny]="activeLayout === UserGalleryActiveLayout.TINY"
+        [class.layout-small]="activeLayout === UserGalleryActiveLayout.SMALL"
+        [class.layout-large]="activeLayout === UserGalleryActiveLayout.LARGE"
       >
         <ng-container *ngIf="gridItems?.length > 0">
           <a
@@ -96,8 +99,10 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
               [style.object-position]="item.objectPosition"
               fill
             />
-            <ng-container *ngTemplateOutlet="iconsTemplate; context: { image: item }"></ng-container>
-            <ng-container *ngTemplateOutlet="hoverTemplate; context: { image: item }"></ng-container>
+
+            <astrobin-image-icons [image]="item"></astrobin-image-icons>
+            <astrobin-image-hover [image]="item"></astrobin-image-hover>
+
             <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
             <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image: item }"></ng-container>
           </a>
@@ -107,7 +112,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
       <div
         *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TINY"
         @fadeInOut
-        class="masonry-layout-container tiny"
+        class="masonry-layout-container layout-tiny"
       >
         <a
           *ngFor="let image of images"
@@ -125,8 +130,9 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
             [height]="130"
           />
 
-          <ng-container *ngTemplateOutlet="iconsTemplate; context: { image }"></ng-container>
-          <ng-container *ngTemplateOutlet="hoverTemplate; context: { image }"></ng-container>
+          <astrobin-image-icons [image]="image"></astrobin-image-icons>
+          <astrobin-image-hover [image]="image"></astrobin-image-hover>
+
           <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
           <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image }"></ng-container>
         </a>
@@ -181,86 +187,6 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
     <div *ngIf="loadingMore && !loading" class="loading">
       <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
     </div>
-
-    <ng-template #iconsTemplate let-image="image">
-      <fa-icon *ngIf="image.isPlayable" icon="play"></fa-icon>
-
-      <fa-icon
-        *ngIf="image.isWip"
-        [ngbTooltip]="'This image is in your staging area' | translate"
-        container="body"
-        triggers="hover click"
-        icon="lock"
-        class="wip-icon"
-      ></fa-icon>
-
-      <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="badges">
-        <fa-icon
-          *ngIf="image.isIotd"
-          class="iotd"
-          icon="trophy"
-          [ngbTooltip]="'Image of the Day' | translate"
-          container="body"
-        ></fa-icon>
-
-        <fa-icon
-          *ngIf="!image.isIotd && image.isTopPick"
-          class="top-pick"
-          icon="star"
-          [ngbTooltip]="'Top Pick' | translate"
-          container="body"
-        ></fa-icon>
-
-        <fa-icon
-          *ngIf="!image.isIotd && !image.isTopPick && image.isTopPickNomination"
-          class="top-pick-nomination"
-          icon="arrow-up"
-          [ngbTooltip]="'Top Pick Nomination' | translate"
-          container="body"
-        ></fa-icon>
-
-        <fa-icon
-          *ngIf="currentUserWrapper.user?.id === image.id && !image.isIotd && !image.isTopPick && !image.isTopPickNomination && image.isInIotdQueue"
-          class="in-iotd-queue"
-          icon="gavel"
-          [ngbTooltip]="'Currently in the IOTD/TP queues' | translate"
-          container="body"
-        ></fa-icon>
-
-        <fa-icon
-          *ngIf="image.collaborators?.length"
-          class="collaborators"
-          icon="users"
-        ></fa-icon>
-      </div>
-    </ng-template>
-
-    <ng-template #hoverTemplate let-image="image">
-      <div class="hover d-flex align-items-end gap-2">
-        <div class="flex-grow-1">
-          <div class="title">{{ image.title }}</div>
-          <div *ngIf="image.published" class="published">{{ image.published | localDate | timeago }}</div>
-          <div *ngIf="!image.published && image.uploaded"
-               class="uploaded">{{ image.uploaded | localDate | timeago }}
-          </div>
-        </div>
-
-        <div class="counters d-flex flex-column gap-1">
-          <div class="counter likes">
-            <fa-icon icon="thumbs-up"></fa-icon>
-            <span class="value">{{ image.likeCount }}</span>
-          </div>
-          <div class="counter bookmarks">
-            <fa-icon icon="bookmark"></fa-icon>
-            <span class="value">{{ image.bookmarkCount }}</span>
-          </div>
-          <div class="counter comments">
-            <fa-icon icon="comment"></fa-icon>
-            <span class="value">{{ image.commentCount }}</span>
-          </div>
-        </div>
-      </div>
-    </ng-template>
 
     <ng-template #menuTemplate let-image="image">
       <astrobin-user-gallery-image-menu
@@ -455,30 +381,30 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       navigationContext,
       this.viewContainerRef,
       true
-    );
+    ).subscribe(slideshow => {
+      this._slideshowComponent = slideshow.instance;
 
-    this._slideshowComponent = slideshow.instance;
+      if (this._nearEndOfContextSubscription) {
+        this._nearEndOfContextSubscription.unsubscribe();
+      }
 
-    if (this._nearEndOfContextSubscription) {
-      this._nearEndOfContextSubscription.unsubscribe();
-    }
+      this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
+        .pipe(
+          filter(callerComponentId => callerComponentId === this.componentId)
+        )
+        .subscribe(() => {
+          if (
+            this.loading ||
+            this.loadingMore ||
+            this.next === null
+          ) {
+            return;
+          }
 
-    this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
-      .pipe(
-        filter(callerComponentId => callerComponentId === this.componentId)
-      )
-      .subscribe(() => {
-        if (
-          this.loading ||
-          this.loadingMore ||
-          this.next === null
-        ) {
-          return;
-        }
-
-        this.page++;
-        this._getImages();
-      });
+          this.page++;
+          this._getImages();
+        });
+    });
   }
 
   protected onImageDeleted(imageId: ImageInterface["pk"]): void {

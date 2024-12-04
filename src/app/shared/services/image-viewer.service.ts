@@ -17,6 +17,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { Observable } from "rxjs";
 
 export interface ImageViewerNavigationContextItem {
   imageId: ImageInterface["hash"] | ImageInterface["pk"];
@@ -85,7 +86,7 @@ export class ImageViewerService extends BaseService {
         [],
         viewContainerRef,
         false
-      );
+      ).subscribe();
     }
   }
 
@@ -96,46 +97,50 @@ export class ImageViewerService extends BaseService {
     navigationContext: ImageViewerNavigationContext,
     viewContainerRef: ViewContainerRef,
     pushState: boolean
-  ): ComponentRef<ImageViewerSlideshowComponent> {
+  ): Observable<ComponentRef<ImageViewerSlideshowComponent>> {
     if (!this._isBrowser) {
       return;
     }
 
-    if (!this.slideshow) {
-      this._previousTitle = this.titleService.getTitle();
-      this._previousDescription = this.titleService.getDescription();
-      this._previousUrl = this.windowRefService.getCurrentUrl().toString();
+    return new Observable(observer => {
+      if (!this.slideshow) {
+        this._previousTitle = this.titleService.getTitle();
+        this._previousDescription = this.titleService.getDescription();
+        this._previousUrl = this.windowRefService.getCurrentUrl().toString();
 
-      this.slideshow = viewContainerRef.createComponent(ImageViewerSlideshowComponent);
+        this.slideshow = viewContainerRef.createComponent(ImageViewerSlideshowComponent);
 
-      this._stopBodyScrolling();
+        this._stopBodyScrolling();
 
-      this.slideshow.instance.closeSlideshow.pipe(take(1)).subscribe(pushState => {
-        this.closeSlideShow(pushState);
-        this.titleService.setTitle(this._previousTitle);
-        this.titleService.setDescription(this._previousDescription);
-        this.titleService.updateMetaTag({ property: "og:url", content: this._previousUrl });
-      });
+        this.slideshow.instance.closeSlideshow.pipe(take(1)).subscribe(pushState => {
+          this.closeSlideShow(pushState);
+          this.titleService.setTitle(this._previousTitle);
+          this.titleService.setDescription(this._previousDescription);
+          this.titleService.updateMetaTag({ property: "og:url", content: this._previousUrl });
+        });
 
-      this.slideshow.instance.imageChange.subscribe((image: ImageInterface) => {
-        if (isPlatformBrowser(this.platformId)) {
-          let url = this.windowRefService.getCurrentUrl().href;
-          url = UtilsService.addOrUpdateUrlParam(url, "i", image.hash || image.pk.toString());
-          this.windowRefService.pushState({ imageId: image.hash || image.pk }, url);
+        this.slideshow.instance.imageChange.subscribe((image: ImageInterface) => {
+          if (isPlatformBrowser(this.platformId)) {
+            let url = this.windowRefService.getCurrentUrl().href;
+            url = UtilsService.addOrUpdateUrlParam(url, "i", image.hash || image.pk.toString());
+            this.windowRefService.pushState({ imageId: image.hash || image.pk }, url);
+          }
+        });
+      }
+
+      this.slideshow.instance.setCallerComponentId(callerComponentId);
+      this.slideshow.instance.setNavigationContext(navigationContext);
+      this.slideshow.instance.setImage(imageId, revisionLabel, pushState).subscribe({
+        next: () => {
+          observer.next(this.slideshow);
+          observer.complete();
+        },
+        error: () => {
+          this.closeSlideShow(false);
+          observer.error();
         }
       });
-    }
-
-    this.slideshow.instance.setCallerComponentId(callerComponentId);
-    this.slideshow.instance.setNavigationContext(navigationContext);
-    this.slideshow.instance.setImage(imageId, revisionLabel, pushState).subscribe({
-      next: () => {
-      },
-      error: () => {
-        this.closeSlideShow(false);
-      }
     });
-    return this.slideshow;
   }
 
   closeSlideShow(pushState: boolean): void {

@@ -21,7 +21,7 @@
 <ng-template #astrobinLogoTemplate>
   <a
     *ngIf="!showMobileSearch"
-    [href]="classicRoutesService.HOME"
+    routerLink="/"
     class="navbar-brand p-0 ps-3 pe-2 w-100 d-inline-block me-0 me-lg-3"
   >
     <img alt="AstroBin" class="d-block d-sm-none d-lg-block" src="assets/images/nav-logo.png?v=3" />
@@ -310,7 +310,7 @@
       class="navbar-nav mr-lg-auto mb-0 order-1 order-lg-0 justify-content-center"
     >
       <li class="nav-item">
-        <a [href]="classicRoutesService.HOME" class="nav-link d-lg-none">
+        <a routerLink="/" class="nav-link d-lg-none">
           {{ "Home" | translate }}
         </a>
       </li>

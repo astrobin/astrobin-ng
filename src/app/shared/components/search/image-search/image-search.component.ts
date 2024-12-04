@@ -172,7 +172,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   private _openImageByImageViewer(image: ImageSearchInterface): void {
-    const slideshow = this.imageViewerService.openSlideshow(
+    this.imageViewerService.openSlideshow(
       this.componentId,
       image.hash || image.objectId,
       FINAL_REVISION_LABEL,
@@ -182,27 +182,27 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       })),
       this.viewContainerRef,
       true
-    );
+    ).subscribe(slideshow => {
+      if (this._nearEndOfContextSubscription) {
+        this._nearEndOfContextSubscription.unsubscribe();
+      }
 
-    if (this._nearEndOfContextSubscription) {
-      this._nearEndOfContextSubscription.unsubscribe();
-    }
-
-    this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
-      .pipe(
-        filter(callerComponentId => callerComponentId === this.componentId),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe(() => {
-        this.loadMore().subscribe(() => {
-          slideshow.instance.setNavigationContext(
-            this.results.map(result => ({
-              imageId: result.hash || result.objectId,
-              thumbnailUrl: result.galleryThumbnail
-            }))
-          );
+      this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
+        .pipe(
+          filter(callerComponentId => callerComponentId === this.componentId),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe(() => {
+          this.loadMore().subscribe(() => {
+            slideshow.instance.setNavigationContext(
+              this.results.map(result => ({
+                imageId: result.hash || result.objectId,
+                thumbnailUrl: result.galleryThumbnail
+              }))
+            );
+          });
         });
-      });
+    });
   }
 
   private _removeDuplicateRetailers(listings: any[]): any[] {

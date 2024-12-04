@@ -1,0 +1,72 @@
+:host {
+  transition: opacity .25s ease-in-out;
+}
+
+.wip-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: var(--white);
+}
+
+[icon="play"] {
+  position: absolute;
+  font-size: 2rem;
+  line-height: 1rem;
+  color: var(--lightestGrey);
+  top: calc(50% - 1rem);
+  left: calc(50% - .75rem);
+  opacity: .75;
+}
+
+.badges {
+  display: flex;
+  justify-content: flex-start;
+  gap: .25rem;
+  position: absolute;
+  top: .375rem;
+  left: .375rem;
+
+  [icon] {
+    font-size: .75rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+    text-align: center;
+    line-height: 1.35rem;
+    color: var(--brightWhite);
+    border: 1px solid var(--brightWhite);
+
+    ::ng-deep svg {
+      filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .4));
+    }
+
+    &.iotd {
+      background-color: var(--gold);
+      box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--gold) 0 0 10px;
+    }
+
+    &.top-pick {
+      line-height: 1.35rem;
+      background-color: var(--silver);
+      box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--silver) 0 0 10px;
+    }
+
+    &.top-pick-nomination {
+      background-color: var(--bronze);
+      box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--bronze) 0 0 10px;
+    }
+
+    &.in-iotd-queue {
+      background-color: var(--successColor);
+      box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--successColor) 0 0 10px;
+    }
+
+    &.collaborators {
+      background-color: var(--secondaryAccentColor);
+      box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--bronze) 0 0 10px;
+    }
+  }
+}

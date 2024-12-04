@@ -37,133 +37,6 @@
       transition: filter .25s ease-in-out;
     }
 
-    > [icon="play"] {
-      position: absolute;
-      font-size: 2rem;
-      line-height: 1rem;
-      color: var(--lightestGrey);
-      top: calc(50% - 1rem);
-      left: calc(50% - .75rem);
-      opacity: .75;
-    }
-
-    > .badges {
-      display: flex;
-      justify-content: flex-start;
-      gap: .25rem;
-      position: absolute;
-      top: .375rem;
-      left: .375rem;
-
-      [icon] {
-        font-size: .75rem;
-        width: 1.5rem;
-        height: 1.5rem;
-        border-radius: 1rem;
-        text-align: center;
-        line-height: 1.35rem;
-        color: var(--brightWhite);
-        border: 1px solid var(--brightWhite);
-
-        ::ng-deep svg {
-          filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .4));
-        }
-
-        &.iotd {
-          background-color: var(--gold);
-          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--gold) 0 0 10px;
-        }
-
-        &.top-pick {
-          line-height: 1.35rem;
-          background-color: var(--silver);
-          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--silver) 0 0 10px;
-        }
-
-        &.top-pick-nomination {
-          background-color: var(--bronze);
-          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--bronze) 0 0 10px;
-        }
-
-        &.in-iotd-queue {
-          background-color: var(--successColor);
-          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--successColor) 0 0 10px;
-        }
-
-        &.collaborators {
-          background-color: var(--secondaryAccentColor);
-          box-shadow: rgba(0, 0, 0, .8) 0 1px 5px, var(--bronze) 0 0 10px;
-        }
-      }
-    }
-
-    > .hover {
-      opacity: 0;
-      position: absolute;
-      bottom: 0;
-      padding: .75rem;
-      width: 100%;
-      max-height: 80%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      background: rgba(0, 0, 0, .75);
-      transition: opacity .25s ease-in-out;
-      border-bottom-left-radius: .75rem;
-      border-bottom-right-radius: .75rem;
-      font-size: .85rem;
-      z-index: 2;
-
-      .title {
-        color: var(--lightestGrey);
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        line-clamp: 3;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        /* Firefox */
-        display: -moz-box;
-        -moz-box-orient: vertical;
-        word-break: break-word;
-        hyphens: auto;
-      }
-
-      /* Fallback for browsers without line-clamp support */
-      @supports not ((-webkit-line-clamp: 4) or (line-clamp: 4)) {
-        .title {
-          display: block;
-          max-height: 6em; /* Approximate height for 3 lines (1.5em per line) */
-          position: relative;
-          overflow: hidden;
-        }
-      }
-
-      .published,
-      .uploaded {
-        color: var(--lighterGrey);
-        font-size: .6rem;
-      }
-
-      .counters {
-        .counter {
-          color: var(--lighterGrey);
-          font-size: .65rem;
-          white-space: nowrap;
-
-          .ng-fa-icon {
-            width: 1rem;
-            display: inline-block;
-            text-align: center;
-            margin-right: .25rem;
-          }
-
-          > .value {
-            color: var(--white);
-          }
-        }
-      }
-    }
-
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         > .image-container,
@@ -171,37 +44,13 @@
           filter: brightness(1.5);
         }
 
-        > .hover {
+        > astrobin-image-hover {
           opacity: 1;
         }
-      }
-    }
 
-    @media (max-width: $sm-max) {
-      &.wide {
-        grid-column: span 6;
-      }
-
-      &.medium {
-        grid-column: span 3;
-      }
-
-      &.normal {
-        grid-column: span 3;
-      }
-    }
-
-    @media (max-width: $xs-max) {
-      &.wide {
-        grid-column: span 6;
-      }
-
-      &.medium {
-        grid-column: span 6;
-      }
-
-      &.normal {
-        grid-column: span 6;
+        > astrobin-image-icons {
+          opacity: 0;
+        }
       }
     }
   }
@@ -212,9 +61,19 @@
     margin: 2rem 0;
   }
 
-  &.tiny {
+  &.layout-large {
+    astrobin-image-hover {
+      opacity: 1;
+
+      .counters {
+        flex-direction: row !important;
+      }
+    }
+  }
+
+  &.layout-tiny {
     a {
-      > .hover {
+      astrobin-image-hover {
         font-size: .75rem;
         border-bottom-left-radius: 1.75rem;
         border-bottom-right-radius: 1.75rem;

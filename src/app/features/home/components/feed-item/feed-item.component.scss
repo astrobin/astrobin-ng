@@ -1,0 +1,41 @@
+@import '../../../../styles/mixins';
+
+.feed-item-content {
+  ::ng-deep {
+    .feed-item-header {
+      @include darkest-background-texture;
+      padding: 1rem;
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      gap: 1rem;
+      filter: drop-shadow(0 .25rem 1rem rgba(0, 0, 0, .5));
+      color: var(--lightestGrey);
+
+      .feed-item-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        box-shadow: 0 0 .5rem rgba(0, 0, 0, .75);
+      }
+
+      .feed-item-header-text {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        font-size: .9rem;
+        text-shadow: 0 0 1px rgba(0, 0, 0, .75);
+      }
+    }
+
+    .feed-item-footer {
+      @include darkest-background-texture;
+      padding: .5rem 1rem;
+
+      .feed-item-footer-text {
+        font-size: .9rem;
+        color: var(--lighterGray);
+      }
+    }
+  }
+}

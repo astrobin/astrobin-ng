@@ -1,0 +1,72 @@
+@import '../../../../styles/breakpoints';
+
+$column-count: 3;
+$column-gap: 1.5rem;
+
+$lg_max_column_count: 2;
+$lg_max_column_gap: 1rem;
+
+$sm_max_column_count: 1;
+$sm_max_column_gap: 2rem;
+
+.nav-tabs {
+  justify-content: center;
+  border-bottom: 0;
+
+  .nav-link {
+    border-radius: .75rem;
+
+    &:not(.active) {
+      color: var(--lighterGrey);
+    }
+  }
+}
+
+.global-personal-switcher {
+  text-align: right;
+
+  .ng-fa-icon {
+    font-size: .9rem;
+    cursor: pointer;
+    color: var(--lighterGrey);
+
+    &:first-child {
+      margin-right: .5rem;
+    }
+
+    &.active {
+      color: var(--accentColor);
+      pointer-events: none;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--white);
+      }
+    }
+  }
+}
+
+.feed {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .feed-item {
+    display: block;
+    margin-bottom: $column-gap;
+    box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
+    border-radius: var(--bs-border-radius);
+    overflow: hidden;
+    width: calc(33.333% - 20px);
+
+
+    @media (max-width: $lg-max) {
+      margin-bottom: $lg_max_column_gap;
+    }
+
+    @media (max-width: $sm-max) {
+      margin-bottom: $sm_max_column_gap;
+    }
+  }
+}
