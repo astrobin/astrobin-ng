@@ -10,6 +10,7 @@ import { TranslateService } from "@ngx-translate/core";
   selector: 'astrobin-home',
   template: `
     <div class="page">
+      <astrobin-iotd></astrobin-iotd>
       <astrobin-feed></astrobin-feed>
     </div>
   `,

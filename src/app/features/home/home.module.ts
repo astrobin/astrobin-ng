@@ -12,6 +12,7 @@ import { FeedItemDisplayTextComponent } from './components/feed-item-display-tex
 import { SearchModule } from "@features/search/search.module";
 import { FeedItemMarketplaceListingComponent } from "@features/home/components/feed-item-marketplace-listing/feed-item-marketplace-listing.component";
 import { FeedItemGroupComponent } from "@features/home/components/feed-item-group/feed-item-group.component";
+import { IotdComponent } from './components/iotd/iotd.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { FeedItemGroupComponent } from "@features/home/components/feed-item-grou
     FeedItemRevisionComponent,
     FeedItemDisplayTextComponent,
     FeedItemMarketplaceListingComponent,
-    FeedItemGroupComponent
+    FeedItemGroupComponent,
+    IotdComponent
   ],
   imports: [
     CommonModule,

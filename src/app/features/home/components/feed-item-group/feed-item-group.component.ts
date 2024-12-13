@@ -8,7 +8,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 @Component({
   selector: "astrobin-feed-item-group",
   template: `
-    <div class="feed-item-marketplace-listing">
+    <div class="feed-item-component feed-item-marketplace-listing">
       <div class="feed-item-header">
         <div class="feed-item-header-text">
           <div class="feed-item-header-text-1">
@@ -19,7 +19,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
       <div class="feed-item-body">
         <a [href]="classicRoutesService.GROUP(+feedItem.actionObjectObjectId)">
-          GROUP IMG
+          <img src="/assets/images/actstream-group-action.jpg" alt="" />
         </a>
       </div>
 

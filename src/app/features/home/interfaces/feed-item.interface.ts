@@ -38,10 +38,13 @@ export interface FeedItemInterface {
   actionObjectContentType: number;
 
   image: string;
+  imageW: number;
+  imageH: number;
   thumbnail: string;
   verb: FeedItemVerb,
   description: string;
   timestamp: string;
   public: boolean;
   othersCount: number;
+  data?: any;
 }

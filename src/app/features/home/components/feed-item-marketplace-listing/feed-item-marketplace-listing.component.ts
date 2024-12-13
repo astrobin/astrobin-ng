@@ -7,7 +7,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
 @Component({
   selector: "astrobin-feed-item-marketplace-listing",
   template: `
-    <div class="feed-item-marketplace-listing">
+    <div class="feed-item-component feed-item-marketplace-listing">
       <div class="feed-item-header">
         <img
           class="feed-item-avatar"
@@ -21,7 +21,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
           <div class="feed-item-header-text-1">
             {{ feedItem.actionObjectDisplayName }}
           </div>
-          <div class="form-item-header-text-2">
+          <div class="feed-item-header-text-2">
             <a [routerLink]="['/u', feedItem.actionObjectUserUsername]">
               {{ feedItem.actionObjectUserDisplayName }}
             </a>
@@ -34,6 +34,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
           <img
             [alt]="feedItem.actionObjectDisplayName"
             [src]="feedItem.image"
+            [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
           >
         </a>
       </div>

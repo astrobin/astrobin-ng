@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -112,14 +112,13 @@ enum FeedType {
           [ngbTooltip]="'Personal feed' | translate"
         ></fa-icon>
       </div>
-
     </div>
 
     <div [ngbNavOutlet]="nav"></div>
   `,
   styleUrls: ["./feed.component.scss"]
 })
-export class FeedComponent extends BaseComponentDirective implements OnInit {
+export class FeedComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   @ViewChild("feed") protected feedElement: ElementRef;
 
   protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
@@ -143,6 +142,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit {
   protected loadingMore = false;
   protected next: string | null = null;
 
+  private readonly _isBrowser: boolean;
   private _page = 1;
 
   constructor(
@@ -155,9 +155,11 @@ export class FeedComponent extends BaseComponentDirective implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly renderer: Renderer2
   ) {
     super(store$);
+    this._isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit(): void {
@@ -191,11 +193,16 @@ export class FeedComponent extends BaseComponentDirective implements OnInit {
 
     this.onTabChange(this.activeTab);
 
-    if (isPlatformBrowser(this.platformId)) {
+    if (this._isBrowser) {
       fromEvent(this.windowRefService.nativeWindow, "scroll")
         .pipe(takeUntil(this.destroyed$), throttleTime(200))
         .subscribe(() => this._onScroll());
     }
+  }
+
+  ngOnDestroy() {
+    this._destroyMasonry()
+    super.ngOnDestroy();
   }
 
   onFeedTypeChange(feedType: FeedType) {
@@ -209,6 +216,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit {
     this.next = null;
     this.feedItems = null;
     this.images = null;
+
+    this._destroyMasonry();
     this._loadData();
   }
 
@@ -243,11 +252,12 @@ export class FeedComponent extends BaseComponentDirective implements OnInit {
       this.loading = false;
       this.loadingMore = false;
 
-      this.utilsService.delay(1).subscribe(() => {
+      this.utilsService.delay(100).subscribe(() => {
         if (!this.masonry) {
           this._initMasonry();
         } else {
           this.masonry.reloadItems();
+          this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
           this.masonry.layout();
         }
       });
@@ -291,13 +301,34 @@ export class FeedComponent extends BaseComponentDirective implements OnInit {
   }
 
   private _initMasonry() {
+    if (!this._isBrowser) {
+      return;
+    }
+
     this.masonry = new Masonry(this.feedElement.nativeElement, {
       itemSelector: ".feed-item",
       columnWidth: ".feed-item",
-      gutter: 20,
       percentPosition: true,
+      gutter: 20,
       transitionDuration: "0"
     });
+
+    this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
+    this.masonry.layout();
+  }
+
+  private _masonryLayoutComplete() {
+    const feedItems = this.feedElement.nativeElement.querySelectorAll('.feed-item') as NodeListOf<HTMLElement>;
+    feedItems.forEach(item => {
+      this.renderer.setStyle(item, "opacity", "1");
+    });
+  }
+
+  private _destroyMasonry() {
+    if (this.masonry) {
+      this.masonry.destroy();
+      this.masonry = null
+    }
   }
 
   private _onScroll(): void {

@@ -30,6 +30,9 @@ export interface IotdInterface {
   judge: number;
   image: number;
   date: string;
+  thumbnail: string;
+  title: string;
+  userDisplayNames: string;
 }
 
 export interface HiddenImage {
@@ -60,7 +63,9 @@ export interface DismissedImage {
   created: string;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class IotdApiService extends BaseClassicApiService {
   constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
     super(loadingService);
@@ -209,5 +214,20 @@ export class IotdApiService extends BaseClassicApiService {
         `${this.baseUrl}/iotd/judgement-queue/next-available-selection-time/`
       )
       .pipe(map(response => response.nextAvailableSelectionTime));
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // IOTD
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  getCurrentIotd(): Observable<IotdInterface | null> {
+    return this.http.get<IotdInterface[]>(`${this.baseUrl}/iotd/current-iotd/`).pipe(
+      map(response => {
+        if (response.length === 0) {
+          return null;
+        }
+
+        return response[0];
+      })
+    );
   }
 }

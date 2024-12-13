@@ -17,6 +17,5 @@ export interface TopicInterface {
   slug: string;
   forum: ForumInterface["id"];
   user: UserInterface["id"];
-  subscribers: UserInterface["id"][];
-  readedBy: UserInterface["id"][];
+  read: boolean;
 }

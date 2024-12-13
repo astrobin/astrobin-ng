@@ -55,6 +55,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   showLabel = true;
 
   @Input()
+  showTooltip = true;
+
+  @Input()
   count: number;
 
   // Optionally provided, in case the parent component has this information at hand.
@@ -72,6 +75,8 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   private _toggleProperty: TogglePropertyInterface;
   private _createSubscription: Subscription;
   private _deleteSubscription: Subscription;
+  private _scrollSubscription: Subscription;
+
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -155,6 +160,11 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this._initTogglePropertyIcon();
     }
 
+    // Clean up existing scroll subscription if it exists
+    if (this._scrollSubscription) {
+      this._scrollSubscription.unsubscribe();
+    }
+
     if (isPlatformBrowser(this.platformId)) {
       if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, {
         verticalTolerance: 500
@@ -166,7 +176,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
           ofType(AppActionTypes.FORCE_CHECK_TOGGLE_PROPERTY_AUTO_LOAD)
         );
 
-        merge(
+        this._scrollSubscription = merge(
           // Stream 1: Throttled events during scrolling
           fromEvent(scrollElement, "scroll").pipe(
             throttleTime(300)
@@ -177,12 +187,17 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
           ),
           forceCheck$
         ).pipe(
+          takeUntil(this.destroyed$), // Add this to auto-unsubscribe when component is destroyed
           tap(() => {
             if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, {
               verticalTolerance: 500
             })) {
               this._initStatus();
-            } else {
+              // Unsubscribe once we've initialized
+              if (this._scrollSubscription) {
+                this._scrollSubscription.unsubscribe();
+                this._scrollSubscription = null;
+              }
             }
           })
         ).subscribe();
@@ -199,6 +214,10 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
 
     if (this._deleteSubscription) {
       this._deleteSubscription.unsubscribe();
+    }
+
+    if (this._scrollSubscription) {
+      this._scrollSubscription.unsubscribe();
     }
   }
 
@@ -339,6 +358,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this.utilsService.delay(50).subscribe(() => {
         this._toggleProperty = toggleProperty;
         this.toggled = true;
+        this.count += 1;
         this.loading = false;
         this.changeDetectorRef.markForCheck();
       });
@@ -353,6 +373,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this._toggleProperty = null;
       this.toggled = false;
       this.loading = false;
+      this.count -= 1;
       this.changeDetectorRef.markForCheck();
     });
   }

@@ -4,3 +4,10 @@ img {
   object-fit: cover;
   cursor: pointer;
 }
+
+.comment-body {
+  font-size: .9rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--grey);
+}
