@@ -5,7 +5,6 @@ import { Store } from "@ngrx/store";
 import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 import { FeedApiService } from "@features/home/services/feed-api.service";
 import { FeedService } from "@features/home/services/feed.service";
-import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
 import { take, takeUntil } from "rxjs/operators";
 import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
@@ -15,7 +14,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { fromEvent, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import Masonry from 'masonry-layout';
+import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
 
 enum FeedTab {
   FEED = "FEED",
@@ -130,7 +129,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   protected currentUserProfile: UserProfileInterface;
 
   // For the activity feed.
-  protected masonry: Masonry;
   protected feedItems: FeedItemInterface[] = null;
 
   // For the recent images.
@@ -200,11 +198,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     }
   }
 
-  ngOnDestroy() {
-    this._destroyMasonry()
-    super.ngOnDestroy();
-  }
-
   onFeedTypeChange(feedType: FeedType) {
     this.activeFeedType = feedType;
     this.onTabChange(this.activeTab);
@@ -217,7 +210,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     this.feedItems = null;
     this.images = null;
 
-    this._destroyMasonry();
     this._loadData();
   }
 
@@ -251,17 +243,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     const _cleanUp = () => {
       this.loading = false;
       this.loadingMore = false;
-
-      this.utilsService.delay(100).subscribe(() => {
-        if (!this.masonry) {
-          this._initMasonry();
-        } else {
-          this.masonry.reloadItems();
-          this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
-          this.masonry.layout();
-        }
-      });
-    }
+    };
 
     const _loadFeed = (section: FrontPageSection) => {
       this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
@@ -297,37 +279,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       } else {
         _loadRecent(FrontPageSection.FOLLOWED);
       }
-    }
-  }
-
-  private _initMasonry() {
-    if (!this._isBrowser) {
-      return;
-    }
-
-    this.masonry = new Masonry(this.feedElement.nativeElement, {
-      itemSelector: ".feed-item",
-      columnWidth: ".feed-item",
-      percentPosition: true,
-      gutter: 20,
-      transitionDuration: "0"
-    });
-
-    this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
-    this.masonry.layout();
-  }
-
-  private _masonryLayoutComplete() {
-    const feedItems = this.feedElement.nativeElement.querySelectorAll('.feed-item') as NodeListOf<HTMLElement>;
-    feedItems.forEach(item => {
-      this.renderer.setStyle(item, "opacity", "1");
-    });
-  }
-
-  private _destroyMasonry() {
-    if (this.masonry) {
-      this.masonry.destroy();
-      this.masonry = null
     }
   }
 

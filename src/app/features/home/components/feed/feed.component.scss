@@ -38,29 +38,55 @@
   }
 }
 
-.feed {
-  $gutter: 20px;
+/* Modern browsers - native masonry */
+@supports (grid-template-rows: masonry) {
+  .feed {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: masonry;
+    gap: 1rem;
 
+    @media (min-width: $sm-min) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Large devices (desktops, 992px and up) */
+    @media (min-width: $lg-min) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+/* Fallback for browsers without masonry support */
+@supports not (grid-template-rows: masonry) {
+  .feed {
+    column-count: 1;
+    column-gap: 1rem;
+
+    @media (min-width: $sm-min) {
+      column-count: 2;
+    }
+
+    @media (min-width: $lg-min) {
+      column-count: 3;
+    }
+  }
+
+  .feed-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+}
+
+.feed {
   width: 100%;
   margin: 0 auto;
-  position: relative;
 
   .feed-item {
     display: block;
     border-radius: var(--bs-border-radius);
     box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
     overflow: hidden;
-    width: calc(33.333% - #{$gutter / 1.5});
-    margin-bottom: $gutter;
-    opacity: 0;
-    transition: opacity .2s;
-
-    @media (max-width: $md-max) {
-      width: calc(50% - #{$gutter / 2});
-    }
-
-    @media (max-width: $xs-max) {
-      width: 100%;
-    }
+    position: relative;
   }
 }
