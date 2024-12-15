@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
@@ -6,11 +6,13 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 @Component({
   selector: "astrobin-feed-item-display-text",
   template: `
-    <span [innerHTML]="sanitizedMessage" dynamicRouterLink></span>
+    <span [innerHTML]="message" dynamicRouterLink></span>
   `
 })
-export class FeedItemDisplayTextComponent {
+export class FeedItemDisplayTextComponent implements OnChanges {
   @Input() feedItem!: FeedItemInterface;
+
+  protected message: SafeHtml = "";
 
   constructor(
     private translateService: TranslateService,
@@ -18,12 +20,16 @@ export class FeedItemDisplayTextComponent {
   ) {
   }
 
-  get sanitizedMessage(): SafeHtml {
-    const rawMessage = this.getMessage();
+  ngOnChanges(): void {
+    this.message = this._getSanitizedMessage();
+  }
+
+  private _getSanitizedMessage(): SafeHtml {
+    const rawMessage = this._getMessage();
     return this.sanitizer.bypassSecurityTrustHtml(rawMessage);
   }
 
-  private getMessage(): string {
+  private _getMessage(): string {
     const actorUrl = `/u/${this.feedItem.actorUsername}`;
     const actorLink = `<a
       href="${actorUrl}"

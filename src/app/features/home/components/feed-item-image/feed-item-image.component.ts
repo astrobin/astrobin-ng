@@ -1,4 +1,4 @@
-import { Component, Input, ViewContainerRef } from "@angular/core";
+import { Component, Input, OnChanges, ViewContainerRef } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -20,18 +20,18 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
         <div class="feed-item-header">
           <img
             class="feed-item-avatar"
-            [alt]="getDisplayName()"
-            [ngSrc]="getUserAvatar()"
+            [alt]="displayName"
+            [ngSrc]="userAvatar"
             width="60"
             height="60"
           >
 
           <div class="feed-item-header-text">
             <div class="feed-item-header-text-1">
-              {{ getDisplayName() }}
+              {{ displayName }}
             </div>
             <div class="feed-item-header-text-2">
-              <a [routerLink]="['/u', getUserUsername()]">{{ getDisplayName() }}</a>
+              <a [routerLink]="['/u', userUsername]">{{ userDisplayName }}</a>
             </div>
           </div>
         </div>
@@ -39,7 +39,7 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
         <div class="feed-item-body">
           <img
             (click)="openImage()"
-            [alt]="getDisplayName()"
+            [alt]="displayName"
             [src]="feedItem.image"
             [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
           >
@@ -62,10 +62,12 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
           <div class="feed-item-extra d-flex gap-3 mt-4">
             <astrobin-toggle-property
               *ngIf="currentUserWrapper.user?.username !== feedItem.actionObjectUserUsername"
-              [contentType]="getContentType()"
+              [contentType]="contentType"
               [count]="feedItem.data?.likeCount"
-              [objectId]="+(getObjectId())"
+              [objectId]="+objectId"
               [showLabel]="false"
+              [showLoadingIndicator]="false"
+              [showTooltip]="false"
               [userId]="currentUserWrapper.user?.id"
               class="w-auto m-0"
               btnClass="btn btn-link text-secondary btn-no-block"
@@ -73,18 +75,8 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
             ></astrobin-toggle-property>
 
             <div class="d-flex align-items-center">
-              <fa-icon
-                (click)="openComments()"
-                [ngbTooltip]="'Comment' | translate"
-                [openDelay]="1000"
-                container="body"
-                icon="comment"
-              ></fa-icon>
-
-              <span
-                *ngIf="feedItem.data?.commentCount"
-                class="count"
-              >
+              <fa-icon (click)="openComments()" icon="comment"></fa-icon>
+              <span *ngIf="feedItem.data?.commentCount" class="count">
                 {{ feedItem.data.commentCount }}
               </span>
             </div>
@@ -98,8 +90,15 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
     "./feed-item-image.component.scss"
   ]
 })
-export class FeedItemImageComponent extends BaseComponentDirective {
+export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;
+
+  protected contentType: number;
+  protected objectId: string;
+  protected displayName: string;
+  protected userUsername: string;
+  protected userDisplayName: string;
+  protected userAvatar: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -110,52 +109,19 @@ export class FeedItemImageComponent extends BaseComponentDirective {
     super(store$);
   }
 
-  protected getContentType() {
-    switch (this.feedItem.verb) {
-      case FeedItemVerb.VERB_UPLOADED_IMAGE:
-      case FeedItemVerb.VERB_LIKED_IMAGE:
-      case FeedItemVerb.VERB_BOOKMARKED_IMAGE:
-        return this.feedItem.actionObjectContentType;
-      case FeedItemVerb.VERB_UPLOADED_REVISION:
-      case FeedItemVerb.VERB_COMMENTED_IMAGE:
-        return this.feedItem.targetContentType;
-      default:
-        return null;
-    }
-  }
-
-  protected getObjectId() {
-    switch (this.feedItem.verb) {
-      case FeedItemVerb.VERB_UPLOADED_IMAGE:
-      case FeedItemVerb.VERB_LIKED_IMAGE:
-      case FeedItemVerb.VERB_BOOKMARKED_IMAGE:
-        return this.feedItem.actionObjectObjectId;
-      case FeedItemVerb.VERB_UPLOADED_REVISION:
-      case FeedItemVerb.VERB_COMMENTED_IMAGE:
-        return this.feedItem.targetObjectId;
-      default:
-        return null;
-    }
-  }
-
-  protected getDisplayName() {
-    switch (this.feedItem.verb) {
-      case FeedItemVerb.VERB_UPLOADED_IMAGE:
-      case FeedItemVerb.VERB_LIKED_IMAGE:
-      case FeedItemVerb.VERB_BOOKMARKED_IMAGE:
-        return this.feedItem.actionObjectDisplayName;
-      case FeedItemVerb.VERB_UPLOADED_REVISION:
-      case FeedItemVerb.VERB_COMMENTED_IMAGE:
-        return this.feedItem.targetDisplayName;
-      default:
-        return null;
-    }
+  ngOnChanges(): void {
+    this.contentType = this._getContentType();
+    this.objectId = this._getObjectId();
+    this.displayName = this._getDisplayName();
+    this.userUsername = this._getUserUsername();
+    this.userDisplayName = this._getUserDisplayName();
+    this.userAvatar = this._getUserAvatar();
   }
 
   protected openImage(): void {
     this.imageViewerService.openSlideshow(
       this.componentId,
-      this.getObjectId(),
+      this._getObjectId(),
       FINAL_REVISION_LABEL,
       [],
       this.viewContainerRef,
@@ -163,7 +129,29 @@ export class FeedItemImageComponent extends BaseComponentDirective {
     ).subscribe();
   }
 
-  protected getUserAvatar(): string {
+  protected openComments(): void {
+    this.store$.pipe(
+      select(selectContentTypeById, {
+        id: this._getContentType()
+      }),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      const modalRef = this.modalService.open(NestedCommentsModalComponent);
+      const componentInstance = modalRef.componentInstance as NestedCommentsModalComponent;
+
+      componentInstance.contentType = contentType;
+      componentInstance.objectId = +(this._getObjectId());
+      componentInstance.title = this._getDisplayName();
+      componentInstance.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS;
+    });
+
+    this.store$.dispatch(new LoadContentTypeById({
+      id: this._getContentType()
+    }));
+  }
+
+  private _getUserAvatar(): string {
     switch (this.feedItem.verb) {
       case FeedItemVerb.VERB_UPLOADED_IMAGE:
       case FeedItemVerb.VERB_LIKED_IMAGE:
@@ -177,7 +165,49 @@ export class FeedItemImageComponent extends BaseComponentDirective {
     }
   }
 
-  protected getUserUsername(): string {
+  private _getContentType(): number {
+    switch (this.feedItem.verb) {
+      case FeedItemVerb.VERB_UPLOADED_IMAGE:
+      case FeedItemVerb.VERB_LIKED_IMAGE:
+      case FeedItemVerb.VERB_BOOKMARKED_IMAGE:
+        return this.feedItem.actionObjectContentType;
+      case FeedItemVerb.VERB_UPLOADED_REVISION:
+      case FeedItemVerb.VERB_COMMENTED_IMAGE:
+        return this.feedItem.targetContentType;
+      default:
+        return null;
+    }
+  }
+
+  private _getObjectId(): string {
+    switch (this.feedItem.verb) {
+      case FeedItemVerb.VERB_UPLOADED_IMAGE:
+      case FeedItemVerb.VERB_LIKED_IMAGE:
+      case FeedItemVerb.VERB_BOOKMARKED_IMAGE:
+        return this.feedItem.actionObjectObjectId;
+      case FeedItemVerb.VERB_UPLOADED_REVISION:
+      case FeedItemVerb.VERB_COMMENTED_IMAGE:
+        return this.feedItem.targetObjectId;
+      default:
+        return null;
+    }
+  }
+
+  private _getDisplayName(): string {
+    switch (this.feedItem.verb) {
+      case FeedItemVerb.VERB_UPLOADED_IMAGE:
+      case FeedItemVerb.VERB_LIKED_IMAGE:
+      case FeedItemVerb.VERB_BOOKMARKED_IMAGE:
+        return this.feedItem.actionObjectDisplayName;
+      case FeedItemVerb.VERB_UPLOADED_REVISION:
+      case FeedItemVerb.VERB_COMMENTED_IMAGE:
+        return this.feedItem.targetDisplayName;
+      default:
+        return null;
+    }
+  }
+
+  private _getUserUsername(): string {
     switch (this.feedItem.verb) {
       case FeedItemVerb.VERB_UPLOADED_IMAGE:
       case FeedItemVerb.VERB_LIKED_IMAGE:
@@ -191,7 +221,7 @@ export class FeedItemImageComponent extends BaseComponentDirective {
     }
   }
 
-  protected getUserDisplayName(): string {
+  private _getUserDisplayName(): string {
     switch (this.feedItem.verb) {
       case FeedItemVerb.VERB_UPLOADED_IMAGE:
       case FeedItemVerb.VERB_LIKED_IMAGE:
@@ -203,27 +233,5 @@ export class FeedItemImageComponent extends BaseComponentDirective {
       default:
         return null;
     }
-  }
-
-  protected openComments(): void {
-    this.store$.pipe(
-      select(selectContentTypeById, {
-        id: this.getContentType()
-      }),
-      filter(contentType => !!contentType),
-      take(1)
-    ).subscribe(contentType => {
-      const modalRef = this.modalService.open(NestedCommentsModalComponent);
-      const componentInstance = modalRef.componentInstance as NestedCommentsModalComponent;
-
-      componentInstance.contentType = contentType;
-      componentInstance.objectId = +(this.getObjectId());
-      componentInstance.title = this.getDisplayName();
-      componentInstance.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS;
-    });
-
-    this.store$.dispatch(new LoadContentTypeById({
-      id: this.getContentType()
-    }));
   }
 }

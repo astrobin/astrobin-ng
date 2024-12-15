@@ -47,11 +47,16 @@ enum FeedType {
               class="feed"
             >
               <astrobin-feed-item
-                *ngFor="let item of feedItems"
+                *ngFor="let item of feedItems; trackBy: trackByFn"
                 [feedItem]="item"
                 class="feed-item"
               ></astrobin-feed-item>
             </div>
+
+            <astrobin-loading-indicator
+              *ngIf="loadingMore"
+              class="mt-5"
+            ></astrobin-loading-indicator>
           </ng-template>
         </li>
 
@@ -158,6 +163,10 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
+  }
+
+  trackByFn(index: number, item: FeedItemInterface): string {
+    return '' + item.id
   }
 
   ngOnInit(): void {

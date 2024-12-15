@@ -38,9 +38,26 @@
   }
 }
 
-/* Modern browsers - native masonry */
-@supports (grid-template-rows: masonry) {
-  .feed {
+.feed-viewport {
+  width: 100%;
+}
+
+.feed {
+  width: 100%;
+  margin: 0 auto;
+
+  .feed-item {
+    display: block;
+    border-radius: var(--bs-border-radius);
+    box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
+    overflow: hidden;
+    position: relative;
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+
+  /* Modern browsers - native masonry */
+  @supports (grid-template-rows: masonry) {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: masonry;
@@ -55,11 +72,9 @@
       grid-template-columns: repeat(3, 1fr);
     }
   }
-}
 
-/* Fallback for browsers without masonry support */
-@supports not (grid-template-rows: masonry) {
-  .feed {
+  /* Fallback for browsers without masonry support */
+  @supports not (grid-template-rows: masonry) {
     column-count: 1;
     column-gap: 1rem;
 
@@ -70,23 +85,5 @@
     @media (min-width: $lg-min) {
       column-count: 3;
     }
-  }
-
-  .feed-item {
-    break-inside: avoid;
-    margin-bottom: 1rem;
-  }
-}
-
-.feed {
-  width: 100%;
-  margin: 0 auto;
-
-  .feed-item {
-    display: block;
-    border-radius: var(--bs-border-radius);
-    box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
-    overflow: hidden;
-    position: relative;
   }
 }

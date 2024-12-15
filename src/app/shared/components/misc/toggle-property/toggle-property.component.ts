@@ -58,6 +58,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   showTooltip = true;
 
   @Input()
+  showLoadingIndicator = true;
+
+  @Input()
   count: number;
 
   // Optionally provided, in case the parent component has this information at hand.
@@ -187,7 +190,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
           ),
           forceCheck$
         ).pipe(
-          takeUntil(this.destroyed$), // Add this to auto-unsubscribe when component is destroyed
+          takeUntil(this.destroyed$),
           tap(() => {
             if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, {
               verticalTolerance: 500
