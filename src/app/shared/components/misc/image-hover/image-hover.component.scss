@@ -29,6 +29,11 @@
     hyphens: auto;
   }
 
+  .author {
+    color: var(--lighterGrey);
+    font-size: .85rem;
+  }
+
   /* Fallback for browsers without line-clamp support */
   @supports not ((-webkit-line-clamp: 4) or (line-clamp: 4)) {
     .title {
