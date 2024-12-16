@@ -1,7 +1,31 @@
+@import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
+
 astrobin-iotd {
-  margin: -2rem -2rem 3rem;
+  margin: -2rem 0 1rem;
   border-top-left-radius: .25rem;
   border-top-right-radius: .25rem;
   overflow: hidden;
   display: block;
+
+  @media screen and (min-width: $lg-min) {
+    margin-left: -2rem;
+    margin-right: -2rem;
+    margin-bottom: 3rem;
+  }
+}
+
+.latest-from-the-forums {
+  margin-bottom: 3rem;
+
+  > .header {
+    @include darkest-background-texture;
+    padding: .5rem 1rem;
+
+    h4 {
+      font-size: 1.15rem;
+      margin: 0;
+      color: var(--lightestGrey);
+    }
+  }
 }

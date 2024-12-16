@@ -1,51 +1,144 @@
-<div class="card">
-  <div class="card-header">
-    {{ "Recent forum posts" | translate }}
-  </div>
+<ng-template #headerTemplate>
+  {{ "Recent forum posts" | translate }}
+</ng-template>
 
-  <div class="card-body">
-    <ng-container *ngIf="!loading; else loadingTemplate">
-      <table *ngIf="topics?.length > 0; else noTopicsTemplate" class="table table-striped mb-0">
-        <tbody>
-          <tr *ngFor="let topic of topics">
-            <td class="title">
-              <span *ngIf="topic.postCount < 2" class="text-muted d-inline-block pr-2"
-                >{{ "Unanswered" | translate }}
-              </span>
+<ng-template #footerTemplate>
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <a *ngIf="topics?.length > MAX_TOPICS" class="btn btn-secondary" [href]="forumUrl">
+      {{ "View all" | translate }}
+    </a>
 
-              <a [href]="topicUrl(topic.id)">
-                {{ topic.name }}
+    <a class="btn btn-primary" [href]="forumNewTopicUrl">
+      {{ "New topic" | translate }}
+    </a>
+  </ng-container>
+</ng-template>
+
+<ng-template #tableTemplate>
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <table
+      *ngIf="topics?.length > 0; else noTopicsTemplate"
+      [class.table-striped]="striped"
+      class="table table-sm mb-0"
+    >
+      <tbody>
+      <tr *ngFor="let topic of topics">
+        <td class="title">
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            <a [href]="topicUrl(topic.id)">
+              {{ topic.name }}
+            </a>
+
+            <span *ngIf="!forumId && topic.forumName" class="forum-name">
+              <a [href]="classicRoutesService.FORUM(topic.forum)">
+                [{{ topic.forumName }}]
               </a>
+            </span>
+          </div>
 
-              <div class="meta">
-                <astrobin-username [userId]="topic.user"></astrobin-username>&middot;
-                <abbr [attr.title]="topic.created | localDate">
-                  {{ topic.created | localDate | timeago: true }}
-                </abbr>
-              </div>
-            </td>
+          <div class="meta d-flex gap-1 gap-lg-3 flex-column flex-lg-row">
+            <div class="started">
+              {{ "Started by" | translate }}
+              <astrobin-username [userId]="topic.user"></astrobin-username>&middot;
+              <abbr [attr.title]="topic.created | localDate">
+                {{ topic.created | localDate | timeago: true }}
+              </abbr>
+            </div>
+            <div class="last-post">
+              {{ "Last post by" | translate }}
+              <a [routerLink]="['/u', topic.lastPostUsername]">{{ topic.lastPostUserDisplayName }}</a>&middot;
+              <abbr [attr.title]="topic.lastPostTimestamp | localDate">
+                {{ topic.lastPostTimestamp | localDate | timeago: true }}
+              </abbr>
+            </div>
+          </div>
+        </td>
 
-            <td class="replies d-none d-lg-table-cell">
-              {{ getRepliesMessage(topic.postCount) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </ng-container>
-  </div>
+        <td class="stats d-none d-md-table-cell">
+          <div class="d-flex gap-3">
+            <div>
+              <fa-icon icon="comment" class="me-1"></fa-icon>
+              {{ topic.postCount - 1 }}
+            </div>
 
-  <div class="card-footer">
-    <ng-container *ngIf="!loading; else loadingTemplate">
-      <a *ngIf="topics?.length > MAX_TOPICS" class="btn btn-secondary" [href]="forumUrl">
-        {{ "View all topics" | translate }}
+            <div>
+              <fa-icon icon="eye" class="me-1"></fa-icon>
+              {{ topic.views }}
+            </div>
+          </div>
+        </td>
+
+        <td class="go-to-last-post">
+          <a class="p-3" [href]="classicRoutesService.FORUM_POST(topic.lastPostId.toString())">
+            &rsaquo;
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #noTopicsTemplate>
+  <ng-container *ngIf="!!forumId">
+    <p>
+      <span>
+        {{ "There are no topics in this forum." | translate }}
+      </span>
+      <span>
+      <a [href]="forumNewTopicUrl">
+        {{ "Want to be the first to post?" | translate }}
       </a>
+    </span>
+    </p>
 
-      <a class="btn btn-primary" [href]="forumNewTopicUrl">
-        {{ "New topic" | translate }}
-      </a>
-    </ng-container>
+    <p *ngIf="category?.slug === 'equipment-forums'" class="text-muted">
+      {{
+        "When you start a new discussions here, everybody who has used this equipment item on AstroBin will be notified " +
+        "unless they opted-out." | translate
+      }}
+    </p>
+  </ng-container>
+
+  <ng-container *ngIf="!forumId">
+    <p>
+      {{ "There are no recent topics." | translate }}
+    </p>
+  </ng-container>
+</ng-template>
+
+
+<ng-container *ngIf="useCard">
+  <div class="card">
+    <div *ngIf="showHeader" class="card-header">
+      <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
+    </div>
+
+    <div class="card-body">
+      <ng-container [ngTemplateOutlet]="tableTemplate"></ng-container>
+    </div>
+
+    <div *ngIf="showFooter" class="card-footer">
+      <ng-container [ngTemplateOutlet]="footerTemplate"></ng-container>
+    </div>
   </div>
-</div>
+</ng-container>
+
+<ng-container *ngIf="!useCard">
+  <h4 *ngIf="showHeader">
+    <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
+  </h4>
+
+  <ng-container [ngTemplateOutlet]="tableTemplate"></ng-container>
+
+  <div *ngIf="showFooter">
+    <ng-container [ngTemplateOutlet]="footerTemplate"></ng-container>
+  </div>
+</ng-container>
 
 <div
   *ngIf="category?.slug === 'equipment-forums' && topics?.length > 0"
@@ -53,27 +146,3 @@
   class="category-description"
 >
 </div>
-
-<ng-template #loadingTemplate>
-  <astrobin-loading-indicator></astrobin-loading-indicator>
-</ng-template>
-
-<ng-template #noTopicsTemplate>
-  <p>
-    <span>
-      {{ "There are no topics in this forum." | translate }}
-    </span>
-    <span>
-      <a [href]="forumNewTopicUrl">
-        {{ "Want to be the first to post?" | translate }}
-      </a>
-    </span>
-  </p>
-
-  <p class="text-muted">
-    {{
-      "When you start a new discussions here, everybody who has used this equipment item on AstroBin will be notified " +
-        "unless they opted-out." | translate
-    }}
-  </p>
-</ng-template>

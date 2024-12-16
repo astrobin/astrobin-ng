@@ -23,11 +23,10 @@ $height: 500px;
     background: linear-gradient(
         180deg,
         transparent 0,
-        rgba(0, 0, 0, .5) 40%,
-        rgba(0, 0, 0, .8)
+        rgba(0, 0, 0, .5) 20%,
+        rgba(0, 0, 0, .7)
     );
     width: 100%;
-    height: 100px;
     padding: 1rem 2rem;
 
     .ng-fa-icon[icon="trophy"] {
@@ -36,7 +35,7 @@ $height: 500px;
 
     .iotd-label {
       color: var(--white);
-      font-size: 1.5rem;
+      font-size: 1.75rem;
 
       .text {
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.65);
@@ -61,7 +60,6 @@ $height: 500px;
     .iotd-title {
       color: var(--white);
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-      margin-right: .75rem;
     }
 
     .iotd-users {

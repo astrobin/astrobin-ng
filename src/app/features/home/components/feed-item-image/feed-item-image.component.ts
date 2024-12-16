@@ -28,7 +28,14 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
 
           <div class="feed-item-header-text">
             <div class="feed-item-header-text-1">
-              {{ displayName }}
+              <a
+                (click)="openImage()"
+                [href]="'/i/' + objectId"
+                astrobinEventPreventDefault
+                astrobinEventStopPropagation
+              >
+                {{ displayName }}
+              </a>
             </div>
             <div class="feed-item-header-text-2">
               <a [routerLink]="['/u', userUsername]">{{ userDisplayName }}</a>
@@ -37,20 +44,24 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
         </div>
 
         <div class="feed-item-body">
-          <img
+          <a
             (click)="openImage()"
-            [alt]="displayName"
-            [src]="feedItem.image"
-            [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
+            [href]="'/i/' + objectId"
+            astrobinEventPreventDefault
+            astrobinEventStopPropagation
           >
+            <img
+              [alt]="displayName"
+              [src]="feedItem.image"
+              [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
+            >
+          </a>
         </div>
 
         <div class="feed-item-footer">
           <div class="feed-item-footer-text">
             <astrobin-feed-item-display-text [feedItem]="feedItem"></astrobin-feed-item-display-text>
           </div>
-
-          <span class="timestamp">{{ feedItem.timestamp | localDate | timeago }}</span>
 
           <div
             *ngIf="feedItem.data?.commentHtml"
@@ -59,26 +70,32 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
           >
           </div>
 
-          <div class="feed-item-extra d-flex gap-3 mt-4">
-            <astrobin-toggle-property
-              *ngIf="currentUserWrapper.user?.username !== feedItem.actionObjectUserUsername"
-              [contentType]="contentType"
-              [count]="feedItem.data?.likeCount"
-              [objectId]="+objectId"
-              [showLabel]="false"
-              [showLoadingIndicator]="false"
-              [showTooltip]="false"
-              [userId]="currentUserWrapper.user?.id"
-              class="w-auto m-0"
-              btnClass="btn btn-link text-secondary btn-no-block"
-              propertyType="like"
-            ></astrobin-toggle-property>
+          <div class="feed-item-extra d-flex mt-3 justify-content-between align-items-center">
+            <span class="timestamp">
+              {{ feedItem.timestamp | localDate | timeago }}
+            </span>
 
-            <div class="d-flex align-items-center">
-              <fa-icon (click)="openComments()" icon="comment"></fa-icon>
-              <span *ngIf="feedItem.data?.commentCount" class="count">
+            <div class="d-flex gap-3">
+              <astrobin-toggle-property
+                *ngIf="currentUserWrapper.user?.username !== feedItem.actionObjectUserUsername"
+                [contentType]="contentType"
+                [count]="feedItem.data?.likeCount"
+                [objectId]="+objectId"
+                [showLabel]="false"
+                [showLoadingIndicator]="false"
+                [showTooltip]="false"
+                [userId]="currentUserWrapper.user?.id"
+                class="w-auto m-0"
+                btnClass="btn btn-link text-secondary btn-no-block"
+                propertyType="like"
+              ></astrobin-toggle-property>
+
+              <div class="d-flex align-items-center">
+                <fa-icon (click)="openComments()" icon="comment"></fa-icon>
+                <span *ngIf="feedItem.data?.commentCount" class="count">
                 {{ feedItem.data.commentCount }}
               </span>
+              </div>
             </div>
           </div>
         </div>

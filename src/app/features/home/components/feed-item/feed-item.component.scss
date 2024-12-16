@@ -21,9 +21,9 @@
       min-height: 100px;
       background: linear-gradient(
           180deg,
-          rgba(0, 0, 0, .8) 0,
-          rgba(0, 0, 0, .5) 60%,
-          rgba(0, 0, 0, .3) 80%,
+          rgba(0, 0, 0, .4) 0,
+          rgba(0, 0, 0, .3) 60%,
+          rgba(0, 0, 0, .2) 80%,
           transparent
       );
 
@@ -60,7 +60,7 @@
 
     .feed-item-footer {
       padding: .75rem 1rem;
-      background: var(--black);
+      background: rgba(0, 0, 0, .375);
 
       .feed-item-footer-text {
         font-size: .9rem;

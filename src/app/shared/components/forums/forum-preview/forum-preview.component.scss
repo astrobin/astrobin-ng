@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 .category-description {
   padding: .5rem 1rem;
   background: var(--darkestGrey);
@@ -10,11 +12,18 @@
 .table {
   td {
     vertical-align: middle;
+
+    @media screen and (min-width: $lg-min) {
+      padding: 1rem;
+    }
   }
 
   .title {
+    width: 99%;
+
     a {
-      color: var(--lightestGrey);
+      color: white;
+      font-size: 1.15rem;
       font-weight: bold;
       padding: 2px 0; // avoid gaps in the clickable area if the text is multi-line.
       hyphens: auto;
@@ -25,24 +34,64 @@
       }
     }
 
+    .forum-name {
+      font-size: .9rem;
+      color: var(--lightestGrey);
+
+      a {
+        font-weight: normal;
+        font-size: .9rem;
+        color: var(--lighterGrey);
+        text-decoration: underline dotted var(--lightGrey);
+        text-underline-offset: 2px;
+
+        &:hover {
+          color: var(--accentColor);
+        }
+      }
+    }
+
     .meta {
-      margin-top: .5rem;
+      font-size: .8rem;
+      margin-top: .25rem;
+      color: var(--lighterGrey);
 
       astrobin-username {
         margin-right: .25rem;
 
-        ::ng-deep a {
+        ::ng-deep a .username {
           color: var(--lighterGrey);
+          text-decoration: underline dotted var(--lightGrey);
+          text-underline-offset: 2px;
+          font-size: .8rem;
+
+          &:hover {
+            color: var(--accentColor);
+          }
         }
       }
 
-      white-space: nowrap;
-      color: var(--lighterGrey);
+      a {
+        color: var(--lighterGrey);
+        text-decoration: underline dotted var(--lightGrey);
+        text-underline-offset: 2px;
+        font-size: .8rem;
+        font-weight: normal;
+        margin-right: .25rem;
+      }
     }
   }
 
-  .replies {
-    white-space: nowrap;
+  .stats {
+    font-size: .8rem;
     color: var(--lighterGrey);
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .go-to-last-post {
+    white-space: nowrap;
+    width: 1px;
+    font-size: 2rem;
   }
 }

@@ -29,7 +29,7 @@ enum FeedType {
 @Component({
   selector: "astrobin-feed",
   template: `
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="feed-container d-flex justify-content-between align-items-center mb-3">
       <ul
         ngbNav
         (activeIdChange)="onTabChange($event)"

@@ -1,4 +1,10 @@
 @import '../../../../styles/breakpoints';
+@import '../../../../styles/mixins';
+
+.feed-container {
+  @include darkest-background-texture;
+  padding: 1rem;
+}
 
 .nav-tabs {
   justify-content: center;
@@ -38,10 +44,6 @@
   }
 }
 
-.feed-viewport {
-  width: 100%;
-}
-
 .feed {
   width: 100%;
   margin: 0 auto;
@@ -54,6 +56,10 @@
     position: relative;
     break-inside: avoid;
     margin-bottom: 1rem;
+
+    @media (max-width: $sm-min) {
+      margin-bottom: 2rem;
+    }
   }
 
   /* Modern browsers - native masonry */
