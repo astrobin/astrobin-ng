@@ -149,6 +149,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
 
   private readonly _isBrowser: boolean;
   private _page = 1;
+  private _oldFeedItemsCount = 0;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -257,40 +258,57 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       this.loadingMore = true;
     }
 
-    const _cleanUp = () => {
+    const _cleanUp = (newItemsAdded: boolean) => {
       this.loading = false;
       this.loadingMore = false;
 
-      this.utilsService.delay(100).subscribe(() => {
-        if (!this.masonry) {
-          this._initMasonry();
-        } else {
-          this.masonry.reloadItems();
-          this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
-          this.masonry.layout();
-        }
-      });
+      // Ensure the new items are rendered
+      this.changeDetectorRef.detectChanges();
+
+      if (!this.masonry) {
+        this._initMasonry();
+      } else if (newItemsAdded) {
+        // Find newly added elements
+        const feedItems = this.feedElement.nativeElement.querySelectorAll('.feed-item');
+        // Assuming we know how many items were there before, we can isolate the new ones.
+        // For simplicity, let's say we track the old count and new count:
+        const newElements = Array.from(feedItems).slice(this._oldFeedItemsCount);
+        this._oldFeedItemsCount = feedItems.length;
+
+        // Call appended on just the new elements
+        this.masonry.appended(newElements);
+      }
+
+      this._masonryLayoutComplete();
     }
 
     const _loadFeed = (section: FrontPageSection) => {
       this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
+        const prevCount = this.feedItems?.length || 0;
+
         this.feedItems = this.feedService.removeDuplicates([
           ...(this.feedItems || []),
           ...(feedItems.results as FeedItemInterface[])
         ]);
-        _cleanUp();
+
+        const newItemsAdded = (this.feedItems.length > prevCount);
         this.next = feedItems.next;
+        _cleanUp(newItemsAdded);
       });
     };
 
     const _loadRecent = (section: FrontPageSection) => {
       this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
+        const prevCount = this.images?.length || 0;
+
         this.images = [
           ...this.images || [],
           ...feedItems.results as ImageInterface[]
         ];
-        _cleanUp();
+
+        const newItemsAdded = (this.images.length > prevCount);
         this.next = feedItems.next;
+        _cleanUp(newItemsAdded);
       });
     };
 
@@ -314,6 +332,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       return;
     }
 
+    // Initialize masonry for the first time
     this.masonry = new Masonry(this.feedElement.nativeElement, {
       itemSelector: ".feed-item",
       columnWidth: ".feed-item",
@@ -321,6 +340,10 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       gutter: 20,
       transitionDuration: "0"
     });
+
+    // Keep track of how many items we initially had.
+    const feedItems = this.feedElement.nativeElement.querySelectorAll('.feed-item');
+    this._oldFeedItemsCount = feedItems.length;
 
     this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
     this.masonry.layout();
