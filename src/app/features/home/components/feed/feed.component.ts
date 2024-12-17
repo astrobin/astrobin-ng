@@ -6,7 +6,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
 import { FeedApiService } from "@features/home/services/feed-api.service";
 import { FeedService } from "@features/home/services/feed.service";
 import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
-import { take, takeUntil } from "rxjs/operators";
+import { filter, take, takeUntil } from "rxjs/operators";
 import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
@@ -16,6 +16,7 @@ import { fromEvent, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import Masonry from 'masonry-layout';
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 
 enum FeedTab {
   FEED = "FEED",
@@ -162,10 +163,20 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     public readonly utilsService: UtilsService,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    public readonly router: Router,
+    public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
+
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.imageViewerService.closeSlideShow(false);
+      this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
+    });
   }
 
   trackByFn(index: number, item: FeedItemInterface): string {
