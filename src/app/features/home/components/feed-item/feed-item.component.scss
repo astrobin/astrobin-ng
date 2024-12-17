@@ -6,14 +6,7 @@
       box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
     }
 
-    .feed-item-header {
-      padding: .5rem 1rem;
-      display: flex;
-      justify-content: start;
-      align-items: start;
-      gap: 1rem;
-      filter: drop-shadow(0 .25rem 1rem rgba(0, 0, 0, .5));
-      color: var(--lightestGrey);
+    .feed-item-header-fade {
       position: absolute;
       top: 0;
       left: 0;
@@ -26,6 +19,18 @@
           rgba(0, 0, 0, .2) 80%,
           transparent
       );
+      pointer-events: none;
+    }
+
+    .feed-item-header {
+      padding: .5rem 1rem;
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      gap: 1rem;
+      filter: drop-shadow(0 .25rem 1rem rgba(0, 0, 0, .5));
+      color: var(--lightestGrey);
+      position: absolute;
 
       .feed-item-avatar {
         width: 3rem;

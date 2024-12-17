@@ -17,6 +17,7 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div class="feed-item-component feed-item-image">
+        <div class="feed-item-header-fade"></div>
         <div class="feed-item-header">
           <img
             class="feed-item-avatar"
