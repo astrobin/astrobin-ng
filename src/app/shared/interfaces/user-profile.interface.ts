@@ -90,6 +90,8 @@ export interface UserProfileInterface {
   followingCount: number;
   displayWipImagesOnPublicGallery?: boolean;
   allowAds?: boolean;
+  suspended?: string;
+  suspensionReason?: string;
 }
 
 export interface UserProfileStatsInterface {

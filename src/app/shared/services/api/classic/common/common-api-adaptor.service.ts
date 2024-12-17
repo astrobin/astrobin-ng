@@ -115,6 +115,8 @@ export interface BackendUserProfileInterface {
   following_count?: number;
   display_wip_images_on_public_gallery?: boolean;
   allow_ads?: boolean; // Whether the user allows ads to be shown on their profile.
+  suspended?: string;
+  suspension_reason?: string;
 }
 
 export interface BackendTogglePropertyInterface {
@@ -242,7 +244,9 @@ export class CommonApiAdaptorService extends BaseService {
       followersCount: userProfile.followers_count,
       followingCount: userProfile.following_count,
       displayWipImagesOnPublicGallery: userProfile.display_wip_images_on_public_gallery,
-      allowAds: userProfile.allow_ads
+      allowAds: userProfile.allow_ads,
+      suspended: userProfile.suspended,
+      suspensionReason: userProfile.suspension_reason
     };
   }
 

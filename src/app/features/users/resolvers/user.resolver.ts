@@ -39,6 +39,11 @@ export const UserResolver: ResolveFn<{ user: UserInterface, userProfile: UserPro
         map((action: LoadUserProfileSuccess) => action.payload.userProfile),
         take(1)
       ).subscribe(userProfile => {
+        if (userProfile.suspended) {
+          onError(observer);
+          return;
+        }
+
         observer.next({ user, userProfile });
         observer.complete();
       });
