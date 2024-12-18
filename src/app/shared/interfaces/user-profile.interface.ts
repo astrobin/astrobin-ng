@@ -92,6 +92,7 @@ export interface UserProfileInterface {
   allowAds?: boolean;
   suspended?: string;
   suspensionReason?: string;
+  shadowBans: number[];
 }
 
 export interface UserProfileStatsInterface {

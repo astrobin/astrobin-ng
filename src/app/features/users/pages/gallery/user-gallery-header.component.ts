@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Subject } from "rxjs";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/account/store/auth.actions";
 
 @Component({
   selector: "astrobin-user-gallery-header",
@@ -71,6 +72,24 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
                       [href]="classicRoutesService.SETTINGS"
                       class="dropdown-item"
                       translate="My settings"
+                    ></a>
+                    <a
+                      *ngIf="currentUserWrapper.user?.id !== user.id && !currentUserWrapper.userProfile.shadowBans?.includes(userProfile.id)"
+                      (click)="shadowBan(userProfile.id)"
+                      href="#"
+                      astrobinEventPreventDefault
+                      astrobinEventStopPropagation
+                      class="dropdown-item"
+                      translate="Shadow-ban"
+                    ></a>
+                    <a
+                      *ngIf="currentUserWrapper.user?.id !== user.id && currentUserWrapper.userProfile.shadowBans?.includes(userProfile.id)"
+                      (click)="removeShadowBan(userProfile.id)"
+                      href="#"
+                      astrobinEventPreventDefault
+                      astrobinEventStopPropagation
+                      class="dropdown-item"
+                      translate="Remove shadow-ban"
                     ></a>
                     <a
                       *ngIf="currentUserWrapper.user?.id !== user.id"
@@ -430,6 +449,14 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     this.router.navigateByUrl(`/search?p=${params}`).then(() => {
       this.windowRefService.scroll({ top: 0 });
     });
+  }
+
+  protected shadowBan(userProfileId: UserProfileInterface["id"]) {
+    this.store$.dispatch(new ShadowBanUserProfile({ id: userProfileId }));
+  }
+
+  protected removeShadowBan(userProfileId: UserProfileInterface["id"]) {
+    this.store$.dispatch(new RemoveShadowBanUserProfile({ id: userProfileId }));
   }
 
   private _searchFollowers(searchTerm?: string) {

@@ -14,6 +14,12 @@ astrobin-user-gallery-header {
   height: 16rem;
 }
 
+.shadow-ban-alert {
+  margin: 0 -2rem;
+  border-radius: 0;
+  font-size: .9rem;
+}
+
 @media (max-width: $md-max) {
   astrobin-ad-manager {
     margin: -2rem -.5rem 2rem;

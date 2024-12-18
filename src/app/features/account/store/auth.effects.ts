@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { setTimeagoIntl } from "@app/translate-loader";
-import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage, ChangeUserProfileGalleryHeaderImageFailure, ChangeUserProfileGalleryHeaderImageSuccess, InitializeAuthSuccess, LoadUser, LoadUserFailure, LoadUserProfile, LoadUserProfileFailure, LoadUserProfileSuccess, LoadUserSuccess, Login, LoginFailure, LoginSuccess, LogoutSuccess, UpdateUserProfile, UpdateUserProfileSuccess } from "@features/account/store/auth.actions";
+import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage, ChangeUserProfileGalleryHeaderImageFailure, ChangeUserProfileGalleryHeaderImageSuccess, InitializeAuthSuccess, LoadUser, LoadUserFailure, LoadUserProfile, LoadUserProfileFailure, LoadUserProfileSuccess, LoadUserSuccess, Login, LoginFailure, LoginSuccess, LogoutSuccess, RemoveShadowBanUserProfile, RemoveShadowBanUserProfileFailure, RemoveShadowBanUserProfileSuccess, ShadowBanUserProfile, ShadowBanUserProfileFailure, ShadowBanUserProfileSuccess, UpdateUserProfile, UpdateUserProfileSuccess } from "@features/account/store/auth.actions";
 import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
@@ -18,6 +18,7 @@ import { catchError, concatMap, map, mergeMap, switchMap, tap } from "rxjs/opera
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { selectUser, selectUserByUsername, selectUserProfile } from "@features/account/store/auth.selectors";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Injectable()
 export class AuthEffects {
@@ -163,6 +164,90 @@ export class AuthEffects {
     { dispatch: false }
   );
 
+  ShadowBanUserProfile: Observable<ShadowBanUserProfileSuccess | ShadowBanUserProfileFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.SHADOW_BAN_USER_PROFILE),
+        map((action: ShadowBanUserProfile) => action.payload),
+        switchMap(payload =>
+          this.commonApiService.shadowBanUserProfile(payload.id).pipe(
+            map(response => new ShadowBanUserProfileSuccess({
+              id: payload.id,
+              message: response.message
+            })),
+            catchError(error => of(new ShadowBanUserProfileFailure({ id: payload.id, error })))
+          )
+        )
+      )
+  );
+
+  ShadowBanUserProfileSuccess: Observable<string> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.SHADOW_BAN_USER_PROFILE_SUCCESS),
+        map((action: ShadowBanUserProfileSuccess) => action.payload.message),
+        tap(message => {
+          this.popNotificationsService.success(message);
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  ShadowBanUserProfileFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.SHADOW_BAN_USER_PROFILE_FAILURE),
+        tap(() => {
+          this.popNotificationsService.error("Failed to shadow ban user.");
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  RemoveShadowBanUserProfile: Observable<RemoveShadowBanUserProfileSuccess | RemoveShadowBanUserProfileFailure> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.REMOVE_SHADOW_BAN_USER_PROFILE),
+        map((action: RemoveShadowBanUserProfile) => action.payload),
+        switchMap(payload =>
+          this.commonApiService.removeShadowBanUserProfile(payload.id).pipe(
+            map(response => new RemoveShadowBanUserProfileSuccess({
+              id: payload.id,
+              message: response.message
+            })),
+            catchError(error => of(new RemoveShadowBanUserProfileFailure({ id: payload.id, error })))
+          )
+        )
+      )
+  );
+
+  RemoveShadowBanUserProfileSuccess: Observable<string> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.REMOVE_SHADOW_BAN_USER_PROFILE_SUCCESS),
+        map((action: RemoveShadowBanUserProfileSuccess) => action.payload.message),
+        tap(message => {
+          this.popNotificationsService.success(message);
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  RemoveShadowBanUserProfileFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.REMOVE_SHADOW_BAN_USER_PROFILE_FAILURE),
+        tap(() => {
+          this.popNotificationsService.error("Failed to remove shadow ban from user.");
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
+
   private _getCurrentUser$: Observable<{
     user: UserInterface;
     userProfile: UserProfileInterface;
@@ -285,7 +370,8 @@ export class AuthEffects {
     public readonly loadingService: LoadingService,
     public readonly commonApiService: CommonApiService,
     public readonly translate: TranslateService,
-    public readonly timeagoIntl: TimeagoIntl
+    public readonly timeagoIntl: TimeagoIntl,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
   }
 

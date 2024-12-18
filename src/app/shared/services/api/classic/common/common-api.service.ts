@@ -191,6 +191,18 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     );
   }
 
+  shadowBanUserProfile(userProfileId: UserProfileInterface["id"]): Observable<{ message?: string; detail?: string }> {
+    return this.http.post<{ message?: string; detail?: string }>(
+      this.configUrl + `/userprofiles/${userProfileId}/shadow-ban/`, {}
+    );
+  }
+
+  removeShadowBanUserProfile(userProfileId: UserProfileInterface["id"]): Observable<{ message?: string; detail?: string }> {
+    return this.http.post<{ message?: string; detail?: string }>(
+      this.configUrl + `/userprofiles/${userProfileId}/remove-shadow-ban/`, {}
+    );
+  }
+
   getSubscriptions(): Observable<SubscriptionInterface[]> {
     return this.http.get<SubscriptionInterface[]>(`${this.configUrl}/subscriptions/`);
   }

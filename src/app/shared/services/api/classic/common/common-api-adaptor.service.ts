@@ -117,6 +117,7 @@ export interface BackendUserProfileInterface {
   allow_ads?: boolean; // Whether the user allows ads to be shown on their profile.
   suspended?: string;
   suspension_reason?: string;
+  shadow_bans: number[];
 }
 
 export interface BackendTogglePropertyInterface {
@@ -246,7 +247,8 @@ export class CommonApiAdaptorService extends BaseService {
       displayWipImagesOnPublicGallery: userProfile.display_wip_images_on_public_gallery,
       allowAds: userProfile.allow_ads,
       suspended: userProfile.suspended,
-      suspensionReason: userProfile.suspension_reason
+      suspensionReason: userProfile.suspension_reason,
+      shadowBans: userProfile.shadow_bans
     };
   }
 
