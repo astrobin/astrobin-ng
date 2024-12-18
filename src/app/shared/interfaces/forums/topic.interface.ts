@@ -20,6 +20,8 @@ export interface TopicInterface {
   forum: ForumInterface["id"];
   forumName: ForumInterface["name"];
   user: UserInterface["id"];
+  username: UserInterface["username"];
+  userDisplayName: UserProfileInterface["realName"];
   read: boolean;
   lastPostUsername: UserInterface["username"];
   lastPostUserDisplayName: UserProfileInterface["realName"];

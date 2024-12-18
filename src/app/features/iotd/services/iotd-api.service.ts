@@ -10,6 +10,7 @@ import { ReviewImageInterface } from "@features/iotd/types/review-image.interfac
 import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
 import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { IotdStatsInterface } from "@features/iotd/types/iotd-stats.interface";
 
 export interface SubmissionInterface {
   id: number;
@@ -229,5 +230,9 @@ export class IotdApiService extends BaseClassicApiService {
         return response[0];
       })
     );
+  }
+
+  getStats(): Observable<PaginatedApiResultInterface<IotdStatsInterface>> {
+    return this.http.get<PaginatedApiResultInterface<IotdStatsInterface>>(`${this.baseUrl}/iotd/stats/`);
   }
 }

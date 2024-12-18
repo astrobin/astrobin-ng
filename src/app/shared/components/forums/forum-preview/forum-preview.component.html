@@ -39,7 +39,7 @@
           <div class="meta d-flex gap-1 gap-lg-3 flex-column flex-lg-row">
             <div class="started">
               {{ "Started by" | translate }}
-              <astrobin-username [userId]="topic.user"></astrobin-username>&middot;
+              <a [routerLink]="['/u', topic.username]">{{ topic.userDisplayName }}</a>&middot;
               <abbr [attr.title]="topic.created | localDate">
                 {{ topic.created | localDate | timeago: true }}
               </abbr>

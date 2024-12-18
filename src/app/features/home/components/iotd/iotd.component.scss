@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 $height: 500px;
 
 :host {
@@ -46,7 +48,8 @@ $height: 500px;
         filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.33));
       }
 
-      .info-link {
+      .info-link,
+      .stats-link {
         color: var(--white);
         font-size: .8rem;
         vertical-align: super;
@@ -68,5 +71,73 @@ $height: 500px;
       font-style: italic;
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
+  }
+}
+
+.stats-container {
+  color: var(--lightestGrey);
+}
+
+.stats-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.table-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+
+  th, td {
+    padding: 0.75rem;
+  }
+}
+
+.category-header {
+  text-align: left;
+}
+
+.numeric-header {
+  text-align: right;
+}
+
+.category-cell {
+  text-align: left;
+}
+
+.numeric-cell {
+  text-align: right;
+}
+
+.table-note {
+  font-size: .875rem;
+  color: var(--lightGrey);
+  font-style: italic;
+}
+
+@media (max-width: $sm-max) {
+  .stats-container {
+    padding: 1rem;
+  }
+
+  .stats-table {
+    font-size: .875rem;
+  }
+}
+
+::ng-deep .iotd-stats-offcanvas {
+  &:not(.offcanvas-bottom) {
+    width: 50vw !important;
   }
 }
