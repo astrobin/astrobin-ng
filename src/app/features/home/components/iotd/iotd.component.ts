@@ -37,7 +37,7 @@ import { DeviceService } from "@shared/services/device.service";
         ">
           <fa-icon icon="trophy"></fa-icon>
 
-          <div class="text-center text-sm-left">
+          <div class="text-center text-sm-start">
             <div class="iotd-label">
               <span class="text">{{ "Image of the day" | translate }}</span>
               <a
