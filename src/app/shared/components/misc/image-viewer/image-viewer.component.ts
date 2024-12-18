@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -38,7 +38,7 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 })
 export class ImageViewerComponent
   extends BaseComponentDirective
-  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
+  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy, OnChanges {
   @Input()
   image: ImageInterface;
 
@@ -189,6 +189,12 @@ export class ImageViewerComponent
     this.initialized.emit();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.active && !changes.active.firstChange && changes.active.currentValue) {
+      this._recordHit();
+    }
+  }
+
   ngAfterViewInit() {
     if (this._isBrowser) {
       merge(
@@ -334,7 +340,6 @@ export class ImageViewerComponent
     this._updateSupportsFullscreen();
     this._initAutoOpenFullscreen();
     this._setMouseHoverImage();
-    this._recordHit();
     this._setAd();
 
     // Updates to the current image.
@@ -854,14 +859,14 @@ export class ImageViewerComponent
   }
 
   private _recordHit() {
+    if (!this._isBrowser || !this.active) {
+      return;
+    }
+
     const contentTypePayload = {
       appLabel: "astrobin",
       model: "image"
     };
-
-    if (!this._isBrowser) {
-      return;
-    }
 
     // No need to dispatch this because it's already done.
     this.currentUser$
