@@ -69,6 +69,8 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
 
   // We keep a local "loading" state because we don't want to freeze the whole app.
   protected loading = false;
+  // We distinguish between "toggling" and "loading" because we want to show an animation while toggling.
+  protected toggling = false;
   protected initialized = false;
   protected isTouchDevice = false;
   protected setTogglePropertyLabel: string;
@@ -236,7 +238,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       return;
     }
 
-    this.loading = true;
+    this.toggling = true;
 
     if (this.toggled) {
       if (this._toggleProperty) {
@@ -300,6 +302,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       ).subscribe(toggleProperty => {
         this._toggleProperty = toggleProperty;
         this.toggled = true;
+        this.toggling = false;
         this.initialized = true;
         observer.next(toggleProperty);
         observer.complete();
@@ -314,6 +317,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       ).subscribe(() => {
         this._toggleProperty = null;
         this.toggled = false;
+        this.toggling = false;
         this.initialized = true;
         observer.next(null);
         observer.complete();
@@ -361,7 +365,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this.utilsService.delay(50).subscribe(() => {
         this._toggleProperty = toggleProperty;
         this.toggled = true;
-        this.count += 1;
+        if (this.count !== null && this.count !== undefined) {
+          this.count += 1;
+        }
         this.loading = false;
         this.changeDetectorRef.markForCheck();
       });
@@ -376,7 +382,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this._toggleProperty = null;
       this.toggled = false;
       this.loading = false;
-      this.count -= 1;
+      if (this.count !== null && this.count !== undefined && this.count > 0) {
+        this.count += 1;
+      }
       this.changeDetectorRef.markForCheck();
     });
   }

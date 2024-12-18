@@ -2,6 +2,7 @@
   (click)="onClick($event)"
   [class.loading]="showLoadingIndicator && (loading || !initialized || toggled === undefined)"
   [class.toggled]="!!toggled"
+  [class.toggling]="toggling"
   [class]="btnClass"
   [disabled]="disabled"
   [ngbTooltip]="

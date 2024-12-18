@@ -97,16 +97,6 @@
         margin-left: .375rem;
       }
 
-      astrobin-toggle-property .ng-fa-icon,
-      .ng-fa-icon[icon="comment"] {
-        transition: transform .2s ease-in-out;
-        display: inline-block;
-
-        &:hover {
-          transform: translateY(-.1rem);
-        }
-      }
-
       .ng-fa-icon[icon="comment"] {
         cursor: pointer;
       }
