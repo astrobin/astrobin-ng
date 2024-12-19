@@ -27,6 +27,7 @@ export interface FeedItemInterface {
   targetUserDisplayName: string;
   targetUserAvatar: string;
   targetContentType: number;
+  targetUrl: string;
 
   // Action object fields
   actionObjectObjectId: string;

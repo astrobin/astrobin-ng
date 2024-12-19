@@ -5,6 +5,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
+import { FeedItemGenerator } from "@shared/generators/feed-item.generator";
 
 describe('FeedItemImageComponent', () => {
   let component: FeedItemImageComponent;
@@ -16,6 +17,7 @@ describe('FeedItemImageComponent', () => {
     ])
     fixture = TestBed.createComponent(FeedItemImageComponent);
     component = fixture.componentInstance;
+    component.feedItem = FeedItemGenerator.imageItem();
     fixture.detectChanges();
   });
 

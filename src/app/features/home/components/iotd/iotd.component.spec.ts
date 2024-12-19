@@ -5,6 +5,8 @@ import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { of } from "rxjs";
+import { IotdGenerator } from "@shared/generators/iotd.generator";
 
 describe("IotdComponent", () => {
   let component: IotdComponent;
@@ -16,6 +18,9 @@ describe("IotdComponent", () => {
     ]);
     fixture = TestBed.createComponent(IotdComponent);
     component = fixture.componentInstance;
+
+    jest.spyOn(component.iotdApiService, "getCurrentIotd").mockReturnValueOnce(of(IotdGenerator.iotd()));
+
     fixture.detectChanges();
   });
 

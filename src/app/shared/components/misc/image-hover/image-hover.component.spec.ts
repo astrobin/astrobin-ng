@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImageHoverComponent } from './image-hover.component';
+import { ImageGenerator } from "@shared/generators/image.generator";
 
 describe('ImageHoverComponent', () => {
   let component: ImageHoverComponent;
@@ -12,6 +13,7 @@ describe('ImageHoverComponent', () => {
     });
     fixture = TestBed.createComponent(ImageHoverComponent);
     component = fixture.componentInstance;
+    component.image = ImageGenerator.image();
     fixture.detectChanges();
   });
 

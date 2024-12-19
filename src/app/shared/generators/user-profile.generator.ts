@@ -64,7 +64,8 @@ export class UserProfileGenerator {
       imageCount: 0,
       wipImageCount: 0,
       followersCount: 0,
-      followingCount: 0
+      followingCount: 0,
+      shadowBans: []
     };
   }
 }
