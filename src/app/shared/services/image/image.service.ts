@@ -492,7 +492,7 @@ export class ImageService extends BaseService {
       }
 
       if (acquisition.exposurePerFrame) {
-        return `${acquisition.exposurePerFrame}s`;
+        return `${acquisition.exposurePerFrame} ms`;
       }
     }
 
