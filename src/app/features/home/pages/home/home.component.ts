@@ -21,7 +21,6 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
           align-items-center
           flex-column flex-md-row
           mb-3
-          px-4
         ">
           <h4>{{ "Latest from the forums" | translate }}</h4>
           <div class="d-flex gap-2">
