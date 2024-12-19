@@ -23,6 +23,22 @@
     >
       <tbody>
       <tr *ngFor="let topic of topics">
+        <td class="read-status">
+          <fa-icon
+            *ngIf="topic.read"
+            icon="circle"
+            class="text-muted"
+            [title]="'Read' | translate"
+          ></fa-icon>
+
+          <fa-icon
+            *ngIf="!topic.read"
+            icon="circle"
+            class="text-primary"
+            [title]="'Unread' | translate"
+          ></fa-icon>
+        </td>
+
         <td class="title">
           <div class="d-flex align-items-center gap-3 flex-wrap">
             <a [href]="topicUrl(topic.id)">
