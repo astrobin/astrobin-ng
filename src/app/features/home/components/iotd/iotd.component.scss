@@ -33,6 +33,8 @@ $height: 500px;
 
     .ng-fa-icon[icon="trophy"] {
       font-size: 2rem;
+      color: var(--gold);
+      filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.33));
     }
 
     .iotd-label {
