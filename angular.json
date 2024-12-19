@@ -26,6 +26,9 @@
               "src/favicon.ico",
               "src/assets"
             ],
+            "scripts": [
+              "src/assets/js/CoordinateInterpolation.js"
+            ],
             "styles": [
               {
                 "input": "src/default-theme.scss",

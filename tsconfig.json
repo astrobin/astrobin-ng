@@ -12,7 +12,8 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "typeRoots": [
-      "./node_modules/@types"
+      "./node_modules/@types",
+      "./src/types"
     ],
     "lib": [
       "es2020",

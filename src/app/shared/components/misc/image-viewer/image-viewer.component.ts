@@ -14,7 +14,7 @@ import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { animationFrameScheduler, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
-import { isPlatformBrowser, Location } from "@angular/common";
+import { DecimalPipe, isPlatformBrowser, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -29,6 +29,8 @@ import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manage
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { SolutionApiService } from "@shared/services/api/classic/platesolving/solution/solution-api.service";
+import { Throttle } from "@app/decorators";
 
 
 @Component({
@@ -101,15 +103,8 @@ export class ImageViewerComponent
 
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
-
-  @HostBinding("id")
-  get id() {
-    return this.image ? `image-viewer-${this.image.hash || this.image.pk}` : null;
-  }
-
   protected readonly ImageAlias = ImageAlias;
   protected readonly isPlatformBrowser = isPlatformBrowser;
-
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
   protected revision: ImageInterface | ImageRevisionInterface;
   protected imageObjectLoaded = false;
@@ -123,6 +118,19 @@ export class ImageViewerComponent
   protected mouseHoverImage: string;
   protected forceViewMouseHover = false;
   protected inlineSvg: SafeHtml;
+  protected advancedSolutionMatrix: {
+    matrixRect: string;
+    matrixDelta: number;
+    raMatrix: string;
+    decMatrix: string;
+  };
+  protected loadingAdvancedSolutionMatrix = false;
+  protected mouseHoverRa: string;
+  protected mouseHoverDec: string;
+  protected mouseHoverGalacticRa: string;
+  protected mouseHoverGalacticDec: string;
+  protected mouseHoverX: number;
+  protected mouseHoverY: number;
   protected isLightBoxOpen = false;
   protected showUpgradeToPlateSolveBanner$ = combineLatest([
     this.currentUser$,
@@ -166,10 +174,16 @@ export class ImageViewerComponent
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly imageViewerService: ImageViewerService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly solutionApiService: SolutionApiService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
+  }
+
+  @HostBinding("id")
+  get id() {
+    return this.image ? `image-viewer-${this.image.hash || this.image.pk}` : null;
   }
 
   @HostBinding("class.standalone")
@@ -372,6 +386,79 @@ export class ImageViewerComponent
     this.imageArea.nativeElement.classList.remove("hover");
   }
 
+  @Throttle(20)
+  protected onSvgMouseMove(event: MouseEvent): void {
+    if (!this.advancedSolutionMatrix) {
+      return;
+    }
+
+    const imageElement = this.imageArea.nativeElement.querySelector("astrobin-image img");
+    const imageRenderedWidth = imageElement.clientWidth;
+    const imageNaturalWidth = imageElement.naturalWidth;
+    const hdWidth = Math.min(imageNaturalWidth, 1824);
+    const scale = imageRenderedWidth / hdWidth;
+    const raMatrix = this.advancedSolutionMatrix.raMatrix.split(",").map(Number);
+    const decMatrix = this.advancedSolutionMatrix.decMatrix.split(",").map(Number);
+    const rect = this.advancedSolutionMatrix.matrixRect.split(",").map(Number);
+    const delta = this.advancedSolutionMatrix.matrixDelta;
+
+    const interpolation = new CoordinateInterpolation(
+      raMatrix,
+      decMatrix,
+      rect[0],
+      rect[1],
+      rect[2],
+      rect[3],
+      delta,
+      undefined,
+      scale
+    );
+
+    const interpolationText = interpolation.interpolateAsText(
+      event.offsetX / scale,
+      event.offsetY / scale,
+      false,
+      true,
+      true
+    );
+
+    const ra = interpolationText.alpha.trim().split(" ").map(x => x.padStart(2, "0"));
+    const dec = interpolationText.delta.trim().split(" ").map(x => x.padStart(2, "0"));
+
+    this.mouseHoverRa = `
+      <span class="symbol">α</span>:
+      <span class="value">${ra[0]}</span><span class="unit">h</span>
+      <span class="value">${ra[1]}</span><span class="unit">m</span>
+      <span class="value">${ra[2]}</span><span class="unit">s</span>
+    `;
+    this.mouseHoverDec = `
+      <span class="symbol">δ</span>:
+      <span class="value">${dec[0]}</span><span class="unit">°</span>
+      <span class="value">${dec[1]}</span><span class="unit">'</span>
+      <span class="value">${dec[2]}</span><span class="unit">"</span>
+    `;
+
+    const galacticRa = interpolationText.l.trim().split(" ").map(x => x.padStart(2, "0"));
+    const galacticDec = interpolationText.b.trim().split(" ").map(x => x.padStart(2, "0"));
+
+    this.mouseHoverGalacticRa = `
+      <span class="symbol">l</span>:
+      <span class="value">${galacticRa[0]}</span><span class="unit">°</span>
+      <span class="value">${galacticRa[1]}</span><span class="unit">'</span>
+      <span class="value">${galacticRa[2]}</span><span class="unit>"</span>
+    `;
+
+    this.mouseHoverGalacticDec = `
+      <span class="symbol">b</span>:
+      <span class="value">${galacticDec[0]}</span><span class="unit">°</span>
+      <span class="value">${galacticDec[1]}</span><span class="unit">'</span>
+      <span class="value">${galacticDec[2]}</span><span class="unit"></span>
+    `;
+
+    this.mouseHoverX = event.offsetX;
+    this.mouseHoverY = event.offsetY;
+  }
+
   protected onRevisionSelected(revisionLabel: ImageRevisionInterface["label"], pushState: boolean): void {
     if (this.revisionLabel === revisionLabel) {
       return;
@@ -508,6 +595,10 @@ export class ImageViewerComponent
           ).subscribe(inlineSvg => {
             this.inlineSvg = inlineSvg;
           });
+          this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
+            this.advancedSolutionMatrix = matrix;
+            this.loadingAdvancedSolutionMatrix = false;
+          });
         } else if (this.revision?.solution?.imageFile) {
           this.mouseHoverImage = this.revision.solution.imageFile;
           this.inlineSvg = null;
@@ -549,6 +640,21 @@ export class ImageViewerComponent
         return this.domSanitizer.bypassSecurityTrustHtml(svgContent);
       })
     );
+  }
+
+  private _loadAdvancedSolutionMatrix$(solutionId: number): Observable<{
+    matrixRect: string;
+    matrixDelta: number;
+    raMatrix: string;
+    decMatrix: string;
+  }> {
+    if (this.loadingAdvancedSolutionMatrix || this.advancedSolutionMatrix) {
+      return of(this.advancedSolutionMatrix);
+    }
+
+    this.loadingAdvancedSolutionMatrix = true;
+
+    return this.solutionApiService.getAdvancedMatrix(solutionId);
   }
 
   private _onMouseHoverSvgLoad(): void {
@@ -889,4 +995,6 @@ export class ImageViewerComponent
       )
       .subscribe();
   }
+
+  protected readonly DecimalPipe = DecimalPipe;
 }
