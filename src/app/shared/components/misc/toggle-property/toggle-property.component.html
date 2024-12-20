@@ -1,15 +1,18 @@
 <button
   (click)="onClick($event)"
-  [class.loading]="loading || !initialized || toggled === undefined"
+  [class.loading]="showLoadingIndicator && (loading || !initialized || toggled === undefined)"
   [class.toggled]="!!toggled"
+  [class.toggling]="toggling"
   [class]="btnClass"
   [disabled]="disabled"
   [ngbTooltip]="
+    showTooltip &&
     !isTouchDevice &&
     !showLabel ? (
       !toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel
     ) : ''
   "
+  [openDelay]="1000"
   [attr.aria-label]="
     !showLabel ? (!toggled ? setTogglePropertyLabel : unsetTogglePropertyLabel) : null
   "
@@ -21,7 +24,7 @@
       [icon]="togglePropertyIcon"
     ></fa-icon>
     <span *ngIf="showLabel">{{ unsetTogglePropertyLabel }}</span>
-    <span *ngIf="count !== undefined" class="count">{{ count | numberSuffix }}</span>
+    <span *ngIf="count !== undefined && count !== null" class="count">{{ count | numberSuffix }}</span>
   </ng-container>
 
   <ng-container *ngIf="!toggled">
@@ -30,6 +33,6 @@
       [icon]="togglePropertyIcon"
     ></fa-icon>
     <span *ngIf="showLabel">{{ setTogglePropertyLabel }}</span>
-    <span *ngIf="count !== undefined" class="count">{{ count | numberSuffix }}</span>
+    <span *ngIf="count !== undefined && count !== null" class="count">{{ count | numberSuffix }}</span>
   </ng-container>
 </button>

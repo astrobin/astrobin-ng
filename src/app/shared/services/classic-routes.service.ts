@@ -26,6 +26,8 @@ export class ClassicRoutesService extends BaseService {
   FORUM_HOME = BASE_URL + "/forum/";
   FORUM_LATEST = BASE_URL + "/forum/topic/latest/";
   FORUM_SUBSCRIBED = BASE_URL + "/forum/topic/subscribed";
+  FORUM= (id: number) => BASE_URL + `/forum/forum/${id}/`;
+  FORUM_POST = (id: string) => BASE_URL + `/forum/post/${id}/`;
   SEARCH = BASE_URL + "/search/";
   TOP_PICK_NOMINATIONS = BASE_URL + "/explore/top-pick-nominations/";
   TOP_PICKS = BASE_URL + "/explore/top-picks/";
@@ -75,6 +77,4 @@ export class ClassicRoutesService extends BaseService {
   EDIT_IMAGE_REVISION = (id: string) => BASE_URL + `/edit/revision/${id}/`;
 
   COMPOSE_MESSAGE = (username: string, subject: string) => BASE_URL + `/messages/compose/${username}/?subject=${subject}`;
-
-  FORUM_POST = (id: string) => BASE_URL + `/forum/post/${id}/`;
 }

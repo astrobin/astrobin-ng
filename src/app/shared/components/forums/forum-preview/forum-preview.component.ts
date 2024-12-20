@@ -21,6 +21,18 @@ export class ForumPreviewComponent extends BaseComponentDirective implements OnI
   @Input()
   forumId: ForumInterface["id"];
 
+  @Input()
+  showHeader = true;
+
+  @Input()
+  showFooter = true;
+
+  @Input()
+  striped = true;
+
+  @Input()
+  useCard = true;
+
   category: CategoryInterface;
   forum: ForumInterface;
   topics: TopicInterface[] = null;
@@ -51,6 +63,7 @@ export class ForumPreviewComponent extends BaseComponentDirective implements OnI
 
   ngOnInit(): void {
     super.ngOnInit();
+    this._loadTopics();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -63,31 +76,41 @@ export class ForumPreviewComponent extends BaseComponentDirective implements OnI
     return `${this.classicRoutesService.FORUM_HOME}topic/${topicId}`;
   }
 
-  getRepliesMessage(postCount: number): string {
-    return this.translateService.instant("{{0}} replies", { 0: postCount - 1 });
-  }
-
   private _loadTopics(): void {
+    if (this.loading) {
+      return;
+    }
+
     this.loading = true;
-    this.forumApiService
-      .getForum(this.forumId)
-      .pipe(
-        tap(forum => {
-          this.forum = forum;
-          this.forumUrl = `${this.classicRoutesService.FORUM_HOME}c/equipment-forums/${forum.slug}/`;
-          this.forumNewTopicUrl = `${this.classicRoutesService.FORUM_HOME}forum/${forum.id}/topic/add/`;
-        }),
-        switchMap(forum =>
-          this.forumApiService.getCategory(forum.category).pipe(
-            tap(category => (this.category = category)),
-            map(() => forum)
-          )
-        ),
-        switchMap(forum => this.forumApiService.loadTopics(forum.id))
-      )
-      .subscribe(response => {
+
+    if (this.forumId) {
+      this.forumApiService
+        .getForum(this.forumId)
+        .pipe(
+          tap(forum => {
+            this.forum = forum;
+            this.forumUrl = `${this.classicRoutesService.FORUM_HOME}c/equipment-forums/${forum.slug}/`;
+            this.forumNewTopicUrl = `${this.classicRoutesService.FORUM_HOME}forum/${forum.id}/topic/add/`;
+          }),
+          switchMap(forum =>
+            this.forumApiService.getCategory(forum.category).pipe(
+              tap(category => (this.category = category)),
+              map(() => forum)
+            )
+          ),
+          switchMap(forum => this.forumApiService.loadTopics(forum.id))
+        )
+        .subscribe(response => {
+          this.topics = response.results.slice(0, this.MAX_TOPICS);
+          this.loading = false;
+        });
+    } else {
+      this.forumUrl = `${this.classicRoutesService.FORUM_LATEST}`;
+      this.forumNewTopicUrl = `${this.classicRoutesService.FORUM_HOME}/#new-topic`;
+      this.forumApiService.loadTopics().subscribe(response => {
         this.topics = response.results.slice(0, this.MAX_TOPICS);
         this.loading = false;
       });
+    }
   }
 }

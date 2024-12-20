@@ -76,6 +76,25 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
         ...state,
         userProfile: action.payload.userProfile
       };
+    case AuthActionTypes.SHADOW_BAN_USER_PROFILE_SUCCESS:
+      return {
+        ...state,
+        userProfile: {
+          ...state.userProfile,
+          shadowBans: [
+            ...state.userProfile.shadowBans,
+            action.payload.id
+          ]
+        }
+      };
+    case AuthActionTypes.REMOVE_SHADOW_BAN_USER_PROFILE_SUCCESS:
+      return {
+        ...state,
+        userProfile: {
+          ...state.userProfile,
+          shadowBans: state.userProfile.shadowBans.filter(id => id !== action.payload.id)
+        }
+      };
     case EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_SUCCESS:
       const feedback: MarketplaceFeedbackInterface = action.payload.feedback;
       const userIndex = state.users.findIndex(user => user.id === feedback.recipient);

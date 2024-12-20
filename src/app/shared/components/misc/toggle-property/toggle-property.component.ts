@@ -55,6 +55,12 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   showLabel = true;
 
   @Input()
+  showTooltip = true;
+
+  @Input()
+  showLoadingIndicator = true;
+
+  @Input()
   count: number;
 
   // Optionally provided, in case the parent component has this information at hand.
@@ -63,6 +69,8 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
 
   // We keep a local "loading" state because we don't want to freeze the whole app.
   protected loading = false;
+  // We distinguish between "toggling" and "loading" because we want to show an animation while toggling.
+  protected toggling = false;
   protected initialized = false;
   protected isTouchDevice = false;
   protected setTogglePropertyLabel: string;
@@ -72,6 +80,8 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   private _toggleProperty: TogglePropertyInterface;
   private _createSubscription: Subscription;
   private _deleteSubscription: Subscription;
+  private _scrollSubscription: Subscription;
+
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -155,6 +165,11 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this._initTogglePropertyIcon();
     }
 
+    // Clean up existing scroll subscription if it exists
+    if (this._scrollSubscription) {
+      this._scrollSubscription.unsubscribe();
+    }
+
     if (isPlatformBrowser(this.platformId)) {
       if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, {
         verticalTolerance: 500
@@ -166,7 +181,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
           ofType(AppActionTypes.FORCE_CHECK_TOGGLE_PROPERTY_AUTO_LOAD)
         );
 
-        merge(
+        this._scrollSubscription = merge(
           // Stream 1: Throttled events during scrolling
           fromEvent(scrollElement, "scroll").pipe(
             throttleTime(300)
@@ -177,12 +192,17 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
           ),
           forceCheck$
         ).pipe(
+          takeUntil(this.destroyed$),
           tap(() => {
             if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, {
               verticalTolerance: 500
             })) {
               this._initStatus();
-            } else {
+              // Unsubscribe once we've initialized
+              if (this._scrollSubscription) {
+                this._scrollSubscription.unsubscribe();
+                this._scrollSubscription = null;
+              }
             }
           })
         ).subscribe();
@@ -200,6 +220,10 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     if (this._deleteSubscription) {
       this._deleteSubscription.unsubscribe();
     }
+
+    if (this._scrollSubscription) {
+      this._scrollSubscription.unsubscribe();
+    }
   }
 
   public onClick(event: MouseEvent | TouchEvent): void {
@@ -214,7 +238,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       return;
     }
 
-    this.loading = true;
+    this.toggling = true;
 
     if (this.toggled) {
       if (this._toggleProperty) {
@@ -278,6 +302,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       ).subscribe(toggleProperty => {
         this._toggleProperty = toggleProperty;
         this.toggled = true;
+        this.toggling = false;
         this.initialized = true;
         observer.next(toggleProperty);
         observer.complete();
@@ -292,6 +317,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       ).subscribe(() => {
         this._toggleProperty = null;
         this.toggled = false;
+        this.toggling = false;
         this.initialized = true;
         observer.next(null);
         observer.complete();
@@ -339,6 +365,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this.utilsService.delay(50).subscribe(() => {
         this._toggleProperty = toggleProperty;
         this.toggled = true;
+        if (this.count !== null && this.count !== undefined) {
+          this.count += 1;
+        }
         this.loading = false;
         this.changeDetectorRef.markForCheck();
       });
@@ -353,6 +382,9 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this._toggleProperty = null;
       this.toggled = false;
       this.loading = false;
+      if (this.count !== null && this.count !== undefined && this.count > 0) {
+        this.count += 1;
+      }
       this.changeDetectorRef.markForCheck();
     });
   }

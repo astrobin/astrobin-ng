@@ -165,14 +165,49 @@
         <div
           (mouseenter)="onImageMouseEnter($event)"
           (mouseleave)="onImageMouseLeave($event)"
+          (mousemove)="onSvgMouseMove($event)"
           [innerHTML]="inlineSvg"
           [id]="'mouse-hover-svg-' + image.pk"
           class="mouse-hover w-100 position-relative"
         ></div>
 
         <div class="mouse-hover-svg-overlay">
-          Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
+          <astrobin-loading-indicator
+            *ngIf="!advancedSolutionMatrix && loadingAdvancedSolutionMatrix"
+          ></astrobin-loading-indicator>
+
+          <div *ngIf="!!advancedSolutionMatrix" class="mouse-hover-svg-overlay-coordinates">
+            <div
+              class="ra-dec d-flex gap-2"
+              ngbTooltip="RA/Dec"
+            >
+              <span [innerHTML]="mouseHoverRa"></span>
+              <span [innerHTML]="mouseHoverDec"></span>
+            </div>
+
+            <div
+              class="galactic d-flex gap-2"
+              [ngbTooltip]="'Galactic coordinates' | translate"
+            >
+              <span [innerHTML]="mouseHoverGalacticRa"></span>
+              <span [innerHTML]="mouseHoverGalacticDec"></span>
+            </div>
+          </div>
+
+          <span>
+            Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
+          </span>
         </div>
+
+        <div
+          class="x-ruler"
+          [style.top.px]="mouseHoverY"
+        ></div>
+
+        <div
+          class="y-ruler"
+          [style.left.px]="mouseHoverX"
+        ></div>
       </div>
 
       <button

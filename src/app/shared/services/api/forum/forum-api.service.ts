@@ -27,10 +27,13 @@ export class ForumApiService extends BaseClassicApiService {
     return this.http.get<ForumInterface>(`${this.configUrl}/forum/${forumId}/`);
   }
 
-  loadTopics(forumId: ForumInterface["id"], page = 1): Observable<PaginatedApiResultInterface<TopicInterface>> {
+  loadTopics(forumId?: ForumInterface["id"], page = 1): Observable<PaginatedApiResultInterface<TopicInterface>> {
     let url = this.configUrl + "/topic/";
 
-    url = UtilsService.addOrUpdateUrlParam(url, "forum", forumId.toString());
+    if (forumId) {
+      url = UtilsService.addOrUpdateUrlParam(url, "forum", forumId.toString());
+    }
+
     url = UtilsService.addOrUpdateUrlParam(url, "page", page.toString());
 
     return this.http.get<PaginatedApiResultInterface<TopicInterface>>(url);

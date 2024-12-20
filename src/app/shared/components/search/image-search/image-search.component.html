@@ -123,37 +123,7 @@
               <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
             </div>
 
-            <div *ngIf="averageHeight >= 150" class="hover d-flex align-items-center gap-2">
-              <div class="flex-grow-1">
-                <div *ngIf="item.username && item.userDisplayName" class="user">
-                  <a
-                    (click)="userService.openGallery(item.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-                    [href]="userService.getGalleryUrl(item.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-                    astrobinEventPreventDefault
-                    astrobinEventStopPropagation
-                  >
-                    {{ item.userDisplayName }}
-                  </a>
-                </div>
-                <div class="title">{{ item.title }}</div>
-                <div *ngIf="item.published" class="published">{{ item.published | localDate | timeago }}</div>
-              </div>
-
-              <div class="counters d-flex flex-column gap-1">
-                <div class="counter likes">
-                  <fa-icon icon="thumbs-up"></fa-icon>
-                  <span class="value">{{ item.likes }}</span>
-                </div>
-                <div class="counter bookmarks">
-                  <fa-icon icon="bookmark"></fa-icon>
-                  <span class="value">{{ item.bookmarks }}</span>
-                </div>
-                <div class="counter comments">
-                  <fa-icon icon="comment"></fa-icon>
-                  <span class="value">{{ item.comments }}</span>
-                </div>
-              </div>
-            </div>
+            <astrobin-image-hover [image]="item"></astrobin-image-hover>
           </a>
         </div>
       </ng-container>

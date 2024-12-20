@@ -1,0 +1,105 @@
+@import '../../../../styles/mixins';
+
+.feed-item-content {
+  ::ng-deep {
+    .feed-item-component {
+      box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
+    }
+
+    .feed-item-header-fade {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 100px;
+      background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, .4) 0,
+          rgba(0, 0, 0, .3) 60%,
+          rgba(0, 0, 0, .2) 80%,
+          transparent
+      );
+      pointer-events: none;
+    }
+
+    .feed-item-header {
+      padding: .5rem 1rem;
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      gap: 1rem;
+      filter: drop-shadow(0 .25rem 1rem rgba(0, 0, 0, .5));
+      color: var(--lightestGrey);
+      position: absolute;
+
+      .feed-item-avatar {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        box-shadow: 0 0 .5rem rgba(0, 0, 0, .75);
+        border: 1px solid rgba(255, 255, 255, .25)
+      }
+
+      .feed-item-header-text {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        text-shadow: 0 0 1px rgba(0, 0, 0, .75);
+      }
+
+      .feed-item-header-text-1,
+      .feed-item-header-text-2 {
+        display: inline-block;
+      }
+
+      .feed-item-header-text-2 {
+        font-size: .8rem;
+      }
+    }
+
+    .feed-item-body {
+      img {
+        min-height: 200px;
+      }
+    }
+
+    .feed-item-footer {
+      padding: .75rem 1rem;
+      background: rgba(0, 0, 0, .375);
+
+      .feed-item-footer-text {
+        font-size: .9rem;
+        color: var(--lightestGrey);
+      }
+
+      .timestamp {
+        color: var(--lighterGrey);
+        font-size: .8rem;
+      }
+    }
+
+    .feed-item-extra {
+      astrobin-toggle-property {
+        .btn .ng-fa-icon {
+          margin: 0 !important;
+        }
+
+        .btn.toggled .ng-fa-icon {
+          color: var(--accentColor);
+          opacity: 1 !important;
+        }
+      }
+
+      astrobin-toggle-property .count,
+      .ng-fa-icon[icon="comment"] + .count {
+        font-size: .8rem;
+        color: var(--lighterGrey);
+        margin-left: .375rem;
+      }
+
+      .ng-fa-icon[icon="comment"] {
+        cursor: pointer;
+      }
+    }
+  }
+}

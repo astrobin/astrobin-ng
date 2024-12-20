@@ -16,12 +16,15 @@ import { select, Store } from "@ngrx/store";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadImage, LoadImageFailure, LoadImageOptionsInterface } from "@app/store/actions/image.actions";
+import { LoadImage, LoadImageFailure } from "@app/store/actions/image.actions";
 import { MainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { TitleService } from "@shared/services/title/title.service";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
+import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
+import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { IotdInterface } from "@features/iotd/services/iotd-api.service";
 
 @Injectable({
   providedIn: "root"
@@ -489,7 +492,7 @@ export class ImageService extends BaseService {
       }
 
       if (acquisition.exposurePerFrame) {
-        return `${acquisition.exposurePerFrame}s`;
+        return `${acquisition.exposurePerFrame} ms`;
       }
     }
 
@@ -947,24 +950,6 @@ export class ImageService extends BaseService {
     return `${url}?r=${revisionLabel}`;
   }
 
-  private _loadImageFileTraditional(url: string, observer: Observer<string>): void {
-    const image = new Image();
-    image.onload = () => {
-      observer.next(url);
-      observer.complete();
-    };
-    image.onerror = error => observer.error(error);
-    image.src = url;
-  }
-
-  private _createObjectURL(blob: Blob): string {
-    if (typeof URL !== "undefined" && URL.createObjectURL) {
-      return URL.createObjectURL(blob);
-    }
-    // Fallback for environments without URL.createObjectURL
-    return "";
-  }
-
   setMetaTags(image: ImageInterface): void {
     const maxDescriptionLength = 200;
     let description: string;
@@ -993,5 +978,81 @@ export class ImageService extends BaseService {
       property: "og:url",
       content: this.windowRef.getCurrentUrl().toString()
     });
+  }
+
+  getObjectPosition(image: ImageSearchInterface | ImageInterface | FeedItemInterface | IotdInterface): string {
+    if (!image.hasOwnProperty("squareCropping")) {
+      return "50% 50%"; // Fallback to center
+    }
+
+    if (!(image as (ImageSearchInterface | ImageInterface)).squareCropping) {
+      return "50% 50%"; // Fallback to center
+    }
+
+    const coords = (image as (ImageSearchInterface | ImageInterface)).squareCropping.split(",").map(Number);
+
+    // Validate that we have exactly 4 numeric coordinates
+    if (coords.length !== 4 || coords.some(isNaN)) {
+      return "50% 50%"; // Fallback to center if parsing failed
+    }
+
+    let [x1, y1, x2, y2] = coords;
+
+    x1 = Math.max(0, x1);
+    y1 = Math.max(0, y1);
+    x2 = Math.min(this.getW(image), x2);
+    y2 = Math.min(this.getH(image), y2);
+
+    // Calculate the center of the cropping square
+    const centerX = (x1 + x2) / 2;
+    const centerY = (y1 + y2) / 2;
+
+    // Return the position in the format 'x% y%'
+    const positionX = (centerX / this.getW(image)) * 100;
+    const positionY = (centerY / this.getH(image)) * 100;
+
+    return `${positionX}% ${positionY}%`;
+  }
+
+  getW(image: ImageSearchInterface | ImageInterface | FeedItemInterface | IotdInterface) {
+    if (image.hasOwnProperty("finalW")) {
+      return (image as ImageSearchInterface).finalW;
+    }
+
+    if (image.hasOwnProperty("w")) {
+      return (image as ImageInterface).w;
+    }
+
+    return 200;
+  }
+
+  getH(image: ImageSearchInterface | ImageInterface | FeedItemInterface | IotdInterface) {
+    if (image.hasOwnProperty("finalH")) {
+      return (image as ImageSearchInterface).finalH;
+    }
+
+    if (image.hasOwnProperty("h")) {
+      return (image as ImageInterface).h;
+    }
+
+    return 200;
+  }
+
+  private _loadImageFileTraditional(url: string, observer: Observer<string>): void {
+    const image = new Image();
+    image.onload = () => {
+      observer.next(url);
+      observer.complete();
+    };
+    image.onerror = error => observer.error(error);
+    image.src = url;
+  }
+
+  private _createObjectURL(blob: Blob): string {
+    if (typeof URL !== "undefined" && URL.createObjectURL) {
+      return URL.createObjectURL(blob);
+    }
+    // Fallback for environments without URL.createObjectURL
+    return "";
   }
 }

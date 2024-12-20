@@ -10,7 +10,8 @@
   },
   "files": [
     "main.ts",
-    "polyfills.ts"
+    "polyfills.ts",
+    "types/coordinate-utils.d.ts"
   ],
   "exclude": [
     "**/*.spec.ts",

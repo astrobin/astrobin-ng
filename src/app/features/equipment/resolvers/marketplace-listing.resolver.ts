@@ -16,9 +16,18 @@ export const MarketplaceListingResolver: ResolveFn<MarketplaceListingInterface> 
   store$ = inject(Store<MainState>),
   windowRefService = inject(WindowRefService)
 ): Observable<MarketplaceListingInterface> => {
-  const hash: string = route.paramMap.get("hash");
+  const id: string = route.paramMap.get("hashOrId");
+  const isDigit = /^\d+$/.test(id);
 
-  return equipmentApiService.loadMarketplaceListingByHash(hash).pipe(
+  let apiCall: Observable<MarketplaceListingInterface>;
+
+  if (isDigit) {
+    apiCall = equipmentApiService.loadMarketplaceListing(+id);
+  } else {
+    apiCall = equipmentApiService.loadMarketplaceListingByHash(id);
+  }
+
+  return apiCall.pipe(
     tap(listing => {
       store$.dispatch(new LoadMarketplaceListingSuccess({ listing }));
     }),

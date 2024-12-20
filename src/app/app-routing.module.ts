@@ -3,6 +3,10 @@ import { RouterModule, Routes } from "@angular/router";
 
 const routes: Routes = [
   {
+    path: "",
+    loadChildren: () => import("@features/home/home.module").then(m => m.HomeModule)
+  },
+  {
     path: "account",
     loadChildren: () => import("@features/account/account.module").then(m => m.AccountModule)
   },
@@ -61,7 +65,10 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       onSameUrlNavigation: "reload",
-      initialNavigation: "enabledBlocking"
+      initialNavigation: "enabledBlocking",
+      scrollPositionRestoration: "enabled",
+      anchorScrolling: "enabled",
+      scrollOffset: [0, 64]
     })
   ],
   exports: [RouterModule]

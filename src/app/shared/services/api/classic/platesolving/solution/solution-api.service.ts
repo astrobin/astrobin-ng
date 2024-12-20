@@ -49,4 +49,8 @@ export class SolutionApiService extends BaseClassicApiService {
       `${this.configUrl}/?content_type=${contentType}&object_ids=${objectIds.join(",")}`
     );
   }
+
+  getAdvancedMatrix(solutionId: number): Observable<any> {
+    return this.http.get<any>(`${this.configUrl}/${solutionId}/advanced-matrix/`);
+  }
 }

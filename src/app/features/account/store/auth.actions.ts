@@ -25,7 +25,13 @@ export enum AuthActionTypes {
   LOAD_USER_PROFILE_FAILURE = "[Auth] Load user profile failure",
   CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE = "[Auth] Change user profile gallery header image",
   CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_SUCCESS = "[Auth] Change user profile gallery header image success",
-  CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_FAILURE = "[Auth] Change user profile gallery header image failure"
+  CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_FAILURE = "[Auth] Change user profile gallery header image failure",
+  SHADOW_BAN_USER_PROFILE = "[Auth] Shadow ban user profile",
+  SHADOW_BAN_USER_PROFILE_SUCCESS = "[Auth] Shadow ban user profile success",
+  SHADOW_BAN_USER_PROFILE_FAILURE = "[Auth] Shadow ban user profile failure",
+  REMOVE_SHADOW_BAN_USER_PROFILE = "[Auth] Remove shadow ban user profile",
+  REMOVE_SHADOW_BAN_USER_PROFILE_SUCCESS = "[Auth] Remove shadow ban user profile success",
+  REMOVE_SHADOW_BAN_USER_PROFILE_FAILURE = "[Auth] Remove shadow ban user profile failure",
 }
 
 export class InitializeAuth implements Action {
@@ -161,6 +167,48 @@ export class ChangeUserProfileGalleryHeaderImageFailure implements PayloadAction
   }
 }
 
+export class ShadowBanUserProfile implements PayloadActionInterface {
+  readonly type = AuthActionTypes.SHADOW_BAN_USER_PROFILE;
+
+  constructor(public payload: { id: UserProfileInterface["id"] }) {
+  }
+}
+
+export class ShadowBanUserProfileSuccess implements PayloadActionInterface {
+  readonly type = AuthActionTypes.SHADOW_BAN_USER_PROFILE_SUCCESS;
+
+  constructor(public payload: { id: UserProfileInterface["id"], message: string }) {
+  }
+}
+
+export class ShadowBanUserProfileFailure implements PayloadActionInterface {
+  readonly type = AuthActionTypes.SHADOW_BAN_USER_PROFILE_FAILURE;
+
+  constructor(public payload: { id: UserProfileInterface["id"], error: any }) {
+  }
+}
+
+export class RemoveShadowBanUserProfile implements PayloadActionInterface {
+  readonly type = AuthActionTypes.REMOVE_SHADOW_BAN_USER_PROFILE;
+
+  constructor(public payload: { id: UserProfileInterface["id"] }) {
+  }
+}
+
+export class RemoveShadowBanUserProfileSuccess implements PayloadActionInterface {
+  readonly type = AuthActionTypes.REMOVE_SHADOW_BAN_USER_PROFILE_SUCCESS;
+
+  constructor(public payload: { id: UserProfileInterface["id"], message: string }) {
+  }
+}
+
+export class RemoveShadowBanUserProfileFailure implements PayloadActionInterface {
+  readonly type = AuthActionTypes.REMOVE_SHADOW_BAN_USER_PROFILE_FAILURE;
+
+  constructor(public payload: { id: UserProfileInterface["id"], error: any }) {
+  }
+}
+
 export type All =
   | InitializeAuth
   | InitializeAuthSuccess
@@ -178,4 +226,10 @@ export type All =
   | LoadUserProfileFailure
   | ChangeUserProfileGalleryHeaderImage
   | ChangeUserProfileGalleryHeaderImageSuccess
-  | ChangeUserProfileGalleryHeaderImageFailure;
+  | ChangeUserProfileGalleryHeaderImageFailure
+  | ShadowBanUserProfile
+  | ShadowBanUserProfileSuccess
+  | ShadowBanUserProfileFailure
+  | RemoveShadowBanUserProfile
+  | RemoveShadowBanUserProfileSuccess
+  | RemoveShadowBanUserProfileFailure;

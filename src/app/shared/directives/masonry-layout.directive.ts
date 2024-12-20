@@ -1,12 +1,18 @@
-import { Directive, Input, Output, EventEmitter, OnChanges, SimpleChanges, Renderer2, Inject, OnInit, HostListener } from "@angular/core";
+import { Directive, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { DeviceService } from "@shared/services/device.service";
 import { DOCUMENT } from "@angular/common";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
+import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
+import { ImageService } from "@shared/services/image/image.service";
 
 export type MasonryLayoutGridItem =
-  (ImageSearchInterface | ImageInterface) & { objectPosition?: string, displayHeight?: number, displayWidth?: number };
+  (ImageSearchInterface | ImageInterface | FeedItemInterface) & {
+  objectPosition?: string,
+  displayHeight?: number,
+  displayWidth?: number
+};
 
 @Directive({
   selector: "[astrobinMasonryLayout]"
@@ -14,14 +20,16 @@ export type MasonryLayoutGridItem =
 export class MasonryLayoutDirective implements OnInit, OnChanges {
   @Input("astrobinMasonryLayout") items: MasonryLayoutGridItem[] = [];
   @Input() activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.TINY;
-  @Output() gridItemsChange = new EventEmitter<{ gridItems: MasonryLayoutGridItem[], averageHeight: number}>();
+  @Output() gridItemsChange = new EventEmitter<{ gridItems: MasonryLayoutGridItem[], averageHeight: number }>();
 
   averageHeight: number = 200;
 
   constructor(
     private deviceService: DeviceService,
-    @Inject(DOCUMENT) private document: Document
-  ) {}
+    @Inject(DOCUMENT) private document: Document,
+    public readonly imageService: ImageService
+  ) {
+  }
 
   ngOnInit(): void {
     this._setAverageSizeForAlias();
@@ -34,7 +42,7 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
     }
   }
 
-  @HostListener('window:resize')
+  @HostListener("window:resize")
   onResize(): void {
     this._setAverageSizeForAlias();
     this._assignWidthsToGridItems();
@@ -68,8 +76,8 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
     const gridItems = [];
 
     this.items.forEach(image => {
-      const w = this._getW(image);
-      const h = this._getH(image);
+      const w = this.imageService.getW(image);
+      const h = this.imageService.getH(image);
       const imageAspectRatio = w && h ? w / h : 1.0;
       let width: number;
       let height: number;
@@ -87,7 +95,7 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
         ...image,
         displayWidth: width,
         displayHeight: height,
-        objectPosition: this._getObjectPosition(image),
+        objectPosition: this.imageService.getObjectPosition(image)
       });
     });
 
@@ -103,7 +111,7 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
       160, 180, 200, 220, 240, 280,
       300, 320, 360, 380, 400, 420, 480,
       500, 520, 560, 600, 620, 660, 680,
-      720, 760, 800, 860, 920,
+      720, 760, 800, 860, 920
     ];
 
     let height: number;
@@ -132,51 +140,5 @@ export class MasonryLayoutDirective implements OnInit, OnChanges {
     } while ((bestWidth / height) < minAspectRatio || (bestWidth / height) > maxAspectRatio);
 
     return { width: bestWidth, height };
-  }
-
-  private _getObjectPosition(image: ImageSearchInterface | ImageInterface): string {
-    if (!image.squareCropping) {
-      return '50% 50%'; // Fallback to center
-    }
-
-    const coords = image.squareCropping.split(',').map(Number);
-
-    // Validate that we have exactly 4 numeric coordinates
-    if (coords.length !== 4 || coords.some(isNaN)) {
-      return '50% 50%'; // Fallback to center if parsing failed
-    }
-
-    let [x1, y1, x2, y2] = coords;
-
-    x1 = Math.max(0, x1);
-    y1 = Math.max(0, y1);
-    x2 = Math.min(this._getW(image), x2);
-    y2 = Math.min(this._getH(image), y2);
-
-    // Calculate the center of the cropping square
-    const centerX = (x1 + x2) / 2;
-    const centerY = (y1 + y2) / 2;
-
-    // Return the position in the format 'x% y%'
-    const positionX = (centerX / this._getW(image)) * 100;
-    const positionY = (centerY / this._getH(image)) * 100;
-
-    return `${positionX}% ${positionY}%`;
-  }
-
-  private _getW(image: ImageSearchInterface | ImageInterface) {
-    if (image.hasOwnProperty("finalW")) {
-      return (image as ImageSearchInterface).finalW;
-    }
-
-    return image.w;
-  }
-
-  private _getH(image: ImageSearchInterface | ImageInterface) {
-    if (image.hasOwnProperty("finalH")) {
-      return (image as ImageSearchInterface).finalH;
-    }
-
-    return image.h;
   }
 }

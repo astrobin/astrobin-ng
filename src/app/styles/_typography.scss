@@ -93,3 +93,7 @@ pre {
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
+
+abbr[title] {
+  text-underline-offset: 2px;
+}

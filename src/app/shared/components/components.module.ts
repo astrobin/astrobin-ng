@@ -147,6 +147,8 @@ import { MarketplaceListingCardsComponent } from "@shared/components/equipment/m
 import { EquipmentPresetComponent } from "@shared/components/equipment/preset/equipment-preset.component";
 import { EquipmentPresetEditorComponent } from "@shared/components/equipment/preset-editor/equipment-preset-editor.component";
 import { EquipmentPresetSummaryComponent } from "@shared/components/equipment/preset-summary/equipment-preset-summary.component";
+import { ImageIconsComponent } from "@shared/components/misc/image-icons/image-icons.component";
+import { ImageHoverComponent } from "@shared/components/misc/image-hover/image-hover.component";
 
 const modules = [
   CommonModule,
@@ -224,6 +226,8 @@ const components = [
   HeaderComponent,
   HrComponent,
   ImageComponent,
+  ImageHoverComponent,
+  ImageIconsComponent,
   ImageLoadingIndicatorComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,

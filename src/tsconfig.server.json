@@ -11,7 +11,8 @@
   },
   "files": [
     "main.server.ts",
-    "../server.ts"
+    "../server.ts",
+    "types/coordinate-utils.d.ts"
   ],
   "angularCompilerOptions": {
     "entryModule": "./app/app.server.module#AppServerModule"

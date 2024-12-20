@@ -443,6 +443,30 @@ $globalLoadingIndicatorHeight: 6px;
         align-items: center;
         position: absolute;
 
+        .x-ruler {
+          position: absolute;
+          left: 0;
+          height: 1px;
+          width: 100%;
+          border-top: 1px solid rgba(255, 255, 255, 0.2);
+          border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+          z-index: 1;
+          pointer-events: none;
+          opacity: 0;
+        }
+
+        .y-ruler {
+          position: absolute;
+          top: 0;
+          height: 100%;
+          width: 1px;
+          border-left: 1px solid rgba(255, 255, 255, 0.2);
+          border-right: 1px solid rgba(0, 0, 0, 0.2);
+          z-index: 1;
+          pointer-events: none;
+          opacity: 0;
+        }
+
         .mouse-hover {
           position: absolute;
           top: 0;
@@ -453,7 +477,7 @@ $globalLoadingIndicatorHeight: 6px;
           object-fit: contain;
           opacity: 0;
           transition: opacity 0.3s;
-          cursor: zoom-in;
+          cursor: none;
           // Believe it or not, this is necessary to prevent the SVG to display with a white background.
           color-scheme: none;
         }
@@ -467,6 +491,25 @@ $globalLoadingIndicatorHeight: 6px;
           transition: opacity 0.3s;
           padding: .5rem .75rem;
           font-size: .9rem;
+
+          .mouse-hover-svg-overlay-coordinates {
+            ::ng-deep {
+              .symbol {
+                color: var(--white);
+                font-weight: bold;
+              }
+
+              .value {
+                color: var(--lightestGrey);
+              }
+
+              .unit {
+                font-size: .75rem;
+                color: var(--lighterGrey);
+                vertical-align: super;
+              }
+            }
+          }
 
           @media (hover: hover) and (pointer: fine) {
             &:hover {
@@ -493,6 +536,11 @@ $globalLoadingIndicatorHeight: 6px;
         .mouse-hover.ready + .mouse-hover-svg-overlay {
           opacity: 1 !important;
           pointer-events: auto;
+        }
+
+        .x-ruler,
+        .y-ruler {
+          opacity: .75 !important;
         }
       }
 

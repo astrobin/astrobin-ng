@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AuthGroupInterface } from "@shared/interfaces/auth-group.interface";
 import { PermissionInterface } from "@shared/interfaces/permission.interface";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
@@ -115,6 +115,9 @@ export interface BackendUserProfileInterface {
   following_count?: number;
   display_wip_images_on_public_gallery?: boolean;
   allow_ads?: boolean; // Whether the user allows ads to be shown on their profile.
+  suspended?: string;
+  suspension_reason?: string;
+  shadow_bans: number[];
 }
 
 export interface BackendTogglePropertyInterface {
@@ -189,7 +192,7 @@ export class CommonApiAdaptorService extends BaseService {
       retailerCountry: userProfile.retailer_country,
       avatar: userProfile.avatar,
       excludeFromCompetition: userProfile.exclude_from_competitions,
-      defaultFrontPageSection: userProfile.default_frontpage_section,
+      defaultFrontPageSection: FrontPageSection[userProfile.default_frontpage_section],
       defaultGallerySorting: userProfile.default_gallery_sorting,
       defaultLicense: userProfile.default_license,
       defaultWatermark: userProfile.default_watermark,
@@ -242,7 +245,10 @@ export class CommonApiAdaptorService extends BaseService {
       followersCount: userProfile.followers_count,
       followingCount: userProfile.following_count,
       displayWipImagesOnPublicGallery: userProfile.display_wip_images_on_public_gallery,
-      allowAds: userProfile.allow_ads
+      allowAds: userProfile.allow_ads,
+      suspended: userProfile.suspended,
+      suspensionReason: userProfile.suspension_reason,
+      shadowBans: userProfile.shadow_bans
     };
   }
 

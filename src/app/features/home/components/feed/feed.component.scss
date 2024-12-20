@@ -1,0 +1,75 @@
+@import '../../../../styles/breakpoints';
+@import '../../../../styles/mixins';
+
+.feed-container {
+  @include darkest-background-texture;
+  padding: 1rem;
+}
+
+.nav-tabs {
+  justify-content: center;
+  border-bottom: 0;
+
+  .nav-link {
+    border-radius: .75rem;
+
+    &:not(.active) {
+      color: var(--lighterGrey);
+    }
+  }
+}
+
+.global-personal-switcher {
+  text-align: right;
+
+  .ng-fa-icon {
+    font-size: .9rem;
+    cursor: pointer;
+    color: var(--lighterGrey);
+
+    &:first-child {
+      margin-right: .5rem;
+    }
+
+    &.active {
+      color: var(--accentColor);
+      pointer-events: none;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--white);
+      }
+    }
+  }
+}
+
+.feed {
+  $gutter: 20px;
+
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  contain: paint layout;
+  content-visibility: auto;
+
+  .feed-item {
+    display: block;
+    border-radius: var(--bs-border-radius);
+    box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
+    overflow: hidden;
+    width: calc(33.333% - #{$gutter / 1.5});
+    margin-bottom: $gutter;
+    opacity: 0;
+    transition: opacity .2s;
+    will-change: opacity, transform;
+
+    @media (max-width: $md-max) {
+      width: calc(50% - #{$gutter / 2});
+    }
+
+    @media (max-width: $xs-max) {
+      width: 100%;
+    }
+  }
+}

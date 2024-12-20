@@ -19,13 +19,23 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 @Component({
   selector: "astrobin-user-gallery-page",
   template: `
-    <div class="page has-infinite-scroll">
+    <div
+      *ngIf="currentUserWrapper$ | async as currentUserWrapper"
+      class="page has-infinite-scroll"
+    >
       <astrobin-ad-manager #ad *ngIf="showAd" configName="wide"></astrobin-ad-manager>
 
       <astrobin-user-gallery-header
         [user]="user"
         [userProfile]="userProfile"
       ></astrobin-user-gallery-header>
+
+      <p
+        *ngIf="currentUserWrapper.userProfile.shadowBans?.includes(userProfile.id)"
+        class="alert alert-warning shadow-ban-alert"
+      >
+        {{ "You shadow-banned this user. They won't be able to contact you." | translate }}
+      </p>
 
       <astrobin-user-gallery-navigation
         [user]="user"

@@ -2,14 +2,77 @@
   display: flex;
 
   button {
+    position: relative;
+    transition: all 0.2s ease;
+
     &[disabled] {
       cursor: not-allowed;
       pointer-events: auto;
       color: var(--lightGrey) !important;
     }
-  }
 
-  .btn.toggled .ng-fa-icon {
-    opacity: .5;
+    &.toggling {
+      .ng-fa-icon {
+        animation: likeAnimation 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+    }
+
+    .ng-fa-icon {
+      display: inline-block;
+      transform-origin: center;
+      transition: all 0.2s ease;
+      // Start slightly smaller when not toggled
+      transform: scale(0.9);
+    }
+
+    &:hover:not([disabled]) {
+      .ng-fa-icon {
+        transform: scale(1.1);
+      }
+    }
+
+    // Loading state
+    &.loading {
+      .ng-fa-icon {
+        opacity: 0.5;
+      }
+    }
+
+    // Count animation
+    .count {
+      margin-left: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+
+    &.toggling .count {
+      animation: countBump 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+  }
+}
+
+@keyframes likeAnimation {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes countBump {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
   }
 }

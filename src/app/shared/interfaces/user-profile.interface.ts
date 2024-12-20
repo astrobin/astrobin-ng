@@ -1,6 +1,13 @@
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
 
+export enum FrontPageSection {
+  GLOBAL = "global",
+  PERSONAL = "personal",
+  RECENT = "recent",
+  FOLLOWED = "followed"
+}
+
 export enum DefaultGallerySortingOption {
   PUBLICATION,
   ACQUISITION,
@@ -32,7 +39,7 @@ export interface UserProfileInterface {
   retailerCountry: string;
   avatar: string;
   excludeFromCompetition: boolean;
-  defaultFrontPageSection: string;
+  defaultFrontPageSection: FrontPageSection;
   defaultGallerySorting: DefaultGallerySortingOption;
   defaultLicense: number;
   defaultWatermarkText: string;
@@ -83,6 +90,9 @@ export interface UserProfileInterface {
   followingCount: number;
   displayWipImagesOnPublicGallery?: boolean;
   allowAds?: boolean;
+  suspended?: string;
+  suspensionReason?: string;
+  shadowBans: number[];
 }
 
 export interface UserProfileStatsInterface {
