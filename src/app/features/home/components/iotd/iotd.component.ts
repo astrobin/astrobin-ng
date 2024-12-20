@@ -16,8 +16,9 @@ import { DeviceService } from "@shared/services/device.service";
     <astrobin-image-loading-indicator *ngIf="!iotd"></astrobin-image-loading-indicator>
 
     <ng-container *ngIf="!!iotd">
-      <div
-        (click)="openImage(iotd.image)"
+      <a
+        (click)="openImage($event, iotd.image)"
+        [href]="'/i/' + iotd.image"
         [ngStyle]="{
           'background-image': 'url(' + iotd.thumbnail + ')',
           'background-position': objectPosition || '50% 50%',
@@ -25,7 +26,7 @@ import { DeviceService } from "@shared/services/device.service";
           'background-size': 'cover'
         }"
         class="iotd-image"
-      ></div>
+      ></a>
 
       <div class="iotd-footer">
         <div class="
@@ -298,7 +299,13 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
     });
   }
 
-  openImage(imageId: ImageInterface["pk"]) {
+  openImage(event: MouseEvent, imageId: ImageInterface["pk"]) {
+    if (event.metaKey || event.ctrlKey) {
+      return;
+    }
+
+    event.preventDefault();
+
     this.imageViewerService.openSlideshow(
       this.componentId,
       imageId,

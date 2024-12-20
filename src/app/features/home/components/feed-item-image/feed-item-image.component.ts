@@ -11,6 +11,7 @@ import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, take } from "rxjs/operators";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-feed-item-image",
@@ -30,7 +31,7 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
           <div class="feed-item-header-text">
             <div class="feed-item-header-text-1">
               <a
-                (click)="openImage.emit(objectId)"
+                (click)="onClick($event)"
                 [href]="'/i/' + objectId"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
@@ -46,7 +47,7 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
 
         <div class="feed-item-body">
           <a
-            (click)="openImage.emit(objectId)"
+            (click)="onClick($event)"
             [href]="'/i/' + objectId"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
@@ -123,7 +124,8 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
     public readonly store$: Store<MainState>,
     public readonly imageViewerService: ImageViewerService,
     public readonly viewContainerRef: ViewContainerRef,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
   }
@@ -135,6 +137,15 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
     this.userUsername = this._getUserUsername();
     this.userDisplayName = this._getUserDisplayName();
     this.userAvatar = this._getUserAvatar();
+  }
+
+  protected onClick(event: MouseEvent): void {
+    if (event.metaKey || event.ctrlKey) {
+      this.windowRefService.nativeWindow.open(`/i/${this.objectId}`, "_blank");
+      return;
+    }
+
+    this.openImage.emit(this.objectId);
   }
 
   protected openComments(): void {

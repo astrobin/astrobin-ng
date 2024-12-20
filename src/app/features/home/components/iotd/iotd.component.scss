@@ -12,6 +12,7 @@ $height: 500px;
   }
 
   .iotd-image {
+    display: block;
     object-fit: cover;
     cursor: pointer;
   }

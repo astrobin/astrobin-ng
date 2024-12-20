@@ -355,6 +355,7 @@ export class ImageViewerComponent
     this._initAutoOpenFullscreen();
     this._setMouseHoverImage();
     this._setAd();
+    this._replaceIdWithHash();
 
     // Updates to the current image.
     this.store$.pipe(
@@ -962,6 +963,25 @@ export class ImageViewerComponent
         this.adManagerComponent.refreshAd();
       }
     });
+  }
+
+  private _replaceIdWithHash() {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    const currentUrl = this.windowRefService.nativeWindow.location.href;
+    const urlObj = new URL(currentUrl);
+    const queryString = urlObj.search;  // Includes the '?'
+    const fragment = urlObj.hash;       // Includes the '#'
+
+    // If the URL contains the image id, replace it while keeping query and fragment
+    if (this.activatedRoute.snapshot.params["imageId"] === this.image.pk.toString()) {
+      this.windowRefService.replaceState(
+        {},
+        `/i/${this.image.hash}${queryString}${fragment}`
+      );
+    }
   }
 
   private _recordHit() {
