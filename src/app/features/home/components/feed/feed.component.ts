@@ -15,7 +15,6 @@ import { isPlatformBrowser } from "@angular/common";
 import { fromEvent, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import Masonry from 'masonry-layout';
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { fadeInOut } from "@shared/animations";
 
@@ -48,7 +47,7 @@ interface VisibleFeedItemInterface {
         <li [ngbNavItem]="FeedTab.FEED">
           <a ngbNavLink translate="Activity feed"></a>
           <ng-template ngbNavContent>
-            <astrobin-loading-indicator *ngIf="loading"></astrobin-loading-indicator>
+            <astrobin-loading-indicator *ngIf="loading || !isBrowser"></astrobin-loading-indicator>
 
             <div
               #feed
@@ -149,7 +148,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   protected currentUserProfile: UserProfileInterface;
 
   // For the activity feed.
-  protected masonry: Masonry;
+  protected MasonryModule: any;
+  protected masonry: any;
   protected feedItems: FeedItemInterface[] = null;
   protected visibleFeedItems: VisibleFeedItemInterface[] = null;
 
@@ -162,7 +162,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   protected loadingMore = false;
   protected next: string | null = null;
 
-  private readonly _isBrowser: boolean;
+  protected readonly isBrowser: boolean;
+
   private _page = 1;
   private _oldFeedItemsCount = 0;
 
@@ -182,7 +183,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);
-    this._isBrowser = isPlatformBrowser(platformId);
+    this.isBrowser = isPlatformBrowser(platformId);
 
     router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -197,8 +198,12 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     return '' + item.data.id
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     super.ngOnInit();
+
+    if (this.isBrowser) {
+      this.MasonryModule = await import('masonry-layout');
+    }
 
     this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
       this.currentUserProfile = userProfile;
@@ -228,7 +233,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
 
     this.onTabChange(this.activeTab);
 
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       fromEvent(this.windowRefService.nativeWindow, "scroll")
         .pipe(takeUntil(this.destroyed$), throttleTime(100), debounceTime(200))
         .subscribe(() => this._onScroll());
@@ -292,7 +297,9 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       this.changeDetectorRef.detectChanges();
 
       if (!this.masonry) {
-        this._initMasonry();
+        this._initMasonry().then(() => {
+          this._masonryLayoutComplete();
+        });
       } else if (newItemsAdded) {
         // Find newly added elements
         const feedItems = this.feedElement.nativeElement.querySelectorAll('.feed-item');
@@ -303,9 +310,9 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
 
         // Call appended on just the new elements
         this.masonry.appended(newElements);
-      }
 
-      this._masonryLayoutComplete();
+        this._masonryLayoutComplete();
+      }
     }
 
     const _loadFeed = (section: FrontPageSection) => {
@@ -365,7 +372,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   }
 
   private _updateVisibleFeedItems(newItemsAdded: boolean) {
-    if (!this.feedItems || !this._isBrowser) {
+    if (!this.feedItems || !this.isBrowser) {
       return;
     }
 
@@ -398,13 +405,13 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     this.visibleFeedItems = newVisibleFeedItems;
   }
 
-  private _initMasonry() {
-    if (!this._isBrowser) {
+  private async _initMasonry() {
+    if (!this.isBrowser || !this.MasonryModule) {
       return;
     }
 
     // Initialize masonry for the first time
-    this.masonry = new Masonry(this.feedElement.nativeElement, {
+    this.masonry = new this.MasonryModule.default(this.feedElement.nativeElement, {
       itemSelector: ".feed-item",
       columnWidth: ".feed-item",
       percentPosition: true,
