@@ -49,7 +49,9 @@
 
       .feed-item-header-text-1,
       .feed-item-header-text-2 {
-        display: inline-block;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
 
       .feed-item-header-text-2 {
