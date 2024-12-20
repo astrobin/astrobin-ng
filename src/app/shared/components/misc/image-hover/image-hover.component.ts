@@ -8,7 +8,7 @@ import { ImageSearchInterface } from "@shared/interfaces/image-search.interface"
     <div class="hover d-flex align-items-end gap-2">
       <div class="flex-grow-1">
         <div class="title">{{ image.title }}</div>
-        <div class="author">{{ image.userDisplayName }}</div>
+        <div *ngIf="showAuthor" class="author">{{ image.userDisplayName }}</div>
         <div *ngIf="published" class="published">{{ published | localDate | timeago }}</div>
         <div *ngIf="!published && uploaded"
              class="uploaded">{{ uploaded | localDate | timeago }}
@@ -35,6 +35,7 @@ import { ImageSearchInterface } from "@shared/interfaces/image-search.interface"
 })
 export class ImageHoverComponent implements OnChanges {
   @Input() image: ImageInterface | ImageSearchInterface;
+  @Input() showAuthor = true;
 
   protected published: string;
   protected uploaded: string;

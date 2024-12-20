@@ -75,8 +75,18 @@
     a {
       astrobin-image-hover {
         font-size: .75rem;
-        border-bottom-left-radius: 1.75rem;
-        border-bottom-right-radius: 1.75rem;
+
+        .author {
+          font-size: .65rem;
+        }
+
+        .counters {
+          .counter {
+            .ng-fa-icon {
+              margin-right: .1rem !important;
+            }
+          }
+        }
       }
 
       > img {
