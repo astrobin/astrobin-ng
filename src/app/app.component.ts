@@ -7,12 +7,12 @@ import { ThemeService } from "@shared/services/theme.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import { filter, map, take } from "rxjs/operators";
+import { filter, map, pairwise, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { CookieConsentService } from "@shared/services/cookie-consent/cookie-consent.service";
 import { CookieConsentEnum } from "@shared/types/cookie-consent.enum";
 import { Observable } from "rxjs";
-import { DOCUMENT, isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { DOCUMENT, isPlatformBrowser } from "@angular/common";
 import { NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
 import { TransferState } from "@angular/platform-browser";
@@ -127,6 +127,15 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   initRouterEvents(): void {
+    this.router.events?.pipe(
+      filter(event => event instanceof NavigationEnd),
+      pairwise()
+    ).subscribe(([prev, current]: [NavigationEnd, NavigationEnd]) => {
+      if (prev.urlAfterRedirects === current.urlAfterRedirects) {
+        this.windowRefService.scroll({ top: 0, behavior: "smooth" });
+      }
+    });
+
     this.router.events?.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.loadingService.setLoading(true);
