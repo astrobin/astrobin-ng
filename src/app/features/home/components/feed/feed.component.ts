@@ -6,16 +6,16 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
 import { FeedApiService } from "@features/home/services/feed-api.service";
 import { FeedService } from "@features/home/services/feed.service";
 import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
-import { debounceTime, filter, take, takeUntil } from "rxjs/operators";
+import { debounceTime, take, takeUntil } from "rxjs/operators";
 import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { isPlatformBrowser } from "@angular/common";
-import { fromEvent, throttleTime } from "rxjs";
+import { fromEvent, merge, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { fadeInOut } from "@shared/animations";
 
 enum FeedTab {
@@ -188,14 +188,14 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   trackByFn(index: number, item: VisibleFeedItemInterface): string {
-    return '' + item.data.id
+    return "" + item.data.id;
   }
 
   async ngOnInit() {
     super.ngOnInit();
 
     if (this.isBrowser) {
-      this.MasonryModule = await import('masonry-layout');
+      this.MasonryModule = await import("masonry-layout");
     }
 
     this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
@@ -227,8 +227,16 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     this.onTabChange(this.activeTab);
 
     if (this.isBrowser) {
-      fromEvent(this.windowRefService.nativeWindow, "scroll")
-        .pipe(takeUntil(this.destroyed$), throttleTime(100), debounceTime(200))
+      merge(
+        fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
+          takeUntil(this.destroyed$),
+          throttleTime(200)
+        ),
+        fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
+          takeUntil(this.destroyed$),
+          debounceTime(100)
+        )
+      )
         .subscribe(() => this._onScroll());
     }
   }
@@ -239,7 +247,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   ngOnDestroy() {
-    this._destroyMasonry()
+    this._destroyMasonry();
     super.ngOnDestroy();
   }
 
@@ -311,7 +319,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
         });
       } else if (newItemsAdded) {
         // Find newly added elements
-        const feedItems = this.feedElement.nativeElement.querySelectorAll('.feed-item');
+        const feedItems = this.feedElement.nativeElement.querySelectorAll(".feed-item");
         // Assuming we know how many items were there before, we can isolate the new ones.
         // For simplicity, let's say we track the old count and new count:
         const newElements = Array.from(feedItems).slice(this._oldFeedItemsCount);
@@ -322,7 +330,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
         this._masonryLayoutComplete();
       }
-    }
+    };
 
     const _loadFeed = (section: FrontPageSection) => {
       this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
@@ -387,7 +395,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
     const bufferSize = 2000;
     const _win = this.windowRefService.nativeWindow;
-    const _doc  = _win.document;
+    const _doc = _win.document;
     const newVisibleFeedItems: VisibleFeedItemInterface[] = [];
 
     for (const item of this.feedItems) {
@@ -429,7 +437,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     });
 
     // Keep track of how many items we initially had.
-    const feedItems = this.feedElement.nativeElement.querySelectorAll('.feed-item');
+    const feedItems = this.feedElement.nativeElement.querySelectorAll(".feed-item");
     this._oldFeedItemsCount = feedItems.length;
 
     this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
@@ -437,7 +445,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   private _masonryLayoutComplete() {
-    const feedItems = this.feedElement.nativeElement.querySelectorAll('.feed-item') as NodeListOf<HTMLElement>;
+    const feedItems = this.feedElement.nativeElement.querySelectorAll(".feed-item") as NodeListOf<HTMLElement>;
     feedItems.forEach(item => {
       this.renderer.setStyle(item, "opacity", "1");
     });
@@ -447,7 +455,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   private _destroyMasonry() {
     if (this.masonry) {
       this.masonry.destroy();
-      this.masonry = null
+      this.masonry = null;
     }
   }
 
