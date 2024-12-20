@@ -6,7 +6,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
 import { FeedApiService } from "@features/home/services/feed-api.service";
 import { FeedService } from "@features/home/services/feed.service";
 import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
-import { filter, take, takeUntil } from "rxjs/operators";
+import { debounceTime, filter, take, takeUntil } from "rxjs/operators";
 import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
@@ -17,6 +17,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import Masonry from 'masonry-layout';
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { fadeInOut } from "@shared/animations";
 
 enum FeedTab {
   FEED = "FEED",
@@ -26,6 +27,11 @@ enum FeedTab {
 enum FeedType {
   GLOBAL = "GLOBAL",
   PERSONAL = "PERSONAL",
+}
+
+interface VisibleFeedItemInterface {
+  data: FeedItemInterface;
+  visible: boolean;
 }
 
 @Component({
@@ -43,16 +49,22 @@ enum FeedType {
           <a ngbNavLink translate="Activity feed"></a>
           <ng-template ngbNavContent>
             <astrobin-loading-indicator *ngIf="loading"></astrobin-loading-indicator>
+
             <div
-              *ngIf="feedItems !== null"
               #feed
               class="feed"
             >
-              <astrobin-feed-item
-                *ngFor="let item of feedItems; trackBy: trackByFn"
-                [feedItem]="item"
+              <div
                 class="feed-item"
-              ></astrobin-feed-item>
+                *ngFor="let item of visibleFeedItems; trackBy: trackByFn"
+                [attr.data-feed-item-id]="item.data.id"
+              >
+                <astrobin-feed-item
+                  @fadeInOut
+                  *ngIf="item.visible"
+                  [feedItem]="item.data"
+                ></astrobin-feed-item>
+              </div>
             </div>
 
             <astrobin-loading-indicator
@@ -122,7 +134,8 @@ enum FeedType {
 
     <div [ngbNavOutlet]="nav"></div>
   `,
-  styleUrls: ["./feed.component.scss"]
+  styleUrls: ["./feed.component.scss"],
+  animations: [fadeInOut]
 })
 export class FeedComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   @ViewChild("feed") protected feedElement: ElementRef;
@@ -138,6 +151,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   // For the activity feed.
   protected masonry: Masonry;
   protected feedItems: FeedItemInterface[] = null;
+  protected visibleFeedItems: VisibleFeedItemInterface[] = null;
 
   // For the recent images.
   protected images: ImageInterface[] = null;
@@ -179,8 +193,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     });
   }
 
-  trackByFn(index: number, item: FeedItemInterface): string {
-    return '' + item.id
+  trackByFn(index: number, item: VisibleFeedItemInterface): string {
+    return '' + item.data.id
   }
 
   ngOnInit(): void {
@@ -216,7 +230,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
 
     if (this._isBrowser) {
       fromEvent(this.windowRefService.nativeWindow, "scroll")
-        .pipe(takeUntil(this.destroyed$), throttleTime(200))
+        .pipe(takeUntil(this.destroyed$), throttleTime(100), debounceTime(200))
         .subscribe(() => this._onScroll());
     }
   }
@@ -236,6 +250,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     this._page = 1;
     this.next = null;
     this.feedItems = null;
+    this.visibleFeedItems = null;
     this.images = null;
 
     this._destroyMasonry();
@@ -302,6 +317,17 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
           ...(feedItems.results as FeedItemInterface[])
         ]);
 
+        this.visibleFeedItems = this.feedItems.map(item => {
+          return {
+            data: item,
+            height: null,
+            width: null,
+            top: null,
+            left: null,
+            visible: true
+          };
+        });
+
         const newItemsAdded = (this.feedItems.length > prevCount);
         this.next = feedItems.next;
         _cleanUp(newItemsAdded);
@@ -338,6 +364,36 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     }
   }
 
+  private _updateVisibleFeedItems(newItemsAdded: boolean) {
+    if (!this.feedItems || !this._isBrowser) {
+      return;
+    }
+
+    const bufferSize = 2000;
+
+    this.visibleFeedItems = this.feedItems.map(item => {
+      const element = this.feedElement.nativeElement.querySelector(`[data-feed-item-id="${item.id}"]`) as HTMLElement;
+      const _win = this.windowRefService.nativeWindow;
+      const _doc  = _win.document;
+
+      if (!element) {
+        return {
+          data: item,
+          visible: true
+        };
+      }
+
+      const rect = element.getBoundingClientRect();
+
+      return {
+        data: item,
+        visible:
+          rect.top + rect.height >= -bufferSize &&
+          rect.top <= (_win.innerHeight || _doc.documentElement.clientHeight) + bufferSize
+      };
+    });
+  }
+
   private _initMasonry() {
     if (!this._isBrowser) {
       return;
@@ -365,6 +421,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     feedItems.forEach(item => {
       this.renderer.setStyle(item, "opacity", "1");
     });
+    this._updateVisibleFeedItems(false);
   }
 
   private _destroyMasonry() {
@@ -375,6 +432,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   }
 
   private _onScroll(): void {
+    this._updateVisibleFeedItems(false);
+
     if (
       this.loading ||
       this.loadingMore ||
