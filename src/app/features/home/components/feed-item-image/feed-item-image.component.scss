@@ -7,11 +7,15 @@ img {
 
 .comment-body {
   font-size: .9rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--grey);
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding: .75rem 1.25rem;
+  border-left: .25rem solid var(--grey);
   color: var(--lighterGrey);
+  background: rgba(0, 0, 0, .2);
+  box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
 }
+
 
 .feed-item-header-text-1 {
   a {
