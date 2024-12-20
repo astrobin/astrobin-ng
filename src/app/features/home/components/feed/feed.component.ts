@@ -370,28 +370,32 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     }
 
     const bufferSize = 2000;
+    const _win = this.windowRefService.nativeWindow;
+    const _doc  = _win.document;
+    const newVisibleFeedItems: VisibleFeedItemInterface[] = [];
 
-    this.visibleFeedItems = this.feedItems.map(item => {
+    for (const item of this.feedItems) {
       const element = this.feedElement.nativeElement.querySelector(`[data-feed-item-id="${item.id}"]`) as HTMLElement;
-      const _win = this.windowRefService.nativeWindow;
-      const _doc  = _win.document;
+      let isVisible = true;
 
-      if (!element) {
-        return {
-          data: item,
-          visible: true
-        };
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        isVisible = rect.top + rect.height >= -bufferSize &&
+          rect.top <= (_win.innerHeight || _doc.documentElement.clientHeight) + bufferSize;
       }
 
-      const rect = element.getBoundingClientRect();
-
-      return {
-        data: item,
-        visible:
-          rect.top + rect.height >= -bufferSize &&
-          rect.top <= (_win.innerHeight || _doc.documentElement.clientHeight) + bufferSize
-      };
-    });
+      // Only create a new object if visibility has changed or it's a new item
+      const existingItem = this.visibleFeedItems?.find(vfi => vfi.data.id === item.id);
+      if (!existingItem || existingItem.visible !== isVisible) {
+        newVisibleFeedItems.push({
+          data: item,
+          visible: isVisible
+        });
+      } else if (existingItem) {
+        newVisibleFeedItems.push(existingItem); // Keep the existing object
+      }
+    }
+    this.visibleFeedItems = newVisibleFeedItems;
   }
 
   private _initMasonry() {
