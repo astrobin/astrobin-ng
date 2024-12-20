@@ -1,9 +1,9 @@
-import { Component, Input, OnChanges, ViewContainerRef } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output, ViewContainerRef } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
-import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
@@ -30,7 +30,7 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
           <div class="feed-item-header-text">
             <div class="feed-item-header-text-1">
               <a
-                (click)="openImage()"
+                (click)="openImage.emit(objectId)"
                 [href]="'/i/' + objectId"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
@@ -46,7 +46,7 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
 
         <div class="feed-item-body">
           <a
-            (click)="openImage()"
+            (click)="openImage.emit(objectId)"
             [href]="'/i/' + objectId"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
@@ -110,6 +110,7 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
 })
 export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;
+  @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
 
   protected contentType: number;
   protected objectId: string;
@@ -134,17 +135,6 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
     this.userUsername = this._getUserUsername();
     this.userDisplayName = this._getUserDisplayName();
     this.userAvatar = this._getUserAvatar();
-  }
-
-  protected openImage(): void {
-    this.imageViewerService.openSlideshow(
-      this.componentId,
-      this._getObjectId(),
-      FINAL_REVISION_LABEL,
-      [],
-      this.viewContainerRef,
-      true
-    ).subscribe();
   }
 
   protected openComments(): void {

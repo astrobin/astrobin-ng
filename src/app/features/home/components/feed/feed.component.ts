@@ -61,6 +61,7 @@ interface VisibleFeedItemInterface {
                 <astrobin-feed-item
                   @fadeInOut
                   *ngIf="item.visible"
+                  (openImage)="openImageById($event)"
                   [feedItem]="item.data"
                 ></astrobin-feed-item>
               </div>
@@ -265,6 +266,17 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
     this.gridItems = event.gridItems;
     this.averageHeight = event.averageHeight;
+  }
+
+  openImageById(imageId: ImageInterface["hash"] | ImageInterface["pk"]): void {
+    this.imageViewerService.openSlideshow(
+      this.componentId,
+      imageId,
+      FINAL_REVISION_LABEL,
+      [],
+      this.viewContainerRef,
+      true
+    ).subscribe();
   }
 
   openImage(image: ImageInterface): void {

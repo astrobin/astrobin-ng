@@ -1,8 +1,9 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-feed-item",
@@ -10,6 +11,7 @@ import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-
     <div class="feed-item-content">
       <astrobin-feed-item-image
         *ngIf="isImageFeedItem"
+        (openImage)="openImage.emit($event)"
         [feedItem]="feedItem"
       ></astrobin-feed-item-image>
 
@@ -28,6 +30,7 @@ import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-
 })
 export class FeedItemComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;
+  @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
 
   protected isImageFeedItem = false;
   protected isMarketplaceListingFeedItem = false;
