@@ -35,7 +35,7 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
               [objectId]="image?.pk"
               [showLabel]="false"
               [userId]="currentUserWrapper.user?.id"
-              [count]="image.likeCount"
+              [count]="initialLikeCount"
               class="btn-no-block"
               btnClass="btn btn-no-block {{ btnExtraClasses }}"
               propertyType="like"
@@ -57,7 +57,7 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
               [objectId]="image?.pk"
               [userId]="currentUserWrapper.user?.id"
               [showLabel]="false"
-              [count]="image?.bookmarkCount"
+              [count]="initialBookmarkCount"
               class="btn-no-block"
               btnClass="btn btn-no-block {{ btnExtraClasses }}"
               propertyType="bookmark"
@@ -151,6 +151,8 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
   protected likeThis: {username: string; displayName: string}[] = [];
   protected likeThisSearch: string;
   protected likeThisSearchSubject = new Subject<string>();
+  protected initialLikeCount: number;
+  protected initialBookmarkCount: number;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -185,6 +187,9 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.initialLikeCount = this.image.likeCount;
+    this.initialBookmarkCount = this.image.bookmarkCount;
 
     this.likeThisSearchSubject.pipe(
       debounceTime(300),

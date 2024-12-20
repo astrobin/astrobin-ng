@@ -1,6 +1,6 @@
 <button
   (click)="onClick($event)"
-  [class.loading]="showLoadingIndicator && (loading || !initialized || toggled === undefined)"
+  [class.loading]="(showLoadingIndicator && (loading || !initialized || toggled === undefined)) || toggling"
   [class.toggled]="!!toggled"
   [class.toggling]="toggling"
   [class]="btnClass"
