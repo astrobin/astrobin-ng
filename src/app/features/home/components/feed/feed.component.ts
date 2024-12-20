@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -137,7 +137,7 @@ interface VisibleFeedItemInterface {
   styleUrls: ["./feed.component.scss"],
   animations: [fadeInOut]
 })
-export class FeedComponent extends BaseComponentDirective implements OnInit, OnDestroy {
+export class FeedComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("feed") protected feedElement: ElementRef;
 
   protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
@@ -185,14 +185,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
-
-    router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.imageViewerService.closeSlideShow(false);
-      this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
-    });
   }
 
   trackByFn(index: number, item: VisibleFeedItemInterface): string {
@@ -239,6 +231,11 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
         .pipe(takeUntil(this.destroyed$), throttleTime(100), debounceTime(200))
         .subscribe(() => this._onScroll());
     }
+  }
+
+  ngAfterViewInit() {
+    this.imageViewerService.closeSlideShow(false);
+    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
   }
 
   ngOnDestroy() {
