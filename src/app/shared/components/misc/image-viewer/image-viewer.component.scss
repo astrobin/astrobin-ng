@@ -758,6 +758,15 @@ $globalLoadingIndicatorHeight: 6px;
         right: unset;
         position: unset;
         z-index: 1031;
+
+        .btn {
+          padding: 1rem .5rem !important;
+          font-size: 1.15rem !important;
+
+          .ng-fa-icon {
+            margin: 0;
+          }
+        }
       }
     }
   }
