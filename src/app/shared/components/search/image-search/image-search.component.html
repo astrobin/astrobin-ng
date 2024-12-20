@@ -123,7 +123,10 @@
               <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
             </div>
 
-            <astrobin-image-hover [image]="item"></astrobin-image-hover>
+            <astrobin-image-hover
+              *ngIf="alias === ImageAlias.REGULAR"
+              [image]="item"
+            ></astrobin-image-hover>
           </a>
         </div>
       </ng-container>
