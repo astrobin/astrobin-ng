@@ -2,16 +2,18 @@
 @import "../../../../styles/mixins";
 
 astrobin-iotd {
-  margin: -2rem 0 1rem;
+  margin: -1.25rem 0 1rem;
   border-top-left-radius: .25rem;
   border-top-right-radius: .25rem;
   overflow: hidden;
   display: block;
 
+  @media screen and (min-width: $md-min) {
+    margin-top: -1rem;
+  }
+
   @media screen and (min-width: $lg-min) {
-    margin-left: -2rem;
-    margin-right: -2rem;
-    margin-bottom: 3rem;
+    margin: -2rem -2rem 3rem;
   }
 }
 
