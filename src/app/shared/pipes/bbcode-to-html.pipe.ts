@@ -154,6 +154,8 @@ export class BBCodeToHtmlPipe implements PipeTransform {
     ).subscribe(thumbnail => {
       if (thumbnail) {
         callback(thumbnail);
+      } else {
+        callback(src);
       }
     });
   }
