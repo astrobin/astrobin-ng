@@ -82,3 +82,11 @@
     }
   }
 }
+
+::ng-deep {
+  .active-smart-folder-gallery-offcanvas {
+    &:not(.offcanvas-bottom) {
+      width: 40vw !important;
+    }
+  }
+}

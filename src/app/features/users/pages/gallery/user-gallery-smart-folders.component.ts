@@ -8,6 +8,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
 import { takeUntil } from "rxjs/operators";
 import { fadeInOut } from "@shared/animations";
+import { FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
 
 export enum SmartFolderType {
   YEAR = "year",
@@ -73,7 +74,10 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
-  @Output() readonly activeChange = new EventEmitter<string>();
+  @Output() readonly activeChange = new EventEmitter<{
+    active: string,
+    menu: FindImagesResponseInterface["menu"]
+  }>();
 
   public readonly smartFolders = [
     {

@@ -16,7 +16,7 @@ import { selectCollections } from "@app/store/selectors/app/collection.selectors
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
-import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { FindImagesOptionsInterface, FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
@@ -126,25 +126,10 @@ type GalleryNavigationComponent =
             </a>
             <ng-template ngbNavContent>
               <astrobin-user-gallery-smart-folders
-                (activeChange)="activeSmartFolder = $event"
+                (activeChange)="onActiveSmartFolderChange($event)"
                 [user]="user"
                 [userProfile]="userProfile"
               ></astrobin-user-gallery-smart-folders>
-
-              <astrobin-user-gallery-images
-                *ngIf="activeSmartFolderType && activeSmartFolder !== null && activeSmartFolder !== undefined"
-                [activeLayout]="activeLayout"
-                [user]="user"
-                [userProfile]="userProfile"
-                [options]="{
-                includeStagingArea:
-                  currentUserWrapper.user?.id === user.id &&
-                  userProfile.displayWipImagesOnPublicGallery,
-                subsection: activeSmartFolderType,
-                active: activeSmartFolder,
-                q: searchModel
-              }"
-              ></astrobin-user-gallery-images>
             </ng-template>
           </li>
 
@@ -155,35 +140,10 @@ type GalleryNavigationComponent =
             </a>
             <ng-template ngbNavContent>
               <astrobin-user-gallery-equipment
-                (activeEquipmentItemChange)="activeSmartFolder = $event"
+                (activeEquipmentItemChange)="onActiveSmartFolderChange($event)"
                 [user]="user"
                 [userProfile]="userProfile"
               ></astrobin-user-gallery-equipment>
-
-              <astrobin-equipment-item-summary
-                *ngIf="activeSmartFolderEquipmentItem"
-                [item]="activeSmartFolderEquipmentItem"
-                [showDataDoesNotUpdateInRealTime]="false"
-                [showEditButtons]="false"
-                [showImage]="false"
-                [showMostOftenUsedWith]="true"
-                class="d-block mt-3 mb-5"
-              ></astrobin-equipment-item-summary>
-
-              <astrobin-user-gallery-images
-                *ngIf="activeSmartFolder !== null && activeSmartFolder !== undefined"
-                [activeLayout]="activeLayout"
-                [user]="user"
-                [userProfile]="userProfile"
-                [options]="{
-                includeStagingArea:
-                  currentUserWrapper.user?.id === user.id &&
-                  userProfile.displayWipImagesOnPublicGallery,
-                subsection: SmartFolderType.GEAR,
-                active: activeSmartFolder,
-                q: searchModel
-              }"
-              ></astrobin-user-gallery-images>
             </ng-template>
           </li>
 
@@ -263,6 +223,42 @@ type GalleryNavigationComponent =
         (ngModelChange)="onSearchModelChange()"
       />
     </ng-template>
+
+    <ng-template #activeSmartFolderGalleryOffcanvas let-offcanvas>
+      <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title">{{ activeSmartFolderLabel }}</h5>
+          <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
+        </div>
+
+        <div class="offcanvas-body">
+          <astrobin-equipment-item-summary
+            *ngIf="activeSmartFolderEquipmentItem"
+            [item]="activeSmartFolderEquipmentItem"
+            [showDataDoesNotUpdateInRealTime]="false"
+            [showEditButtons]="false"
+            [showImage]="false"
+            [showMostOftenUsedWith]="true"
+            class="d-block mt-3 mb-5"
+          ></astrobin-equipment-item-summary>
+
+          <astrobin-user-gallery-images
+            *ngIf="activeSmartFolderType && activeSmartFolder !== null && activeSmartFolder !== undefined"
+            [activeLayout]="UserGalleryActiveLayout.SMALL"
+            [user]="user"
+            [userProfile]="userProfile"
+            [options]="{
+                includeStagingArea:
+                  currentUserWrapper.user?.id === user.id &&
+                  userProfile.displayWipImagesOnPublicGallery,
+                subsection: activeSmartFolderType,
+                active: activeSmartFolder,
+                q: searchModel
+              }"
+          ></astrobin-user-gallery-images>
+        </div>
+      </ng-container>
+    </ng-template>
   `,
   styleUrls: ["./user-gallery-navigation.component.scss"]
 })
@@ -271,8 +267,10 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   @Input() userProfile: UserProfileInterface;
 
   @ViewChild("createCollectionOffcanvas") createCollectionOffcanvas: TemplateRef<any>;
+  @ViewChild("activeSmartFolderGalleryOffcanvas") activeSmartFolderGalleryOffcanvas: TemplateRef<any>;
 
   protected readonly ImageAlias = ImageAlias;
+  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
   protected readonly isBrowser: boolean;
 
   protected activeTab: GalleryNavigationComponent = "gallery";
@@ -281,6 +279,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   protected activeCollection: CollectionInterface | null = null;
   protected activeSmartFolderType: SmartFolderType | null = null;
   protected activeSmartFolder: string | null = null;
+  protected activeSmartFolderLabel: string | null = null;
   protected activeSmartFolderEquipmentItem: EquipmentItem | null = null;
   protected searchModel: string | null = null;
   protected publicGalleryOptions: FindImagesOptionsInterface;
@@ -410,6 +409,19 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     };
   }
 
+  protected onActiveSmartFolderChange(event: {
+    active: string,
+    menu: FindImagesResponseInterface["menu"]
+  }) {
+    this.activeSmartFolder = event.active;
+
+    if (!!this.activeSmartFolder) {
+      const menuEntry = event.menu.find(item => item[0] === event.active);
+      this.activeSmartFolderLabel = menuEntry ? menuEntry[1] : null;
+      this._openSmartFolderGalleryOffcanvas();
+    }
+  }
+
   private _updateSearchModel() {
     this.searchModel = null;
 
@@ -477,6 +489,10 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     this.activeSmartFolderType = this.route.snapshot.queryParamMap.get("folder-type") as SmartFolderType;
     this.activeSmartFolder = this.route.snapshot.queryParamMap.get("active");
 
+    if (!!this.activeSmartFolder) {
+      this._openSmartFolderGalleryOffcanvas();
+    }
+
     if (
       this.activeSmartFolderType === SmartFolderType.GEAR &&
       this.activeSmartFolder?.length > 0 &&
@@ -509,5 +525,12 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     } else {
       this.activeSmartFolderEquipmentItem = null;
     }
+  }
+
+  private _openSmartFolderGalleryOffcanvas() {
+    this.offcanvasService.open(this.activeSmartFolderGalleryOffcanvas, {
+      panelClass: "active-smart-folder-gallery-offcanvas",
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 }

@@ -24,7 +24,7 @@ import { FindImagesResponseInterface } from "@shared/services/api/classic/images
           <h4 class="mb-0 me-2">{{ humanizeFolderType() }}</h4>
           <a
             *ngFor="let item of menu"
-            [class.active]="item[0].toString() === active.toString()"
+            [class.active]="!!active && item[0].toString() === active.toString()"
             [routerLink]="['/u', user.username]"
             [queryParams]="{ 'folder-type': folderType, active: item[0] }"
             [fragment]="galleryFragment"
@@ -48,7 +48,10 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   @Input() folderType: SmartFolderType;
   @Input() galleryFragment = "smart-folders";
 
-  @Output() readonly activeChange = new EventEmitter<string>();
+  @Output() readonly activeChange = new EventEmitter<{
+    active: string,
+    menu: FindImagesResponseInterface["menu"]
+  }>();
 
   protected menu: FindImagesResponseInterface["menu"];
   protected active: string | null = null;
@@ -73,7 +76,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       takeUntil(this.destroyed$)
     ).subscribe(active => {
       this.active = active;
-      this.activeChange.emit(active);
+      this.activeChange.emit({ active, menu: this.menu });
     });
   }
 
@@ -85,7 +88,6 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       }
 
       this.active = this.activatedRoute.snapshot.queryParamMap.get("active");
-      this.activeChange.emit(this.active);
 
       this.actions$.pipe(
         ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
@@ -97,12 +99,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
         take(1)
       ).subscribe(payload => {
         this.menu = payload.response.menu;
-
-        if (!this.active) {
-          this.active = payload.response.active || this.menu[0][0];
-          this.activeChange.emit(this.active);
-        }
-
+        this.activeChange.emit({ active: this.active, menu: this.menu });
         this.loading = false;
       });
 

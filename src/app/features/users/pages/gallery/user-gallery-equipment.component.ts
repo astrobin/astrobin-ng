@@ -14,6 +14,7 @@ import { DeviceService } from "@shared/services/device.service";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { Actions, ofType } from "@ngrx/effects";
+import { FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
 
 @Component({
   selector: "astrobin-user-gallery-equipment",
@@ -105,7 +106,7 @@ export class UserGalleryEquipmentComponent extends BaseComponentDirective implem
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
-  @Output() activeEquipmentItemChange = new EventEmitter<string>();
+  @Output() activeEquipmentItemChange = new EventEmitter<{ active: string, menu: FindImagesResponseInterface["menu"] }>();
 
   @ViewChild("presetSummaryOffcanvas") presetSummaryOffcanvas: TemplateRef<any>;
   @ViewChild("presetCreateOffcanvas") presetCreateOffcanvas: TemplateRef<any>;
