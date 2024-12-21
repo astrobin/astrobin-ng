@@ -236,8 +236,28 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
           takeUntil(this.destroyed$),
           debounceTime(100)
         )
-      )
-        .subscribe(() => this._onScroll());
+      ).subscribe(() => this._onScroll());
+
+      fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
+        takeUntil(this.destroyed$),
+        debounceTime(100)
+      ).subscribe(() => {
+        this.visibleFeedItems = this.feedItems.map(item => {
+          return {
+            data: item,
+            visible: true
+          };
+        });
+
+        this.changeDetectorRef.detectChanges();
+
+        if (this.masonry) {
+          this.masonry.once("layoutComplete", () => {
+            this._masonryLayoutComplete()
+          });
+          this.masonry.layout();
+        }
+      });
     }
   }
 
@@ -344,10 +364,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
         this.visibleFeedItems = this.feedItems.map(item => {
           return {
             data: item,
-            height: null,
-            width: null,
-            top: null,
-            left: null,
             visible: true
           };
         });
