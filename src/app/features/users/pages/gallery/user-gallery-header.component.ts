@@ -222,6 +222,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
       <div class="offcanvas-body">
         <div *ngIf="followers; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
+            *ngIf="!searching && followers.followers?.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
@@ -234,6 +235,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
               {{ follower[2] || follower[1] }}
             </a>
           </ng-container>
+          <p *ngIf="!searching && followers.followers?.length === 0" translate="No followers."></p>
         </div>
       </div>
     </ng-template>
@@ -246,6 +248,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
       <div class="offcanvas-body">
         <div *ngIf="following; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
+            *ngIf="!searching && following.following?.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
@@ -258,6 +261,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
               {{ following[2] || following[1] }}
             </a>
           </ng-container>
+          <p *ngIf="!searching && following.following?.length === 0" translate="Not following anyone."></p>
         </div>
       </div>
     </ng-template>
@@ -268,8 +272,12 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
         <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
       </div>
       <div class="offcanvas-body">
+        <p class="mb-3 text-muted">
+          {{ "These are the users that follow you and are followed by you." | translate }}
+        </p>
         <div *ngIf="mutualFollowers; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
+            *ngIf="!searching && mutualFollowers['mutual-followers']?.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
@@ -277,11 +285,14 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
             [(ngModel)]="mutualFollowersSearch"
             (ngModelChange)="mutualFollowersSearchSubject.next($event)"
           />
+
           <ng-container *ngIf="!searching; else loadingTemplate">
             <a *ngFor="let follower of mutualFollowers['mutual-followers']" [routerLink]="['/u', follower[1]]">
               {{ follower[2] || follower[1] }}
             </a>
           </ng-container>
+
+          <p *ngIf="!searching && mutualFollowers['mutual-followers']?.length === 0" translate="No mutual followers."></p>
         </div>
       </div>
     </ng-template>
