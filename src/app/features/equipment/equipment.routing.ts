@@ -231,7 +231,7 @@ export const equipmentRoutes: Routes = [
         canActivate: [AuthGuardService]
       },
       {
-        path: "listing/:hash/edit",
+        path: "listing/:hashOrId/edit",
         component: MarketplaceEditListingPageComponent,
         canActivate: [AuthGuardService],
         resolve: {
@@ -239,7 +239,7 @@ export const equipmentRoutes: Routes = [
         }
       },
       {
-        path: "listing/:hash/:slug/edit",
+        path: "listing/:hashOrId/:slug/edit",
         component: MarketplaceEditListingPageComponent,
         canActivate: [AuthGuardService],
         resolve: {
