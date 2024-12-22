@@ -13,8 +13,8 @@
 .user-sidebar,
 .overlay {
   position: fixed;
-  top: 0;
-  bottom: 0;
+  top: env(safe-area-inset-top);
+  bottom: env(safe-area-inset-bottom);
 }
 
 .overlay {
@@ -132,7 +132,7 @@
 .navbar {
   @include darkest-background-texture;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
-  top: .3rem;
+  top: env(safe-area-inset-top);
   padding: 0;
 
   @media (max-width: $md-max) {

@@ -20,6 +20,8 @@ import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { Platform } from "@ionic/angular";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -49,8 +51,11 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     public readonly notificationsService: NotificationsService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly loadingService: LoadingService,
-    public readonly titleService: TitleService
+    public readonly titleService: TitleService,
+    public readonly platform: Platform
   ) {
+    console.log("AstroBin: Welcome to the AstroBin app!");
+
     super(store$);
 
     this._isBrowser = isPlatformBrowser(platformId);
@@ -67,6 +72,14 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("AstroBin: App component initialized");
+
+    if (this.platform.is("capacitor")) {
+      this.platform.ready().then(() => {
+        this._initStatusBar();
+      });
+    }
+
     if (this._isBrowser && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1) {
       this.includeAnalytics$().subscribe(includeAnalytics => {
         if (includeAnalytics) {
@@ -236,5 +249,13 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
           .subscribe();
       }
     });
+  }
+
+  private async _initStatusBar() {
+    try {
+      await StatusBar.setStyle({style: Style.Dark});
+    } catch (e) {
+      console.error("Error changing status bar color", e);
+    }
   }
 }

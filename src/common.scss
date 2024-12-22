@@ -9,7 +9,28 @@
 @import './node_modules/@swimlane/ngx-datatable/themes/bootstrap';
 @import './node_modules/@swimlane/ngx-datatable/assets/icons';
 
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
 @import "assets/flags/flags";
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  astrobin-root {
+    display: block;
+    width: 100%;
+    height: 100vh;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+}
 
 @import "app/styles/accordion";
 @import "app/styles/alerts";

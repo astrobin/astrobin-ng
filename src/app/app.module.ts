@@ -47,6 +47,7 @@ import { Router } from "@angular/router";
 import { CLIENT_IP } from "@app/client-ip.injector";
 import { TimeagoAppClock } from "@shared/services/timeago-app-clock.service";
 import { NGRX_STATE_KEY } from "@shared/services/store-transfer.service";
+import { IonicModule } from "@ionic/angular";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -85,6 +86,9 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     BrowserAnimationsModule,
     HttpClientModule,
     CookieModule.forRoot(),
+    IonicModule.forRoot({
+      _forceStatusbarPadding: true
+    }),
 
     // Dependencies.
     StoreModule.forRoot(mainStateReducers,
