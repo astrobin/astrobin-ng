@@ -149,7 +149,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
               <a
                 (click)="openStatsOffcanvas()"
                 astrobinEventPreventDefault
-                class="btn btn-xs btn-link btn-no-block p-0 p-md-2 text-muted"
+                class="btn btn-xs btn-link btn-no-block p-0 p-md-2 more"
                 data-toggle="offcanvas"
                 href=""
                 translate="More"
