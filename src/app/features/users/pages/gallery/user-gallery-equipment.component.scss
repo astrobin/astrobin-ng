@@ -14,3 +14,10 @@ astrobin-loading-indicator {
 .create-preset {
   @include create-preset-button();
 }
+
+h4 small {
+  display: block;
+  font-size: .9rem;
+  color: var(--lighterGrey);
+  margin-top: .5rem;
+}

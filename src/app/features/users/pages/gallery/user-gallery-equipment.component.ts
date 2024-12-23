@@ -21,7 +21,12 @@ import { FindImagesResponseInterface } from "@shared/services/api/classic/images
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div class="mb-5">
-        <h4 class="mb-3">{{ "Setups" | translate }}</h4>
+        <h4 class="mb-3">
+          {{ "Setups" | translate }}
+          <small>
+            {{ "Setups are saved combinations of equipment for quick association with one's images." | translate }}
+          </small>
+        </h4>
 
         <astrobin-loading-indicator *ngIf="loadingPresets"></astrobin-loading-indicator>
 
