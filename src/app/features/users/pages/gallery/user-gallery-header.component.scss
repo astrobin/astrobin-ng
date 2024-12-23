@@ -135,6 +135,12 @@
       opacity: 1;
     }
   }
+
+  .btn.more {
+    background: rgba(0, 0, 0, .5);
+    color: var(--lighterGrey) !important;
+    padding: .25rem .5rem !important;
+  }
 }
 
 @media (max-width: $sm-max) {

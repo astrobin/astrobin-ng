@@ -247,7 +247,7 @@ export class ImageEditRevisionPageComponent
       label: string,
       disabled?: boolean
     }[] = this.imageEditSettingsFieldsService.additionalMouseHoverOptions(
-      this.image,
+      this.revision,
       this.image.revisions.filter(revision => revision.pk !== this.revision.pk)
     );
 

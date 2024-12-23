@@ -14,6 +14,10 @@ img {
   color: var(--lighterGrey);
   background: rgba(0, 0, 0, .2);
   box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
+
+  img {
+    max-width: 100%;
+  }
 }
 
 .feed-item-header-text-1 {

@@ -1,66 +1,64 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, Output, PLATFORM_ID } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
-import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Observable, of } from "rxjs";
-import { map, take } from "rxjs/operators";
+import { fromEvent, Subject, throttleTime } from "rxjs";
+import { debounceTime, distinctUntilChanged, map, take, takeUntil } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage } from "@features/account/store/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { isPlatformBrowser } from "@angular/common";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { ImageService } from "@shared/services/image/image.service";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 
 @Component({
   selector: "astrobin-user-gallery-header-change-image",
   template: `
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
-      <div class="d-flex justify-content-end mt-4">
-        <button
-          (click)="imageChange.emit(null)"
-          class="btn btn-secondary btn-no-block me-2"
-          translate="Cancel"
-          type="button"
-        ></button>
-        <button
-          [class.loading]="loadingService.loading$ | async"
-          [disabled]="!form.valid"
-          class="btn btn-primary btn-no-block"
-          translate="Select"
-          type="submit"
-        ></button>
-      </div>
-    </form>
+    <p class="mb-3">
+      {{ "Click on an image to set a new header for your gallery." | translate }}
+    </p>
 
-    <ng-template #imageOptionTemplate let-item="item">
-      <div class="image-option-template">
-        <div class="row align-items-center">
-          <div class="col-2">
-            <img [alt]="item.value.title" [src]="getGalleryThumbnail(item.value)" class="w-100" />
-          </div>
-          <div class="col ps-2">
-            <h5 class="title">{{item.value.title}}</h5>
-            <div class="uploaded">
-              {{ "Published" | translate}}:
-              <abbr *ngIf="!!item.value.published; else unpublishedTemplate" [title]="item.value.published | localDate">
-                {{ item.value.published | localDate | timeago: true }}
-              </abbr>
+    <input
+      class="form-control mb-3 user-gallery-quick-search"
+      type="search"
+      placeholder="{{ 'Search' | translate }}"
+      [(ngModel)]="searchModel"
+      (ngModelChange)="onSearchModelChange()"
+    />
 
-              <ng-template #unpublishedTemplate>
-                <span class="text-muted">{{ "Unpublished" | translate }}</span>
-              </ng-template>
-            </div>
-          </div>
-        </div>
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+      <astrobin-loading-indicator
+        *ngIf="loadingImages"
+        @fadeInOut
+        class="mt-2"
+      ></astrobin-loading-indicator>
+
+      <div
+        *ngFor="let image of images; trackBy: imageTrackBy"
+        @fadeInOut
+        (click)="onSelect(image)"
+        [ngbTooltip]="image.title"
+        class="image"
+        container="body"
+      >
+        <img [src]="image.finalGalleryThumbnail" alt="" />
       </div>
-    </ng-template>
+
+      <astrobin-loading-indicator
+        *ngIf="loadingMoreImages"
+        @fadeInOut
+        class="mt-2"
+      ></astrobin-loading-indicator>
+    </div>
   `,
   styleUrls: ["./user-gallery-header-change-image.component.scss"]
 })
@@ -70,13 +68,15 @@ export class UserGalleryHeaderChangeImageComponent extends BaseComponentDirectiv
 
   @Output() imageChange = new EventEmitter<ImageInterface>();
 
-  @ViewChild("imageOptionTemplate")
-  imageOptionTemplate: TemplateRef<any>;
+  protected images: ImageInterface[] = [];
+  protected loadingImages = false;
+  protected loadingMoreImages = false;
+  protected searchModel: string | null = null;
 
-  protected model: { image: ImageInterface } = { image: null };
-  protected form: FormGroup = new FormGroup({});
-  protected fields: FormlyFieldConfig[] = [];
-
+  private readonly _isBrowser: boolean;
+  private _page = 1;
+  private _next: string | null = null;
+  private _searchSubject: Subject<string> = new Subject<string>();
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -84,29 +84,72 @@ export class UserGalleryHeaderChangeImageComponent extends BaseComponentDirectiv
     public readonly translateService: TranslateService,
     public readonly imageApiService: ImageApiService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly elementRef: ElementRef,
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    public readonly windowRefService: WindowRefService,
+    public readonly imageService: ImageService
   ) {
     super(store$);
+    this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngAfterViewInit() {
-    this._initFields();
+    this._setupOnScroll();
+
+    this.action$.pipe(
+      ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
+      map((action: FindImagesSuccess) => action.payload),
+      takeUntil(this.destroyed$)
+    ).subscribe(payload => {
+      this.loadingImages = false;
+      this.loadingMoreImages = false;
+      this._next = payload.response.next;
+      this.images = this.images.concat(payload.response.results.map(image => ({
+        ...image,
+        finalGalleryThumbnail: this.imageService.getGalleryThumbnail(image)
+      })));
+    });
+
+    this.store$.dispatch(new FindImages({
+      options: {
+        userId: this.user.id,
+        gallerySerializer: true,
+        includeStagingArea: true,
+        page: this._page
+      }
+    }));
+
+    this._searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(searchTerm => {
+      this._page = 1;
+      this.images = [];
+      this.loadingImages = true;
+
+      this.store$.dispatch(new FindImages({
+        options: {
+          userId: this.user.id,
+          gallerySerializer: true,
+          includeStagingArea: true,
+          page: this._page,
+          q: searchTerm
+        }
+      }));
+    });
+
+    this.loadingImages = true;
   }
 
-  protected getGalleryThumbnail(image: ImageInterface): string {
-    return image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url;
-  }
-
-  protected onSubmit() {
-    if (!this.form.valid) {
-      return;
-    }
-
+  protected onSelect(image: ImageInterface) {
     this.action$.pipe(
       ofType(AuthActionTypes.CHANGE_USER_PROFILE_GALLERY_HEADER_IMAGE_SUCCESS),
       take(1)
     ).subscribe(() => {
-      this.imageChange.emit(this.model.image);
+      this.imageChange.emit(image);
       this.popNotificationsService.success(
         this.translateService.instant("Header image changed.")
       );
@@ -124,56 +167,51 @@ export class UserGalleryHeaderChangeImageComponent extends BaseComponentDirectiv
     this.store$.dispatch(
       new ChangeUserProfileGalleryHeaderImage({
         id: this.userProfile.id,
-        imageId :this.model.image.hash || this.model.image.pk
+        imageId: image.hash || image.pk
       })
     );
   }
 
-  private _initFields() {
-    this.fields = [
-      {
-        key: "image",
-        type: "ng-select",
-        wrappers: ["default-wrapper"],
-        props: {
-          required: true,
-          optionTemplate: this.imageOptionTemplate,
-          label: this.translateService.instant("Image"),
-          options: of([]),
-          onSearch: (q: string): Observable<any[]> => {
-            return new Observable<any[]>(observer => {
-              if (!q) {
-                observer.next();
-                observer.complete();
-                return;
-              }
+  protected onSearchModelChange() {
+    this._searchSubject.next(this.searchModel);
+  }
 
-              const field = this.fields.find(f => f.key === "image");
+  protected imageTrackBy(index: number, image: ImageInterface) {
+    return image.pk + "";
+  }
 
-              this.imageApiService.findImages({
+  private _setupOnScroll() {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    const scrollableElement = UtilsService.getScrollableParent(
+      this.elementRef.nativeElement,
+      this.windowRefService
+    );
+
+    fromEvent(scrollableElement, "scroll")
+      .pipe(
+        throttleTime(250),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+          const isNearBottom = this.utilsService.isNearBottom(this.windowRefService, this.elementRef);
+
+          if (isNearBottom && !this.loadingImages && !this.loadingMoreImages && this._next) {
+            this.loadingMoreImages = true;
+            this._page++;
+
+            this.store$.dispatch(new FindImages({
+              options: {
                 userId: this.user.id,
-                q
-              }).pipe(
-                map(response => response.results),
-                map(images => {
-                  return images.map(image => ({
-                    value: image,
-                    label: image.title
-                  }));
-                })
-              )
-                .subscribe(options => {
-                  field.props = {
-                    ...field.props,
-                    options: of(options)
-                  };
-                  observer.next(options);
-                  observer.complete();
-                });
-            });
+                gallerySerializer: true,
+                includeStagingArea: true,
+                page: this._page
+              }
+            }));
           }
         }
-      }
-    ];
+      );
   }
 }
