@@ -12,7 +12,7 @@ import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.i
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { isPlatformBrowser } from "@angular/common";
-import { fromEvent, merge, throttleTime } from "rxjs";
+import { fromEvent, merge, Subscription, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -44,7 +44,7 @@ interface VisibleFeedItemInterface {
         #nav="ngbNav"
         class="nav-tabs"
       >
-        <li [ngbNavItem]="FeedTab.FEED">
+        <li [ngbNavItem]="FeedTab.FEED" class="me-2">
           <a ngbNavLink translate="Activity feed"></a>
           <ng-template ngbNavContent>
             <astrobin-loading-indicator *ngIf="loading || !isBrowser"></astrobin-loading-indicator>
@@ -132,13 +132,22 @@ interface VisibleFeedItemInterface {
       </div>
     </div>
 
-    <div [ngbNavOutlet]="nav"></div>
+    <div
+      #tabsContentWrapper
+      class="tabs-content-wrapper"
+      [style.min-height.px]="lastKnownHeight"
+    >
+      <div [ngbNavOutlet]="nav"></div>
+    </div>
   `,
   styleUrls: ["./feed.component.scss"],
   animations: [fadeInOut]
 })
 export class FeedComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild("tabsContentWrapper", { static: false }) tabsContentWrapper: ElementRef;
   @ViewChild("feed") protected feedElement: ElementRef;
+
+  protected lastKnownHeight = null;
 
   protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
   protected readonly FeedTab = FeedTab;
@@ -167,6 +176,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
   private _page = 1;
   private _oldFeedItemsCount = 0;
+  private _currentDataSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -253,7 +263,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
         if (this.masonry) {
           this.masonry.once("layoutComplete", () => {
-            this._masonryLayoutComplete()
+            this._masonryLayoutComplete();
           });
           this.masonry.layout();
         }
@@ -277,15 +287,26 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   onTabChange(feedType: FeedTab) {
+    if (this.tabsContentWrapper?.nativeElement) {
+      this.lastKnownHeight = this.tabsContentWrapper.nativeElement.offsetHeight;
+    }
+
+    this.changeDetectorRef.detectChanges();
+
     this.activeTab = feedType;
     this._page = 1;
     this.next = null;
     this.feedItems = null;
     this.visibleFeedItems = null;
     this.images = null;
+    this._oldFeedItemsCount = 0;
+    this.loading = true;
 
     this._destroyMasonry();
-    this._loadData();
+
+    this.utilsService.delay(500).subscribe(() => {
+      this._loadData();
+    });
   }
 
   onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
@@ -326,6 +347,11 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
       this.loadingMore = true;
     }
 
+    if (this._currentDataSubscription) {
+      this._currentDataSubscription.unsubscribe();
+      this._currentDataSubscription = null;
+    }
+
     const _cleanUp = (newItemsAdded: boolean) => {
       this.loading = false;
       this.loadingMore = false;
@@ -347,13 +373,12 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
         // Call appended on just the new elements
         this.masonry.appended(newElements);
-
         this._masonryLayoutComplete();
       }
     };
 
     const _loadFeed = (section: FrontPageSection) => {
-      this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
+      this._currentDataSubscription = this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
         const prevCount = this.feedItems?.length || 0;
 
         this.feedItems = this.feedService.removeDuplicates([
@@ -370,12 +395,13 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
         const newItemsAdded = (this.feedItems.length > prevCount);
         this.next = feedItems.next;
+        this.lastKnownHeight = null;
         _cleanUp(newItemsAdded);
       });
     };
 
     const _loadRecent = (section: FrontPageSection) => {
-      this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
+      this._currentDataSubscription = this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
         const prevCount = this.images?.length || 0;
 
         this.images = [
@@ -385,6 +411,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
         const newItemsAdded = (this.images.length > prevCount);
         this.next = feedItems.next;
+        this.lastKnownHeight = null;
         _cleanUp(newItemsAdded);
       });
     };
@@ -439,7 +466,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   private async _initMasonry() {
-    if (!this.isBrowser || !this.MasonryModule) {
+    if (!this.isBrowser || !this.MasonryModule || !this.feedElement) {
       return;
     }
 
@@ -466,6 +493,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
       this.renderer.setStyle(item, "opacity", "1");
     });
     this._updateVisibleFeedItems(false);
+    this.changeDetectorRef.detectChanges();
   }
 
   private _destroyMasonry() {
