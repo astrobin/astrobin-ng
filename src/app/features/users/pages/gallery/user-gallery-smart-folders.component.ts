@@ -37,7 +37,7 @@ export enum SmartFolderType {
           >
             <div class="smart-folder-background"></div>
             <div class="smart-folder-stars"></div>
-            <div class="smart-folder" [routerLink]="['/u', user.username, 'gallery', 'smart', smartFolder.name]">
+            <div class="smart-folder">
               <div class="icon">
                 <fa-icon *ngIf="smartFolder.icon" [icon]="smartFolder.icon"></fa-icon>
                 <img *ngIf="smartFolder.image" [src]="smartFolder.image" alt="" />
