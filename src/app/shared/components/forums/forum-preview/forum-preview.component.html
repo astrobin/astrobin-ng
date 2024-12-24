@@ -40,22 +40,18 @@
         </td>
 
         <td class="title">
-          <div class="d-flex align-items-center gap-3 flex-wrap">
-            <a [href]="topicUrl(topic.id)">
-              {{ topic.name }}
-            </a>
+          <a [href]="topicUrl(topic.id)" class="mb-2 mb-xl-0">
+            {{ topic.name }}
+          </a>
 
+          <div class="meta d-flex gap-xl-3 flex-column flex-xl-row align-items-xl-center">
             <span *ngIf="!forumId && topic.forumName" class="forum-name">
               <a [href]="classicRoutesService.FORUM(topic.forum)">
-                [{{ topic.forumName }}]
+                {{ topic.forumName }}
               </a>
             </span>
-          </div>
-
-          <div class="meta d-flex gap-1 gap-lg-3 flex-column flex-lg-row">
             <div class="started">
-              {{ "Started by" | translate }}
-              <a [routerLink]="['/u', topic.username]">{{ topic.userDisplayName }}</a>&middot;
+              <a [routerLink]="['/u', topic.username]">{{ topic.displayName }}</a>&middot;
               <abbr [attr.title]="topic.created | localDate">
                 {{ topic.created | localDate | timeago: true }}
               </abbr>
