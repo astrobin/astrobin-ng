@@ -3,6 +3,7 @@ import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import { Capacitor } from "@capacitor/core";
 
 // Keep in sync with _breakpoints.scss
 enum Breakpoint {
@@ -25,6 +26,7 @@ enum Breakpoint {
   providedIn: "root"
 })
 export class DeviceService extends BaseService {
+  private readonly _isNative: boolean;
   private readonly _isBrowser: boolean;
 
   constructor(
@@ -33,6 +35,7 @@ export class DeviceService extends BaseService {
     public readonly windowRefService: WindowRefService
   ) {
     super(loadingService);
+    this._isNative = Capacitor.isNativePlatform();
     this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
@@ -151,6 +154,10 @@ export class DeviceService extends BaseService {
     }
 
     return false;
+  }
+
+  canAccessDOM(): boolean {
+    return this._isNative || this._isBrowser;
   }
 
   isTouchEnabled(): boolean {
