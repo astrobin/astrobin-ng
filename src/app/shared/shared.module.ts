@@ -54,6 +54,9 @@ import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-grou
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from "@angular/platform-browser";
 import { AutoSizeInputModule } from "ngx-autosize-input";
+import { ScrollService } from "@shared/services/scroll.service";
+import { PlatformService } from "@shared/services/platform.service";
+import { IonicModule } from "@ionic/angular";
 
 declare const Hammer;
 
@@ -119,6 +122,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     FormlySelectModule,
     HammerModule,
     ImageCropperModule,
+    IonicModule,
     NgbModule,
     NgbAccordionModule,
     NgbCarouselModule,
@@ -186,6 +190,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     FormlyBootstrapModule,
     HammerModule,
     ImageCropperModule,
+    IonicModule,
     NgbModule,
     NgbAccordionModule,
     NgbCarouselModule,
@@ -229,6 +234,8 @@ export class SharedModule {
         UltimateSubscriptionGuardService,
         UserService,
         WindowRefService,
+        ScrollService,
+        PlatformService,
         {
           provide: APP_INITIALIZER,
           useFactory: appInitializer,

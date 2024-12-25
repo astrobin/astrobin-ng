@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -11,12 +11,13 @@ import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { isPlatformBrowser } from "@angular/common";
 import { fromEvent, merge, Subscription, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { fadeInOut } from "@shared/animations";
+import { ScrollService } from "@shared/services/scroll.service";
+import { PlatformService } from "@shared/services/platform.service";
 
 enum FeedTab {
   FEED = "FEED",
@@ -47,7 +48,7 @@ interface VisibleFeedItemInterface {
         <li [ngbNavItem]="FeedTab.FEED" class="me-2">
           <a ngbNavLink translate="Activity feed"></a>
           <ng-template ngbNavContent>
-            <astrobin-loading-indicator *ngIf="loading || !isBrowser"></astrobin-loading-indicator>
+            <astrobin-loading-indicator *ngIf="loading || platformService.isServer"></astrobin-loading-indicator>
 
             <div
               #feed
@@ -172,8 +173,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   protected loadingMore = false;
   protected next: string | null = null;
 
-  protected readonly isBrowser: boolean;
-
   private _page = 1;
   private _oldFeedItemsCount = 0;
   private _currentDataSubscription: Subscription;
@@ -185,16 +184,16 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     public readonly feedService: FeedService,
     public readonly imageViewerService: ImageViewerService,
     public readonly viewContainerRef: ViewContainerRef,
-    @Inject(PLATFORM_ID) private platformId: Object,
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     public readonly utilsService: UtilsService,
     public readonly renderer: Renderer2,
     public readonly router: Router,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly scrollService: ScrollService,
+    public readonly platformService: PlatformService
   ) {
     super(store$);
-    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   trackByFn(index: number, item: VisibleFeedItemInterface): string {
@@ -204,7 +203,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   async ngOnInit() {
     super.ngOnInit();
 
-    if (this.isBrowser) {
+    if (!this.platformService.isServer) {
       this.MasonryModule = await import("masonry-layout");
     }
 
@@ -236,16 +235,12 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
     this.onTabChange(this.activeTab);
 
-    if (this.isBrowser) {
+    if (this.platformService.canAccessDOM()) {
       merge(
-        fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-          takeUntil(this.destroyed$),
-          throttleTime(200)
-        ),
-        fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-          takeUntil(this.destroyed$),
-          debounceTime(100)
-        )
+        this.scrollService.scroll.pipe(throttleTime(200)),
+        this.scrollService.scroll.pipe(debounceTime(100))
+      ).pipe(
+        takeUntil(this.destroyed$)
       ).subscribe(() => this._onScroll());
 
       fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
@@ -432,7 +427,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   private _updateVisibleFeedItems(newItemsAdded: boolean) {
-    if (!this.feedItems || !this.isBrowser) {
+    if (!this.feedItems || this.platformService.isServer) {
       return;
     }
 
@@ -466,7 +461,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   private async _initMasonry() {
-    if (!this.isBrowser || !this.MasonryModule || !this.feedElement) {
+    if (this.platformService.isServer || !this.MasonryModule || !this.feedElement) {
       return;
     }
 

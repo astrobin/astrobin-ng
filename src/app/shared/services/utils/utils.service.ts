@@ -30,7 +30,7 @@ export class UtilsService {
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
     public readonly cookieService: CookieService,
-    @Inject(PLATFORM_ID) public readonly platformId
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
   }
 
@@ -931,7 +931,7 @@ export class UtilsService {
       return value;
     }
 
-    if (typeof value === 'object') {
+    if (typeof value === "object") {
       if (Array.isArray(value)) {
         return value.map(UtilsService.cloneValue);
       } else {
@@ -955,6 +955,24 @@ export class UtilsService {
     }
 
     return avatar;
+  }
+
+  static getScrollableParent(element: HTMLElement, windowRefService: WindowRefService): HTMLElement | Window {
+    if (!element) {
+      return null;
+    }
+
+    let parent = element.parentElement;
+
+    while (parent) {
+      const overflowY = windowRefService.nativeWindow.getComputedStyle(parent).overflowY;
+      if (overflowY === "auto" || overflowY === "scroll") {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+
+    return windowRefService.nativeWindow;
   }
 
   supportsDateInput() {
@@ -1030,24 +1048,6 @@ export class UtilsService {
     );
   }
 
-  static getScrollableParent(element: HTMLElement, windowRefService: WindowRefService): HTMLElement | Window {
-    if (!element) {
-      return null;
-    }
-
-    let parent = element.parentElement;
-
-    while (parent) {
-      const overflowY = windowRefService.nativeWindow.getComputedStyle(parent).overflowY;
-      if (overflowY === "auto" || overflowY === "scroll") {
-        return parent;
-      }
-      parent = parent.parentElement;
-    }
-
-    return windowRefService.nativeWindow;
-  }
-
   isNearOrInViewport(
     element: HTMLElement,
     options: ViewportCheckOptions = {}
@@ -1062,7 +1062,7 @@ export class UtilsService {
       shouldCheckVertical = true,
       shouldCheckHorizontal = true,
       verticalTolerance = 2000,
-      horizontalTolerance = 10,
+      horizontalTolerance = 10
     } = options;
 
     // Get the bounding rectangle of the element

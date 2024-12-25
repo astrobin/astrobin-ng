@@ -149,6 +149,7 @@ import { EquipmentPresetEditorComponent } from "@shared/components/equipment/pre
 import { EquipmentPresetSummaryComponent } from "@shared/components/equipment/preset-summary/equipment-preset-summary.component";
 import { ImageIconsComponent } from "@shared/components/misc/image-icons/image-icons.component";
 import { ImageHoverComponent } from "@shared/components/misc/image-hover/image-hover.component";
+import { IonicModule } from "@ionic/angular";
 
 const modules = [
   CommonModule,
@@ -160,6 +161,7 @@ const modules = [
   FormlySelectModule,
   HammerModule,
   ImageCropperModule,
+  IonicModule,
   LightboxModule,
   NgbAccordionModule,
   NgbCarouselModule,

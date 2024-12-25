@@ -1,11 +1,13 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { DOCUMENT, isPlatformBrowser, isPlatformServer, Location } from "@angular/common";
+import { DOCUMENT, Location } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Router } from "@angular/router";
 import { BehaviorSubject, fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import { IonContent } from "@ionic/angular";
+import { PlatformService } from "@shared/services/platform.service";
 
 // @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -22,11 +24,11 @@ export class WindowRefService extends BaseService {
     public readonly utilsService: UtilsService,
     public readonly router: Router,
     private readonly location: Location,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    private readonly platformService: PlatformService
   ) {
     super(loadingService);
 
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       fromEvent(this.nativeWindow, "resize")
         .pipe(
           debounceTime(300)
@@ -44,15 +46,15 @@ export class WindowRefService extends BaseService {
   }
 
   getViewPortAspectRatio(): number {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (this.platformService.isServer) {
       return 1;
     }
 
     return window.innerWidth / window.innerHeight;
   }
 
-  scroll(options: any) {
-    if (!isPlatformBrowser(this.platformId) || typeof (this.nativeWindow?.scroll) === "undefined") {
+  async scroll(options: any) {
+    if (!this.platformService.canAccessDOM()) {
       return;
     }
 
@@ -60,11 +62,15 @@ export class WindowRefService extends BaseService {
       options = { top: 0, left: 0, behavior: "auto" };
     }
 
-    let overrideScrollBehavior = false;
-
-    if (options.behavior === "auto" || options.behavior === undefined) {
-      overrideScrollBehavior = true;
+    if (this.platformService.isNative) {
+      const content = this.nativeWindow.document.querySelector("ion-content");
+      if (content instanceof HTMLIonContentElement) {
+        await (content as any as IonContent).scrollToPoint(options.left, options.top, options.behavior === "smooth" ? 300 : 0);
+      }
+      return;
     }
+
+    let overrideScrollBehavior = options.behavior === "auto" || options.behavior === undefined;
 
     if (overrideScrollBehavior) {
       this.nativeWindow.document.documentElement.style.scrollBehavior = "auto";
@@ -80,7 +86,7 @@ export class WindowRefService extends BaseService {
   }
 
   scrollToElement(selector: string, options?: boolean | ScrollIntoViewOptions) {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (this.platformService.isServer) {
       return;
     }
 
@@ -114,7 +120,7 @@ export class WindowRefService extends BaseService {
   }
 
   focusElement(selector: string) {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (this.platformService.isServer) {
       return;
     }
 
@@ -175,7 +181,7 @@ export class WindowRefService extends BaseService {
   }
 
   changeBodyOverflow(value: "hidden" | "auto"): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const _document = this.nativeWindow.document;
       if (_document) {
         _document.body.classList.toggle("overflow-hidden", value === "hidden");
@@ -184,7 +190,7 @@ export class WindowRefService extends BaseService {
   }
 
   private _pushOrReplaceState(method: "pushState" | "replaceState", data: any, url: string) {
-    if (isPlatformServer(this.platformId)) {
+    if (this.platformService.isServer) {
       return;
     }
 

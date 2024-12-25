@@ -1,7 +1,7 @@
 <div
   [class.loading]="loadingService.loading$ | async"
-   class="global-loading-indicator"
-   xmlns="http://www.w3.org/1999/html"
+  class="global-loading-indicator"
+  xmlns="http://www.w3.org/1999/html"
 >
   <div class="background"></div>
 </div>
@@ -9,9 +9,14 @@
 <astrobin-header></astrobin-header>
 
 <div class="container">
-  <astrobin-beta-banner></astrobin-beta-banner>
-  <astrobin-breadcrumb></astrobin-breadcrumb>
-  <router-outlet></router-outlet>
+  <ion-content
+    (ionScroll)="scrollService.emitScroll($event)"
+    [scrollEvents]="true"
+  >
+    <astrobin-beta-banner></astrobin-beta-banner>
+    <astrobin-breadcrumb></astrobin-breadcrumb>
+    <ion-router-outlet></ion-router-outlet>
+  </ion-content>
 </div>
 
 <astrobin-footer></astrobin-footer>

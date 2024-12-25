@@ -1,5 +1,6 @@
 @import "animations";
 @import "mixins";
+@import "variables";
 
 html {
   position: relative;
@@ -8,12 +9,18 @@ html {
 
 body {
   @include main-background-texture;
-  font-family: "Noto Sans", Helvetica, Arial, sans-serif;
+  font-family: $font-family;
   padding-top: env(safe-area-inset-top);
 
   @media screen and (max-width: $sm-max) {
     @include darkest-background-texture;
   }
+}
+
+ion-content {
+  font-family: $font-family;
+  --background: none;
+  --padding-top: 3rem;
 }
 
 .app-loading {

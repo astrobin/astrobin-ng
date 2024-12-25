@@ -1,9 +1,8 @@
 import { BaseService } from "@shared/services/base.service";
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { isPlatformBrowser } from "@angular/common";
-import { Capacitor } from "@capacitor/core";
+import { PlatformService } from "@shared/services/platform.service";
 
 // Keep in sync with _breakpoints.scss
 enum Breakpoint {
@@ -26,21 +25,16 @@ enum Breakpoint {
   providedIn: "root"
 })
 export class DeviceService extends BaseService {
-  private readonly _isNative: boolean;
-  private readonly _isBrowser: boolean;
-
   constructor(
     public readonly loadingService: LoadingService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly platformService: PlatformService
   ) {
     super(loadingService);
-    this._isNative = Capacitor.isNativePlatform();
-    this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
   xxsMin(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth >= Breakpoint.XXS_MIN;
     }
@@ -49,7 +43,7 @@ export class DeviceService extends BaseService {
   }
 
   xxsMax(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth <= Breakpoint.XXS_MAX;
     }
@@ -58,7 +52,7 @@ export class DeviceService extends BaseService {
   }
 
   xsMin(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth >= Breakpoint.XS_MIN;
     }
@@ -67,7 +61,7 @@ export class DeviceService extends BaseService {
   }
 
   xsMax(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth <= Breakpoint.XS_MAX;
     }
@@ -76,7 +70,7 @@ export class DeviceService extends BaseService {
   }
 
   smMin(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth >= Breakpoint.SM_MIN;
     }
@@ -85,7 +79,7 @@ export class DeviceService extends BaseService {
   }
 
   smMax(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth <= Breakpoint.SM_MAX;
     }
@@ -94,7 +88,7 @@ export class DeviceService extends BaseService {
   }
 
   mdMin(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth >= Breakpoint.MD_MIN;
     }
@@ -103,7 +97,7 @@ export class DeviceService extends BaseService {
   }
 
   mdMax(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth <= Breakpoint.MD_MAX;
     }
@@ -112,7 +106,7 @@ export class DeviceService extends BaseService {
   }
 
   lgMin(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth >= Breakpoint.LG_MIN;
     }
@@ -121,7 +115,7 @@ export class DeviceService extends BaseService {
   }
 
   lgMax(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth <= Breakpoint.LG_MAX;
     }
@@ -130,7 +124,7 @@ export class DeviceService extends BaseService {
   }
 
   xlMin(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth >= Breakpoint.XL_MIN;
     }
@@ -139,7 +133,7 @@ export class DeviceService extends BaseService {
   }
 
   xlMax(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth <= Breakpoint.XL_MAX;
     }
@@ -148,7 +142,7 @@ export class DeviceService extends BaseService {
   }
 
   xxlMin(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!this.platformService.isServer) {
       const window = this.windowRefService.nativeWindow;
       return window.innerWidth >= Breakpoint.XXL_MIN;
     }
@@ -156,12 +150,16 @@ export class DeviceService extends BaseService {
     return false;
   }
 
-  canAccessDOM(): boolean {
-    return this._isNative || this._isBrowser;
+  isBrowser(): boolean {
+    return this.platformService.isBrowser;
+  }
+
+  isNative(): boolean {
+    return this.platformService.isNative;
   }
 
   isTouchEnabled(): boolean {
-    if (!this._isBrowser) {
+    if (this.platformService.isServer) {
       return false;
     }
 
@@ -169,7 +167,7 @@ export class DeviceService extends BaseService {
 
     return (
       // Primary checks
-      'ontouchstart' in _window ||
+      "ontouchstart" in _window ||
       navigator.maxTouchPoints > 0 ||
       // Secondary checks (media queries)
       (
@@ -182,12 +180,12 @@ export class DeviceService extends BaseService {
   }
 
   isHybridPC(): boolean {
-    if (!this._isBrowser) {
+    if (this.platformService.isServer) {
       return false;
     }
 
     const _window = this.windowRefService.nativeWindow;
-    const hasTouch = 'ontouchstart' in _window || navigator.maxTouchPoints > 0;
+    const hasTouch = "ontouchstart" in _window || navigator.maxTouchPoints > 0;
     const hasFinePointer = _window.matchMedia("(pointer: fine)").matches;
 
     return hasTouch && hasFinePointer;

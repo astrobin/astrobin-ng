@@ -22,6 +22,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Platform } from "@ionic/angular";
+import { ScrollService } from "@shared/services/scroll.service";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -52,7 +53,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     public readonly offcanvasService: NgbOffcanvas,
     public readonly loadingService: LoadingService,
     public readonly titleService: TitleService,
-    public readonly platform: Platform
+    public readonly platform: Platform,
+    public readonly scrollService: ScrollService
   ) {
     console.log("AstroBin: Welcome to the AstroBin app!");
 
