@@ -1,10 +1,31 @@
 @import "../../../../styles/breakpoints";
 
+@mixin underline {
+  text-decoration: underline dotted var(--lighterGrey);
+  text-underline-offset: 2px;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      text-decoration: underline dotted var(--accentColor);
+    }
+  }
+}
+
+astrobin-loading-indicator {
+  height: 838px;
+  justify-content: start;
+  padding-top: 2rem;
+
+  @media screen and (max-width: $md-max) {
+    height: 1102px;
+  }
+}
+
 .category-description {
   padding: .5rem 1rem;
   background: var(--darkestGrey);
   margin: 0 1rem;
-  border-radius: 0 0 .5rem .5rem ;
+  border-radius: 0 0 .5rem .5rem;
   font-style: italic;
   color: var(--lightGrey);
 }
@@ -27,33 +48,23 @@
   .title {
     width: 99%;
 
-    a {
+    > a {
       color: white;
       font-size: 1.15rem;
       font-weight: bold;
-      padding: 2px 0; // avoid gaps in the clickable area if the text is multi-line.
-      hyphens: auto;
+      display: -webkit-box;
+      display: -moz-box;
+      -webkit-line-clamp: 1;
+      -moz-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      -moz-box-orient: vertical;
+      line-clamp: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       &:hover {
         color: var(--accentColor);
         text-decoration: none;
-      }
-    }
-
-    .forum-name {
-      font-size: .9rem;
-      color: var(--lightestGrey);
-
-      a {
-        font-weight: normal;
-        font-size: .9rem;
-        color: var(--lighterGrey);
-        text-decoration: underline dotted var(--lightGrey);
-        text-underline-offset: 2px;
-
-        &:hover {
-          color: var(--accentColor);
-        }
       }
     }
 
@@ -62,14 +73,13 @@
       margin-top: .25rem;
       color: var(--lighterGrey);
 
-      astrobin-username {
-        margin-right: .25rem;
+      .forum-name {
+        color: var(--lightestGrey);
 
-        ::ng-deep a .username {
+        a {
+          font-weight: normal;
           color: var(--lighterGrey);
-          text-decoration: underline dotted var(--lightGrey);
-          text-underline-offset: 2px;
-          font-size: .8rem;
+          @include underline;
 
           &:hover {
             color: var(--accentColor);
@@ -77,13 +87,26 @@
         }
       }
 
+      abbr {
+        @include underline;
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            text-decoration: underline dotted var(--lighterGrey) !important;
+          }
+        }
+      }
+
       a {
         color: var(--lighterGrey);
-        text-decoration: underline dotted var(--lightGrey);
-        text-underline-offset: 2px;
+        @include underline;
         font-size: .8rem;
         font-weight: normal;
         margin-right: .25rem;
+
+        &:hover {
+          color: var(--accentColor);
+        }
       }
     }
   }

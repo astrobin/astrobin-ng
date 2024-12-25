@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { select, Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { DefaultGallerySortingOption, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
@@ -15,12 +15,7 @@ import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollections } from "@app/store/selectors/app/collection.selectors";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
-import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
-import { FindImagesOptionsInterface, FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
 
 type GalleryNavigationComponent =
   "gallery" |
