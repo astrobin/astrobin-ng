@@ -1,5 +1,16 @@
 @import "../../../../styles/breakpoints";
 
+@mixin underline {
+  text-decoration: underline dotted var(--lighterGrey);
+  text-underline-offset: 2px;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      text-decoration: underline dotted var(--accentColor);
+    }
+  }
+}
+
 astrobin-loading-indicator {
   height: 838px;
   justify-content: start;
@@ -68,8 +79,7 @@ astrobin-loading-indicator {
         a {
           font-weight: normal;
           color: var(--lighterGrey);
-          text-decoration: underline dotted var(--lightGrey);
-          text-underline-offset: 2px;
+          @include underline;
 
           &:hover {
             color: var(--accentColor);
@@ -77,28 +87,26 @@ astrobin-loading-indicator {
         }
       }
 
-      astrobin-username {
-        margin-right: .25rem;
+      abbr {
+        @include underline;
 
-        ::ng-deep a .username {
-          color: var(--lighterGrey);
-          text-decoration: underline dotted var(--lightGrey);
-          text-underline-offset: 2px;
-          font-size: .8rem;
-
+        @media (hover: hover) and (pointer: fine) {
           &:hover {
-            color: var(--accentColor);
+            text-decoration: underline dotted var(--lighterGrey) !important;
           }
         }
       }
 
       a {
         color: var(--lighterGrey);
-        text-decoration: underline dotted var(--lightGrey);
-        text-underline-offset: 2px;
+        @include underline;
         font-size: .8rem;
         font-weight: normal;
         margin-right: .25rem;
+
+        &:hover {
+          color: var(--accentColor);
+        }
       }
     }
   }
