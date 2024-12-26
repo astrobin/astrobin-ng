@@ -13,7 +13,7 @@
 
 astrobin-loading-indicator {
   height: 838px;
-  justify-content: start;
+  justify-content: flex-start;
   padding-top: 2rem;
 
   @media screen and (max-width: $md-max) {
