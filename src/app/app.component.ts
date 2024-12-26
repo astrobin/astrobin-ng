@@ -127,11 +127,12 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   initRouterEvents(): void {
-    this.router.events?.pipe(
+    this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       pairwise()
     ).subscribe(([prev, current]: [NavigationEnd, NavigationEnd]) => {
-      if (prev.urlAfterRedirects === current.urlAfterRedirects) {
+      if (prev.urlAfterRedirects === current.urlAfterRedirects &&
+        this.router.getCurrentNavigation()?.trigger !== 'popstate') {
         this.windowRefService.scroll({ top: 0, behavior: "smooth" });
       }
     });
