@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -7,6 +7,7 @@ import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { isPlatformBrowser } from "@angular/common";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: 'astrobin-home',
@@ -56,7 +57,7 @@ import { isPlatformBrowser } from "@angular/common";
   `,
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent extends BaseComponentDirective implements OnInit {
+export class HomeComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   protected isBrowser: boolean;
 
   constructor(
@@ -64,7 +65,8 @@ export class HomeComponent extends BaseComponentDirective implements OnInit {
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
-    @Inject(PLATFORM_ID) private readonly platformId: Object
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -75,5 +77,9 @@ export class HomeComponent extends BaseComponentDirective implements OnInit {
 
     this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
     this.titleService.setTitle(this.translateService.instant('Home of Astrophotography'));
+  }
+
+  ngAfterViewInit() {
+    this.windowRefService.scroll({ top: 0, behavior: "auto" });
   }
 }

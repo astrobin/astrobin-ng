@@ -3,28 +3,29 @@
 .btn {
   position: fixed;
   width: auto;
-  bottom: 2rem;
+  bottom: 1rem;
   z-index: 1029;
-  box-shadow: 0 0 .75rem rgba(0, 0, 0, .75);
+  font-size: 1.5rem;
+  transition: transform .25s ease-in-out;
 
   &.position-left {
     right: auto;
-    left: 2rem;
+    left: 1rem;
   }
 
   &.position-right {
     left: auto;
-    right: 2rem;
+    right: 1rem;
   }
 
-  @media (max-width: $md-max) {
-    &.position-left {
-      left: .75rem;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: scale(1.1);
     }
+  }
 
-    &.position-right {
-      right: .75rem;
-    }
+  .ng-fa-icon {
+    filter: drop-shadow(0 0 .5rem rgba(0, 0, 0, .5));
   }
 }
 
