@@ -20,6 +20,7 @@ import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
+import { VersionCheckService } from "@shared/services/version-check.service";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -49,7 +50,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     public readonly notificationsService: NotificationsService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly loadingService: LoadingService,
-    public readonly titleService: TitleService
+    public readonly titleService: TitleService,
+    public readonly versionCheckService: VersionCheckService
   ) {
     super(store$);
 
@@ -67,6 +69,20 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   ngOnInit(): void {
+    this.versionCheckService.checkForUpdates();
+    this._suppressPwaInstallationPrompt();
+    this._initGoogleAnalytics();
+  }
+
+  private _suppressPwaInstallationPrompt(): void {
+    if (this._isBrowser) {
+      this.windowRefService.nativeWindow.addEventListener("beforeinstallprompt", event => {
+        event.preventDefault();
+      });
+    }
+  }
+
+  private _initGoogleAnalytics(): void {
     if (this._isBrowser && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1) {
       this.includeAnalytics$().subscribe(includeAnalytics => {
         if (includeAnalytics) {
@@ -78,14 +94,14 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
             `https://www.googletagmanager.com/gtm.js?id=${Constants.GOOGLE_TAG_MANAGER_ID}`,
             this.renderer,
             () => {
-              this.initGtag();
+              this._initGtag();
             });
         }
       });
     }
   }
 
-  initGtag(): void {
+  private _initGtag(): void {
     if (!this._isBrowser) {
       return;
     }

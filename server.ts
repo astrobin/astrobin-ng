@@ -67,6 +67,7 @@ export function app(): express.Express {
 
   // All regular routes use the Universal engine
   server.get("*", (req, res) => {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
     res.render(indexHtml, {
       req,
       res,
@@ -90,6 +91,9 @@ export function app(): express.Express {
       }
     });
   });
+
+  server.get('/ngsw.json', express.static(distFolder));
+  server.get('/ngsw-worker.js', express.static(distFolder));
 
   return server;
 }
