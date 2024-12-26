@@ -143,3 +143,14 @@ astrobin-marketplace-more-from-user {
     color: var(--lighterGrey);
   }
 }
+
+astrobin-scroll-to-top {
+  ::ng-deep {
+    .btn {
+      @media (max-width: $md-max) {
+        left: 1rem !important;
+        right: unset !important;
+      }
+    }
+  }
+}

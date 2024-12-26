@@ -6,20 +6,22 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { fromEvent, Subscription } from "rxjs";
 import { throttleTime } from "rxjs/operators";
 import { isPlatformBrowser } from "@angular/common";
+import { fadeInOut } from "@shared/animations";
 
 @Component({
   selector: "astrobin-scroll-to-top",
   template: `
     <button
       *ngIf="show"
+      @fadeInOut
       (click)="scrollToTop()"
-      class="btn btn-secondary position-{{ position }}"
+      class="btn btn-link text-secondary position-{{ position }}"
     >
       <fa-icon icon="chevron-circle-up"></fa-icon>
-      {{ "Scroll to top" | translate }}
     </button>
   `,
-  styleUrls: ["./scroll-to-top.component.scss"]
+  styleUrls: ["./scroll-to-top.component.scss"],
+  animations: [fadeInOut]
 })
 export class ScrollToTopComponent extends BaseComponentDirective implements OnChanges, OnInit, OnDestroy {
   @Input() position: "left" | "right" = "right";
