@@ -211,6 +211,12 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
       this.currentUserProfile = userProfile;
 
+      if (!userProfile) {
+        this.activeTab = FeedTab.FEED;
+        this.activeFeedType = FeedType.GLOBAL;
+        return;
+      }
+
       switch (userProfile.defaultFrontPageSection) {
         case FrontPageSection.GLOBAL:
           this.activeTab = FeedTab.FEED;
