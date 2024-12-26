@@ -74,7 +74,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                       translate="My settings"
                     ></a>
                     <a
-                      *ngIf="currentUserWrapper.user?.id !== user.id && !currentUserWrapper.userProfile.shadowBans?.includes(userProfile.id)"
+                      *ngIf="currentUserWrapper.user?.id !== user.id && !currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)"
                       (click)="shadowBan(userProfile.id)"
                       href="#"
                       astrobinEventPreventDefault
@@ -83,7 +83,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                       translate="Shadow-ban"
                     ></a>
                     <a
-                      *ngIf="currentUserWrapper.user?.id !== user.id && currentUserWrapper.userProfile.shadowBans?.includes(userProfile.id)"
+                      *ngIf="currentUserWrapper.user?.id !== user.id && currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)"
                       (click)="removeShadowBan(userProfile.id)"
                       href="#"
                       astrobinEventPreventDefault
