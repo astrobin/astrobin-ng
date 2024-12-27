@@ -19,6 +19,32 @@
       }
     },
     {
+      "name": "local-images",
+      "installMode": "lazy",
+      "updateMode": "lazy",
+      "resources": {
+        "files": [
+          "/assets/images/**"
+        ]
+      }
+    },
+    {
+      "name": "fonts",
+      "installMode": "lazy",
+      "updateMode": "lazy",
+      "resources": {
+        "urls": [
+          "https://fonts.googleapis.com/**",
+          "https://fonts.gstatic.com/**"
+        ]
+      },
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 50,
+        "maxAge": "1y"
+      }
+    },
+    {
       "name": "cdn-images",
       "installMode": "lazy",
       "updateMode": "prefetch",
@@ -26,6 +52,11 @@
         "urls": [
           "https://cdn.astrobin.com/**"
         ]
+      },
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 500,
+        "maxAge": "30d"
       }
     }
   ],
@@ -33,6 +64,16 @@
     {
       "name": "api-freshness",
       "urls": ["/api/**"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "3d",
+        "timeout": "10s"
+      }
+    },
+    {
+      "name": "json-api-freshness",
+      "urls": ["/json-api/**"],
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,

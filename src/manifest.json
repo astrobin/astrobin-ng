@@ -7,6 +7,7 @@
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
+  "id": "com.astrobin.app",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
@@ -47,6 +48,72 @@
       "src": "assets/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/desktop/feed.jpg",
+      "sizes": "1280x720",
+      "form_factor": "wide",
+      "type": "image/jpeg",
+      "label": "The AstroBin feed",
+      "description": "The AstroBin feed is where you can see the latest activity by the community."
+    },
+    {
+      "src": "assets/screenshots/desktop/image.jpg",
+      "sizes": "1280x720",
+      "form_factor": "wide",
+      "type": "image/jpeg",
+      "label": "An image page",
+      "description": "The image page is where you can see the details of an image, including the equipment used and the acquisition details."
+    },
+    {
+      "src": "assets/screenshots/desktop/gallery.jpg",
+      "sizes": "1280x720",
+      "form_factor": "wide",
+      "type": "image/jpeg",
+      "label": "A user gallery",
+      "description": "A user gallery is where you can see all the images published by a user."
+    },
+    {
+      "src": "assets/screenshots/desktop/marketplace.jpg",
+      "sizes": "1280x720",
+      "form_factor": "wide",
+      "type": "image/jpeg",
+      "label": "The AstroBin Marketplace",
+      "description": "The AstroBin Marketplace is a fantastic platform to buy and sell astronomy equipment."
+    },
+    {
+      "src": "assets/screenshots/mobile/feed.jpg",
+      "sizes": "480x1040",
+      "form_factor": "narrow",
+      "type": "image/jpeg",
+      "label": "The AstroBin feed",
+      "description": "The AstroBin feed is where you can see the latest activity by the community."
+    },
+    {
+      "src": "assets/screenshots/mobile/image.jpg",
+      "sizes": "480x1040",
+      "form_factor": "narrow",
+      "type": "image/jpeg",
+      "label": "An image page",
+      "description": "The image page is where you can see the details of an image, including the equipment used and the acquisition details."
+    },
+    {
+      "src": "assets/screenshots/mobile/gallery.jpg",
+      "sizes": "480x1040",
+      "form_factor": "narrow",
+      "type": "image/jpeg",
+      "label": "A user gallery",
+      "description": "A user gallery is where you can see all the images published by a user."
+    },
+    {
+      "src": "assets/screenshots/mobile/marketplace.jpg",
+      "sizes": "480x1040",
+      "form_factor": "narrow",
+      "type": "image/jpeg",
+      "label": "The AstroBin Marketplace",
+      "description": "The AstroBin Marketplace is a fantastic platform to buy and sell astronomy equipment."
     }
   ]
 }
