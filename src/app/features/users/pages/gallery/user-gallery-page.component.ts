@@ -31,7 +31,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
       ></astrobin-user-gallery-header>
 
       <p
-        *ngIf="currentUserWrapper.userProfile.shadowBans?.includes(userProfile.id)"
+        *ngIf="currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)"
         class="alert alert-warning shadow-ban-alert"
       >
         {{ "You shadow-banned this user. They won't be able to contact you." | translate }}
