@@ -391,6 +391,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   protected openChangeHeaderImageOffcanvas() {
     this.offcanvasService.open(
       this.changeHeaderImageOffcanvas, {
+        panelClass: "change-header-image-offcanvas",
         position: this.deviceService.offcanvasPosition()
       }
     );

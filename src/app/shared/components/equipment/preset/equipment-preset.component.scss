@@ -76,8 +76,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    pointer-events: none;
-    opacity: 0;
+    pointer-events: all;
+    opacity: 1;
     transition: opacity 0.3s ease, background 0.3s ease;
 
     .ng-fa-icon {
@@ -123,6 +123,12 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
+    .btn-delete-preset,
+    .btn-edit-preset {
+      pointer-events: none;
+      opacity: 0;
+    }
+
     &:hover {
       .btn-delete-preset,
       .btn-edit-preset {
@@ -139,14 +145,6 @@
           opacity: .9;
         }
       }
-    }
-  }
-
-  @media (hover: none) and (pointer: coarse) {
-    .btn-delete-preset,
-    .btn-edit-preset {
-      pointer-events: auto;
-      opacity: 1;
     }
   }
 

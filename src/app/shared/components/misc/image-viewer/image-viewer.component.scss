@@ -284,8 +284,8 @@ $globalLoadingIndicatorHeight: 6px;
         font-size: 1.5rem;
         cursor: pointer;
         z-index: 1031;
-        opacity: 0;
-        pointer-events: none;
+        opacity: 1;
+        pointer-events: all;
         padding: .5rem;
         transition: opacity 0.3s, transform 0.3s ease-in-out;
 
@@ -298,8 +298,12 @@ $globalLoadingIndicatorHeight: 6px;
         }
 
         @media (hover: hover) and (pointer: fine) {
+          opacity: 0;
+          pointer-events: none;
+
           &:hover {
             opacity: 1 !important;
+            pointer-events: all;
           }
         }
       }
@@ -379,7 +383,7 @@ $globalLoadingIndicatorHeight: 6px;
         font-size: 1.5rem;
         display: none;
 
-        @media (hover: none) and (pointer: coarse) {
+        @media (pointer: coarse) {
           pointer-events: auto;
           display: block;
           opacity: 1;
@@ -488,7 +492,7 @@ $globalLoadingIndicatorHeight: 6px;
           bottom: .5rem;
           right: .5rem;
           background: rgba(0, 0, 0, .75);
-          opacity: 0;
+          opacity: 1;
           transition: opacity 0.3s;
           padding: .5rem .75rem;
           font-size: .9rem;
@@ -513,6 +517,8 @@ $globalLoadingIndicatorHeight: 6px;
           }
 
           @media (hover: hover) and (pointer: fine) {
+            opacity: 0;
+
             &:hover {
               opacity: 1;
             }
@@ -546,7 +552,7 @@ $globalLoadingIndicatorHeight: 6px;
       }
 
       &.force-view-mousehover {
-        @media (hover: none) and (pointer: coarse) {
+        @media (pointer: coarse) {
           .mouse-hover.ready,
           .mouse-hover.ready + .mouse-hover-svg-overlay {
             opacity: 1 !important;
