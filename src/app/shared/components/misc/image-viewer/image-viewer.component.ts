@@ -970,6 +970,10 @@ export class ImageViewerComponent
       return;
     }
 
+    if (!this.image || !this.image.hash) {
+      return;
+    }
+
     const currentUrl = this.windowRefService.nativeWindow.location.href;
     const urlObj = new URL(currentUrl);
     const queryString = urlObj.search;  // Includes the '?'
