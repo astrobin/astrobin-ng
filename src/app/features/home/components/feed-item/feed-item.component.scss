@@ -25,8 +25,8 @@
     .feed-item-header {
       padding: .5rem 1rem;
       display: flex;
-      justify-content: start;
-      align-items: start;
+      justify-content: flex-start;
+      align-items: flex-start;
       gap: 1rem;
       filter: drop-shadow(0 .25rem 1rem rgba(0, 0, 0, .5));
       color: var(--lightestGrey);
@@ -43,7 +43,7 @@
       .feed-item-header-text {
         display: flex;
         flex-direction: column;
-        align-items: start;
+        align-items: flex-start;
         text-shadow: 0 0 1px rgba(0, 0, 0, .75);
       }
 

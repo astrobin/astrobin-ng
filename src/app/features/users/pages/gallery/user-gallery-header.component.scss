@@ -89,7 +89,7 @@
     }
 
     @media (max-width: $xs-max) {
-      align-items: start !important;
+      align-items: flex-start !important;
       gap: .25rem;
 
       .btn:first-child {
