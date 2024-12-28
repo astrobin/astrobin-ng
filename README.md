@@ -27,7 +27,7 @@ $ npm run start
 $ npm run start:prod
 ```
 
-### Running it with Docker
+### Running it with Docker (local only)
 ```bash
 $ docker compose up
 ```
