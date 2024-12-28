@@ -2,7 +2,7 @@
   "$schema": "http://json.schemastore.org/web-manifest",
   "name": "AstroBin",
   "short_name": "AstroBin",
-  "theme_color": "#cc4b2e",
+  "theme_color": "#222",
   "background_color": "#222",
   "display": "standalone",
   "scope": "./",
