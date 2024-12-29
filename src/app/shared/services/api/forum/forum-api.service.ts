@@ -38,4 +38,10 @@ export class ForumApiService extends BaseClassicApiService {
 
     return this.http.get<PaginatedApiResultInterface<TopicInterface>>(url);
   }
+
+  latestTopics(page = 1): Observable<PaginatedApiResultInterface<TopicInterface>> {
+    return this.http.get<PaginatedApiResultInterface<TopicInterface>>(
+      `${this.configUrl}/topic/latest/?page=${page}`
+    );
+  }
 }
