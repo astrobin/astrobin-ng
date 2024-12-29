@@ -492,7 +492,7 @@ $globalLoadingIndicatorHeight: 6px;
           bottom: .5rem;
           right: .5rem;
           background: rgba(0, 0, 0, .75);
-          opacity: 1;
+          opacity: 0;
           transition: opacity 0.3s;
           padding: .5rem .75rem;
           font-size: .9rem;
@@ -517,8 +517,6 @@ $globalLoadingIndicatorHeight: 6px;
           }
 
           @media (hover: hover) and (pointer: fine) {
-            opacity: 0;
-
             &:hover {
               opacity: 1;
             }
@@ -567,7 +565,7 @@ $globalLoadingIndicatorHeight: 6px;
 
       // The buttons are always visible on touch devices. The revisions are handled separately and activated
       // by a button.
-      @media (hover: none) and (pointer: coarse) {
+      @media (pointer: coarse) {
         astrobin-image-viewer-revisions {
           opacity: 0;
           pointer-events: none;

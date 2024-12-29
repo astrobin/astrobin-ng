@@ -131,7 +131,7 @@ import { UserService } from "@shared/services/user.service";
                   (click)="userService.openGallery(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                   [href]="userService.getGalleryUrl(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                   astrobinEventPreventDefault
-                  class="d-inline me-2"
+                  class="d-inline"
                 >
                   {{ photographers[0].displayName }}
                 </a>
@@ -145,7 +145,7 @@ import { UserService } from "@shared/services/user.service";
                   [showIcon]="false"
                   [setLabel]="'Follow' | translate"
                   [unsetLabel]="'Unfollow' | translate"
-                  class="d-inline-block btn-no-block"
+                  class="d-inline-block btn-no-block ms-2"
                   btnClass="btn btn-xs btn-no-block btn-outline-secondary"
                   propertyType="follow"
                 ></astrobin-toggle-property>
