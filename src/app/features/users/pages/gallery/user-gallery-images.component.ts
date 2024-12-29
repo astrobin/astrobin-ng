@@ -158,7 +158,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
             *ngFor="let image of images"
             [class.wip]="image.isWip"
           >
-            <td [attr.data-label]="'Title' | translate">
+            <td [attr.data-label]="'Title' | translate" class="d-flex justify-content-md-between align-items-center">
               <a
                 (click)="openImage(image)"
                 [href]="'/i/' + (image.hash || image.pk.toString())"
