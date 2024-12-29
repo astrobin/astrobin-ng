@@ -107,7 +107,7 @@ export class ForumPreviewComponent extends BaseComponentDirective implements OnI
     } else {
       this.forumUrl = `${this.classicRoutesService.FORUM_LATEST}`;
       this.forumNewTopicUrl = `${this.classicRoutesService.FORUM_HOME}/#new-topic`;
-      this.forumApiService.loadTopics().subscribe(response => {
+      this.forumApiService.latestTopics().subscribe(response => {
         this.topics = response.results.slice(0, this.MAX_TOPICS);
         this.loading = false;
       });
