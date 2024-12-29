@@ -62,7 +62,7 @@
 
 @media (max-width: $sm-max) {
   .table-mobile-support {
-    .table tbody {
+    tbody {
       display: block;
     }
 
@@ -71,16 +71,16 @@
     }
 
     /* Each row as a block element on small screens */
-    .table tbody tr {
+    tbody tr {
       display: block;
       margin-bottom: 2rem;
     }
 
-    .table tbody:last-child tr:last-child {
+    tbody:last-child tr:last-child {
       margin-bottom: 0;
     }
 
-    .table tbody tr td {
+    tbody tr td {
       display: flex;
       gap: .5rem;
       padding: .5rem 1rem;
@@ -88,7 +88,7 @@
       border-bottom-width: 0;
     }
 
-    .table tbody tr td:before {
+    tbody tr td:before {
       content: attr(data-label);
       color: var(--lighterGrey);
     }
