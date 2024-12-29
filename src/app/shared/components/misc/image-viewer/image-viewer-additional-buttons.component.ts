@@ -47,6 +47,7 @@ import { ImageService } from "@shared/services/image/image.service";
     <button
       (click)="showAdjustmentsEditor.emit()"
       astrobinEventPreventDefault
+      astrobinEventStopPropagation
       class="adjustments-editor-button btn btn-link text-light d-none d-md-block"
     >
       <fa-icon
