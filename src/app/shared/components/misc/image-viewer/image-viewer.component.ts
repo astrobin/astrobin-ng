@@ -206,6 +206,7 @@ export class ImageViewerComponent
   ngOnChanges(changes: SimpleChanges) {
     if (changes.active && !changes.active.firstChange && changes.active.currentValue) {
       this._recordHit();
+      this._adjustSvgOverlay();
     }
   }
 
@@ -691,6 +692,10 @@ export class ImageViewerComponent
   }
 
   private _adjustSvgOverlay(): void {
+    if (!this._isBrowser) {
+      return;
+    }
+
     if (!this.inlineSvg) {
       return;
     }
@@ -700,7 +705,10 @@ export class ImageViewerComponent
       return;
     }
 
-    const imageAreaElement = this.imageArea.nativeElement.querySelector(".image-area-body") as HTMLElement;
+    const imageId = this.image.hash || this.image.pk;
+    const imageAreaElement = this.windowRefService.nativeWindow.document.querySelector(
+      `#image-viewer-${imageId} .image-area-body`
+    ) as HTMLElement;
     const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-svg-container") as HTMLElement;
 
     if (!overlaySvgElement) {

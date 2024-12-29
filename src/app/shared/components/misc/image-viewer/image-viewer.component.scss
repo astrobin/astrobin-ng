@@ -497,6 +497,11 @@ $globalLoadingIndicatorHeight: 6px;
           padding: .5rem .75rem;
           font-size: .9rem;
 
+          @media (max-width: $sm-max) {
+            font-size: .65rem;
+            padding: .25rem;
+          }
+
           .mouse-hover-svg-overlay-coordinates {
             ::ng-deep {
               .symbol {
