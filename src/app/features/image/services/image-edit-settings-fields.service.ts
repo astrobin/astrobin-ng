@@ -9,6 +9,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: null
@@ -20,7 +21,8 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
     public readonly translateService: TranslateService,
     public readonly imageService: ImageService,
     public readonly imageEditService: ImageEditService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly utilsService: UtilsService
   ) {
     super(loadingService);
   }
@@ -268,6 +270,31 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
     };
   }
 
+  getMaxZoomField(): FormlyFieldConfig {
+    return {
+      key: "maxZoom",
+      type: "ng-select",
+      id: "image-max-zoom-field",
+      expressions: {
+        hide: "!model.fullSizeDisplayLimitation || model.fullSizeDisplayLimitation === 'NOBODY'",
+      },
+      props: {
+        clearable: true,
+        placeholder: this.translateService.instant("Use default preference"),
+        options: [
+          { value: 8, label: "8x" },
+          { value: 4, label: "4x" },
+          { value: 2, label: "2x" },
+          { value: 1, label: "1x" },
+        ],
+        label: this.translateService.instant("Max zoom level"),
+        description: this.translateService.instant(
+          "The maximum zoom level that will be available for this image."
+        )
+      },
+    };
+  }
+
   getDownloadLimitationField(): FormlyFieldConfig {
     return {
       key: "downloadLimitation",
@@ -289,6 +316,29 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
       },
       validators: {
         validation: [{ name: "enum-value", options: { allowedValues: Object.values(DownloadLimitationOptions) } }]
+      }
+    };
+  }
+
+  getAllowImageAdjustmentsWidgetField(): FormlyFieldConfig {
+    return {
+      key: "allowImageAdjustmentsWidget",
+      type: "ng-select",
+      id: "image-allow-image-adjustments-widget-field",
+      props: {
+        clearable: true,
+        label: this.translateService.instant("Allow image adjustments widget"),
+        placeholder: this.translateService.instant("Use default preference"),
+        options: [
+          {
+            value: true,
+            label: this.translateService.instant("Yes")
+          },
+          {
+            value: false,
+            label: this.translateService.instant("No")
+          }
+        ]
       }
     };
   }

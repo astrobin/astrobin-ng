@@ -786,6 +786,18 @@ export class ImageViewerComponent
   }
 
   private _initAdjustmentEditor() {
+    if (!this.image) {
+      return;
+    }
+
+    if (this.image.allowImageAdjustmentsWidget === false) {
+      return;
+    }
+
+    if (this.image.allowImageAdjustmentsWidget === null && this.image.defaultAllowImageAdjustmentsWidget === false) {
+      return;
+    }
+
     if (
       this.activatedRoute.snapshot.queryParams["brightness"] ||
       this.activatedRoute.snapshot.queryParams["contrast"] ||

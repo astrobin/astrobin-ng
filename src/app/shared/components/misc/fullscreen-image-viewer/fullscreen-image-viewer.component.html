@@ -177,7 +177,7 @@
     <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage">
-      <img *ngIf="hd && (!real || !allowReal)" [src]="hd" class="hd-image" alt="" />
+      <img *ngIf="hd && (!real || !allowReal || !isLargeEnough)" [src]="hd" class="hd-image" alt="" />
 
       <lib-ngx-image-zoom
         #ngxImageZoom
@@ -191,7 +191,7 @@
         [fullImage]="real"
         [lensHeight]="zoomLensSize"
         [lensWidth]="zoomLensSize"
-        [maxZoomRatio]="8"
+        [maxZoomRatio]="maxZoom"
         [minZoomRatio]="0.1"
         [thumbImage]="hd"
         zoomMode="toggle-click"
