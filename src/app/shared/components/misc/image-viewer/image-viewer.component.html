@@ -82,7 +82,7 @@
     </div>
 
     <div class="image-area-body">
-      <ng-container *ngIf="adjustmentEditorVisible && isPlatformBrowser(platformId)">
+      <ng-container *ngIf="adjustmentEditorVisible && isBrowser">
         <astrobin-image-viewer-adjustment-editor
           [image]="image"
           [revisionLabel]="revisionLabel"

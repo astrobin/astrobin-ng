@@ -149,7 +149,7 @@ export class ImageViewerComponent
   protected showAd = false;
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
-  private readonly _isBrowser: boolean;
+  protected readonly isBrowser: boolean;
   private _dataAreaScrollEventSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
 
@@ -178,7 +178,7 @@ export class ImageViewerComponent
     public readonly solutionApiService: SolutionApiService
   ) {
     super(store$);
-    this._isBrowser = isPlatformBrowser(platformId);
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   @HostBinding("id")
@@ -211,7 +211,7 @@ export class ImageViewerComponent
   }
 
   ngAfterViewInit() {
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       merge(
         this._retryAdjustSvgOverlay.pipe(
           delay(100),
@@ -499,7 +499,7 @@ export class ImageViewerComponent
       this.viewingFullscreenImage = true;
       this.toggleFullscreen.emit(true);
 
-      if (this._isBrowser) {
+      if (this.isBrowser) {
         const location_ = this.windowRefService.nativeWindow.location;
         this.windowRefService.pushState(
           {
@@ -518,7 +518,7 @@ export class ImageViewerComponent
     this.viewingFullscreenImage = false;
     this.toggleFullscreen.emit(false);
 
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       const location_ = this.windowRefService.nativeWindow.location;
       this.windowRefService.replaceState(
         {},
@@ -660,7 +660,7 @@ export class ImageViewerComponent
   }
 
   private _onMouseHoverSvgLoad(): void {
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       this.utilsService.delay(100).subscribe(() => {
         const _doc = this.windowRefService.nativeWindow.document;
         const svgObject = _doc.getElementById("mouse-hover-svg-" + this.image.pk) as HTMLObjectElement;
@@ -692,7 +692,7 @@ export class ImageViewerComponent
   }
 
   private _adjustSvgOverlay(): void {
-    if (!this._isBrowser) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -752,7 +752,7 @@ export class ImageViewerComponent
   }
 
   private _initDataAreaScrollHandling() {
-    if (!this._isBrowser) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -796,7 +796,7 @@ export class ImageViewerComponent
   }
 
   private _initAutoOpenFullscreen() {
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       const hash = this.windowRefService.nativeWindow.location.hash;
       if (hash === "#fullscreen") {
         this.enterFullscreen(null);
@@ -939,7 +939,7 @@ export class ImageViewerComponent
   }
 
   private _setAd() {
-    if (!this._isBrowser) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -974,7 +974,7 @@ export class ImageViewerComponent
   }
 
   private _replaceIdWithHash() {
-    if (!this._isBrowser) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -997,7 +997,7 @@ export class ImageViewerComponent
   }
 
   private _recordHit() {
-    if (!this._isBrowser || !this.active) {
+    if (!this.isBrowser || !this.active) {
       return;
     }
 
