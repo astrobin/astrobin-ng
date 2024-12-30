@@ -33,5 +33,9 @@
     &:not(.offcanvas-bottom) {
       width: 40vw !important;
     }
+
+    &.offcanvas-bottom {
+      height: 85vh !important;
+    }
   }
 }

@@ -20,6 +20,7 @@ import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/
 type GalleryNavigationComponent =
   "gallery" |
   "staging" |
+  "collections" |
   "smart-folders" |
   "equipment" |
   "marketplace" |
@@ -43,35 +44,10 @@ type GalleryNavigationComponent =
             <a ngbNavLink>
               <fa-icon icon="images" class="me-2"></fa-icon>
               <span translate="Gallery"></span>
-
-              <div
-                *ngIf="currentUserWrapper.user?.id === user.id"
-                ngbDropdown
-                container="body"
-                class="d-inline-block ms-2"
-              >
-                <a
-                  ngbDropdownToggle
-                  [class.active]="activeCollection === null"
-                  class="btn btn-sm btn-link no-toggle text-white"
-                >
-                  <fa-icon icon="caret-down"></fa-icon>
-                </a>
-                <div ngbDropdownMenu>
-                  <a
-                    (click)="createCollection()"
-                    ngbDropdownItem
-                    astrobinEventPreventDefault
-                    astrobinEventStopPropagation
-                    href="#"
-                  >
-                    {{ "Create new collection" | translate }}
-                  </a>
-                </div>
-              </div>
             </a>
             <ng-template ngbNavContent>
               <astrobin-user-gallery-collections
+                *ngIf="userProfile.displayCollectionsOnPublicGallery"
                 [user]="user"
                 [userProfile]="userProfile"
                 [parent]="collectionId"
@@ -111,6 +87,37 @@ type GalleryNavigationComponent =
                 [userProfile]="userProfile"
                 [options]="stagingAreaOptions"
               ></astrobin-user-gallery-images>
+            </ng-template>
+          </li>
+
+          <li *ngIf="!userProfile.displayCollectionsOnPublicGallery" ngbNavItem="collections">
+            <a ngbNavLink>
+              <fa-icon icon="layer-group" class="me-2"></fa-icon>
+              <span translate="Collections"></span>
+            </a>
+            <ng-template ngbNavContent>
+              <astrobin-user-gallery-collections
+                [user]="user"
+                [userProfile]="userProfile"
+                [parent]="collectionId"
+              ></astrobin-user-gallery-collections>
+
+              <ng-container *ngIf="activeCollection">
+                <astrobin-user-gallery-buttons
+                  [(activeLayout)]="activeLayout"
+                  (sortChange)="onSortChange($event)"
+                ></astrobin-user-gallery-buttons>
+
+                <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
+
+                <astrobin-user-gallery-images
+                  [activeLayout]="activeLayout"
+                  [expectedImageCount]="activeCollection ? activeCollection.imageCount : userProfile.imageCount"
+                  [user]="user"
+                  [userProfile]="userProfile"
+                  [options]="publicGalleryOptions"
+                ></astrobin-user-gallery-images>
+              </ng-container>
             </ng-template>
           </li>
 

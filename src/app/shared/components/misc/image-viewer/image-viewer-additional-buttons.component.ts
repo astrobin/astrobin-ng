@@ -45,8 +45,14 @@ import { ImageService } from "@shared/services/image/image.service";
     </button>
 
     <button
+      *ngIf="
+        image.allowImageAdjustmentsWidget === true || (
+          image.allowImageAdjustmentsWidget === null &&
+          image.defaultAllowImageAdjustmentsWidget
+        )"
       (click)="showAdjustmentsEditor.emit()"
       astrobinEventPreventDefault
+      astrobinEventStopPropagation
       class="adjustments-editor-button btn btn-link text-light d-none d-md-block"
     >
       <fa-icon

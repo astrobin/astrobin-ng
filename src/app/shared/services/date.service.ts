@@ -118,10 +118,15 @@ export class DateService extends BaseService {
     const dateFormat = this.getDateFormat();
 
     if (dateObj.getFullYear() === currentYear && !forceYear) {
-      return this.datePipe.transform(dateObj, dateFormat, undefined, this.translateService.currentLang)!;
+      return this.datePipe.transform(dateObj, dateFormat, "UTC", this.translateService.currentLang)!;
     }
 
-    return this.datePipe.transform(dateObj, `${dateFormat}${dateFormat === "MMM d" ? "," : ""} yyyy`, undefined, this.translateService.currentLang)!;
+    return this.datePipe.transform(
+      dateObj,
+      `${dateFormat}${dateFormat === "MMM d" ? "," : ""} yyyy`,
+      "UTC",
+      this.translateService.currentLang
+    )!;
   }
 
   private formatRange(range: number[]): string {

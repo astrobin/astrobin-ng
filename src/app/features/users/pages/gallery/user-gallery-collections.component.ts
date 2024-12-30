@@ -26,7 +26,7 @@ import { DeviceService } from "@shared/services/device.service";
           <a
             [routerLink]="['/u', user.username]"
             [queryParams]="{ collection: parentCollection.parent }"
-            fragment="gallery"
+            [fragment]="userProfile.displayCollectionsOnPublicGallery ? 'gallery' : 'collections'"
           >
             <fa-icon icon="arrow-circle-up"></fa-icon>
           </a>
@@ -165,7 +165,7 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     this.router.navigate(
       [],
       {
-        fragment: "gallery",
+        fragment: this.userProfile.displayCollectionsOnPublicGallery ? "gallery" : "collections",
         queryParams: { collection: collection.id },
         relativeTo: this.activatedRoute
       }

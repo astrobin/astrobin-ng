@@ -184,6 +184,8 @@ export enum CelestialHemisphere {
   SOUTHERN = "S"
 }
 
+export type ImageMaxZoom = 8 | 4 | 2 | 1;
+
 export interface ImageInterface {
   pk: number;
   user: UserInterface["id"];
@@ -248,7 +250,11 @@ export interface ImageInterface {
   locations: number[];
   locationObjects: LocationInterface[];
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
+  maxZoom: ImageMaxZoom;
+  defaultMaxZoom?: ImageMaxZoom;
   downloadLimitation: DownloadLimitationOptions;
+  allowImageAdjustmentsWidget: boolean;
+  defaultAllowImageAdjustmentsWidget?: boolean;
   thumbnails: ImageThumbnailInterface[];
   submittedForIotdTpConsideration: string | null;
   deepSkyAcquisitions: DeepSkyAcquisitionInterface[];

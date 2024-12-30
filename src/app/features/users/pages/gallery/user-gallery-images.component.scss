@@ -86,10 +86,10 @@
         astrobin-user-gallery-image-menu {
           opacity: 1;
           pointer-events: all;
-        }
 
-        astrobin-user-gallery-image-menu:hover {
-          filter: brightness(1.5);
+          &:hover {
+            filter: brightness(1.5);
+          }
         }
 
         .key-value-tag {

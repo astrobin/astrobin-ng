@@ -12,7 +12,7 @@
     right: .5rem;
     z-index: 1;
     transition: opacity .25s ease-in-out;
-    opacity: 0;
+    opacity: 1;
     padding: .5rem 1rem;
     background: rgba(0, 0, 0, 0.75);
     color: var(--lighterGrey);
@@ -108,7 +108,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0;
+    opacity: 1;
 
     .ng-fa-icon {
       font-size: 1rem;
@@ -126,13 +126,11 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+      opacity: 0;
+
       &:hover {
         opacity: 1;
       }
-    }
-
-    @media (hover: none) and (pointer: coarse) {
-      opacity: 1;
     }
   }
 
@@ -155,6 +153,10 @@
 
 
 @media (hover: hover) and (pointer: fine) {
+  .user-gallery-header .btn-change-header-image {
+    opacity: 0;
+  }
+
   .user-gallery-header:hover {
     .btn-change-header-image {
       opacity: 1;
@@ -162,10 +164,8 @@
   }
 }
 
-@media (hover: none) and (pointer: coarse) {
-  .user-gallery-header {
-    .btn-change-header-image {
-      opacity: 1;
-    }
+::ng-deep {
+  .change-header-image-offcanvas.offcanvas-bottom {
+    height: 85vh !important;
   }
 }

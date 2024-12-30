@@ -95,7 +95,7 @@
 
     <div *ngIf="item.listings.itemListings.length; else brandsTemplate">
       <div *ngFor="let listing of item.listings.itemListings" class="retailer">
-        <a [href]="listing.url" target="_blank">
+        <a [href]="listing.url" target="_blank" class="no-external-link-icon">
           <img *ngIf="listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
           <span *ngIf="!listing.retailer.logo">{{ listing.retailer.name }}</span>
         </a>
@@ -106,7 +106,7 @@
   <ng-template #brandsTemplate>
     <div *ngIf="item.listings.brandListings">
       <div *ngFor="let listing of item.listings.brandListings" class="retailer">
-        <a [href]="listing.url" target="_blank">
+        <a [href]="listing.url" target="_blank" class="no-external-link-icon">
           <img *ngIf="listing.retailer.logo" [src]="listing.retailer.logo" alt="" />
           <span *ngIf="!listing.retailer.logo">{{ listing.retailer.name }}</span>
         </a>

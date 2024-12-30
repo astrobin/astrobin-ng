@@ -38,8 +38,8 @@ $size: 150px;
     border: 1px solid var(--lightGrey);
     cursor: pointer;
     border-radius: 50%;
-    opacity: 0;
-    pointer-events: none;
+    opacity: 1;
+    pointer-events: all;
     line-height: 1rem;
     z-index: 1;
     width: 2rem;
@@ -82,6 +82,11 @@ $size: 150px;
   }
 
   @media (hover: hover) and (pointer: fine) {
+    astrobin-user-gallery-collection-menu {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     &:hover {
       filter: brightness(1.5);
 

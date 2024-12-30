@@ -5,6 +5,11 @@
   .preset-create-offcanvas:not(.offcanvas-bottom) {
     width: 40vw;
   }
+
+  .preset-summary-offcanvas.offcanvas-bottom,
+  .preset-create-offcanvas.offcanvas-bottom {
+    height: 85vh !important;
+  }
 }
 
 astrobin-loading-indicator {

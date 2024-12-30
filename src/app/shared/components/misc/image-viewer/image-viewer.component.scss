@@ -284,8 +284,8 @@ $globalLoadingIndicatorHeight: 6px;
         font-size: 1.5rem;
         cursor: pointer;
         z-index: 1031;
-        opacity: 0;
-        pointer-events: none;
+        opacity: 1;
+        pointer-events: all;
         padding: .5rem;
         transition: opacity 0.3s, transform 0.3s ease-in-out;
 
@@ -298,8 +298,12 @@ $globalLoadingIndicatorHeight: 6px;
         }
 
         @media (hover: hover) and (pointer: fine) {
+          opacity: 0;
+          pointer-events: none;
+
           &:hover {
             opacity: 1 !important;
+            pointer-events: all;
           }
         }
       }
@@ -379,7 +383,7 @@ $globalLoadingIndicatorHeight: 6px;
         font-size: 1.5rem;
         display: none;
 
-        @media (hover: none) and (pointer: coarse) {
+        @media (pointer: coarse) {
           pointer-events: auto;
           display: block;
           opacity: 1;
@@ -493,6 +497,11 @@ $globalLoadingIndicatorHeight: 6px;
           padding: .5rem .75rem;
           font-size: .9rem;
 
+          @media (max-width: $sm-max) {
+            font-size: .65rem;
+            padding: .25rem;
+          }
+
           .mouse-hover-svg-overlay-coordinates {
             ::ng-deep {
               .symbol {
@@ -546,7 +555,7 @@ $globalLoadingIndicatorHeight: 6px;
       }
 
       &.force-view-mousehover {
-        @media (hover: none) and (pointer: coarse) {
+        @media (pointer: coarse) {
           .mouse-hover.ready,
           .mouse-hover.ready + .mouse-hover-svg-overlay {
             opacity: 1 !important;
@@ -561,7 +570,7 @@ $globalLoadingIndicatorHeight: 6px;
 
       // The buttons are always visible on touch devices. The revisions are handled separately and activated
       // by a button.
-      @media (hover: none) and (pointer: coarse) {
+      @media (pointer: coarse) {
         astrobin-image-viewer-revisions {
           opacity: 0;
           pointer-events: none;
