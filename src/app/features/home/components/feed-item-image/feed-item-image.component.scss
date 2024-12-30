@@ -15,7 +15,7 @@ img {
   background: rgba(0, 0, 0, .2);
   box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
 
-  img {
+  ::ng-deep img {
     max-width: 100%;
   }
 }

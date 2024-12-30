@@ -31,6 +31,8 @@ export class UserProfileGenerator {
       defaultWatermarkSize: WatermarkSizeOptions.MEDIUM,
       defaultWatermarkPosition: WatermarkPositionOptions.CENTER,
       defaultWatermarkOpacity: 0.5,
+      defaultAllowImageAdjustmentsWidget: null,
+      defaultMaxZoom: null,
       acceptTos: true,
       openNotificationsInNewTab: null,
       receiveNewsletter: true,

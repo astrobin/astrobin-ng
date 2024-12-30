@@ -95,6 +95,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected touchZoomTransform = '';
   protected naturalWidth: number;
   protected naturalHeight: number;
+  protected maxZoom = 8;
 
   private _lastTouchScale = 1;
   private _touchScaleOffset = { x: 0, y: 0 };
@@ -507,6 +508,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       const revision = this.imageService.getRevision(image, this.revision);
       this.naturalWidth = revision.w;
       this.naturalHeight = revision.h;
+      this.maxZoom = image.maxZoom || image.defaultMaxZoom || 8;
       this.isLargeEnough = (
         revision.w > this.windowRef.nativeWindow.innerWidth ||
         revision.h > this.windowRef.nativeWindow.innerHeight

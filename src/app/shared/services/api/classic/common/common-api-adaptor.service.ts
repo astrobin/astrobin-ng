@@ -4,7 +4,7 @@ import { PermissionInterface } from "@shared/interfaces/permission.interface";
 import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
-import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
+import { ImageMaxZoom, WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 import { GroupInterface } from "@shared/interfaces/group.interface";
@@ -69,6 +69,8 @@ export interface BackendUserProfileInterface {
   default_watermark_size: WatermarkSizeOptions;
   default_watermark_position: WatermarkPositionOptions;
   default_watermark_opacity: number;
+  default_allow_image_adjustments_widget: boolean | null;
+  default_max_zoom: ImageMaxZoom | null;
   accept_tos: boolean;
   open_notifications_in_new_tab: boolean | null;
   receive_important_communications: boolean;
@@ -113,6 +115,7 @@ export interface BackendUserProfileInterface {
   wip_image_count?: number;
   followers_count?: number;
   following_count?: number;
+  display_collections_on_public_gallery?: boolean;
   display_wip_images_on_public_gallery?: boolean;
   allow_ads?: boolean; // Whether the user allows ads to be shown on their profile.
   suspended?: string;
@@ -200,6 +203,8 @@ export class CommonApiAdaptorService extends BaseService {
       defaultWatermarkPosition: userProfile.default_watermark_position,
       defaultWatermarkSize: userProfile.default_watermark_size,
       defaultWatermarkText: userProfile.default_watermark_text,
+      defaultAllowImageAdjustmentsWidget: userProfile.default_allow_image_adjustments_widget,
+      defaultMaxZoom: userProfile.default_max_zoom,
       acceptTos: userProfile.accept_tos,
       openNotificationsInNewTab: userProfile.open_notifications_in_new_tab,
       receiveNewsletter: userProfile.receive_newsletter,
@@ -244,6 +249,7 @@ export class CommonApiAdaptorService extends BaseService {
       wipImageCount: userProfile.wip_image_count,
       followersCount: userProfile.followers_count,
       followingCount: userProfile.following_count,
+      displayCollectionsOnPublicGallery: userProfile.display_collections_on_public_gallery,
       displayWipImagesOnPublicGallery: userProfile.display_wip_images_on_public_gallery,
       allowAds: userProfile.allow_ads,
       suspended: userProfile.suspended,
