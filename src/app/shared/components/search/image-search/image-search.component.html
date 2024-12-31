@@ -115,13 +115,7 @@
               }"
             ></div>
 
-            <fa-icon *ngIf="item.video || item.animated" icon="play"></fa-icon>
-
-            <div class="badges">
-              <fa-icon *ngIf="item.isIotd" class="iotd" icon="trophy"></fa-icon>
-              <fa-icon *ngIf="item.isTopPick" class="top-pick" icon="star"></fa-icon>
-              <fa-icon *ngIf="item.isTopPickNomination" class="top-pick-nomination" icon="arrow-up"></fa-icon>
-            </div>
+            <astrobin-image-icons [image]="item"></astrobin-image-icons>
 
             <astrobin-image-hover
               *ngIf="alias === ImageAlias.REGULAR"
