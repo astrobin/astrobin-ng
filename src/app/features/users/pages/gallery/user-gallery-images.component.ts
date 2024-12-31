@@ -314,7 +314,9 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     super.ngOnInit();
 
     if (isPlatformBrowser(this.platformId)) {
-      fromEvent(this.windowRefService.nativeWindow, "scroll")
+      const scrollElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
+
+      fromEvent(scrollElement, "scroll")
         .pipe(takeUntil(this.destroyed$), throttleTime(200))
         .subscribe(() => this._onScroll());
     }
