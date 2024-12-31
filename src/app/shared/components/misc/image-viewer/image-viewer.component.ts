@@ -193,7 +193,6 @@ export class ImageViewerComponent
 
   ngOnInit(): void {
     this._initImageAlias();
-    this._initAdjustmentEditor();
     this._initContentTypes();
 
     if (this.image) {
@@ -351,6 +350,7 @@ export class ImageViewerComponent
     this.image = image;
     this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
 
+    this._initAdjustmentEditor();
     this._initRevision();
     this._updateSupportsFullscreen();
     this._initAutoOpenFullscreen();
