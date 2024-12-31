@@ -19,6 +19,8 @@ import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image
 import { Subscription } from "rxjs";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { isPlatformBrowser } from "@angular/common";
+import { LoadImage } from "@app/store/actions/image.actions";
+import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 
 @Component({
   selector: "astrobin-image-viewer-plate-solving-banner",
@@ -28,20 +30,24 @@ import { isPlatformBrowser } from "@angular/common";
     >
       <div class="flex-grow-1">
         <fa-icon icon="spinner" animation="spin" class="me-2"></fa-icon>
-        <span *ngIf="solution.status < SolutionStatus.SUCCESS; else solvingWithPixInsightTemplate">
+
+        <span *ngIf="!solution">
+          {{ "AstroBin is preparing to plate-solve this image..." | translate }}
+        </span>
+
+        <span *ngIf="!!solution && solution.status === SolutionStatus.PENDING">
           {{ "AstroBin is plate-solving this image with Astrometry.net..." | translate }}
         </span>
+
+        <span *ngIf="!!solution && solution.status === SolutionStatus.ADVANCED_PENDING">
+          {{ "AstroBin is plate-solving this image with PixInsight..." | translate }}
+        </span>
       </div>
+
       <button class="btn btn-link btn-no-block" (click)="openInformationOffcanvas()">
         <fa-icon icon="info-circle" class="me-0"></fa-icon>
       </button>
     </div>
-
-    <ng-template #solvingWithPixInsightTemplate>
-      <span>
-        {{ "AstroBin is plate-solving this image with PixInsight..." | translate }}
-      </span>
-    </ng-template>
 
     <ng-template #informationOffcanvasTemplate let-offcanvas>
       <div class="offcanvas-header">
@@ -120,7 +126,8 @@ export class ImageViewerPlateSolvingBannerComponent
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly imageApiService: ImageApiService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -138,36 +145,49 @@ export class ImageViewerPlateSolvingBannerComponent
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
-      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-      if (this.revision) {
-        this.solution = this.revision.solution;
-        this._isSolving = this.solutionService.isSolving(this.solution);
-        this._hostClass = this._isSolving ? "" : "d-none";
+      this._initImage(this.image);
+    }
+  }
 
-        if (this._isSolving) {
-          this._previouslySolving = true;
-        }
+  private _initImage(image: ImageInterface) {
+    this.revision = this.imageService.getRevision(image, this.revisionLabel);
+    if (this.revision) {
+      this.solution = this.revision.solution;
+      this._isSolving = this.solutionService.isSolving(this.solution);
+      this._hostClass = this._isSolving ? "" : "d-none";
 
-        if (this._solutionSucceeded()) {
-          if (this.solution.status !== SolutionStatus.ADVANCED_SUCCESS && !this._performAdvancedSolve) {
-            this.popNotificationsService.success(this._successMessage);
-            this._cancelPolling();
-          }
-        } else if (this._solutionFailed()) {
-          this.popNotificationsService.error(this._failureMessage);
+      if (this._isSolving) {
+        this._previouslySolving = true;
+      }
+
+      if (this._solutionSucceeded()) {
+        if (this.solution.status !== SolutionStatus.ADVANCED_SUCCESS && !this._performAdvancedSolve) {
+          this.popNotificationsService.success(this._successMessage);
           this._cancelPolling();
         }
+      } else if (this._solutionFailed()) {
+        this.popNotificationsService.error(this._failureMessage);
+        this._cancelPolling();
       }
     }
   }
 
   protected openInformationOffcanvas() {
+    if (!this.solution) {
+      this.popNotificationsService.error(this.translateService.instant("No plate-solving information available."));
+      return;
+    }
+
     this.offcanvasService.open(this._informationOffcanvasTemplate, {
       position: this.deviceService.offcanvasPosition()
     });
   }
 
   _solutionSucceeded(): boolean {
+    if (!this.solution) {
+      return false;
+    }
+
     return this._previouslySolving &&
       (
         this.solution.status === SolutionStatus.SUCCESS ||
@@ -176,6 +196,10 @@ export class ImageViewerPlateSolvingBannerComponent
   }
 
   _solutionFailed(): boolean {
+    if (!this.solution) {
+      return false;
+    }
+
     return this._previouslySolving &&
       (
         this.solution.status === SolutionStatus.FAILED ||
@@ -192,6 +216,10 @@ export class ImageViewerPlateSolvingBannerComponent
 
   _pollSolution() {
     if (!this.solution) {
+      this.imageApiService.getImage(this.image.pk).subscribe(image => {
+        this.image = image;
+        this._initImage(image);
+      });
       return;
     }
 
