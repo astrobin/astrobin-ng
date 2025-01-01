@@ -36,6 +36,7 @@ export interface FindImagesOptionsInterface {
   collection?: CollectionInterface["id"];
   subsection?: string;
   active?: string;
+  ordering?: string;
 }
 
 @Injectable({
@@ -98,7 +99,8 @@ export class ImageApiService extends BaseClassicApiService {
       trash: options.trash ? "true" : null,
       collection: options.collection,
       subsection: options.subsection,
-      active: options.active
+      active: options.active,
+      ordering: options.ordering
     };
 
     // Filter out null or undefined values

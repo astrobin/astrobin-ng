@@ -29,18 +29,49 @@ export enum UserGalleryActiveLayout {
             (click)="sortChange.emit('title')"
           >
             {{ "Title" | translate }}
+            <fa-icon *ngIf="subsection === 'title'" icon="check"></fa-icon>
           </button>
           <button
             class="dropdown-item"
             (click)="sortChange.emit('uploaded')"
           >
             {{ "Publication date" | translate }}
+            <fa-icon *ngIf="subsection === 'uploaded'" icon="check"></fa-icon>
           </button>
           <button
             class="dropdown-item"
             (click)="sortChange.emit('acquired')"
           >
             {{ "Acquisition date" | translate }}
+            <fa-icon *ngIf="subsection === 'acquired'" icon="check"></fa-icon>
+          </button>
+          <button
+            class="dropdown-item"
+            (click)="sortChange.emit('views')"
+          >
+            {{ "Views" | translate }}
+            <fa-icon *ngIf="ordering === 'views'" icon="check"></fa-icon>
+          </button>
+          <button
+            class="dropdown-item"
+            (click)="sortChange.emit('likes')"
+          >
+            {{ "Likes" | translate }}
+            <fa-icon *ngIf="ordering === 'likes'" icon="check"></fa-icon>
+          </button>
+          <button
+            class="dropdown-item"
+            (click)="sortChange.emit('bookmarks')"
+          >
+            {{ "Bookmarks" | translate }}
+            <fa-icon *ngIf="ordering === 'bookmarks'" icon="check"></fa-icon>
+          </button>
+          <button
+            class="dropdown-item"
+            (click)="sortChange.emit('comments')"
+          >
+            {{ "Comments" | translate }}
+            <fa-icon *ngIf="ordering === 'comments'" icon="check"></fa-icon>
           </button>
         </div>
       </div>
@@ -127,6 +158,12 @@ export enum UserGalleryActiveLayout {
 export class UserGalleryButtonsComponent extends BaseComponentDirective implements OnInit {
   @Input()
   activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.TINY;
+
+  @Input()
+  subsection: string;
+
+  @Input()
+  ordering: string;
 
   @Output()
   activeLayoutChange = new EventEmitter<UserGalleryActiveLayout>();
