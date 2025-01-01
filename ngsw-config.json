@@ -13,18 +13,17 @@
           "/favicon.ico",
           "/index.html",
           "/*.css",
-          "/*.js",
-          "/assets/**"
+          "/*.js"
         ]
       }
     },
     {
-      "name": "local-images",
+      "name": "assets",
       "installMode": "lazy",
       "updateMode": "lazy",
       "resources": {
         "files": [
-          "/assets/images/**"
+          "/assets/**"
         ]
       }
     },
@@ -47,7 +46,7 @@
     {
       "name": "cdn-images",
       "installMode": "lazy",
-      "updateMode": "prefetch",
+      "updateMode": "lazy",
       "resources": {
         "urls": [
           "https://cdn.astrobin.com/**"
@@ -55,8 +54,8 @@
       },
       "cacheConfig": {
         "strategy": "performance",
-        "maxSize": 500,
-        "maxAge": "30d"
+        "maxSize": 50,
+        "maxAge": "5m"
       }
     }
   ],
@@ -67,7 +66,7 @@
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
-        "maxAge": "3d",
+        "maxAge": "5m",
         "timeout": "10s"
       }
     },
@@ -77,7 +76,7 @@
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
-        "maxAge": "3d",
+        "maxAge": "5m",
         "timeout": "10s"
       }
     }
