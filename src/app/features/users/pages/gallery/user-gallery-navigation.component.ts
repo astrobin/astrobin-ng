@@ -55,6 +55,8 @@ type GalleryNavigationComponent =
 
               <astrobin-user-gallery-buttons
                 [(activeLayout)]="activeLayout"
+                [subsection]="publicGalleryOptions.subsection"
+                [ordering]="publicGalleryOptions.ordering"
                 (sortChange)="onSortChange($event)"
               ></astrobin-user-gallery-buttons>
 
@@ -79,7 +81,11 @@ type GalleryNavigationComponent =
               <span translate="Staging area"></span>
             </a>
             <ng-template ngbNavContent>
-              <astrobin-user-gallery-buttons [(activeLayout)]="activeLayout"></astrobin-user-gallery-buttons>
+              <astrobin-user-gallery-buttons
+                [(activeLayout)]="activeLayout"
+                [subsection]="stagingAreaOptions.subsection"
+                [ordering]="stagingAreaOptions.ordering"
+              ></astrobin-user-gallery-buttons>
               <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
               <astrobin-user-gallery-images
                 [activeLayout]="activeLayout"
@@ -106,6 +112,8 @@ type GalleryNavigationComponent =
                 <astrobin-user-gallery-buttons
                   [(activeLayout)]="activeLayout"
                   (sortChange)="onSortChange($event)"
+                  [subsection]="publicGalleryOptions.subsection"
+                  [ordering]="publicGalleryOptions.ordering"
                 ></astrobin-user-gallery-buttons>
 
                 <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
@@ -353,14 +361,27 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   protected onSortChange(sort: string) {
+    let prop: string;
+    let otherProp: string;
+
+    if (['title', 'uploaded', 'acquired'].includes(sort)) {
+      prop = 'subsection';
+      otherProp = 'ordering';
+    } else if (['likes', 'bookmarks', 'comments', 'views'].includes(sort)) {
+      prop = 'ordering';
+      otherProp = 'subsection';
+    }
+
     this.publicGalleryOptions = {
       ...this.publicGalleryOptions,
-      subsection: sort
+      [prop]: sort,
+      [otherProp]: null
     };
 
     this.stagingAreaOptions = {
       ...this.stagingAreaOptions,
-      subsection: sort
+      [prop]: sort,
+      [otherProp]: null
     };
   }
 

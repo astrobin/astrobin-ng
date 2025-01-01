@@ -146,12 +146,30 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
         <table class="table table-striped table-mobile-support">
           <thead>
           <tr>
-            <th>{{ "Title" | translate }}</th>
-            <th>{{ "Published" | translate }}</th>
-            <th>{{ "Views" | translate }}</th>
-            <th>{{ "Likes" | translate }}</th>
-            <th>{{ "Bookmarks" | translate }}</th>
-            <th>{{ "Comments" | translate }}</th>
+            <th>
+              {{ "Title" | translate }}
+              <fa-icon *ngIf="options.subsection === 'title'" icon="sort-alpha-asc" class="ms-2"></fa-icon>
+            </th>
+            <th>
+              {{ "Published" | translate }}
+              <fa-icon *ngIf="options.subsection === 'uploaded'" icon="sort-desc" class="ms-2"></fa-icon>
+            </th>
+            <th>
+              {{ "Views" | translate }}
+              <fa-icon *ngIf="options.ordering === 'views'" icon="sort-amount-down" class="ms-2"></fa-icon>
+            </th>
+            <th>
+              {{ "Likes" | translate }}
+              <fa-icon *ngIf="options.ordering === 'likes'" icon="sort-amount-down" class="ms-2"></fa-icon>
+            </th>
+            <th>
+              {{ "Bookmarks" | translate }}
+              <fa-icon *ngIf="options.ordering === 'bookmarks'" icon="sort-amount-down" class="ms-2"></fa-icon>
+            </th>
+            <th>
+              {{ "Comments" | translate }}
+              <fa-icon *ngIf="options.ordering === 'comments'" icon="sort-amount-down" class="ms-2"></fa-icon>
+            </th>
           </thead>
           <tbody>
           <tr
