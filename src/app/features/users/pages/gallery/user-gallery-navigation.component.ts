@@ -201,7 +201,7 @@ type GalleryNavigationComponent =
 
     <ng-template #createCollectionOffcanvas let-offcanvas>
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title">{{ "Create new collection" | translate }}</h5>
+        <h5 class="offcanvas-title">{{ "Create collection" | translate }}</h5>
         <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
       </div>
       <div class="offcanvas-body">

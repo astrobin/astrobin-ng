@@ -47,7 +47,7 @@ import { DeviceService } from "@shared/services/device.service";
       </div>
 
       <div
-        *ngIf="!loading && collections?.length > 0"
+        *ngIf="!loading && (collections?.length > 0 || currentUserWrapper.user?.id === user.id)"
         class="d-flex flex-wrap gap-4 justify-content-center mb-5"
       >
         <a
@@ -69,19 +69,24 @@ import { DeviceService } from "@shared/services/device.service";
           (click)="createCollection()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="create-collection-button"
+          class="create-collection-button d-flex flex-column justify-content-center align-items-center text-center"
         >
           <fa-icon
             icon="plus"
-            [ngbTooltip]="'Create new collection'"
+            [ngbTooltip]="'Create collection'"
           ></fa-icon>
+
+          <span
+            *ngIf="collections.length === 0"
+            class="text-muted"
+          >{{ "Create collection" | translate }}</span>
         </a>
       </div>
     </ng-container>
 
     <ng-template #createCollectionOffcanvas let-offcanvas>
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title">{{ "Create new collection" | translate }}</h5>
+        <h5 class="offcanvas-title">{{ "Create collection" | translate }}</h5>
         <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
       </div>
       <div class="offcanvas-body">
