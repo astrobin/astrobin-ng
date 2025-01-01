@@ -151,6 +151,9 @@ describe("DateService", () => {
 
       // Mock the locale to be 'en-US'
       jest.spyOn(translateService, 'currentLang', 'get').mockReturnValue('en-US');
+
+      // Mock the current year to 2024
+      jest.spyOn(service, "getCurrentYear").mockReturnValue(2024);
     });
 
     it("should return a single date formatted in en-US short format", () => {
@@ -566,6 +569,9 @@ describe("DateService", () => {
 
       // Mock the locale to be 'en-US'
       jest.spyOn(translateService, 'currentLang', 'get').mockReturnValue('en-US');
+
+      // Mock the current year to 2024
+      jest.spyOn(service, "getCurrentYear").mockReturnValue(2024);
     });
 
     it("should return a single date when multiple identical dates are provided in en-US format", () => {
