@@ -31,6 +31,7 @@ import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap"
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SolutionApiService } from "@shared/services/api/classic/platesolving/solution/solution-api.service";
 import { Throttle } from "@app/decorators";
+import { SolutionStatus } from "@shared/interfaces/solution.interface";
 
 
 @Component({
@@ -132,6 +133,7 @@ export class ImageViewerComponent
   protected mouseHoverX: number;
   protected mouseHoverY: number;
   protected isLightBoxOpen = false;
+  protected showPlateSolvingBanner = false;
   protected showUpgradeToPlateSolveBanner$ = combineLatest([
     this.currentUser$,
     this.userSubscriptionService.canPlateSolve$()
@@ -193,7 +195,6 @@ export class ImageViewerComponent
 
   ngOnInit(): void {
     this._initImageAlias();
-    this._initAdjustmentEditor();
     this._initContentTypes();
 
     if (this.image) {
@@ -351,10 +352,12 @@ export class ImageViewerComponent
     this.image = image;
     this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
 
+    this._initAdjustmentEditor();
     this._initRevision();
     this._updateSupportsFullscreen();
     this._initAutoOpenFullscreen();
     this._setMouseHoverImage();
+    this._setShowPlateSolvingBanner();
     this._setAd();
     this._replaceIdWithHash();
 
@@ -633,6 +636,37 @@ export class ImageViewerComponent
           this.inlineSvg = null;
         }
     }
+  }
+
+  private _setShowPlateSolvingBanner() {
+    if (!this.image) {
+      this.showPlateSolvingBanner = false;
+      return;
+    }
+
+    if (!this.revision) {
+      this.showPlateSolvingBanner = false;
+      return;
+    }
+
+    if (!this.imageService.isPlateSolvable(this.image)) {
+      this.showPlateSolvingBanner = false;
+      return;
+    }
+
+    if (
+      !!this.revision.solution && (
+        this.revision.solution.status === SolutionStatus.SUCCESS ||
+        this.revision.solution.status === SolutionStatus.ADVANCED_SUCCESS ||
+        this.revision.solution.status === SolutionStatus.FAILED ||
+        this.revision.solution.status === SolutionStatus.ADVANCED_FAILED
+      )
+    ) {
+      this.showPlateSolvingBanner = false;
+      return;
+    }
+
+    this.showPlateSolvingBanner = true;
   }
 
   private _loadInlineSvg$(svgUrl: string): Observable<SafeHtml> {

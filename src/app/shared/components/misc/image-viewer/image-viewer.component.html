@@ -315,7 +315,7 @@
     ></astrobin-image-viewer-wip-banner>
 
     <astrobin-image-viewer-plate-solving-banner
-      *ngIf="image && revision?.solution && currentUserWrapper.user?.id === image.user"
+      *ngIf="image && showPlateSolvingBanner && (currentUserWrapper.user?.id === image.user || currentUserWrapper.user?.isSuperUser)"
       [image]="image"
       [revisionLabel]="revisionLabel"
       class="image-viewer-banner-component"

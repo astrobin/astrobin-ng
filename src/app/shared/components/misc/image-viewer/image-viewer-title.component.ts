@@ -28,26 +28,27 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
           </small>
 
           <small class="justify-content-center justify-content-sm-start">
-          <span *ngIf="publicationDate">
-            <fa-icon
-              *ngIf="licenseIcon && licenseTooltip"
-              [icon]="licenseIcon"
-              [ngbTooltip]="licenseTooltip"
-              triggers="hover click"
-              container="body"
-              class="license-icon"
-            ></fa-icon>
-            {{ publicationDate | localDate | timeago:true }}
-          </span>
+            <span *ngIf="publicationDate">
+              <fa-icon
+                *ngIf="licenseIcon && licenseTooltip"
+                [icon]="licenseIcon"
+                [ngbTooltip]="licenseTooltip"
+                triggers="hover click"
+                container="body"
+                class="license-icon"
+              ></fa-icon>
+              {{ publicationDate | localDate | timeago:true }}
+            </span>
 
             <span class="view-count">
-            <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
-            <span
-              *ngIf="image.viewCount > 1"
-              [translateParams]="{ '0': image.viewCount | numberSuffix }"
-              [translate]="'{{0}} views'"
-            ></span>
-          </span>
+              <span *ngIf="image.viewCount === 0" [translate]="'No views'"></span>
+              <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
+              <span
+                *ngIf="image.viewCount > 1"
+                [translateParams]="{ '0': image.viewCount | numberSuffix }"
+                [translate]="'{{0}} views'"
+              ></span>
+            </span>
 
             <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
 
