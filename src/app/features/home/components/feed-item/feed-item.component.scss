@@ -20,6 +20,7 @@
           transparent
       );
       pointer-events: none;
+      z-index: 1;
     }
 
     .feed-item-header {
@@ -31,6 +32,7 @@
       filter: drop-shadow(0 .25rem 1rem rgba(0, 0, 0, .5));
       color: var(--lightestGrey);
       position: absolute;
+      z-index: 1;
 
       .feed-item-avatar {
         width: 3rem;
@@ -63,6 +65,13 @@
     .feed-item-body {
       img {
         min-height: 200px;
+        transition: filter .25s ease-in-out;
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            filter: brightness(1.25);
+          }
+        }
       }
     }
 
