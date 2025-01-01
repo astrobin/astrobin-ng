@@ -16,6 +16,8 @@
 
     .link {
       border-bottom: none;
+      border-radius: .5rem;
+      overflow: hidden;
 
       &::after {
         content: "";
@@ -27,12 +29,12 @@
         object-fit: cover;
         box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
         border-radius: .5rem;
-        transition: filter .25s ease-in-out;
+        transition: transform .1s ease-in-out;
       }
 
       &:hover {
         .image {
-          filter: brightness(1.5);
+          transform: scale(1.05);
         }
       }
     }

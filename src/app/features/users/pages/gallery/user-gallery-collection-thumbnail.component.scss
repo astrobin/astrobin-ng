@@ -3,8 +3,8 @@ $size: 150px;
 .collection-container {
   position: relative;
   cursor: pointer;
-  transition: filter 0.3s ease;
   width: $size;
+  transition: transform .2s ease;
 
   .collection-background {
     background: url("/assets/images/polaroids.png?v=20241008") no-repeat center;
@@ -47,11 +47,11 @@ $size: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.3s ease, filter 0.3s ease;
+    transition: opacity .3s ease, transform .2s ease;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        filter: brightness(1.5);
+        transform: scale(1.025);
       }
     }
 
@@ -88,7 +88,7 @@ $size: 150px;
     }
 
     &:hover {
-      filter: brightness(1.5);
+      transform: translateY(-1px);
 
       astrobin-user-gallery-collection-menu {
         opacity: 1;

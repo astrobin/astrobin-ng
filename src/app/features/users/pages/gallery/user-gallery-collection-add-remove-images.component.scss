@@ -1,7 +1,8 @@
 .image {
   position: relative;
   cursor: pointer;
-  transition: filter 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
+  overflow: hidden;
 
   img {
     width: 80px;
@@ -56,7 +57,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      filter: brightness(1.5);
+      transform: scale(1.025);
     }
   }
 }

@@ -20,6 +20,7 @@
           transparent
       );
       pointer-events: none;
+      z-index: 1;
     }
 
     .feed-item-header {
@@ -31,6 +32,7 @@
       filter: drop-shadow(0 .25rem 1rem rgba(0, 0, 0, .5));
       color: var(--lightestGrey);
       position: absolute;
+      z-index: 1;
 
       .feed-item-avatar {
         width: 3rem;

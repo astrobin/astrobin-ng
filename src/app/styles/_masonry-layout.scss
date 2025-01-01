@@ -24,6 +24,7 @@
     justify-content: center;
     overflow: hidden;
     position: relative;
+    border-radius: .75rem;
 
     > .image-container,
     > img {
@@ -34,14 +35,14 @@
       height: 100%;
       object-fit: cover;
       border-radius: .75rem;
-      transition: filter .25s ease-in-out;
+      transition: transform .2s ease-in-out;
     }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         > .image-container,
         > img {
-          filter: brightness(1.5);
+          transform: scale(1.025);
         }
 
         > astrobin-image-hover {
@@ -71,6 +72,8 @@
 
   &.layout-tiny {
     a {
+      border-radius: 1.75rem;
+
       astrobin-image-hover {
         font-size: .75rem;
 
