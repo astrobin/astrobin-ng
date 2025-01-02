@@ -28,7 +28,8 @@ export class VersionCheckService {
   notifyAboutUpdates() {
     const notification = this.popNotificationsService.info(
       this.translateService.instant(
-        "A new version of AstroBin is required to ensure everything works correctly. Click here to update."
+    "AstroBin requires an update to continue working correctly. " +
+        "If you're editing a form or making changes, please save your work before clicking here to update."
       ),
       this.translateService.instant("Update available"),
       {
