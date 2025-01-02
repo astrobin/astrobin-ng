@@ -107,8 +107,7 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     HttpClientModule,
     CookieModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      registrationStrategy: environment.production ? 'registerWhenStable:30000' : undefined
+      enabled: false,
     }),
     // Dependencies.
     StoreModule.forRoot(mainStateReducers,

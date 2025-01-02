@@ -56,4 +56,10 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
       object_id: objectId
     });
   }
+
+  serviceWorkerEnabled(): Observable<boolean> {
+    return this.http
+      .get<{ swEnabled: boolean }>(`${this.configUrl}/common/service-worker-control/`)
+      .pipe(map(response => response.swEnabled));
+  }
 }

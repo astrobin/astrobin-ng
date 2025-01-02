@@ -19,24 +19,28 @@ export class VersionCheckService {
 
   checkForUpdates() {
     this.swUpdate.versionUpdates.subscribe((event: VersionEvent) => {
-      if (event.type === 'VERSION_READY') {
-        const notification = this.popNotificationsService.info(
-          this.translateService.instant(
-            "A new version of AstroBin is required to ensure everything works correctly. Click here to update."
-          ),
-          this.translateService.instant("Update available"),
-          {
-            disableTimeOut: true,
-            closeButton: false,
-          }
-        );
-
-        notification.onTap.subscribe(() => {
-          this.swUpdate.activateUpdate().then(() => {
-            this.document.location.reload();
-          });
-        });
+      if (event.type === "VERSION_READY") {
+        this.notifyAboutUpdates();
       }
+    });
+  }
+
+  notifyAboutUpdates() {
+    const notification = this.popNotificationsService.info(
+      this.translateService.instant(
+        "A new version of AstroBin is required to ensure everything works correctly. Click here to update."
+      ),
+      this.translateService.instant("Update available"),
+      {
+        disableTimeOut: true,
+        closeButton: false
+      }
+    );
+
+    notification.onTap.subscribe(() => {
+      this.swUpdate.activateUpdate().then(() => {
+        this.document.location.reload();
+      });
     });
   }
 }
