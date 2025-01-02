@@ -8,13 +8,17 @@ AstroBin NG, based on [Node.js](https://nodejs.org), [Angular](https://angular.i
 
 [AstroBin NG](https://github.com/astrobin/astrobin-ng).
 
-## Installation
+## Running the application
+
+### Running it natively
+
+#### Installation
 
 ```bash
 $ npm ci
 ```
 
-## Running it
+#### Running it
 
 ```bash
 # development
@@ -22,6 +26,13 @@ $ npm run start
 
 # production mode
 $ npm run start:prod
+```
+
+### Running it with Docker (local only)
+
+```bash
+# Start the application (development)
+$ docker compose up
 ```
 
 ## Test

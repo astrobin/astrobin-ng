@@ -1,0 +1,19 @@
+version: "3"
+services:
+  astrobin-ng:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    healthcheck:
+      test: curl --fail http://127.0.0.1:4400/ || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - .:/code
+    expose:
+      - "4400"
+    ports:
+      - "4400:4400"
+    environment:
+      - NODE_PATH=/opt/deps/node_modules
