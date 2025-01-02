@@ -3,12 +3,15 @@ import { SwUpdate, VersionEvent } from "@angular/service-worker";
 import { TranslateService } from "@ngx-translate/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { DOCUMENT } from "@angular/common";
+import { Subscription } from "rxjs";
 
 
 @Injectable({
   providedIn: "root"
 })
 export class VersionCheckService {
+  private _subscription: Subscription;
+
   constructor(
     public readonly swUpdate: SwUpdate,
     public readonly translateService: TranslateService,
@@ -18,7 +21,17 @@ export class VersionCheckService {
   }
 
   checkForUpdates() {
-    this.swUpdate.versionUpdates.subscribe((event: VersionEvent) => {
+    if (!this.swUpdate.isEnabled) {
+      return;
+    }
+
+    if (!!this._subscription) {
+      return;
+    }
+
+    this.swUpdate.checkForUpdate();
+
+    this._subscription = this.swUpdate.versionUpdates.subscribe((event: VersionEvent) => {
       if (event.type === "VERSION_READY") {
         this.notifyAboutUpdates();
       }

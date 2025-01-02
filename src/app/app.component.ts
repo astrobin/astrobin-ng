@@ -72,7 +72,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    this.versionCheckService.checkForUpdates();
     this._startPollingForServiceWorkerKillSwitch();
     this._suppressPwaInstallationPrompt();
     this._initGoogleAnalytics();
@@ -258,10 +257,13 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
             .register('/ngsw-worker.js')
             .then(() => {
               console.log('Service Worker registered');
+              this.versionCheckService.checkForUpdates();
             })
             .catch((err) => {
               console.error('Service Worker registration failed:', err);
             });
+        } else {
+          this.versionCheckService.checkForUpdates();
         }
       });
     }

@@ -56,6 +56,36 @@ export function app(): express.Express {
   server.use("/api", apiProxy);
   server.use("/json-api", apiProxy);
 
+  server.get('/ngsw.json', (req, res) => {
+    const filePath = join(distFolder, 'ngsw.json');
+    res.sendFile(filePath, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      },
+    }, (err) => {
+      if (err) {
+        console.error('Error serving ngsw.json:', err);
+        res.status(404).send('ngsw.json not found');
+      }
+    });
+  });
+
+  server.get('/ngsw-worker.js', (req, res) => {
+    const filePath = join(distFolder, 'ngsw-worker.js');
+    res.sendFile(filePath, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      },
+    }, (err) => {
+      if (err) {
+        console.error('Error serving ngsw-worker.js:', err);
+        res.status(404).send('ngsw-worker.js not found');
+      }
+    });
+  });
+
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
@@ -92,9 +122,6 @@ export function app(): express.Express {
       }
     });
   });
-
-  server.get('/ngsw.json', express.static(distFolder));
-  server.get('/ngsw-worker.js', express.static(distFolder));
 
   return server;
 }
