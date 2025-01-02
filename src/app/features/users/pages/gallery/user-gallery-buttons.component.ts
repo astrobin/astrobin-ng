@@ -47,13 +47,6 @@ export enum UserGalleryActiveLayout {
           </button>
           <button
             class="dropdown-item"
-            (click)="sortChange.emit('views')"
-          >
-            {{ "Views" | translate }}
-            <fa-icon *ngIf="ordering === 'views'" icon="check"></fa-icon>
-          </button>
-          <button
-            class="dropdown-item"
             (click)="sortChange.emit('likes')"
           >
             {{ "Likes" | translate }}
