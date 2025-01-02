@@ -124,7 +124,7 @@
     "@types/supertest": "2.0.16",
     "@typescript-eslint/eslint-plugin": "5.48.1",
     "@typescript-eslint/parser": "5.48.1",
-    "@vendure/ngx-translate-extract": "8.2.2",
+    "@vendure/ngx-translate-extract": "8.3.0",
     "compression": "1.7.5",
     "concurrently": "7.6.0",
     "cross-var": "1.1.0",
