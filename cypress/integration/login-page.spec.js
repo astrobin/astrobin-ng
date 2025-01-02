@@ -6,6 +6,8 @@ context("login-page", () => {
     cy.setupInitializationRoutes();
 
     cy.route("get", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
+    cy.route("get", "/api/v2/iotd/current-iotd/", {}).as("currentIotd");
+    cy.route("get", "/api/v2/forum/topic/latest/?page=1", {}).as("latestTopics");
 
     cy.visitPage("/account/login?redirectUrl=%2F");
   });

@@ -40,19 +40,22 @@ export class AuthService extends BaseService implements AuthServiceInterface {
   logout(): Observable<void> {
     return new Observable<void>(observer => {
       this.router.navigate(["account", "logging-out"]).then(() => {
-        for (const domain of [".astrobin.com", "localhost"]) {
-          this.cookieService.remove(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, {
-            path: "/",
-            domain
-          });
-        }
-
+        this.removeAuthenticationToken();
         observer.next();
         observer.complete();
 
         this.redirectToBackendLogout();
       });
     });
+  }
+
+  removeAuthenticationToken() {
+    for (const domain of [".astrobin.com", "localhost"]) {
+      this.cookieService.remove(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, {
+        path: "/",
+        domain
+      });
+    }
   }
 
   getLoginUrl(redirectUrl?: string): string {

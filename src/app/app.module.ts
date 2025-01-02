@@ -47,6 +47,7 @@ import { Router } from "@angular/router";
 import { CLIENT_IP } from "@app/client-ip.injector";
 import { TimeagoAppClock } from "@shared/services/timeago-app-clock.service";
 import { NGRX_STATE_KEY } from "@shared/services/store-transfer.service";
+import { ServiceWorkerModule } from "@angular/service-worker";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -105,7 +106,10 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     BrowserAnimationsModule,
     HttpClientModule,
     CookieModule.forRoot(),
-
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
     // Dependencies.
     StoreModule.forRoot(mainStateReducers,
       {

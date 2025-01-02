@@ -14,7 +14,7 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
   providedIn: "root"
 })
 export class JsonApiService extends BaseClassicApiService implements JsonApiServiceInterface {
-  configUrl = environment.classicBaseUrl + "/json-api";
+  configUrl = environment.classicApiUrl + "/json-api";
 
   constructor(public loadingService: LoadingService, private http: HttpClient) {
     super(loadingService);
@@ -55,5 +55,11 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
       content_type_id: contentTypeId,
       object_id: objectId
     });
+  }
+
+  serviceWorkerEnabled(): Observable<boolean> {
+    return this.http
+      .get<{ swEnabled: boolean }>(`${this.configUrl}/common/service-worker-control/`)
+      .pipe(map(response => response.swEnabled));
   }
 }

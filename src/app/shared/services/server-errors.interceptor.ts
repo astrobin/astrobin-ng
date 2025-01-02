@@ -76,16 +76,25 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
 
         break;
       case 401:
-        errorTitle = this.translateService.instant("Login required");
-        errorMessage = this.translateService.instant(
-          "You tried to access a server resource that's only available to logged in users."
-        );
+        if (err.error?.detail === "Invalid token.") {
+          errorTitle = this.translateService.instant("Invalid token");
+          errorMessage = this.translateService.instant(
+            "The authentication token you provided is invalid. Please log in again."
+          );
+          this.authService.removeAuthenticationToken();
+          this.windowRefService.nativeWindow.document.location.reload();
+        } else {
+          errorTitle = this.translateService.instant("Login required");
+          errorMessage = this.translateService.instant(
+            "You tried to access a server resource that's only available to logged in users."
+          );
 
-        // Force logout in case of invalid authentication token.
-        this.authService.logout();
-        this.utilsService.delay(3000).subscribe(() => {
-          this.windowRefService.nativeWindow.location.assign("/account/login");
-        });
+          // Force logout in case of invalid authentication token.
+          this.authService.logout();
+          this.utilsService.delay(3000).subscribe(() => {
+            this.windowRefService.nativeWindow.location.assign("/account/login");
+          });
+        }
 
         break;
       case 403:
