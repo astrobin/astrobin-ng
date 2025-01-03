@@ -713,6 +713,10 @@ $globalLoadingIndicatorHeight: 6px;
           padding: 1rem .75rem;
         }
 
+        @media (max-width: $lg-max) {
+          font-size: .9rem;
+        }
+
         @media (min-width: $lg-min) {
           overflow-y: auto;
           @include custom-scrollbar;
