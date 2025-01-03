@@ -555,7 +555,8 @@ export function appReducer(state = initialAppState, action: All): AppState {
     }
 
     case AppActionTypes.LOAD_NESTED_COMMENT_SUCCESS:
-    case AppActionTypes.CREATE_NESTED_COMMENT_SUCCESS: {
+    case AppActionTypes.CREATE_NESTED_COMMENT_SUCCESS:
+    case AppActionTypes.UPDATE_NESTED_COMMENT_SUCCESS: {
       return {
         ...state,
         nestedComments: UtilsService.sortObjectsByProperty(
