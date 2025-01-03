@@ -17,7 +17,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { Observable } from "rxjs";
+import { EMPTY, Observable } from "rxjs";
 
 export interface ImageViewerNavigationContextItem {
   imageId: ImageInterface["hash"] | ImageInterface["pk"];
@@ -109,7 +109,7 @@ export class ImageViewerService extends BaseService {
     pushState: boolean
   ): Observable<ComponentRef<ImageViewerSlideshowComponent>> {
     if (!this._isBrowser) {
-      return;
+      return EMPTY;
     }
 
     return new Observable(observer => {

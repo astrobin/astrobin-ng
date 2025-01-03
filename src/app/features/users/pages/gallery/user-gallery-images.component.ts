@@ -393,7 +393,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       thumbnailUrl: this.imageService.getGalleryThumbnail(image)
     }));
 
-    const slideshow = this.imageViewerService.openSlideshow(
+    this.imageViewerService.openSlideshow(
       this.componentId,
       imageId,
       FINAL_REVISION_LABEL,

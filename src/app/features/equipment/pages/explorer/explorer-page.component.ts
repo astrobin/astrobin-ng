@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -39,7 +39,7 @@ import { ImageViewerService } from "@shared/services/image-viewer.service";
   templateUrl: "./explorer-page.component.html",
   styleUrls: ["./explorer-page.component.scss"]
 })
-export class ExplorerPageComponent extends ExplorerBaseComponent implements OnInit {
+export class ExplorerPageComponent extends ExplorerBaseComponent implements OnInit, AfterViewInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly ExplorerPageSortOrder = EquipmentItemsSortOrder;
 
@@ -94,8 +94,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       deviceService,
       offcanvasService
     );
-
-    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
   }
 
   ngOnInit(): void {
@@ -116,6 +114,10 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         this._setParams();
         this._updateTitle(this.activatedRoute.snapshot.data?.item);
       });
+  }
+
+  ngAfterViewInit(): void {
+    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
   }
 
   onSelectedItemChanged(item: EquipmentItemBaseInterface) {
