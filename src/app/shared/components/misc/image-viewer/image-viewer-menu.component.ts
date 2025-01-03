@@ -50,7 +50,7 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
           [routerLink]="['/i', image.hash || image.pk.toString(), 'edit']"
           [class]="itemClass"
         >
-          {{ "Edit" | translate }}
+          {{ "Edit project" | translate }}
         </a>
 
         <a
