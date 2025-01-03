@@ -743,6 +743,12 @@ export class ImageViewerComponent
     const imageAreaElement = this.windowRefService.nativeWindow.document.querySelector(
       `#image-viewer-${imageId} .image-area-body`
     ) as HTMLElement;
+
+    if (!imageAreaElement) {
+      this._retryAdjustSvgOverlay.next();
+      return;
+    }
+
     const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-svg-container") as HTMLElement;
 
     if (!overlaySvgElement) {
