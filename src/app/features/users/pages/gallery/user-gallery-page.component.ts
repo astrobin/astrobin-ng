@@ -71,6 +71,8 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     ).subscribe(() => {
       if (!this.imageViewerService.slideshow) {
         this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
+      } else {
+        this.imageViewerService.closeSlideShow(false);
       }
     });
   }

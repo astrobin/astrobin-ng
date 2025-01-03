@@ -11,7 +11,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { DeviceService } from "@shared/services/device.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TitleService } from "@shared/services/title/title.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
@@ -61,6 +61,16 @@ export class ImageViewerService extends BaseService {
     ).subscribe((pk: ImageInterface["pk"]) => {
       if (this.slideshow && this.slideshow.instance.activeImage.pk === pk) {
         this.closeSlideShow(true);
+      }
+    });
+
+    this.router.events.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        if (this.slideshow) {
+          this.closeSlideShow(false);
+        }
       }
     });
   }
