@@ -19,6 +19,7 @@ import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions"
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import { fadeInOut } from "@shared/animations";
 
 @Component({
   selector: "astrobin-user-gallery-header-change-image",
@@ -60,7 +61,8 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
       ></astrobin-loading-indicator>
     </div>
   `,
-  styleUrls: ["./user-gallery-header-change-image.component.scss"]
+  styleUrls: ["./user-gallery-header-change-image.component.scss"],
+  animations: [fadeInOut]
 })
 export class UserGalleryHeaderChangeImageComponent extends BaseComponentDirective implements AfterViewInit {
   @Input() user: UserInterface;
