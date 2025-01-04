@@ -5,10 +5,11 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-color-or-mono-filter.search-filter-component",
@@ -18,8 +19,9 @@ import { SearchFilterCategory } from "@features/search/interfaces/search-filter-
 export class SearchColorOrMonoFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.COLOR_OR_MONO;
 
-  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;readonly
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
+  readonly;
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchColorOrMonoFilterComponent.key as SearchAutoCompleteType
   );
   readonly editFields = [
@@ -58,10 +60,10 @@ export class SearchColorOrMonoFilterComponent extends SearchBaseFilterComponent 
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly sensorService: SensorService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

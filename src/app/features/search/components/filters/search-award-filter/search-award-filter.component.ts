@@ -5,11 +5,12 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-award-filter.search-filter-component",
@@ -21,7 +22,7 @@ export class SearchAwardFilterComponent extends SearchBaseFilterComponent {
   static minimumSubscription = PayableProductInterface.LITE;
 
   readonly category = SearchFilterCategory.GENERAL;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchAwardFilterComponent.key as SearchAutoCompleteType);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchAwardFilterComponent.key as SearchAutoCompleteType);
   readonly values: { [key: string]: string } = {
     [SearchAwardFilterValue.IOTD]: this.translateService.instant("Image of the day"),
     [SearchAwardFilterValue.TOP_PICK]: this.translateService.instant("Top Pick"),
@@ -63,9 +64,9 @@ export class SearchAwardFilterComponent extends SearchBaseFilterComponent {
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService
+    public readonly searchFilterService: SearchFilterService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

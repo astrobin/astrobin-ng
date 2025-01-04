@@ -3,54 +3,29 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { SearchModelInterface, SearchType } from "@features/search/interfaces/search-model.interface";
-import { SearchAutoCompleteItem, SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@features/search/services/search.service";
 import { concatMap, debounceTime, filter, map, takeUntil, tap } from "rxjs/operators";
 import { forkJoin, from, Observable, of, Subject } from "rxjs";
-import { SearchSubjectsFilterComponent } from "@features/search/components/filters/search-subject-filter/search-subjects-filter.component";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
-import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
-import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
 import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
 import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { SearchTelescopeTypesFilterComponent } from "@features/search/components/filters/search-telescope-types-filter/search-telescope-types-filter.component";
-import { SearchCameraTypesFilterComponent } from "@features/search/components/filters/search-camera-types-filter/search-camera-types-filter.component";
-import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
-import { SearchRemoteSourceFilterComponent } from "@features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component";
-import { SearchAcquisitionTypeFilterComponent } from "@features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component";
-import { SearchColorOrMonoFilterComponent } from "@features/search/components/filters/search-color-or-mono-filter/search-color-or-mono-filter.component";
-import { SearchModifiedCameraFilterComponent } from "@features/search/components/filters/search-modified-camera-filter/search-modified-camera-filter.component";
-import { SearchAnimatedFilterComponent } from "@features/search/components/filters/search-animated-filter/search-animated-filter.component";
-import { SearchVideoFilterComponent } from "@features/search/components/filters/search-video-filter/search-video-filter.component";
-import { SearchAwardFilterComponent } from "@features/search/components/filters/search-award-filter/search-award-filter.component";
-import { SearchCountryFilterComponent } from "@features/search/components/filters/search-country-filter/search-country-filter.component";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { SearchDataSourceFilterComponent } from "@features/search/components/filters/search-data-source-filter/search-data-source-filter.component";
-import { SearchMinimumDataFilterComponent } from "@features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component";
-import { SearchConstellationFilterComponent } from "@features/search/components/filters/search-constellation-filter/search-constellation-filter.component";
-import { SearchBortleScaleFilterComponent } from "@features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component";
-import { SearchLicenseFilterComponent } from "@features/search/components/filters/search-license-filter/search-license-filter.component";
-import { SearchFilterTypesFilterComponent } from "@features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component";
 import { DeviceService } from "@shared/services/device.service";
 import { TranslateService } from "@ngx-translate/core";
-import { SearchSubjectTypeFilterComponent } from "@features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { SearchPersonalFiltersFilterComponent } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.component";
 import { LoadSaveSearchModalComponent } from "@features/search/components/filters/load-save-search-modal/load-save-search-modal.component";
 import { SearchTextFilterComponent } from "@features/search/components/filters/search-text-filter/search-text-filter.component";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import { SearchMountFilterComponent } from "@features/search/components/filters/search-mount-filter/search-mount-filter.component";
-import { SearchFilterFilterComponent } from "@features/search/components/filters/search-filter-filter/search-filter-filter.component";
-import { SearchAccessoryFilterComponent } from "@features/search/components/filters/search-accessory-filter/search-accessory-filter.component";
-import { SearchSoftwareFilterComponent } from "@features/search/components/filters/search-software-filter/search-software-filter.component";
-import { SearchUsersFilterComponent } from "@features/search/components/filters/search-users-filter/search-users-filter.component";
 import { NgModel } from "@angular/forms";
-import { SearchSensorFilterComponent } from "@features/search/components/filters/search-sensor-filter/search-sensor-filter.component";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { SearchAutoCompleteItem } from "@features/search/interfaces/search-auto-complete-item.interface";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
@@ -84,12 +59,16 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   protected loadingAutoCompleteItems = false;
   protected selectedAutoCompleteItemIndex = -1;
   protected filterComponentRefs: ComponentRef<SearchFilterComponentInterface>[] = [];
+  protected firstSearchDone = false; // Used to track when a search has been performed, in order to display an alert
+  // message
+  // regarding free text search.
   private _modelChanged: Subject<string> = new Subject<string>();
   private _abortAutoComplete = false;
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly modalService: NgbModal,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly windowRefService: WindowRefService,
@@ -131,7 +110,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         const query = this.model.text;
         this.loadingAutoCompleteItems = true;
 
-        from(this._autoCompleteMethods(query?.value)).pipe(
+        from(this.searchService.autoCompleteMethods(query?.value)).pipe(
           concatMap(filter =>
             filter.method.pipe(
               map(result => ({ key: filter.key, result }))
@@ -342,10 +321,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   onAutoCompleteItemClicked(autoCompleteItem: SearchAutoCompleteItem): Observable<SearchModelInterface> {
     this.resetAutoCompleteItems();
 
-    return this.searchService.allowFilter$(autoCompleteItem.minimumSubscription).pipe(
+    return this.searchFilterService.allowFilter$(autoCompleteItem.minimumSubscription).pipe(
       tap(allow => {
         if (!allow) {
-          this.searchService.openSubscriptionRequiredModal(autoCompleteItem.minimumSubscription);
+          this.searchFilterService.openSubscriptionRequiredModal(autoCompleteItem.minimumSubscription);
           return;
         }
 
@@ -434,6 +413,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       ? model.text.value.toLowerCase().replace(/\s/g, "")
       : null;
 
+    this.firstSearchDone = true;
     this.resetAutoCompleteItems();
     this.searchInputNgModel.control.markAsPristine();
 
@@ -443,7 +423,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       (model.searchType === SearchType.IMAGE || model.searchType === undefined)
     ) {
       forkJoin(
-        this._autoCompleteMethods(model.text?.value)
+        this.searchService.autoCompleteMethods(model.text?.value)
           .filter(filter => filter.key !== SearchAutoCompleteType.TEXT)
           .map(filter => filter.method)
       ).subscribe((results: SearchAutoCompleteItem[][]) => {
@@ -582,7 +562,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
     this._updateModel({
       type: key,
-      label: this.searchService.humanizeSearchAutoCompleteType(key),
+      label: this.searchFilterService.humanizeSearchAutoCompleteType(key),
       value
     });
   }
@@ -729,45 +709,20 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.onSearch(this.model, false);
   }
 
-  private _updateModelWithMagicAutoComplete(value: string): Observable<SearchAutoCompleteItem[][]> {
+  private _updateModelWithMagicAutoComplete(value: string): Observable<SearchAutoCompleteItem> {
     // Checks if any autocomplete items are a perfect match. If they are, updates the model with that item type and
     // empties the text. Otherwise, it sets the text.
 
     if (this.model.searchType !== SearchType.IMAGE && this.model.searchType !== undefined) {
       this.modelChanged.emit(this.model);
-      return of([]);
+      return of(null);
     }
 
-    const normalizeLabel = (label: string) => label.toLowerCase().replace(/\s/g, "");
-
-    const normalizedQuery = normalizeLabel(value);
-    const observables$ = this._autoCompleteMethods(value)
-      .filter(filter => filter.key !== SearchAutoCompleteType.USERS)
-      .map(filter => filter.method);
-    let found = false;
-
-    return forkJoin(observables$).pipe(
-      tap((results: SearchAutoCompleteItem[][]) => {
-        results.forEach(group => {
-          group.forEach(item => {
-            if (item.type !== SearchAutoCompleteType.TEXT) {
-              const normalizedLabel = normalizeLabel(item.label);
-              if (
-                normalizedLabel === normalizedQuery ||
-                (
-                  item.aliases &&
-                  item.aliases.some(alias => normalizeLabel(alias) === normalizedQuery)
-                )
-              ) {
-                found = true;
-                this.onAutoCompleteItemClicked(item).subscribe();
-                return;
-              }
-            }
-          });
-        });
-
-        if (!found) {
+    return this.searchService.magicAutocomplete$(value).pipe(
+      tap((item: SearchAutoCompleteItem) => {
+        if (item) {
+          this.onAutoCompleteItemClicked(item).subscribe();
+        } else {
           this.model = {
             ...this.model,
             text: {
@@ -789,129 +744,4 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       componentRef => this.searchService.getKeyByFilterComponentType(componentRef.componentType) === this.searchService.getKeyByFilterComponentType(filterComponentType)
     );
   }
-
-  private _autoCompleteMethods = (query: string) => {
-    return [
-      {
-        key: SearchAutoCompleteType.SEARCH_FILTER,
-        method: this.searchService.autoCompleteSearchFilters$(query)
-      },
-      {
-        key: SearchTelescopeFilterComponent.key,
-        method: this.searchService.autoCompleteTelescopes$(query)
-      },
-      {
-        key: SearchSensorFilterComponent.key,
-        method: this.searchService.autoCompleteSensors$(query)
-      },
-      {
-        key: SearchCameraFilterComponent.key,
-        method: this.searchService.autoCompleteCameras$(query)
-      },
-      {
-        key: SearchMountFilterComponent.key,
-        method: this.searchService.autoCompleteMounts$(query)
-      },
-      {
-        key: SearchFilterFilterComponent.key,
-        method: this.searchService.autoCompleteFilters$(query)
-      },
-      {
-        key: SearchAccessoryFilterComponent.key,
-        method: this.searchService.autoCompleteAccessories$(query)
-      },
-      {
-        key: SearchSoftwareFilterComponent.key,
-        method: this.searchService.autoCompleteSoftware$(query)
-      },
-      {
-        key: SearchSubjectsFilterComponent.key,
-        method: this.searchService.autoCompleteSubjects$(query)
-      },
-      {
-        key: SearchTelescopeTypesFilterComponent.key,
-        method: this.searchService.autoCompleteTelescopeTypes$(query)
-      },
-      {
-        key: SearchCameraTypesFilterComponent.key,
-        method: this.searchService.autoCompleteCameraTypes$(query)
-      },
-      {
-        key: SearchAcquisitionMonthsFilterComponent.key,
-        method: this.searchService.autoCompleteMonths$(query)
-      },
-      {
-        key: SearchRemoteSourceFilterComponent.key,
-        method: this.searchService.autoCompleteRemoteSources$(query)
-      },
-      {
-        key: SearchSubjectTypeFilterComponent.key,
-        method: this.searchService.autoCompleteSubjectTypes$(query)
-      },
-      {
-        key: SearchColorOrMonoFilterComponent.key,
-        method: this.searchService.autoCompleteColorOrMono$(query)
-      },
-      {
-        key: SearchModifiedCameraFilterComponent.key,
-        method: this.searchService.autoCompleteModifiedCamera$(query)
-      },
-      {
-        key: SearchAnimatedFilterComponent.key,
-        method: this.searchService.autoCompleteAnimated$(query)
-      },
-      {
-        key: SearchVideoFilterComponent.key,
-        method: this.searchService.autoCompleteVideos$(query)
-      },
-      {
-        key: SearchAwardFilterComponent.key,
-        method: this.searchService.autoCompleteAward$(query)
-      },
-      {
-        key: SearchCountryFilterComponent.key,
-        method: this.searchService.autoCompleteCountries$(query)
-      },
-      {
-        key: SearchDataSourceFilterComponent.key,
-        method: this.searchService.autoCompleteDataSources$(query)
-      },
-      {
-        key: SearchMinimumDataFilterComponent.key,
-        method: this.searchService.autoCompleteMinimumData$(query)
-      },
-      {
-        key: SearchConstellationFilterComponent.key,
-        method: this.searchService.autoCompleteConstellations$(query)
-      },
-      {
-        key: SearchBortleScaleFilterComponent.key,
-        method: this.searchService.autoCompleteBortleScale$(query)
-      },
-      {
-        key: SearchLicenseFilterComponent.key,
-        method: this.searchService.autoCompleteLicenseOptions$(query)
-      },
-      {
-        key: SearchFilterTypesFilterComponent.key,
-        method: this.searchService.autoCompleteFilterTypes$(query)
-      },
-      {
-        key: SearchAcquisitionTypeFilterComponent.key,
-        method: this.searchService.autoCompleteAcquisitionTypes$(query)
-      },
-      {
-        key: SearchPersonalFiltersFilterComponent.key,
-        method: this.searchService.autoCompletePersonalFilters$(query)
-      },
-      {
-        key: SearchUsersFilterComponent.key,
-        method: this.searchService.autoCompleteUsers$(query)
-      },
-      {
-        key: SearchAutoCompleteType.TEXT,
-        method: this.searchService.autoCompleteFreeText$(query)
-      }
-    ];
-  };
 }

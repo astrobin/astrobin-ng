@@ -36,7 +36,7 @@
   <!-- Quick search form -->
   <form
     *ngIf="!isSearchPage"
-    [action]="classicRoutesService.SEARCH"
+    (submit)="onQuickSearchSubmit($event)"
     class="ps-3 pe-2 px-lg-4"
     method="get"
     ngNoForm
@@ -44,6 +44,7 @@
     <label class="w-100 mb-0">
       <input
         #quickSearchInput
+        [(ngModel)]="quickSearchQuery"
         autocomplete="off"
         class="form-control"
         name="q"
@@ -465,7 +466,10 @@
             Explore
           </button>
           <div [attr.aria-labelledby]="'exploreDropdown'" ngbDropdownMenu>
-            <a [href]="classicRoutesService.SEARCH + '?d=i'" class="dropdown-item">
+            <a
+              [routerLink]="['/', 'search']"
+              class="dropdown-item"
+            >
               <fa-icon icon="search"></fa-icon>
               {{ "Advanced search" | translate }}
             </a>

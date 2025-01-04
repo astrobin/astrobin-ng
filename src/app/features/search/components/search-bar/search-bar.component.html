@@ -399,6 +399,23 @@
   </div>
 </div>
 
+<div
+  *ngIf="firstSearchDone && model.text?.value"
+  class="alert alert-dark alert-mini search-bar-free-text-alert"
+>
+  <fa-icon icon="info-circle"></fa-icon>
+  {{ "AstroBin's search is powerful and flexible. We recommend that you use specific filters, instead of doing a free text search, if possible." | translate }}
+  <a
+    (click)="showTabOrEnterInformation()"
+    href="#"
+    astrobinEventStopPropagation
+    astrobinEventPreventDefault
+    class="alert-link"
+  >
+    {{ "Learn why." }}
+  </a>
+</div>
+
 <div class="filters">
   <p
     *ngIf="!model.text?.value && filterComponentRefs?.length === 0"

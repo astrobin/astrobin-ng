@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { SearchBaseSliderFilterComponent } from "@features/search/components/filters/search-base-slider-filter/search-base-slider-filter.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -8,6 +7,8 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-field-radius-filter.search-filter-component",
@@ -19,7 +20,7 @@ export class SearchFieldRadiusFilterComponent extends SearchBaseSliderFilterComp
   static minimumSubscription = PayableProductInterface.ULTIMATE;
 
   readonly category = SearchFilterCategory.SKY_AND_SUBJECTS;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchFieldRadiusFilterComponent.key as SearchAutoCompleteType
   );
   readonly unit = "&deg;";
@@ -29,9 +30,9 @@ export class SearchFieldRadiusFilterComponent extends SearchBaseSliderFilterComp
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService
+    public readonly searchFilterService: SearchFilterService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
 
     this.initFields(SearchFieldRadiusFilterComponent.key, { floor: 0, ceil: 180, step: .1 });
   }

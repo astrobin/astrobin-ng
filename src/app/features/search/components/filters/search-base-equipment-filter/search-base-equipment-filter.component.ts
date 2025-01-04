@@ -5,7 +5,6 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { filter, map, take } from "rxjs/operators";
@@ -15,6 +14,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentActionTypes, LoadEquipmentItem, LoadEquipmentItemSuccess } from "@features/equipment/store/equipment.actions";
 import { MatchType } from "@features/search/enums/match-type.enum";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-base-equipment-filter.search-filter-component",
@@ -29,7 +30,7 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly actions$: Actions
   ) {
     super(
@@ -37,7 +38,7 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
       translateService,
       domSanitizer,
       modalService,
-      searchService
+      searchFilterService
     );
   }
 

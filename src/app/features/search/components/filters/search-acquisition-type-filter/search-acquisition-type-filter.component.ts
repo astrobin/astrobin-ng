@@ -5,11 +5,12 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { AcquisitionType } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-acquisition-type-source-filter.search-filter-component",
@@ -21,7 +22,7 @@ export class SearchAcquisitionTypeFilterComponent extends SearchBaseFilterCompon
   static minimumSubscription = PayableProductInterface.LITE;
 
   readonly category = SearchFilterCategory.ACQUISITION_ATTRIBUTES;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchAcquisitionTypeFilterComponent.key as SearchAutoCompleteType
   );
   readonly editFields = [
@@ -47,10 +48,10 @@ export class SearchAcquisitionTypeFilterComponent extends SearchBaseFilterCompon
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly imageService: ImageService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {
