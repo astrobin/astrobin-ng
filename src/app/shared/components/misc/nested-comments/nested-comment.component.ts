@@ -9,7 +9,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@shared/services/loading.service";
-import { ApproveNestedComment, ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedComment, DeleteNestedComment } from "@app/store/actions/nested-comments.actions";
+import { ApproveNestedComment, ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedComment, DeleteNestedComment, UpdateNestedComment, UpdateNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -60,6 +60,11 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   replyFields: FormlyFieldConfig[];
   showReplyForm = false;
 
+  editModel: { comment: string };
+  editForm = new FormGroup({});
+  editFields: FormlyFieldConfig[];
+  showEditForm = false;
+
   protected approving = false;
   protected deleting = false;
   protected link: string;
@@ -91,6 +96,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     super.ngOnInit();
 
     this._initReplyFields();
+    this._initEditFields();
     this._initHighlighted();
     this._listenToLikes();
   }
@@ -113,6 +119,34 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       this._initUserGalleryUrl();
       this._initAvatarUrl();
     }
+  }
+
+  cancelEdit() {
+    this.editForm.reset();
+    this.showEditForm = false;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  submitEdit() {
+    this.actions$
+      .pipe(
+        ofType(AppActionTypes.UPDATE_NESTED_COMMENT_SUCCESS),
+        filter((action: UpdateNestedCommentSuccess) => action.payload.nestedComment.id === this.comment.id),
+        take(1),
+        tap(() => this.cancelEdit())
+      )
+      .subscribe(() => {
+        this.changeDetectorRef.markForCheck();
+      });
+
+    this.store$.dispatch(
+      new UpdateNestedComment({
+        nestedComment: {
+          ...this.comment,
+          text: this.editForm.get("comment").value
+        }
+      })
+    );
   }
 
   cancelReply() {
@@ -207,6 +241,21 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     this.changeDetectorRef.markForCheck();
   }
 
+  onEditClicked(event: Event) {
+    event.preventDefault();
+
+    if (this.comment.deleted) {
+      return;
+    }
+
+    this.editModel = {
+      comment: this.comment.text
+    };
+
+    this.showEditForm = true;
+    this.changeDetectorRef.markForCheck();
+  }
+
   onReplyClicked(event: Event) {
     event.preventDefault();
 
@@ -283,6 +332,20 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       this.comment.likes = this.comment.likes.filter(user => user !== toggleProperty.user);
       this.changeDetectorRef.markForCheck();
     });
+  }
+
+  private _initEditFields() {
+    this.editFields = [
+      {
+        key: "comment",
+        type: "ckeditor",
+        wrappers: ["default-wrapper"],
+        id: `edit-comment-field-${this.comment.id}`,
+        props: {
+          required: true
+        }
+      }
+    ];
   }
 
   private _initReplyFields() {

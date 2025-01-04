@@ -39,6 +39,12 @@ export class NestedCommentsApiService extends BaseClassicApiService {
       .pipe(map(createdNestedComment => UtilsService.objectToCamelCase(createdNestedComment)));
   }
 
+  update(nestedComment: NestedCommentInterface): Observable<NestedCommentInterface> {
+    return this.http
+      .put<NestedCommentInterface>(`${this.configUrl}/nestedcomments/${nestedComment.id}/`, UtilsService.objectToSnakeCase(nestedComment))
+      .pipe(map(updatedNestedComment => UtilsService.objectToCamelCase(updatedNestedComment)));
+  }
+
   approve(id: NestedCommentInterface["id"]): Observable<NestedCommentInterface> {
     return this.http.post<NestedCommentInterface>(`${this.configUrl}/nestedcomments/${id}/approve/`, {});
   }
