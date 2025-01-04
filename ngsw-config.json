@@ -56,6 +56,10 @@
         "strategy": "performance",
         "maxSize": 50,
         "maxAge": "5m"
+      },
+      "cacheQueryOptions": {
+        "mode": "cors",
+        "credentials": "omit"
       }
     }
   ],
