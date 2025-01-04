@@ -65,6 +65,27 @@ export class CreateNestedCommentFailure implements PayloadActionInterface {
   }
 }
 
+export class UpdateNestedComment implements PayloadActionInterface {
+  readonly type = AppActionTypes.UPDATE_NESTED_COMMENT;
+
+  constructor(public payload: { nestedComment: NestedCommentInterface }) {
+  }
+}
+
+export class UpdateNestedCommentSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.UPDATE_NESTED_COMMENT_SUCCESS;
+
+  constructor(public payload: { nestedComment: NestedCommentInterface }) {
+  }
+}
+
+export class UpdateNestedCommentFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.UPDATE_NESTED_COMMENT_FAILURE;
+
+  constructor(public payload: { nestedComment: NestedCommentInterface }) {
+  }
+}
+
 export class ApproveNestedComment implements PayloadActionInterface {
   readonly type = AppActionTypes.APPROVE_NESTED_COMMENT;
 
