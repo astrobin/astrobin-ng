@@ -218,6 +218,16 @@
     }
   }
 
+  .search-bar-free-text-alert {
+    border-radius: 0;
+    padding: .5rem 1rem;
+    margin: 0 -2rem;
+
+    @media (max-width: $md-max) {
+      margin: 0 -.5rem;
+    }
+  }
+
   .filters {
     @include darkest-background-texture();
     display: flex;

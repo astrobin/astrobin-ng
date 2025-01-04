@@ -5,21 +5,43 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DateService } from "@shared/services/date.service";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
 
 @Component({
   selector: "astrobin-base-data-range-filter.search-filter-component",
   template: ""
 })
 export abstract class SearchBaseDateRangeFilterComponent extends SearchBaseFilterComponent {
+  editFields: FormlyFieldConfig[];
   private readonly _minLabel = this.translateService.instant("From");
   private readonly _maxLabel = this.translateService.instant("To");
 
-  editFields: FormlyFieldConfig[];
+  protected constructor(
+    public readonly store$: Store<MainState>,
+    public readonly translateService: TranslateService,
+    public readonly domSanitizer: DomSanitizer,
+    public readonly modalService: NgbModal,
+    public readonly searchFilterService: SearchFilterService,
+    public readonly utilsService: UtilsService,
+    public readonly dateService: DateService
+  ) {
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
+  }
+
+  render(): SafeHtml {
+    if (!this.value) {
+      return "";
+    }
+
+    const from = new Date(this.value.min).toLocaleDateString(this.translateService.currentLang);
+    const to = new Date(this.value.max).toLocaleDateString(this.translateService.currentLang);
+
+    return this.domSanitizer.bypassSecurityTrustHtml(`${from} &rarr; ${to}`);
+  }
 
   protected initFields(key: string): void {
     const supportsDateInput = this.utilsService.supportsDateInput();
@@ -125,28 +147,5 @@ export abstract class SearchBaseDateRangeFilterComponent extends SearchBaseFilte
         }
       }
     ];
-  }
-
-  protected constructor(
-    public readonly store$: Store<MainState>,
-    public readonly translateService: TranslateService,
-    public readonly domSanitizer: DomSanitizer,
-    public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
-    public readonly utilsService: UtilsService,
-    public readonly dateService: DateService
-  ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
-  }
-
-  render(): SafeHtml {
-    if (!this.value) {
-      return "";
-    }
-
-    const from = new Date(this.value.min).toLocaleDateString(this.translateService.currentLang);
-    const to = new Date(this.value.max).toLocaleDateString(this.translateService.currentLang);
-
-    return this.domSanitizer.bypassSecurityTrustHtml(`${from} &rarr; ${to}`);
   }
 }

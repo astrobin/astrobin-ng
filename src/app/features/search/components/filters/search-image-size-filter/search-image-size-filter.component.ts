@@ -1,13 +1,14 @@
 import { Component } from "@angular/core";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-image-size-filter.search-filter-component",
@@ -17,7 +18,7 @@ import { SearchFilterCategory } from "@features/search/interfaces/search-filter-
 export class SearchImageSizeFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.IMAGE_SIZE;
   readonly category = SearchFilterCategory.FILE_ATTRIBUTES;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchImageSizeFilterComponent.key as SearchAutoCompleteType
   );
   readonly widthLabel = this.translateService.instant("Width");
@@ -73,9 +74,9 @@ export class SearchImageSizeFilterComponent extends SearchBaseFilterComponent {
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

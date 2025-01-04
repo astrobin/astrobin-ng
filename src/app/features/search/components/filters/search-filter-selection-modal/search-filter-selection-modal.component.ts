@@ -11,6 +11,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
 
 type FilterType = {
   category: SearchFilterCategory;
@@ -43,6 +44,7 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
     public readonly modal: NgbActiveModal,
     public readonly translateService: TranslateService,
     public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly utilsService: UtilsService,
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly modalService: NgbModal
@@ -90,7 +92,7 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
         label: componentRef.instance.label,
         minimumSubscription: (componentRef.componentType as any).minimumSubscription as PayableProductInterface,
         key: this.searchService.getKeyByFilterComponentType(componentRef.componentType),
-        allow$: this.searchService.allowFilter$((componentRef.componentType as any).minimumSubscription as PayableProductInterface)
+        allow$: this.searchFilterService.allowFilter$((componentRef.componentType as any).minimumSubscription as PayableProductInterface)
       }));
 
       // Now that we have the labels, we don't need these anymore.
@@ -118,7 +120,7 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
     filter.allow$.subscribe(allow => {
       if (!allow) {
         this.modal.close();
-        this.searchService.openSubscriptionRequiredModal(filter.minimumSubscription);
+        this.searchFilterService.openSubscriptionRequiredModal(filter.minimumSubscription);
         return;
       }
 

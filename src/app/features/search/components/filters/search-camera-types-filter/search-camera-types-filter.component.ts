@@ -5,11 +5,12 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { CameraType } from "@features/equipment/types/camera.interface";
 import { CameraService } from "@features/equipment/services/camera.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-camera-types-filter.search-filter-component",
@@ -21,7 +22,7 @@ export class SearchCameraTypesFilterComponent extends SearchBaseFilterComponent 
   static minimumSubscription = PayableProductInterface.LITE;
 
   readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchCameraTypesFilterComponent.key as SearchAutoCompleteType);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchCameraTypesFilterComponent.key as SearchAutoCompleteType);
   readonly editFields = [
     {
       key: SearchCameraTypesFilterComponent.key,
@@ -53,10 +54,10 @@ export class SearchCameraTypesFilterComponent extends SearchBaseFilterComponent 
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly cameraService: CameraService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

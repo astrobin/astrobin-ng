@@ -5,10 +5,11 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SearchPersonalFiltersFilterValue } from "@features/search/components/filters/search-personal-filters-filter/search-personal-filters-filter.value";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-personal-filters-filter.search-filter-component",
@@ -18,12 +19,12 @@ import { SearchFilterCategory } from "@features/search/interfaces/search-filter-
 export class SearchPersonalFiltersFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.PERSONAL_FILTERS;
   readonly category = SearchFilterCategory.GENERAL;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchPersonalFiltersFilterComponent.key as SearchAutoCompleteType);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchPersonalFiltersFilterComponent.key as SearchAutoCompleteType);
   readonly values: { [key: string]: string } = {
-    [SearchPersonalFiltersFilterValue.MY_IMAGES]: this.searchService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_IMAGES),
-    [SearchPersonalFiltersFilterValue.MY_LIKES]: this.searchService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_LIKES),
-    [SearchPersonalFiltersFilterValue.MY_BOOKMARKS]: this.searchService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_BOOKMARKS),
-    [SearchPersonalFiltersFilterValue.MY_FOLLOWED_USERS]: this.searchService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_FOLLOWED_USERS),
+    [SearchPersonalFiltersFilterValue.MY_IMAGES]: this.searchFilterService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_IMAGES),
+    [SearchPersonalFiltersFilterValue.MY_LIKES]: this.searchFilterService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_LIKES),
+    [SearchPersonalFiltersFilterValue.MY_BOOKMARKS]: this.searchFilterService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_BOOKMARKS),
+    [SearchPersonalFiltersFilterValue.MY_FOLLOWED_USERS]: this.searchFilterService.humanizePersonalFilter(SearchPersonalFiltersFilterValue.MY_FOLLOWED_USERS)
   };
   readonly editFields = [
     {
@@ -62,9 +63,9 @@ export class SearchPersonalFiltersFilterComponent extends SearchBaseFilterCompon
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService
+    public readonly searchFilterService: SearchFilterService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

@@ -9,12 +9,13 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterEditorModalComponent } from "@features/search/components/filters/search-filter-editor-modal/search-filter-editor-modal.component";
 import { SearchFilterCategory, SearchFilterComponentInterface } from "@features/search/interfaces/search-filter-component.interface";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isObservable } from "rxjs";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-filter-base",
@@ -47,7 +48,7 @@ export abstract class SearchBaseFilterComponent
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService
+    public readonly searchFilterService: SearchFilterService
   ) {
     super(store$);
   }
@@ -64,11 +65,11 @@ export abstract class SearchBaseFilterComponent
 
   edit(): void {
     const minimumSubscription = (this.constructor as any).minimumSubscription;
-    this.searchService.allowFilter$(minimumSubscription).subscribe(allowEdit => {
+    this.searchFilterService.allowFilter$(minimumSubscription).subscribe(allowEdit => {
       if (allowEdit) {
         this._openEditModal();
       } else {
-        this.searchService.openSubscriptionRequiredModal(minimumSubscription);
+        this.searchFilterService.openSubscriptionRequiredModal(minimumSubscription);
       }
     });
   }
@@ -76,7 +77,7 @@ export abstract class SearchBaseFilterComponent
   _openEditModal(): void {
     const modalRef: NgbModalRef = this.modalService.open(SearchFilterEditorModalComponent);
     const instance: SearchFilterEditorModalComponent = modalRef.componentInstance;
-    const key = this.searchService.getKeyByFilterComponentInstance(this);
+    const key = this.searchFilterService.getKeyByFilterComponentInstance(this);
     instance.fields = [...this.editFields];
     instance.model = { [key]: UtilsService.cloneValue(this.value) };
     this.editModel = { ...instance.model };
@@ -142,11 +143,11 @@ export abstract class SearchBaseFilterComponent
         options: [
           {
             value: MatchType.ALL,
-            label: this.searchService.humanizeMatchType(MatchType.ALL)
+            label: this.searchFilterService.humanizeMatchType(MatchType.ALL)
           },
           {
             value: MatchType.ANY,
-            label: this.searchService.humanizeMatchType(MatchType.ANY)
+            label: this.searchFilterService.humanizeMatchType(MatchType.ANY)
           }
         ]
       },

@@ -5,11 +5,12 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { GroupApiService } from "@shared/services/api/classic/groups/group-api.service";
 import { takeUntil, tap } from "rxjs/operators";
 import { GroupInterface } from "@shared/interfaces/group.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-groups-filter.search-filter-component",
@@ -20,7 +21,7 @@ export class SearchGroupsFilterComponent extends SearchBaseFilterComponent imple
   static key = SearchAutoCompleteType.GROUPS;
 
   readonly category = SearchFilterCategory.GENERAL;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchGroupsFilterComponent.key);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchGroupsFilterComponent.key);
   readonly editFields = [
     {
       key: SearchGroupsFilterComponent.key,
@@ -58,10 +59,10 @@ export class SearchGroupsFilterComponent extends SearchBaseFilterComponent imple
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly groupApiService: GroupApiService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   ngOnInit(): void {

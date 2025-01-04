@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import { SearchBaseFilterComponent } from "@features/search/components/filters/search-base-filter/search-base-filter.component";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -10,6 +9,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-coords-filter.search-filter-component",
@@ -21,7 +22,7 @@ export class SearchCoordsFilterComponent extends SearchBaseFilterComponent {
   static minimumSubscription = PayableProductInterface.ULTIMATE;
 
   readonly category = SearchFilterCategory.SKY_AND_SUBJECTS;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchCoordsFilterComponent.key as SearchAutoCompleteType
   );
   readonly raLabel = this.translateService.instant("Right ascension");
@@ -82,10 +83,10 @@ export class SearchCoordsFilterComponent extends SearchBaseFilterComponent {
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly astroUtilsService: AstroUtilsService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {
@@ -96,7 +97,7 @@ export class SearchCoordsFilterComponent extends SearchBaseFilterComponent {
     const minRa = this.astroUtilsService.formatRa(this.value.ra.min);
     const maxRa = this.astroUtilsService.formatRa(this.value.ra.max);
     const minDec = this.value.dec.min;
-    const maxDec = this.value.dec.max
+    const maxDec = this.value.dec.max;
 
     return this.domSanitizer.bypassSecurityTrustHtml(`RA: ${minRa} - ${maxRa}, Dec: ${minDec} - ${maxDec}`);
   }

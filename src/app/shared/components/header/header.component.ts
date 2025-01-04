@@ -22,6 +22,8 @@ import { NavigationEnd, Router } from "@angular/router";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { UserService } from "@shared/services/user.service";
+import { SearchService } from "@features/search/services/search.service";
+import { MatchType } from "@features/search/enums/match-type.enum";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -41,6 +43,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   userProfile: UserProfileInterface;
   showMobileSearch = false;
   isSearchPage = false;
+  quickSearchQuery: string;
 
   languages: AvailableLanguageInterface[] = [
     { code: "en", label: "English (US)" },
@@ -107,7 +110,8 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     public readonly jsonApiService: JsonApiService,
     public readonly router: Router,
     public readonly utilsService: UtilsService,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    public readonly searchService: SearchService
   ) {
     super(store$);
   }
@@ -187,6 +191,26 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     this.currentUserWrapper$.pipe(takeUntil(this.destroyed$)).subscribe(wrapper => {
       this.user = wrapper.user;
       this.userProfile = wrapper.userProfile;
+    });
+  }
+
+  onQuickSearchSubmit(event: Event) {
+    event.preventDefault();
+
+    this.searchService.magicAutocomplete$(this.quickSearchQuery).pipe(take(1)).subscribe((result) => {
+      let params: string;
+      if (result) {
+        params = this.searchService.modelToParams({
+          [result.type]: result.value
+        });
+      } else {
+        params = this.searchService.modelToParams({text: { value: this.quickSearchQuery, matchType: MatchType.ALL} });
+      }
+
+      this.router.navigateByUrl(`/search?p=${params}`).then(() => {
+        this.quickSearchQuery = "";
+        this.windowRefService.scroll({ top: 0 });
+      });
     });
   }
 

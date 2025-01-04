@@ -48,6 +48,7 @@ import { CLIENT_IP } from "@app/client-ip.injector";
 import { TimeagoAppClock } from "@shared/services/timeago-app-clock.service";
 import { NGRX_STATE_KEY } from "@shared/services/store-transfer.service";
 import { ServiceWorkerModule } from "@angular/service-worker";
+import { SearchModule } from "@features/search/search.module";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -155,7 +156,8 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
 
     // This app.
     AppRoutingModule,
-    SharedModule.forRoot()
+    SharedModule.forRoot(),
+    SearchModule
   ],
   providers: [
     CookieService,

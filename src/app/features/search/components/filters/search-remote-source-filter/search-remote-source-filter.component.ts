@@ -5,10 +5,11 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { RemoteSource } from "@shared/interfaces/image.interface";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-remote-source-filter.search-filter-component",
@@ -19,7 +20,7 @@ export class SearchRemoteSourceFilterComponent extends SearchBaseFilterComponent
   static key = SearchAutoCompleteType.REMOTE_SOURCE;
   static minimumSubscription = PayableProductInterface.ULTIMATE;
   category = SearchFilterCategory.ACQUISITION_ATTRIBUTES;
-  label = this.searchService.humanizeSearchAutoCompleteType(
+  label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchRemoteSourceFilterComponent.key as SearchAutoCompleteType
   );
   editFields = [
@@ -44,9 +45,9 @@ export class SearchRemoteSourceFilterComponent extends SearchBaseFilterComponent
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService
+    public readonly searchFilterService: SearchFilterService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {
