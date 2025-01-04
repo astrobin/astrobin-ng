@@ -79,7 +79,9 @@ export class HomeComponent extends BaseComponentDirective implements OnInit, Aft
       pairwise(),
       takeUntil(this.destroyed$)
     ).subscribe(([prev, current]: [NavigationEnd, NavigationEnd]) => {
-      if (prev.urlAfterRedirects === "/" && current.urlAfterRedirects === "/" && this.isBrowser) {
+      const isBack = this.router.getCurrentNavigation()?.trigger === "popstate";
+      const isSameUrl = prev.urlAfterRedirects === current.urlAfterRedirects;
+      if (this.isBrowser && isSameUrl && !isBack) {
         this.windowRefService.nativeWindow.location.reload();
       }
     });

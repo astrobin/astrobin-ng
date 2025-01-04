@@ -94,8 +94,12 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
       filter(event => event instanceof NavigationEnd),
       pairwise()
     ).subscribe(([prev, current]: [NavigationEnd, NavigationEnd]) => {
-      if (prev.urlAfterRedirects === current.urlAfterRedirects &&
-        this.router.getCurrentNavigation()?.trigger !== "popstate") {
+      const isSameUrl = prev.urlAfterRedirects === current.urlAfterRedirects;
+      const isBack = this.router.getCurrentNavigation()?.trigger === "popstate";
+      const isHomeRoute = current.urlAfterRedirects === "/";
+      const isBrowser = this._isBrowser;
+
+      if (isBrowser && isSameUrl && !isBack && !isHomeRoute) {
         this.windowRefService.scroll({ top: 0, behavior: "smooth" });
       }
     });

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges, ViewContainerRef } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -238,7 +238,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
   styleUrls: ["./user-gallery-images.component.scss"],
   animations: [fadeInOut]
 })
-export class UserGalleryImagesComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class UserGalleryImagesComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
   @Input() options: FindImagesOptionsInterface;
@@ -278,53 +278,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
-
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      startWith(null),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.page = 1;
-      this.next = null;
-
-      if (this._findImagesSubscription) {
-        this._findImagesSubscription.unsubscribe();
-      }
-
-      actions$.pipe(
-        ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
-        map((action: FindImagesSuccess) => action.payload),
-        filter(payload => JSON.stringify(payload.options) === JSON.stringify({
-          userId: this.user.id,
-          gallerySerializer: true,
-          page: this.page,
-          ...this.options
-        })),
-        takeUntil(
-          merge(
-            this.destroyed$,
-            this.router.events.pipe(filter(event => event instanceof NavigationEnd))
-          )
-        ),
-        map(payload => payload.response)
-      ).subscribe(response => {
-        if (this.page > 1) {
-          this.images = [...this.images, ...response.results];
-        } else {
-          this.images = response.results;
-        }
-        this.next = response.next;
-        this.loadingMore = false;
-        this.loading = false;
-        this.changeDetectorRef.detectChanges();
-        if (this._slideshowComponent) {
-          this._slideshowComponent.setNavigationContext(this.images.map(image => ({
-            imageId: image.hash || image.pk.toString(),
-            thumbnailUrl: this.imageService.getGalleryThumbnail(image)
-          })));
-        }
-      });
-    });
   }
 
   ngOnInit() {
@@ -340,7 +293,10 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.user && changes.user.currentValue || changes.options) {
+    if (
+      (changes.user && changes.user.currentValue) ||
+      (changes.options && JSON.stringify(changes.options.currentValue) !== JSON.stringify(changes.options.previousValue))
+    ) {
       this.page = 1;
       this._getImages();
     }
@@ -376,6 +332,51 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       });
 
       this.store$.dispatch(new LoadCollections({ params: { ids: [changes.options.currentValue.collection] } }));
+    }
+
+    if (this._findImagesSubscription) {
+      this._findImagesSubscription.unsubscribe();
+    }
+
+    this._findImagesSubscription = this.actions$.pipe(
+      ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
+      map((action: FindImagesSuccess) => action.payload),
+      filter(payload => JSON.stringify(payload.options) === JSON.stringify({
+        userId: this.user.id,
+        gallerySerializer: true,
+        page: this.page,
+        ...this.options
+      })),
+      takeUntil(
+        merge(
+          this.destroyed$,
+          this.router.events.pipe(filter(event => event instanceof NavigationEnd))
+        )
+      ),
+      map(payload => payload.response)
+    ).subscribe(response => {
+      if (this.page > 1) {
+        this.images = [...this.images, ...response.results];
+      } else {
+        this.images = response.results;
+      }
+      this.next = response.next;
+      this.loadingMore = false;
+      this.loading = false;
+      this.changeDetectorRef.detectChanges();
+      if (this._slideshowComponent) {
+        this._slideshowComponent.setNavigationContext(this.images.map(image => ({
+          imageId: image.hash || image.pk.toString(),
+          thumbnailUrl: this.imageService.getGalleryThumbnail(image)
+        })));
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this._findImagesSubscription) {
+      this._findImagesSubscription.unsubscribe();
+      this._findImagesSubscription = null;
     }
   }
 
