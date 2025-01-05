@@ -130,7 +130,7 @@
     "concurrently": "7.6.0",
     "cross-var": "1.1.0",
     "cypress": "6.9.1",
-    "esbuild": "0.23.0",
+    "esbuild": "0.24.2",
     "esbuild-wasm": "0.23.0",
     "eslint": "8.41.0",
     "eslint-plugin-import": "latest",
