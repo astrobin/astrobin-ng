@@ -27,7 +27,7 @@
 
     &:hover:not([disabled]) {
       .ng-fa-icon {
-        transform: scale(1.1);
+        transform: scale(1);
       }
     }
 
@@ -52,6 +52,7 @@
       .ng-fa-icon,
       .count {
         opacity: .4;
+        filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, .5));
       }
     }
   }

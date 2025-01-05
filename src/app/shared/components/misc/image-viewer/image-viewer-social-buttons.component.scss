@@ -14,7 +14,11 @@
       border-radius: .25rem;
 
       &.toggled {
-        box-shadow: 3px 3px 6px rgba(0, 0, 0, .5) inset;
+        box-shadow: 5px 5px 5px rgba(0, 0, 0, .5) inset;
+      }
+
+      &:not(.toggled) {
+        box-shadow: 3px 3px 3px rgba(255, 255, 255, .15) inset;
       }
 
       &.loading {
@@ -54,6 +58,7 @@
     ::ng-deep .btn {
       &:hover {
         color: var(--white);
+        filter: brightness(1.1);
       }
     }
   }
