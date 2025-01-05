@@ -73,7 +73,7 @@
     "class-validator": "0.14.1",
     "core-js": "3.39.0",
     "country-js": "0.0.9",
-    "dotenv": "16.0.3",
+    "dotenv": "16.4.7",
     "express": "4.21.2",
     "filesize": "9.0.11",
     "hammerjs": "2.0.8",
