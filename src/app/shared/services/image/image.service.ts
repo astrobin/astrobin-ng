@@ -484,7 +484,7 @@ export class ImageService extends BaseService {
       const acquisition = image.solarSystemAcquisitions[0];
 
       if (acquisition.frames && acquisition.exposurePerFrame) {
-        return `${acquisition.frames} &times; ${acquisition.exposurePerFrame}s`;
+        return `${acquisition.frames} &times; ${acquisition.exposurePerFrame}ms`;
       }
 
       if (acquisition.frames) {
@@ -492,7 +492,7 @@ export class ImageService extends BaseService {
       }
 
       if (acquisition.exposurePerFrame) {
-        return `${acquisition.exposurePerFrame} ms`;
+        return `${acquisition.exposurePerFrame}ms`;
       }
     }
 
