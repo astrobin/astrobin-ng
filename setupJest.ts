@@ -5,7 +5,6 @@ import "@angular/localize/init";
 import { FormGroup } from "@angular/forms";
 import { NotificationListResponseInterfaceGenerator } from "@features/notifications/generators/notification-list-response.interface.generator";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
-import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { TranslateService } from "@ngx-translate/core";
 import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
@@ -34,14 +33,6 @@ ngMocks.defaultMock(NotificationsApiService, () => ({
   getAll: jest.fn().mockReturnValue(of(NotificationListResponseInterfaceGenerator.notificationListResponse())),
   getUnreadCount: jest.fn().mockReturnValue(of(1)),
   update: jest.fn().mockReturnValue(EMPTY),
-  markAllAsRead: jest.fn().mockReturnValue(EMPTY)
-}));
-
-ngMocks.defaultMock(NotificationsService, () => ({
-  getAll: jest.fn().mockReturnValue(of(NotificationListResponseInterfaceGenerator.notificationListResponse())),
-  getUnreadCount: jest.fn().mockReturnValue(of(1)),
-  markAsRead: jest.fn().mockReturnValue(EMPTY),
-  markAsUnread: jest.fn().mockReturnValue(EMPTY),
   markAllAsRead: jest.fn().mockReturnValue(EMPTY)
 }));
 

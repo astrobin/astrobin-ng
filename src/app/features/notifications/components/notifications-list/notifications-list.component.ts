@@ -11,7 +11,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { map, take, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
-import { LoadNotifications, MarkAsRead, NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
+import { LoadNotifications, MarkAllAsRead, MarkAsRead, NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
 import { selectNotifications } from "@features/notifications/store/notifications.selectors";
 import { LoadingService } from "@shared/services/loading.service";
 import { Actions, ofType } from "@ngrx/effects";
@@ -88,7 +88,7 @@ export class NotificationsListComponent extends BaseComponentDirective implement
       this.loadNotifications();
     });
 
-    this.store$.dispatch(new MarkAsRead({ notificationId: null, read: true }));
+    this.store$.dispatch(new MarkAllAsRead());
   }
 
   toggleShowRead(value: boolean): void {

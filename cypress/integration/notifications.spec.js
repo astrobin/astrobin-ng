@@ -16,6 +16,7 @@ context("notifications", () => {
     beforeEach(() => {
       cy.server();
       cy.setupInitializationRoutes();
+      cy.setupAuthRoutes();
     });
 
     describe("when there are no notifications", () => {
@@ -26,7 +27,7 @@ context("notifications", () => {
       });
 
       it("should have the correct setup", () => {
-        cy.get(".page > h1").should("contain", "Notifications");
+        cy.get(".page h1").should("contain", "Notifications");
         cy.get("astrobin-empty-list").should("be.visible");
         cy.get("#mark-all-as-read").should("be.disabled");
       });

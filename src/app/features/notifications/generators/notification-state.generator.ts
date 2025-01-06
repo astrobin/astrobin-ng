@@ -4,7 +4,10 @@ export class NotificationStateGenerator {
   static default(): NotificationsState {
     return {
       types: [],
-      settings: []
+      settings: [],
+      notifications: [],
+      unreadCount: 0,
+      totalNotifications: 0
     };
   }
 }
