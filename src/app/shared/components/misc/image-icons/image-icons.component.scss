@@ -4,10 +4,10 @@
 
 .wip-icon {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
+  bottom: .5rem;
+  right: .5rem;
+  font-size: 1rem;
+  line-height: 1rem;
   color: var(--white);
 }
 
