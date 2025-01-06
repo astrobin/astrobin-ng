@@ -119,6 +119,53 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
     return map[type];
   }
 
+  humanizeTypeMedium(type: FilterType | LegacyFilterType) {
+    const map = {
+      [FilterType.H_ALPHA]: "H-alpha",
+      [FilterType.H_BETA]: "H-beta",
+      [FilterType.SII]: "SII",
+      [FilterType.OIII]: "OIII",
+      [FilterType.NII]: "NII",
+      [FilterType.UV]: "UV",
+      [FilterType.IR]: "IR",
+      [FilterType.UV_IR_CUT]: "UV/IR Cut",
+      [FilterType.MULTIBAND]: "Multiband",
+      [FilterType.LP]: "LP",
+      [FilterType.L]: "Luminance/Clear",
+      [FilterType.R]: "R",
+      [FilterType.G]: "G",
+      [FilterType.B]: "B",
+      [FilterType.ND]: "ND",
+      [FilterType.UHC]: "UHC",
+      [FilterType.SKY_GLOW]: "Sky glow",
+      [FilterType.SOLAR]: "Solar",
+      [FilterType.LUNAR]: "Lunar",
+      [FilterType.PLANETARY]: "Planetary",
+      [FilterType.COMETARY]: "Cometary",
+      [FilterType.PHOTOMETRIC_U]: "Photometric UV",
+      [FilterType.PHOTOMETRIC_B]: "Photometric B",
+      [FilterType.PHOTOMETRIC_V]: "Photometric V",
+      [FilterType.PHOTOMETRIC_R]: "Photometric R",
+      [FilterType.PHOTOMETRIC_I]: "Photometric IR",
+      [FilterType.OTHER]: this.translateService.instant("Other"),
+
+      // Legacy filter types
+      [LegacyFilterType.CLEAR_OR_COLOR]: this.translateService.instant("Clear or color"),
+      [LegacyFilterType.BROAD_HA]: "H-alpha",
+      [LegacyFilterType.NARROW_HA]: "H-alpha",
+      [LegacyFilterType.BROAD_HB]: "H-beta",
+      [LegacyFilterType.NARROW_HB]: "H-beta",
+      [LegacyFilterType.BROAD_SII]: "SII",
+      [LegacyFilterType.NARROW_SII]: "SII",
+      [LegacyFilterType.BROAD_OIII]: "OIII",
+      [LegacyFilterType.NARROW_OIII]: "OIII",
+      [LegacyFilterType.BROAD_NII]: "NII",
+      [LegacyFilterType.NARROW_NII]: "NII"
+    };
+
+    return map[type];
+  }
+
   humanizeSize(size: FilterSize) {
     const map = {
       [FilterSize.ROUND_1_25_IN]: this.translateService.instant("Round") + ` 1.25"`,

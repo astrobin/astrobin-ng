@@ -185,7 +185,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           !this.form.get("overrideName").value &&
           this.form.dirty
         ) {
-          const typeLabel = !!value.type ? this.filterService.humanizeTypeShort(value.type) : "";
+          const typeLabel = !!value.type ? this.filterService.humanizeTypeMedium(value.type) : "";
           const bandwidthLabel = !!value.bandwidth ? `${value.bandwidth}nm` : "";
           const sizeLabel =
             !!value.size && value.size !== FilterSize.OTHER ? this.filterService.humanizeSizeShort(value.size) : "";
