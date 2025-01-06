@@ -22,11 +22,16 @@
             content: '\b7'; /* middot */
             display: inline-block;
             margin-left: .5rem;
+            color: var(--lightGrey);
           }
         }
 
         .original-filename {
           word-break: break-all;
+        }
+
+        .view-count {
+          color: var(--lightestGrey);
         }
 
         @media (max-width: $md-max) {
