@@ -268,6 +268,10 @@ export class ImageViewerComponent
       event.preventDefault();
     }
 
+    if (!this.active) {
+      return;
+    }
+
     if (this.viewingFullscreenImage) {
       this.exitFullscreen();
       return;
