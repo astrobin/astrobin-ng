@@ -148,8 +148,8 @@
   <!-- Notifications -->
   <a class="btn btn-link nav-link position-relative" routerLink="/notifications">
     <fa-icon icon="bell"></fa-icon>
-    <ng-container *ngIf="notificationsService.unreadCount$ | async as unreadCount">
-      <span class="badge bg-danger badge-pill rounded-pill">
+    <ng-container *ngIf="unreadNotificationsCount$ | async as unreadCount">
+      <span *ngIf="!!unreadCount" class="badge bg-danger badge-pill rounded-pill m-0">
         {{ unreadCount }}
       </span>
     </ng-container>

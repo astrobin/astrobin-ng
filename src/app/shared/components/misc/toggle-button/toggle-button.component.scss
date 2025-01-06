@@ -1,6 +1,19 @@
-label {
-  margin-left: .5rem;
-  margin-bottom: 0;
-  display: inline-block;
-  vertical-align: middle;
+:host {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  ::ng-deep {
+    ng-toggle {
+      display: flex;
+    }
+
+    label {
+      margin-left: .5rem;
+      margin-bottom: 0;
+      display: block;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+  }
 }

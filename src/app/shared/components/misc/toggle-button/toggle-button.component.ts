@@ -29,6 +29,7 @@ export class ToggleButtonComponent extends BaseComponentDirective implements OnI
 
   color: { checked: string, unchecked: string };
   switchColor: { checked: string, unchecked: string };
+  uniqueId = Math.random().toString(36).slice(2, 11);
 
   constructor(public readonly store$: Store<MainState>, public readonly themeService: ThemeService) {
     super(store$);

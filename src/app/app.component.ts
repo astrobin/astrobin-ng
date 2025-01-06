@@ -17,11 +17,11 @@ import { NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
 import { TransferState } from "@angular/platform-browser";
 import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
-import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { VersionCheckService } from "@shared/services/version-check.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { GetUnreadCount } from "@features/notifications/store/notifications.actions";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -49,7 +49,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     @Inject(DOCUMENT) public document: any,
     public readonly transferState: TransferState,
     @Inject(CLIENT_IP) public readonly clientIp: string,
-    public readonly notificationsService: NotificationsService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly loadingService: LoadingService,
     public readonly titleService: TitleService,
@@ -121,7 +120,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
             take(1)
           ).subscribe(() => {
             this.utilsService.delay(500).subscribe(() => {
-              this.notificationsService.getUnreadCount().subscribe();
+              this.store$.dispatch(new GetUnreadCount());
             });
           });
         }
