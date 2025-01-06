@@ -613,6 +613,7 @@ $globalLoadingIndicatorHeight: 6px;
         display: flex;
         flex-direction: column;
         overflow-x: hidden;
+        font-size: .9rem;
 
         astrobin-ad-manager {
           position: sticky;
@@ -711,10 +712,6 @@ $globalLoadingIndicatorHeight: 6px;
 
         @media (max-width: $md-max) {
           padding: 1rem .75rem;
-        }
-
-        @media (max-width: $lg-max) {
-          font-size: .9rem;
         }
 
         @media (min-width: $lg-min) {

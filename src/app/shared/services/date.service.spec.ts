@@ -182,6 +182,15 @@ describe("DateService", () => {
       expect(result).toBe("Jul 30 - Aug 1");
     });
 
+    it("should omit the year for two non contiguous dates in the same year", () => {
+      const dates = [
+        "2023-07-30T00:00:00Z",
+        "2023-08-01T00:00:00Z"
+      ];
+      const result = service.formatDates(dates);
+      expect(result).toBe("Jul 30, Aug 1 2023");
+    });
+
     it("should return a range of contiguous dates in different years with en-US format", () => {
       const dates = [
         "2023-12-30T00:00:00Z",
@@ -277,7 +286,7 @@ describe("DateService", () => {
         "1985-07-08T00:00:00Z"
       ];
       const result = service.formatDates(dates);
-      expect(result).toBe("4 Jul 1985, 8 Jul 1985");
+      expect(result).toBe("4 Jul, 8 Jul 1985");
     });
 
     it("should format multiple non-contiguous dates in the same month and year from the past", () => {
@@ -365,7 +374,7 @@ describe("DateService", () => {
         "1985-07-08T00:00:00Z"
       ];
       const result = service.formatDates(dates);
-      expect(result).toBe("Jul 4, 1985, Jul 8, 1985");
+      expect(result).toBe("Jul 4, Jul 8 1985");
     });
 
     it("should format multiple non-contiguous dates in the same month and year from the past in en-US format", () => {

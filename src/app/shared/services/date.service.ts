@@ -71,6 +71,16 @@ export class DateService extends BaseService {
     const contiguousRanges = this.getContiguousRanges(parsedDates);
 
     if (parsedDates.length === 2 && contiguousRanges.length === 2) {
+      const date1 = new Date(parsedDates[0]);
+      const date2 = new Date(parsedDates[1]);
+      const currentYear = this.getCurrentYear();
+
+      // If dates are in the same year but not current year, format differently
+      if (date1.getFullYear() === date2.getFullYear() && date1.getFullYear() !== currentYear) {
+        const dateFormat = this.getDateFormat();
+        return `${this.datePipe.transform(date1, dateFormat)}, ${this.datePipe.transform(date2, dateFormat)} ${date1.getFullYear()}`;
+      }
+
       return `${this.formatSingleDate(parsedDates[0])}, ${this.formatSingleDate(parsedDates[1])}`;
     }
 

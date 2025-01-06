@@ -84,7 +84,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       [FilterType.UV_IR_CUT]: "UV/IR Cut",
       [FilterType.MULTIBAND]: "Multiband",
       [FilterType.LP]: "LP",
-      [FilterType.L]: "Lum",
+      [FilterType.L]: "Lum/Clear",
       [FilterType.R]: "Red",
       [FilterType.G]: "Green",
       [FilterType.B]: "Blue",
