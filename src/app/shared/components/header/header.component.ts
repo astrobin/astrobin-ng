@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { Logout } from "@features/account/store/auth.actions";
-import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -24,6 +23,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { UserService } from "@shared/services/user.service";
 import { SearchService } from "@features/search/services/search.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
+import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -44,6 +44,10 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   showMobileSearch = false;
   isSearchPage = false;
   quickSearchQuery: string;
+
+  protected unreadNotificationsCount$: Observable<number> = this.store$.select(selectUnreadNotificationsCount).pipe(
+    takeUntil(this.destroyed$)
+  );
 
   languages: AvailableLanguageInterface[] = [
     { code: "en", label: "English (US)" },
@@ -100,7 +104,6 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     public readonly modalService: NgbModal,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly authService: AuthService,
-    public readonly notificationsService: NotificationsService,
     public readonly loadingService: LoadingService,
     public readonly windowRefService: WindowRefService,
     public readonly translateService: TranslateService,

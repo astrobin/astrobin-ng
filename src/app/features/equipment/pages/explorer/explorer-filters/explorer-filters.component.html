@@ -81,12 +81,10 @@
                   <div ngbDropdownMenu [attr.aria-labelledby]="'filter-dropdown-' + filter.type">
                     <div class="widget-content">
                       <astrobin-toggle-button
-                        [value]="filter.value"
                         (toggle)="setFilterValue(filter, $event)"
+                        [label]="filter.label"
+                        [value]="filter.value"
                       ></astrobin-toggle-button>
-                      <label class="ms-2">
-                        {{ filter.label }}
-                      </label>
                     </div>
                   </div>
                 </button>

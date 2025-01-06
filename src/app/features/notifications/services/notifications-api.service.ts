@@ -7,6 +7,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
 import { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: "root"
@@ -18,8 +19,14 @@ export class NotificationsApiService extends BaseClassicApiService {
     super(loadingService);
   }
 
-  getAll(page = 1): Observable<NotificationListResponseInterface> {
-    return this.http.get<NotificationListResponseInterface>(`${this.configUrl}/notification/?page=${page}`);
+  getAll(page = 1, read?: boolean): Observable<NotificationListResponseInterface> {
+    let url = `${this.configUrl}/notification/?page=${page}`;
+
+    if (read !== undefined) {
+      url = UtilsService.addOrUpdateUrlParam(url, "read", read.toString());
+    }
+
+    return this.http.get<NotificationListResponseInterface>(url);
   }
 
   getUnreadCount(): Observable<number> {
