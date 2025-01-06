@@ -223,6 +223,7 @@ export class ImageViewerComponent
           takeUntil(this.destroyed$)
         )
       ).subscribe(() => {
+        this._initImageAlias();
         this._adjustSvgOverlay();
 
         if (this.adManagerComponent) {

@@ -63,7 +63,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   @HostBinding('style.--height')
   get videoHeight(): string {
-    return this.height ? `${this.height}px` : 'auto';
+    return this.revision?.videoFile && this.height ? `${this.height}px` : 'auto';
   }
 
   @ViewChild("videoPlayerElement", { static: false })
