@@ -149,6 +149,7 @@ import { EquipmentPresetEditorComponent } from "@shared/components/equipment/pre
 import { EquipmentPresetSummaryComponent } from "@shared/components/equipment/preset-summary/equipment-preset-summary.component";
 import { ImageIconsComponent } from "@shared/components/misc/image-icons/image-icons.component";
 import { ImageHoverComponent } from "@shared/components/misc/image-hover/image-hover.component";
+import { ImageViewerIotdTpStatsComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component";
 
 const modules = [
   CommonModule,
@@ -256,6 +257,7 @@ const components = [
   ImageViewerAdditionalButtonComponent,
   ImageViewerAdjustmentsEditorComponent,
   ImageViewerIotdBannerComponent,
+  ImageViewerIotdTpStatsComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,

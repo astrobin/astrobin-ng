@@ -8,22 +8,8 @@
   gap: 1px;
 }
 
-::ng-deep .iotd-stats-accordion {
-  .image-iotd-tp-stats-item {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-right: 1rem;
-    gap: 1rem;
-
-    .name {
-      color: var(--lightestGrey);
-    }
-
-    .value {
-      color: var(--white);
-      font-weight: bold;
-    }
+::ng-deep .image-iotd-tp-stats-offcanvas {
+  &:not(.offcanvas-bottom) {
+    width: 40vw !important;
   }
 }

@@ -1,0 +1,19 @@
+.iotd-stats-accordion {
+  .image-iotd-tp-stats-item {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 1rem;
+    gap: 1rem;
+
+    .name {
+      color: var(--lightestGrey);
+    }
+
+    .value {
+      color: var(--white);
+      font-weight: bold;
+    }
+  }
+}
