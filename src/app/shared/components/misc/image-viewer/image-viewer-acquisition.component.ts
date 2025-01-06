@@ -9,7 +9,7 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
-import { FilterType, FilterTypePriority } from "@features/equipment/types/filter.interface";
+import { FilterType, FilterTypePriority, LegacyFilterType } from "@features/equipment/types/filter.interface";
 import { FilterService } from "@features/equipment/services/filter.service";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -251,7 +251,7 @@ interface DetailedFilterSummary {
                   <span class="name">{{ detail.name }}</span>
                 </ng-container>
                 <ng-container *ngIf="!detail.name">
-                  {{ "Unknown or no filter" | translate }}
+                  {{ "No filter" | translate }}
                 </ng-container>
               </td>
 
@@ -322,9 +322,17 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
   }
 
   humanizeFilterType(filterType: string): string {
-    if (filterType === "UNKNOWN") {
-      return this.translateService.instant("Unknown or no filter");
+    if (
+      !Object.values(FilterType).includes(filterType as FilterType) &&
+      !Object.values(LegacyFilterType).includes(filterType as LegacyFilterType)
+    ) {
+      return filterType;
     }
+
+    if (filterType === "UNKNOWN") {
+      return this.translateService.instant("No filter");
+    }
+
 
     return this.filterService.humanizeTypeShort(filterType as FilterType);
   }
@@ -350,7 +358,16 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     const filterSummaries: { [key: string]: FilterSummary } = {};
 
     this.image.deepSkyAcquisitions.forEach(acquisition => {
-      const filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
+      let filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
+
+      if (filterType === "UNKNOWN" || filterType === "OTHER" || filterType === "CLEAR_OR_COLOR") {
+        if (acquisition.filter2) {
+          filterType = `${acquisition.filter2Brand} ${acquisition.filter2Name}`;
+        } else if (acquisition.filter) {
+          filterType = `${acquisition.filterMake} ${acquisition.filterName}`;
+        }
+      }
+
       const date = acquisition.date;
       const duration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
 
@@ -420,7 +437,16 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     const detailedFilterSummaries: { [key: string]: DetailedFilterSummary } = {};
 
     this.image.deepSkyAcquisitions.forEach(acquisition => {
-      const filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
+      let filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
+
+      if (filterType === "UNKNOWN" || filterType === "OTHER" || filterType === "CLEAR_OR_COLOR") {
+        if (acquisition.filter2) {
+          filterType = `${acquisition.filter2Brand} ${acquisition.filter2Name}`;
+        } else if (acquisition.filter) {
+          filterType = `${acquisition.filterMake} ${acquisition.filterName}`;
+        }
+      }
+
       const name = acquisition.filter2Name || acquisition.filterName;
       const brand = acquisition.filter2Brand || acquisition.filterMake || this.translateService.instant("DIY");
       const date = acquisition.date;
