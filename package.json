@@ -140,7 +140,7 @@
     "jest": "29.7.0",
     "jest-preset-angular": "14.4.2",
     "js-beautify": "1.14.9",
-    "ng-mocks": "14.10.1",
+    "ng-mocks": "14.13.1",
     "ngx-build-plus": "16.0.0",
     "nodemon": "2.0.22",
     "npm-run-all2": "5.0.2",
