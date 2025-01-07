@@ -131,7 +131,7 @@
     "cross-var": "1.1.0",
     "cypress": "6.9.1",
     "esbuild": "0.24.2",
-    "esbuild-wasm": "0.23.0",
+    "esbuild-wasm": "0.24.2",
     "eslint": "8.57.1",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jsdoc": "latest",
