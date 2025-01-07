@@ -121,7 +121,7 @@
     "@types/hammerjs": "2.0.46",
     "@types/jest": "29.5.14",
     "@types/masonry-layout": "4.2.8",
-    "@types/node": "18.19.69",
+    "@types/node": "18.19.70",
     "@types/supertest": "2.0.16",
     "@typescript-eslint/eslint-plugin": "5.48.1",
     "@typescript-eslint/parser": "5.48.1",
