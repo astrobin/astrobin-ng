@@ -101,7 +101,11 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
             />
 
             <astrobin-image-icons [image]="item"></astrobin-image-icons>
-            <astrobin-image-hover [image]="item" [showAuthor]="false"></astrobin-image-hover>
+            <astrobin-image-hover
+              [image]="item"
+              [showAuthor]="false"
+              [staticOverlay]="options.ordering"
+            ></astrobin-image-hover>
 
             <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
             <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image: item }"></ng-container>
@@ -131,7 +135,11 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
           />
 
           <astrobin-image-icons [image]="image"></astrobin-image-icons>
-          <astrobin-image-hover [image]="image" [showAuthor]="false"></astrobin-image-hover>
+          <astrobin-image-hover
+            [image]="image"
+            [showAuthor]="false"
+            [staticOverlay]="options.ordering"
+          ></astrobin-image-hover>
 
           <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
           <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image }"></ng-container>

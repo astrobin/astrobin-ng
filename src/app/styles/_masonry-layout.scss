@@ -44,8 +44,12 @@
           filter: brightness(1.25);
         }
 
-        > astrobin-image-hover {
-          opacity: 1;
+        > astrobin-image-hover .hover {
+          opacity: 1 !important;
+        }
+
+        > astrobin-image-hover .static-overlay {
+          opacity: 0;
         }
 
         > astrobin-image-icons {

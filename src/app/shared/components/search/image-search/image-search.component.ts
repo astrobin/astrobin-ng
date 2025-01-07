@@ -36,9 +36,11 @@ import { UserService } from "@shared/services/user.service";
 export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
+
   @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
+
   @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
 
   protected readonly ImageAlias = ImageAlias;
