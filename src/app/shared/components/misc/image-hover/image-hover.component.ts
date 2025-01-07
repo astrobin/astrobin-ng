@@ -1,10 +1,16 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
+import { ImageService } from "@shared/services/image/image.service";
+import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
 
 @Component({
   selector: 'astrobin-image-hover',
   template: `
+    <div class="static-overlay" *ngIf="staticOverlay">
+      <ng-container *ngTemplateOutlet="staticOverlayTemplate"></ng-container>
+    </div>
+
     <div class="hover d-flex align-items-end gap-2">
       <div class="flex-grow-1">
         <div class="title">{{ image.title }}</div>
@@ -29,19 +35,66 @@ import { ImageSearchInterface } from "@shared/interfaces/image-search.interface"
           <span class="value">{{ comments }}</span>
         </div>
       </div>
-    </div>`,
+    </div>
+
+    <ng-template #staticOverlayTemplate>
+      <div class="static-overlay-content">
+        <span *ngIf="staticOverlay?.includes('comments')">
+          {{ comments | numberSuffix }}
+        </span>
+
+        <span *ngIf="staticOverlay?.includes('likes')">
+          {{ likes | numberSuffix }}
+        </span>
+
+        <span *ngIf="staticOverlay?.includes('bookmarks')">
+          {{ bookmarks | numberSuffix }}
+        </span>
+
+        <span *ngIf="staticOverlay?.includes('views')">
+          {{ image.views | numberSuffix }}
+        </span>
+
+        <span *ngIf="staticOverlay?.includes('integration') && !!integration" [innerHTML]="integration">
+        </span>
+
+        <span *ngIf="staticOverlay?.includes('field_radius')">
+          {{ image.fieldRadius | number:"1.2-2" }}&deg;
+        </span>
+
+        <span *ngIf="staticOverlay?.includes('pixel_scale')">
+          {{ image.pixelScale | number:"1.2-2" }}&Prime;/px
+        </span>
+
+        <span *ngIf="staticOverlay?.includes('coord_ra_min') && !!ra" [innerHTML]="ra">
+        </span>
+
+        <span *ngIf="staticOverlay?.includes('coord_dec_min') && !!dec" [innerHTML]="dec">
+        </span>
+      </div>
+    </ng-template>
+  `,
   styleUrls: ['./image-hover.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageHoverComponent implements OnChanges {
   @Input() image: ImageInterface | ImageSearchInterface;
   @Input() showAuthor = true;
+  @Input() staticOverlay: string;
 
   protected published: string;
   protected uploaded: string;
   protected likes: number;
   protected bookmarks: number;
   protected comments: number;
+  protected integration: string;
+  protected ra: string;
+  protected dec: string;
+
+  constructor(
+    public readonly imageService: ImageService,
+    public readonly astroUtils: AstroUtilsService
+  ) {}
 
   ngOnChanges(): void {
     if (this.image.hasOwnProperty('likeCount')) {
@@ -56,6 +109,13 @@ export class ImageHoverComponent implements OnChanges {
       this.likes = (this.image as ImageSearchInterface).likes;
       this.bookmarks = (this.image as ImageSearchInterface).bookmarks;
       this.comments = (this.image as ImageSearchInterface).comments;
+      this.integration = this.imageService.formatIntegration((this.image as ImageSearchInterface).integration);
+      this.ra = this.astroUtils.formatRa(
+        ((this.image as ImageSearchInterface).coordRaMin + (this.image as ImageSearchInterface).coordRaMax) / 2
+      );
+      this.dec = this.astroUtils.formatDec(
+        ((this.image as ImageSearchInterface).coordDecMin + (this.image as ImageSearchInterface).coordDecMax) / 2
+      );
     }
   }
 }

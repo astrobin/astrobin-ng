@@ -39,6 +39,14 @@ export interface ImageSearchInterface {
   likes: number;
   bookmarks: number;
   comments: number;
+  views: number;
+  integration: number;
+  fieldRadius: number;
+  pixelScale: number;
+  coordRaMin: number;
+  coordRaMax: number;
+  coordDecMin: number;
+  coordDecMax: number;
   w: number;
   h: number;
   finalW: number;
