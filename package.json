@@ -138,7 +138,7 @@
     "eslint-plugin-prefer-arrow": "latest",
     "eslint-plugin-react": "latest",
     "jest": "29.7.0",
-    "jest-preset-angular": "14.2.4",
+    "jest-preset-angular": "14.4.2",
     "js-beautify": "1.14.9",
     "ng-mocks": "14.10.1",
     "ngx-build-plus": "16.0.0",
