@@ -98,7 +98,7 @@
     "reflect-metadata": "0.1.13",
     "rimraf": "4.4.1",
     "rxjs": "7.8.1",
-    "tslib": "2.5.2",
+    "tslib": "2.8.1",
     "webpack-bundle-tracker": "1.8.1",
     "zone.js": "0.13.3"
   },
