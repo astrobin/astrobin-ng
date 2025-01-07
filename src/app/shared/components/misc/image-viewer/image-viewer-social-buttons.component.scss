@@ -39,7 +39,8 @@
     }
   }
 
-  .like-count {
+  .like-count,
+  .bookmark-count {
     color: var(--accentColor);
     border-bottom: 1px dashed var(--darkerAccentColor);
     font-size: .9rem;
@@ -59,6 +60,32 @@
       &:hover {
         color: var(--white);
         filter: brightness(1.1);
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .image-like-this-offcanvas,
+  .image-bookmarked-this-offcanvas {
+    .table td {
+      vertical-align: middle;
+    }
+
+    &:not(.offcanvas-bottom) {
+      width: 40vw;
+    }
+
+    astrobin-toggle-property {
+      .btn {
+        .ng-fa-icon {
+          margin: 0;
+        }
+
+        &.toggled .ng-fa-icon {
+          opacity: 1 !important;
+          color: var(--accentColor) !important;
+        }
       }
     }
   }

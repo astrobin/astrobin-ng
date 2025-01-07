@@ -12,14 +12,16 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, take, takeUntil, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { isPlatformBrowser } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
+import { LoadingService } from "@shared/services/loading.service";
 
 
 @Component({
@@ -53,6 +55,7 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 
           <div *ngIf="showBookmark" class="bookmark">
             <astrobin-toggle-property
+              *ngIf="!!image && !!currentUserWrapper.user && currentUserWrapper.user.id !== image.user"
               [contentType]="imageContentType.id"
               [objectId]="image?.pk"
               [userId]="currentUserWrapper.user?.id"
@@ -62,6 +65,15 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
               btnClass="btn btn-no-block {{ btnExtraClasses }}"
               propertyType="bookmark"
             ></astrobin-toggle-property>
+
+            <div
+              *ngIf="!!image && !!currentUserWrapper.user && currentUserWrapper.user.id === image.user"
+              (click)="openBookmarkedThisOffcanvas()"
+              class="bookmark-count me-3"
+            >
+              <fa-icon icon="bookmark"></fa-icon>
+              <span class="ms-2">{{ image.bookmarkCount }}</span>
+            </div>
           </div>
 
           <div *ngIf="image?.allowComments && showComments" class="comment">
@@ -105,9 +117,10 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
           aria-label="Close"
         ></button>
       </div>
-      <div class="offcanvas-body">
+      <div class="offcanvas-body" *ngIf="currentUserWrapper$ | async as currentUserWrapper">
         <div *ngIf="likeThis; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
+            *ngIf="likeThis && likeThis.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
@@ -116,12 +129,109 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
             (ngModelChange)="likeThisSearchSubject.next($event)"
           />
           <ng-container *ngIf="!searching; else loadingTemplate">
-            <a *ngFor="let user of likeThis" [routerLink]="['/u', user.username]">
-              {{ user.displayName || user.username }}
-            </a>
+            <table *ngIf="likeThis && likeThis.length > 0; else nothingHereTemplate" class="table table-sm table-striped">
+              <tbody>
+                <tr *ngFor="let like of likeThis">
+                  <td>
+                    <a [routerLink]="['/u', like.username]">
+                      {{ like.displayName || like.username }}
+                    </a>
+                    <div class="d-md-none">
+                      {{ like.timestamp | localDate | timeago: true }}
+                    </div>
+                  </td>
+                  <td class="d-none d-lg-table-cell">
+                    {{ like.timestamp | localDate | timeago: true }}
+                  </td>
+                  <td class="text-end">
+                    <astrobin-toggle-property
+                      *ngIf="!!currentUserWrapper.user && currentUserWrapper.user.id !== like.userId"
+                      [userId]="currentUserWrapper.user.id"
+                      [contentType]="userContentType.id"
+                      [objectId]="like.userId"
+                      [propertyType]="'follow'"
+                      [showLabel]="false"
+                      class="d-block"
+                      btnClass="btn btn-sm btn-link text-secondary"
+                    ></astrobin-toggle-property>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </ng-container>
         </div>
       </div>
+    </ng-template>
+
+    <ng-template #bookmarkedThisOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" translate="People who bookmarked this"></h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="offcanvas.close()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body" *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+        <astrobin-toggle-property
+          *ngIf="!!currentUserWrapper.user && currentUserWrapper.user.id === image.user"
+          [userId]="currentUserWrapper.user.id"
+          [contentType]="imageContentType.id"
+          [objectId]="image.pk"
+          [propertyType]="'bookmark'"
+          [setLabel]="'Bookmark your own image' | translate"
+          class="d-block mb-3"
+          btnClass="btn btn-primary"
+        ></astrobin-toggle-property>
+
+        <div *ngIf="bookmarkedThis; else loadingTemplate" class="d-flex flex-column gap-1">
+          <input
+            *ngIf="bookmarkedThis && bookmarkedThis.length > 0"
+            type="search"
+            class="form-control mb-2"
+            placeholder="{{ 'Search' | translate }}"
+            [ngModelOptions]="{standalone: true}"
+            [(ngModel)]="bookmarkedThisSearch"
+            (ngModelChange)="bookmarkedThisSearchSubject.next($event)"
+          />
+          <ng-container *ngIf="!searching; else loadingTemplate">
+            <table *ngIf="bookmarkedThis && bookmarkedThis.length > 0; else nothingHereTemplate" class="table table-sm table-striped">
+              <tbody>
+              <tr *ngFor="let bookmark of bookmarkedThis">
+                <td>
+                  <a [routerLink]="['/u', bookmark.username]">
+                    {{ bookmark.displayName || bookmark.username }}
+                  </a>
+                  <div class="d-md-none">
+                    {{ bookmark.timestamp | localDate | timeago: true }}
+                  </div>
+                </td>
+                <td class="d-none d-lg-table-cell">
+                  {{ bookmark.timestamp | localDate | timeago: true }}
+                </td>
+                <td class="text-end">
+                  <astrobin-toggle-property
+                    *ngIf="!!currentUserWrapper.user && currentUserWrapper.user.id !== bookmark.userId"
+                    [userId]="currentUserWrapper.user.id"
+                    [contentType]="userContentType.id"
+                    [objectId]="bookmark.userId"
+                    [showLabel]="false"
+                    [propertyType]="'follow'"
+                    class="d-block"
+                    btnClass="btn btn-sm btn-link text-secondary"
+                  ></astrobin-toggle-property>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </ng-container>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #nothingHereTemplate>
+      <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
     </ng-template>
 
     <ng-template #loadingTemplate>
@@ -145,12 +255,21 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
 
   @ViewChild("shareTemplate") shareTemplate: TemplateRef<any>;
   @ViewChild("likeThisOffcanvas") likeThisOffcanvas: TemplateRef<any>;
+  @ViewChild("bookmarkedThisOffcanvas") bookmarkedThisOffcanvas: TemplateRef<any>;
 
+  protected userContentType: ContentTypeInterface;
   protected imageContentType: ContentTypeInterface;
   protected searching = false;
-  protected likeThis: {username: string; displayName: string}[] = [];
+
+  protected likeThis: {userId: number; username: string; displayName: string, timestamp: string;}[] = [];
   protected likeThisSearch: string;
   protected likeThisSearchSubject = new Subject<string>();
+
+  protected bookmarkedThis: {userId: number; username: string; displayName: string, timestamp: string;}[] = [];
+  protected bookmarkedThisSearch: string;
+  protected bookmarkedThisSearchSubject = new Subject<string>();
+
+
   protected initialLikeCount: number;
   protected initialBookmarkCount: number;
 
@@ -167,7 +286,8 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly utilsService: UtilsService,
-    public readonly imageApiService: ImageApiService
+    public readonly imageApiService: ImageApiService,
+    public readonly loadingService: LoadingService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
 
@@ -179,9 +299,17 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       this.imageContentType = contentType;
     });
 
+    this.store$.pipe(
+      select(selectContentType, { appLabel: "auth", model: "user" }),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      this.userContentType = contentType;
+    });
+
     this.store$.dispatch(new LoadContentType({
-      appLabel: "astrobin",
-      model: "image"
+      appLabel: "auth",
+      model: "user"
     }));
   }
 
@@ -197,6 +325,14 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       takeUntil(this.destroyed$)
     ).subscribe(search => {
       this._searchUsersWhoLikeThis(search);
+    });
+
+    this.bookmarkedThisSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(search => {
+      this._searchUsersWhoBookmarkedThis(search);
     });
   }
 
@@ -250,19 +386,53 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
 
   protected openLikeThisOffcanvas() {
     this.likeThisSearch = "";
-    this._searchUsersWhoLikeThis(null);
-    this.offcanvasService.open(
-      this.likeThisOffcanvas, {
-        position: this.deviceService.offcanvasPosition()
-      }
-    );
+    this.loadingService.setLoading(true);
+    this._searchUsersWhoLikeThis(null).subscribe(() => {
+      const offcanvas = this.offcanvasService.open(
+        this.likeThisOffcanvas, {
+          panelClass: "image-like-this-offcanvas",
+          position: this.deviceService.offcanvasPosition()
+        }
+      );
+
+      offcanvas.shown.pipe(take(1)).subscribe(() => {
+        this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
+        this.loadingService.setLoading(false);
+      });
+    });
   }
 
-  private _searchUsersWhoLikeThis(q: string) {
+  protected openBookmarkedThisOffcanvas() {
+    this.bookmarkedThisSearch = "";
+    this.loadingService.setLoading(true);
+    this._searchUsersWhoBookmarkedThis(null).subscribe(() => {
+      const offcanvas = this.offcanvasService.open(
+        this.bookmarkedThisOffcanvas, {
+          panelClass: "image-bookmarked-this-offcanvas",
+          position: this.deviceService.offcanvasPosition()
+        }
+      );
+
+      offcanvas.shown.pipe(take(1)).subscribe(() => {
+        this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
+        this.loadingService.setLoading(false);
+      });
+    });
+  }
+
+  private _searchUsersWhoLikeThis(q: string): Observable<any> {
     this.searching = true;
-    this.imageApiService.getUsersWhoLikeImage(this.image.pk, q).subscribe(users => {
+    return this.imageApiService.getUsersWhoLikeImage(this.image.pk, q).pipe(tap(users => {
       this.likeThis = users;
       this.searching = false;
-    })
+    }));
+  }
+
+  private _searchUsersWhoBookmarkedThis(q: string): Observable<any> {
+    this.searching = true;
+    return this.imageApiService.getUsersWhoBookmarkedImage(this.image.pk, q).pipe(tap(users => {
+      this.bookmarkedThis = users;
+      this.searching = false;
+    }));
   }
 }

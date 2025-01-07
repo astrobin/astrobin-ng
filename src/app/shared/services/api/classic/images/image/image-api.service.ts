@@ -227,8 +227,10 @@ export class ImageApiService extends BaseClassicApiService {
   }
 
   getUsersWhoLikeImage(pk: ImageInterface["pk"], q: string): Observable<{
+    userId: number;
     username: string;
     displayName: string;
+    timestamp: string;
   }[]> {
     let url = `${this.configUrl}/image/${pk}/users-who-like/`;
 
@@ -237,8 +239,30 @@ export class ImageApiService extends BaseClassicApiService {
     }
 
     return this.http.get<{
+      userId: number;
       username: string;
       displayName: string;
+      timestamp: string;
+    }[]>(url);
+  }
+
+  getUsersWhoBookmarkedImage(pk: ImageInterface["pk"], q: string): Observable<{
+    userId: number;
+    username: string;
+    displayName: string;
+    timestamp: string;
+  }[]> {
+    let url = `${this.configUrl}/image/${pk}/users-who-bookmarked/`;
+
+    if (q) {
+      url += `?users-who-bookmarked-q=${q}`;
+    }
+
+    return this.http.get<{
+      userId: number;
+      username: string;
+      displayName: string;
+      timestamp: string;
     }[]>(url);
   }
 }
