@@ -95,7 +95,7 @@
     "ngx-uploadx": "6.2.1",
     "pako": "2.1.0",
     "popper": "1.0.1",
-    "reflect-metadata": "0.1.13",
+    "reflect-metadata": "0.2.2",
     "rimraf": "4.4.1",
     "rxjs": "7.8.1",
     "tslib": "2.5.2",
