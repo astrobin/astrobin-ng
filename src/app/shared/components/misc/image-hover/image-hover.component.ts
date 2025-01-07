@@ -91,10 +91,7 @@ export class ImageHoverComponent implements OnChanges {
   protected ra: string;
   protected dec: string;
 
-  constructor(
-    public readonly imageService: ImageService,
-    public readonly astroUtils: AstroUtilsService
-  ) {}
+  constructor(public readonly imageService: ImageService) {}
 
   ngOnChanges(): void {
     if (this.image.hasOwnProperty('likeCount')) {
@@ -110,12 +107,8 @@ export class ImageHoverComponent implements OnChanges {
       this.bookmarks = (this.image as ImageSearchInterface).bookmarks;
       this.comments = (this.image as ImageSearchInterface).comments;
       this.integration = this.imageService.formatIntegration((this.image as ImageSearchInterface).integration);
-      this.ra = this.astroUtils.formatRa(
-        ((this.image as ImageSearchInterface).coordRaMin + (this.image as ImageSearchInterface).coordRaMax) / 2
-      );
-      this.dec = this.astroUtils.formatDec(
-        ((this.image as ImageSearchInterface).coordDecMin + (this.image as ImageSearchInterface).coordDecMax) / 2
-      );
+      this.ra = this.imageService.formatRightAscension((this.image as ImageSearchInterface).coordRaMin);
+      this.dec = this.imageService.formatDeclination((this.image as ImageSearchInterface).coordDecMin);
     }
   }
 }
