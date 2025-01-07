@@ -919,7 +919,6 @@ export class ImageService extends BaseService {
       return regularThumbnail.url;
     }
 
-
     return "/assets/images/loading.gif?v=20241030";
   }
 

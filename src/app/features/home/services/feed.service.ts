@@ -16,7 +16,7 @@ export class FeedService {
     let resultIndex = 0;
 
     // Store the index where we first saw each key
-    const seenAction = new Map<string, number>();
+    const seenActionObject = new Map<string, number>();
     const seenTarget = new Map<string, number>();
 
     // Single pass through the array
@@ -30,15 +30,15 @@ export class FeedService {
         `${item.targetObjectId}:${item.targetContentType}` : '';
 
       // Check if we've seen either key
-      const seenActionIndex = actionKey ? seenAction.get(actionKey) : undefined;
-      const seenTargetIndex = targetKey ? seenTarget.get(targetKey) : undefined;
+      const seenActionIndex = actionKey ? seenActionObject.get(actionKey) || seenTarget.get(actionKey) : undefined;
+      const seenTargetIndex = targetKey ? seenActionObject.get(targetKey) || seenTarget.get(targetKey) : undefined;
 
       // If we haven't seen either key, or if this item was the first occurrence
       if ((!actionKey || seenActionIndex === undefined) &&
         (!targetKey || seenTargetIndex === undefined)) {
 
         // Store the current index
-        if (actionKey) seenAction.set(actionKey, i);
+        if (actionKey) seenActionObject.set(actionKey, i);
         if (targetKey) seenTarget.set(targetKey, i);
 
         // Add item to result
