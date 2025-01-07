@@ -322,17 +322,16 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
   }
 
   humanizeFilterType(filterType: string): string {
+    if (filterType === "UNKNOWN") {
+      return this.translateService.instant("No filter");
+    }
+
     if (
       !Object.values(FilterType).includes(filterType as FilterType) &&
       !Object.values(LegacyFilterType).includes(filterType as LegacyFilterType)
     ) {
       return filterType;
     }
-
-    if (filterType === "UNKNOWN") {
-      return this.translateService.instant("No filter");
-    }
-
 
     return this.filterService.humanizeTypeShort(filterType as FilterType);
   }
