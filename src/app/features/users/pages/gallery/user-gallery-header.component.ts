@@ -192,7 +192,12 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
             <td>{{ stat[0] }}</td>
             <td *ngIf="!stat[2]">{{ stat[1] }}</td>
             <td *ngIf="stat[2] && stat[2] === 'datetime'">
-              {{ stat[1] | localDate | timeago }}
+              <ng-container *ngIf="!!stat[1]">
+                {{ stat[1] | localDate | timeago }}
+              </ng-container>
+              <ng-container *ngIf="!stat[1]">
+                {{ "n/a" | translate }}
+              </ng-container>
             </td>
           </tr>
           </tbody>
