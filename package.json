@@ -71,7 +71,7 @@
     "buffer": "6.0.3",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",
-    "core-js": "3.39.0",
+    "core-js": "3.40.0",
     "country-js": "0.10.0",
     "dotenv": "16.4.7",
     "express": "4.21.2",
