@@ -150,8 +150,9 @@ import { LoadingService } from "@shared/services/loading.service";
                       [contentType]="userContentType.id"
                       [objectId]="like.userId"
                       [propertyType]="'follow'"
+                      [showLabel]="false"
                       class="d-block"
-                      btnClass="btn btn-sm btn-outline-secondary"
+                      btnClass="btn btn-sm btn-link text-secondary"
                     ></astrobin-toggle-property>
                   </td>
                 </tr>
@@ -215,9 +216,10 @@ import { LoadingService } from "@shared/services/loading.service";
                     [userId]="currentUserWrapper.user.id"
                     [contentType]="userContentType.id"
                     [objectId]="bookmark.userId"
+                    [showLabel]="false"
                     [propertyType]="'follow'"
                     class="d-block"
-                    btnClass="btn btn-sm btn-outline-secondary"
+                    btnClass="btn btn-sm btn-link text-secondary"
                   ></astrobin-toggle-property>
                 </td>
               </tr>
