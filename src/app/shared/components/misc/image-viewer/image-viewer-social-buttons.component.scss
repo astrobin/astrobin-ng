@@ -70,23 +70,23 @@
   .image-bookmarked-this-offcanvas {
     .table td {
       vertical-align: middle;
+
+      astrobin-toggle-property {
+        .btn {
+          .ng-fa-icon {
+            margin: 0;
+          }
+
+          &.toggled .ng-fa-icon {
+            opacity: 1 !important;
+            color: var(--accentColor) !important;
+          }
+        }
+      }
     }
 
     &:not(.offcanvas-bottom) {
       width: 40vw;
-    }
-
-    astrobin-toggle-property {
-      .btn {
-        .ng-fa-icon {
-          margin: 0;
-        }
-
-        &.toggled .ng-fa-icon {
-          opacity: 1 !important;
-          color: var(--accentColor) !important;
-        }
-      }
     }
   }
 }

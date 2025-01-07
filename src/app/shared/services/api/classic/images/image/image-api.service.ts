@@ -39,11 +39,30 @@ export interface FindImagesOptionsInterface {
   ordering?: string;
 }
 
+export interface UsersWhoLikeOrBookmarkInterface {
+  userId: number;
+  username: string;
+  displayName: string;
+  timestamp: string;
+  followed: boolean;
+}
+
 @Injectable({
   providedIn: "root"
 })
 export class ImageApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/images";
+
+  private readonly PROPERTY_CONFIGS = {
+    like: {
+      urlPath: 'users-who-like',
+      queryParam: 'users-who-like-q'
+    },
+    bookmark: {
+      urlPath: 'users-who-bookmarked',
+      queryParam: 'users-who-bookmarked-q'
+    }
+  } as const;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -226,43 +245,38 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.patch<ImageInterface>(`${this.configUrl}/image/${pk}/remove-collaborator/`, { userId });
   }
 
-  getUsersWhoLikeImage(pk: ImageInterface["pk"], q: string): Observable<{
-    userId: number;
-    username: string;
-    displayName: string;
-    timestamp: string;
-  }[]> {
-    let url = `${this.configUrl}/image/${pk}/users-who-like/`;
-
-    if (q) {
-      url += `?users-who-like-q=${q}`;
-    }
-
-    return this.http.get<{
-      userId: number;
-      username: string;
-      displayName: string;
-      timestamp: string;
-    }[]>(url);
+  getUsersWhoLikeImage(
+    pk: ImageInterface["pk"],
+    q: string,
+    page = 1
+  ): Observable<PaginatedApiResultInterface<UsersWhoLikeOrBookmarkInterface>> {
+    return this._getUsersWithProperty(pk, "like", q, page);
   }
 
-  getUsersWhoBookmarkedImage(pk: ImageInterface["pk"], q: string): Observable<{
-    userId: number;
-    username: string;
-    displayName: string;
-    timestamp: string;
-  }[]> {
-    let url = `${this.configUrl}/image/${pk}/users-who-bookmarked/`;
+  getUsersWhoBookmarkedImage(
+    pk: ImageInterface["pk"],
+    q: string,
+    page = 1
+  ): Observable<PaginatedApiResultInterface<UsersWhoLikeOrBookmarkInterface>> {
+    return this._getUsersWithProperty(pk, "bookmark", q, page);
+  }
+
+  private _getUsersWithProperty(
+    pk: ImageInterface["pk"],
+    propertyType: keyof typeof this.PROPERTY_CONFIGS,
+    q: string,
+    page = 1
+  ): Observable<PaginatedApiResultInterface<UsersWhoLikeOrBookmarkInterface>> {
+    let url = `${this.configUrl}/image/${pk}/${this.PROPERTY_CONFIGS[propertyType].urlPath}/`;
 
     if (q) {
-      url += `?users-who-bookmarked-q=${q}`;
+      url = UtilsService.addOrUpdateUrlParam(url, this.PROPERTY_CONFIGS[propertyType].queryParam, q);
     }
 
-    return this.http.get<{
-      userId: number;
-      username: string;
-      displayName: string;
-      timestamp: string;
-    }[]>(url);
+    if (page > 1) {
+      url = UtilsService.addOrUpdateUrlParam(url, "page", page.toString());
+    }
+
+    return this.http.get<PaginatedApiResultInterface<UsersWhoLikeOrBookmarkInterface>>(url);
   }
 }

@@ -12,16 +12,17 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { debounceTime, distinctUntilChanged, filter, take, takeUntil, tap } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { isPlatformBrowser } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { Observable, Subject } from "rxjs";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { finalize, fromEvent, Observable, Subject, throttleTime } from "rxjs";
+import { ImageApiService, UsersWhoLikeOrBookmarkInterface } from "@shared/services/api/classic/images/image/image-api.service";
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
 import { LoadingService } from "@shared/services/loading.service";
+import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 
 
 @Component({
@@ -129,35 +130,41 @@ import { LoadingService } from "@shared/services/loading.service";
             (ngModelChange)="likeThisSearchSubject.next($event)"
           />
           <ng-container *ngIf="!searching; else loadingTemplate">
-            <table *ngIf="likeThis && likeThis.length > 0; else nothingHereTemplate" class="table table-sm table-striped">
+            <table
+              *ngIf="likeThis && likeThis.length > 0; else nothingHereTemplate"
+              class="table table-sm table-striped"
+            >
               <tbody>
-                <tr *ngFor="let like of likeThis">
-                  <td>
-                    <a [routerLink]="['/u', like.username]">
-                      {{ like.displayName || like.username }}
-                    </a>
-                    <div class="d-md-none">
-                      {{ like.timestamp | localDate | timeago: true }}
-                    </div>
-                  </td>
-                  <td class="d-none d-lg-table-cell">
+              <tr *ngFor="let like of likeThis">
+                <td>
+                  <a [routerLink]="['/u', like.username]">
+                    {{ like.displayName || like.username }}
+                  </a>
+                  <div class="d-xl-none">
                     {{ like.timestamp | localDate | timeago: true }}
-                  </td>
-                  <td class="text-end">
-                    <astrobin-toggle-property
-                      *ngIf="!!currentUserWrapper.user && currentUserWrapper.user.id !== like.userId"
-                      [userId]="currentUserWrapper.user.id"
-                      [contentType]="userContentType.id"
-                      [objectId]="like.userId"
-                      [propertyType]="'follow'"
-                      [showLabel]="false"
-                      class="d-block"
-                      btnClass="btn btn-sm btn-link text-secondary"
-                    ></astrobin-toggle-property>
-                  </td>
-                </tr>
+                  </div>
+                </td>
+                <td class="d-none d-xl-table-cell">
+                  {{ like.timestamp | localDate | timeago: true }}
+                </td>
+                <td class="text-end">
+                  <astrobin-toggle-property
+                    *ngIf="!!currentUserWrapper.user && currentUserWrapper.user.id !== like.userId"
+                    [userId]="currentUserWrapper.user.id"
+                    [contentType]="userContentType.id"
+                    [objectId]="like.userId"
+                    [propertyType]="'follow'"
+                    [showLabel]="false"
+                    [toggled]="like.followed"
+                    class="d-block"
+                    btnClass="btn btn-sm btn-link text-secondary"
+                  ></astrobin-toggle-property>
+                </td>
+              </tr>
               </tbody>
             </table>
+
+            <astrobin-loading-indicator *ngIf="loadingMore"></astrobin-loading-indicator>
           </ng-container>
         </div>
       </div>
@@ -196,18 +203,21 @@ import { LoadingService } from "@shared/services/loading.service";
             (ngModelChange)="bookmarkedThisSearchSubject.next($event)"
           />
           <ng-container *ngIf="!searching; else loadingTemplate">
-            <table *ngIf="bookmarkedThis && bookmarkedThis.length > 0; else nothingHereTemplate" class="table table-sm table-striped">
+            <table
+              *ngIf="bookmarkedThis && bookmarkedThis.length > 0; else nothingHereTemplate"
+              class="table table-sm table-striped"
+            >
               <tbody>
               <tr *ngFor="let bookmark of bookmarkedThis">
                 <td>
                   <a [routerLink]="['/u', bookmark.username]">
                     {{ bookmark.displayName || bookmark.username }}
                   </a>
-                  <div class="d-md-none">
+                  <div class="d-xl-none">
                     {{ bookmark.timestamp | localDate | timeago: true }}
                   </div>
                 </td>
-                <td class="d-none d-lg-table-cell">
+                <td class="d-none d-xl-table-cell">
                   {{ bookmark.timestamp | localDate | timeago: true }}
                 </td>
                 <td class="text-end">
@@ -216,8 +226,9 @@ import { LoadingService } from "@shared/services/loading.service";
                     [userId]="currentUserWrapper.user.id"
                     [contentType]="userContentType.id"
                     [objectId]="bookmark.userId"
-                    [showLabel]="false"
                     [propertyType]="'follow'"
+                    [showLabel]="false"
+                    [toggled]="bookmark.followed"
                     class="d-block"
                     btnClass="btn btn-sm btn-link text-secondary"
                   ></astrobin-toggle-property>
@@ -225,6 +236,8 @@ import { LoadingService } from "@shared/services/loading.service";
               </tr>
               </tbody>
             </table>
+
+            <astrobin-loading-indicator *ngIf="loadingMore"></astrobin-loading-indicator>
           </ng-container>
         </div>
       </div>
@@ -251,7 +264,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
   @Input() showBookmark = true;
   @Input() showComments = true;
   @Input() showShare = true;
-  @Input() btnExtraClasses = ""
+  @Input() btnExtraClasses = "";
 
   @ViewChild("shareTemplate") shareTemplate: TemplateRef<any>;
   @ViewChild("likeThisOffcanvas") likeThisOffcanvas: TemplateRef<any>;
@@ -261,14 +274,18 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
   protected imageContentType: ContentTypeInterface;
   protected searching = false;
 
-  protected likeThis: {userId: number; username: string; displayName: string, timestamp: string;}[] = [];
+  protected likeThis: UsersWhoLikeOrBookmarkInterface[] = [];
   protected likeThisSearch: string;
   protected likeThisSearchSubject = new Subject<string>();
+  protected likeThisPage = 1;
 
-  protected bookmarkedThis: {userId: number; username: string; displayName: string, timestamp: string;}[] = [];
+  protected bookmarkedThis: UsersWhoLikeOrBookmarkInterface[];
   protected bookmarkedThisSearch: string;
   protected bookmarkedThisSearchSubject = new Subject<string>();
+  protected bookmarkedThisPage = 1;
 
+  protected loadingMore = false; // If loading more pages of likes/bookmarks
+  protected hasMorePages = false; // If there are more pages of likes/bookmarks
 
   protected initialLikeCount: number;
   protected initialBookmarkCount: number;
@@ -385,30 +402,38 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
   }
 
   protected openLikeThisOffcanvas() {
-    this.likeThisSearch = "";
-    this.loadingService.setLoading(true);
-    this._searchUsersWhoLikeThis(null).subscribe(() => {
-      const offcanvas = this.offcanvasService.open(
-        this.likeThisOffcanvas, {
-          panelClass: "image-like-this-offcanvas",
-          position: this.deviceService.offcanvasPosition()
-        }
-      );
-
-      offcanvas.shown.pipe(take(1)).subscribe(() => {
-        this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
-        this.loadingService.setLoading(false);
-      });
+    this._openPropertyOffcanvas({
+      searchProperty: "likeThisSearch",
+      searchMethod: this._searchUsersWhoLikeThis.bind(this),
+      offcanvasTemplate: this.likeThisOffcanvas,
+      panelClass: "image-like-this-offcanvas"
     });
   }
 
   protected openBookmarkedThisOffcanvas() {
-    this.bookmarkedThisSearch = "";
+    this._openPropertyOffcanvas({
+      searchProperty: "bookmarkedThisSearch",
+      searchMethod: this._searchUsersWhoBookmarkedThis.bind(this),
+      offcanvasTemplate: this.bookmarkedThisOffcanvas,
+      panelClass: "image-bookmarked-this-offcanvas"
+    });
+  }
+
+  private _openPropertyOffcanvas(
+    params: {
+      searchProperty: "likeThisSearch" | "bookmarkedThisSearch";
+      searchMethod: (q: string | null) => Observable<any>;
+      offcanvasTemplate: any;
+      panelClass: string;
+    }
+  ) {
+    this[params.searchProperty] = "";
     this.loadingService.setLoading(true);
-    this._searchUsersWhoBookmarkedThis(null).subscribe(() => {
+
+    params.searchMethod(null).subscribe(() => {
       const offcanvas = this.offcanvasService.open(
-        this.bookmarkedThisOffcanvas, {
-          panelClass: "image-bookmarked-this-offcanvas",
+        params.offcanvasTemplate, {
+          panelClass: params.panelClass,
           position: this.deviceService.offcanvasPosition()
         }
       );
@@ -416,23 +441,105 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       offcanvas.shown.pipe(take(1)).subscribe(() => {
         this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
         this.loadingService.setLoading(false);
+
+        const offcanvasElement = document.querySelector(`.${params.panelClass} .offcanvas-body`);
+        if (offcanvasElement) {
+          // Check if content is shorter than viewport and we have more pages
+          const checkAndLoadMore = () => {
+            const element = offcanvasElement as HTMLElement;
+            if (element.scrollHeight <= element.clientHeight && this.hasMorePages && !this.loadingMore) {
+              this.loadingMore = true;
+              params.searchMethod(this[params.searchProperty] as string)
+                .pipe(finalize(() => this.loadingMore = false))
+                .subscribe(() => {
+                  // Recursively check again after loading, in case we still need more
+                  setTimeout(checkAndLoadMore, 0);
+                });
+            }
+          };
+
+          // Initial check when offcanvas opens
+          checkAndLoadMore();
+
+          // Set up scroll listener for further loading
+          fromEvent(offcanvasElement, 'scroll')
+            .pipe(
+              takeUntil(offcanvas.hidden),
+              throttleTime(200),
+              map((event: Event) => {
+                const element = event.target as HTMLElement;
+                const threshold = 400;
+                return element.scrollHeight - (element.scrollTop + element.clientHeight) <= threshold;
+              }),
+              filter(isNearBottom => isNearBottom),
+              filter(() => !this.loadingMore && this.hasMorePages)
+            ).subscribe(() => {
+            this.loadingMore = true;
+            params.searchMethod(this[params.searchProperty] as string)
+              .pipe(finalize(() => this.loadingMore = false))
+              .subscribe();
+          });
+        }
       });
     });
   }
 
-  private _searchUsersWhoLikeThis(q: string): Observable<any> {
-    this.searching = true;
-    return this.imageApiService.getUsersWhoLikeImage(this.image.pk, q).pipe(tap(users => {
-      this.likeThis = users;
-      this.searching = false;
-    }));
+  private _searchUsersWithProperty(params: {
+    propertyType: "like" | "bookmark";
+    query: string;
+    pageProperty: "likeThisPage" | "bookmarkedThisPage";
+    resultsProperty: "likeThis" | "bookmarkedThis";
+    searchMethod: (pk: number, q: string, page: number) => Observable<PaginatedApiResultInterface<UsersWhoLikeOrBookmarkInterface>>;
+  }): Observable<PaginatedApiResultInterface<UsersWhoLikeOrBookmarkInterface>> {
+    if (!!params.query) {
+      // Reset page and results when performing a new search
+      this[params.pageProperty] = 1;
+      this[params.resultsProperty] = [];
+    }
+
+    if (this[params.pageProperty] === 1) {
+      this.searching = true;
+      this[params.resultsProperty] = [];
+    } else {
+      this.loadingMore = true;
+    }
+
+    return params.searchMethod(this.image.pk, params.query, this[params.pageProperty]).pipe(
+      tap(response => {
+        this[params.resultsProperty] = [
+          ...(this[params.resultsProperty] || []),
+          ...response.results
+        ];
+
+        this.searching = false;
+        this.loadingMore = false;
+        this.hasMorePages = !!response.next;
+
+        // Increment page number after successful load
+        if (this.hasMorePages) {
+          this[params.pageProperty]++;
+        }
+      })
+    );
   }
 
-  private _searchUsersWhoBookmarkedThis(q: string): Observable<any> {
-    this.searching = true;
-    return this.imageApiService.getUsersWhoBookmarkedImage(this.image.pk, q).pipe(tap(users => {
-      this.bookmarkedThis = users;
-      this.searching = false;
-    }));
+  private _searchUsersWhoLikeThis(q: string): Observable<PaginatedApiResultInterface<UsersWhoLikeOrBookmarkInterface>> {
+    return this._searchUsersWithProperty({
+      propertyType: "like",
+      query: q,
+      pageProperty: "likeThisPage",
+      resultsProperty: "likeThis",
+      searchMethod: this.imageApiService.getUsersWhoLikeImage.bind(this.imageApiService)
+    });
+  }
+
+  private _searchUsersWhoBookmarkedThis(q: string): Observable<PaginatedApiResultInterface<UsersWhoLikeOrBookmarkInterface>> {
+    return this._searchUsersWithProperty({
+      propertyType: "bookmark",
+      query: q,
+      pageProperty: "bookmarkedThisPage",
+      resultsProperty: "bookmarkedThis",
+      searchMethod: this.imageApiService.getUsersWhoBookmarkedImage.bind(this.imageApiService)
+    });
   }
 }
