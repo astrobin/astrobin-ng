@@ -52,7 +52,10 @@ interface VisibleItemInterface {
           class="nav-tabs"
         >
           <li [ngbNavItem]="ArchiveType.IOTD">
-            <button ngbNavLink>{{ "Image of the day" | translate }}</button>
+            <button ngbNavLink>
+              <span class="d-none d-md-inline">{{ "Image of the day" | translate }}</span>
+              <span class="d-inline d-md-none">IOTD</span>
+            </button>
             <ng-template ngbNavContent>
               <ng-container *ngTemplateOutlet="tabContentTemplate"></ng-container>
             </ng-template>
