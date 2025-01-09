@@ -22,7 +22,7 @@ import { ImageViewerNavigationContext, ImageViewerService } from "@shared/servic
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { SearchService } from "@features/search/services/search.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
@@ -146,7 +146,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
 
   protected readonly ArchiveType = ArchiveType;
 
-  protected activeTab: ArchiveType = ArchiveType.IOTD;
+  protected activeTab: ArchiveType;
   protected loading = false;
   protected loadingMore = false;
   protected next: string | null = null;
@@ -155,6 +155,8 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   protected items: IotdArchiveInterface[] | TopPickArchiveInterface[] | TopPickNominationArchiveInterface[];
   protected visibleItems: VisibleItemInterface[];
   protected _page = 1;
+  protected readonly SearchAutoCompleteType = SearchAutoCompleteType;
+  protected readonly DataSource = DataSource;
   private readonly _isBrowser: boolean;
   private _oldItemsCount = 0;
   private _loadedImages: Set<string> = new Set();
@@ -177,7 +179,8 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     public readonly imageService: ImageService,
     public readonly searchService: SearchService,
     public readonly searchFilterService: SearchFilterService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
@@ -193,8 +196,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     this._initTitleAndBreadcrumb();
     this._initScrollListener();
     this._initResizeListener();
-
-    this.onTabChange({ activeId: ArchiveType.IOTD } as NgbNavChangeEvent<ArchiveType>);
+    this._initTab();
   }
 
   ngOnDestroy() {
@@ -227,6 +229,14 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     });
   }
 
+  getDataSourceEnumValues(): DataSource[] {
+    return Object.values(DataSource).filter(value => typeof value === "string") as DataSource[];
+  }
+
+  getSubjectTypeEnumValues(): SubjectType[] {
+    return Object.values(SubjectType).filter(value => typeof value === "string") as SubjectType[];
+  }
+
   protected openSearch(key: SearchAutoCompleteType, value: any): void {
     const encodedParams = this.searchService.modelToParams({
       [key]: value,
@@ -236,16 +246,17 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     this.router.navigateByUrl(`/search?p=${encodedParams}`);
   }
 
-  getDataSourceEnumValues(): DataSource[] {
-    return Object.values(DataSource).filter(value => typeof value === 'string') as DataSource[];
-  }
-
-  getSubjectTypeEnumValues(): SubjectType[] {
-    return Object.values(SubjectType).filter(value => typeof value === 'string') as SubjectType[];
-  }
-
   protected onTabChange(event: NgbNavChangeEvent<ArchiveType>) {
-    this.activeTab = event.activeId;
+    if (this.activeTab == event.nextId && this.items !== undefined) {
+      return;
+    }
+
+    this.router.navigate([], {
+      fragment: event.nextId.toString(),
+    });
+
+    this.activeTab = event.nextId;
+
     this._page = 1;
     this.next = null;
 
@@ -328,6 +339,27 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         }
       });
     }
+  }
+
+  private _initTab() {
+    const doInit = () => {
+      const fragment = this.activatedRoute.snapshot.fragment;
+
+      this.onTabChange({
+        nextId: fragment
+          ? (fragment as any) as ArchiveType
+          : ArchiveType.IOTD
+      } as NgbNavChangeEvent<ArchiveType>);
+    };
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      doInit();
+    });
+
+    doInit();
   }
 
   private _loadData(): Observable<(IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface)[]> {
@@ -533,8 +565,4 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         });
       });
   }
-
-  protected readonly SearchAutoCompleteType = SearchAutoCompleteType;
-  protected readonly DataSource = DataSource;
-  protected readonly Object = Object;
 }
