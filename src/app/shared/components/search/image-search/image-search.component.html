@@ -120,7 +120,7 @@
             <astrobin-image-hover
               *ngIf="alias === ImageAlias.REGULAR"
               [image]="item"
-              [staticOverlay]="model.ordering"
+              [staticOverlay]="showStaticOverlay ? model.ordering : null"
             ></astrobin-image-hover>
           </a>
         </div>

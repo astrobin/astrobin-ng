@@ -57,6 +57,9 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
   @Input()
   showMarketplaceItems = true;
 
+  @Input()
+  showStaticOverlay = true;
+
   next: string;
   loading = true;
   images: ImageSearchInterface[] = [];
