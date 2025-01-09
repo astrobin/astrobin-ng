@@ -80,7 +80,7 @@ export class IotdTpArchiveItemComponent extends BaseComponentDirective implement
     this.date = (this.item as any).date ? (this.item as any).date : this.item.created;
 
     this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
-      this._newGalleryExperience = currentUserProfile.enableNewGalleryExperience;
+      this._newGalleryExperience = currentUserProfile?.enableNewGalleryExperience;
 
       this.photographers = [
         {
@@ -111,7 +111,7 @@ export class IotdTpArchiveItemComponent extends BaseComponentDirective implement
     if (this._newGalleryExperience) {
       this.router.navigate(["/u", username]);
     } else {
-      this.windowRefService.nativeWindow.open(this.classicRoutesService.GALLERY(username));
+      this.windowRefService.nativeWindow.open(this.classicRoutesService.GALLERY(username), "_self");
     }
   }
 }
