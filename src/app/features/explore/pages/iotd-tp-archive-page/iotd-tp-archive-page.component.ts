@@ -71,39 +71,47 @@ interface VisibleItemInterface {
           </li>
         </ul>
 
-        <div ngbDropdown [placement]="'bottom-end'" class="dropdown d-none d-md-block">
-          <button ngbDropdownToggle class="btn btn-link text-primary no-toggle p-3">
-            <fa-icon icon="filter"></fa-icon>
-          </button>
-          <div ngbDropdownMenu>
-            <div class="dropdown-header">
-              {{ searchFilterService.humanizeSearchAutoCompleteType(SearchAutoCompleteType.DATA_SOURCE) }}
-            </div>
-
-            <button
-              *ngFor="let source of getDataSourceEnumValues()"
-              (click)="openSearch(SearchAutoCompleteType.DATA_SOURCE, source)"
-              ngbDropdownItem
-            >
-              {{ imageService.humanizeDataSource(source) }}
+        <div class="d-flex flex-nowrap align-items-center me-2">
+          <div ngbDropdown [placement]="'bottom-end'" class="dropdown px-2 py-3 d-none d-md-block">
+            <button ngbDropdownToggle class="btn btn-link text-primary no-toggle">
+              <fa-icon icon="filter"></fa-icon>
             </button>
+            <div ngbDropdownMenu>
+              <div class="dropdown-header">
+                {{ searchFilterService.humanizeSearchAutoCompleteType(SearchAutoCompleteType.DATA_SOURCE) }}
+              </div>
 
-            <div class="dropdown-header">
-              {{ searchFilterService.humanizeSearchAutoCompleteType(SearchAutoCompleteType.SUBJECT_TYPE) }}
+              <button
+                *ngFor="let source of getDataSourceEnumValues()"
+                (click)="openSearch(SearchAutoCompleteType.DATA_SOURCE, source)"
+                ngbDropdownItem
+              >
+                {{ imageService.humanizeDataSource(source) }}
+              </button>
+
+              <div class="dropdown-header">
+                {{ searchFilterService.humanizeSearchAutoCompleteType(SearchAutoCompleteType.SUBJECT_TYPE) }}
+              </div>
+
+              <button
+                *ngFor="let subjectType of getSubjectTypeEnumValues()"
+                (click)="openSearch(SearchAutoCompleteType.SUBJECT_TYPE, subjectType)"
+                ngbDropdownItem
+              >
+                {{ imageService.humanizeSubjectType(subjectType) }}
+              </button>
             </div>
-
-            <button
-              *ngFor="let subjectType of getSubjectTypeEnumValues()"
-              (click)="openSearch(SearchAutoCompleteType.SUBJECT_TYPE, subjectType)"
-              ngbDropdownItem
-            >
-              {{ imageService.humanizeSubjectType(subjectType) }}
-            </button>
           </div>
+
+          <a href="https://welcome.astrobin.com/iotd" target="_blank" rel="noopener" class="px-2 py-3">
+            <fa-icon icon="info-circle"></fa-icon>
+          </a>
         </div>
       </div>
 
       <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+      <astrobin-scroll-to-top></astrobin-scroll-to-top>
     </div>
 
     <ng-template #tabContentTemplate>
