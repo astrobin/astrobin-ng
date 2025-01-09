@@ -114,6 +114,7 @@ interface VisibleItemInterface {
       <div class="items-container" #itemsContainer>
         <div
           *ngFor="let item of visibleItems; trackBy: trackByFn"
+          [attr.data-item-id]="item.data.id"
           class="item"
         >
           <astrobin-iotd-tp-archive-item
@@ -121,15 +122,14 @@ interface VisibleItemInterface {
             @fadeInOut
             (click)="openImageById(item.data.image['hash'] || item.data.image['pk'])"
             (imageLoaded)="onImageLoaded($event)"
-            [attr.data-item-id]="item.data.id"
             [item]="item.data"
           ></astrobin-iotd-tp-archive-item>
         </div>
-
-        <ng-container *ngIf="loadingMore">
-          <ng-template [ngTemplateOutlet]="loadingTemplate"></ng-template>
-        </ng-container>
       </div>
+
+      <ng-container *ngIf="loadingMore">
+        <ng-template [ngTemplateOutlet]="loadingTemplate"></ng-template>
+      </ng-container>
     </ng-template>
 
     <ng-template #loadingTemplate>
@@ -158,9 +158,8 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   protected readonly SearchAutoCompleteType = SearchAutoCompleteType;
   protected readonly DataSource = DataSource;
   private readonly _isBrowser: boolean;
-  private _oldItemsCount = 0;
   private _loadedImages: Set<string> = new Set();
-  private _currentBatch: string[] = [];
+  private _currentBatch: string[] = null;
   private _nearEndOfContextSubscription: Subscription;
 
   public constructor(
@@ -278,12 +277,19 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     this._loadedImages.add(imageId);
 
     // If all images in the current batch are loaded, trigger masonry layout
-    if (this._currentBatch.every(id => this._loadedImages.has(id))) {
+    if (this._currentBatch && this._currentBatch.every(id => this._loadedImages.has(id))) {
       if (this.masonry) {
-        this.masonry.layout();
+        const items = this.itemsContainer.nativeElement.querySelectorAll(".item") as NodeListOf<HTMLElement>;
+        const newElements = Array.from(items).filter(item => this._currentBatch.includes(item.getAttribute("data-item-id")));
+        this.masonry.appended(newElements);
+        this._masonryLayoutComplete();
+        this.loadingMore = false;
       } else {
         this._initMasonry();
+        this.loading = false;
       }
+
+      this._currentBatch = null;
     }
   }
 
@@ -322,12 +328,12 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         takeUntil(this.destroyed$),
         debounceTime(100)
       ).subscribe(() => {
-        this.visibleItems = this.items.map(item => {
+        this.visibleItems = this.items? this.items.map(item => {
           return {
             data: item,
             visible: true
           };
-        });
+        }) : null;
 
         this.changeDetectorRef.detectChanges();
 
@@ -389,11 +395,12 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       }
 
       api.subscribe(response => {
-        this.loading = false;
-        this.loadingMore = false;
         this.next = response.next;
 
-        this._currentBatch = response.results.map(item => item.id.toString());
+        this._currentBatch = [
+          ...this._currentBatch || [],
+          ...response.results.map(item => item.id.toString())
+        ];
 
         switch (this.activeTab) {
           case ArchiveType.IOTD:
@@ -415,25 +422,8 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         // Ensure the new items are rendered
         this.changeDetectorRef.detectChanges();
 
-        if (!this.masonry) {
-          this._initMasonry().then(() => {
-            subscriber.next(response.results);
-            subscriber.complete();
-          });
-        } else if (response.results) {
-          // Find newly added elements
-          const items = this.itemsContainer.nativeElement.querySelectorAll(".item");
-          // Assuming we know how many items were there before, we can isolate the new ones.
-          // For simplicity, let's say we track the old count and new count:
-          const newElements = Array.from(items).slice(this._oldItemsCount);
-          this._oldItemsCount = items.length;
-
-          // Call appended on just the new elements
-          this.masonry.appended(newElements);
-          this._masonryLayoutComplete();
-          subscriber.next(response.results);
-          subscriber.complete();
-        }
+        subscriber.next(response.results);
+        subscriber.complete();
       });
     });
   }
@@ -451,10 +441,6 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       gutter: 20,
       transitionDuration: "0"
     });
-
-    // Keep track of how many items we itemsContainer had.
-    const items = this.itemsContainer.nativeElement.querySelectorAll(".item");
-    this._oldItemsCount = items.length;
 
     this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
     this.masonry.layout();
@@ -501,7 +487,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       }
 
       // Only create a new object if visibility has changed, or it's a new item
-      const existingItem = this.visibleItems?.find(vfi => vfi.data.id === item.id);
+      const existingItem = this.visibleItems?.find(visibleItem => visibleItem.data.id === item.id);
       if (!existingItem || existingItem.visible !== isVisible) {
         newVisibleFeedItems.push({
           data: item,
@@ -524,6 +510,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       !this.loading &&
       !this.loadingMore
     ) {
+      this._page++;
       this._loadData().subscribe();
     }
   }

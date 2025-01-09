@@ -275,12 +275,12 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
         takeUntil(this.destroyed$),
         debounceTime(100)
       ).subscribe(() => {
-        this.visibleFeedItems = this.feedItems.map(item => {
+        this.visibleFeedItems = this.feedItems ? this.feedItems.map(item => {
           return {
             data: item,
             visible: true
           };
-        });
+        }) : null;
 
         this.changeDetectorRef.detectChanges();
 

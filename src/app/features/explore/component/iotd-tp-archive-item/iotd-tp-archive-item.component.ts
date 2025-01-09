@@ -43,7 +43,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         </div>
 
         <div class="date">
-          {{ date | date: 'shortDate' }}
+          {{ date | localDate | date: 'shortDate' }}
         </div>
       </div>
     </div>
