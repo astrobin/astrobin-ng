@@ -1,0 +1,75 @@
+@import "../../../../styles/mixins";
+@import "../../../../styles/breakpoints";
+
+:host {
+  .tabs-container {
+    @include darkest-background-texture;
+
+    .nav-tabs {
+      border-bottom: 0;
+      color: var(--lighterGrey);
+      padding: .5rem 1rem;
+      gap: .5rem;
+
+      .nav-link {
+        border-radius: .75rem;
+
+        &:not(.active) {
+          color: var(--lighterGrey);
+        }
+      }
+    }
+
+    @media (max-width: $sm-max) {
+      margin: -.5rem;
+
+      .nav-tabs {
+        font-size: .8rem;
+        gap: 0;
+        padding: .5rem;
+
+        .nav-link {
+          padding: .5rem;
+        }
+      }
+    }
+
+    @media (min-width: $lg-min) {
+      margin-top: -2rem;
+      margin-left: -2rem;
+      margin-right: -2rem;
+    }
+  }
+
+  ::ng-deep {
+    .tab-pane .items-container {
+      $gutter: 20px;
+
+      width: 100%;
+      margin: 0 auto;
+      contain: paint layout;
+      content-visibility: auto;
+
+      .item {
+        display: block;
+        border-radius: var(--bs-border-radius);
+        box-shadow: 0 0 0.5rem rgba(0, 0, 0, .375);
+        overflow: hidden;
+        width: calc(33.333% - #{$gutter / 1.5});
+        margin-bottom: 20px;
+        opacity: 0;
+        transition: opacity 0.2s;
+        will-change: opacity, transform;
+        cursor: pointer;
+
+        @media (max-width: $md-max) {
+          width: calc(50% - #{$gutter / 2});
+        }
+
+        @media (max-width: $xs-max) {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
