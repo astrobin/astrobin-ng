@@ -40,6 +40,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
+  @Input() showStaticOverlay = true;
 
   @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
 

@@ -35,6 +35,7 @@ import { VariantSelectorModalComponent } from "@shared/components/equipment/item
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 import { DeviceService } from "@shared/services/device.service";
+import { MatchType } from "@features/search/enums/match-type.enum";
 
 @Component({
   selector: "astrobin-brand-explorer-page",
@@ -298,4 +299,6 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
       this.loadingService.setLoading(false);
     }
   }
+
+  protected readonly MatchType = MatchType;
 }
