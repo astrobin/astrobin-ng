@@ -77,7 +77,7 @@ import { DeviceService } from "@shared/services/device.service";
           ></fa-icon>
 
           <span
-            *ngIf="collections.length === 0"
+            *ngIf="!collections || collections.length === 0"
             class="text-muted"
           >{{ "Create collection" | translate }}</span>
         </a>
