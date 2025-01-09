@@ -549,7 +549,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     }
   }
 
-  private _updateVisibleFeedItems(newItemsAdded: boolean) {
+  private _updateVisibleFeedItems() {
     if (!this.feedItems || !this.isBrowser) {
       return;
     }
@@ -610,7 +610,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     feedItems.forEach(item => {
       this.renderer.setStyle(item, "opacity", "1");
     });
-    this._updateVisibleFeedItems(false);
+    this._updateVisibleFeedItems();
     this.changeDetectorRef.detectChanges();
   }
 
@@ -622,7 +622,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   private _onScroll(): void {
-    this._updateVisibleFeedItems(false);
+    this._updateVisibleFeedItems();
 
     if (
       this.loading ||

@@ -1,0 +1,57 @@
+:host {
+  .iotd-tp-archive-item {
+    position: relative;
+
+    img {
+      width: 100%;
+      transition: filter .25s ease-in-out;
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          filter: brightness(1.25);
+        }
+      }
+    }
+
+    .gradient {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 5rem;
+      background: linear-gradient(0, rgba(0, 0, 0, 0.8) 0, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.2) 80%, transparent);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: .5rem .75rem;
+      z-index: 2;
+
+      .title,
+      .date {
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+      }
+
+      .title {
+        font-size: 1rem;
+        line-height: 1.15rem;
+        font-weight: 700;
+        color: var(--brightWhite);
+
+        .user-display-name {
+          font-weight: 400;
+        }
+      }
+
+      .date {
+        font-size: .85rem;
+        color: var(--lighterGrey);
+      }
+    }
+  }
+}

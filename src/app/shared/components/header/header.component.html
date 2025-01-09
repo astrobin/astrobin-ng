@@ -487,24 +487,10 @@
               {{ "Constellations" | translate }}
             </a>
 
-            <div class="dropdown-divider"></div>
-
-            <a [href]="classicRoutesService.TOP_PICK_NOMINATIONS" class="dropdown-item">
+            <a [routerLink]="['explore', 'iotd-tp-archive']" class="dropdown-item">
               <fa-icon icon="arrow-up"></fa-icon>
-              {{ "Top pick nominations" | translate }}
+              {{ "IOTD/TP Archive" | translate }}
             </a>
-
-            <a [href]="classicRoutesService.TOP_PICKS" class="dropdown-item">
-              <fa-icon icon="star"></fa-icon>
-              {{ "Top picks" | translate }}
-            </a>
-
-            <a [href]="classicRoutesService.IOTD" class="dropdown-item">
-              <fa-icon icon="trophy"></fa-icon>
-              {{ "Image of the day" | translate }}
-            </a>
-
-            <div class="dropdown-divider"></div>
 
             <a [href]="classicRoutesService.GROUPS" class="dropdown-item">
               <fa-icon icon="users"></fa-icon>

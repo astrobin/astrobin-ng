@@ -30,3 +30,14 @@ astrobin-user-gallery-header {
     width: calc(100% + 1rem)
   }
 }
+
+@media (max-width: $sm-max) {
+  astrobin-ad-manager {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  astrobin-user-gallery-header {
+    margin-top: 0;
+  }
+}

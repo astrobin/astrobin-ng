@@ -29,6 +29,7 @@ astrobin-search-bar ::ng-deep {
     @media (max-width: $sm-max) {
       position: sticky;
       top: 60px;
+      margin-top: -.5rem;
 
       ::ng-deep {
         .search-bar-input-container {
