@@ -10,6 +10,7 @@ import { take } from "rxjs/operators";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { MasonryLoadable } from "@shared/components/masonry-layout/masonry-layout.component";
 
 @Component({
   selector: "astrobin-iotd-tp-archive-item",
@@ -50,10 +51,10 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   `,
   styleUrls: ["./iotd-tp-archive-item.component.scss"]
 })
-export class IotdTpArchiveItemComponent extends BaseComponentDirective implements OnInit {
+export class IotdTpArchiveItemComponent extends BaseComponentDirective implements OnInit, MasonryLoadable {
   @Input() item: IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface;
 
-  @Output() imageLoaded = new EventEmitter<string>();
+  @Output() loaded = new EventEmitter<void>();
 
   protected thumbnailUrl: string;
   protected date: string;
@@ -104,7 +105,7 @@ export class IotdTpArchiveItemComponent extends BaseComponentDirective implement
   }
 
   onImageLoad(): void {
-    this.imageLoaded.emit(this.item.id.toString());
+    this.loaded.emit();
   }
 
   openGallery(username: string): void {
