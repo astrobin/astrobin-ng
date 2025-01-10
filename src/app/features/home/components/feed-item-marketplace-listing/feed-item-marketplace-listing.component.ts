@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -32,6 +32,8 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
       <div class="feed-item-body">
         <a [routerLink]="['/equipment/marketplace/listing', feedItem.actionObjectObjectId]">
           <img
+            #image
+            (load)="loaded.emit()"
             [alt]="feedItem.actionObjectDisplayName"
             [src]="feedItem.image"
             [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
@@ -51,8 +53,16 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
     "./feed-item-marketplace-listing.component.scss"
   ],
 })
-export class FeedItemMarketplaceListingComponent extends BaseComponentDirective {
+export class FeedItemMarketplaceListingComponent extends BaseComponentDirective implements AfterViewInit {
   @Input() feedItem: FeedItemInterface;
+  @Output() loaded = new EventEmitter<void>();
+  @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
+
+  ngAfterViewInit() {
+    if (this.imageElement?.nativeElement?.complete) {
+      this.loaded.emit();
+    }
+  }
 
   constructor(
     public readonly store$: Store<MainState>,

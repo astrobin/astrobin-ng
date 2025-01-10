@@ -4,6 +4,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { MasonryLoadable } from "@shared/components/masonry-layout/masonry-layout.component";
 
 @Component({
   selector: "astrobin-feed-item",
@@ -11,26 +12,30 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
     <div class="feed-item-content">
       <astrobin-feed-item-image
         *ngIf="isImageFeedItem"
+        (loaded)="loaded.emit()"
         (openImage)="openImage.emit($event)"
         [feedItem]="feedItem"
       ></astrobin-feed-item-image>
 
       <astrobin-feed-item-marketplace-listing
         *ngIf="isMarketplaceListingFeedItem"
+        (loaded)="loaded.emit()"
         [feedItem]="feedItem"
       ></astrobin-feed-item-marketplace-listing>
 
       <astrobin-feed-item-group
         *ngIf="isGroupFeedItem"
+        (loaded)="loaded.emit()"
         [feedItem]="feedItem"
       ></astrobin-feed-item-group>
     </div>
   `,
   styleUrls: ["./feed-item.component.scss"]
 })
-export class FeedItemComponent extends BaseComponentDirective implements OnChanges {
+export class FeedItemComponent extends BaseComponentDirective implements OnChanges, MasonryLoadable {
   @Input() feedItem: FeedItemInterface;
   @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
+  @Output() loaded = new EventEmitter<void>();
 
   protected isImageFeedItem = false;
   protected isMarketplaceListingFeedItem = false;

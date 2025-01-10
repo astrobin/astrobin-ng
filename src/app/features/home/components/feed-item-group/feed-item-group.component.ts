@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -19,7 +19,12 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
       <div class="feed-item-body">
         <a [href]="classicRoutesService.GROUP(+feedItem.actionObjectObjectId)">
-          <img src="/assets/images/actstream-group-action.jpg" alt="" />
+          <img
+            #image
+            (load)="loaded.emit()"
+            src="/assets/images/actstream-group-action.jpg"
+            alt=""
+          />
         </a>
       </div>
 
@@ -35,13 +40,21 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
     "./feed-item-group.component.scss"
   ],
 })
-export class FeedItemGroupComponent extends BaseComponentDirective {
+export class FeedItemGroupComponent extends BaseComponentDirective implements AfterViewInit{
   @Input() feedItem: FeedItemInterface;
+  @Output() loaded = new EventEmitter<void>();
+  @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
+  }
+
+  ngAfterViewInit() {
+    if (this.imageElement?.nativeElement?.complete) {
+      this.loaded.emit();
+    }
   }
 }

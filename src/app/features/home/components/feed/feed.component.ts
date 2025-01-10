@@ -55,32 +55,22 @@ interface VisibleFeedItemInterface {
           <ng-template ngbNavContent>
             <astrobin-loading-indicator *ngIf="loading || !isBrowser"></astrobin-loading-indicator>
 
-            <div
-              #feed
-              class="feed"
+            <astrobin-masonry-layout
+              (layoutReady)="masonryLayoutReady = true"
+              [items]="feedItems"
             >
-              <div
-                class="feed-item"
-                *ngFor="let item of visibleFeedItems; trackBy: trackByFn"
-                [attr.data-feed-item-id]="item.data.id"
-                [attr.data-feed-item.data-verb]="item.data.verb"
-                [attr.data-feed-item.data-actor-id]="item.data.actorObjectId"
-                [attr.data-feed-item.data-action-object-id]="item.data.actionObjectObjectId"
-                [attr.data-feed-item.data-action-content-type-id]="item.data.actionObjectContentType"
-                [attr.data-feed-item.data-target-id]="item.data.targetObjectId"
-                [attr.data-feed-item.data-target-content-type-id]="item.data.targetContentType"
-              >
+              <ng-template let-item let-notifyReady="notifyReady">
                 <astrobin-feed-item
                   @fadeInOut
-                  *ngIf="item.visible"
+                  (loaded)="notifyReady()"
                   (openImage)="openImageById($event)"
-                  [feedItem]="item.data"
+                  [feedItem]="item"
                 ></astrobin-feed-item>
-              </div>
-            </div>
+              </ng-template>
+            </astrobin-masonry-layout>
 
             <astrobin-loading-indicator
-              *ngIf="loadingMore"
+              *ngIf="!loading && (loadingMore || !masonryLayoutReady)"
               class="mt-5"
             ></astrobin-loading-indicator>
           </ng-template>
@@ -170,10 +160,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   protected currentUserProfile: UserProfileInterface;
 
   // For the activity feed.
-  protected MasonryModule: any;
-  protected masonry: any;
   protected feedItems: FeedItemInterface[] = null;
-  protected visibleFeedItems: VisibleFeedItemInterface[] = null;
+  protected masonryLayoutReady = false;
 
   // For the recent images.
   protected images: ImageInterface[] = null;
@@ -187,7 +175,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   protected readonly isBrowser: boolean;
 
   private _page = 1;
-  private _oldFeedItemsCount = 0;
   private _currentDataSubscription: Subscription;
   private _imageContentType: ContentTypeInterface;
   private _nearEndOfContextSubscription: Subscription;
@@ -212,18 +199,10 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  trackByFn(index: number, item: VisibleFeedItemInterface): string {
-    return "" + item.data.id;
-  }
-
   async ngOnInit() {
     super.ngOnInit();
 
     this._initContentTypes();
-
-    if (this.isBrowser) {
-      this.MasonryModule = await import("masonry-layout");
-    }
 
     this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
       this.currentUserProfile = userProfile;
@@ -270,38 +249,12 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
           debounceTime(100)
         )
       ).subscribe(() => this._onScroll());
-
-      fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
-        takeUntil(this.destroyed$),
-        debounceTime(100)
-      ).subscribe(() => {
-        this.visibleFeedItems = this.feedItems ? this.feedItems.map(item => {
-          return {
-            data: item,
-            visible: true
-          };
-        }) : null;
-
-        this.changeDetectorRef.detectChanges();
-
-        if (this.masonry) {
-          this.masonry.once("layoutComplete", () => {
-            this._masonryLayoutComplete();
-          });
-          this.masonry.layout();
-        }
-      });
     }
   }
 
   ngAfterViewInit() {
     this.imageViewerService.closeSlideShow(false);
     this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
-  }
-
-  ngOnDestroy() {
-    this._destroyMasonry();
-    super.ngOnDestroy();
   }
 
   onFeedTypeChange(feedType: FeedType) {
@@ -320,12 +273,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     this._page = 1;
     this.next = null;
     this.feedItems = null;
-    this.visibleFeedItems = null;
     this.images = null;
-    this._oldFeedItemsCount = 0;
     this.loading = true;
-
-    this._destroyMasonry();
 
     this.utilsService.delay(500).pipe(
       switchMap(() => this._loadData())
@@ -451,6 +400,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   private _loadData(): Observable<PaginatedApiResultInterface<FeedItemInterface | ImageInterface>> {
+    this.masonryLayoutReady = false;
+
     if (this._page === 1) {
       this.loading = true;
     } else {
@@ -462,50 +413,25 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
       this._currentDataSubscription = null;
     }
 
-    const _cleanUp = (newItemsAdded: boolean) => {
+    const _cleanUp = () => {
       this.loading = false;
       this.loadingMore = false;
 
       // Ensure the new items are rendered
       this.changeDetectorRef.detectChanges();
-
-      if (!this.masonry) {
-        this._initMasonry().then(() => {
-          this._masonryLayoutComplete();
-        });
-      } else if (newItemsAdded) {
-        // Find newly added elements
-        const feedItems = this.feedElement.nativeElement.querySelectorAll(".feed-item");
-        // Assuming we know how many items were there before, we can isolate the new ones.
-        // For simplicity, let's say we track the old count and new count:
-        const newElements = Array.from(feedItems).slice(this._oldFeedItemsCount);
-        this._oldFeedItemsCount = feedItems.length;
-
-        // Call appended on just the new elements
-        this.masonry.appended(newElements);
-        this._masonryLayoutComplete();
-      }
     };
 
     const _loadFeed = (section: FrontPageSection): Observable<PaginatedApiResultInterface<FeedItemInterface>> => {
       return new Observable(observer => {
         this._currentDataSubscription = this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
-          const prevCount = this.feedItems?.length || 0;
-
           this.feedItems = this.feedService.removeDuplicates([
             ...(this.feedItems || []),
             ...(feedItems.results as FeedItemInterface[])
           ]);
 
-          this.visibleFeedItems = this.feedItems.map(item => ({
-            data: item,
-            visible: true
-          }));
-
-          const newItemsAdded = (this.feedItems.length > prevCount);
           this.next = feedItems.next;
           this.lastKnownHeight = null;
-          _cleanUp(newItemsAdded);
+          _cleanUp();
 
           observer.next(feedItems as PaginatedApiResultInterface<FeedItemInterface>);
           observer.complete();
@@ -516,17 +442,14 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     const _loadRecent = (section: FrontPageSection): Observable<PaginatedApiResultInterface<ImageInterface>> => {
       return new Observable(observer => {
         this._currentDataSubscription = this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
-          const prevCount = this.images?.length || 0;
-
           this.images = [
             ...this.images || [],
             ...feedItems.results as ImageInterface[]
           ];
 
-          const newItemsAdded = (this.images.length > prevCount);
           this.next = feedItems.next;
           this.lastKnownHeight = null;
-          _cleanUp(newItemsAdded);
+          _cleanUp();
 
           observer.next(feedItems as PaginatedApiResultInterface<ImageInterface>);
           observer.complete();
@@ -549,85 +472,12 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     }
   }
 
-  private _updateVisibleFeedItems() {
-    if (!this.feedItems || !this.isBrowser) {
-      return;
-    }
-
-    const bufferSize = 2000;
-    const _win = this.windowRefService.nativeWindow;
-    const _doc = _win.document;
-    const newVisibleFeedItems: VisibleFeedItemInterface[] = [];
-
-    for (const item of this.feedItems) {
-      const element = this.feedElement.nativeElement.querySelector(`[data-feed-item-id="${item.id}"]`) as HTMLElement;
-      let isVisible = true;
-
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        isVisible = rect.top + rect.height >= -bufferSize &&
-          rect.top <= (_win.innerHeight || _doc.documentElement.clientHeight) + bufferSize;
-      }
-
-      // Only create a new object if visibility has changed or it's a new item
-      const existingItem = this.visibleFeedItems?.find(vfi => vfi.data.id === item.id);
-      if (!existingItem || existingItem.visible !== isVisible) {
-        newVisibleFeedItems.push({
-          data: item,
-          visible: isVisible
-        });
-      } else if (existingItem) {
-        newVisibleFeedItems.push(existingItem); // Keep the existing object
-      }
-    }
-    this.visibleFeedItems = newVisibleFeedItems;
-  }
-
-  private async _initMasonry() {
-    if (!this.isBrowser || !this.MasonryModule || !this.feedElement) {
-      return;
-    }
-
-    // Initialize masonry for the first time
-    this.masonry = new this.MasonryModule.default(this.feedElement.nativeElement, {
-      itemSelector: ".feed-item",
-      columnWidth: ".feed-item",
-      percentPosition: true,
-      gutter: 20,
-      transitionDuration: "0"
-    });
-
-    // Keep track of how many items we initially had.
-    const feedItems = this.feedElement.nativeElement.querySelectorAll(".feed-item");
-    this._oldFeedItemsCount = feedItems.length;
-
-    this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
-    this.masonry.layout();
-  }
-
-  private _masonryLayoutComplete() {
-    const feedItems = this.feedElement.nativeElement.querySelectorAll(".feed-item") as NodeListOf<HTMLElement>;
-    feedItems.forEach(item => {
-      this.renderer.setStyle(item, "opacity", "1");
-    });
-    this._updateVisibleFeedItems();
-    this.changeDetectorRef.detectChanges();
-  }
-
-  private _destroyMasonry() {
-    if (this.masonry) {
-      this.masonry.destroy();
-      this.masonry = null;
-    }
-  }
-
   private _onScroll(): void {
-    this._updateVisibleFeedItems();
-
     if (
       this.loading ||
       this.loadingMore ||
       this.next === null ||
+      !this.masonryLayoutReady ||
       !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
     ) {
       return;

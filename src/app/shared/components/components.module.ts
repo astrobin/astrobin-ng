@@ -150,6 +150,7 @@ import { EquipmentPresetSummaryComponent } from "@shared/components/equipment/pr
 import { ImageIconsComponent } from "@shared/components/misc/image-icons/image-icons.component";
 import { ImageHoverComponent } from "@shared/components/misc/image-hover/image-hover.component";
 import { ImageViewerIotdTpStatsComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component";
+import { MasonryLayoutComponent } from "@shared/components/masonry-layout/masonry-layout.component";
 
 const modules = [
   CommonModule,
@@ -265,6 +266,7 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  MasonryLayoutComponent,
   MarketplaceListingCardComponent,
   MarketplaceListingCardsComponent,
   MobileMenuComponent,

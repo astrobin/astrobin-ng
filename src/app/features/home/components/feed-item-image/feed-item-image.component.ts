@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild, ViewContainerRef } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -53,6 +53,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             astrobinEventStopPropagation
           >
             <img
+              #image
+              (load)="loaded.emit()"
               [alt]="displayName"
               [src]="feedItem.image"
               [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
@@ -109,9 +111,11 @@ import { WindowRefService } from "@shared/services/window-ref.service";
     "./feed-item-image.component.scss"
   ]
 })
-export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges {
+export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges, AfterViewInit {
   @Input() feedItem: FeedItemInterface;
   @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
+  @Output() loaded = new EventEmitter<void>();
+  @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
 
   protected contentType: number;
   protected objectId: string;
@@ -128,6 +132,12 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
     public readonly windowRefService: WindowRefService
   ) {
     super(store$);
+  }
+
+  ngAfterViewInit() {
+    if (this.imageElement?.nativeElement?.complete) {
+      this.loaded.emit();
+    }
   }
 
   ngOnChanges(): void {
