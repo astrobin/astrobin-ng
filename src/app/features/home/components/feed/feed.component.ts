@@ -34,11 +34,6 @@ enum FeedType {
   PERSONAL = "PERSONAL",
 }
 
-interface VisibleFeedItemInterface {
-  data: FeedItemInterface;
-  visible: boolean;
-}
-
 @Component({
   selector: "astrobin-feed",
   template: `
