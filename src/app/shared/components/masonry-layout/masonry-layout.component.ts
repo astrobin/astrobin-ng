@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
-import { fromEvent, merge, Subject, throttleTime } from "rxjs";
+import { auditTime, fromEvent, merge, Subject, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 import { debounceTime, takeUntil } from "rxjs/operators";
@@ -57,7 +57,6 @@ interface MasonryItem<T extends HasId> {
 })
 export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input() items: T[] = [];
-  @Input() bufferPx = 2000;
 
   @Output() layoutReady = new EventEmitter<void>();
 
@@ -81,6 +80,7 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
 
   private readonly _isBrowser: boolean;
   private readonly _READY_TIMEOUT = 5000;
+  private readonly _SCROLL_BUFFER: number;
 
   private _layoutInProgress = false;
   private _readyItems = new Set<string | number>();
@@ -96,6 +96,10 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
     public readonly utilsService: UtilsService
   ) {
     this._isBrowser = isPlatformBrowser(platformId);
+
+    if (this._isBrowser) {
+      this._SCROLL_BUFFER = this.windowRefService.nativeWindow.innerHeight * 2;
+    }
   }
 
   @Input() set breakpoints(value: MasonryBreakpoints) {
@@ -238,15 +242,12 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
   }
 
   private _initScrollListener() {
-    // Combine throttled and debounced scroll events for better performance
-    merge(
-      fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(throttleTime(200)),
-      fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(debounceTime(100))
-    ).pipe(
-      takeUntil(this._destroyed$)
-    ).subscribe(() => {
-      this._updateVisibleItems();
-    });
+    fromEvent(this.windowRefService.nativeWindow, "scroll")
+      .pipe(
+        auditTime(100), // or throttleTime/debounceTime
+        takeUntil(this._destroyed$)
+      )
+      .subscribe(() => this._updateVisibleItems());
 
     fromEvent(this.windowRefService.nativeWindow, "resize")
       .pipe(debounceTime(100), takeUntil(this._destroyed$))
@@ -288,19 +289,33 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
     const _win = this.windowRefService.nativeWindow;
     const _doc = _win.document;
 
+    // Query all .masonry-item elements at once
+    const elements = this.container.nativeElement.querySelectorAll(".masonry-item");
+
+    // Build a Map of id -> element
+    const elementsById = new Map<string, HTMLElement>();
+    elements.forEach((el: HTMLElement) => {
+      const itemId = el.getAttribute("data-masonry-id");
+      if (itemId) {
+        elementsById.set(itemId, el as HTMLElement);
+      }
+    });
+
+    // Now iterate items and look up the element from the map
     this.itemStates.forEach(item => {
-      const element = this.container.nativeElement.querySelector(`[data-masonry-id="${item.data.id}"]`);
+      const element = elementsById.get(String(item.data.id));
 
       if (element) {
         const rect = element.getBoundingClientRect();
-
         item.visible = (
-          !this._readyItems.has(item.data.id) || (
-            rect.top + rect.height >= -this.bufferPx &&
-            rect.top <= (_win.innerHeight || _doc.documentElement.clientHeight) + this.bufferPx
+          !this._readyItems.has(item.data.id) ||
+          (
+            rect.top + rect.height >= -this._SCROLL_BUFFER &&
+            rect.top <= (_win.innerHeight || _doc.documentElement.clientHeight) + this._SCROLL_BUFFER
           )
         );
 
+        // Only set opacity if item is visible
         if (item.visible) {
           this.renderer.setStyle(element, "opacity", "1");
         }
