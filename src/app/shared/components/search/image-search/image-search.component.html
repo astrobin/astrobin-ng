@@ -101,7 +101,7 @@
             lg: 5,
             xl: 5
           }"
-          [gutter]="gutter ?? 10"
+          [gutter]="gutter ?? 16"
         >
           <ng-template let-item let-notifyReady="notifyReady">
             <div class="image-container">
@@ -110,8 +110,9 @@
                 [href]="getImageLink(item)"
               >
                 <img
-                  (load)="notifyReady()"
-                  [src]="item.regularThumbnail"
+                  #imageElement
+                  (load)="onImageLoad(imageElement, item, notifyReady)"
+                  (error)="onImageError(imageElement, item, notifyReady)"                  [src]="item.regularThumbnail"
                   [alt]="item.title"
                 />
 
@@ -126,14 +127,27 @@
             </div>
           </ng-template>
         </astrobin-masonry-layout>
+
+        <div
+          *ngIf="!loadMoreOnScroll && !loading && !initialLoading && masonryLayoutReady"
+          class="w-100 d-flex justify-content-center mt-3"
+        >
+          <button
+            *ngIf="!!next"
+            (click)="loadMore().subscribe()"
+            class="btn btn-outline-primary btn-no-block"
+          >
+            {{ "Load more" | translate }}
+          </button>
+        </div>
+
+        <div *ngIf="!initialLoading && (loading || !masonryLayoutReady)" class="loading">
+          <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
+        </div>
       </ng-container>
     </ng-container>
   </ng-container>
 </ng-container>
-
-<div *ngIf="loading && !initialLoading && !masonryLayoutReady" class="loading">
-  <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
-</div>
 
 <ng-template #noImagesTemplate>
   <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>

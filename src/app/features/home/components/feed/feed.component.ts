@@ -69,6 +69,8 @@ enum FeedType {
               *ngIf="!loading && (loadingMore || !masonryLayoutReady)"
               class="mt-5"
             ></astrobin-loading-indicator>
+
+            <astrobin-scroll-to-top></astrobin-scroll-to-top>
           </ng-template>
         </li>
 
@@ -83,20 +85,20 @@ enum FeedType {
                 [items]="images"
                 [idProperty]="'pk'"
                 [breakpoints]="{
-                xs: 2,
-                sm: 3,
-                md: 4,
-                lg: 5,
-                xl: 5
-              }"
-                [gutter]="10"
+                  xs: 2,
+                  sm: 3,
+                  md: 4,
+                  lg: 5,
+                  xl: 5
+                }"
+                [gutter]="16"
               >
                 <ng-template let-item let-notifyReady="notifyReady">
                   <a
                     (click)="openImage(item)"
                     [href]="'/i/' + (item.hash || item.pk)"
                     astrobinEventPreventDefault
-                    class="image-link"
+                    class="image-container image-link"
                   >
                     <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
                     <img
@@ -104,12 +106,11 @@ enum FeedType {
                       (load)="notifyReady()"
                       [alt]="item.title"
                       [src]="item.thumbnails[0].url"
-                      [style.object-position]="item.objectPosition"
                     />
-
-                    <astrobin-image-icons [image]="item"></astrobin-image-icons>
-                    <astrobin-image-hover [image]="item"></astrobin-image-hover>
                   </a>
+
+                  <astrobin-image-icons [image]="item"></astrobin-image-icons>
+                  <astrobin-image-hover [image]="item"></astrobin-image-hover>
                 </ng-template>
               </astrobin-masonry-layout>
             </div>
@@ -118,6 +119,8 @@ enum FeedType {
               *ngIf="!loading && (loadingMore || !masonryLayoutReady)"
               class="mt-5"
             ></astrobin-loading-indicator>
+
+            <astrobin-scroll-to-top></astrobin-scroll-to-top>
           </ng-template>
         </li>
       </ul>

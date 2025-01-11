@@ -280,16 +280,16 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       if (changes.activeLayout.currentValue === UserGalleryActiveLayout.TINY) {
         this.breakpoints = {
           xs: 4,
-          sm: 6,
-          md: 8,
+          sm: 5,
+          md: 7,
           lg: 8,
-          xl: 10
+          xl: 9
         };
         this.gutter = 8;
       } else if (changes.activeLayout.currentValue === UserGalleryActiveLayout.SMALL) {
         this.breakpoints = {
           xs: 2,
-          sm: 4,
+          sm: 3,
           md: 4,
           lg: 5,
           xl: 5

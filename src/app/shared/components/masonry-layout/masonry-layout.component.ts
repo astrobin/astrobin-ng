@@ -82,7 +82,7 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
   protected masonry: any;
 
   private readonly _isBrowser: boolean;
-  private readonly _READY_TIMEOUT = 5000;
+  private readonly _READY_TIMEOUT = 1000;
   private readonly _SCROLL_BUFFER: number;
 
   private _masonryLoaded = false;
@@ -284,7 +284,7 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
 
   private _initResizeListener() {
     fromEvent(this.windowRefService.nativeWindow, "resize")
-      .pipe(debounceTime(100), takeUntil(this._destroyed$))
+      .pipe(throttleTime(100), takeUntil(this._destroyed$))
       .subscribe(() => {
         const newBreakpoint = this._getBreakpoint();
         const breakpointChanged = this._currentBreakpoint !== newBreakpoint;
