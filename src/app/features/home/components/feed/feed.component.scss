@@ -43,33 +43,3 @@
     }
   }
 }
-
-.feed {
-  $gutter: 20px;
-
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  contain: paint layout;
-  content-visibility: auto;
-
-  .feed-item {
-    display: block;
-    border-radius: var(--bs-border-radius);
-    box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
-    overflow: hidden;
-    width: calc(33.333% - #{$gutter / 1.5});
-    margin-bottom: $gutter;
-    opacity: 0;
-    transition: opacity .2s;
-    will-change: opacity, transform;
-
-    @media (max-width: $md-max) {
-      width: calc(50% - #{$gutter / 2});
-    }
-
-    @media (max-width: $xs-max) {
-      width: 100%;
-    }
-  }
-}

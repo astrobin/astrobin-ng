@@ -10,7 +10,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
@@ -21,12 +20,11 @@ import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
-import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageService } from "@shared/services/image/image.service";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { UserService } from "@shared/services/user.service";
+import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-layout.component";
 
 @Component({
   selector: "astrobin-image-search",
@@ -37,22 +35,20 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
 
-  @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
+  @Input() showDynamicOverlay = true;
   @Input() showStaticOverlay = true;
+  @Input() breakpoints: MasonryBreakpoints;
+  @Input() gutter: number;
 
   @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
 
-  protected readonly ImageAlias = ImageAlias;
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
-
-  protected gridItems: MasonryLayoutGridItem[] = [];
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
-  protected averageHeight: number = 200;
+  protected masonryLayoutReady = false;
 
   private _nearEndOfContextSubscription: Subscription;
 
@@ -78,12 +74,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
   }
 
-  onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
-    this.gridItems = event.gridItems;
-    this.averageHeight = event.averageHeight;
-    this.changeDetectorRef.detectChanges();
-  }
-
   getItemListingsMessage(listing: EquipmentItemListingInterface): string {
     return this.translateService.instant(
       "Support AstroBin by shopping for {{0}} at our partners!",
@@ -105,6 +95,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   fetchData(): Observable<SearchPaginatedApiResultInterface<ImageSearchInterface>> {
+    this.masonryLayoutReady = false;
+
     return this.imageSearchApiService
       .search({ ...this.model, pageSize: this.model.pageSize || this.pageSize })
       .pipe(

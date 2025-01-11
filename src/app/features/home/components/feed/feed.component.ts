@@ -5,8 +5,7 @@ import { select, Store } from "@ngrx/store";
 import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 import { FeedApiService } from "@features/home/services/feed-api.service";
 import { FeedService } from "@features/home/services/feed.service";
-import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
-import { debounceTime, filter, switchMap, take, takeUntil } from "rxjs/operators";
+import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
@@ -50,19 +49,21 @@ enum FeedType {
           <ng-template ngbNavContent>
             <astrobin-loading-indicator *ngIf="loading || !isBrowser"></astrobin-loading-indicator>
 
-            <astrobin-masonry-layout
-              (layoutReady)="masonryLayoutReady = true"
-              [items]="feedItems"
-            >
-              <ng-template let-item let-notifyReady="notifyReady">
-                <astrobin-feed-item
-                  @fadeInOut
-                  (loaded)="notifyReady()"
-                  (openImage)="openImageById($event)"
-                  [feedItem]="item"
-                ></astrobin-feed-item>
-              </ng-template>
-            </astrobin-masonry-layout>
+            <div [style.min-height.px]="lastKnownHeight">
+              <astrobin-masonry-layout
+                (layoutReady)="masonryLayoutReady = true"
+                [items]="feedItems"
+              >
+                <ng-template let-item let-notifyReady="notifyReady">
+                  <astrobin-feed-item
+                    @fadeInOut
+                    (loaded)="notifyReady()"
+                    (openImage)="openImageById($event)"
+                    [feedItem]="item"
+                  ></astrobin-feed-item>
+                </ng-template>
+              </astrobin-masonry-layout>
+            </div>
 
             <astrobin-loading-indicator
               *ngIf="!loading && (loadingMore || !masonryLayoutReady)"
@@ -76,38 +77,47 @@ enum FeedType {
           <ng-template ngbNavContent>
             <astrobin-loading-indicator *ngIf="loading"></astrobin-loading-indicator>
 
-            <div
-              (gridItemsChange)="onGridItemsChange($event)"
-              [activeLayout]="UserGalleryActiveLayout.SMALL"
-              [astrobinMasonryLayout]="images"
-              class="masonry-layout-container"
-            >
-              <ng-container *ngIf="gridItems?.length > 0">
-                <a
-                  *ngFor="let item of gridItems"
-                  (click)="openImage(item)"
-                  [style.width.px]="item.displayWidth * averageHeight / item.displayHeight * .5"
-                  [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight * .5"
-                  [style.min-width.px]="averageHeight"
-                  [style.min-height.px]="averageHeight"
-                  [href]="'/i/' + (item.hash || item.pk)"
-                  astrobinEventPreventDefault
-                  class="image-link"
-                >
-                  <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
-                  <img
-                    *ngIf="item?.thumbnails?.length"
-                    [alt]="item.title"
-                    [ngSrc]="item.thumbnails[0].url"
-                    [style.object-position]="item.objectPosition"
-                    fill
-                  />
+            <div [style.min-height.px]="lastKnownHeight">
+              <astrobin-masonry-layout
+                (layoutReady)="masonryLayoutReady = true"
+                [items]="images"
+                [idProperty]="'pk'"
+                [breakpoints]="{
+                xs: 2,
+                sm: 3,
+                md: 4,
+                lg: 5,
+                xl: 5
+              }"
+                [gutter]="10"
+              >
+                <ng-template let-item let-notifyReady="notifyReady">
+                  <a
+                    (click)="openImage(item)"
+                    [href]="'/i/' + (item.hash || item.pk)"
+                    astrobinEventPreventDefault
+                    class="image-link"
+                  >
+                    <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
+                    <img
+                      *ngIf="item?.thumbnails?.length"
+                      (load)="notifyReady()"
+                      [alt]="item.title"
+                      [src]="item.thumbnails[0].url"
+                      [style.object-position]="item.objectPosition"
+                    />
 
-                  <astrobin-image-icons [image]="item"></astrobin-image-icons>
-                  <astrobin-image-hover [image]="item"></astrobin-image-hover>
-                </a>
-              </ng-container>
+                    <astrobin-image-icons [image]="item"></astrobin-image-icons>
+                    <astrobin-image-hover [image]="item"></astrobin-image-hover>
+                  </a>
+                </ng-template>
+              </astrobin-masonry-layout>
             </div>
+
+            <astrobin-loading-indicator
+              *ngIf="!loading && (loadingMore || !masonryLayoutReady)"
+              class="mt-5"
+            ></astrobin-loading-indicator>
           </ng-template>
         </li>
       </ul>
@@ -129,11 +139,7 @@ enum FeedType {
       </div>
     </div>
 
-    <div
-      #tabsContentWrapper
-      class="tabs-content-wrapper"
-      [style.min-height.px]="lastKnownHeight"
-    >
+    <div #tabsContentWrapper class="tabs-content-wrapper">
       <div [ngbNavOutlet]="nav"></div>
     </div>
   `,
@@ -145,6 +151,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   @ViewChild("feed") protected feedElement: ElementRef;
 
   protected lastKnownHeight = null;
+  protected lastKnownScrollPosition = 0;
 
   protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
   protected readonly FeedTab = FeedTab;
@@ -160,8 +167,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
   // For the recent images.
   protected images: ImageInterface[] = null;
-  protected gridItems: MasonryLayoutGridItem[] = null;
-  protected averageHeight = 150;
 
   protected loading = true;
   protected loadingMore = false;
@@ -262,6 +267,10 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
       this.lastKnownHeight = this.tabsContentWrapper.nativeElement.offsetHeight;
     }
 
+    if (this.isBrowser) {
+      this.lastKnownScrollPosition = this.windowRefService.nativeWindow.scrollY;
+    }
+
     this.changeDetectorRef.detectChanges();
 
     this.activeTab = feedType;
@@ -272,13 +281,13 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     this.loading = true;
 
     this.utilsService.delay(500).pipe(
-      switchMap(() => this._loadData())
+      switchMap(() => this._loadData()),
+      tap(() => {
+        if (this.lastKnownScrollPosition) {
+          this.windowRefService.scroll({top: this.lastKnownScrollPosition, behavior: "smooth"});
+        }
+      })
     ).subscribe();
-  }
-
-  onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
-    this.gridItems = event.gridItems;
-    this.averageHeight = event.averageHeight;
   }
 
   openImageById(imageId: ImageInterface["hash"] | ImageInterface["pk"]): void {
@@ -411,6 +420,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     const _cleanUp = () => {
       this.loading = false;
       this.loadingMore = false;
+      this.lastKnownHeight = null;
 
       // Ensure the new items are rendered
       this.changeDetectorRef.detectChanges();
@@ -425,7 +435,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
           ]);
 
           this.next = feedItems.next;
-          this.lastKnownHeight = null;
           _cleanUp();
 
           observer.next(feedItems as PaginatedApiResultInterface<FeedItemInterface>);
@@ -443,7 +452,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
           ];
 
           this.next = feedItems.next;
-          this.lastKnownHeight = null;
           _cleanUp();
 
           observer.next(feedItems as PaginatedApiResultInterface<ImageInterface>);

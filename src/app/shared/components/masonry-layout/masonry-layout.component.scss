@@ -4,7 +4,7 @@
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: calc(var(--gutter) * 1px);
   contain: paint layout;
   content-visibility: auto;
 }
@@ -12,25 +12,25 @@
 .masonry-item {
   flex-grow: 0;
   flex-shrink: 0;
-  width: calc((100% - (var(--columns-xs) - 1) * 20px) / var(--columns-xs));
-  margin-bottom: 20px;
+  width: calc((100% - (var(--columns-xs) - 1) * (var(--gutter) * 1px)) / var(--columns-xs));
+  margin-bottom: calc(var(--gutter) * 1px);
   opacity: 0;
   transition: opacity .2s;
   will-change: opacity, transform;
 
   @media (min-width: $sm-min) {
-    width: calc((100% - (var(--columns-sm) - 1) * 20px) / var(--columns-sm));
+    width: calc((100% - (var(--columns-sm) - 1) * (var(--gutter) * 1px)) / var(--columns-sm));
   }
 
   @media (min-width: $md-min) {
-    width: calc((100% - (var(--columns-md) - 1) * 20px) / var(--columns-md));
+    width: calc((100% - (var(--columns-md) - 1) * (var(--gutter) * 1px)) / var(--columns-md));
   }
 
   @media (min-width: $lg-min) {
-    width: calc((100% - (var(--columns-lg) - 1) * 20px) / var(--columns-lg));
+    width: calc((100% - (var(--columns-lg) - 1) * (var(--gutter) * 1px)) / var(--columns-lg));
   }
 
   @media (min-width: $xl-min) {
-    width: calc((100% - (var(--columns-xl) - 1) * 20px) / var(--columns-xl));
+    width: calc((100% - (var(--columns-xl) - 1) * (var(--gutter) * 1px)) / var(--columns-xl));
   }
 }

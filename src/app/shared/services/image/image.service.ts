@@ -903,20 +903,32 @@ export class ImageService extends BaseService {
       return image.finalGalleryThumbnail;
     }
 
-    const galleryThumbnail =
-      image.thumbnails &&
-      image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY);
+    const galleryThumbnail = this.getThumbnail(image, ImageAlias.GALLERY);
 
     if (galleryThumbnail) {
-      return galleryThumbnail.url;
+      return galleryThumbnail;
     }
 
-    const regularThumbnail =
-      image.thumbnails &&
-      image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR);
+    const regularThumbnail = this.getThumbnail(image, ImageAlias.REGULAR);
 
     if (regularThumbnail) {
-      return regularThumbnail.url;
+      return regularThumbnail;
+    }
+
+    return "/assets/images/loading.gif?v=20241030";
+  }
+
+  getThumbnail(image: ImageInterface, alias: ImageAlias): string {
+    if (alias === ImageAlias.GALLERY && image.finalGalleryThumbnail) {
+      return image.finalGalleryThumbnail;
+    }
+
+    const thumbnail =
+      image.thumbnails &&
+      image.thumbnails.find(thumbnail => thumbnail.alias === alias);
+
+    if (thumbnail) {
+      return thumbnail.url;
     }
 
     return "/assets/images/loading.gif?v=20241030";

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { auditTime, fromEvent, merge, Subject, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
@@ -18,11 +18,7 @@ export interface MasonryLoadable {
   loaded: EventEmitter<void>;
 }
 
-interface HasId {
-  id: string | number;
-}
-
-interface MasonryItem<T extends HasId> {
+interface MasonryItem<T> {
   data: T;
   visible: boolean;
   height?: number;
@@ -31,17 +27,22 @@ interface MasonryItem<T extends HasId> {
 @Component({
   selector: "astrobin-masonry-layout",
   template: `
-    <div #container class="masonry-container">
+    <div
+      #container
+      class="masonry-container"
+      [style.--gutter]="gutter"
+    >
       <div
         *ngFor="let item of itemStates; trackBy: trackByFn"
         class="masonry-item"
-        [attr.data-masonry-id]="item.data.id"
+        [attr.data-masonry-id]="item.data[this.idProperty]"
         [style.height.px]="item.height || null"
         [style.--columns-xs]="breakpointColumns.xs"
         [style.--columns-sm]="breakpointColumns.sm"
         [style.--columns-md]="breakpointColumns.md"
         [style.--columns-lg]="breakpointColumns.lg"
         [style.--columns-xl]="breakpointColumns.xl"
+        [style.--gutter]="gutter"
       >
         <ng-container
           *ngIf="item.visible"
@@ -55,8 +56,10 @@ interface MasonryItem<T extends HasId> {
   styleUrls: ["./masonry-layout.component.scss"]
 
 })
-export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterViewInit, OnChanges, OnDestroy {
+export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input() items: T[] = [];
+  @Input() idProperty = "id";
+  @Input() gutter = 20;
 
   @Output() layoutReady = new EventEmitter<void>();
 
@@ -82,6 +85,8 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
   private readonly _READY_TIMEOUT = 5000;
   private readonly _SCROLL_BUFFER: number;
 
+  private _masonryLoaded = false;
+  private _pendingReadyItems = new Set<string | number>();
   private _layoutInProgress = false;
   private _readyItems = new Set<string | number>();
   private _previousItemCount = 0;
@@ -110,21 +115,41 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
       lg: value.lg ?? 3,
       xl: value.xl ?? 3
     };
+
+    this._reloadMasonry();
   }
 
   async ngOnInit() {
     if (this._isBrowser) {
       this.MasonryModule = await import("masonry-layout");
+      this._masonryLoaded = true;
+
+      // Process any pending ready items
+      this._pendingReadyItems.forEach(itemId => {
+        this._notifyItemReady(itemId);
+      });
+      this._pendingReadyItems.clear();
     }
   }
 
-  ngOnChanges() {
-    this._updateItemStates();
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.items) {
+      this._updateItemStates();
+    }
+
+    if (
+      this.masonry &&
+      (changes.breakpoints && !changes.breakpoints.firstChange) ||
+      (changes.gutter && !changes.gutter.firstChange)
+    ) {
+      this._reloadMasonry();
+    }
   }
 
   ngAfterViewInit() {
     if (this._isBrowser) {
       this._initScrollListener();
+      this._initResizeListener();
     }
   }
 
@@ -143,12 +168,12 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
   protected getTemplateContext(item: T) {
     return {
       $implicit: item,
-      notifyReady: () => this._notifyItemReady(item.id)
+      notifyReady: () => this._notifyItemReady(item[this.idProperty])
     };
   }
 
   protected trackByFn(_: number, item: MasonryItem<T>): string | number {
-    return item.data.id;
+    return item.data[this.idProperty];
   }
 
   private _getBreakpoint(): string {
@@ -193,6 +218,11 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
       }
     }
 
+    if (!this._masonryLoaded) {
+      this._pendingReadyItems.add(itemId);
+      return;
+    }
+
     if (this._readyItems.has(itemId)) {
       return;
     }
@@ -222,14 +252,14 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
   private _updateItemStates() {
     this.itemStates = this.items ? this.items.map(item => {
       const existingState = this.itemStates.find(
-        state => state.data.id === item.id
+        state => state.data[this.idProperty] === item[this.idProperty]
       );
 
       // Set timeout for new items that aren't already ready
       if (this._isBrowser) {
-        if (!existingState && !this._readyItems.has(item.id) && !this._readyTimeouts.has(item.id)) {
-          this._readyTimeouts.set(item.id, setTimeout(() => {
-            this._notifyItemReady(item.id);
+        if (!existingState && !this._readyItems.has(item[this.idProperty]) && !this._readyTimeouts.has(item[this.idProperty])) {
+          this._readyTimeouts.set(item[this.idProperty], setTimeout(() => {
+            this._notifyItemReady(item[this.idProperty]);
           }, this._READY_TIMEOUT));
         }
       }
@@ -242,13 +272,17 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
   }
 
   private _initScrollListener() {
-    fromEvent(this.windowRefService.nativeWindow, "scroll")
+    const scrollableParent = UtilsService.getScrollableParent(this.container.nativeElement, this.windowRefService);
+
+    fromEvent(scrollableParent, "scroll")
       .pipe(
         auditTime(100), // or throttleTime/debounceTime
         takeUntil(this._destroyed$)
       )
       .subscribe(() => this._updateVisibleItems());
+  }
 
+  private _initResizeListener() {
     fromEvent(this.windowRefService.nativeWindow, "resize")
       .pipe(debounceTime(100), takeUntil(this._destroyed$))
       .subscribe(() => {
@@ -256,24 +290,28 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
         const breakpointChanged = this._currentBreakpoint !== newBreakpoint;
         this._currentBreakpoint = newBreakpoint;
 
-        if (this.masonry && !this._layoutInProgress) {
-          this.itemStates = this.items.map(item => ({
-            data: item,
-            visible: true
-          }));
-
-          requestAnimationFrame(() => {
-            // If breakpoint changed, we need to force a complete recalculation
-            if (breakpointChanged) {
-              this.masonry.reloadItems();
-            }
-
-            this._layoutInProgress = true;
-            this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
-            this.masonry.layout();
-          });
-        }
+        this._relayout(breakpointChanged);
       });
+  }
+
+  private _relayout(reloadItems: boolean) {
+    if (this.masonry && !this._layoutInProgress) {
+      this.itemStates = this.items.map(item => ({
+        data: item,
+        visible: true
+      }));
+
+      requestAnimationFrame(() => {
+        this._layoutInProgress = true;
+
+        if (reloadItems) {
+          this.masonry.reloadItems();
+        }
+
+        this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
+        this.masonry.layout();
+      });
+    }
   }
 
   private _updateVisibleItems() {
@@ -303,12 +341,12 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
 
     // Now iterate items and look up the element from the map
     this.itemStates.forEach(item => {
-      const element = elementsById.get(String(item.data.id));
+      const element = elementsById.get(String(item.data[this.idProperty]));
 
       if (element) {
         const rect = element.getBoundingClientRect();
         item.visible = (
-          !this._readyItems.has(item.data.id) ||
+          !this._readyItems.has(item.data[this.idProperty]) ||
           (
             rect.top + rect.height >= -this._SCROLL_BUFFER &&
             rect.top <= (_win.innerHeight || _doc.documentElement.clientHeight) + this._SCROLL_BUFFER
@@ -328,7 +366,7 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
 
     Array.from(items).slice(firstIndex).forEach(item => {
       const itemId = item.getAttribute("data-masonry-id");
-      const itemState = this.itemStates.find(state => state.data.id.toString() === itemId);
+      const itemState = this.itemStates.find(state => state.data[this.idProperty].toString() === itemId);
 
       if (itemState) {
         itemState.height = item.getBoundingClientRect().height;
@@ -346,6 +384,12 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
     if (this.masonry) {
       this.masonry.destroy();
       this.masonry = null;
+
+      // Reset visibility states
+      this.itemStates.forEach(item => {
+        item.visible = true;
+        item.height = undefined;
+      });
     }
   }
 
@@ -358,12 +402,45 @@ export class MasonryLayoutComponent<T extends HasId> implements OnInit, AfterVie
       itemSelector: ".masonry-item",
       columnWidth: ".masonry-item",
       percentPosition: true,
-      gutter: 20,
+      gutter: this.gutter,
       transitionDuration: "0"
     });
 
     this._layoutInProgress = true;
     this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
     this.masonry.layout();
+  }
+
+  private _reloadMasonry() {
+    let currentScrollPosition: number;
+    let scrollableParent: HTMLElement | Window;
+
+    if (this.masonry) {
+      if (this._isBrowser) {
+        scrollableParent = UtilsService.getScrollableParent(
+          this.container.nativeElement,
+          this.windowRefService
+        );
+
+        if (scrollableParent) {
+          if (scrollableParent === this.windowRefService.nativeWindow) {
+            currentScrollPosition = this.windowRefService.nativeWindow.scrollY;
+          } else {
+            currentScrollPosition = (scrollableParent as HTMLElement).scrollTop;
+          }
+        }
+      }
+
+      this._destroyMasonry();
+      this.utilsService.delay(100).subscribe(() => {
+        requestAnimationFrame(() => {
+          this._initMasonry();
+
+          if (currentScrollPosition !== undefined) {
+            scrollableParent.scrollTo(0, currentScrollPosition);
+          }
+        });
+      });
+    }
   }
 }

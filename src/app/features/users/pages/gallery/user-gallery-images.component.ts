@@ -7,9 +7,8 @@ import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.i
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { filter, map, startWith, take, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { ImageService } from "@shared/services/image/image.service";
@@ -27,6 +26,7 @@ import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
+import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-layout.component";
 
 @Component({
   selector: "astrobin-user-gallery-images",
@@ -60,91 +60,42 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
 
       <ng-container *ngTemplateOutlet="acquisitionSortingInfoTemplate"></ng-container>
 
-      <div
-        *ngIf="
-          !loading &&
-          images.length > 0 &&
-          (
-            activeLayout === UserGalleryActiveLayout.SMALL ||
-            activeLayout === UserGalleryActiveLayout.LARGE
-          )
-        "
-        @fadeInOut
-        (gridItemsChange)="onGridItemsChange($event)"
-        [astrobinMasonryLayout]="images"
-        [activeLayout]="activeLayout"
-        class="masonry-layout-container"
-        [class.layout-tiny]="activeLayout === UserGalleryActiveLayout.TINY"
-        [class.layout-small]="activeLayout === UserGalleryActiveLayout.SMALL"
-        [class.layout-large]="activeLayout === UserGalleryActiveLayout.LARGE"
+      <astrobin-masonry-layout
+        [items]="images"
+        [idProperty]="'pk'"
+        [breakpoints]="breakpoints"
+        [gutter]="gutter"
       >
-        <ng-container *ngIf="gridItems?.length > 0">
-          <a
-            *ngFor="let item of gridItems"
-            (click)="openImage(item)"
-            [style.width.px]="item.displayWidth * averageHeight / item.displayHeight * .5"
-            [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight * .5"
-            [style.min-width.px]="averageHeight"
-            [style.min-height.px]="averageHeight"
-            [href]="'/i/' + (item.hash || item.pk)"
-            astrobinEventPreventDefault
-            [class.wip]="item.isWip"
-            class="image-link"
-          >
-            <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
-            <img
-              *ngIf="item?.thumbnails?.length"
-              [alt]="item.title"
-              [ngSrc]="item.thumbnails[0].url"
-              [style.object-position]="item.objectPosition"
-              fill
-            />
+        <ng-template let-item let-notifyReady="notifyReady">
+          <div class="image-container">
+            <a
+              (click)="openImage(item)"
+              [href]="'/i/' + (item.hash || item.pk)"
+              [class.wip]="item.isWip"
+              astrobinEventPreventDefault
+            >
+              <img
+                (load)="notifyReady()"
+                [src]="imageService.getThumbnail(
+                  item,
+                  activeLayout === UserGalleryActiveLayout.TINY ? ImageAlias.GALLERY : ImageAlias.REGULAR
+                )"
+                [alt]="item.title"
+              />
 
-            <astrobin-image-icons [image]="item"></astrobin-image-icons>
-            <astrobin-image-hover
-              [image]="item"
-              [showAuthor]="false"
-              [staticOverlay]="options.ordering"
-            ></astrobin-image-hover>
+              <astrobin-image-icons [image]="item"></astrobin-image-icons>
+
+              <astrobin-image-hover
+                [image]="item"
+                [staticOverlay]="options.ordering"
+              ></astrobin-image-hover>
+            </a>
 
             <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
             <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image: item }"></ng-container>
-          </a>
-        </ng-container>
-      </div>
-
-      <div
-        *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TINY"
-        @fadeInOut
-        class="masonry-layout-container layout-tiny"
-      >
-        <a
-          *ngFor="let image of images"
-          (click)="openImage(image)"
-          [class.wip]="image.isWip"
-          [href]="'/i/' + (image.hash || image.pk.toString())"
-          astrobinEventPreventDefault
-          class="image-link"
-        >
-          <img
-            [ngSrc]="imageService.getGalleryThumbnail(image)"
-            [alt]="image.title"
-            [title]="image.title"
-            [width]="130"
-            [height]="130"
-          />
-
-          <astrobin-image-icons [image]="image"></astrobin-image-icons>
-          <astrobin-image-hover
-            [image]="image"
-            [showAuthor]="false"
-            [staticOverlay]="options.ordering"
-          ></astrobin-image-hover>
-
-          <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
-          <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image }"></ng-container>
-        </a>
-      </div>
+          </div>
+        </ng-template>
+      </astrobin-masonry-layout>
 
       <div
         *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TABLE"
@@ -262,9 +213,10 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   protected images: ImageInterface[] = [];
   protected loading = false;
   protected loadingMore = false;
-  protected gridItems: MasonryLayoutGridItem[] = [];
-  protected averageHeight = 200;
   protected loadingPlaceholdersCount: number;
+  protected breakpoints: MasonryBreakpoints;
+  protected gutter: number;
+
 
   private _findImagesSubscription: Subscription;
   private _slideshowComponent: ImageViewerSlideshowComponent;
@@ -325,7 +277,34 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }
 
     if (changes.activeLayout) {
-      this._updateAverageHeight(this.activeLayout);
+      if (changes.activeLayout.currentValue === UserGalleryActiveLayout.TINY) {
+        this.breakpoints = {
+          xs: 4,
+          sm: 6,
+          md: 8,
+          lg: 8,
+          xl: 10
+        };
+        this.gutter = 8;
+      } else if (changes.activeLayout.currentValue === UserGalleryActiveLayout.SMALL) {
+        this.breakpoints = {
+          xs: 2,
+          sm: 4,
+          md: 4,
+          lg: 5,
+          xl: 5
+        };
+        this.gutter = 12;
+      } else if (changes.activeLayout.currentValue === UserGalleryActiveLayout.LARGE) {
+        this.breakpoints = {
+          xs: 1,
+          sm: 1,
+          md: 2,
+          lg: 3,
+          xl: 3
+        };
+        this.gutter = 16;
+      }
     }
 
     if (changes.options && changes.options.currentValue.collection) {
@@ -388,14 +367,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }
   }
 
-  onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
-    this.gridItems = event.gridItems;
-    this.averageHeight = event.averageHeight;
-    this.changeDetectorRef.detectChanges();
-  }
-
-  openImage(item: MasonryLayoutGridItem): void {
-    const image = item as ImageInterface;
+  openImage(image: ImageInterface): void {
     const imageId = image.hash || image.pk.toString();
     const navigationContext = this.images.map(image => ({
       imageId: image.hash || image.pk.toString(),
@@ -440,21 +412,16 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     this.changeDetectorRef.detectChanges();
   }
 
-  protected onImageRemovedFromCollection(event: { imageId: ImageInterface["pk"]; collectionId: CollectionInterface["id"] }): void {
+  protected onImageRemovedFromCollection(event: {
+    imageId: ImageInterface["pk"];
+    collectionId: CollectionInterface["id"]
+  }): void {
     if (event.collectionId !== this.options.collection) {
       return;
     }
 
     this.images = this.images.filter(image => image.pk !== event.imageId);
     this.changeDetectorRef.detectChanges();
-  }
-
-  private _updateAverageHeight(layout: UserGalleryActiveLayout): void {
-    if (layout === UserGalleryActiveLayout.LARGE) {
-      this.averageHeight = 300;
-    } else {
-      this.averageHeight = 200;
-    }
   }
 
   private _getImages(): void {
@@ -474,7 +441,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }));
   }
 
-  private _onScroll(){
+  private _onScroll() {
     if (
       isPlatformServer(this.platformId) ||
       this.loading ||

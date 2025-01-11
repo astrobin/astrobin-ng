@@ -90,55 +90,55 @@
           <span [innerHTML]="lastResultsCount"></span>
         </div>
 
-        <div
-          class="masonry-layout-container"
-          [astrobinMasonryLayout]="results"
-          [activeLayout]="alias === ImageAlias.GALLERY ? UserGalleryActiveLayout.TINY : UserGalleryActiveLayout.SMALL"
-          (gridItemsChange)="onGridItemsChange($event)"
+        <astrobin-masonry-layout
+          (layoutReady)="masonryLayoutReady = true"
+          [items]="results"
+          [idProperty]="'objectId'"
+          [breakpoints]="breakpoints ?? {
+            xs: 2,
+            sm: 3,
+            md: 4,
+            lg: 5,
+            xl: 5
+          }"
+          [gutter]="gutter ?? 10"
         >
-          <a
-            *ngFor="let item of gridItems"
-            (click)="openImage($event, item)"
-            [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
-            [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
-            [style.min-width.px]="averageHeight"
-            [style.min-height.px]="averageHeight"
-            [href]="getImageLink(item)"
-          >
-            <div
-              class="image-container"
-              [ngStyle]="{
-                'background-image': 'url(' + (alias === ImageAlias.REGULAR ? item.regularThumbnail : item.galleryThumbnail) + ')',
-                'background-position': item.objectPosition || '50% 50%',
-                'background-repeat': 'no-repeat',
-                'background-size': 'cover'
-              }"
-            ></div>
+          <ng-template let-item let-notifyReady="notifyReady">
+            <div class="image-container">
+              <a
+                (click)="openImage($event, item)"
+                [href]="getImageLink(item)"
+              >
+                <img
+                  (load)="notifyReady()"
+                  [src]="item.regularThumbnail"
+                  [alt]="item.title"
+                />
 
-            <astrobin-image-icons [image]="item"></astrobin-image-icons>
+                <astrobin-image-icons [image]="item"></astrobin-image-icons>
 
-            <astrobin-image-hover
-              *ngIf="alias === ImageAlias.REGULAR"
-              [image]="item"
-              [staticOverlay]="showStaticOverlay ? model.ordering : null"
-            ></astrobin-image-hover>
-          </a>
-        </div>
+                <astrobin-image-hover
+                  *ngIf="showDynamicOverlay"
+                  [image]="item"
+                  [staticOverlay]="showStaticOverlay ? model.ordering : null"
+                ></astrobin-image-hover>
+              </a>
+            </div>
+          </ng-template>
+        </astrobin-masonry-layout>
       </ng-container>
     </ng-container>
   </ng-container>
 </ng-container>
 
-<div *ngIf="loading && !initialLoading" class="loading">
+<div *ngIf="loading && !initialLoading && !masonryLayoutReady" class="loading">
   <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
 </div>
-
-<ng-container #imageViewerContainer></ng-container>
 
 <ng-template #noImagesTemplate>
   <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
 </ng-template>
 
 <ng-template #loadingTemplate>
-  <astrobin-loading-indicator></astrobin-loading-indicator>
+  <astrobin-loading-indicator class="mt-3"></astrobin-loading-indicator>
 </ng-template>

@@ -27,7 +27,7 @@
   transition: opacity .25s ease-in-out;
   border-bottom-left-radius: .75rem;
   border-bottom-right-radius: .75rem;
-  font-size: .85rem;
+  font-size: .75rem;
   z-index: 2;
 
   .title {
@@ -47,7 +47,7 @@
 
   .author {
     color: var(--lighterGrey);
-    font-size: .85rem;
+    font-size: .7rem;
   }
 
   /* Fallback for browsers without line-clamp support */
