@@ -31,6 +31,10 @@
 
   &.tiny {
     font-size: .65rem;
+    height: 100%;
+    max-height: unset;
+    border-top-left-radius: .75rem;
+    border-top-right-radius: .75rem;
 
     .author {
       font-size: .65rem;

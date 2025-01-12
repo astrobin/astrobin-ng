@@ -9,32 +9,30 @@ astrobin-image-loading-indicator ::ng-deep {
 
 .loading-container {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(var(--gutter) * 1px);
   contain: paint layout;
   content-visibility: auto;
-}
-
-.loading-item {
-  flex-grow: 0;
-  flex-shrink: 0;
-  width: calc((100% - (var(--columns-xs) - 1) * (var(--gutter) * 1px)) / var(--columns-xs));
-  will-change: opacity;
+  columns: var(--columns-xs);
+  column-gap: calc(var(--gutter) * 1px);
 
   @media (min-width: $sm-min) {
-    width: calc((100% - (var(--columns-sm) - 1) * (var(--gutter) * 1px)) / var(--columns-sm));
+    columns: var(--columns-sm);
   }
 
   @media (min-width: $md-min) {
-    width: calc((100% - (var(--columns-md) - 1) * (var(--gutter) * 1px)) / var(--columns-md));
+    columns: var(--columns-md);
   }
 
   @media (min-width: $lg-min) {
-    width: calc((100% - (var(--columns-lg) - 1) * (var(--gutter) * 1px)) / var(--columns-lg));
+    columns: var(--columns-lg);
   }
 
   @media (min-width: $xl-min) {
-    width: calc((100% - (var(--columns-xl) - 1) * (var(--gutter) * 1px)) / var(--columns-xl));
+    columns: var(--columns-xl);
   }
+}
+
+.loading-item {
+  width: 100%;
+  will-change: opacity;
+  margin-bottom: calc(var(--gutter) * 1px);
 }
