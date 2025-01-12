@@ -95,6 +95,8 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
   private _currentBreakpoint?: string;
   private _readyTimeouts = new Map<string | number, any>();
   private _destroyed$ = new Subject<void>();
+  private _initializationLock = false;
+  private _initializationQueue: (() => void)[] = [];
 
   constructor(
     public readonly windowRefService: WindowRefService,
@@ -120,16 +122,24 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
     };
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     if (this._isBrowser) {
-      this.MasonryModule = await import("masonry-layout");
-      this._masonryLoaded = true;
+      this._initializationLock = true;
+      import("masonry-layout").then(module => {
+        this.MasonryModule = module;
+        this._masonryLoaded = true;
 
-      // Process any pending ready items
-      this._pendingReadyItems.forEach(itemId => {
-        this._notifyItemReady(itemId);
+        // Process pending items in a controlled way
+        const pendingItems = Array.from(this._pendingReadyItems);
+        this._pendingReadyItems.clear();
+
+        pendingItems.forEach(itemId => {
+          this._initializationQueue.push(() => this._notifyItemReady(itemId));
+        });
+
+        this._initializationLock = false;
+        this._processInitializationQueue();
       });
-      this._pendingReadyItems.clear();
     }
   }
 
@@ -153,6 +163,8 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
   }
 
   ngOnDestroy() {
+    this._initializationQueue = [];
+    this._initializationLock = false;
     this._destroyMasonry();
 
     if (this._isBrowser) {
@@ -173,6 +185,13 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
 
   protected trackByFn(_: number, item: MasonryItem<T>): string | number {
     return item.data[this.idProperty];
+  }
+
+  private _processInitializationQueue() {
+    while (this._initializationQueue.length > 0) {
+      const task = this._initializationQueue.shift();
+      task?.();
+    }
   }
 
   private _handleItemsChange(itemsChange: SimpleChanges["items"]): void {
@@ -240,34 +259,53 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
     }
 
     if (!this._masonryLoaded) {
-      this._pendingReadyItems.add(itemId);
+      this.utilsService.delay(500).subscribe(() => this._notifyItemReady(itemId));
+      console.warn("Masonry not loaded yet, retrying in 500ms.");
       return;
     }
 
+    // if (!this._masonryLoaded) {
+    //   if (this._initializationLock) {
+    //     this._pendingReadyItems.add(itemId);
+    //     return;
+    //   }
+    //   this._initializationQueue.push(() => this._notifyItemReady(itemId));
+    //   return;
+    // }
+
+    // Prevent duplicate processing
     if (this._readyItems.has(itemId)) {
       return;
     }
 
     this._readyItems.add(itemId);
 
-    if (this._readyItems.size === this.items.length) {
-      if (!this.masonry) {
-        this._initMasonry().subscribe();
-      } else {
-        if (!this._layoutInProgress) {
-          const items = this.container.nativeElement.querySelectorAll(".masonry-item") as NodeListOf<HTMLElement>;
+    console.log("Item ready", itemId);
+
+    // Use Promise to ensure sequential processing
+    Promise.resolve().then(() => {
+      if (this._readyItems.size === this.items.length) {
+        console.log("All items ready, relayouting...");
+        if (!this.masonry) {
+          console.log("Masonry not initialized yet, initializing...");
+          this._initMasonry().subscribe();
+        } else if (!this._layoutInProgress) {
+          console.log("Relayouting...");
+          const items = this.container.nativeElement.querySelectorAll(".masonry-item");
           const newElements = Array.from(items).slice(this._previousItemCount);
 
           if (newElements.length > 0) {
             this._layoutInProgress = true;
-            this.masonry.once("layoutComplete", () => this._masonryLayoutComplete().subscribe());
+            this.masonry.once("layoutComplete", () => {
+              this._masonryLayoutComplete().subscribe();
+            });
             this.masonry.appended(newElements);
           }
         }
-      }
 
-      this._previousItemCount = this.items.length;
-    }
+        this._previousItemCount = this.items.length;
+      }
+    });
   }
 
   private _updateItemStates() {
@@ -352,6 +390,8 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
       return;
     }
 
+    console.log("Updating visible items");
+
     const _win = this.windowRefService.nativeWindow;
     const _doc = _win.document;
 
@@ -390,6 +430,7 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
   }
 
   private _masonryLayoutComplete(firstIndex = 0): Observable<void> {
+    console.log("Layout complete");
     return new Observable(observer => {
       const items = this.container.nativeElement.querySelectorAll(".masonry-item") as NodeListOf<HTMLElement>;
 
@@ -414,6 +455,8 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
   }
 
   private _destroyMasonry() {
+    console.log("Destroying masonry");
+
     if (this.masonry) {
       this.masonry.destroy();
       this.masonry = null;
@@ -442,12 +485,18 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
         transitionDuration: "0"
       });
 
-      this._layoutInProgress = true;
-      this.masonry.once("layoutComplete", () => this._masonryLayoutComplete().subscribe(() => {
-        observer.next();
-        observer.complete();
-      }));
-      this.masonry.layout();
+      requestAnimationFrame(() => {
+        this._layoutInProgress = true;
+        this.masonry.once("layoutComplete", () => {
+          this._masonryLayoutComplete().subscribe(() => {
+            this._updateVisibleItems();  // Force visibility update
+            observer.next();
+            observer.complete();
+          });
+        });
+
+        this.masonry.layout();
+      });
     });
   }
 

@@ -7,33 +7,34 @@ astrobin-image-loading-indicator ::ng-deep {
   }
 }
 
-astrobin-image-loading-indicator.tiny {
-  display: inline-block;
-  width: 143px;
-  height: 143px;
+.loading-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--gutter) * 1px);
+  contain: paint layout;
+  content-visibility: auto;
+}
 
-  @media (max-width: $xl-max) {
-    width: 140px;
-    height: 140px;
+.loading-item {
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: calc((100% - (var(--columns-xs) - 1) * (var(--gutter) * 1px)) / var(--columns-xs));
+  will-change: opacity;
+
+  @media (min-width: $sm-min) {
+    width: calc((100% - (var(--columns-sm) - 1) * (var(--gutter) * 1px)) / var(--columns-sm));
   }
 
-  @media (max-width: $lg-max) {
-    width: 135px;
-    height: 135px;
+  @media (min-width: $md-min) {
+    width: calc((100% - (var(--columns-md) - 1) * (var(--gutter) * 1px)) / var(--columns-md));
   }
 
-  @media (max-width: $md-max) {
-    width: calc(100vw / 7 - 1rem);
-    height: calc(100vw / 7 - 1rem);
+  @media (min-width: $lg-min) {
+    width: calc((100% - (var(--columns-lg) - 1) * (var(--gutter) * 1px)) / var(--columns-lg));
   }
 
-  @media (max-width: $sm-max) {
-    width: calc(100vw / 5 - 1rem);
-    height: calc(100vw / 5 - 1rem);
-  }
-
-  @media (max-width: $xs-max) {
-    width: calc(100vw / 3 - 1.25rem);
-    height: calc(100vw / 3 - 1.25rem);
+  @media (min-width: $xl-min) {
+    width: calc((100% - (var(--columns-xl) - 1) * (var(--gutter) * 1px)) / var(--columns-xl));
   }
 }

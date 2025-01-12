@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnChanges, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -11,25 +11,25 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
   selector: "astrobin-user-gallery-loading",
   template: `
     <ng-container *ngIf="isBrowser">
-      <astrobin-masonry-layout
-        [items]="placeholders"
-        [breakpoints]="breakpoints"
-        [gutter]="gutter"
-      >
-        <ng-template let-item let-notifyReady="notifyReady">
-          <astrobin-image-loading-indicator
-            (load)="notifyReady()"
-            [style.height.px]="item.h"
-          >
-          </astrobin-image-loading-indicator>
-        </ng-template>
-      </astrobin-masonry-layout>
+      <div class="loading-container" [style.--gutter]="gutter">
+        <astrobin-image-loading-indicator
+          *ngFor="let placeholder of placeholders"
+          [style.height.px]="placeholder.h"
+          [style.--columns-xs]="breakpoints.xs"
+          [style.--columns-sm]="breakpoints.sm"
+          [style.--columns-md]="breakpoints.md"
+          [style.--columns-lg]="breakpoints.lg"
+          [style.--columns-xl]="breakpoints.xl"
+          [style.--gutter]="gutter"
+          class="loading-item"
+        ></astrobin-image-loading-indicator>
+      </div>
     </ng-container>
   `,
   styleUrls: ["./user-gallery-loading.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserGalleryLoadingComponent extends BaseComponentDirective implements AfterViewInit, OnInit {
+export class UserGalleryLoadingComponent extends BaseComponentDirective implements AfterViewInit, OnChanges {
   @Input() numberOfImages: number;
   @Input() activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.TINY;
 
@@ -49,9 +49,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-
+  ngOnChanges() {
     if (this.activeLayout === UserGalleryActiveLayout.TINY) {
       this.size = 130;
       this.breakpoints = {
@@ -94,8 +92,6 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
   ngAfterViewInit() {
     this.utilsService.delay(1).subscribe(() => {
       this.placeholders = Array.from({ length: this.numberOfImages }).map(() => ({
-        id: UtilsService.uuid(),
-        w: Math.random() * this.size + this.size,
         h: this.size
       }));
       this.changeDetectorRef.markForCheck();

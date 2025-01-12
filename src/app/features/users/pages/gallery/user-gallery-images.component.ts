@@ -77,7 +77,7 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
               astrobinEventPreventDefault
             >
               <img
-                (load)="notifyReady()"
+                (load)="onImageReady(notifyReady)"
                 [src]="imageService.getThumbnail(
                   item,
                   activeLayout === UserGalleryActiveLayout.TINY ? ImageAlias.GALLERY : ImageAlias.REGULAR
@@ -300,7 +300,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       } else if (changes.activeLayout.currentValue === UserGalleryActiveLayout.LARGE) {
         this.breakpoints = {
           xs: 1,
-          sm: 1,
+          sm: 2,
           md: 2,
           lg: 3,
           xl: 3
@@ -367,6 +367,13 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       this._findImagesSubscription.unsubscribe();
       this._findImagesSubscription = null;
     }
+  }
+
+  protected onImageReady(notifyReady: () => void): void {
+    this.utilsService.delay(0).subscribe(() => {
+      notifyReady();
+      this.changeDetectorRef.detectChanges();
+    });
   }
 
   openImage(image: ImageInterface): void {
