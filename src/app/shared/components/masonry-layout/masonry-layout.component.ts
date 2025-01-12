@@ -133,36 +133,14 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes.items) {
-      const currentItems = changes.items.currentValue || [];
-      const previousItems = changes.items.previousValue || [];
+      this._handleItemsChange(changes.items);
+      return;
+    }
 
-      if (!changes.items.firstChange) {
-        // Check if this is pagination (new items are appended to existing ones)
-        const isPagination = previousItems.length > 0 &&
-          currentItems.length > previousItems.length &&
-          previousItems.every((prevItem, index) =>
-            currentItems[index][this.idProperty] === prevItem[this.idProperty]
-          );
-
-        if (!isPagination) {
-          if (this.masonry) {
-            this._reloadMasonry().subscribe();
-          } else {
-            this._updateItemStates();
-          }
-        } else {
-          this._updateItemStates();
-        }
-      } else {
-        this._updateItemStates();
-      }
-    } else if (
-      this.masonry &&
-      (changes.breakpoints && !changes.breakpoints.firstChange) ||
-      (changes.gutter && !changes.gutter.firstChange)
-    ) {
+    if (this.masonry && (changes.breakpoints && !changes.breakpoints.firstChange) ||
+      (changes.gutter && !changes.gutter.firstChange)) {
       this._reloadMasonry().subscribe();
     }
   }
@@ -195,6 +173,28 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
 
   protected trackByFn(_: number, item: MasonryItem<T>): string | number {
     return item.data[this.idProperty];
+  }
+
+  private _handleItemsChange(itemsChange: SimpleChanges["items"]): void {
+    const currentItems = itemsChange.currentValue || [];
+    const previousItems = itemsChange.previousValue || [];
+
+    if (itemsChange.firstChange) {
+      this._updateItemStates();
+      return;
+    }
+
+    const isPagination = previousItems.length > 0 &&
+      currentItems.length > previousItems.length &&
+      previousItems.every((prevItem, index) =>
+        currentItems[index][this.idProperty] === prevItem[this.idProperty]
+      );
+
+    if (isPagination || !this.masonry) {
+      this._updateItemStates();
+    } else {
+      this._reloadMasonry().subscribe();
+    }
   }
 
   private _getBreakpoint(): string {
