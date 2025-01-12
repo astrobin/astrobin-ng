@@ -73,6 +73,7 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
               (click)="openImage(item)"
               [href]="'/i/' + (item.hash || item.pk)"
               [class.wip]="item.isWip"
+              class="image-link"
               astrobinEventPreventDefault
             >
               <img
@@ -90,10 +91,10 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
                 [image]="item"
                 [staticOverlay]="options.ordering"
               ></astrobin-image-hover>
-            </a>
 
-            <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
-            <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image: item }"></ng-container>
+              <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
+              <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image: item }"></ng-container>
+            </a>
           </div>
         </ng-template>
       </astrobin-masonry-layout>
