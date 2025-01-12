@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
@@ -10,5 +10,10 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   `,
   styleUrls: ["./image-loading-indicator.component.scss"]
 })
-export class ImageLoadingIndicatorComponent extends BaseComponentDirective {
+export class ImageLoadingIndicatorComponent extends BaseComponentDirective implements AfterViewInit {
+  @Output() load = new EventEmitter<void>();
+
+  ngAfterViewInit() {
+    this.load.emit();
+  }
 }

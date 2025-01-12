@@ -61,6 +61,7 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
       <ng-container *ngTemplateOutlet="acquisitionSortingInfoTemplate"></ng-container>
 
       <astrobin-masonry-layout
+        *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TABLE"
         [items]="images"
         [idProperty]="'pk'"
         [breakpoints]="breakpoints"

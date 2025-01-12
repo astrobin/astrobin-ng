@@ -5,12 +5,25 @@ import { MainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
+import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-layout.component";
 
 @Component({
   selector: "astrobin-user-gallery-loading",
   template: `
     <ng-container *ngIf="isBrowser">
-      <astrobin-loading-indicator></astrobin-loading-indicator>
+      <astrobin-masonry-layout
+        [items]="placeholders"
+        [breakpoints]="breakpoints"
+        [gutter]="gutter"
+      >
+        <ng-template let-item let-notifyReady="notifyReady">
+          <astrobin-image-loading-indicator
+            (load)="notifyReady()"
+            [style.height.px]="item.h"
+          >
+          </astrobin-image-loading-indicator>
+        </ng-template>
+      </astrobin-masonry-layout>
     </ng-container>
   `,
   styleUrls: ["./user-gallery-loading.component.scss"],
@@ -22,6 +35,9 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
 
   protected readonly isBrowser: boolean;
   protected placeholders: any[] = []; // All we need is w and h.
+  protected size = 200;
+  protected breakpoints: MasonryBreakpoints;
+  protected gutter: number;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -36,9 +52,53 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
   ngOnInit() {
     super.ngOnInit();
 
+    if (this.activeLayout === UserGalleryActiveLayout.TINY) {
+      this.size = 130;
+      this.breakpoints = {
+        xs: 4,
+        sm: 5,
+        md: 7,
+        lg: 8,
+        xl: 9
+      };
+      this.gutter = 8;
+    }
+
+    if (this.activeLayout === UserGalleryActiveLayout.SMALL) {
+      this.size = 150;
+      this.breakpoints = {
+        xs: 2,
+        sm: 3,
+        md: 4,
+        lg: 5,
+        xl: 5
+      };
+      this.gutter = 12;
+    }
+
+    if (this.activeLayout === UserGalleryActiveLayout.LARGE) {
+      this.size = 300;
+      this.breakpoints = {
+        xs: 1,
+        sm: 1,
+        md: 2,
+        lg: 3,
+        xl: 3
+      };
+      this.gutter = 16;
+    }
+
     this.changeDetectorRef.markForCheck();
   }
 
   ngAfterViewInit() {
+    this.utilsService.delay(1).subscribe(() => {
+      this.placeholders = Array.from({ length: this.numberOfImages }).map(() => ({
+        id: UtilsService.uuid(),
+        w: Math.random() * this.size + this.size,
+        h: this.size
+      }));
+      this.changeDetectorRef.markForCheck();
+    });
   }
 }
