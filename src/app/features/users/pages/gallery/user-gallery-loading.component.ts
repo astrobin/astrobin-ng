@@ -14,7 +14,7 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
       <div class="loading-container" [style.--gutter]="gutter">
         <astrobin-image-loading-indicator
           *ngFor="let placeholder of placeholders"
-          [style.height.px]="placeholder.h"
+          [style.height.px]="height"
           [style.--columns-xs]="breakpoints.xs"
           [style.--columns-sm]="breakpoints.sm"
           [style.--columns-md]="breakpoints.md"
@@ -35,7 +35,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
 
   protected readonly isBrowser: boolean;
   protected placeholders: any[] = []; // All we need is w and h.
-  protected size = 200;
+  protected height = 200;
   protected breakpoints: MasonryBreakpoints;
   protected gutter: number;
 
@@ -50,8 +50,19 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
   }
 
   ngOnChanges() {
+    this._updateLayout();
+  }
+
+  ngAfterViewInit() {
+    this.utilsService.delay(1).subscribe(() => {
+      this.placeholders = Array.from({ length: this.numberOfImages }).map(() => ({}));
+      this.changeDetectorRef.markForCheck();
+    });
+  }
+
+  private _updateLayout() {
     if (this.activeLayout === UserGalleryActiveLayout.TINY) {
-      this.size = 130;
+      this.height = 130;
       this.breakpoints = {
         xs: 4,
         sm: 5,
@@ -63,7 +74,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     }
 
     if (this.activeLayout === UserGalleryActiveLayout.SMALL) {
-      this.size = 150;
+      this.height = 200;
       this.breakpoints = {
         xs: 2,
         sm: 3,
@@ -75,7 +86,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     }
 
     if (this.activeLayout === UserGalleryActiveLayout.LARGE) {
-      this.size = 300;
+      this.height = 300;
       this.breakpoints = {
         xs: 1,
         sm: 1,
@@ -87,14 +98,5 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     }
 
     this.changeDetectorRef.markForCheck();
-  }
-
-  ngAfterViewInit() {
-    this.utilsService.delay(1).subscribe(() => {
-      this.placeholders = Array.from({ length: this.numberOfImages }).map(() => ({
-        h: this.size
-      }));
-      this.changeDetectorRef.markForCheck();
-    });
   }
 }

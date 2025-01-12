@@ -259,19 +259,13 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
     }
 
     if (!this._masonryLoaded) {
-      this.utilsService.delay(500).subscribe(() => this._notifyItemReady(itemId));
-      console.warn("Masonry not loaded yet, retrying in 500ms.");
+      if (this._initializationLock) {
+        this._pendingReadyItems.add(itemId);
+        return;
+      }
+      this._initializationQueue.push(() => this._notifyItemReady(itemId));
       return;
     }
-
-    // if (!this._masonryLoaded) {
-    //   if (this._initializationLock) {
-    //     this._pendingReadyItems.add(itemId);
-    //     return;
-    //   }
-    //   this._initializationQueue.push(() => this._notifyItemReady(itemId));
-    //   return;
-    // }
 
     // Prevent duplicate processing
     if (this._readyItems.has(itemId)) {
@@ -280,17 +274,12 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
 
     this._readyItems.add(itemId);
 
-    console.log("Item ready", itemId);
-
     // Use Promise to ensure sequential processing
     Promise.resolve().then(() => {
       if (this._readyItems.size === this.items.length) {
-        console.log("All items ready, relayouting...");
         if (!this.masonry) {
-          console.log("Masonry not initialized yet, initializing...");
           this._initMasonry().subscribe();
         } else if (!this._layoutInProgress) {
-          console.log("Relayouting...");
           const items = this.container.nativeElement.querySelectorAll(".masonry-item");
           const newElements = Array.from(items).slice(this._previousItemCount);
 
@@ -390,8 +379,6 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
       return;
     }
 
-    console.log("Updating visible items");
-
     const _win = this.windowRefService.nativeWindow;
     const _doc = _win.document;
 
@@ -430,7 +417,6 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
   }
 
   private _masonryLayoutComplete(firstIndex = 0): Observable<void> {
-    console.log("Layout complete");
     return new Observable(observer => {
       const items = this.container.nativeElement.querySelectorAll(".masonry-item") as NodeListOf<HTMLElement>;
 
@@ -455,8 +441,6 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
   }
 
   private _destroyMasonry() {
-    console.log("Destroying masonry");
-
     if (this.masonry) {
       this.masonry.destroy();
       this.masonry = null;
@@ -489,9 +473,11 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
         this._layoutInProgress = true;
         this.masonry.once("layoutComplete", () => {
           this._masonryLayoutComplete().subscribe(() => {
-            this._updateVisibleItems();  // Force visibility update
-            observer.next();
-            observer.complete();
+            this.utilsService.delay(100).subscribe(() => {
+              this._updateVisibleItems();  // Force visibility update
+              observer.next();
+              observer.complete();
+            });
           });
         });
 
