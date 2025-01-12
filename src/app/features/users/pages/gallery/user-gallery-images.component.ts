@@ -5,7 +5,7 @@ import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
-import { Actions, ofType } from "@ngrx/effects";
+import { act, Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -48,6 +48,12 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
 
       <ng-container *ngTemplateOutlet="acquisitionSortingInfoTemplate"></ng-container>
 
+      <astrobin-loading-indicator
+        *ngIf="!loadingPlaceholdersCount || loadingPlaceholdersCount <= 10"
+        [hidden]="!loading"
+        @fadeInOut
+      ></astrobin-loading-indicator>
+
       <ng-container *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TABLE">
         <astrobin-user-gallery-loading
           *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
@@ -56,12 +62,6 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
           [activeLayout]="activeLayout"
           [numberOfImages]="loadingPlaceholdersCount"
         ></astrobin-user-gallery-loading>
-
-        <astrobin-loading-indicator
-          *ngIf="!loadingPlaceholdersCount || loadingPlaceholdersCount <= 10"
-          [hidden]="!loading && masonryLayoutReady"
-          @fadeInOut
-        ></astrobin-loading-indicator>
 
         <astrobin-masonry-layout
           (layoutReady)="masonryLayoutReady = true"
@@ -93,6 +93,8 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
                 <astrobin-image-hover
                   [image]="item"
                   [staticOverlay]="options.ordering"
+                  [activeLayout]="activeLayout"
+                  [showAuthor]="false"
                 ></astrobin-image-hover>
 
                 <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
@@ -227,7 +229,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   protected gutter: number;
   protected masonryLayoutReady = false;
 
-
   private _findImagesSubscription: Subscription;
   private _slideshowComponent: ImageViewerSlideshowComponent;
   private _nearEndOfContextSubscription: Subscription;
@@ -268,6 +269,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       (changes.options && JSON.stringify(changes.options.currentValue) !== JSON.stringify(changes.options.previousValue))
     ) {
       this.page = 1;
+      this.loadingPlaceholdersCount = 0;
       this._getImages();
     }
 

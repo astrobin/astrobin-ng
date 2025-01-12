@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/c
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageService } from "@shared/services/image/image.service";
-import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
+import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 
 @Component({
   selector: 'astrobin-image-hover',
@@ -11,7 +11,12 @@ import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.serv
       <ng-container *ngTemplateOutlet="staticOverlayTemplate"></ng-container>
     </div>
 
-    <div class="hover d-flex align-items-end gap-2">
+    <div
+      class="hover d-flex align-items-end gap-2"
+      [class.tiny]="activeLayout === ActiveLayout.TINY"
+      [class.small]="activeLayout === ActiveLayout.SMALL"
+      [class.large]="activeLayout === ActiveLayout.LARGE"
+    >
       <div class="flex-grow-1">
         <div class="title">{{ image.title }}</div>
         <div *ngIf="showAuthor" class="author">{{ image.userDisplayName }}</div>
@@ -81,6 +86,9 @@ export class ImageHoverComponent implements OnChanges {
   @Input() image: ImageInterface | ImageSearchInterface;
   @Input() showAuthor = true;
   @Input() staticOverlay: string;
+  @Input() activeLayout: string;
+
+  protected readonly ActiveLayout = UserGalleryActiveLayout;
 
   protected published: string;
   protected uploaded: string;

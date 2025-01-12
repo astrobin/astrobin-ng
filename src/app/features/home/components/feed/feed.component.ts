@@ -110,7 +110,7 @@ enum FeedType {
                   </a>
 
                   <astrobin-image-icons [image]="item"></astrobin-image-icons>
-                  <astrobin-image-hover [image]="item"></astrobin-image-hover>
+                  <astrobin-image-hover [image]="item" [activeLayout]="UserGalleryActiveLayout.SMALL"></astrobin-image-hover>
                 </ng-template>
               </astrobin-masonry-layout>
             </div>

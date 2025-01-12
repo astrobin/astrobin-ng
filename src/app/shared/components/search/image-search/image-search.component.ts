@@ -25,6 +25,7 @@ import { DeviceService } from "@shared/services/device.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { UserService } from "@shared/services/user.service";
 import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-layout.component";
+import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 
 @Component({
   selector: "astrobin-image-search",
@@ -279,4 +280,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       return acc;
     }, []);
   }
+
+  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
 }

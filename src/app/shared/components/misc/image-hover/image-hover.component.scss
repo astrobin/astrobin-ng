@@ -27,8 +27,64 @@
   transition: opacity .25s ease-in-out;
   border-bottom-left-radius: .75rem;
   border-bottom-right-radius: .75rem;
-  font-size: .75rem;
   z-index: 2;
+
+  &.tiny {
+    font-size: .65rem;
+
+    .author {
+      font-size: .65rem;
+    }
+
+    .published,
+    .uploaded {
+      font-size: .55rem;
+    }
+
+    .counters {
+      .counter {
+        font-size: .55rem;
+      }
+    }
+  }
+
+  &.small {
+    font-size: .75rem;
+
+    .author {
+      font-size: .75rem;
+    }
+
+    .published,
+    .uploaded {
+      font-size: .65rem;
+    }
+
+    .counters {
+      .counter {
+        font-size: .65rem;
+      }
+    }
+  }
+
+  &.large {
+    font-size: .9rem;
+
+    .author {
+      font-size: .9rem;
+    }
+
+    .published,
+    .uploaded {
+      font-size: .75rem;
+    }
+
+    .counters {
+      .counter {
+        font-size: .75rem;
+      }
+    }
+  }
 
   .title {
     color: var(--lightestGrey);
@@ -47,7 +103,6 @@
 
   .author {
     color: var(--lighterGrey);
-    font-size: .7rem;
   }
 
   /* Fallback for browsers without line-clamp support */
@@ -63,13 +118,11 @@
   .published,
   .uploaded {
     color: var(--lighterGrey);
-    font-size: .6rem;
   }
 
   .counters {
     .counter {
       color: var(--lighterGrey);
-      font-size: .65rem;
       white-space: nowrap;
 
       .ng-fa-icon {
