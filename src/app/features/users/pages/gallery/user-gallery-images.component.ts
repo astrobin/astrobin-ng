@@ -27,7 +27,6 @@ import { selectCollectionsByParams } from "@app/store/selectors/app/collection.s
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-layout.component";
-import { Breakpoint } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-user-gallery-images",
@@ -441,49 +440,12 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   }
 
   private _calculateBreakpointsAndGutter(): void {
-    const LAYOUT_CONFIG = {
-      [UserGalleryActiveLayout.TINY]: {
-        ultranarrow: { columns: 4, gutter: 8 }, // < SM_MIN
-        narrow: { columns: 6, gutter: 8 },      // < MD_MIN
-        medium: { columns: 7, gutter: 8 },      // < LG_MIN
-        wide: { columns: 10, gutter: 8 }       // >= LG_MIN
-      },
-      [UserGalleryActiveLayout.SMALL]: {
-        ultranarrow: { columns: 2, gutter: 10 },
-        narrow: { columns: 3, gutter: 10 },
-        medium: { columns: 5, gutter: 10 },
-        wide: { columns: 6, gutter: 10 }
-      },
-      [UserGalleryActiveLayout.LARGE]: {
-        ultranarrow: { columns: 1, gutter: 12 },
-        narrow: { columns: 2, gutter: 12 },
-        medium: { columns: 2, gutter: 12 },
-        wide: { columns: 3, gutter: 12 }
-      }
-    };
-
-    let config: { columns: number; gutter: number };
-
-    if (this._containerWidth < Breakpoint.SM_MIN) {
-      config = LAYOUT_CONFIG[this.activeLayout].ultranarrow;
-    } else if (this._containerWidth < Breakpoint.MD_MIN) {
-      config = LAYOUT_CONFIG[this.activeLayout].narrow;
-    } else if (this._containerWidth < Breakpoint.LG_MIN) {
-      config = LAYOUT_CONFIG[this.activeLayout].medium;
-    } else {
-      config = LAYOUT_CONFIG[this.activeLayout].wide;
-    }
-
-    // Since all breakpoint sizes are the same, we can simplify this
-    this.breakpoints = {
-      xs: config.columns,
-      sm: config.columns,
-      md: config.columns,
-      lg: config.columns,
-      xl: config.columns
-    };
-
-    this.gutter = config.gutter;
+    const { breakpoints, gutter } = this.imageService.getBreakpointsAndGutterForMasonryLayout(
+      this._containerWidth,
+      this.activeLayout
+    );
+    this.breakpoints = breakpoints;
+    this.gutter = gutter;
   }
 
   private _getImages(): void {

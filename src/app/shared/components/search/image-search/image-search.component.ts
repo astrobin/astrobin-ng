@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, Output, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { Observable, Subscription } from "rxjs";
+import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
@@ -26,13 +26,14 @@ import { ImageService } from "@shared/services/image/image.service";
 import { UserService } from "@shared/services/user.service";
 import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-layout.component";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-image-search",
   templateUrl: "./image-search.component.html",
   styleUrls: ["./image-search.component.scss"]
 })
-export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> {
+export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
 
@@ -50,7 +51,9 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
   protected masonryLayoutReady = false;
+  protected uiReady = false;
 
+  private readonly _isBrowser: boolean;
   private readonly _placeholderBase64 = 'data:image/svg+xml;base64,' + btoa(`
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100">
       <rect width="100" height="100" fill="#1a1a1a"/>
@@ -91,7 +94,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   `);
 
   private _nearEndOfContextSubscription: Subscription;
-  private imageDimensions = new Map<string, { width: number; height: number }>();
+  private _imageDimensions = new Map<string, { width: number; height: number }>();
+  private _containerWidth = 0;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -113,11 +117,22 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly userService: UserService
   ) {
     super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
+    this._isBrowser = isPlatformBrowser(this.platformId);
+  }
+
+  ngOnInit() {
+    super.ngOnInit();
+
+    fromEvent(this.windowRefService.nativeWindow, "resize")
+      .pipe(takeUntil(this.destroyed$), auditTime(200))
+      .subscribe(() => this._checkUiReady());
+
+    this._checkUiReady();
   }
 
   onImageLoad(imageElement: HTMLImageElement, item: ImageSearchInterface, notifyReady: () => void): void {
     // Store the original dimensions
-    this.imageDimensions.set("" + item.objectId, {
+    this._imageDimensions.set("" + item.objectId, {
       width: imageElement.naturalWidth,
       height: imageElement.naturalHeight
     });
@@ -126,7 +141,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
   onImageError(imageElement: HTMLImageElement, item: ImageSearchInterface, notifyReady: () => void): void {
     // If we have stored dimensions, use them
-    const dimensions = this.imageDimensions.get("" + item.objectId);
+    const dimensions = this._imageDimensions.get("" + item.objectId);
     if (dimensions) {
       imageElement.width = dimensions.width;
       imageElement.height = dimensions.height;
@@ -233,6 +248,29 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       this.classicRoutesService.IMAGE(image.hash || ("" + image.objectId)),
       "_self"
     );
+  }
+
+  private _checkUiReady(): void {
+    if (!this._isBrowser) {
+      return;
+    }
+    this._containerWidth = this.elementRef.nativeElement?.parentElement?.clientWidth;
+
+    if (this._containerWidth > 0) {
+      this._calculateBreakpointsAndGutter();
+      this.uiReady = true;
+    } else {
+      this.utilsService.delay(100).subscribe(() => this._checkUiReady());
+    }
+  }
+
+  private _calculateBreakpointsAndGutter(): void {
+    const { breakpoints, gutter } = this.imageService.getBreakpointsAndGutterForMasonryLayout(
+      this._containerWidth,
+      UserGalleryActiveLayout.SMALL
+    );
+    this.breakpoints = breakpoints;
+    this.gutter = gutter;
   }
 
   private _openImageByImageViewer(image: ImageSearchInterface): void {
