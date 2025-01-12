@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { auditTime, fromEvent, merge, Subject, throttleTime } from "rxjs";
+import { AfterViewInit, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { auditTime, fromEvent, Observable, of, Subject, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
-import { debounceTime, takeUntil } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Breakpoint } from "@shared/services/device.service";
 
@@ -22,6 +22,7 @@ interface MasonryItem<T> {
   data: T;
   visible: boolean;
   height?: number;
+  aspectRatio?: number;
 }
 
 @Component({
@@ -35,6 +36,7 @@ interface MasonryItem<T> {
       <div
         *ngFor="let item of itemStates; trackBy: trackByFn"
         class="masonry-item"
+        [class.wide]="item.aspectRatio && item.aspectRatio > 2"
         [attr.data-masonry-id]="item.data[this.idProperty]"
         [style.height.px]="item.height || null"
         [style.--columns-xs]="breakpointColumns.xs"
@@ -59,7 +61,7 @@ interface MasonryItem<T> {
 export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input() items: T[] = [];
   @Input() idProperty = "id";
-  @Input() gutter = 20;
+  @Input() gutter = 16;
 
   @Output() layoutReady = new EventEmitter<void>();
 
@@ -98,7 +100,8 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly renderer: Renderer2,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     this._isBrowser = isPlatformBrowser(platformId);
 
@@ -115,8 +118,6 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
       lg: value.lg ?? 3,
       xl: value.xl ?? 3
     };
-
-    this._reloadMasonry();
   }
 
   async ngOnInit() {
@@ -134,15 +135,35 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.items) {
-      this._updateItemStates();
-    }
+      const currentItems = changes.items.currentValue || [];
+      const previousItems = changes.items.previousValue || [];
 
-    if (
+      if (!changes.items.firstChange) {
+        // Check if this is pagination (new items are appended to existing ones)
+        const isPagination = previousItems.length > 0 &&
+          currentItems.length > previousItems.length &&
+          previousItems.every((prevItem, index) =>
+            currentItems[index][this.idProperty] === prevItem[this.idProperty]
+          );
+
+        if (!isPagination) {
+          if (this.masonry) {
+            this._reloadMasonry().subscribe();
+          } else {
+            this._updateItemStates();
+          }
+        } else {
+          this._updateItemStates();
+        }
+      } else {
+        this._updateItemStates();
+      }
+    } else if (
       this.masonry &&
       (changes.breakpoints && !changes.breakpoints.firstChange) ||
       (changes.gutter && !changes.gutter.firstChange)
     ) {
-      this._reloadMasonry();
+      this._reloadMasonry().subscribe();
     }
   }
 
@@ -231,7 +252,7 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
 
     if (this._readyItems.size === this.items.length) {
       if (!this.masonry) {
-        this._initMasonry();
+        this._initMasonry().subscribe();
       } else {
         if (!this._layoutInProgress) {
           const items = this.container.nativeElement.querySelectorAll(".masonry-item") as NodeListOf<HTMLElement>;
@@ -239,7 +260,7 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
 
           if (newElements.length > 0) {
             this._layoutInProgress = true;
-            this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
+            this.masonry.once("layoutComplete", () => this._masonryLayoutComplete().subscribe());
             this.masonry.appended(newElements);
           }
         }
@@ -264,9 +285,16 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
         }
       }
 
+      let aspectRatio: number | undefined;
+
+      if (item.hasOwnProperty("w") && item.hasOwnProperty("h")) {
+        aspectRatio = item["w"] / item["h"];
+      }
+
       return existingState || {
         data: item,
-        visible: true
+        visible: true,
+        aspectRatio
       };
     }) : [];
   }
@@ -308,7 +336,7 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
           this.masonry.reloadItems();
         }
 
-        this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
+        this.masonry.once("layoutComplete", () => this._masonryLayoutComplete().subscribe());
         this.masonry.layout();
       });
     }
@@ -361,22 +389,27 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
     });
   }
 
-  private _masonryLayoutComplete(firstIndex = 0) {
-    const items = this.container.nativeElement.querySelectorAll(".masonry-item") as NodeListOf<HTMLElement>;
+  private _masonryLayoutComplete(firstIndex = 0): Observable<void> {
+    return new Observable(observer => {
+      const items = this.container.nativeElement.querySelectorAll(".masonry-item") as NodeListOf<HTMLElement>;
 
-    Array.from(items).slice(firstIndex).forEach(item => {
-      const itemId = item.getAttribute("data-masonry-id");
-      const itemState = this.itemStates.find(state => state.data[this.idProperty].toString() === itemId);
+      Array.from(items).slice(firstIndex).forEach(item => {
+        const itemId = item.getAttribute("data-masonry-id");
+        const itemState = this.itemStates.find(state => state.data[this.idProperty].toString() === itemId);
 
-      if (itemState) {
-        itemState.height = item.getBoundingClientRect().height;
-      }
-    });
+        if (itemState) {
+          itemState.height = item.getBoundingClientRect().height;
+        }
+      });
 
-    requestAnimationFrame(() => {
-      this._layoutInProgress = false;
-      this._updateVisibleItems();
-      this.layoutReady.emit();
+      requestAnimationFrame(() => {
+        this._layoutInProgress = false;
+        this._updateVisibleItems();
+        this.layoutReady.emit();
+
+        observer.next();
+        observer.complete();
+      });
     });
   }
 
@@ -385,62 +418,49 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
       this.masonry.destroy();
       this.masonry = null;
 
-      // Reset visibility states
-      this.itemStates.forEach(item => {
-        item.visible = true;
-        item.height = undefined;
-      });
+      // Reset all states
+      this._pendingReadyItems.clear();
+      this._readyItems.clear();
+      this._readyTimeouts.clear();
+      this.itemStates = [];
+      this._previousItemCount = 0;
+      this._layoutInProgress = false;
     }
   }
 
-  private _initMasonry() {
+  private _initMasonry(): Observable<void> {
     if (!this._isBrowser || !this.MasonryModule || !this.container) {
-      return;
+      return of(null);
     }
 
-    this.masonry = new this.MasonryModule.default(this.container.nativeElement, {
-      itemSelector: ".masonry-item",
-      columnWidth: ".masonry-item",
-      percentPosition: true,
-      gutter: this.gutter,
-      transitionDuration: "0"
-    });
+    return new Observable(observer => {
+      this.masonry = new this.MasonryModule.default(this.container.nativeElement, {
+        itemSelector: ".masonry-item",
+        columnWidth: ".masonry-item",
+        percentPosition: true,
+        gutter: this.gutter,
+        transitionDuration: "0"
+      });
 
-    this._layoutInProgress = true;
-    this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
-    this.masonry.layout();
+      this._layoutInProgress = true;
+      this.masonry.once("layoutComplete", () => this._masonryLayoutComplete().subscribe(() => {
+        observer.next();
+        observer.complete();
+      }));
+      this.masonry.layout();
+    });
   }
 
-  private _reloadMasonry() {
-    let currentScrollPosition: number;
-    let scrollableParent: HTMLElement | Window;
-
-    if (this.masonry) {
-      if (this._isBrowser) {
-        scrollableParent = UtilsService.getScrollableParent(
-          this.container.nativeElement,
-          this.windowRefService
-        );
-
-        if (scrollableParent) {
-          if (scrollableParent === this.windowRefService.nativeWindow) {
-            currentScrollPosition = this.windowRefService.nativeWindow.scrollY;
-          } else {
-            currentScrollPosition = (scrollableParent as HTMLElement).scrollTop;
-          }
-        }
-      }
-
+  private _reloadMasonry(): Observable<void> {
+    return new Observable(observer => {
       this._destroyMasonry();
-      this.utilsService.delay(100).subscribe(() => {
-        requestAnimationFrame(() => {
-          this._initMasonry();
 
-          if (currentScrollPosition !== undefined) {
-            scrollableParent.scrollTo(0, currentScrollPosition);
-          }
-        });
-      });
-    }
+      this.changeDetectorRef.detectChanges();
+
+      this._updateItemStates();
+
+      observer.next();
+      observer.complete();
+    });
   }
 }

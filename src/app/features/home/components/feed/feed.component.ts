@@ -91,7 +91,7 @@ enum FeedType {
                   lg: 5,
                   xl: 5
                 }"
-                [gutter]="16"
+                [gutter]="12"
               >
                 <ng-template let-item let-notifyReady="notifyReady">
                   <a

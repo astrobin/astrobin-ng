@@ -6,6 +6,7 @@ astrobin-masonry-layout {
 
     .image-container {
       position: relative;
+      height: 100%;
 
       &,
       img {
@@ -15,7 +16,13 @@ astrobin-masonry-layout {
 
       img {
         width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
+    }
+
+    &.wide {
+      min-height: 200px;
     }
 
     @media (hover: hover) and (pointer: fine) {

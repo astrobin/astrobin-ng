@@ -101,7 +101,7 @@
             lg: 5,
             xl: 5
           }"
-          [gutter]="gutter ?? 16"
+          [gutter]="gutter ?? 12"
         >
           <ng-template let-item let-notifyReady="notifyReady">
             <div class="image-container">
@@ -112,7 +112,8 @@
                 <img
                   #imageElement
                   (load)="onImageLoad(imageElement, item, notifyReady)"
-                  (error)="onImageError(imageElement, item, notifyReady)"                  [src]="item.regularThumbnail"
+                  (error)="onImageError(imageElement, item, notifyReady)"
+                  [src]="item.regularThumbnail"
                   [alt]="item.title"
                 />
 
