@@ -22,7 +22,8 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
       >
         <astrobin-image-loading-indicator
           *ngFor="let placeholder of placeholders"
-          [style.height.px]="placeholder.w || height"
+          [style.height.px]="placeholder.aspectRatio === 1 ? 'auto' : placeholder.h"
+          [style.aspect-ratio]="placeholder.aspectRatio"
           [style.--gutter]="gutter"
           class="loading-item"
         ></astrobin-image-loading-indicator>
@@ -38,7 +39,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
 
   protected readonly isBrowser: boolean;
   protected placeholders: any[] = []; // All we need is w and h.
-  protected height = 200;
+  protected size = 200;
   protected breakpoints: MasonryBreakpoints;
   protected gutter: number;
 
@@ -58,7 +59,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
 
   private _updateLayout() {
     if (this.activeLayout === UserGalleryActiveLayout.TINY) {
-      this.height = 130;
+      this.size = 130;
       this.breakpoints = {
         xs: 4,
         sm: 5,
@@ -68,7 +69,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
       };
       this.gutter = 8;
     } else if (this.activeLayout === UserGalleryActiveLayout.SMALL) {
-      this.height = 200;
+      this.size = 200;
       this.breakpoints = {
         xs: 2,
         sm: 3,
@@ -78,7 +79,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
       };
       this.gutter = 10;
     } else if (this.activeLayout === UserGalleryActiveLayout.LARGE) {
-      this.height = 300;
+      this.size = 300;
       this.breakpoints = {
         xs: 1,
         sm: 1,
@@ -90,10 +91,13 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     }
 
     this.placeholders = Array.from({ length: this.numberOfImages }).map(() => ({
-      w: this.activeLayout === UserGalleryActiveLayout.TINY
-        ? this.height
-        : Math.floor(Math.random() * 100 + this.height / 2)
+      h: this.activeLayout === UserGalleryActiveLayout.TINY
+        ? this.size
+        : Math.floor(Math.random() * 100 + this.size / 2),
+      aspectRatio: this.activeLayout === UserGalleryActiveLayout.TINY ? 1 : Math.random() * 0.5 + 0.5
     }));
+
+    console.log(this.placeholders);
 
     this.changeDetectorRef.markForCheck();
   }

@@ -92,7 +92,7 @@ export enum UserGalleryActiveLayout {
       <img
         *ngIf="activeLayout !== UserGalleryActiveLayout.SMALL"
         (click)="setLayout(UserGalleryActiveLayout.SMALL)"
-        [ngSrc]="'/assets/images/layout-small.png?v=20241008'"
+        [ngSrc]="'/assets/images/layout-small.png?v=20250112'"
         [ngbTooltip]="'Small layout' | translate"
         alt="{{ 'Small layout' | translate }}"
         class="cursor-pointer"
@@ -102,7 +102,7 @@ export enum UserGalleryActiveLayout {
       />
       <img
         *ngIf="activeLayout === UserGalleryActiveLayout.SMALL"
-        [ngSrc]="'/assets/images/layout-small-active.png?v=20241008'"
+        [ngSrc]="'/assets/images/layout-small-active.png?v=20250112'"
         [ngbTooltip]="'Small layout' | translate"
         alt="{{ 'Small layout' | translate }}"
         container="body"
