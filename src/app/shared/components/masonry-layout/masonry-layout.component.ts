@@ -97,6 +97,9 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
   private _destroyed$ = new Subject<void>();
   private _initializationLock = false;
   private _initializationQueue: (() => void)[] = [];
+  private _cachedWindowHeight: number = 0;
+  private _boundingRects = new Map<string, DOMRect>();
+  private _visibleIds = new Set<string>();
 
   constructor(
     public readonly windowRefService: WindowRefService,
@@ -165,6 +168,10 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
   ngOnDestroy() {
     this._initializationQueue = [];
     this._initializationLock = false;
+    this._boundingRects.clear();
+    this._visibleIds.clear();
+    this._cachedWindowHeight = 0;
+
     this._destroyMasonry();
 
     if (this._isBrowser) {
@@ -331,7 +338,7 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
 
     fromEvent(scrollableParent, "scroll")
       .pipe(
-        auditTime(100), // or throttleTime/debounceTime
+        auditTime(250), // or throttleTime/debounceTime
         takeUntil(this._destroyed$)
       )
       .subscribe(() => this._updateVisibleItems());
@@ -339,7 +346,7 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
 
   private _initResizeListener() {
     fromEvent(this.windowRefService.nativeWindow, "resize")
-      .pipe(throttleTime(100), takeUntil(this._destroyed$))
+      .pipe(throttleTime(200), takeUntil(this._destroyed$))
       .subscribe(() => {
         const newBreakpoint = this._getBreakpoint();
         const breakpointChanged = this._currentBreakpoint !== newBreakpoint;
@@ -349,8 +356,16 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
       });
   }
 
+  private _clearCaches() {
+    this._boundingRects.clear();
+    this._visibleIds.clear();
+    this._cachedWindowHeight = 0;
+  }
+
   private _relayout(reloadItems: boolean) {
     if (this.masonry && !this._layoutInProgress) {
+      this._clearCaches();
+
       this.itemStates = this.items.map(item => ({
         data: item,
         visible: true
@@ -382,40 +397,73 @@ export class MasonryLayoutComponent<T> implements OnInit, AfterViewInit, OnChang
     const _win = this.windowRefService.nativeWindow;
     const _doc = _win.document;
 
-    // Query all .masonry-item elements at once
-    const elements = this.container.nativeElement.querySelectorAll(".masonry-item");
+    // Cache window height - only update when needed
+    const currentWindowHeight = _win.innerHeight || _doc.documentElement.clientHeight;
+    if (this._cachedWindowHeight !== currentWindowHeight) {
+      this._cachedWindowHeight = currentWindowHeight;
+    }
 
-    // Build a Map of id -> element
-    const elementsById = new Map<string, HTMLElement>();
-    elements.forEach((el: HTMLElement) => {
-      const itemId = el.getAttribute("data-masonry-id");
-      if (itemId) {
-        elementsById.set(itemId, el as HTMLElement);
-      }
-    });
+    // Get current scroll position
+    const scrollTop = _win.pageYOffset || _doc.documentElement.scrollTop;
+    const viewportTop = scrollTop - this._SCROLL_BUFFER;
+    const viewportBottom = scrollTop + this._cachedWindowHeight + this._SCROLL_BUFFER;
 
-    // Now iterate items and look up the element from the map
+    // Batch DOM reads
+    const updateNeeded = new Set<string>();
+
     this.itemStates.forEach(item => {
-      const element = elementsById.get(String(item.data[this.idProperty]));
+      const itemId = String(item.data[this.idProperty]);
+      const wasVisible = this._visibleIds.has(itemId);
 
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        item.visible = (
-          !this._readyItems.has(item.data[this.idProperty]) ||
-          (
-            rect.top + rect.height >= -this._SCROLL_BUFFER &&
-            rect.top <= (_win.innerHeight || _doc.documentElement.clientHeight) + this._SCROLL_BUFFER
-          )
-        );
+      // Skip if item is already visible and processed
+      if (wasVisible && this._boundingRects.has(itemId)) {
+        const rect = this._boundingRects.get(itemId)!;
+        const isStillVisible =
+          rect.top + rect.height + scrollTop >= viewportTop &&
+          rect.top + scrollTop <= viewportBottom;
 
-        // Only set opacity if item is visible
-        if (item.visible) {
-          this.renderer.setStyle(element, "opacity", "1");
+        if (isStillVisible) {
+          return;
         }
       }
-    });
-  }
 
+      updateNeeded.add(itemId);
+    });
+
+    // Batch DOM operations
+    if (updateNeeded.size > 0) {
+      const elements = this.container.nativeElement.querySelectorAll(".masonry-item");
+      elements.forEach((el: HTMLElement) => {
+        const itemId = el.getAttribute("data-masonry-id");
+        if (itemId && updateNeeded.has(itemId)) {
+          const rect = el.getBoundingClientRect();
+          this._boundingRects.set(itemId, rect);
+
+          const absoluteTop = rect.top + scrollTop;
+          const isVisible =
+            !this._readyItems.has(itemId) ||
+            (
+              absoluteTop + rect.height >= viewportTop &&
+              absoluteTop <= viewportBottom
+            );
+
+          // Update visibility state
+          if (isVisible) {
+            this._visibleIds.add(itemId);
+            this.renderer.setStyle(el, "opacity", "1");
+          } else {
+            this._visibleIds.delete(itemId);
+          }
+
+          // Update item state
+          const item = this.itemStates.find(i => String(i.data[this.idProperty]) === itemId);
+          if (item) {
+            item.visible = isVisible;
+          }
+        }
+      });
+    }
+  }
   private _masonryLayoutComplete(firstIndex = 0): Observable<void> {
     return new Observable(observer => {
       const items = this.container.nativeElement.querySelectorAll(".masonry-item") as NodeListOf<HTMLElement>;

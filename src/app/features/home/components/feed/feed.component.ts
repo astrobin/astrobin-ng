@@ -11,7 +11,7 @@ import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.i
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem, ImageViewerService } from "@shared/services/image-viewer.service";
 import { isPlatformBrowser } from "@angular/common";
-import { fromEvent, merge, Observable, Subscription, throttleTime } from "rxjs";
+import { auditTime, fromEvent, merge, Observable, Subscription, throttleTime } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -242,15 +242,9 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
     this.onTabChange(this.activeTab);
 
     if (this.isBrowser) {
-      merge(
-        fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-          takeUntil(this.destroyed$),
-          throttleTime(200)
-        ),
-        fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-          takeUntil(this.destroyed$),
-          debounceTime(100)
-        )
+      fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
+        auditTime(250),
+        takeUntil(this.destroyed$)
       ).subscribe(() => this._onScroll());
     }
   }

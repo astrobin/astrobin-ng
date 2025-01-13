@@ -144,6 +144,9 @@ export enum AppActionTypes {
   LOAD_TOGGLE_PROPERTY = "[App] Load toggle property",
   LOAD_TOGGLE_PROPERTY_SUCCESS = "[App] Load toggle property success",
   LOAD_TOGGLE_PROPERTY_FAILURE = "[App] Load toggle property failure",
+  LOAD_TOGGLE_PROPERTIES = "[App] Load toggle properties",
+  LOAD_TOGGLE_PROPERTIES_SUCCESS = "[App] Load toggle properties success",
+  LOAD_TOGGLE_PROPERTIES_FAILURE = "[App] Load toggle properties failure",
 
   LOAD_REMOTE_SOURCE_AFFILIATES = "[App] Load remote source affiliates",
   LOAD_REMOTE_SOURCE_AFFILIATES_SUCCESS = "[App] Load remote source affiliates success",

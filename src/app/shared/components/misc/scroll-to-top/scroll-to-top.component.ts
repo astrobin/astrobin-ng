@@ -3,8 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { fromEvent, Subscription } from "rxjs";
-import { throttleTime } from "rxjs/operators";
+import { auditTime, fromEvent, Subscription } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { fadeInOut } from "@shared/animations";
 
@@ -105,7 +104,7 @@ export class ScrollToTopComponent extends BaseComponentDirective implements OnCh
 
     // Subscribe to the scroll event of the current element or window
     this._scrollSubscription = fromEvent(element, "scroll")
-      .pipe(throttleTime(100))
+      .pipe(auditTime(250))
       .subscribe(() => {
         this._offset = this._getScrollTop(element);
       });

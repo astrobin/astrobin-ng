@@ -14,7 +14,7 @@
   flex-shrink: 0;
   width: calc((100% - (var(--columns-xs) - 1) * (var(--gutter) * 1px)) / var(--columns-xs));
   margin-bottom: calc(var(--gutter) * 1px);
-  opacity: 0;
+  opacity: 1;
   transition: opacity .2s;
   will-change: opacity, transform;
 
