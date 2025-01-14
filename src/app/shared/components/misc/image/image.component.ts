@@ -395,8 +395,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   private _setupAutoLoad() {
     if (this._isBrowser) {
-      const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(throttleTime(100));
-      const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize").pipe(throttleTime(100));
+      const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(throttleTime(250));
+      const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize").pipe(throttleTime(250));
       const forceCheck$ = this.actions$.pipe(
         ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD),
         map((action: ForceCheckImageAutoLoad) => action.payload),

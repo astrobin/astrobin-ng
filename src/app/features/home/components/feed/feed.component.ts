@@ -5,7 +5,7 @@ import { select, Store } from "@ngrx/store";
 import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 import { FeedApiService } from "@features/home/services/feed-api.service";
 import { FeedService } from "@features/home/services/feed.service";
-import { debounceTime, filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";

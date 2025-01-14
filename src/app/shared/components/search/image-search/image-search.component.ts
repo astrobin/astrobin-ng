@@ -50,8 +50,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
-  protected masonryLayoutReady = false;
   protected uiReady = false;
+  protected isMobile = false;
 
   private readonly _isBrowser: boolean;
   private readonly _placeholderBase64 = 'data:image/svg+xml;base64,' + btoa(`
@@ -118,6 +118,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   ) {
     super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
     this._isBrowser = isPlatformBrowser(this.platformId);
+    this.hasMasonryLayout = true;
   }
 
   ngOnInit() {
@@ -125,9 +126,13 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
     fromEvent(this.windowRefService.nativeWindow, "resize")
       .pipe(takeUntil(this.destroyed$), auditTime(200))
-      .subscribe(() => this._checkUiReady());
+      .subscribe(() => {
+        this._checkUiReady();
+        this._checkMobile();
+      });
 
     this._checkUiReady();
+    this._checkMobile();
   }
 
   onImageLoad(imageElement: HTMLImageElement, item: ImageSearchInterface, notifyReady: () => void): void {
@@ -254,6 +259,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     if (!this._isBrowser) {
       return;
     }
+
     this._containerWidth = this.elementRef.nativeElement?.parentElement?.clientWidth;
 
     if (this._containerWidth > 0) {
@@ -262,6 +268,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     } else {
       this.utilsService.delay(100).subscribe(() => this._checkUiReady());
     }
+  }
+
+  private _checkMobile(): void {
+    this.isMobile = this.deviceService.smMax();
   }
 
   private _calculateBreakpointsAndGutter(): void {

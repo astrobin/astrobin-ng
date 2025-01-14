@@ -1067,8 +1067,8 @@ export class ImageService extends BaseService {
         xl: { columns: 10, gutter: 8 }
       },
       [UserGalleryActiveLayout.SMALL]: {
-        xs: { columns: 2, gutter: 10 },
-        sm: { columns: 3, gutter: 10 },
+        xs: { columns: 3, gutter: 10 },
+        sm: { columns: 4, gutter: 10 },
         md: { columns: 4, gutter: 10 },
         lg: { columns: 5, gutter: 10 },
         xl: { columns: 6, gutter: 10 }
