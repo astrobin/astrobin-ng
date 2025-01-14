@@ -142,7 +142,11 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     return item.data[this.idProperty];
   }
 
-  private _calculateLayout(item: HTMLElement): { rowSpan: number } | null {
+  private _calculateLayout(
+    item: HTMLElement,
+    rowGap: number,
+    rowHeight: number,
+  ): { rowSpan: number } | null {
     if (!this.container) {
       return null;
     }
@@ -152,10 +156,6 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
       return null;
     }
 
-    const grid = this.container.nativeElement;
-    const computedStyle = getComputedStyle(grid);
-    const rowGap = parseInt(computedStyle.getPropertyValue("grid-row-gap") || "0");
-    const rowHeight = parseInt(computedStyle.getPropertyValue("grid-auto-rows") || "1");
     const contentHeight = content.getBoundingClientRect().height;
 
     return {
@@ -163,19 +163,32 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     };
   }
 
-  private _updateItemLayout(item: HTMLElement): void {
+  private _updateItemLayout(
+    item: HTMLElement,
+    rowGap: number,
+    rowHeight: number,
+  ): void {
     const itemId = item.getAttribute("data-masonry-id");
     const stateIndex = this.itemStates.findIndex(
       state => state.data[this.idProperty].toString() === itemId
     );
 
     if (stateIndex !== -1) {
-      const layout = this._calculateLayout(item);
+      const layout = this._calculateLayout(item, rowGap, rowHeight);
       if (layout) {
         this.itemStates[stateIndex].rowSpan = layout.rowSpan;
         this.itemStates[stateIndex].ready = true;
       }
     }
+  }
+
+  private _getGridRowGapAndHeight(): [number, number] {
+    const grid = this.container.nativeElement;
+    const computedStyle = getComputedStyle(grid);
+    const rowGap = parseInt(computedStyle.getPropertyValue("grid-row-gap") || "0");
+    const rowHeight = parseInt(computedStyle.getPropertyValue("grid-auto-rows") || "1");
+
+    return [rowGap, rowHeight];
   }
 
   private _update() {
@@ -190,22 +203,41 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
       return;
     }
 
+    // Collect all layout updates before applying any
+    const layoutUpdates = new Map<number, { rowSpan: number }>();
+    const [rowGap, rowHeight] = this._getGridRowGapAndHeight();
+
     Promise.all([...unreadyItems].map(item =>
       new Promise<void>(resolve => {
         const imgLoad = imagesLoaded(item);
 
         imgLoad.on("done", () => {
-          requestAnimationFrame(() => {
-            this._updateItemLayout(item);
-            this.changeDetectorRef.markForCheck();
-            resolve();
-          });
+          const itemId = item.getAttribute("data-masonry-id");
+          const stateIndex = this.itemStates.findIndex(
+            state => state.data[this.idProperty].toString() === itemId
+          );
+
+          if (stateIndex !== -1) {
+            const layout = this._calculateLayout(item, rowGap, rowHeight);
+            if (layout) {
+              layoutUpdates.set(stateIndex, layout);
+            }
+          }
+          resolve();
         });
 
         imgLoad.on("fail", () => resolve());
       })
     )).then(() => {
-      this.layoutReady.emit(true);
+      // Apply all updates in a single animation frame
+      requestAnimationFrame(() => {
+        layoutUpdates.forEach((layout, index) => {
+          this.itemStates[index].rowSpan = layout.rowSpan;
+          this.itemStates[index].ready = true;
+        });
+        this.changeDetectorRef.markForCheck();
+        this.layoutReady.emit(true);
+      });
     });
   }
 
@@ -239,10 +271,10 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     }
 
     const unreadyItems = this.container.nativeElement.querySelectorAll(".masonry-item:not(.ready)");
-
+    const [rowGap, rowHeight] = this._getGridRowGapAndHeight();
     if (unreadyItems.length > 0) {
       requestAnimationFrame(() => {
-        unreadyItems.forEach(item => this._updateItemLayout(item));
+        unreadyItems.forEach(item => this._updateItemLayout(item, rowGap, rowHeight));
         this.changeDetectorRef.markForCheck();
       });
     }
