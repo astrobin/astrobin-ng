@@ -112,8 +112,10 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
         item.rowSpan = undefined;
       });
 
-      this.utilsService.delay(200).subscribe(() => {
-        requestAnimationFrame(() => {
+      this.changeDetectorRef.detectChanges();
+
+      requestAnimationFrame(() => {
+        this.utilsService.delay(250).subscribe(() => {
           this._updateLayout();
           this.layoutReady.emit(true);
         });
@@ -145,7 +147,7 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
   private _calculateLayout(
     item: HTMLElement,
     rowGap: number,
-    rowHeight: number,
+    rowHeight: number
   ): { rowSpan: number } | null {
     if (!this.container) {
       return null;
@@ -157,16 +159,17 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     }
 
     const contentHeight = content.getBoundingClientRect().height;
+    const safetyMargin = 2; // Add 2px safety margin
 
     return {
-      rowSpan: Math.ceil((contentHeight + rowGap) / (rowHeight + rowGap))
+      rowSpan: Math.ceil((contentHeight + rowGap + safetyMargin) / (rowHeight + rowGap))
     };
   }
 
   private _updateItemLayout(
     item: HTMLElement,
     rowGap: number,
-    rowHeight: number,
+    rowHeight: number
   ): void {
     const itemId = item.getAttribute("data-masonry-id");
     const stateIndex = this.itemStates.findIndex(
@@ -207,36 +210,42 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     const layoutUpdates = new Map<number, { rowSpan: number }>();
     const [rowGap, rowHeight] = this._getGridRowGapAndHeight();
 
-    Promise.all([...unreadyItems].map(item =>
-      new Promise<void>(resolve => {
-        const imgLoad = imagesLoaded(item);
+    requestAnimationFrame(() => {
+      this.utilsService.delay(50).subscribe(() => {
+        Promise.all([...unreadyItems].map(item =>
+          new Promise<void>(resolve => {
+            const imgLoad = imagesLoaded(item);
 
-        imgLoad.on("done", () => {
-          const itemId = item.getAttribute("data-masonry-id");
-          const stateIndex = this.itemStates.findIndex(
-            state => state.data[this.idProperty].toString() === itemId
-          );
+            imgLoad.on("done", () => {
+              this.utilsService.delay(50).subscribe(() => {
+                const itemId = item.getAttribute("data-masonry-id");
+                const stateIndex = this.itemStates.findIndex(
+                  state => state.data[this.idProperty].toString() === itemId
+                );
 
-          if (stateIndex !== -1) {
-            const layout = this._calculateLayout(item, rowGap, rowHeight);
-            if (layout) {
-              layoutUpdates.set(stateIndex, layout);
-            }
-          }
-          resolve();
+                if (stateIndex !== -1) {
+                  const layout = this._calculateLayout(item, rowGap, rowHeight);
+                  if (layout) {
+                    layoutUpdates.set(stateIndex, layout);
+                  }
+                }
+                resolve();
+              });
+            });
+
+            imgLoad.on("fail", () => resolve());
+          })
+        )).then(() => {
+          // Apply all updates in a single animation frame
+          requestAnimationFrame(() => {
+            layoutUpdates.forEach((layout, index) => {
+              this.itemStates[index].rowSpan = layout.rowSpan;
+              this.itemStates[index].ready = true;
+            });
+            this.changeDetectorRef.markForCheck();
+            this.layoutReady.emit(true);
+          });
         });
-
-        imgLoad.on("fail", () => resolve());
-      })
-    )).then(() => {
-      // Apply all updates in a single animation frame
-      requestAnimationFrame(() => {
-        layoutUpdates.forEach((layout, index) => {
-          this.itemStates[index].rowSpan = layout.rowSpan;
-          this.itemStates[index].ready = true;
-        });
-        this.changeDetectorRef.markForCheck();
-        this.layoutReady.emit(true);
       });
     });
   }
