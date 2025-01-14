@@ -129,11 +129,10 @@
         </astrobin-masonry-layout>
 
         <div
-          *ngIf="!loadMoreOnScroll && !loading && !initialLoading"
-          class="w-100 d-flex justify-content-center mt-3"
+          *ngIf="!loading && !initialLoading && masonryLayoutReady && !!next"
+          class="w-100 d-flex justify-content-center mt-4"
         >
           <button
-            *ngIf="!!next"
             (click)="loadMore().subscribe()"
             class="btn btn-outline-primary btn-no-block"
           >
@@ -154,5 +153,5 @@
 </ng-template>
 
 <ng-template #loadingTemplate>
-  <astrobin-loading-indicator class="mt-3"></astrobin-loading-indicator>
+  <astrobin-loading-indicator class="mt-4 mb-3 mb-md-0"></astrobin-loading-indicator>
 </ng-template>

@@ -173,7 +173,19 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
       </ng-container>
     </ng-container>
 
-    <div *ngIf="loadingMore && !loading" class="loading">
+    <div
+      *ngIf="!loadingMore && !loading && masonryLayoutReady && !!next"
+      class="w-100 d-flex justify-content-center mt-4"
+    >
+      <button
+        (click)="onScroll()"
+        class="btn btn-outline-primary btn-no-block"
+      >
+        {{ "Load more" | translate }}
+      </button>
+    </div>
+
+    <div *ngIf="(loadingMore || !masonryLayoutReady) && !loading" class="loading mt-4 mb-2 mb-md-0">
       <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
     </div>
 
@@ -267,7 +279,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
 
       fromEvent(scrollElement, "scroll")
         .pipe(takeUntil(this.destroyed$), throttleTime(200), debounceTime(100))
-        .subscribe(() => this._onScroll());
+        .subscribe(() => this.onScroll());
 
       fromEvent(this.windowRefService.nativeWindow, "resize")
         .pipe(takeUntil(this.destroyed$), auditTime(200))
@@ -473,7 +485,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }));
   }
 
-  private _onScroll() {
+  protected onScroll() {
     if (
       isPlatformServer(this.platformId) ||
       this.loading ||

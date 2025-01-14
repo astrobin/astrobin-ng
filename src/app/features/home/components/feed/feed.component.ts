@@ -11,7 +11,7 @@ import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.i
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem, ImageViewerService } from "@shared/services/image-viewer.service";
 import { isPlatformBrowser } from "@angular/common";
-import { auditTime, fromEvent, merge, Observable, Subscription, throttleTime } from "rxjs";
+import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -51,6 +51,7 @@ enum FeedType {
 
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
+                (layoutReady)="masonryLayoutReady = $event"
                 [items]="feedItems"
               >
                 <ng-template let-item>
@@ -63,9 +64,21 @@ enum FeedType {
               </astrobin-masonry-layout>
             </div>
 
+            <div
+              *ngIf="!loadingMore && !loading && masonryLayoutReady && !!next"
+              class="w-100 d-flex justify-content-center mt-4"
+            >
+              <button
+                (click)="onScroll()"
+                class="btn btn-outline-primary btn-no-block"
+              >
+                {{ "Load more" | translate }}
+              </button>
+            </div>
+
             <astrobin-loading-indicator
-              *ngIf="!loading && loadingMore"
-              class="mt-5"
+              *ngIf="!loading && (loadingMore || !masonryLayoutReady)"
+              class="mt-4 mb-2 mb-md-0"
             ></astrobin-loading-indicator>
 
             <astrobin-scroll-to-top></astrobin-scroll-to-top>
@@ -106,7 +119,10 @@ enum FeedType {
                   </a>
 
                   <astrobin-image-icons [image]="item"></astrobin-image-icons>
-                  <astrobin-image-hover [image]="item" [activeLayout]="UserGalleryActiveLayout.SMALL"></astrobin-image-hover>
+                  <astrobin-image-hover
+                    [image]="item"
+                    [activeLayout]="UserGalleryActiveLayout.SMALL"
+                  ></astrobin-image-hover>
                 </ng-template>
               </astrobin-masonry-layout>
             </div>
@@ -159,6 +175,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   protected activeTab = FeedTab.FEED;
   protected activeFeedType = FeedType.GLOBAL;
   protected currentUserProfile: UserProfileInterface;
+  protected masonryLayoutReady = false;
 
   // For the activity feed.
   protected feedItems: FeedItemInterface[] = null;
@@ -238,9 +255,9 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
     if (this.isBrowser) {
       fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-        auditTime(250),
+        auditTime(100),
         takeUntil(this.destroyed$)
-      ).subscribe(() => this._onScroll());
+      ).subscribe(() => this.onScroll());
     }
   }
 
@@ -276,7 +293,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
       switchMap(() => this._loadData()),
       tap(() => {
         if (this.lastKnownScrollPosition) {
-          this.windowRefService.scroll({top: this.lastKnownScrollPosition, behavior: "smooth"});
+          this.windowRefService.scroll({ top: this.lastKnownScrollPosition, behavior: "smooth" });
         }
       })
     ).subscribe();
@@ -335,6 +352,20 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
         }
       );
     });
+  }
+
+  protected onScroll(): void {
+    if (
+      this.loading ||
+      this.loadingMore ||
+      this.next === null ||
+      !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
+    ) {
+      return;
+    }
+
+    this._page++;
+    this._loadData().subscribe();
   }
 
   private _filterFeedItemsByContentType(items: FeedItemInterface[], contentType: ContentTypeInterface): FeedItemInterface[] {
@@ -463,20 +494,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
         return _loadRecent(FrontPageSection.FOLLOWED);
       }
     }
-  }
-
-  private _onScroll(): void {
-    if (
-      this.loading ||
-      this.loadingMore ||
-      this.next === null ||
-      !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
-    ) {
-      return;
-    }
-
-    this._page++;
-    this._loadData().subscribe();
   }
 
   private _initContentTypes() {
