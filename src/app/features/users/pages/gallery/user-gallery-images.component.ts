@@ -436,6 +436,23 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     this.changeDetectorRef.detectChanges();
   }
 
+  protected onScroll() {
+    if (
+      isPlatformServer(this.platformId) ||
+      this.loading ||
+      this.loadingMore ||
+      (!this.masonryLayoutReady && this.activeLayout !== UserGalleryActiveLayout.TABLE) ||
+      this.next === null
+    ) {
+      return;
+    }
+
+    if (this.utilsService.isNearBottom(this.windowRefService, this.elementRef)) {
+      this.page++;
+      this._getImages();
+    }
+  }
+
   private _checkUiReady(): void {
     if (!this._isBrowser) {
       return;
@@ -483,22 +500,5 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
         ...this.options
       }
     }));
-  }
-
-  protected onScroll() {
-    if (
-      isPlatformServer(this.platformId) ||
-      this.loading ||
-      this.loadingMore ||
-      !this.masonryLayoutReady ||
-      this.next === null
-    ) {
-      return;
-    }
-
-    if (this.utilsService.isNearBottom(this.windowRefService, this.elementRef)) {
-      this.page++;
-      this._getImages();
-    }
   }
 }
