@@ -51,19 +51,19 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
 
         <astrobin-loading-indicator
           *ngIf="!loadingPlaceholdersCount || loadingPlaceholdersCount <= 10"
-          [hidden]="!loading"
+          [hidden]="!loading || masonryLayoutReady"
           @fadeInOut
         ></astrobin-loading-indicator>
 
-        <ng-container *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TABLE">
-          <astrobin-user-gallery-loading
-            *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
-            [hidden]="!loading"
-            @fadeInOut
-            [activeLayout]="activeLayout"
-            [numberOfImages]="loadingPlaceholdersCount"
-          ></astrobin-user-gallery-loading>
+        <astrobin-user-gallery-loading
+          *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
+          [hidden]="!loading || masonryLayoutReady"
+          @fadeInOut
+          [activeLayout]="activeLayout"
+          [numberOfImages]="loadingPlaceholdersCount"
+        ></astrobin-user-gallery-loading>
 
+        <ng-container *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TABLE">
           <astrobin-masonry-layout
             (layoutReady)="masonryLayoutReady = $event"
             [items]="images"

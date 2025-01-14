@@ -102,10 +102,9 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     if (changes.items) {
       this.layoutReady.emit(false);
       this._updateItemStates();
-
-        requestAnimationFrame(() => {
-          this._update();
-        });
+      requestAnimationFrame(() => {
+        this._update();
+      });
     } else if (changes.gutter || changes.breakpoints) {
       this.layoutReady.emit(false);
       this.itemStates.forEach(item => {
@@ -143,53 +142,67 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     return item.data[this.idProperty];
   }
 
+  private _calculateLayout(item: HTMLElement): { rowSpan: number } | null {
+    if (!this.container) {
+      return null;
+    }
+
+    const content = item.querySelector(".masonry-content");
+    if (!content) {
+      return null;
+    }
+
+    const grid = this.container.nativeElement;
+    const computedStyle = getComputedStyle(grid);
+    const rowGap = parseInt(computedStyle.getPropertyValue("grid-row-gap") || "0");
+    const rowHeight = parseInt(computedStyle.getPropertyValue("grid-auto-rows") || "1");
+    const contentHeight = content.getBoundingClientRect().height;
+
+    return {
+      rowSpan: Math.ceil((contentHeight + rowGap) / (rowHeight + rowGap))
+    };
+  }
+
+  private _updateItemLayout(item: HTMLElement): void {
+    const itemId = item.getAttribute("data-masonry-id");
+    const stateIndex = this.itemStates.findIndex(
+      state => state.data[this.idProperty].toString() === itemId
+    );
+
+    if (stateIndex !== -1) {
+      const layout = this._calculateLayout(item);
+      if (layout) {
+        this.itemStates[stateIndex].rowSpan = layout.rowSpan;
+        this.itemStates[stateIndex].ready = true;
+      }
+    }
+  }
+
   private _update() {
     if (!this.container) {
       this.utilsService.delay(25).subscribe(() => this._update());
       return;
     }
 
-    // Only select unready items
     const unreadyItems = this.container.nativeElement.querySelectorAll(".masonry-item:not(.ready)");
     if (unreadyItems.length === 0) {
       this.layoutReady.emit(true);
       return;
     }
 
-    // Process each unready item
     Promise.all([...unreadyItems].map(item =>
       new Promise<void>(resolve => {
         const imgLoad = imagesLoaded(item);
 
-        imgLoad.on("done", (_instance, images) => {
-          const itemId = item.getAttribute("data-masonry-id");
-          const stateIndex = this.itemStates.findIndex(
-            state => state.data[this.idProperty].toString() === itemId
-          );
-
-          if (stateIndex !== -1) {
-            requestAnimationFrame(() => {
-              const content = item.querySelector(".masonry-content");
-              if (content) {
-                const grid = this.container.nativeElement;
-                const computedStyle = getComputedStyle(grid);
-                const rowGap = parseInt(computedStyle.getPropertyValue("grid-row-gap") || "0");
-                const rowHeight = parseInt(computedStyle.getPropertyValue("grid-auto-rows") || "1");
-                const contentHeight = content.getBoundingClientRect().height;
-                this.itemStates[stateIndex].rowSpan = Math.ceil(
-                  (contentHeight + rowGap) / (rowHeight + rowGap)
-                );
-                this.itemStates[stateIndex].ready = true;
-                this.changeDetectorRef.markForCheck();
-              }
-            });
-          }
-          resolve();
+        imgLoad.on("done", () => {
+          requestAnimationFrame(() => {
+            this._updateItemLayout(item);
+            this.changeDetectorRef.markForCheck();
+            resolve();
+          });
         });
 
-        imgLoad.on("fail", (_instance, images) => {
-          resolve();
-        });
+        imgLoad.on("fail", () => resolve());
       })
     )).then(() => {
       this.layoutReady.emit(true);
@@ -225,41 +238,11 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
       return;
     }
 
-    const grid = this.container.nativeElement;
-    const computedStyle = getComputedStyle(grid);
-    const rowGap = parseInt(computedStyle.getPropertyValue("grid-row-gap") || "0");
-    const rowHeight = parseInt(computedStyle.getPropertyValue("grid-auto-rows") || "1");
-    const divisor = rowHeight + rowGap;
-
-    // Only select unready items
     const unreadyItems = this.container.nativeElement.querySelectorAll(".masonry-item:not(.ready)");
 
-    // Batch DOM reads and writes
-    const updates: Array<() => void> = [];
-
-    unreadyItems.forEach((item: HTMLElement) => {
-      // Find the index in itemStates by matching the masonry-id
-      const itemId = item.getAttribute("data-masonry-id");
-      const stateIndex = this.itemStates.findIndex(
-        state => state.data[this.idProperty].toString() === itemId
-      );
-
-      if (stateIndex !== -1) {
-        const content = item.querySelector(".masonry-content");
-        if (content) {
-          const contentHeight = content.getBoundingClientRect().height;
-          updates.push(() => {
-            this.itemStates[stateIndex].rowSpan = Math.ceil((contentHeight + rowGap) / divisor);
-            this.itemStates[stateIndex].ready = true;
-          });
-        }
-      }
-    });
-
-    // Batch updates
-    if (updates.length > 0) {
+    if (unreadyItems.length > 0) {
       requestAnimationFrame(() => {
-        updates.forEach(update => update());
+        unreadyItems.forEach(item => this._updateItemLayout(item));
         this.changeDetectorRef.markForCheck();
       });
     }

@@ -34,6 +34,29 @@
   will-change: opacity, transform;
   overflow: hidden;
 
+  &:not(.ready) {
+    pointer-events: none;
+    position: absolute;
+    height: 0;
+    width: calc(100% / var(--columns-xs, 2) - var(--gutter));
+
+    @media (min-width: $sm-min) {
+      width: calc(100% / var(--columns-sm, 3) - var(--gutter));
+    }
+
+    @media (min-width: $md-min) {
+      width: calc(100% / var(--columns-md, 4) - var(--gutter));
+    }
+
+    @media (min-width: $lg-min) {
+      width: calc(100% / var(--columns-lg, 5) - var(--gutter));
+    }
+
+    @media (min-width: $xl-min) {
+      width: calc(100% / var(--columns-xl, 6) - var(--gutter));
+    }
+  }
+
   &.ready {
     opacity: 1;
   }
