@@ -13,12 +13,12 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
     <ng-container *ngIf="isBrowser">
       <div
         class="loading-container"
-        [style.--columns-xs]="breakpoints.xs"
-        [style.--columns-sm]="breakpoints.sm"
-        [style.--columns-md]="breakpoints.md"
-        [style.--columns-lg]="breakpoints.lg"
-        [style.--columns-xl]="breakpoints.xl"
-        [style.--gutter]="gutter"
+        [style.--columns-xs]="breakpoints?.xs ?? 1"
+        [style.--columns-sm]="breakpoints?.sm ?? 2"
+        [style.--columns-md]="breakpoints?.md ?? 3"
+        [style.--columns-lg]="breakpoints?.lg ?? 4"
+        [style.--columns-xl]="breakpoints?.xl ?? 5"
+        [style.--gutter]="gutter ?? 10"
       >
         <astrobin-image-loading-indicator
           *ngFor="let placeholder of placeholders"
@@ -88,6 +88,17 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
         xl: 3
       };
       this.gutter = 12;
+    } else if (this.activeLayout === UserGalleryActiveLayout.TABLE) {
+      // Doesn't matter.
+      this.size = 0;
+      this.breakpoints = {
+        xs: 0,
+        sm: 0,
+        md: 0,
+        lg: 0,
+        xl: 0
+      };
+      this.gutter = 0;
     }
 
     this.placeholders = Array.from({ length: this.numberOfImages }).map(() => ({

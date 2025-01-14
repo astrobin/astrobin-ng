@@ -1114,7 +1114,7 @@ export class UtilsService {
     const window = windowRefService.nativeWindow;
     const rect = this._getElementRect(elementRef.nativeElement);
 
-    return rect.bottom < window.innerHeight + 2000;
+    return rect.bottom < window.innerHeight + 10000;
   }
 
   delay(ms: number): Observable<void> {

@@ -1077,8 +1077,16 @@ export class ImageService extends BaseService {
         xs: { columns: 1, gutter: 12 },
         sm: { columns: 2, gutter: 12 },
         md: { columns: 2, gutter: 12 },
-        ld: { columns: 3, gutter: 12 },
+        lg: { columns: 3, gutter: 12 },
         xl: { columns: 4, gutter: 12 }
+      },
+      [UserGalleryActiveLayout.TABLE]: {
+        // Doesn't matter.
+        xs: { columns: 0, gutter: 0 },
+        sm: { columns: 0, gutter: 0 },
+        md: { columns: 0, gutter: 0 },
+        lg: { columns: 0, gutter: 0 },
+        xl: { columns: 0, gutter: 0 }
       }
     };
 
