@@ -1,10 +1,9 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
-import { MasonryLoadable } from "@shared/components/masonry-layout/masonry-layout.component";
 
 @Component({
   selector: "astrobin-feed-item",
@@ -32,7 +31,7 @@ import { MasonryLoadable } from "@shared/components/masonry-layout/masonry-layou
   `,
   styleUrls: ["./feed-item.component.scss"]
 })
-export class FeedItemComponent extends BaseComponentDirective implements OnChanges, MasonryLoadable {
+export class FeedItemComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;
   @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
   @Output() loaded = new EventEmitter<void>();
@@ -55,12 +54,12 @@ export class FeedItemComponent extends BaseComponentDirective implements OnChang
     ].indexOf(this.feedItem.verb) !== -1;
 
     this.isMarketplaceListingFeedItem = [
-      FeedItemVerb.VERB_CREATED_MARKETPLACE_LISTING,
+      FeedItemVerb.VERB_CREATED_MARKETPLACE_LISTING
     ].indexOf(this.feedItem.verb) !== -1;
 
     this.isGroupFeedItem = [
       FeedItemVerb.VERB_JOINED_GROUP,
-      FeedItemVerb.VERB_CREATED_PUBLIC_GROUP,
+      FeedItemVerb.VERB_CREATED_PUBLIC_GROUP
     ].indexOf(this.feedItem.verb) !== -1;
   }
 }

@@ -90,58 +90,46 @@
           <span [innerHTML]="lastResultsCount"></span>
         </div>
 
-        <div class="d-flex flex-wrap">
-          <img
-            #imageElement
-            *ngFor="let item of results"
-            [src]="item.regularThumbnail"
-            [alt]="item.title"
-            class="w-50 p-2"
-          />
-        </div>
+        <astrobin-masonry-layout
+          (layoutReady)="masonryLayoutReady = $event"
+          [items]="results"
+          [idProperty]="'objectId'"
+          [breakpoints]="breakpoints ?? {
+            xs: 2,
+            sm: 3,
+            md: 4,
+            lg: 5,
+            xl: 6
+          }"
+          [gutter]="gutter ?? 12"
+        >
+          <ng-template let-item>
+            <div class="image-container">
+              <a
+                (click)="openImage($event, item)"
+                [href]="getImageLink(item)"
+              >
+                <img
+                  #imageElement
+                  [src]="item.regularThumbnail"
+                  [alt]="item.title"
+                />
 
-<!--        <astrobin-masonry-layout-->
-<!--          (layoutReady)="masonryLayoutReady = true"-->
-<!--          [items]="results"-->
-<!--          [idProperty]="'objectId'"-->
-<!--          [breakpoints]="breakpoints ?? {-->
-<!--            xs: 3,-->
-<!--            sm: 4,-->
-<!--            md: 5,-->
-<!--            lg: 5,-->
-<!--            xl: 6-->
-<!--          }"-->
-<!--          [gutter]="gutter ?? 12"-->
-<!--        >-->
-<!--          <ng-template let-item let-notifyReady="notifyReady">-->
-<!--            <div class="image-container">-->
-<!--              <a-->
-<!--                (click)="openImage($event, item)"-->
-<!--                [href]="getImageLink(item)"-->
-<!--              >-->
-<!--                <img-->
-<!--                  #imageElement-->
-<!--                  (load)="onImageLoad(imageElement, item, notifyReady)"-->
-<!--                  (error)="onImageError(imageElement, item, notifyReady)"-->
-<!--                  [src]="item.regularThumbnail"-->
-<!--                  [alt]="item.title"-->
-<!--                />-->
+                <astrobin-image-icons [image]="item"></astrobin-image-icons>
 
-<!--                <astrobin-image-icons [image]="item"></astrobin-image-icons>-->
-
-<!--                <astrobin-image-hover-->
-<!--                  *ngIf="!isMobile && showDynamicOverlay"-->
-<!--                  [image]="item"-->
-<!--                  [staticOverlay]="showStaticOverlay ? model.ordering : null"-->
-<!--                  [activeLayout]="UserGalleryActiveLayout.SMALL"-->
-<!--                ></astrobin-image-hover>-->
-<!--              </a>-->
-<!--            </div>-->
-<!--          </ng-template>-->
-<!--        </astrobin-masonry-layout>-->
+                <astrobin-image-hover
+                  *ngIf="!isMobile && showDynamicOverlay"
+                  [image]="item"
+                  [staticOverlay]="showStaticOverlay ? model.ordering : null"
+                  [activeLayout]="UserGalleryActiveLayout.SMALL"
+                ></astrobin-image-hover>
+              </a>
+            </div>
+          </ng-template>
+        </astrobin-masonry-layout>
 
         <div
-          *ngIf="!loadMoreOnScroll && !loading && !initialLoading && masonryLayoutReady"
+          *ngIf="!loadMoreOnScroll && !loading && !initialLoading"
           class="w-100 d-flex justify-content-center mt-3"
         >
           <button

@@ -58,20 +58,20 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
         <ng-container *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TABLE">
           <astrobin-user-gallery-loading
             *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
-            [hidden]="!loading && masonryLayoutReady"
+            [hidden]="!loading"
             @fadeInOut
             [activeLayout]="activeLayout"
             [numberOfImages]="loadingPlaceholdersCount"
           ></astrobin-user-gallery-loading>
 
           <astrobin-masonry-layout
-            (layoutReady)="masonryLayoutReady = true"
+            (layoutReady)="masonryLayoutReady = $event"
             [items]="images"
             [idProperty]="'pk'"
             [breakpoints]="breakpoints"
             [gutter]="gutter"
           >
-            <ng-template let-item let-notifyReady="notifyReady">
+            <ng-template let-item>
               <div class="image-container">
                 <a
                   (click)="openImage(item)"
@@ -81,7 +81,6 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
                   astrobinEventPreventDefault
                 >
                   <img
-                    (load)="notifyReady"
                     [src]="imageService.getThumbnail(
                     item,
                     activeLayout === UserGalleryActiveLayout.TINY ? ImageAlias.GALLERY : ImageAlias.REGULAR
@@ -444,8 +443,16 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       this._containerWidth,
       this.activeLayout
     );
-    this.breakpoints = breakpoints;
-    this.gutter = gutter;
+
+    if (
+      this.breakpoints === undefined ||
+      this.gutter === undefined ||
+      JSON.stringify(this.breakpoints) !== JSON.stringify(breakpoints) ||
+      this.gutter !== gutter
+    ) {
+      this.breakpoints = breakpoints;
+      this.gutter = gutter;
+    }
   }
 
   private _getImages(): void {
@@ -471,6 +478,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       isPlatformServer(this.platformId) ||
       this.loading ||
       this.loadingMore ||
+      !this.masonryLayoutReady ||
       this.next === null
     ) {
       return;

@@ -1060,7 +1060,7 @@ export class ImageService extends BaseService {
   } {
     const LAYOUT_CONFIG = {
       [UserGalleryActiveLayout.TINY]: {
-        xs: { columns: 4, gutter: 8 },
+        xs: { columns: 3, gutter: 8 },
         sm: { columns: 5, gutter: 8 },
         md: { columns: 7, gutter: 8 },
         lg: { columns: 9, gutter: 8 },

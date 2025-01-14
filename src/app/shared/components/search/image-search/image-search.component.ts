@@ -54,47 +54,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   protected isMobile = false;
 
   private readonly _isBrowser: boolean;
-  private readonly _placeholderBase64 = 'data:image/svg+xml;base64,' + btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100">
-      <rect width="100" height="100" fill="#1a1a1a"/>
-
-      <!-- Small stars -->
-      <circle cx="10" cy="10" r="0.8" fill="#ffffff" opacity="0.6"/>
-      <circle cx="25" cy="15" r="0.6" fill="#ffffff" opacity="0.5"/>
-      <circle cx="40" cy="8" r="0.7" fill="#ffffff" opacity="0.7"/>
-      <circle cx="60" cy="12" r="0.5" fill="#ffffff" opacity="0.4"/>
-      <circle cx="75" cy="20" r="0.7" fill="#ffffff" opacity="0.6"/>
-      <circle cx="90" cy="15" r="0.6" fill="#ffffff" opacity="0.5"/>
-
-      <!-- Medium stars -->
-      <circle cx="15" cy="30" r="1.2" fill="#ffffff" opacity="0.8"/>
-      <circle cx="35" cy="40" r="1.0" fill="#ffffff" opacity="0.7"/>
-      <circle cx="55" cy="35" r="1.1" fill="#ffffff" opacity="0.75"/>
-      <circle cx="80" cy="45" r="1.0" fill="#ffffff" opacity="0.7"/>
-
-      <!-- Large stars with glow -->
-      <circle cx="20" cy="70" r="1.5" fill="#ffffff" opacity="0.9">
-        <animate attributeName="opacity" values="0.9;0.7;0.9" dur="3s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="45" cy="65" r="1.6" fill="#ffffff" opacity="0.9">
-        <animate attributeName="opacity" values="0.9;0.6;0.9" dur="4s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="70" cy="75" r="1.4" fill="#ffffff" opacity="0.9">
-        <animate attributeName="opacity" values="0.9;0.7;0.9" dur="3.5s" repeatCount="indefinite"/>
-      </circle>
-
-      <!-- Random scattered tiny stars -->
-      <circle cx="85" cy="85" r="0.4" fill="#ffffff" opacity="0.4"/>
-      <circle cx="5" cy="50" r="0.3" fill="#ffffff" opacity="0.3"/>
-      <circle cx="95" cy="60" r="0.4" fill="#ffffff" opacity="0.4"/>
-      <circle cx="30" cy="95" r="0.3" fill="#ffffff" opacity="0.3"/>
-      <circle cx="50" cy="90" r="0.4" fill="#ffffff" opacity="0.4"/>
-      <circle cx="65" cy="55" r="0.3" fill="#ffffff" opacity="0.3"/>
-    </svg>
-  `);
 
   private _nearEndOfContextSubscription: Subscription;
-  private _imageDimensions = new Map<string, { width: number; height: number }>();
   private _containerWidth = 0;
 
   constructor(
@@ -135,34 +96,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     this._checkMobile();
   }
 
-  onImageLoad(imageElement: HTMLImageElement, item: ImageSearchInterface, notifyReady: () => void): void {
-    // Store the original dimensions
-    this._imageDimensions.set("" + item.objectId, {
-      width: imageElement.naturalWidth,
-      height: imageElement.naturalHeight
-    });
-    notifyReady();
-  }
-
-  onImageError(imageElement: HTMLImageElement, item: ImageSearchInterface, notifyReady: () => void): void {
-    // If we have stored dimensions, use them
-    const dimensions = this._imageDimensions.get("" + item.objectId);
-    if (dimensions) {
-      imageElement.width = dimensions.width;
-      imageElement.height = dimensions.height;
-    } else {
-      // Default dimensions if we don't have stored ones
-      imageElement.width = 150;
-      imageElement.height = 150;
-    }
-
-    // Replace with placeholder
-    imageElement.src = this._placeholderBase64;
-
-    // Update the layout
-    notifyReady();
-  }
-
   getItemListingsMessage(listing: EquipmentItemListingInterface): string {
     return this.translateService.instant(
       "Support AstroBin by shopping for {{0}} at our partners!",
@@ -184,8 +117,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   fetchData(): Observable<SearchPaginatedApiResultInterface<ImageSearchInterface>> {
-    this.masonryLayoutReady = false;
-
     return this.imageSearchApiService
       .search({ ...this.model, pageSize: this.model.pageSize || this.pageSize })
       .pipe(
@@ -279,8 +210,16 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       this._containerWidth,
       UserGalleryActiveLayout.SMALL
     );
-    this.breakpoints = breakpoints;
-    this.gutter = gutter;
+
+    if (
+      this.breakpoints === undefined ||
+      this.gutter === undefined ||
+      JSON.stringify(breakpoints) !== JSON.stringify(this.breakpoints) ||
+      gutter !== this.gutter
+    ) {
+      this.breakpoints = breakpoints;
+      this.gutter = gutter;
+    }
   }
 
   private _openImageByImageViewer(image: ImageSearchInterface): void {

@@ -10,7 +10,6 @@ import { take } from "rxjs/operators";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { MasonryLoadable } from "@shared/components/masonry-layout/masonry-layout.component";
 
 @Component({
   selector: "astrobin-iotd-tp-archive-item",
@@ -51,7 +50,7 @@ import { MasonryLoadable } from "@shared/components/masonry-layout/masonry-layou
   `,
   styleUrls: ["./iotd-tp-archive-item.component.scss"]
 })
-export class IotdTpArchiveItemComponent extends BaseComponentDirective implements OnInit, MasonryLoadable {
+export class IotdTpArchiveItemComponent extends BaseComponentDirective implements OnInit {
   @Input() item: IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface;
 
   @Output() loaded = new EventEmitter<void>();

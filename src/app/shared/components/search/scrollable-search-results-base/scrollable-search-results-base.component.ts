@@ -141,7 +141,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     if (
       this.loading ||
       this.next === null ||
-      // (this.hasMasonryLayout && !this.masonryLayoutReady) ||
+      (this.hasMasonryLayout && !this.masonryLayoutReady) ||
       !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
     ) {
       return;

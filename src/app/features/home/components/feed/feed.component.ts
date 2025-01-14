@@ -51,13 +51,11 @@ enum FeedType {
 
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
-                (layoutReady)="masonryLayoutReady = true"
                 [items]="feedItems"
               >
-                <ng-template let-item let-notifyReady="notifyReady">
+                <ng-template let-item>
                   <astrobin-feed-item
                     @fadeInOut
-                    (loaded)="notifyReady()"
                     (openImage)="openImageById($event)"
                     [feedItem]="item"
                   ></astrobin-feed-item>
@@ -66,7 +64,7 @@ enum FeedType {
             </div>
 
             <astrobin-loading-indicator
-              *ngIf="!loading && (loadingMore || !masonryLayoutReady)"
+              *ngIf="!loading && loadingMore"
               class="mt-5"
             ></astrobin-loading-indicator>
 
@@ -81,7 +79,6 @@ enum FeedType {
 
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
-                (layoutReady)="masonryLayoutReady = true"
                 [items]="images"
                 [idProperty]="'pk'"
                 [breakpoints]="{
@@ -93,7 +90,7 @@ enum FeedType {
                 }"
                 [gutter]="12"
               >
-                <ng-template let-item let-notifyReady="notifyReady">
+                <ng-template let-item>
                   <a
                     (click)="openImage(item)"
                     [href]="'/i/' + (item.hash || item.pk)"
@@ -103,7 +100,6 @@ enum FeedType {
                     <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
                     <img
                       *ngIf="item?.thumbnails?.length"
-                      (load)="notifyReady()"
                       [alt]="item.title"
                       [src]="item.thumbnails[0].url"
                     />
@@ -116,7 +112,7 @@ enum FeedType {
             </div>
 
             <astrobin-loading-indicator
-              *ngIf="!loading && (loadingMore || !masonryLayoutReady)"
+              *ngIf="!loading && loadingMore"
               class="mt-5"
             ></astrobin-loading-indicator>
 
@@ -166,7 +162,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
 
   // For the activity feed.
   protected feedItems: FeedItemInterface[] = null;
-  protected masonryLayoutReady = false;
 
   // For the recent images.
   protected images: ImageInterface[] = null;
@@ -401,8 +396,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   }
 
   private _loadData(): Observable<PaginatedApiResultInterface<FeedItemInterface | ImageInterface>> {
-    this.masonryLayoutReady = false;
-
     if (this._page === 1) {
       this.loading = true;
     } else {
@@ -477,7 +470,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
       this.loading ||
       this.loadingMore ||
       this.next === null ||
-      !this.masonryLayoutReady ||
       !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
     ) {
       return;

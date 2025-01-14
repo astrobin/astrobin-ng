@@ -118,14 +118,13 @@ enum ArchiveType {
       </ng-container>
 
       <astrobin-masonry-layout
-        (layoutReady)="masonryLayoutReady = true"
+        (layoutReady)="masonryLayoutReady = $event"
         [items]="items"
       >
-        <ng-template let-item let-notifyReady="notifyReady">
+        <ng-template let-item>
           <astrobin-iotd-tp-archive-item
             @fadeInOut
             (click)="openImageById(item.image['hash'] || item.image['pk'])"
-            (loaded)="notifyReady()"
             [item]="item"
           ></astrobin-iotd-tp-archive-item>
         </ng-template>
@@ -155,8 +154,8 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   protected activeTab: ArchiveType;
   protected loading = false;
   protected loadingMore = false;
-  protected masonryLayoutReady = false;
   protected items: IotdArchiveInterface[] | TopPickArchiveInterface[] | TopPickNominationArchiveInterface[];
+  protected masonryLayoutReady = false;
 
   private readonly _isBrowser: boolean;
 
@@ -384,6 +383,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         if (
           this.loading ||
           this.loadingMore ||
+          !this.masonryLayoutReady ||
           this._next === null
         ) {
           return;
