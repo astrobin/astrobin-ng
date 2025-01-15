@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, Output, PLATFORM_ID, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { auditTime, fromEvent, Subject } from "rxjs";
+import { auditTime, defer, from, fromEvent, Observable, of, Subject, switchMap, toArray } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
-import { takeUntil } from "rxjs/operators";
+import { catchError, filter, map, mergeMap, retry, take, takeUntil, tap } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import imagesLoaded from "imagesloaded";
 
@@ -16,6 +16,7 @@ export interface MasonryBreakpoints {
 
 interface MasonryItem<T> {
   data: T;
+  visible: boolean;
   ready: boolean;
   rowSpan?: number;
 }
@@ -75,7 +76,6 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
   protected itemStates: MasonryItem<T>[] = [];
 
   private readonly _isBrowser: boolean;
-
   private _destroyed$ = new Subject<void>();
 
   constructor(
@@ -108,6 +108,7 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     } else if (changes.gutter || changes.breakpoints) {
       this.layoutReady.emit(false);
       this.itemStates.forEach(item => {
+        item.visible = true;
         item.ready = false;
         item.rowSpan = undefined;
       });
@@ -115,8 +116,8 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
       this.changeDetectorRef.detectChanges();
 
       requestAnimationFrame(() => {
-        this.utilsService.delay(250).subscribe(() => {
-          this._updateLayout();
+        this.utilsService.delay(1).subscribe(() => {
+          this._update();
           this.layoutReady.emit(true);
         });
       });
@@ -148,41 +149,69 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     item: HTMLElement,
     rowGap: number,
     rowHeight: number
-  ): { rowSpan: number } | null {
+  ): Observable<{ rowSpan: number; contentHeight: number } | null> {
     if (!this.container) {
-      return null;
+      return of(null);
     }
 
     const content = item.querySelector(".masonry-content");
     if (!content) {
-      return null;
+      console.error(
+        `Masonry item ${item.getAttribute("data-masonry-id")} does not have a .masonry-content element.`
+      );
+      return of(null);
     }
 
-    const contentHeight = content.getBoundingClientRect().height;
-    const safetyMargin = 2; // Add 2px safety margin
+    return defer(() => {
+      const rect = content.getBoundingClientRect();
+      if (rect.height === 0) {
+        console.error(`Zero height detected for item ${item.getAttribute("data-masonry-id")}`);
+        throw new Error("Zero height detected");
+      }
 
-    return {
-      rowSpan: Math.ceil((contentHeight + rowGap + safetyMargin) / (rowHeight + rowGap))
-    };
+      const safetyMargin = 2;
+      const rowSpan = Math.ceil((rect.height + rowGap + safetyMargin) / (rowHeight + rowGap));
+
+      return of({ rowSpan, contentHeight: rect.height });
+    }).pipe(
+      retry({
+        count: 3,
+        delay: (error, retryCount) => {
+          return this.utilsService.delay(100 * (retryCount + 1));
+        }
+      }),
+      catchError(() => {
+        // If we still have zero height after retries, use rowHeight as fallback
+        const rowSpan = Math.ceil((rowHeight + rowGap + 2) / (rowHeight + rowGap));
+        return of({ rowSpan, contentHeight: rowHeight });
+      })
+    );
   }
 
   private _updateItemLayout(
     item: HTMLElement,
     rowGap: number,
     rowHeight: number
-  ): void {
+  ): Observable<void> {
     const itemId = item.getAttribute("data-masonry-id");
     const stateIndex = this.itemStates.findIndex(
       state => state.data[this.idProperty].toString() === itemId
     );
 
-    if (stateIndex !== -1) {
-      const layout = this._calculateLayout(item, rowGap, rowHeight);
-      if (layout) {
-        this.itemStates[stateIndex].rowSpan = layout.rowSpan;
-        this.itemStates[stateIndex].ready = true;
-      }
+    if (stateIndex === -1) {
+      return of(void 0);
     }
+
+    return this._calculateLayout(item, rowGap, rowHeight).pipe(
+      tap(layout => {
+        if (layout) {
+          this.itemStates[stateIndex].rowSpan = layout.rowSpan;
+          this.itemStates[stateIndex].visible = true;
+          this.changeDetectorRef.markForCheck();
+        }
+      }),
+      map(() => void 0)
+    );
   }
 
   private _getGridRowGapAndHeight(): [number, number] {
@@ -201,52 +230,80 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     }
 
     const unreadyItems = this.container.nativeElement.querySelectorAll(".masonry-item:not(.ready)");
+
     if (unreadyItems.length === 0) {
       this.layoutReady.emit(true);
       return;
     }
 
-    // Collect all layout updates before applying any
-    const layoutUpdates = new Map<number, { rowSpan: number }>();
     const [rowGap, rowHeight] = this._getGridRowGapAndHeight();
 
-    requestAnimationFrame(() => {
-      this.utilsService.delay(50).subscribe(() => {
-        Promise.all([...unreadyItems].map(item =>
-          new Promise<void>(resolve => {
-            const imgLoad = imagesLoaded(item);
+    const layoutUpdates$ = from(unreadyItems).pipe(
+      mergeMap((item: HTMLElement) => {
+        const hasImages = item.querySelectorAll("img").length > 0;
 
-            imgLoad.on("done", () => {
-              this.utilsService.delay(50).subscribe(() => {
-                const itemId = item.getAttribute("data-masonry-id");
-                const stateIndex = this.itemStates.findIndex(
-                  state => state.data[this.idProperty].toString() === itemId
-                );
+        if (!hasImages) {
+          return this._updateItemLayout(item, rowGap, rowHeight);
+        }
 
-                if (stateIndex !== -1) {
-                  const layout = this._calculateLayout(item, rowGap, rowHeight);
-                  if (layout) {
-                    layoutUpdates.set(stateIndex, layout);
-                  }
+        const imgLoad = imagesLoaded(item);
+
+        return new Observable<void>(subscriber => {
+
+          imgLoad.on("done", () => {
+            this.utilsService.delay(50).subscribe(() => {
+              this._updateItemLayout(item, rowGap, rowHeight).subscribe({
+                next: () => {
+                  subscriber.next();
+                  subscriber.complete();
+                },
+                error: (err) => {
+                  console.error(`Error updating layout for item ${item.getAttribute("data-masonry-id")}:`, err);
+                  subscriber.error(err);
                 }
-                resolve();
               });
             });
+          });
 
-            imgLoad.on("fail", () => resolve());
-          })
-        )).then(() => {
-          // Apply all updates in a single animation frame
-          requestAnimationFrame(() => {
-            layoutUpdates.forEach((layout, index) => {
-              this.itemStates[index].rowSpan = layout.rowSpan;
-              this.itemStates[index].ready = true;
+          imgLoad.on("fail", (instance, image) => {
+            console.warn(`Image load failed for item ${item.getAttribute("data-masonry-id")}:`, image);
+            this._updateItemLayout(item, rowGap, rowHeight).subscribe({
+              next: () => {
+                subscriber.next();
+                subscriber.complete();
+              },
+              error: (err) => subscriber.error(err)
             });
-            this.changeDetectorRef.markForCheck();
+          });
+        });
+      }),
+      tap({
+        error: (err) => console.error("Error processing item:", err),
+      }),
+      toArray()
+    );
+
+    const markAllItemsReady = () => {
+      this.utilsService.delay(1).subscribe(() => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.itemStates.forEach(item => {
+              item.ready = true;
+            });
             this.layoutReady.emit(true);
           });
         });
       });
+    };
+
+    layoutUpdates$.subscribe({
+      complete: () => {
+        markAllItemsReady();
+      },
+      error: (error) => {
+        console.error("Error in layout updates:", error);
+        markAllItemsReady();
+      }
     });
   }
 
@@ -259,6 +316,7 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
       return {
         ...(existingState || {}),
         data: item,
+        visible: existingState ? existingState.visible : true,
         ready: existingState ? existingState.ready : false,
         rowSpan: existingState ? existingState.rowSpan : undefined
       };
@@ -271,7 +329,14 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
         auditTime(250),
         takeUntil(this._destroyed$)
       )
-      .subscribe(() => this._updateLayout());
+      .subscribe(() => {
+        this.itemStates.forEach(item => {
+          item.visible = false;
+          item.ready = false;
+          item.rowSpan = undefined;
+        });
+        this._updateLayout();
+      });
   }
 
   private _updateLayout() {
@@ -283,7 +348,7 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnChanges, OnDe
     const [rowGap, rowHeight] = this._getGridRowGapAndHeight();
     if (unreadyItems.length > 0) {
       requestAnimationFrame(() => {
-        unreadyItems.forEach(item => this._updateItemLayout(item, rowGap, rowHeight));
+        unreadyItems.forEach((item: HTMLElement) => this._updateItemLayout(item, rowGap, rowHeight));
         this.changeDetectorRef.markForCheck();
       });
     }

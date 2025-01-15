@@ -8,6 +8,7 @@
   width: 100%;
   contain: paint layout;
   content-visibility: auto;
+  transform: translateZ(0);
 
   @media (min-width: $sm-min) {
     grid-template-columns: repeat(var(--columns-sm, 3), 1fr);
