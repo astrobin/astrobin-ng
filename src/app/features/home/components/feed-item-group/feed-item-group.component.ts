@@ -19,7 +19,10 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
       </div>
 
       <div class="feed-item-body">
-        <a [href]="classicRoutesService.GROUP(+feedItem.actionObjectObjectId)">
+        <a
+          [href]="classicRoutesService.GROUP(+feedItem.actionObjectObjectId)"
+          class="main-image-container"
+        >
           <img
             #image
             (load)="loaded.emit()"

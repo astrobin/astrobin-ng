@@ -30,7 +30,10 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
       </div>
 
       <div class="feed-item-body">
-        <a [routerLink]="['/equipment/marketplace/listing', feedItem.actionObjectObjectId]">
+        <a
+          [routerLink]="['/equipment/marketplace/listing', feedItem.actionObjectObjectId]"
+          class="main-image-container"
+        >
           <img
             #image
             (load)="loaded.emit()"

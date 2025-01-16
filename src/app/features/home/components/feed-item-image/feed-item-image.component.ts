@@ -51,6 +51,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             [href]="'/i/' + objectId"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
+            class="main-image-container"
           >
             <img
               #image
