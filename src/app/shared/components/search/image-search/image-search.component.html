@@ -91,17 +91,9 @@
         </div>
 
         <astrobin-masonry-layout
-          (layoutReady)="masonryLayoutReady = $event"
+          [layout]="'medium'"
           [items]="results"
           [idProperty]="'objectId'"
-          [breakpoints]="breakpoints ?? {
-            xs: 2,
-            sm: 3,
-            md: 4,
-            lg: 5,
-            xl: 6
-          }"
-          [gutter]="gutter ?? 12"
         >
           <ng-template let-item>
             <div class="image-container">
@@ -121,7 +113,7 @@
                   *ngIf="!isMobile && showDynamicOverlay"
                   [image]="item"
                   [staticOverlay]="showStaticOverlay ? model.ordering : null"
-                  [activeLayout]="UserGalleryActiveLayout.SMALL"
+                  [activeLayout]="UserGalleryActiveLayout.MEDIUM"
                 ></astrobin-image-hover>
               </a>
             </div>
@@ -129,7 +121,7 @@
         </astrobin-masonry-layout>
 
         <div
-          *ngIf="!loading && !initialLoading && masonryLayoutReady && !!next"
+          *ngIf="!loading && !initialLoading && !!next"
           class="w-100 d-flex justify-content-center mt-4"
         >
           <button
@@ -140,7 +132,7 @@
           </button>
         </div>
 
-        <div *ngIf="!initialLoading && (loading || !masonryLayoutReady)" class="loading">
+        <div *ngIf="!initialLoading && loading" class="loading">
           <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
         </div>
       </ng-container>

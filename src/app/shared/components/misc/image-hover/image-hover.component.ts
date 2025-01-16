@@ -13,8 +13,8 @@ import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gall
 
     <div
       class="hover d-flex align-items-end gap-2"
-      [class.tiny]="activeLayout === ActiveLayout.TINY"
       [class.small]="activeLayout === ActiveLayout.SMALL"
+      [class.medium]="activeLayout === ActiveLayout.MEDIUM"
       [class.large]="activeLayout === ActiveLayout.LARGE"
     >
       <div class="flex-grow-1">

@@ -1,64 +1,123 @@
 @import "../../../styles/breakpoints";
 
-.masonry-container {
-  display: grid;
-  grid-template-columns: repeat(var(--columns-xs, 2), 1fr);
-  grid-gap: var(--gutter);
-  grid-auto-rows: 0;
-  width: 100%;
-  contain: paint layout;
-  content-visibility: auto;
-  transform: translateZ(0);
+$min-clamp: 0.6;
+$max-clamp: 1;
+$base-container-width-factor: 800;
+$base-height: 180px;
+$small-factor: 0.6;
+$large-factor: 1.4;
 
-  @media (min-width: $sm-min) {
-    grid-template-columns: repeat(var(--columns-sm, 3), 1fr);
+@mixin random-width-for-ratio($min, $max) {
+  $random-addition: random($max - $min);
+
+  $scale-factor: clamp(
+    #{$min-clamp},
+    var(--container-width) / #{$base-container-width-factor},
+    #{$max-clamp}
+  );
+
+  // Optional modifiers
+  &.small {
+    width: calc((#{$random-addition + $min}px) * #{$scale-factor} * #{$small-factor}) !important;
+    height: calc(#{$base-height} * #{$scale-factor} * #{$small-factor}) !important;
   }
 
-  @media (min-width: $md-min) {
-    grid-template-columns: repeat(var(--columns-md, 4), 1fr);
+  &.medium {
+    width: calc((#{$random-addition + $min}px) * #{$scale-factor});
+    height: calc(#{$base-height} * #{$scale-factor});
   }
 
-  @media (min-width: $lg-min) {
-    grid-template-columns: repeat(var(--columns-lg, 5), 1fr);
+  &.large {
+    width: calc((#{$random-addition + $min}px) * #{$scale-factor} * #{$large-factor}) !important;
+    height: calc(#{$base-height} * #{$scale-factor} * #{$large-factor}) !important;
   }
 
-  @media (min-width: $xl-min) {
-    grid-template-columns: repeat(var(--columns-xl, 6), 1fr);
-  }
+  // Default behavior (same as medium)
+  width: calc((#{$random-addition + $min}px) * #{$scale-factor});
+  height: calc(#{$base-height} * #{$scale-factor});
 }
 
-.masonry-item {
+.masonry-container {
+  display: flex;
+  flex-flow: row wrap;
   width: 100%;
-  break-inside: avoid;
+  //contain: paint layout;
+  //content-visibility: auto;
+  //transform: translateZ(0);
   opacity: 0;
-  transition: opacity .25s ease-in-out;
-  will-change: opacity, transform;
-  overflow: hidden;
-
-  &:not(.ready) {
-    pointer-events: none;
-    position: absolute;
-    height: 0;
-    width: calc(100% / var(--columns-xs, 2) - var(--gutter));
-
-    @media (min-width: $sm-min) {
-      width: calc(100% / var(--columns-sm, 3) - var(--gutter));
-    }
-
-    @media (min-width: $md-min) {
-      width: calc(100% / var(--columns-md, 4) - var(--gutter));
-    }
-
-    @media (min-width: $lg-min) {
-      width: calc(100% / var(--columns-lg, 5) - var(--gutter));
-    }
-
-    @media (min-width: $xl-min) {
-      width: calc(100% / var(--columns-xl, 6) - var(--gutter));
-    }
-  }
+  transition: opacity 0.2s ease;
 
   &.ready {
     opacity: 1;
   }
+
+  &.small {
+    gap: calc(
+      var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$small-factor}
+    );
+  }
+
+  &.medium {
+    gap: calc(
+      var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp})
+    );
+  }
+
+  &.large {
+    gap: calc(
+      var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$large-factor}
+    );
+  }
+
+  // Default, same as medium
+  gap: calc(
+    var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor},#{$max-clamp})
+  );
+}
+
+.masonry-item {
+  flex: 1 0 auto;
+
+  @for $i from 1 through 12 {
+    &:nth-child(12n + #{$i}) {
+      &.aspect-narrow {
+        @include random-width-for-ratio(100, 150);
+      }
+
+      &.aspect-square {
+        @include random-width-for-ratio(150, 200);
+      }
+
+      &.aspect-wide {
+        @include random-width-for-ratio(200, 250);
+      }
+
+      &.aspect-panoramic {
+        @include random-width-for-ratio(250, 350);
+      }
+    }
+  }
+
+  .masonry-content {
+    height: 100%;
+
+    ::ng-deep {
+      .image-container {
+        height: 100%;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}
+
+.masonry-spacer {
+  flex: 999999 0 0; // Very high flex-grow to ensure it takes remaining space
+  height: 0; // Takes no vertical space
+  margin-top: 0;
+  margin-bottom: 0;
 }

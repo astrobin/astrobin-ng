@@ -24,7 +24,6 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { UserService } from "@shared/services/user.service";
-import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-layout.component";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { isPlatformBrowser } from "@angular/common";
 
@@ -41,8 +40,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   @Input() showMarketplaceItems = true;
   @Input() showDynamicOverlay = true;
   @Input() showStaticOverlay = true;
-  @Input() breakpoints: MasonryBreakpoints;
-  @Input() gutter: number;
 
   @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
 
@@ -50,13 +47,11 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
-  protected uiReady = false;
   protected isMobile = false;
 
   private readonly _isBrowser: boolean;
 
   private _nearEndOfContextSubscription: Subscription;
-  private _containerWidth = 0;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -79,7 +74,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   ) {
     super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
     this._isBrowser = isPlatformBrowser(this.platformId);
-    this.hasMasonryLayout = true;
   }
 
   ngOnInit() {
@@ -88,11 +82,9 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     fromEvent(this.windowRefService.nativeWindow, "resize")
       .pipe(takeUntil(this.destroyed$), auditTime(200))
       .subscribe(() => {
-        this._checkUiReady();
         this._checkMobile();
       });
 
-    this._checkUiReady();
     this._checkMobile();
   }
 
@@ -186,40 +178,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     );
   }
 
-  private _checkUiReady(): void {
-    if (!this._isBrowser) {
-      return;
-    }
-
-    this._containerWidth = this.elementRef.nativeElement?.parentElement?.clientWidth;
-
-    if (this._containerWidth > 0) {
-      this._calculateBreakpointsAndGutter();
-      this.uiReady = true;
-    } else {
-      this.utilsService.delay(100).subscribe(() => this._checkUiReady());
-    }
-  }
-
   private _checkMobile(): void {
     this.isMobile = this.deviceService.smMax();
-  }
-
-  private _calculateBreakpointsAndGutter(): void {
-    const { breakpoints, gutter } = this.imageService.getBreakpointsAndGutterForMasonryLayout(
-      this._containerWidth,
-      UserGalleryActiveLayout.SMALL
-    );
-
-    if (
-      this.breakpoints === undefined ||
-      this.gutter === undefined ||
-      JSON.stringify(breakpoints) !== JSON.stringify(this.breakpoints) ||
-      gutter !== this.gutter
-    ) {
-      this.breakpoints = breakpoints;
-      this.gutter = gutter;
-    }
   }
 
   private _openImageByImageViewer(image: ImageSearchInterface): void {

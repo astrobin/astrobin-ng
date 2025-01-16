@@ -29,9 +29,6 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   @Input() loadMoreOnScroll = true;
   @Input() showResultsCount = false;
 
-  protected hasMasonryLayout = false;
-  protected masonryLayoutReady = false;
-
   protected constructor(
     public readonly store$: Store<MainState>,
     public readonly windowRefService: WindowRefService,
@@ -141,7 +138,6 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     if (
       this.loading ||
       this.next === null ||
-      (this.hasMasonryLayout && !this.masonryLayoutReady) ||
       !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
     ) {
       return;

@@ -57,7 +57,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
               (load)="loaded.emit()"
               [alt]="displayName"
               [src]="feedItem.image"
-              [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
+              class="main-image"
             >
           </a>
         </div>

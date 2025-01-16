@@ -6,8 +6,8 @@ import { CookieService } from "ngx-cookie";
 import { isPlatformBrowser } from "@angular/common";
 
 export enum UserGalleryActiveLayout {
-  TINY = "tiny",
   SMALL = "small",
+  MEDIUM = "medium",
   LARGE = "large",
   TABLE = "table"
 }
@@ -70,29 +70,9 @@ export enum UserGalleryActiveLayout {
       </div>
 
       <img
-        *ngIf="activeLayout !== UserGalleryActiveLayout.TINY"
-        (click)="setLayout(UserGalleryActiveLayout.TINY)"
-        [ngSrc]="'/assets/images/layout-tiny.png?v=20241008'"
-        [ngbTooltip]="'Tiny layout' | translate"
-        alt="{{ 'Tiny layout' | translate }}"
-        class="cursor-pointer"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout === UserGalleryActiveLayout.TINY"
-        [ngSrc]="'/assets/images/layout-tiny-active.png?v=20241008'"
-        [ngbTooltip]="'Tiny layout' | translate"
-        alt="{{ 'Tiny layout' | translate }}"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
         *ngIf="activeLayout !== UserGalleryActiveLayout.SMALL"
         (click)="setLayout(UserGalleryActiveLayout.SMALL)"
-        [ngSrc]="'/assets/images/layout-small.png?v=20250112'"
+        [ngSrc]="'/assets/images/layout-small.png?v=20241008'"
         [ngbTooltip]="'Small layout' | translate"
         alt="{{ 'Small layout' | translate }}"
         class="cursor-pointer"
@@ -102,9 +82,29 @@ export enum UserGalleryActiveLayout {
       />
       <img
         *ngIf="activeLayout === UserGalleryActiveLayout.SMALL"
-        [ngSrc]="'/assets/images/layout-small-active.png?v=20250112'"
+        [ngSrc]="'/assets/images/layout-small-active.png?v=20241008'"
         [ngbTooltip]="'Small layout' | translate"
         alt="{{ 'Small layout' | translate }}"
+        container="body"
+        height="{{ ICON_SIZE }}"
+        width="{{ ICON_SIZE }}"
+      />
+      <img
+        *ngIf="activeLayout !== UserGalleryActiveLayout.MEDIUM"
+        (click)="setLayout(UserGalleryActiveLayout.MEDIUM)"
+        [ngSrc]="'/assets/images/layout-medium.png?v=20250112'"
+        [ngbTooltip]="'Medium layout' | translate"
+        alt="{{ 'Medium layout' | translate }}"
+        class="cursor-pointer"
+        container="body"
+        height="{{ ICON_SIZE }}"
+        width="{{ ICON_SIZE }}"
+      />
+      <img
+        *ngIf="activeLayout === UserGalleryActiveLayout.MEDIUM"
+        [ngSrc]="'/assets/images/layout-medium-active.png?v=20250112'"
+        [ngbTooltip]="'Medium layout' | translate"
+        alt="{{ 'Medium layout' | translate }}"
         container="body"
         height="{{ ICON_SIZE }}"
         width="{{ ICON_SIZE }}"
@@ -150,7 +150,7 @@ export enum UserGalleryActiveLayout {
 })
 export class UserGalleryButtonsComponent extends BaseComponentDirective implements OnInit {
   @Input()
-  activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.TINY;
+  activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.MEDIUM;
 
   @Input()
   subsection: string;
@@ -184,6 +184,8 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
       const cookie = this.cookieService.get(this._cookieKey);
       if (cookie) {
         this.setLayout(cookie as UserGalleryActiveLayout);
+      } else {
+        this.setLayout(UserGalleryActiveLayout.MEDIUM);
       }
     }
   }

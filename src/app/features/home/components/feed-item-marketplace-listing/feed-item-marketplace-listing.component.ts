@@ -36,7 +36,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
             (load)="loaded.emit()"
             [alt]="feedItem.actionObjectDisplayName"
             [src]="feedItem.image"
-            [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
+            class="main-image"
           >
         </a>
       </div>
@@ -44,6 +44,12 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
       <div class="feed-item-footer">
         <div class="feed-item-footer-text">
           <astrobin-feed-item-display-text [feedItem]="feedItem"></astrobin-feed-item-display-text>
+        </div>
+
+        <div class="feed-item-extra mt-3">
+          <span class="timestamp">
+            {{ feedItem.timestamp | localDate | timeago }}
+          </span>
         </div>
       </div>
     </div>

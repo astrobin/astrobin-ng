@@ -19,10 +19,6 @@ astrobin-masonry-layout {
       }
     }
 
-    &.wide {
-      min-height: 200px;
-    }
-
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         .image-container {

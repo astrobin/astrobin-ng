@@ -118,7 +118,7 @@ enum ArchiveType {
       </ng-container>
 
       <astrobin-masonry-layout
-        (layoutReady)="masonryLayoutReady = $event"
+        [layout]="'small'"
         [items]="items"
       >
         <ng-template let-item>
@@ -130,7 +130,7 @@ enum ArchiveType {
         </ng-template>
       </astrobin-masonry-layout>
 
-      <ng-container *ngIf="!loading && (loadingMore || !masonryLayoutReady)">
+      <ng-container *ngIf="!loading && loadingMore">
         <ng-template [ngTemplateOutlet]="loadingTemplate"></ng-template>
       </ng-container>
     </ng-template>
@@ -155,7 +155,6 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   protected loading = false;
   protected loadingMore = false;
   protected items: IotdArchiveInterface[] | TopPickArchiveInterface[] | TopPickNominationArchiveInterface[];
-  protected masonryLayoutReady = false;
 
   private readonly _isBrowser: boolean;
 
@@ -383,7 +382,6 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         if (
           this.loading ||
           this.loadingMore ||
-          !this.masonryLayoutReady ||
           this._next === null
         ) {
           return;

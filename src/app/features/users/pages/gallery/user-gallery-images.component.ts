@@ -5,7 +5,7 @@ import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
-import { Actions, ofType } from "@ngrx/effects";
+import { act, Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { debounceTime, filter, map, take, takeUntil } from "rxjs/operators";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -16,7 +16,7 @@ import { NavigationEnd, Router } from "@angular/router";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { auditTime, fromEvent, merge, Subscription, throttleTime } from "rxjs";
+import { fromEvent, merge, Subscription, throttleTime } from "rxjs";
 import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
@@ -26,13 +26,12 @@ import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
-import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-layout.component";
 
 @Component({
   selector: "astrobin-user-gallery-images",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <ng-container *ngIf="uiReady">
+      <ng-container *ngIf="!!activeLayout; else loadingTemplate">
         <astrobin-nothing-here
           *ngIf="!loading && images.length === 0"
           [withAlert]="false"
@@ -51,13 +50,13 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
 
         <astrobin-loading-indicator
           *ngIf="!loadingPlaceholdersCount || loadingPlaceholdersCount <= 10"
-          [hidden]="!loading || masonryLayoutReady"
+          [hidden]="!loading"
           @fadeInOut
         ></astrobin-loading-indicator>
 
         <astrobin-user-gallery-loading
           *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
-          [hidden]="!loading || masonryLayoutReady"
+          [hidden]="!loading"
           @fadeInOut
           [activeLayout]="activeLayout"
           [numberOfImages]="loadingPlaceholdersCount"
@@ -65,11 +64,11 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
 
         <ng-container *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TABLE">
           <astrobin-masonry-layout
-            (layoutReady)="masonryLayoutReady = $event"
             [items]="images"
+            [layout]="activeLayout === UserGalleryActiveLayout.SMALL
+            ? 'small' :
+            activeLayout === UserGalleryActiveLayout.MEDIUM ? 'medium' : 'large'"
             [idProperty]="'pk'"
-            [breakpoints]="breakpoints"
-            [gutter]="gutter"
           >
             <ng-template let-item>
               <div class="image-container">
@@ -81,10 +80,7 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
                   astrobinEventPreventDefault
                 >
                   <img
-                    [src]="imageService.getThumbnail(
-                    item,
-                    activeLayout === UserGalleryActiveLayout.TINY ? ImageAlias.GALLERY : ImageAlias.REGULAR
-                  )"
+                    [src]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
                     [alt]="item.title"
                   />
 
@@ -174,7 +170,7 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
     </ng-container>
 
     <div
-      *ngIf="!loadingMore && !loading && masonryLayoutReady && !!next"
+      *ngIf="!loadingMore && !loading && !!next"
       class="w-100 d-flex justify-content-center mt-4"
     >
       <button
@@ -185,7 +181,7 @@ import { MasonryBreakpoints } from "@shared/components/masonry-layout/masonry-la
       </button>
     </div>
 
-    <div *ngIf="(loadingMore || !masonryLayoutReady) && !loading" class="loading mt-4 mb-2 mb-md-0">
+    <div *ngIf="loadingMore && !loading" class="loading mt-4 mb-2 mb-md-0">
       <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
     </div>
 
@@ -239,17 +235,12 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   protected loading = false;
   protected loadingMore = false;
   protected loadingPlaceholdersCount: number;
-  protected breakpoints: MasonryBreakpoints;
-  protected gutter: number;
-  protected masonryLayoutReady = false;
-  protected uiReady = false;
 
   private readonly _isBrowser: boolean;
 
   private _findImagesSubscription: Subscription;
   private _slideshowComponent: ImageViewerSlideshowComponent;
   private _nearEndOfContextSubscription: Subscription;
-  private _containerWidth = 0;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -280,12 +271,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       fromEvent(scrollElement, "scroll")
         .pipe(takeUntil(this.destroyed$), throttleTime(200), debounceTime(100))
         .subscribe(() => this.onScroll());
-
-      fromEvent(this.windowRefService.nativeWindow, "resize")
-        .pipe(takeUntil(this.destroyed$), auditTime(200))
-        .subscribe(() => this._checkUiReady());
-
-      this._checkUiReady();
     }
   }
 
@@ -312,11 +297,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
           this.paginationConfig.pageSize
         );
       }
-    }
-
-    if (changes.activeLayout) {
-      this._calculateBreakpointsAndGutter();
-      this.masonryLayoutReady = false;
     }
 
     if (changes.options && changes.options.currentValue.collection) {
@@ -441,7 +421,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       isPlatformServer(this.platformId) ||
       this.loading ||
       this.loadingMore ||
-      (!this.masonryLayoutReady && this.activeLayout !== UserGalleryActiveLayout.TABLE) ||
       this.next === null
     ) {
       return;
@@ -453,43 +432,11 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }
   }
 
-  private _checkUiReady(): void {
-    if (!this._isBrowser) {
-      return;
-    }
-    this._containerWidth = this.elementRef.nativeElement?.parentElement?.clientWidth;
-
-    if (this._containerWidth > 0) {
-      this._calculateBreakpointsAndGutter();
-      this.uiReady = true;
-    } else {
-      this.utilsService.delay(100).subscribe(() => this._checkUiReady());
-    }
-  }
-
-  private _calculateBreakpointsAndGutter(): void {
-    const { breakpoints, gutter } = this.imageService.getBreakpointsAndGutterForMasonryLayout(
-      this._containerWidth,
-      this.activeLayout
-    );
-
-    if (
-      this.breakpoints === undefined ||
-      this.gutter === undefined ||
-      JSON.stringify(this.breakpoints) !== JSON.stringify(breakpoints) ||
-      this.gutter !== gutter
-    ) {
-      this.breakpoints = breakpoints;
-      this.gutter = gutter;
-    }
-  }
-
   private _getImages(): void {
     if (this.page > 1) {
       this.loadingMore = true;
     } else {
       this.loading = true;
-      this.masonryLayoutReady = false;
     }
 
     this.store$.dispatch(new FindImages({
@@ -501,4 +448,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       }
     }));
   }
+
+  protected readonly act = act;
 }

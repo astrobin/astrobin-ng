@@ -51,7 +51,8 @@ enum FeedType {
 
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
-                (layoutReady)="masonryLayoutReady = $event"
+                class="activity-feed-masonry-layout"
+                [layout]="'medium'"
                 [items]="feedItems"
               >
                 <ng-template let-item>
@@ -65,7 +66,7 @@ enum FeedType {
             </div>
 
             <div
-              *ngIf="!loadingMore && !loading && masonryLayoutReady && !!next"
+              *ngIf="!loadingMore && !loading && !!next"
               class="w-100 d-flex justify-content-center mt-4"
             >
               <button
@@ -77,7 +78,7 @@ enum FeedType {
             </div>
 
             <astrobin-loading-indicator
-              *ngIf="!loading && (loadingMore || !masonryLayoutReady)"
+              *ngIf="!loading && loadingMore"
               class="mt-4 mb-2 mb-md-0"
             ></astrobin-loading-indicator>
 
@@ -92,16 +93,9 @@ enum FeedType {
 
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
+                [layout]="'medium'"
                 [items]="images"
                 [idProperty]="'pk'"
-                [breakpoints]="{
-                  xs: 2,
-                  sm: 3,
-                  md: 4,
-                  lg: 5,
-                  xl: 5
-                }"
-                [gutter]="12"
               >
                 <ng-template let-item>
                   <a
@@ -121,7 +115,7 @@ enum FeedType {
                   <astrobin-image-icons [image]="item"></astrobin-image-icons>
                   <astrobin-image-hover
                     [image]="item"
-                    [activeLayout]="UserGalleryActiveLayout.SMALL"
+                    [activeLayout]="UserGalleryActiveLayout.MEDIUM"
                   ></astrobin-image-hover>
                 </ng-template>
               </astrobin-masonry-layout>
@@ -175,7 +169,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   protected activeTab = FeedTab.FEED;
   protected activeFeedType = FeedType.GLOBAL;
   protected currentUserProfile: UserProfileInterface;
-  protected masonryLayoutReady = false;
 
   // For the activity feed.
   protected feedItems: FeedItemInterface[] = null;

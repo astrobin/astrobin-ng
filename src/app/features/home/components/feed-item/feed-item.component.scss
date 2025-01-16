@@ -63,7 +63,7 @@
     }
 
     .feed-item-body {
-      img {
+      .main-image {
         min-height: 200px;
         transition: filter .25s ease-in-out;
 
@@ -71,6 +71,10 @@
           &:hover {
             filter: brightness(1.25);
           }
+        }
+
+        @media (min-width: $md-min) {
+          height: 250px;
         }
       }
     }

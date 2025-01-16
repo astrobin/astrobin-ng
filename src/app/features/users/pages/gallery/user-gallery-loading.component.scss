@@ -1,38 +1,11 @@
 @import "../../../../styles/breakpoints";
 
-
-astrobin-image-loading-indicator ::ng-deep {
-  .load-wrapper {
-    border-radius: 20px;
-  }
-}
-
-.loading-container {
-  width: 100%;
-  contain: paint layout;
-  content-visibility: auto;
-  columns: var(--columns-xs);
-  column-gap: calc(var(--gutter) * 1px);
-
-  @media (min-width: $sm-min) {
-    columns: var(--columns-sm);
-  }
-
-  @media (min-width: $md-min) {
-    columns: var(--columns-md);
-  }
-
-  @media (min-width: $lg-min) {
-    columns: var(--columns-lg);
-  }
-
-  @media (min-width: $xl-min) {
-    columns: var(--columns-xl);
-  }
-}
-
 .loading-item {
-  width: 100%;
   will-change: opacity;
-  margin-bottom: calc(var(--gutter) * 1px);
+
+  ::ng-deep {
+    .load-wrapper {
+      border-radius: 20px;
+    }
+  }
 }

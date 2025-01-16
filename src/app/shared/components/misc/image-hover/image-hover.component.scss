@@ -29,30 +29,11 @@
   border-bottom-right-radius: .75rem;
   z-index: 2;
 
-  &.tiny {
-    font-size: .65rem;
-    height: 100%;
-    max-height: unset;
-    border-top-left-radius: .75rem;
-    border-top-right-radius: .75rem;
-
-    .author {
-      font-size: .65rem;
-    }
-
-    .published,
-    .uploaded {
-      font-size: .55rem;
-    }
-
-    .counters {
-      .counter {
-        font-size: .55rem;
-      }
-    }
+  &.small {
+    display: none !important;
   }
 
-  &.small {
+  &.medium {
     font-size: .75rem;
 
     .author {

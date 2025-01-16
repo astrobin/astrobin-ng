@@ -244,7 +244,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   protected readonly isBrowser: boolean;
 
   protected activeTab: GalleryNavigationComponent = "gallery";
-  protected activeLayout = UserGalleryActiveLayout.TINY;
+  protected activeLayout: UserGalleryActiveLayout;
   protected collectionId: CollectionInterface["id"] | null = null;
   protected activeCollection: CollectionInterface | null = null;
   protected searchModel: string | null = null;
