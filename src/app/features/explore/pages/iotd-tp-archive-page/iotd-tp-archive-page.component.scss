@@ -45,4 +45,18 @@
       margin-right: -2rem;
     }
   }
+
+  astrobin-masonry-layout {
+    ::ng-deep {
+      .masonry-container {
+        @media (max-width: $sm-max) {
+          display: block;
+
+          .masonry-item {
+            margin-bottom: 1rem;
+          }
+        }
+      }
+    }
+  }
 }
