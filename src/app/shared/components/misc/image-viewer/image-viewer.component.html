@@ -305,7 +305,8 @@
   >
     <astrobin-ad-manager
       #ad
-      *ngIf="showAd"
+      *ngIf="active && adConfig"
+      [class.d-none]="!showAd"
       (adDisplayed)="adDisplayed = true"
       [configName]="adConfig"
     ></astrobin-ad-manager>
