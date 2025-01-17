@@ -11,6 +11,7 @@
   .ng-fa-icon {
     &.active {
       color: var(--accentColor);
+      pointer-events: none;
     }
   }
 }

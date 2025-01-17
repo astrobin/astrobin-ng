@@ -69,80 +69,37 @@ export enum UserGalleryActiveLayout {
         </div>
       </div>
 
-      <img
-        *ngIf="activeLayout !== UserGalleryActiveLayout.SMALL"
+      <fa-icon
         (click)="setLayout(UserGalleryActiveLayout.SMALL)"
-        [ngSrc]="'/assets/images/layout-small.png?v=20241008'"
+        icon="table-cells"
         [ngbTooltip]="'Small layout' | translate"
-        alt="{{ 'Small layout' | translate }}"
         class="cursor-pointer"
+        [class.active]="activeLayout === UserGalleryActiveLayout.SMALL"
         container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout === UserGalleryActiveLayout.SMALL"
-        [ngSrc]="'/assets/images/layout-small-active.png?v=20241008'"
-        [ngbTooltip]="'Small layout' | translate"
-        alt="{{ 'Small layout' | translate }}"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout !== UserGalleryActiveLayout.MEDIUM"
-        (click)="setLayout(UserGalleryActiveLayout.MEDIUM)"
-        [ngSrc]="'/assets/images/layout-medium.png?v=20250112'"
-        [ngbTooltip]="'Medium layout' | translate"
-        alt="{{ 'Medium layout' | translate }}"
-        class="cursor-pointer"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout === UserGalleryActiveLayout.MEDIUM"
-        [ngSrc]="'/assets/images/layout-medium-active.png?v=20250112'"
-        [ngbTooltip]="'Medium layout' | translate"
-        alt="{{ 'Medium layout' | translate }}"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout !== UserGalleryActiveLayout.LARGE"
-        (click)="setLayout(UserGalleryActiveLayout.LARGE)"
-        [ngSrc]="'/assets/images/layout-large.png?v=20241008'"
-        [ngbTooltip]="'Large layout' | translate"
-        alt="{{ 'Large layout' | translate }}"
-        class="cursor-pointer"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout === UserGalleryActiveLayout.LARGE"
-        [ngSrc]="'/assets/images/layout-large-active.png?v=20241008'"
-        [ngbTooltip]="'Large layout' | translate"
-        alt="{{ 'Large layout' | translate }}"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
       />
       <fa-icon
-        *ngIf="activeLayout !== UserGalleryActiveLayout.TABLE"
+        (click)="setLayout(UserGalleryActiveLayout.MEDIUM)"
+        icon="table-cells-large"
+        [ngbTooltip]="'Medium layout' | translate"
+        class="cursor-pointer"
+        [class.active]="activeLayout === UserGalleryActiveLayout.MEDIUM"
+        container="body"
+      />
+      <fa-icon
+        (click)="setLayout(UserGalleryActiveLayout.LARGE)"
+        icon="square"
+        [ngbTooltip]="'Large layout' | translate"
+        class="cursor-pointer"
+        [class.active]="activeLayout === UserGalleryActiveLayout.LARGE"
+        container="body"
+      />
+      <fa-icon
         (click)="setLayout(UserGalleryActiveLayout.TABLE)"
         [icon]="['fas', 'bars']"
         [ngbTooltip]="'Table layout' | translate"
         class="cursor-pointer"
+        [class.active]="activeLayout === UserGalleryActiveLayout.TABLE"
         container="body"
-      ></fa-icon>
-      <fa-icon
-        *ngIf="activeLayout === UserGalleryActiveLayout.TABLE"
-        [icon]="['fas', 'bars']"
-        [ngbTooltip]="'Table layout' | translate"
-        container="body"
-        class="active"
       ></fa-icon>
     </div>
   `,
@@ -165,7 +122,6 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
   sortChange = new EventEmitter<string>();
 
   protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
-  protected readonly ICON_SIZE = 16;
 
   private readonly _isBrowser: boolean;
   private readonly _cookieKey = "astrobin-user-gallery-layout";
