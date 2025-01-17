@@ -15,6 +15,7 @@ import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-search-page",
@@ -48,7 +49,8 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly viewContainerRef: ViewContainerRef,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
-    public readonly userSubscriptionService: UserSubscriptionService
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly imageService: ImageService
   ) {
     super(store$);
 
@@ -63,7 +65,11 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
   ngOnInit() {
     super.ngOnInit();
 
-    this.titleService.setTitle(this.translateService.instant("Search"));
+    if (this.activatedRoute.snapshot.data.image) {
+      this.imageService.setMetaTags(this.activatedRoute.snapshot.data.image);
+    } else {
+      this.titleService.setTitle(this.translateService.instant("Search"));
+    }
 
     this.userSubscriptionService.displayAds$().pipe(
       takeUntil(this.destroyed$)
@@ -124,7 +130,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
   }
 
   updateUrl(): void {
-    const currentUrlParams = decodeURIComponent(this.activatedRoute.snapshot.queryParams['p']);
+    const currentUrlParams = decodeURIComponent(this.activatedRoute.snapshot.queryParams["p"]);
     const modelParams = decodeURIComponent(this.searchService.modelToParams(this.model));
 
     if (currentUrlParams === modelParams) {

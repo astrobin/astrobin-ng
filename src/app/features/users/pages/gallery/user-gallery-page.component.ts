@@ -15,6 +15,7 @@ import { FindCollections, FindCollectionsSuccess } from "@app/store/actions/coll
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { selectCurrentUser, selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-user-gallery-page",
@@ -61,7 +62,8 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     public readonly imageViewerService: ImageViewerService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly viewContainerRef: ViewContainerRef,
-    public readonly userSubscriptionService: UserSubscriptionService
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly imageService: ImageService
   ) {
     super(store$);
 
@@ -207,16 +209,20 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
   }
 
   private _setMetaTags() {
-    const title = this.user.displayName;
-    const description = this.translateService.instant("A gallery on AstroBin.");
+    if (this.route.snapshot.data.image) {
+      this.imageService.setMetaTags(this.route.snapshot.data.image);
+    } else {
+      const title = this.user.displayName;
+      const description = this.translateService.instant("A gallery on AstroBin.");
 
-    this.titleService.setTitle(title);
-    this.titleService.setDescription(description);
-    this.titleService.addMetaTag({ name: "og:title", content: title });
-    this.titleService.addMetaTag({ name: "og:description", content: description });
+      this.titleService.setTitle(title);
+      this.titleService.setDescription(description);
+      this.titleService.addMetaTag({ name: "og:title", content: title });
+      this.titleService.addMetaTag({ name: "og:description", content: description });
 
-    if (this.user.avatar) {
-      this.titleService.addMetaTag({ name: "og:gallery", content: this.user.avatar });
+      if (this.user.avatar) {
+        this.titleService.addMetaTag({ name: "og:gallery", content: this.user.avatar });
+      }
     }
   }
 }

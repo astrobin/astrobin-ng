@@ -8,8 +8,9 @@ import { TranslateService } from "@ngx-translate/core";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { filter, pairwise, takeUntil } from "rxjs/operators";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: 'astrobin-home',
@@ -69,10 +70,12 @@ export class HomeComponent extends BaseComponentDirective implements OnInit, Aft
     public readonly classicRoutesService: ClassicRoutesService,
     @Inject(PLATFORM_ID) private readonly platformId: Object,
     public readonly windowRefService: WindowRefService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly route: ActivatedRoute,
+    public readonly imageService: ImageService
   ) {
     super(store$);
-    this.isBrowser = isPlatformBrowser(platformId);
+    this.isBrowser = isPlatformBrowser(this.platformId);
 
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -91,7 +94,12 @@ export class HomeComponent extends BaseComponentDirective implements OnInit, Aft
     super.ngOnInit();
 
     this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
-    this.titleService.setTitle(this.translateService.instant('Home of Astrophotography'));
+
+    if (this.route.snapshot.data.image) {
+      this.imageService.setMetaTags(this.route.snapshot.data.image);
+    } else {
+      this.titleService.setTitle(this.translateService.instant('Home of Astrophotography'));
+    }
   }
 
   ngAfterViewInit() {
