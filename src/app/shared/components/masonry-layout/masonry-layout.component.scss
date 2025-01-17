@@ -41,9 +41,8 @@ $large-factor: 1.4;
   display: flex;
   flex-flow: row wrap;
   width: 100%;
-  //contain: paint layout;
-  //content-visibility: auto;
-  //transform: translateZ(0);
+  contain: paint layout;
+  transform: translateZ(0);
   opacity: 0;
   transition: opacity 0.2s ease;
 
