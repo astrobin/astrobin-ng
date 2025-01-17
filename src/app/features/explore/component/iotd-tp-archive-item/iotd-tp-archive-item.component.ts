@@ -16,7 +16,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   template: `
     <div class="iotd-tp-archive-item">
       <img
-        (load)="onImageLoad()"
         [alt]="item.image.title"
         [src]="thumbnailUrl"
       />
@@ -49,8 +48,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 })
 export class IotdTpArchiveItemComponent extends BaseComponentDirective implements OnInit {
   @Input() item: IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface;
-
-  @Output() loaded = new EventEmitter<void>();
 
   protected thumbnailUrl: string;
   protected date: string;
@@ -98,10 +95,6 @@ export class IotdTpArchiveItemComponent extends BaseComponentDirective implement
         }))
       ];
     });
-  }
-
-  onImageLoad(): void {
-    this.loaded.emit();
   }
 
   openGallery(username: string): void {
