@@ -36,7 +36,6 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
         >
           <img
             #image
-            (load)="loaded.emit()"
             [alt]="feedItem.actionObjectDisplayName"
             [src]="feedItem.image"
             class="main-image"
@@ -62,16 +61,9 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
     "./feed-item-marketplace-listing.component.scss"
   ],
 })
-export class FeedItemMarketplaceListingComponent extends BaseComponentDirective implements AfterViewInit {
+export class FeedItemMarketplaceListingComponent extends BaseComponentDirective   {
   @Input() feedItem: FeedItemInterface;
-  @Output() loaded = new EventEmitter<void>();
   @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
-
-  ngAfterViewInit() {
-    if (this.imageElement?.nativeElement?.complete) {
-      this.loaded.emit();
-    }
-  }
 
   constructor(
     public readonly store$: Store<MainState>,

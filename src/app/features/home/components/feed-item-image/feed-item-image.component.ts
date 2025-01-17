@@ -55,7 +55,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
           >
             <img
               #image
-              (load)="loaded.emit()"
               [alt]="displayName"
               [src]="feedItem.image"
               class="main-image"
@@ -112,10 +111,9 @@ import { WindowRefService } from "@shared/services/window-ref.service";
     "./feed-item-image.component.scss"
   ]
 })
-export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges, AfterViewInit {
+export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;
   @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
-  @Output() loaded = new EventEmitter<void>();
   @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
 
   protected contentType: number;
@@ -133,12 +131,6 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
     public readonly windowRefService: WindowRefService
   ) {
     super(store$);
-  }
-
-  ngAfterViewInit() {
-    if (this.imageElement?.nativeElement?.complete) {
-      this.loaded.emit();
-    }
   }
 
   ngOnChanges(): void {

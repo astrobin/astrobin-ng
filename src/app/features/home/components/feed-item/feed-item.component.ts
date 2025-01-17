@@ -11,20 +11,17 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
     <div class="feed-item-content">
       <astrobin-feed-item-image
         *ngIf="isImageFeedItem"
-        (loaded)="loaded.emit()"
         (openImage)="openImage.emit($event)"
         [feedItem]="feedItem"
       ></astrobin-feed-item-image>
 
       <astrobin-feed-item-marketplace-listing
         *ngIf="isMarketplaceListingFeedItem"
-        (loaded)="loaded.emit()"
         [feedItem]="feedItem"
       ></astrobin-feed-item-marketplace-listing>
 
       <astrobin-feed-item-group
         *ngIf="isGroupFeedItem"
-        (loaded)="loaded.emit()"
         [feedItem]="feedItem"
       ></astrobin-feed-item-group>
     </div>
@@ -34,7 +31,6 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 export class FeedItemComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;
   @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
-  @Output() loaded = new EventEmitter<void>();
 
   protected isImageFeedItem = false;
   protected isMarketplaceListingFeedItem = false;
