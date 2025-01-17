@@ -238,6 +238,37 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
       );
   }
 
+  getToggleProperties(params: Partial<TogglePropertyInterface>[]): Observable<TogglePropertyInterface[] | null> {
+    if (!params.length) {
+      return of(null);
+    }
+
+    // All params in a group will have the same content type and property type
+    const contentType = params[0].contentType;
+    const propertyType = params[0].propertyType;
+    const userIds = Array.from(new Set(params.map(item => item.user))).join(',');
+    const objectIds = params.map(item => item.objectId).join(',');
+
+    return this.http
+      .get<PaginatedApiResultInterface<BackendTogglePropertyInterface>>(
+        `${this.configUrl}/toggleproperties/?` +
+        `property_type=${propertyType}&` +
+        `user_id__in=${userIds}&` +
+        `content_type=${contentType}&` +
+        `object_id__in=${objectIds}`
+      )
+      .pipe(
+        map(response => {
+          if (response.results.length > 0) {
+            return response.results.map(result =>
+              this.commonApiAdaptorService.togglePropertyFromBackend(result)
+            );
+          }
+          return null;
+        })
+      );
+  }
+
   createToggleProperty(params: Partial<TogglePropertyInterface>): Observable<TogglePropertyInterface> {
     return this.http.post<BackendTogglePropertyInterface>(
       `${this.configUrl}/toggleproperties/`, this.commonApiAdaptorService.togglePropertyToBackend(params)

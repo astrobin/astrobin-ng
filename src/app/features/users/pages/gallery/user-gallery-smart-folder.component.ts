@@ -69,7 +69,7 @@ import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-
 
           <astrobin-user-gallery-images
             *ngIf="activeType && active !== null && active !== undefined"
-            [activeLayout]="UserGalleryActiveLayout.SMALL"
+            [activeLayout]="UserGalleryActiveLayout.MEDIUM"
             [user]="user"
             [userProfile]="userProfile"
             [options]="{

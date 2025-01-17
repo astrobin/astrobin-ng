@@ -1,8 +1,8 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { fromEvent, Observable, Subject, throttleTime } from "rxjs";
+import { auditTime, fromEvent, merge, Observable, throttleTime } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
-import { delay, takeUntil } from "rxjs/operators";
+import { debounceTime, takeUntil } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -29,16 +29,13 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   @Input() loadMoreOnScroll = true;
   @Input() showResultsCount = false;
 
-  protected dataFetched = new Subject<{ data: T[], cumulative: boolean }>();
-  protected scheduledLoadingTimeout: number = null;
-
   protected constructor(
     public readonly store$: Store<MainState>,
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly translateService: TranslateService,
-    public readonly utilsService: UtilsService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -50,23 +47,14 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
       const scrollElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
 
       fromEvent(scrollElement, "scroll")
-        .pipe(takeUntil(this.destroyed$), throttleTime(200), delay(100))
+        .pipe(auditTime(100), takeUntil(this.destroyed$))
         .subscribe(() => this._onScroll());
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.model && changes.model.currentValue) {
-      if (
-        this.windowRefService.nativeWindow.clearTimeout === undefined ||
-        this.windowRefService.nativeWindow.setTimeout === undefined
-      ) {
-        // Server side.
-        this.loadData();
-      } else {
-        this.cancelScheduledLoading();
-        this.scheduleLoading();
-      }
+      this.loadData();
     }
   }
 
@@ -114,40 +102,16 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     }
   }
 
-  cancelScheduledLoading() {
-    if (this.scheduledLoadingTimeout && this.windowRefService.nativeWindow.clearTimeout !== undefined) {
-      this.windowRefService.nativeWindow.clearTimeout(this.scheduledLoadingTimeout);
-      this.scheduledLoadingTimeout = null;
-    }
-  }
-
-  scheduleLoading() {
-    if (this.windowRefService.nativeWindow.setTimeout !== undefined) {
-      this.scheduledLoadingTimeout = this.windowRefService.nativeWindow.setTimeout(() => {
-        this.loadData();
-      }, 50);
-    } else {
-      this.loadData();
-    }
-  }
-
   loadData(): void {
-    if (
-      isPlatformBrowser(this.platformId) &&
-      this.utilsService.isNearTop(this.windowRefService, this.elementRef)
-    ) {
-      this.loading = false;
-      this.initialLoading = true;
+    this.loading = false;
+    this.initialLoading = true;
 
-      this.fetchData().subscribe(response => {
-        this.results = response.results;
-        this.next = response.next;
-        this.initialLoading = false;
-        this.updateLastResultsCount(response.count);
-        this.cancelScheduledLoading();
-        this.dataFetched.next({ data: this.results, cumulative: false });
-      });
-    }
+    this.fetchData().subscribe(response => {
+      this.results = response.results;
+      this.next = response.next;
+      this.initialLoading = false;
+      this.updateLastResultsCount(response.count);
+    });
   }
 
   loadMore(): Observable<T[]> {
@@ -160,8 +124,6 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
           this.results = this.results.concat(response.results);
           this.next = response.next;
           this.loading = false;
-          this.cancelScheduledLoading();
-          this.dataFetched.next({ data: this.results, cumulative: true });
 
           observer.next(response.results);
           observer.complete();
@@ -174,32 +136,19 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
 
   private _onScroll() {
     if (
-      isPlatformBrowser(this.platformId) &&
-      this.utilsService.isNearBottom(this.windowRefService, this.elementRef) &&
-      !this.initialLoading &&
-      !this.loading
+      this.loading ||
+      this.next === null ||
+      !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
     ) {
-      if (this.results !== null) {
-        if (this.loadMoreOnScroll) {
-          this.loadMore().subscribe();
-        }
-      } else {
-        this.loadData();
-      }
-    }
-  }
-
-  private _getScrollableParent(element: HTMLElement): HTMLElement | null {
-    let parent = element.parentElement;
-
-    while (parent) {
-      const overflowY = window.getComputedStyle(parent).overflowY;
-      if (overflowY === "auto" || overflowY === "scroll") {
-        return parent;
-      }
-      parent = parent.parentElement;
+      return;
     }
 
-    return null;
+    if (this.results !== null) {
+      if (this.loadMoreOnScroll) {
+        this.loadMore().subscribe();
+      }
+    } else {
+      this.loadData();
+    }
   }
 }

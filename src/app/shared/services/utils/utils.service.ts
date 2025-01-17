@@ -14,6 +14,10 @@ import msgpack from "msgpack-lite";
 import pako from "pako";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
+interface CachedRect {
+  rect: DOMRect;
+  timestamp: number;
+}
 
 interface ViewportCheckOptions {
   shouldCheckVertical?: boolean;
@@ -26,6 +30,9 @@ interface ViewportCheckOptions {
   providedIn: "root"
 })
 export class UtilsService {
+  private _rectCache = new Map<HTMLElement, CachedRect>();
+  private readonly RECT_CACHE_DURATION = 1000; // 1 second
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
@@ -931,7 +938,7 @@ export class UtilsService {
       return value;
     }
 
-    if (typeof value === 'object') {
+    if (typeof value === "object") {
       if (Array.isArray(value)) {
         return value.map(UtilsService.cloneValue);
       } else {
@@ -955,6 +962,24 @@ export class UtilsService {
     }
 
     return avatar;
+  }
+
+  static getScrollableParent(element: HTMLElement, windowRefService: WindowRefService): HTMLElement | Window {
+    if (!element) {
+      return null;
+    }
+
+    let parent = element.parentElement;
+
+    while (parent) {
+      const overflowY = windowRefService.nativeWindow.getComputedStyle(parent).overflowY;
+      if (overflowY === "auto" || overflowY === "scroll") {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+
+    return windowRefService.nativeWindow;
   }
 
   supportsDateInput() {
@@ -1030,75 +1055,45 @@ export class UtilsService {
     );
   }
 
-  static getScrollableParent(element: HTMLElement, windowRefService: WindowRefService): HTMLElement | Window {
-    if (!element) {
-      return null;
-    }
-
-    let parent = element.parentElement;
-
-    while (parent) {
-      const overflowY = windowRefService.nativeWindow.getComputedStyle(parent).overflowY;
-      if (overflowY === "auto" || overflowY === "scroll") {
-        return parent;
-      }
-      parent = parent.parentElement;
-    }
-
-    return windowRefService.nativeWindow;
-  }
-
   isNearOrInViewport(
     element: HTMLElement,
     options: ViewportCheckOptions = {}
   ): boolean {
-    // Ensure the code runs only in the browser environment
     if (!isPlatformBrowser(this.platformId)) {
       return false;
     }
 
-    // Destructure options with default values and improved naming
     const {
       shouldCheckVertical = true,
       shouldCheckHorizontal = true,
       verticalTolerance = 2000,
-      horizontalTolerance = 10,
+      horizontalTolerance = 10
     } = options;
 
-    // Get the bounding rectangle of the element
-    const rect = element.getBoundingClientRect();
+    const rect = this._getElementRect(element);
 
-    // If the element has no dimensions or position (all rect values are zero), return false
-    if (
-      rect.width === 0 ||
-      rect.height === 0 ||
-      (rect.top === 0 && rect.bottom === 0 && rect.left === 0 && rect.right === 0)
-    ) {
+    // If element has no dimensions, it's not visible
+    if (rect.width === 0 || rect.height === 0) {
       return false;
     }
 
-    // Initialize check results to true
     let isWithinVerticalTolerance = true;
     let isWithinHorizontalTolerance = true;
 
-    // Perform vertical distance check if enabled
     if (shouldCheckVertical) {
       isWithinVerticalTolerance =
-        rect.top <= (window.innerHeight || document.documentElement.clientHeight) + verticalTolerance &&
+        rect.top <= (window.innerHeight + verticalTolerance) &&
         rect.bottom >= -verticalTolerance;
     }
 
-    // Perform horizontal distance check if enabled
     if (shouldCheckHorizontal) {
       isWithinHorizontalTolerance =
-        rect.left <= (window.innerWidth || document.documentElement.clientWidth) + horizontalTolerance &&
+        rect.left <= (window.innerWidth + horizontalTolerance) &&
         rect.right >= -horizontalTolerance;
     }
 
-    // Return true only if all enabled checks pass
     return isWithinVerticalTolerance && isWithinHorizontalTolerance;
   }
-
 
   isNearTop(windowRefService: WindowRefService, elementRef: ElementRef): boolean {
     if (!isPlatformBrowser(this.platformId)) {
@@ -1117,9 +1112,9 @@ export class UtilsService {
     }
 
     const window = windowRefService.nativeWindow;
-    const rect = elementRef.nativeElement.getBoundingClientRect();
+    const rect = this._getElementRect(elementRef.nativeElement);
 
-    return rect.bottom < window.innerHeight + 2000;
+    return rect.bottom < window.innerHeight + 10000;
   }
 
   delay(ms: number): Observable<void> {
@@ -1161,6 +1156,19 @@ export class UtilsService {
 
   objectKeys(obj: any): string[] {
     return Object.keys(obj);
+  }
+
+  private _getElementRect(element: HTMLElement): DOMRect {
+    const now = Date.now();
+    const cached = this._rectCache.get(element);
+
+    if (cached && now - cached.timestamp < this.RECT_CACHE_DURATION) {
+      return cached.rect;
+    }
+
+    const rect = element.getBoundingClientRect();
+    this._rectCache.set(element, { rect, timestamp: now });
+    return rect;
   }
 }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnInit, PLATFORM_ID, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -8,13 +8,13 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { fromEvent, merge, Observable, Subscription, throttleTime } from "rxjs";
+import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
 import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
 import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { debounceTime, filter, takeUntil } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
 import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
 import { fadeInOut } from "@shared/animations";
 import { DataSource, FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@shared/interfaces/image.interface";
@@ -31,11 +31,6 @@ enum ArchiveType {
   IOTD = SearchAwardFilterValue.IOTD,
   TP = SearchAwardFilterValue.TOP_PICK,
   TPN = SearchAwardFilterValue.TOP_PICK_NOMINATION
-}
-
-interface VisibleItemInterface {
-  data: IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface;
-  visible: boolean;
 }
 
 @Component({
@@ -122,23 +117,20 @@ interface VisibleItemInterface {
         <ng-template [ngTemplateOutlet]="loadingTemplate"></ng-template>
       </ng-container>
 
-      <div class="items-container" #itemsContainer>
-        <div
-          *ngFor="let item of visibleItems; trackBy: trackByFn"
-          [attr.data-item-id]="item.data.id"
-          class="item"
-        >
+      <astrobin-masonry-layout
+        [layout]="'small'"
+        [items]="items"
+      >
+        <ng-template let-item>
           <astrobin-iotd-tp-archive-item
-            *ngIf="item.visible"
             @fadeInOut
-            (click)="openImageById(item.data.image['hash'] || item.data.image['pk'])"
-            (imageLoaded)="onImageLoaded($event)"
-            [item]="item.data"
+            (click)="openImageById(item.image['hash'] || item.image['pk'])"
+            [item]="item"
           ></astrobin-iotd-tp-archive-item>
-        </div>
-      </div>
+        </ng-template>
+      </astrobin-masonry-layout>
 
-      <ng-container *ngIf="loadingMore">
+      <ng-container *ngIf="!loading && loadingMore">
         <ng-template [ngTemplateOutlet]="loadingTemplate"></ng-template>
       </ng-container>
     </ng-template>
@@ -150,27 +142,24 @@ interface VisibleItemInterface {
   styleUrls: ["./iotd-tp-archive-page.component.scss"],
   animations: [fadeInOut]
 })
-export class IotdTpArchivePageComponent extends BaseComponentDirective implements OnInit, OnDestroy {
+export class IotdTpArchivePageComponent extends BaseComponentDirective implements OnInit {
   readonly title = this.translateService.instant("Image of the day and Top Pick archive");
 
   @ViewChild("itemsContainer", { static: false }) itemsContainer: ElementRef;
 
   protected readonly ArchiveType = ArchiveType;
+  protected readonly SearchAutoCompleteType = SearchAutoCompleteType;
+  protected readonly DataSource = DataSource;
 
   protected activeTab: ArchiveType;
   protected loading = false;
   protected loadingMore = false;
-  protected next: string | null = null;
-  protected MasonryModule: any;
-  protected masonry: any;
   protected items: IotdArchiveInterface[] | TopPickArchiveInterface[] | TopPickNominationArchiveInterface[];
-  protected visibleItems: VisibleItemInterface[];
-  protected _page = 1;
-  protected readonly SearchAutoCompleteType = SearchAutoCompleteType;
-  protected readonly DataSource = DataSource;
+
   private readonly _isBrowser: boolean;
-  private _loadedImages: Set<string> = new Set();
-  private _currentBatch: string[] = null;
+
+  private _page = 1;
+  private _next: string | null = null;
   private _nearEndOfContextSubscription: Subscription;
 
   public constructor(
@@ -182,7 +171,6 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
-    public readonly renderer: Renderer2,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly imageViewerService: ImageViewerService,
     public readonly viewContainerRef: ViewContainerRef,
@@ -199,19 +187,9 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   async ngOnInit() {
     super.ngOnInit();
 
-    if (this._isBrowser) {
-      this.MasonryModule = await import("masonry-layout");
-    }
-
     this._initTitleAndBreadcrumb();
     this._initScrollListener();
-    this._initResizeListener();
     this._initTab();
-  }
-
-  ngOnDestroy() {
-    this._destroyMasonry();
-    super.ngOnDestroy();
   }
 
   openImageById(imageId: ImageInterface["hash"] | ImageInterface["pk"]): void {
@@ -262,46 +240,18 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     }
 
     this.router.navigate([], {
-      fragment: event.nextId.toString(),
+      fragment: event.nextId.toString()
     });
 
     this.activeTab = event.nextId;
 
     this._page = 1;
-    this.next = null;
-
+    this._next = null;
     this.items = null;
-    this.visibleItems = null;
-
-    this._destroyMasonry();
 
     this.utilsService.delay(100).subscribe(() => {
       this._loadData().subscribe();
     });
-  }
-
-  protected trackByFn(index: number, item: VisibleItemInterface) {
-    return item.data.id;
-  }
-
-  protected onImageLoaded(imageId: string): void {
-    this._loadedImages.add(imageId);
-
-    // If all images in the current batch are loaded, trigger masonry layout
-    if (this._currentBatch && this._currentBatch.every(id => this._loadedImages.has(id))) {
-      if (this.masonry) {
-        const items = this.itemsContainer.nativeElement.querySelectorAll(".item") as NodeListOf<HTMLElement>;
-        const newElements = Array.from(items).filter(item => this._currentBatch.includes(item.getAttribute("data-item-id")));
-        this.masonry.appended(newElements);
-        this._masonryLayoutComplete();
-        this.loadingMore = false;
-      } else {
-        this._initMasonry();
-        this.loading = false;
-      }
-
-      this._currentBatch = null;
-    }
   }
 
   private _initTitleAndBreadcrumb() {
@@ -320,41 +270,10 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
 
   private _initScrollListener() {
     if (this._isBrowser) {
-      merge(
-        fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-          takeUntil(this.destroyed$),
-          throttleTime(200)
-        ),
-        fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-          takeUntil(this.destroyed$),
-          debounceTime(100)
-        )
+      fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
+        auditTime(100),
+        takeUntil(this.destroyed$)
       ).subscribe(() => this._onScroll());
-    }
-  }
-
-  private _initResizeListener() {
-    if (this._isBrowser) {
-      fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
-        takeUntil(this.destroyed$),
-        debounceTime(100)
-      ).subscribe(() => {
-        this.visibleItems = this.items? this.items.map(item => {
-          return {
-            data: item,
-            visible: true
-          };
-        }) : null;
-
-        this.changeDetectorRef.detectChanges();
-
-        if (this.masonry) {
-          this.masonry.once("layoutComplete", () => {
-            this._masonryLayoutComplete();
-          });
-          this.masonry.layout();
-        }
-      });
     }
   }
 
@@ -406,12 +325,10 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       }
 
       api.subscribe(response => {
-        this.next = response.next;
+        this._next = response.next;
 
-        this._currentBatch = [
-          ...this._currentBatch || [],
-          ...response.results.map(item => item.id.toString())
-        ];
+        this.loading = false;
+        this.loadingMore = false;
 
         switch (this.activeTab) {
           case ArchiveType.IOTD:
@@ -425,11 +342,6 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
             break;
         }
 
-        this.visibleItems = this.items.map(item => ({
-          data: item,
-          visible: true
-        }));
-
         // Ensure the new items are rendered
         this.changeDetectorRef.detectChanges();
 
@@ -439,85 +351,11 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     });
   }
 
-  private async _initMasonry() {
-    if (!this._isBrowser || !this.MasonryModule || !this.itemsContainer) {
-      return;
-    }
-
-    // Initialize masonry for the first time
-    this.masonry = new this.MasonryModule.default(this.itemsContainer.nativeElement, {
-      itemSelector: ".item",
-      columnWidth: ".item",
-      percentPosition: true,
-      gutter: 20,
-      transitionDuration: "0"
-    });
-
-    this.masonry.once("layoutComplete", () => this._masonryLayoutComplete());
-    this.masonry.layout();
-  }
-
-  private _masonryLayoutComplete() {
-    if (!this.itemsContainer) {
-      return;
-    }
-
-    const items = this.itemsContainer.nativeElement.querySelectorAll(".item") as NodeListOf<HTMLElement>;
-    items.forEach(item => {
-      this.renderer.setStyle(item, "opacity", "1");
-    });
-    this._updateVisibleItems();
-    this.changeDetectorRef.detectChanges();
-  }
-
-  private _destroyMasonry() {
-    if (this.masonry) {
-      this.masonry.destroy();
-      this.masonry = null;
-    }
-  }
-
-  private _updateVisibleItems() {
-    if (!this.items || !this._isBrowser) {
-      return;
-    }
-
-    const bufferSize = 2000;
-    const _win = this.windowRefService.nativeWindow;
-    const _doc = _win.document;
-    const newVisibleFeedItems: VisibleItemInterface[] = [];
-
-    for (const item of this.items) {
-      const element = this.itemsContainer.nativeElement.querySelector(`[data-item-id="${item.id}"]`) as HTMLElement;
-      let isVisible = true;
-
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        isVisible = rect.top + rect.height >= -bufferSize &&
-          rect.top <= (_win.innerHeight || _doc.documentElement.clientHeight) + bufferSize;
-      }
-
-      // Only create a new object if visibility has changed, or it's a new item
-      const existingItem = this.visibleItems?.find(visibleItem => visibleItem.data.id === item.id);
-      if (!existingItem || existingItem.visible !== isVisible) {
-        newVisibleFeedItems.push({
-          data: item,
-          visible: isVisible
-        });
-      } else if (existingItem) {
-        newVisibleFeedItems.push(existingItem); // Keep the existing object
-      }
-    }
-    this.visibleItems = newVisibleFeedItems;
-  }
-
   private _onScroll() {
-    this._updateVisibleItems();
-
     if (
       this._isBrowser &&
       this.utilsService.isNearBottom(this.windowRefService, this.elementRef) &&
-      !!this.next &&
+      !!this._next &&
       !this.loading &&
       !this.loadingMore
     ) {
@@ -544,7 +382,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         if (
           this.loading ||
           this.loadingMore ||
-          this.next === null
+          this._next === null
         ) {
           return;
         }

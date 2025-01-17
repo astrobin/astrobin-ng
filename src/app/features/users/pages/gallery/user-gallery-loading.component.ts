@@ -1,7 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnChanges, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
 import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -12,55 +10,31 @@ import { isPlatformBrowser } from "@angular/common";
   selector: "astrobin-user-gallery-loading",
   template: `
     <ng-container *ngIf="isBrowser">
-      <div
-        *ngIf="placeholders.length > 0"
-        class="masonry-layout-container"
-        [astrobinMasonryLayout]="placeholders"
-        [activeLayout]="activeLayout"
-        (gridItemsChange)="onGridItemsChange($event)"
+      <astrobin-masonry-layout
+        [items]="placeholders"
+        [layout]="activeLayout === UserGalleryActiveLayout.SMALL
+          ? 'small'
+          : activeLayout === UserGalleryActiveLayout.MEDIUM ? 'medium' : 'large'"
       >
-        <ng-container *ngIf="gridItems?.length > 0">
-          <ng-container *ngIf="activeLayout === UserGalleryActiveLayout.TINY">
-            <astrobin-image-loading-indicator
-              *ngFor="let item of gridItems"
-              class="tiny"
-            ></astrobin-image-loading-indicator>
-          </ng-container>
-
-          <ng-container
-            *ngIf="activeLayout === UserGalleryActiveLayout.SMALL || activeLayout === UserGalleryActiveLayout.LARGE"
-          >
-            <astrobin-image-loading-indicator
-              *ngFor="let item of gridItems"
-              [style.width.px]="item.displayWidth * averageHeight / item.displayHeight"
-              [style.height.px]="averageHeight"
-              [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight"
-              [style.min-width.px]="averageHeight"
-              [style.min-height.px]="averageHeight"
-            >
-            </astrobin-image-loading-indicator>
-          </ng-container>
-
-          <ng-container *ngIf="activeLayout === UserGalleryActiveLayout.TABLE">
-            <astrobin-loading-indicator></astrobin-loading-indicator>
-          </ng-container>
-        </ng-container>
-      </div>
+        <ng-template let-item>
+          <astrobin-image-loading-indicator
+            class="loading-item"
+            [w]="item.w"
+            [h]="item.h"
+          ></astrobin-image-loading-indicator>
+        </ng-template>
+      </astrobin-masonry-layout>
     </ng-container>
   `,
   styleUrls: ["./user-gallery-loading.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserGalleryLoadingComponent extends BaseComponentDirective implements AfterViewInit, OnInit {
+export class UserGalleryLoadingComponent extends BaseComponentDirective implements OnChanges {
   @Input() numberOfImages: number;
-  @Input() activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.TINY;
+  @Input() activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.SMALL;
 
-  protected readonly ImageAlias = ImageAlias;
   protected readonly isBrowser: boolean;
-
-  protected gridItems: MasonryLayoutGridItem[] = [];
-  protected averageHeight = 200;
-  protected placeholders: any[] = []; // All we need is w and h.
+  protected placeholders: any[] = [];
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -72,37 +46,33 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-
-    if (this.activeLayout === UserGalleryActiveLayout.TINY) {
-      this.averageHeight = 150;
-    }
-
-    if (this.activeLayout === UserGalleryActiveLayout.SMALL) {
-      this.averageHeight = 200;
-    }
-
-    if (this.activeLayout === UserGalleryActiveLayout.LARGE) {
-      this.averageHeight = 300;
-    }
-
-    this.changeDetectorRef.markForCheck();
+  ngOnChanges() {
+    this._updateLayout();
   }
 
-  ngAfterViewInit() {
-    this.utilsService.delay(1).subscribe(() => {
-      this.placeholders = Array.from({ length: this.numberOfImages }).map(() => ({
-        w: Math.random() * this.averageHeight + this.averageHeight,
-        h: this.averageHeight
-      }));
-      this.changeDetectorRef.markForCheck();
+  private _updateLayout(): void {
+    this.placeholders = Array.from({ length: this.numberOfImages }).map((_, i) => {
+      // Generate random aspect ratios that match our real layout's categories
+      const ratio = Math.random();
+      let w, h;
+
+      if (ratio < 0.25) { // narrow
+        w = 0.7;
+        h = 1;
+      } else if (ratio < 0.5) { // square
+        w = 1;
+        h = 1;
+      } else if (ratio < 0.75) { // wide
+        w = 1.2;
+        h = 1;
+      } else { // panoramic
+        w = 2;
+        h = 1;
+      }
+
+      return { id: i, w, h };
     });
-  }
 
-  onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
-    this.gridItems = event.gridItems;
-    this.averageHeight = event.averageHeight;
     this.changeDetectorRef.markForCheck();
   }
 

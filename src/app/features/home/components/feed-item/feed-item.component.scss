@@ -63,13 +63,25 @@
     }
 
     .feed-item-body {
-      img {
-        min-height: 200px;
-        transition: filter .25s ease-in-out;
+      .main-image-container {
+        display: flex;
 
-        @media (hover: hover) and (pointer: fine) {
-          &:hover {
-            filter: brightness(1.25);
+        .main-image {
+          min-height: 200px;
+          transition: filter .25s ease-in-out;
+          flex: 1;
+          width: 100%;
+          display: block;
+
+          @media (hover: hover) and (pointer: fine) {
+            &:hover {
+              filter: brightness(1.25);
+            }
+          }
+
+          @media (min-width: $md-min) {
+            height: 250px;
+            width: auto;
           }
         }
       }

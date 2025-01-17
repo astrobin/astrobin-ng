@@ -1,4 +1,4 @@
-import { Inject, Injectable, NgZone, PLATFORM_ID } from "@angular/core";
+import { ElementRef, Inject, Injectable, NgZone, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -25,6 +25,8 @@ import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 import { IotdInterface } from "@features/iotd/services/iotd-api.service";
+import { Breakpoint } from "@shared/services/device.service";
+import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 
 @Injectable({
   providedIn: "root"
@@ -903,20 +905,32 @@ export class ImageService extends BaseService {
       return image.finalGalleryThumbnail;
     }
 
-    const galleryThumbnail =
-      image.thumbnails &&
-      image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY);
+    const galleryThumbnail = this.getThumbnail(image, ImageAlias.GALLERY);
 
     if (galleryThumbnail) {
-      return galleryThumbnail.url;
+      return galleryThumbnail;
     }
 
-    const regularThumbnail =
-      image.thumbnails &&
-      image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR);
+    const regularThumbnail = this.getThumbnail(image, ImageAlias.REGULAR);
 
     if (regularThumbnail) {
-      return regularThumbnail.url;
+      return regularThumbnail;
+    }
+
+    return "/assets/images/loading.gif?v=20241030";
+  }
+
+  getThumbnail(image: ImageInterface, alias: ImageAlias): string {
+    if (alias === ImageAlias.GALLERY && image.finalGalleryThumbnail) {
+      return image.finalGalleryThumbnail;
+    }
+
+    const thumbnail =
+      image.thumbnails &&
+      image.thumbnails.find(thumbnail => thumbnail.alias === alias);
+
+    if (thumbnail) {
+      return thumbnail.url;
     }
 
     return "/assets/images/loading.gif?v=20241030";

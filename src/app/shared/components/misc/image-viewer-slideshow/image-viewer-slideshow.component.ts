@@ -265,7 +265,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
             subscriber.next(image);
             subscriber.complete();
 
-            this.utilsService.delay(50).subscribe(() => {
+            this.utilsService.delay(250).subscribe(() => {
               this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
             });
           });

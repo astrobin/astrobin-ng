@@ -1,16 +1,15 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, Output, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { Observable, Subscription } from "rxjs";
+import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
@@ -21,38 +20,36 @@ import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
-import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageService } from "@shared/services/image/image.service";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { UserService } from "@shared/services/user.service";
+import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-image-search",
   templateUrl: "./image-search.component.html",
   styleUrls: ["./image-search.component.scss"]
 })
-export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> {
+export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
 
-  @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
+  @Input() showDynamicOverlay = true;
   @Input() showStaticOverlay = true;
 
   @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
 
-  protected readonly ImageAlias = ImageAlias;
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
-
-  protected gridItems: MasonryLayoutGridItem[] = [];
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
-  protected averageHeight: number = 200;
+  protected isMobile = false;
+
+  private readonly _isBrowser: boolean;
 
   private _nearEndOfContextSubscription: Subscription;
 
@@ -76,12 +73,19 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly userService: UserService
   ) {
     super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
+    this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
-    this.gridItems = event.gridItems;
-    this.averageHeight = event.averageHeight;
-    this.changeDetectorRef.detectChanges();
+  ngOnInit() {
+    super.ngOnInit();
+
+    fromEvent(this.windowRefService.nativeWindow, "resize")
+      .pipe(takeUntil(this.destroyed$), auditTime(200))
+      .subscribe(() => {
+        this._checkMobile();
+      });
+
+    this._checkMobile();
   }
 
   getItemListingsMessage(listing: EquipmentItemListingInterface): string {
@@ -174,6 +178,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     );
   }
 
+  private _checkMobile(): void {
+    this.isMobile = this.deviceService.smMax();
+  }
+
   private _openImageByImageViewer(image: ImageSearchInterface): void {
     this.imageViewerService.openSlideshow(
       this.componentId,
@@ -219,4 +227,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       return acc;
     }, []);
   }
+
+  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
 }

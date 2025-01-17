@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild, ViewContainerRef } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -51,11 +51,13 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             [href]="'/i/' + objectId"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
+            class="main-image-container"
           >
             <img
+              #image
               [alt]="displayName"
               [src]="feedItem.image"
-              [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
+              class="main-image"
             >
           </a>
         </div>
@@ -112,6 +114,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;
   @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
+  @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
 
   protected contentType: number;
   protected objectId: string;

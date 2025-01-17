@@ -5,11 +5,10 @@ import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
-import { Actions, ofType } from "@ngrx/effects";
+import { act, Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { filter, map, startWith, take, takeUntil } from "rxjs/operators";
+import { debounceTime, filter, map, take, takeUntil } from "rxjs/operators";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { ImageService } from "@shared/services/image/image.service";
@@ -32,184 +31,157 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
   selector: "astrobin-user-gallery-images",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <astrobin-nothing-here
-        *ngIf="!loading && images.length === 0"
-        [withAlert]="false"
-        [withInfoSign]="false"
-      ></astrobin-nothing-here>
+      <ng-container *ngIf="!!activeLayout; else loadingTemplate">
+        <astrobin-nothing-here
+          *ngIf="!loading && images.length === 0"
+          [withAlert]="false"
+          [withInfoSign]="false"
+        ></astrobin-nothing-here>
 
-      <astrobin-user-gallery-loading
-        *ngIf="loading && loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
-        @fadeInOut
-        [activeLayout]="activeLayout"
-        [numberOfImages]="loadingPlaceholdersCount"
-      ></astrobin-user-gallery-loading>
-
-      <astrobin-loading-indicator
-        *ngIf="loading && (!loadingPlaceholdersCount || loadingPlaceholdersCount <= 10)"
-        @fadeInOut
-      ></astrobin-loading-indicator>
-
-      <p
-        *ngIf="options.q"
-        class="alert alert-dark"
-      >
-        <fa-icon icon="info-circle"></fa-icon>
-        {{ "You can refine your search by using the advanced search page and filtering by user." | translate }}
-      </p>
-
-      <ng-container *ngTemplateOutlet="acquisitionSortingInfoTemplate"></ng-container>
-
-      <div
-        *ngIf="
-          !loading &&
-          images.length > 0 &&
-          (
-            activeLayout === UserGalleryActiveLayout.SMALL ||
-            activeLayout === UserGalleryActiveLayout.LARGE
-          )
-        "
-        @fadeInOut
-        (gridItemsChange)="onGridItemsChange($event)"
-        [astrobinMasonryLayout]="images"
-        [activeLayout]="activeLayout"
-        class="masonry-layout-container"
-        [class.layout-tiny]="activeLayout === UserGalleryActiveLayout.TINY"
-        [class.layout-small]="activeLayout === UserGalleryActiveLayout.SMALL"
-        [class.layout-large]="activeLayout === UserGalleryActiveLayout.LARGE"
-      >
-        <ng-container *ngIf="gridItems?.length > 0">
-          <a
-            *ngFor="let item of gridItems"
-            (click)="openImage(item)"
-            [style.width.px]="item.displayWidth * averageHeight / item.displayHeight * .5"
-            [style.flex-grow]="item.displayWidth * averageHeight / item.displayHeight * .5"
-            [style.min-width.px]="averageHeight"
-            [style.min-height.px]="averageHeight"
-            [href]="'/i/' + (item.hash || item.pk)"
-            astrobinEventPreventDefault
-            [class.wip]="item.isWip"
-            class="image-link"
-          >
-            <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
-            <img
-              *ngIf="item?.thumbnails?.length"
-              [alt]="item.title"
-              [ngSrc]="item.thumbnails[0].url"
-              [style.object-position]="item.objectPosition"
-              fill
-            />
-
-            <astrobin-image-icons [image]="item"></astrobin-image-icons>
-            <astrobin-image-hover
-              [image]="item"
-              [showAuthor]="false"
-              [staticOverlay]="options.ordering"
-            ></astrobin-image-hover>
-
-            <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
-            <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image: item }"></ng-container>
-          </a>
-        </ng-container>
-      </div>
-
-      <div
-        *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TINY"
-        @fadeInOut
-        class="masonry-layout-container layout-tiny"
-      >
-        <a
-          *ngFor="let image of images"
-          (click)="openImage(image)"
-          [class.wip]="image.isWip"
-          [href]="'/i/' + (image.hash || image.pk.toString())"
-          astrobinEventPreventDefault
-          class="image-link"
+        <p
+          *ngIf="options.q"
+          class="alert alert-dark"
         >
-          <img
-            [ngSrc]="imageService.getGalleryThumbnail(image)"
-            [alt]="image.title"
-            [title]="image.title"
-            [width]="130"
-            [height]="130"
-          />
+          <fa-icon icon="info-circle"></fa-icon>
+          {{ "You can refine your search by using the advanced search page and filtering by user." | translate }}
+        </p>
 
-          <astrobin-image-icons [image]="image"></astrobin-image-icons>
-          <astrobin-image-hover
-            [image]="image"
-            [showAuthor]="false"
-            [staticOverlay]="options.ordering"
-          ></astrobin-image-hover>
+        <ng-container *ngTemplateOutlet="acquisitionSortingInfoTemplate"></ng-container>
 
-          <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
-          <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image }"></ng-container>
-        </a>
-      </div>
+        <astrobin-loading-indicator
+          *ngIf="!loadingPlaceholdersCount || loadingPlaceholdersCount <= 10"
+          [hidden]="!loading"
+          @fadeInOut
+        ></astrobin-loading-indicator>
 
-      <div
-        *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TABLE"
-        @fadeInOut
-        class="table-layout-container"
-      >
-        <table class="table table-striped table-mobile-support">
-          <thead>
-          <tr>
-            <th>
-              {{ "Title" | translate }}
-              <fa-icon *ngIf="options.subsection === 'title'" icon="sort-alpha-asc" class="ms-2"></fa-icon>
-            </th>
-            <th>
-              {{ "Published" | translate }}
-              <fa-icon *ngIf="options.subsection === 'uploaded'" icon="sort-desc" class="ms-2"></fa-icon>
-            </th>
-            <th>
-              {{ "Views" | translate }}
-            </th>
-            <th>
-              {{ "Likes" | translate }}
-              <fa-icon *ngIf="options.ordering === 'likes'" icon="sort-amount-down" class="ms-2"></fa-icon>
-            </th>
-            <th>
-              {{ "Bookmarks" | translate }}
-              <fa-icon *ngIf="options.ordering === 'bookmarks'" icon="sort-amount-down" class="ms-2"></fa-icon>
-            </th>
-            <th>
-              {{ "Comments" | translate }}
-              <fa-icon *ngIf="options.ordering === 'comments'" icon="sort-amount-down" class="ms-2"></fa-icon>
-            </th>
-          </thead>
-          <tbody>
-          <tr
-            *ngFor="let image of images"
-            [class.wip]="image.isWip"
+        <astrobin-user-gallery-loading
+          *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
+          [hidden]="!loading"
+          @fadeInOut
+          [activeLayout]="activeLayout"
+          [numberOfImages]="loadingPlaceholdersCount"
+        ></astrobin-user-gallery-loading>
+
+        <ng-container *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TABLE">
+          <astrobin-masonry-layout
+            [items]="images"
+            [layout]="activeLayout === UserGalleryActiveLayout.SMALL
+            ? 'small' :
+            activeLayout === UserGalleryActiveLayout.MEDIUM ? 'medium' : 'large'"
+            [idProperty]="'pk'"
           >
-            <td [attr.data-label]="'Title' | translate" class="d-flex justify-content-md-between align-items-center">
-              <a
-                (click)="openImage(image)"
-                [href]="'/i/' + (image.hash || image.pk.toString())"
-                astrobinEventPreventDefault
+            <ng-template let-item>
+              <div class="image-container">
+                <a
+                  (click)="openImage(item)"
+                  [href]="'/i/' + (item.hash || item.pk)"
+                  [class.wip]="item.isWip"
+                  class="image-link"
+                  astrobinEventPreventDefault
+                >
+                  <img
+                    [src]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
+                    [alt]="item.title"
+                  />
+
+                  <astrobin-image-icons [image]="item"></astrobin-image-icons>
+
+                  <astrobin-image-hover
+                    [image]="item"
+                    [staticOverlay]="options.ordering"
+                    [activeLayout]="activeLayout"
+                    [showAuthor]="false"
+                  ></astrobin-image-hover>
+
+                  <ng-container *ngTemplateOutlet="menuTemplate; context: { image: item }"></ng-container>
+                  <ng-container *ngTemplateOutlet="keyValueTagTemplate; context: { image: item }"></ng-container>
+                </a>
+              </div>
+            </ng-template>
+          </astrobin-masonry-layout>
+        </ng-container>
+
+        <ng-container
+          *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TABLE"
+        >
+          <div
+            @fadeInOut
+            class="table-layout-container"
+          >
+            <table class="table table-striped table-mobile-support">
+              <thead>
+              <tr>
+                <th>
+                  {{ "Title" | translate }}
+                  <fa-icon *ngIf="options.subsection === 'title'" icon="sort-alpha-asc" class="ms-2"></fa-icon>
+                </th>
+                <th>
+                  {{ "Published" | translate }}
+                  <fa-icon *ngIf="options.subsection === 'uploaded'" icon="sort-desc" class="ms-2"></fa-icon>
+                </th>
+                <th>
+                  {{ "Views" | translate }}
+                </th>
+                <th>
+                  {{ "Likes" | translate }}
+                  <fa-icon *ngIf="options.ordering === 'likes'" icon="sort-amount-down" class="ms-2"></fa-icon>
+                </th>
+                <th>
+                  {{ "Bookmarks" | translate }}
+                  <fa-icon *ngIf="options.ordering === 'bookmarks'" icon="sort-amount-down" class="ms-2"></fa-icon>
+                </th>
+                <th>
+                  {{ "Comments" | translate }}
+                  <fa-icon *ngIf="options.ordering === 'comments'" icon="sort-amount-down" class="ms-2"></fa-icon>
+                </th>
+              </thead>
+              <tbody>
+              <tr
+                *ngFor="let image of images"
+                [class.wip]="image.isWip"
               >
-                {{ image.title }}
-                <fa-icon *ngIf="image.isWip" class="ms-2" icon="lock"></fa-icon>
-              </a>
-              <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
-            </td>
-            <td [attr.data-label]="'Published' | translate" class="no-wrap">
-              <abbr [attr.title]="(image.published || image.uploaded) | localDate">
-                {{ (image.published || image.uploaded) | localDate | timeago: true }}
-              </abbr>
-            </td>
-            <td [attr.data-label]="'Views' | translate">{{ image.viewCount }}</td>
-            <td [attr.data-label]="'Likes' | translate">{{ image.likeCount }}</td>
-            <td [attr.data-label]="'Bookmarks' | translate">{{ image.bookmarkCount }}</td>
-            <td [attr.data-label]="'Comments' | translate">{{ image.commentCount }}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+                <td [attr.data-label]="'Title' | translate"
+                    class="d-flex justify-content-md-between align-items-center">
+                  <a
+                    (click)="openImage(image)"
+                    [href]="'/i/' + (image.hash || image.pk.toString())"
+                    astrobinEventPreventDefault
+                  >
+                    {{ image.title }}
+                    <fa-icon *ngIf="image.isWip" class="ms-2" icon="lock"></fa-icon>
+                  </a>
+                  <ng-container *ngTemplateOutlet="menuTemplate; context: { image }"></ng-container>
+                </td>
+                <td [attr.data-label]="'Published' | translate" class="no-wrap">
+                  <abbr [attr.title]="(image.published || image.uploaded) | localDate">
+                    {{ (image.published || image.uploaded) | localDate | timeago: true }}
+                  </abbr>
+                </td>
+                <td [attr.data-label]="'Views' | translate">{{ image.viewCount }}</td>
+                <td [attr.data-label]="'Likes' | translate">{{ image.likeCount }}</td>
+                <td [attr.data-label]="'Bookmarks' | translate">{{ image.bookmarkCount }}</td>
+                <td [attr.data-label]="'Comments' | translate">{{ image.commentCount }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+      </ng-container>
     </ng-container>
 
-    <div *ngIf="loadingMore && !loading" class="loading">
+    <div
+      *ngIf="!loadingMore && !loading && !!next"
+      class="w-100 d-flex justify-content-center mt-4"
+    >
+      <button
+        (click)="onScroll()"
+        class="btn btn-outline-primary btn-no-block"
+      >
+        {{ "Load more" | translate }}
+      </button>
+    </div>
+
+    <div *ngIf="loadingMore && !loading" class="loading mt-4 mb-2 mb-md-0">
       <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
     </div>
 
@@ -262,9 +234,9 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   protected images: ImageInterface[] = [];
   protected loading = false;
   protected loadingMore = false;
-  protected gridItems: MasonryLayoutGridItem[] = [];
-  protected averageHeight = 200;
   protected loadingPlaceholdersCount: number;
+
+  private readonly _isBrowser: boolean;
 
   private _findImagesSubscription: Subscription;
   private _slideshowComponent: ImageViewerSlideshowComponent;
@@ -286,17 +258,19 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
+
+    this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngOnInit() {
     super.ngOnInit();
 
-    if (isPlatformBrowser(this.platformId)) {
+    if (this._isBrowser) {
       const scrollElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
 
       fromEvent(scrollElement, "scroll")
-        .pipe(takeUntil(this.destroyed$), throttleTime(200))
-        .subscribe(() => this._onScroll());
+        .pipe(takeUntil(this.destroyed$), throttleTime(200), debounceTime(100))
+        .subscribe(() => this.onScroll());
     }
   }
 
@@ -306,6 +280,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       (changes.options && JSON.stringify(changes.options.currentValue) !== JSON.stringify(changes.options.previousValue))
     ) {
       this.page = 1;
+      this.loadingPlaceholdersCount = 0;
       this._getImages();
     }
 
@@ -322,10 +297,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
           this.paginationConfig.pageSize
         );
       }
-    }
-
-    if (changes.activeLayout) {
-      this._updateAverageHeight(this.activeLayout);
     }
 
     if (changes.options && changes.options.currentValue.collection) {
@@ -388,14 +359,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }
   }
 
-  onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
-    this.gridItems = event.gridItems;
-    this.averageHeight = event.averageHeight;
-    this.changeDetectorRef.detectChanges();
-  }
-
-  openImage(item: MasonryLayoutGridItem): void {
-    const image = item as ImageInterface;
+  openImage(image: ImageInterface): void {
     const imageId = image.hash || image.pk.toString();
     const navigationContext = this.images.map(image => ({
       imageId: image.hash || image.pk.toString(),
@@ -440,7 +404,10 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     this.changeDetectorRef.detectChanges();
   }
 
-  protected onImageRemovedFromCollection(event: { imageId: ImageInterface["pk"]; collectionId: CollectionInterface["id"] }): void {
+  protected onImageRemovedFromCollection(event: {
+    imageId: ImageInterface["pk"];
+    collectionId: CollectionInterface["id"]
+  }): void {
     if (event.collectionId !== this.options.collection) {
       return;
     }
@@ -449,11 +416,19 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     this.changeDetectorRef.detectChanges();
   }
 
-  private _updateAverageHeight(layout: UserGalleryActiveLayout): void {
-    if (layout === UserGalleryActiveLayout.LARGE) {
-      this.averageHeight = 300;
-    } else {
-      this.averageHeight = 200;
+  protected onScroll() {
+    if (
+      isPlatformServer(this.platformId) ||
+      this.loading ||
+      this.loadingMore ||
+      this.next === null
+    ) {
+      return;
+    }
+
+    if (this.utilsService.isNearBottom(this.windowRefService, this.elementRef)) {
+      this.page++;
+      this._getImages();
     }
   }
 
@@ -474,19 +449,5 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }));
   }
 
-  private _onScroll(){
-    if (
-      isPlatformServer(this.platformId) ||
-      this.loading ||
-      this.loadingMore ||
-      this.next === null
-    ) {
-      return;
-    }
-
-    if (this.utilsService.isNearBottom(this.windowRefService, this.elementRef)) {
-      this.page++;
-      this._getImages();
-    }
-  }
+  protected readonly act = act;
 }

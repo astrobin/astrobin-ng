@@ -5,7 +5,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 
 // Keep in sync with _breakpoints.scss
-enum Breakpoint {
+export enum Breakpoint {
   XXS_MIN = 0,
   XXS_MAX = 475.98,
   XS_MIN = 476,

@@ -13,7 +13,7 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { animationFrameScheduler, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
+import { animationFrameScheduler, auditTime, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { DecimalPipe, isPlatformBrowser, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
@@ -206,6 +206,8 @@ export class ImageViewerComponent
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.active && !changes.active.firstChange && changes.active.currentValue) {
+      this.adDisplayed = false;
+      this._setAd();
       this._recordHit();
       this._adjustSvgOverlay();
     }
@@ -219,7 +221,7 @@ export class ImageViewerComponent
           takeUntil(this.destroyed$)
         ),
         fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
-          throttleTime(300),
+          auditTime(300),
           takeUntil(this.destroyed$)
         )
       ).subscribe(() => {
@@ -363,7 +365,6 @@ export class ImageViewerComponent
     this._initAutoOpenFullscreen();
     this._setMouseHoverImage();
     this._setShowPlateSolvingBanner();
-    this._setAd();
     this._replaceIdWithHash();
 
     // Updates to the current image.
@@ -1011,7 +1012,9 @@ export class ImageViewerComponent
       filter(showAds => showAds !== undefined),
       take(1)
     ).subscribe(showAds => {
-      const dataAreaWidth = this.dataArea.nativeElement.clientWidth;
+      const dataAreaWidth = this.windowRefService.nativeWindow.document.querySelector(
+        `#image-viewer-${this.image.hash || this.image.pk} .data-area`
+      ).clientWidth;
       const windowHeight = this.windowRefService.nativeWindow.innerHeight;
 
       this.showAd = this.image && this.image.allowAds && showAds;
@@ -1024,9 +1027,13 @@ export class ImageViewerComponent
         this.adConfig = "wide";
       }
 
-      if (this.adManagerComponent && this.adDisplayed) {
-        this.adManagerComponent.refreshAd();
-      }
+      this.changeDetectorRef.detectChanges();
+
+      this.utilsService.delay(1).subscribe(() => {
+        if (this.adManagerComponent && this.active) {
+          this.adManagerComponent.refreshAd();
+        }
+      });
     });
   }
 

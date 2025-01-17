@@ -1,10 +1,22 @@
+@import "../../../../styles/breakpoints";
+
 :host {
   .iotd-tp-archive-item {
+    display: flex;
     position: relative;
 
     img {
-      width: 100%;
+      min-height: 200px;
       transition: filter .25s ease-in-out;
+      flex: 1;
+      width: 100%;
+      display: block;
+      object-fit: cover;
+
+      @media (min-width: $md-min) {
+        height: 250px;
+        width: auto;
+      }
 
       @media (hover: hover) and (pointer: fine) {
         &:hover {
@@ -34,22 +46,27 @@
 
       .title,
       .date {
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
       }
 
       .title {
-        font-size: 1rem;
+        font-size: .9rem;
         line-height: 1.15rem;
-        font-weight: 700;
-        color: var(--brightWhite);
+        color: var(--white);
 
         .user-display-name {
-          font-weight: 400;
+          font-size: .8rem;
+        }
+
+        .separator {
+          margin: 0 .25rem;
+          display: inline-block;
+          color: var(--lighterGrey);
         }
       }
 
       .date {
-        font-size: .85rem;
+        font-size: .75rem;
         color: var(--lighterGrey);
       }
     }

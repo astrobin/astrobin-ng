@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
@@ -11,4 +11,6 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   styleUrls: ["./image-loading-indicator.component.scss"]
 })
 export class ImageLoadingIndicatorComponent extends BaseComponentDirective {
+  @Input() w: number;
+  @Input() h: number;
 }

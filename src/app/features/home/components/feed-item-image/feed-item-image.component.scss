@@ -1,3 +1,5 @@
+@import '../../../../styles/breakpoints';
+
 img {
   width: 100%;
   height: 100%;
@@ -17,6 +19,10 @@ img {
 
   ::ng-deep img {
     max-width: 100%;
+  }
+
+  @media (min-width: $md-min) {
+    display: none;
   }
 }
 
