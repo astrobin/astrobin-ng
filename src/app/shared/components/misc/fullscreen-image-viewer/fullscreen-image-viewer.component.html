@@ -145,7 +145,12 @@
     </ng-container>
 
     <ng-container *ngIf="isVeryLargeImage">
-      <img *ngIf="!real" [src]="hd" alt="" class="hd-image"/>
+      <img
+        *ngIf="!real"
+        [src]="hd"
+        alt=""
+        class="hd-image"
+      />
 
       <a
         *ngIf="hd && real && realThumbnailUnsafeUrl"
@@ -153,7 +158,11 @@
         class="no-external-link-icon d-flex align-items-center"
         target="_blank"
       >
-        <img [src]="hd" alt="" class="hd-image"/>
+        <img
+          [src]="hd"
+          alt=""
+          class="hd-image"
+        />
       </a>
       <ng-container
         *ngIf="hd && real && isLargeEnough && allowReal && realThumbnailUnsafeUrl"
@@ -161,7 +170,12 @@
       ></ng-container>
     </ng-container>
 
-    <img *ngIf="hd && (!real || !allowReal)" [src]="hd" class="hd-image" alt="" />
+    <img
+      *ngIf="hd && (!real || !allowReal)"
+      [src]="hd"
+      class="hd-image"
+      alt=""
+    />
 
     <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && real" [ngTemplateOutlet]="real && pinchAndZoomInstructionTemplate"></ng-container>
     <ng-container *ngIf="hd && !isLargeEnough" [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
@@ -172,12 +186,18 @@
 </ng-template>
 
 <ng-template #nonTouchDeviceTemplate let-hd="hd" let-real="real">
-  <div class="position-relative w-100 h-100 d-flex justify-content-center">
+  <div class="position-relative w-100 h-100 d-flex justify-content-center align-items-center">
     <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
     <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage">
-      <img *ngIf="hd && (!real || !allowReal || !isLargeEnough)" [src]="hd" class="hd-image" alt="" />
+      <img
+        *ngIf="hd && (!real || !allowReal || !isLargeEnough)"
+        [src]="hd"
+        class="hd-image"
+        alt=""
+        [style.max-width.px]="naturalWidth"
+      />
 
       <lib-ngx-image-zoom
         #ngxImageZoom
@@ -209,7 +229,13 @@
     </ng-container>
 
     <ng-container *ngIf="isVeryLargeImage">
-      <img *ngIf="!real" [src]="hd" alt="" class="hd-image"/>
+      <img
+        *ngIf="!real"
+        [src]="hd"
+        alt=""
+        class="hd-image"
+        [style.max-width.px]="naturalWidth"
+      />
 
       <a
         *ngIf="hd && real && realThumbnailUnsafeUrl"
@@ -217,7 +243,12 @@
         class="no-external-link-icon d-flex align-items-center"
         target="_blank"
       >
-        <img [src]="hd" alt="" class="hd-image"/>
+        <img
+          [src]="hd"
+          alt=""
+          class="hd-image"
+          [style.max-width.px]="naturalWidth"
+        />
       </a>
       <ng-container
         *ngIf="hd && real && isLargeEnough && allowReal && realThumbnailUnsafeUrl"
