@@ -19,7 +19,10 @@ describe("SearchPageComponent", () => {
         provide: ActivatedRoute,
         useValue: {
           snapshot: {
-            queryParams: {}
+            queryParams: {},
+            data: {
+              image: null
+            }
           },
           queryParams: EMPTY
         }
