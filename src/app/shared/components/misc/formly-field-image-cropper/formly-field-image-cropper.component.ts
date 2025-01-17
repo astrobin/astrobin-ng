@@ -11,7 +11,6 @@ import { fromEvent, Subscription } from "rxjs";
 import { debounceTime, filter, map, take, tap } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
-import { Obj } from "@popperjs/core";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 
 @Component({
@@ -47,7 +46,7 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationService: PopNotificationsService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId: Obj,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super();
