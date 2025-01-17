@@ -36,17 +36,27 @@
 
       .title,
       .date {
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
       }
 
       .title {
-        font-size: 1rem;
+        font-size: .9rem;
         line-height: 1.15rem;
-        color: var(--brightWhite);
+        color: var(--white);
+
+        .user-display-name {
+          font-size: .8rem;
+        }
+
+        .separator {
+          margin: 0 .25rem;
+          display: inline-block;
+          color: var(--lighterGrey);
+        }
       }
 
       .date {
-        font-size: .85rem;
+        font-size: .75rem;
         color: var(--lighterGrey);
       }
     }

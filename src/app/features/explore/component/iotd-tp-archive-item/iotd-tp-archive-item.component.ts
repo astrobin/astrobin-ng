@@ -35,10 +35,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
               astrobinEventStopPropagation
               astrobinEventPreventDefault
               class="user-display-name"
-            >
-              {{ photographer.displayName }}
-            </a>
-            <span *ngIf="!last">, </span>
+            >{{ photographer.displayName }}</a><span *ngIf="!last" class="separator">&middot;</span>
           </span>
         </div>
 
