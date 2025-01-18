@@ -28,82 +28,95 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 @Component({
   selector: "astrobin-image-viewer-social-buttons",
   template: `
-    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div class="social-buttons d-flex gap-2 align-items-center">
-        <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
-          <div *ngIf="showLike" class="like">
-            <astrobin-toggle-property
-              *ngIf="!!image && !!currentUserWrapper.user && currentUserWrapper.user.id !== image.user"
-              [contentType]="imageContentType.id"
-              [objectId]="image?.pk"
-              [showLabel]="false"
-              [userId]="currentUserWrapper.user?.id"
-              [count]="initialLikeCount"
-              class="btn-no-block"
-              btnClass="btn btn-no-block {{ btnExtraClasses }}"
-              propertyType="like"
-            ></astrobin-toggle-property>
+    <ng-template #likeButtonTemplate let-currentUserWrapper>
+      <div *ngIf="showLike && !!image" class="like">
+        <astrobin-toggle-property
+          *ngIf="currentUserWrapper.user?.id !== image.user"
+          [contentType]="imageContentType.id"
+          [objectId]="image?.pk"
+          [showLabel]="false"
+          [userId]="currentUserWrapper.user?.id"
+          [count]="initialLikeCount"
+          class="btn-no-block"
+          btnClass="btn btn-no-block {{ btnExtraClasses }}"
+          propertyType="like"
+        ></astrobin-toggle-property>
 
-            <div
-              *ngIf="!!image && !!currentUserWrapper.user && currentUserWrapper.user.id === image.user"
-              (click)="openLikeThisOffcanvas()"
-              class="like-count me-3"
-            >
-              <fa-icon icon="thumbs-up"></fa-icon>
-              <span class="ms-2">{{ image.likeCount }}</span>
-            </div>
-          </div>
+        <div
+          *ngIf="!!currentUserWrapper.user && currentUserWrapper.user.id === image.user"
+          (click)="openLikeThisOffcanvas()"
+          class="like-count me-3"
+        >
+          <fa-icon icon="thumbs-up"></fa-icon>
+          <span class="ms-2">{{ image.likeCount }}</span>
+        </div>
+      </div>
+    </ng-template>
 
-          <div *ngIf="showBookmark" class="bookmark">
-            <astrobin-toggle-property
-              *ngIf="!!image && !!currentUserWrapper.user && currentUserWrapper.user.id !== image.user"
-              [contentType]="imageContentType.id"
-              [objectId]="image?.pk"
-              [userId]="currentUserWrapper.user?.id"
-              [showLabel]="false"
-              [count]="initialBookmarkCount"
-              class="btn-no-block"
-              btnClass="btn btn-no-block {{ btnExtraClasses }}"
-              propertyType="bookmark"
-            ></astrobin-toggle-property>
+    <ng-template #bookmarkButtonTemplate let-currentUserWrapper>
+      <div *ngIf="showBookmark" class="bookmark">
+        <astrobin-toggle-property
+          *ngIf="!!image && currentUserWrapper.user?.id !== image.user"
+          [contentType]="imageContentType.id"
+          [objectId]="image?.pk"
+          [userId]="currentUserWrapper.user?.id"
+          [showLabel]="false"
+          [count]="initialBookmarkCount"
+          class="btn-no-block"
+          btnClass="btn btn-no-block {{ btnExtraClasses }}"
+          propertyType="bookmark"
+        ></astrobin-toggle-property>
 
-            <div
-              *ngIf="!!image && !!currentUserWrapper.user && currentUserWrapper.user.id === image.user"
-              (click)="openBookmarkedThisOffcanvas()"
-              class="bookmark-count me-3"
-            >
-              <fa-icon icon="bookmark"></fa-icon>
-              <span class="ms-2">{{ image.bookmarkCount }}</span>
-            </div>
-          </div>
+        <div
+          *ngIf="!!image && !!currentUserWrapper.user && currentUserWrapper.user.id === image.user"
+          (click)="openBookmarkedThisOffcanvas()"
+          class="bookmark-count me-3"
+        >
+          <fa-icon icon="bookmark"></fa-icon>
+          <span class="ms-2">{{ image.bookmarkCount }}</span>
+        </div>
+      </div>
+    </ng-template>
 
-          <div *ngIf="image?.allowComments && showComments" class="comment">
-            <button
-              (click)="scrollToComments($event)"
-              class="btn btn-no-block {{ btnExtraClasses }}"
-            >
-              <fa-icon
-                [ngbTooltip]="'Comments' | translate"
-                triggers="hover click"
-                container="body"
-                icon="comments"
-              ></fa-icon>
+    <ng-template #commentsButtonTemplate>
+      <div *ngIf="image?.allowComments && showComments" class="comment">
+        <button
+          (click)="scrollToComments($event)"
+          class="btn btn-no-block {{ btnExtraClasses }}"
+        >
+          <fa-icon
+            [ngbTooltip]="'Comments' | translate"
+            triggers="hover click"
+            container="body"
+            icon="comments"
+          ></fa-icon>
 
-              <span class="count">
+          <span class="count">
                 <astrobin-nested-comments-count
                   [contentType]="imageContentType"
                   [objectId]="image?.pk"
                 ></astrobin-nested-comments-count>
               </span>
-            </button>
-          </div>
+        </button>
+      </div>
+    </ng-template>
 
-          <div *ngIf="showShare" class="share">
-            <astrobin-image-viewer-share-button
-              [image]="image"
-              [revisionLabel]="revisionLabel"
-            ></astrobin-image-viewer-share-button>
-          </div>
+    <ng-template #shareButtonTemplate>
+      <div *ngIf="showShare" class="share">
+        <astrobin-image-viewer-share-button
+          [image]="image"
+          [revisionLabel]="revisionLabel"
+        ></astrobin-image-viewer-share-button>
+      </div>
+    </ng-template>
+
+    <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+      <div class="social-buttons d-flex gap-2 align-items-center">
+        <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
+          <ng-container [ngTemplateOutlet]="likeButtonTemplate" [ngTemplateOutletContext]="{ $implicit: currentUserWrapper }"></ng-container>
+          <ng-container [ngTemplateOutlet]="bookmarkButtonTemplate" [ngTemplateOutletContext]="{ $implicit: currentUserWrapper }"></ng-container>
+          <ng-container [ngTemplateOutlet]="commentsButtonTemplate"></ng-container>
+          <ng-container [ngTemplateOutlet]="shareButtonTemplate"></ng-container>
         </ng-container>
       </div>
     </ng-container>

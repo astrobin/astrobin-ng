@@ -69,7 +69,6 @@ import { UserService } from "@shared/services/user.service";
             metadata-item
             flex-grow-1
             gap-3
-            flex-column flex-sm-row
           "
         >
           <ng-container *ngIf="photographers?.length > 0; else loadingTemplate">
@@ -112,8 +111,7 @@ import { UserService } from "@shared/services/user.service";
                 align-items-center
                 flex-nowrap
                 flex-grow-1
-                flex-column flex-sm-row
-                gap-2 gap-sm-3
+                gap-3
                 w-100
               "
             >
@@ -126,12 +124,11 @@ import { UserService } from "@shared/services/user.service";
                 <img [src]="photographers[0].avatar" alt="" class="avatar" />
               </a>
 
-              <div class="text-center text-sm-start">
+              <div class="d-flex gap-2 align-items-center">
                 <a
                   (click)="userService.openGallery(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                   [href]="userService.getGalleryUrl(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                   astrobinEventPreventDefault
-                  class="d-inline"
                 >
                   {{ photographers[0].displayName }}
                 </a>
@@ -141,12 +138,12 @@ import { UserService } from "@shared/services/user.service";
                   [contentType]="userContentType.id"
                   [objectId]="photographers[0].id"
                   [userId]="currentUserWrapper.user?.id"
-                  [showLabel]="true"
-                  [showIcon]="false"
+                  [showLabel]="false"
+                  [showIcon]="true"
                   [setLabel]="'Follow' | translate"
                   [unsetLabel]="'Unfollow' | translate"
-                  class="d-inline-block btn-no-block ms-2"
-                  btnClass="btn btn-xs btn-no-block btn-outline-secondary"
+                  class="btn-no-block follow-toggle-property"
+                  btnClass="btn btn-xs btn-no-block btn-link link-secondary"
                   propertyType="follow"
                 ></astrobin-toggle-property>
               </div>
