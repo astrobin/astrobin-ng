@@ -1136,6 +1136,10 @@ export class SearchService extends BaseService {
   }
 
   private _autoCompleteMatch(query: string, candidate: string): boolean {
+    if (!query) {
+      return false;
+    }
+
     const normalizationFunction = (value: string) => value.replace(/\s+/g, "").toLowerCase();
     const normalizedQuery = normalizationFunction(query);
     const normalizedCandidate = normalizationFunction(candidate);
