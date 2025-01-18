@@ -20,6 +20,10 @@ $background: rgba(0, 0, 0, 0.95);
     height: 100%;
   }
 
+  .carousel:focus-visible {
+    outline: none !important;
+  }
+
   .carousel-container {
     overflow: hidden;
     height: 100%;
