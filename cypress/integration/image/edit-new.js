@@ -4,6 +4,9 @@ context("Image edit (new)", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
+
+    cy.route("get", "**/notifications/notification/get_unread_count", "0").as("getUnreadNotificationsCount");
+
     cy.route("get", "**/api/v2/images/image/?hash=abc123&skip-thumbnails=*", "fixture:api/images/new_image_1_by_hashes.json").as(
       "getImage"
     );
