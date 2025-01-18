@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnChanges, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 
 @Component({
-  selector: "astrobin-user-gallery-loading",
+  selector: "astrobin-image-gallery-loading",
   template: `
     <ng-container *ngIf="isBrowser">
       <astrobin-masonry-layout
@@ -15,6 +15,7 @@ import { isPlatformBrowser } from "@angular/common";
         [layout]="activeLayout === UserGalleryActiveLayout.SMALL
           ? 'small'
           : activeLayout === UserGalleryActiveLayout.MEDIUM ? 'medium' : 'large'"
+        [leftAlignLastRow]="false"
       >
         <ng-template let-item>
           <astrobin-image-loading-indicator
@@ -26,12 +27,12 @@ import { isPlatformBrowser } from "@angular/common";
       </astrobin-masonry-layout>
     </ng-container>
   `,
-  styleUrls: ["./user-gallery-loading.component.scss"],
+  styleUrls: ["./image-gallery-loading.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserGalleryLoadingComponent extends BaseComponentDirective implements OnChanges {
+export class ImageGalleryLoadingComponent extends BaseComponentDirective implements OnChanges {
   @Input() numberOfImages: number;
-  @Input() activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.SMALL;
+  @Input() activeLayout: ImageGalleryLayout = ImageGalleryLayout.SMALL;
 
   protected readonly isBrowser: boolean;
   protected placeholders: any[] = [];
@@ -54,7 +55,7 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     this.placeholders = Array.from({ length: this.numberOfImages }).map((_, i) => {
       // Generate random aspect ratios that match our real layout's categories
       const ratio = Math.random();
-      let w, h;
+      let w: number, h: number;
 
       if (ratio < 0.25) { // narrow
         w = 0.7;
@@ -76,5 +77,5 @@ export class UserGalleryLoadingComponent extends BaseComponentDirective implemen
     this.changeDetectorRef.markForCheck();
   }
 
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
+  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
 }

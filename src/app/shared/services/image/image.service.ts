@@ -25,8 +25,6 @@ import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 import { IotdInterface } from "@features/iotd/services/iotd-api.service";
-import { Breakpoint } from "@shared/services/device.service";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 
 @Injectable({
   providedIn: "root"

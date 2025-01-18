@@ -10,12 +10,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { fromEvent, Subject, throttleTime } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { debounceTime, distinctUntilChanged, filter, map, startWith, take, takeUntil } from "rxjs/operators";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollections } from "@app/store/selectors/app/collection.selectors";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 
 type GalleryNavigationComponent =
   "gallery" |
@@ -244,7 +244,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   protected readonly isBrowser: boolean;
 
   protected activeTab: GalleryNavigationComponent = "gallery";
-  protected activeLayout: UserGalleryActiveLayout;
+  protected activeLayout: ImageGalleryLayout;
   protected collectionId: CollectionInterface["id"] | null = null;
   protected activeCollection: CollectionInterface | null = null;
   protected searchModel: string | null = null;

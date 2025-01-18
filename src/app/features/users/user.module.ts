@@ -11,7 +11,6 @@ import { userFeatureKey, userReducer } from "@features/users/store/user.reducers
 import { UserGalleryHeaderComponent } from "@features/users/pages/gallery/user-gallery-header.component";
 import { UserGalleryNavigationComponent } from "@features/users/pages/gallery/user-gallery-navigation.component";
 import { UserGalleryImagesComponent } from "@features/users/pages/gallery/user-gallery-images.component";
-import { UserGalleryLoadingComponent } from "@features/users/pages/gallery/user-gallery-loading.component";
 import { UserGalleryMarketplaceComponent } from "@features/users/pages/gallery/user-gallery-marketplace.component";
 import { UserGalleryAboutComponent } from "@features/users/pages/gallery/user-gallery-about.component";
 import { UserGalleryTrashComponent } from "@features/users/pages/gallery/user-gallery-trash.component";
@@ -34,7 +33,6 @@ import { UserGalleryEquipmentComponent } from "@features/users/pages/gallery/use
     UserGalleryHeaderChangeImageComponent,
     UserGalleryNavigationComponent,
     UserGalleryImagesComponent,
-    UserGalleryLoadingComponent,
     UserGalleryMarketplaceComponent,
     UserGalleryAboutComponent,
     UserGalleryTrashComponent,

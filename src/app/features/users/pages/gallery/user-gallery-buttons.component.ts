@@ -4,13 +4,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { CookieService } from "ngx-cookie";
 import { isPlatformBrowser } from "@angular/common";
-
-export enum UserGalleryActiveLayout {
-  SMALL = "small",
-  MEDIUM = "medium",
-  LARGE = "large",
-  TABLE = "table"
-}
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 
 @Component({
   selector: "astrobin-user-gallery-buttons",
@@ -107,7 +101,7 @@ export enum UserGalleryActiveLayout {
 })
 export class UserGalleryButtonsComponent extends BaseComponentDirective implements OnInit {
   @Input()
-  activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.MEDIUM;
+  activeLayout: ImageGalleryLayout = ImageGalleryLayout.MEDIUM;
 
   @Input()
   subsection: string;
@@ -116,12 +110,12 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
   ordering: string;
 
   @Output()
-  activeLayoutChange = new EventEmitter<UserGalleryActiveLayout>();
+  activeLayoutChange = new EventEmitter<ImageGalleryLayout>();
 
   @Output()
   sortChange = new EventEmitter<string>();
 
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
+  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
 
   private readonly _isBrowser: boolean;
   private readonly _cookieKey = "astrobin-user-gallery-layout";
@@ -139,14 +133,14 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
     if (this._isBrowser) {
       const cookie = this.cookieService.get(this._cookieKey);
       if (cookie) {
-        this.setLayout(cookie as UserGalleryActiveLayout);
+        this.setLayout(cookie as ImageGalleryLayout);
       } else {
-        this.setLayout(UserGalleryActiveLayout.MEDIUM);
+        this.setLayout(ImageGalleryLayout.MEDIUM);
       }
     }
   }
 
-  setLayout(layout: UserGalleryActiveLayout) {
+  setLayout(layout: ImageGalleryLayout) {
     this.activeLayout = layout;
     this.activeLayoutChange.emit(this.activeLayout);
 

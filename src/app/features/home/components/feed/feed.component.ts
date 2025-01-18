@@ -8,7 +8,6 @@ import { FeedService } from "@features/home/services/feed.service";
 import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem, ImageViewerService } from "@shared/services/image-viewer.service";
 import { isPlatformBrowser } from "@angular/common";
 import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
@@ -22,6 +21,7 @@ import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 
 enum FeedTab {
   FEED = "FEED",
@@ -162,7 +162,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, Aft
   protected lastKnownHeight = null;
   protected lastKnownScrollPosition = 0;
 
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
+  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
   protected readonly FeedTab = FeedTab;
   protected readonly FeedType = FeedType;
 

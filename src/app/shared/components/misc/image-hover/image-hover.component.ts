@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/c
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageService } from "@shared/services/image/image.service";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 
 @Component({
   selector: 'astrobin-image-hover',
@@ -88,7 +88,7 @@ export class ImageHoverComponent implements OnChanges {
   @Input() staticOverlay: string;
   @Input() activeLayout: string;
 
-  protected readonly ActiveLayout = UserGalleryActiveLayout;
+  protected readonly ActiveLayout = ImageGalleryLayout;
 
   protected published: string;
   protected uploaded: string;

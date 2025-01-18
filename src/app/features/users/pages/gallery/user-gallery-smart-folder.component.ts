@@ -13,7 +13,6 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 import { FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
@@ -21,6 +20,7 @@ import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 
 @Component({
   selector: "astrobin-user-gallery-smart-folder",
@@ -106,7 +106,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
   protected activeLabel: string | null = null;
   protected activeEquipmentItem: EquipmentItem | null = null;
 
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
+  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
 
   constructor(
     public readonly store$: Store<MainState>,

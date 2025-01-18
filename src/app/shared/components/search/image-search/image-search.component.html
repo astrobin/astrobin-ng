@@ -94,6 +94,7 @@
           [layout]="'medium'"
           [items]="results"
           [idProperty]="'objectId'"
+          [leftAlignLastRow]="false"
         >
           <ng-template let-item>
             <div class="image-container">
@@ -132,8 +133,13 @@
           </button>
         </div>
 
-        <div *ngIf="!initialLoading && loading" class="loading">
-          <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
+        <div *ngIf="!initialLoading && loading" class="mt-4">
+          <ng-container *ngIf="loading">
+            <astrobin-image-gallery-loading
+              [numberOfImages]="results.length"
+              [activeLayout]="UserGalleryActiveLayout.MEDIUM"
+            ></astrobin-image-gallery-loading>
+          </ng-container>
         </div>
       </ng-container>
     </ng-container>
@@ -145,5 +151,8 @@
 </ng-template>
 
 <ng-template #loadingTemplate>
-  <astrobin-loading-indicator class="mt-4 mb-3 mb-md-0"></astrobin-loading-indicator>
+  <astrobin-image-gallery-loading
+    [numberOfImages]="SearchService.DEFAULT_PAGE_SIZE"
+    [activeLayout]="UserGalleryActiveLayout.MEDIUM"
+  ></astrobin-image-gallery-loading>
 </ng-template>

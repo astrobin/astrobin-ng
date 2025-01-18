@@ -43,7 +43,7 @@ interface MasonryItem<T> {
         </div>
       </div>
 
-      <div class="masonry-spacer"></div>
+      <div *ngIf="leftAlignLastRow" class="masonry-spacer"></div>
     </div>
   `,
   styleUrls: [`./masonry-layout.component.scss`]
@@ -52,6 +52,7 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnDestroy {
   @Input() items: T[] = [];
   @Input() layout: "small" | "medium" | "large" | null = null;
   @Input() idProperty = "id";
+  @Input() leftAlignLastRow = true;
 
   @ViewChild("container") container!: ElementRef;
 

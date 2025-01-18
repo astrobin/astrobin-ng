@@ -151,6 +151,7 @@ import { ImageIconsComponent } from "@shared/components/misc/image-icons/image-i
 import { ImageHoverComponent } from "@shared/components/misc/image-hover/image-hover.component";
 import { ImageViewerIotdTpStatsComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component";
 import { MasonryLayoutComponent } from "@shared/components/masonry-layout/masonry-layout.component";
+import { ImageGalleryLoadingComponent } from "@shared/components/image-gallery-loading-indicator/image-gallery-loading.component";
 
 const modules = [
   CommonModule,
@@ -230,6 +231,7 @@ const components = [
   ImageComponent,
   ImageHoverComponent,
   ImageIconsComponent,
+  ImageGalleryLoadingComponent,
   ImageLoadingIndicatorComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,

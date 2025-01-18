@@ -29,6 +29,8 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   @Input() loadMoreOnScroll = true;
   @Input() showResultsCount = false;
 
+  protected readonly SearchService = SearchService;
+
   protected constructor(
     public readonly store$: Store<MainState>,
     public readonly windowRefService: WindowRefService,

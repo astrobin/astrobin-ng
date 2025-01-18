@@ -24,8 +24,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { UserService } from "@shared/services/user.service";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { isPlatformBrowser } from "@angular/common";
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 
 @Component({
   selector: "astrobin-image-search",
@@ -228,5 +228,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     }, []);
   }
 
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
+  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
+  protected readonly Array = Array;
 }

@@ -20,12 +20,12 @@ import { fromEvent, merge, Subscription, throttleTime } from "rxjs";
 import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { fadeInOut } from "@shared/animations";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 
 @Component({
   selector: "astrobin-user-gallery-images",
@@ -54,13 +54,13 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
           @fadeInOut
         ></astrobin-loading-indicator>
 
-        <astrobin-user-gallery-loading
+        <astrobin-image-gallery-loading
           *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
           [hidden]="!loading"
           @fadeInOut
           [activeLayout]="activeLayout"
           [numberOfImages]="loadingPlaceholdersCount"
-        ></astrobin-user-gallery-loading>
+        ></astrobin-image-gallery-loading>
 
         <ng-container *ngIf="!loading && images.length > 0 && activeLayout !== UserGalleryActiveLayout.TABLE">
           <astrobin-masonry-layout
@@ -223,10 +223,10 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   @Input() userProfile: UserProfileInterface;
   @Input() options: FindImagesOptionsInterface;
   @Input() expectedImageCount: number;
-  @Input() activeLayout: UserGalleryActiveLayout;
+  @Input() activeLayout: ImageGalleryLayout;
 
   protected readonly ImageAlias = ImageAlias;
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
+  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
 
   protected collection: CollectionInterface;
   protected next: string | null = null;
