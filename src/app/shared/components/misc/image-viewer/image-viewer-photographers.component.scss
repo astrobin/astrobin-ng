@@ -15,9 +15,9 @@
   }
 
   .avatar {
-      width: 3rem;
-      height: 3rem;
-      border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
   }
 
   .view-count {
@@ -40,10 +40,9 @@
       margin-right: 0;
     }
 
-    &.toggled {
-      .ng-fa-icon {
-        color: var(--accentColor);
-      }
+    .toggled .ng-fa-icon {
+      color: var(--accentColor);
+      opacity: 1 !important;
     }
   }
 
