@@ -241,7 +241,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     return new Observable(subscriber => {
       this._loadImage(imageId).subscribe({
         next: image => {
-          this.loadingImage = false;
           this.activeImage = image;
           this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
           this.imageService.setMetaTags(image);
@@ -249,7 +248,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
           this._loadAdjacentImages(imageId);
           this._dropImagesTooFarFromIndex(imageId);
 
-          this.utilsService.delay(200).subscribe(() => {
+          this.utilsService.delay(1).subscribe(() => {
             if (this.carousel) {
               this._skipSlideEvent = true;
               this.carousel.select(imageId.toString());
@@ -257,6 +256,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
               this.carousel.focus();
               this.activeId = imageId;
             }
+
+            this.loadingImage = false;
 
             if (emitChange) {
               this.imageChange.emit(image);
