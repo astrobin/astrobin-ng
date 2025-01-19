@@ -44,7 +44,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   @Input() showDynamicOverlay = true;
   @Input() showStaticOverlay = true;
 
-  @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
+  @Output() imageOpened = new EventEmitter<ImageSearchInterface>();
 
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
@@ -151,8 +151,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
     event.preventDefault();
 
-    this.imageClicked.emit(image);
-
     // If we are on an image's page, we don't want to open the image viewer but simply route to the image.
     if (this.router.url.startsWith("/i/")) {
       this._openImageByNavigation(image);
@@ -235,6 +233,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       switchMap(() => this.utilsService.delay(200)),
       finalize(() => {
         this.loadingImageId = null;
+        this.imageOpened.emit(image);
       })
     ).subscribe({
       error: (error) => {
