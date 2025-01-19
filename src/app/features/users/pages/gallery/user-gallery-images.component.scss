@@ -37,6 +37,11 @@
       object-fit: cover;
     }
 
+    astrobin-loading-indicator {
+      background: rgba(0, 0, 0, .75);
+      border-radius: .5rem;
+    }
+
     .key-value-tag {
       position: absolute;
       bottom: .25rem;

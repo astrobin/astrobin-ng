@@ -4,13 +4,13 @@ import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
+import { auditTime, finalize, fromEvent, Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { filter, take, takeUntil, tap } from "rxjs/operators";
+import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -26,11 +26,14 @@ import { ImageService } from "@shared/services/image/image.service";
 import { UserService } from "@shared/services/user.service";
 import { isPlatformBrowser } from "@angular/common";
 import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
+import { fadeInOut } from "@shared/animations";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-image-search",
   templateUrl: "./image-search.component.html",
-  styleUrls: ["./image-search.component.scss"]
+  styleUrls: ["./image-search.component.scss"],
+  animations: [fadeInOut]
 })
 export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
@@ -41,16 +44,19 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   @Input() showDynamicOverlay = true;
   @Input() showStaticOverlay = true;
 
-  @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
+  @Output() imageOpened = new EventEmitter<ImageSearchInterface>();
 
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
   protected isMobile = false;
+  protected loadingImageId: ImageSearchInterface["objectId"];
+
+  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
+  protected readonly Array = Array;
 
   private readonly _isBrowser: boolean;
-
   private _nearEndOfContextSubscription: Subscription;
 
   constructor(
@@ -147,8 +153,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
     event.preventDefault();
 
-    this.imageClicked.emit(image);
-
     // If we are on an image's page, we don't want to open the image viewer but simply route to the image.
     if (this.router.url.startsWith("/i/")) {
       this._openImageByNavigation(image);
@@ -161,10 +165,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
         }
       });
     }
-  }
-
-  getImageLink(image: ImageSearchInterface): string {
-    return `/i/${image.hash || image.objectId}`;
   }
 
   private _openImageByNavigation(image: ImageSearchInterface): void {
@@ -183,36 +183,60 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   }
 
   private _openImageByImageViewer(image: ImageSearchInterface): void {
-    this.imageViewerService.openSlideshow(
-      this.componentId,
-      image.hash || image.objectId,
-      FINAL_REVISION_LABEL,
-      this.results.map(result => ({
-        imageId: result.hash || result.objectId,
-        thumbnailUrl: result.galleryThumbnail
-      })),
-      this.viewContainerRef,
-      true
-    ).subscribe(slideshow => {
-      if (this._nearEndOfContextSubscription) {
-        this._nearEndOfContextSubscription.unsubscribe();
-      }
+    this.loadingImageId = image.objectId;
 
-      this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
-        .pipe(
-          filter(callerComponentId => callerComponentId === this.componentId),
-          takeUntil(this.destroyed$)
+    const navigationContext = this.results.map(result => ({
+      imageId: result.hash || result.objectId,
+      thumbnailUrl: result.galleryThumbnail
+    }));
+
+    this.imageService.loadImage(image.hash || image.objectId).pipe(
+      switchMap(dbImage => {
+        const alias: ImageAlias = this.deviceService.lgMax() ? ImageAlias.HD : ImageAlias.QHD;
+        const thumbnailUrl = this.imageService.getThumbnail(dbImage, alias);
+        return this.imageService.loadImageFile(thumbnailUrl, () => {});
+      }),
+      switchMap(() =>
+        this.imageViewerService.openSlideshow(
+          this.componentId,
+          image.hash || image.objectId,
+          FINAL_REVISION_LABEL,
+          navigationContext,
+          this.viewContainerRef,
+          true
         )
-        .subscribe(() => {
-          this.loadMore().subscribe(() => {
-            slideshow.instance.setNavigationContext(
-              this.results.map(result => ({
-                imageId: result.hash || result.objectId,
-                thumbnailUrl: result.galleryThumbnail
-              }))
-            );
-          });
-        });
+      ),
+      tap(slideshow => {
+        if (this._nearEndOfContextSubscription) {
+          this._nearEndOfContextSubscription.unsubscribe();
+        }
+
+        this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext.pipe(
+          filter(callerComponentId => callerComponentId === this.componentId),
+          takeUntil(this.destroyed$),
+          switchMap(() =>
+            this.loadMore().pipe(
+              tap(() => {
+                slideshow.instance.setNavigationContext(
+                  this.results.map(result => ({
+                    imageId: result.hash || result.objectId,
+                    thumbnailUrl: result.galleryThumbnail
+                  }))
+                );
+              })
+            )
+          )
+        ).subscribe();
+      }),
+      switchMap(() => this.utilsService.delay(200)),
+      finalize(() => {
+        this.loadingImageId = null;
+        this.imageOpened.emit(image);
+      })
+    ).subscribe({
+      error: (error) => {
+        console.error("Failed to load image:", error);
+      }
     });
   }
 
@@ -227,7 +251,4 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       return acc;
     }, []);
   }
-
-  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
-  protected readonly Array = Array;
 }

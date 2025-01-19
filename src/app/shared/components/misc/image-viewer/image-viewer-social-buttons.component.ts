@@ -92,11 +92,11 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
           ></fa-icon>
 
           <span class="count">
-                <astrobin-nested-comments-count
-                  [contentType]="imageContentType"
-                  [objectId]="image?.pk"
-                ></astrobin-nested-comments-count>
-              </span>
+            <astrobin-nested-comments-count
+              [contentType]="imageContentType"
+              [objectId]="image?.pk"
+            ></astrobin-nested-comments-count>
+          </span>
         </button>
       </div>
     </ng-template>

@@ -1,8 +1,6 @@
 @import "../../../styles/breakpoints";
 
 .loading-item {
-  will-change: opacity;
-
   ::ng-deep {
     .load-wrapper {
       border-radius: 20px;

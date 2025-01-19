@@ -14,6 +14,14 @@ $header-height: 63px;
   background-color: black;
   justify-content: center;
   align-items: center;
+  opacity: 0;
+  transition: opacity .2s ease;
+  pointer-events: none;
+
+  &.show {
+    opacity: 1;
+    pointer-events: all;
+  }
 
   @supports (height: 100dvh) {
     height: 100dvh;

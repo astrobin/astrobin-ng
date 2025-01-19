@@ -92,6 +92,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   private readonly MAX_RETRIES = 5;
   private readonly RETRY_DELAY = 300;
   private _dimensionsInterval: any;
+  private _loadImageFileSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -185,6 +186,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
 
   ngOnDestroy(): void {
+    if (this._loadImageFileSubscription) {
+      this._loadImageFileSubscription.unsubscribe();
+      this._loadImageFileSubscription = null;
+    }
+
     if (this._dimensionsInterval) {
       clearInterval(this._dimensionsInterval);
       this._dimensionsInterval = null;
@@ -293,10 +299,14 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _loadThumbnail() {
+    if (this._loadImageFileSubscription) {
+      this._loadImageFileSubscription.unsubscribe();
+    }
+
     const url = this._getRevisionThumbnailUrl();
 
     if (url && !url.includes("placeholder")) {
-      this.imageService
+      this._loadImageFileSubscription = this.imageService
         .loadImageFile(url, (progress: number) => {
           this.imageLoadingProgress = progress;
         })

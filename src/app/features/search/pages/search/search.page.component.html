@@ -8,7 +8,7 @@
 
   <astrobin-image-search
     *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
-    (imageClicked)="imageClicked()"
+    (imageOpened)="imageOpened()"
     [model]="model"
     [showResultsCount]="true"
     class="d-block mt-3"

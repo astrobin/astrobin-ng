@@ -1,6 +1,14 @@
 <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-  <ng-container *ngIf="!initialLoading; else loadingTemplate">
-    <ng-container *ngIf="results !== null; else loadingTemplate">
+  <div
+    astrobinScrollVisibility
+    [viewportOptions]="{
+       verticalTolerance: 200,
+       horizontalTolerance: 10,
+       shouldCheckHorizontal: false
+     }"
+    (visibilityChange)="onVisibilityChange($event)"
+  >
+    <ng-container *ngIf="!initialLoading && results !== null; else loadingTemplate">
       <ng-container *ngIf="results.length > 0; else noImagesTemplate">
         <div
           *ngIf="
@@ -100,7 +108,7 @@
             <div class="image-container">
               <a
                 (click)="openImage($event, item)"
-                [href]="getImageLink(item)"
+                [href]="'/i/' + (item.hash || item.objectId)"
               >
                 <img
                   #imageElement
@@ -108,10 +116,16 @@
                   [alt]="item.title"
                 />
 
+                <astrobin-loading-indicator
+                  *ngIf="loadingImageId?.toString() === item.objectId.toString()"
+                  class="position-absolute top-0"
+                ></astrobin-loading-indicator>
+
                 <astrobin-image-icons [image]="item"></astrobin-image-icons>
 
                 <astrobin-image-hover
-                  *ngIf="!isMobile && showDynamicOverlay"
+                  *ngIf="!loadingImageId && !isMobile && showDynamicOverlay"
+                  @fadeInOut
                   [image]="item"
                   [staticOverlay]="showStaticOverlay ? model.ordering : null"
                   [activeLayout]="UserGalleryActiveLayout.MEDIUM"
@@ -136,14 +150,14 @@
         <div *ngIf="!initialLoading && loading" class="mt-4">
           <ng-container *ngIf="loading">
             <astrobin-image-gallery-loading
-              [numberOfImages]="results.length"
+              [numberOfImages]="25"
               [activeLayout]="UserGalleryActiveLayout.MEDIUM"
             ></astrobin-image-gallery-loading>
           </ng-container>
         </div>
       </ng-container>
     </ng-container>
-  </ng-container>
+  </div>
 </ng-container>
 
 <ng-template #noImagesTemplate>
@@ -152,7 +166,7 @@
 
 <ng-template #loadingTemplate>
   <astrobin-image-gallery-loading
-    [numberOfImages]="SearchService.DEFAULT_PAGE_SIZE"
+    [numberOfImages]="25"
     [activeLayout]="UserGalleryActiveLayout.MEDIUM"
   ></astrobin-image-gallery-loading>
 </ng-template>

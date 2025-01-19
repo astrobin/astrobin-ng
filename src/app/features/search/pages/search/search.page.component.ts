@@ -173,7 +173,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     }
   }
 
-  imageClicked() {
+  imageOpened() {
     if (this.adManagerComponent) {
       // Makes the slot available to the image viewer.
       this.showAd = false;

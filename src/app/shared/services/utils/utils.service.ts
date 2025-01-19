@@ -19,7 +19,7 @@ interface CachedRect {
   timestamp: number;
 }
 
-interface ViewportCheckOptions {
+export interface ViewportCheckOptions {
   shouldCheckVertical?: boolean;
   shouldCheckHorizontal?: boolean;
   verticalTolerance?: number;

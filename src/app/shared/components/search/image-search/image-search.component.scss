@@ -45,3 +45,10 @@
   margin-bottom: .5rem;
   padding-left: .25rem;
 }
+
+.image-container {
+  astrobin-loading-indicator {
+    background: rgba(0, 0, 0, .75);
+    border-radius: .75rem;
+  }
+}

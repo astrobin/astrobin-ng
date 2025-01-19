@@ -6,12 +6,7 @@ $background: rgba(0, 0, 0, 0.95);
 
 :host {
   position: fixed;
-  top: 6px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: calc(100% - 6px);
+  inset: 6px 0 0 0;
   z-index: 1030;
   overflow: hidden;
   background: $background;
@@ -31,6 +26,36 @@ $background: rgba(0, 0, 0, 0.95);
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 .5rem var(--black);
+  }
+
+  .loading-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    .close-button {
+      position: absolute;
+      top: .75rem;
+      left: .75rem;
+      padding: .5rem;
+      font-size: 1.5rem;
+      color: var(--white);
+
+      @media (max-width: $sm-max) {
+        left: unset;
+        top: .5rem;
+        right: .5rem;
+        padding: 1rem;
+        font-size: 1rem;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          color: var(--brightWhite);
+        }
+      }
+    }
   }
 
   .carousel-area {
