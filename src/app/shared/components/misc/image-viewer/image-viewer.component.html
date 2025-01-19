@@ -123,6 +123,7 @@
       <astrobin-fullscreen-image-viewer
         *ngIf="standalone && supportsFullscreen"
         [id]="image.pk"
+        [eagerLoading]="true"
         [revision]="revisionLabel"
         [standalone]="standalone"
         (exitFullscreen)="exitFullscreen()"
@@ -130,6 +131,7 @@
 
       <astrobin-image
         #imageComponent
+        @fadeInOut
         (imageClick)="enterFullscreen($event)"
         (loaded)="onImageLoaded()"
         (imageMouseEnter)="onImageMouseEnter($event)"

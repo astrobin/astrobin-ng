@@ -9,14 +9,18 @@ import { ImageService } from "@shared/services/image/image.service";
 import { IotdStatsInterface } from "@features/iotd/types/iotd-stats.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
+import { fadeInOut } from "@shared/animations";
 
 @Component({
   selector: "astrobin-iotd",
   template: `
-    <astrobin-image-loading-indicator *ngIf="!iotd"></astrobin-image-loading-indicator>
+    <astrobin-image-loading-indicator
+      *ngIf="!iotd"
+    ></astrobin-image-loading-indicator>
 
     <ng-container *ngIf="!!iotd">
       <a
+        @fadeInOut
         (click)="openImage($event, iotd.image)"
         [href]="'/i/' + iotd.image"
         [ngStyle]="{
@@ -271,7 +275,8 @@ import { DeviceService } from "@shared/services/device.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./iotd.component.scss"]
+  styleUrls: ["./iotd.component.scss"],
+  animations: [fadeInOut]
 })
 export class IotdComponent extends BaseComponentDirective implements OnInit {
   protected iotd: IotdInterface;

@@ -25,13 +25,15 @@ import { FullSizeLimitationDisplayOptions, ImageInterface } from "@shared/interf
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { TitleService } from "@shared/services/title/title.service";
+import { fadeInOut } from "@shared/animations";
 
 declare type HammerInput = any;
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
   templateUrl: "./fullscreen-image-viewer.component.html",
-  styleUrls: ["./fullscreen-image-viewer.component.scss"]
+  styleUrls: ["./fullscreen-image-viewer.component.scss"],
+  animations: [fadeInOut]
 })
 export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input()
@@ -51,14 +53,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @Input()
   standalone = false;
 
+  @Input()
+  eagerLoading = false;
+
   @Output()
   enterFullscreen = new EventEmitter<void>();
 
   @Output()
   exitFullscreen = new EventEmitter<void>();
-
-  @HostBinding("class")
-  klass = "d-none";
 
   @ViewChild("ngxImageZoom", { static: false, read: NgxImageZoomComponent })
   ngxImageZoom: NgxImageZoomComponent;
@@ -72,6 +74,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @ViewChild("touchRealWrapper", { static: false })
   touchRealWrapper: ElementRef;
 
+  @HostBinding("class.show")
+  show: boolean = false;
+
   protected touchMode?: boolean = undefined;
   protected enableLens = true;
   protected zoomLensSize: number;
@@ -82,7 +87,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected hdThumbnail: SafeUrl;
   protected realThumbnail: SafeUrl;
   protected realThumbnailUnsafeUrl: string;
-  protected show: boolean = false;
   protected hdImageLoadingProgress$: Observable<number>;
   protected realImageLoadingProgress$: Observable<number>;
   protected hdThumbnailLoading = false;
@@ -116,6 +120,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _zoomIndicatorTimeoutDuration = 1000;
   private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
+  private _eagerLoadingSubscription: Subscription;
 
   private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
@@ -179,6 +184,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       throw new Error("Attribute 'id' is required");
     }
 
+    if (changes.eagerLoading || changes.id) {
+      // Clean up previous subscriptions
+      if (this._eagerLoadingSubscription) {
+        this._eagerLoadingSubscription.unsubscribe();
+        this._eagerLoadingSubscription = null;
+      }
+
+      // Set up eager loading if enabled
+      if (this.eagerLoading && !this._eagerLoadingSubscription) {
+        this.utilsService.delay(2500).subscribe(() => {
+          if (!this._eagerLoadingSubscription) { // Double check in case user clicked during timeout
+            this._eagerLoadingSubscription = this._initThumbnailSubscriptions();
+          }
+        });
+      }
+    }
+
     if (this._currentFullscreenImageSubscription) {
       this._currentFullscreenImageSubscription.unsubscribe();
     }
@@ -194,7 +216,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       ).subscribe(() => {
         this._resetThumbnailSubscriptions();
         this.show = false;
-        this.klass = "d-none";
         this.hdThumbnail = null;
         this.realThumbnail = null;
         this._resetTouchZoom();
@@ -204,30 +225,42 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       });
 
       this.show = true;
-      this.klass = "d-flex";
       this.titleService.disablePageZoom();
       this.enterFullscreen.emit();
-      this._initThumbnailSubscriptions();
+
+      // Only initialize thumbnails if not already eagerly loading
+      if (!this._eagerLoadingSubscription) {
+        this._initThumbnailSubscriptions();
+      }
     });
   }
 
   ngOnDestroy() {
     super.ngOnDestroy();
 
+    if (this._eagerLoadingSubscription) {
+      this._eagerLoadingSubscription.unsubscribe();
+      this._eagerLoadingSubscription = null;
+    }
+
     if (this._imageSubscription) {
       this._imageSubscription.unsubscribe();
+      this._imageSubscription = null;
     }
 
     if (this._hdThumbnailSubscription) {
       this._hdThumbnailSubscription.unsubscribe();
+      this._hdThumbnailSubscription = null;
     }
 
     if (this._realThumbnailSubscription) {
       this._realThumbnailSubscription.unsubscribe();
+      this._realThumbnailSubscription = null;
     }
 
     if (this._currentFullscreenImageSubscription) {
       this._currentFullscreenImageSubscription.unsubscribe();
+      this._currentFullscreenImageSubscription = null;
     }
   }
 
@@ -410,7 +443,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _applyPanMoveMomentum(): void {
-    const friction = 0.8; // Adjust this value to change how quickly it slows down
+    const friction = 0.5; // Adjust this value to change how quickly it slows down
     const minVelocity = 0.01; // Minimum velocity before stopping
 
     const animate = () => {
@@ -479,10 +512,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _resetThumbnailSubscriptions() {
     if (this._hdThumbnailSubscription) {
       this._hdThumbnailSubscription.unsubscribe();
+      this._hdThumbnailSubscription = null;
     }
 
     if (this._realThumbnailSubscription) {
       this._realThumbnailSubscription.unsubscribe();
+      this._realThumbnailSubscription = null;
+    }
+
+    if (this._eagerLoadingSubscription) {
+      this._eagerLoadingSubscription.unsubscribe();
+      this._eagerLoadingSubscription = null;
     }
 
     this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getHdOptions() }));
@@ -495,7 +535,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.realThumbnail = null;
   }
 
-  private _initThumbnailSubscriptions() {
+  private _initThumbnailSubscriptions(): Subscription {
+    // Reset any existing subscriptions
+    this._resetThumbnailSubscriptions();
+
+    const subscriptions = new Subscription();
+
     if (this._imageSubscription) {
       this._imageSubscription.unsubscribe();
     }
@@ -525,9 +570,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       });
     });
 
-    if (this._hdThumbnailSubscription) {
-      this._hdThumbnailSubscription.unsubscribe();
-    }
+    subscriptions.add(this._imageSubscription);
 
     this._hdThumbnailSubscription = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
       tap(() => (this.hdThumbnailLoading = true)),
@@ -546,9 +589,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.hdThumbnail = url;
     });
 
-    if (this._realThumbnailSubscription) {
-      this._realThumbnailSubscription.unsubscribe();
-    }
+    subscriptions.add(this._hdThumbnailSubscription);
 
     this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
       tap(() => (this.realThumbnailLoading = true)),
@@ -569,7 +610,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.realThumbnail = url;
     });
 
+    subscriptions.add(this._realThumbnailSubscription);
+
     this.store$.dispatch(new LoadThumbnail({ data: this._getHdOptions(), bustCache: false }));
+
+    return subscriptions;
   }
 
   private _setZoomLensSize(): void {

@@ -26,7 +26,7 @@ const SLIDESHOW_WINDOW = 3;
 @Component({
   selector: "astrobin-image-viewer-slideshow",
   template: `
-    <div #carouselContainer *ngIf="!fullscreen" class="carousel-container">
+    <div #carouselContainer class="carousel-container">
       <div class="carousel-area">
         <ngb-carousel
           #carousel
@@ -48,7 +48,7 @@ const SLIDESHOW_WINDOW = 3;
             [attr.id]="item.imageId"
           >
             <astrobin-image-viewer
-              *ngIf="item.image && !loadingImage; else loadingTemplate"
+              *ngIf="item.image; else loadingTemplate"
               (closeClick)="closeSlideshow.emit(true)"
               (nextClick)="onNextClick()"
               (previousClick)="onPreviousClick()"
@@ -79,13 +79,19 @@ const SLIDESHOW_WINDOW = 3;
     <astrobin-fullscreen-image-viewer
       *ngIf="activeImage"
       [id]="activeImage.pk"
+      [eagerLoading]="true"
       [revision]="activeImageRevisionLabel"
       (enterFullscreen)="onEnterFullscreen()"
       (exitFullscreen)="onExitFullscreen()"
     ></astrobin-fullscreen-image-viewer>
 
     <ng-template #loadingTemplate>
-      <astrobin-loading-indicator></astrobin-loading-indicator>
+      <div class="loading-area" @fadeInOut>
+        <div class="close-button" (click)="closeSlideshow.emit(true)">
+          <fa-icon icon="times"></fa-icon>
+        </div>
+        <astrobin-loading-indicator></astrobin-loading-indicator>
+      </div>
     </ng-template>
   `,
   styleUrls: ["./image-viewer-slideshow.component.scss"],
@@ -300,7 +306,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       const location_ = this.windowRefService.nativeWindow.location;
       this.windowRefService.replaceState(
         {},
-        `${location_.pathname}${location_.search}`
+        `${location_.pathname}${location_.search}`,
       );
     }
 

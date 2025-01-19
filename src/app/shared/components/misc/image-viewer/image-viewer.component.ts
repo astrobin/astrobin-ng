@@ -32,12 +32,14 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { SolutionApiService } from "@shared/services/api/classic/platesolving/solution/solution-api.service";
 import { Throttle } from "@app/decorators";
 import { SolutionStatus } from "@shared/interfaces/solution.interface";
+import { fadeInOut } from "@shared/animations";
 
 
 @Component({
   selector: "astrobin-image-viewer",
   templateUrl: "./image-viewer.component.html",
-  styleUrls: ["./image-viewer.component.scss"]
+  styleUrls: ["./image-viewer.component.scss"],
+  animations: [fadeInOut]
 })
 export class ImageViewerComponent
   extends BaseComponentDirective

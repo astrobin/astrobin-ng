@@ -31,6 +31,7 @@ import { IotdInterface } from "@features/iotd/services/iotd-api.service";
 })
 export class ImageService extends BaseService {
   private _imageNotFoundNotification: ActiveToast<any>;
+  private readonly _loadedImageUrls = new Map<string, string>();
 
   public constructor(
     public readonly store$: Store<MainState>,
@@ -827,12 +828,24 @@ export class ImageService extends BaseService {
       return of(url);
     }
 
+    // Check cache first
+    const cachedUrl = this._loadedImageUrls.get(url);
+    if (cachedUrl) {
+      // Still call the progress callback to maintain expected behavior
+      progressCallback(100);
+      return of(cachedUrl);
+    }
+
     return new Observable<string>(observer => {
       if (typeof XMLHttpRequest === "undefined") {
         // Fallback for environments without XMLHttpRequest
-        this.http.get(url, { responseType: "blob" }).pipe(
+        const subscription = this.http.get(url, { responseType: "blob" }).pipe(
           tap(() => progressCallback(100)),
-          map(blob => this._createObjectURL(blob))
+          map(blob => {
+            const objectUrl = this._createObjectURL(blob);
+            this._loadedImageUrls.set(url, objectUrl);
+            return objectUrl;
+          })
         ).subscribe(
           objectUrl => {
             observer.next(objectUrl);
@@ -840,7 +853,8 @@ export class ImageService extends BaseService {
           },
           error => observer.error(error)
         );
-        return;
+        // Return cleanup function
+        return () => subscription.unsubscribe();
       }
 
       const xhr = new XMLHttpRequest();
@@ -882,7 +896,9 @@ export class ImageService extends BaseService {
           }
 
           const blob = new Blob([xhr.response], options);
-          observer.next(this._createObjectURL(blob));
+          const objectUrl = this._createObjectURL(blob);
+          this._loadedImageUrls.set(url, objectUrl);
+          observer.next(objectUrl);
           observer.complete();
         });
       };
@@ -895,6 +911,11 @@ export class ImageService extends BaseService {
       };
 
       xhr.send();
+
+      // Return cleanup function
+      return () => {
+        xhr.abort();
+      };
     });
   }
 

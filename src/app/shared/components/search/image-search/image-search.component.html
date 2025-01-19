@@ -99,6 +99,7 @@
           <ng-template let-item>
             <div class="image-container">
               <a
+                @fadeInOut
                 (click)="openImage($event, item)"
                 [href]="getImageLink(item)"
               >
@@ -108,10 +109,17 @@
                   [alt]="item.title"
                 />
 
+                <astrobin-loading-indicator
+                  *ngIf="loadingImageId?.toString() === item.objectId.toString()"
+                  @fadeInOut
+                  class="position-absolute top-0"
+                ></astrobin-loading-indicator>
+
                 <astrobin-image-icons [image]="item"></astrobin-image-icons>
 
                 <astrobin-image-hover
-                  *ngIf="!isMobile && showDynamicOverlay"
+                  *ngIf="!loadingImageId && !isMobile && showDynamicOverlay"
+                  @fadeInOut
                   [image]="item"
                   [staticOverlay]="showStaticOverlay ? model.ordering : null"
                   [activeLayout]="UserGalleryActiveLayout.MEDIUM"
@@ -152,6 +160,7 @@
 
 <ng-template #loadingTemplate>
   <astrobin-image-gallery-loading
+    @fadeInOut
     [numberOfImages]="SearchService.DEFAULT_PAGE_SIZE"
     [activeLayout]="UserGalleryActiveLayout.MEDIUM"
   ></astrobin-image-gallery-loading>

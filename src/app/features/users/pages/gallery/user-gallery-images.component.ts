@@ -7,7 +7,7 @@ import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.i
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
 import { act, Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { debounceTime, filter, map, take, takeUntil } from "rxjs/operators";
+import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -16,7 +16,7 @@ import { NavigationEnd, Router } from "@angular/router";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { fromEvent, merge, Subscription, throttleTime } from "rxjs";
+import { finalize, fromEvent, merge, Subscription, throttleTime } from "rxjs";
 import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
@@ -26,6 +26,7 @@ import { selectCollectionsByParams } from "@app/store/selectors/app/collection.s
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-user-gallery-images",
@@ -84,9 +85,17 @@ import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
                     [alt]="item.title"
                   />
 
+                  <astrobin-loading-indicator
+                    *ngIf="loadingImageId === item.pk"
+                    @fadeInOut
+                    class="position-absolute top-0"
+                  ></astrobin-loading-indicator>
+
                   <astrobin-image-icons [image]="item"></astrobin-image-icons>
 
                   <astrobin-image-hover
+                    *ngIf="!loadingImageId"
+                    @fadeInOut
                     [image]="item"
                     [staticOverlay]="options.ordering"
                     [activeLayout]="activeLayout"
@@ -235,6 +244,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   protected loading = false;
   protected loadingMore = false;
   protected loadingPlaceholdersCount: number;
+  protected loadingImageId: ImageInterface["pk"];
 
   private readonly _isBrowser: boolean;
 
@@ -255,7 +265,8 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly utilsService: UtilsService,
     public readonly paginationConfig: NgbPaginationConfig,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
 
@@ -360,42 +371,60 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   }
 
   openImage(image: ImageInterface): void {
+    this.loadingImageId = image.pk;
+
     const imageId = image.hash || image.pk.toString();
     const navigationContext = this.images.map(image => ({
       imageId: image.hash || image.pk.toString(),
       thumbnailUrl: this.imageService.getGalleryThumbnail(image)
     }));
 
-    this.imageViewerService.openSlideshow(
-      this.componentId,
-      imageId,
-      FINAL_REVISION_LABEL,
-      navigationContext,
-      this.viewContainerRef,
-      true
-    ).subscribe(slideshow => {
-      this._slideshowComponent = slideshow.instance;
-
-      if (this._nearEndOfContextSubscription) {
-        this._nearEndOfContextSubscription.unsubscribe();
-      }
-
-      this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
-        .pipe(
-          filter(callerComponentId => callerComponentId === this.componentId)
+    this.imageService.loadImage(imageId).pipe(
+      switchMap(dbImage => {
+        const alias: ImageAlias = this.deviceService.lgMax() ? ImageAlias.HD : ImageAlias.QHD;
+        const thumbnailUrl = this.imageService.getThumbnail(dbImage, alias);
+        return this.imageService.loadImageFile(thumbnailUrl, () => {});
+      }),
+      switchMap(() =>
+        this.imageViewerService.openSlideshow(
+          this.componentId,
+          imageId,
+          FINAL_REVISION_LABEL,
+          navigationContext,
+          this.viewContainerRef,
+          true
         )
-        .subscribe(() => {
-          if (
-            this.loading ||
-            this.loadingMore ||
-            this.next === null
-          ) {
-            return;
-          }
+      ),
+      tap(slideshow => {
+        this._slideshowComponent = slideshow.instance;
 
-          this.page++;
-          this._getImages();
-        });
+        if (this._nearEndOfContextSubscription) {
+          this._nearEndOfContextSubscription.unsubscribe();
+        }
+
+        this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext.pipe(
+          filter(callerComponentId => callerComponentId === this.componentId),
+          tap(() => {
+            if (
+              this.loading ||
+              this.loadingMore ||
+              this.next === null
+            ) {
+              return;
+            }
+
+            this.page++;
+            this._getImages();
+          })
+        ).subscribe();
+      }),
+      finalize(() => {
+        this.loadingImageId = null;
+      })
+    ).subscribe({
+      error: (error) => {
+        console.error('Failed to load image:', error);
+      }
     });
   }
 

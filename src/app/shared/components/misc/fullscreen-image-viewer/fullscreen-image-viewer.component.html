@@ -319,7 +319,7 @@
   </div>
 </ng-template>
 
-<ng-container *ngIf="show">
+<div class="fullscreen-image-viewer h-100" *ngIf="show" @fadeInOut>
   <ng-container
     *ngIf="{
       hd: hdThumbnail,
@@ -351,4 +351,4 @@
       <img src="/assets/images/nav-logo.png?v=3" alt="AstroBin" />
     </a>
   </div>
-</ng-container>
+</div>

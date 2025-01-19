@@ -54,6 +54,20 @@ astrobin-masonry-layout.activity-feed-masonry-layout {
           margin-bottom: 1rem;
         }
       }
+
+      .masonry-item astrobin-loading-indicator {
+        background: rgba(0, 0, 0, .5);
+      }
     }
+  }
+}
+
+.image-container {
+  display: block;
+  height: 100%;
+
+  astrobin-loading-indicator {
+    background: rgba(0, 0, 0, .5);
+    border-radius: .75rem;
   }
 }
