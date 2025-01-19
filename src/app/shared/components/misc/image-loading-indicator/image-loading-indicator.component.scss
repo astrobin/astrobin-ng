@@ -15,36 +15,39 @@
   overflow: hidden;
 }
 
-.activity {
-  position: absolute;
-  left: -45%;
-  height: 100%;
-  width: 45%;
-  background-image: linear-gradient(
-      to left,
-      rgba(50, 50, 50, 0.05) 0%,
-      rgba(50, 50, 50, 0.3) 25%,
-      rgba(50, 50, 50, 0.6) 50%,
-      rgba(50, 50, 50, 0.3) 75%,
-      rgba(50, 50, 50, 0.05) 100%
-  );
-  animation: loading 1s infinite linear;
-  will-change: transform;
-  z-index: 1;
-  transform: translateX(0);
-}
-
-@keyframes loading {
-  from {
-    transform: translateX(-100%);
+@media (pointer: fine) and (min-width: $sm-min) {
+  .activity {
+    position: absolute;
+    left: -45%;
+    height: 100%;
+    width: 45%;
+    background-image: linear-gradient(
+        to left,
+        rgba(50, 50, 50, 0.05) 0%,
+        rgba(50, 50, 50, 0.3) 25%,
+        rgba(50, 50, 50, 0.6) 50%,
+        rgba(50, 50, 50, 0.3) 75%,
+        rgba(50, 50, 50, 0.05) 100%
+    );
+    animation: loading 1s infinite linear;
+    will-change: transform;
+    z-index: 1;
+    transform: translateX(0);
   }
-  to {
-    transform: translateX(300%);
+
+  @keyframes loading {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(300%);
+    }
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .activity {
     animation: none;
+    background: none;
   }
 }
