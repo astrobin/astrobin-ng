@@ -62,6 +62,12 @@ astrobin-masonry-layout.activity-feed-masonry-layout {
   }
 }
 
+.mobile-feed-loading {
+  astrobin-image-loading-indicator {
+    height: 350px;
+  }
+}
+
 .image-container {
   display: block;
   height: 100%;

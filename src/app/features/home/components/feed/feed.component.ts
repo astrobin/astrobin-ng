@@ -49,10 +49,20 @@ enum FeedType {
         <li [ngbNavItem]="FeedTab.FEED" class="me-2">
           <a ngbNavLink translate="Activity feed"></a>
           <ng-template ngbNavContent>
+            <div
+              *ngIf="loading && isBrowser"
+              class="d-flex d-md-none flex-column mobile-feed-loading gap-3"
+            >
+              <astrobin-image-loading-indicator
+                *ngFor="let x of Array(50)"
+              ></astrobin-image-loading-indicator>
+            </div>
+
             <astrobin-image-gallery-loading
               *ngIf="loading && isBrowser"
               [numberOfImages]="50"
               [activeLayout]="UserGalleryActiveLayout.LARGE"
+              class="activity-feed-gallery-loading d-none d-md-block"
             ></astrobin-image-gallery-loading>
 
             <div [style.min-height.px]="lastKnownHeight">
@@ -89,9 +99,18 @@ enum FeedType {
               </button>
             </div>
 
+            <div
+              *ngIf="!loading && loadingMore"
+              class="d-flex d-md-none flex-column mobile-feed-loading gap-3"
+            >
+              <astrobin-image-loading-indicator
+                *ngFor="let x of Array(50)"
+              ></astrobin-image-loading-indicator>
+            </div>
+
             <astrobin-image-gallery-loading
               *ngIf="!loading && loadingMore"
-              class="d-block mt-4 mb-2 mb-md-0"
+              class="d-none d-md-block mt-4 mb-2 mb-md-0 activity-feed-gallery-loading"
               [numberOfImages]="50"
               [activeLayout]="UserGalleryActiveLayout.LARGE"
             ></astrobin-image-gallery-loading>
@@ -573,4 +592,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       model: "image"
     }));
   }
+
+  protected readonly Array = Array;
 }
