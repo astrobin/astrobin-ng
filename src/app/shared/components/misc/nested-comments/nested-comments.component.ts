@@ -96,6 +96,8 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   // This the comment type of NestedComment, used to like comments.
   protected commentContentType: ContentTypeInterface;
 
+  protected isInViewport = false;
+
   constructor(
     public readonly store$: Store,
     public readonly actions$: Actions,
@@ -118,6 +120,13 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     this._initFields();
 
     this.refresh();
+  }
+
+  onIntersectionChange(isIntersecting: boolean): void {
+    if (isIntersecting && !this.isInViewport) {
+      this.isInViewport = true;
+      this.refresh();
+    }
   }
 
   refresh() {

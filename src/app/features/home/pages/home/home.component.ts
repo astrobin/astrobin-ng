@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -11,6 +11,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { filter, pairwise, takeUntil } from "rxjs/operators";
 import { ImageService } from "@shared/services/image/image.service";
+import { ImageViewerService } from "@shared/services/image-viewer.service";
 
 @Component({
   selector: 'astrobin-home',
@@ -72,7 +73,9 @@ export class HomeComponent extends BaseComponentDirective implements OnInit, Aft
     public readonly windowRefService: WindowRefService,
     public readonly router: Router,
     public readonly route: ActivatedRoute,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly imageViewerService: ImageViewerService,
+    public readonly viewContainerRef: ViewContainerRef
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -86,6 +89,17 @@ export class HomeComponent extends BaseComponentDirective implements OnInit, Aft
       const isSameUrl = prev.urlAfterRedirects === current.urlAfterRedirects;
       if (this.isBrowser && isSameUrl && !isBack) {
         this.windowRefService.nativeWindow.location.reload();
+      }
+    });
+
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      if (!this.imageViewerService.slideshow) {
+        this.imageViewerService.autoOpenSlideshow(this.componentId, this.route, this.viewContainerRef);
+      } else {
+        this.imageViewerService.closeSlideShow(false);
       }
     });
   }

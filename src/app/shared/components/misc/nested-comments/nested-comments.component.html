@@ -1,52 +1,60 @@
-<div *ngIf="comments$ | async as comments" class="nested-comments card">
-  <div class="card-header">
-    {{ title }}
+<div
+  astrobinIntersectionObserver
+  [rootMargin]="'50px'"
+  (intersectionChange)="onIntersectionChange($event)"
+  class="search-results"
+>
+  <div *ngIf="comments$ | async as comments" class="nested-comments card">
+    <div class="card-header">
+      {{ title }}
 
-    <div class="actions">
-      <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
-      <button (click)="close.emit()" *ngIf="showCloseButton" class="btn btn-link btn-no-block btn-close ms-2"></button>
+      <div class="actions">
+        <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+        <button (click)="close.emit()" *ngIf="showCloseButton"
+                class="btn btn-link btn-no-block btn-close ms-2"></button>
+      </div>
     </div>
-  </div>
 
-  <div class="card-body">
+    <div class="card-body">
 
-    <p *ngIf="!!info">
-      <fa-icon class="me-2" icon="info-circle"></fa-icon>
-      <span [innerHTML]="info"></span>
-    </p>
+      <p *ngIf="!!info">
+        <fa-icon class="me-2" icon="info-circle"></fa-icon>
+        <span [innerHTML]="info"></span>
+      </p>
 
-    <ng-container
-      *ngIf="showTopLevelForm && topLevelFormPlacement === 'TOP'"
-      [ngTemplateOutlet]="topLevelFormTpl"
-    ></ng-container>
-
-    <ng-container
-      *ngIf="showTopLevelButton && topLevelFormPlacement === 'TOP' && !showTopLevelForm"
-      [ngTemplateOutlet]="addCommentButtonTpl"
-    ></ng-container>
-
-    <ng-container *ngIf="!loadingComments; else loadingTpl">
       <ng-container
-        *ngFor="let comment of comments; trackBy: commentTrackByFn"
-        [ngTemplateOutletContext]="{comment}"
-        [ngTemplateOutlet]="commentsTpl"
+        *ngIf="showTopLevelForm && topLevelFormPlacement === 'TOP'"
+        [ngTemplateOutlet]="topLevelFormTpl"
       ></ng-container>
-      <ng-container *ngIf="comments.length === 0" [ngTemplateOutlet]="noCommentsTpl"></ng-container>
-    </ng-container>
 
-    <ng-container
-      *ngIf="showTopLevelForm && topLevelFormPlacement === 'BOTTOM'"
-      [ngTemplateOutlet]="topLevelFormTpl"
-    ></ng-container>
+      <ng-container
+        *ngIf="showTopLevelButton && topLevelFormPlacement === 'TOP' && !showTopLevelForm"
+        [ngTemplateOutlet]="addCommentButtonTpl"
+      ></ng-container>
 
-    <ng-container
-      *ngIf="showTopLevelButton && topLevelFormPlacement === 'BOTTOM' && !showTopLevelForm"
-      [ngTemplateOutlet]="addCommentButtonTpl"
-    ></ng-container>
+      <ng-container *ngIf="!loadingComments; else loadingTpl">
+        <ng-container
+          *ngFor="let comment of comments; trackBy: commentTrackByFn"
+          [ngTemplateOutletContext]="{comment}"
+          [ngTemplateOutlet]="commentsTpl"
+        ></ng-container>
+        <ng-container *ngIf="comments.length === 0" [ngTemplateOutlet]="noCommentsTpl"></ng-container>
+      </ng-container>
 
-  </div> <!-- card-body -->
+      <ng-container
+        *ngIf="showTopLevelForm && topLevelFormPlacement === 'BOTTOM'"
+        [ngTemplateOutlet]="topLevelFormTpl"
+      ></ng-container>
 
-</div> <!-- card -->
+      <ng-container
+        *ngIf="showTopLevelButton && topLevelFormPlacement === 'BOTTOM' && !showTopLevelForm"
+        [ngTemplateOutlet]="addCommentButtonTpl"
+      ></ng-container>
+
+    </div> <!-- card-body -->
+
+  </div> <!-- card -->
+</div>
 
 <ng-template #loadingTpl>
   <astrobin-loading-indicator></astrobin-loading-indicator>

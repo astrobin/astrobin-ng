@@ -13,7 +13,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { auditTime, finalize, fromEvent, Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { fadeInOut } from "@shared/animations";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
@@ -224,17 +224,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
-
-    router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      if (!this.imageViewerService.slideshow) {
-        this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
-      } else {
-        this.imageViewerService.closeSlideShow(false);
-      }
-    });
   }
 
   async ngOnInit() {
