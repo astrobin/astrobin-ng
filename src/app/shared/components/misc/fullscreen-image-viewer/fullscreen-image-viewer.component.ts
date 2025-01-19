@@ -443,7 +443,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _applyPanMoveMomentum(): void {
-    const friction = 0.5; // Adjust this value to change how quickly it slows down
+    const friction = 0.8; // Adjust this value to change how quickly it slows down
     const minVelocity = 0.01; // Minimum velocity before stopping
 
     const animate = () => {
