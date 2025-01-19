@@ -209,7 +209,15 @@ export class ImageViewerComponent
   ngOnChanges(changes: SimpleChanges) {
     if (changes.active && !changes.active.firstChange && changes.active.currentValue) {
       this.adDisplayed = false;
-      this._setAd();
+
+      if (this.adManagerComponent) {
+        this.adManagerComponent.destroyAd().then(() => {
+          this._setAd();
+        });
+      } else {
+        this._setAd();
+      }
+
       this._recordHit();
       this._adjustSvgOverlay();
     }
@@ -253,6 +261,10 @@ export class ImageViewerComponent
   ngOnDestroy() {
     if (this._dataAreaScrollEventSubscription) {
       this._dataAreaScrollEventSubscription.unsubscribe();
+    }
+
+    if (this.adManagerComponent) {
+      this.adManagerComponent.destroyAd();
     }
 
     super.ngOnDestroy();
@@ -938,7 +950,7 @@ export class ImageViewerComponent
     }
 
     const adManager = scrollArea.querySelector("astrobin-ad-manager") as HTMLElement | null;
-    const adManagerHeight = adManager ? adManager.offsetHeight : 0;
+    const adManagerHeight = adManager && adManager.querySelector(".ad-container").classList.contains("ad-rendered") ? adManager.offsetHeight : 0;
     const siteHeader = document.querySelector("astrobin-header > nav") as HTMLElement | null;
     const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
     const mobileMenu = imageViewer.querySelector("astrobin-mobile-menu") as HTMLElement | null;
@@ -956,7 +968,7 @@ export class ImageViewerComponent
 
       if (sideToSideLayout) {
         // The position is relative to the data area.
-        translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
+        translateYValue = `${globalLoadingIndicatorHeight + adManagerHeight + mobileMenuHeight - 1}px`;
       } else {
         // The position is relative to the main area.
         translateYValue = `${globalLoadingIndicatorHeight + siteHeaderHeight + mobileMenuHeight - 1}px`;
@@ -1010,12 +1022,14 @@ export class ImageViewerComponent
       return;
     }
 
+    this.adConfig = undefined;
+
     this.userSubscriptionService.displayAds$().pipe(
       filter(showAds => showAds !== undefined),
       take(1)
     ).subscribe(showAds => {
       const dataAreaWidth = this.windowRefService.nativeWindow.document.querySelector(
-        `#image-viewer-${this.image.hash || this.image.pk} .data-area`
+        `#image-viewer-${this.image.hash || this.image.pk} .data-area-container`
       ).clientWidth;
       const windowHeight = this.windowRefService.nativeWindow.innerHeight;
 
@@ -1032,7 +1046,7 @@ export class ImageViewerComponent
       this.changeDetectorRef.detectChanges();
 
       this.utilsService.delay(1).subscribe(() => {
-        if (this.adManagerComponent && this.active) {
+        if (this.adManagerComponent && this.active && !this.adDisplayed) {
           this.adManagerComponent.refreshAd();
         }
       });

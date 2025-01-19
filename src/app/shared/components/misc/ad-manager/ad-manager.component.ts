@@ -1,14 +1,24 @@
-import { AfterViewInit, Component, EventEmitter, Inject, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Inject, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
 import { AdManagerService } from "@shared/services/ad-manager.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-ad-manager",
   template: `
-    <div *ngIf="isBrowser" [id]="divId" class="ad-container"></div>
+    <div
+      *ngIf="isBrowser"
+      [id]="divId"
+      [style.height.px]="adHeight"
+      class="ad-container"
+      [class.ad-rendered]="adRendered"
+    >
+      <astrobin-loading-indicator *ngIf="!adRendered"></astrobin-loading-indicator>
+    </div>
     <button
+      *ngIf="adRendered"
       (click)="removeAds()"
       class="btn btn-link btn-no-block remove-ads"
     >
@@ -31,7 +41,8 @@ import { DeviceService } from "@shared/services/device.service";
           translate="There are only astronomy ads on AstroBin, that are published after careful review and approval. Nothing fishy, nothing off-topic, and nothing that will use any of your private information."
         ></p>
 
-        <p translate="If you are on AstroBin Premium or AstroBin Ultimate, you can remove ads in your settings. If you are not, please consider supporting AstroBin by subscribing!"></p>
+        <p
+          translate="If you are on AstroBin Premium or AstroBin Ultimate, you can remove ads in your settings. If you are not, please consider supporting AstroBin by subscribing!"></p>
 
         <p translate="Thank you!"></p>
       </div>
@@ -39,7 +50,7 @@ import { DeviceService } from "@shared/services/device.service";
   `,
   styleUrls: ["./ad-manager.component.scss"]
 })
-export class AdManagerComponent implements OnChanges, AfterViewInit {
+export class AdManagerComponent implements OnChanges {
   @Input() configName: string;
 
   @Output() adDisplayed = new EventEmitter<void>();
@@ -50,17 +61,23 @@ export class AdManagerComponent implements OnChanges, AfterViewInit {
   protected adUnitPath: string;
   protected divId: string;
   protected adSize: any[];
+  protected adHeight: number;
+  protected adRendered = false;
+
+  private _loadingAd = true;
 
   constructor(
     public readonly adManagerService: AdManagerService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
-    @Inject(PLATFORM_ID) platformId: Object
+    @Inject(PLATFORM_ID) platformId: Object,
+    public readonly elementRef: ElementRef,
+    public readonly utilsService: UtilsService
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  async ngOnChanges(changes: SimpleChanges) {
     if (this.isBrowser) {
       const config = this.adManagerService.getAdConfig(this.configName);
       if (config) {
@@ -68,24 +85,44 @@ export class AdManagerComponent implements OnChanges, AfterViewInit {
         this.divId = config.divId;
         this.adSize = config.adSize;
 
+        // First destroy any existing slot
+        await this.adManagerService.destroyAdSlot(this.divId);
+
+        const containerWidth = this.elementRef.nativeElement.parentElement.offsetWidth;
+
+        // Calculate the ad height by scaling the width proportionally to the container width
+        const adSizes = {
+          rectangular: {
+            width: 920,
+            height: 640
+          },
+          wide: {
+            width: 2280,
+            height: 280
+          }
+        };
+        this.adHeight = (adSizes[this.configName].height * containerWidth) / adSizes[this.configName].width;
+
+        // Only define new slot after previous one is destroyed
         this.adManagerService.defineAdSlot(this.configName, this.adUnitPath, this.adSize, this.divId);
+
+        this.adManagerService.displayAd(this.divId).then((displayed) => {
+          this._onAdResult(displayed);
+        });
       } else {
         console.error(`No ad configuration found for ${this.configName}`);
       }
     }
   }
 
-  ngAfterViewInit(): void {
-    if (this.isBrowser) {
-      this.adManagerService.displayAd(this.divId, () => {
-        this.adDisplayed.emit();
-      });
-    }
-  }
-
   refreshAd(): void {
-    this.adManagerService.refreshAd(this.divId, () => {
-      this.adDisplayed.emit();
+    if (this._loadingAd) {
+      return;
+    }
+
+    this._loadingAd = true;
+    this.adManagerService.refreshAd(this.divId).then((displayed) => {
+      this._onAdResult(displayed);
     });
   }
 
@@ -95,7 +132,22 @@ export class AdManagerComponent implements OnChanges, AfterViewInit {
     });
   }
 
-  destroyAd(): void {
-    this.adManagerService.destroyAdSlot(this.divId);
+  destroyAd(): Promise<void> {
+    return this.adManagerService.destroyAdSlot(this.divId);
+  }
+
+  private _onAdResult(displayed: boolean): void {
+    if (displayed) {
+      this.utilsService.delay(100).subscribe(() => {
+        requestAnimationFrame(() => {
+          this.adRendered = displayed;
+          this.adDisplayed.emit();
+          this._loadingAd = false;
+        });
+      });
+    } else {
+      this.adRendered = false;
+      this._loadingAd = false;
+    }
   }
 }

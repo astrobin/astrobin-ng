@@ -71,11 +71,22 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
       this.titleService.setTitle(this.translateService.instant("Search"));
     }
 
-    this.userSubscriptionService.displayAds$().pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(showAd => {
-      this.showAd = showAd;
-    });
+    if (this.activatedRoute.snapshot.data.image) {
+      // Don't bother, because the image viewer will be opened.
+      this.showAd = false;
+    } else {
+      this.userSubscriptionService.displayAds$().pipe(
+        takeUntil(this.destroyed$)
+      ).subscribe(showAd => {
+        this.showAd = showAd;
+      });
+    }
+
+    this.imageViewerService.slideshowState$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isOpen => {
+        this.showAd = !isOpen;
+      });
 
     merge(
       this.router.events.pipe(
@@ -170,14 +181,6 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
         {},
         `/search`
       );
-    }
-  }
-
-  imageOpened() {
-    if (this.adManagerComponent) {
-      // Makes the slot available to the image viewer.
-      this.showAd = false;
-      this.adManagerComponent.destroyAd();
     }
   }
 }
