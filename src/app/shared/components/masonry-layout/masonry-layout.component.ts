@@ -3,6 +3,7 @@ import { Subject } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 
 interface MasonryItem<T> {
   data: T;
@@ -60,11 +61,11 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnDestroy {
     $implicit: T;
   }>;
 
-  protected itemStates: MasonryItem<T>[] = [];
   protected containerWidth = 0;
 
   private readonly _isBrowser: boolean;
   private _destroyed$ = new Subject<void>();
+  private _resize$ = new Subject<number>();
   private _resizeObserver: ResizeObserver | null = null;
 
   constructor(
@@ -75,18 +76,29 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnDestroy {
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     this._isBrowser = isPlatformBrowser(platformId);
+
+    this._resize$
+      .pipe(
+        debounceTime(16),
+        distinctUntilChanged(),
+        takeUntil(this._destroyed$)
+      )
+      .subscribe(width => {
+        this.containerWidth = width;
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   ngAfterViewInit() {
     if (this._isBrowser && this.container) {
       requestAnimationFrame(() => {
         if (this.container) {
-          this.containerWidth = this.container.nativeElement.offsetWidth;
-          this.changeDetectorRef.markForCheck();
+          const width = this.container.nativeElement.offsetWidth;
+          this._resize$.next(width);
 
           this._resizeObserver = new ResizeObserver(entries => {
-            this.containerWidth = entries[0].contentRect.width;
-            this.changeDetectorRef.markForCheck();
+            const newWidth = Math.round(entries[0].contentRect.width);
+            this._resize$.next(newWidth);
           });
 
           this._resizeObserver.observe(this.container.nativeElement);

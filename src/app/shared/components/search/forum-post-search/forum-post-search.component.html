@@ -1,4 +1,9 @@
-<div class="search-results">
+<div
+  astrobinIntersectionObserver
+  [rootMargin]="'50px'"
+  (intersectionChange)="onIntersectionChange($event)"
+  class="search-results"
+>
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
     <ng-container *ngIf="results !== null; else loadingTemplate">
       <ng-container *ngIf="results.length > 0; else noResultsTemplate">
@@ -15,7 +20,7 @@
                 <span class="created">{{ post.created | localDate | timeago: true }}</span>
               </small>
             </div>
-            <img *ngIf="post.userAvatar" [src]="post.userAvatar" [alt]="post.userDisplayName "/>
+            <img *ngIf="post.userAvatar" [src]="post.userAvatar" [alt]="post.userDisplayName " />
           </div>
 
           <div

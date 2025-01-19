@@ -2,7 +2,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { auditTime, fromEvent, merge, Observable, throttleTime } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
-import { debounceTime, takeUntil } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -28,6 +28,8 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   @Input() model: SearchModelInterface;
   @Input() loadMoreOnScroll = true;
   @Input() showResultsCount = false;
+
+  protected isInViewport = false;
 
   protected readonly SearchService = SearchService;
 
@@ -55,8 +57,17 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.model && changes.model.currentValue) {
+    if (changes.model && changes.model.currentValue && this.isInViewport) {
       this.loadData();
+    }
+  }
+
+  onIntersectionChange(isIntersecting: boolean): void {
+    if (isIntersecting && !this.isInViewport) {
+      this.isInViewport = true;
+      if (this.model) {
+        this.loadData();
+      }
     }
   }
 

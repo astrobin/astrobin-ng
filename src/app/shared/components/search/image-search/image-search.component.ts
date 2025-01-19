@@ -52,8 +52,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
   protected isMobile = false;
   protected loadingImageId: ImageSearchInterface["objectId"];
+
   protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
   protected readonly Array = Array;
+
   private readonly _isBrowser: boolean;
   private _nearEndOfContextSubscription: Subscription;
 
@@ -163,10 +165,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
         }
       });
     }
-  }
-
-  getImageLink(image: ImageSearchInterface): string {
-    return `/i/${image.hash || image.objectId}`;
   }
 
   private _openImageByNavigation(image: ImageSearchInterface): void {

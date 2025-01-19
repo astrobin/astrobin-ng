@@ -1,157 +1,163 @@
 <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-  <ng-container *ngIf="!initialLoading; else loadingTemplate">
-    <ng-container *ngIf="results !== null; else loadingTemplate">
-      <ng-container *ngIf="results.length > 0; else noImagesTemplate">
-        <div
-          *ngIf="
+  <div
+    astrobinIntersectionObserver
+    [rootMargin]="'50px'"
+    (intersectionChange)="onIntersectionChange($event)"
+  >
+    <ng-container *ngIf="!initialLoading; else loadingTemplate">
+      <ng-container *ngIf="results !== null; else loadingTemplate">
+        <ng-container *ngIf="results.length > 0; else noImagesTemplate">
+          <div
+            *ngIf="
             (showRetailers && allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)) ||
             (showMarketplaceItems && marketplaceLineItems?.length)
           "
-          class="mb-4"
-        >
-          <div
-            *ngIf="allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)"
-            class="alert alert-light retailers"
+            class="mb-4"
           >
-            <ng-container *ngIf="itemListings?.length">
-              <div>
-                <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-                <span
-                  [innerHTML]="getItemListingsMessage(itemListings[0])"
-                  class="me-2"
-                ></span>
-              </div>
-              <div class="list">
-                <a
-                  *ngFor="let item of itemListings"
-                  [href]="item.url"
-                  class="link"
-                  target="_blank"
-                >
-                  <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
-                </a>
-              </div>
-            </ng-container>
+            <div
+              *ngIf="allowFullRetailerIntegration && (itemListings?.length || brandListings?.length)"
+              class="alert alert-light retailers"
+            >
+              <ng-container *ngIf="itemListings?.length">
+                <div>
+                  <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+                  <span
+                    [innerHTML]="getItemListingsMessage(itemListings[0])"
+                    class="me-2"
+                  ></span>
+                </div>
+                <div class="list">
+                  <a
+                    *ngFor="let item of itemListings"
+                    [href]="item.url"
+                    class="link"
+                    target="_blank"
+                  >
+                    <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
+                  </a>
+                </div>
+              </ng-container>
 
-            <ng-container *ngIf="(!itemListings || itemListings.length === 0) && brandListings?.length > 0">
-              <div>
-                <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-                <span
-                  [innerHTML]="getBrandListingsMessage(brandListings[0].brand)"
-                  class="me-2"
-                ></span>
-              </div>
-              <div class="list">
-                <a
-                  *ngFor="let item of brandListings"
-                  [href]="item.url"
-                  class="link"
-                  target="_blank"
-                >
-                  <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
-                </a>
-              </div>
-            </ng-container>
-          </div>
-
-          <div
-            *ngIf="marketplaceLineItems?.length"
-            class="alert alert-light marketplace-listings"
-          >
-            <div>
-              <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
-              <span
-                [innerHTML]="getMarketplaceMessage()"
-                class="me-2"
-              ></span>
+              <ng-container *ngIf="(!itemListings || itemListings.length === 0) && brandListings?.length > 0">
+                <div>
+                  <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+                  <span
+                    [innerHTML]="getBrandListingsMessage(brandListings[0].brand)"
+                    class="me-2"
+                  ></span>
+                </div>
+                <div class="list">
+                  <a
+                    *ngFor="let item of brandListings"
+                    [href]="item.url"
+                    class="link"
+                    target="_blank"
+                  >
+                    <img [src]="item.retailer.logo" [alt]="item.retailer.name" class="image" />
+                  </a>
+                </div>
+              </ng-container>
             </div>
-            <div class="list">
-              <a
-                *ngFor="let item of marketplaceLineItems"
-                [routerLink]="['/equipment/marketplace/listing', item.listingHash]"
-                class="link"
-              >
-                <img
-                  *ngIf="item.images?.length"
-                  [src]="item.images[0].thumbnailFile"
-                  [alt]="item.itemName"
-                  class="image"
-                />
 
-                <span *ngIf="!item.images || item.images.length === 0" class="item-name">
+            <div
+              *ngIf="marketplaceLineItems?.length"
+              class="alert alert-light marketplace-listings"
+            >
+              <div>
+                <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
+                <span
+                  [innerHTML]="getMarketplaceMessage()"
+                  class="me-2"
+                ></span>
+              </div>
+              <div class="list">
+                <a
+                  *ngFor="let item of marketplaceLineItems"
+                  [routerLink]="['/equipment/marketplace/listing', item.listingHash]"
+                  class="link"
+                >
+                  <img
+                    *ngIf="item.images?.length"
+                    [src]="item.images[0].thumbnailFile"
+                    [alt]="item.itemName"
+                    class="image"
+                  />
+
+                  <span *ngIf="!item.images || item.images.length === 0" class="item-name">
                   {{ item.itemName }}
                 </span>
-              </a>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="results-count" *ngIf="showResultsCount && lastResultsCount">
-          <span [innerHTML]="lastResultsCount"></span>
-        </div>
+          <div class="results-count" *ngIf="showResultsCount && lastResultsCount">
+            <span [innerHTML]="lastResultsCount"></span>
+          </div>
 
-        <astrobin-masonry-layout
-          [layout]="'medium'"
-          [items]="results"
-          [idProperty]="'objectId'"
-          [leftAlignLastRow]="false"
-        >
-          <ng-template let-item>
-            <div class="image-container">
-              <a
-                @fadeInOut
-                (click)="openImage($event, item)"
-                [href]="getImageLink(item)"
-              >
-                <img
-                  #imageElement
-                  [src]="item.regularThumbnail"
-                  [alt]="item.title"
-                />
-
-                <astrobin-loading-indicator
-                  *ngIf="loadingImageId?.toString() === item.objectId.toString()"
-                  @fadeInOut
-                  class="position-absolute top-0"
-                ></astrobin-loading-indicator>
-
-                <astrobin-image-icons [image]="item"></astrobin-image-icons>
-
-                <astrobin-image-hover
-                  *ngIf="!loadingImageId && !isMobile && showDynamicOverlay"
-                  @fadeInOut
-                  [image]="item"
-                  [staticOverlay]="showStaticOverlay ? model.ordering : null"
-                  [activeLayout]="UserGalleryActiveLayout.MEDIUM"
-                ></astrobin-image-hover>
-              </a>
-            </div>
-          </ng-template>
-        </astrobin-masonry-layout>
-
-        <div
-          *ngIf="!loading && !initialLoading && !!next"
-          class="w-100 d-flex justify-content-center mt-4"
-        >
-          <button
-            (click)="loadMore().subscribe()"
-            class="btn btn-outline-primary btn-no-block"
+          <astrobin-masonry-layout
+            [layout]="'medium'"
+            [items]="results"
+            [idProperty]="'objectId'"
+            [leftAlignLastRow]="false"
           >
-            {{ "Load more" | translate }}
-          </button>
-        </div>
+            <ng-template let-item>
+              <div class="image-container">
+                <a
+                  @fadeInOut
+                  (click)="openImage($event, item)"
+                  [href]="'/i/' + (item.hash || item.objectId)"
+                >
+                  <img
+                    #imageElement
+                    [src]="item.regularThumbnail"
+                    [alt]="item.title"
+                  />
 
-        <div *ngIf="!initialLoading && loading" class="mt-4">
-          <ng-container *ngIf="loading">
-            <astrobin-image-gallery-loading
-              [numberOfImages]="results.length"
-              [activeLayout]="UserGalleryActiveLayout.MEDIUM"
-            ></astrobin-image-gallery-loading>
-          </ng-container>
-        </div>
+                  <astrobin-loading-indicator
+                    *ngIf="loadingImageId?.toString() === item.objectId.toString()"
+                    @fadeInOut
+                    class="position-absolute top-0"
+                  ></astrobin-loading-indicator>
+
+                  <astrobin-image-icons [image]="item"></astrobin-image-icons>
+
+                  <astrobin-image-hover
+                    *ngIf="!loadingImageId && !isMobile && showDynamicOverlay"
+                    @fadeInOut
+                    [image]="item"
+                    [staticOverlay]="showStaticOverlay ? model.ordering : null"
+                    [activeLayout]="UserGalleryActiveLayout.MEDIUM"
+                  ></astrobin-image-hover>
+                </a>
+              </div>
+            </ng-template>
+          </astrobin-masonry-layout>
+
+          <div
+            *ngIf="!loading && !initialLoading && !!next"
+            class="w-100 d-flex justify-content-center mt-4"
+          >
+            <button
+              (click)="loadMore().subscribe()"
+              class="btn btn-outline-primary btn-no-block"
+            >
+              {{ "Load more" | translate }}
+            </button>
+          </div>
+
+          <div *ngIf="!initialLoading && loading" class="mt-4">
+            <ng-container *ngIf="loading">
+              <astrobin-image-gallery-loading
+                [numberOfImages]="results.length"
+                [activeLayout]="UserGalleryActiveLayout.MEDIUM"
+              ></astrobin-image-gallery-loading>
+            </ng-container>
+          </div>
+        </ng-container>
       </ng-container>
     </ng-container>
-  </ng-container>
+  </div>
 </ng-container>
 
 <ng-template #noImagesTemplate>
