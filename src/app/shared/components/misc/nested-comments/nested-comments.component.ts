@@ -122,7 +122,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     this.refresh();
   }
 
-  onIntersectionChange(isIntersecting: boolean): void {
+  onVisibilityChange(isIntersecting: boolean): void {
     if (isIntersecting && !this.isInViewport) {
       this.isInViewport = true;
       this.refresh();

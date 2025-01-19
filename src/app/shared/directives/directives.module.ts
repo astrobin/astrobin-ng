@@ -7,7 +7,7 @@ import { NoScrollDirective } from "@shared/directives/no-scroll/no-scroll.direct
 import { ScrollToggleDirective } from "@shared/directives/scroll-toggle.directive";
 import { StickyDirective } from "@shared/directives/sticky-active.directive";
 import { DynamicRouterLinkDirective } from "@shared/directives/dynamic-router-link.directive";
-import { IntersectionObserverDirective } from "@shared/directives/intersection-observer.directive";
+import { ScrollVisibilityDirective } from "@shared/directives/scroll-visibility.directive";
 
 @NgModule({
   declarations: [
@@ -18,7 +18,7 @@ import { IntersectionObserverDirective } from "@shared/directives/intersection-o
     ScrollToggleDirective,
     StickyDirective,
     DynamicRouterLinkDirective,
-    IntersectionObserverDirective
+    ScrollVisibilityDirective
   ],
   exports: [
     EventPreventDefaultDirective,
@@ -28,7 +28,7 @@ import { IntersectionObserverDirective } from "@shared/directives/intersection-o
     ScrollToggleDirective,
     StickyDirective,
     DynamicRouterLinkDirective,
-    IntersectionObserverDirective
+    ScrollVisibilityDirective
   ],
   imports: [CommonModule]
 })

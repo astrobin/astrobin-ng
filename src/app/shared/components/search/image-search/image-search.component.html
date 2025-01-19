@@ -1,8 +1,12 @@
 <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
   <div
-    astrobinIntersectionObserver
-    [rootMargin]="'50px'"
-    (intersectionChange)="onIntersectionChange($event)"
+    astrobinScrollVisibility
+    [viewportOptions]="{
+       verticalTolerance: 200,
+       horizontalTolerance: 10,
+       shouldCheckHorizontal: false
+     }"
+    (visibilityChange)="onVisibilityChange($event)"
   >
     <ng-container *ngIf="!initialLoading; else loadingTemplate">
       <ng-container *ngIf="results !== null; else loadingTemplate">

@@ -62,7 +62,7 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     }
   }
 
-  onIntersectionChange(isIntersecting: boolean): void {
+  onVisibilityChange(isIntersecting: boolean): void {
     if (isIntersecting && !this.isInViewport && this.model) {
       this.isInViewport = true;
       this.loadData();

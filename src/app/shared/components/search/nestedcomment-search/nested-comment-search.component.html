@@ -1,7 +1,11 @@
 <div
-  astrobinIntersectionObserver
-  [rootMargin]="'50px'"
-  (intersectionChange)="onIntersectionChange($event)"
+  astrobinScrollVisibility
+  [viewportOptions]="{
+       verticalTolerance: 200,
+       horizontalTolerance: 10,
+       shouldCheckHorizontal: false
+     }"
+  (visibilityChange)="onVisibilityChange($event)"
   class="search-results"
 >
   <ng-container *ngIf="!initialLoading; else loadingTemplate">
