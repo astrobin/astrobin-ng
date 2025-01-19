@@ -49,7 +49,11 @@ enum FeedType {
         <li [ngbNavItem]="FeedTab.FEED" class="me-2">
           <a ngbNavLink translate="Activity feed"></a>
           <ng-template ngbNavContent>
-            <astrobin-loading-indicator *ngIf="loading || !isBrowser"></astrobin-loading-indicator>
+            <astrobin-image-gallery-loading
+              *ngIf="loading && isBrowser"
+              [numberOfImages]="50"
+              [activeLayout]="UserGalleryActiveLayout.LARGE"
+            ></astrobin-image-gallery-loading>
 
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
@@ -85,10 +89,12 @@ enum FeedType {
               </button>
             </div>
 
-            <astrobin-loading-indicator
+            <astrobin-image-gallery-loading
               *ngIf="!loading && loadingMore"
-              class="mt-4 mb-2 mb-md-0"
-            ></astrobin-loading-indicator>
+              class="d-block mt-4 mb-2 mb-md-0"
+              [numberOfImages]="50"
+              [activeLayout]="UserGalleryActiveLayout.LARGE"
+            ></astrobin-image-gallery-loading>
 
             <astrobin-scroll-to-top></astrobin-scroll-to-top>
           </ng-template>
@@ -97,7 +103,11 @@ enum FeedType {
         <li [ngbNavItem]="FeedTab.RECENT">
           <a ngbNavLink translate="Recent images"></a>
           <ng-template ngbNavContent>
-            <astrobin-loading-indicator *ngIf="loading"></astrobin-loading-indicator>
+            <astrobin-image-gallery-loading
+              *ngIf="loading && isBrowser"
+              [numberOfImages]="50"
+              [activeLayout]="UserGalleryActiveLayout.MEDIUM"
+            ></astrobin-image-gallery-loading>
 
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
@@ -138,10 +148,24 @@ enum FeedType {
               </astrobin-masonry-layout>
             </div>
 
-            <astrobin-loading-indicator
+            <div
+              *ngIf="!loadingMore && !loading && !!next"
+              class="w-100 d-flex justify-content-center mt-4"
+            >
+              <button
+                (click)="onScroll()"
+                class="btn btn-outline-primary btn-no-block"
+              >
+                {{ "Load more" | translate }}
+              </button>
+            </div>
+
+            <astrobin-image-gallery-loading
               *ngIf="!loading && loadingMore"
-              class="mt-5"
-            ></astrobin-loading-indicator>
+              class="d-block mt-5"
+              [numberOfImages]="50"
+              [activeLayout]="UserGalleryActiveLayout.MEDIUM"
+            ></astrobin-image-gallery-loading>
 
             <astrobin-scroll-to-top></astrobin-scroll-to-top>
           </ng-template>
