@@ -1,6 +1,6 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { auditTime, fromEvent, merge, Observable, throttleTime } from "rxjs";
+import { auditTime, fromEvent, Observable } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { takeUntil } from "rxjs/operators";
 import { Store } from "@ngrx/store";
@@ -63,11 +63,9 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   }
 
   onIntersectionChange(isIntersecting: boolean): void {
-    if (isIntersecting && !this.isInViewport) {
+    if (isIntersecting && !this.isInViewport && this.model) {
       this.isInViewport = true;
-      if (this.model) {
-        this.loadData();
-      }
+      this.loadData();
     }
   }
 

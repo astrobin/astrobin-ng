@@ -149,7 +149,7 @@
           <div *ngIf="!initialLoading && loading" class="mt-4">
             <ng-container *ngIf="loading">
               <astrobin-image-gallery-loading
-                [numberOfImages]="results.length"
+                [numberOfImages]="25"
                 [activeLayout]="UserGalleryActiveLayout.MEDIUM"
               ></astrobin-image-gallery-loading>
             </ng-container>
@@ -167,7 +167,7 @@
 <ng-template #loadingTemplate>
   <astrobin-image-gallery-loading
     @fadeInOut
-    [numberOfImages]="SearchService.DEFAULT_PAGE_SIZE"
+    [numberOfImages]="25"
     [activeLayout]="UserGalleryActiveLayout.MEDIUM"
   ></astrobin-image-gallery-loading>
 </ng-template>
