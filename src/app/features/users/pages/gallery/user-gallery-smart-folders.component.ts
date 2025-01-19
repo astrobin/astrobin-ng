@@ -24,7 +24,6 @@ export enum SmartFolderType {
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div
         *ngIf="!activeFolderType"
-        @fadeInOut
         class="d-flex flex-wrap gap-4 justify-content-center"
       >
         <ng-container *ngFor="let smartFolder of smartFolders">
@@ -59,7 +58,6 @@ export enum SmartFolderType {
 
       <astrobin-user-gallery-smart-folder
         *ngIf="activeFolderType"
-        @fadeInOut
         (activeChange)="activeChange.emit($event)"
         [user]="user"
         [userProfile]="userProfile"

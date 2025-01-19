@@ -73,14 +73,12 @@ enum FeedType {
               >
                 <ng-template let-item>
                   <astrobin-feed-item
-                    @fadeInOut
                     (openImage)="openImageById(item.id, $event)"
                     [feedItem]="item"
                   ></astrobin-feed-item>
 
                   <astrobin-loading-indicator
                     *ngIf="loadingItemId === item.id.toString()"
-                    @fadeInOut
                     class="position-absolute top-0 h-100"
                   ></astrobin-loading-indicator>
                 </ng-template>
@@ -150,7 +148,6 @@ enum FeedType {
 
                     <astrobin-loading-indicator
                       *ngIf="loadingItemId === item.hash || loadingItemId === item.pk.toString()"
-                      @fadeInOut
                       class="position-absolute top-0 h-100"
                     ></astrobin-loading-indicator>
                   </a>

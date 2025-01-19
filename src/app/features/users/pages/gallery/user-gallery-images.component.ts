@@ -52,13 +52,11 @@ import { DeviceService } from "@shared/services/device.service";
         <astrobin-loading-indicator
           *ngIf="!loadingPlaceholdersCount || loadingPlaceholdersCount <= 10"
           [hidden]="!loading"
-          @fadeInOut
         ></astrobin-loading-indicator>
 
         <astrobin-image-gallery-loading
           *ngIf="loadingPlaceholdersCount && loadingPlaceholdersCount > 10"
           [hidden]="!loading"
-          @fadeInOut
           [activeLayout]="activeLayout"
           [numberOfImages]="loadingPlaceholdersCount"
         ></astrobin-image-gallery-loading>
@@ -113,10 +111,7 @@ import { DeviceService } from "@shared/services/device.service";
         <ng-container
           *ngIf="!loading && images.length > 0 && activeLayout === UserGalleryActiveLayout.TABLE"
         >
-          <div
-            @fadeInOut
-            class="table-layout-container"
-          >
+          <div class="table-layout-container">
             <table class="table table-striped table-mobile-support">
               <thead>
               <tr>
