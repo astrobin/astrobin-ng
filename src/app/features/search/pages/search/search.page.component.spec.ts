@@ -6,7 +6,8 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { ActivatedRoute, Router } from "@angular/router";
-import { EMPTY, of } from "rxjs";
+import { BehaviorSubject, EMPTY, of } from "rxjs";
+import { ImageViewerService } from "@shared/services/image-viewer.service";
 
 describe("SearchPageComponent", () => {
   let component: SearchPageComponent;
@@ -31,6 +32,12 @@ describe("SearchPageComponent", () => {
         provide: Router,
         useValue: {
           events: EMPTY
+        }
+      },
+      {
+        provide: ImageViewerService,
+        useValue: {
+          slideshowState$: new BehaviorSubject<boolean>(false)
         }
       }
     ]);
