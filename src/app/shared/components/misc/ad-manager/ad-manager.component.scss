@@ -1,6 +1,19 @@
 :host {
   position: relative;
 
+  .ad-container {
+    opacity: 0;
+    transition: opacity .3s;
+
+    :not(.ad-rendered) {
+      pointer-events: none;
+    }
+
+    &.ad-rendered {
+      opacity: 1;
+    }
+  }
+
   .remove-ads {
     position: absolute;
     bottom: .25rem;

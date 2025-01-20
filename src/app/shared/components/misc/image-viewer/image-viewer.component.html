@@ -304,6 +304,7 @@
     #dataArea
     *ngIf="currentUserWrapper$ | async as currentUserWrapper"
     class="data-area"
+    [class.d-none]="!adConfig"
   >
     <astrobin-ad-manager
       #ad

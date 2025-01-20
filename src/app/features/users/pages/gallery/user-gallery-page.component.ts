@@ -103,14 +103,25 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       this.user = data.userData.user;
       this.userProfile = data.userData.userProfile;
 
-      this.userSubscriptionService.displayAds$().pipe(
-        filter(showAd => typeof showAd !== "undefined"),
-        take(1)
-      ).subscribe(showAd => {
-        // showAd = if the viewer gets ads.
-        // this.userProfile.allowAds = if the user allows ads to be shown on their profile.
-        this.showAd = showAd && this.userProfile.allowAds;
-      });
+      if (this.activatedRoute.snapshot.data.image) {
+        // Don't bother, because the image viewer will be opened.
+        this.showAd = false;
+      } else {
+        this.userSubscriptionService.displayAds$().pipe(
+          filter(showAd => typeof showAd !== "undefined"),
+          take(1)
+        ).subscribe(showAd => {
+          // showAd = if the viewer gets ads.
+          // this.userProfile.allowAds = if the user allows ads to be shown on their profile.
+          this.showAd = showAd && this.userProfile.allowAds;
+        });
+      }
+
+      this.imageViewerService.slideshowState$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(isOpen => {
+          this.showAd = !isOpen;
+        });
 
       if (!this.activatedRoute.snapshot.fragment) {
         switch (this.userProfile.defaultGallerySorting) {

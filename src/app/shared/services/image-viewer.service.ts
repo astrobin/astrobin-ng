@@ -17,7 +17,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { EMPTY, Observable } from "rxjs";
+import { EMPTY, Observable, Subject } from "rxjs";
 
 export interface ImageViewerNavigationContextItem {
   imageId: ImageInterface["hash"] | ImageInterface["pk"];
@@ -33,10 +33,13 @@ export type ImageViewerNavigationContext = ImageViewerNavigationContextItem[];
 export class ImageViewerService extends BaseService {
   slideshow: ComponentRef<ImageViewerSlideshowComponent>;
 
+  public slideshowState$: Observable<boolean>;
+
   private readonly _isBrowser: boolean;
   private _previousTitle: string;
   private _previousDescription: string;
   private _previousUrl: string;
+  private _slideshowStateSubject = new Subject<boolean>();
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -51,6 +54,8 @@ export class ImageViewerService extends BaseService {
     public readonly imageService: ImageService
   ) {
     super(loadingService);
+
+    this.slideshowState$ = this._slideshowStateSubject.asObservable();
 
     this._isBrowser = isPlatformBrowser(platformId);
 
@@ -119,7 +124,7 @@ export class ImageViewerService extends BaseService {
         this._previousUrl = this.windowRefService.getCurrentUrl().toString();
 
         this.slideshow = viewContainerRef.createComponent(ImageViewerSlideshowComponent);
-
+        this._slideshowStateSubject.next(true);
         this._stopBodyScrolling();
 
         this.slideshow.instance.closeSlideshow.pipe(take(1)).subscribe(pushState => {
@@ -157,6 +162,7 @@ export class ImageViewerService extends BaseService {
     if (this.slideshow) {
       this.slideshow.destroy();
       this.slideshow = null;
+      this._slideshowStateSubject.next(false);
 
       this.store$.dispatch(new HideFullscreenImage());
       this._resumeBodyScrolling();

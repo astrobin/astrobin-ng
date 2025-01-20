@@ -65,45 +65,92 @@ export class AdManagerService extends BaseService {
     }
   }
 
-  displayAd(divId: string, callback: () => void): void {
-    if (this._isBrowser) {
-      const nativeWindow = this.windowRefService.nativeWindow as any;
-      if (nativeWindow) {
-        nativeWindow.googletag.cmd.push(() => {
-          nativeWindow.googletag.display(divId);
-          if (callback) {
-            callback();
+  displayAd(divId: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (this._isBrowser) {
+        const nativeWindow = this.windowRefService.nativeWindow as any;
+        if (nativeWindow) {
+          const slot = this._adSlots[divId];
+          if (!slot) {
+            resolve(false);
+            return;
           }
-        });
-      }
-    }
-  }
 
-  refreshAd(divId: string, callback: () => void): void {
-    if (this._isBrowser) {
-      const nativeWindow = this.windowRefService.nativeWindow as any;
-      if (nativeWindow && this._adSlots[divId]) {
-        nativeWindow.googletag.cmd.push(() => {
-          nativeWindow.googletag.pubads().refresh([this._adSlots[divId]]);
-          if (callback) {
-            callback();
-          }
-        });
-      }
-    }
-  }
+          const renderListener = (event) => {
+            if (event.slot === slot) {
+              nativeWindow.googletag.pubads().removeEventListener('slotRenderEnded', renderListener);
 
-  destroyAdSlot(divId: string): void {
-    if (this._isBrowser) {
-      const nativeWindow = this.windowRefService.nativeWindow as any;
-      nativeWindow.googletag.cmd.push(() => {
-        const slot = this._adSlots[divId];
-        if (slot) {
-          nativeWindow.googletag.destroySlots([slot]);
-          delete this._adSlots[divId];
+              if (event.isEmpty) {
+                resolve(false);
+              } else {
+                // Add slotOnload listener only if we're expecting an ad
+                const loadListener = (loadEvent) => {
+                  if (loadEvent.slot === slot) {
+                    nativeWindow.googletag.pubads().removeEventListener('slotOnload', loadListener);
+                    resolve(true);
+                  }
+                };
+                nativeWindow.googletag.pubads().addEventListener('slotOnload', loadListener);
+              }
+            }
+          };
+
+          nativeWindow.googletag.pubads().addEventListener('slotRenderEnded', renderListener);
+          nativeWindow.googletag.cmd.push(() => {
+            nativeWindow.googletag.display(divId);
+          });
+        } else {
+          resolve(false);
         }
-      });
-    }
+      } else {
+        resolve(false);
+      }
+    });
+  }
+
+  refreshAd(divId: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (this._isBrowser) {
+        const nativeWindow = this.windowRefService.nativeWindow as any;
+        if (nativeWindow && this._adSlots[divId]) {
+          const slot = this._adSlots[divId];
+
+          const listener = (event) => {
+            if (event.slot === slot) {
+              nativeWindow.googletag.pubads().removeEventListener('slotRenderEnded', listener);
+              resolve(!event.isEmpty);
+            }
+          };
+
+          nativeWindow.googletag.pubads().addEventListener('slotRenderEnded', listener);
+          nativeWindow.googletag.cmd.push(() => {
+            nativeWindow.googletag.pubads().refresh([this._adSlots[divId]]);
+          });
+        } else {
+          resolve(false);
+        }
+      } else {
+        resolve(false);
+      }
+    });
+  }
+
+  destroyAdSlot(divId: string): Promise<void> {
+    return new Promise<void>((resolve) => {
+      if (this._isBrowser) {
+        const nativeWindow = this.windowRefService.nativeWindow as any;
+        nativeWindow.googletag.cmd.push(() => {
+          const slot = this._adSlots[divId];
+          if (slot) {
+            nativeWindow.googletag.destroySlots([slot]);
+            delete this._adSlots[divId];
+          }
+          resolve();
+        });
+      } else {
+        resolve();
+      }
+    });
   }
 
   private _initGooglePublisherTag() {
