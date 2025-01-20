@@ -119,19 +119,9 @@
           [style.transition]="touchScale === 1 ? 'transform 0.3s' : 'none'"
         >
           <img
-            [src]="isVeryLargeImage ? hd : real"
-            [class.hidden]="isTransforming"
+            [src]="real"
             [style.transform]="touchZoomTransform"
             alt=""
-            class="display-image"
-          />
-
-          <img
-            [src]="isVeryLargeImage ? hd : real"
-            [class.hidden]="!isTransforming"
-            [style.transform]="touchZoomTransform"
-            alt=""
-            class="manipulation-image"
           />
         </div>
 
@@ -177,9 +167,12 @@
       alt=""
     />
 
-    <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && real" [ngTemplateOutlet]="real && pinchAndZoomInstructionTemplate"></ng-container>
-    <ng-container *ngIf="hd && !isLargeEnough" [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
-    <ng-container *ngIf="hd && isLargeEnough && !allowReal" [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
+    <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && real"
+                  [ngTemplateOutlet]="real && pinchAndZoomInstructionTemplate"></ng-container>
+    <ng-container *ngIf="hd && !isLargeEnough"
+                  [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
+    <ng-container *ngIf="hd && isLargeEnough && !allowReal"
+                  [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
   </div>
 
   <ng-container [ngTemplateOutlet]="zoomModesTemplate" [ngTemplateOutletContext]="{ real }"></ng-container>
@@ -288,7 +281,11 @@
 </ng-template>
 
 <ng-template #zoomModesTemplate let-real="real">
-  <div *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && !!real" class="zoom-modes">
+  <div
+    *ngIf="(!isVeryLargeImage && isLargeEnough && allowReal && !!real) &&
+           (isHybridPC || !isTouchDevice || (isHybridPC && !touchMode))"
+    class="zoom-modes"
+  >
     <div
       *ngIf="isHybridPC"
       (click)="toggleTouchMouseMode()"
