@@ -606,6 +606,32 @@ $globalLoadingIndicatorHeight: 6px;
       flex-direction: column;
       justify-content: flex-start;
 
+      .data-area-bottom-gradient {
+        position: fixed;
+        bottom: 0;
+        left: 60%;
+        right: 0;
+        height: 5rem;
+        background: linear-gradient(
+            180deg,
+            transparent 0, rgba(0, 0, 0, .03) 4%,
+            rgba(0, 0, 0, .11) 21%,
+            rgba(0, 0, 0, .8) 78%,
+            rgba(0, 0, 0, .9) 95%,
+            rgba(0, 0, 0, .95)
+        );
+        pointer-events: none;
+
+        @media (max-width: $lg-max) {
+          left: 50%;
+          height: 4rem;
+        }
+
+        @media (max-width: $sm-max) {
+          display: none;
+        }
+      }
+
       .data-area {
         @include darker-background-texture;
         height: 100%;
