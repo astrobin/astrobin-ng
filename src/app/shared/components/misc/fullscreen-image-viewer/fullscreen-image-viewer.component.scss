@@ -162,17 +162,8 @@ $header-height: 63px;
         justify-content: center;
         transform-origin: center;
 
-        .display-image,
-        .manipulation-image {
+        img {
           position: absolute;
-
-          &.hidden {
-            opacity: 0;
-          }
-        }
-
-        .manipulation-image {
-          will-change: transform;
         }
       }
     }
