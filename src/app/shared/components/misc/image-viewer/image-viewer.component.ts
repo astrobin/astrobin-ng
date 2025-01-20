@@ -207,7 +207,10 @@ export class ImageViewerComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.active && !changes.active.firstChange && changes.active.currentValue) {
+    if (this.active) {
+      this._recordHit();
+      this._adjustSvgOverlay();
+
       this.adDisplayed = false;
 
       if (this.adManagerComponent) {
@@ -217,9 +220,6 @@ export class ImageViewerComponent
       } else {
         this._setAd();
       }
-
-      this._recordHit();
-      this._adjustSvgOverlay();
     }
   }
 

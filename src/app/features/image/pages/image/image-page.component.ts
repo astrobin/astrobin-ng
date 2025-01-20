@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { filter, switchMap, take, takeUntil } from "rxjs/operators";
@@ -31,6 +31,7 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
 
   protected readonly isBrowser: boolean;
   protected image: ImageInterface;
+  protected revisionLabel: ImageRevisionInterface["label"];
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -57,16 +58,7 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
       distinctUntilChangedObj()
     ).subscribe(data => {
       this.image = data.image;
-      this.imageService.setMetaTags(this.image);
-
-      this.utilsService.delay(1).subscribe(() => {
-        if (this.image && this.imageViewer) {
-          this.imageViewer.setImage(
-            this.image,
-            this.route.snapshot.queryParams.r || FINAL_REVISION_LABEL
-          );
-        }
-      });
+      this.revisionLabel = this.route.snapshot.queryParams.r || FINAL_REVISION_LABEL;
     });
 
     this._setupOnDelete();
