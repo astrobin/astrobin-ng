@@ -38,6 +38,7 @@ describe("CreateLocationModalComponent", () => {
       {
         provide: GoogleMapsService,
         useValue: {
+          loadGoogleMaps: jest.fn().mockResolvedValue(Promise.resolve()),
           createGeocoder: () => {
             return {
               geocode: jest
