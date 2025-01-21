@@ -10,6 +10,8 @@ import { StoreModule } from "@ngrx/store";
 import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
 import { ActivatedRoute } from "@angular/router";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { MarketplaceListingFormComponent } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("MarketplaceEditListingPageComponent", () => {
   let component: MarketplaceEditListingPageComponent;
@@ -18,6 +20,7 @@ describe("MarketplaceEditListingPageComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceEditListingPageComponent, AppModule)
+      .mock(MarketplaceListingFormComponent, { export: true })
       .provide([
         provideMockStore({ initialState: initialMainState }),
         {
@@ -28,6 +31,12 @@ describe("MarketplaceEditListingPageComponent", () => {
                 listing: MarketplaceGenerator.listing()
               }
             }
+          }
+        },
+        {
+          provide: WindowRefService,
+          useValue: {
+            scroll: jest.fn()
           }
         }
       ])

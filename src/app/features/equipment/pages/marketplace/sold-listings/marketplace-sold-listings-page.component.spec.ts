@@ -12,6 +12,7 @@ import { StoreModule } from "@ngrx/store";
 import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { MarketplaceSearchBarComponent } from "@features/equipment/components/marketplace-search-bar/marketplace-search-bar.component";
 
 describe("SoldListingsComponent", () => {
   let component: MarketplaceSoldListingsPageComponent;
@@ -20,6 +21,7 @@ describe("SoldListingsComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceSoldListingsPageComponent, AppModule)
+      .mock(MarketplaceSearchBarComponent, { export: true })
       .provide([
         WindowRefService,
         provideMockStore({ initialState: initialMainState }),

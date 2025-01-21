@@ -6,6 +6,7 @@ import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { FeedItemGenerator } from "@shared/generators/feed-item.generator";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { FeedItemDisplayTextComponent } from "@features/home/components/feed-item-display-text/feed-item-display-text.component";
 
 describe('FeedItemGroupComponent', () => {
   let component: FeedItemGroupComponent;
@@ -19,6 +20,7 @@ describe('FeedItemGroupComponent', () => {
     });
 
     await MockBuilder(FeedItemGroupComponent, AppModule)
+      .mock(FeedItemDisplayTextComponent, { export: true })
       .provide([
         provideMockStore({ initialState: initialMainState }),
         { provide: ClassicRoutesService, useValue: mockClassicRoutesService }

@@ -12,6 +12,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ActivatedRoute } from "@angular/router";
 import { of } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { MarketplaceSearchBarComponent } from "@features/equipment/components/marketplace-search-bar/marketplace-search-bar.component";
 
 describe("MarketplaceUserExpiredListingsPageComponent", () => {
   let component: MarketplaceUserExpiredListingsPageComponent;
@@ -19,6 +20,7 @@ describe("MarketplaceUserExpiredListingsPageComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceUserExpiredListingsPageComponent, AppModule)
+      .mock(MarketplaceSearchBarComponent, { export: true })
       .provide([
         WindowRefService,
         provideMockStore({ initialState: initialMainState }),

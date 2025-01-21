@@ -8,6 +8,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { StoreModule } from "@ngrx/store";
 import { MarketplaceCreateListingPageComponent } from "@features/equipment/pages/marketplace/create-listing/marketplace-create-listing-page.component";
+import { MarketplaceListingFormComponent } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
 
 describe("MarketplaceCreateListingPageComponent", () => {
   let component: MarketplaceCreateListingPageComponent;
@@ -16,6 +17,7 @@ describe("MarketplaceCreateListingPageComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceCreateListingPageComponent, AppModule)
+      .mock(MarketplaceListingFormComponent, { export: true })
       .provide([provideMockStore({ initialState: initialMainState })])
       .keep(StoreModule.forRoot(mainStateReducers))
       .keep(EffectsModule.forRoot(mainStateEffects))

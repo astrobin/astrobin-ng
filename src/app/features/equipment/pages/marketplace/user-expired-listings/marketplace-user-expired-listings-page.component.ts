@@ -9,7 +9,7 @@ import { MarketplaceUserListingsBasePageComponent } from "@features/equipment/pa
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 @Component({
-  selector: "astrobin-marketplace-user-sold-listings-page",
+  selector: "astrobin-marketplace-user-expired-listings-page",
   templateUrl: "../listings-base/marketplace-listings-base-page.component.html",
   styleUrls: ["../listings-base/marketplace-listings-base-page.component.scss"]
 })

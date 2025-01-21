@@ -9,7 +9,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { UserInterface } from "@shared/interfaces/user.interface";
 
 @Component({
-  selector: "astrobin-marketplace-sold-listings-page",
+  selector: "astrobin-marketplace-pending-moderation-listings-page",
   templateUrl: "../listings-base/marketplace-listings-base-page.component.html",
   styleUrls: ["../listings-base/marketplace-listings-base-page.component.scss"]
 })
