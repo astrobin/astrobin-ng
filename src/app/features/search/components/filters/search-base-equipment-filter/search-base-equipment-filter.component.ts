@@ -127,7 +127,7 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
   };
 
   render(): SafeHtml {
-    if (!this.value) {
+    if (!this.value || !this.value.value) {
       return this.domSanitizer.bypassSecurityTrustHtml("...");
     }
 
