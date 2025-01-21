@@ -33,7 +33,7 @@ export class LocationEffects {
       map(
         ({ userProfile, location }) =>
           new UpdateUserProfile({
-            ...userProfile,
+            id: userProfile.id,
             locations: [
               ...userProfile.locations,
               ...[location]

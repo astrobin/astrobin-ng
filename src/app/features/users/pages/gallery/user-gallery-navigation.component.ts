@@ -16,6 +16,7 @@ import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
 import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
+import { UpdateUserProfile } from "@features/account/store/auth.actions";
 
 type GalleryNavigationComponent =
   "gallery" |
@@ -44,6 +45,40 @@ type GalleryNavigationComponent =
             <a ngbNavLink>
               <fa-icon icon="images" class="me-2"></fa-icon>
               <span translate="Gallery"></span>
+
+              <div
+                *ngIf="currentUserWrapper.user?.id === user.id"
+                [autoClose]="'outside'"
+                ngbDropdown
+                class="d-inline-block ms-3"
+                container="body"
+              >
+                <a
+                  class="btn btn-sm btn-link no-toggle text-secondary"
+                  ngbDropdownToggle
+                >
+                  <fa-icon icon="cog"></fa-icon>
+                </a>
+                <div ngbDropdownMenu>
+                  <div class="dropdown-item">
+                    <astrobin-toggle-button
+                      [label]="'Collections in separate tab' | translate"
+                      [value]="!userProfile.displayCollectionsOnPublicGallery"
+                      (toggle)="onDisplayCollectionsOnSeparateTabToggle($event)"
+                      class="gallery-settings"
+                    ></astrobin-toggle-button>
+                  </div>
+
+                  <div class="dropdown-item">
+                    <astrobin-toggle-button
+                      [label]="'Staging area in separate tab' | translate"
+                      [value]="!userProfile.displayWipImagesOnPublicGallery"
+                      (toggle)="onDisplayWipImagesOnSeparateTabToggle($event)"
+                      class="gallery-settings"
+                    ></astrobin-toggle-button>
+                  </div>
+                </div>
+              </div>
             </a>
             <ng-template ngbNavContent>
               <astrobin-user-gallery-collections
@@ -338,6 +373,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   }
 
   ngOnChanges() {
+    this._setFindImageOptions();
     this._updateSearchModel();
 
     const navTabsElement = this.elementRef.nativeElement.querySelector(".nav-tabs");
@@ -383,6 +419,20 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       [prop]: sort,
       [otherProp]: null
     };
+  }
+
+  protected onDisplayCollectionsOnSeparateTabToggle(value: boolean) {
+    this.store$.dispatch(new UpdateUserProfile({
+      id: this.userProfile.id,
+      displayCollectionsOnPublicGallery: !value
+    }));
+  }
+
+  protected onDisplayWipImagesOnSeparateTabToggle(value: boolean) {
+    this.store$.dispatch(new UpdateUserProfile({
+      id: this.userProfile.id,
+      displayWipImagesOnPublicGallery: !value
+    }));
   }
 
   private _updateSearchModel() {

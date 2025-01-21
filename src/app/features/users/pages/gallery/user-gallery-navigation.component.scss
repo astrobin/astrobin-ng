@@ -73,6 +73,21 @@
   }
 }
 
+::ng-deep astrobin-toggle-button.gallery-settings  {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+
+  ng-toggle {
+    margin-left: 0;
+  }
+
+  label {
+    font-weight: normal;
+  }
+}
+
 @media (max-width: $md-max) {
   :host {
     margin: 0 -.5rem;

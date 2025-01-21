@@ -176,7 +176,11 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     userProfileId: UserProfileInterface["id"],
     data: Partial<UserProfileInterface>
   ): Observable<UserProfileInterface> {
-    return this.http.put<UserProfileInterface>(this.configUrl + `/userprofiles/${userProfileId}/partial/`, data);
+    return this.http.put<BackendUserProfileInterface>(
+      this.configUrl + `/userprofiles/${userProfileId}/partial/`, data
+    ).pipe(
+      map(response => this.commonApiAdaptorService.userProfileFromBackend(response))
+    );
   }
 
   changeUserProfileGalleryHeaderImage(
