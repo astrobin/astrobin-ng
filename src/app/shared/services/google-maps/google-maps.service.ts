@@ -47,6 +47,10 @@ export class GoogleMapsService extends BaseService {
   }
 
   createGeocoder(): google.maps.Geocoder {
+    if (!this.maps) {
+      throw new Error("Google Maps API not loaded");
+    }
+
     return new this.maps.Geocoder();
   }
 
