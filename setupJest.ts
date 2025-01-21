@@ -126,5 +126,6 @@ ngMocks.defaultMock(RemoteSourceAffiliateApiService, () => ({
 }));
 
 ngMocks.defaultMock(GoogleMapsService, () => ({
-  maps: {}
+  maps: {},
+  loadGoogleMaps: jest.fn().mockReturnValue(Promise.resolve())
 }));

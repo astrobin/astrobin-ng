@@ -349,8 +349,6 @@
     line-height: var(--bs-badge-font-size);
     box-shadow: 0 2px 2px rgba(0, 0, 0, .5);
 
-    background-color: red !important;
-
     @media (max-width: $md-max) {
       top: -.5rem;
       right: .5rem;
