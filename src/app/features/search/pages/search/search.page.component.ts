@@ -124,7 +124,12 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
         };
       } catch (e) {
         this.model = {
-          page: 1
+          text: {
+            value: "",
+            matchType: undefined
+          },
+          page: 1,
+          pageSize: SearchService.DEFAULT_PAGE_SIZE
         };
       }
     }
