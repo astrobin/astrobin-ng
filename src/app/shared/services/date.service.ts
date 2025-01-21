@@ -4,6 +4,7 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Month } from "@shared/enums/month.enum";
+import * as Sentry from '@sentry/browser';
 
 @Injectable({
   providedIn: "root"
@@ -131,12 +132,19 @@ export class DateService extends BaseService {
       return this.datePipe.transform(dateObj, dateFormat, "UTC", this.translateService.currentLang)!;
     }
 
-    return this.datePipe.transform(
-      dateObj,
-      `${dateFormat}${dateFormat === "MMM d" ? "," : ""} yyyy`,
-      "UTC",
-      this.translateService.currentLang
-    )!;
+    try {
+      return this.datePipe.transform(
+        dateObj,
+        `${dateFormat}${dateFormat === "MMM d" ? "," : ""} yyyy`,
+        "UTC",
+        this.translateService.currentLang
+      )!;
+    } catch (e) {
+      if (typeof Sentry !== "undefined") {
+        Sentry.captureMessage("Invalid date for " + date);
+      }
+      return this.translateService.instant("Invalid date");
+    }
   }
 
   private formatRange(range: number[]): string {
