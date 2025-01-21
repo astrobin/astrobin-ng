@@ -12,6 +12,12 @@ import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Injectable({
   providedIn: "root"
@@ -53,5 +59,53 @@ export class EquipmentService extends BaseService {
         });
       });
     });
+  }
+
+  humanizeTelescopeType(item: TelescopeInterface): string {
+    if (item.type === TelescopeType.CAMERA_LENS) {
+      return this.translateService.instant("Lens");
+    }
+
+    if (item.type === TelescopeType.BINOCULARS) {
+      return this.translateService.instant("Binoculars");
+    }
+
+    if (item.type === TelescopeType.OTHER) {
+      return this.translateService.instant("Optics");
+    }
+
+    return this.translateService.instant("Telescope");
+  }
+
+  humanizeCameraType(item: CameraInterface): string {
+    return this.translateService.instant("Camera");
+  }
+
+  humanizeMountType(item: MountInterface): string {
+    return this.translateService.instant("Mount");
+  }
+
+  humanizeFilterType(item: FilterInterface): string {
+    return this.translateService.instant("Filter");
+  }
+
+  humanizeEquipmentItemType(item: EquipmentItem): string {
+    if (item.klass === EquipmentItemType.TELESCOPE) {
+      return this.humanizeTelescopeType(item as TelescopeInterface);
+    }
+
+    if (item.klass === EquipmentItemType.CAMERA) {
+      return this.humanizeCameraType(item as CameraInterface);
+    }
+
+    if (item.klass === EquipmentItemType.MOUNT) {
+      return this.humanizeMountType(item as MountInterface);
+    }
+
+    if (item.klass === EquipmentItemType.FILTER) {
+      return this.humanizeFilterType(item as FilterInterface);
+    }
+
+    return this.translateService.instant("Equipment");
   }
 }
