@@ -136,32 +136,11 @@ interface DetailedFilterSummary {
             </div>
           </td>
 
-          <td [attr.data-label]="'Frames' | translate">
+          <td [attr.data-label]="'Frames' | translate" class="d-none d-lg-table-cell">
             <div class="metadata-item">
               <div class="metadata-label">
-                <span
-                  *ngIf="filterSummary.summary.number && filterSummary.summary.duration"
-                  class="no-wrap"
-                >
-                  <span class="number">{{ filterSummary.summary.number }}</span>
-                  <span class="symbol px-1">&times;</span>
-                  <span class="duration">{{ filterSummary.summary.duration }}</span>
-                  <span class="symbol">&Prime;</span>
-                </span>
-                <span
-                  *ngIf="!filterSummary.summary.number || !filterSummary.summary.duration"
-                  (click)="openDeepSkyIntegrationDetails($event)"
-                  data-toggle="offcanvas"
-                >
-                  <fa-icon
-                    [ngbTooltip]="'Mix of multiple exposure times' | translate"
-                    class="d-none d-lg-inline"
-                    container="body"
-                    icon="bars-staggered"
-                    triggers="hover click"
-                  ></fa-icon>
-                  <span class="d-lg-none">{{ "Mix of multiple exposure times" | translate }}</span>
-                </span>
+                <ng-container *ngTemplateOutlet="deepSkyFramesTemplate; context: { $implicit: filterSummary }">
+                </ng-container>
               </div>
             </div>
           </td>
@@ -169,6 +148,12 @@ interface DetailedFilterSummary {
           <td [attr.data-label]="'Integration' | translate">
             <div class="metadata-item">
               <div class="metadata-label">
+                <span class="d-lg-none">
+                  <ng-container *ngTemplateOutlet="deepSkyFramesTemplate; context: { $implicit: filterSummary }">
+                  </ng-container>
+
+                  <span class="px-2 symbol">=</span>
+                </span>
                 <span
                   [innerHTML]="imageService.formatIntegration(filterSummary.summary.totalIntegration)"
                   class="no-wrap"
@@ -204,6 +189,32 @@ interface DetailedFilterSummary {
         </tbody>
       </table>
     </div>
+
+    <ng-template #deepSkyFramesTemplate let-filterSummary>
+      <span
+        *ngIf="filterSummary.summary.number && filterSummary.summary.duration"
+        class="no-wrap"
+      >
+        <span class="number">{{ filterSummary.summary.number }}</span>
+        <span class="symbol px-1">&times;</span>
+        <span class="duration">{{ filterSummary.summary.duration }}</span>
+        <span class="symbol">&Prime;</span>
+      </span>
+      <span
+        *ngIf="!filterSummary.summary.number || !filterSummary.summary.duration"
+        (click)="openDeepSkyIntegrationDetails($event)"
+        data-toggle="offcanvas"
+      >
+        <fa-icon
+          [ngbTooltip]="'Mix of exposure times' | translate"
+          class="d-none d-lg-inline"
+          container="body"
+          icon="bars-staggered"
+          triggers="hover click"
+        ></fa-icon>
+        <span class="d-lg-none">{{ "Mix of exposure times" | translate }}</span>
+      </span>
+    </ng-template>
 
     <ng-template #deepSkyIntegrationDetailsTemplate let-offcanvas>
       <div class="offcanvas-header">
