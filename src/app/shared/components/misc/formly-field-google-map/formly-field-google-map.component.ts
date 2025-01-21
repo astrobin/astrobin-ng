@@ -48,9 +48,13 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
     });
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.isCypress = isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") > -1;
     this.isLocalhost = isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.location.hostname === "localhost";
+
+    if (!this.isCypress && !this.isLocalhost) {
+      await this.googleMapsService.loadGoogleMaps();
+    }
   }
 
   ngAfterViewInit(): void {
