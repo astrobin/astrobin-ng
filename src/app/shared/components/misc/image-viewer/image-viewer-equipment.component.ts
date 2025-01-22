@@ -82,7 +82,7 @@ type LegacyEquipmentItem =
       <ng-container *ngIf="attr.indexOf('legacy') === -1; else legacyTemplate">
         <a
           *ngFor="let item of this[attr]"
-          href="#"
+          [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
           (click)="equipmentItemClicked($event, item)"
           class="value"
         >
@@ -102,11 +102,15 @@ type LegacyEquipmentItem =
       <ng-template #legacyTemplate>
         <a
           *ngFor="let item of this[attr]"
-          href="#"
+          [href]="legacyEquipmentUrl(item)"
           (click)="legacyEquipmentItemClicked($event, item)"
           class="value legacy-equipment"
         >
-          <img *ngIf="enableKlassIcon" class="klass-icon" src="/assets/images/{{ attrToIcon[attr] }}-white.png?v=1" alt="" />
+          <img
+            *ngIf="enableKlassIcon"
+            class="klass-icon"
+            src="/assets/images/{{ attrToIcon[attr] }}-white.png?v=1"
+            alt="" />
           <span>{{ item.make }} {{ item.name }}</span>
         </a>
       </ng-template>
@@ -115,51 +119,6 @@ type LegacyEquipmentItem =
   styleUrls: ["./image-viewer-equipment.component.scss"]
 })
 export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseComponent implements OnChanges {
-  protected readonly imagingAttributes = [
-    "telescopes",
-    "legacyTelescopes",
-    "cameras",
-    "legacyCameras",
-    "mounts",
-    "legacyMounts",
-    "filters",
-    "legacyFilters",
-    "accessories",
-    "legacyAccessories",
-    "legacyFocalReducers",
-    "software",
-    "legacySoftware",
-    ]
-
-  protected readonly guidingAttributes = [
-    "guidingTelescopes",
-    "legacyGuidingTelescopes",
-    "guidingCameras",
-    "legacyGuidingCameras"
-  ];
-
-  protected readonly attrToIcon = {
-    "telescopes": "telescope",
-    "legacyTelescopes": "telescope",
-    "cameras": "camera",
-    "legacyCameras": "camera",
-    "mounts": "mount",
-    "legacyMounts": "mount",
-    "filters": "filter",
-    "legacyFilters": "filter",
-    "accessories": "accessory",
-    "legacyAccessories": "accessory",
-    "legacyFocalReducers": "accessory",
-    "software": "software",
-    "legacySoftware": "software",
-    "guidingTelescopes": "telescope",
-    "legacyGuidingTelescopes": "telescope",
-    "guidingCameras": "camera",
-    "legacyGuidingCameras": "camera"
-  }
-
-  protected attrToLabel: { [key: string]: string};
-
   hasEquipment: boolean;
   hasImagingEquipment: boolean;
   hasGuidingEquipment: boolean;
@@ -180,6 +139,48 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
   legacyGuidingTelescopes: LegacyTelescopeInterface[] = [];
   guidingCameras: CameraInterface[] = [];
   legacyGuidingCameras: LegacyCameraInterface[] = [];
+
+  protected readonly imagingAttributes = [
+    "telescopes",
+    "legacyTelescopes",
+    "cameras",
+    "legacyCameras",
+    "mounts",
+    "legacyMounts",
+    "filters",
+    "legacyFilters",
+    "accessories",
+    "legacyAccessories",
+    "legacyFocalReducers",
+    "software",
+    "legacySoftware"
+  ];
+  protected readonly guidingAttributes = [
+    "guidingTelescopes",
+    "legacyGuidingTelescopes",
+    "guidingCameras",
+    "legacyGuidingCameras"
+  ];
+  protected readonly attrToIcon = {
+    "telescopes": "telescope",
+    "legacyTelescopes": "telescope",
+    "cameras": "camera",
+    "legacyCameras": "camera",
+    "mounts": "mount",
+    "legacyMounts": "mount",
+    "filters": "filter",
+    "legacyFilters": "filter",
+    "accessories": "accessory",
+    "legacyAccessories": "accessory",
+    "legacyFocalReducers": "accessory",
+    "software": "software",
+    "legacySoftware": "software",
+    "guidingTelescopes": "telescope",
+    "legacyGuidingTelescopes": "telescope",
+    "guidingCameras": "camera",
+    "legacyGuidingCameras": "camera"
+  };
+  protected attrToLabel: { [key: string]: string };
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -273,12 +274,20 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
       "legacyGuidingTelescopes": this.translateService.instant("Guiding optics"),
       "guidingCameras": this.guidingCameras?.length > 1 ? this.translateService.instant("Guiding cameras") : this.translateService.instant("Guiding camera"),
       "legacyGuidingCameras": this.legacyGuidingCameras?.length > 1 ? this.translateService.instant("Guiding cameras") : this.translateService.instant("Guiding camera")
-    }
+    };
   }
 
   protected equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {
     event.preventDefault();
-    this.router.navigateByUrl(`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`).then(() => {
+
+    const url = `/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`;
+
+    if (event.ctrlKey || event.metaKey) {
+      this.windowRefService.nativeWindow.open(url);
+      return;
+    }
+
+    this.router.navigateByUrl(url).then(() => {
       this.imageViewerService.closeSlideShow(false);
       this.windowRefService.scroll({ top: 0 });
     });
@@ -286,12 +295,32 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
 
   protected legacyEquipmentItemClicked(event: MouseEvent, item: LegacyEquipmentItem): void {
     event.preventDefault();
-    const text = "\"" + ((item.make || "") + " " + (item.name || "")).trim() + "\"";
+
+    if (event.ctrlKey || event.metaKey) {
+      const url = this.legacyEquipmentUrl(item);
+      this.windowRefService.nativeWindow.open(url);
+      return;
+    }
+
     this.search({
       text: {
-        value: text,
+        value: this._legacyItemSearchText(item),
         matchType: MatchType.ALL
       }
     });
+  }
+
+  protected legacyEquipmentUrl(item: LegacyEquipmentItem): string {
+    const params = this.searchService.modelToParams({
+      text: {
+        value: this._legacyItemSearchText(item),
+        matchType: MatchType.ALL
+      }
+    });
+    return `/search?p=${params}`;
+  }
+
+  private _legacyItemSearchText(item: LegacyEquipmentItem): string {
+    return "\"" + ((item.make || "") + " " + (item.name || "")).trim() + "\"";
   }
 }
