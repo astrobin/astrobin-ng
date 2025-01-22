@@ -68,6 +68,7 @@
 
       <a
         *ngIf="showMoreButton"
+        [href]="searchUrl"
         (click)="onMoreClicked($event)"
         astrobinEventStopPropagation
         astrobinEventPreventDefault
