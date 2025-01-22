@@ -372,15 +372,16 @@ $globalLoadingIndicatorHeight: 6px;
       }
 
       .revisions-mobile-button {
-        bottom: .5rem;
+        bottom: .75rem;
         left: 0;
         right: 0;
         margin: 0 auto;
-        width: 3rem;
-        height: 3rem;
+        width: 2.25rem;
+        height: 2.25rem;
         border-radius: 50%;
         border: 1px solid var(--grey);
-        font-size: 1.5rem;
+        font-size: 1rem;
+        line-height: 1rem;
         display: none;
 
         @media (pointer: coarse) {
