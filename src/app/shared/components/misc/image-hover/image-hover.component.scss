@@ -31,6 +31,14 @@
   border-bottom-right-radius: .75rem;
   z-index: 2;
   font-size: .75rem;  // Base font size
+  pointer-events: none;
+
+  @media (hover: hover) {
+    &:hover {
+      pointer-events: auto;
+      opacity: 1;
+    }
+  }
 
   @container (max-width: 200px) {
     font-size: .7rem;

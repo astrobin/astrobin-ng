@@ -133,24 +133,27 @@ enum FeedType {
                 [idProperty]="'pk'"
               >
                 <ng-template let-item>
-                  <a
-                    (click)="openImage(item)"
-                    [href]="'/i/' + (item.hash || item.pk)"
-                    astrobinEventPreventDefault
-                    class="image-container image-link"
-                  >
-                    <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
-                    <img
-                      *ngIf="item?.thumbnails?.length"
-                      [alt]="item.title"
-                      [src]="item.thumbnails[0].url"
-                    />
+                  <div class="image-container">
+                    <a
+                      (click)="openImage(item)"
+                      [href]="'/i/' + (item.hash || item.pk)"
+                      astrobinEventPreventDefault
+                      class="image-link"
+                    >
+                      <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
+                      <img
+                        *ngIf="item?.thumbnails?.length"
+                        [alt]="item.title"
+                        [src]="item.thumbnails[0].url"
+                      />
 
-                    <astrobin-loading-indicator
-                      *ngIf="loadingItemId === item.hash || loadingItemId === item.pk.toString()"
-                      class="position-absolute top-0 h-100"
-                    ></astrobin-loading-indicator>
-                  </a>
+                      <astrobin-loading-indicator
+                        *ngIf="loadingItemId === item.hash || loadingItemId === item.pk.toString()"
+                        @fadeInOut
+                        class="position-absolute top-0 h-100"
+                      ></astrobin-loading-indicator>
+                    </a>
+                  </div>
 
                   <astrobin-image-icons [image]="item"></astrobin-image-icons>
 

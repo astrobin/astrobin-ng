@@ -118,6 +118,7 @@
 
                 <astrobin-loading-indicator
                   *ngIf="loadingImageId?.toString() === item.objectId.toString()"
+                  @fadeInOut
                   class="position-absolute top-0"
                 ></astrobin-loading-indicator>
 
