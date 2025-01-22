@@ -364,8 +364,6 @@ export class ImageViewerComponent
     image: ImageInterface,
     revisionLabel: ImageRevisionInterface["label"]
   ): void {
-    console.log("setImage called for image " + image.pk);
-
     this._scrollToTop();
 
     this.imageService.removeInvalidImageNotification();
