@@ -124,25 +124,53 @@ export class DateService extends BaseService {
   }
 
   private formatSingleDate(date: number, forceYear = false): string {
-    const dateObj = new Date(date);
-    const currentYear = this.getCurrentYear();
-    const dateFormat = this.getDateFormat();
-
-    if (dateObj.getFullYear() === currentYear && !forceYear) {
-      return this.datePipe.transform(dateObj, dateFormat, "UTC", this.translateService.currentLang)!;
-    }
-
     try {
-      return this.datePipe.transform(
-        dateObj,
-        `${dateFormat}${dateFormat === "MMM d" ? "," : ""} yyyy`,
-        "UTC",
-        this.translateService.currentLang
-      )!;
+      const dateObj = new Date(date);
+
+      // Add validation check
+      if (isNaN(dateObj.getTime())) {
+        throw new Error('Invalid Date object created');
+      }
+
+      const currentYear = this.getCurrentYear();
+      const dateFormat = this.getDateFormat();
+      const currentLang = this.translateService.currentLang;
+
+      if (dateObj.getFullYear() === currentYear && !forceYear) {
+        const result = this.datePipe.transform(dateObj, dateFormat, "UTC", currentLang);
+        if (result === null) {
+          throw new Error('DatePipe returned null when in current year');
+        }
+        return result;
+      }
+
+      const format = `${dateFormat}${dateFormat === "MMM d" ? "," : ""} yyyy`;
+      const result = this.datePipe.transform(dateObj, format, "UTC", currentLang);
+      if (result === null) {
+        throw new Error('DatePipe returned null when not in current year');
+      }
+      return result;
+
     } catch (e) {
       if (typeof Sentry !== "undefined") {
-        Sentry.captureMessage("Invalid date for " + date);
+        Sentry.captureException(e, {
+          extra: {
+            timestamp: date,
+            userAgent: navigator.userAgent,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            locale: navigator.language,
+            dateToString: new Date(date).toString(),
+            dateToISO: new Date(date).toISOString(),
+            dateGetTime: new Date(date).getTime(),
+          }
+        });
       }
+
+      console.error('Date formatting error:', {
+        timestamp: date,
+        error: e
+      });
+
       return this.translateService.instant("Invalid date");
     }
   }
