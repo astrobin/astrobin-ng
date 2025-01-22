@@ -152,24 +152,24 @@ export class DateService extends BaseService {
       return result;
 
     } catch (e) {
+      const logData = {
+        error: e,
+        timestamp: date,
+        userAgent: navigator.userAgent,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        locale: navigator.language,
+        dateToString: new Date(date).toString(),
+        dateToISO: new Date(date).toISOString(),
+        dateGetTime: new Date(date).getTime(),
+      };
+
       if (typeof Sentry !== "undefined") {
         Sentry.captureException(e, {
-          extra: {
-            timestamp: date,
-            userAgent: navigator.userAgent,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            locale: navigator.language,
-            dateToString: new Date(date).toString(),
-            dateToISO: new Date(date).toISOString(),
-            dateGetTime: new Date(date).getTime(),
-          }
+          extra: logData
         });
       }
 
-      console.error('Date formatting error:', {
-        timestamp: date,
-        error: e
-      });
+      console.error('Date formatting error:', logData);
 
       return this.translateService.instant("Invalid date");
     }
