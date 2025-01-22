@@ -109,10 +109,14 @@ export abstract class MarketplaceListingsBasePageComponent
   }
 
   checkAndSetupScrollEvent() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     if (this.listingCards) {
       this.setupScrollEvent(this.listingCards);
     } else {
-      setTimeout(() => this.checkAndSetupScrollEvent(), 50);
+      this.utilsService.delay(50).subscribe(() => this.checkAndSetupScrollEvent());
     }
   }
 
@@ -239,9 +243,9 @@ export abstract class MarketplaceListingsBasePageComponent
     this.utilsService.delay(1).subscribe(() => {
       if (options.clear) {
         this.store$.dispatch(new ClearMarketplaceListings());
-        this.windowRefService.scroll({ top: 0 });
         this.page = 1;
       }
+
       this.store$.dispatch(
         new LoadMarketplaceListings({
           options: {
@@ -267,15 +271,7 @@ export abstract class MarketplaceListingsBasePageComponent
       map(([listings, currentUser]) =>
         !!listings ? listings.filter(this._getListingsFilterPredicate(currentUser)) : null
       ),
-      tap(() => {
-        this.utilsService.delay(200).subscribe(() => {
-          if (this.page === 1 && this.windowRefService.nativeWindow.innerWidth < 768) {
-            this.windowRefService.scrollToElement(".marketplace-navigation");
-          }
-
-          this.loadingService.setLoading(false);
-        });
-      }),
+      tap(() => this.loadingService.setLoading(false)),
       takeUntil(this.destroyed$)
     );
   }

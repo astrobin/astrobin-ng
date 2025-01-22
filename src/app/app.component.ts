@@ -89,20 +89,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
   }
 
   initRouterEvents(): void {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      pairwise()
-    ).subscribe(([prev, current]: [NavigationEnd, NavigationEnd]) => {
-      const isSameUrl = prev.urlAfterRedirects === current.urlAfterRedirects;
-      const isBack = this.router.getCurrentNavigation()?.trigger === "popstate";
-      const isHomeRoute = current.urlAfterRedirects === "/";
-      const isBrowser = this._isBrowser;
-
-      if (isBrowser && isSameUrl && !isBack && !isHomeRoute) {
-        this.windowRefService.scroll({ top: 0, behavior: "smooth" });
-      }
-    });
-
     this.router.events?.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.loadingService.setLoading(true);

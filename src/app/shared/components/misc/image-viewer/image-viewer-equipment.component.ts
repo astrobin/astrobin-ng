@@ -289,7 +289,6 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
 
     this.router.navigateByUrl(url).then(() => {
       this.imageViewerService.closeSlideShow(false);
-      this.windowRefService.scroll({ top: 0 });
     });
   }
 

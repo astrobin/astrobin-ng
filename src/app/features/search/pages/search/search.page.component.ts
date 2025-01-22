@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -22,7 +22,7 @@ import { ImageService } from "@shared/services/image/image.service";
   templateUrl: "./search.page.component.html",
   styleUrls: ["./search.page.component.scss"]
 })
-export class SearchPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class SearchPageComponent extends BaseComponentDirective implements OnInit {
   readonly SearchType = SearchType;
 
   @ViewChild("ad", { static: false, read: AdManagerComponent }) adManagerComponent: AdManagerComponent;
@@ -104,10 +104,6 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     });
   }
 
-  ngAfterViewInit() {
-    this.windowRefService.scroll({ top: 0 });
-  }
-
   loadModel(queryParams: Record<string, string> = {}): void {
     const params = queryParams["p"];
     if (params) {
@@ -142,7 +138,6 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     };
 
     this.updateUrl();
-    this.windowRefService.scroll({ top: 0 });
   }
 
   updateUrl(): void {

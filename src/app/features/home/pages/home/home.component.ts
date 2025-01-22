@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { Component, Inject, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -14,7 +14,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 
 @Component({
-  selector: 'astrobin-home',
+  selector: "astrobin-home",
   template: `
     <div class="page">
 
@@ -59,9 +59,9 @@ import { ImageViewerService } from "@shared/services/image-viewer.service";
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
-  styleUrls: ['./home.component.scss']
+  styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class HomeComponent extends BaseComponentDirective implements OnInit {
   protected isBrowser: boolean;
 
   constructor(
@@ -112,11 +112,7 @@ export class HomeComponent extends BaseComponentDirective implements OnInit, Aft
     if (this.route.snapshot.data.image) {
       this.imageService.setMetaTags(this.route.snapshot.data.image);
     } else {
-      this.titleService.setTitle(this.translateService.instant('Home of Astrophotography'));
+      this.titleService.setTitle(this.translateService.instant("Home of Astrophotography"));
     }
-  }
-
-  ngAfterViewInit() {
-    this.windowRefService.scroll({ top: 0, behavior: "auto" });
   }
 }

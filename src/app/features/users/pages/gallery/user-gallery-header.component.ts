@@ -450,9 +450,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
         }
       }
     );
-    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-      this.windowRefService.scroll({ top: 0 });
-    });
+    this.router.navigateByUrl(`/search?p=${params}`);
   }
 
   protected searchLikedImages() {
@@ -463,9 +461,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
         }
       }
     );
-    this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-      this.windowRefService.scroll({ top: 0 });
-    });
+    this.router.navigateByUrl(`/search?p=${params}`);
   }
 
   protected shadowBan(userProfileId: UserProfileInterface["id"]) {

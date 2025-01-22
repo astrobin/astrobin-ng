@@ -217,7 +217,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   @ViewChild("feed") protected feedElement: ElementRef;
 
   protected lastKnownHeight = null;
-  protected lastKnownScrollPosition = 0;
 
   protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
   protected readonly FeedTab = FeedTab;
@@ -323,10 +322,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       this.lastKnownHeight = this.tabsContentWrapper.nativeElement.offsetHeight;
     }
 
-    if (this.isBrowser) {
-      this.lastKnownScrollPosition = this.windowRefService.nativeWindow.scrollY;
-    }
-
     this.changeDetectorRef.detectChanges();
 
     this.activeTab = feedType;
@@ -336,14 +331,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     this.images = null;
     this.loading = true;
 
-    this.utilsService.delay(500).pipe(
-      switchMap(() => this._loadData()),
-      tap(() => {
-        if (this.lastKnownScrollPosition) {
-          this.windowRefService.scroll({ top: this.lastKnownScrollPosition, behavior: "smooth" });
-        }
-      })
-    ).subscribe();
+    this._loadData().subscribe();
   }
 
   openImageById(feedItemId: FeedItemInterface["id"], imageId: ImageInterface["hash"] | ImageInterface["pk"]): void {

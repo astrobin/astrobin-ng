@@ -134,9 +134,7 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
               matchType: null
             }
           });
-          this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-            this.windowRefService.scroll({ top: 0 });
-          });
+          this.router.navigateByUrl(`/search?p=${params}`);
         });
 
         this.store$.dispatch(new LoadEquipmentItem({ id: itemId, type: itemType }));

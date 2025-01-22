@@ -466,7 +466,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
                 .pipe(finalize(() => this.loadingMore = false))
                 .subscribe(() => {
                   // Recursively check again after loading, in case we still need more
-                  setTimeout(checkAndLoadMore, 0);
+                  this.utilsService.delay(1).subscribe(() => checkAndLoadMore());
                 });
             }
           };
