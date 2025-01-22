@@ -631,29 +631,38 @@ export class ImageViewerComponent
           this.inlineSvg = null;
         }
         break;
-      case MouseHoverImageOptions.INVERTED:
-        this.mouseHoverImage = this.revision.thumbnails.find(thumbnail =>
+      case MouseHoverImageOptions.INVERTED: {
+        const thumbnail = this.revision.thumbnails?.find(thumbnail =>
           thumbnail.alias === this.alias + "_inverted"
-        ).url;
+        );
+        this.mouseHoverImage = thumbnail?.url ?? null;
         this.inlineSvg = null;
+      }
         break;
-      case "ORIGINAL":
-        this.mouseHoverImage = this.image.thumbnails.find(thumbnail =>
+      case "ORIGINAL": {
+        const thumbnail = this.image.thumbnails?.find(thumbnail =>
           thumbnail.alias === this.alias &&
           thumbnail.revision === ORIGINAL_REVISION_LABEL
-        ).url;
+        );
+        this.mouseHoverImage = thumbnail?.url ?? null;
         this.inlineSvg = null;
+      }
         break;
-      default:
-        const matchingRevision = this.image.revisions.find(
+      default: {
+        const matchingRevision = this.image.revisions?.find(
           revision => revision.label === this.revision.mouseHoverImage.replace("REVISION__", "")
         );
         if (matchingRevision) {
-          this.mouseHoverImage = matchingRevision.thumbnails.find(
+          const thumbnail = matchingRevision.thumbnails?.find(
             thumbnail => thumbnail.alias === this.alias
-          ).url;
+          );
+          this.mouseHoverImage = thumbnail?.url ?? null;
+          this.inlineSvg = null;
+        } else {
+          this.mouseHoverImage = null;
           this.inlineSvg = null;
         }
+      }
     }
   }
 
@@ -1106,6 +1115,4 @@ export class ImageViewerComponent
       )
       .subscribe();
   }
-
-  protected readonly DecimalPipe = DecimalPipe;
 }
