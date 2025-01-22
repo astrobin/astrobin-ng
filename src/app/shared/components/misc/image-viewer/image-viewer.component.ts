@@ -198,12 +198,6 @@ export class ImageViewerComponent
   ngOnInit(): void {
     this._initImageAlias();
     this._initContentTypes();
-
-    if (this.image) {
-      this.setImage(this.image, this.revisionLabel);
-    }
-
-    this.initialized.emit();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -220,6 +214,11 @@ export class ImageViewerComponent
       } else {
         this._setAd();
       }
+    }
+
+    if (changes.image && changes.image.currentValue) {
+      this.setImage(this.image, this.revisionLabel);
+      this.initialized.emit();
     }
   }
 
@@ -365,6 +364,8 @@ export class ImageViewerComponent
     image: ImageInterface,
     revisionLabel: ImageRevisionInterface["label"]
   ): void {
+    console.log("setImage called for image " + image.pk);
+
     this._scrollToTop();
 
     this.imageService.removeInvalidImageNotification();
