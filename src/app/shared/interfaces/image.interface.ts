@@ -78,6 +78,8 @@ export enum DataSource {
 }
 
 export enum RemoteSource {
+  AAAN = "AAA Gateway North",
+  AAAS = "AAA Gateway South",
   ALNI = "Alnitak Remote Observatories",
   AC = "AstroCamp",
   AHK = "Astro Hostel Krasnodar",
