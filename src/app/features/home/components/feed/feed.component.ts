@@ -68,8 +68,10 @@ enum FeedType {
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
                 class="activity-feed-masonry-layout"
-                [layout]="'medium'"
+                [layout]="'xl'"
                 [items]="feedItems"
+                [widthProperty]="'imageW'"
+                [heightProperty]="'imageH'"
               >
                 <ng-template let-item>
                   <astrobin-feed-item

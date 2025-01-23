@@ -20,6 +20,7 @@ interface MasonryItem<T> {
       [class.small]="layout === 'small'"
       [class.medium]="layout === 'medium'"
       [class.large]="layout === 'large'"
+      [class.xl]="layout === 'xl'"
       [style.--gutter]="'1rem'"
       [style.--container-width]="containerWidth"
     >
@@ -30,10 +31,11 @@ interface MasonryItem<T> {
         [class.small]="layout === 'small'"
         [class.medium]="layout === 'medium'"
         [class.large]="layout === 'large'"
-        [class.aspect-narrow]="item['w'] && item['h'] && item['w'] / item['h'] < 0.8"
-        [class.aspect-square]="item['w'] && item['h'] && item['w'] / item['h'] >= 0.8 && item['w'] / item['h'] <= 1.2"
-        [class.aspect-wide]="item['w'] && item['h'] && item['w'] / item['h'] > 1.2"
-        [class.aspect-panoramic]="item['w'] && item['h'] && item['w'] / item['h'] > 2"
+        [class.xl]="layout === 'xl'"
+        [class.aspect-narrow]="item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] < 0.8"
+        [class.aspect-square]="item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] >= 0.8 && item[widthProperty] / item[heightProperty] <= 1.2"
+        [class.aspect-wide]="item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] > 1.2"
+        [class.aspect-panoramic]="item[widthProperty] && item[heightProperty] && item[widthProperty] / item[heightProperty] > 2"
       >
         <div class="masonry-content">
           <ng-container
@@ -51,8 +53,10 @@ interface MasonryItem<T> {
 })
 export class MasonryLayoutComponent<T> implements AfterViewInit, OnDestroy {
   @Input() items: T[] = [];
-  @Input() layout: "small" | "medium" | "large" | null = null;
+  @Input() layout: "small" | "medium" | "large" | "xl" | null = null;
   @Input() idProperty = "id";
+  @Input() widthProperty = "w";
+  @Input() heightProperty = "h";
   @Input() leftAlignLastRow = true;
 
   @ViewChild("container") container!: ElementRef;

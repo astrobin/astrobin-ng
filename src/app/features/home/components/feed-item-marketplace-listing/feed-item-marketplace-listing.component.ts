@@ -48,7 +48,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
           <astrobin-feed-item-display-text [feedItem]="feedItem"></astrobin-feed-item-display-text>
         </div>
 
-        <div class="feed-item-extra mt-3">
+        <div class="feed-item-extra">
           <span class="timestamp">
             {{ feedItem.timestamp | localDate | timeago }}
           </span>

@@ -1,38 +1,48 @@
 @import '../../../../styles/mixins';
 
+@mixin overlay-background {
+  padding: .75rem 1rem;
+  background: rgba(0, 0, 0, .18);
+  backdrop-filter: blur(1.5px);
+}
+
+:host {
+  display: block;
+  height: 100%;
+}
+
 .feed-item-content {
+  position: relative;
+  height: 100%;
+  border-radius: .75rem;
+  overflow: hidden;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .35);
+  transition: filter .2s ease-in-out;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      filter: brightness(1.15);
+    }
+  }
+
   ::ng-deep {
     .feed-item-component {
       box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
-    }
-
-    .feed-item-header-fade {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      min-height: 100px;
-      background: linear-gradient(
-          180deg,
-          rgba(0, 0, 0, .4) 0,
-          rgba(0, 0, 0, .3) 60%,
-          rgba(0, 0, 0, .2) 80%,
-          transparent
-      );
-      pointer-events: none;
-      z-index: 1;
+      height: 100%;
     }
 
     .feed-item-header {
-      padding: .5rem 1rem;
       display: flex;
       justify-content: flex-start;
-      align-items: flex-start;
-      gap: 1rem;
-      filter: drop-shadow(0 .25rem 1rem rgba(0, 0, 0, .5));
+      align-items: center;
+      gap: .75rem;
       color: var(--lightestGrey);
       position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 1;
+      @include overlay-background();
 
       .feed-item-avatar {
         width: 3rem;
@@ -46,15 +56,17 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        text-shadow: 0 0 1px rgba(0, 0, 0, .75);
+        font-size: .9rem;
       }
 
-      .feed-item-header-text-1,
-      .feed-item-header-text-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+      @media (min-width: $md-min) {
+        .feed-item-header-text-1,
+        .feed-item-header-text-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
       }
 
       .feed-item-header-text-2 {
@@ -63,33 +75,15 @@
     }
 
     .feed-item-body {
-      .main-image-container {
-        display: flex;
-
-        .main-image {
-          min-height: 200px;
-          transition: filter .25s ease-in-out;
-          flex: 1;
-          width: 100%;
-          display: block;
-
-          @media (hover: hover) and (pointer: fine) {
-            &:hover {
-              filter: brightness(1.25);
-            }
-          }
-
-          @media (min-width: $md-min) {
-            height: 250px;
-            width: auto;
-          }
-        }
-      }
+      height: 100%;
     }
 
     .feed-item-footer {
-      padding: .75rem 1rem;
-      background: rgba(0, 0, 0, .375);
+      @include overlay-background();
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
 
       .feed-item-footer-text {
         font-size: .9rem;
@@ -98,11 +92,15 @@
 
       .timestamp {
         color: var(--lighterGrey);
-        font-size: .8rem;
+        font-size: .75rem;
       }
     }
 
     .feed-item-extra {
+      @media (min-width: $md-min) {
+        margin-top: .25rem;
+      }
+
       astrobin-toggle-property {
         .btn .ng-fa-icon {
           margin: 0 !important;

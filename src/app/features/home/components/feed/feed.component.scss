@@ -52,6 +52,27 @@ astrobin-masonry-layout.activity-feed-masonry-layout {
 
         .masonry-item {
           margin-bottom: 1rem;
+
+          .feed-item-header {
+            @include darkest-background-texture;
+            position: unset;
+            top: unset;
+            left: unset;
+            right: unset;
+            text-shadow: none;
+            padding: 1rem;
+          }
+
+          .feed-item-footer {
+            @include dark-background-texture;
+            position: unset;
+            bottom: unset;
+            left: unset;
+            right: unset;
+            background: var(--darkestGrey);
+            padding-top: 1rem;
+            padding-bottom: 0;
+          }
         }
       }
 
@@ -71,7 +92,7 @@ astrobin-masonry-layout.activity-feed-masonry-layout {
 
 .image-container {
   astrobin-loading-indicator {
-    background: rgba(0, 0, 0, .75);
+    background: rgba(0, 0, 0, .65);
     border-radius: .75rem;
   }
 }

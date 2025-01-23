@@ -9,7 +9,6 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
   selector: "astrobin-feed-item-group",
   template: `
     <div class="feed-item-component feed-item-marketplace-listing">
-      <div class="feed-item-header-fade"></div>
       <div class="feed-item-header">
         <div class="feed-item-header-text">
           <div class="feed-item-header-text-1">
@@ -37,7 +36,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
           <astrobin-feed-item-display-text [feedItem]="feedItem"></astrobin-feed-item-display-text>
         </div>
 
-        <div class="feed-item-extra mt-3">
+        <div class="feed-item-extra">
           <span class="timestamp">
             {{ feedItem.timestamp | localDate | timeago }}
           </span>

@@ -27,7 +27,18 @@ img {
 }
 
 .feed-item-header-text-1 {
-  a {
-    color: var(--white);
+  .item-display-name {
+    color: var(--lightestGrey);
   }
+}
+
+
+astrobin-toggle-property ::ng-deep .count {
+  color: var(--lightestGrey) !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .35);
+}
+
+.ng-fa-icon[icon='comment'],
+.ng-fa-icon[icon='comment'] + .count {
+  color: var(--lightestGrey) !important;
 }

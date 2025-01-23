@@ -50,17 +50,8 @@ export class FeedItemDisplayTextComponent implements OnChanges {
         );
 
       case FeedItemVerb.VERB_LIKED_IMAGE:
-        if (this.feedItem.othersCount > 0) {
-          return this.translateService.instant(
-            "{{ actor }} and {{ count }} others liked this image.",
-            {
-              actor: actorLink,
-              count: this.feedItem.othersCount
-            }
-          );
-        }
         return this.translateService.instant(
-          "{{ actor }} liked an image.",
+          "{{ actor }} liked this image.",
           { actor: actorLink }
         );
 

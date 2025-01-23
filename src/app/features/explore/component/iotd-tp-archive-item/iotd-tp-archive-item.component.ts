@@ -20,8 +20,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
         [src]="thumbnailUrl"
       />
 
-      <div class="gradient"></div>
-
       <div class="info">
         <div class="title">
           {{ item.image.title }},

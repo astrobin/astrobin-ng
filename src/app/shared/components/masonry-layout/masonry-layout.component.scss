@@ -6,6 +6,7 @@ $base-container-width-factor: 800;
 $base-height: 180px;
 $small-factor: 0.6;
 $large-factor: 1.4;
+$xl-factor: 1.8;
 
 @mixin random-width-for-ratio($min, $max) {
   $random-addition: random($max - $min);
@@ -30,6 +31,19 @@ $large-factor: 1.4;
   &.large {
     width: calc((#{$random-addition + $min}px) * #{$scale-factor} * #{$large-factor}) !important;
     height: calc(#{$base-height} * #{$scale-factor} * #{$large-factor}) !important;
+  }
+
+  &.xl {
+    @media (min-width: $md-min) {
+      min-width: 25%;
+      width: calc((#{$random-addition + $min}px) * #{$scale-factor} * #{$xl-factor}) !important;
+      height: calc(#{$base-height} * #{$scale-factor} * #{$xl-factor}) !important;
+    }
+
+    @media (max-width: $sm-max) {
+      width: 100% !important;
+      height: auto !important;
+    }
   }
 
   // Default behavior (same as medium)
@@ -63,6 +77,13 @@ $large-factor: 1.4;
   }
 
   &.large {
+    gap: calc(
+      var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$large-factor}
+    );
+  }
+
+  &.xl {
+    // Large factor used intentionally.
     gap: calc(
       var(--gutter) * clamp(#{$min-clamp}, var(--container-width) / #{$base-container-width-factor}, #{$max-clamp}) * #{$large-factor}
     );

@@ -64,7 +64,7 @@ import { fadeInOut } from "@shared/animations";
               </a>
             </div>
 
-            <div class="d-flex flex-column flex-sm-row align-items-center gap-sm-2">
+            <div class="d-flex flex-column align-items-center align-items-sm-start gap-1">
               <span class="iotd-title">{{ iotd.title }}</span>
               <span class="iotd-users">{{ iotd.userDisplayNames }}</span>
             </div>

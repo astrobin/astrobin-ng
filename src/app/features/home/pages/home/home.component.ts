@@ -28,17 +28,22 @@ import { ImageViewerService } from "@shared/services/image-viewer.service";
           justify-content-center justify-content-md-between
           align-items-center
           flex-column flex-md-row
+          gap-3 gap-sm-2
           mb-3
         ">
             <h4>{{ "Latest from the forums" | translate }}</h4>
-            <div class="d-flex gap-2">
-              <a [href]="classicRoutesService.FORUM_LATEST">
+            <div class="d-flex gap-2 align-items-center">
+              <a
+                [href]="classicRoutesService.FORUM_LATEST"
+                class="no-wrap btn btn-link link-primary btn-xs m-0"
+              >
                 {{ "View all" | translate }}
               </a>
 
-              <span class="text-muted">&middot;</span>
-
-              <a [href]="classicRoutesService.FORUM_HOME + '#new-topic'">
+              <a
+                [href]="classicRoutesService.FORUM_HOME + '#new-topic'"
+                class="no-wrap btn btn-primary btn-xs"
+              >
                 {{ "New topic" | translate }}
               </a>
             </div>

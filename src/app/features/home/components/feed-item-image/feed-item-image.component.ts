@@ -18,7 +18,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div class="feed-item-component feed-item-image">
-        <div class="feed-item-header-fade"></div>
         <div class="feed-item-header">
           <img
             class="feed-item-avatar"
@@ -35,6 +34,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
                 [href]="'/i/' + objectId"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
+                class="item-display-name"
               >
                 {{ displayName }}
               </a>
@@ -74,7 +74,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
           >
           </div>
 
-          <div class="feed-item-extra d-flex mt-3 justify-content-between align-items-center">
+          <div class="feed-item-extra d-flex justify-content-between align-items-center">
             <span class="timestamp">
               {{ feedItem.timestamp | localDate | timeago }}
             </span>

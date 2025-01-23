@@ -25,24 +25,21 @@
       }
     }
 
-    .gradient {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 5rem;
-      background: linear-gradient(0, rgba(0, 0, 0, 0.8) 0, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.2) 80%, transparent);
-      pointer-events: none;
-      z-index: 1;
-    }
-
     .info {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      padding: .5rem .75rem;
+      padding: .75rem;
       z-index: 2;
+      background: linear-gradient(
+          180deg,
+          transparent 0,
+          rgba(0, 0, 0, .2) 20%,
+          rgba(0, 0, 0, .4)
+      );
+      backdrop-filter: blur(1.5px);
+
 
       .title,
       .date {
