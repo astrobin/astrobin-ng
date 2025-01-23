@@ -806,6 +806,12 @@ $globalLoadingIndicatorHeight: 6px;
           }
         }
       }
+
+      astrobin-image-viewer-share-button {
+        .ng-fa-icon {
+          color: var(--white);
+        }
+      }
     }
   }
 }

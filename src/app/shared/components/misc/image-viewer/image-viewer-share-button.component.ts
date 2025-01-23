@@ -131,15 +131,33 @@ export class ImageViewerShareButtonComponent implements OnChanges {
   openShare(event: MouseEvent): void {
     event.preventDefault();
 
-    this.shareModel = {
-      sharingMode: SharingMode.LINK,
-      copyThis: this.getSharingValue(SharingMode.LINK)
-    };
+    const isNativeShareSupported = typeof navigator !== 'undefined' && !!navigator.share;
+    const isMobile = this.deviceService.isMobile();
 
-    this.offcanvasService.open(this.shareTemplate, {
-      position: this.deviceService.offcanvasPosition(),
-      panelClass: "image-viewer-share-offcanvas"
-    });
+    if (isNativeShareSupported && isMobile) {
+      try {
+        navigator.share({
+          title: this.image.title,
+          url: this.getSharingValue(SharingMode.LINK)
+        }).catch(error => {
+          console.error('Sharing failed:', error);
+        })
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Sharing failed:', error);
+        }
+      }
+    } else {
+      this.shareModel = {
+        sharingMode: SharingMode.LINK,
+        copyThis: this.getSharingValue(SharingMode.LINK)
+      };
+
+      this.offcanvasService.open(this.shareTemplate, {
+        position: this.deviceService.offcanvasPosition(),
+        panelClass: "image-viewer-share-offcanvas"
+      });
+    }
   }
 
   protected getSharingValue(sharingMode: SharingMode): string {
