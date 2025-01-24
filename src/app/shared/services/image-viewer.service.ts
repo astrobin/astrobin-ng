@@ -1,5 +1,5 @@
 import { isPlatformBrowser, Location } from "@angular/common";
-import { ComponentRef, Inject, Injectable, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { ApplicationRef, ComponentRef, createComponent, Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -51,7 +51,8 @@ export class ImageViewerService extends BaseService {
     public readonly deviceService: DeviceService,
     public readonly router: Router,
     public readonly titleService: TitleService,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly applicationRef: ApplicationRef
   ) {
     super(loadingService);
 
@@ -83,7 +84,6 @@ export class ImageViewerService extends BaseService {
   autoOpenSlideshow(
     callerComponentId: string,
     activatedRoute: ActivatedRoute,
-    viewContainerRef: ViewContainerRef
   ): void {
     const queryParams = activatedRoute.snapshot.queryParams;
 
@@ -99,7 +99,6 @@ export class ImageViewerService extends BaseService {
         queryParams["i"],
         queryParams["r"] || FINAL_REVISION_LABEL,
         [],
-        viewContainerRef,
         false
       ).subscribe();
     }
@@ -110,7 +109,6 @@ export class ImageViewerService extends BaseService {
     imageId: ImageInterface["hash"] | ImageInterface["pk"],
     revisionLabel: ImageRevisionInterface["label"],
     navigationContext: ImageViewerNavigationContext,
-    viewContainerRef: ViewContainerRef,
     pushState: boolean
   ): Observable<ComponentRef<ImageViewerSlideshowComponent>> {
     if (!this._isBrowser) {
@@ -123,7 +121,21 @@ export class ImageViewerService extends BaseService {
         this._previousDescription = this.titleService.getDescription();
         this._previousUrl = this.windowRefService.getCurrentUrl().toString();
 
-        this.slideshow = viewContainerRef.createComponent(ImageViewerSlideshowComponent);
+
+        this.slideshow = createComponent(
+          ImageViewerSlideshowComponent, {
+            environmentInjector: this.applicationRef.injector
+          }
+        );
+
+        if (this._isBrowser) {
+          const body = this.windowRefService.nativeWindow.document.body;
+          body.appendChild(this.slideshow.location.nativeElement);
+          body.classList.add("image-viewer-open");
+        }
+
+        this.applicationRef.attachView(this.slideshow.hostView);
+
         this._slideshowStateSubject.next(true);
         this._stopBodyScrolling();
 
@@ -160,8 +172,15 @@ export class ImageViewerService extends BaseService {
 
   closeSlideShow(pushState: boolean): void {
     if (this.slideshow) {
+      this.slideshow.location.nativeElement.remove();
       this.slideshow.destroy();
       this.slideshow = null;
+
+      if (this._isBrowser) {
+        const body = this.windowRefService.nativeWindow.document.body;
+        body.classList.remove("image-viewer-open");
+      }
+
       this._slideshowStateSubject.next(false);
 
       this.store$.dispatch(new HideFullscreenImage());

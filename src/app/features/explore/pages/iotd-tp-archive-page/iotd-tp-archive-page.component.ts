@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnInit, PLATFORM_ID, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -174,7 +174,6 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     public readonly elementRef: ElementRef,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef,
     public readonly imageService: ImageService,
     public readonly searchService: SearchService,
     public readonly searchFilterService: SearchFilterService,
@@ -210,7 +209,6 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         imageId: item.image["hash"] || item.image["pk"],
         thumbnailUrl: this.imageService.getGalleryThumbnail(item.image)
       })),
-      this.viewContainerRef,
       true
     ).subscribe(slideshow => {
       this._setupSlideshowPagination(

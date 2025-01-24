@@ -1,4 +1,4 @@
-import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -49,7 +49,6 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly searchService: SearchService,
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
@@ -65,7 +64,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.imageViewerService.autoOpenSlideshow(this.componentId, activatedRoute, viewContainerRef);
+      this.imageViewerService.autoOpenSlideshow(this.componentId, activatedRoute);
     });
   }
 

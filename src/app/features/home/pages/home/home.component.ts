@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -79,8 +79,7 @@ export class HomeComponent extends BaseComponentDirective implements OnInit {
     public readonly router: Router,
     public readonly route: ActivatedRoute,
     public readonly imageService: ImageService,
-    public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef
+    public readonly imageViewerService: ImageViewerService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -102,7 +101,7 @@ export class HomeComponent extends BaseComponentDirective implements OnInit {
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       if (!this.imageViewerService.slideshow) {
-        this.imageViewerService.autoOpenSlideshow(this.componentId, this.route, this.viewContainerRef);
+        this.imageViewerService.autoOpenSlideshow(this.componentId, this.route);
       } else {
         this.imageViewerService.closeSlideShow(false);
       }

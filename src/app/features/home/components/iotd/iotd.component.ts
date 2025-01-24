@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { IotdApiService, IotdInterface } from "@features/iotd/services/iotd-api.service";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -289,7 +289,6 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
     public readonly store$: Store<MainState>,
     public readonly iotdApiService: IotdApiService,
     public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef,
     public readonly imageService: ImageService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService
@@ -316,7 +315,6 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
       imageId,
       FINAL_REVISION_LABEL,
       [],
-      this.viewContainerRef,
       true
     ).subscribe();
   }

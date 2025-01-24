@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
@@ -67,7 +67,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
-    public readonly viewContainerRef: ViewContainerRef,
     public readonly imageViewerService: ImageViewerService,
     public readonly router: Router,
     public readonly loadingService: LoadingService,
@@ -202,7 +201,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
           image.hash || image.objectId,
           FINAL_REVISION_LABEL,
           navigationContext,
-          this.viewContainerRef,
           true
         )
       ),

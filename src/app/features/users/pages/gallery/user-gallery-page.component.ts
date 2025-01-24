@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -69,7 +69,6 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
     public readonly activatedRoute: ActivatedRoute,
-    public readonly viewContainerRef: ViewContainerRef,
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly imageService: ImageService
   ) {
@@ -79,7 +78,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
+      this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
     });
   }
 
