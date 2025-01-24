@@ -11,12 +11,20 @@ import { UtilsService } from "@shared/services/utils/utils.service";
     <div
       *ngIf="isBrowser && unitPath && divId && size"
       [id]="divId"
-      [style.height.px]="(rendered || loading) ? height : 0"
+      [style.height.px]="height"
       class="ad-container"
       [class.ad-rendered]="rendered"
     >
     </div>
+
     <astrobin-loading-indicator *ngIf="loading && !rendered"></astrobin-loading-indicator>
+
+    <img
+      *ngIf="!loading && !rendered && !!configName"
+      [src]="'/assets/images/ads/' + configName + '/thank-you-for-not-blocking-ads.jpg?v=1'"
+      [alt]="'Thank you for not blocking ads!' | translate"
+    />
+
     <button
       *ngIf="rendered"
       (click)="removeAds()"

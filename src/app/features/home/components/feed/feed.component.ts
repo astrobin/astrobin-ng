@@ -81,6 +81,7 @@ enum FeedType {
 
                   <astrobin-loading-indicator
                     *ngIf="loadingItemId === item.id.toString()"
+                    @fadeInOut
                     class="position-absolute top-0 h-100"
                   ></astrobin-loading-indicator>
                 </ng-template>
