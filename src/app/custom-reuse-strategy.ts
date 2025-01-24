@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from "@angular/router";
 import { Inject, PLATFORM_ID } from "@angular/core";
-import { LocationStrategy } from "@angular/common";
+import { isPlatformBrowser, LocationStrategy } from "@angular/common";
 
 interface RouteReuseConfig {
   onlyReuseOnBackNavigation?: boolean;
@@ -13,100 +13,65 @@ interface RouteCacheEntry {
 
 export class CustomRouteReuseStrategy implements RouteReuseStrategy {
   routesToCache: Record<string, RouteReuseConfig> = {
-    '': { onlyReuseOnBackNavigation: true },
-    '/search': { onlyReuseOnBackNavigation: true },
-    '/explore/constellations': {},
-    '/explore/iotd-tp-archive': { onlyReuseOnBackNavigation: true },
+    "": { onlyReuseOnBackNavigation: true },
+    "/search": { onlyReuseOnBackNavigation: true },
+    "/explore/constellations": {},
+    "/explore/iotd-tp-archive": { onlyReuseOnBackNavigation: true }
   };
 
-  private cache: Map<string, RouteCacheEntry> = new Map();
-  private isBackNavigation = false;
+  private readonly _isBrowser: boolean;
+  private _cache: Map<string, RouteCacheEntry> = new Map();
+  private _isBackNavigation = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     locationStrategy: LocationStrategy
   ) {
-    locationStrategy.onPopState(() => {
-      this.isBackNavigation = true;
-      setTimeout(() => {
-        this.isBackNavigation = false;
-      }, 100);
-    });
-  }
-
-  private shouldCachePath(path: string): boolean {
-    const basePath = path.split(/[?#]/)[0];
-
-    // Check for exact matches first
-    if (basePath in this.routesToCache) {
-      console.log('✅ Exact match found for', basePath);
-      return true;
+    this._isBrowser = isPlatformBrowser(platformId);
+    if (this._isBrowser) {
+      locationStrategy.onPopState(() => {
+        this._isBackNavigation = true;
+        setTimeout(() => {
+          this._isBackNavigation = false;
+        }, 100);
+      });
     }
-
-    // Check for parameterized routes
-    for (const cacheablePath of Object.keys(this.routesToCache)) {
-      if (cacheablePath.includes(':')) {
-        const regex = new RegExp('^' + cacheablePath.replace(/:[^/]+/g, '[^/]+') + '$');
-        if (regex.test(basePath)) {
-          console.log('✅ Parameterized match found for', basePath);
-          return true;
-        }
-      }
-    }
-
-    console.log('❌ No match found for', basePath);
-    return false;
   }
 
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-    const shouldReuse = future.routeConfig === curr.routeConfig;
-    console.log('🤔 shouldReuseRoute?', {
-      current: this.getPath(curr),
-      future: this.getPath(future),
-      result: shouldReuse
-    });
-    return shouldReuse;
+    return future.routeConfig === curr.routeConfig;
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
+    if (!this._isBrowser) {
+      return false;
+    }
+
     const path = this.getPath(route);
     const basePath = path.split(/[?#]/)[0];
-    const cacheEntry = this.cache.get(path);
+    const cacheEntry = this._cache.get(path);
     const config = this.routesToCache[basePath];
 
     if (!cacheEntry || !route.component) {
       return false;
     }
 
-    if (config?.onlyReuseOnBackNavigation && !this.isBackNavigation) {
-      console.log('🔍 shouldAttach? No - not back navigation with onlyReuseOnBackNavigation', {
-        path,
-        isBack: this.isBackNavigation
-      });
+    if (config?.onlyReuseOnBackNavigation && !this._isBackNavigation) {
       return false;
     }
 
-    const canAttach = this.shouldCachePath(path) && !!cacheEntry && !!route.component;
-    console.log('🔍 shouldAttach?', {
-      path,
-      cached: !!cacheEntry,
-      hasComponent: !!route.component,
-      result: canAttach
-    });
-    return canAttach;
+    return this.shouldCachePath(path) && !!cacheEntry && !!route.component;
   }
 
-
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
-    if (!route.component) {
-      console.log('⚠️ retrieve: No component found');
+    if (!this._isBrowser || !route.component) {
       return null;
     }
 
     const path = this.getPath(route);
-    const cacheEntry = this.cache.get(path);
+    const cacheEntry = this._cache.get(path);
 
-    if (this.isBackNavigation && cacheEntry?.scrollPosition) {
+    if (this._isBackNavigation && cacheEntry?.scrollPosition) {
       const checkScrollHeight = () => {
         if (document.documentElement.scrollHeight >= cacheEntry.scrollPosition) {
           window.scrollTo(0, cacheEntry.scrollPosition);
@@ -117,55 +82,29 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
       setTimeout(checkScrollHeight, 25);
     }
 
-    console.log('📤 retrieve:', {
-      path,
-      foundHandle: !!cacheEntry,
-      isBack: this.isBackNavigation,
-      scrollPos: cacheEntry?.scrollPosition
-    });
-
     return cacheEntry?.handle || null;
   }
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    if (route.children.length > 0) {
-      console.log('💾 shouldDetach? No - has children:', {
-        path: this.getPath(route),
-        children: route.children.length
-      });
+    if (!this._isBrowser || route.children.length > 0) {
       return false;
     }
 
     const path = this.getPath(route);
     const basePath = path.split(/[?#]/)[0];
-    const shouldDetach = basePath in this.routesToCache;
-    console.log('💾 shouldDetach?', {
-      path,
-      exactRoute: basePath,
-      result: shouldDetach
-    });
-    return shouldDetach;
+    return basePath in this.routesToCache;
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle | null): void {
+    if (!this._isBrowser) {
+      return;
+    }
+
     const path = this.getPath(route);
     const basePath = path.split(/[?#]/)[0];
 
     if (basePath in this.routesToCache && handle) {
-      console.log('📥 storing route:', {
-        path,
-        exactRoute: basePath,
-        currentCacheSize: this.cache.size,
-        scrollPosition: window.scrollY
-      });
-      this.cache.set(path, { handle, scrollPosition: window.scrollY });
-    } else {
-      console.log('❌ not storing route:', {
-        path,
-        exactRoute: basePath,
-        inRoutesToCache: basePath in this.routesToCache,
-        hasHandle: !!handle
-      });
+      this._cache.set(path, { handle, scrollPosition: window.scrollY });
     }
   }
 
@@ -181,5 +120,24 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
 
     const basePath = '/' + paths.join("/").replace(/\/+/g, '/');
     return basePath.replace(/\/+$/g, '');
+  }
+
+  private shouldCachePath(path: string): boolean {
+    const basePath = path.split(/[?#]/)[0];
+
+    if (basePath in this.routesToCache) {
+      return true;
+    }
+
+    for (const cacheablePath of Object.keys(this.routesToCache)) {
+      if (cacheablePath.includes(":")) {
+        const regex = new RegExp("^" + cacheablePath.replace(/:[^/]+/g, "[^/]+") + "$");
+        if (regex.test(basePath)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }

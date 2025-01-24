@@ -9,7 +9,7 @@ import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { of } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { MarketplaceSearchBarComponent } from "@features/equipment/components/marketplace-search-bar/marketplace-search-bar.component";
@@ -31,6 +31,12 @@ describe("MarketplaceUserSoldListingsPageComponent", () => {
             snapshot: {
               paramMap: { get: key => "test-username" }
             }
+          }
+        },
+        {
+          provide: Router,
+          useValue: {
+            events: of()
           }
         }
       ])

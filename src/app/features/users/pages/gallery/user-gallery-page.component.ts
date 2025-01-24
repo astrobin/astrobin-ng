@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -16,6 +16,7 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { selectCurrentUser, selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { ImageService } from "@shared/services/image/image.service";
+import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 
 @Component({
   selector: "astrobin-user-gallery-page",
@@ -24,7 +25,11 @@ import { ImageService } from "@shared/services/image/image.service";
       *ngIf="currentUserWrapper$ | async as currentUserWrapper"
       class="page has-infinite-scroll"
     >
-      <astrobin-ad-manager #ad *ngIf="showAd" configName="wide"></astrobin-ad-manager>
+      <astrobin-ad-manager
+        #ad
+        [style.visibility]="showAd ? 'visible' : 'hidden'"
+        [configName]="showAd ? 'wide' : null"
+      ></astrobin-ad-manager>
 
       <astrobin-user-gallery-header
         [user]="user"
@@ -47,9 +52,12 @@ import { ImageService } from "@shared/services/image/image.service";
   styleUrls: ["./user-gallery-page.component.scss"]
 })
 export class UserGalleryPageComponent extends BaseComponentDirective implements OnInit {
+  @ViewChild("ad", { static: false, read: AdManagerComponent }) adManagerComponent: AdManagerComponent;
+
   protected user: UserInterface;
   protected userProfile: UserProfileInterface;
   protected showAd: boolean;
+  protected allowAds: boolean;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -71,11 +79,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      if (!this.imageViewerService.slideshow) {
-        this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
-      } else {
-        this.imageViewerService.closeSlideShow(false);
-      }
+      this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
     });
   }
 
@@ -103,24 +107,27 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       this.user = data.userData.user;
       this.userProfile = data.userData.userProfile;
 
-      if (this.activatedRoute.snapshot.data.image) {
-        // Don't bother, because the image viewer will be opened.
-        this.showAd = false;
-      } else {
-        this.userSubscriptionService.displayAds$().pipe(
-          filter(showAd => typeof showAd !== "undefined"),
-          take(1)
-        ).subscribe(showAd => {
-          // showAd = if the viewer gets ads.
-          // this.userProfile.allowAds = if the user allows ads to be shown on their profile.
-          this.showAd = showAd && this.userProfile.allowAds;
-        });
-      }
+      this.userSubscriptionService.displayAds$().pipe(
+        filter(showAd => typeof showAd !== "undefined"),
+        take(1)
+      ).subscribe(showAd => {
+        /*
+         * showAd = if the viewer gets ads.
+         * this.userProfile.allowAds = if the user allows ads to be shown on their profile.
+         */
+        this.allowAds = showAd && this.userProfile.allowAds;
+        this.showAd = this.allowAds && !this.activatedRoute.snapshot.data.image;
+      });
 
       this.imageViewerService.slideshowState$
         .pipe(takeUntil(this.destroyed$))
         .subscribe(isOpen => {
-          this.showAd = !isOpen;
+          this.showAd = this.allowAds && !isOpen;
+
+          if (!this.showAd && this.adManagerComponent) {
+          } else if (this.showAd && this.adManagerComponent) {
+            this.adManagerComponent.refreshAd();
+          }
         });
 
       if (!this.activatedRoute.snapshot.fragment) {

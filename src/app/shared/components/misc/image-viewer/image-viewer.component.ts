@@ -14,7 +14,7 @@ import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { animationFrameScheduler, auditTime, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
-import { DecimalPipe, isPlatformBrowser, Location } from "@angular/common";
+import { isPlatformBrowser, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -272,6 +272,7 @@ export class ImageViewerComponent
   @HostListener("window:popstate", ["$event"])
   onPopState(event: PopStateEvent) {
     if (this.standalone && this.viewingFullscreenImage) {
+      event.preventDefault();
       this.exitFullscreen();
     }
   }
@@ -1050,14 +1051,6 @@ export class ImageViewerComponent
       } else {
         this.adConfig = "wide";
       }
-
-      this.changeDetectorRef.detectChanges();
-
-      this.utilsService.delay(1).subscribe(() => {
-        if (this.adManagerComponent && this.active && !this.adDisplayed) {
-          this.adManagerComponent.refreshAd();
-        }
-      });
     });
   }
 

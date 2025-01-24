@@ -7,10 +7,10 @@ import { Store } from "@ngrx/store";
 import { ImageService } from "@shared/services/image/image.service";
 import { NgbCarousel, NgbSlideEvent } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { distinctUntilChanged, filter, map, switchMap, takeUntil } from "rxjs/operators";
+import { switchMap } from "rxjs/operators";
 import { Observable, Subscription } from "rxjs";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { NavigationEnd, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { DeviceService } from "@shared/services/device.service";
@@ -153,41 +153,17 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     public readonly translateService: TranslateService
   ) {
     super(store$);
-
     this._isBrowser = isPlatformBrowser(this.platformId);
-
-    router.events
-      .pipe(
-        filter(event => event instanceof NavigationEnd),
-        map((event: NavigationEnd) => event.urlAfterRedirects),
-        distinctUntilChanged(),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe(url => {
-        const imageId = this.router.parseUrl(url).queryParams["i"];
-        const revisionLabel = this.router.parseUrl(url).queryParams["r"] || FINAL_REVISION_LABEL;
-        if (imageId) {
-          this.setImage(imageId, revisionLabel, false).subscribe(
-            () => {
-            },
-            error => {
-              this.closeSlideshow.emit(false);
-            }
-          );
-        }
-      });
   }
 
   @HostListener("window:popstate", ["$event"])
   onPopState(event: PopStateEvent) {
     if (this.fullscreen) {
+      event.preventDefault();
       this.store$.dispatch(new HideFullscreenImage());
       this.onExitFullscreen();
     } else if (event.state?.imageId && this.activeId !== event.state.imageId) {
-      this.setImage(
-        event.state.imageId,
-        event.state.revisionLabel || FINAL_REVISION_LABEL,
-        false).subscribe();
+      event.preventDefault();
     } else {
       this.closeSlideshow.emit(false);
     }
@@ -306,7 +282,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       const location_ = this.windowRefService.nativeWindow.location;
       this.windowRefService.replaceState(
         {},
-        `${location_.pathname}${location_.search}`,
+        `${location_.pathname}${location_.search}`
       );
     }
 

@@ -1,5 +1,5 @@
-import { Component, HostListener, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
-import { Location } from "@angular/common";
+import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild, ViewContainerRef } from "@angular/core";
+import { isPlatformBrowser, Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -9,7 +9,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { SearchService } from "@features/search/services/search.service";
 import { filter, map, startWith, takeUntil } from "rxjs/operators";
 import { merge } from "rxjs";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -22,7 +22,7 @@ import { ImageService } from "@shared/services/image/image.service";
   templateUrl: "./search.page.component.html",
   styleUrls: ["./search.page.component.scss"]
 })
-export class SearchPageComponent extends BaseComponentDirective implements OnInit {
+export class SearchPageComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   readonly SearchType = SearchType;
 
   @ViewChild("ad", { static: false, read: AdManagerComponent }) adManagerComponent: AdManagerComponent;
@@ -36,7 +36,10 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     pageSize: SearchService.DEFAULT_PAGE_SIZE
   };
 
+  protected allowAds: boolean;
   protected showAd: boolean;
+
+  private _isBrowser: boolean;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -50,9 +53,13 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
+
+    this._isBrowser = isPlatformBrowser(platformId);
 
     router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -71,21 +78,24 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
       this.titleService.setTitle(this.translateService.instant("Search"));
     }
 
-    if (this.activatedRoute.snapshot.data.image) {
-      // Don't bother, because the image viewer will be opened.
-      this.showAd = false;
-    } else {
-      this.userSubscriptionService.displayAds$().pipe(
-        takeUntil(this.destroyed$)
-      ).subscribe(showAd => {
-        this.showAd = showAd;
-      });
-    }
+    this.userSubscriptionService.displayAds$().pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(allowAds => {
+      this.allowAds = allowAds;
+      this.showAd = allowAds && !this.activatedRoute.snapshot.data.image;
+    });
 
     this.imageViewerService.slideshowState$
       .pipe(takeUntil(this.destroyed$))
       .subscribe(isOpen => {
-        this.showAd = !isOpen;
+        this.showAd = this.allowAds && !isOpen;
+
+        if (!this.showAd && this.adManagerComponent) {
+        } else if (this.showAd && this.adManagerComponent) {
+          this.utilsService.delay(100).subscribe(() => {
+            this.adManagerComponent.refreshAd();
+          });
+        }
       });
 
     merge(
@@ -104,9 +114,29 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     });
   }
 
-  @HostListener('window:popstate', ['$event'])
-  onPopState(e) {
-    if (this.adManagerComponent && !this.imageViewerService.isSlideshowOpen()) {
+  ngOnDestroy() {
+    if (this.adManagerComponent) {
+      this.adManagerComponent.destroyAd();
+    }
+
+    super.ngOnDestroy();
+  }
+
+  @HostListener("window:popstate", ["$event"])
+  onPopState(event: PopStateEvent): void {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    const queryParams = this.windowRefService.nativeWindow.location.search;
+    const isImage = queryParams.includes("i=");
+
+    if (isImage) {
+      event.preventDefault();
+      return;
+    }
+
+    if (this.adManagerComponent) {
       this.adManagerComponent.refreshAd();
     }
   }

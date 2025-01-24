@@ -9,16 +9,16 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   selector: "astrobin-ad-manager",
   template: `
     <div
-      *ngIf="isBrowser"
+      *ngIf="isBrowser && unitPath && divId && size"
       [id]="divId"
-      [style.height.px]="adHeight"
+      [style.height.px]="(rendered || loading) ? height : 0"
       class="ad-container"
-      [class.ad-rendered]="adRendered"
+      [class.ad-rendered]="rendered"
     >
-      <astrobin-loading-indicator *ngIf="!adRendered"></astrobin-loading-indicator>
     </div>
+    <astrobin-loading-indicator *ngIf="loading && !rendered"></astrobin-loading-indicator>
     <button
-      *ngIf="adRendered"
+      *ngIf="rendered"
       (click)="removeAds()"
       class="btn btn-link btn-no-block remove-ads"
     >
@@ -58,13 +58,12 @@ export class AdManagerComponent implements OnChanges {
   @ViewChild("removeAdsOffcanvasTemplate") removeAdsOffcanvasTemplate: TemplateRef<any>;
 
   protected readonly isBrowser: boolean;
-  protected adUnitPath: string;
+  protected unitPath: string;
   protected divId: string;
-  protected adSize: any[];
-  protected adHeight: number;
-  protected adRendered = false;
-
-  private _loadingAd = true;
+  protected size: any[];
+  protected height: number;
+  protected rendered = false;
+  protected loading = false;
 
   constructor(
     public readonly adManagerService: AdManagerService,
@@ -81,9 +80,9 @@ export class AdManagerComponent implements OnChanges {
     if (this.isBrowser) {
       const config = this.adManagerService.getAdConfig(this.configName);
       if (config) {
-        this.adUnitPath = config.adUnitPath;
+        this.unitPath = config.adUnitPath;
         this.divId = config.divId;
-        this.adSize = config.adSize;
+        this.size = config.adSize;
 
         // First destroy any existing slot
         await this.adManagerService.destroyAdSlot(this.divId);
@@ -101,29 +100,47 @@ export class AdManagerComponent implements OnChanges {
             height: 280
           }
         };
-        this.adHeight = (adSizes[this.configName].height * containerWidth) / adSizes[this.configName].width;
+        this.height = (adSizes[this.configName].height * containerWidth) / adSizes[this.configName].width;
 
-        // Only define new slot after previous one is destroyed
-        this.adManagerService.defineAdSlot(this.configName, this.adUnitPath, this.adSize, this.divId);
-
-        this.adManagerService.displayAd(this.divId).then((displayed) => {
-          this._onAdResult(displayed);
-        });
+        this._defineAndDisplayAd();
       } else {
-        console.error(`No ad configuration found for ${this.configName}`);
+        console.debug(`Ad configuration "${this.configName}" not found.`);
+        this.unitPath = null;
+        this.divId = null;
+        this.size = null;
       }
     }
   }
 
-  refreshAd(): void {
-    if (this._loadingAd) {
+  private _defineAndDisplayAd(): void {
+    if (!this.unitPath || !this.divId || !this.size) {
+      console.debug(`_defineAndDisplayAd: params are null`);
       return;
     }
 
-    this._loadingAd = true;
-    this.adManagerService.refreshAd(this.divId).then((displayed) => {
-      this._onAdResult(displayed);
-    });
+    if (this.adManagerService.hasAdSlot(this.divId)) {
+      this.adManagerService.refreshAd(this.divId).then((displayed) => {
+        this._onAdResult(displayed);
+      });
+    } else {
+      this.adManagerService.defineAdSlot(this.configName, this.unitPath, this.size, this.divId).then(() => {
+        this.loading = true;
+        this.adManagerService.displayAd(this.divId).then((displayed) => {
+          this._onAdResult(displayed);
+        });
+      });
+    }
+  }
+
+  refreshAd(): void {
+    if (this.loading) {
+      console.debug(`Ad is already loading, skipping refresh.`);
+      return;
+    }
+
+    this.loading = true;
+
+    this._defineAndDisplayAd();
   }
 
   removeAds(): void {
@@ -133,21 +150,24 @@ export class AdManagerComponent implements OnChanges {
   }
 
   destroyAd(): Promise<void> {
+    console.debug(`Destroying ad slot ${this.divId}`);
     return this.adManagerService.destroyAdSlot(this.divId);
   }
 
   private _onAdResult(displayed: boolean): void {
     if (displayed) {
-      this.utilsService.delay(100).subscribe(() => {
+      this.utilsService.delay(1).subscribe(() => {
         requestAnimationFrame(() => {
-          this.adRendered = displayed;
+          console.debug(`Ad displayed: ${this.divId}`);
+          this.rendered = displayed;
           this.adDisplayed.emit();
-          this._loadingAd = false;
+          this.loading = false;
         });
       });
     } else {
-      this.adRendered = false;
-      this._loadingAd = false;
+      console.debug(`Ad not displayed: ${this.divId}`);
+      this.rendered = false;
+      this.loading = false;
     }
   }
 }
