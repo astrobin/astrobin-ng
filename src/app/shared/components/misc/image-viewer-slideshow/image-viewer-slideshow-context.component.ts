@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
 import { fromEvent, Subscription, throttleTime } from "rxjs";
+import { fadeInOut } from "@shared/animations";
 
 
 @Component({
@@ -19,7 +20,7 @@ import { fromEvent, Subscription, throttleTime } from "rxjs";
       <div #navigationContextElement class="navigation-context">
         <div
           *ngFor="let item of navigationContext; trackBy: trackByFn"
-          (click)="itemSelected.emit(item.imageId)"
+          (click)="onItemClicked(item.imageId)"
           class="navigation-context-item"
           [class.active]="item.imageId === activeId"
         >
@@ -28,6 +29,11 @@ import { fromEvent, Subscription, throttleTime } from "rxjs";
             [src]="item.thumbnailUrl"
             alt=""
           />
+
+          <astrobin-loading-indicator
+            *ngIf="loadingImageId?.toString() === item.imageId.toString()"
+            @fadeInOut
+          ></astrobin-loading-indicator>
         </div>
       </div>
 
@@ -41,7 +47,8 @@ import { fromEvent, Subscription, throttleTime } from "rxjs";
       </button>
     </div>
   `,
-  styleUrls: ["./image-viewer-slideshow-context.component.scss"]
+  styleUrls: ["./image-viewer-slideshow-context.component.scss"],
+  animations: [fadeInOut]
 })
 export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input()
@@ -61,6 +68,8 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
 
   @ViewChild("navigationContextElement", { static: true })
   navigationContextElement: ElementRef;
+
+  protected loadingImageId: ImageViewerNavigationContextItem["imageId"];
 
   private _scrollEventSubscription: Subscription;
   private _wheelEventSubscription: Subscription;
@@ -110,8 +119,19 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
     }
   }
 
+  public removeLoadingStatus(imageId: ImageViewerNavigationContextItem["imageId"]): void {
+    if (this.loadingImageId === imageId) {
+      this.loadingImageId = null;
+    }
+  }
+
   protected trackByFn(index: number, item: ImageViewerNavigationContextItem) {
     return item.imageId;
+  }
+
+  protected onItemClicked(imageId: ImageViewerNavigationContextItem["imageId"]): void {
+    this.loadingImageId = imageId;
+    this.itemSelected.emit(imageId);
   }
 
   protected scrollNavigationContextLeft(): void {
@@ -144,5 +164,4 @@ export class ImageViewerSlideshowContextComponent implements AfterViewInit, OnDe
       });
     }
   }
-
 }

@@ -19,6 +19,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
+import { ImageViewerSlideshowContextComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow-context.component";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
@@ -67,6 +68,7 @@ const SLIDESHOW_WINDOW = 3;
 
       <div *ngIf="navigationContext?.length > 1" class="context-area">
         <astrobin-image-viewer-slideshow-context
+          #context
           [activeId]="activeId"
           [callerComponentId]="callerComponentId"
           [navigationContext]="navigationContext"
@@ -114,6 +116,9 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   @Output()
   imageChange = new EventEmitter<ImageInterface>();
+
+  @ViewChild("context", { read: ImageViewerSlideshowContextComponent})
+  protected context: ImageViewerSlideshowContextComponent;
 
   activeId: ImageInterface["pk"] | ImageInterface["hash"];
   activeImage: ImageInterface;
@@ -240,6 +245,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
             }
 
             this.loadingImage = false;
+
+            if (this.context) {
+              this.context.removeLoadingStatus(imageId);
+            }
 
             if (emitChange) {
               this.imageChange.emit(image);
