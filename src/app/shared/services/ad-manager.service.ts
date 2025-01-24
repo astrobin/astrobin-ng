@@ -30,6 +30,7 @@ export class AdManagerService extends BaseService {
       adSize: ['fluid']
     }
   };
+  private _lastRequestTimestamp = 0;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -51,6 +52,12 @@ export class AdManagerService extends BaseService {
   }
 
   defineAdSlot(configName: string, adUnitPath: string, size: any[], divId: string): void {
+    if (this._lastRequestTimestamp && Date.now() - this._lastRequestTimestamp < 100) {
+      return;
+    }
+
+    this._lastRequestTimestamp = Date.now();
+
     if (this._isBrowser) {
       const nativeWindow = this.windowRefService.nativeWindow as any;
       if (nativeWindow) {

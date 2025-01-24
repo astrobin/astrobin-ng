@@ -180,6 +180,10 @@ export class ImageViewerService extends BaseService {
     }
   }
 
+  isSlideshowOpen(): boolean {
+    return !!this.slideshow;
+  }
+
   getScrollArea(imageId: ImageInterface["hash"] | ImageInterface["pk"]): {
     scrollArea: HTMLElement;
     windowWidth: number;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, HostListener, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -102,6 +102,13 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     ).subscribe((queryParams: Record<string, string>) => {
       this.loadModel(queryParams);
     });
+  }
+
+  @HostListener('window:popstate', ['$event'])
+  onPopState(e) {
+    if (this.adManagerComponent && !this.imageViewerService.isSlideshowOpen()) {
+      this.adManagerComponent.refreshAd();
+    }
   }
 
   loadModel(queryParams: Record<string, string> = {}): void {

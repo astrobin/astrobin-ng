@@ -1,4 +1,4 @@
-import { DatePipe, isPlatformBrowser, registerLocaleData } from "@angular/common";
+import { DatePipe, isPlatformBrowser, LocationStrategy, registerLocaleData } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import localeArabic from "@angular/common/locales/ar";
 import localeGerman from "@angular/common/locales/de";
@@ -43,12 +43,13 @@ import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { translateLoaderFactory } from "./translate-loader";
 import * as Sentry from "@sentry/angular";
-import { Router } from "@angular/router";
+import { Router, RouteReuseStrategy } from "@angular/router";
 import { CLIENT_IP } from "@app/client-ip.injector";
 import { TimeagoAppClock } from "@shared/services/timeago-app-clock.service";
 import { NGRX_STATE_KEY } from "@shared/services/store-transfer.service";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { SearchModule } from "@features/search/search.module";
+import { CustomRouteReuseStrategy } from "@app/custom-reuse-strategy";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -107,9 +108,9 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     BrowserAnimationsModule,
     HttpClientModule,
     CookieModule.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', {
+    ServiceWorkerModule.register("ngsw-worker.js", {
       enabled: environment.production,
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: "registerWhenStable:30000"
     }),
     // Dependencies.
     StoreModule.forRoot(mainStateReducers,
@@ -172,6 +173,12 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
       useValue: Sentry.createErrorHandler({
         showDialog: false
       })
+    },
+    {
+      provide: RouteReuseStrategy,
+      useFactory: (platformId: Object, locationStrategy: LocationStrategy) =>
+        new CustomRouteReuseStrategy(platformId, locationStrategy),
+      deps: [PLATFORM_ID, LocationStrategy]
     },
     { provide: CLIENT_IP, useValue: "" } // provide a fallback value for CLIENT_IP
   ],

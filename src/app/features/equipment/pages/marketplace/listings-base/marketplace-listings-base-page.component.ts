@@ -10,7 +10,7 @@ import { debounceTime, filter, map, take, takeUntil, tap, withLatestFrom } from 
 import { ClearMarketplaceListings, EquipmentActionTypes, LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 import { LoadingService } from "@shared/services/loading.service";
 import { MarketplaceFilterModel, marketplaceFilterModelKeys, MarketplaceRefreshOptions } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { CountryService } from "@shared/services/country.service";
 import { fromEvent, Observable } from "rxjs";
@@ -79,6 +79,16 @@ export abstract class MarketplaceListingsBasePageComponent
     public readonly offcanvasService: NgbOffcanvas
   ) {
     super(store$);
+
+    this.router.events.pipe(
+      filter(event =>
+        event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(activatedRoute))
+      ),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this._setTitle();
+      this._setBreadcrumb();
+    });
   }
 
   ngOnInit(): void {
@@ -256,8 +266,6 @@ export abstract class MarketplaceListingsBasePageComponent
       );
     });
 
-    this._setTitle();
-    this._setBreadcrumb();
     this.loadingService.setLoading(false);
   }
 

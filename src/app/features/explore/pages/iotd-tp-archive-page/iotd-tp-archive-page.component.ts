@@ -26,6 +26,7 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { RouterService } from "@shared/services/router.service";
 
 enum ArchiveType {
   IOTD = SearchAwardFilterValue.IOTD,
@@ -182,12 +183,20 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
+
+    this.router.events.pipe(
+      filter(event =>
+        event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(activatedRoute))
+      ),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this._initTitleAndBreadcrumb();
+    });
   }
 
   async ngOnInit() {
     super.ngOnInit();
 
-    this._initTitleAndBreadcrumb();
     this._initScrollListener();
     this._initTab();
   }

@@ -69,8 +69,6 @@ export class ConstellationsPageComponent extends BaseComponentDirective implemen
 
     event.preventDefault();
 
-    this.router.navigateByUrl(this.getFindImagesUrl(constellation)).then(() => {
-      this.windowRefService.scroll({ top: 0 });
-    });
+    this.router.navigateByUrl(this.getFindImagesUrl(constellation));
   }
 }
