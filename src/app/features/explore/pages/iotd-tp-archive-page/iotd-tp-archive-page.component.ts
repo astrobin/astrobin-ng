@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnInit, PLATFORM_ID, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -26,6 +26,7 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { RouterService } from "@shared/services/router.service";
 
 enum ArchiveType {
   IOTD = SearchAwardFilterValue.IOTD,
@@ -173,7 +174,6 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     public readonly elementRef: ElementRef,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef,
     public readonly imageService: ImageService,
     public readonly searchService: SearchService,
     public readonly searchFilterService: SearchFilterService,
@@ -182,12 +182,20 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
+
+    this.router.events.pipe(
+      filter(event =>
+        event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(activatedRoute))
+      ),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this._initTitleAndBreadcrumb();
+    });
   }
 
   async ngOnInit() {
     super.ngOnInit();
 
-    this._initTitleAndBreadcrumb();
     this._initScrollListener();
     this._initTab();
   }
@@ -201,7 +209,6 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
         imageId: item.image["hash"] || item.image["pk"],
         thumbnailUrl: this.imageService.getGalleryThumbnail(item.image)
       })),
-      this.viewContainerRef,
       true
     ).subscribe(slideshow => {
       this._setupSlideshowPagination(

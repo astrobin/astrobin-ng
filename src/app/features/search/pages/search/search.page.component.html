@@ -6,8 +6,8 @@
 
   <astrobin-ad-manager
     #ad
-    *ngIf="showAd"
-    configName="wide"
+    [style.visibility]="showAd ? 'visible' : 'hidden'"
+    [configName]="showAd ? 'wide' : null"
   ></astrobin-ad-manager>
 
   <astrobin-image-search

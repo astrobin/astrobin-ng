@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Router, UrlTree } from "@angular/router";
+import { ActivatedRoute, Router, UrlTree } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Location } from "@angular/common";
 
@@ -16,6 +16,13 @@ export class RouterService extends BaseService {
     private readonly location: Location
   ) {
     super(loadingService);
+  }
+
+  static getCurrentPath(route: ActivatedRoute): string {
+    return route.snapshot.pathFromRoot
+      .map(r => r.routeConfig?.path || "")
+      .filter(segment => segment !== "")
+      .join("/");
   }
 
   getLoginUrlTree(redirectUrl?: string): UrlTree {

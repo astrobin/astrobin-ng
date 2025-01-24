@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
@@ -81,6 +81,7 @@ enum FeedType {
 
                   <astrobin-loading-indicator
                     *ngIf="loadingItemId === item.id.toString()"
+                    @fadeInOut
                     class="position-absolute top-0 h-100"
                   ></astrobin-loading-indicator>
                 </ng-template>
@@ -255,7 +256,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     public readonly feedApiService: FeedApiService,
     public readonly feedService: FeedService,
     public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef,
     @Inject(PLATFORM_ID) private platformId: Object,
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
@@ -423,7 +423,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
           imageId,
           FINAL_REVISION_LABEL,
           navigationContext,
-          this.viewContainerRef,
           true
         )
       ),

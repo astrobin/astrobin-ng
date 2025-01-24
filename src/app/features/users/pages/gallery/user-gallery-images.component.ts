@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -251,7 +251,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef,
     public readonly loadingService: LoadingService,
     public readonly imageService: ImageService,
     public readonly router: Router,
@@ -386,7 +385,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
           imageId,
           FINAL_REVISION_LABEL,
           navigationContext,
-          this.viewContainerRef,
           true
         )
       ),

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -79,8 +79,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly deviceService: DeviceService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef
+    public readonly imageViewerService: ImageViewerService
   ) {
     super(
       store$,
@@ -117,7 +116,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   ngAfterViewInit(): void {
-    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute, this.viewContainerRef);
+    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
   }
 
   onSelectedItemChanged(item: EquipmentItemBaseInterface) {

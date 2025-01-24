@@ -22,6 +22,7 @@ import { TitleService } from "@shared/services/title/title.service";
 import { VersionCheckService } from "@shared/services/version-check.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { GetUnreadCount } from "@features/notifications/store/notifications.actions";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -94,6 +95,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
         this.loadingService.setLoading(true);
       } else if (event instanceof NavigationEnd) {
         this.loadingService.setLoading(false);
+        this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
         this.windowRefService.changeBodyOverflow("auto");
         this.offcanvasService.dismiss();
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);

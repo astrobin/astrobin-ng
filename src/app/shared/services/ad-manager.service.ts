@@ -19,17 +19,18 @@ export class AdManagerService extends BaseService {
   private readonly _isBrowser: boolean;
   private _publisherId = "47890729";
   private _adConfigurations = {
-    'rectangular': {
+    "rectangular": {
       adUnitPath: `/${this._publisherId}/astrobin-native-responsive-rectangular`,
-      divId: 'div-gpt-ad-1603646272754-0',
-      adSize: ['fluid']
+      divId: "div-gpt-ad-1603646272754-0",
+      adSize: ["fluid"]
     },
-    'wide': {
+    "wide": {
       adUnitPath: `/${this._publisherId}/astrobin-native-responsive-wide`,
-      divId: 'div-gpt-ad-1726208728627-0',
-      adSize: ['fluid']
+      divId: "div-gpt-ad-1726208728627-0",
+      adSize: ["fluid"]
     }
   };
+  private _lastRequestTimestamp = 0;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -50,19 +51,35 @@ export class AdManagerService extends BaseService {
     return this._adConfigurations[name] || null;
   }
 
-  defineAdSlot(configName: string, adUnitPath: string, size: any[], divId: string): void {
-    if (this._isBrowser) {
-      const nativeWindow = this.windowRefService.nativeWindow as any;
-      if (nativeWindow) {
-        nativeWindow.googletag.cmd.push(() => {
-          const slot = nativeWindow.googletag.defineSlot(adUnitPath, size, divId);
-          if (slot) {
-            slot.setTargeting("format", [configName]).addService(nativeWindow.googletag.pubads());
-            this._adSlots[divId] = slot;
-          }
-        });
+  defineAdSlot(configName: string, adUnitPath: string, size: any[], divId: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if (this._lastRequestTimestamp && Date.now() - this._lastRequestTimestamp < 100) {
+        reject("Too many requests");
+        return;
       }
-    }
+
+      this._lastRequestTimestamp = Date.now();
+
+      if (this._isBrowser) {
+        const nativeWindow = this.windowRefService.nativeWindow as any;
+        if (nativeWindow) {
+          nativeWindow.googletag.cmd.push(() => {
+            const slot = nativeWindow.googletag.defineSlot(adUnitPath, size, divId);
+            if (slot) {
+              slot.setTargeting("format", [configName]).addService(nativeWindow.googletag.pubads());
+              this._adSlots[divId] = slot;
+              resolve();
+            } else {
+              reject("Failed to define slot");
+            }
+          });
+        }
+      }
+    });
+  }
+
+  hasAdSlot(divId: string): boolean {
+    return !!this._adSlots[divId];
   }
 
   displayAd(divId: string): Promise<boolean> {
@@ -78,7 +95,7 @@ export class AdManagerService extends BaseService {
 
           const renderListener = (event) => {
             if (event.slot === slot) {
-              nativeWindow.googletag.pubads().removeEventListener('slotRenderEnded', renderListener);
+              nativeWindow.googletag.pubads().removeEventListener("slotRenderEnded", renderListener);
 
               if (event.isEmpty) {
                 resolve(false);
@@ -86,16 +103,16 @@ export class AdManagerService extends BaseService {
                 // Add slotOnload listener only if we're expecting an ad
                 const loadListener = (loadEvent) => {
                   if (loadEvent.slot === slot) {
-                    nativeWindow.googletag.pubads().removeEventListener('slotOnload', loadListener);
+                    nativeWindow.googletag.pubads().removeEventListener("slotOnload", loadListener);
                     resolve(true);
                   }
                 };
-                nativeWindow.googletag.pubads().addEventListener('slotOnload', loadListener);
+                nativeWindow.googletag.pubads().addEventListener("slotOnload", loadListener);
               }
             }
           };
 
-          nativeWindow.googletag.pubads().addEventListener('slotRenderEnded', renderListener);
+          nativeWindow.googletag.pubads().addEventListener("slotRenderEnded", renderListener);
           nativeWindow.googletag.cmd.push(() => {
             nativeWindow.googletag.display(divId);
           });
@@ -109,7 +126,14 @@ export class AdManagerService extends BaseService {
   }
 
   refreshAd(divId: string): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (this._lastRequestTimestamp && Date.now() - this._lastRequestTimestamp < 100) {
+        reject("Too many requests");
+        return;
+      }
+
+      this._lastRequestTimestamp = Date.now();
+
       if (this._isBrowser) {
         const nativeWindow = this.windowRefService.nativeWindow as any;
         if (nativeWindow && this._adSlots[divId]) {
@@ -117,12 +141,12 @@ export class AdManagerService extends BaseService {
 
           const listener = (event) => {
             if (event.slot === slot) {
-              nativeWindow.googletag.pubads().removeEventListener('slotRenderEnded', listener);
+              nativeWindow.googletag.pubads().removeEventListener("slotRenderEnded", listener);
               resolve(!event.isEmpty);
             }
           };
 
-          nativeWindow.googletag.pubads().addEventListener('slotRenderEnded', listener);
+          nativeWindow.googletag.pubads().addEventListener("slotRenderEnded", listener);
           nativeWindow.googletag.cmd.push(() => {
             nativeWindow.googletag.pubads().refresh([this._adSlots[divId]]);
           });
