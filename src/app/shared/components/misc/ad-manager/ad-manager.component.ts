@@ -21,7 +21,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
     <img
       *ngIf="!loading && !rendered && !!configName"
-      [src]="'/assets/images/ads/' + configName + '/thank-you-for-not-blocking-ads.jpg?v=1'"
+      [src]="'/assets/images/ads/' + configName + '/thank-you-for-not-blocking-ads.jpeg?v=1'"
       [alt]="'Thank you for not blocking ads!' | translate"
     />
 
