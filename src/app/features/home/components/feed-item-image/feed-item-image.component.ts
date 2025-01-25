@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild, ViewContainerRef } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -109,7 +109,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   styleUrls: [
     "../feed-item/feed-item.component.scss",
     "./feed-item-image.component.scss"
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
@@ -33,7 +33,8 @@ declare type HammerInput = any;
   selector: "astrobin-fullscreen-image-viewer",
   templateUrl: "./fullscreen-image-viewer.component.html",
   styleUrls: ["./fullscreen-image-viewer.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input()
@@ -143,7 +144,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly windowRefService: WindowRefService,
     public readonly titleService: TitleService,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
 
@@ -203,6 +205,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           // Double check in case user clicked during timeout
           if (!this._eagerLoadingSubscription && !this.hdThumbnail && !this.realThumbnail) {
             this._eagerLoadingSubscription = this._initThumbnailSubscriptions();
+            this.changeDetectorRef.detectChanges();
           }
         });
       }
@@ -229,6 +232,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.titleService.enablePageZoom();
         cancelAnimationFrame(this._animationFrame);
         this.exitFullscreen.emit();
+        this.changeDetectorRef.markForCheck();
       });
 
       this.show = true;
@@ -239,6 +243,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       if (!this._eagerLoadingSubscription && !this.hdThumbnail && !this.realThumbnail) {
         this._initThumbnailSubscriptions();
       }
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -278,6 +284,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       if (this.ngxImageZoom) {
         (this.ngxImageZoom as any).clickMouseLeave = () => {
         };
+        this.changeDetectorRef.markForCheck();
       }
     });
   }
@@ -576,6 +583,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         revision.w > this.windowRef.nativeWindow.innerWidth ||
         revision.h > this.windowRef.nativeWindow.innerHeight
       );
+      this.changeDetectorRef.markForCheck();
 
       this.currentUser$.pipe(take(1)).subscribe(user => {
         const limit = image.fullSizeDisplayLimitation;
@@ -585,6 +593,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           (limit === FullSizeLimitationDisplayOptions.PAYING && !!user && !!user.validSubscription) ||
           (limit === FullSizeLimitationDisplayOptions.ME && !!user && user.id === image.user)
         );
+        this.changeDetectorRef.markForCheck();
       });
     });
 
@@ -611,6 +620,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       )
     ).subscribe(url => {
       this.hdThumbnail = url;
+      this.changeDetectorRef.markForCheck();
     });
 
     subscriptions.add(this._hdThumbnailSubscription);
@@ -638,6 +648,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       )
     ).subscribe(url => {
       this.realThumbnail = url;
+      this.changeDetectorRef.markForCheck();
     });
 
     subscriptions.add(this._realThumbnailSubscription);

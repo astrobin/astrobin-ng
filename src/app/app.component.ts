@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { NavigationEnd, NavigationStart, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -30,7 +30,8 @@ declare var gtag: any;
 @Component({
   selector: "astrobin-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"]
+  styleUrls: ["./app.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   private readonly _isBrowser: boolean;
@@ -54,7 +55,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     public readonly loadingService: LoadingService,
     public readonly titleService: TitleService,
     public readonly versionCheckService: VersionCheckService,
-    public readonly jsonApiService: JsonApiService
+    public readonly jsonApiService: JsonApiService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
 
@@ -101,6 +103,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);
         this.setMetaTags(event.urlAfterRedirects);
+        this.changeDetectorRef.markForCheck();
 
         if (this._isBrowser) {
           this.currentUser$.pipe(
@@ -217,6 +220,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
           console.log("Kill switch deactivated. Registering Service Worker...");
           this._enableServiceWorker();
         }
+        this.changeDetectorRef.markForCheck();
       });
   }
 

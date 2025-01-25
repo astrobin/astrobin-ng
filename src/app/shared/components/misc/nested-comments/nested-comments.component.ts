@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -18,6 +18,7 @@ import { RouterService } from "@shared/services/router.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { fadeInOut } from "@shared/animations";
 
 export enum NestedCommentsAutoStartTopLevelStrategy {
   ALWAYS = "ALWAYS",
@@ -29,7 +30,9 @@ export type NestedCommentsTopLevelFormPlacement = "TOP" | "BOTTOM";
 @Component({
   selector: "astrobin-nested-comments",
   templateUrl: "./nested-comments.component.html",
-  styleUrls: ["./nested-comments.component.scss"]
+  styleUrls: ["./nested-comments.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [fadeInOut],
 })
 export class NestedCommentsComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
@@ -104,7 +107,8 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly routerService: RouterService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -118,8 +122,6 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   ngOnChanges() {
     this._initComments();
     this._initFields();
-
-    this.refresh();
   }
 
   onVisibilityChange(isIntersecting: boolean): void {
@@ -139,7 +141,10 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         ),
         take(1)
       )
-      .subscribe(() => (this.loadingComments = false));
+      .subscribe(() => {
+        this.loadingComments = false;
+        this.changeDetectorRef.markForCheck();
+      });
 
     this.loadingComments = true;
     this.store$.dispatch(new LoadNestedComments({ contentTypeId: this.contentType.id, objectId: this.objectId }));
@@ -189,6 +194,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         return;
       }
       this.showTopLevelForm = true;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -213,6 +219,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
 
           this.utilsService.delay(200).subscribe(() => {
             this._autoStartTopLevel();
+            this.changeDetectorRef.markForCheck();
           });
         }),
         takeUntil(this.destroyed$)
@@ -227,9 +234,10 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     this._autoStartTopLevelRetries++;
 
     if (this.loadingComments) {
-      this.utilsService.delay(200).subscribe(() =>
-        this._autoStartTopLevel()
-      );
+      this.utilsService.delay(200).subscribe(() => {
+        this._autoStartTopLevel();
+        this.changeDetectorRef.markForCheck();
+      });
       return;
     }
 
@@ -271,6 +279,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
       take(1)
     ).subscribe(contentType => {
       this.commentContentType = contentType;
+      this.changeDetectorRef.markForCheck();
     });
     this.store$.dispatch(new LoadContentType(payload));
   }

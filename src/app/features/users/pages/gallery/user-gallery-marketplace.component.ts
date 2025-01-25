@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MainState } from "@app/store/state";
@@ -15,7 +15,8 @@ import { map } from "rxjs/operators";
   template: `
     <astrobin-marketplace-listing-cards [listings]="listings$ | async"></astrobin-marketplace-listing-cards>
   `,
-  styleUrls: ["./user-gallery-marketplace.component.scss"]
+  styleUrls: ["./user-gallery-marketplace.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryMarketplaceComponent extends BaseComponentDirective implements OnInit {
   @Input() user: UserInterface;

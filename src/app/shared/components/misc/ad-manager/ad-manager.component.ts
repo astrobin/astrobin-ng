@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Inject, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
 import { AdManagerService } from "@shared/services/ad-manager.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
@@ -56,7 +56,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./ad-manager.component.scss"]
+  styleUrls: ["./ad-manager.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdManagerComponent implements OnChanges {
   @Input() configName: string;
@@ -79,7 +80,8 @@ export class AdManagerComponent implements OnChanges {
     public readonly deviceService: DeviceService,
     @Inject(PLATFORM_ID) platformId: Object,
     public readonly elementRef: ElementRef,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -129,12 +131,16 @@ export class AdManagerComponent implements OnChanges {
     if (this.adManagerService.hasAdSlot(this.divId)) {
       this.adManagerService.refreshAd(this.divId).then((displayed) => {
         this._onAdResult(displayed);
+        this.changeDetectorRef.markForCheck();
       });
     } else {
       this.adManagerService.defineAdSlot(this.configName, this.unitPath, this.size, this.divId).then(() => {
         this.loading = true;
+        this.changeDetectorRef.markForCheck();
+
         this.adManagerService.displayAd(this.divId).then((displayed) => {
           this._onAdResult(displayed);
+          this.changeDetectorRef.markForCheck();
         });
       });
     }
@@ -170,6 +176,7 @@ export class AdManagerComponent implements OnChanges {
           this.rendered = displayed;
           this.adDisplayed.emit();
           this.loading = false;
+          this.changeDetectorRef.markForCheck();
         });
       });
     } else {

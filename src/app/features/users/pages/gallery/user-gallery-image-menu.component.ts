@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -70,7 +70,8 @@ import { RemoveImageFromCollection, SetCollectionCoverImage } from "@app/store/a
       </div>
     </ng-container>
   `,
-  styleUrls: ["./user-gallery-image-menu.component.scss"]
+  styleUrls: ["./user-gallery-image-menu.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryImageMenuComponent extends BaseComponentDirective implements OnInit {
   @Input() user: UserInterface;

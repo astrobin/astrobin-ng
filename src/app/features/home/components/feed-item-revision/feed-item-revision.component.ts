@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -15,7 +15,8 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
       >
     </div>
   `,
-  styleUrls: ["./feed-item-revision.component.scss"]
+  styleUrls: ["./feed-item-revision.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemRevisionComponent extends BaseComponentDirective {
   @Input() feedItem: FeedItemInterface;

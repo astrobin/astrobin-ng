@@ -258,6 +258,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
 
     this.utilsService.delay(100).subscribe(() => {
       this._loadData().subscribe();
+      this.changeDetectorRef.markForCheck();
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageService } from "@shared/services/image/image.service";
@@ -213,7 +213,8 @@ import { UserService } from "@shared/services/user.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-photographers.component.scss"]
+  styleUrls: ["./image-viewer-photographers.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   @Input()
@@ -248,7 +249,8 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
     public readonly loadingService: LoadingService,
     public readonly renderer: Renderer2,
     public readonly utilsService: UtilsService,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -316,6 +318,8 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
           );
         });
       }
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 

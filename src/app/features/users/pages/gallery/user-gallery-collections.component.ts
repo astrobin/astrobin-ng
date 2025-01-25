@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -99,7 +99,8 @@ import { DeviceService } from "@shared/services/device.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./user-gallery-collections.component.scss"]
+  styleUrls: ["./user-gallery-collections.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryCollectionsComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() user: UserInterface;
@@ -121,7 +122,8 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -148,6 +150,7 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     ).subscribe(collections => {
       this.collections = collections;
       this.loading = false;
+      this.changeDetectorRef.markForCheck();
     });
 
     if (this.parent) {
@@ -162,6 +165,7 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
         takeUntil(this.destroyed$)
       ).subscribe(collections => {
         this.parentCollection = collections[0];
+        this.changeDetectorRef.markForCheck();
       });
     }
   }

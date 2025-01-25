@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -354,7 +354,8 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-menu.component.scss"]
+  styleUrls: ["./image-viewer-menu.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerMenuComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() image: ImageInterface;
@@ -418,7 +419,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly router: Router,
     public readonly imageApiService: ImageApiService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly changeDetectionRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -445,6 +447,7 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
         ).subscribe(image => {
           this.image = image;
           this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+          this.changeDetectionRef.markForCheck();
         });
       }
     }

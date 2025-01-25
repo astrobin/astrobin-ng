@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -66,7 +66,8 @@ export enum SmartFolderType {
     </ng-container>
   `,
   styleUrls: ["./user-gallery-smart-folders.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGallerySmartFoldersComponent extends BaseComponentDirective implements OnInit {
   @Input() user: UserInterface;
@@ -111,7 +112,8 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
   constructor(
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -119,6 +121,7 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
   ngOnInit() {
     this.activatedRoute.queryParamMap.pipe(takeUntil(this.destroyed$)).subscribe(() => {
       this._setActiveFolderTypeFromRoute();
+      this.changeDetectorRef.markForCheck();
     });
 
     this._setActiveFolderTypeFromRoute();

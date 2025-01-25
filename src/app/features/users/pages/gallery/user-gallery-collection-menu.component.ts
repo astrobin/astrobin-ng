@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -128,7 +128,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./user-gallery-collection-menu.component.scss"]
+  styleUrls: ["./user-gallery-collection-menu.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryCollectionMenuComponent
   extends BaseComponentDirective implements OnInit, OnChanges {
@@ -154,7 +155,8 @@ export class UserGalleryCollectionMenuComponent
     public readonly deviceService: DeviceService,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -196,6 +198,7 @@ export class UserGalleryCollectionMenuComponent
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       this._imagesChanged = true;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -214,7 +217,8 @@ export class UserGalleryCollectionMenuComponent
       take(1)
     ).subscribe(error => {
       this.popNotificationsService.error(
-        this.translateService.instant("Error updating collection") + ": " + JSON.stringify(error));
+        this.translateService.instant("Error updating collection") + ": " + JSON.stringify(error)
+      );
     });
 
     this.store$.dispatch(new UpdateCollection({ collection: this.editCollectionModel }));
@@ -247,7 +251,8 @@ export class UserGalleryCollectionMenuComponent
       take(1)
     ).subscribe(error => {
       this.popNotificationsService.error(
-        this.translateService.instant("Error deleting collection") + ": " + JSON.stringify(error));
+        this.translateService.instant("Error deleting collection") + ": " + JSON.stringify(error)
+      );
     });
 
     this.store$.dispatch(new DeleteCollection({ collectionId: this.collection.id }));

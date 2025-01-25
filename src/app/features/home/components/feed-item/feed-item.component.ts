@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -26,7 +26,8 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
       ></astrobin-feed-item-group>
     </div>
   `,
-  styleUrls: ["./feed-item.component.scss"]
+  styleUrls: ["./feed-item.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;

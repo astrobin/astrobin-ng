@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -84,7 +84,8 @@ import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
       </ng-container>
     </ng-template>
   `,
-  styleUrls: ["./user-gallery-smart-folder.component.scss"]
+  styleUrls: ["./user-gallery-smart-folder.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGallerySmartFolderComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @ViewChild("activeSmartFolderGalleryOffcanvas") activeSmartFolderGalleryOffcanvas: TemplateRef<any>;
@@ -116,7 +117,8 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
     public readonly router: Router,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -131,6 +133,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
     ).subscribe(active => {
       this.active = active;
       this.onActiveSmartFolderChange({ active, menu: this.menu });
+      this.changeDetectorRef.markForCheck();
     });
 
     this.router.events.pipe(
@@ -138,6 +141,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       this._setSmartFolderFromRoute();
+      this.changeDetectorRef.markForCheck();
     });
 
     this._setSmartFolderFromRoute();
@@ -152,6 +156,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
 
       this._initializeFromRoute();
       this._loadImages();
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -179,6 +184,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       this.menu = payload.response.menu;
       this.onActiveSmartFolderChange({ active: this.active, menu: this.menu });
       this.loading = false;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.dispatch(new FindImages({
@@ -272,6 +278,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       take(1)
     ).subscribe(item => {
       this.activeEquipmentItem = item;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.dispatch(new LoadEquipmentItem(payload));
@@ -312,6 +319,7 @@ export class UserGallerySmartFolderComponent extends BaseComponentDirective impl
       fragment: this.galleryFragment
     }).then(() => {
       this.onActiveSmartFolderChange({ active: null, menu: this.menu });
+      this.changeDetectorRef.markForCheck();
     });
   }
 }

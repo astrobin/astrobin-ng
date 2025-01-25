@@ -9,7 +9,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { filter, pairwise, takeUntil } from "rxjs/operators";
+import { filter, pairwise, take, takeUntil } from "rxjs/operators";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
 
@@ -98,13 +98,9 @@ export class HomeComponent extends BaseComponentDirective implements OnInit {
 
     router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
+      take(1)
     ).subscribe(() => {
-      if (!this.imageViewerService.slideshow) {
-        this.imageViewerService.autoOpenSlideshow(this.componentId, this.route);
-      } else {
-        this.imageViewerService.closeSlideShow(false);
-      }
+      this.imageViewerService.autoOpenSlideshow(this.componentId, this.route);
     });
   }
 

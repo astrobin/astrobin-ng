@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -49,7 +49,8 @@ import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manage
       ></astrobin-user-gallery-navigation>
     </div>
   `,
-  styleUrls: ["./user-gallery-page.component.scss"]
+  styleUrls: ["./user-gallery-page.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryPageComponent extends BaseComponentDirective implements OnInit {
   @ViewChild("ad", { static: false, read: AdManagerComponent }) adManagerComponent: AdManagerComponent;
@@ -70,13 +71,14 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     public readonly imageViewerService: ImageViewerService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
 
     router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
+      take(1)
     ).subscribe(() => {
       this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
     });
@@ -105,6 +107,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     }) => {
       this.user = data.userData.user;
       this.userProfile = data.userData.userProfile;
+      this.changeDetectorRef.markForCheck();
 
       this.userSubscriptionService.displayAds$().pipe(
         filter(showAd => typeof showAd !== "undefined"),
@@ -116,6 +119,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
          */
         this.allowAds = showAd && this.userProfile.allowAds;
         this.showAd = this.allowAds && !this.activatedRoute.snapshot.data.image;
+        this.changeDetectorRef.markForCheck();
       });
 
       this.imageViewerService.slideshowState$
@@ -127,6 +131,8 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
           } else if (this.showAd && this.adManagerComponent) {
             this.adManagerComponent.refreshAd();
           }
+
+          this.changeDetectorRef.markForCheck();
         });
 
       if (!this.activatedRoute.snapshot.fragment) {
@@ -186,6 +192,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       .subscribe(userProfile => {
         if (userProfile?.id === this.userProfile.id) {
           this.userProfile = { ...userProfile };
+          this.changeDetectorRef.markForCheck();
         }
       });
 
@@ -195,6 +202,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       .subscribe(user => {
         if (user?.id === this.user.id) {
           this.user = { ...user };
+          this.changeDetectorRef.markForCheck();
         }
       });
 
@@ -207,6 +215,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       .subscribe(userProfile => {
         if (userProfile) {
           this.userProfile = { ...userProfile };
+          this.changeDetectorRef.markForCheck();
         }
       });
 
@@ -219,6 +228,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       .subscribe(user => {
         if (user) {
           this.user = { ...user };
+          this.changeDetectorRef.markForCheck();
         }
       });
   }

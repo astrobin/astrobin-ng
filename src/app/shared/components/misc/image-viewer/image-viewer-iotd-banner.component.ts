@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageInterface } from "@shared/interfaces/image.interface";
@@ -37,7 +37,8 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
       </a>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-iotd-banner.component.scss"]
+  styleUrls: ["./image-viewer-iotd-banner.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerIotdBannerComponent extends BaseComponentDirective {
   @Input() image: ImageInterface;

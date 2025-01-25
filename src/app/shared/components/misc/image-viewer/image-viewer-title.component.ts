@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -158,7 +158,8 @@ import { DeviceService } from "@shared/services/device.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-title.component.scss"]
+  styleUrls: ["./image-viewer-title.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   @ViewChild("viewIotdTpStatsOffcanvas") viewIotdTpStatsOffcanvas: TemplateRef<any>;

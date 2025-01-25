@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -306,7 +306,8 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
-  styleUrls: ["./user-gallery-header.component.scss"]
+  styleUrls: ["./user-gallery-header.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @Input() user: UserInterface;
@@ -341,7 +342,8 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
     public readonly activatedRoute: ActivatedRoute,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
     this._setUserContentType();
@@ -354,19 +356,28 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       debounceTime(300),
       distinctUntilChanged(),
       takeUntil(this.destroyed$)
-    ).subscribe(searchTerm => this._searchFollowers(searchTerm));
+    ).subscribe(searchTerm => {
+      this._searchFollowers(searchTerm);
+      this.changeDetectorRef.markForCheck();
+    });
 
     this.followingSearchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       takeUntil(this.destroyed$)
-    ).subscribe(searchTerm => this._searchFollowing(searchTerm));
+    ).subscribe(searchTerm => {
+      this._searchFollowing(searchTerm);
+      this.changeDetectorRef.markForCheck();
+    });
 
     this.mutualFollowersSearchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       takeUntil(this.destroyed$)
-    ).subscribe(searchTerm => this._searchMutualFollowers(searchTerm));
+    ).subscribe(searchTerm => {
+      this._searchMutualFollowers(searchTerm);
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   ngAfterViewInit() {
@@ -389,6 +400,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     if (!this.stats) {
       this.commonApiService.getUserProfileStats(this.userProfile.id).subscribe(stats => {
         this.stats = stats;
+        this.changeDetectorRef.markForCheck();
       });
     }
   }
@@ -424,6 +436,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
           position: this.deviceService.offcanvasPosition()
         }
       );
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -439,6 +452,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
           position: this.deviceService.offcanvasPosition()
         }
       );
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -477,6 +491,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     this.commonApiService.getUserProfileFollowers(this.userProfile.id, searchTerm).subscribe(followers => {
       this.followers = followers;
       this.searching = false;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -485,6 +500,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     this.commonApiService.getUserProfileFollowing(this.userProfile.id, searchTerm).subscribe(following => {
       this.following = following;
       this.searching = false;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -493,6 +509,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     this.commonApiService.getUserProfileMutualFollowers(this.userProfile.id, searchTerm).subscribe(mutualFollowers => {
       this.mutualFollowers = mutualFollowers;
       this.searching = false;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -501,7 +518,10 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
       select(selectContentType, { appLabel: "auth", model: "user" }),
       filter(contentType => !!contentType),
       take(1)
-    ).subscribe(contentType => this.userContentType = contentType);
+    ).subscribe(contentType => {
+      this.userContentType = contentType;
+      this.changeDetectorRef.markForCheck();
+    });
     this.store$.dispatch(new LoadContentType({ appLabel: "auth", model: "user" }));
   }
 }

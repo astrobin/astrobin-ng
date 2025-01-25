@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { IotdApiService, IotdInterface } from "@features/iotd/services/iotd-api.service";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -276,7 +276,8 @@ import { fadeInOut } from "@shared/animations";
     </ng-template>
   `,
   styleUrls: ["./iotd.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IotdComponent extends BaseComponentDirective implements OnInit {
   protected iotd: IotdInterface;
@@ -291,7 +292,8 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
     public readonly imageViewerService: ImageViewerService,
     public readonly imageService: ImageService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -300,6 +302,7 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
     this.iotdApiService.getCurrentIotd().subscribe(iotd => {
       this.iotd = iotd;
       this.objectPosition = this.imageService.getObjectPosition(iotd);
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -328,6 +331,7 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
       }
 
       this.iotdStats = response.results[0];
+      this.changeDetectorRef.markForCheck();
     });
 
     this.offcanvasService.open(this._iotdStatsOffcanvasTemplate, {

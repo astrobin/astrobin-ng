@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -47,7 +47,8 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
   styleUrls: [
     "../feed-item/feed-item.component.scss",
     "./feed-item-group.component.scss"
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemGroupComponent extends BaseComponentDirective {
   @Input() feedItem: FeedItemInterface;

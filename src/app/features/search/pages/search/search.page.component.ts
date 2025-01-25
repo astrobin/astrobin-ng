@@ -7,7 +7,7 @@ import { SearchModelInterface, SearchType } from "@features/search/interfaces/se
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SearchService } from "@features/search/services/search.service";
-import { filter, map, startWith, takeUntil } from "rxjs/operators";
+import { filter, map, startWith, take, takeUntil } from "rxjs/operators";
 import { merge } from "rxjs";
 import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
@@ -62,7 +62,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
 
     router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
+      take(1)
     ).subscribe(() => {
       this.imageViewerService.autoOpenSlideshow(this.componentId, activatedRoute);
     });

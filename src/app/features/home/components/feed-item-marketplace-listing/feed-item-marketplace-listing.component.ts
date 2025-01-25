@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -60,6 +60,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
     "../feed-item/feed-item.component.scss",
     "./feed-item-marketplace-listing.component.scss"
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemMarketplaceListingComponent extends BaseComponentDirective   {
   @Input() feedItem: FeedItemInterface;

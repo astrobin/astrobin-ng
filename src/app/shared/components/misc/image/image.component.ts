@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { ForceCheckImageAutoLoad, LoadImage, LoadImages } from "@app/store/actions/image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
@@ -24,7 +24,8 @@ declare const videojs: any;
 @Component({
   selector: "astrobin-image",
   templateUrl: "./image.component.html",
-  styleUrls: ["./image.component.scss"]
+  styleUrls: ["./image.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input()
@@ -117,6 +118,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     ).subscribe(() => {
       if (this.revision) {
         this._setWidthAndHeight(this.revision.w, this.revision.h);
+        this.changeDetectorRef.markForCheck();
       }
     });
   }
@@ -177,6 +179,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       // visible viewport. A delay of a few ms causes the fullscreen viewer to have time to auto-hide.
       this.utilsService.delay(10).subscribe(() => {
         this.load();
+        this.changeDetectorRef.markForCheck();
       });
     }
 
@@ -239,6 +242,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       )
       .subscribe(image => {
         this.revision = this.imageService.getRevision(image, this.revisionLabel);
+        this.changeDetectorRef.markForCheck();
 
         if (this.thumbnailUrl && !this.revision.videoFile) {
           this.loaded.emit();
@@ -256,6 +260,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         if (!this.revision.videoFile) {
           this._setWidthAndHeight(this.revision.w, this.revision.h);
         }
+
+        this.changeDetectorRef.markForCheck();
       });
 
     this.store$.dispatch(new LoadImage({ imageId: this.id }));
@@ -309,6 +315,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       this._loadImageFileSubscription = this.imageService
         .loadImageFile(url, (progress: number) => {
           this.imageLoadingProgress = progress;
+          this.changeDetectorRef.markForCheck();
         })
         .subscribe(loadedUrl => {
           this.thumbnailUrl = this.domSanitizer.bypassSecurityTrustUrl(loadedUrl);
@@ -319,6 +326,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
           } else {
             this.loaded.emit();
           }
+
+          this.changeDetectorRef.markForCheck();
         });
 
       return;
@@ -336,6 +345,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         switchMap(thumbnail =>
           this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
             this.imageLoadingProgress = progress;
+            this.changeDetectorRef.markForCheck();
           })
         ),
         map(loadedUrl => this.domSanitizer.bypassSecurityTrustUrl(loadedUrl))
@@ -349,6 +359,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         } else {
           this.loaded.emit();
         }
+
+        this.changeDetectorRef.markForCheck();
       });
 
     this.store$.dispatch(
@@ -376,6 +388,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
               clearInterval(this._dimensionsInterval);
               this._dimensionsInterval = null;
               this._setWidthAndHeight(imageWidth, imageHeight);
+              this.changeDetectorRef.markForCheck();
             }
           }, 1000);
         }
@@ -411,12 +424,18 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD),
         map((action: ForceCheckImageAutoLoad) => action.payload),
         filter(payload => payload.imageId === this.id || (payload.imageId as string) === this.image?.hash),
-        tap(() => (this.forceLoad = true))
+        tap(() => {
+          this.forceLoad = true;
+          this.changeDetectorRef.markForCheck();
+        })
       );
 
       this._autoLoadSubscription = merge(scroll$, resize$, forceCheck$)
         .pipe(takeUntil(this.destroyed$))
-        .subscribe(() => this.load());
+        .subscribe(() => {
+          this.load();
+          this.changeDetectorRef.markForCheck();
+        });
     }
   }
 
@@ -427,10 +446,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
           this.videoJsReady = true;
           this.loaded.emit();
           this.loading = false;
-          this.changeDetectorRef.detectChanges();
+          this.changeDetectorRef.markForCheck();
 
           this._waitForVideoElementReady().subscribe(() => {
             this._createVideoJsPlayer();
+            this.changeDetectorRef.markForCheck();
           });
         });
       });
@@ -454,6 +474,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       this.utilsService.delay(1).subscribe(() => {
         requestAnimationFrame(() => {
           this._setWidthAndHeight(this.revision.w, this.revision.h);
+          this.changeDetectorRef.markForCheck();
         });
       });
 
@@ -517,8 +538,10 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
             )
             .subscribe(image => {
               this.load();
+              this.changeDetectorRef.markForCheck();
             });
         }
+        this.changeDetectorRef.markForCheck();
       });
   }
 

@@ -82,7 +82,7 @@ import { InformationDialogComponent } from "@shared/components/misc/information-
 import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
 import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
 import { ForumPreviewComponent } from "@shared/components/forums/forum-preview/forum-preview.component";
-import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
+import { ImageSearchBrandListingMessagePipe, ImageSearchComponent, ImageSearchItemListingMessagePipe } from "@shared/components/search/image-search/image-search.component";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
 import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";
 import { ItemBrowserByPropertiesComponent } from "@shared/components/equipment/item-browser-by-properties/item-browser-by-properties.component";
@@ -235,6 +235,8 @@ const components = [
   ImageLoadingIndicatorComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,
+  ImageSearchItemListingMessagePipe,
+  ImageSearchBrandListingMessagePipe,
   ImageViewerSlideshowComponent,
   ImageViewerSlideshowContextComponent,
   ImageViewerComponent,

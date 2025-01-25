@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -7,7 +7,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { DefaultGallerySortingOption, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { fromEvent, Subject, throttleTime } from "rxjs";
+import { auditTime, fromEvent, Subject } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { debounceTime, distinctUntilChanged, filter, map, startWith, take, takeUntil } from "rxjs/operators";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
@@ -267,7 +267,8 @@ type GalleryNavigationComponent =
       />
     </ng-template>
   `,
-  styleUrls: ["./user-gallery-navigation.component.scss"]
+  styleUrls: ["./user-gallery-navigation.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryNavigationComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnChanges {
   @Input() user: UserInterface;
@@ -296,7 +297,8 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     public readonly elementRef: ElementRef,
     public readonly renderer: Renderer2,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
 
@@ -306,6 +308,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   ngOnInit(): void {
     this.route.fragment.pipe(takeUntil(this.destroyed$)).subscribe((fragment: string | null) => {
       this._setActiveTabFromRoute();
+      this.changeDetectorRef.markForCheck();
     });
 
     this._searchSubject.pipe(
@@ -324,6 +327,8 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
         q: searchTerm,
         page: 1
       };
+
+      this.changeDetectorRef.markForCheck();
     });
 
     this.router.events.pipe(
@@ -332,6 +337,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     ).subscribe(() => {
       this._setCollectionFromRoute();
       this._setFindImageOptions();
+      this.changeDetectorRef.markForCheck();
     });
 
     this._setActiveTabFromRoute();
@@ -359,16 +365,23 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       fromEvent(this.windowRefService.nativeWindow, "resize")
         .pipe(
           startWith(null),
-          throttleTime(300),
+          auditTime(300),
           takeUntil(this.destroyed$)
         )
         .subscribe(() => {
           updateFadeVisibility();
+          this.changeDetectorRef.markForCheck();
         });
 
       fromEvent(navTabsElement, "scroll")
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(() => updateFadeVisibility());
+        .pipe(
+          auditTime(100),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe(() => {
+          updateFadeVisibility();
+          this.changeDetectorRef.markForCheck();
+        });
     }
   }
 
@@ -400,12 +413,12 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     let prop: string;
     let otherProp: string;
 
-    if (['title', 'uploaded', 'acquired'].includes(sort)) {
-      prop = 'subsection';
-      otherProp = 'ordering';
-    } else if (['likes', 'bookmarks', 'comments'].includes(sort)) {
-      prop = 'ordering';
-      otherProp = 'subsection';
+    if (["title", "uploaded", "acquired"].includes(sort)) {
+      prop = "subsection";
+      otherProp = "ordering";
+    } else if (["likes", "bookmarks", "comments"].includes(sort)) {
+      prop = "ordering";
+      otherProp = "subsection";
     }
 
     this.publicGalleryOptions = {
@@ -469,6 +482,8 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
         onlyStagingArea: currentUserWrapper.user?.id === this.user.id,
         q: this.searchModel
       };
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -492,6 +507,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
         take(1)
       ).subscribe(collection => {
         this.activeCollection = collection;
+        this.changeDetectorRef.markForCheck();
       });
     } else {
       this.activeCollection = null;

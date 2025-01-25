@@ -25,7 +25,7 @@
               <div>
                 <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
                 <span
-                  [innerHTML]="getItemListingsMessage(itemListings[0])"
+                  [innerHTML]="itemListings[0] | itemListingMessage"
                   class="me-2"
                 ></span>
               </div>
@@ -45,7 +45,7 @@
               <div>
                 <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
                 <span
-                  [innerHTML]="getBrandListingsMessage(brandListings[0].brand)"
+                  [innerHTML]="brandListings[0].brand | brandListingMessage"
                   class="me-2"
                 ></span>
               </div>
@@ -69,7 +69,7 @@
             <div>
               <fa-icon icon="shopping-cart" class="me-2"></fa-icon>
               <span
-                [innerHTML]="getMarketplaceMessage()"
+                [innerHTML]="marketplaceMessage"
                 class="me-2"
               ></span>
             </div>

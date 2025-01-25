@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -97,7 +97,8 @@ import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
       ></fa-icon>
     </div>
   `,
-  styleUrls: ["./user-gallery-buttons.component.scss"]
+  styleUrls: ["./user-gallery-buttons.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryButtonsComponent extends BaseComponentDirective implements OnInit {
   @Input()

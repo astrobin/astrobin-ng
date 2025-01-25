@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
@@ -178,7 +178,8 @@ import { SearchFilterService } from "@features/search/services/search-filter.ser
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-astrometry.component.scss"]
+  styleUrls: ["./image-viewer-astrometry.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   revision: ImageInterface | ImageRevisionInterface;
@@ -205,7 +206,8 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     public readonly deviceService: DeviceService,
     public readonly windowRefService: WindowRefService,
     public readonly astroUtilsService: AstroUtilsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -252,6 +254,7 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     this.searchFilterService.allowFilter$(minimumSubscription).subscribe(allow => {
       if (allow) {
         this._doFindImagesInTheSameArea(degree);
+        this.changeDetectorRef.markForCheck();
       } else {
         this.searchFilterService.openSubscriptionRequiredModal(minimumSubscription);
       }

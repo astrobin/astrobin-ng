@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
-import { act, Actions, ofType } from "@ngrx/effects";
+import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -220,7 +220,8 @@ import { DeviceService } from "@shared/services/device.service";
     </ng-template>
   `,
   styleUrls: ["./user-gallery-images.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryImagesComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input() user: UserInterface;
@@ -275,7 +276,10 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
 
       fromEvent(scrollElement, "scroll")
         .pipe(takeUntil(this.destroyed$), throttleTime(200), debounceTime(100))
-        .subscribe(() => this.onScroll());
+        .subscribe(() => {
+          this.onScroll();
+          this.changeDetectorRef.markForCheck();
+        });
     }
   }
 
@@ -313,6 +317,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
         takeUntil(this.destroyed$)
       ).subscribe(collection => {
         this.collection = collection;
+        this.changeDetectorRef.markForCheck();
       });
 
       this.store$.dispatch(new LoadCollections({ params: { ids: [changes.options.currentValue.collection] } }));
@@ -344,16 +349,19 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       } else {
         this.images = response.results;
       }
+
       this.next = response.next;
       this.loadingMore = false;
       this.loading = false;
-      this.changeDetectorRef.detectChanges();
+
       if (this._slideshowComponent) {
         this._slideshowComponent.setNavigationContext(this.images.map(image => ({
           imageId: image.hash || image.pk.toString(),
           thumbnailUrl: this.imageService.getGalleryThumbnail(image)
         })));
       }
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -413,6 +421,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       }),
       finalize(() => {
         this.loadingImageId = null;
+        this.changeDetectorRef.markForCheck();
       })
     ).subscribe({
       error: (error) => {
@@ -423,7 +432,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
 
   protected onImageDeleted(imageId: ImageInterface["pk"]): void {
     this.images = this.images.filter(image => image.pk !== imageId);
-    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
   }
 
   protected onImageRemovedFromCollection(event: {
@@ -435,7 +444,7 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
     }
 
     this.images = this.images.filter(image => image.pk !== event.imageId);
-    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
   }
 
   protected onScroll() {
@@ -470,6 +479,4 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       }
     }));
   }
-
-  protected readonly act = act;
 }

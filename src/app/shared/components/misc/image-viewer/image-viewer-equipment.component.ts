@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
@@ -116,7 +116,8 @@ type LegacyEquipmentItem =
       </ng-template>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-equipment.component.scss"]
+  styleUrls: ["./image-viewer-equipment.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   hasEquipment: boolean;

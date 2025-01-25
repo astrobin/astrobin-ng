@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { Logout } from "@features/account/store/auth.actions";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -33,7 +33,8 @@ interface AvailableLanguageInterface {
 @Component({
   selector: "astrobin-header",
   templateUrl: "./header.component.html",
-  styleUrls: ["./header.component.scss"]
+  styleUrls: ["./header.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent extends BaseComponentDirective implements OnInit {
   menubarIsCollapsed = true;
@@ -44,11 +45,6 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   showMobileSearch = false;
   isSearchPage = false;
   quickSearchQuery: string;
-
-  protected unreadNotificationsCount$: Observable<number> = this.store$.select(selectUnreadNotificationsCount).pipe(
-    takeUntil(this.destroyed$)
-  );
-
   languages: AvailableLanguageInterface[] = [
     { code: "en", label: "English (US)" },
     { code: "en-GB", label: "English (UK)" },
@@ -72,7 +68,6 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     { code: "sq", label: "Shqipe" },
     { code: "tr", label: "Türkçe" }
   ];
-
   languageCodeDisplays: AvailableLanguageInterface[] = [
     { code: "en", label: "EN" },
     { code: "en-GB", label: "EN (GB)" },
@@ -99,6 +94,44 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   @ViewChild("userSidebar") userSidebar: ElementRef;
   @ViewChildren("quickSearchInput") quickSearchInputs: QueryList<ElementRef>;
 
+  protected unreadNotificationsCount$: Observable<number> = this.store$.select(selectUnreadNotificationsCount).pipe(
+    takeUntil(this.destroyed$)
+  );
+
+  protected helpWithTranslationsUrl$: Observable<string> = this.store$.select(selectCurrentUser).pipe(
+    map((user: UserInterface) => {
+      let path = `${this.classicRoutesService.CONTACT}?subject=Help%20with%20translations`;
+
+      if (!!user) {
+        path += `&username=${user.username}`;
+      }
+
+      return path;
+    })
+  );
+
+  protected imageIndexPopoverInfo: SafeHtml = this.domSanitizer.bypassSecurityTrustHtml(
+    this.translateService.instant(
+      "The <strong>Image Index</strong> is a system based on likes received on images, that incentivizes the " +
+      "most active and liked members of the community. {{_0}}Learn more.{{_1}}",
+      {
+        _0: `<a href="https://welcome.astrobin.com/features/image-index" target="_blank">`,
+        _1: "</a>"
+      }
+    )
+  );
+
+  protected contributionIndexPopoverInfo: SafeHtml = this.domSanitizer.bypassSecurityTrustHtml(
+    this.translateService.instant(
+      "The <strong>Contribution Index (beta)</strong> is system to reward informative, constructive, and " +
+      "valuable commentary on AstroBin. {{_0}}Learn more.{{_1}}",
+      {
+        _0: `<a href="https://welcome.astrobin.com/features/contribution-index" target="_blank">`,
+        _1: "</a>"
+      }
+    )
+  );
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly modalService: NgbModal,
@@ -114,7 +147,8 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     public readonly router: Router,
     public readonly utilsService: UtilsService,
     public readonly userService: UserService,
-    public readonly searchService: SearchService
+    public readonly searchService: SearchService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -133,51 +167,12 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     return display[0].label;
   }
 
-  get helpWithTranslationsUrl$(): Observable<string> {
-    return this.store$.select(selectCurrentUser).pipe(
-      map((user: UserInterface) => {
-        let path = `${this.classicRoutesService.CONTACT}?subject=Help%20with%20translations`;
-
-        if (!!user) {
-          path += `&username=${user.username}`;
-        }
-
-        return path;
-      })
-    );
-  }
-
-  get imageIndexPopoverInfo(): SafeHtml {
-    return this.domSanitizer.bypassSecurityTrustHtml(
-      this.translateService.instant(
-        "The <strong>Image Index</strong> is a system based on likes received on images, that incentivizes the " +
-        "most active and liked members of the community. {{_0}}Learn more.{{_1}}",
-        {
-          _0: `<a href="https://welcome.astrobin.com/features/image-index" target="_blank">`,
-          _1: "</a>"
-        }
-      )
-    );
-  }
-
-  get contributionIndexPopoverInfo(): SafeHtml {
-    return this.domSanitizer.bypassSecurityTrustHtml(
-      this.translateService.instant(
-        "The <strong>Contribution Index (beta)</strong> is system to reward informative, constructive, and " +
-        "valuable commentary on AstroBin. {{_0}}Learn more.{{_1}}",
-        {
-          _0: `<a href="https://welcome.astrobin.com/features/contribution-index" target="_blank">`,
-          _1: "</a>"
-        }
-      )
-    );
-  }
-
   ngOnInit() {
     super.ngOnInit();
 
     this.helpWithTranslationsUrl$.pipe(takeUntil(this.destroyed$)).subscribe(url => {
       this.helpWithTranslationsUrl = url;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.router.events
@@ -189,11 +184,13 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
         this.isSearchPage = this.router.url.startsWith("/search");
         this.closeSidebarMenu();
         this.closeUserSidebarMenu();
+        this.changeDetectorRef.markForCheck();
       });
 
     this.currentUserWrapper$.pipe(takeUntil(this.destroyed$)).subscribe(wrapper => {
       this.user = wrapper.user;
       this.userProfile = wrapper.userProfile;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -202,23 +199,27 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
 
     this.searchService.magicAutocomplete$(this.quickSearchQuery).pipe(take(1)).subscribe((result) => {
       let params: string;
+
       if (result) {
         params = this.searchService.modelToParams({
           [result.type]: result.value
         });
       } else {
-        params = this.searchService.modelToParams({text: { value: this.quickSearchQuery, matchType: MatchType.ALL} });
+        params = this.searchService.modelToParams({ text: { value: this.quickSearchQuery, matchType: MatchType.ALL } });
       }
 
       this.router.navigateByUrl(`/search?p=${params}`).then(() => {
         this.quickSearchQuery = "";
+        this.changeDetectorRef.markForCheck();
       });
     });
   }
 
   onShowMobileSearchClick(event: Event) {
     event.preventDefault();
+
     this.showMobileSearch = true;
+
     this.utilsService.delay(1).subscribe(() => {
       this.quickSearchInputs.forEach((input: ElementRef) => {
         if (input.nativeElement.offsetParent !== null) {
@@ -253,6 +254,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
       .pipe(take(1))
       .subscribe(() => {
         this.themeService.setTheme();
+        this.changeDetectorRef.markForCheck();
       });
   }
 

@@ -1,4 +1,4 @@
-import { Component, HostBinding, Inject, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
@@ -90,7 +90,8 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
     <ng-template #naTemplate>
       {{ "n/a" | translate }}
     </ng-template>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerPlateSolvingBannerComponent
   extends ImageViewerSectionBaseComponent implements OnInit, OnChanges {
@@ -127,7 +128,8 @@ export class ImageViewerPlateSolvingBannerComponent
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly imageApiService: ImageApiService
+    public readonly imageApiService: ImageApiService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -219,6 +221,7 @@ export class ImageViewerPlateSolvingBannerComponent
       this.imageApiService.getImage(this.image.pk).subscribe(image => {
         this.image = image;
         this._initImage(image);
+        this.changeDetectorRef.markForCheck();
       });
       return;
     }
@@ -232,7 +235,10 @@ export class ImageViewerPlateSolvingBannerComponent
     this.store$.dispatch(new LoadSolution(payload));
 
     if (this._isSolving) {
-      this._pollingSubscription = this.utilsService.delay(30000).subscribe(() => this._pollSolution());
+      this._pollingSubscription = this.utilsService.delay(30000).subscribe(() => {
+        this._pollSolution();
+        this.changeDetectorRef.markForCheck();
+      });
     }
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
@@ -216,7 +216,8 @@ enum FeedType {
     </div>
   `,
   styleUrls: ["./feed.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   @ViewChild("tabsContentWrapper", { static: false }) tabsContentWrapper: ElementRef;
@@ -281,6 +282,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       if (!userProfile) {
         this.activeTab = FeedTab.FEED;
         this.activeFeedType = FeedType.GLOBAL;
+        this.changeDetectorRef.markForCheck();
         return;
       }
 
@@ -305,6 +307,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
           this.activeTab = FeedTab.FEED;
           this.activeFeedType = FeedType.GLOBAL;
       }
+
+      this.changeDetectorRef.markForCheck();
     });
 
     this.onTabChange(this.activeTab);
@@ -313,7 +317,10 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
         auditTime(100),
         takeUntil(this.destroyed$)
-      ).subscribe(() => this.onScroll());
+      ).subscribe(() => {
+        this.onScroll();
+        this.changeDetectorRef.markForCheck();
+      });
     }
   }
 
@@ -431,6 +438,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       }),
       finalize(() => {
         this.loadingItemId = null;
+        this.changeDetectorRef.markForCheck();
       })
     ).subscribe({
       error: (error) => {
@@ -483,6 +491,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
         }
 
         this._page++;
+        this.changeDetectorRef.markForCheck();
+
         this._loadData().subscribe(results => {
           const currentNavigationContext = slideshow.instance.navigationContext;
           const newItems = getNewNavigationContext(results);
@@ -493,6 +503,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
           ];
 
           slideshow.instance.setNavigationContext(newNavigationContext);
+          this.changeDetectorRef.markForCheck();
         });
       });
   }
@@ -574,6 +585,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       take(1)
     ).subscribe(contentType => {
       this._imageContentType = contentType;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.dispatch(new LoadContentType({

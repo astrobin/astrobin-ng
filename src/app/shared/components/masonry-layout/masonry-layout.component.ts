@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ContentChild, ElementRef, Inject, Input, OnDestroy, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, Inject, Input, OnDestroy, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
 import { Subject } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
@@ -49,7 +49,8 @@ interface MasonryItem<T> {
       <div *ngIf="leftAlignLastRow" class="masonry-spacer"></div>
     </div>
   `,
-  styleUrls: [`./masonry-layout.component.scss`]
+  styleUrls: [`./masonry-layout.component.scss`],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MasonryLayoutComponent<T> implements AfterViewInit, OnDestroy {
   @Input() items: T[] = [];

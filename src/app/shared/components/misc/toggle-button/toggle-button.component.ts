@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Theme, ThemeService } from "@shared/services/theme.service";
 import { Store } from "@ngrx/store";
@@ -7,7 +7,8 @@ import { MainState } from "@app/store/state";
 @Component({
   selector: "astrobin-toggle-button",
   templateUrl: "./toggle-button.component.html",
-  styleUrls: ["./toggle-button.component.scss"]
+  styleUrls: ["./toggle-button.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToggleButtonComponent extends BaseComponentDirective implements OnInit {
   model: boolean;

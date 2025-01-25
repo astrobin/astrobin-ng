@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
@@ -278,7 +278,8 @@ interface DetailedFilterSummary {
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-acquisition.component.scss"]
+  styleUrls: ["./image-viewer-acquisition.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   dates: string[];

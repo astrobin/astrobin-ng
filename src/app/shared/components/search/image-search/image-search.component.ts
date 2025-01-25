@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, Pipe, PipeTransform, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
@@ -29,11 +29,44 @@ import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 import { fadeInOut } from "@shared/animations";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 
+@Pipe({
+  name: "itemListingMessage",
+  pure: true
+})
+export class ImageSearchItemListingMessagePipe implements PipeTransform {
+  transform(listing: EquipmentItemListingInterface): string {
+    return this.translateService.instant(
+      "Support AstroBin by shopping for {{0}} at our partners!",
+      { 0: `<strong>${listing.name}</strong>` }
+    );
+  }
+
+  constructor(private readonly translateService: TranslateService) {
+  }
+}
+
+@Pipe({
+  name: "brandListingMessage",
+  pure: true
+})
+export class ImageSearchBrandListingMessagePipe implements PipeTransform {
+  transform(brand: BrandInterface): string {
+    return this.translateService.instant(
+      "Support AstroBin by shopping for {{0}} products at our partners!",
+      { 0: `<strong>${brand.name}</strong>` }
+    );
+  }
+
+  constructor(private readonly translateService: TranslateService) {
+  }
+}
+
 @Component({
   selector: "astrobin-image-search",
   templateUrl: "./image-search.component.html",
   styleUrls: ["./image-search.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
@@ -55,7 +88,9 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
 
   protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
   protected readonly Array = Array;
-
+  protected marketplaceMessage = this.translateService.instant(
+    "We found some items relevant to your search for sale on our marketplace!"
+  );
   private readonly _isBrowser: boolean;
   private _nearEndOfContextSubscription: Subscription;
 
@@ -88,29 +123,10 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       .pipe(takeUntil(this.destroyed$), auditTime(200))
       .subscribe(() => {
         this._checkMobile();
+        this.changeDetectorRef.markForCheck();
       });
 
     this._checkMobile();
-  }
-
-  getItemListingsMessage(listing: EquipmentItemListingInterface): string {
-    return this.translateService.instant(
-      "Support AstroBin by shopping for {{0}} at our partners!",
-      { 0: `<strong>${listing.name}</strong>` }
-    );
-  }
-
-  getBrandListingsMessage(brand: BrandInterface): string {
-    return this.translateService.instant(
-      "Support AstroBin by shopping for {{0}} products at our partners!",
-      { 0: `<strong>${brand.name}</strong>` }
-    );
-  }
-
-  getMarketplaceMessage(): string {
-    return this.translateService.instant(
-      "We found some items relevant to your search for sale on our marketplace!"
-    );
   }
 
   fetchData(): Observable<SearchPaginatedApiResultInterface<ImageSearchInterface>> {
@@ -119,27 +135,14 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       .pipe(
         tap(result => {
           this.allowFullRetailerIntegration = result.allowFullRetailerIntegration;
+          this.itemListings = result.equipmentItemListings ?
+            this._removeDuplicateRetailers(result.equipmentItemListings) : [];
+          this.brandListings = result.equipmentBrandListings ?
+            this._removeDuplicateRetailers(result.equipmentBrandListings) : [];
+          this.marketplaceLineItems = result.marketplaceLineItems || [];
 
-          if (result.equipmentItemListings) {
-            this.itemListings = this._removeDuplicateRetailers(result.equipmentItemListings);
-          } else {
-            this.itemListings = [];
-          }
-
-          if (result.equipmentBrandListings) {
-            this.brandListings = this._removeDuplicateRetailers(result.equipmentBrandListings);
-          } else {
-            this.brandListings = [];
-          }
-
-          if (result.marketplaceLineItems) {
-            this.marketplaceLineItems = result.marketplaceLineItems;
-          } else {
-            this.marketplaceLineItems = [];
-          }
-        }),
-        tap(result => {
           this.searchService.searchCompleteSubject.next(result);
+          this.changeDetectorRef.markForCheck();
         })
       );
   }
@@ -193,7 +196,8 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       switchMap(dbImage => {
         const alias: ImageAlias = this.deviceService.lgMax() ? ImageAlias.HD : ImageAlias.QHD;
         const thumbnailUrl = this.imageService.getThumbnail(dbImage, alias);
-        return this.imageService.loadImageFile(thumbnailUrl, () => {});
+        return this.imageService.loadImageFile(thumbnailUrl, () => {
+        });
       }),
       switchMap(() =>
         this.imageViewerService.openSlideshow(
@@ -226,9 +230,13 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
           )
         ).subscribe();
       }),
-      switchMap(() => this.utilsService.delay(200)),
-      finalize(() => {
+      tap(() => {
         this.loadingImageId = null;
+        this.changeDetectorRef.markForCheck();
+      }),
+      // Wait for the fadeInOut animation.
+      switchMap(() => this.utilsService.delay(250)),
+      finalize(() => {
         this.imageOpened.emit(image);
       })
     ).subscribe({

@@ -1,14 +1,13 @@
 <div
   astrobinScrollVisibility
   [viewportOptions]="{
-       verticalTolerance: 200,
+       verticalTolerance: 500,
        horizontalTolerance: 10,
        shouldCheckHorizontal: false
      }"
   (visibilityChange)="onVisibilityChange($event)"
-  class="search-results"
 >
-  <div *ngIf="comments$ | async as comments" class="nested-comments card">
+  <div *ngIf="comments$ | async as comments; else loadingTpl" class="nested-comments card" @fadeInOut>
     <div class="card-header">
       {{ title }}
 
@@ -61,7 +60,7 @@
 </div>
 
 <ng-template #loadingTpl>
-  <astrobin-loading-indicator></astrobin-loading-indicator>
+  <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
 </ng-template>
 
 <ng-template #topLevelFormTpl>

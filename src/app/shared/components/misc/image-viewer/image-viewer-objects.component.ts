@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
@@ -56,7 +56,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-objects.component.scss"]
+  styleUrls: ["./image-viewer-objects.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerObjectsComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   revision: ImageInterface | ImageRevisionInterface;

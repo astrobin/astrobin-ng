@@ -1,4 +1,4 @@
-import { Component, Input, TemplateRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, TemplateRef } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -16,7 +16,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       <ng-container [ngTemplateOutlet]="messageTemplate"></ng-container>
     </div>
   `,
-  styleUrls: ["./image-viewer-custom-message-banner.component.scss"]
+  styleUrls: ["./image-viewer-custom-message-banner.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerCustomMessageBannerComponent extends ImageViewerSectionBaseComponent {
   @Input() messageTemplate: TemplateRef<any>;

@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -39,7 +39,8 @@ import { fadeInOut } from "@shared/animations";
   selector: "astrobin-image-viewer",
   templateUrl: "./image-viewer.component.html",
   styleUrls: ["./image-viewer.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerComponent
   extends BaseComponentDirective
@@ -245,6 +246,8 @@ export class ImageViewerComponent
           this._dataAreaScrollEventSubscription.unsubscribe();
           this._initDataAreaScrollHandling();
         }
+
+        this.changeDetectorRef.markForCheck();
       });
     }
 
@@ -390,6 +393,7 @@ export class ImageViewerComponent
       this.image = { ...image };
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
       this._setMouseHoverImage();
+      this.changeDetectorRef.markForCheck();
     });
 
     this.changeDetectorRef.detectChanges();
@@ -569,6 +573,7 @@ export class ImageViewerComponent
           if (lightBoxEvent.id === LIGHTBOX_EVENT.CLOSE) {
             this.isLightBoxOpen = false;
             lightBoxEventSubscription.unsubscribe();
+            this.changeDetectorRef.markForCheck();
           }
         });
 
@@ -619,10 +624,12 @@ export class ImageViewerComponent
             environment.classicBaseUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
           ).subscribe(inlineSvg => {
             this.inlineSvg = inlineSvg;
+            this.changeDetectorRef.markForCheck();
           });
           this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
             this.advancedSolutionMatrix = matrix;
             this.loadingAdvancedSolutionMatrix = false;
+            this.changeDetectorRef.markForCheck();
           });
         } else if (this.revision?.solution?.imageFile) {
           this.mouseHoverImage = this.revision.solution.imageFile;
@@ -750,6 +757,7 @@ export class ImageViewerComponent
         }
 
         this._adjustSvgOverlay();
+        this.changeDetectorRef.markForCheck();
       });
     }
   }
@@ -843,6 +851,7 @@ export class ImageViewerComponent
       .subscribe(() => {
         this._handleFloatingTitleOnScroll(scrollArea, this.standalone, hasMobileMenu, sideToSideLayout);
         this._handleNavigationButtonsVisibility(scrollArea);
+        this.changeDetectorRef.markForCheck();
       });
   }
 
@@ -892,6 +901,7 @@ export class ImageViewerComponent
       take(1)
     ).subscribe(contentType => {
       this.imageContentType = contentType;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.pipe(
@@ -900,6 +910,7 @@ export class ImageViewerComponent
       take(1)
     ).subscribe(contentType => {
       this.userContentType = contentType;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.dispatch(new LoadContentType({
@@ -1027,6 +1038,7 @@ export class ImageViewerComponent
     if (!this.dataArea) {
       this.utilsService.delay(100).subscribe(() => {
         this._setAd();
+        this.changeDetectorRef.markForCheck();
       });
       return;
     }
@@ -1051,6 +1063,8 @@ export class ImageViewerComponent
       } else {
         this.adConfig = "wide";
       }
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { SafeHtml } from "@angular/platform-browser";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -83,7 +83,8 @@ import { ImageService } from "@shared/services/image/image.service";
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-additional-buttons.component.scss"]
+  styleUrls: ["./image-viewer-additional-buttons.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerAdditionalButtonComponent implements OnInit {
   @Input() image: ImageInterface;
@@ -109,7 +110,8 @@ export class ImageViewerAdditionalButtonComponent implements OnInit {
   constructor(
     public readonly modalService: NgbModal,
     public readonly imageApiService: ImageApiService,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -133,6 +135,7 @@ export class ImageViewerAdditionalButtonComponent implements OnInit {
     ).subscribe(thumbnail => {
       this.loadingHistogram = false;
       this.histogram = thumbnail.url;
+      this.changeDetectorRef.markForCheck();
     });
   }
 }

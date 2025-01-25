@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MainState } from "@app/store/state";
@@ -105,7 +105,8 @@ import { FindImagesResponseInterface } from "@shared/services/api/classic/images
       </div>
     </ng-template>
   `,
-  styleUrls: ["./user-gallery-equipment.component.scss"]
+  styleUrls: ["./user-gallery-equipment.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryEquipmentComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input() user: UserInterface;
@@ -127,7 +128,8 @@ export class UserGalleryEquipmentComponent extends BaseComponentDirective implem
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -153,6 +155,7 @@ export class UserGalleryEquipmentComponent extends BaseComponentDirective implem
         take(1)
       ).subscribe(() => {
         this.loadingPresets = false;
+        this.changeDetectorRef.markForCheck();
       });
 
       this._presetsSubscription = this.store$.select(selectEquipmentPresets)
@@ -162,6 +165,7 @@ export class UserGalleryEquipmentComponent extends BaseComponentDirective implem
         )
         .subscribe(presets => {
           this.presets = presets;
+          this.changeDetectorRef.markForCheck();
         });
 
       this.store$.dispatch(new FindEquipmentPresets({ userId: this.user.id }));
@@ -194,5 +198,4 @@ export class UserGalleryEquipmentComponent extends BaseComponentDirective implem
       position: this.deviceService.offcanvasPosition()
     });
   }
-
 }

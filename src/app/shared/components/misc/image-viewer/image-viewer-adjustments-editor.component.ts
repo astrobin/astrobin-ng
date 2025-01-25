@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { Options } from "@angular-slider/ngx-slider";
 import { DeviceService } from "@shared/services/device.service";
@@ -112,7 +112,8 @@ const DEFAULT_SATURATION = 100;
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-adjustments-editor.component.scss"]
+  styleUrls: ["./image-viewer-adjustments-editor.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy {
   @Input() image: ImageInterface;

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
@@ -52,7 +52,8 @@ enum SharingMode {
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-share-button.component.scss"]
+  styleUrls: ["./image-viewer-share-button.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerShareButtonComponent implements OnChanges {
   @Input()

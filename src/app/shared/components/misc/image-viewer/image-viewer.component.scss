@@ -628,7 +628,7 @@ $globalLoadingIndicatorHeight: 6px;
           height: 4rem;
         }
 
-        @media (max-width: $sm-max) {
+        @media (max-width: $md-max) {
           display: none;
         }
       }

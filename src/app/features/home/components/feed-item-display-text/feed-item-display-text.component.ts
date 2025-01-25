@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
 import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
@@ -7,7 +7,8 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
   selector: "astrobin-feed-item-display-text",
   template: `
     <span [innerHTML]="message" dynamicRouterLink></span>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemDisplayTextComponent implements OnChanges {
   @Input() feedItem!: FeedItemInterface;

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { GroupInterface } from "@shared/interfaces/group.interface";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
@@ -107,7 +107,8 @@ import { UserService } from "@shared/services/user.service";
     <ng-template #loadingTemplate>
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirective implements OnChanges {
   @Input() image: ImageInterface;
@@ -123,7 +124,8 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -154,6 +156,7 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
       takeUntil(this.destroyed$)
     ).subscribe(groups => {
       this.groups = groups;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.dispatch(new LoadGroups({ params: { ids: this.image.partOfGroupSet } }));
@@ -166,6 +169,7 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
       takeUntil(this.destroyed$)
     ).subscribe(collections => {
       this.collections = collections;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.dispatch(new LoadCollections({ params: { ids: this.image.collections } }));

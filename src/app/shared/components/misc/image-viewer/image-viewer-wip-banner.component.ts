@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -63,7 +63,8 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-wip-banner.component.scss"]
+  styleUrls: ["./image-viewer-wip-banner.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerWipBannerComponent extends ImageViewerSectionBaseComponent implements OnInit {
   readonly model = {

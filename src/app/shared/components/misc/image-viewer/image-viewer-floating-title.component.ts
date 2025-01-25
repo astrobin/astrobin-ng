@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -27,7 +27,8 @@ import { DeviceService } from "@shared/services/device.service";
       ></astrobin-image-viewer-social-buttons>
     </div>
   `,
-  styleUrls: ["./image-viewer-floating-title.component.scss"]
+  styleUrls: ["./image-viewer-floating-title.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerFloatingTitleComponent extends ImageViewerSectionBaseComponent {
   public constructor(

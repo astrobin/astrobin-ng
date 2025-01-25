@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -77,7 +77,8 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
       </div>
     </ng-container>
   `,
-  styleUrls: ["./user-gallery-collection-thumbnail.component.scss"]
+  styleUrls: ["./user-gallery-collection-thumbnail.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryCollectionThumbnailComponent extends BaseComponentDirective {
   @Input() user: UserInterface;
