@@ -80,7 +80,7 @@ export class NestedCommentsEffects {
             .subscribe(selectedNestedComment => {
               this.utilsService.delay(1).subscribe(() => {
                 const element = this.windowRefService.nativeWindow.document.getElementById(`c${nestedComment.id}`);
-                element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+                element.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 if (isPlatformBrowser(this.platformId)) {
                   fromEvent(this.windowRefService.nativeWindow, "scroll")
                     .pipe(debounceTime(50), first(), mapTo(true))

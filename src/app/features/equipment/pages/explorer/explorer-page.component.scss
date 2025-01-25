@@ -6,8 +6,10 @@
 
 .items {
   th {
+    white-space: nowrap;
+
     fa-icon {
-      margin-left: 1rem;
+      margin-left: .25rem;
     }
   }
 

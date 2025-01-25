@@ -102,6 +102,7 @@
               {{ "Users" | translate }}
               <astrobin-data-does-not-update-in-real-time
                 *ngIf="showDataDoesNotUpdateInRealTime"
+                class="d-none d-md-inline"
               ></astrobin-data-does-not-update-in-real-time>
             </th>
             <td class="property-value">{{ item.userCount || 0 }}</td>
@@ -112,6 +113,7 @@
               {{ "Images" | translate }}
               <astrobin-data-does-not-update-in-real-time
                 *ngIf="showDataDoesNotUpdateInRealTime"
+                class="d-none d-md-inline"
               ></astrobin-data-does-not-update-in-real-time>
             </th>
             <td class="property-value">{{ item.imageCount || 0 }}</td>
@@ -123,6 +125,7 @@
             {{ "Most often used with" | translate }}
             <astrobin-data-does-not-update-in-real-time
               *ngIf="showDataDoesNotUpdateInRealTime"
+              class="d-none d-md-inline"
             ></astrobin-data-does-not-update-in-real-time>
           </th>
           <td class="property-value most-often-used-with">
