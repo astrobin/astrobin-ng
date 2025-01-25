@@ -6,7 +6,7 @@ $background: rgba(0, 0, 0, 0.95);
 
 :host {
   position: fixed;
-  inset: 6px 0 0 0;
+  inset: 0;
   z-index: 1046;
   overflow: hidden;
   background: $background;

@@ -975,8 +975,6 @@ export class ImageViewerComponent
     const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
     const mobileMenu = imageViewer.querySelector("astrobin-mobile-menu") as HTMLElement | null;
     const mobileMenuHeight = mobileMenu && hasMobileMenu ? mobileMenu.offsetHeight : 0;
-    const globalLoadingIndicator = document.querySelector(".global-loading-indicator") as HTMLElement | null;
-    const globalLoadingIndicatorHeight = globalLoadingIndicator ? globalLoadingIndicator.offsetHeight : 0;
 
     // Check if the social buttons are out of view, but only if they are above the visible area
     const socialButtonsRect = socialButtons.getBoundingClientRect();
@@ -988,10 +986,10 @@ export class ImageViewerComponent
 
       if (sideToSideLayout) {
         // The position is relative to the data area.
-        translateYValue = `${globalLoadingIndicatorHeight + adManagerHeight + mobileMenuHeight - 1}px`;
+        translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
       } else {
         // The position is relative to the main area.
-        translateYValue = `${globalLoadingIndicatorHeight + siteHeaderHeight + mobileMenuHeight - 1}px`;
+        translateYValue = `${siteHeaderHeight + mobileMenuHeight - 1}px`;
       }
 
       this.renderer.setStyle(floatingTitle, "transform", `translateY(${translateYValue})`);
