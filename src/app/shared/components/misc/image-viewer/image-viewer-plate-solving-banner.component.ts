@@ -181,6 +181,8 @@ export class ImageViewerPlateSolvingBannerComponent
     }
 
     this.offcanvasService.open(this._informationOffcanvasTemplate, {
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }

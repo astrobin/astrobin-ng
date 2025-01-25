@@ -107,7 +107,8 @@ export class ImageViewerObjectsComponent extends ImageViewerSectionBaseComponent
   moreObjectsInFieldClicked(event: MouseEvent): void {
     event.preventDefault();
     this.offcanvasService.open(this.moreObjectsInFieldTemplate, {
-      panelClass: "offcanvas-more-objects-in-field",
+      panelClass: "image-viewer-offcanvas offcanvas-more-objects-in-field",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }

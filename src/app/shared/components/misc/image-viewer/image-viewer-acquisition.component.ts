@@ -360,7 +360,8 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     });
 
     this.offcanvasService.open(this.deepSkyIntegrationDetailsTemplate, {
-      panelClass: "offcanvas-deep-sky-integration-details",
+      panelClass: "image-viewer-offcanvas offcanvas-deep-sky-integration-details",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }

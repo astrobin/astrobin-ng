@@ -156,7 +156,8 @@ export class ImageViewerShareButtonComponent implements OnChanges {
 
       this.offcanvasService.open(this.shareTemplate, {
         position: this.deviceService.offcanvasPosition(),
-        panelClass: "image-viewer-share-offcanvas"
+        panelClass: "image-viewer-offcanvas image-viewer-share-offcanvas",
+        backdropClass: "image-viewer-offcanvas-backdrop",
       });
     }
   }

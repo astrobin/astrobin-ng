@@ -138,6 +138,8 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
   protected openGroupsOffcanvas() {
     this._loadGroups();
     this.offcanvasService.open(this.groupsOffcanvasTemplate, {
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }
@@ -145,6 +147,8 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
   protected openCollectionsOffcanvas() {
     this._loadCollections();
     this.offcanvasService.open(this.collectionsOffcanvasTemplate, {
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }

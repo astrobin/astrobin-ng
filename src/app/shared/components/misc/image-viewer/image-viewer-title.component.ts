@@ -210,7 +210,8 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
   viewIotdTpStats() {
     this.offcanvasService.dismiss(); // Avoids nested offcanvases.
     this.offcanvasService.open(this.viewIotdTpStatsOffcanvas, {
-      panelClass: "image-iotd-tp-stats-offcanvas",
+      panelClass: "image-viewer-offcanvas image-iotd-tp-stats-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }

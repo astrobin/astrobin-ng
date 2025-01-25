@@ -14,7 +14,7 @@
         class="usage-menu me-2 mb-0"
         ngbDropdown
       >
-        <button class="btn btn-outline-secondary mb-0" id="usage-menu" ngbDropdownToggle type="button">
+        <button class="btn btn-xs btn-outline-secondary mb-0" id="usage-menu" ngbDropdownToggle type="button">
           {{ "Usage" | translate }}
         </button>
 
@@ -49,7 +49,7 @@
         *ngIf="showSortButton"
         class="sort-menu me-2 mb-0" ngbDropdown
       >
-        <button class="btn btn-outline-secondary mb-0" id="sort-search-results" ngbDropdownToggle type="button">
+        <button class="btn btn-xs btn-outline-secondary mb-0" id="sort-search-results" ngbDropdownToggle type="button">
           {{ "Sort" | translate }}
         </button>
 
@@ -72,7 +72,7 @@
         (click)="onMoreClicked($event)"
         astrobinEventStopPropagation
         astrobinEventPreventDefault
-        class="btn btn-outline-primary float-end"
+        class="btn btn-xs btn-outline-primary float-end"
       >
         {{ "More" | translate }}
       </a>

@@ -223,6 +223,8 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
     }
 
     this.offcanvasService.open(this.remoteSourceAffiliateSponsorOffcanvasTemplate,{
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }

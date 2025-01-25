@@ -21,6 +21,11 @@
     .ng-placeholder {
       color: var(--lightGrey) !important;
       padding-left: 1rem !important;
+      font-size: .9rem;
+
+      @media (max-width: $xs-max) {
+        font-size: .8rem;
+      }
     }
   }
 

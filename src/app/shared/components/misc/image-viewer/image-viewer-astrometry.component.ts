@@ -240,7 +240,8 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   openMoreInfo(event: MouseEvent): void {
     event.preventDefault();
     this.offcanvasService.open(this.moreInfoTemplate, {
-      panelClass: "offcanvas-more-info",
+      panelClass: "image-viewer-offcanvas offcanvas-more-info",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }

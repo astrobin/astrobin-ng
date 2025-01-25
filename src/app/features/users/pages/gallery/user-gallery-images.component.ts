@@ -144,8 +144,10 @@ import { DeviceService } from "@shared/services/device.service";
                 *ngFor="let image of images"
                 [class.wip]="image.isWip"
               >
-                <td [attr.data-label]="'Title' | translate"
-                    class="d-flex justify-content-md-between align-items-center">
+                <td
+                  [attr.data-label]="'Title' | translate"
+                  class="d-flex justify-content-md-between align-items-md-center flex-column flex-md-row"
+                >
                   <a
                     (click)="openImage(image)"
                     [href]="'/i/' + (image.hash || image.pk.toString())"

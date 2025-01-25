@@ -446,7 +446,8 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
     params.searchMethod(null).subscribe(() => {
       const offcanvas = this.offcanvasService.open(
         params.offcanvasTemplate, {
-          panelClass: params.panelClass,
+          panelClass: `image-viewer-offcanvas ${params.panelClass}`,
+          backdropClass: "image-viewer-offcanvas-backdrop",
           position: this.deviceService.offcanvasPosition()
         }
       );

@@ -85,6 +85,11 @@
     padding: .5rem 1rem;
     width: auto;
     border-bottom-width: 0;
+
+    &:first-child {
+      @include darkest-background-texture;
+      box-shadow: none;
+    }
   }
 
   tbody tr td:before {

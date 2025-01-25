@@ -492,7 +492,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     this.offcanvasService.dismiss(); // Avoids nested offcanvases.
     this.offcanvasService.open(
       this.downloadOffcanvasTemplate, {
-        panelClass: "offcanvas-menu",
+        panelClass: "image-viewer-offcanvas offcanvas-menu",
+        backdropClass: "image-viewer-offcanvas-backdrop",
         position: this.deviceService.mdMax() ? "start" : "end"
       }
     );
@@ -517,6 +518,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
   openSubmitForIotdTpConsiderationOffcanvas() {
     this.offcanvasService.dismiss(); // Avoids nested offcanvases.
     this.offcanvasService.open(this.submitForIotdTpConsiderationOffcanvas, {
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
 
@@ -553,7 +556,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
   viewIotdTpStats() {
     this.offcanvasService.dismiss(); // Avoids nested offcanvases.
     this.offcanvasService.open(this.viewIotdTpStatsOffcanvas, {
-      panelClass: "image-iotd-tp-stats-offcanvas",
+      panelClass: "image-viewer-offcanvas image-iotd-tp-stats-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }

@@ -116,7 +116,11 @@ export class ImageViewerWipBannerComponent extends ImageViewerSectionBaseCompone
   }
 
   openPromoteOffcanvas() {
-    this.offcanvasService.open(this.promoteOffcanvas, { position: this.deviceService.offcanvasPosition() });
+    this.offcanvasService.open(this.promoteOffcanvas, {
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 
   publish() {

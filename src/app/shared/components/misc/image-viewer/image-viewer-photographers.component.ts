@@ -332,7 +332,8 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
 
   openCollaboratorsOffcanvas(): void {
     this.offcanvasService.open(this.collaboratorsTemplate, {
-      panelClass: "offcanvas-collaborators",
+      panelClass: "image-viewer-offcanvas offcanvas-collaborators",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
     this.utilsService.delay(500).subscribe(() => {
