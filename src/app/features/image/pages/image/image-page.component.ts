@@ -12,7 +12,6 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { DeleteImageFailure, DeleteImageSuccess } from "@app/store/actions/image.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserService } from "@shared/services/user.service";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
@@ -39,7 +38,6 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
     public readonly route: ActivatedRoute,
     public readonly windowRefService: WindowRefService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly userService: UserService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
@@ -59,6 +57,7 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
     ).subscribe(data => {
       this.image = data.image;
       this.revisionLabel = this.route.snapshot.queryParams.r || FINAL_REVISION_LABEL;
+      this.imageService.setMetaTags(this.image);
     });
 
     this._setupOnDelete();
