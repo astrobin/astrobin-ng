@@ -106,6 +106,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   private _revision: ImageInterface | ImageRevisionInterface;
 
+  private _lastTransform: string = null;
+  private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
   private _canvasContext: CanvasRenderingContext2D;
   private _canvasContainerDimensions: { width: number; height: number; centerX: number; centerY: number };
@@ -262,6 +264,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   ngOnDestroy() {
     super.ngOnDestroy();
 
+    if (this._imageBitmap) {
+      this._imageBitmap.close();
+    }
+    if (this._rafId) {
+      cancelAnimationFrame(this._rafId);
+    }
+
     if (this._eagerLoadingSubscription) {
       this._eagerLoadingSubscription.unsubscribe();
       this._eagerLoadingSubscription = null;
@@ -392,6 +401,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.isTransforming = false;
+    this._drawCanvas();
   }
 
   protected onPanStart(event: HammerInput): void {
@@ -521,6 +531,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         cancelAnimationFrame(this._animationFrame);
         this._animationFrame = null;
         this.isTransforming = false;
+        this._drawCanvas();
         return;
       }
 
@@ -689,15 +700,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             this._canvasImage.decoding = "async";
 
             this._canvasImage.onload = () => {
-              const canvas = this.touchRealCanvas.nativeElement;
-              this._canvasContext = canvas.getContext("2d", {
-                alpha: false,
-                willReadFrequently: false
-              });
-              this._updateCanvasDimensions();
-              this._drawCanvas();
-              this.realThumbnailLoading = false;
-              this.changeDetectorRef.markForCheck();
+              try {
+                // Create bitmap once when loading image
+                createImageBitmap(this._canvasImage).then(bitmap => {
+                  this._imageBitmap = bitmap;
+                  const canvas = this.touchRealCanvas.nativeElement;
+                  this._canvasContext = canvas.getContext('2d', {
+                    alpha: false,
+                    willReadFrequently: false
+                  });
+
+                  this._updateCanvasDimensions();
+                  this._drawCanvas();
+                  this.changeDetectorRef.markForCheck();
+                });
+              } catch (error) {
+                console.error('Failed to initialize canvas:', error);
+              }
             };
 
             this._canvasImage.src = this.realThumbnailUnsafeUrl;
@@ -769,37 +788,32 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _performDrawCanvas(): void {
-    if (!this._canvasContext || !this._canvasImage) {
-      return;
-    }
+    if (!this._canvasContext || !this._imageBitmap) return;
 
-    requestAnimationFrame(() => {
-      const ctx = this._canvasContext;
-      const { width, height, centerX, centerY } = this._canvasContainerDimensions;
-      const { width: drawWidth, height: drawHeight } = this._canvasImageDimensions;
+    const ctx = this._canvasContext;
+    const { width, height, centerX, centerY } = this._canvasContainerDimensions;
+    const { width: drawWidth, height: drawHeight } = this._canvasImageDimensions;
 
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, width, height);
+    // Cache transform matrix
+    const transform = `${this.touchScale},${centerX + this._touchScaleOffset.x * this.touchScale},${centerY + this._touchScaleOffset.y * this.touchScale}`;
 
-      ctx.setTransform(
-        this.touchScale,
-        0,
-        0,
-        this.touchScale,
-        centerX + this._touchScaleOffset.x * this.touchScale,
-        centerY + this._touchScaleOffset.y * this.touchScale
-      );
+    if (this._lastTransform === transform) return;
+    this._lastTransform = transform;
 
-      this._clampOffset();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, width, height);
 
-      ctx.drawImage(
-        this._canvasImage,
-        -drawWidth * .5,
-        -drawHeight * .5,
-        drawWidth,
-        drawHeight
-      );
-    });
+    ctx.setTransform(
+      this.touchScale,
+      0,
+      0,
+      this.touchScale,
+      centerX + this._touchScaleOffset.x * this.touchScale,
+      centerY + this._touchScaleOffset.y * this.touchScale
+    );
+
+    this._clampOffset();
+    ctx.drawImage(this._imageBitmap, -drawWidth * .5, -drawHeight * .5, drawWidth, drawHeight);
   }
 
   private _setZoomLensSize(): void {

@@ -103,6 +103,7 @@
     <ng-container *ngIf="!isVeryLargeImage">
       <div
         *ngIf="real && allowReal"
+        @fadeInOut
         #touchRealContainer
         class="touch-real-container"
         (pinchstart)="onPinchStart($event)"
@@ -149,13 +150,6 @@
         [ngTemplateOutlet]="imageTooLargeToZoomTemplate"
       ></ng-container>
     </ng-container>
-
-    <img
-      *ngIf="hd && (!real || !allowReal)"
-      [src]="hd"
-      class="hd-image"
-      alt=""
-    />
 
     <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && real"
                   [ngTemplateOutlet]="real && pinchAndZoomInstructionTemplate"></ng-container>
