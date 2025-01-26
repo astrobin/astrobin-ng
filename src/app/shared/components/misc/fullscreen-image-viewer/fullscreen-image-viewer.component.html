@@ -113,17 +113,7 @@
         (panend)="onPanEnd($event)"
         (doubletap)="onDoubleTap($event)"
       >
-        <div
-          #touchRealWrapper
-          class="touch-real-wrapper"
-          [style.transition]="touchScale === 1 ? 'transform 0.3s' : 'none'"
-        >
-          <img
-            [src]="real"
-            [style.transform]="touchZoomTransform"
-            alt=""
-          />
-        </div>
+        <canvas #touchRealCanvas class="touch-real-canvas"></canvas>
 
         <div
           *ngIf="actualTouchZoom !== null"

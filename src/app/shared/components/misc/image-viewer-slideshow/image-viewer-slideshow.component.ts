@@ -82,7 +82,7 @@ const SLIDESHOW_WINDOW = 3;
       *ngIf="activeImage"
       [id]="activeImage.pk"
       [eagerLoading]="true"
-      [revision]="activeImageRevisionLabel"
+      [revisionLabel]="activeImageRevisionLabel"
       (enterFullscreen)="onEnterFullscreen()"
       (exitFullscreen)="onExitFullscreen()"
     ></astrobin-fullscreen-image-viewer>

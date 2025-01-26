@@ -21,7 +21,7 @@ import { DeviceService } from "@shared/services/device.service";
 import { CookieService } from "ngx-cookie";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { FullSizeLimitationDisplayOptions, ImageInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { TitleService } from "@shared/services/title/title.service";
@@ -41,7 +41,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   id: ImageInterface["pk"];
 
   @Input()
-  revision = "final";
+  revisionLabel = FINAL_REVISION_LABEL;
 
   @Input()
   anonymized = false;
@@ -72,6 +72,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @ViewChild("touchRealContainer", { static: false })
   touchRealContainer: ElementRef;
 
+  @ViewChild("touchRealCanvas")
+  touchRealCanvas: ElementRef<HTMLCanvasElement>;
+
   @ViewChild("touchRealWrapper", { static: false })
   touchRealWrapper: ElementRef;
 
@@ -97,11 +100,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected touchScale = 1;
   protected actualTouchZoom: number = null;
   protected isTransforming = false;
-  protected touchZoomTransform = "";
   protected naturalWidth: number;
   protected naturalHeight: number;
   protected maxZoom = 8;
 
+  private _revision: ImageInterface | ImageRevisionInterface;
+
+  private _canvasImage: HTMLImageElement;
+  private _canvasContext: CanvasRenderingContext2D;
+  private _canvasContainerDimensions: { width: number; height: number; centerX: number; centerY: number };
+  private _canvasImageDimensions: { width: number; height: number };
+  private _rafId: number;
   private _lastTouchScale = 1;
   private _touchScaleOffset = { x: 0, y: 0 };
   private _lastTouchScaleOffset = { x: 0, y: 0 };
@@ -178,6 +187,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @HostListener("window:resize", ["$event"])
   onResize(event) {
     this._setZoomLensSize();
+    this._updateCanvasDimensions();
+    this._drawCanvas();
   }
 
   ngOnInit() {
@@ -205,7 +216,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           // Double check in case user clicked during timeout
           if (!this._eagerLoadingSubscription && !this.hdThumbnail && !this.realThumbnail) {
             this._eagerLoadingSubscription = this._initThumbnailSubscriptions();
-            this.changeDetectorRef.detectChanges();
+            this.changeDetectorRef.markForCheck();
           }
         });
       }
@@ -328,6 +339,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onPinchStart(event: HammerInput): void {
+    if (this._animationFrame) {
+      cancelAnimationFrame(this._animationFrame);
+      this._animationFrame = null;
+    }
+
     this._lastTouchScale = this.touchScale;
 
     // Store the initial pinch position
@@ -344,22 +360,29 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onPinchMove(event: HammerInput): void {
-    const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
-    if (now - this._pinchLastTime < this.FRAME_INTERVAL) {
+    if (event.timeStamp - this._pinchLastTime < this.FRAME_INTERVAL) {
       return;
     }
-    this._pinchLastTime = now;
+    this._pinchLastTime = event.timeStamp;
 
-    const displayWidth = this.touchRealContainer.nativeElement.offsetWidth;
-    const naturalScale = displayWidth / this.naturalWidth;
-    const maxScale = this.isVeryLargeImage ? 1 : 8 / naturalScale;
+    const naturalScale = this._canvasContainerDimensions.width / this.naturalWidth;
+    const maxScale = this.isVeryLargeImage ? 1 : this.maxZoom / naturalScale;
+    this.touchScale = Math.min(Math.max(this._lastTouchScale * event.scale, 1), maxScale);
 
-    this.touchScale = Math.min(
-      Math.max(this._lastTouchScale * event.scale, 1),
-      maxScale
-    );
+    const rect = this.touchRealContainer.nativeElement.getBoundingClientRect();
+    const currentCenter = {
+      x: event.center.x - rect.left,
+      y: event.center.y - rect.top
+    };
+
+    const deltaX = currentCenter.x - this._touchScaleStartPoint.x;
+    const deltaY = currentCenter.y - this._touchScaleStartPoint.y;
+
+    const { maxOffsetX, maxOffsetY, newOffsetX, newOffsetY } = this._calculatePanOffsets(deltaX, deltaY);
+    this._applyOffsetWithinBounds(newOffsetX, newOffsetY, maxOffsetX, maxOffsetY);
+
     this._updateActualTouchZoom();
-    this._setTouchZoomTransform();
+    this._drawCanvas();
   }
 
   protected onPinchEnd(): void {
@@ -372,17 +395,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected onPanStart(event: HammerInput): void {
-    if (this.touchScale <= 1) {
-      return;
-    }
-
-    // Cancel any ongoing momentum animation
     if (this._animationFrame) {
       cancelAnimationFrame(this._animationFrame);
       this._animationFrame = null;
     }
 
+    if (this.touchScale <= 1) {
+      return;
+    }
+
     this._lastTouchScaleOffset = this._touchScaleOffset;
+
     this._touchScaleStartPoint = {
       x: event.center.x,
       y: event.center.y
@@ -394,49 +417,24 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       x: event.center.x,
       y: event.center.y
     };
-    this._panLastTime = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    this._panLastTime = event.timeStamp;
 
     this.isTransforming = true;
   }
 
   protected onPanMove(event: HammerInput): void {
-    if (this.touchScale <= 1) {
+    if (this.touchScale <= 1 || event.timeStamp - this._panLastTime < this.FRAME_INTERVAL) {
       return;
     }
 
-    const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
-    if (now - this._panLastTime < this.FRAME_INTERVAL) {
-      return;
-    }
-
-    const deltaTime = now - this._panLastTime;
-
-    // Calculate velocity
-    if (deltaTime > 0) {
-      this._panVelocity = {
-        x: (event.center.x - this._panLastPosition.x) / deltaTime,
-        y: (event.center.y - this._panLastPosition.y) / deltaTime
-      };
-    }
-
-    this._panLastPosition = { x: event.center.x, y: event.center.y };
-    this._panLastTime = now;
+    this._updateVelocity(event);
 
     const deltaX = event.center.x - this._touchScaleStartPoint.x;
     const deltaY = event.center.y - this._touchScaleStartPoint.y;
 
-    const adjustedDeltaX = deltaX / this.touchScale;
-    const adjustedDeltaY = deltaY / this.touchScale;
-
-    const maxOffsetX = (this.touchScale - 1) * this.touchRealContainer.nativeElement.offsetWidth / 2;
-    const maxOffsetY = (this.touchScale - 1) * this.touchRealContainer.nativeElement.offsetHeight / 2;
-
-    this._touchScaleOffset = {
-      x: Math.min(Math.max(this._lastTouchScaleOffset.x + adjustedDeltaX, -maxOffsetX), maxOffsetX),
-      y: Math.min(Math.max(this._lastTouchScaleOffset.y + adjustedDeltaY, -maxOffsetY), maxOffsetY)
-    };
-
-    this._setTouchZoomTransform();
+    const { maxOffsetX, maxOffsetY, newOffsetX, newOffsetY } = this._calculatePanOffsets(deltaX, deltaY);
+    this._applyOffsetWithinBounds(newOffsetX, newOffsetY, maxOffsetX, maxOffsetY);
+    this._drawCanvas();
   }
 
   protected onPanEnd(event: HammerInput) {
@@ -463,34 +461,75 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
-  private _setTouchZoomTransform(): void {
-    this.touchZoomTransform = `scale(${this.touchScale}) translate(${this._touchScaleOffset.x}px, ${this._touchScaleOffset.y}px)`;
+  private _calculatePanOffsets(deltaX: number, deltaY: number, currentScale: number = this.touchScale): {
+    maxOffsetX: number;
+    maxOffsetY: number;
+    newOffsetX: number;
+    newOffsetY: number;
+  } {
+    const scaledImageWidth = this._canvasImageDimensions.width * currentScale;
+    const scaledImageHeight = this._canvasImageDimensions.height * currentScale;
+
+    const maxOffsetX = Math.max(0, (scaledImageWidth - this._canvasContainerDimensions.width) / (2 * currentScale));
+    const maxOffsetY = Math.max(0, (scaledImageHeight - this._canvasContainerDimensions.height) / (2 * currentScale));
+
+    const adjustedDeltaX = deltaX / currentScale;
+    const adjustedDeltaY = deltaY / currentScale;
+
+    return {
+      maxOffsetX,
+      maxOffsetY,
+      newOffsetX: this._lastTouchScaleOffset.x + adjustedDeltaX,
+      newOffsetY: this._lastTouchScaleOffset.y + adjustedDeltaY
+    };
+  }
+
+  private _updateVelocity(event: HammerInput): void {
+    const deltaTime = event.timeStamp - this._panLastTime;
+
+    if (deltaTime > 0) {
+      this._panVelocity = {
+        x: (event.center.x - this._panLastPosition.x) / deltaTime,
+        y: (event.center.y - this._panLastPosition.y) / deltaTime
+      };
+    }
+
+    this._panLastPosition = { x: event.center.x, y: event.center.y };
+    this._panLastTime = event.timeStamp;
+  }
+
+  private _applyOffsetWithinBounds(newOffsetX: number, newOffsetY: number, maxOffsetX: number, maxOffsetY: number): void {
+    if (Math.abs(newOffsetX) <= maxOffsetX) {
+      this._touchScaleOffset.x = newOffsetX;
+    }
+
+    if (Math.abs(newOffsetY) <= maxOffsetY) {
+      this._touchScaleOffset.y = newOffsetY;
+    }
   }
 
   private _applyPanMoveMomentum(): void {
-    const friction = 0.9; // Adjust this value to change how quickly it slows down
-    const minVelocity = 0.025; // Minimum velocity before stopping
+    const friction = 0.925;
+    const minVelocity = 0.025;
 
     const animate = () => {
       // Apply friction
       this._panVelocity.x *= friction;
       this._panVelocity.y *= friction;
 
-      // Stop if velocity is very low
       if (Math.abs(this._panVelocity.x) < minVelocity && Math.abs(this._panVelocity.y) < minVelocity) {
         cancelAnimationFrame(this._animationFrame);
         this._animationFrame = null;
         this.isTransforming = false;
-        this._setTouchZoomTransform();
         return;
       }
 
       // Calculate new position
-      const deltaX = (this._panVelocity.x * 16) / this.touchScale; // 16ms is roughly one frame at 60fps
-      const deltaY = (this._panVelocity.y * 16) / this.touchScale;
+      const deltaX = (this._panVelocity.x * this.FRAME_INTERVAL) / this.touchScale;
+      const deltaY = (this._panVelocity.y * this.FRAME_INTERVAL) / this.touchScale;
 
-      const maxOffsetX = (this.touchScale - 1) * this.touchRealContainer.nativeElement.offsetWidth / 2;
-      const maxOffsetY = (this.touchScale - 1) * this.touchRealContainer.nativeElement.offsetHeight / 2;
+      const maxOffsetX = (this.touchScale - 1) * this._canvasContainerDimensions.width / 2;
+      const maxOffsetY = (this.touchScale - 1) * this._canvasContainerDimensions.height / 2;
 
       // Update position with bounds checking
       this._touchScaleOffset = {
@@ -506,13 +545,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this._panVelocity.y = 0;
       }
 
-      this._setTouchZoomTransform();
+      this._drawCanvas();
       this._animationFrame = requestAnimationFrame(animate);
     };
 
     this._animationFrame = requestAnimationFrame(animate);
   }
-
 
   private _updateActualTouchZoom(): void {
     if (!this.naturalWidth || !this.touchRealContainer?.nativeElement?.offsetWidth) {
@@ -526,11 +564,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _resetTouchZoom(): void {
-    this.touchZoomTransform = "";
     this.touchScale = 1;
     this._lastTouchScale = 1;
     this._touchScaleOffset = { x: 0, y: 0 };
     this._lastTouchScaleOffset = { x: 0, y: 0 };
+    this._canvasContainerDimensions = null;
+    this._canvasImageDimensions = null;
     this._updateActualTouchZoom();
   }
 
@@ -573,89 +612,194 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._imageSubscription = this.store$.pipe(
       select(selectImage, this.id),
       filter(image => !!image),
-      take(1)
-    ).subscribe(image => {
-      const revision = this.imageService.getRevision(image, this.revision);
-      this.naturalWidth = revision.w;
-      this.naturalHeight = revision.h;
-      this.maxZoom = image.maxZoom || image.defaultMaxZoom || 8;
-      this.isLargeEnough = (
-        revision.w > this.windowRef.nativeWindow.innerWidth ||
-        revision.h > this.windowRef.nativeWindow.innerHeight
-      );
-      this.changeDetectorRef.markForCheck();
-
-      this.currentUser$.pipe(take(1)).subscribe(user => {
-        const limit = image.fullSizeDisplayLimitation;
-        this.allowReal = !this.respectFullSizeDisplayLimitation || (
-          limit === FullSizeLimitationDisplayOptions.EVERYBODY ||
-          (limit === FullSizeLimitationDisplayOptions.MEMBERS && !!user) ||
-          (limit === FullSizeLimitationDisplayOptions.PAYING && !!user && !!user.validSubscription) ||
-          (limit === FullSizeLimitationDisplayOptions.ME && !!user && user.id === image.user)
+      take(1),
+      tap(image => {
+        this._revision = this.imageService.getRevision(image, this.revisionLabel);
+        this.naturalWidth = this._revision.w;
+        this.naturalHeight = this._revision.h;
+        this.maxZoom = image.maxZoom || image.defaultMaxZoom || 8;
+        this.isLargeEnough = (
+          this._revision.w > this.windowRef.nativeWindow.innerWidth ||
+          this._revision.h > this.windowRef.nativeWindow.innerHeight
         );
         this.changeDetectorRef.markForCheck();
+
+        this.currentUser$.pipe(take(1)).subscribe(user => {
+          const limit = image.fullSizeDisplayLimitation;
+          this.allowReal = !this.respectFullSizeDisplayLimitation || (
+            limit === FullSizeLimitationDisplayOptions.EVERYBODY ||
+            (limit === FullSizeLimitationDisplayOptions.MEMBERS && !!user) ||
+            (limit === FullSizeLimitationDisplayOptions.PAYING && !!user && !!user.validSubscription) ||
+            (limit === FullSizeLimitationDisplayOptions.ME && !!user && user.id === image.user)
+          );
+          this.changeDetectorRef.markForCheck();
+        });
+      })
+    ).subscribe(() => {
+      this._hdThumbnailSubscription = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
+        tap(() => {
+          this.hdThumbnailLoading = true;
+          this._hdLoadingProgressSubject.next(0);
+          this.changeDetectorRef.markForCheck();
+        }),
+        filter(thumbnail => !!thumbnail),
+        switchMap(thumbnail =>
+          this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
+            this._hdLoadingProgressSubject.next(progress);
+          }).pipe(
+            switchMap(url =>
+              this._preloadImage(url).pipe(
+                map(() => this.domSanitizer.bypassSecurityTrustUrl(url)),
+                tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false }))),
+                tap(() => {
+                  this.hdThumbnailLoading = false;
+                  this.changeDetectorRef.markForCheck();
+                })
+              )
+            )
+          )
+        )
+      ).subscribe(url => {
+        this.hdThumbnail = url;
+        this.changeDetectorRef.markForCheck();
       });
+
+      this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
+        tap(() => {
+          this.realThumbnailLoading = true;
+          this._realLoadingProgressSubject.next(0);
+          this.changeDetectorRef.markForCheck();
+        }),
+        filter(thumbnail => !!thumbnail),
+        tap(thumbnail => {
+          this.realThumbnailUnsafeUrl = thumbnail.url;
+          this.changeDetectorRef.markForCheck();
+        }),
+        switchMap(thumbnail =>
+          this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
+            this._realLoadingProgressSubject.next(progress);
+          })
+        )
+      ).subscribe(url => {
+        this.realThumbnail = url;
+
+        this.utilsService.delay(1).subscribe(() => {
+          if (this.touchRealCanvas) {
+            this._canvasImage = new Image();
+            this._canvasImage.decoding = "async";
+
+            this._canvasImage.onload = () => {
+              const canvas = this.touchRealCanvas.nativeElement;
+              this._canvasContext = canvas.getContext("2d", {
+                alpha: false,
+                willReadFrequently: false
+              });
+              this._updateCanvasDimensions();
+              this._drawCanvas();
+              this.realThumbnailLoading = false;
+              this.changeDetectorRef.markForCheck();
+            };
+
+            this._canvasImage.src = this.realThumbnailUnsafeUrl;
+          }
+        });
+
+        this.changeDetectorRef.markForCheck();
+      });
+
+      subscriptions.add(this._hdThumbnailSubscription);
+      subscriptions.add(this._realThumbnailSubscription);
     });
 
     subscriptions.add(this._imageSubscription);
 
-    this._hdThumbnailSubscription = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
-      tap(() => {
-        this.hdThumbnailLoading = true;
-        this._hdLoadingProgressSubject.next(0);
-      }),
-      filter(thumbnail => !!thumbnail),
-      switchMap(thumbnail =>
-        this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
-          this._hdLoadingProgressSubject.next(progress);
-        }).pipe(
-          switchMap(url =>
-            this._preloadImage(url).pipe(
-              map(() => this.domSanitizer.bypassSecurityTrustUrl(url)),
-              tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false }))),
-              tap(() => this.hdThumbnailLoading = false)
-            )
-          )
-        )
-      )
-    ).subscribe(url => {
-      this.hdThumbnail = url;
-      this.changeDetectorRef.markForCheck();
-    });
-
-    subscriptions.add(this._hdThumbnailSubscription);
-
-    this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
-      tap(() => {
-        this.realThumbnailLoading = true;
-        this._realLoadingProgressSubject.next(0);
-      }),
-      filter(thumbnail => !!thumbnail),
-      tap(thumbnail => {
-        this.realThumbnailUnsafeUrl = thumbnail.url;
-      }),
-      switchMap(thumbnail =>
-        this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
-          this._realLoadingProgressSubject.next(progress);
-        }).pipe(
-          switchMap(url =>
-            this._preloadImage(url).pipe(
-              map(() => this.domSanitizer.bypassSecurityTrustUrl(url)),
-              tap(() => this.realThumbnailLoading = false)
-            )
-          )
-        )
-      )
-    ).subscribe(url => {
-      this.realThumbnail = url;
-      this.changeDetectorRef.markForCheck();
-    });
-
-    subscriptions.add(this._realThumbnailSubscription);
-
     this.store$.dispatch(new LoadThumbnail({ data: this._getHdOptions(), bustCache: false }));
 
     return subscriptions;
+  }
+
+  private _clampOffset(): void {
+    const { width, height } = this._canvasContainerDimensions;
+    const { width: drawWidth, height: drawHeight } = this._canvasImageDimensions;
+
+    const scaledWidth = drawWidth * this.touchScale;
+    const scaledHeight = drawHeight * this.touchScale;
+    const maxOffsetX = Math.max(0, (scaledWidth - width) / (2 * this.touchScale));
+    const maxOffsetY = Math.max(0, (scaledHeight - height) / (2 * this.touchScale));
+
+    this._touchScaleOffset = {
+      x: Math.min(Math.max(this._touchScaleOffset.x, -maxOffsetX), maxOffsetX),
+      y: Math.min(Math.max(this._touchScaleOffset.y, -maxOffsetY), maxOffsetY)
+    };
+  }
+
+  private _updateCanvasDimensions(): void {
+    const container = this.touchRealContainer.nativeElement;
+    const canvas = this.touchRealCanvas.nativeElement;
+
+    this._canvasContainerDimensions = {
+      width: container.offsetWidth,
+      height: container.offsetHeight,
+      centerX: container.offsetWidth * 0.5,
+      centerY: container.offsetHeight * 0.5
+    };
+
+    canvas.width = this._canvasContainerDimensions.width;
+    canvas.height = this._canvasContainerDimensions.height;
+
+    // Recalculate image dimensions
+    const imageRatio = this._canvasImage.width / this._canvasImage.height;
+    const containerRatio = this._canvasContainerDimensions.width / this._canvasContainerDimensions.height;
+
+    this._canvasImageDimensions = {
+      width: imageRatio > containerRatio ?
+        this._canvasContainerDimensions.width :
+        this._canvasContainerDimensions.height * imageRatio,
+      height: imageRatio > containerRatio ?
+        this._canvasContainerDimensions.width / imageRatio :
+        this._canvasContainerDimensions.height
+    };
+  }
+
+  private _drawCanvas(): void {
+    if (this._rafId) {
+      cancelAnimationFrame(this._rafId);
+    }
+    this._rafId = requestAnimationFrame(this._performDrawCanvas.bind(this));
+  }
+
+  private _performDrawCanvas(): void {
+    if (!this._canvasContext || !this._canvasImage) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const ctx = this._canvasContext;
+      const { width, height, centerX, centerY } = this._canvasContainerDimensions;
+      const { width: drawWidth, height: drawHeight } = this._canvasImageDimensions;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.setTransform(
+        this.touchScale,
+        0,
+        0,
+        this.touchScale,
+        centerX + this._touchScaleOffset.x * this.touchScale,
+        centerY + this._touchScaleOffset.y * this.touchScale
+      );
+
+      this._clampOffset();
+
+      ctx.drawImage(
+        this._canvasImage,
+        -drawWidth * .5,
+        -drawHeight * .5,
+        drawWidth,
+        drawHeight
+      );
+    });
   }
 
   private _setZoomLensSize(): void {
@@ -681,7 +825,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _getHdOptions(): Omit<ImageThumbnailInterface, "url"> {
     return {
       id: this.id,
-      revision: this.revision,
+      revision: this.revisionLabel,
       alias: this.anonymized ? ImageAlias.HD_ANONYMIZED : ImageAlias.QHD
     };
   }
@@ -689,7 +833,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _getRealOptions(): Omit<ImageThumbnailInterface, "url"> {
     return {
       id: this.id,
-      revision: this.revision,
+      revision: this.revisionLabel,
       alias: this.anonymized ? ImageAlias.REAL_ANONYMIZED : ImageAlias.REAL
     };
   }
@@ -697,6 +841,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _preloadImage(url: string): Observable<void> {
     return new Observable(subscriber => {
       const img = new Image();
+      img.decoding = "async";
       img.onload = () => {
         subscriber.next();
         subscriber.complete();
