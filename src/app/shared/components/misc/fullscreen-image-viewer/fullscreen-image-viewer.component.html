@@ -114,6 +114,10 @@
         (panend)="onPanEnd($event)"
         (doubletap)="onDoubleTap($event)"
       >
+        <div *ngIf="canvasLoading" class="loading">
+          <fa-icon icon="spinner" animation="spin"></fa-icon>
+        </div>
+
         <canvas #touchRealCanvas class="touch-real-canvas"></canvas>
 
         <div

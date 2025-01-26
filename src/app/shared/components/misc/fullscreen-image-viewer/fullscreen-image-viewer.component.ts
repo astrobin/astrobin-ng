@@ -103,6 +103,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected naturalWidth: number;
   protected naturalHeight: number;
   protected maxZoom = 8;
+  protected canvasLoading = false;
 
   private _revision: ImageInterface | ImageRevisionInterface;
 
@@ -134,12 +135,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _eagerLoadingSubscription: Subscription;
+  private _firstRenderSubject = new BehaviorSubject<boolean>(false);
 
   private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
 
+  readonly firstRender$ = this._firstRenderSubject.asObservable().pipe(
+    filter(rendered => rendered)
+  );
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -243,6 +248,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.realThumbnail = null;
         this._resetTouchZoom();
         this.titleService.enablePageZoom();
+
+        this._lastTransform = null;
+        if (this._imageBitmap) {
+          this._imageBitmap.close();
+          this._imageBitmap = null;
+        }
+        this._canvasContext = null;
+        this._canvasImage = null;
+        this._firstRenderSubject.next(false);
+        this.canvasLoading = false;
+
         cancelAnimationFrame(this._animationFrame);
         this.exitFullscreen.emit();
         this.changeDetectorRef.markForCheck();
@@ -519,11 +535,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _applyPanMoveMomentum(): void {
-    const friction = 0.925;
-    const minVelocity = 0.025;
+    const friction = .95;
+    const minVelocity = .025;
 
     const animate = () => {
-      // Apply friction
       this._panVelocity.x *= friction;
       this._panVelocity.y *= friction;
 
@@ -535,7 +550,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         return;
       }
 
-      // Calculate new position
+      // Calculate new position - keeping the division by touchScale for relative motion
       const deltaX = (this._panVelocity.x * this.FRAME_INTERVAL) / this.touchScale;
       const deltaY = (this._panVelocity.y * this.FRAME_INTERVAL) / this.touchScale;
 
@@ -677,6 +692,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
         tap(() => {
+          this.canvasLoading = true;
           this.realThumbnailLoading = true;
           this._realLoadingProgressSubject.next(0);
           this.changeDetectorRef.markForCheck();
@@ -694,7 +710,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       ).subscribe(url => {
         this.realThumbnail = url;
 
-        this.utilsService.delay(1).subscribe(() => {
+        this.utilsService.delay(50).subscribe(() => {
           if (this.touchRealCanvas) {
             this._canvasImage = new Image();
             this._canvasImage.decoding = "async";
@@ -712,6 +728,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
                   this._updateCanvasDimensions();
                   this._drawCanvas();
+
+                  this.firstRender$.pipe(take(1)).subscribe(() => {
+                    this.canvasLoading = false;
+                    this.changeDetectorRef.markForCheck();
+                  });
+
                   this.changeDetectorRef.markForCheck();
                 });
               } catch (error) {
@@ -720,6 +742,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             };
 
             this._canvasImage.src = this.realThumbnailUnsafeUrl;
+            this.changeDetectorRef.markForCheck();
           }
         });
 
@@ -814,6 +837,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this._clampOffset();
     ctx.drawImage(this._imageBitmap, -drawWidth * .5, -drawHeight * .5, drawWidth, drawHeight);
+
+    if (!this._firstRenderSubject.value) {
+      this._firstRenderSubject.next(true);
+    }
   }
 
   private _setZoomLensSize(): void {
