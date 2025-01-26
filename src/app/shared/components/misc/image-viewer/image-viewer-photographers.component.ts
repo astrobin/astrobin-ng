@@ -316,6 +316,7 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
               pending: true
             }))
           );
+          this.changeDetectorRef.markForCheck();
         });
       }
 

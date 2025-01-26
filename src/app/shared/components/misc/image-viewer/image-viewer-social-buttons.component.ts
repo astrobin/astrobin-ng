@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageService } from "@shared/services/image/image.service";
@@ -113,10 +113,18 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div class="social-buttons d-flex gap-2 align-items-center">
         <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
-          <ng-container [ngTemplateOutlet]="likeButtonTemplate" [ngTemplateOutletContext]="{ $implicit: currentUserWrapper }"></ng-container>
-          <ng-container [ngTemplateOutlet]="bookmarkButtonTemplate" [ngTemplateOutletContext]="{ $implicit: currentUserWrapper }"></ng-container>
-          <ng-container [ngTemplateOutlet]="commentsButtonTemplate"></ng-container>
-          <ng-container [ngTemplateOutlet]="shareButtonTemplate"></ng-container>
+          <ng-container
+            [ngTemplateOutlet]="likeButtonTemplate"
+            [ngTemplateOutletContext]="{ $implicit: currentUserWrapper }"
+          ></ng-container>
+          <ng-container
+            [ngTemplateOutlet]="bookmarkButtonTemplate"
+            [ngTemplateOutletContext]="{ $implicit: currentUserWrapper }"></ng-container>
+          <ng-container
+            [ngTemplateOutlet]="commentsButtonTemplate"
+          ></ng-container>
+          <ng-container [ngTemplateOutlet]="shareButtonTemplate"
+          ></ng-container>
         </ng-container>
       </div>
     </ng-container>
@@ -264,7 +272,8 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-social-buttons.component.scss"]
+  styleUrls: ["./image-viewer-social-buttons.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseComponent implements OnInit {
   @Input()
@@ -317,7 +326,8 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly utilsService: UtilsService,
     public readonly imageApiService: ImageApiService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
 
@@ -327,6 +337,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       take(1)
     ).subscribe(contentType => {
       this.imageContentType = contentType;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.pipe(
@@ -335,6 +346,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       take(1)
     ).subscribe(contentType => {
       this.userContentType = contentType;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.dispatch(new LoadContentType({
@@ -355,6 +367,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       takeUntil(this.destroyed$)
     ).subscribe(search => {
       this._searchUsersWhoLikeThis(search);
+      this.changeDetectorRef.markForCheck();
     });
 
     this.bookmarkedThisSearchSubject.pipe(
@@ -363,6 +376,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
       takeUntil(this.destroyed$)
     ).subscribe(search => {
       this._searchUsersWhoBookmarkedThis(search);
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -469,6 +483,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
                   // Recursively check again after loading, in case we still need more
                   this.utilsService.delay(1).subscribe(() => checkAndLoadMore());
                 });
+              this.changeDetectorRef.markForCheck();
             }
           };
 
@@ -476,7 +491,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
           checkAndLoadMore();
 
           // Set up scroll listener for further loading
-          fromEvent(offcanvasElement, 'scroll')
+          fromEvent(offcanvasElement, "scroll")
             .pipe(
               takeUntil(offcanvas.hidden),
               throttleTime(200),
@@ -492,6 +507,7 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
             params.searchMethod(this[params.searchProperty] as string)
               .pipe(finalize(() => this.loadingMore = false))
               .subscribe();
+            this.changeDetectorRef.markForCheck();
           });
         }
       });
@@ -533,6 +549,8 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
         if (this.hasMorePages) {
           this[params.pageProperty]++;
         }
+
+        this.changeDetectorRef.markForCheck();
       })
     );
   }
