@@ -68,6 +68,7 @@ import { DeviceService } from "@shared/services/device.service";
             ? 'small' :
             activeLayout === UserGalleryActiveLayout.MEDIUM ? 'medium' : 'large'"
             [idProperty]="'pk'"
+            [leftAlignLastRow]="next === null"
           >
             <ng-template let-item>
               <div class="image-container">

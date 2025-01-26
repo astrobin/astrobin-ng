@@ -15,7 +15,7 @@ import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
         [layout]="activeLayout === UserGalleryActiveLayout.SMALL
           ? 'small'
           : activeLayout === UserGalleryActiveLayout.MEDIUM ? 'medium' : 'large'"
-        [leftAlignLastRow]="false"
+        [leftAlignLastRow]="true"
       >
         <ng-template let-item>
           <astrobin-image-loading-indicator
