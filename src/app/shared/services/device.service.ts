@@ -192,7 +192,7 @@ export class DeviceService extends BaseService {
   }
 
   isMobile(): boolean {
-    if (!this._isBrowser) {
+    if (this.platformService.isServer) {
       return false;
     }
 
