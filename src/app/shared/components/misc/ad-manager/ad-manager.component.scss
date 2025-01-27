@@ -1,6 +1,25 @@
 :host {
   position: relative;
 
+  .ad-container {
+    opacity: 0;
+    transition: opacity .3s;
+
+    :not(.ad-rendered) {
+      pointer-events: none;
+    }
+
+    &.ad-rendered {
+      opacity: 1;
+    }
+  }
+
+  .default-ad {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
   .remove-ads {
     position: absolute;
     bottom: .25rem;
@@ -16,5 +35,13 @@
 
   &:hover .remove-ads {
     opacity: 1;
+  }
+
+  astrobin-loading-indicator {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
   }
 }

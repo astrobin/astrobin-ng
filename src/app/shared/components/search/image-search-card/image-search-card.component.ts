@@ -57,6 +57,9 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
   @Input()
   showMarketplaceItems = true;
 
+  @Input()
+  showStaticOverlay = true;
+
   next: string;
   loading = true;
   images: ImageSearchInterface[] = [];
@@ -94,26 +97,22 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
   }
 
   updateSearchUrl(): void {
-    const urlParams = new URLSearchParams();
-    urlParams.set("d", "i");
-    urlParams.set("sort", this.model.ordering || "-likes");
-
-    if (this.model.itemType) {
-      const paramName = this.imageSearchApiService.getFilterParamName(this.model.itemType, this.model.usageType);
-      urlParams.set(paramName, this.model.itemId.toString());
-    }
-
-    if (this.model.username) {
-      urlParams.set("username", this.model.username.toString());
-    }
-
-    this.searchUrl = `${this.classicRoutesService.SEARCH}?${urlParams.toString()}`;
-  }
-
-  onMoreClicked(event: MouseEvent): void {
     this.currentUserProfile$.pipe(take(1)).subscribe((userProfile: UserProfileInterface) => {
-      if (!userProfile || !userProfile.enableNewSearchExperience) {
-        this.windowRefService.nativeWindow.location.href = this.searchUrl;
+      if (userProfile && !userProfile.enableNewSearchExperience) {
+        const urlParams = new URLSearchParams();
+        urlParams.set("d", "i");
+        urlParams.set("sort", this.model.ordering || "-likes");
+
+        if (this.model.itemType) {
+          const paramName = this.imageSearchApiService.getFilterParamName(this.model.itemType, this.model.usageType);
+          urlParams.set(paramName, this.model.itemId.toString());
+        }
+
+        if (this.model.username) {
+          urlParams.set("username", this.model.username.toString());
+        }
+
+        this.searchUrl = `${this.classicRoutesService.SEARCH}?${urlParams.toString()}`;
       } else {
         const { itemId, itemType, ...model } = this.model;
 
@@ -123,6 +122,7 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
         ).subscribe(item => {
           const params = this.searchService.modelToParams({
             ...model,
+            ordering: undefined,
             [itemType.toLowerCase()]: {
               value: [{
                 id: itemId,
@@ -131,12 +131,20 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
               matchType: null
             }
           });
-          this.router.navigateByUrl(`/search?p=${params}`).then(() => {
-            this.windowRefService.scroll({ top: 0 });
-          });
+          this.searchUrl = `/search?p=${params}`;
         });
 
         this.store$.dispatch(new LoadEquipmentItem({ id: itemId, type: itemType }));
+      }
+    });
+  }
+
+  onMoreClicked(event: MouseEvent): void {
+    this.currentUserProfile$.pipe(take(1)).subscribe((userProfile: UserProfileInterface) => {
+      if (userProfile && !userProfile.enableNewSearchExperience) {
+        this.windowRefService.nativeWindow.location.href = this.searchUrl;
+      } else {
+        this.router.navigateByUrl(this.searchUrl);
       }
     });
   }

@@ -84,6 +84,19 @@
         </a>
 
         <button
+          (click)="onEditClicked($event)"
+          *ngIf="
+            !comment.deleted &&
+            currentUserWrapper.user?.id === comment.author
+          "
+          [hidden]="showReplyForm"
+          class="btn btn-link btn-sm btn-no-block text-muted"
+        >
+          <fa-icon icon="edit"></fa-icon>
+          {{ "Edit" | translate }}
+        </button>
+
+        <button
           (click)="onReplyClicked($event)"
           *ngIf="
             !comment.pendingModeration &&
@@ -125,6 +138,35 @@
           class="btn-no-block"
           propertyType="like"
         ></astrobin-toggle-property>
+      </div>
+
+      <div *ngIf="showEditForm" class="edit-form">
+        <astrobin-read-only-mode
+          *ngIf="(readOnlyMode$ | async) === true; else editFormTemplate"
+        ></astrobin-read-only-mode>
+
+        <ng-template #editFormTemplate>
+          <form [formGroup]="editForm" class="d-block mt-3">
+            <formly-form [fields]="editFields" [form]="editForm" [model]="editModel"></formly-form>
+          </form>
+
+          <button
+            (click)="cancelEdit()"
+            [class.loading]="loadingService.loading$ | async"
+            class="btn btn-sm btn-outline-secondary mt-3"
+          >
+            {{ "Cancel" | translate }}
+          </button>
+
+          <button
+            (click)="submitEdit()"
+            [class.loading]="loadingService.loading$ | async"
+            [disabled]="!editForm.valid"
+            class="btn btn-primary btn-sm ms-sm-2 mt-3"
+          >
+            {{ "Submit" | translate }}
+          </button>
+        </ng-template>
       </div>
 
       <div *ngIf="showReplyForm" class="reply-form">

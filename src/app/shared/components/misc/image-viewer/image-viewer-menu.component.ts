@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -6,7 +6,7 @@ import { DownloadLimitationOptions, ImageInterface, ImageRevisionInterface, ORIG
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { filter, map, take, takeUntil } from "rxjs/operators";
+import { filter, take, takeUntil } from "rxjs/operators";
 import { DeleteImage, DeleteImageFailure, DeleteImageSuccess, SubmitImageForIotdTpConsideration, SubmitImageForIotdTpConsiderationSuccess, UnpublishImage, UnpublishImageSuccess } from "@app/store/actions/image.actions";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -27,10 +27,8 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ActiveToast } from "ngx-toastr";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 
 @Component({
   selector: "astrobin-image-viewer-menu",
@@ -50,7 +48,7 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
           [routerLink]="['/i', image.hash || image.pk.toString(), 'edit']"
           [class]="itemClass"
         >
-          {{ "Edit" | translate }}
+          {{ "Edit project" | translate }}
         </a>
 
         <a
@@ -346,74 +344,9 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
         <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
       </div>
       <div class="offcanvas-body">
-        <ng-container *ngIf="getIotdTpStatsLegend$() | async as legend">
-          <ngb-accordion *ngIf="iotdTpStats; else loadingTemplate" #accordion="ngbAccordion" class="iotd-stats-accordion">
-            <ngb-panel>
-              <ng-template ngbPanelTitle>
-                <div class="image-iotd-tp-stats-item">
-                  <span class="name">{{ "Submitted" | translate }}</span>
-                  <span class="value">{{ image.submittedForIotdTpConsideration | localDate | date: "short" }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template ngbPanelContent>
-                {{ legend["submittedForIotdTpConsideration"] }}
-              </ng-template>
-            </ngb-panel>
-            <ngb-panel>
-              <ng-template ngbPanelTitle>
-                <div class="image-iotd-tp-stats-item">
-                  <span
-                    class="name">{{ "Views by Submitters (available since September 19th, 2023)" | translate }}</span>
-                  <span class="value">{{ iotdTpStats.submitter_views_percentage }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template ngbPanelContent>
-                {{ legend["submitter_views_percentage"] }}
-              </ng-template>
-            </ngb-panel>
-
-            <ngb-panel>
-              <ng-template ngbPanelTitle>
-                <div class="image-iotd-tp-stats-item">
-                  <span class="name">{{ "Promotions by Submitters" | translate }}</span>
-                  <span class="value">{{ iotdTpStats.submissions }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template ngbPanelContent>
-                {{ legend["submissions"] }}
-              </ng-template>
-            </ngb-panel>
-
-            <ngb-panel>
-              <ng-template ngbPanelTitle>
-                <div class="image-iotd-tp-stats-item">
-                  <span class="name">{{ "Promotions by Reviewers" | translate }}</span>
-                  <span class="value">{{ iotdTpStats.votes }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template ngbPanelContent>
-                {{ legend["votes"] }}
-              </ng-template>
-            </ngb-panel>
-
-            <ngb-panel>
-              <ng-template ngbPanelTitle>
-                <div class="image-iotd-tp-stats-item">
-                  <span class="name">{{ "Early dismissal" | translate }}</span>
-                  <span class="value">{{ iotdTpStats.early_dismissal }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template ngbPanelContent>
-                {{ legend["early_dismissal"] }}
-              </ng-template>
-            </ngb-panel>
-          </ngb-accordion>
-        </ng-container>
+        <astrobin-image-viewer-iotd-tp-stats
+          [image]="image"
+        ></astrobin-image-viewer-iotd-tp-stats>
       </div>
     </ng-template>
 
@@ -421,7 +354,8 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-menu.component.scss"]
+  styleUrls: ["./image-viewer-menu.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerMenuComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() image: ImageInterface;
@@ -467,7 +401,6 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
   protected revision: ImageInterface | ImageRevisionInterface;
   protected maySubmitForIotdTpConsideration: boolean;
   protected reasonIfCannotSubmitForIotdTpConsideration: string;
-  protected iotdTpStats: ImageIotdTpStatsInterface;
 
   private _agreedToIotdTpRulesAndGuidelinesNotification: ActiveToast<any>;
   private _selectImageSubscription: Subscription;
@@ -486,7 +419,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly router: Router,
     public readonly imageApiService: ImageApiService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly changeDetectionRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -513,6 +447,7 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
         ).subscribe(image => {
           this.image = image;
           this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+          this.changeDetectionRef.markForCheck();
         });
       }
     }
@@ -557,7 +492,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     this.offcanvasService.dismiss(); // Avoids nested offcanvases.
     this.offcanvasService.open(
       this.downloadOffcanvasTemplate, {
-        panelClass: "offcanvas-menu",
+        panelClass: "image-viewer-offcanvas offcanvas-menu",
+        backdropClass: "image-viewer-offcanvas-backdrop",
         position: this.deviceService.mdMax() ? "start" : "end"
       }
     );
@@ -582,6 +518,8 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
   openSubmitForIotdTpConsiderationOffcanvas() {
     this.offcanvasService.dismiss(); // Avoids nested offcanvases.
     this.offcanvasService.open(this.submitForIotdTpConsiderationOffcanvas, {
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
 
@@ -618,57 +556,10 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
   viewIotdTpStats() {
     this.offcanvasService.dismiss(); // Avoids nested offcanvases.
     this.offcanvasService.open(this.viewIotdTpStatsOffcanvas, {
+      panelClass: "image-viewer-offcanvas image-iotd-tp-stats-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
-
-    this.imageApiService.getImageStats(this.image.hash || this.image.pk).subscribe(stats => {
-      this.iotdTpStats = stats;
-    });
-  }
-
-  getIotdTpStatsLegend$(): Observable<{ [key: string]: string }> {
-    return this.store$.pipe(
-      select(selectBackendConfig),
-      filter(backendConfig => !!backendConfig),
-      take(1),
-      map(backendConfig => {
-        return {
-          "submittedForIotdTpConsideration" : this.translateService.instant(
-            "The date and time when this image was submitted for IOTD/TP consideration. AstroBin may " +
-            "automatically resubmit your image multiple times if necessary."
-          ),
-          "submitter_views_percentage": this.translateService.instant(
-            "Every image is assigned to {{ 0 }} of available Submitters. In the event that at least 80% of them " +
-            "don't view the image before its time in the IOTD/TP process expires, it's assigned to the other {{ 0 }} " +
-            "of Submitters and the process begins anew.", {
-              0: `${backendConfig.IOTD_DESIGNATED_SUBMITTERS_PERCENTAGE}%`,
-            }
-          ),
-          "submissions": this.translateService.instant(
-            "When {{ 0 }} distinct Submitters promote the image, it moves on to the next stage of the process: " +
-            "evaluation for Top Pick status. This requirement, in addition to anonymization of images and " +
-            "distribution to only a subset of them, prevents biases and ensures that the best images are " +
-            "selected.", {
-              0: backendConfig.IOTD_SUBMISSION_MIN_PROMOTIONS
-            }
-          ),
-          "votes": this.translateService.instant(
-            "When {{ 0 }} distinct Reviewers promote the image, it moves on to the next stage of the process: " +
-            "evaluation for IOTD status.", {
-              0: backendConfig.IOTD_REVIEW_MIN_PROMOTIONS
-            }
-          ),
-          "early_dismissal": this.translateService.instant(
-            "Staff members have a lot of images to inspect on a daily basis, and they can dismiss images if " +
-            "they believe they don't meet the requirements for IOTD/TP selection. If an image is dismissed {{ 0 }} " +
-            "times, it's removed from the process. This streamlines the process and ensures that any bias " +
-            "present in promotions could be overruled by other staff members.", {
-              0: backendConfig.IOTD_MAX_DISMISSALS
-            }
-          )
-        }
-      })
-    );
   }
 
   private _initSubmitForIotdTpConsiderationForm(): void {

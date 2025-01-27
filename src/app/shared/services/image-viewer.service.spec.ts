@@ -6,7 +6,8 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
-import { of } from "rxjs";
+import { EMPTY, of } from "rxjs";
+import { Router } from "@angular/router";
 
 describe('ImageViewerService', () => {
   let service: ImageViewerService;
@@ -14,7 +15,13 @@ describe('ImageViewerService', () => {
   beforeEach(async () => {
     await MockBuilder(ImageViewerService, AppModule).provide([
       provideMockStore({ initialState: initialMainState }),
-      provideMockActions(() => of())
+      provideMockActions(() => of()),
+      {
+        provide: Router,
+        useValue: {
+          events: EMPTY
+        }
+      }
     ]);
     service = TestBed.inject(ImageViewerService);
   });

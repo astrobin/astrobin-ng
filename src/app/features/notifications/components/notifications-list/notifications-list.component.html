@@ -1,0 +1,125 @@
+<ng-container *ngIf="{ unread: unreadCount$ | async, totalNotifications: totalNotifications$ | async } as counts">
+
+  <div class="header d-flex justify-content-lg-between align-items-center mb-4">
+    <h1 class="flex-lg-fill border-bottom-0 mb-0">
+      {{ pageTitle }}
+      <span
+        *ngIf="!!counts.unread"
+        class="badge bg-danger badge-pill rounded-pill border border-light d-none d-lg-inline-block"
+        id="unread-notifications-count"
+      >
+        {{ counts.unread }}
+      </span>
+    </h1>
+
+    <div class="d-none d-lg-flex align-items-center">
+      <astrobin-toggle-button
+        [value]="onlyUnread"
+        (toggle)="toggleShowRead($event)"
+        [label]="'Only unread' | translate"
+        class="me-3"
+      ></astrobin-toggle-button>
+
+      <ng-container [ngTemplateOutlet]="markAllAsReadButton"></ng-container>
+
+      <astrobin-refresh-button
+        (click)="refreshNotifications()"
+        [loading]="refreshing"
+        class="d-block mt-3 mt-lg-0 ms-lg-3"
+      ></astrobin-refresh-button>
+    </div>
+
+    <div class="d-lg-none">
+      <div ngbDropdown>
+        <fa-icon
+          icon="ellipsis-v"
+          ngbDropdownToggle
+          class="dropdown-toggle no-toggle p-3 ms-2"
+        ></fa-icon>
+
+        <div ngbDropdownMenu>
+          <astrobin-toggle-button
+            ngbDropdownItem
+            [value]="onlyUnread"
+            (toggle)="toggleShowRead($event)"
+            [label]="'Only unread' | translate"
+          ></astrobin-toggle-button>
+
+          <button
+            ngbDropdownItem
+            (click)="markAllAsRead()"
+            [disabled]="(unreadCount$ | async) === 0"
+          >
+            {{ "Mark all as read" | translate }}
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="refreshNotifications()"
+          >
+            {{ "Refresh" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="notifications$ | async as notifications; else loading">
+    <ng-container *ngIf="notifications.length > 0; else noNotifications">
+      <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="counts.totalNotifications">
+      </ngb-pagination>
+
+      <div class="notifications">
+        <div *ngFor="let notification of notifications"
+             class="notification row"
+             id="notification-{{notification.id}}">
+
+          <div [class.read]="notification.read" [class.unread]="!notification.read"
+               class="col-2 col-md-1 read-indicator">
+            <fa-icon (click)="toggleRead(notification)" class="read-icon" icon="eye">
+            </fa-icon>
+          </div>
+
+          <div (click)="notificationClicked(notification)" class="col-10 col-md-11 col-lg-7 message">
+            <span [innerHTML]="notification.message | normalizeNotificationLink"></span>
+          </div>
+
+          <div class="col-10 col-lg-4 offset-2 offset-md-1 offset-lg-0 created text-lg-right">
+            <abbr [attr.title]="notification.created | localDate">
+              {{ notification.created | localDate | timeago:true }}
+            </abbr>
+          </div>
+        </div>
+      </div>
+
+      <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="counts.totalNotifications">
+      </ngb-pagination>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #noNotifications>
+    <astrobin-empty-list></astrobin-empty-list>
+  </ng-template>
+
+  <ng-template #loading>
+    <div *ngIf="loadingService.loading$ | async" class="app-loading active"></div>
+  </ng-template>
+
+  <div class="buttons-area d-sm-flex justify-content-sm-end gap-sm-2 mt-4">
+    <ng-container [ngTemplateOutlet]="markAllAsReadButton"></ng-container>
+    <a class="btn btn-secondary" routerLink="/notifications/settings">
+      {{ "Settings"|translate }}
+    </a>
+  </div>
+</ng-container>
+
+<ng-template #markAllAsReadButton>
+  <button
+    (click)="markAllAsRead()"
+    [class.loading]="loadingService.loading$ | async"
+    [disabled]="(unreadCount$ | async) === 0"
+    class="btn btn-primary"
+    id="mark-all-as-read">
+    {{ "Mark all as read" | translate }}
+  </button>
+</ng-template>

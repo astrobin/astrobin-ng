@@ -1,18 +1,12 @@
 <ng-template #hdImageLoadingTemplate>
   <div *ngIf="hdThumbnailLoading" class="loading-indicator-container has-message">
-    <astrobin-loading-indicator
-      [progress]="hdImageLoadingProgress$ | async"
-      [message]="'Downloading image' | translate"
-    ></astrobin-loading-indicator>
+    <astrobin-loading-indicator></astrobin-loading-indicator>
   </div>
 </ng-template>
 
 <ng-template #realThumbnailLoadingTemplate>
   <div *ngIf="realThumbnailLoading" class="loading-indicator-container has-message">
-    <astrobin-loading-indicator
-      [progress]="realImageLoadingProgress$ | async"
-      [message]="'Downloading high resolution image' | translate"
-    ></astrobin-loading-indicator>
+    <astrobin-loading-indicator [progress]="realImageLoadingProgress$ | async"></astrobin-loading-indicator>
   </div>
 </ng-template>
 
@@ -97,12 +91,17 @@
 
 <ng-template #touchDeviceTemplate let-hd="hd" let-real="real">
   <div class="touch-device">
-    <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
-    <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
+    <div
+      class="loading-indicator-container has-message"
+      *ngIf="!isVeryLargeImage && isLargeEnough && (hdThumbnailLoading || realThumbnailLoading || canvasLoading)"
+    >
+      <astrobin-loading-indicator [progress]="loadingProgress$ | async"></astrobin-loading-indicator>
+    </div>
 
     <ng-container *ngIf="!isVeryLargeImage">
       <div
-        *ngIf="real && allowReal"
+        *ngIf="real && allowReal && isLargeEnough"
+        @fadeInOut
         #touchRealContainer
         class="touch-real-container"
         (pinchstart)="onPinchStart($event)"
@@ -113,30 +112,10 @@
         (panend)="onPanEnd($event)"
         (doubletap)="onDoubleTap($event)"
       >
-        <div
-          #touchRealWrapper
-          class="touch-real-wrapper"
-          [style.transition]="touchScale === 1 ? 'transform 0.3s' : 'none'"
-        >
-          <img
-            [src]="isVeryLargeImage ? hd : real"
-            [class.hidden]="isTransforming"
-            [style.transform]="touchZoomTransform"
-            alt=""
-            class="display-image"
-          />
-
-          <img
-            [src]="isVeryLargeImage ? hd : real"
-            [class.hidden]="!isTransforming"
-            [style.transform]="touchZoomTransform"
-            alt=""
-            class="manipulation-image"
-          />
-        </div>
+        <canvas #touchRealCanvas class="touch-real-canvas"></canvas>
 
         <div
-          *ngIf="actualTouchZoom !== null"
+          *ngIf="actualTouchZoom !== null && !canvasLoading"
           class="touch-zoom-indicator"
         >
           {{ actualTouchZoom | number:'1.2-2' }}x
@@ -145,7 +124,12 @@
     </ng-container>
 
     <ng-container *ngIf="isVeryLargeImage">
-      <img *ngIf="!real" [src]="hd" alt="" class="hd-image"/>
+      <img
+        *ngIf="!real"
+        [src]="hd"
+        alt=""
+        class="hd-image"
+      />
 
       <a
         *ngIf="hd && real && realThumbnailUnsafeUrl"
@@ -153,7 +137,11 @@
         class="no-external-link-icon d-flex align-items-center"
         target="_blank"
       >
-        <img [src]="hd" alt="" class="hd-image"/>
+        <img
+          [src]="hd"
+          alt=""
+          class="hd-image"
+        />
       </a>
       <ng-container
         *ngIf="hd && real && isLargeEnough && allowReal && realThumbnailUnsafeUrl"
@@ -161,23 +149,30 @@
       ></ng-container>
     </ng-container>
 
-    <img *ngIf="hd && (!real || !allowReal)" [src]="hd" class="hd-image" alt="" />
-
-    <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && real" [ngTemplateOutlet]="real && pinchAndZoomInstructionTemplate"></ng-container>
-    <ng-container *ngIf="hd && !isLargeEnough" [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
-    <ng-container *ngIf="hd && isLargeEnough && !allowReal" [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
+    <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && real && !canvasLoading"
+                  [ngTemplateOutlet]="pinchAndZoomInstructionTemplate"></ng-container>
+    <ng-container *ngIf="hd && !isLargeEnough"
+                  [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
+    <ng-container *ngIf="hd && isLargeEnough && !allowReal"
+                  [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
   </div>
 
   <ng-container [ngTemplateOutlet]="zoomModesTemplate" [ngTemplateOutletContext]="{ real }"></ng-container>
 </ng-template>
 
 <ng-template #nonTouchDeviceTemplate let-hd="hd" let-real="real">
-  <div class="position-relative w-100 h-100 d-flex justify-content-center">
+  <div class="position-relative w-100 h-100 d-flex justify-content-center align-items-center">
     <ng-container *ngIf="!hd && !real" [ngTemplateOutlet]="hdImageLoadingTemplate"></ng-container>
     <ng-container *ngIf="hd && !real && allowReal" [ngTemplateOutlet]="realThumbnailLoadingTemplate"></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage">
-      <img *ngIf="hd && (!real || !allowReal)" [src]="hd" class="hd-image" alt="" />
+      <img
+        *ngIf="hd && (!real || !allowReal || !isLargeEnough)"
+        [src]="hd"
+        class="hd-image"
+        alt=""
+        [style.max-width.px]="naturalWidth"
+      />
 
       <lib-ngx-image-zoom
         #ngxImageZoom
@@ -191,7 +186,7 @@
         [fullImage]="real"
         [lensHeight]="zoomLensSize"
         [lensWidth]="zoomLensSize"
-        [maxZoomRatio]="8"
+        [maxZoomRatio]="maxZoom"
         [minZoomRatio]="0.1"
         [thumbImage]="hd"
         zoomMode="toggle-click"
@@ -209,7 +204,13 @@
     </ng-container>
 
     <ng-container *ngIf="isVeryLargeImage">
-      <img *ngIf="!real" [src]="hd" alt="" class="hd-image"/>
+      <img
+        *ngIf="!real"
+        [src]="hd"
+        alt=""
+        class="hd-image"
+        [style.max-width.px]="naturalWidth"
+      />
 
       <a
         *ngIf="hd && real && realThumbnailUnsafeUrl"
@@ -217,7 +218,12 @@
         class="no-external-link-icon d-flex align-items-center"
         target="_blank"
       >
-        <img [src]="hd" alt="" class="hd-image"/>
+        <img
+          [src]="hd"
+          alt=""
+          class="hd-image"
+          [style.max-width.px]="naturalWidth"
+        />
       </a>
       <ng-container
         *ngIf="hd && real && isLargeEnough && allowReal && realThumbnailUnsafeUrl"
@@ -257,7 +263,11 @@
 </ng-template>
 
 <ng-template #zoomModesTemplate let-real="real">
-  <div *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && !!real" class="zoom-modes">
+  <div
+    *ngIf="(!isVeryLargeImage && isLargeEnough && allowReal && !!real) &&
+           (isHybridPC || !isTouchDevice || (isHybridPC && !touchMode))"
+    class="zoom-modes"
+  >
     <div
       *ngIf="isHybridPC"
       (click)="toggleTouchMouseMode()"
@@ -288,7 +298,12 @@
   </div>
 </ng-template>
 
-<ng-container *ngIf="show">
+<div
+  *ngIf="show"
+  @fadeInOut
+  [class.touch]="(isTouchDevice && !isHybridPC) || (isHybridPC && touchMode)"
+  class="fullscreen-image-viewer h-100"
+>
   <ng-container
     *ngIf="{
       hd: hdThumbnail,
@@ -320,4 +335,4 @@
       <img src="/assets/images/nav-logo.png?v=3" alt="AstroBin" />
     </a>
   </div>
-</ng-container>
+</div>

@@ -10,7 +10,7 @@ import { debounceTime, filter, map, take, takeUntil, tap, withLatestFrom } from 
 import { ClearMarketplaceListings, EquipmentActionTypes, LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 import { LoadingService } from "@shared/services/loading.service";
 import { MarketplaceFilterModel, marketplaceFilterModelKeys, MarketplaceRefreshOptions } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { CountryService } from "@shared/services/country.service";
 import { fromEvent, Observable } from "rxjs";
@@ -79,6 +79,16 @@ export abstract class MarketplaceListingsBasePageComponent
     public readonly offcanvasService: NgbOffcanvas
   ) {
     super(store$);
+
+    this.router.events.pipe(
+      filter(event =>
+        event instanceof NavigationEnd && router.url.startsWith("/" + RouterService.getCurrentPath(activatedRoute))
+      ),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this._setTitle();
+      this._setBreadcrumb();
+    });
   }
 
   ngOnInit(): void {
@@ -109,10 +119,14 @@ export abstract class MarketplaceListingsBasePageComponent
   }
 
   checkAndSetupScrollEvent() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     if (this.listingCards) {
       this.setupScrollEvent(this.listingCards);
     } else {
-      setTimeout(() => this.checkAndSetupScrollEvent(), 50);
+      this.utilsService.delay(50).subscribe(() => this.checkAndSetupScrollEvent());
     }
   }
 
@@ -239,9 +253,9 @@ export abstract class MarketplaceListingsBasePageComponent
     this.utilsService.delay(1).subscribe(() => {
       if (options.clear) {
         this.store$.dispatch(new ClearMarketplaceListings());
-        this.windowRefService.scroll({ top: 0 });
         this.page = 1;
       }
+
       this.store$.dispatch(
         new LoadMarketplaceListings({
           options: {
@@ -252,8 +266,6 @@ export abstract class MarketplaceListingsBasePageComponent
       );
     });
 
-    this._setTitle();
-    this._setBreadcrumb();
     this.loadingService.setLoading(false);
   }
 
@@ -267,15 +279,7 @@ export abstract class MarketplaceListingsBasePageComponent
       map(([listings, currentUser]) =>
         !!listings ? listings.filter(this._getListingsFilterPredicate(currentUser)) : null
       ),
-      tap(() => {
-        this.utilsService.delay(200).subscribe(() => {
-          if (this.page === 1 && this.windowRefService.nativeWindow.innerWidth < 768) {
-            this.windowRefService.scrollToElement(".marketplace-navigation");
-          }
-
-          this.loadingService.setLoading(false);
-        });
-      }),
+      tap(() => this.loadingService.setLoading(false)),
       takeUntil(this.destroyed$)
     );
   }

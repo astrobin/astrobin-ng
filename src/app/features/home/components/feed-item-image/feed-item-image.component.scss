@@ -1,3 +1,5 @@
+@import '../../../../styles/breakpoints';
+
 img {
   width: 100%;
   height: 100%;
@@ -15,13 +17,28 @@ img {
   background: rgba(0, 0, 0, .2);
   box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
 
-  img {
+  ::ng-deep img {
     max-width: 100%;
+  }
+
+  @media (min-width: $md-min) {
+    display: none;
   }
 }
 
 .feed-item-header-text-1 {
-  a {
-    color: var(--white);
+  .item-display-name {
+    color: var(--lightestGrey);
   }
+}
+
+
+astrobin-toggle-property ::ng-deep .count {
+  color: var(--lightestGrey) !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .35);
+}
+
+.ng-fa-icon[icon='comment'],
+.ng-fa-icon[icon='comment'] + .count {
+  color: var(--lightestGrey) !important;
 }

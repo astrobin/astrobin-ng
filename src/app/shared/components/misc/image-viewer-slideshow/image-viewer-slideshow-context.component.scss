@@ -61,6 +61,7 @@
       align-items: center;
       cursor: pointer;
       padding: .25rem;
+      position: relative;
 
       img {
         height: 5rem;
@@ -70,9 +71,17 @@
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
-            filter: brightness(1.5);
+            filter: brightness(1.25);
           }
         }
+      }
+
+      astrobin-loading-indicator {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, .65);
       }
 
       &.active {

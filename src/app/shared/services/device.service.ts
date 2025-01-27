@@ -5,7 +5,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { PlatformService } from "@shared/services/platform.service";
 
 // Keep in sync with _breakpoints.scss
-enum Breakpoint {
+export enum Breakpoint {
   XXS_MIN = 0,
   XXS_MAX = 475.98,
   XS_MIN = 476,
@@ -189,6 +189,18 @@ export class DeviceService extends BaseService {
     const hasFinePointer = _window.matchMedia("(pointer: fine)").matches;
 
     return hasTouch && hasFinePointer;
+  }
+
+  isMobile(): boolean {
+    if (!this._isBrowser) {
+      return false;
+    }
+
+    if (typeof navigator === "undefined") {
+      return false;
+    }
+
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 
   offcanvasPosition(): "bottom" | "end" {

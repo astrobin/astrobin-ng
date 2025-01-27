@@ -1,4 +1,5 @@
 @import "../../../../styles/breakpoints";
+@import "../../../../styles/mixins";
 
 ::ng-deep .top-label {
   display: block;
@@ -34,6 +35,16 @@ h4 {
 }
 
 .table.items {
+  td {
+    @media (max-width: $md-max) {
+      flex-direction: column;
+    }
+
+    @media (min-width: $lg-min) {
+      flex-direction: row;
+    }
+  }
+
   td:not(:first-child) {
     color: var(--lightestGrey);
   }

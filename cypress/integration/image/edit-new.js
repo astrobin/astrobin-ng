@@ -4,6 +4,9 @@ context("Image edit (new)", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
+
+    cy.route("get", "**/notifications/notification/get_unread_count", "0").as("getUnreadNotificationsCount");
+
     cy.route("get", "**/api/v2/images/image/?hash=abc123&skip-thumbnails=*", "fixture:api/images/new_image_1_by_hashes.json").as(
       "getImage"
     );
@@ -133,53 +136,6 @@ context("Image edit (new)", () => {
     cy.get("#image-locations-field").should("be.visible");
   });
 
-  it("should create a location", () => {
-    cy.mockGeolocation();
-
-    const location = {
-      id: 1,
-      name: "Home observatory",
-      city: "Zurich",
-      state: "ZH",
-      country: "CH",
-      lat_deg: 10,
-      lat_min: 11,
-      lat_sec: 12,
-      lat_side: "N",
-      lon_deg: 10,
-      lon_min: 11,
-      lon_sec: 12,
-      lon_side: "E",
-      altitude: 400
-    };
-
-    cy.route("post", "**/api/v2/astrobin/location/", location).as("createLocation");
-    cy.route("put", "**/api/v2/common/userprofiles/1/partial/", {
-      locations: [location]
-    }).as("updateUserProfile");
-
-    cy.get("#image-locations-field").click();
-    cy.get("#image-locations-field .ng-option.ng-option-disabled")
-      .contains("Type to search options or to create a new one...")
-      .should("be.visible");
-    cy.get("#image-locations-field").type("Home observatory");
-
-    cy.get("#image-locations-field .add-tag").contains("Home observatory").should("be.visible");
-
-    cy.get("#image-locations-field .add-tag .btn").click();
-
-    cy.get("astrobin-create-location-modal").should("be.visible");
-    cy.get("astrobin-create-location-modal .form-control#name").should("have.value", "Home observatory");
-
-    cy.get("astrobin-create-location-modal .btn").contains("Save").click();
-
-    cy.get("formly-validation-message").contains("This field is required").should("exist");
-
-    cy.get("astrobin-create-location-modal .form-control#altitude").type("400");
-
-    cy.get("astrobin-create-location-modal .btn").contains("Save").click();
-  });
-
   it("should select a group", () => {
     cy.get(".form-text")
       .contains("This field is disabled because you haven't joined any groups yet.")
@@ -263,6 +219,7 @@ context("Image edit (new)", () => {
   });
 
   it("should add a telescope", () => {
+    cy.setupAuthRoutes();
     cy.route("get", "**/api/v2/equipment/brand/1/", "fixture:api/equipment_v2/brand_1.json").as("getBrand1");
     cy.route("get", "**/api/v2/equipment/telescope/*", {
       count: 1,

@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
@@ -13,8 +13,8 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { animationFrameScheduler, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
-import { DecimalPipe, isPlatformBrowser, Location } from "@angular/common";
+import { animationFrameScheduler, auditTime, combineLatest, fromEvent, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
+import { isPlatformBrowser, Location } from "@angular/common";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -31,12 +31,16 @@ import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap"
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SolutionApiService } from "@shared/services/api/classic/platesolving/solution/solution-api.service";
 import { Throttle } from "@app/decorators";
+import { SolutionStatus } from "@shared/interfaces/solution.interface";
+import { fadeInOut } from "@shared/animations";
 
 
 @Component({
   selector: "astrobin-image-viewer",
   templateUrl: "./image-viewer.component.html",
-  styleUrls: ["./image-viewer.component.scss"]
+  styleUrls: ["./image-viewer.component.scss"],
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerComponent
   extends BaseComponentDirective
@@ -132,6 +136,7 @@ export class ImageViewerComponent
   protected mouseHoverX: number;
   protected mouseHoverY: number;
   protected isLightBoxOpen = false;
+  protected showPlateSolvingBanner = false;
   protected showUpgradeToPlateSolveBanner$ = combineLatest([
     this.currentUser$,
     this.userSubscriptionService.canPlateSolve$()
@@ -149,7 +154,7 @@ export class ImageViewerComponent
   protected showAd = false;
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
-  private readonly _isBrowser: boolean;
+  protected readonly isBrowser: boolean;
   private _dataAreaScrollEventSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
 
@@ -178,7 +183,7 @@ export class ImageViewerComponent
     public readonly solutionApiService: SolutionApiService
   ) {
     super(store$);
-    this._isBrowser = isPlatformBrowser(platformId);
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   @HostBinding("id")
@@ -193,34 +198,44 @@ export class ImageViewerComponent
 
   ngOnInit(): void {
     this._initImageAlias();
-    this._initAdjustmentEditor();
     this._initContentTypes();
-
-    if (this.image) {
-      this.setImage(this.image, this.revisionLabel);
-    }
-
-    this.initialized.emit();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.active && !changes.active.firstChange && changes.active.currentValue) {
+    if (this.active) {
       this._recordHit();
+      this._adjustSvgOverlay();
+
+      this.adDisplayed = false;
+
+      if (this.adManagerComponent) {
+        this.adManagerComponent.destroyAd().then(() => {
+          this._setAd();
+        });
+      } else {
+        this._setAd();
+      }
+    }
+
+    if (changes.image && changes.image.currentValue) {
+      this.setImage(this.image, this.revisionLabel);
+      this.initialized.emit();
     }
   }
 
   ngAfterViewInit() {
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       merge(
         this._retryAdjustSvgOverlay.pipe(
           delay(100),
           takeUntil(this.destroyed$)
         ),
         fromEvent(this.windowRefService.nativeWindow, "resize").pipe(
-          throttleTime(300),
+          auditTime(300),
           takeUntil(this.destroyed$)
         )
       ).subscribe(() => {
+        this._initImageAlias();
         this._adjustSvgOverlay();
 
         if (this.adManagerComponent) {
@@ -231,6 +246,8 @@ export class ImageViewerComponent
           this._dataAreaScrollEventSubscription.unsubscribe();
           this._initDataAreaScrollHandling();
         }
+
+        this.changeDetectorRef.markForCheck();
       });
     }
 
@@ -248,12 +265,17 @@ export class ImageViewerComponent
       this._dataAreaScrollEventSubscription.unsubscribe();
     }
 
+    if (this.adManagerComponent) {
+      this.adManagerComponent.destroyAd();
+    }
+
     super.ngOnDestroy();
   }
 
   @HostListener("window:popstate", ["$event"])
   onPopState(event: PopStateEvent) {
     if (this.standalone && this.viewingFullscreenImage) {
+      event.preventDefault();
       this.exitFullscreen();
     }
   }
@@ -263,6 +285,10 @@ export class ImageViewerComponent
     if (event) {
       event.stopPropagation();
       event.preventDefault();
+    }
+
+    if (!this.active) {
+      return;
     }
 
     if (this.viewingFullscreenImage) {
@@ -350,11 +376,12 @@ export class ImageViewerComponent
     this.image = image;
     this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
 
+    this._initAdjustmentEditor();
     this._initRevision();
     this._updateSupportsFullscreen();
     this._initAutoOpenFullscreen();
     this._setMouseHoverImage();
-    this._setAd();
+    this._setShowPlateSolvingBanner();
     this._replaceIdWithHash();
 
     // Updates to the current image.
@@ -366,6 +393,7 @@ export class ImageViewerComponent
       this.image = { ...image };
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
       this._setMouseHoverImage();
+      this.changeDetectorRef.markForCheck();
     });
 
     this.changeDetectorRef.detectChanges();
@@ -498,7 +526,7 @@ export class ImageViewerComponent
       this.viewingFullscreenImage = true;
       this.toggleFullscreen.emit(true);
 
-      if (this._isBrowser) {
+      if (this.isBrowser) {
         const location_ = this.windowRefService.nativeWindow.location;
         this.windowRefService.pushState(
           {
@@ -517,7 +545,7 @@ export class ImageViewerComponent
     this.viewingFullscreenImage = false;
     this.toggleFullscreen.emit(false);
 
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       const location_ = this.windowRefService.nativeWindow.location;
       this.windowRefService.replaceState(
         {},
@@ -545,6 +573,7 @@ export class ImageViewerComponent
           if (lightBoxEvent.id === LIGHTBOX_EVENT.CLOSE) {
             this.isLightBoxOpen = false;
             lightBoxEventSubscription.unsubscribe();
+            this.changeDetectorRef.markForCheck();
           }
         });
 
@@ -595,10 +624,12 @@ export class ImageViewerComponent
             environment.classicBaseUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
           ).subscribe(inlineSvg => {
             this.inlineSvg = inlineSvg;
+            this.changeDetectorRef.markForCheck();
           });
           this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
             this.advancedSolutionMatrix = matrix;
             this.loadingAdvancedSolutionMatrix = false;
+            this.changeDetectorRef.markForCheck();
           });
         } else if (this.revision?.solution?.imageFile) {
           this.mouseHoverImage = this.revision.solution.imageFile;
@@ -608,30 +639,70 @@ export class ImageViewerComponent
           this.inlineSvg = null;
         }
         break;
-      case MouseHoverImageOptions.INVERTED:
-        this.mouseHoverImage = this.revision.thumbnails.find(thumbnail =>
+      case MouseHoverImageOptions.INVERTED: {
+        const thumbnail = this.revision.thumbnails?.find(thumbnail =>
           thumbnail.alias === this.alias + "_inverted"
-        ).url;
+        );
+        this.mouseHoverImage = thumbnail?.url ?? null;
         this.inlineSvg = null;
+      }
         break;
-      case "ORIGINAL":
-        this.mouseHoverImage = this.image.thumbnails.find(thumbnail =>
+      case "ORIGINAL": {
+        const thumbnail = this.image.thumbnails?.find(thumbnail =>
           thumbnail.alias === this.alias &&
           thumbnail.revision === ORIGINAL_REVISION_LABEL
-        ).url;
+        );
+        this.mouseHoverImage = thumbnail?.url ?? null;
         this.inlineSvg = null;
+      }
         break;
-      default:
-        const matchingRevision = this.image.revisions.find(
+      default: {
+        const matchingRevision = this.image.revisions?.find(
           revision => revision.label === this.revision.mouseHoverImage.replace("REVISION__", "")
         );
         if (matchingRevision) {
-          this.mouseHoverImage = matchingRevision.thumbnails.find(
+          const thumbnail = matchingRevision.thumbnails?.find(
             thumbnail => thumbnail.alias === this.alias
-          ).url;
+          );
+          this.mouseHoverImage = thumbnail?.url ?? null;
+          this.inlineSvg = null;
+        } else {
+          this.mouseHoverImage = null;
           this.inlineSvg = null;
         }
+      }
     }
+  }
+
+  private _setShowPlateSolvingBanner() {
+    if (!this.image) {
+      this.showPlateSolvingBanner = false;
+      return;
+    }
+
+    if (!this.revision) {
+      this.showPlateSolvingBanner = false;
+      return;
+    }
+
+    if (!this.imageService.isPlateSolvable(this.image)) {
+      this.showPlateSolvingBanner = false;
+      return;
+    }
+
+    if (
+      !!this.revision.solution && (
+        this.revision.solution.status === SolutionStatus.SUCCESS ||
+        this.revision.solution.status === SolutionStatus.ADVANCED_SUCCESS ||
+        this.revision.solution.status === SolutionStatus.FAILED ||
+        this.revision.solution.status === SolutionStatus.ADVANCED_FAILED
+      )
+    ) {
+      this.showPlateSolvingBanner = false;
+      return;
+    }
+
+    this.showPlateSolvingBanner = true;
   }
 
   private _loadInlineSvg$(svgUrl: string): Observable<SafeHtml> {
@@ -659,7 +730,7 @@ export class ImageViewerComponent
   }
 
   private _onMouseHoverSvgLoad(): void {
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       this.utilsService.delay(100).subscribe(() => {
         const _doc = this.windowRefService.nativeWindow.document;
         const svgObject = _doc.getElementById("mouse-hover-svg-" + this.image.pk) as HTMLObjectElement;
@@ -686,11 +757,16 @@ export class ImageViewerComponent
         }
 
         this._adjustSvgOverlay();
+        this.changeDetectorRef.markForCheck();
       });
     }
   }
 
   private _adjustSvgOverlay(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
     if (!this.inlineSvg) {
       return;
     }
@@ -700,7 +776,16 @@ export class ImageViewerComponent
       return;
     }
 
-    const imageAreaElement = this.imageArea.nativeElement.querySelector(".image-area-body") as HTMLElement;
+    const imageId = this.image.hash || this.image.pk;
+    const imageAreaElement = this.windowRefService.nativeWindow.document.querySelector(
+      `#image-viewer-${imageId} .image-area-body`
+    ) as HTMLElement;
+
+    if (!imageAreaElement) {
+      this._retryAdjustSvgOverlay.next();
+      return;
+    }
+
     const overlaySvgElement = imageAreaElement.querySelector(".mouse-hover-svg-container") as HTMLElement;
 
     if (!overlaySvgElement) {
@@ -744,7 +829,7 @@ export class ImageViewerComponent
   }
 
   private _initDataAreaScrollHandling() {
-    if (!this._isBrowser) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -766,6 +851,7 @@ export class ImageViewerComponent
       .subscribe(() => {
         this._handleFloatingTitleOnScroll(scrollArea, this.standalone, hasMobileMenu, sideToSideLayout);
         this._handleNavigationButtonsVisibility(scrollArea);
+        this.changeDetectorRef.markForCheck();
       });
   }
 
@@ -778,6 +864,18 @@ export class ImageViewerComponent
   }
 
   private _initAdjustmentEditor() {
+    if (!this.image) {
+      return;
+    }
+
+    if (this.image.allowImageAdjustmentsWidget === false) {
+      return;
+    }
+
+    if (this.image.allowImageAdjustmentsWidget === null && this.image.defaultAllowImageAdjustmentsWidget === false) {
+      return;
+    }
+
     if (
       this.activatedRoute.snapshot.queryParams["brightness"] ||
       this.activatedRoute.snapshot.queryParams["contrast"] ||
@@ -788,7 +886,7 @@ export class ImageViewerComponent
   }
 
   private _initAutoOpenFullscreen() {
-    if (this._isBrowser) {
+    if (this.isBrowser) {
       const hash = this.windowRefService.nativeWindow.location.hash;
       if (hash === "#fullscreen") {
         this.enterFullscreen(null);
@@ -803,6 +901,7 @@ export class ImageViewerComponent
       take(1)
     ).subscribe(contentType => {
       this.imageContentType = contentType;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.pipe(
@@ -811,6 +910,7 @@ export class ImageViewerComponent
       take(1)
     ).subscribe(contentType => {
       this.userContentType = contentType;
+      this.changeDetectorRef.markForCheck();
     });
 
     this.store$.dispatch(new LoadContentType({
@@ -870,13 +970,11 @@ export class ImageViewerComponent
     }
 
     const adManager = scrollArea.querySelector("astrobin-ad-manager") as HTMLElement | null;
-    const adManagerHeight = adManager ? adManager.offsetHeight : 0;
+    const adManagerHeight = adManager && adManager.querySelector(".ad-container").classList.contains("ad-rendered") ? adManager.offsetHeight : 0;
     const siteHeader = document.querySelector("astrobin-header > nav") as HTMLElement | null;
     const siteHeaderHeight = siteHeader && hasSiteHeader ? siteHeader.offsetHeight : 0;
     const mobileMenu = imageViewer.querySelector("astrobin-mobile-menu") as HTMLElement | null;
     const mobileMenuHeight = mobileMenu && hasMobileMenu ? mobileMenu.offsetHeight : 0;
-    const globalLoadingIndicator = document.querySelector(".global-loading-indicator") as HTMLElement | null;
-    const globalLoadingIndicatorHeight = globalLoadingIndicator ? globalLoadingIndicator.offsetHeight : 0;
 
     // Check if the social buttons are out of view, but only if they are above the visible area
     const socialButtonsRect = socialButtons.getBoundingClientRect();
@@ -891,7 +989,7 @@ export class ImageViewerComponent
         translateYValue = `${adManagerHeight + mobileMenuHeight - 1}px`;
       } else {
         // The position is relative to the main area.
-        translateYValue = `${globalLoadingIndicatorHeight + siteHeaderHeight + mobileMenuHeight - 1}px`;
+        translateYValue = `${siteHeaderHeight + mobileMenuHeight - 1}px`;
       }
 
       this.renderer.setStyle(floatingTitle, "transform", `translateY(${translateYValue})`);
@@ -931,22 +1029,27 @@ export class ImageViewerComponent
   }
 
   private _setAd() {
-    if (!this._isBrowser) {
+    if (!this.isBrowser) {
       return;
     }
 
     if (!this.dataArea) {
       this.utilsService.delay(100).subscribe(() => {
         this._setAd();
+        this.changeDetectorRef.markForCheck();
       });
       return;
     }
+
+    this.adConfig = undefined;
 
     this.userSubscriptionService.displayAds$().pipe(
       filter(showAds => showAds !== undefined),
       take(1)
     ).subscribe(showAds => {
-      const dataAreaWidth = this.dataArea.nativeElement.clientWidth;
+      const dataAreaWidth = this.windowRefService.nativeWindow.document.querySelector(
+        `#image-viewer-${this.image.hash || this.image.pk} .data-area-container`
+      ).clientWidth;
       const windowHeight = this.windowRefService.nativeWindow.innerHeight;
 
       this.showAd = this.image && this.image.allowAds && showAds;
@@ -959,14 +1062,16 @@ export class ImageViewerComponent
         this.adConfig = "wide";
       }
 
-      if (this.adManagerComponent && this.adDisplayed) {
-        this.adManagerComponent.refreshAd();
-      }
+      this.changeDetectorRef.markForCheck();
     });
   }
 
   private _replaceIdWithHash() {
-    if (!this._isBrowser) {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    if (!this.image || !this.image.hash) {
       return;
     }
 
@@ -985,7 +1090,7 @@ export class ImageViewerComponent
   }
 
   private _recordHit() {
-    if (!this._isBrowser || !this.active) {
+    if (!this.isBrowser || !this.active) {
       return;
     }
 
@@ -1015,6 +1120,4 @@ export class ImageViewerComponent
       )
       .subscribe();
   }
-
-  protected readonly DecimalPipe = DecimalPipe;
 }

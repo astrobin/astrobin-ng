@@ -30,6 +30,20 @@ export enum FilterType {
   OTHER = "OTHER"
 }
 
+export enum LegacyFilterType {
+  CLEAR_OR_COLOR = "CLEAR_OR_COLOR",
+  BROAD_HA = "BROAD HA",
+  NARROW_HA = "NARROW HA",
+  BROAD_HB = "BROAD HB",
+  NARROW_HB = "NARROW HB",
+  BROAD_SII = "BROAD SII",
+  NARROW_SII = "NARROW SII",
+  BROAD_OIII = "BROAD OIII",
+  NARROW_OIII = "NARROW OIII",
+  BROAD_NII = "BROAD NII",
+  NARROW_NII = "NARROW NII",
+}
+
 export const FilterTypePriority: { [key in keyof typeof FilterType]: number } = {
   L: 1,
   UV_IR_CUT: 2,

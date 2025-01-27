@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
@@ -9,7 +9,7 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
-import { FilterType, FilterTypePriority } from "@features/equipment/types/filter.interface";
+import { FilterType, FilterTypePriority, LegacyFilterType } from "@features/equipment/types/filter.interface";
 import { FilterService } from "@features/equipment/services/filter.service";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -70,7 +70,7 @@ interface DetailedFilterSummary {
       </div>
     </ng-container>
 
-    <div class="metadata-header d-md-none d-flex justify-content-between">
+    <div class="metadata-header d-lg-none d-flex justify-content-between">
       <span>{{ "Integration" | translate }}</span>
       <span
         *ngIf="deepSkyIntegrationTime"
@@ -82,7 +82,7 @@ interface DetailedFilterSummary {
       *ngIf="image.deepSkyAcquisitions?.length && !image.solarSystemAcquisitions?.length"
       class="metadata-section"
     >
-      <table class="table table-mobile-support mb-0">
+      <table class="table table-mobile-support-md mb-0">
         <thead>
         <tr>
           <th>
@@ -103,7 +103,7 @@ interface DetailedFilterSummary {
             </span>
           </th>
 
-          <th *ngIf="dates?.length" class="d-none d-md-table-cell">
+          <th *ngIf="dates?.length">
             <astrobin-image-viewer-acquisition-dates [dates]="dates"></astrobin-image-viewer-acquisition-dates>
           </th>
 
@@ -117,7 +117,7 @@ interface DetailedFilterSummary {
         </thead>
 
         <tbody>
-        <tr class="spacer-row d-none d-md-block">
+        <tr class="spacer-row d-none d-lg-block">
           <td colspan="4"></td>
         </tr>
 
@@ -136,32 +136,11 @@ interface DetailedFilterSummary {
             </div>
           </td>
 
-          <td [attr.data-label]="'Frames' | translate">
+          <td [attr.data-label]="'Frames' | translate" class="d-none d-lg-table-cell">
             <div class="metadata-item">
               <div class="metadata-label">
-                <span
-                  *ngIf="filterSummary.summary.number && filterSummary.summary.duration"
-                  class="no-wrap"
-                >
-                  <span class="number">{{ filterSummary.summary.number }}</span>
-                  <span class="symbol px-1">&times;</span>
-                  <span class="duration">{{ filterSummary.summary.duration }}</span>
-                  <span class="symbol">&Prime;</span>
-                </span>
-                <span
-                  *ngIf="!filterSummary.summary.number || !filterSummary.summary.duration"
-                  (click)="openDeepSkyIntegrationDetails($event)"
-                  data-toggle="offcanvas"
-                >
-                  <fa-icon
-                    [ngbTooltip]="'Mix of multiple exposure times' | translate"
-                    class="d-none d-md-inline"
-                    container="body"
-                    icon="bars-staggered"
-                    triggers="hover click"
-                  ></fa-icon>
-                  <span class="d-md-none">{{ "Mix of multiple exposure times" | translate }}</span>
-                </span>
+                <ng-container *ngTemplateOutlet="deepSkyFramesTemplate; context: { $implicit: filterSummary }">
+                </ng-container>
               </div>
             </div>
           </td>
@@ -169,6 +148,12 @@ interface DetailedFilterSummary {
           <td [attr.data-label]="'Integration' | translate">
             <div class="metadata-item">
               <div class="metadata-label">
+                <span class="d-lg-none">
+                  <ng-container *ngTemplateOutlet="deepSkyFramesTemplate; context: { $implicit: filterSummary }">
+                  </ng-container>
+
+                  <span class="px-2 symbol">=</span>
+                </span>
                 <span
                   [innerHTML]="imageService.formatIntegration(filterSummary.summary.totalIntegration)"
                   class="no-wrap"
@@ -177,7 +162,7 @@ interface DetailedFilterSummary {
             </div>
           </td>
 
-          <td *ngIf="dates?.length" [attr.data-label]="'Dates' | translate" class="d-none d-md-table-cell">
+          <td *ngIf="dates?.length" [attr.data-label]="'Dates' | translate">
             <div class="metadata-item">
               <div class="metadata-label">
                 <astrobin-image-viewer-acquisition-dates
@@ -205,13 +190,39 @@ interface DetailedFilterSummary {
       </table>
     </div>
 
+    <ng-template #deepSkyFramesTemplate let-filterSummary>
+      <span
+        *ngIf="filterSummary.summary.number && filterSummary.summary.duration"
+        class="no-wrap"
+      >
+        <span class="number">{{ filterSummary.summary.number }}</span>
+        <span class="symbol px-1">&times;</span>
+        <span class="duration">{{ filterSummary.summary.duration }}</span>
+        <span class="symbol">&Prime;</span>
+      </span>
+      <span
+        *ngIf="!filterSummary.summary.number || !filterSummary.summary.duration"
+        (click)="openDeepSkyIntegrationDetails($event)"
+        data-toggle="offcanvas"
+      >
+        <fa-icon
+          [ngbTooltip]="'Mix of exposure times' | translate"
+          class="d-none d-lg-inline"
+          container="body"
+          icon="bars-staggered"
+          triggers="hover click"
+        ></fa-icon>
+        <span class="d-lg-none">{{ "Mix of exposure times" | translate }}</span>
+      </span>
+    </ng-template>
+
     <ng-template #deepSkyIntegrationDetailsTemplate let-offcanvas>
       <div class="offcanvas-header">
         <h4 class="offcanvas-title">{{ "Acquisition sessions" | translate }}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
       </div>
       <div class="offcanvas-body offcanvas-users">
-        <table class="table mt-0 table-mobile-support">
+        <table class="table mt-0 table-mobile-support-md">
           <ng-container *ngFor="let filterType of filterTypes; let i = index">
             <thead>
             <tr *ngIf="i > 0" class="spacer-row">
@@ -221,7 +232,7 @@ interface DetailedFilterSummary {
               <th>
                 {{ humanizeFilterType(filterType) }}
               </th>
-              <th class="d-md-none"></th>
+              <th class="d-lg-none"></th>
               <th>
                 <span
                   [innerHTML]="imageService.formatIntegration(detailedFilterSummaries[filterType].totalIntegration)">
@@ -231,7 +242,7 @@ interface DetailedFilterSummary {
             </thead>
 
             <tbody>
-            <tr class="small-spacer-row d-none d-md-block">
+            <tr class="small-spacer-row d-none d-lg-block">
               <td colspan="3"></td>
             </tr>
 
@@ -245,13 +256,13 @@ interface DetailedFilterSummary {
                 </ng-container>
               </td>
 
-              <td [attr.data-label]="'Filter' | translate" class="d-md-none">
+              <td [attr.data-label]="'Filter' | translate" class="d-lg-none">
                 <ng-container *ngIf="detail.name">
                   <span class="brand">{{ detail.brand }}</span>
                   <span class="name">{{ detail.name }}</span>
                 </ng-container>
                 <ng-container *ngIf="!detail.name">
-                  {{ "Unknown or no filter" | translate }}
+                  {{ "No filter" | translate }}
                 </ng-container>
               </td>
 
@@ -267,7 +278,8 @@ interface DetailedFilterSummary {
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-acquisition.component.scss"]
+  styleUrls: ["./image-viewer-acquisition.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   dates: string[];
@@ -323,10 +335,17 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
 
   humanizeFilterType(filterType: string): string {
     if (filterType === "UNKNOWN") {
-      return this.translateService.instant("Unknown or no filter");
+      return this.translateService.instant("No filter");
     }
 
-    return this.filterService.humanizeType(filterType as FilterType);
+    if (
+      !Object.values(FilterType).includes(filterType as FilterType) &&
+      !Object.values(LegacyFilterType).includes(filterType as LegacyFilterType)
+    ) {
+      return filterType;
+    }
+
+    return this.filterService.humanizeTypeShort(filterType as FilterType);
   }
 
   openDeepSkyIntegrationDetails(event: MouseEvent): void {
@@ -341,7 +360,8 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     });
 
     this.offcanvasService.open(this.deepSkyIntegrationDetailsTemplate, {
-      panelClass: "offcanvas-deep-sky-integration-details",
+      panelClass: "image-viewer-offcanvas offcanvas-deep-sky-integration-details",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }
@@ -350,7 +370,16 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     const filterSummaries: { [key: string]: FilterSummary } = {};
 
     this.image.deepSkyAcquisitions.forEach(acquisition => {
-      const filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
+      let filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
+
+      if (filterType === "UNKNOWN" || filterType === "OTHER" || filterType === "CLEAR_OR_COLOR") {
+        if (acquisition.filter2) {
+          filterType = `${acquisition.filter2Brand} ${acquisition.filter2Name}`;
+        } else if (acquisition.filter) {
+          filterType = `${acquisition.filterMake} ${acquisition.filterName}`;
+        }
+      }
+
       const date = acquisition.date;
       const duration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
 
@@ -420,7 +449,16 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     const detailedFilterSummaries: { [key: string]: DetailedFilterSummary } = {};
 
     this.image.deepSkyAcquisitions.forEach(acquisition => {
-      const filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
+      let filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
+
+      if (filterType === "UNKNOWN" || filterType === "OTHER" || filterType === "CLEAR_OR_COLOR") {
+        if (acquisition.filter2) {
+          filterType = `${acquisition.filter2Brand} ${acquisition.filter2Name}`;
+        } else if (acquisition.filter) {
+          filterType = `${acquisition.filterMake} ${acquisition.filterName}`;
+        }
+      }
+
       const name = acquisition.filter2Name || acquisition.filterName;
       const brand = acquisition.filter2Brand || acquisition.filterMake || this.translateService.instant("DIY");
       const date = acquisition.date;

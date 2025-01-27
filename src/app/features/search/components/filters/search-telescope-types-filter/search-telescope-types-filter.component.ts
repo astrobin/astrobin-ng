@@ -5,11 +5,13 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@features/search/services/search.service";
 import { TelescopeType } from "@features/equipment/types/telescope.interface";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-telescope-types-filter.search-filter-component",
@@ -20,7 +22,7 @@ export class SearchTelescopeTypesFilterComponent extends SearchBaseFilterCompone
   static key = SearchAutoCompleteType.TELESCOPE_TYPES;
   static minimumSubscription = PayableProductInterface.LITE;
   category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
-  label = this.searchService.humanizeSearchAutoCompleteType(SearchTelescopeTypesFilterComponent.key as SearchAutoCompleteType);
+  label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchTelescopeTypesFilterComponent.key as SearchAutoCompleteType);
   editFields = [
     {
       key: SearchTelescopeTypesFilterComponent.key,
@@ -56,10 +58,10 @@ export class SearchTelescopeTypesFilterComponent extends SearchBaseFilterCompone
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly telescopeService: TelescopeService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

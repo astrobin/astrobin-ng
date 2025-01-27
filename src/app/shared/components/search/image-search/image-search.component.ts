@@ -1,17 +1,16 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, Output, PLATFORM_ID, ViewContainerRef } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, Pipe, PipeTransform, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { ImageSearchApiService } from "@shared/services/api/classic/images/image/image-search-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { Observable, Subscription } from "rxjs";
+import { auditTime, finalize, fromEvent, Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
 import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { filter, take, takeUntil, tap } from "rxjs/operators";
+import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentBrandListingInterface, EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -21,36 +20,78 @@ import { LoadingService } from "@shared/services/loading.service";
 import { SearchService } from "@features/search/services/search.service";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
-import { MasonryLayoutGridItem } from "@shared/directives/masonry-layout.directive";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { ImageService } from "@shared/services/image/image.service";
-import { UserGalleryActiveLayout } from "@features/users/pages/gallery/user-gallery-buttons.component";
 import { UserService } from "@shared/services/user.service";
+import { isPlatformBrowser } from "@angular/common";
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
+import { fadeInOut } from "@shared/animations";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
+
+@Pipe({
+  name: "itemListingMessage",
+  pure: true
+})
+export class ImageSearchItemListingMessagePipe implements PipeTransform {
+  transform(listing: EquipmentItemListingInterface): string {
+    return this.translateService.instant(
+      "Support AstroBin by shopping for {{0}} at our partners!",
+      { 0: `<strong>${listing.name}</strong>` }
+    );
+  }
+
+  constructor(private readonly translateService: TranslateService) {
+  }
+}
+
+@Pipe({
+  name: "brandListingMessage",
+  pure: true
+})
+export class ImageSearchBrandListingMessagePipe implements PipeTransform {
+  transform(brand: BrandInterface): string {
+    return this.translateService.instant(
+      "Support AstroBin by shopping for {{0}} products at our partners!",
+      { 0: `<strong>${brand.name}</strong>` }
+    );
+  }
+
+  constructor(private readonly translateService: TranslateService) {
+  }
+}
 
 @Component({
   selector: "astrobin-image-search",
   templateUrl: "./image-search.component.html",
-  styleUrls: ["./image-search.component.scss"]
+  styleUrls: ["./image-search.component.scss"],
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> {
+export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<ImageSearchInterface> implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType = EquipmentItemUsageType;
-  @Input() alias: ImageAlias.GALLERY | ImageAlias.REGULAR = ImageAlias.REGULAR;
+
   @Input() showRetailers = true;
   @Input() showMarketplaceItems = true;
-  @Output() imageClicked = new EventEmitter<ImageSearchInterface>();
+  @Input() showDynamicOverlay = true;
+  @Input() showStaticOverlay = true;
 
-  protected readonly ImageAlias = ImageAlias;
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
+  @Output() imageOpened = new EventEmitter<ImageSearchInterface>();
 
-  protected gridItems: MasonryLayoutGridItem[] = [];
   protected allowFullRetailerIntegration = false;
   protected itemListings: EquipmentItemListingInterface[] = [];
   protected brandListings: EquipmentBrandListingInterface[] = [];
   protected marketplaceLineItems: MarketplaceLineItemInterface[] = [];
-  protected averageHeight: number = 200;
+  protected isMobile = false;
+  protected loadingImageId: ImageSearchInterface["objectId"];
 
+  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
+  protected readonly Array = Array;
+  protected marketplaceMessage = this.translateService.instant(
+    "We found some items relevant to your search for sale on our marketplace!"
+  );
+  private readonly _isBrowser: boolean;
   private _nearEndOfContextSubscription: Subscription;
 
   constructor(
@@ -61,7 +102,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
-    public readonly viewContainerRef: ViewContainerRef,
     public readonly imageViewerService: ImageViewerService,
     public readonly router: Router,
     public readonly loadingService: LoadingService,
@@ -73,32 +113,20 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly userService: UserService
   ) {
     super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
+    this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  onGridItemsChange(event: { gridItems: any[]; averageHeight: number }): void {
-    this.gridItems = event.gridItems;
-    this.averageHeight = event.averageHeight;
-    this.changeDetectorRef.detectChanges();
-  }
+  ngOnInit() {
+    super.ngOnInit();
 
-  getItemListingsMessage(listing: EquipmentItemListingInterface): string {
-    return this.translateService.instant(
-      "Support AstroBin by shopping for {{0}} at our partners!",
-      { 0: `<strong>${listing.name}</strong>` }
-    );
-  }
+    fromEvent(this.windowRefService.nativeWindow, "resize")
+      .pipe(takeUntil(this.destroyed$), auditTime(200))
+      .subscribe(() => {
+        this._checkMobile();
+        this.changeDetectorRef.markForCheck();
+      });
 
-  getBrandListingsMessage(brand: BrandInterface): string {
-    return this.translateService.instant(
-      "Support AstroBin by shopping for {{0}} products at our partners!",
-      { 0: `<strong>${brand.name}</strong>` }
-    );
-  }
-
-  getMarketplaceMessage(): string {
-    return this.translateService.instant(
-      "We found some items relevant to your search for sale on our marketplace!"
-    );
+    this._checkMobile();
   }
 
   fetchData(): Observable<SearchPaginatedApiResultInterface<ImageSearchInterface>> {
@@ -107,27 +135,14 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       .pipe(
         tap(result => {
           this.allowFullRetailerIntegration = result.allowFullRetailerIntegration;
+          this.itemListings = result.equipmentItemListings ?
+            this._removeDuplicateRetailers(result.equipmentItemListings) : [];
+          this.brandListings = result.equipmentBrandListings ?
+            this._removeDuplicateRetailers(result.equipmentBrandListings) : [];
+          this.marketplaceLineItems = result.marketplaceLineItems || [];
 
-          if (result.equipmentItemListings) {
-            this.itemListings = this._removeDuplicateRetailers(result.equipmentItemListings);
-          } else {
-            this.itemListings = [];
-          }
-
-          if (result.equipmentBrandListings) {
-            this.brandListings = this._removeDuplicateRetailers(result.equipmentBrandListings);
-          } else {
-            this.brandListings = [];
-          }
-
-          if (result.marketplaceLineItems) {
-            this.marketplaceLineItems = result.marketplaceLineItems;
-          } else {
-            this.marketplaceLineItems = [];
-          }
-        }),
-        tap(result => {
           this.searchService.searchCompleteSubject.next(result);
+          this.changeDetectorRef.markForCheck();
         })
       );
   }
@@ -139,8 +154,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     }
 
     event.preventDefault();
-
-    this.imageClicked.emit(image);
 
     // If we are on an image's page, we don't want to open the image viewer but simply route to the image.
     if (this.router.url.startsWith("/i/")) {
@@ -156,10 +169,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     }
   }
 
-  getImageLink(image: ImageSearchInterface): string {
-    return `/i/${image.hash || image.objectId}`;
-  }
-
   private _openImageByNavigation(image: ImageSearchInterface): void {
     this.router.navigate([`/i/${image.hash || image.objectId}`]);
   }
@@ -171,37 +180,69 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     );
   }
 
-  private _openImageByImageViewer(image: ImageSearchInterface): void {
-    this.imageViewerService.openSlideshow(
-      this.componentId,
-      image.hash || image.objectId,
-      FINAL_REVISION_LABEL,
-      this.results.map(result => ({
-        imageId: result.hash || result.objectId,
-        thumbnailUrl: result.galleryThumbnail
-      })),
-      this.viewContainerRef,
-      true
-    ).subscribe(slideshow => {
-      if (this._nearEndOfContextSubscription) {
-        this._nearEndOfContextSubscription.unsubscribe();
-      }
+  private _checkMobile(): void {
+    this.isMobile = this.deviceService.smMax();
+  }
 
-      this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext
-        .pipe(
-          filter(callerComponentId => callerComponentId === this.componentId),
-          takeUntil(this.destroyed$)
-        )
-        .subscribe(() => {
-          this.loadMore().subscribe(() => {
-            slideshow.instance.setNavigationContext(
-              this.results.map(result => ({
-                imageId: result.hash || result.objectId,
-                thumbnailUrl: result.galleryThumbnail
-              }))
-            );
-          });
+  private _openImageByImageViewer(image: ImageSearchInterface): void {
+    this.loadingImageId = image.objectId;
+
+    const navigationContext = this.results.map(result => ({
+      imageId: result.hash || result.objectId,
+      thumbnailUrl: result.galleryThumbnail
+    }));
+
+    this.imageService.loadImage(image.hash || image.objectId).pipe(
+      switchMap(dbImage => {
+        const alias: ImageAlias = this.deviceService.lgMax() ? ImageAlias.HD : ImageAlias.QHD;
+        const thumbnailUrl = this.imageService.getThumbnail(dbImage, alias);
+        return this.imageService.loadImageFile(thumbnailUrl, () => {
         });
+      }),
+      switchMap(() =>
+        this.imageViewerService.openSlideshow(
+          this.componentId,
+          image.hash || image.objectId,
+          FINAL_REVISION_LABEL,
+          navigationContext,
+          true
+        )
+      ),
+      tap(slideshow => {
+        if (this._nearEndOfContextSubscription) {
+          this._nearEndOfContextSubscription.unsubscribe();
+        }
+
+        this._nearEndOfContextSubscription = slideshow.instance.nearEndOfContext.pipe(
+          filter(callerComponentId => callerComponentId === this.componentId),
+          takeUntil(this.destroyed$),
+          switchMap(() =>
+            this.loadMore().pipe(
+              tap(() => {
+                slideshow.instance.setNavigationContext(
+                  this.results.map(result => ({
+                    imageId: result.hash || result.objectId,
+                    thumbnailUrl: result.galleryThumbnail
+                  }))
+                );
+              })
+            )
+          )
+        ).subscribe();
+      }),
+      tap(() => {
+        this.loadingImageId = null;
+        this.changeDetectorRef.markForCheck();
+      }),
+      // Wait for the fadeInOut animation.
+      switchMap(() => this.utilsService.delay(250)),
+      finalize(() => {
+        this.imageOpened.emit(image);
+      })
+    ).subscribe({
+      error: (error) => {
+        console.error("Failed to load image:", error);
+      }
     });
   }
 

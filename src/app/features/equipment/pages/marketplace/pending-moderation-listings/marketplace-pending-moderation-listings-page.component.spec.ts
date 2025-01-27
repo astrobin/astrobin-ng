@@ -9,9 +9,10 @@ import { EffectsModule } from "@ngrx/effects";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { StoreModule } from "@ngrx/store";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { of } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { MarketplaceSearchBarComponent } from "@features/equipment/components/marketplace-search-bar/marketplace-search-bar.component";
 
 describe("SoldListingsComponent", () => {
   let component: MarketplacePendingModerationListingsPageComponent;
@@ -20,6 +21,7 @@ describe("SoldListingsComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplacePendingModerationListingsPageComponent, AppModule)
+      .mock(MarketplaceSearchBarComponent, { export: true })
       .provide([
         WindowRefService,
         provideMockStore({ initialState: initialMainState }),
@@ -27,6 +29,12 @@ describe("SoldListingsComponent", () => {
           provide: ActivatedRoute,
           useValue: {
             queryParams: of({ region: "us" })
+          }
+        },
+        {
+          provide: Router,
+          useValue: {
+            events: of()
           }
         }
       ])

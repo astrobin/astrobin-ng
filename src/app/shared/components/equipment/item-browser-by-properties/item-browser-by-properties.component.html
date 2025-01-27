@@ -11,7 +11,7 @@
     </div>
   </div>
   <div class="col">
-    <div class="results">
+    <div class="results mt-4 mt-lg-0">
       <h4>{{ "Results" | translate }}</h4>
 
       <div *ngIf="!options.formState.loadingPage && results.length === 0">
@@ -25,7 +25,7 @@
         [class.loading]="options.formState.loadingPage"
         class="scrollable-container"
       >
-        <table class="table table-striped items">
+        <table class="table table-mobile-support items">
           <thead>
           <tr>
             <th>{{ "Name" | translate }}</th>
@@ -64,7 +64,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let item of results">
-            <td>
+            <td [attr.data-label]="'Name' | translate">
               <a
                 (click)="itemSelected.emit(item)"
                 [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
@@ -92,53 +92,73 @@
             </td>
 
             <ng-container *ngIf="type === EquipmentItemType.TELESCOPE">
-              <td>{{ telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.TYPE) | async }}</td>
-              <td>{{ telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.APERTURE) | async }}</td>
-              <td>{{ telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.FOCAL_LENGTH) | async }}</td>
+              <td [attr.data-label]="telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE)">
+                {{ telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.TYPE) | async }}
+              </td>
+              <td [attr.data-label]="telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE)">
+                {{ telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.APERTURE) | async }}
+              </td>
+              <td [attr.data-label]="telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH)">
+                {{ telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.FOCAL_LENGTH) | async }}
+              </td>
             </ng-container>
 
             <ng-container *ngIf="type === EquipmentItemType.CAMERA">
-              <td>{{ cameraService.getPrintableProperty$(item, CameraDisplayProperty.TYPE) | async }}</td>
+              <td [attr.data-label]="cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE)">
+                {{ cameraService.getPrintableProperty$(item, CameraDisplayProperty.TYPE) | async }}
+              </td>
 
               <ng-container *ngIf="!!item.sensor">
                 <ng-container *ngIf="getSensor$(item.sensor) | async as sensor">
-                  <td>
+                  <td [attr.data-label]="'Sensor' | translate">
                     <astrobin-equipment-item-display-name [item]="sensor"></astrobin-equipment-item-display-name>
                   </td>
-                  <td>
+                  <td [attr.data-label]="sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXELS)">
                     {{ sensorService.getPrintableProperty$(sensor, SensorDisplayProperty.PIXELS) | async }}
                   </td>
                 </ng-container>
               </ng-container>
 
               <ng-container *ngIf="!item.sensor">
-                <td>
+                <td [attr.data-label]="'Sensor' | translate">
                   <ng-container *ngTemplateOutlet="notAvailable"></ng-container>
                 </td>
-                <td>
+                <td [attr.data-label]="sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXELS)">
                   <ng-container *ngTemplateOutlet="notAvailable"></ng-container>
                 </td>
               </ng-container>
             </ng-container>
 
             <ng-container *ngIf="type === EquipmentItemType.SENSOR">
-              <td>{{ sensorService.getPrintableProperty$(item, SensorDisplayProperty.PIXELS) | async }}</td>
+              <td [attr.data-label]="sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXELS)">
+                {{ sensorService.getPrintableProperty$(item, SensorDisplayProperty.PIXELS) | async }}
+              </td>
             </ng-container>
 
             <ng-container *ngIf="type === EquipmentItemType.MOUNT">
-              <td>{{ mountService.getPrintableProperty$(item, MountDisplayProperty.TYPE) | async }}</td>
+              <td [attr.data-label]="mountService.getPrintablePropertyName(MountDisplayProperty.TYPE)">
+                {{ mountService.getPrintableProperty$(item, MountDisplayProperty.TYPE) | async }}
+              </td>
             </ng-container>
 
             <ng-container *ngIf="type === EquipmentItemType.FILTER">
-              <td>{{ filterService.getPrintableProperty$(item, FilterDisplayProperty.TYPE) | async }}</td>
+              <td [attr.data-label]="filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE)">
+                {{ filterService.getPrintableProperty$(item, FilterDisplayProperty.TYPE) | async }}
+              </td>
             </ng-container>
 
             <ng-container *ngIf="type === EquipmentItemType.ACCESSORY">
-              <td>{{ accessoryService.getPrintableProperty$(item, AccessoryDisplayProperty.TYPE) | async }}</td>
+              <td [attr.data-label]="accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE)">
+                {{ accessoryService.getPrintableProperty$(item, AccessoryDisplayProperty.TYPE) | async }}
+              </td>
             </ng-container>
 
-            <td class="d-none d-lg-table-cell">{{ item.userCount }}</td>
-            <td class="d-none d-lg-table-cell">{{ item.imageCount }}</td>
+            <td class="d-none d-lg-table-cell" [attr.data-label]="'Users' | translate">
+              {{ item.userCount }}
+            </td>
+            <td class="d-none d-lg-table-cell" [attr.data-label]="'Images' | translate">
+              {{ item.imageCount }}
+            </td>
           </tr>
           </tbody>
         </table>

@@ -30,6 +30,29 @@
   }
 }
 
+.cke_toolbox_collapser {
+  background: transparent !important;
+  border: 1px solid var(--accentColor) !important;
+  box-shadow: none !important;
+  margin: 2px !important;
+  padding: .15rem !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  float: left !important;
+  visibility: hidden;
+
+  .cke_arrow {
+    border-left: 4px solid transparent !important;
+    border-right: 4px solid transparent !important;
+    border-top: 4px solid var(--accentColor) !important;
+    border-bottom: 4px solid transparent !important;
+  }
+
+  &.cke_toolbox_collapser_min {
+    visibility: visible !important;
+  }
+}
+
 select.cke_dialog_ui_input_select {
   height: auto !important;
 }

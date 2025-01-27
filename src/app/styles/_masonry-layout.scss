@@ -1,103 +1,45 @@
 @import "breakpoints";
 
-.masonry-layout-container {
-  $gap: .75rem;
-
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  gap: $gap;
-  content-visibility: auto;
-  contain: paint layout;
-  overflow-anchor: none;
-  height: auto !important;
-  align-items: flex-start;
-  justify-content: flex-start;
-
-  &::after {
-    content: "";
-    flex-grow: 999999999999;
-  }
-
-  > a {
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
+astrobin-masonry-layout {
+  .masonry-item {
     position: relative;
 
-    > .image-container,
-    > img {
-      position: absolute;
-      top: 0;
-      vertical-align: bottom;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: .75rem;
-      transition: filter .25s ease-in-out;
+    .image-container {
+      position: relative;
+
+      &,
+      img {
+        border-radius: .75rem;
+        transition: filter .25s ease-in-out;
+      }
+
+      img {
+        width: 100%;
+        object-fit: cover;
+      }
     }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        > .image-container,
-        > img {
-          filter: brightness(1.5);
+        .image-container {
+          &,
+          img {
+            filter: brightness(1.25);
+          }
         }
 
-        > astrobin-image-hover {
-          opacity: 1;
+        astrobin-image-hover .hover {
+          opacity: 1 !important;
         }
 
-        > astrobin-image-icons {
+        astrobin-image-hover .static-overlay {
+          opacity: 0;
+        }
+
+        astrobin-image-icons {
           opacity: 0;
         }
       }
-    }
-  }
-
-  .loading,
-  + .loading {
-    width: 100%;
-    margin: 2rem 0;
-  }
-
-  &.layout-large {
-    astrobin-image-hover {
-      .counters {
-        flex-direction: row !important;
-      }
-    }
-  }
-
-  &.layout-tiny {
-    a {
-      astrobin-image-hover {
-        font-size: .75rem;
-
-        .author {
-          font-size: .65rem;
-        }
-
-        .counters {
-          .counter {
-            .ng-fa-icon {
-              margin-right: .1rem !important;
-            }
-          }
-        }
-      }
-
-      > img {
-        border-radius: 1.75rem;
-      }
-    }
-  }
-
-  @media (max-width: $xs-max) {
-    justify-content: center;
-
-    &::after {
-      display: none;
     }
   }
 }

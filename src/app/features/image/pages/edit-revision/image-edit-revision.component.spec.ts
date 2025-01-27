@@ -13,6 +13,7 @@ import { ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 describe("ImageEditRevisionComponent", () => {
   let component: ImageEditRevisionPageComponent;
@@ -78,7 +79,8 @@ describe("ImageEditRevisionComponent", () => {
           },
           fragment: of("1")
         }
-      }
+      },
+      ClassicRoutesService
     ]);
 
     store = TestBed.inject(MockStore);
@@ -87,6 +89,9 @@ describe("ImageEditRevisionComponent", () => {
   beforeEach(async () => {
     fixture = TestBed.createComponent(ImageEditRevisionPageComponent);
     component = fixture.componentInstance;
+
+    jest.spyOn(component.imageService, "getRevision").mockReturnValue(image.revisions[0]);
+
     fixture.detectChanges();
   });
 

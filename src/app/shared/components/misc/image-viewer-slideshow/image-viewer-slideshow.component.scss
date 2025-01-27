@@ -6,18 +6,17 @@ $background: rgba(0, 0, 0, 0.95);
 
 :host {
   position: fixed;
-  top: 6px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: calc(100% - 6px);
-  z-index: 1030;
+  inset: 0;
+  z-index: 1046;
   overflow: hidden;
   background: $background;
 
   @media (hover: none) and (pointer: coarse) {
     height: 100%;
+  }
+
+  .carousel:focus-visible {
+    outline: none !important;
   }
 
   .carousel-container {
@@ -27,6 +26,36 @@ $background: rgba(0, 0, 0, 0.95);
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 .5rem var(--black);
+  }
+
+  .loading-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    .close-button {
+      position: absolute;
+      top: .75rem;
+      left: .75rem;
+      padding: .5rem;
+      font-size: 1.5rem;
+      color: var(--white);
+
+      @media (max-width: $sm-max) {
+        left: unset;
+        top: .5rem;
+        right: .5rem;
+        padding: 1rem;
+        font-size: 1rem;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          color: var(--brightWhite);
+        }
+      }
+    }
   }
 
   .carousel-area {

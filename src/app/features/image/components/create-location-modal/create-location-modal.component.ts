@@ -42,8 +42,10 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
     super(store$);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     super.ngOnInit();
+
+    await this.googleMapsService.loadGoogleMaps();
 
     this.store$
       .select(selectApp)

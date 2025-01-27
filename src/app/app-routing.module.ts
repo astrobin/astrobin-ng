@@ -66,7 +66,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes, {
       onSameUrlNavigation: "reload",
       initialNavigation: "enabledBlocking",
-      scrollPositionRestoration: "disabled",
+      scrollPositionRestoration: "enabled",
       anchorScrolling: "enabled",
       scrollOffset: [0, 64]
     })

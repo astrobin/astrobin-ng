@@ -11,6 +11,9 @@ import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-
 import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { IotdStatsInterface } from "@features/iotd/types/iotd-stats.interface";
+import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
+import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
+import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
 
 export interface SubmissionInterface {
   id: number;
@@ -234,5 +237,26 @@ export class IotdApiService extends BaseClassicApiService {
 
   getStats(): Observable<PaginatedApiResultInterface<IotdStatsInterface>> {
     return this.http.get<PaginatedApiResultInterface<IotdStatsInterface>>(`${this.baseUrl}/iotd/stats/`);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // ARCHIVE
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  getIotdArchive(page = 1): Observable<PaginatedApiResultInterface<IotdArchiveInterface>> {
+    return this.http.get<PaginatedApiResultInterface<IotdArchiveInterface>>(
+      `${this.baseUrl}/iotd/iotd-archive/?page=${page}`
+    );
+  }
+
+  getTopPickArchive(page = 1): Observable<PaginatedApiResultInterface<TopPickArchiveInterface>> {
+    return this.http.get<PaginatedApiResultInterface<TopPickArchiveInterface>>(
+      `${this.baseUrl}/iotd/top-pick-archive/?page=${page}`
+    );
+  }
+
+  getTopPickNominationsArchive(page = 1): Observable<PaginatedApiResultInterface<TopPickNominationArchiveInterface>> {
+    return this.http.get<PaginatedApiResultInterface<TopPickNominationArchiveInterface>>(
+      `${this.baseUrl}/iotd/top-pick-nominations-archive/?page=${page}`
+    );
   }
 }

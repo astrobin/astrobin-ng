@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot, ResolveFn } from "@angular/router";
 import { Store } from '@ngrx/store';
 import { Location } from '@angular/common';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, of } from "rxjs";
 import { catchError, tap } from 'rxjs/operators';
 import { ImageApiService } from '@shared/services/api/classic/images/image/image-api.service';
 import { ImageInterface } from '../interfaces/image.interface';
@@ -18,8 +18,16 @@ export const ImageResolver: ResolveFn<ImageInterface | null> = (
   const location = inject(Location);
   const store$ = inject(Store<MainState>);
 
-  const id = route.paramMap.get('imageId');
+  let id = route.paramMap.get('imageId');
   const skipThumbnails = route.data['skipThumbnails'] || false;
+
+  if (!id) {
+    id = route.queryParamMap.get('i');
+  }
+
+  if (!id) {
+    return of(null);
+  }
 
   return service.getImage(id, { skipThumbnails }).pipe(
     tap(image => {

@@ -6,13 +6,16 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { MarketplaceLineItemComponent } from "@features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component";
 
 describe("MarketplaceListingComponent", () => {
   let component: MarketplaceListingComponent;
   let fixture: ComponentFixture<MarketplaceListingComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceListingComponent, AppModule).provide(provideMockStore({ initialState: initialMainState }));
+    await MockBuilder(MarketplaceListingComponent, AppModule)
+      .mock(MarketplaceLineItemComponent, { export: true })
+      .provide(provideMockStore({ initialState: initialMainState }));
 
     fixture = TestBed.createComponent(MarketplaceListingComponent);
     component = fixture.componentInstance;

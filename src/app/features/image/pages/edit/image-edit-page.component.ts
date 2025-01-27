@@ -752,7 +752,8 @@ export class ImageEditPageComponent
             this.imageEditSettingsFieldsService.getKeyValueTagsField(),
             this.imageEditSettingsFieldsService.getLoopVideoField(),
             this.imageEditSettingsFieldsService.getDownloadLimitationField(),
-            this.imageEditSettingsFieldsService.getAllowCommentsField()
+            this.imageEditSettingsFieldsService.getAllowCommentsField(),
+            this.imageEditSettingsFieldsService.getAllowImageAdjustmentsWidgetField()
           ];
         } else {
           settings.fieldGroup = [
@@ -760,8 +761,10 @@ export class ImageEditPageComponent
             this.imageEditSettingsFieldsService.getMouseHoverImageField(),
             this.imageEditSettingsFieldsService.getKeyValueTagsField(),
             this.imageEditSettingsFieldsService.getFullSizeDisplayLimitationField(),
+            this.imageEditSettingsFieldsService.getMaxZoomField(),
             this.imageEditSettingsFieldsService.getDownloadLimitationField(),
-            this.imageEditSettingsFieldsService.getAllowCommentsField()
+            this.imageEditSettingsFieldsService.getAllowCommentsField(),
+            this.imageEditSettingsFieldsService.getAllowImageAdjustmentsWidgetField()
           ];
         }
 

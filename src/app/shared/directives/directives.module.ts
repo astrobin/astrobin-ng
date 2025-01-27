@@ -6,8 +6,8 @@ import { GtagOutboundClickEventDirective } from "@shared/directives/gtag-outboun
 import { NoScrollDirective } from "@shared/directives/no-scroll/no-scroll.directive";
 import { ScrollToggleDirective } from "@shared/directives/scroll-toggle.directive";
 import { StickyDirective } from "@shared/directives/sticky-active.directive";
-import { MasonryLayoutDirective } from "@shared/directives/masonry-layout.directive";
 import { DynamicRouterLinkDirective } from "@shared/directives/dynamic-router-link.directive";
+import { ScrollVisibilityDirective } from "@shared/directives/scroll-visibility.directive";
 
 @NgModule({
   declarations: [
@@ -17,8 +17,8 @@ import { DynamicRouterLinkDirective } from "@shared/directives/dynamic-router-li
     NoScrollDirective,
     ScrollToggleDirective,
     StickyDirective,
-    MasonryLayoutDirective,
-    DynamicRouterLinkDirective
+    DynamicRouterLinkDirective,
+    ScrollVisibilityDirective
   ],
   exports: [
     EventPreventDefaultDirective,
@@ -27,8 +27,8 @@ import { DynamicRouterLinkDirective } from "@shared/directives/dynamic-router-li
     NoScrollDirective,
     ScrollToggleDirective,
     StickyDirective,
-    MasonryLayoutDirective,
-    DynamicRouterLinkDirective
+    DynamicRouterLinkDirective,
+    ScrollVisibilityDirective
   ],
   imports: [CommonModule]
 })

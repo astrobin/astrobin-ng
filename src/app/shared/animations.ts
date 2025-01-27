@@ -3,10 +3,10 @@ import { animate, group, query, style, transition, trigger } from "@angular/anim
 export const fadeInOut = trigger("fadeInOut", [
   transition(":enter", [ // void => *
     style({ opacity: 0 }),
-    animate("150ms ease-in", style({ opacity: 1 }))
+    animate("250ms ease-in", style({ opacity: 1 }))
   ]),
   transition(":leave", [ // * => void
-    animate("150ms ease-out", style({ opacity: 0 }))
+    animate("250ms ease-out", style({ opacity: 0 }))
   ])
 ]);
 

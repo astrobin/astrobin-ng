@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angular/core";
 
 @Component({
   selector: 'astrobin-image-viewer-close-button',
@@ -10,7 +10,8 @@ import { Component, EventEmitter, Output } from "@angular/core";
         icon="times"
       ></fa-icon>
     </button>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerCloseButtonComponent {
   @Output() closeClick = new EventEmitter<void>();

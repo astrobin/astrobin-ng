@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 .metadata-section.photographers {
   display: flex;
   align-items: center;
@@ -13,9 +15,9 @@
   }
 
   .avatar {
-      width: 3rem;
-      height: 3rem;
-      border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
   }
 
   .view-count {
@@ -25,6 +27,25 @@
 }
 
 ::ng-deep {
+  astrobin-toggle-property {
+    .btn-lg {
+      @media (max-width: $sm-max) {
+        padding: .375rem .75rem !important;
+      }
+    }
+  }
+
+  .follow-toggle-property {
+    .ng-fa-icon {
+      margin-right: 0;
+    }
+
+    .toggled .ng-fa-icon {
+      color: var(--accentColor);
+      opacity: 1 !important;
+    }
+  }
+
   .offcanvas-collaborators {
     .users {
       display: flex;

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { FilterInterface, FilterSize, FilterType } from "@features/equipment/types/filter.interface";
+import { FilterInterface, FilterSize, FilterType, LegacyFilterType } from "@features/equipment/types/filter.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -25,7 +25,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
     super(loadingService);
   }
 
-  humanizeType(type: FilterType) {
+  humanizeType(type: FilterType | LegacyFilterType) {
     const map = {
       [FilterType.H_ALPHA]: this.translateService.instant("Hydrogen-alpha (Hα)"),
       [FilterType.H_BETA]: this.translateService.instant("Hydrogen-beta (Hβ)"),
@@ -56,26 +56,26 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       [FilterType.OTHER]: this.translateService.instant("Other"),
 
       // Legacy filter types
-      "CLEAR_OR_COLOR": this.translateService.instant("Clear or color"),
-      "BROAD HA": this.translateService.instant("Hydrogen-alpha (Hα)"),
-      "NARROW HA": this.translateService.instant("Hydrogen-alpha (Hα)"),
-      "BROAD HB": this.translateService.instant("Hydrogen-beta (Hβ)"),
-      "NARROW HB": this.translateService.instant("Hydrogen-beta (Hβ)"),
-      "BROAD SII": this.translateService.instant("Sulfur-II (SII)"),
-      "NARROW SII": this.translateService.instant("Sulfur-II (SII)"),
-      "BROAD OIII": this.translateService.instant("Oxygen-III (OIII)"),
-      "NARROW OIII": this.translateService.instant("Oxygen-III (OIII)"),
-      "BROAD NII": this.translateService.instant("Nitrogen-II (NII)"),
-      "NARROW NII": this.translateService.instant("Nitrogen-II (NII)"),
+      [LegacyFilterType.CLEAR_OR_COLOR]: this.translateService.instant("Clear or color"),
+      [LegacyFilterType.BROAD_HA]: this.translateService.instant("Hydrogen-alpha (Hα)"),
+      [LegacyFilterType.NARROW_HA]: this.translateService.instant("Hydrogen-alpha (Hα)"),
+      [LegacyFilterType.BROAD_HB]: this.translateService.instant("Hydrogen-beta (Hβ)"),
+      [LegacyFilterType.NARROW_HB]: this.translateService.instant("Hydrogen-beta (Hβ)"),
+      [LegacyFilterType.BROAD_SII]: this.translateService.instant("Sulfur-II (SII)"),
+      [LegacyFilterType.NARROW_SII]: this.translateService.instant("Sulfur-II (SII)"),
+      [LegacyFilterType.BROAD_OIII]: this.translateService.instant("Oxygen-III (OIII)"),
+      [LegacyFilterType.NARROW_OIII]: this.translateService.instant("Oxygen-III (OIII)"),
+      [LegacyFilterType.BROAD_NII]: this.translateService.instant("Nitrogen-II (NII)"),
+      [LegacyFilterType.NARROW_NII]: this.translateService.instant("Nitrogen-II (NII)")
     };
 
     return map[type];
   }
 
-  humanizeTypeShort(type: FilterType) {
+  humanizeTypeShort(type: FilterType | LegacyFilterType) {
     const map = {
-      [FilterType.H_ALPHA]: "H-alpha",
-      [FilterType.H_BETA]: "H-beta",
+      [FilterType.H_ALPHA]: "Hα",
+      [FilterType.H_BETA]: "Hβ",
       [FilterType.SII]: "SII",
       [FilterType.OIII]: "OIII",
       [FilterType.NII]: "NII",
@@ -84,10 +84,10 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       [FilterType.UV_IR_CUT]: "UV/IR Cut",
       [FilterType.MULTIBAND]: "Multiband",
       [FilterType.LP]: "LP",
-      [FilterType.L]: "Lum",
-      [FilterType.R]: "Red",
-      [FilterType.G]: "Green",
-      [FilterType.B]: "Blue",
+      [FilterType.L]: "Lum/Clear",
+      [FilterType.R]: "R",
+      [FilterType.G]: "G",
+      [FilterType.B]: "B",
       [FilterType.ND]: "ND",
       [FilterType.UHC]: "UHC",
       [FilterType.SKY_GLOW]: "Sky glow",
@@ -100,7 +100,67 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       [FilterType.PHOTOMETRIC_V]: "Photometric V",
       [FilterType.PHOTOMETRIC_R]: "Photometric R",
       [FilterType.PHOTOMETRIC_I]: "Photometric IR",
-      [FilterType.OTHER]: null
+      [FilterType.OTHER]: this.translateService.instant("Other"),
+
+      // Legacy filter types
+      [LegacyFilterType.CLEAR_OR_COLOR]: this.translateService.instant("Clear or color"),
+      [LegacyFilterType.BROAD_HA]: "Hα",
+      [LegacyFilterType.NARROW_HA]: "Hα",
+      [LegacyFilterType.BROAD_HB]: "Hβ",
+      [LegacyFilterType.NARROW_HB]: "Hβ",
+      [LegacyFilterType.BROAD_SII]: "SII",
+      [LegacyFilterType.NARROW_SII]: "SII",
+      [LegacyFilterType.BROAD_OIII]: "OIII",
+      [LegacyFilterType.NARROW_OIII]: "OIII",
+      [LegacyFilterType.BROAD_NII]: "NII",
+      [LegacyFilterType.NARROW_NII]: "NII"
+    };
+
+    return map[type];
+  }
+
+  humanizeTypeMedium(type: FilterType | LegacyFilterType) {
+    const map = {
+      [FilterType.H_ALPHA]: "H-alpha",
+      [FilterType.H_BETA]: "H-beta",
+      [FilterType.SII]: "SII",
+      [FilterType.OIII]: "OIII",
+      [FilterType.NII]: "NII",
+      [FilterType.UV]: "UV",
+      [FilterType.IR]: "IR",
+      [FilterType.UV_IR_CUT]: "UV/IR Cut",
+      [FilterType.MULTIBAND]: "Multiband",
+      [FilterType.LP]: "LP",
+      [FilterType.L]: "Luminance/Clear",
+      [FilterType.R]: "R",
+      [FilterType.G]: "G",
+      [FilterType.B]: "B",
+      [FilterType.ND]: "ND",
+      [FilterType.UHC]: "UHC",
+      [FilterType.SKY_GLOW]: "Sky glow",
+      [FilterType.SOLAR]: "Solar",
+      [FilterType.LUNAR]: "Lunar",
+      [FilterType.PLANETARY]: "Planetary",
+      [FilterType.COMETARY]: "Cometary",
+      [FilterType.PHOTOMETRIC_U]: "Photometric UV",
+      [FilterType.PHOTOMETRIC_B]: "Photometric B",
+      [FilterType.PHOTOMETRIC_V]: "Photometric V",
+      [FilterType.PHOTOMETRIC_R]: "Photometric R",
+      [FilterType.PHOTOMETRIC_I]: "Photometric IR",
+      [FilterType.OTHER]: this.translateService.instant("Other"),
+
+      // Legacy filter types
+      [LegacyFilterType.CLEAR_OR_COLOR]: this.translateService.instant("Clear or color"),
+      [LegacyFilterType.BROAD_HA]: "H-alpha",
+      [LegacyFilterType.NARROW_HA]: "H-alpha",
+      [LegacyFilterType.BROAD_HB]: "H-beta",
+      [LegacyFilterType.NARROW_HB]: "H-beta",
+      [LegacyFilterType.BROAD_SII]: "SII",
+      [LegacyFilterType.NARROW_SII]: "SII",
+      [LegacyFilterType.BROAD_OIII]: "OIII",
+      [LegacyFilterType.NARROW_OIII]: "OIII",
+      [LegacyFilterType.BROAD_NII]: "NII",
+      [LegacyFilterType.NARROW_NII]: "NII"
     };
 
     return map[type];

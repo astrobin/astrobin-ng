@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges, ViewChild, ViewContainerRef } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges, ViewChild, ViewContainerRef } from "@angular/core";
 import { Action, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -50,7 +50,8 @@ import { ImageViewerService } from "@shared/services/image-viewer.service";
 @Component({
   selector: "astrobin-equipment-explorer",
   templateUrl: "./explorer.component.html",
-  styleUrls: ["./explorer.component.scss"]
+  styleUrls: ["./explorer.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExplorerComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   readonly EquipmentItemType = EquipmentItemType;
@@ -177,16 +178,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly userService: UserService,
     public readonly deviceService: DeviceService,
     public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef
+    public readonly viewContainerRef: ViewContainerRef,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
-
-    router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      // this.imageViewerService.autoOpenImageViewer(this.activatedRoute, this.componentId, this.viewContainerRef);
-    });
   }
 
   get contentType$(): Observable<ContentTypeInterface | null> {
@@ -276,7 +271,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
           filter(item => !!item && item.id === this.activeId),
           take(1)
         )
-        .subscribe(item => this.setItem(item));
+        .subscribe(item => {
+          this.setItem(item);
+          this.changeDetectorRef.markForCheck();
+        });
     } else {
       this.setItem(null);
     }
@@ -299,6 +297,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       )
       .subscribe(item => {
         this.setItem(item);
+        this.changeDetectorRef.markForCheck();
       });
 
     this.actions$
@@ -310,6 +309,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       )
       .subscribe(item => {
         this.selectedItem = item;
+        this.changeDetectorRef.markForCheck();
       });
 
     this.actions$
@@ -317,6 +317,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       .pipe(takeUntil(this.destroyed$))
       .subscribe(() => {
         this.expandEditProposals();
+        this.changeDetectorRef.markForCheck();
       });
   }
 
@@ -377,12 +378,15 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       }
 
       this.loadingService.setLoading(true);
+      this.changeDetectorRef.markForCheck();
 
       this.equipmentApiService.acquireEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
         this.loadingService.setLoading(false);
 
         this.editMode = true;
         this.editModel = { ...this.selectedItem };
+
+        this.changeDetectorRef.markForCheck();
 
         this.windowRefService.scrollToElement("#edit-item");
       });
@@ -404,10 +408,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
           .subscribe(() => {
             this._endEditMode();
             this.loadingService.setLoading(false);
+            this.changeDetectorRef.markForCheck();
           });
       } else {
         this._endEditMode();
         this.loadingService.setLoading(false);
+        this.changeDetectorRef.markForCheck();
       }
     });
   }
@@ -435,6 +441,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
       componentInstance.equipmentItem = this.selectedItem;
 
+      this.changeDetectorRef.markForCheck();
+
       this.actions$
         .pipe(
           ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS),
@@ -445,6 +453,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         .subscribe(item => {
           this.setItem(item);
           this.approved.emit();
+          this.changeDetectorRef.markForCheck();
           this.popNotificationsService.success(this.translateService.instant("Item approved."));
         });
     });
@@ -457,6 +466,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     this.loadingService.setLoading(true);
 
+    this.changeDetectorRef.markForCheck();
+
     this.equipmentApiService.acquireReviewerLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
       this.loadingService.setLoading(false);
 
@@ -464,6 +475,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       const componentInstance: UnapproveItemModalComponent = modal.componentInstance;
 
       componentInstance.equipmentItem = this.selectedItem;
+      this.changeDetectorRef.markForCheck();
 
       this.actions$
         .pipe(
@@ -519,6 +531,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         .subscribe(item => {
           this.popNotificationsService.success(this.translateService.instant("Item frozen as ambiguous."));
           this.setItem(item);
+          this.changeDetectorRef.markForCheck();
           this.frozenAsAmbiguous.emit();
         });
 
@@ -555,6 +568,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         .subscribe(item => {
           this.popNotificationsService.success(this.translateService.instant("Item unfrozen."));
           this.setItem(item);
+          this.changeDetectorRef.markForCheck();
           this.unfrozenAsAmbiguous.emit();
         });
 
@@ -582,6 +596,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       modal.closed.pipe(take(1)).subscribe(() => {
         this.resetBrowser();
         this.rejected.emit();
+        this.changeDetectorRef.markForCheck();
         this.loadingService.setLoading(false);
       });
     });
@@ -706,6 +721,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
           .subscribe(() => {
             this.editProposalCreated();
             this.loadingService.setLoading(false);
+            this.changeDetectorRef.markForCheck();
           });
       }
     };
@@ -717,6 +733,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
       modal.closed.pipe(take(1)).subscribe(() => {
         _createEditProposal();
+        this.changeDetectorRef.markForCheck();
       });
     } else {
       _createEditProposal();
@@ -783,6 +800,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
           this.editProposalsByStatus(editProposals, null).length === 0 && !this.activeEditProposalId;
 
         const pendingEditProposals = this.editProposalsByStatus(editProposals, null);
+
+        this.changeDetectorRef.markForCheck();
+
         for (const pendingEditProposal of pendingEditProposals) {
           this.currentUser$.pipe(take(1)).subscribe(user => {
             if (!!user && user.id !== pendingEditProposal.editProposalBy) {

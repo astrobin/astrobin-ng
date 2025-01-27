@@ -24,6 +24,7 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-image-edit-revision-page",
@@ -58,7 +59,8 @@ export class ImageEditRevisionPageComponent
     public readonly windowRefService: WindowRefService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly imageService: ImageService
   ) {
     super(store$);
   }
@@ -74,7 +76,13 @@ export class ImageEditRevisionPageComponent
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.image = this.route.snapshot.data.image;
     this.revisionLabel = this.route.snapshot.params.revisionLabel;
-    this.revision = this.image.revisions.find(revision => revision.label === this.revisionLabel);
+    this.revision = this.imageService.getRevision(this.image, this.revisionLabel) as ImageRevisionInterface;
+
+    if (!this.revision) {
+      this.popNotificationsService.error(this.translateService.instant("Revision not found"));
+      this._returnToImage();
+    }
+
     this.model = {
       pk: this.revision.pk,
       title: this.revision.title,

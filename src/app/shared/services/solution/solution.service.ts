@@ -134,10 +134,11 @@ export class SolutionService extends BaseService {
   }
 
   isSolving(solution: SolutionInterface): boolean {
+    if (!solution) {
+      return false;
+    }
+
     return (
-      solution === null ||
-      typeof solution === "undefined" ||
-      solution.status === SolutionStatus.MISSING ||
       solution.status === SolutionStatus.PENDING ||
       solution.status === SolutionStatus.ADVANCED_PENDING
     );

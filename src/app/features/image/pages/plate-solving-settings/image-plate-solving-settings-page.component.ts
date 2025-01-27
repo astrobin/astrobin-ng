@@ -54,21 +54,21 @@ import { switchMap } from "rxjs/operators";
 
       <div class="form-actions">
         <button
+          (click)="restart()"
+          [class.loading]="loadingService.loading$ | async"
+          class="btn btn-secondary"
+          type="submit"
+        >
+          {{ "Restart plate-solving" | translate }}
+        </button>
+
+        <button
           (click)="save()"
           [class.loading]="loadingService.loading$ | async"
           class="btn btn-primary"
           type="submit"
         >
           {{ "Save" | translate }}
-        </button>
-
-        <button
-          (click)="restart()"
-          [class.loading]="loadingService.loading$ | async"
-          class="btn btn-secondary"
-          type="submit"
-        >
-          {{ "Restart place-solving" | translate }}
         </button>
 
         <a

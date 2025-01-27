@@ -5,10 +5,11 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { Month } from "@shared/enums/month.enum";
 import { DateService } from "@shared/services/date.service";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-acquisition-months-filter.search-filter-component",
@@ -18,7 +19,7 @@ import { SearchFilterCategory } from "@features/search/interfaces/search-filter-
 export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.ACQUISITION_MONTHS;
   category = SearchFilterCategory.DATETIME;
-  label = this.searchService.humanizeSearchAutoCompleteType(
+  label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchAcquisitionMonthsFilterComponent.key as SearchAutoCompleteType
   );
   editFields = [
@@ -57,10 +58,10 @@ export class SearchAcquisitionMonthsFilterComponent extends SearchBaseFilterComp
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly dateService: DateService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

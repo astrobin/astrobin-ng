@@ -5,13 +5,14 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-bortle-scale-filter.search-filter-component",
@@ -22,7 +23,7 @@ export class SearchBortleScaleFilterComponent extends SearchBaseFilterComponent 
   static key = SearchAutoCompleteType.BORTLE_SCALE;
 
   readonly category = SearchFilterCategory.SKY_AND_SUBJECTS;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchBortleScaleFilterComponent.key as SearchAutoCompleteType
   );
   readonly minLabel = this.translateService.instant("Minimum Bortle scale");
@@ -130,11 +131,11 @@ export class SearchBortleScaleFilterComponent extends SearchBaseFilterComponent 
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly imageService: ImageService,
     public readonly utilsService: UtilsService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

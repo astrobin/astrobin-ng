@@ -13,6 +13,7 @@
     [iconsTemplate]="mobileMenuIconsTemplate"
     [template]="navTemplate"
     [templateContext]="{ $implicit: image }"
+    [offcanvasClass]="'image-viewer-offcanvas'"
   ></astrobin-mobile-menu>
 
   <div
@@ -23,6 +24,7 @@
 
     <div class="data-area-container">
       <ng-container [ngTemplateOutlet]="dataAreaTemplate"></ng-container>
+      <div class="data-area-bottom-gradient"></div>
     </div> <!-- data-area-container -->
   </div>
 
@@ -82,7 +84,7 @@
     </div>
 
     <div class="image-area-body">
-      <ng-container *ngIf="adjustmentEditorVisible && isPlatformBrowser(platformId)">
+      <ng-container *ngIf="adjustmentEditorVisible && isBrowser">
         <astrobin-image-viewer-adjustment-editor
           [image]="image"
           [revisionLabel]="revisionLabel"
@@ -123,13 +125,15 @@
       <astrobin-fullscreen-image-viewer
         *ngIf="standalone && supportsFullscreen"
         [id]="image.pk"
-        [revision]="revisionLabel"
+        [eagerLoading]="true"
+        [revisionLabel]="revisionLabel"
         [standalone]="standalone"
         (exitFullscreen)="exitFullscreen()"
       ></astrobin-fullscreen-image-viewer>
 
       <astrobin-image
         #imageComponent
+        @fadeInOut
         (imageClick)="enterFullscreen($event)"
         (loaded)="onImageLoaded()"
         (imageMouseEnter)="onImageMouseEnter($event)"
@@ -153,6 +157,7 @@
           alt=""
           class="mouse-hover ready"
           src="{{ mouseHoverImage }}"
+          [style.max-width.px]="revision.w"
         />
       </div>
 
@@ -256,11 +261,11 @@
 <ng-template #moreFromThisUserTemplate>
   <div class="metadata-header mb-2">{{ "More from this user" | translate }}</div>
   <astrobin-image-search
-    [alias]="ImageAlias.GALLERY"
     [model]="{ userId: image.user, ordering: '-likes', pageSize: 25 }"
     [loadMoreOnScroll]="false"
     [showRetailers]="false"
     [showMarketplaceItems]="false"
+    [showStaticOverlay]="false"
     class="more-from-this-photographer"
   ></astrobin-image-search>
 </ng-template>
@@ -281,6 +286,7 @@
     [loadMoreOnScroll]="true"
     [showRetailers]="false"
     [showMarketplaceItems]="false"
+    [showStaticOverlay]="false"
     class="similar-to-this"
   ></astrobin-image-search>
 </ng-template>
@@ -300,10 +306,12 @@
     #dataArea
     *ngIf="currentUserWrapper$ | async as currentUserWrapper"
     class="data-area"
+    [class.d-none]="!adConfig"
   >
     <astrobin-ad-manager
       #ad
-      *ngIf="showAd"
+      *ngIf="active && adConfig"
+      [class.d-none]="!showAd"
       (adDisplayed)="adDisplayed = true"
       [configName]="adConfig"
     ></astrobin-ad-manager>
@@ -315,7 +323,7 @@
     ></astrobin-image-viewer-wip-banner>
 
     <astrobin-image-viewer-plate-solving-banner
-      *ngIf="image && revision?.solution && currentUserWrapper.user?.id === image.user"
+      *ngIf="image && showPlateSolvingBanner && (currentUserWrapper.user?.id === image.user || currentUserWrapper.user?.isSuperUser)"
       [image]="image"
       [revisionLabel]="revisionLabel"
       class="image-viewer-banner-component"

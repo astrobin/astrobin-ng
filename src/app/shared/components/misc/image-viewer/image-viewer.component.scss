@@ -233,8 +233,7 @@ $globalLoadingIndicatorHeight: 6px;
         width: 50%;
       }
 
-      @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio),
-      (max-width: $portraitLayoutBreakpoint) and (orientation: portrait) {
+      @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
         width: 100%;
         min-height: calc(50vh - 3rem);
         max-height: calc(70vh - 3rem);
@@ -285,8 +284,8 @@ $globalLoadingIndicatorHeight: 6px;
         font-size: 1.5rem;
         cursor: pointer;
         z-index: 1031;
-        opacity: 0;
-        pointer-events: none;
+        opacity: 1;
+        pointer-events: all;
         padding: .5rem;
         transition: opacity 0.3s, transform 0.3s ease-in-out;
 
@@ -299,8 +298,12 @@ $globalLoadingIndicatorHeight: 6px;
         }
 
         @media (hover: hover) and (pointer: fine) {
+          opacity: 0;
+          pointer-events: none;
+
           &:hover {
             opacity: 1 !important;
+            pointer-events: all;
           }
         }
       }
@@ -311,8 +314,7 @@ $globalLoadingIndicatorHeight: 6px;
         border-radius: .75rem;
         z-index: 1030;
 
-        @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio),
-        (max-width: $portraitLayoutBreakpoint) and (orientation: portrait) {
+        @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
           position: fixed;
           opacity: .8 !important;
           font-size: 1.25rem !important;
@@ -370,18 +372,19 @@ $globalLoadingIndicatorHeight: 6px;
       }
 
       .revisions-mobile-button {
-        bottom: .5rem;
+        bottom: .75rem;
         left: 0;
         right: 0;
         margin: 0 auto;
-        width: 3rem;
-        height: 3rem;
+        width: 2.25rem;
+        height: 2.25rem;
         border-radius: 50%;
         border: 1px solid var(--grey);
-        font-size: 1.5rem;
+        font-size: 1rem;
+        line-height: 1rem;
         display: none;
 
-        @media (hover: none) and (pointer: coarse) {
+        @media (pointer: coarse) {
           pointer-events: auto;
           display: block;
           opacity: 1;
@@ -495,6 +498,11 @@ $globalLoadingIndicatorHeight: 6px;
           padding: .5rem .75rem;
           font-size: .9rem;
 
+          @media (max-width: $sm-max) {
+            font-size: .65rem;
+            padding: .25rem;
+          }
+
           .mouse-hover-svg-overlay-coordinates {
             ::ng-deep {
               .symbol {
@@ -548,7 +556,7 @@ $globalLoadingIndicatorHeight: 6px;
       }
 
       &.force-view-mousehover {
-        @media (hover: none) and (pointer: coarse) {
+        @media (pointer: coarse) {
           .mouse-hover.ready,
           .mouse-hover.ready + .mouse-hover-svg-overlay {
             opacity: 1 !important;
@@ -563,7 +571,7 @@ $globalLoadingIndicatorHeight: 6px;
 
       // The buttons are always visible on touch devices. The revisions are handled separately and activated
       // by a button.
-      @media (hover: none) and (pointer: coarse) {
+      @media (pointer: coarse) {
         astrobin-image-viewer-revisions {
           opacity: 0;
           pointer-events: none;
@@ -599,6 +607,32 @@ $globalLoadingIndicatorHeight: 6px;
       flex-direction: column;
       justify-content: flex-start;
 
+      .data-area-bottom-gradient {
+        position: fixed;
+        bottom: 0;
+        left: 60%;
+        right: 0;
+        height: 5rem;
+        background: linear-gradient(
+            180deg,
+            transparent 0, rgba(0, 0, 0, .03) 4%,
+            rgba(0, 0, 0, .11) 21%,
+            rgba(0, 0, 0, .8) 78%,
+            rgba(0, 0, 0, .9) 95%,
+            rgba(0, 0, 0, .95)
+        );
+        pointer-events: none;
+
+        @media (max-width: $lg-max) {
+          left: 50%;
+          height: 4rem;
+        }
+
+        @media (max-width: $md-max) {
+          display: none;
+        }
+      }
+
       .data-area {
         @include darker-background-texture;
         height: 100%;
@@ -606,6 +640,7 @@ $globalLoadingIndicatorHeight: 6px;
         display: flex;
         flex-direction: column;
         overflow-x: hidden;
+        font-size: .9rem;
 
         astrobin-ad-manager {
           position: sticky;
@@ -721,7 +756,7 @@ $globalLoadingIndicatorHeight: 6px;
         width: 50%;
       }
 
-      @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio),
+      @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio),
       (max-width: $portraitLayoutBreakpoint) and (orientation: portrait) {
         width: 100%;
         height: unset;
@@ -733,7 +768,7 @@ $globalLoadingIndicatorHeight: 6px;
       }
     }
 
-    @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio),
+    @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio),
     (max-width: $portraitLayoutBreakpoint) and (orientation: portrait) {
       overflow-y: auto;
       flex-direction: column;
@@ -771,6 +806,12 @@ $globalLoadingIndicatorHeight: 6px;
           .ng-fa-icon {
             margin: 0;
           }
+        }
+      }
+
+      astrobin-image-viewer-share-button {
+        .ng-fa-icon {
+          color: var(--white);
         }
       }
     }

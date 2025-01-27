@@ -5,11 +5,11 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
-import { FormControl } from "@angular/forms";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-subjects-filter.search-filter-component",
@@ -19,8 +19,8 @@ import { SearchFilterCategory } from "@features/search/interfaces/search-filter-
 export class SearchSubjectsFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.SUBJECTS;
 
-  readonly category = SearchFilterCategory.SKY_AND_SUBJECTS
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchSubjectsFilterComponent.key);
+  readonly category = SearchFilterCategory.SKY_AND_SUBJECTS;
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchSubjectsFilterComponent.key);
   readonly editFields = [
     {
       key: SearchSubjectsFilterComponent.key,
@@ -72,9 +72,9 @@ export class SearchSubjectsFilterComponent extends SearchBaseFilterComponent {
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService
+    public readonly searchFilterService: SearchFilterService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

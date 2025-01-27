@@ -50,7 +50,8 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
     super(store$);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    await this.googleMapsService.loadGoogleMaps();
     this.googleMapsAvailable = !!this.googleMapsService.maps;
   }
 

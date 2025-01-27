@@ -50,6 +50,8 @@ describe("MarketplaceListingPageComponent", () => {
     component = fixture.componentInstance;
     component.listing = MarketplaceGenerator.listing();
 
+    jest.spyOn(component.windowRefService, "scroll").mockImplementation(() => {});
+
     jest.spyOn(
       component.equipmentMarketplaceService, "getListingUser$"
     ).mockReturnValue(of(UserGenerator.user()));

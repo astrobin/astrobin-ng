@@ -30,6 +30,10 @@ export class BBCodeToHtmlPipe implements PipeTransform {
     const window = this.windowRefService.nativeWindow as any;
     const CKEDITOR = window.CKEDITOR;
 
+    if (!CKEDITOR || !CKEDITOR.htmlParser) {
+      return code;
+    }
+
     const fragment = CKEDITOR.htmlParser.fragment.fromBBCode(code);
     const writer = new CKEDITOR.htmlParser.basicWriter();
     const bbcodeFilter = new CKEDITOR.htmlParser.filter();

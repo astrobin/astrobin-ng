@@ -2,7 +2,7 @@
 @import "../../../../styles/mixins";
 
 astrobin-iotd {
-  margin: -1.25rem 0 1rem;
+  margin: 0 0 1rem;
   border-top-left-radius: .25rem;
   border-top-right-radius: .25rem;
   overflow: hidden;
@@ -25,7 +25,7 @@ astrobin-iotd {
     padding: 1.5rem 1rem;
 
     h4 {
-      font-size: 1rem;
+      font-size: 1.15rem;
       margin: 0;
       color: var(--lightestGrey);
     }

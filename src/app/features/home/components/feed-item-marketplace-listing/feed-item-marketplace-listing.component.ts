@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -30,11 +30,15 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
       </div>
 
       <div class="feed-item-body">
-        <a [routerLink]="['/equipment/marketplace/listing', feedItem.actionObjectObjectId]">
+        <a
+          [routerLink]="['/equipment/marketplace/listing', feedItem.actionObjectObjectId]"
+          class="main-image-container"
+        >
           <img
+            #image
             [alt]="feedItem.actionObjectDisplayName"
             [src]="feedItem.image"
-            [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
+            class="main-image"
           >
         </a>
       </div>
@@ -43,6 +47,12 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
         <div class="feed-item-footer-text">
           <astrobin-feed-item-display-text [feedItem]="feedItem"></astrobin-feed-item-display-text>
         </div>
+
+        <div class="feed-item-extra">
+          <span class="timestamp">
+            {{ feedItem.timestamp | localDate | timeago }}
+          </span>
+        </div>
       </div>
     </div>
   `,
@@ -50,9 +60,11 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
     "../feed-item/feed-item.component.scss",
     "./feed-item-marketplace-listing.component.scss"
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FeedItemMarketplaceListingComponent extends BaseComponentDirective {
+export class FeedItemMarketplaceListingComponent extends BaseComponentDirective   {
   @Input() feedItem: FeedItemInterface;
+  @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
 
   constructor(
     public readonly store$: Store<MainState>,

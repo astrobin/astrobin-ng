@@ -44,32 +44,55 @@
   }
 }
 
-.feed {
-  $gutter: 20px;
+astrobin-masonry-layout.activity-feed-masonry-layout {
+  ::ng-deep {
+    .masonry-container {
+      @media (max-width: $sm-max) {
+        display: block;
 
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  contain: paint layout;
-  content-visibility: auto;
+        .masonry-item {
+          margin-bottom: 1rem;
 
-  .feed-item {
-    display: block;
-    border-radius: var(--bs-border-radius);
-    box-shadow: 0 0 .5rem rgba(0, 0, 0, .375);
-    overflow: hidden;
-    width: calc(33.333% - #{$gutter / 1.5});
-    margin-bottom: $gutter;
-    opacity: 0;
-    transition: opacity .2s;
-    will-change: opacity, transform;
+          .feed-item-header {
+            @include darkest-background-texture;
+            position: unset;
+            top: unset;
+            left: unset;
+            right: unset;
+            text-shadow: none;
+            padding: 1rem;
+          }
 
-    @media (max-width: $md-max) {
-      width: calc(50% - #{$gutter / 2});
+          .feed-item-footer {
+            @include dark-background-texture;
+            position: unset;
+            bottom: unset;
+            left: unset;
+            right: unset;
+            background: var(--darkestGrey);
+            padding-top: 1rem;
+            padding-bottom: 0;
+          }
+        }
+      }
+
+      .masonry-item astrobin-loading-indicator {
+        background: rgba(0, 0, 0, .75);
+        z-index: 1;
+      }
     }
+  }
+}
 
-    @media (max-width: $xs-max) {
-      width: 100%;
-    }
+.mobile-feed-loading {
+  astrobin-image-loading-indicator {
+    height: 350px;
+  }
+}
+
+.image-container {
+  astrobin-loading-indicator {
+    background: rgba(0, 0, 0, .65);
+    border-radius: .75rem;
   }
 }

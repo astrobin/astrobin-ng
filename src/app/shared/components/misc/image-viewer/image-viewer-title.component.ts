@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -10,6 +10,8 @@ import { ImageService } from "@shared/services/image/image.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { DeviceService } from "@shared/services/device.service";
 
 @Component({
   selector: "astrobin-image-viewer-title",
@@ -28,26 +30,27 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
           </small>
 
           <small class="justify-content-center justify-content-sm-start">
-          <span *ngIf="publicationDate">
-            <fa-icon
-              *ngIf="licenseIcon && licenseTooltip"
-              [icon]="licenseIcon"
-              [ngbTooltip]="licenseTooltip"
-              triggers="hover click"
-              container="body"
-              class="license-icon"
-            ></fa-icon>
-            {{ publicationDate | localDate | timeago:true }}
-          </span>
+            <span *ngIf="publicationDate">
+              <fa-icon
+                *ngIf="licenseIcon && licenseTooltip"
+                [icon]="licenseIcon"
+                [ngbTooltip]="licenseTooltip"
+                triggers="hover click"
+                container="body"
+                class="license-icon"
+              ></fa-icon>
+              {{ publicationDate | localDate | timeago:true }}
+            </span>
 
             <span class="view-count">
-            <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
-            <span
-              *ngIf="image.viewCount > 1"
-              [translateParams]="{ '0': image.viewCount | numberSuffix }"
-              [translate]="'{{0}} views'"
-            ></span>
-          </span>
+              <span *ngIf="image.viewCount === 0" [translate]="'No views'"></span>
+              <span *ngIf="image.viewCount === 1" [translate]="'One view'"></span>
+              <span
+                *ngIf="image.viewCount > 1"
+                [translateParams]="{ '0': image.viewCount | numberSuffix }"
+                [translate]="'{{0}} views'"
+              ></span>
+            </span>
 
             <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
 
@@ -55,8 +58,13 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
           </small>
 
           <div class="iotd-tp">
-            <div *ngIf="!image.iotdDate && (image.isTopPick || image.isTopPickNomination)">
-              <span *ngIf="!image.iotdDate && image.isTopPick" class="top-pick">
+            <div
+              *ngIf="!image.iotdDate && (image.isTopPick || image.isTopPickNomination)"
+            >
+              <span
+                *ngIf="!image.iotdDate && image.isTopPick"
+                class="top-pick"
+              >
                 <span class="label">
                   <fa-icon icon="star"></fa-icon>
                   {{ "Top Pick" | translate }}
@@ -84,7 +92,16 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
                 <fa-icon icon="gavel"></fa-icon>
                 {{ "Currently in the IOTD/TP queues" | translate }}
               </span>
-              <ng-container [ngTemplateOutlet]="iotdInfoLinkTemplate"></ng-container>
+
+              <a
+                (click)="viewIotdTpStats()"
+                astrobinEventPreventDefault
+                astrobinEventStopPropagation
+                class="ms-2"
+                href="#"
+              >
+                <fa-icon icon="info-circle"></fa-icon>
+              </a>
             </span>
           </div>
         </h2>
@@ -118,17 +135,35 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
     <ng-template #iotdInfoLinkTemplate>
       <a
         href="https://welcome.astrobin.com/iotd"
-        class="ms-2 no-external-link-icon text-muted"
+        class="ms-2 no-external-link-icon"
         rel="noopener"
         target="_blank"
       >
         <fa-icon icon="info-circle"></fa-icon>
       </a>
     </ng-template>
+
+    <ng-template #viewIotdTpStatsOffcanvas let-offcanvas>
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">
+          {{ "IOTD/TP stats" | translate }}
+          <fa-icon icon="lock" class="ms-2"></fa-icon>
+        </h5>
+        <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
+      </div>
+      <div class="offcanvas-body">
+        <astrobin-image-viewer-iotd-tp-stats
+          [image]="image"
+        ></astrobin-image-viewer-iotd-tp-stats>
+      </div>
+    </ng-template>
   `,
-  styleUrls: ["./image-viewer-title.component.scss"]
+  styleUrls: ["./image-viewer-title.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent implements OnChanges {
+  @ViewChild("viewIotdTpStatsOffcanvas") viewIotdTpStatsOffcanvas: TemplateRef<any>;
+
   protected resolution: string;
   protected size: number;
   protected publicationDate: string;
@@ -142,7 +177,9 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
     public readonly imageViewerService: ImageViewerService,
     public readonly imageService: ImageService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly deviceService: DeviceService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -168,5 +205,14 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
   setLicenseIconAndTooltip(image: ImageInterface): void {
     this.licenseIcon = this.imageService.getLicenseIcon(image.license);
     this.licenseTooltip = this.imageService.humanizeLicenseOption(image.license);
+  }
+
+  viewIotdTpStats() {
+    this.offcanvasService.dismiss(); // Avoids nested offcanvases.
+    this.offcanvasService.open(this.viewIotdTpStatsOffcanvas, {
+      panelClass: "image-viewer-offcanvas image-iotd-tp-stats-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 }

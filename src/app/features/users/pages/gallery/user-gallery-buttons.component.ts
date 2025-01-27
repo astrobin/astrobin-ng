@@ -1,16 +1,10 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { CookieService } from "ngx-cookie";
 import { isPlatformBrowser } from "@angular/common";
-
-export enum UserGalleryActiveLayout {
-  TINY = "tiny",
-  SMALL = "small",
-  LARGE = "large",
-  TABLE = "table"
-}
+import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
 
 @Component({
   selector: "astrobin-user-gallery-buttons",
@@ -29,113 +23,100 @@ export enum UserGalleryActiveLayout {
             (click)="sortChange.emit('title')"
           >
             {{ "Title" | translate }}
+            <fa-icon *ngIf="subsection === 'title'" icon="check"></fa-icon>
           </button>
           <button
             class="dropdown-item"
             (click)="sortChange.emit('uploaded')"
           >
             {{ "Publication date" | translate }}
+            <fa-icon *ngIf="subsection === 'uploaded'" icon="check"></fa-icon>
           </button>
           <button
             class="dropdown-item"
             (click)="sortChange.emit('acquired')"
           >
             {{ "Acquisition date" | translate }}
+            <fa-icon *ngIf="subsection === 'acquired'" icon="check"></fa-icon>
+          </button>
+          <button
+            class="dropdown-item"
+            (click)="sortChange.emit('likes')"
+          >
+            {{ "Likes" | translate }}
+            <fa-icon *ngIf="ordering === 'likes'" icon="check"></fa-icon>
+          </button>
+          <button
+            class="dropdown-item"
+            (click)="sortChange.emit('bookmarks')"
+          >
+            {{ "Bookmarks" | translate }}
+            <fa-icon *ngIf="ordering === 'bookmarks'" icon="check"></fa-icon>
+          </button>
+          <button
+            class="dropdown-item"
+            (click)="sortChange.emit('comments')"
+          >
+            {{ "Comments" | translate }}
+            <fa-icon *ngIf="ordering === 'comments'" icon="check"></fa-icon>
           </button>
         </div>
       </div>
 
-      <img
-        *ngIf="activeLayout !== UserGalleryActiveLayout.TINY"
-        (click)="setLayout(UserGalleryActiveLayout.TINY)"
-        [ngSrc]="'/assets/images/layout-tiny.png?v=20241008'"
-        [ngbTooltip]="'Tiny layout' | translate"
-        alt="{{ 'Tiny layout' | translate }}"
-        class="cursor-pointer"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout === UserGalleryActiveLayout.TINY"
-        [ngSrc]="'/assets/images/layout-tiny-active.png?v=20241008'"
-        [ngbTooltip]="'Tiny layout' | translate"
-        alt="{{ 'Tiny layout' | translate }}"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout !== UserGalleryActiveLayout.SMALL"
+      <fa-icon
         (click)="setLayout(UserGalleryActiveLayout.SMALL)"
-        [ngSrc]="'/assets/images/layout-small.png?v=20241008'"
+        icon="table-cells"
         [ngbTooltip]="'Small layout' | translate"
-        alt="{{ 'Small layout' | translate }}"
-        class="cursor-pointer d-none d-lg-inline"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout === UserGalleryActiveLayout.SMALL"
-        [ngSrc]="'/assets/images/layout-small-active.png?v=20241008'"
-        [ngbTooltip]="'Small layout' | translate"
-        alt="{{ 'Small layout' | translate }}"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout !== UserGalleryActiveLayout.LARGE"
-        (click)="setLayout(UserGalleryActiveLayout.LARGE)"
-        [ngSrc]="'/assets/images/layout-large.png?v=20241008'"
-        [ngbTooltip]="'Large layout' | translate"
-        alt="{{ 'Large layout' | translate }}"
         class="cursor-pointer"
+        [class.active]="activeLayout === UserGalleryActiveLayout.SMALL"
         container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
-      />
-      <img
-        *ngIf="activeLayout === UserGalleryActiveLayout.LARGE"
-        [ngSrc]="'/assets/images/layout-large-active.png?v=20241008'"
-        [ngbTooltip]="'Large layout' | translate"
-        alt="{{ 'Large layout' | translate }}"
-        container="body"
-        height="{{ ICON_SIZE }}"
-        width="{{ ICON_SIZE }}"
       />
       <fa-icon
-        *ngIf="activeLayout !== UserGalleryActiveLayout.TABLE"
+        (click)="setLayout(UserGalleryActiveLayout.MEDIUM)"
+        icon="table-cells-large"
+        [ngbTooltip]="'Medium layout' | translate"
+        class="cursor-pointer"
+        [class.active]="activeLayout === UserGalleryActiveLayout.MEDIUM"
+        container="body"
+      />
+      <fa-icon
+        (click)="setLayout(UserGalleryActiveLayout.LARGE)"
+        icon="square"
+        [ngbTooltip]="'Large layout' | translate"
+        class="cursor-pointer"
+        [class.active]="activeLayout === UserGalleryActiveLayout.LARGE"
+        container="body"
+      />
+      <fa-icon
         (click)="setLayout(UserGalleryActiveLayout.TABLE)"
         [icon]="['fas', 'bars']"
         [ngbTooltip]="'Table layout' | translate"
         class="cursor-pointer"
+        [class.active]="activeLayout === UserGalleryActiveLayout.TABLE"
         container="body"
-      ></fa-icon>
-      <fa-icon
-        *ngIf="activeLayout === UserGalleryActiveLayout.TABLE"
-        [icon]="['fas', 'bars']"
-        [ngbTooltip]="'Table layout' | translate"
-        container="body"
-        class="active"
       ></fa-icon>
     </div>
   `,
-  styleUrls: ["./user-gallery-buttons.component.scss"]
+  styleUrls: ["./user-gallery-buttons.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryButtonsComponent extends BaseComponentDirective implements OnInit {
   @Input()
-  activeLayout: UserGalleryActiveLayout = UserGalleryActiveLayout.TINY;
+  activeLayout: ImageGalleryLayout = ImageGalleryLayout.MEDIUM;
+
+  @Input()
+  subsection: string;
+
+  @Input()
+  ordering: string;
 
   @Output()
-  activeLayoutChange = new EventEmitter<UserGalleryActiveLayout>();
+  activeLayoutChange = new EventEmitter<ImageGalleryLayout>();
 
   @Output()
   sortChange = new EventEmitter<string>();
 
-  protected readonly UserGalleryActiveLayout = UserGalleryActiveLayout;
-  protected readonly ICON_SIZE = 16;
+  protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
 
   private readonly _isBrowser: boolean;
   private readonly _cookieKey = "astrobin-user-gallery-layout";
@@ -153,12 +134,14 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
     if (this._isBrowser) {
       const cookie = this.cookieService.get(this._cookieKey);
       if (cookie) {
-        this.setLayout(cookie as UserGalleryActiveLayout);
+        this.setLayout(cookie as ImageGalleryLayout);
+      } else {
+        this.setLayout(ImageGalleryLayout.MEDIUM);
       }
     }
   }
 
-  setLayout(layout: UserGalleryActiveLayout) {
+  setLayout(layout: ImageGalleryLayout) {
     this.activeLayout = layout;
     this.activeLayoutChange.emit(this.activeLayout);
 

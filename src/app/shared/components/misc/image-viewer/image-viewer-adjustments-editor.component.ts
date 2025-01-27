@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { Options } from "@angular-slider/ngx-slider";
 import { DeviceService } from "@shared/services/device.service";
@@ -9,8 +9,9 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { isPlatformBrowser } from "@angular/common";
 
 const DEFAULT_BRIGHTNESS = 100;
 const DEFAULT_CONTRAST = 100;
@@ -111,7 +112,8 @@ const DEFAULT_SATURATION = 100;
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-adjustments-editor.component.scss"]
+  styleUrls: ["./image-viewer-adjustments-editor.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy {
   @Input() image: ImageInterface;
@@ -149,6 +151,8 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
     ceil: 200
   };
 
+  protected readonly isBrowser: boolean;
+
   protected brightness: number;
   protected contrast: number;
   protected saturation: number;
@@ -165,8 +169,10 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
     public readonly imageService: ImageService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly popNotificationService: PopNotificationsService,
-    public readonly router: Router
+    @Inject(PLATFORM_ID) platformId: Object
   ) {
+
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit() {
@@ -254,20 +260,25 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
 
   share() {
     this.offcanvasService.open(this.shareOffcanvasTemplate, {
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }
 
   removeQueryParams() {
-    const queryParams = { ...this.activatedRoute.snapshot.queryParams };
-
-    for (const paramKey of ["brightness", "contrast", "saturation"]) {
-      delete queryParams[paramKey];
+    if (!this.isBrowser) {
+      return;
     }
 
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: queryParams
+    const url = new URL(window.location.href);
+
+    // Remove the specified parameters
+    ["brightness", "contrast", "saturation"].forEach(param => {
+      url.searchParams.delete(param);
     });
+
+    // Replace the current URL without triggering navigation
+    this.windowRefService.nativeWindow.history.replaceState({}, '', url);
   }
 }

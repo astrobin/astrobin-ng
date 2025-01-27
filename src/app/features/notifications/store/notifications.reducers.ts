@@ -1,15 +1,22 @@
 import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
 import { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
 import { All, NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
+import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 
 export interface NotificationsState {
   types: NotificationTypeInterface[] | null;
   settings: NotificationSettingInterface[] | null;
+  notifications: NotificationInterface[] | null;
+  totalNotifications: number | null;
+  unreadCount: number | null;
 }
 
 export const initialNotificationsState: NotificationsState = {
   types: null,
-  settings: null
+  settings: null,
+  notifications: null,
+  totalNotifications: null,
+  unreadCount: null
 };
 
 export function notificationsReducer(state = initialNotificationsState, action: All): NotificationsState {
@@ -34,6 +41,41 @@ export function notificationsReducer(state = initialNotificationsState, action: 
 
           return setting;
         })
+      };
+    case NotificationsActionTypes.LOAD_NOTIFICATIONS_SUCCESS:
+      return {
+        ...state,
+        notifications: action.payload.notifications,
+        totalNotifications: action.payload.total
+      };
+    case NotificationsActionTypes.GET_UNREAD_COUNT_SUCCESS:
+      return {
+        ...state,
+        unreadCount: action.payload.count
+      };
+    case NotificationsActionTypes.MARK_AS_READ_SUCCESS:
+      return {
+        ...state,
+        unreadCount: Math.max(0, state.unreadCount - (action.payload.read ? 1 : -1)),
+        notifications: state.notifications.map(notification => {
+          if (notification.id === action.payload.notificationId) {
+            return {
+              ...notification,
+              read: action.payload.read
+            }
+          }
+
+          return notification;
+        })
+      };
+    case NotificationsActionTypes.MARK_ALL_AS_READ_SUCCESS:
+      return {
+        ...state,
+        unreadCount: 0,
+        notifications: state.notifications.map(notification => ({
+          ...notification,
+          read: true
+        }))
       };
     default:
       return state;

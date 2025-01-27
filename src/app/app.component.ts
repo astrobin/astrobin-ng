@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { NavigationEnd, NavigationStart, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -7,22 +7,25 @@ import { ThemeService } from "@shared/services/theme.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import { filter, map, pairwise, take } from "rxjs/operators";
+import { catchError, filter, map, switchMap, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { CookieConsentService } from "@shared/services/cookie-consent/cookie-consent.service";
 import { CookieConsentEnum } from "@shared/types/cookie-consent.enum";
-import { Observable } from "rxjs";
+import { Observable, Subscription, timer } from "rxjs";
 import { DOCUMENT, isPlatformBrowser } from "@angular/common";
 import { NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
 import { TransferState } from "@angular/platform-browser";
 import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
-import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Platform } from "@ionic/angular";
 import { ScrollService } from "@shared/services/scroll.service";
+import { VersionCheckService } from "@shared/services/version-check.service";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { GetUnreadCount } from "@features/notifications/store/notifications.actions";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -32,8 +35,9 @@ declare var gtag: any;
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
-export class AppComponent extends BaseComponentDirective implements OnInit {
+export class AppComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   private readonly _isBrowser: boolean;
+  private _serviceWorkerKillSwitchSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -49,10 +53,11 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     @Inject(DOCUMENT) public document: any,
     public readonly transferState: TransferState,
     @Inject(CLIENT_IP) public readonly clientIp: string,
-    public readonly notificationsService: NotificationsService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly loadingService: LoadingService,
     public readonly titleService: TitleService,
+    public readonly versionCheckService: VersionCheckService,
+    public readonly jsonApiService: JsonApiService,
     public readonly platform: Platform,
     public readonly scrollService: ScrollService
   ) {
@@ -93,46 +98,21 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
             `https://www.googletagmanager.com/gtm.js?id=${Constants.GOOGLE_TAG_MANAGER_ID}`,
             this.renderer,
             () => {
-              this.initGtag();
+              this._initGtag();
             });
         }
       });
     }
+
+    this._startPollingForServiceWorkerKillSwitch();
+    this._suppressPwaInstallationPrompt();
+    this._initGoogleAnalytics();
   }
 
-  initGtag(): void {
-    if (!this._isBrowser) {
-      return;
+  ngOnDestroy(): void {
+    if (this._serviceWorkerKillSwitchSubscription) {
+      this._serviceWorkerKillSwitchSubscription.unsubscribe();
     }
-
-    try {
-      dataLayer = dataLayer || [];
-    } catch (e) {
-      return;
-    }
-
-    // @ts-ignore
-    gtag("js", new Date());
-
-    // @ts-ignore
-    gtag("config", Constants.GOOGLE_ANALYTICS_ID, {
-      linker: {
-        domains: [
-          "www.astrobin.com",
-          "app.astrobin.com",
-          "welcome.astrobin.com",
-          "de.welcome.astrobin.com",
-          "es.welcome.astrobin.com",
-          "fr.welcome.astrobin.com",
-          "it.welcome.astrobin.com",
-          "pt.welcome.astrobin.com"
-        ],
-        accept_incoming: true
-      }
-    });
-
-    // @ts-ignore
-    gtag("config", "AW-1062298010");
   }
 
   initPagination(): void {
@@ -142,21 +122,12 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   initRouterEvents(): void {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      pairwise()
-    ).subscribe(([prev, current]: [NavigationEnd, NavigationEnd]) => {
-      if (prev.urlAfterRedirects === current.urlAfterRedirects &&
-        this.router.getCurrentNavigation()?.trigger !== 'popstate') {
-        this.windowRefService.scroll({ top: 0, behavior: "smooth" });
-      }
-    });
-
     this.router.events?.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.loadingService.setLoading(true);
       } else if (event instanceof NavigationEnd) {
         this.loadingService.setLoading(false);
+        this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
         this.windowRefService.changeBodyOverflow("auto");
         this.offcanvasService.dismiss();
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
@@ -169,7 +140,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
             take(1)
           ).subscribe(() => {
             this.utilsService.delay(500).subscribe(() => {
-              this.notificationsService.getUnreadCount().subscribe();
+              this.store$.dispatch(new GetUnreadCount());
             });
           });
         }
@@ -252,6 +223,135 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
           .subscribe();
       }
     });
+  }
+
+  private _startPollingForServiceWorkerKillSwitch(): void {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    this._serviceWorkerKillSwitchSubscription = timer(0, 30000) // Start immediately, then every 30 seconds
+      .pipe(
+        switchMap(() =>
+          this.jsonApiService.serviceWorkerEnabled().pipe(
+            catchError((err) => {
+              console.error("Kill switch API error:", err);
+              return []; // Return empty to avoid breaking the stream
+            })
+          )
+        )
+      )
+      .subscribe((enabled: boolean) => {
+        if (!enabled) {
+          console.log("Kill switch activated. Unregistering Service Worker...");
+          this._disableServiceWorker();
+        } else {
+          console.log("Kill switch deactivated. Registering Service Worker...");
+          this._enableServiceWorker();
+        }
+      });
+  }
+
+  private _disableServiceWorker(): void {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistration().then((registration) => {
+        if (registration) {
+          registration.unregister().then(() => {
+            console.log("Service Worker unregistered");
+          });
+        }
+      });
+    }
+  }
+
+  private _enableServiceWorker(): void {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistration().then((registration) => {
+        if (!registration) {
+          navigator.serviceWorker
+            .register("/ngsw-worker.js")
+            .then(() => {
+              console.log("Service Worker registered");
+              this.versionCheckService.checkForUpdates();
+            })
+            .catch((err) => {
+              console.error("Service Worker registration failed:", err);
+            });
+        } else {
+          this.versionCheckService.checkForUpdates();
+        }
+      });
+    }
+  }
+
+  private _suppressPwaInstallationPrompt(): void {
+    if (this._isBrowser) {
+      this.windowRefService.nativeWindow.addEventListener("beforeinstallprompt", event => {
+        event.preventDefault();
+      });
+    }
+  }
+
+  private _initGoogleAnalytics(): void {
+    if (this._isBrowser && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1) {
+      this.includeAnalytics$().subscribe(includeAnalytics => {
+        if (includeAnalytics) {
+          this.utilsService.insertScript(
+            `https://www.googletagmanager.com/gtag/js?id=${Constants.GOOGLE_ANALYTICS_ID}`,
+            this.renderer
+          );
+          this.utilsService.insertScript(
+            `https://www.googletagmanager.com/gtm.js?id=${Constants.GOOGLE_TAG_MANAGER_ID}`,
+            this.renderer,
+            () => {
+              this._initGtag();
+            });
+        }
+      });
+    }
+  }
+
+  private _initGtag(): void {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    try {
+      dataLayer = dataLayer || [];
+    } catch (e) {
+      return;
+    }
+
+    // @ts-ignore
+    gtag("js", new Date());
+
+    // @ts-ignore
+    gtag("config", Constants.GOOGLE_ANALYTICS_ID, {
+      linker: {
+        domains: [
+          "www.astrobin.com",
+          "app.astrobin.com",
+          "welcome.astrobin.com",
+          "de.welcome.astrobin.com",
+          "es.welcome.astrobin.com",
+          "fr.welcome.astrobin.com",
+          "it.welcome.astrobin.com",
+          "pt.welcome.astrobin.com"
+        ],
+        accept_incoming: true
+      }
+    });
+
+    // @ts-ignore
+    gtag("config", "AW-1062298010");
   }
 
   private async _initStatusBar() {

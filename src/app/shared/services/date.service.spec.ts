@@ -151,6 +151,9 @@ describe("DateService", () => {
 
       // Mock the locale to be 'en-US'
       jest.spyOn(translateService, 'currentLang', 'get').mockReturnValue('en-US');
+
+      // Mock the current year to 2024
+      jest.spyOn(service, "getCurrentYear").mockReturnValue(2024);
     });
 
     it("should return a single date formatted in en-US short format", () => {
@@ -177,6 +180,15 @@ describe("DateService", () => {
       ];
       const result = service.formatDates(dates);
       expect(result).toBe("Jul 30 - Aug 1");
+    });
+
+    it("should omit the year for two non contiguous dates in the same year", () => {
+      const dates = [
+        "2023-07-30T00:00:00Z",
+        "2023-08-01T00:00:00Z"
+      ];
+      const result = service.formatDates(dates);
+      expect(result).toBe("Jul 30, Aug 1 2023");
     });
 
     it("should return a range of contiguous dates in different years with en-US format", () => {
@@ -274,7 +286,7 @@ describe("DateService", () => {
         "1985-07-08T00:00:00Z"
       ];
       const result = service.formatDates(dates);
-      expect(result).toBe("4 Jul 1985, 8 Jul 1985");
+      expect(result).toBe("4 Jul, 8 Jul 1985");
     });
 
     it("should format multiple non-contiguous dates in the same month and year from the past", () => {
@@ -362,7 +374,7 @@ describe("DateService", () => {
         "1985-07-08T00:00:00Z"
       ];
       const result = service.formatDates(dates);
-      expect(result).toBe("Jul 4, 1985, Jul 8, 1985");
+      expect(result).toBe("Jul 4, Jul 8 1985");
     });
 
     it("should format multiple non-contiguous dates in the same month and year from the past in en-US format", () => {
@@ -566,6 +578,9 @@ describe("DateService", () => {
 
       // Mock the locale to be 'en-US'
       jest.spyOn(translateService, 'currentLang', 'get').mockReturnValue('en-US');
+
+      // Mock the current year to 2024
+      jest.spyOn(service, "getCurrentYear").mockReturnValue(2024);
     });
 
     it("should return a single date when multiple identical dates are provided in en-US format", () => {

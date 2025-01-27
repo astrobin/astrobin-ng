@@ -1,4 +1,4 @@
-import { Inject, Injectable, NgZone, PLATFORM_ID } from "@angular/core";
+import { ElementRef, Inject, Injectable, NgZone, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -31,6 +31,7 @@ import { IotdInterface } from "@features/iotd/services/iotd-api.service";
 })
 export class ImageService extends BaseService {
   private _imageNotFoundNotification: ActiveToast<any>;
+  private readonly _loadedImageUrls = new Map<string, string>();
 
   public constructor(
     public readonly store$: Store<MainState>,
@@ -484,7 +485,7 @@ export class ImageService extends BaseService {
       const acquisition = image.solarSystemAcquisitions[0];
 
       if (acquisition.frames && acquisition.exposurePerFrame) {
-        return `${acquisition.frames} &times; ${acquisition.exposurePerFrame}s`;
+        return `${acquisition.frames} &times; ${acquisition.exposurePerFrame}ms`;
       }
 
       if (acquisition.frames) {
@@ -492,7 +493,7 @@ export class ImageService extends BaseService {
       }
 
       if (acquisition.exposurePerFrame) {
-        return `${acquisition.exposurePerFrame} ms`;
+        return `${acquisition.exposurePerFrame}ms`;
       }
     }
 
@@ -827,12 +828,24 @@ export class ImageService extends BaseService {
       return of(url);
     }
 
+    // Check cache first
+    const cachedUrl = this._loadedImageUrls.get(url);
+    if (cachedUrl) {
+      // Still call the progress callback to maintain expected behavior
+      progressCallback(100);
+      return of(cachedUrl);
+    }
+
     return new Observable<string>(observer => {
       if (typeof XMLHttpRequest === "undefined") {
         // Fallback for environments without XMLHttpRequest
-        this.http.get(url, { responseType: "blob" }).pipe(
+        const subscription = this.http.get(url, { responseType: "blob" }).pipe(
           tap(() => progressCallback(100)),
-          map(blob => this._createObjectURL(blob))
+          map(blob => {
+            const objectUrl = this._createObjectURL(blob);
+            this._loadedImageUrls.set(url, objectUrl);
+            return objectUrl;
+          })
         ).subscribe(
           objectUrl => {
             observer.next(objectUrl);
@@ -840,7 +853,8 @@ export class ImageService extends BaseService {
           },
           error => observer.error(error)
         );
-        return;
+        // Return cleanup function
+        return () => subscription.unsubscribe();
       }
 
       const xhr = new XMLHttpRequest();
@@ -882,7 +896,9 @@ export class ImageService extends BaseService {
           }
 
           const blob = new Blob([xhr.response], options);
-          observer.next(this._createObjectURL(blob));
+          const objectUrl = this._createObjectURL(blob);
+          this._loadedImageUrls.set(url, objectUrl);
+          observer.next(objectUrl);
           observer.complete();
         });
       };
@@ -895,6 +911,11 @@ export class ImageService extends BaseService {
       };
 
       xhr.send();
+
+      // Return cleanup function
+      return () => {
+        xhr.abort();
+      };
     });
   }
 
@@ -903,22 +924,33 @@ export class ImageService extends BaseService {
       return image.finalGalleryThumbnail;
     }
 
-    const galleryThumbnail =
-      image.thumbnails &&
-      image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY);
+    const galleryThumbnail = this.getThumbnail(image, ImageAlias.GALLERY);
 
     if (galleryThumbnail) {
-      return galleryThumbnail.url;
+      return galleryThumbnail;
     }
 
-    const regularThumbnail =
-      image.thumbnails &&
-      image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR);
+    const regularThumbnail = this.getThumbnail(image, ImageAlias.REGULAR);
 
     if (regularThumbnail) {
-      return regularThumbnail.url;
+      return regularThumbnail;
     }
 
+    return "/assets/images/loading.gif?v=20241030";
+  }
+
+  getThumbnail(image: ImageInterface, alias: ImageAlias): string {
+    if (alias === ImageAlias.GALLERY && image.finalGalleryThumbnail) {
+      return image.finalGalleryThumbnail;
+    }
+
+    const thumbnail =
+      image.thumbnails &&
+      image.thumbnails.find(thumbnail => thumbnail.alias === alias);
+
+    if (thumbnail) {
+      return thumbnail.url;
+    }
 
     return "/assets/images/loading.gif?v=20241030";
   }

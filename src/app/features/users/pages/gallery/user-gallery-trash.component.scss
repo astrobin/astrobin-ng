@@ -44,7 +44,7 @@
     }
   }
 
-  @media (hover: none) and (pointer: coarse) {
+  @media (pointer: coarse) {
     .restore > .btn {
       visibility: visible;
     }

@@ -53,6 +53,10 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   get placeholder(): string {
+    if (this.props.placeholder) {
+      return this.props.placeholder;
+    }
+
     if (this.props.addTag) {
       if (this.props.addTagPlaceholder) {
         return this.props.addTagPlaceholder;

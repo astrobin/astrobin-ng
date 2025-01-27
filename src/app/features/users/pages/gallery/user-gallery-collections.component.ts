@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -26,7 +26,7 @@ import { DeviceService } from "@shared/services/device.service";
           <a
             [routerLink]="['/u', user.username]"
             [queryParams]="{ collection: parentCollection.parent }"
-            fragment="gallery"
+            [fragment]="userProfile.displayCollectionsOnPublicGallery ? 'gallery' : 'collections'"
           >
             <fa-icon icon="arrow-circle-up"></fa-icon>
           </a>
@@ -47,7 +47,7 @@ import { DeviceService } from "@shared/services/device.service";
       </div>
 
       <div
-        *ngIf="!loading && collections?.length > 0"
+        *ngIf="!loading && (collections?.length > 0 || currentUserWrapper.user?.id === user.id)"
         class="d-flex flex-wrap gap-4 justify-content-center mb-5"
       >
         <a
@@ -69,19 +69,24 @@ import { DeviceService } from "@shared/services/device.service";
           (click)="createCollection()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          class="create-collection-button"
+          class="create-collection-button d-flex flex-column justify-content-center align-items-center text-center"
         >
           <fa-icon
             icon="plus"
-            [ngbTooltip]="'Create new collection'"
+            [ngbTooltip]="'Create collection'"
           ></fa-icon>
+
+          <span
+            *ngIf="!collections || collections.length === 0"
+            class="text-muted"
+          >{{ "Create collection" | translate }}</span>
         </a>
       </div>
     </ng-container>
 
     <ng-template #createCollectionOffcanvas let-offcanvas>
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title">{{ "Create new collection" | translate }}</h5>
+        <h5 class="offcanvas-title">{{ "Create collection" | translate }}</h5>
         <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
       </div>
       <div class="offcanvas-body">
@@ -94,7 +99,8 @@ import { DeviceService } from "@shared/services/device.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./user-gallery-collections.component.scss"]
+  styleUrls: ["./user-gallery-collections.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryCollectionsComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input() user: UserInterface;
@@ -116,7 +122,8 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -143,6 +150,7 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     ).subscribe(collections => {
       this.collections = collections;
       this.loading = false;
+      this.changeDetectorRef.markForCheck();
     });
 
     if (this.parent) {
@@ -157,6 +165,7 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
         takeUntil(this.destroyed$)
       ).subscribe(collections => {
         this.parentCollection = collections[0];
+        this.changeDetectorRef.markForCheck();
       });
     }
   }
@@ -165,7 +174,7 @@ export class UserGalleryCollectionsComponent extends BaseComponentDirective impl
     this.router.navigate(
       [],
       {
-        fragment: "gallery",
+        fragment: this.userProfile.displayCollectionsOnPublicGallery ? "gallery" : "collections",
         queryParams: { collection: collection.id },
         relativeTo: this.activatedRoute
       }

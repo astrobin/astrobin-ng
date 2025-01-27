@@ -1,4 +1,4 @@
-import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
+import { ImageMaxZoom, WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
 
 export enum FrontPageSection {
@@ -47,6 +47,8 @@ export interface UserProfileInterface {
   defaultWatermarkSize: WatermarkSizeOptions;
   defaultWatermarkPosition: WatermarkPositionOptions;
   defaultWatermarkOpacity: number;
+  defaultMaxZoom: ImageMaxZoom | null;
+  defaultAllowImageAdjustmentsWidget: boolean | null;
   acceptTos: boolean;
   openNotificationsInNewTab: boolean | null;
   receiveNewsletter: boolean;
@@ -88,6 +90,7 @@ export interface UserProfileInterface {
   wipImageCount: number;
   followersCount: number;
   followingCount: number;
+  displayCollectionsOnPublicGallery?: boolean;
   displayWipImagesOnPublicGallery?: boolean;
   allowAds?: boolean;
   suspended?: string;

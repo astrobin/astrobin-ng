@@ -82,7 +82,7 @@ import { InformationDialogComponent } from "@shared/components/misc/information-
 import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
 import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
 import { ForumPreviewComponent } from "@shared/components/forums/forum-preview/forum-preview.component";
-import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
+import { ImageSearchBrandListingMessagePipe, ImageSearchComponent, ImageSearchItemListingMessagePipe } from "@shared/components/search/image-search/image-search.component";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
 import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";
 import { ItemBrowserByPropertiesComponent } from "@shared/components/equipment/item-browser-by-properties/item-browser-by-properties.component";
@@ -149,6 +149,9 @@ import { EquipmentPresetEditorComponent } from "@shared/components/equipment/pre
 import { EquipmentPresetSummaryComponent } from "@shared/components/equipment/preset-summary/equipment-preset-summary.component";
 import { ImageIconsComponent } from "@shared/components/misc/image-icons/image-icons.component";
 import { ImageHoverComponent } from "@shared/components/misc/image-hover/image-hover.component";
+import { ImageViewerIotdTpStatsComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component";
+import { MasonryLayoutComponent } from "@shared/components/masonry-layout/masonry-layout.component";
+import { ImageGalleryLoadingComponent } from "@shared/components/image-gallery-loading-indicator/image-gallery-loading.component";
 import { IonicModule } from "@ionic/angular";
 
 const modules = [
@@ -230,9 +233,12 @@ const components = [
   ImageComponent,
   ImageHoverComponent,
   ImageIconsComponent,
+  ImageGalleryLoadingComponent,
   ImageLoadingIndicatorComponent,
   ImageSearchCardComponent,
   ImageSearchComponent,
+  ImageSearchItemListingMessagePipe,
+  ImageSearchBrandListingMessagePipe,
   ImageViewerSlideshowComponent,
   ImageViewerSlideshowContextComponent,
   ImageViewerComponent,
@@ -258,6 +264,7 @@ const components = [
   ImageViewerAdditionalButtonComponent,
   ImageViewerAdjustmentsEditorComponent,
   ImageViewerIotdBannerComponent,
+  ImageViewerIotdTpStatsComponent,
   ForumPostSearchComponent,
   NestedCommentSearchComponent,
   InformationDialogComponent,
@@ -265,6 +272,7 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  MasonryLayoutComponent,
   MarketplaceListingCardComponent,
   MarketplaceListingCardsComponent,
   MobileMenuComponent,

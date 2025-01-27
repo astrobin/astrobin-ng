@@ -13,6 +13,9 @@ import {
   DeleteToggleProperty,
   DeleteTogglePropertyFailure,
   DeleteTogglePropertySuccess,
+  LoadToggleProperties,
+  LoadTogglePropertiesFailure,
+  LoadTogglePropertiesSuccess,
   LoadToggleProperty,
   LoadTogglePropertyFailure,
   LoadTogglePropertySuccess
@@ -60,6 +63,49 @@ export class TogglePropertyEffects {
             return void 0;
           }
         )
+      ),
+    { dispatch: false }
+  );
+
+  LoadToggleProperties: Observable<LoadTogglePropertiesSuccess | LoadTogglePropertiesFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.LOAD_TOGGLE_PROPERTIES),
+      map((action: LoadToggleProperties) => action.payload.toggleProperties),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap((toggleProperties: Partial<TogglePropertyInterface>[]) =>
+        this.commonApiService.getToggleProperties(toggleProperties).pipe(
+          map(response => {
+            if (response !== null && Array.isArray(response)) {
+              return new LoadTogglePropertiesSuccess({ toggleProperties: response });
+            }
+            return new LoadTogglePropertiesFailure({ toggleProperties });
+          }),
+          catchError(() => of(new LoadTogglePropertiesFailure({ toggleProperties })))
+        )
+      )
+    )
+  );
+
+  LoadTogglePropertiesSuccess: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.LOAD_TOGGLE_PROPERTIES_SUCCESS),
+        map(() => {
+          this.loadingService.setLoading(false);
+          return void 0;
+        })
+      ),
+    { dispatch: false }
+  );
+
+  LoadTogglePropertiesFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.LOAD_TOGGLE_PROPERTIES_FAILURE),
+        map(() => {
+          this.loadingService.setLoading(false);
+          return void 0;
+        })
       ),
     { dispatch: false }
   );

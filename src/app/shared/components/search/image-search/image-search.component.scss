@@ -32,7 +32,7 @@
 
       &:hover {
         .image {
-          filter: brightness(1.5);
+          filter: brightness(1.25);
         }
       }
     }
@@ -44,4 +44,11 @@
   color: var(--lighterGrey);
   margin-bottom: .5rem;
   padding-left: .25rem;
+}
+
+.image-container {
+  astrobin-loading-indicator {
+    background: rgba(0, 0, 0, .65);
+    border-radius: .75rem;
+  }
 }

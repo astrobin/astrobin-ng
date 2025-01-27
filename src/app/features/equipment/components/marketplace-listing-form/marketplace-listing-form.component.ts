@@ -3,7 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input,
+  Input, OnInit,
   Output,
   TemplateRef,
   ViewChild
@@ -66,7 +66,7 @@ export interface MarketplaceListingFormInitialCountInterface {
   templateUrl: "./marketplace-listing-form.component.html",
   styleUrls: ["./marketplace-listing-form.component.scss"]
 })
-export class MarketplaceListingFormComponent extends BaseComponentDirective implements AfterViewInit {
+export class MarketplaceListingFormComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @ViewChild("multipleSaleOptionTemplate")
   multipleSaleOptionTemplate: TemplateRef<any>;
 
@@ -150,6 +150,11 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     public readonly userService: UserService
   ) {
     super(store$);
+  }
+
+  async ngOnInit() {
+    super.ngOnInit();
+    await this.googleMapsService.loadGoogleMaps();
   }
 
   ngAfterViewInit() {

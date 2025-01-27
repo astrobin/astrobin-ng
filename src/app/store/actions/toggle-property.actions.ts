@@ -66,3 +66,24 @@ export class LoadTogglePropertyFailure implements PayloadActionInterface {
   constructor(public payload: { toggleProperty: Partial<TogglePropertyInterface> }) {
   }
 }
+
+export class LoadToggleProperties implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_TOGGLE_PROPERTIES;
+
+  constructor(public payload: { toggleProperties: Partial<TogglePropertyInterface>[] }) {
+  }
+}
+
+export class LoadTogglePropertiesSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_TOGGLE_PROPERTIES_SUCCESS;
+
+  constructor(public payload: { toggleProperties: TogglePropertyInterface[] }) {
+  }
+}
+
+export class LoadTogglePropertiesFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_TOGGLE_PROPERTIES_FAILURE;
+
+  constructor(public payload: { toggleProperties: Partial<TogglePropertyInterface>[] }) {
+  }
+}

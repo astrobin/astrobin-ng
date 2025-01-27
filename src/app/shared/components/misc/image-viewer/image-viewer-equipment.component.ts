@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
 import { Router } from "@angular/router";
@@ -22,6 +22,8 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
+import { TranslateService } from "@ngx-translate/core";
+import { EquipmentService } from "@shared/services/equipment.service";
 
 type LegacyEquipmentItem =
   | LegacyTelescopeInterface
@@ -37,49 +39,56 @@ type LegacyEquipmentItem =
     <ng-container *ngIf="hasEquipment">
       <div *ngIf="hasGuidingEquipment" class="metadata-header">{{ "Imaging equipment" | translate }}</div>
       <div *ngIf="!hasGuidingEquipment" class="metadata-header">{{ "Equipment" | translate }}</div>
-      <div class="metadata-section">
-        <div class="metadata-item">
-          <div class="metadata-label">
-            <div class="equipment-section">
-              <ng-container *ngFor="let attr of imagingAttributes">
-                <ng-container
-                  [ngTemplateOutlet]="equipmentTemplate"
-                  [ngTemplateOutletContext]="{ $implicit: attr }"
-                ></ng-container>
-              </ng-container>
-            </div>
-          </div>
+      <div class="metadata-section w-100">
+        <div class="equipment-section">
+          <table class="table table-sm table-mobile-support">
+            <tbody>
+            <ng-container *ngFor="let attr of imagingAttributes">
+              <tr *ngIf="this[attr].length > 0">
+                <th>
+                  <div class="equipment-label">
+                    {{ attrToLabel[attr] }}
+                  </div>
+                </th>
+                <td>
+                  <div class="equipment-container">
+                    <ng-container
+                      [ngTemplateOutlet]="equipmentTemplate"
+                      [ngTemplateOutletContext]="{ $implicit: attr, enableKlassIcon: false }"
+                    ></ng-container>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
         </div>
       </div>
 
       <div *ngIf="hasGuidingEquipment" class="metadata-header">{{ "Guiding equipment" | translate }}</div>
-      <div *ngIf="hasGuidingEquipment" class="metadata-section">
-        <div class="metadata-item">
-          <div class="metadata-label">
-            <div class="equipment-section">
-              <ng-container *ngFor="let attr of guidingAttributes">
-                <ng-container
-                  [ngTemplateOutlet]="equipmentTemplate"
-                  [ngTemplateOutletContext]="{ $implicit: attr }"
-                ></ng-container>
-              </ng-container>
-            </div>
-          </div>
+      <div *ngIf="hasGuidingEquipment" class="metadata-section w-100">
+        <div class="equipment-section">
+          <ng-container *ngFor="let attr of guidingAttributes">
+            <ng-container
+              [ngTemplateOutlet]="equipmentTemplate"
+              [ngTemplateOutletContext]="{ $implicit: attr, enableKlassIcon: true }"
+            ></ng-container>
+          </ng-container>
         </div>
       </div>
     </ng-container>
 
-    <ng-template #equipmentTemplate let-attr>
+    <ng-template #equipmentTemplate let-attr let-enableKlassIcon="enableKlassIcon">
       <ng-container *ngIf="attr.indexOf('legacy') === -1; else legacyTemplate">
         <a
           *ngFor="let item of this[attr]"
-          href="#"
+          [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
           (click)="equipmentItemClicked($event, item)"
           class="value"
         >
           <astrobin-equipment-item-display-name
             [item]="item"
-            [enableKlassIcon]="true"
+            [enableKlassIcon]="enableKlassIcon"
             [enableBrandLink]="false"
             [enableNameLink]="false"
             [enableSummaryModal]="false"
@@ -93,62 +102,24 @@ type LegacyEquipmentItem =
       <ng-template #legacyTemplate>
         <a
           *ngFor="let item of this[attr]"
-          href="#"
+          [href]="legacyEquipmentUrl(item)"
           (click)="legacyEquipmentItemClicked($event, item)"
           class="value legacy-equipment"
         >
-          <img class="klass-icon" src="/assets/images/{{ attrToIcon[attr] }}-white.png?v=1" alt="" />
+          <img
+            *ngIf="enableKlassIcon"
+            class="klass-icon"
+            src="/assets/images/{{ attrToIcon[attr] }}-white.png?v=1"
+            alt="" />
           <span>{{ item.make }} {{ item.name }}</span>
         </a>
       </ng-template>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-equipment.component.scss"]
+  styleUrls: ["./image-viewer-equipment.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseComponent implements OnChanges {
-  readonly imagingAttributes = [
-    "telescopes",
-    "legacyTelescopes",
-    "cameras",
-    "legacyCameras",
-    "mounts",
-    "legacyMounts",
-    "filters",
-    "legacyFilters",
-    "accessories",
-    "legacyAccessories",
-    "legacyFocalReducers",
-    "software",
-    "legacySoftware",
-    ]
-
-  readonly guidingAttributes = [
-    "guidingTelescopes",
-    "legacyGuidingTelescopes",
-    "guidingCameras",
-    "legacyGuidingCameras"
-  ];
-
-  readonly attrToIcon = {
-    "telescopes": "telescope",
-    "legacyTelescopes": "telescope",
-    "cameras": "camera",
-    "legacyCameras": "camera",
-    "mounts": "mount",
-    "legacyMounts": "mount",
-    "filters": "filter",
-    "legacyFilters": "filter",
-    "accessories": "accessory",
-    "legacyAccessories": "accessory",
-    "legacyFocalReducers": "accessory",
-    "software": "software",
-    "legacySoftware": "software",
-    "guidingTelescopes": "telescope",
-    "legacyGuidingTelescopes": "telescope",
-    "guidingCameras": "camera",
-    "legacyGuidingCameras": "camera"
-  }
-
   hasEquipment: boolean;
   hasImagingEquipment: boolean;
   hasGuidingEquipment: boolean;
@@ -170,13 +141,57 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
   guidingCameras: CameraInterface[] = [];
   legacyGuidingCameras: LegacyCameraInterface[] = [];
 
+  protected readonly imagingAttributes = [
+    "telescopes",
+    "legacyTelescopes",
+    "cameras",
+    "legacyCameras",
+    "mounts",
+    "legacyMounts",
+    "filters",
+    "legacyFilters",
+    "accessories",
+    "legacyAccessories",
+    "legacyFocalReducers",
+    "software",
+    "legacySoftware"
+  ];
+  protected readonly guidingAttributes = [
+    "guidingTelescopes",
+    "legacyGuidingTelescopes",
+    "guidingCameras",
+    "legacyGuidingCameras"
+  ];
+  protected readonly attrToIcon = {
+    "telescopes": "telescope",
+    "legacyTelescopes": "telescope",
+    "cameras": "camera",
+    "legacyCameras": "camera",
+    "mounts": "mount",
+    "legacyMounts": "mount",
+    "filters": "filter",
+    "legacyFilters": "filter",
+    "accessories": "accessory",
+    "legacyAccessories": "accessory",
+    "legacyFocalReducers": "accessory",
+    "software": "software",
+    "legacySoftware": "software",
+    "guidingTelescopes": "telescope",
+    "legacyGuidingTelescopes": "telescope",
+    "guidingCameras": "camera",
+    "legacyGuidingCameras": "camera"
+  };
+  protected attrToLabel: { [key: string]: string };
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
     public readonly windowRefService: WindowRefService,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly translateService: TranslateService,
+    public readonly equipmentService: EquipmentService
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -205,24 +220,107 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
       this.guidingCameras = image.guidingCameras2;
       this.legacyGuidingCameras = image.guidingCameras;
     }
+
+    let imagingTelescopesLabel: string;
+    let imagingCamerasLabel: string;
+    let mountsLabel: string;
+    let filtersLabel: string;
+    let accessoriesLabel: string;
+
+    if (this.telescopes.length === 1) {
+      imagingTelescopesLabel = this.equipmentService.humanizeTelescopeType(this.telescopes[0]);
+    } else {
+      imagingTelescopesLabel = this.translateService.instant("Optics");
+    }
+
+    if (this.cameras.length === 1) {
+      imagingCamerasLabel = this.equipmentService.humanizeCameraType(this.cameras[0]);
+    } else {
+      imagingCamerasLabel = this.translateService.instant("Cameras");
+    }
+
+    if (this.mounts.length === 1) {
+      mountsLabel = this.translateService.instant("Mount");
+    } else {
+      mountsLabel = this.translateService.instant("Mounts");
+    }
+
+    if (this.filters.length === 1) {
+      filtersLabel = this.translateService.instant("Filter");
+    } else {
+      filtersLabel = this.translateService.instant("Filters");
+    }
+
+    if (this.accessories.length === 1) {
+      accessoriesLabel = this.translateService.instant("Accessory");
+    } else {
+      accessoriesLabel = this.translateService.instant("Accessories");
+    }
+
+    this.attrToLabel = {
+      "telescopes": imagingTelescopesLabel,
+      "legacyTelescopes": this.translateService.instant("Optics"),
+      "cameras": imagingCamerasLabel,
+      "legacyCameras": this.legacyCameras?.length > 1 ? this.translateService.instant("Cameras") : this.translateService.instant("Camera"),
+      "mounts": mountsLabel,
+      "legacyMounts": this.legacyMounts?.length > 1 ? this.translateService.instant("Mounts") : this.translateService.instant("Mount"),
+      "filters": filtersLabel,
+      "legacyFilters": this.legacyFilters?.length > 1 ? this.translateService.instant("Filters") : this.translateService.instant("Filter"),
+      "accessories": accessoriesLabel,
+      "legacyAccessories": this.legacyAccessories?.length > 1 ? this.translateService.instant("Accessories") : this.translateService.instant("Accessory"),
+      "legacyFocalReducers": this.legacyFocalReducers?.length > 1 ? this.translateService.instant("Focal reducers") : this.translateService.instant("Focus reducer"),
+      "software": this.translateService.instant("Software"),
+      "legacySoftware": this.translateService.instant("Software"),
+      "guidingTelescopes": this.translateService.instant("Guiding optics"),
+      "legacyGuidingTelescopes": this.translateService.instant("Guiding optics"),
+      "guidingCameras": this.guidingCameras?.length > 1 ? this.translateService.instant("Guiding cameras") : this.translateService.instant("Guiding camera"),
+      "legacyGuidingCameras": this.legacyGuidingCameras?.length > 1 ? this.translateService.instant("Guiding cameras") : this.translateService.instant("Guiding camera")
+    };
   }
 
-  equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {
+  protected equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {
     event.preventDefault();
-    this.router.navigateByUrl(`/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`).then(() => {
+
+    const url = `/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`;
+
+    if (event.ctrlKey || event.metaKey) {
+      this.windowRefService.nativeWindow.open(url);
+      return;
+    }
+
+    this.router.navigateByUrl(url).then(() => {
       this.imageViewerService.closeSlideShow(false);
-      this.windowRefService.scroll({ top: 0 });
     });
   }
 
-  legacyEquipmentItemClicked(event: MouseEvent, item: LegacyEquipmentItem): void {
+  protected legacyEquipmentItemClicked(event: MouseEvent, item: LegacyEquipmentItem): void {
     event.preventDefault();
-    const text = "\"" + ((item.make || "") + " " + (item.name || "")).trim() + "\"";
+
+    if (event.ctrlKey || event.metaKey) {
+      const url = this.legacyEquipmentUrl(item);
+      this.windowRefService.nativeWindow.open(url);
+      return;
+    }
+
     this.search({
       text: {
-        value: text,
+        value: this._legacyItemSearchText(item),
         matchType: MatchType.ALL
       }
     });
+  }
+
+  protected legacyEquipmentUrl(item: LegacyEquipmentItem): string {
+    const params = this.searchService.modelToParams({
+      text: {
+        value: this._legacyItemSearchText(item),
+        matchType: MatchType.ALL
+      }
+    });
+    return `/search?p=${params}`;
+  }
+
+  private _legacyItemSearchText(item: LegacyEquipmentItem): string {
+    return "\"" + ((item.make || "") + " " + (item.name || "")).trim() + "\"";
   }
 }

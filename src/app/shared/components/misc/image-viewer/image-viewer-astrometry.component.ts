@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
@@ -13,6 +13,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
 import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
 import { TranslateService } from "@ngx-translate/core";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
 
 @Component({
   selector: "astrobin-image-viewer-astrometry",
@@ -177,7 +178,8 @@ import { TranslateService } from "@ngx-translate/core";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-astrometry.component.scss"]
+  styleUrls: ["./image-viewer-astrometry.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   revision: ImageInterface | ImageRevisionInterface;
@@ -196,6 +198,7 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   constructor(
     public readonly store$: Store<MainState>,
     public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
     public readonly imageService: ImageService,
@@ -203,7 +206,8 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     public readonly deviceService: DeviceService,
     public readonly windowRefService: WindowRefService,
     public readonly astroUtilsService: AstroUtilsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -236,7 +240,8 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   openMoreInfo(event: MouseEvent): void {
     event.preventDefault();
     this.offcanvasService.open(this.moreInfoTemplate, {
-      panelClass: "offcanvas-more-info",
+      panelClass: "image-viewer-offcanvas offcanvas-more-info",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }
@@ -247,11 +252,12 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
 
     const minimumSubscription = SearchCoordsFilterComponent.minimumSubscription;
 
-    this.searchService.allowFilter$(minimumSubscription).subscribe(allow => {
+    this.searchFilterService.allowFilter$(minimumSubscription).subscribe(allow => {
       if (allow) {
         this._doFindImagesInTheSameArea(degree);
+        this.changeDetectorRef.markForCheck();
       } else {
-        this.searchService.openSubscriptionRequiredModal(minimumSubscription);
+        this.searchFilterService.openSubscriptionRequiredModal(minimumSubscription);
       }
     });
   }

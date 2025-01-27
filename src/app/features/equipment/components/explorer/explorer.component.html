@@ -23,6 +23,17 @@
 
       <div class="card-header">
         {{ equipmentItemService.humanizeType(activeType) }}
+
+        <div class="actions">
+          <button
+            (click)="resetBrowser()"
+            [class.loading]="loadingService.loading$ | async"
+            [disabled]="editMode"
+            class="btn btn-link link-secondary"
+          >
+            &times;
+          </button>
+        </div>
       </div>
 
       <div class="card-body">
@@ -142,15 +153,6 @@
       </div>
 
       <div class="card-footer">
-        <button
-          (click)="resetBrowser()"
-          [class.loading]="loadingService.loading$ | async"
-          [disabled]="editMode"
-          class="btn btn-sm-block btn-outline-secondary"
-        >
-          {{ "Close" | translate }}
-        </button>
-
         <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
           <ng-container *ngIf="!!currentUserWrapper.user">
             <button
@@ -171,6 +173,7 @@
                 [objectId]="selectedItem.id"
                 [userId]="currentUserWrapper.user?.id"
                 propertyType="follow"
+                class="py-0"
               ></astrobin-toggle-property>
             </ng-container>
 
@@ -512,6 +515,7 @@
         }"
         [showRetailers]="false"
         [showMarketplaceItems]="false"
+        [showStaticOverlay]="false"
         class="mt-5 d-block"
         ordering="-likes"
       ></astrobin-image-search-card>

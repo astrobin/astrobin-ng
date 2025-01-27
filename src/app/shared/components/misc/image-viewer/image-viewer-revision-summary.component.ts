@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@features/search/services/search.service";
@@ -38,7 +38,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
       </div>
     </div>
   `,
-  styleUrls: ["./image-viewer-revision-summary.component.scss"]
+  styleUrls: ["./image-viewer-revision-summary.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerRevisionSummaryComponent extends ImageViewerSectionBaseComponent {
   @Input() revision: ImageRevisionInterface;

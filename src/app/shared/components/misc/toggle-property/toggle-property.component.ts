@@ -5,8 +5,8 @@ import { MainState } from "@app/store/state";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@shared/services/loading.service";
-import { CreateToggleProperty, CreateTogglePropertySuccess, DeleteToggleProperty, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
-import { debounceTime, filter, map, take, takeUntil, tap } from "rxjs/operators";
+import { CreateToggleProperty, CreateTogglePropertySuccess, DeleteToggleProperty, LoadTogglePropertiesFailure, LoadTogglePropertiesSuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -14,8 +14,10 @@ import { RouterService } from "@shared/services/router.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { DeviceService } from "@shared/services/device.service";
 import { isPlatformBrowser } from "@angular/common";
-import { fromEvent, merge, Observable, Subscription, throttleTime } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { ViewportInitService } from "@shared/services/viewport-initialization.service";
+import { TogglePropertyBatchService } from "@shared/services/toggle-property-batch.service";
 
 @Component({
   selector: "astrobin-toggle-property",
@@ -82,8 +84,6 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   private _createSubscriptionFailure: Subscription;
   private _deleteSubscription: Subscription;
   private _deleteSubscriptionFailure: Subscription;
-  private _scrollSubscription: Subscription;
-
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -96,9 +96,120 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly elementRef: ElementRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly viewportInitService: ViewportInitService,
+    public readonly togglePropertyBatchService: TogglePropertyBatchService
   ) {
     super(store$);
+  }
+
+  public ngOnInit(): void {
+    this.isTouchDevice = this.deviceService.isTouchEnabled();
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    this.initialized = false;
+    this.loading = false;
+
+    if (changes.propertyType) {
+      this._initSetTogglePropertyLabel();
+      this._initUnsetTogglePropertyLabel();
+      this._initTogglePropertyIcon();
+    }
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.viewportInitService.register(
+        this.componentId,
+        this.elementRef,
+        () => {
+          this._initStatus();
+          this.changeDetectorRef.markForCheck();
+        }
+      );
+    }
+
+    this.actions$.pipe(
+      ofType(AppActionTypes.FORCE_CHECK_TOGGLE_PROPERTY_AUTO_LOAD),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      if (!this.initialized &&
+        this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, { verticalTolerance: 500 })) {
+        this._initStatus();
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.viewportInitService.unregister(this.componentId);
+
+    if (this._createSubscription) {
+      this._createSubscription.unsubscribe();
+    }
+
+    if (this._createSubscriptionFailure) {
+      this._createSubscriptionFailure.unsubscribe();
+    }
+
+    if (this._deleteSubscription) {
+      this._deleteSubscription.unsubscribe();
+    }
+
+    if (this._deleteSubscriptionFailure) {
+      this._deleteSubscriptionFailure.unsubscribe();
+    }
+
+    super.ngOnDestroy();
+  }
+
+  public onClick(event: MouseEvent | TouchEvent): void {
+    event.preventDefault();
+
+    if (this.disabled) {
+      return;
+    }
+
+    if (!this.userId) {
+      this.routerService.redirectToLogin();
+      return;
+    }
+
+    this.toggling = true;
+
+    if (this.toggled) {
+      if (this._toggleProperty) {
+        this.store$.dispatch(
+          new DeleteToggleProperty({ toggleProperty: this._toggleProperty })
+        );
+      } else {
+        this._initToggleProperty().pipe(
+          filter(toggleProperty => !!toggleProperty),
+          take(1)
+        ).subscribe(toggleProperty => {
+          if (toggleProperty) {
+            this.store$.dispatch(
+              new DeleteToggleProperty({ toggleProperty })
+            );
+          } else {
+            this.loading = false;
+            this.changeDetectorRef.markForCheck();
+          }
+        });
+      }
+    } else {
+      this.store$.dispatch(
+        new CreateToggleProperty({
+          toggleProperty: {
+            propertyType: this.propertyType,
+            user: this.userId,
+            objectId: this.objectId,
+            contentType: this.contentType
+          }
+        })
+      );
+    }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   private _initUnsetTogglePropertyLabel(): void {
@@ -153,139 +264,6 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     }
   }
 
-  public ngOnInit(): void {
-    this.isTouchDevice = this.deviceService.isTouchEnabled();
-  }
-
-  public ngOnChanges(changes: SimpleChanges): void {
-    this.initialized = false;
-    this.loading = false;
-
-    if (changes.propertyType) {
-      this._initSetTogglePropertyLabel();
-      this._initUnsetTogglePropertyLabel();
-      this._initTogglePropertyIcon();
-    }
-
-    // Clean up existing scroll subscription if it exists
-    if (this._scrollSubscription) {
-      this._scrollSubscription.unsubscribe();
-    }
-
-    if (isPlatformBrowser(this.platformId)) {
-      if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, {
-        verticalTolerance: 500
-      })) {
-        this._initStatus();
-      } else {
-        const scrollElement = UtilsService.getScrollableParent(this.elementRef.nativeElement, this.windowRefService);
-        const forceCheck$ = this.actions$.pipe(
-          ofType(AppActionTypes.FORCE_CHECK_TOGGLE_PROPERTY_AUTO_LOAD)
-        );
-
-        this._scrollSubscription = merge(
-          // Stream 1: Throttled events during scrolling
-          fromEvent(scrollElement, "scroll").pipe(
-            throttleTime(300)
-          ),
-          // Stream 2: Single event when scrolling stops
-          fromEvent(scrollElement, "scroll").pipe(
-            debounceTime(150)
-          ),
-          forceCheck$
-        ).pipe(
-          takeUntil(this.destroyed$),
-          tap(() => {
-            if (this.utilsService.isNearOrInViewport(this.elementRef.nativeElement, {
-              verticalTolerance: 500
-            })) {
-              this._initStatus();
-              // Unsubscribe once we've initialized
-              if (this._scrollSubscription) {
-                this._scrollSubscription.unsubscribe();
-                this._scrollSubscription = null;
-              }
-            }
-          })
-        ).subscribe();
-      }
-    }
-  }
-
-  public ngOnDestroy(): void {
-    super.ngOnDestroy();
-
-    if (this._createSubscription) {
-      this._createSubscription.unsubscribe();
-    }
-
-    if (this._createSubscriptionFailure) {
-      this._createSubscriptionFailure.unsubscribe();
-    }
-
-    if (this._deleteSubscription) {
-      this._deleteSubscription.unsubscribe();
-    }
-
-    if (this._deleteSubscriptionFailure) {
-      this._deleteSubscriptionFailure.unsubscribe();
-    }
-
-    if (this._scrollSubscription) {
-      this._scrollSubscription.unsubscribe();
-    }
-  }
-
-  public onClick(event: MouseEvent | TouchEvent): void {
-    event.preventDefault();
-
-    if (this.disabled) {
-      return;
-    }
-
-    if (!this.userId) {
-      this.routerService.redirectToLogin();
-      return;
-    }
-
-    this.toggling = true;
-
-    if (this.toggled) {
-      if (this._toggleProperty) {
-        this.store$.dispatch(
-          new DeleteToggleProperty({ toggleProperty: this._toggleProperty })
-        );
-      } else {
-        this._initToggleProperty().pipe(
-          filter(toggleProperty => !!toggleProperty),
-          take(1)
-        ).subscribe(toggleProperty => {
-          if (toggleProperty) {
-            this.store$.dispatch(
-              new DeleteToggleProperty({ toggleProperty })
-            );
-          } else {
-            this.loading = false;
-            this.changeDetectorRef.markForCheck();
-          }
-        });
-      }
-    } else {
-      this.store$.dispatch(
-        new CreateToggleProperty({
-          toggleProperty: {
-            propertyType: this.propertyType,
-            user: this.userId,
-            objectId: this.objectId,
-            contentType: this.contentType
-          }
-        })
-      );
-    }
-
-    this.changeDetectorRef.detectChanges();
-  }
-
   private _getFilterParams(toggleProperty: Partial<TogglePropertyInterface>): boolean {
     return toggleProperty.propertyType === this.propertyType &&
       toggleProperty.user === this.userId &&
@@ -293,36 +271,34 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       toggleProperty.contentType === this.contentType;
   }
 
-  private _getStoreParams(): Partial<TogglePropertyInterface> {
-    return {
-      propertyType: this.propertyType,
-      user: this.userId,
-      objectId: this.objectId,
-      contentType: this.contentType
-    };
-  }
-
   private _initToggleProperty(): Observable<TogglePropertyInterface | null> {
     return new Observable<TogglePropertyInterface | null>(observer => {
       this.actions$.pipe(
-        ofType(AppActionTypes.LOAD_TOGGLE_PROPERTY_SUCCESS),
-        map((action: LoadTogglePropertySuccess) => action.payload.toggleProperty),
-        filter(toggleProperty => this._getFilterParams(toggleProperty)),
+        ofType(AppActionTypes.LOAD_TOGGLE_PROPERTIES_SUCCESS),
+        map((action: LoadTogglePropertiesSuccess) => action.payload.toggleProperties),
+        filter(toggleProperties => {
+          // Find our toggle property in the batch response
+          return toggleProperties.some(tp => this._getFilterParams(tp));
+        }),
         take(1)
-      ).subscribe(toggleProperty => {
-        this._toggleProperty = toggleProperty;
-        this.toggled = true;
+      ).subscribe(toggleProperties => {
+        const toggleProperty = toggleProperties.find(tp => this._getFilterParams(tp));
+        this._toggleProperty = toggleProperty || null;
+        this.toggled = !!toggleProperty;
         this.toggling = false;
         this.initialized = true;
-        observer.next(toggleProperty);
+        observer.next(toggleProperty || null);
         observer.complete();
         this.changeDetectorRef.markForCheck();
       });
 
       this.actions$.pipe(
-        ofType(AppActionTypes.LOAD_TOGGLE_PROPERTY_FAILURE),
-        map((action: LoadTogglePropertyFailure) => action.payload.toggleProperty),
-        filter(toggleProperty => this._getFilterParams(toggleProperty)),
+        ofType(AppActionTypes.LOAD_TOGGLE_PROPERTIES_FAILURE),
+        map((action: LoadTogglePropertiesFailure) => action.payload.toggleProperties),
+        filter(toggleProperties => {
+          // Find our toggle property in the batch response
+          return toggleProperties.some(tp => this._getFilterParams(tp));
+        }),
         take(1)
       ).subscribe(() => {
         this._toggleProperty = null;
@@ -334,7 +310,13 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
         this.changeDetectorRef.markForCheck();
       });
 
-      this.store$.dispatch(new LoadToggleProperty({ toggleProperty: this._getStoreParams() }));
+      this.togglePropertyBatchService
+        .checkToggleProperty(
+          this.propertyType,
+          this.userId,
+          this.objectId,
+          this.contentType
+        );
     });
   }
 

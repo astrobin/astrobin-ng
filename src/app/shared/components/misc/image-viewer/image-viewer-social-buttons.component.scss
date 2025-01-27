@@ -14,7 +14,11 @@
       border-radius: .25rem;
 
       &.toggled {
-        box-shadow: 3px 3px 6px rgba(0, 0, 0, .5) inset;
+        box-shadow: 5px 5px 5px rgba(0, 0, 0, .5) inset;
+      }
+
+      &:not(.toggled) {
+        box-shadow: 3px 3px 3px rgba(255, 255, 255, .15) inset;
       }
 
       &.loading {
@@ -35,7 +39,8 @@
     }
   }
 
-  .like-count {
+  .like-count,
+  .bookmark-count {
     color: var(--accentColor);
     border-bottom: 1px dashed var(--darkerAccentColor);
     font-size: .9rem;
@@ -54,7 +59,34 @@
     ::ng-deep .btn {
       &:hover {
         color: var(--white);
+        filter: brightness(1.1);
       }
+    }
+  }
+}
+
+::ng-deep {
+  .image-like-this-offcanvas,
+  .image-bookmarked-this-offcanvas {
+    .table td {
+      vertical-align: middle;
+
+      astrobin-toggle-property {
+        .btn {
+          .ng-fa-icon {
+            margin: 0;
+          }
+
+          &.toggled .ng-fa-icon {
+            opacity: 1 !important;
+            color: var(--accentColor) !important;
+          }
+        }
+      }
+    }
+
+    &:not(.offcanvas-bottom) {
+      width: 40vw;
     }
   }
 }

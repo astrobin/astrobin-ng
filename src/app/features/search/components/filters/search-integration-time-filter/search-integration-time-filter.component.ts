@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { SearchBaseSliderFilterComponent } from "@features/search/components/filters/search-base-slider-filter/search-base-slider-filter.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -8,6 +7,8 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-integration-time-filter.search-filter-component",
@@ -20,7 +21,7 @@ export class SearchIntegrationTimeFilterComponent extends SearchBaseSliderFilter
 
   readonly category = SearchFilterCategory.ACQUISITION_ATTRIBUTES;
   readonly unit = "h";
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchIntegrationTimeFilterComponent.key as SearchAutoCompleteType
   );
 
@@ -29,9 +30,9 @@ export class SearchIntegrationTimeFilterComponent extends SearchBaseSliderFilter
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService
+    public readonly searchFilterService: SearchFilterService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
 
     this.initFields(SearchIntegrationTimeFilterComponent.key, { floor: 0, ceil: 999, step: .1 });
   }

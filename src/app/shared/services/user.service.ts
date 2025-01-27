@@ -79,7 +79,7 @@ export class UserService extends BaseService implements UserServiceInterface {
 
   openGallery(username: UserInterface["username"], newGalleryExperience: boolean): void {
     if (newGalleryExperience) {
-      this.router.navigateByUrl('/u/' + username + '#gallery').then(() => {
+      this.router.navigateByUrl('/u/' + username).then(() => {
         this.imageViewerService.closeSlideShow(false);
       });
     } else {
@@ -103,7 +103,7 @@ export class UserService extends BaseService implements UserServiceInterface {
     newGalleryExperience: boolean
   ): void {
     if (newGalleryExperience) {
-      this.router.navigateByUrl('/u/' + username + '?collection=' + collectionId + '#gallery').then(() => {
+      this.router.navigateByUrl('/u/' + username + '?collection=' + collectionId).then(() => {
         this.imageViewerService.closeSlideShow(false);
       });
     } else {

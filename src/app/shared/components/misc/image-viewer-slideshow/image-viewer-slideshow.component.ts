@@ -7,10 +7,10 @@ import { Store } from "@ngrx/store";
 import { ImageService } from "@shared/services/image/image.service";
 import { NgbCarousel, NgbSlideEvent } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { distinctUntilChanged, filter, map, switchMap, takeUntil } from "rxjs/operators";
+import { switchMap } from "rxjs/operators";
 import { Observable, Subscription } from "rxjs";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { NavigationEnd, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { DeviceService } from "@shared/services/device.service";
@@ -19,6 +19,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { fadeInOut } from "@shared/animations";
+import { ImageViewerSlideshowContextComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow-context.component";
 
 const SLIDESHOW_BUFFER = 1;
 const SLIDESHOW_WINDOW = 3;
@@ -26,7 +27,7 @@ const SLIDESHOW_WINDOW = 3;
 @Component({
   selector: "astrobin-image-viewer-slideshow",
   template: `
-    <div #carouselContainer *ngIf="!fullscreen" class="carousel-container">
+    <div #carouselContainer class="carousel-container">
       <div class="carousel-area">
         <ngb-carousel
           #carousel
@@ -48,7 +49,7 @@ const SLIDESHOW_WINDOW = 3;
             [attr.id]="item.imageId"
           >
             <astrobin-image-viewer
-              *ngIf="item.image && !loadingImage; else loadingTemplate"
+              *ngIf="item.image; else loadingTemplate"
               (closeClick)="closeSlideshow.emit(true)"
               (nextClick)="onNextClick()"
               (previousClick)="onPreviousClick()"
@@ -67,6 +68,7 @@ const SLIDESHOW_WINDOW = 3;
 
       <div *ngIf="navigationContext?.length > 1" class="context-area">
         <astrobin-image-viewer-slideshow-context
+          #context
           [activeId]="activeId"
           [callerComponentId]="callerComponentId"
           [navigationContext]="navigationContext"
@@ -79,13 +81,19 @@ const SLIDESHOW_WINDOW = 3;
     <astrobin-fullscreen-image-viewer
       *ngIf="activeImage"
       [id]="activeImage.pk"
-      [revision]="activeImageRevisionLabel"
+      [eagerLoading]="true"
+      [revisionLabel]="activeImageRevisionLabel"
       (enterFullscreen)="onEnterFullscreen()"
       (exitFullscreen)="onExitFullscreen()"
     ></astrobin-fullscreen-image-viewer>
 
     <ng-template #loadingTemplate>
-      <astrobin-loading-indicator></astrobin-loading-indicator>
+      <div class="loading-area" @fadeInOut>
+        <div class="close-button" (click)="closeSlideshow.emit(true)">
+          <fa-icon icon="times"></fa-icon>
+        </div>
+        <astrobin-loading-indicator></astrobin-loading-indicator>
+      </div>
     </ng-template>
   `,
   styleUrls: ["./image-viewer-slideshow.component.scss"],
@@ -108,6 +116,9 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   @Output()
   imageChange = new EventEmitter<ImageInterface>();
+
+  @ViewChild("context", { read: ImageViewerSlideshowContextComponent})
+  protected context: ImageViewerSlideshowContextComponent;
 
   activeId: ImageInterface["pk"] | ImageInterface["hash"];
   activeImage: ImageInterface;
@@ -147,41 +158,17 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     public readonly translateService: TranslateService
   ) {
     super(store$);
-
     this._isBrowser = isPlatformBrowser(this.platformId);
-
-    router.events
-      .pipe(
-        filter(event => event instanceof NavigationEnd),
-        map((event: NavigationEnd) => event.urlAfterRedirects),
-        distinctUntilChanged(),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe(url => {
-        const imageId = this.router.parseUrl(url).queryParams["i"];
-        const revisionLabel = this.router.parseUrl(url).queryParams["r"] || FINAL_REVISION_LABEL;
-        if (imageId) {
-          this.setImage(imageId, revisionLabel, false).subscribe(
-            () => {
-            },
-            error => {
-              this.closeSlideshow.emit(false);
-            }
-          );
-        }
-      });
   }
 
   @HostListener("window:popstate", ["$event"])
   onPopState(event: PopStateEvent) {
     if (this.fullscreen) {
+      event.preventDefault();
       this.store$.dispatch(new HideFullscreenImage());
       this.onExitFullscreen();
     } else if (event.state?.imageId && this.activeId !== event.state.imageId) {
-      this.setImage(
-        event.state.imageId,
-        event.state.revisionLabel || FINAL_REVISION_LABEL,
-        false).subscribe();
+      event.preventDefault();
     } else {
       this.closeSlideshow.emit(false);
     }
@@ -241,7 +228,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     return new Observable(subscriber => {
       this._loadImage(imageId).subscribe({
         next: image => {
-          this.loadingImage = false;
           this.activeImage = image;
           this.activeImageRevisionLabel = revisionLabel || FINAL_REVISION_LABEL;
           this.imageService.setMetaTags(image);
@@ -249,13 +235,19 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
           this._loadAdjacentImages(imageId);
           this._dropImagesTooFarFromIndex(imageId);
 
-          this.utilsService.delay(200).subscribe(() => {
+          this.utilsService.delay(1).subscribe(() => {
             if (this.carousel) {
               this._skipSlideEvent = true;
               this.carousel.select(imageId.toString());
               this._skipSlideEvent = false;
               this.carousel.focus();
               this.activeId = imageId;
+            }
+
+            this.loadingImage = false;
+
+            if (this.context) {
+              this.context.removeLoadingStatus(imageId);
             }
 
             if (emitChange) {
@@ -265,7 +257,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
             subscriber.next(image);
             subscriber.complete();
 
-            this.utilsService.delay(50).subscribe(() => {
+            this.utilsService.delay(250).subscribe(() => {
               this.store$.dispatch(new ForceCheckTogglePropertyAutoLoad());
             });
           });

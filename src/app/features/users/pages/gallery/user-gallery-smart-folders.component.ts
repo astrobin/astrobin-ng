@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -24,7 +24,6 @@ export enum SmartFolderType {
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div
         *ngIf="!activeFolderType"
-        @fadeInOut
         class="d-flex flex-wrap gap-4 justify-content-center"
       >
         <ng-container *ngFor="let smartFolder of smartFolders">
@@ -59,7 +58,6 @@ export enum SmartFolderType {
 
       <astrobin-user-gallery-smart-folder
         *ngIf="activeFolderType"
-        @fadeInOut
         (activeChange)="activeChange.emit($event)"
         [user]="user"
         [userProfile]="userProfile"
@@ -68,7 +66,8 @@ export enum SmartFolderType {
     </ng-container>
   `,
   styleUrls: ["./user-gallery-smart-folders.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGallerySmartFoldersComponent extends BaseComponentDirective implements OnInit {
   @Input() user: UserInterface;
@@ -113,7 +112,8 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
   constructor(
     public readonly store$: Store<MainState>,
     public readonly translateService: TranslateService,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -121,6 +121,7 @@ export class UserGallerySmartFoldersComponent extends BaseComponentDirective imp
   ngOnInit() {
     this.activatedRoute.queryParamMap.pipe(takeUntil(this.destroyed$)).subscribe(() => {
       this._setActiveFolderTypeFromRoute();
+      this.changeDetectorRef.markForCheck();
     });
 
     this._setActiveFolderTypeFromRoute();

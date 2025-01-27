@@ -48,9 +48,13 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
     });
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.isCypress = isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") > -1;
     this.isLocalhost = isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.location.hostname === "localhost";
+
+    if (!this.isCypress && !this.isLocalhost) {
+      await this.googleMapsService.loadGoogleMaps();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -142,6 +146,10 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
       this.geocoder = this.googleMapsService.createGeocoder();
     }
 
+    if (!this.geocoder) {
+      return;
+    }
+
     this.geocoder.geocode({ location }, (results, status) => {
       if (status === "OK") {
         const address = results[0].formatted_address;
@@ -157,6 +165,10 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
 
     if (!this.geocoder) {
       this.geocoder = this.googleMapsService.createGeocoder();
+    }
+
+    if (!this.geocoder) {
+      return;
     }
 
     this.geocoder.geocode({ address: this.search }, (results, status) => {

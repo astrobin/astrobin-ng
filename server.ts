@@ -54,6 +54,37 @@ export function app(): express.Express {
 
   // Apply the proxy middleware to the /api route
   server.use("/api", apiProxy);
+  server.use("/json-api", apiProxy);
+
+  server.get('/ngsw.json', (req, res) => {
+    const filePath = join(distFolder, 'ngsw.json');
+    res.sendFile(filePath, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      },
+    }, (err) => {
+      if (err) {
+        console.error('Error serving ngsw.json:', err);
+        res.status(404).send('ngsw.json not found');
+      }
+    });
+  });
+
+  server.get('/ngsw-worker.js', (req, res) => {
+    const filePath = join(distFolder, 'ngsw-worker.js');
+    res.sendFile(filePath, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      },
+    }, (err) => {
+      if (err) {
+        console.error('Error serving ngsw-worker.js:', err);
+        res.status(404).send('ngsw-worker.js not found');
+      }
+    });
+  });
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
@@ -67,6 +98,7 @@ export function app(): express.Express {
 
   // All regular routes use the Universal engine
   server.get("*", (req, res) => {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
     res.render(indexHtml, {
       req,
       res,

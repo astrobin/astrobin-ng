@@ -1,4 +1,4 @@
-import { isPlatformBrowser, registerLocaleData } from "@angular/common";
+import { DatePipe, isPlatformBrowser, LocationStrategy, registerLocaleData } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import localeArabic from "@angular/common/locales/ar";
 import localeGerman from "@angular/common/locales/de";
@@ -20,7 +20,7 @@ import localeTurkish from "@angular/common/locales/tr";
 import localeChinese from "@angular/common/locales/zh";
 import localeChineseSimplified from "@angular/common/locales/zh-Hans";
 import localeChineseTraditional from "@angular/common/locales/zh-Hant";
-import { ErrorHandler, Inject, NgModule, PLATFORM_ID } from "@angular/core";
+import { ErrorHandler, Inject, Injectable, NgModule, PLATFORM_ID } from "@angular/core";
 import { BrowserModule, Title, TransferState } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
@@ -38,15 +38,18 @@ import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateP
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SharedModule } from "@shared/shared.module";
 import { CookieModule, CookieService } from "ngx-cookie";
-import { TimeagoClock, TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
+import { TimeagoClock, TimeagoDefaultFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { translateLoaderFactory } from "./translate-loader";
 import * as Sentry from "@sentry/angular";
-import { Router } from "@angular/router";
+import { Router, RouteReuseStrategy } from "@angular/router";
 import { CLIENT_IP } from "@app/client-ip.injector";
 import { TimeagoAppClock } from "@shared/services/timeago-app-clock.service";
 import { NGRX_STATE_KEY } from "@shared/services/store-transfer.service";
+import { ServiceWorkerModule } from "@angular/service-worker";
+import { SearchModule } from "@features/search/search.module";
+import { CustomRouteReuseStrategy } from "@app/custom-reuse-strategy";
 import { IonicModule } from "@ionic/angular";
 
 // Supported languages
@@ -79,6 +82,26 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
   iconLibrary.addIconPacks(fas, far, fab);
 }
 
+@Injectable()
+export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
+  private _maxTimeago = 30 * 24 * 60 * 60 * 1000; // 30 days in ms
+
+  constructor(private datePipe: DatePipe) {
+    super();
+  }
+
+  format(then: number): string {
+    const now = Date.now();
+    const diff = now - then;
+
+    if (diff > this._maxTimeago) {
+      return this.datePipe.transform(then, "mediumDate") || "";
+    }
+
+    return super.format(then);
+  }
+}
+
 @NgModule({
   imports: [
     // Angular.
@@ -86,6 +109,10 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     BrowserAnimationsModule,
     HttpClientModule,
     CookieModule.forRoot(),
+    ServiceWorkerModule.register("ngsw-worker.js", {
+      enabled: environment.production,
+      registrationStrategy: "registerWhenStable:30000"
+    }),
     IonicModule.forRoot({
       _forceStatusbarPadding: true
     }),
@@ -107,7 +134,10 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
 
     TimeagoModule.forRoot({
       intl: TimeagoIntl,
-      formatter: { provide: TimeagoFormatter, useClass: TimeagoCustomFormatter },
+      formatter: {
+        provide: TimeagoFormatter,
+        useClass: AstroBinTimeagoCustomFormatter
+      },
       clock: {
         provide: TimeagoClock,
         useClass: TimeagoAppClock
@@ -132,7 +162,8 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
 
     // This app.
     AppRoutingModule,
-    SharedModule.forRoot()
+    SharedModule.forRoot(),
+    SearchModule
   ],
   providers: [
     CookieService,
@@ -147,6 +178,12 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       useValue: Sentry.createErrorHandler({
         showDialog: false
       })
+    },
+    {
+      provide: RouteReuseStrategy,
+      useFactory: (platformId: Object, locationStrategy: LocationStrategy) =>
+        new CustomRouteReuseStrategy(platformId, locationStrategy),
+      deps: [PLATFORM_ID, LocationStrategy]
     },
     { provide: CLIENT_IP, useValue: "" } // provide a fallback value for CLIENT_IP
   ],

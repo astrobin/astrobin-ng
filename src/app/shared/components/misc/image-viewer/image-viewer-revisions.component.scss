@@ -68,7 +68,7 @@
         transform: translateX(-50%);
         background: rgba(0, 0, 0, .5);
         color: var(--white);
-        opacity: 0;
+        opacity: 1;
         transition: opacity .2s ease-in-out;
         border-radius: .5rem;
 
@@ -98,6 +98,10 @@
       }
 
       @media (hover: hover) and (pointer: fine) {
+        .dropdown {
+          opacity: 0;
+        }
+
         &:hover {
           transform: translateY(-.25rem);
 
@@ -107,7 +111,7 @@
         }
       }
 
-      @media (hover: none) and (pointer: coarse) {
+      @media (pointer: coarse) {
         .dropdown {
           opacity: 1;
           text-align: center;
@@ -143,7 +147,7 @@
       }
     }
 
-    @media (hover: none) and (pointer: coarse) {
+    @media (pointer: coarse) {
       bottom: 4rem;
     }
   }

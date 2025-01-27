@@ -1,0 +1,9 @@
+@import "../../../styles/breakpoints";
+
+.loading-item {
+  ::ng-deep {
+    .load-wrapper {
+      border-radius: 20px;
+    }
+  }
+}

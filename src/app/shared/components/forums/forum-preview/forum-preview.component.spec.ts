@@ -19,7 +19,7 @@ describe("ForumPreviewComponent", () => {
     fixture = TestBed.createComponent(ForumPreviewComponent);
     component = fixture.componentInstance;
 
-    jest.spyOn(component.forumApiService, "loadTopics").mockReturnValueOnce(of({ count: 0, next: null, prev: null, results: [] }));
+    jest.spyOn(component.forumApiService, "latestTopics").mockReturnValueOnce(of({ count: 0, next: null, prev: null, results: [] }));
 
     fixture.detectChanges();
   });

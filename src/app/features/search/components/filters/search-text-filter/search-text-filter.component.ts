@@ -5,8 +5,9 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-text-filter.search-filter-component",
@@ -17,7 +18,7 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.TEXT;
 
   readonly category = SearchFilterCategory.GENERAL;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchTextFilterComponent.key);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchTextFilterComponent.key);
   readonly mayBeRemoved = false;
   readonly infoText = this.translateService.instant(
     "This searches the title, description, and most image attributes, even if the exact words don't match perfectly." +
@@ -50,9 +51,9 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService
+    public readonly searchFilterService: SearchFilterService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

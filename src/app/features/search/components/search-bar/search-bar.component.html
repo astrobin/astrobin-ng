@@ -92,7 +92,7 @@
       class="search-bar-autocomplete-group"
     >
       <h4 class="search-bar-autocomplete-title">
-        {{ searchService.humanizeSearchAutoCompleteType(group.key) }}
+        {{ searchFilterService.humanizeSearchAutoCompleteType(group.key) }}
       </h4>
 
       <ng-container *ngIf="group.value === null">
@@ -113,7 +113,7 @@
           class="search-bar-autocomplete-item"
         >
           <span [innerHTML]="item.label | highlight: model.text?.value"></span>
-          <ng-container *ngIf="(searchService.allowFilter$(item.minimumSubscription) | async) === false">
+          <ng-container *ngIf="(searchFilterService.allowFilter$(item.minimumSubscription) | async) === false">
             <fa-icon icon="lock" class="ms-2"></fa-icon>
           </ng-container>
         </div>
@@ -397,6 +397,23 @@
       </ng-container>
     </ng-template>
   </div>
+</div>
+
+<div
+  *ngIf="firstSearchDone && model.text?.value"
+  class="alert alert-dark alert-mini search-bar-free-text-alert"
+>
+  <fa-icon icon="info-circle"></fa-icon>
+  {{ "AstroBin's search is powerful and flexible. We recommend that you use specific filters, instead of doing a free text search, if possible." | translate }}
+  <a
+    (click)="showTabOrEnterInformation()"
+    href="#"
+    astrobinEventStopPropagation
+    astrobinEventPreventDefault
+    class="alert-link"
+  >
+    {{ "Learn why." }}
+  </a>
 </div>
 
 <div class="filters">

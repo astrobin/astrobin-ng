@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { ImageService } from "@shared/services/image/image.service";
@@ -69,7 +69,6 @@ import { UserService } from "@shared/services/user.service";
             metadata-item
             flex-grow-1
             gap-3
-            flex-column flex-sm-row
           "
         >
           <ng-container *ngIf="photographers?.length > 0; else loadingTemplate">
@@ -112,8 +111,7 @@ import { UserService } from "@shared/services/user.service";
                 align-items-center
                 flex-nowrap
                 flex-grow-1
-                flex-column flex-sm-row
-                gap-2 gap-sm-3
+                gap-3
                 w-100
               "
             >
@@ -126,12 +124,11 @@ import { UserService } from "@shared/services/user.service";
                 <img [src]="photographers[0].avatar" alt="" class="avatar" />
               </a>
 
-              <div class="text-center text-sm-start">
+              <div class="d-flex gap-2 align-items-center">
                 <a
                   (click)="userService.openGallery(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                   [href]="userService.getGalleryUrl(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                   astrobinEventPreventDefault
-                  class="d-inline me-2"
                 >
                   {{ photographers[0].displayName }}
                 </a>
@@ -141,12 +138,12 @@ import { UserService } from "@shared/services/user.service";
                   [contentType]="userContentType.id"
                   [objectId]="photographers[0].id"
                   [userId]="currentUserWrapper.user?.id"
-                  [showLabel]="true"
-                  [showIcon]="false"
+                  [showLabel]="false"
+                  [showIcon]="true"
                   [setLabel]="'Follow' | translate"
                   [unsetLabel]="'Unfollow' | translate"
-                  class="d-inline-block btn-no-block"
-                  btnClass="btn btn-xs btn-no-block btn-outline-secondary"
+                  class="btn-no-block follow-toggle-property"
+                  btnClass="btn btn-xs btn-no-block btn-link link-secondary"
                   propertyType="follow"
                 ></astrobin-toggle-property>
               </div>
@@ -216,7 +213,8 @@ import { UserService } from "@shared/services/user.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-photographers.component.scss"]
+  styleUrls: ["./image-viewer-photographers.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   @Input()
@@ -251,7 +249,8 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
     public readonly loadingService: LoadingService,
     public readonly renderer: Renderer2,
     public readonly utilsService: UtilsService,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -317,8 +316,11 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
               pending: true
             }))
           );
+          this.changeDetectorRef.markForCheck();
         });
       }
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -331,7 +333,8 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
 
   openCollaboratorsOffcanvas(): void {
     this.offcanvasService.open(this.collaboratorsTemplate, {
-      panelClass: "offcanvas-collaborators",
+      panelClass: "image-viewer-offcanvas offcanvas-collaborators",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
     this.utilsService.delay(500).subscribe(() => {

@@ -4,11 +4,14 @@
     [model]="model"
   ></astrobin-search-bar>
 
-  <astrobin-ad-manager #ad *ngIf="showAd" configName="wide"></astrobin-ad-manager>
+  <astrobin-ad-manager
+    #ad
+    [style.visibility]="showAd ? 'visible' : 'hidden'"
+    [configName]="showAd ? 'wide' : null"
+  ></astrobin-ad-manager>
 
   <astrobin-image-search
     *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
-    (imageClicked)="imageClicked()"
     [model]="model"
     [showResultsCount]="true"
     class="d-block mt-3"

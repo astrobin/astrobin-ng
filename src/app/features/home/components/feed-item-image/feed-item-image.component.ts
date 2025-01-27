@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, ViewContainerRef } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild, ViewContainerRef } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -18,7 +18,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <div class="feed-item-component feed-item-image">
-        <div class="feed-item-header-fade"></div>
         <div class="feed-item-header">
           <img
             class="feed-item-avatar"
@@ -35,6 +34,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
                 [href]="'/i/' + objectId"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
+                class="item-display-name"
               >
                 {{ displayName }}
               </a>
@@ -51,11 +51,13 @@ import { WindowRefService } from "@shared/services/window-ref.service";
             [href]="'/i/' + objectId"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
+            class="main-image-container"
           >
             <img
+              #image
               [alt]="displayName"
               [src]="feedItem.image"
-              [style.aspect-ratio]="feedItem.imageW && feedItem.imageH ? feedItem.imageW / feedItem.imageH : 1"
+              class="main-image"
             >
           </a>
         </div>
@@ -72,7 +74,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
           >
           </div>
 
-          <div class="feed-item-extra d-flex mt-3 justify-content-between align-items-center">
+          <div class="feed-item-extra d-flex justify-content-between align-items-center">
             <span class="timestamp">
               {{ feedItem.timestamp | localDate | timeago }}
             </span>
@@ -107,11 +109,13 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   styleUrls: [
     "../feed-item/feed-item.component.scss",
     "./feed-item-image.component.scss"
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedItemImageComponent extends BaseComponentDirective implements OnChanges {
   @Input() feedItem: FeedItemInterface;
   @Output() readonly openImage = new EventEmitter<ImageInterface["hash"] | ImageInterface["pk"]>();
+  @ViewChild('image') imageElement: ElementRef<HTMLImageElement>;
 
   protected contentType: number;
   protected objectId: string;

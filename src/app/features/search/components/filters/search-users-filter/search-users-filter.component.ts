@@ -5,7 +5,7 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@features/search/services/search.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Actions, ofType } from "@ngrx/effects";
@@ -17,6 +17,8 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { AuthActionTypes, LoadUser, LoadUserSuccess } from "@features/account/store/auth.actions";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-users-filter.search-filter-component",
@@ -27,7 +29,7 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.USERS;
 
   readonly category = SearchFilterCategory.GENERAL;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(SearchAutoCompleteType.USERS);
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchAutoCompleteType.USERS);
   readonly editFields: FormlyFieldConfig[] = [
     {
       key: SearchUsersFilterComponent.key,
@@ -89,7 +91,7 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly actions$: Actions,
     public readonly commonApiService: CommonApiService
   ) {
@@ -98,7 +100,7 @@ export class SearchUsersFilterComponent extends SearchBaseFilterComponent {
       translateService,
       domSanitizer,
       modalService,
-      searchService
+      searchFilterService
     );
   }
 

@@ -15,6 +15,7 @@
   .loading {
     display: inline-block;
     cursor: default;
+    color: var(--lightestGrey);
 
     @media (max-width: $xs-max) {
       width: auto;

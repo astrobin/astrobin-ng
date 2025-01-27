@@ -11,24 +11,48 @@ type maps = google.maps;
   providedIn: "root"
 })
 export class GoogleMapsService extends BaseService {
-  private readonly _maps: maps;
+  private _maps: maps;
+  private _loaded = false;
 
   public constructor(public readonly loadingService: LoadingService, public readonly windowRef: WindowRefService) {
     super(loadingService);
 
-    if ((windowRef.nativeWindow as any)?.google !== undefined) {
-      this._maps = (windowRef.nativeWindow as any).google.maps;
-    }
   }
 
   get maps(): maps {
     return this._maps;
   }
 
-  createGeocoder(): google.maps.Geocoder {
-    return new this.maps.Geocoder();
+  loadGoogleMaps(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this._loaded) {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD-yl2h4BvziVebLTTawv9a6DKFky5O2eU`;
+      script.onload = () => {
+        if ((this.windowRef.nativeWindow as any)?.google !== undefined) {
+          this._maps = (this.windowRef.nativeWindow as any).google.maps;
+          this._loaded = true;
+          resolve();
+        } else {
+          reject("Google Maps API not available");
+        }
+      };
+      script.onerror = (error) => reject(error);
+      document.body.appendChild(script);
+    });
   }
 
+  createGeocoder(): google.maps.Geocoder {
+    if (!this.maps) {
+      throw new Error("Google Maps API not loaded");
+    }
+
+    return new this.maps.Geocoder();
+  }
 
   getCityFromAddressComponent(addressComponents: any): string {
     for (let component of addressComponents) {

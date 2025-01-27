@@ -4,6 +4,7 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Month } from "@shared/enums/month.enum";
+import * as Sentry from '@sentry/browser';
 
 @Injectable({
   providedIn: "root"
@@ -71,6 +72,16 @@ export class DateService extends BaseService {
     const contiguousRanges = this.getContiguousRanges(parsedDates);
 
     if (parsedDates.length === 2 && contiguousRanges.length === 2) {
+      const date1 = new Date(parsedDates[0]);
+      const date2 = new Date(parsedDates[1]);
+      const currentYear = this.getCurrentYear();
+
+      // If dates are in the same year but not current year, format differently
+      if (date1.getFullYear() === date2.getFullYear() && date1.getFullYear() !== currentYear) {
+        const dateFormat = this.getDateFormat();
+        return `${this.datePipe.transform(date1, dateFormat)}, ${this.datePipe.transform(date2, dateFormat)} ${date1.getFullYear()}`;
+      }
+
       return `${this.formatSingleDate(parsedDates[0])}, ${this.formatSingleDate(parsedDates[1])}`;
     }
 
@@ -113,15 +124,55 @@ export class DateService extends BaseService {
   }
 
   private formatSingleDate(date: number, forceYear = false): string {
-    const dateObj = new Date(date);
-    const currentYear = this.getCurrentYear();
-    const dateFormat = this.getDateFormat();
+    try {
+      const dateObj = new Date(date);
 
-    if (dateObj.getFullYear() === currentYear && !forceYear) {
-      return this.datePipe.transform(dateObj, dateFormat, undefined, this.translateService.currentLang)!;
+      // Add validation check
+      if (isNaN(dateObj.getTime())) {
+        throw new Error('Invalid Date object created');
+      }
+
+      const currentYear = this.getCurrentYear();
+      const dateFormat = this.getDateFormat();
+      const currentLang = this.translateService.currentLang;
+
+      if (dateObj.getFullYear() === currentYear && !forceYear) {
+        const result = this.datePipe.transform(dateObj, dateFormat, "UTC", currentLang);
+        if (result === null) {
+          throw new Error('DatePipe returned null when in current year');
+        }
+        return result;
+      }
+
+      const format = `${dateFormat}${dateFormat === "MMM d" ? "," : ""} yyyy`;
+      const result = this.datePipe.transform(dateObj, format, "UTC", currentLang);
+      if (result === null) {
+        throw new Error('DatePipe returned null when not in current year');
+      }
+      return result;
+
+    } catch (e) {
+      const logData = {
+        error: e,
+        timestamp: date,
+        userAgent: navigator.userAgent,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        locale: navigator.language,
+        dateToString: new Date(date).toString(),
+        dateToISO: new Date(date).toISOString(),
+        dateGetTime: new Date(date).getTime(),
+      };
+
+      if (typeof Sentry !== "undefined") {
+        Sentry.captureException(e, {
+          extra: logData
+        });
+      }
+
+      console.error('Date formatting error:', logData);
+
+      return this.translateService.instant("Invalid date");
     }
-
-    return this.datePipe.transform(dateObj, `${dateFormat}${dateFormat === "MMM d" ? "," : ""} yyyy`, undefined, this.translateService.currentLang)!;
   }
 
   private formatRange(range: number[]): string {

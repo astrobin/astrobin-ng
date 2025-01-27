@@ -6,7 +6,7 @@ import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
 import { fromEvent, Observable, of } from "rxjs";
 import { catchError, debounceTime, filter, first, map, mapTo, mergeMap, take, tap } from "rxjs/operators";
-import { ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedCommentFailure, CreateNestedCommentSuccess, DeleteNestedCommentFailure, DeleteNestedCommentSuccess, LoadNestedCommentFailure, LoadNestedCommentsSuccess, LoadNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
+import { ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedCommentFailure, CreateNestedCommentSuccess, DeleteNestedCommentFailure, DeleteNestedCommentSuccess, LoadNestedCommentFailure, LoadNestedCommentsSuccess, LoadNestedCommentSuccess, UpdateNestedComment, UpdateNestedCommentFailure, UpdateNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { NestedCommentsApiService } from "@shared/services/api/classic/nested-comments/nested-comments-api.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
@@ -80,7 +80,7 @@ export class NestedCommentsEffects {
             .subscribe(selectedNestedComment => {
               this.utilsService.delay(1).subscribe(() => {
                 const element = this.windowRefService.nativeWindow.document.getElementById(`c${nestedComment.id}`);
-                element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+                element.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 if (isPlatformBrowser(this.platformId)) {
                   fromEvent(this.windowRefService.nativeWindow, "scroll")
                     .pipe(debounceTime(50), first(), mapTo(true))
@@ -106,6 +106,49 @@ export class NestedCommentsEffects {
         ofType(AppActionTypes.CREATE_NESTED_COMMENT_FAILURE),
         map(action => action.payload.nestedComment),
         tap(() => this.loadingService.setLoading(false)),
+        map(() => void 0)
+      ),
+    { dispatch: false }
+  );
+
+  UpdateNestedComment: Observable<UpdateNestedCommentSuccess | UpdateNestedCommentFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.UPDATE_NESTED_COMMENT),
+      map((action: UpdateNestedComment) => action.payload.nestedComment),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(nestedComment =>
+        this.nestedCommentsApiService.update(nestedComment).pipe(
+          map(updatedNestedComment => new UpdateNestedCommentSuccess({ nestedComment: updatedNestedComment })),
+          catchError(() => of(new UpdateNestedCommentFailure({ nestedComment })))
+        )
+      )
+    )
+  );
+
+  UpdateNestedCommentSuccess: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.UPDATE_NESTED_COMMENT_SUCCESS),
+        map((action: UpdateNestedCommentSuccess) => action.payload.nestedComment),
+        tap(() => this.loadingService.setLoading(false)),
+        map(() => void 0)
+      ),
+    { dispatch: false }
+  );
+
+  UpdateNestedCommentFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AppActionTypes.UPDATE_NESTED_COMMENT_FAILURE),
+        map((action: UpdateNestedCommentFailure) => action.payload.nestedComment),
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.error(
+            this.translateService.instant(
+              "Something went wrong while updating the comment. Please try again later."
+            )
+          );
+        }),
         map(() => void 0)
       ),
     { dispatch: false }

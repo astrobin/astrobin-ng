@@ -5,10 +5,11 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { FilterType } from "@features/equipment/types/filter.interface";
 import { FilterService } from "@features/equipment/services/filter.service";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-filter-types-filter.search-filter-component",
@@ -18,8 +19,8 @@ import { SearchFilterCategory } from "@features/search/interfaces/search-filter-
 export class SearchFilterTypesFilterComponent extends SearchBaseFilterComponent {
   static key = SearchAutoCompleteType.FILTER_TYPES;
 
-  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchFilterTypesFilterComponent.key as SearchAutoCompleteType
   );
   readonly editFields = [
@@ -57,10 +58,10 @@ export class SearchFilterTypesFilterComponent extends SearchBaseFilterComponent 
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly filterService: FilterService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }
 
   render(): SafeHtml {

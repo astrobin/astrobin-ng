@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild, ViewContainerRef } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { IotdApiService, IotdInterface } from "@features/iotd/services/iotd-api.service";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -9,14 +9,18 @@ import { ImageService } from "@shared/services/image/image.service";
 import { IotdStatsInterface } from "@features/iotd/types/iotd-stats.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
+import { fadeInOut } from "@shared/animations";
 
 @Component({
   selector: "astrobin-iotd",
   template: `
-    <astrobin-image-loading-indicator *ngIf="!iotd"></astrobin-image-loading-indicator>
+    <astrobin-image-loading-indicator
+      *ngIf="!iotd"
+    ></astrobin-image-loading-indicator>
 
     <ng-container *ngIf="!!iotd">
       <a
+        @fadeInOut
         (click)="openImage($event, iotd.image)"
         [href]="'/i/' + iotd.image"
         [ngStyle]="{
@@ -60,7 +64,7 @@ import { DeviceService } from "@shared/services/device.service";
               </a>
             </div>
 
-            <div class="d-flex flex-column flex-sm-row align-items-center gap-sm-2">
+            <div class="d-flex flex-column align-items-center align-items-sm-start gap-1">
               <span class="iotd-title">{{ iotd.title }}</span>
               <span class="iotd-users">{{ iotd.userDisplayNames }}</span>
             </div>
@@ -271,7 +275,9 @@ import { DeviceService } from "@shared/services/device.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["./iotd.component.scss"]
+  styleUrls: ["./iotd.component.scss"],
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IotdComponent extends BaseComponentDirective implements OnInit {
   protected iotd: IotdInterface;
@@ -284,10 +290,10 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
     public readonly store$: Store<MainState>,
     public readonly iotdApiService: IotdApiService,
     public readonly imageViewerService: ImageViewerService,
-    public readonly viewContainerRef: ViewContainerRef,
     public readonly imageService: ImageService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -296,6 +302,7 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
     this.iotdApiService.getCurrentIotd().subscribe(iotd => {
       this.iotd = iotd;
       this.objectPosition = this.imageService.getObjectPosition(iotd);
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -311,7 +318,6 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
       imageId,
       FINAL_REVISION_LABEL,
       [],
-      this.viewContainerRef,
       true
     ).subscribe();
   }
@@ -325,6 +331,7 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
       }
 
       this.iotdStats = response.results[0];
+      this.changeDetectorRef.markForCheck();
     });
 
     this.offcanvasService.open(this._iotdStatsOffcanvasTemplate, {

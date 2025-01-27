@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { SearchAutoCompleteType, SearchService } from "@features/search/services/search.service";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -10,6 +9,8 @@ import { DateService } from "@shared/services/date.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-search-date-acquired-filter.search-filter-component",
@@ -21,7 +22,7 @@ export class SearchDateAcquiredFilterComponent extends SearchBaseDateRangeFilter
   static minimumSubscription = PayableProductInterface.LITE;
 
   readonly category = SearchFilterCategory.DATETIME;
-  readonly label = this.searchService.humanizeSearchAutoCompleteType(
+  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(
     SearchDateAcquiredFilterComponent.key as SearchAutoCompleteType
   );
 
@@ -30,11 +31,11 @@ export class SearchDateAcquiredFilterComponent extends SearchBaseDateRangeFilter
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchService: SearchService,
+    public readonly searchFilterService: SearchFilterService,
     public readonly utilsService: UtilsService,
     public readonly dateService: DateService
   ) {
-    super(store$, translateService, domSanitizer, modalService, searchService, utilsService, dateService);
+    super(store$, translateService, domSanitizer, modalService, searchFilterService, utilsService, dateService);
 
     this.initFields(SearchDateAcquiredFilterComponent.key);
   }

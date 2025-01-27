@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { filter, switchMap, take, takeUntil } from "rxjs/operators";
@@ -12,7 +12,6 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { DeleteImageFailure, DeleteImageSuccess } from "@app/store/actions/image.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { UserService } from "@shared/services/user.service";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
@@ -31,6 +30,7 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
 
   protected readonly isBrowser: boolean;
   protected image: ImageInterface;
+  protected revisionLabel: ImageRevisionInterface["label"];
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -38,7 +38,6 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
     public readonly route: ActivatedRoute,
     public readonly windowRefService: WindowRefService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly userService: UserService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
@@ -57,16 +56,8 @@ export class ImagePageComponent extends BaseComponentDirective implements OnInit
       distinctUntilChangedObj()
     ).subscribe(data => {
       this.image = data.image;
+      this.revisionLabel = this.route.snapshot.queryParams.r || FINAL_REVISION_LABEL;
       this.imageService.setMetaTags(this.image);
-
-      this.utilsService.delay(1).subscribe(() => {
-        if (this.image && this.imageViewer) {
-          this.imageViewer.setImage(
-            this.image,
-            this.route.snapshot.queryParams.r || FINAL_REVISION_LABEL
-          );
-        }
-      });
     });
 
     this._setupOnDelete();

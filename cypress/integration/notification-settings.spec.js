@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-context("notifications", () => {
+context("notification settings", () => {
   describe("when logged out", () => {
     it("should redirect to the login page", () => {
       cy.server();

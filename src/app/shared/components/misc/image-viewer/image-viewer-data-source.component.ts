@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { DataSource, ImageInterface, RemoteSource } from "@shared/interfaces/image.interface";
 import { ImageService } from "@shared/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
@@ -114,7 +114,8 @@ import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source
       </div>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-data-source.component.scss"]
+  styleUrls: ["./image-viewer-data-source.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   dataSource: string;
@@ -136,7 +137,8 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
     public readonly imageViewerService: ImageViewerService,
     public readonly windowRefService: WindowRefService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$, searchService, router, imageViewerService, windowRefService);
   }
@@ -177,6 +179,7 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
       if (remoteSourceAffiliate) {
         this.remoteDataSourceAffiliate = remoteSourceAffiliate;
         this.remoteDataSourceIsSponsor = new Date(remoteSourceAffiliate.affiliationExpiration) >= new Date();
+        this.changeDetectorRef.markForCheck();
       }
     });
 
@@ -220,6 +223,8 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
     }
 
     this.offcanvasService.open(this.remoteSourceAffiliateSponsorOffcanvasTemplate,{
+      panelClass: "image-viewer-offcanvas",
+      backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
   }
