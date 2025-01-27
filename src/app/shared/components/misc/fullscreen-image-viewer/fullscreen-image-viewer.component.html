@@ -93,14 +93,14 @@
   <div class="touch-device">
     <div
       class="loading-indicator-container has-message"
-      *ngIf="!isVeryLargeImage && (hdThumbnailLoading || realThumbnailLoading || canvasLoading)"
+      *ngIf="!isVeryLargeImage && isLargeEnough && (hdThumbnailLoading || realThumbnailLoading || canvasLoading)"
     >
       <astrobin-loading-indicator [progress]="loadingProgress$ | async"></astrobin-loading-indicator>
     </div>
 
     <ng-container *ngIf="!isVeryLargeImage">
       <div
-        *ngIf="real && allowReal"
+        *ngIf="real && allowReal && isLargeEnough"
         @fadeInOut
         #touchRealContainer
         class="touch-real-container"
