@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { NavigationEnd, NavigationStart, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -7,7 +7,7 @@ import { ThemeService } from "@shared/services/theme.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import { catchError, filter, map, pairwise, switchMap, take } from "rxjs/operators";
+import { catchError, filter, map, switchMap, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { CookieConsentService } from "@shared/services/cookie-consent/cookie-consent.service";
 import { CookieConsentEnum } from "@shared/types/cookie-consent.enum";
@@ -30,8 +30,7 @@ declare var gtag: any;
 @Component({
   selector: "astrobin-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ["./app.component.scss"]
 })
 export class AppComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   private readonly _isBrowser: boolean;
@@ -55,8 +54,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     public readonly loadingService: LoadingService,
     public readonly titleService: TitleService,
     public readonly versionCheckService: VersionCheckService,
-    public readonly jsonApiService: JsonApiService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly jsonApiService: JsonApiService
   ) {
     super(store$);
 
@@ -103,7 +101,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);
         this.setMetaTags(event.urlAfterRedirects);
-        this.changeDetectorRef.markForCheck();
 
         if (this._isBrowser) {
           this.currentUser$.pipe(
@@ -220,7 +217,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
           console.log("Kill switch deactivated. Registering Service Worker...");
           this._enableServiceWorker();
         }
-        this.changeDetectorRef.markForCheck();
       });
   }
 
@@ -229,11 +225,11 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
       return;
     }
 
-    if ('serviceWorker' in navigator) {
+    if ("serviceWorker" in navigator) {
       navigator.serviceWorker.getRegistration().then((registration) => {
         if (registration) {
           registration.unregister().then(() => {
-            console.log('Service Worker unregistered');
+            console.log("Service Worker unregistered");
           });
         }
       });
@@ -245,17 +241,17 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
       return;
     }
 
-    if ('serviceWorker' in navigator) {
+    if ("serviceWorker" in navigator) {
       navigator.serviceWorker.getRegistration().then((registration) => {
         if (!registration) {
           navigator.serviceWorker
-            .register('/ngsw-worker.js')
+            .register("/ngsw-worker.js")
             .then(() => {
-              console.log('Service Worker registered');
+              console.log("Service Worker registered");
               this.versionCheckService.checkForUpdates();
             })
             .catch((err) => {
-              console.error('Service Worker registration failed:', err);
+              console.error("Service Worker registration failed:", err);
             });
         } else {
           this.versionCheckService.checkForUpdates();
