@@ -671,12 +671,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this._eagerLoadingSubscription = null;
     }
 
-    this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getHdOptions() }));
-
-    if (this.allowReal) {
-      this.store$.dispatch(new LoadThumbnailCancel({ thumbnail: this._getRealOptions() }));
-    }
-
     this.hdThumbnail = null;
     this.realThumbnail = null;
   }
