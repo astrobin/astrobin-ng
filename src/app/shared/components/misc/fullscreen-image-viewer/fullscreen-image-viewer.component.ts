@@ -394,14 +394,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this._lastTouchScale = this.touchScale;
 
-    // Store the initial pinch position
+    // Calculate pinch center relative to container
     const rect = this.touchRealContainer.nativeElement.getBoundingClientRect();
     this._touchScaleStartPoint = {
       x: event.center.x - rect.left,
       y: event.center.y - rect.top
     };
 
-    // Store the current offset for calculations
+    // Store the current offset
     this._lastTouchScaleOffset = { ...this._touchScaleOffset };
 
     this.isTransforming = true;
@@ -415,21 +415,45 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     const naturalScale = this._canvasContainerDimensions.width / this.naturalWidth;
     const maxScale = this.isVeryLargeImage ? 1 : this.maxZoom / naturalScale;
-    this.touchScale = Math.min(Math.max(this._lastTouchScale * event.scale, 1), maxScale);
+    const newScale = Math.min(Math.max(this._lastTouchScale * event.scale, 1), maxScale);
 
+    // Get current pinch center
     const rect = this.touchRealContainer.nativeElement.getBoundingClientRect();
     const currentCenter = {
       x: event.center.x - rect.left,
       y: event.center.y - rect.top
     };
 
-    const deltaX = currentCenter.x - this._touchScaleStartPoint.x;
-    const deltaY = currentCenter.y - this._touchScaleStartPoint.y;
+    // Calculate the translation (pan)
+    const deltaX = (currentCenter.x - this._touchScaleStartPoint.x) / this.touchScale;
+    const deltaY = (currentCenter.y - this._touchScaleStartPoint.y) / this.touchScale;
 
-    const { maxOffsetX, maxOffsetY, newOffsetX, newOffsetY } = this._calculatePanOffsets(deltaX, deltaY);
-    this._applyOffsetWithinBounds(newOffsetX, newOffsetY, maxOffsetX, maxOffsetY);
+    if (newScale !== this.touchScale) {
+      // Convert pinch center to image space coordinates
+      const imageSpaceX = (this._touchScaleStartPoint.x - this._canvasContainerDimensions.centerX) / this.touchScale + this._touchScaleOffset.x;
+      const imageSpaceY = (this._touchScaleStartPoint.y - this._canvasContainerDimensions.centerY) / this.touchScale + this._touchScaleOffset.y;
 
-    this._updateActualTouchZoom();
+      // Calculate new offsets to maintain the pinch center point
+      this._touchScaleOffset = {
+        x: imageSpaceX - (imageSpaceX - this._touchScaleOffset.x) * (newScale / this.touchScale) + deltaX,
+        y: imageSpaceY - (imageSpaceY - this._touchScaleOffset.y) * (newScale / this.touchScale) + deltaY
+      };
+
+      this.touchScale = newScale;
+      this._updateActualTouchZoom();
+    } else {
+      // Just apply the translation if scale hasn't changed
+      this._touchScaleOffset = {
+        x: this._touchScaleOffset.x + deltaX,
+        y: this._touchScaleOffset.y + deltaY
+      };
+    }
+
+    // Update the start point for the next move event
+    this._touchScaleStartPoint = currentCenter;
+
+    // Ensure offsets stay within bounds
+    this._clampOffset();
     this._drawCanvas();
   }
 
