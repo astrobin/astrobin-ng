@@ -4,6 +4,7 @@ import { AdManagerService } from "@shared/services/ad-manager.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@shared/services/device.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { fadeInOut } from "@shared/animations";
 
 @Component({
   selector: "astrobin-ad-manager",
@@ -21,8 +22,10 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
     <img
       *ngIf="!loading && !rendered && !!configName"
+      @fadeInOut
       [src]="'/assets/images/ads/' + configName + '/thank-you-for-not-blocking-ads.jpeg?v=1'"
       [alt]="'Thank you for not blocking ads!' | translate"
+      class="default-ad"
     />
 
     <button
@@ -57,6 +60,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
     </ng-template>
   `,
   styleUrls: ["./ad-manager.component.scss"],
+  animations: [fadeInOut],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdManagerComponent implements OnChanges {
@@ -72,7 +76,7 @@ export class AdManagerComponent implements OnChanges {
   protected size: any[];
   protected height: number;
   protected rendered = false;
-  protected loading = false;
+  protected loading = true;
 
   constructor(
     public readonly adManagerService: AdManagerService,
