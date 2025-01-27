@@ -417,11 +417,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const maxScale = this.isVeryLargeImage ? 1 : this.maxZoom / naturalScale;
     const newScale = Math.min(Math.max(this._lastTouchScale * event.scale, 1), maxScale);
 
-    // Get current pinch center
-    const rect = this.touchRealContainer.nativeElement.getBoundingClientRect();
+    // Get current pinch center using cached container offset
     const currentCenter = {
-      x: event.center.x - rect.left,
-      y: event.center.y - rect.top
+      x: event.center.x,
+      y: event.center.y
     };
 
     // Calculate the translation (pan)
