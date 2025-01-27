@@ -12,8 +12,8 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageService } from "@shared/services/image/image.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
-import { BehaviorSubject, Observable, Subscription } from "rxjs";
-import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, merge, Observable, scan, Subscription } from "rxjs";
+import { distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
@@ -93,6 +93,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected realThumbnailUnsafeUrl: string;
   protected hdImageLoadingProgress$: Observable<number>;
   protected realImageLoadingProgress$: Observable<number>;
+  protected loadingProgress$: Observable<number>;
   protected hdThumbnailLoading = false;
   protected realThumbnailLoading = false;
   protected ready = false;
@@ -171,6 +172,25 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.enableLens = this.cookieService.get(this.LENS_ENABLED_COOKIE_NAME) === "true";
     this.hdImageLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
     this.realImageLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
+    this.loadingProgress$ = combineLatest([
+      this.hdImageLoadingProgress$.pipe(startWith(0)),
+      this.realImageLoadingProgress$.pipe(startWith(0))
+    ]).pipe(
+      // First 50% is HD, second 50% is REAL
+      map(([hdProgress, realProgress]) => {
+        if (this.hdThumbnailLoading) {
+          return hdProgress * 0.5;
+        }
+        if (this.realThumbnailLoading) {
+          return 50 + (realProgress * 0.5);
+        }
+        if (this.canvasLoading) {
+          return 100;  // Keep full progress during canvas init
+        }
+        return null;
+      }),
+      distinctUntilChanged()
+    );
   }
 
   @HostBinding("class.disable-zoom")
@@ -254,10 +274,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this._imageBitmap.close();
           this._imageBitmap = null;
         }
+
         this._canvasContext = null;
         this._canvasImage = null;
         this._firstRenderSubject.next(false);
         this.canvasLoading = false;
+        this._canvasContainerDimensions = null;
+        this._canvasImageDimensions = null;
 
         cancelAnimationFrame(this._animationFrame);
         this.exitFullscreen.emit();
@@ -472,19 +495,54 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected onDoubleTap(event: HammerInput): void {
     if (this.touchScale > 1) {
-      this._resetTouchZoom();
+      this._animateZoom(1, 0, 0);
     } else {
-      // Zoom to 2x at double tap location
-      this.touchScale = 2;
+      const displayWidth = this.touchRealContainer.nativeElement.offsetWidth;
+      this._baseTouchScale = displayWidth / this.naturalWidth;
+      const targetScale = 1 / this._baseTouchScale;  // This will make actualTouchZoom = 1
+
       const rect = this.touchRealContainer.nativeElement.getBoundingClientRect();
       const x = event.center.x - rect.left;
       const y = event.center.y - rect.top;
 
-      this._touchScaleOffset = {
-        x: (rect.width / 2 - x) * (this.touchScale - 1),
-        y: (rect.height / 2 - y) * (this.touchScale - 1)
-      };
+      const targetOffsetX = (rect.width / 2 - x);
+      const targetOffsetY = (rect.height / 2 - y);
+
+      this._animateZoom(targetScale, targetOffsetX, targetOffsetY);
     }
+  }
+
+  private _animateZoom(targetScale: number, targetOffsetX: number = 0, targetOffsetY: number = 0) {
+    const startScale = this.touchScale;
+    const startOffsetX = this._touchScaleOffset.x;
+    const startOffsetY = this._touchScaleOffset.y;
+    const duration = 300; // milliseconds
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Ease out cubic function
+      const easing = 1 - Math.pow(1 - progress, 3);
+
+      this.touchScale = startScale + (targetScale - startScale) * easing;
+      this._touchScaleOffset.x = startOffsetX + (targetOffsetX - startOffsetX) * easing;
+      this._touchScaleOffset.y = startOffsetY + (targetOffsetY - startOffsetY) * easing;
+
+      this._updateActualTouchZoom();
+      this.changeDetectorRef.markForCheck();
+      this._drawCanvas();
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        this._lastTouchScale = this.touchScale;
+        this._lastTouchScaleOffset = { ...this._touchScaleOffset };
+      }
+    };
+
+    requestAnimationFrame(animate);
   }
 
   private _calculatePanOffsets(deltaX: number, deltaY: number, currentScale: number = this.touchScale): {
@@ -594,8 +652,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._lastTouchScale = 1;
     this._touchScaleOffset = { x: 0, y: 0 };
     this._lastTouchScaleOffset = { x: 0, y: 0 };
-    this._canvasContainerDimensions = null;
-    this._canvasImageDimensions = null;
     this._updateActualTouchZoom();
   }
 
@@ -648,6 +704,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this._revision.w > this.windowRef.nativeWindow.innerWidth ||
           this._revision.h > this.windowRef.nativeWindow.innerHeight
         );
+
+        this.hdThumbnailLoading = true;
+        this._hdLoadingProgressSubject.next(0);
+
         this.changeDetectorRef.markForCheck();
 
         this.currentUser$.pipe(take(1)).subscribe(user => {
@@ -664,8 +724,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     ).subscribe(() => {
       this._hdThumbnailSubscription = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
         tap(() => {
-          this.hdThumbnailLoading = true;
-          this._hdLoadingProgressSubject.next(0);
           this.changeDetectorRef.markForCheck();
         }),
         filter(thumbnail => !!thumbnail),
@@ -704,48 +762,53 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         }),
         switchMap(thumbnail =>
           this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
-            this._realLoadingProgressSubject.next(progress);
+            // Cap at 99% to avoid showing 100% before canvas is ready
+            this._realLoadingProgressSubject.next(Math.min(progress, 99));
           })
         )
       ).subscribe(url => {
         this.realThumbnail = url;
 
-        this.utilsService.delay(50).subscribe(() => {
-          if (this.touchRealCanvas) {
-            this._canvasImage = new Image();
-            this._canvasImage.decoding = "async";
+        const initCanvas = () => {
+          if (!this.touchRealCanvas) {
+            this.utilsService.delay(10).subscribe(() => initCanvas());
+            return;
+          }
 
-            this._canvasImage.onload = () => {
-              try {
-                // Create bitmap once when loading image
-                createImageBitmap(this._canvasImage).then(bitmap => {
-                  this._imageBitmap = bitmap;
-                  const canvas = this.touchRealCanvas.nativeElement;
-                  this._canvasContext = canvas.getContext('2d', {
-                    alpha: false,
-                    willReadFrequently: false
-                  });
+          this._canvasImage = new Image();
+          this._canvasImage.decoding = "async";
 
-                  this._updateCanvasDimensions();
-                  this._drawCanvas();
+          this._canvasImage.onload = () => {
+            try {
+              createImageBitmap(this._canvasImage).then(bitmap => {
+                this._imageBitmap = bitmap;
+                const canvas = this.touchRealCanvas.nativeElement;
+                this._canvasContext = canvas.getContext('2d', {
+                  alpha: false,
+                  willReadFrequently: false
+                });
 
-                  this.firstRender$.pipe(take(1)).subscribe(() => {
-                    this.canvasLoading = false;
-                    this.changeDetectorRef.markForCheck();
-                  });
+                this._updateCanvasDimensions();
+                this._drawCanvas();
 
+                this.firstRender$.pipe(take(1)).subscribe(() => {
+                  this.canvasLoading = false;
+                  this._realLoadingProgressSubject.next(100);
                   this.changeDetectorRef.markForCheck();
                 });
-              } catch (error) {
-                console.error('Failed to initialize canvas:', error);
-              }
-            };
 
-            this._canvasImage.src = this.realThumbnailUnsafeUrl;
-            this.changeDetectorRef.markForCheck();
-          }
-        });
+                this.changeDetectorRef.markForCheck();
+              });
+            } catch (error) {
+              console.error('Failed to initialize canvas:', error);
+            }
+          };
 
+          this._canvasImage.src = this.realThumbnailUnsafeUrl;
+          this.changeDetectorRef.markForCheck();
+        };
+
+        initCanvas();
         this.changeDetectorRef.markForCheck();
       });
 
@@ -776,6 +839,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _updateCanvasDimensions(): void {
+    if (!this.touchRealContainer || !this.touchRealCanvas) {
+      return;
+    }
+
     const container = this.touchRealContainer.nativeElement;
     const canvas = this.touchRealCanvas.nativeElement;
 

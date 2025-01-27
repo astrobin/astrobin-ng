@@ -79,15 +79,30 @@ export function appInitializer(store: Store<MainState>, actions$: Actions) {
 
 @Injectable()
 export class AstroBinHammerConfig extends HammerGestureConfig {
+  override events = ['pinch', 'pinchstart', 'pinchmove', 'pinchend',
+    'pan', 'panstart', 'panmove', 'panend',
+    'tap', 'doubletap'];  // Add doubletap here
+
+  override overrides = {
+    'pinch': { enable: true },
+    'doubletap': { enable: true }
+  } as any;
+
   override buildHammer(element: HTMLElement) {
-    const mc = new Hammer(element);
+    const mc = new Hammer(element, {
+      touchAction: 'pan-x pan-y'
+    });
+
     mc.get('pinch').set({ enable: true });
 
-    const tap = new Hammer.Tap({ event: 'tap' });
-    const doubleTap = new Hammer.Tap({ event: 'doubletap', taps: 2 });
-    mc.add([doubleTap, tap]);
-    doubleTap.recognizeWith(tap);
-    tap.requireFailure(doubleTap);
+    const tap = mc.get('tap');
+    tap.set({
+      enable: true,
+      taps: 2,
+      interval: 200,
+      threshold: 2,
+      posThreshold: 10
+    });
 
     return mc;
   }

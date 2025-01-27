@@ -140,6 +140,12 @@ $header-height: 63px;
     }
   }
 
+  .touch .loading-indicator-container {
+    top: 50%;
+    bottom: unset;
+    transform: translate(-50%, -50%);
+  }
+
   .touch-device {
     display: flex;
     justify-content: center;
