@@ -13,7 +13,7 @@ import { CookieConsentService } from "@shared/services/cookie-consent/cookie-con
 import { CookieConsentEnum } from "@shared/types/cookie-consent.enum";
 import { Observable, Subscription, timer } from "rxjs";
 import { DOCUMENT, isPlatformBrowser } from "@angular/common";
-import { NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
 import { TransferState } from "@angular/platform-browser";
 import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
@@ -54,7 +54,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     public readonly loadingService: LoadingService,
     public readonly titleService: TitleService,
     public readonly versionCheckService: VersionCheckService,
-    public readonly jsonApiService: JsonApiService
+    public readonly jsonApiService: JsonApiService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
 
@@ -94,6 +95,16 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
       if (event instanceof NavigationStart) {
         this.loadingService.setLoading(true);
       } else if (event instanceof NavigationEnd) {
+        if (this.offcanvasService.hasOpenOffcanvas()) {
+          this.offcanvasService.dismiss();
+          return;
+        }
+
+        if (this.modalService.hasOpenModals()) {
+          this.modalService.dismissAll();
+          return;
+        }
+
         this.loadingService.setLoading(false);
         this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
         this.windowRefService.changeBodyOverflow("auto");
