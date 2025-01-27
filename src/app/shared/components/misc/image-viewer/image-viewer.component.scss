@@ -233,7 +233,7 @@ $globalLoadingIndicatorHeight: 6px;
         width: 50%;
       }
 
-      @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
+      @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
         width: 100%;
         min-height: calc(50vh - 3rem);
         max-height: calc(70vh - 3rem);
@@ -314,7 +314,7 @@ $globalLoadingIndicatorHeight: 6px;
         border-radius: .75rem;
         z-index: 1030;
 
-        @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
+        @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
           position: fixed;
           opacity: .8 !important;
           font-size: 1.25rem !important;
@@ -756,7 +756,7 @@ $globalLoadingIndicatorHeight: 6px;
         width: 50%;
       }
 
-      @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
+      @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
         width: 100%;
         height: unset;
 
@@ -767,7 +767,7 @@ $globalLoadingIndicatorHeight: 6px;
       }
     }
 
-    @media (max-width: $portraitLayoutBreakpoint) and (max-aspect-ratio: $maxAspectRatio) {
+    @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
       overflow-y: auto;
       flex-direction: column;
       justify-content: flex-start;
