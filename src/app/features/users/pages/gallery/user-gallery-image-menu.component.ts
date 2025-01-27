@@ -16,6 +16,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { CollectionInterface } from "@shared/interfaces/collection.interface";
 import { ActivatedRoute } from "@angular/router";
 import { RemoveImageFromCollection, SetCollectionCoverImage } from "@app/store/actions/collection.actions";
+import { ImageService } from "@shared/services/image/image.service";
 
 @Component({
   selector: "astrobin-user-gallery-image-menu",
@@ -41,7 +42,11 @@ import { RemoveImageFromCollection, SetCollectionCoverImage } from "@app/store/a
           [attr.aria-labelledby]="'image-menu-dropdown-button-' + (image.hash || image.pk)"
           ngbDropdownMenu
         >
-          <a class="dropdown-item" [routerLink]="['/i', image.hash || image.pk, 'edit']">
+          <a
+            (click)="imageService.navigateToEdit(image)"
+            astrobinEventPreventDefault
+            class="dropdown-item"
+          >
             {{ "Edit" | translate }}
           </a>
 
@@ -91,7 +96,8 @@ export class UserGalleryImageMenuComponent extends BaseComponentDirective implem
     public readonly actions$: Actions,
     public readonly modalService: ModalService,
     public readonly translateService: TranslateService,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly imageService: ImageService
   ) {
     super(store$);
   }

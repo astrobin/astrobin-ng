@@ -106,59 +106,13 @@
 
 <ng-template #stepperButtonsTemplate>
   <button
-    (click)="onSave($event, classicRoutesService.IMAGE(imageEditService.model.hash || '' + imageEditService.model.pk))"
-    *ngIf="editingExistingImage"
+    (click)="onSave($event)"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-primary"
     id="save-button"
   >
     {{ "Save" | translate }}
   </button>
-
-  <ng-container *ngIf="currentUser$ | async as user">
-    <div *ngIf="!editingExistingImage" ngbDropdown>
-      <button
-        [class.loading]="loadingService.loading$ | async"
-        class="btn btn-primary"
-        id="save-dropdown"
-        ngbDropdownToggle
-      >
-        {{ "Save" | translate }}&hellip;
-      </button>
-      <div [attr.aria-labelledby]="'save-dropdown'" ngbDropdownMenu>
-        <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
-
-        <button
-          (click)="
-            onSave(
-              $event,
-              classicRoutesService.EDIT_IMAGE_GEAR(imageEditService.model.hash || '' + imageEditService.model.pk) +
-                '?upload'
-            )
-          "
-          *ngIf="!(user | isInGroup: Constants.OWN_EQUIPMENT_MIGRATORS_GROUP)"
-          class="dropdown-item"
-        >
-          {{ "Save and proceed to gear selection" | translate }}
-        </button>
-
-        <button
-          (click)="
-            onSave($event, classicRoutesService.IMAGE(imageEditService.model.hash || '' + imageEditService.model.pk))
-          "
-          class="dropdown-item"
-        >
-          {{ "Save and proceed to image" | translate }}
-        </button>
-
-        <hr />
-
-        <button (click)="onSave($event)" class="dropdown-item">
-          {{ "Save and remain on this page" | translate }}
-        </button>
-      </div>
-    </div>
-  </ng-container>
 </ng-template>
 
 <ng-template #acquisitionFilterSelectFooterTemplateExtra>
