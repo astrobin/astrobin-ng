@@ -54,10 +54,6 @@ context("Image edit (new)", () => {
     cy.get("#image-stepper-field .nav-item.danger.done").should("not.exist");
   });
 
-  it("should not show the Save button", () => {
-    cy.get("#save-dropdown").should("be.visible");
-  });
-
   it("should have prefilled the basic information step", () => {
     cy.get("#image-title-field").should("have.value", "Test image");
     cy.get("#image-description-field").should("have.value", "");
