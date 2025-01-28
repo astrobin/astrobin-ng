@@ -87,13 +87,7 @@ context("revision uploader", () => {
           cy.get("#image_file").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
-          [
-            ...Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS,
-            ...Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS
-          ].forEach(format => {
-            cy.get(".accepted-formats")
-              .should("contain.text", format.replace(".", "").toUpperCase());
-          });
+          cy.get(".file").should("contain.text", "Upload an image or a video");
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {

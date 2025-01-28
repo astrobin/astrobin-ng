@@ -73,11 +73,11 @@ export class UploadDataService implements UploadDataServiceInterface {
     const hasUncompressedSourceTypes = allowedTypes.indexOf(".fits") > -1;
 
     if (hasImageTypes && hasVideoTypes && hasUncompressedSourceTypes) {
-      return this.translateService.instant("Upload an image, video, or uncompressed source file");
+      return this.translateService.instant("Upload an image, a video, or an uncompressed source file");
     }
 
     if (hasImageTypes && hasVideoTypes) {
-      return this.translateService.instant("Upload an image or video");
+      return this.translateService.instant("Upload an image or a video");
     }
 
     if (hasImageTypes) {

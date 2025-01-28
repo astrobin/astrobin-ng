@@ -48,14 +48,7 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-
-        [
-          ...Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS,
-          ...Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS
-        ].forEach(format => {
-          cy.get(".accepted-formats")
-            .should("contain.text", format.replace(".", "").toUpperCase());
-        });
+        cy.get(".file").should("contain.text", "Upload an image or a video");
       });
 
       it("should display error if title is missing and Upload is clicked", () => {
