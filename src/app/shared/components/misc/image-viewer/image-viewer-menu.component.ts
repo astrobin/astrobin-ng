@@ -45,7 +45,8 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
         <div [class]="dividerClass"></div>
 
         <a
-          [routerLink]="['/i', image.hash || image.pk.toString(), 'edit']"
+          (click)="imageService.navigateToEdit(image)"
+          astrobinEventPreventDefault
           [class]="itemClass"
         >
           {{ "Edit project" | translate }}

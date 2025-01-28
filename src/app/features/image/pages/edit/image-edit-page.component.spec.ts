@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
@@ -43,6 +43,12 @@ describe("EditComponent", () => {
             }
           },
           fragment: of("1")
+        }
+      },
+      {
+        provide: Router,
+        useValue: {
+          events: of()
         }
       }
     ]);

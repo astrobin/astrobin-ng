@@ -8,7 +8,7 @@ import {
   TemplateRef,
   ViewChild
 } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { SaveImage } from "@app/store/actions/image.actions";
@@ -81,7 +81,7 @@ export class ImageEditPageComponent
   implements OnInit, ComponentCanDeactivate, AfterViewInit {
   readonly Constants = Constants;
 
-  isBrowser: boolean;
+  readonly isBrowser: boolean;
 
   ImageAlias = ImageAlias;
 
@@ -104,6 +104,8 @@ export class ImageEditPageComponent
   presetCreateOffcanvas: TemplateRef<any>;
 
   editingExistingImage: boolean;
+
+  private _returnUrl: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -134,6 +136,18 @@ export class ImageEditPageComponent
     public readonly deviceService: DeviceService
   ) {
     super(store$);
+
+    this.isBrowser = isPlatformBrowser(this.platformId);
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      take(1)
+    ).subscribe(() => {
+      const state = this.router.getCurrentNavigation()?.extras?.state;
+      if (state) {
+        this._returnUrl = state['returnUrl'];
+      }
+    });
   }
 
   @ViewChild("remoteSourceLabelTemplate")
@@ -157,8 +171,6 @@ export class ImageEditPageComponent
 
   ngOnInit(): void {
     super.ngOnInit();
-
-    this.isBrowser = isPlatformBrowser(this.platformId);
 
     const image = this.route.snapshot.data.image;
     this.imageEditService.model = image;
@@ -534,7 +546,7 @@ export class ImageEditPageComponent
     });
   }
 
-  onSave(event: Event, next?: string) {
+  onSave(event: Event) {
     if (event) {
       event.preventDefault();
     }
@@ -574,11 +586,24 @@ export class ImageEditPageComponent
       this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
         this.imageEditService.form.markAsPristine();
 
-        if (!!next) {
-          this.loadingService.setLoading(true);
-          UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
+        if (!this._returnUrl) {
+          this.currentUserProfile$.pipe(take(1)).subscribe(userProfile => {
+            if (userProfile.enableNewGalleryExperience) {
+              this.router.navigate(["i", this.imageEditService.model.hash || this.imageEditService.model.pk]).then(() => {
+                this.popNotificationsService.success(this.translateService.instant("Image saved."));
+              });
+            } else {
+              this.loadingService.setLoading(true);
+              UtilsService.openLink(
+                this.windowRefService.nativeWindow.document,
+                this.classicRoutesService.IMAGE(this.imageEditService.model.hash || this.imageEditService.model.pk)
+              );
+            }
+          });
         } else {
-          this.popNotificationsService.success(this.translateService.instant("Image saved."));
+          this.router.navigateByUrl(this._returnUrl).then(() => {
+            this.popNotificationsService.success(this.translateService.instant("Image saved."));
+          });
         }
       });
     }

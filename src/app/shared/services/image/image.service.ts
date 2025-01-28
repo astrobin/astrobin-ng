@@ -9,7 +9,7 @@ import { BortleScale, DeepSkyAcquisitionInterface } from "@shared/interfaces/dee
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { filter, map, take, tap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
-import { isPlatformServer } from "@angular/common";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ActiveToast } from "ngx-toastr";
 import { select, Store } from "@ngrx/store";
@@ -25,6 +25,7 @@ import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
 import { IotdInterface } from "@features/iotd/services/iotd-api.service";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root"
@@ -32,6 +33,7 @@ import { IotdInterface } from "@features/iotd/services/iotd-api.service";
 export class ImageService extends BaseService {
   private _imageNotFoundNotification: ActiveToast<any>;
   private readonly _loadedImageUrls = new Map<string, string>();
+  private readonly _isBrowser: boolean;
 
   public constructor(
     public readonly store$: Store<MainState>,
@@ -44,9 +46,11 @@ export class ImageService extends BaseService {
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly titleService: TitleService,
-    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe
+    public readonly bbCodeToHtmlPipe: BBCodeToHtmlPipe,
+    public readonly router: Router,
   ) {
     super(loadingService);
+    this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
   public humanizeSubjectTypeShort(value: SubjectType): string {
@@ -1068,6 +1072,20 @@ export class ImageService extends BaseService {
     }
 
     return 200;
+  }
+
+  navigateToEdit(image: ImageInterface): void {
+    let returnUrl: string;
+
+    if (this._isBrowser) {
+      returnUrl = this.router.createUrlTree([]).toString() + location.search + location.hash;
+    } else {
+      returnUrl = `/i/${image.hash || image.pk}`;
+    }
+
+    this.router.navigate(["/i", image.hash || image.pk, "edit"], {
+      state: { returnUrl }
+    });
   }
 
   private _loadImageFileTraditional(url: string, observer: Observer<string>): void {
