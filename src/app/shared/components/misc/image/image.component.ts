@@ -7,17 +7,17 @@ import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
-import { ImageService } from "@shared/services/image/image.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { delay, filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { fromEvent, interval, merge, Observable, of, Subject, Subscription, throttleTime } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
 import { isPlatformBrowser } from "@angular/common";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 
 declare const videojs: any;
 

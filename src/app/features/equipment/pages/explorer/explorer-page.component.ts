@@ -3,7 +3,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { Actions } from "@ngrx/effects";
@@ -11,15 +11,15 @@ import {
   EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE,
   ExplorerBaseComponent
 } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { Location } from "@angular/common";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { CookieService } from "ngx-cookie";
 import {
   ExplorerFilterInterface,
@@ -31,8 +31,8 @@ import { ItemTypeNavComponent } from "@features/equipment/components/item-type-n
 import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { DeviceService } from "@shared/services/device.service";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",

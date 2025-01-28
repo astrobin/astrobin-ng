@@ -10,10 +10,10 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
 import { ImageEditService } from "@features/image/services/image-edit.service";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { FINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { FINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 
 describe("ImageEditRevisionComponent", () => {
   let component: ImageEditRevisionPageComponent;

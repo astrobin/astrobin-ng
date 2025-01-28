@@ -3,9 +3,9 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { CompareService } from "@features/equipment/services/compare.service";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { fromEvent } from "rxjs";
 import { debounceTime, takeUntil } from "rxjs/operators";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";

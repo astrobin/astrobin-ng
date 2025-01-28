@@ -1,4 +1,4 @@
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";

@@ -7,7 +7,7 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
-import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 

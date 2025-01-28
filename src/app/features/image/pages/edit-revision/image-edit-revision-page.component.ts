@@ -6,25 +6,25 @@ import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Observable, of } from "rxjs";
-import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-guard.service";
+import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
 import { isPlatformBrowser } from "@angular/common";
-import { ImageInterface, ImageRevisionInterface, MouseHoverImageOptions } from "@shared/interfaces/image.interface";
+import { ImageInterface, ImageRevisionInterface, MouseHoverImageOptions } from "@core/interfaces/image.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { TitleService } from "@shared/services/title/title.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { TitleService } from "@core/services/title/title.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
-import { LoadingService } from "@shared/services/loading.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { LoadingService } from "@core/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SaveImageRevision, SaveImageRevisionSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { filter, take } from "rxjs/operators";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { ImageService } from "@shared/services/image/image.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-image-edit-revision-page",

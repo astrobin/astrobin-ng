@@ -4,14 +4,14 @@ import { ImageEditorSetCropperShown } from "@features/image/store/image.actions"
 import { selectImageEditorState } from "@features/image/store/image.selectors";
 import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
 import { fromEvent, Subscription } from "rxjs";
 import { debounceTime, filter, map, take, tap } from "rxjs/operators";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",

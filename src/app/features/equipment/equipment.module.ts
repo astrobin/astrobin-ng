@@ -67,7 +67,6 @@ import { MarketplaceUserFeedbackListPageComponent } from "./pages/marketplace/us
 import { MarketplaceUserFeedbackPageComponent } from "./pages/marketplace/marketplace-user-feedback/marketplace-user-feedback-page.component";
 import { MarketplaceFeedbackComponent } from "./components/marketplace-feedback/marketplace-feedback.component";
 import { MarketplaceAcceptRejectRetractOfferModalComponent } from "./components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
-import { SearchModule } from "@features/search/search.module";
 
 @NgModule({
   declarations: [
@@ -138,7 +137,6 @@ import { SearchModule } from "@features/search/search.module";
   imports: [
     RouterModule.forChild(equipmentRoutes),
     SharedModule,
-    SearchModule,
     StoreModule.forFeature(equipmentFeatureKey, equipmentReducer)
   ]
 })

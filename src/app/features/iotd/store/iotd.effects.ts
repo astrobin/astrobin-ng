@@ -5,9 +5,9 @@ import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@shared/services/loading.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import {

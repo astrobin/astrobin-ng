@@ -3,8 +3,8 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@shared/services/title/title.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { TitleService } from "@core/services/title/title.service";
+import { LoadingService } from "@core/services/loading.service";
 import { filter, map, take } from "rxjs/operators";
 import {
   MarketplaceFilterModel,
@@ -14,17 +14,17 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { AuthActionTypes, LoadUser, LoadUserFailure, LoadUserSuccess } from "@features/account/store/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { Location } from "@angular/common";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
-import { CountryService } from "@shared/services/country.service";
+import { CountryService } from "@core/services/country.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { LocalStorageService } from "@shared/services/localstorage.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { LocalStorageService } from "@core/services/localstorage.service";
 import { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { RouterService } from "@shared/services/router.service";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
-import { DeviceService } from "@shared/services/device.service";
+import { RouterService } from "@core/services/router.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { DeviceService } from "@core/services/device.service";
 
 @Component({
   selector: "astrobin-marketplace-user-listings-base-page",

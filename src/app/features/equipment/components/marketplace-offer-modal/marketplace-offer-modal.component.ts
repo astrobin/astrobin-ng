@@ -8,21 +8,21 @@ import { TranslateService } from "@ngx-translate/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { CurrencyPipe } from "@angular/common";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Actions } from "@ngrx/effects";
 import { take, takeUntil } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import {
   MarketplaceLineItemInterface,
   MarketplaceShippingCostType
 } from "@features/equipment/types/marketplace-line-item.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-marketplace-offer-modal",

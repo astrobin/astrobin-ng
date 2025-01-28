@@ -7,8 +7,8 @@ import { SubscriptionsService } from "@features/subscriptions/services/subscript
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { TitleService } from "@shared/services/title/title.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { TitleService } from "@core/services/title/title.service";
 import { Observable } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";

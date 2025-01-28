@@ -8,7 +8,7 @@ import {
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import * as fromIotd from "./iotd.reducer";
 import { IotdState } from "./iotd.reducer";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";

@@ -9,7 +9,7 @@ import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 describe("BaseEquipmentItemEditorComponent", () => {
   let component: BaseItemEditorComponent<CameraInterface, SensorInterface>;

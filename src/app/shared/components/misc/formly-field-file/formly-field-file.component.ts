@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { FieldType } from "@ngx-formly/core";
-import { LoadingService } from "@shared/services/loading.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { CdkDragDrop, CdkDragEnter, CdkDragMove, moveItemInArray } from "@angular/cdk/drag-drop";
 

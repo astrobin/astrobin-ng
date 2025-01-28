@@ -1,16 +1,16 @@
 import { Injectable } from "@angular/core";
-import { BaseService } from "@shared/services/base.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { combineLatest, EMPTY, Observable, Observer } from "rxjs";
-import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
+import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
 import { Location } from "@angular/common";
 import { MainState } from "@app/store/state";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 
 @Injectable({
   providedIn: "root"

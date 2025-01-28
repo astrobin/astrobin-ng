@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { DeviceService } from "@shared/services/device.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { DeviceService } from "@core/services/device.service";
 
 @Component({
   selector: "astrobin-image-viewer-floating-title",

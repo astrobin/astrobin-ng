@@ -13,7 +13,7 @@ import {
 } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -21,7 +21,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import {
   EquipmentItemDisplayProperty,
   EquipmentItemService
-} from "@shared/services/equipment-item.service";
+} from "@core/services/equipment-item.service";
 import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { fromEvent, Observable } from "rxjs";
@@ -30,7 +30,7 @@ import { EquipmentActionTypes, LoadSensor, LoadSensorSuccess } from "@features/e
 import { MainState } from "@app/store/state";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { TelescopeType } from "@features/equipment/types/telescope.interface";
 import { ExplorerFilterType } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { filter, map, take, takeUntil } from "rxjs/operators";
@@ -12,10 +12,10 @@ import {
 } from "@features/equipment/store/equipment.selectors";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { Actions, ofType } from "@ngrx/effects";
 import {
   AcceptMarketplaceOffer,
@@ -29,17 +29,17 @@ import {
   RejectMarketplaceOfferSuccess
 } from "@features/equipment/store/equipment.actions";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@shared/services/loading.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 import { MarketplaceMasterOfferInterface } from "@features/equipment/types/marketplace-master-offer.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { Subscription } from "rxjs";
 import { MarketplaceAcceptRejectRetractOfferModalComponent } from "@features/equipment/components/marketplace-accept-reject-retract-offer-modal/marketplace-accept-reject-retract-offer-modal.component";
-import { UserService } from "@shared/services/user.service";
+import { UserService } from "@core/services/user.service";
 
 interface OfferGroup {
   [key: MarketplaceMasterOfferInterface["id"]]: (MarketplaceOfferInterface & {

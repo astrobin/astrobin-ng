@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { ImageInterface } from "@shared/interfaces/image.interface";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageService } from "@core/services/image/image.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 import { FilterType, FilterTypePriority, LegacyFilterType } from "@features/equipment/types/filter.interface";
 import { FilterService } from "@features/equipment/services/filter.service";
 import { TranslateService } from "@ngx-translate/core";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 // This includes total per filter type.
 interface FilterSummary {

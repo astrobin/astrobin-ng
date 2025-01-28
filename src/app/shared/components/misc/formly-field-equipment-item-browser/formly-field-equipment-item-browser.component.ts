@@ -16,7 +16,7 @@ import {
 import { Actions, ofType } from "@ngrx/effects";
 import { filter, map, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
 

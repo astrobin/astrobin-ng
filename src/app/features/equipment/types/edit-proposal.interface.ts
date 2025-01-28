@@ -1,5 +1,5 @@
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { Observable } from "rxjs";
 
 export enum EditProposalReviewStatus {

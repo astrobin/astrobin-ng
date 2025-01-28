@@ -4,7 +4,7 @@ import {
   MarketplaceFilterModel,
   MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MarketplaceUserListingsBasePageComponent } from "@features/equipment/pages/marketplace/user-listings-base/marketplace-user-listings-base-page.component";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 

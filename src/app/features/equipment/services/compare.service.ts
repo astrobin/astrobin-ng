@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { BaseService } from "@shared/services/base.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { forkJoin, Observable, of, Subject } from "rxjs";
@@ -9,10 +9,10 @@ import { filter, map, switchMap, take } from "rxjs/operators";
 import {
   EquipmentItemDisplayProperty,
   EquipmentItemService
-} from "@shared/services/equipment-item.service";
+} from "@core/services/equipment-item.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { Store } from "@ngrx/store";
@@ -20,8 +20,8 @@ import { MainState } from "@app/store/state";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
-import { SimplifiedSubscriptionName, SubscriptionName } from "@shared/types/subscription-name.type";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { SimplifiedSubscriptionName, SubscriptionName } from "@core/types/subscription-name.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 import { CameraDisplayProperty } from "@features/equipment/services/camera.service";

@@ -3,15 +3,15 @@ import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, take } from "rxjs/operators";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-feed-item-image",

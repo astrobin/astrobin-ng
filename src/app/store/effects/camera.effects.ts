@@ -5,7 +5,7 @@ import { selectCamera } from "@app/store/selectors/app/camera.selectors";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { CameraApiService } from "@shared/services/api/classic/gear/camera/camera-api.service";
+import { CameraApiService } from "@core/services/api/classic/gear/camera/camera-api.service";
 import { EMPTY, Observable, of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take } from "rxjs/operators";
 

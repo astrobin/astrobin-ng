@@ -8,7 +8,7 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { LoadEquipmentItemSuccess } from "@features/equipment/store/equipment.actions";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 export const ItemResolver: ResolveFn<EquipmentItem> = (
   route: ActivatedRouteSnapshot,

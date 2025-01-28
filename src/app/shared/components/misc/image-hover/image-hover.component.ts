@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
-import { ImageInterface } from "@shared/interfaces/image.interface";
-import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
-import { ImageService } from "@shared/services/image/image.service";
-import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
 
 @Component({
   selector: 'astrobin-image-hover',

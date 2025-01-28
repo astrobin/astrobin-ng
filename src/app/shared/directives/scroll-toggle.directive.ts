@@ -1,7 +1,7 @@
 import { AfterViewChecked, AfterViewInit, Directive, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, Renderer2, SimpleChanges } from "@angular/core";
 import { fromEvent, Subscription } from "rxjs";
 import { throttleTime } from "rxjs/operators";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Directive({
   selector: "[astrobinScrollToggle]"

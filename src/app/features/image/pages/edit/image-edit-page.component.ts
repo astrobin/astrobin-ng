@@ -19,14 +19,14 @@ import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { RemoteSourceAffiliateApiService } from "@shared/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { LoadingService } from "@shared/services/loading.service";
-import { TitleService } from "@shared/services/title/title.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { RemoteSourceAffiliateApiService } from "@core/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { ImageEditBasicFieldsService } from "@features/image/services/image-edit-basic-fields.service";
 import { ImageEditModelInterface, ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageEditContentFieldsService } from "@features/image/services/image-edit-content-fields.service";
@@ -50,10 +50,10 @@ import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap"
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
-import { UserService } from "@shared/services/user.service";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { UserService } from "@core/services/user.service";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { CookieService } from "ngx-cookie";
-import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-guard.service";
+import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 import { Constants } from "@shared/constants";
 import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
@@ -63,13 +63,13 @@ import {
   OverrideAcquisitionFormModalComponent
 } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
-import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
-import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system-acquisition.interface";
+import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
+import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 
 @Component({
   selector: "astrobin-image-edit-page",

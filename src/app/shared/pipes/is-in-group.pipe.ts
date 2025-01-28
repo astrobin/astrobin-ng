@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { UserService } from "@shared/services/user.service";
-import { GroupInterface } from "@shared/interfaces/group.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { UserService } from "@core/services/user.service";
+import { GroupInterface } from "@core/interfaces/group.interface";
 
 @Pipe({
   name: "isInGroup"

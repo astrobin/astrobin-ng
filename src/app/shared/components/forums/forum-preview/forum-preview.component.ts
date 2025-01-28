@@ -2,12 +2,12 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/cor
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { ForumInterface } from "@shared/interfaces/forums/forum.interface";
-import { TopicInterface } from "@shared/interfaces/forums/topic.interface";
-import { ForumApiService } from "@shared/services/api/forum/forum-api.service";
+import { ForumInterface } from "@core/interfaces/forums/forum.interface";
+import { TopicInterface } from "@core/interfaces/forums/topic.interface";
+import { ForumApiService } from "@core/services/api/forum/forum-api.service";
 import { map, switchMap, tap } from "rxjs/operators";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { CategoryInterface } from "@shared/interfaces/forums/category.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { CategoryInterface } from "@core/interfaces/forums/category.interface";
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({

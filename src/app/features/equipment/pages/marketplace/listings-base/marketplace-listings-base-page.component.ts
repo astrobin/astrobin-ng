@@ -3,29 +3,29 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectMarketplace, selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
 import { debounceTime, filter, map, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import { ClearMarketplaceListings, EquipmentActionTypes, LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { MarketplaceFilterModel, marketplaceFilterModelKeys, MarketplaceRefreshOptions } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
-import { CountryService } from "@shared/services/country.service";
+import { CountryService } from "@core/services/country.service";
 import { fromEvent, Observable } from "rxjs";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { LocalStorageService } from "@shared/services/localstorage.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { LocalStorageService } from "@core/services/localstorage.service";
 import { NgbModal, NgbModalRef, NgbOffcanvas, NgbPaginationConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { CountrySelectionModalComponent } from "@shared/components/misc/country-selection-modal/country-selection-modal.component";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { RouterService } from "@shared/services/router.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { RouterService } from "@core/services/router.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
-import { DeviceService } from "@shared/services/device.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { DeviceService } from "@core/services/device.service";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",

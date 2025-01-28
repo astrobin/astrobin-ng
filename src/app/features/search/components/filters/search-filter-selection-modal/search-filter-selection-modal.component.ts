@@ -4,13 +4,13 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { merge, Observable, of, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 
 type FilterType = {

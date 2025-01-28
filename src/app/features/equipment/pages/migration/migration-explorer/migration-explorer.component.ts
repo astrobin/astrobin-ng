@@ -5,12 +5,12 @@ import { Actions } from "@ngrx/effects";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({

@@ -6,7 +6,7 @@ import { EMPTY, Observable } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { LoadMarketplaceListingSuccess } from "@features/equipment/store/equipment.actions";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 export const MarketplaceListingResolver: ResolveFn<MarketplaceListingInterface> = (

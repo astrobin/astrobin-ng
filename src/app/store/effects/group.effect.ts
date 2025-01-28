@@ -7,7 +7,7 @@ import { LoadGroups, LoadGroupsFailure, LoadGroupsSuccess } from "@app/store/act
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { selectGroupsByParams } from "@app/store/selectors/app/group.selectors";
 import { MainState } from "@app/store/state";
-import { GroupApiService } from "@shared/services/api/classic/groups/group-api.service";
+import { GroupApiService } from "@core/services/api/classic/groups/group-api.service";
 
 @Injectable()
 export class GroupEffects {

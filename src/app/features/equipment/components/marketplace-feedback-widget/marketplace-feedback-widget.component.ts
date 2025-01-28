@@ -2,8 +2,8 @@ import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { map, take, takeUntil } from "rxjs/operators";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -13,7 +13,7 @@ import { ActivatedRoute } from "@angular/router";
 import { MarketplaceFeedbackTargetType } from "@features/equipment/types/marketplace-feedback.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { Observable } from "rxjs";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({

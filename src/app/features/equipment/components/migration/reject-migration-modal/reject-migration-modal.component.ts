@@ -10,15 +10,15 @@ import {
   EquipmentItemReviewerDecision,
   EquipmentItemReviewerRejectionReason
 } from "@features/equipment/types/equipment-item-base.interface";
-import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { switchMap, take, takeUntil } from "rxjs/operators";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
-import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
+import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 
 export enum RejectMigrationReason {
   REJECTED_INCORRECT_STRATEGY = "REJECTED_INCORRECT_STRATEGY",

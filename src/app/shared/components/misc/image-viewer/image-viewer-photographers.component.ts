@@ -1,27 +1,27 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, Renderer2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { DeviceService } from "@core/services/device.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { filter, take } from "rxjs/operators";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { forkJoin } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { AcceptCollaboratorRequest, DenyCollaboratorRequest, ForceCheckTogglePropertyAutoLoad, RemoveCollaborator } from "@app/store/actions/image.actions";
-import { LoadingService } from "@shared/services/loading.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { UserService } from "@shared/services/user.service";
+import { LoadingService } from "@core/services/loading.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { UserService } from "@core/services/user.service";
 
 
 @Component({

@@ -5,9 +5,9 @@ import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-variant-selector-modal",

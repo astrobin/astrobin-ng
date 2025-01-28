@@ -3,14 +3,14 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { ConstellationInterface, ConstellationsService } from "@features/explore/services/constellations.service";
 import { ViewportScroller } from "@angular/common";
-import { LoadingService } from "@shared/services/loading.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { LoadingService } from "@core/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { startWith, takeUntil } from "rxjs/operators";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
 
 @Component({

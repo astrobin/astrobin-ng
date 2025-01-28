@@ -6,7 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 

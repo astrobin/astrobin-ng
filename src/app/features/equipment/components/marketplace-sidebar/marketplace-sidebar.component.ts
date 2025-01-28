@@ -3,8 +3,8 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-marketplace-sidebar",

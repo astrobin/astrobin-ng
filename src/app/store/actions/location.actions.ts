@@ -2,7 +2,7 @@
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { LocationInterface } from "@shared/interfaces/location.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
 
 export class CreateLocationAddTag implements PayloadActionInterface {
   readonly type = AppActionTypes.CREATE_LOCATION_ADD_TAG;

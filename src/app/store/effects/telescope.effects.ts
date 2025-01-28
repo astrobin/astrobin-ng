@@ -5,7 +5,7 @@ import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { TelescopeApiService } from "@shared/services/api/classic/gear/telescope/telescope-api.service";
+import { TelescopeApiService } from "@core/services/api/classic/gear/telescope/telescope-api.service";
 import { EMPTY, Observable, of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take } from "rxjs/operators";
 

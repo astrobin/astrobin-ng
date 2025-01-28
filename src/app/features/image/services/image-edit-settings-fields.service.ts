@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@shared/services/loading.service";
-import { DownloadLimitationOptions, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface, LicenseOptions, MouseHoverImageOptions } from "@shared/interfaces/image.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { DownloadLimitationOptions, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface, LicenseOptions, MouseHoverImageOptions } from "@core/interfaces/image.interface";
 import { ImageEditService, KeyValueTagsValidator } from "@features/image/services/image-edit.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
-import { ImageService } from "@shared/services/image/image.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { ImageService } from "@core/services/image/image.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 @Injectable({
   providedIn: null

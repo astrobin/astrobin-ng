@@ -6,10 +6,10 @@ import { MainState } from "@app/store/state";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { SavedSearchInterface } from "@features/search/interfaces/saved-search.interface";
-import { SavedSearchApiService } from "@shared/services/api/classic/saved-search/saved-search-api.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { SavedSearchApiService } from "@core/services/api/classic/saved-search/saved-search-api.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { Observable, of } from "rxjs";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 

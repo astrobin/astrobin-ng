@@ -3,7 +3,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

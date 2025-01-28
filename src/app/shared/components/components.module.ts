@@ -9,7 +9,6 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { BreadcrumbComponent } from "@shared/components/misc/breadcrumb/breadcrumb.component";
 import { CameraComponent } from "@shared/components/misc/camera/camera.component";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { FormlyFieldImageCropperComponent } from "@shared/components/misc/formly-field-image-cropper/formly-field-image-cropper.component";
@@ -28,8 +27,6 @@ import { NgxImageZoomModule } from "ngx-image-zoom";
 import { UploadxModule } from "ngx-uploadx";
 import { LoginFormComponent } from "./auth/login-form/login-form.component";
 import { LoginModalComponent } from "./auth/login-modal/login-modal.component";
-import { FooterComponent } from "./footer/footer.component";
-import { HeaderComponent } from "./header/header.component";
 import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
 import { ReadOnlyModeComponent } from "./misc/read-only-mode/read-only-mode.component";
 import { UsernameComponent } from "./misc/username/username.component";
@@ -42,7 +39,7 @@ import { FileValueAccessorDirective } from "@shared/components/misc/formly-field
 import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { NothingHereComponent } from "@shared/components/misc/nothing-here/nothing-here.component";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { NestedCommentsComponent } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { NestedCommentComponent } from "@shared/components/misc/nested-comments/nested-comment.component";
 import { TimeagoModule } from "ngx-timeago";
@@ -95,7 +92,6 @@ import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-
 import { TogglePropertyComponent } from "@shared/components/misc/toggle-property/toggle-property.component";
 import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/summaries/item/summary/more-related-items-modal/more-related-items-modal.component";
 import { StockStatusComponent } from "@shared/components/equipment/stock-status/stock-status.component";
-import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
 import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
@@ -152,6 +148,7 @@ import { ImageHoverComponent } from "@shared/components/misc/image-hover/image-h
 import { ImageViewerIotdTpStatsComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component";
 import { MasonryLayoutComponent } from "@shared/components/masonry-layout/masonry-layout.component";
 import { ImageGalleryLoadingComponent } from "@shared/components/image-gallery-loading-indicator/image-gallery-loading.component";
+import { SharedModule } from "@shared/shared.module";
 
 const modules = [
   CommonModule,
@@ -195,8 +192,6 @@ const modules = [
 const components = [
   AdManagerComponent,
   AvatarComponent,
-  BetaBannerComponent,
-  BreadcrumbComponent,
   CameraComponent,
   ConfirmationDialogComponent,
   CountDownComponent,
@@ -205,7 +200,6 @@ const components = [
   DataDoesNotUpdateInRealTimeComponent,
   EmptyListComponent,
   FileValueAccessorDirective,
-  FooterComponent,
   FormlyCardWrapperComponent,
   FormlyEquipmentItemBrowserWrapperComponent,
   FormlyFieldArrayComponent,
@@ -226,7 +220,6 @@ const components = [
   FormlyWrapperComponent,
   ForumPreviewComponent,
   FullscreenImageViewerComponent,
-  HeaderComponent,
   HrComponent,
   ImageComponent,
   ImageHoverComponent,

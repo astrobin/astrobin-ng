@@ -8,7 +8,7 @@ import { initialMainState } from "@app/store/state";
 import { Router } from "@angular/router";
 import { EMPTY, of } from "rxjs";
 import { FeedItemGenerator } from "@shared/generators/feed-item.generator";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 describe('FeedComponent', () => {
   let component: FeedComponent;

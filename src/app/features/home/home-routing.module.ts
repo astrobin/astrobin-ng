@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
-import { ImageResolver } from "@shared/resolvers/image.resolver";
+import { ImageResolver } from "@core/resolvers/image.resolver";
 
 const routes: Routes = [
   {

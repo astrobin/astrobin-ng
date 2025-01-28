@@ -1,6 +1,6 @@
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";

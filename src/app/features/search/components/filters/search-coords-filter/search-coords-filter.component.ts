@@ -6,9 +6,9 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AstroUtilsService } from "@shared/services/astro-utils/astro-utils.service";
+import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.service";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 

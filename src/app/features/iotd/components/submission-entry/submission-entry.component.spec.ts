@@ -6,7 +6,7 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
 import { SubmissionEntryComponent } from "./submission-entry.component";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
 import { AppModule } from "@app/app.module";
 

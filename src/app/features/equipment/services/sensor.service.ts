@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { BaseService } from "@shared/services/base.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";

@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { take, tap } from "rxjs/operators";
 import {
@@ -13,17 +13,17 @@ import {
   EquipmentActionTypes
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Router } from "@angular/router";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
-import { RouterService } from "@shared/services/router.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { RouterService } from "@core/services/router.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import {
   MARKETPLACE_SALE_TYPE,
   MarketplaceListingFormInitialCountInterface
 } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
 
 @Component({

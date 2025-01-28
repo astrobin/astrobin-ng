@@ -1,9 +1,9 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ImageEditService } from "@features/image/services/image-edit.service";

@@ -10,7 +10,7 @@ import {
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
 import { Action } from "@ngrx/store";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";

@@ -7,7 +7,7 @@ import { initialMainState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { AppModule } from "@app/app.module";
 
 describe("RejectMigrationModalComponent", () => {

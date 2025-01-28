@@ -4,18 +4,18 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Actions, ofType } from "@ngrx/effects";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { TitleService } from "@shared/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { TitleService } from "@core/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { DefaultGallerySortingOption, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { DefaultGallerySortingOption, UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { filter, map, take, takeUntil } from "rxjs/operators";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 import { FindCollections, FindCollectionsSuccess } from "@app/store/actions/collection.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { selectCurrentUser, selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
-import { ImageService } from "@shared/services/image/image.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { ImageService } from "@core/services/image/image.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 
 @Component({

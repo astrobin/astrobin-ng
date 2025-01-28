@@ -1,5 +1,5 @@
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { StockStatus } from "@features/equipment/types/stock-status.type";

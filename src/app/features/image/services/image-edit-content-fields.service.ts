@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@shared/services/loading.service";
-import { AcquisitionType, DataSource, RemoteSource, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { AcquisitionType, DataSource, RemoteSource, SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Observable, of, Subscription } from "rxjs";
 import { CreateLocationAddTag } from "@app/store/actions/location.actions";
@@ -11,10 +11,10 @@ import { ImageEditService } from "@features/image/services/image-edit.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 
 @Injectable({
   providedIn: null

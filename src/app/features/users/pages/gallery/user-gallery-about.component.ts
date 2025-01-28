@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-user-gallery-about",

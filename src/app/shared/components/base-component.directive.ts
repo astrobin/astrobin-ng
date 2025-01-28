@@ -2,14 +2,14 @@ import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { fromEvent, Observable, ReplaySubject, Subject } from "rxjs";
 import { Store } from "@ngrx/store";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { debounceTime, map, switchMap, takeUntil } from "rxjs/operators";
-import { distinctUntilKeyChangedOrNull } from "@shared/services/utils/utils.service";
+import { distinctUntilKeyChangedOrNull } from "@core/services/utils/utils.service";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Directive()
 export class BaseComponentDirective implements OnInit, OnDestroy {

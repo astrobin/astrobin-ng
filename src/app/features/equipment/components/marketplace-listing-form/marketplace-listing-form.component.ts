@@ -19,7 +19,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import {
@@ -34,19 +34,19 @@ import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content
 import { Constants } from "@shared/constants";
 import { TranslateService } from "@ngx-translate/core";
 import * as countryJs from "country-js";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { forkJoin } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
-import { CountryService } from "@shared/services/country.service";
-import { UserService } from "@shared/services/user.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
+import { CountryService } from "@core/services/country.service";
+import { UserService } from "@core/services/user.service";
 
 declare var google: any;
 

@@ -7,7 +7,7 @@ import {
   MarketplaceListingCondition,
   MarketplaceShippingCostType
 } from "@features/equipment/types/marketplace-line-item.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { UserGenerator } from "@shared/generators/user.generator";
 
 export class MarketplaceGenerator {

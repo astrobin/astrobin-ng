@@ -1,4 +1,4 @@
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 
 export interface IotdArchiveInterface {
   id: number;

@@ -1,21 +1,21 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { DefaultGallerySortingOption, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { DefaultGallerySortingOption, UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { auditTime, fromEvent, Subject } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { debounceTime, distinctUntilChanged, filter, map, startWith, take, takeUntil } from "rxjs/operators";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { selectCollections } from "@app/store/selectors/app/collection.selectors";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
-import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
-import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
+import { DeviceService } from "@core/services/device.service";
+import { FindImagesOptionsInterface } from "@core/services/api/classic/images/image/image-api.service";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
 import { UpdateUserProfile } from "@features/account/store/auth.actions";
 
 type GalleryNavigationComponent =

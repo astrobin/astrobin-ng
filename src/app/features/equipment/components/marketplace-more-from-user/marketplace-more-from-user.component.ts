@@ -8,7 +8,7 @@ import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 import { selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 
 @Component({
   selector: "astrobin-marketplace-more-from-user",

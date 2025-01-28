@@ -3,8 +3,8 @@ import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { BaseService } from "@shared/services/base.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
 import { combineLatest, Observable, Observer } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
@@ -12,7 +12,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentActionTypes, LoadMarketplaceListing } from "@features/equipment/store/equipment.actions";
 import { selectMarketplaceListingByHash } from "@features/equipment/store/equipment.selectors";
-import { AuthService } from "@shared/services/auth.service";
+import { AuthService } from "@core/services/auth.service";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 
 @Injectable()

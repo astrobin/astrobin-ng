@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { UsernameServiceInterface } from "@shared/components/misc/username/username.service-interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { BaseService } from "@shared/services/base.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Observable, of } from "rxjs";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";

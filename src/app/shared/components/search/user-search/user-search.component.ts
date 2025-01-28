@@ -1,17 +1,17 @@
 import { Component, ElementRef, Inject, Input, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { Observable } from "rxjs";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { ScrollableSearchResultsBaseComponent } from "@shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component";
-import { UserSearchInterface } from "@shared/interfaces/user-search.interface";
-import { UserSearchApiService } from "@shared/services/api/classic/users/user-search-api.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { UserService } from "@shared/services/user.service";
+import { UserSearchInterface } from "@core/interfaces/user-search.interface";
+import { UserSearchApiService } from "@core/services/api/classic/users/user-search-api.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { UserService } from "@core/services/user.service";
 import { take } from "rxjs/operators";
 
 @Component({

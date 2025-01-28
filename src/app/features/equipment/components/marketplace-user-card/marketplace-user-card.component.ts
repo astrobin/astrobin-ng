@@ -2,14 +2,14 @@ import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { Observable } from "rxjs";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, takeUntil } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { CountryService } from "@shared/services/country.service";
+import { CountryService } from "@core/services/country.service";
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({

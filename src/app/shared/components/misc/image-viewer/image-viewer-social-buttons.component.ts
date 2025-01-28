@@ -1,28 +1,28 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { DeviceService } from "@core/services/device.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { isPlatformBrowser } from "@angular/common";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { finalize, fromEvent, Observable, Subject, throttleTime } from "rxjs";
-import { ImageApiService, UsersWhoLikeOrBookmarkInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { ImageApiService, UsersWhoLikeOrBookmarkInterface } from "@core/services/api/classic/images/image/image-api.service";
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
-import { LoadingService } from "@shared/services/loading.service";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 
 
 @Component({

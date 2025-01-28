@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -23,7 +23,7 @@ import { NotificationTypeInterface } from "@features/notifications/interfaces/no
 import { Observable } from "rxjs";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { NgbAccordion } from "@ng-bootstrap/ng-bootstrap";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
 import { Constants } from "@shared/constants";
 

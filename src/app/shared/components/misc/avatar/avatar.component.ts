@@ -2,15 +2,15 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/cor
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, take } from "rxjs/operators";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { Router } from "@angular/router";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { UserService } from "@shared/services/user.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UserService } from "@core/services/user.service";
 
 @Component({
   selector: "" + "astrobin-avatar",

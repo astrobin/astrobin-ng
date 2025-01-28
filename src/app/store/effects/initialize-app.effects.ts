@@ -4,9 +4,9 @@ import { InitializeAppSuccess } from "@app/store/actions/initialize-app.actions"
 import { setTimeagoIntl } from "@app/translate-loader";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { TimeagoIntl } from "ngx-timeago";
 import { forkJoin, Observable, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";

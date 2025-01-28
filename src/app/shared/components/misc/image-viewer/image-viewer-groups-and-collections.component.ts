@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageInterface } from "@shared/interfaces/image.interface";
-import { GroupInterface } from "@shared/interfaces/group.interface";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
 import { LoadGroups } from "@app/store/actions/group.actions";
@@ -10,10 +10,10 @@ import { filter, takeUntil } from "rxjs/operators";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
-import { UserService } from "@shared/services/user.service";
+import { DeviceService } from "@core/services/device.service";
+import { UserService } from "@core/services/user.service";
 
 @Component({
   selector: "astrobin-image-viewer-groups-and-collections",

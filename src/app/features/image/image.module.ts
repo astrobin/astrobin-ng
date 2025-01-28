@@ -23,9 +23,9 @@ import { OverrideAcquisitionFormModalComponent } from "@features/image/component
 import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
 import { imageFeatureKey, imageReducer } from "@features/image/store/image.reducer";
 import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
-import { SearchModule } from "@features/search/search.module";
 import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revision/image-edit-revision-page.component";
 import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 
 @NgModule({
   declarations: [
@@ -44,7 +44,6 @@ import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/pl
   imports: [
     RouterModule.forChild(imageRoutes),
     SharedModule,
-    SearchModule,
     StoreModule.forFeature(imageFeatureKey, imageReducer),
     EffectsModule.forFeature([ImageEffects])
   ],

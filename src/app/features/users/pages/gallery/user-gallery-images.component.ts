@@ -1,32 +1,32 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface } from "@core/interfaces/image.interface";
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { debounceTime, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { LoadingService } from "@shared/services/loading.service";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { LoadingService } from "@core/services/loading.service";
+import { ImageService } from "@core/services/image/image.service";
 import { NavigationEnd, Router } from "@angular/router";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { finalize, fromEvent, merge, Subscription, throttleTime } from "rxjs";
-import { FindImagesOptionsInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { FindImagesOptionsInterface } from "@core/services/api/classic/images/image/image-api.service";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { fadeInOut } from "@shared/animations";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
-import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
-import { DeviceService } from "@shared/services/device.service";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import { DeviceService } from "@core/services/device.service";
 
 @Component({
   selector: "astrobin-user-gallery-images",

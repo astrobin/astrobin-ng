@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
@@ -11,16 +11,16 @@ import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions"
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { filter, map, take, takeUntil } from "rxjs/operators";
-import { FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { DeviceService } from "@core/services/device.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
-import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
 
 @Component({
   selector: "astrobin-user-gallery-smart-folder",

@@ -8,7 +8,7 @@ import {
   EditProposalReviewStatus
 } from "@features/equipment/types/edit-proposal.interface";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 import {
   ApproveEquipmentItemEditProposalSuccess,
   EquipmentActionTypes,
@@ -16,27 +16,27 @@ import {
   RejectEquipmentItemEditProposalSuccess
 } from "@features/equipment/store/equipment.actions";
 import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { forkJoin, Observable } from "rxjs";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
 import { Actions, ofType } from "@ngrx/effects";
 import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-item-edit-proposal",

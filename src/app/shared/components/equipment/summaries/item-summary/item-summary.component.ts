@@ -8,7 +8,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
-import { distinctUntilKeyChangedOrNull, UtilsService } from "@shared/services/utils/utils.service";
+import { distinctUntilKeyChangedOrNull, UtilsService } from "@core/services/utils/utils.service";
 import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import {
@@ -28,27 +28,27 @@ import { SensorDisplayProperty, SensorService } from "@features/equipment/servic
 import {
   EquipmentItemDisplayProperty,
   EquipmentItemService
-} from "@shared/services/equipment-item.service";
+} from "@core/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { instanceOfSensor, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { AuthService } from "@shared/services/auth.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { AuthService } from "@core/services/auth.service";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
+import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/summaries/item/summary/more-related-items-modal/more-related-items-modal.component";
 
 interface EquipmentItemProperty {

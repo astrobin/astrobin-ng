@@ -4,7 +4,7 @@ import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/ful
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { Observable } from "rxjs";
 
 @Injectable()

@@ -7,7 +7,7 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, EMPTY, of } from "rxjs";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 
 describe("SearchPageComponent", () => {
   let component: SearchPageComponent;

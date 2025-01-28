@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnChanges } from "@angular/core";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";

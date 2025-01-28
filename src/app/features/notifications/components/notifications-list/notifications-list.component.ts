@@ -5,15 +5,15 @@ import { NotificationInterface } from "@features/notifications/interfaces/notifi
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { TitleService } from "@shared/services/title/title.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { map, take, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LoadNotifications, MarkAllAsRead, MarkAsRead, NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
 import { selectNotifications } from "@features/notifications/store/notifications.selectors";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Actions, ofType } from "@ngrx/effects";
 
 @Component({

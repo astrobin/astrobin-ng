@@ -42,21 +42,21 @@ import {
 } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { LoadingService } from "@core/services/loading.service";
 import { MainState } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import {
   EquipmentItemDisplayProperty,
   EquipmentItemService
-} from "@shared/services/equipment-item.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+} from "@core/services/equipment-item.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 export enum EquipmentItemEditorMode {
   CREATION = "CREATION",

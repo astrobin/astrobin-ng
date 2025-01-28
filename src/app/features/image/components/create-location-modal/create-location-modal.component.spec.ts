@@ -5,7 +5,7 @@ import { AppModule } from "@app/app.module";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
-import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
+import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
 
 describe("CreateLocationModalComponent", () => {
   let component: CreateLocationModalComponent;

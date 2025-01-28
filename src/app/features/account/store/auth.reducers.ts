@@ -1,8 +1,8 @@
 import { AuthActionTypes } from "@features/account/store/auth.actions";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";

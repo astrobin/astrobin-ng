@@ -1,14 +1,14 @@
 import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { UsernameService } from "@shared/components/misc/username/username.service";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, switchMap, take, tap } from "rxjs/operators";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { UserService } from "@shared/services/user.service";
+import { UserService } from "@core/services/user.service";
 
 @Component({
   selector: "astrobin-username",

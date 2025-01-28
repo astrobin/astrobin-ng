@@ -1,26 +1,26 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { SolutionInterface, SolutionStatus } from "@shared/interfaces/solution.interface";
-import { SolutionService } from "@shared/services/solution/solution.service";
+import { DeviceService } from "@core/services/device.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
+import { SolutionService } from "@core/services/solution/solution.service";
 import { LoadSolution } from "@app/store/actions/solution.actions";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { Subscription } from "rxjs";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { isPlatformBrowser } from "@angular/common";
 import { LoadImage } from "@app/store/actions/image.actions";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 
 @Component({
   selector: "astrobin-image-viewer-plate-solving-banner",

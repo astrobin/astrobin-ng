@@ -7,10 +7,10 @@ import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { EMPTY, Observable, of, Subject } from "rxjs";
 import { catchError, delay, filter, map, mergeMap, take, takeUntil, tap } from "rxjs/operators";
-import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 
 @Injectable()
 export class ThumbnailEffects {

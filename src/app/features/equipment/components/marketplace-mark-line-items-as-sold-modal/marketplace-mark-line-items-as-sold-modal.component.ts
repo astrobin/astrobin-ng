@@ -4,11 +4,11 @@ import { MainState } from "@app/store/state";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { Actions, ofType } from "@ngrx/effects";
 import {
   EquipmentActionTypes,
@@ -18,7 +18,7 @@ import {
 import { filter, take } from "rxjs/operators";
 import { forkJoin } from "rxjs";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 

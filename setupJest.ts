@@ -13,21 +13,21 @@ import { LoginFormComponent } from "@shared/components/auth/login-form/login-for
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
-import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { RemoteSourceAffiliateApiService } from "@shared/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
-import { AuthService } from "@shared/services/auth.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
-import { UserService } from "@shared/services/user.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ThumbnailGroupApiService } from "@core/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { RemoteSourceAffiliateApiService } from "@core/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
+import { AuthService } from "@core/services/auth.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { UserService } from "@core/services/user.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { MockService, ngMocks } from "ng-mocks";
 import { UploadxService } from "ngx-uploadx";
 import { EMPTY, of } from "rxjs";
-import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
+import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
 
 ngMocks.autoSpy("jest");
 

@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { IotdApiService, IotdInterface } from "@features/iotd/services/iotd-api.service";
-import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface } from "@core/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { ImageService } from "@core/services/image/image.service";
 import { IotdStatsInterface } from "@features/iotd/types/iotd-stats.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 import { fadeInOut } from "@shared/animations";
 
 @Component({

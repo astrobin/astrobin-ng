@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild
 import { FieldArrayType, FormlyFieldConfig } from "@ngx-formly/core";
 import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
 import { TranslateService } from "@ngx-translate/core";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { startWith } from "rxjs/operators";
 import { Subscription } from "rxjs";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";

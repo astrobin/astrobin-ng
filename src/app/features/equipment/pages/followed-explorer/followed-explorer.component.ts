@@ -3,22 +3,22 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Actions } from "@ngrx/effects";
 import { Observable } from "rxjs";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
-import { DeviceService } from "@shared/services/device.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { DeviceService } from "@core/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({

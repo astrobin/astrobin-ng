@@ -1,4 +1,4 @@
-import { LocationInterface } from "@shared/interfaces/location.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
 
 export class LocationGenerator {
   static location(id = 1, name = "My location", lat_deg = 10, lon_deg = 5): LocationInterface {

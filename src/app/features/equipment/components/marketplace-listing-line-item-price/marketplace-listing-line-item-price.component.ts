@@ -9,11 +9,11 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { filter, take, takeUntil } from "rxjs/operators";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-price",

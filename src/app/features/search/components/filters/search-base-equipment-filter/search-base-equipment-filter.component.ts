@@ -10,7 +10,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { filter, map, take } from "rxjs/operators";
 import { forkJoin, Observable } from "rxjs";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentActionTypes, LoadEquipmentItem, LoadEquipmentItemSuccess } from "@features/equipment/store/equipment.actions";
 import { MatchType } from "@features/search/enums/match-type.enum";

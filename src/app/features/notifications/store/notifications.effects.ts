@@ -7,7 +7,7 @@ import { EMPTY, Observable, of } from "rxjs";
 import { GetUnreadCountFailure, GetUnreadCountSuccess, LoadNotifications, LoadNotificationSettingsSuccess, LoadNotificationsFailure, LoadNotificationsSuccess, LoadNotificationTypesSuccess, MarkAllAsReadFailure, MarkAllAsReadSuccess, MarkAsRead, MarkAsReadFailure, MarkAsReadSuccess, NotificationsActionTypes, SetNotificationSetting, SetNotificationSettingSuccess } from "@features/notifications/store/notifications.actions";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import { selectNotificationSettings, selectNotificationTypes } from "@features/notifications/store/notifications.selectors";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 
 @Injectable()
 export class NotificationsEffects {

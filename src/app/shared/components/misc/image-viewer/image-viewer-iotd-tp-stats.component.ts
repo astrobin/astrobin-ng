@@ -6,8 +6,8 @@ import { filter, map, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { MainState } from "@app/store/state";
 import { ImageIotdTpStatsInterface } from "@features/iotd/types/image-iotd-tp-stats.interface";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ImageInterface } from "@core/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-image-viewer-iotd-tp-stats",

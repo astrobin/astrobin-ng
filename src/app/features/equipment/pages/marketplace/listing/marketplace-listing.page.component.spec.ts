@@ -13,7 +13,7 @@ import { MarketplaceGenerator } from "@features/equipment/generators/marketplace
 import { ActivatedRoute, Router } from "@angular/router";
 import { EMPTY, of } from "rxjs";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 describe("MarketplaceListingPageComponent", () => {
   let component: MarketplaceListingPageComponent;

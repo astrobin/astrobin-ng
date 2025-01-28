@@ -1,22 +1,22 @@
 import { Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { Actions, ofType } from "@ngrx/effects";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 import { fromEvent, throttleTime } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { fadeInOut } from "@shared/animations";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, LoadCollections, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess } from "@app/store/actions/collection.actions";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-user-gallery-collection-add-remove-images",

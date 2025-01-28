@@ -1,29 +1,29 @@
 import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { TelescopeInterface as LegacyTelescopeInterface } from "@shared/interfaces/telescope.interface";
-import { CameraInterface as LegacyCameraInterface } from "@shared/interfaces/camera.interface";
-import { MountInterface as LegacyMountInterface } from "@shared/interfaces/mount.interface";
-import { FilterInterface as LegacyFilterInterface } from "@shared/interfaces/filter.interface";
-import { FocalReducerInterface as LegacyFocalReducerInterface } from "@shared/interfaces/focal-reducer.interface";
-import { AccessoryInterface as LegacyAccessoryInterface } from "@shared/interfaces/accessory.interface";
-import { SoftwareInterface as LegacySoftwareInterface } from "@shared/interfaces/software.interface";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
+import { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
+import { MountInterface as LegacyMountInterface } from "@core/interfaces/mount.interface";
+import { FilterInterface as LegacyFilterInterface } from "@core/interfaces/filter.interface";
+import { FocalReducerInterface as LegacyFocalReducerInterface } from "@core/interfaces/focal-reducer.interface";
+import { AccessoryInterface as LegacyAccessoryInterface } from "@core/interfaces/accessory.interface";
+import { SoftwareInterface as LegacySoftwareInterface } from "@core/interfaces/software.interface";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentService } from "@shared/services/equipment.service";
+import { EquipmentService } from "@core/services/equipment.service";
 
 type LegacyEquipmentItem =
   | LegacyTelescopeInterface

@@ -3,7 +3,7 @@ import {
   MarketplaceFilterModel,
   MarketplaceRefreshOptions
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { takeUntil } from "rxjs/operators";

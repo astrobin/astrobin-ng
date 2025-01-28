@@ -3,7 +3,7 @@ import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { FeedItemInterface, FeedItemVerb } from "@features/home/interfaces/feed-item.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-feed-item",

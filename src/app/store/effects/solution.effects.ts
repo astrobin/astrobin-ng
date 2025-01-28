@@ -5,7 +5,7 @@ import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { SolutionApiService } from "@shared/services/api/classic/platesolving/solution/solution-api.service";
+import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
 import { EMPTY, Observable, of } from "rxjs";
 import { catchError, map, mergeMap, take } from "rxjs/operators";
 

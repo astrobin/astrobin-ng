@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

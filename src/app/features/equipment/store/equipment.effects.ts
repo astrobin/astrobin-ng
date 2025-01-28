@@ -12,13 +12,13 @@ import { catchError, filter, map, mergeMap, switchMap, tap } from "rxjs/operator
 import { selectBrand, selectEquipmentItem, selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SelectorWithProps } from "@ngrx/store/src/models";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { LocalDatePipe } from "@shared/pipes/local-date.pipe";
 

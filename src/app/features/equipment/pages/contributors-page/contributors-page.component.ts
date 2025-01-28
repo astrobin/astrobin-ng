@@ -4,7 +4,7 @@ import { takeUntil, tap } from "rxjs/operators";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { Observable } from "rxjs";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";

@@ -4,10 +4,10 @@ import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
-import { GearService } from "@shared/services/gear/gear.service";
+import { TelescopeInterface } from "@core/interfaces/telescope.interface";
+import { GearService } from "@core/services/gear/gear.service";
 import { Observable } from "rxjs";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-telescope",

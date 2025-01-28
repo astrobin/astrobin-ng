@@ -1,6 +1,6 @@
 import { EquipmentActionTypes } from "./equipment.actions";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";

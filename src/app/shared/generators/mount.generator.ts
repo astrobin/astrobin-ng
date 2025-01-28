@@ -1,4 +1,4 @@
-import { MountInterface } from "@shared/interfaces/mount.interface";
+import { MountInterface } from "@core/interfaces/mount.interface";
 
 export class MountGenerator {
   static mount(): MountInterface {

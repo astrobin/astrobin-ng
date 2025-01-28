@@ -6,16 +6,16 @@ import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { LoadingService } from "@shared/services/loading.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { LoadingService } from "@core/services/loading.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { MainState } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldService } from "@core/services/formly-field.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
@@ -23,7 +23,7 @@ import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { of } from "rxjs";
 import { AbstractControl, FormControl } from "@angular/forms";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
 

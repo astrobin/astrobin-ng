@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { SolutionService } from "@shared/services/solution/solution.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SolutionService } from "@core/services/solution/solution.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { DeviceService } from "@core/services/device.service";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-viewer-objects",

@@ -1,9 +1,9 @@
-import { GetCollectionsParamsInterface } from "@shared/services/api/classic/collections/collection-api.service";
+import { GetCollectionsParamsInterface } from "@core/services/api/classic/collections/collection-api.service";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 
 export class LoadCollections implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_COLLECTIONS;

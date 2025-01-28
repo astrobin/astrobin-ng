@@ -13,13 +13,13 @@ import { SubscriptionsService } from "@features/subscriptions/services/subscript
 import { select, Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { LoadingService } from "@shared/services/loading.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { TitleService } from "@shared/services/title/title.service";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { combineLatest, Observable } from "rxjs";
 import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
@@ -30,10 +30,10 @@ import { GetPricing } from "@features/subscriptions/store/subscriptions.actions"
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
-import { SubscriptionName } from "@shared/types/subscription-name.type";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { SubscriptionName } from "@core/types/subscription-name.type";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 declare var Stripe: any;
 

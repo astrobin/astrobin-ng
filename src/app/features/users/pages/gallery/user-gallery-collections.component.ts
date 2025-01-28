@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { selectCollections, selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
 import { filter, map, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Actions } from "@ngrx/effects";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { Subscription } from "rxjs";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 
 @Component({
   selector: "astrobin-user-gallery-collections",

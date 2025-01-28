@@ -3,7 +3,7 @@ import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Observable, of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import {
@@ -20,8 +20,8 @@ import {
   LoadTogglePropertyFailure,
   LoadTogglePropertySuccess
 } from "@app/store/actions/toggle-property.actions";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 
 @Injectable()
 export class TogglePropertyEffects {

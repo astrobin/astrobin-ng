@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FormGroup } from "@angular/forms";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { CreateBrand, CreateBrandSuccess, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { map, take } from "rxjs/operators";

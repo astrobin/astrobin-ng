@@ -3,21 +3,21 @@ import { ActivatedRoute } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
-import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
 import { filter, switchMap, take, takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { DeleteImageFailure, DeleteImageSuccess } from "@app/store/actions/image.actions";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
-import { UserService } from "@shared/services/user.service";
+import { UserService } from "@core/services/user.service";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { forkJoin } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-image-page",

@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy, TemplateRef } from "@angular/core";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
@@ -8,17 +8,17 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { selectEquipmentItems } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { map, takeUntil } from "rxjs/operators";
-import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from "@features/image/components/additional-deep-sky-acquisition-properties-modal/additional-deep-sky-acquisition-properties-modal.component";
 import { Subscription } from "rxjs";
-import { SubjectType } from "@shared/interfaces/image.interface";
+import { SubjectType } from "@core/interfaces/image.interface";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@features/image/components/additional-solar-system-acquisition-properties-modal/additional-solar-system-acquisition-properties-modal.component";
-import { SeeingScale, TransparencyScale } from "@shared/interfaces/solar-system-acquisition.interface";
-import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
+import { SeeingScale, TransparencyScale } from "@core/interfaces/solar-system-acquisition.interface";
+import { BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 
 @Injectable({
   providedIn: null

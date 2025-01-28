@@ -9,17 +9,17 @@ import {
   EquipmentListingsInterface
 } from "@features/equipment/types/equipment-listings.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { TranslateService } from "@ngx-translate/core";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { take } from "rxjs/operators";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
-import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
-import { AuthService } from "@shared/services/auth.service";
+import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { AuthService } from "@core/services/auth.service";
 import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 

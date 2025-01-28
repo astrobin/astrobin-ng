@@ -1,22 +1,22 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { filter, take } from "rxjs/operators";
 import { DeleteImage, DeleteImageSuccess } from "@app/store/actions/image.actions";
-import { ModalService } from "@shared/services/modal.service";
+import { ModalService } from "@core/services/modal.service";
 import { TranslateService } from "@ngx-translate/core";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { ActivatedRoute } from "@angular/router";
 import { RemoveImageFromCollection, SetCollectionCoverImage } from "@app/store/actions/collection.actions";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-user-gallery-image-menu",

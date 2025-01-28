@@ -4,8 +4,8 @@ import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { LoadingService } from "@shared/services/loading.service";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { LoadingService } from "@core/services/loading.service";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { filter, take, takeUntil } from "rxjs/operators";
 import { FormGroup } from "@angular/forms";
@@ -14,12 +14,12 @@ import {
   MarketplaceFeedbackTargetType,
   MarketplaceFeedbackValue
 } from "@features/equipment/types/marketplace-feedback.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { CreateMarketplaceFeedback, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-feedback-modal",

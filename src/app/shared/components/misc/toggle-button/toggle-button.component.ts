@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Theme, ThemeService } from "@shared/services/theme.service";
+import { Theme, ThemeService } from "@core/services/theme.service";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 

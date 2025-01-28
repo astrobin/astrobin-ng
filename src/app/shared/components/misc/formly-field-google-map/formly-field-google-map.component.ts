@@ -2,12 +2,12 @@ import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_I
 import { FieldType } from "@ngx-formly/core";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, take } from "rxjs/operators";
-import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
+import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
 import { google } from "@google/maps";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 
 @Component({

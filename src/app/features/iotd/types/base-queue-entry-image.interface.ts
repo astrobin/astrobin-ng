@@ -1,4 +1,4 @@
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { TelescopeInterface as TelescopeInterface2 } from "@features/equipment/types/telescope.interface";
 import { CameraInterface as CameraInterface2 } from "@features/equipment/types/camera.interface";
 
