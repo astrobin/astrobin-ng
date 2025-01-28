@@ -117,6 +117,7 @@
         <div
           *ngIf="actualTouchZoom !== null && !canvasLoading"
           class="touch-zoom-indicator"
+          [class.beyond-one]="Math.round(actualTouchZoom * 100) >= 101"
         >
           {{ actualTouchZoom | number:'1.2-2' }}x
         </div>
@@ -195,12 +196,15 @@
       >
       </lib-ngx-image-zoom>
 
-      <div
-        *ngIf="showZoomIndicator"
-        class="image-zoom-indicator"
-      >
-        {{ getZoomScroll() | number: "1.2-2" }}x
-      </div>
+      <ng-container *ngIf="getZoomScroll() as zoomScroll">
+        <div
+          *ngIf="showZoomIndicator"
+          class="image-zoom-indicator"
+          [class.beyond-one]="Math.round(zoomScroll * 100) >= 101"
+        >
+          {{ zoomScroll | number: "1.2-2" }}x
+        </div>
+      </ng-container>
     </ng-container>
 
     <ng-container *ngIf="isVeryLargeImage">

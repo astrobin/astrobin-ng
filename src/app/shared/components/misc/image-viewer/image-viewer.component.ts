@@ -1,5 +1,5 @@
 import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, RendererStyleFlags2, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, FullSizeLimitationDisplayOptions, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
@@ -33,6 +33,7 @@ import { SolutionApiService } from "@shared/services/api/classic/platesolving/so
 import { Throttle } from "@app/decorators";
 import { SolutionStatus } from "@shared/interfaces/solution.interface";
 import { fadeInOut } from "@shared/animations";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 
 @Component({
@@ -180,7 +181,8 @@ export class ImageViewerComponent
     public readonly imageViewerService: ImageViewerService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly modalService: NgbModal,
-    public readonly solutionApiService: SolutionApiService
+    public readonly solutionApiService: SolutionApiService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -521,23 +523,51 @@ export class ImageViewerComponent
       event.preventDefault();
     }
 
-    if (this.supportsFullscreen) {
-      this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
-      this.viewingFullscreenImage = true;
-      this.toggleFullscreen.emit(true);
-
-      if (this.isBrowser) {
-        const location_ = this.windowRefService.nativeWindow.location;
-        this.windowRefService.pushState(
-          {
-            imageId: this.image.hash || this.image.pk,
-            revisionLabel: this.revisionLabel,
-            fullscreen: true
-          },
-          `${location_.pathname}${location_.search}#fullscreen`
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (this.supportsFullscreen) {
+        const limit = this.image.fullSizeDisplayLimitation;
+        const allowReal = (
+          limit === FullSizeLimitationDisplayOptions.EVERYBODY ||
+          (limit === FullSizeLimitationDisplayOptions.MEMBERS && !!user) ||
+          (limit === FullSizeLimitationDisplayOptions.PAYING && !!user && !!user.validSubscription) ||
+          (limit === FullSizeLimitationDisplayOptions.ME && !!user && user.id === this.image.user)
         );
+
+        if (!allowReal) {
+          this.popNotificationsService.info(
+            this.translateService.instant("Zoom disabled by the image owner.")
+          );
+          return;
+        }
+
+        if (
+          this.revision.w <= this.windowRefService.nativeWindow.innerWidth &&
+          this.revision.h <= this.windowRefService.nativeWindow.innerHeight
+        ) {
+          this.popNotificationsService.info(
+            this.translateService.instant("Zoom not available because the image is smaller than your viewport.")
+          );
+          return;
+        }
+
+        this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
+        this.viewingFullscreenImage = true;
+        this.changeDetectorRef.markForCheck();
+        this.toggleFullscreen.emit(true);
+
+        if (this.isBrowser) {
+          const location_ = this.windowRefService.nativeWindow.location;
+          this.windowRefService.pushState(
+            {
+              imageId: this.image.hash || this.image.pk,
+              revisionLabel: this.revisionLabel,
+              fullscreen: true
+            },
+            `${location_.pathname}${location_.search}#fullscreen`
+          );
+        }
       }
-    }
+    });
   }
 
   protected exitFullscreen(): void {

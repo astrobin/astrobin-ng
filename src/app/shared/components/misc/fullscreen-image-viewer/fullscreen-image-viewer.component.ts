@@ -81,6 +81,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @HostBinding("class.show")
   show: boolean = false;
 
+  protected readonly Math = Math;
+
   protected touchMode?: boolean = undefined;
   protected enableLens = true;
   protected zoomLensSize: number;

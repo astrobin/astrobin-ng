@@ -102,6 +102,10 @@ $header-height: 63px;
     padding: .25rem .5rem;
     pointer-events: none;
     font-size: .9rem;
+
+    &.beyond-one {
+      background: rgba(255, 0, 0, .5);
+    }
   }
 
   .instruction-container {
@@ -178,6 +182,10 @@ $header-height: 63px;
       border-radius: 1rem;
       font-size: 0.875rem;
       z-index: 1000;
+
+      &.beyond-one {
+        background: rgba(255, 0, 0, .5);
+      }
     }
 
     img {
