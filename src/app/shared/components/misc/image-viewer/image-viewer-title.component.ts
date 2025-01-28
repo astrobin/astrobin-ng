@@ -106,7 +106,11 @@ import { DeviceService } from "@shared/services/device.service";
           </div>
         </h2>
 
-        <div ngbDropdown class="dropdown w-auto d-none d-md-block mt-1">
+        <div
+          ngbDropdown
+          [placement]="'bottom-end'"
+          class="dropdown w-auto d-none d-md-block mt-1"
+        >
           <fa-icon
             ngbDropdownToggle
             icon="ellipsis-v"
