@@ -25,13 +25,6 @@
         <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
         <div class="form-actions">
-          <a
-            [attr.href]="classicRoutesService.IMAGE(image.hash || (image.pk + '')) + '0/?forceClassicRevisionUploader'"
-            class="btn btn-link return-to-classic-uploader"
-          >
-            {{ "Return to the classic uploader" | translate }}
-          </a>
-
           <button
             [class.loading]="uploadButtonLoading()"
             [disabled]="uploadButtonLoading()"
@@ -53,7 +46,7 @@
       <span class="flex-fill me-4">
         {{ "It looks like you reached the revision upload limit for your subscription." | translate }}
       </span>
-      <a [attr.href]="classicRoutesService.PRICING" class="btn btn-primary btn-lg">
+      <a [attr.href]="classicRoutesService.PRICING" class="btn btn-primary btn-lg text-light">
         {{ "Would you like to upgrade?" | translate }}
       </a>
     </div>

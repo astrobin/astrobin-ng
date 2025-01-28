@@ -6,6 +6,7 @@ import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder, MockRender } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 describe("UncompressedSourceUploader.PageComponent", () => {
   let component: UncompressedSourceUploaderPageComponent;
@@ -24,7 +25,8 @@ describe("UncompressedSourceUploader.PageComponent", () => {
               }
             }
           }
-        }
+        },
+        UtilsService
       ])
   );
 

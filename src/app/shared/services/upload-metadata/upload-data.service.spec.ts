@@ -3,12 +3,13 @@ import { MockBuilder } from "ng-mocks";
 import { skip } from "rxjs/operators";
 
 import { UploadDataService, UploadMetadataEventInterface, UploadMetadataInterface } from "./upload-data.service";
+import { AppModule } from "@app/app.module";
 
 describe("UploadMetadataService", () => {
   let service: UploadDataService;
 
   beforeEach(async () => {
-    await MockBuilder(UploadDataService);
+    await MockBuilder(UploadDataService, AppModule);
     service = TestBed.inject(UploadDataService);
   });
 

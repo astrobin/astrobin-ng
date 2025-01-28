@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
@@ -24,44 +24,27 @@ import { ActivatedRoute, Router } from "@angular/router";
   templateUrl: "./uploader-page.component.html",
   styleUrls: ["./uploader-page.component.scss"]
 })
-export class UploaderPageComponent extends BaseComponentDirective implements OnInit {
+export class UploaderPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+  @ViewChild("additionalInfoTemplate") additionalInfoTemplate: TemplateRef<any>;
+
   form = new FormGroup({});
   uploadState: UploadState;
   SubscriptionName: typeof SubscriptionName = SubscriptionName;
   pageTitle = this.translate.instant("Uploader");
+  imageRevisionEtiquetteMessage =
+    this.translate.instant(
+      "Different take on existing data? Consider uploading as a revision."
+    ) +
+    " <a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>" +
+    this.translate.instant("Learn more") +
+    ".</a>";
 
   model = {
     title: "",
     image_file: ""
   };
 
-  fields: FormlyFieldConfig[] = [
-    {
-      key: "title",
-      wrappers: ["default-wrapper"],
-      id: "title",
-      type: "input",
-      props: {
-        label: this.translate.instant("Title"),
-        required: true,
-        maxLength: 128,
-        change: this._onTitleChange.bind(this)
-      }
-    },
-    {
-      key: "image_file",
-      id: "image_file",
-      type: "chunked-file",
-      props: {
-        required: true,
-        experimentalTiffSupportWarning: true,
-        veryLargeSizeWarning: true
-      },
-      validators: {
-        validation: [{ name: "file-size", options: { max: 0 } }]
-      }
-    }
-  ];
+  fields: FormlyFieldConfig[];
 
   uploadAllowed$ = this.userSubscriptionService.uploadAllowed$();
 
@@ -81,56 +64,43 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     super(store$);
   }
 
-  get imageRevisionEtiquetteMessage(): string {
-    return (
-      `<strong>${this.translate.instant("Please note")}</strong>: ` +
-      this.translate.instant("there is an etiquette regarding uploading a new image versus an image revision.") +
-      " <a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>" +
-      this.translate.instant("Learn more") +
-      ".</a>"
-    );
-  }
-
-  subscriptionWithYearlySlotsMessage(name: string, counter: number, slots: number): string {
+  subscriptionWithYearlySlotsMessage(counter: number, slots: number): string {
     return this.translate.instant(
-      "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-      "your <strong>{{2}}</strong> yearly upload slots.",
+      "You have used <strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots.",
       {
-        0: name,
         1: counter,
         2: slots
       }
     );
   }
 
-  subscriptionWithTotalImagesMessage(name: string, counter: number, images: number): string {
+  subscriptionWithTotalImagesMessage(counter: number, images: number): string {
     return this.translate.instant(
-      "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-      "the <strong>{{2}}</strong> images allowed in your plan.",
+      "You have used <strong>{{1}}</strong> of the <strong>{{2}}</strong> images allowed in your plan.",
       {
-        0: name,
         1: counter,
         2: images
       }
     );
   }
 
-  subscriptionWithTotalSlotsMessage(name: string, counter: number, slots: number): string {
+  subscriptionWithTotalSlotsMessage(counter: number, slots: number): string {
     return this.translate.instant(
-      "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-      "your <strong>{{2}}</strong> upload slots.",
+      "You have used <strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots.",
       {
-        0: name,
         1: counter,
         2: slots
+      }
+    ) + " " + this.translate.instant(
+      "Learn more about the {{1}}subscription plans{{2}}.", {
+        1: "<a href='" + this.classicRoutesService.PRICING + "' target='_blank'>",
+        2: "</a>"
       }
     );
   }
 
-  subscriptionWithUnlimitedSlotsMessage(name: string): string {
-    return this.translate.instant("You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited uploads!", {
-      0: name
-    });
+  subscriptionWithUnlimitedSlotsMessage(): string {
+    return this.translate.instant("Enjoy your unlimited uploads!");
   }
 
   ngOnInit(): void {
@@ -175,6 +145,10 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
         }
       }
     });
+  }
+
+  ngAfterViewInit() {
+    this._initFields();
   }
 
   onSubmit() {
@@ -225,5 +199,36 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     }
 
     this.uploadDataService.setMetadata("image-upload", { title: this.model.title });
+  }
+
+  private _initFields(): void {
+    this.fields = [
+      {
+        key: "title",
+        wrappers: ["default-wrapper"],
+        id: "title",
+        type: "input",
+        props: {
+          label: this.translate.instant("Title"),
+          required: true,
+          maxLength: 128,
+          change: this._onTitleChange.bind(this)
+        }
+      },
+      {
+        key: "image_file",
+        id: "image_file",
+        type: "chunked-file",
+        props: {
+          required: true,
+          experimentalTiffSupportWarning: true,
+          veryLargeSizeWarning: true,
+          additionalInfoTemplate: this.additionalInfoTemplate
+        },
+        validators: {
+          validation: [{ name: "file-size", options: { max: 0 } }]
+        }
+      }
+    ]
   }
 }

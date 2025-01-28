@@ -61,11 +61,7 @@ context("uncompressed source uploader", () => {
         cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
-
-        Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.forEach(format => {
-          cy.get(".accepted-formats")
-            .should("contain.text", format.replace(".", "").toUpperCase());
-        });
+          cy.get(".file").should("contain.text", "Upload an uncompressed source file");
       });
 
       it("should have all form controls if user is Premium", () => {

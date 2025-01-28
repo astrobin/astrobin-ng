@@ -15,9 +15,9 @@ label {
   justify-content: center;
   min-height: 10rem;
   padding: 2rem;
-  border: 2px dashed var(--lightGrey);
+  border: 1px dashed var(--lightGrey);
   opacity: .9;
-  border-radius: .25rem;
+  border-radius: .375rem;
   cursor: not-allowed;
   pointer-events: none;
 
@@ -84,5 +84,12 @@ label {
 .accepted-formats {
   color: var(--lightGrey);
   font-size: .9rem;
+  text-transform: none;
+}
+
+.additional-info {
+  margin-top: 2rem;
+  color: var(--lighterGrey);
+  font-size: .85rem;
   text-transform: none;
 }
