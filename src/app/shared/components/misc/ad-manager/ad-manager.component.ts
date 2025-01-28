@@ -12,7 +12,7 @@ import { fadeInOut } from "@shared/animations";
     <div
       *ngIf="isBrowser && unitPath && divId && size"
       [id]="divId"
-      [style.height.px]="height"
+      [style.height.px]="loading || rendered ? height : 0"
       class="ad-container"
       [class.ad-rendered]="rendered"
     >
