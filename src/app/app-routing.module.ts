@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { CustomPreloadStrategy } from "@app/app.preload-strategy";
 
 const routes: Routes = [
   {
@@ -41,7 +42,8 @@ const routes: Routes = [
   },
   {
     path: "search",
-    loadChildren: () => import("@features/search/search.module").then(m => m.SearchModule)
+    loadChildren: () => import("@features/search/search.module").then(m => m.SearchModule),
+    data: { preload: true }
   },
   {
     path: "subscriptions",
@@ -53,7 +55,8 @@ const routes: Routes = [
   },
   {
     path: "u",
-    loadChildren: () => import("@features/users/user.module").then(m => m.UserModule)
+    loadChildren: () => import("@features/users/user.module").then(m => m.UserModule),
+    data: { preload: true }
   },
   {
     path: "**",
@@ -68,10 +71,12 @@ const routes: Routes = [
       initialNavigation: "enabledBlocking",
       scrollPositionRestoration: "enabled",
       anchorScrolling: "enabled",
-      scrollOffset: [0, 64]
+      scrollOffset: [0, 64],
+      preloadingStrategy: CustomPreloadStrategy,
     })
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [CustomPreloadStrategy]
 })
 export class AppRoutingModule {
 }
