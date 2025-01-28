@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -25,13 +25,14 @@ import { DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFai
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-uncompressed-source-uploader-page",
   templateUrl: "./uncompressed-source-uploader-page.component.html",
   styleUrls: ["./uncompressed-source-uploader-page.component.scss"]
 })
-export class UncompressedSourceUploaderPageComponent extends BaseComponentDirective implements OnInit {
+export class UncompressedSourceUploaderPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   readonly form = new FormGroup({});
   readonly pageTitle = this.translate.instant("Uncompressed source uploader");
   readonly model = {
@@ -56,7 +57,8 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     public readonly titleService: TitleService,
     public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
     public readonly imageApiService: ImageApiService,
-    public readonly modalService: ModalService
+    public readonly modalService: ModalService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -68,7 +70,12 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     this._initTitle();
     this._initBreadcrumb();
     this._initThumbnail();
-    this._initUploadService();
+  }
+
+  ngAfterViewInit(): void {
+    this.utilsService.delay(0).subscribe(() => {
+      this._initUploadService();
+    });
   }
 
   onSubmit() {

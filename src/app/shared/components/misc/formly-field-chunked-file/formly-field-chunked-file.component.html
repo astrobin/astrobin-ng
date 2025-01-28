@@ -8,21 +8,25 @@
       <ng-container *ngIf="upload && upload.name; else withoutFile">
         {{ upload.name }} ({{ uploadSize | filesize }})
 
-        <span class="status">{{ status$ | async }}</span>
+        <ng-container
+          *ngIf="field.props.additionalInfoTemplate && (uploadState.status === 'added' || uploadState.status === 'queue')"
+        >
+          <div class="additional-info">
+            <ng-container *ngTemplateOutlet="field.props.additionalInfoTemplate"></ng-container>
+          </div>
+        </ng-container>
+
+        <span
+          *ngIf="uploadState.status !== 'added' && uploadState.status !== 'queue'"
+          class="status"
+        >
+          {{ status$ | async }}
+        </span>
       </ng-container>
 
       <ng-template #withoutFile>
         <fa-icon icon="upload"></fa-icon>
-        <div class="choose-file">{{ "Drop file here or click to browse" | translate }}</div>
-        <div class="accepted-formats">
-          {{ "Accepted formats" | translate }}:
-          <span
-            *ngFor="let allowedType of uploadOptions.allowedTypes.split(','); let isLast = last"
-            class="accepted-format">
-            {{ allowedType.replace(".", "").toUpperCase() }}
-            {{ isLast ? "" : " &middot; " }}
-          </span>
-        </div>
+        <div class="choose-file">{{ uploadLabel }}</div>
       </ng-template>
     </span>
 

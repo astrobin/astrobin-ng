@@ -2,7 +2,8 @@ import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { Constants } from "@shared/constants";
 import { UploadDataServiceInterface } from "@shared/services/upload-metadata/upload-data.service-interface";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { TranslateService } from "@ngx-translate/core";
 
 export interface UploadMetadataInterface {
   [key: string]: any;
@@ -19,7 +20,10 @@ export interface UploadMetadataEventInterface {
 export class UploadDataService implements UploadDataServiceInterface {
   metadataChanges$: Observable<UploadMetadataEventInterface>;
   endpointChanges$: Observable<string>;
-  allowedTypesChanges$: Observable<string>;
+  allowedTypesChanges$: Observable<{
+    allowedTypes: string,
+    uploadLabel: string
+  }>;
 
   private _metadata: { [key: string]: UploadMetadataInterface } = {};
 
@@ -27,9 +31,14 @@ export class UploadDataService implements UploadDataServiceInterface {
 
   private _endpointChanges = new BehaviorSubject<string>(`${environment.classicApiUrl}/api/v2/images/image-upload/`);
 
-  private _allowedTypesChanges = new BehaviorSubject<string>(Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join());
+  private _allowedTypesChanges = new Subject<{
+    allowedTypes: string,
+    uploadLabel: string
+  }>();
 
-  constructor() {
+  constructor(
+    public readonly translateService: TranslateService
+  ) {
     this.metadataChanges$ = this._metadataChanges.asObservable();
     this.endpointChanges$ = this._endpointChanges.asObservable();
     this.allowedTypesChanges$ = this._allowedTypesChanges.asObservable();
@@ -53,6 +62,28 @@ export class UploadDataService implements UploadDataServiceInterface {
   }
 
   setAllowedTypes(allowedTypes: string) {
-    this._allowedTypesChanges.next(allowedTypes);
+    const uploadLabel = this._setUploadLabel(allowedTypes);
+    this._allowedTypesChanges.next({ allowedTypes, uploadLabel });
+  }
+
+
+  private _setUploadLabel(allowedTypes: string): string {
+    const hasImageTypes = allowedTypes.indexOf(".jpg") > -1;
+    const hasVideoTypes = allowedTypes.indexOf(".mp4") > -1;
+    const hasUncompressedSourceTypes = allowedTypes.indexOf(".fits") > -1;
+
+    if (hasImageTypes && hasVideoTypes && hasUncompressedSourceTypes) {
+      return this.translateService.instant("Upload an image, video, or uncompressed source file");
+    }
+
+    if (hasImageTypes && hasVideoTypes) {
+      return this.translateService.instant("Upload an image or video");
+    }
+
+    if (hasImageTypes) {
+      return this.translateService.instant("Upload an image");
+    }
+
+    return this.translateService.instant("Upload an uncompressed source file");
   }
 }

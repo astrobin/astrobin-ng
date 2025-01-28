@@ -16,6 +16,7 @@ import { forkJoin, Observable, of, Subscription, switchMap } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { fadeInOut } from "@shared/animations";
 
 // PLEASE NOTE: due to the usage of the UploadDataService, there can be only one chunked file upload field on a page
 // at any given time.
@@ -33,7 +34,7 @@ export class TusPost extends Tus {
       };
       await this.request({ method: "POST", body, headers });
       return this.getOffsetFromResponse() || end;
-    }
+    };
 
     if (this.usePOST) {
       return await uploadUsingPost();
@@ -53,7 +54,8 @@ export class TusPost extends Tus {
 @Component({
   selector: "astrobin-formly-field-chunked-file",
   templateUrl: "./formly-field-chunked-file.component.html",
-  styleUrls: ["./formly-field-chunked-file.component.scss"]
+  styleUrls: ["./formly-field-chunked-file.component.scss"],
+  animations: [fadeInOut]
 })
 export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit, OnDestroy {
   upload: FileUpload;
@@ -81,6 +83,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       filename: UtilsService.uuid()
     }
   };
+
+  protected uploadLabel: string;
 
   private _metadataChangesSubscription: Subscription;
   private _endpointChangesSubscription: Subscription;
@@ -261,7 +265,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         });
       }
 
-      this.changeDetectorRef.detectChanges();
+      this.changeDetectorRef.markForCheck();
     });
 
     this._metadataChangesSubscription = this.uploadDataService.metadataChanges$
@@ -278,10 +282,16 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
     this._endpointChangesSubscription = this.uploadDataService.endpointChanges$.subscribe(endpoint => {
       this.uploadOptions.endpoint = endpoint;
+      this.changeDetectorRef.markForCheck();
     });
 
-    this._allowedTypesChangesSubscription = this.uploadDataService.allowedTypesChanges$.subscribe(allowedTypes => {
+    this._allowedTypesChangesSubscription = this.uploadDataService.allowedTypesChanges$.subscribe(({
+      allowedTypes,
+      uploadLabel
+    }) => {
       this.uploadOptions.allowedTypes = allowedTypes;
+      this.uploadLabel = uploadLabel;
+      this.changeDetectorRef.markForCheck();
     });
   }
 

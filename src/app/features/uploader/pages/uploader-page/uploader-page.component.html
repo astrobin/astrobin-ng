@@ -3,97 +3,6 @@
     <ng-container *ngIf="state && state.auth.initialized && state.app.backendConfig; else loading">
       <h1>{{ pageTitle }}</h1>
 
-      <small>
-        <span
-          *ngIf="
-            state.auth.userProfile | hasValidUserSubscription: [
-              SubscriptionName.ASTROBIN_ULTIMATE_2020,
-              SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
-              SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
-            ] | async;
-            else noUltimate
-          "
-          [innerHTML]="subscriptionWithUnlimitedSlotsMessage('Ultimate')"
-        >
-        </span>
-
-        <ng-template #noUltimate>
-          <span
-            *ngIf="
-              state.auth.userProfile
-                | hasValidUserSubscription
-                  : [
-                      SubscriptionName.ASTROBIN_PREMIUM,
-                      SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
-                      SubscriptionName.ASTROBIN_PREMIUM_2020,
-                      SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
-                      SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY
-                    ]
-                | async;
-              else noPremium
-            "
-            [innerHTML]="subscriptionWithUnlimitedSlotsMessage('Premium')"
-          >
-          </span>
-        </ng-template>
-
-        <ng-template #noPremium>
-          <span
-            *ngIf="
-              state.auth.userProfile
-                | hasValidUserSubscription: [
-                  SubscriptionName.ASTROBIN_LITE,
-                  SubscriptionName.ASTROBIN_LITE_AUTORENEW
-                ]
-                | async;
-              else lite2020
-            "
-            [innerHTML]="
-              subscriptionWithYearlySlotsMessage(
-                'Lite',
-                state.auth.userProfile.premiumCounter,
-                state.app.backendConfig.PREMIUM_MAX_IMAGES_LITE
-              )
-            "
-          >
-          </span>
-        </ng-template>
-
-        <ng-template #lite2020>
-          <span
-            *ngIf="
-              state.auth.userProfile | hasValidUserSubscription: [
-                SubscriptionName.ASTROBIN_LITE_2020,
-                SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
-                SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY
-              ] | async;
-              else free
-            "
-            [innerHTML]="
-              subscriptionWithTotalImagesMessage(
-                'Lite',
-                state.auth.userProfile.premiumCounter,
-                state.app.backendConfig.PREMIUM_MAX_IMAGES_LITE_2020
-              )
-            "
-          >
-          </span>
-        </ng-template>
-
-        <ng-template #free>
-          <span
-            [innerHTML]="
-              subscriptionWithTotalSlotsMessage(
-                'Free',
-                state.auth.userProfile.premiumCounter,
-                state.app.backendConfig.PREMIUM_MAX_IMAGES_FREE_2020
-              )
-            "
-          >
-          </span>
-        </ng-template>
-      </small>
-
       <astrobin-read-only-mode *ngIf="state.app.backendConfig?.readOnly; else uploaderTemplate">
       </astrobin-read-only-mode>
     </ng-container>
@@ -108,17 +17,95 @@
   <form (ngSubmit)="onSubmit()" *ngIf="(uploadAllowed$ | async) !== false; else uploadNotAllowed" [formGroup]="form">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
-    <ngb-alert [dismissible]="false" type="info">
-      <p translate>
-        This image will be uploaded to your staging area as a work in progress. You can make it public at the end of the
-        process.
-      </p>
+    <small *ngIf="store$ | async as state" class="uploads-left">
+      <span
+        *ngIf="
+          state.auth.userProfile | hasValidUserSubscription: [
+            SubscriptionName.ASTROBIN_ULTIMATE_2020,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+          ] | async;
+          else noUltimate
+        "
+        [innerHTML]="subscriptionWithUnlimitedSlotsMessage()"
+      >
+      </span>
 
-      <p [innerHTML]="imageRevisionEtiquetteMessage"></p>
-    </ngb-alert>
+      <ng-template #noUltimate>
+        <span
+          *ngIf="
+            state.auth.userProfile
+              | hasValidUserSubscription
+                : [
+                    SubscriptionName.ASTROBIN_PREMIUM,
+                    SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+                    SubscriptionName.ASTROBIN_PREMIUM_2020,
+                    SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+                    SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY
+                  ]
+              | async;
+            else noPremium
+          "
+          [innerHTML]="subscriptionWithUnlimitedSlotsMessage()"
+        >
+        </span>
+      </ng-template>
+
+      <ng-template #noPremium>
+        <span
+          *ngIf="
+            state.auth.userProfile
+              | hasValidUserSubscription: [
+                SubscriptionName.ASTROBIN_LITE,
+                SubscriptionName.ASTROBIN_LITE_AUTORENEW
+              ]
+              | async;
+            else lite2020
+          "
+          [innerHTML]="
+            subscriptionWithYearlySlotsMessage(
+              state.auth.userProfile.premiumCounter,
+              state.app.backendConfig.PREMIUM_MAX_IMAGES_LITE
+            )
+          "
+        >
+        </span>
+      </ng-template>
+
+      <ng-template #lite2020>
+        <span
+          *ngIf="
+            state.auth.userProfile | hasValidUserSubscription: [
+              SubscriptionName.ASTROBIN_LITE_2020,
+              SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+              SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY
+            ] | async;
+            else free
+          "
+          [innerHTML]="
+            subscriptionWithTotalImagesMessage(
+              state.auth.userProfile.premiumCounter,
+              state.app.backendConfig.PREMIUM_MAX_IMAGES_LITE_2020
+            )
+          "
+        >
+        </span>
+      </ng-template>
+
+      <ng-template #free>
+        <span
+          [innerHTML]="
+            subscriptionWithTotalSlotsMessage(
+              state.auth.userProfile.premiumCounter,
+              state.app.backendConfig.PREMIUM_MAX_IMAGES_FREE_2020
+            )
+          "
+        >
+        </span>
+      </ng-template>
+    </small>
 
     <div class="form-actions">
-      <ng-container *ngTemplateOutlet="returnToClassicUploader"></ng-container>
       <button
         [class.loading]="uploadButtonLoading()"
         [disabled]="uploadButtonLoading()"
@@ -132,6 +119,10 @@
   </form>
 </ng-template>
 
+<ng-template #additionalInfoTemplate>
+  <p [innerHTML]="imageRevisionEtiquetteMessage"></p>
+</ng-template>
+
 <ng-template #uploadNotAllowed>
   <div class="sad hero-image"></div>
 
@@ -140,20 +131,9 @@
       <span class="flex-fill me-4">
         {{ "It looks like you reached the upload limit for your subscription." | translate }}
       </span>
-      <a [attr.href]="classicRoutesService.PRICING" class="btn btn-primary btn-lg">
+      <a [attr.href]="classicRoutesService.PRICING" class="btn btn-primary btn-lg text-light">
         {{ "Would you like to upgrade?" | translate }}
       </a>
     </div>
-
-    <ng-container *ngTemplateOutlet="returnToClassicUploader"></ng-container>
   </div>
-</ng-template>
-
-<ng-template #returnToClassicUploader>
-  <a
-    [attr.href]="classicRoutesService.UPLOAD + '?forceClassicUploader'"
-    class="btn btn-link return-to-classic-uploader"
-  >
-    {{ "Return to the classic uploader" | translate }}
-  </a>
 </ng-template>
