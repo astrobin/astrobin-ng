@@ -125,6 +125,7 @@ astrobin-toggle-property {
 
   &.loading {
     overflow: hidden;
+    pointer-events: none;
 
     &:not(.btn-link)::before {
       opacity: 1;
