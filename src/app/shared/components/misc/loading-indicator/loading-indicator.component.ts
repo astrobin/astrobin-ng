@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, Input, OnChanges, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { BehaviorSubject } from "rxjs";
 import { delay, distinctUntilChanged } from "rxjs/operators";
+import { MainState } from "@app/store/state";
+import { Store } from "@ngrx/store";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-loading-indicator",
@@ -25,7 +28,7 @@ import { delay, distinctUntilChanged } from "rxjs/operators";
     <ng-template #noProgress>
       <div>
         <div class="loading-indicator"></div>
-        <span class="sr-only">{{ "Loading..." | translate }}</span>
+        <span *ngIf="isBrowser" class="sr-only">{{ "Loading..." | translate }}</span>
       </div>
 
       <ng-container *ngIf="message">
@@ -50,16 +53,27 @@ export class LoadingIndicatorComponent extends BaseComponentDirective implements
   @Input()
   progressDelay = 1000;
 
-  private progressSubject = new BehaviorSubject<boolean>(false);
-  shouldShowProgress$ = this.progressSubject.pipe(
+  protected readonly isBrowser: boolean;
+
+  private _progressSubject = new BehaviorSubject<boolean>(false);
+
+  shouldShowProgress$ = this._progressSubject.pipe(
     distinctUntilChanged(),
     delay(this.progressDelay)
   );
 
+  constructor(
+    public readonly store$: Store<MainState>,
+    @Inject(PLATFORM_ID) private readonly platformId: Object
+  ) {
+    super(store$);
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.progress) {
       const showProgress = changes.progress.currentValue > 0 && changes.progress.currentValue < 100;
-      this.progressSubject.next(showProgress);
+      this._progressSubject.next(showProgress);
     }
   }
 }
