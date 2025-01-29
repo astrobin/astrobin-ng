@@ -122,12 +122,6 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       skip_notifications: true
     });
 
-    this.userSubscriptionService.fileSizeAllowed(0).subscribe(result => {
-      const field = this.fields.filter(x => x.key === "image_file")[0];
-      const validator = field.validators.validation.filter(x => x.name === "file-size")[0];
-      validator.options.max = result.max;
-    });
-
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;
 
@@ -149,6 +143,12 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
 
   ngAfterViewInit() {
     this._initFields();
+
+    this.userSubscriptionService.fileSizeAllowed(0).subscribe(result => {
+      const field = this.fields.filter(x => x.key === "image_file")[0];
+      const validator = field.validators.validation.filter(x => x.name === "file-size")[0];
+      validator.options.max = result.max;
+    });
   }
 
   onSubmit() {
