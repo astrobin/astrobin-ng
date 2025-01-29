@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, NgModule } from "@angular/core";
-import { CommonModule, DatePipe } from "@angular/common";
+import { CommonModule, CurrencyPipe, DatePipe } from "@angular/common";
 import { Store } from "@ngrx/store";
 import { Actions } from "@ngrx/effects";
 import * as Sentry from "@sentry/angular";
@@ -32,6 +32,7 @@ import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate
   ],
   providers: [
     DatePipe,
+    CurrencyPipe,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,

@@ -1446,6 +1446,10 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   }
 
   private _setContentTypeValue(field: FormlyFieldConfig, value: EquipmentItemType) {
+    if (!value) {
+      return;
+    }
+
     const payload = {
       appLabel: "astrobin_apps_equipment",
       model: value.toLowerCase()
