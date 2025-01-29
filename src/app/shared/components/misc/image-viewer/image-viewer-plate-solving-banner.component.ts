@@ -231,7 +231,8 @@ export class ImageViewerPlateSolvingBannerComponent
     const payload = {
       contentType: this.solution.contentType,
       objectId: this.solution.objectId,
-      forceRefresh: true
+      forceRefresh: true,
+      includePixInsightDetails: true
     };
 
     this.store$.dispatch(new LoadSolution(payload));
