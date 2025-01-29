@@ -117,3 +117,18 @@
   }
 }
 
+@keyframes spin-and-pulse {
+  0% {
+    animation-timing-function: cubic-bezier(0.5856, 0.0703, 0.4143, 0.9297);
+    transform: rotate(0) scale(.95);
+    opacity: .35;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.05);
+    opacity: .85;
+  }
+  100% {
+    transform: rotate(360deg) scale(.95);
+    opacity: .35;
+  }
+}
