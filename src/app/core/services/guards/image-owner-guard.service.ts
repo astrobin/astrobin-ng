@@ -15,7 +15,9 @@ import { LoadImage, LoadImageFailure } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class ImageOwnerGuardService extends BaseService  {
   constructor(
     public readonly store$: Store<MainState>,

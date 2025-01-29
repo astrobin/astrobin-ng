@@ -9,7 +9,9 @@ import { SubscriptionName } from "@core/types/subscription-name.type";
 import { Observable } from "rxjs";
 import { switchMap, take } from "rxjs/operators";
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class UltimateSubscriptionGuardService extends BaseService  {
   constructor(
     public readonly store$: Store<MainState>,

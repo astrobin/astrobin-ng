@@ -10,7 +10,9 @@ import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { filter, switchMap } from "rxjs/operators";
 import { RouterService } from "@core/services/router.service";
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class AuthGuardService extends BaseService  {
   constructor(
     public readonly store$: Store<MainState>,

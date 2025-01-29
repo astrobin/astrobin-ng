@@ -32,8 +32,6 @@ import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate
   ],
   providers: [
     DatePipe,
-    PremiumSubscriptionGuardService,
-    UltimateSubscriptionGuardService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,
