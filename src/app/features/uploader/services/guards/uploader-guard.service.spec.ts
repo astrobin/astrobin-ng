@@ -6,6 +6,7 @@ import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate
 import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
 import { UploaderGuardService } from "./uploader-guard.service";
+import { UploaderModule } from "@features/uploader/uploader.module";
 
 describe("UploaderGuardService", () => {
   let service: UploaderGuardService;

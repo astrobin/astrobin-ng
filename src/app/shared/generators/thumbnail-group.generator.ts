@@ -1,4 +1,4 @@
-import { ThumbnailGroupInterface } from "../interfaces/thumbnail-group.interface";
+import { ThumbnailGroupInterface } from "@core/interfaces/thumbnail-group.interface";
 
 export class ThumbnailGroupGenerator {
   static thumbnailGroup(): ThumbnailGroupInterface {

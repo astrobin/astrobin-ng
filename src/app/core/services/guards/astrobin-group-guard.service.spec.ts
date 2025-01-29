@@ -6,7 +6,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { AstroBinGroupGuardService } from "@core/services/guards/astrobin-group-guard.service";
 import { MockBuilder, MockReset, MockService } from "ng-mocks";
 import { of } from "rxjs";
-import { UserGenerator } from "../../generators/user.generator";
+import { UserGenerator } from "@shared/generators/user.generator";
 
 describe("AstroBinGroupGuardService", () => {
   let service: AstroBinGroupGuardService;

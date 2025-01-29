@@ -1,4 +1,4 @@
-import { AcquisitionType, DataSource, ImageInterface, LicenseOptions, MouseHoverImageOptions, SubjectType, WatermarkPositionOptions, WatermarkSizeOptions } from "../interfaces/image.interface";
+import { AcquisitionType, DataSource, ImageInterface, LicenseOptions, MouseHoverImageOptions, SubjectType, WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
 
 export class ImageGenerator {
   static image(source: Partial<ImageInterface> = {}): ImageInterface {
@@ -79,7 +79,7 @@ export class ImageGenerator {
       userFollowerCount: source.userFollowerCount || 0,
       deleted: source.deleted || null,
       maxZoom: source.maxZoom || null,
-      allowImageAdjustmentsWidget: source.allowImageAdjustmentsWidget || null,
+      allowImageAdjustmentsWidget: source.allowImageAdjustmentsWidget || null
     };
   }
 }

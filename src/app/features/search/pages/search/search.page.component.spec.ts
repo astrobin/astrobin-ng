@@ -8,6 +8,7 @@ import { initialMainState } from "@app/store/state";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, EMPTY, of } from "rxjs";
 import { ImageViewerService } from "@core/services/image-viewer.service";
+import { SearchBarComponent } from "@features/search/components/search-bar/search-bar.component";
 
 describe("SearchPageComponent", () => {
   let component: SearchPageComponent;
@@ -15,32 +16,34 @@ describe("SearchPageComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(SearchPageComponent, AppModule).provide([
-      provideMockStore({ initialState: initialMainState }),
-      {
-        provide: ActivatedRoute,
-        useValue: {
-          snapshot: {
-            queryParams: {},
-            data: {
-              image: null
-            }
-          },
-          queryParams: EMPTY
+        provideMockStore({ initialState: initialMainState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {},
+              data: {
+                image: null
+              }
+            },
+            queryParams: EMPTY
+          }
+        },
+        {
+          provide: Router,
+          useValue: {
+            events: EMPTY
+          }
+        },
+        {
+          provide: ImageViewerService,
+          useValue: {
+            slideshowState$: new BehaviorSubject<boolean>(false)
+          }
         }
-      },
-      {
-        provide: Router,
-        useValue: {
-          events: EMPTY
-        }
-      },
-      {
-        provide: ImageViewerService,
-        useValue: {
-          slideshowState$: new BehaviorSubject<boolean>(false)
-        }
-      }
-    ]);
+      ]
+    ).mock(SearchBarComponent, { export: true });
+
     fixture = TestBed.createComponent(SearchPageComponent);
     component = fixture.componentInstance;
 

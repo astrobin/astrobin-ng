@@ -7,6 +7,7 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { CurrencyPipe } from "@angular/common";
 
 describe("MarketplaceOfferModalComponent", () => {
   let component: MarketplaceOfferModalComponent;
@@ -15,7 +16,8 @@ describe("MarketplaceOfferModalComponent", () => {
   beforeEach(async () => {
     await MockBuilder(MarketplaceOfferModalComponent, AppModule).provide([
       provideMockStore({ initialState: initialMainState }),
-      NgbActiveModal
+      NgbActiveModal,
+      CurrencyPipe
     ]);
 
     fixture = TestBed.createComponent(MarketplaceOfferModalComponent);

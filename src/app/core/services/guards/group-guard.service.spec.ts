@@ -6,7 +6,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { GroupGuardService } from "@core/services/guards/group-guard.service";
 import { MockBuilder, MockReset, MockService } from "ng-mocks";
 import { of } from "rxjs";
-import { UserGenerator } from "../../generators/user.generator";
+import { UserGenerator } from "@shared/generators/user.generator";
 
 describe("GroupGuardService", () => {
   let service: GroupGuardService;
