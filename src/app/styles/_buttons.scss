@@ -1,6 +1,15 @@
 @import "breakpoints";
 @import "mixins";
 
+@keyframes slide {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
+}
+
 @keyframes loading {
   0% {
     transform: translateX(0);
@@ -28,11 +37,14 @@ astrobin-toggle-property {
 
 .btn {
   font-size: 0.85rem;
+  transition: opacity .5s ease;
+  position: relative;
 
   img.icon,
   fa-icon {
     margin-right: .25rem;
     fill: currentColor;
+    transition: opacity .5s ease;
 
     &:last-of-type:not(:only-child) {
       margin-right: .5rem;
@@ -41,6 +53,12 @@ astrobin-toggle-property {
 
   .badge {
     margin-left: .5rem;
+  }
+
+  .count,
+  .badge,
+  .btn-text {
+    transition: opacity .5s ease;
   }
 
   &.disabled {
@@ -79,28 +97,104 @@ astrobin-toggle-property {
     line-height: 1.5rem;
   }
 
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border: 0;
+    margin: 0;
+    background-image: linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.1) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.1) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 25px 25px;
+    animation: slide 5s linear infinite;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .5s ease;
+  }
+
   &.loading {
-    &,
+    overflow: hidden;
+
+    &:not(.btn-link)::before {
+      opacity: 1;
+    }
+
     .btn-text {
-      background: url("/assets/images/white-loader.svg") transparent no-repeat center !important;
-      background-size: 1rem !important;
-      color: transparent !important;
-      text-shadow: none !important;
+      opacity: .5;
     }
 
     fa-icon {
-      color: transparent !important;
-      text-shadow: none !important;
+      opacity: .5;
     }
 
     .badge {
-      display: none;
+      opacity: .5;
     }
 
     .count,
     .btn-text {
-      color: transparent !important;
-      text-shadow: none !important;
+      opacity: .5;
+    }
+
+    &.btn-link {
+      .btn-text {
+        color: transparent !important;
+        text-shadow: none !important;
+      }
+
+      fa-icon {
+        color: transparent !important;
+        text-shadow: none !important;
+      }
+
+      .badge {
+        display: none;
+      }
+
+      .count,
+      .btn-text {
+        color: transparent !important;
+        text-shadow: none !important;
+      }
+
+      &::before {
+        content: " ✩";
+        transform-origin: 50% 50%;
+        animation: spin-and-pulse 2s infinite;
+        text-shadow: 0 0 4px rgba(255, 255, 255, 0.75);
+        background: none;
+        position: unset;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  &.btn-secondary {
+    &::before {
+      background-image: linear-gradient(
+          -45deg,
+          rgba(255, 255, 255, 0.5) 25%,
+          transparent 25%,
+          transparent 50%,
+          rgba(255, 255, 255, 0.5) 50%,
+          rgba(255, 255, 255, 0.5) 75%,
+          transparent 75%,
+          transparent
+      );
     }
   }
 
@@ -109,59 +203,6 @@ astrobin-toggle-property {
     background-size: 1rem !important;
     color: transparent !important;
     text-shadow: none !important;
-  }
-
-  &.loading-bars {
-    position: relative;
-    overflow: hidden;
-    pointer-events: none !important;
-    opacity: .65 !important;
-    color: transparent !important;
-    text-shadow: none !important;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: -100%;
-      left: 0;
-      width: 100%;
-      height: 200%;
-      background: repeating-linear-gradient(
-          -45deg,
-          transparent,
-          transparent .25rem,
-          rgba(0, 0, 0, .9) .25rem,
-          rgba(0, 0, 0, .9) .75rem);
-      animation: loading 1s infinite linear;
-    }
-  }
-
-  &.btn-primary {
-    &.loading {
-      background: url("/assets/images/white-loader.svg") var(--accentColor) no-repeat center !important;
-      background-size: 1rem !important;
-    }
-  }
-
-  &.btn-secondary {
-    &.loading {
-      background: url("/assets/images/black-loader.svg") var(--white) no-repeat center !important;
-      background-size: 1rem !important;
-    }
-  }
-
-  &.btn-warning {
-    &.loading {
-      background: url("/assets/images/black-loader.svg") var(--warningColor) no-repeat center !important;
-      background-size: 1rem !important;
-    }
-  }
-
-  &.btn-danger {
-    &.loading {
-      background: url("/assets/images/white-loader.svg") var(--dangerColor) no-repeat center !important;
-      background-size: 1rem !important;
-    }
   }
 
   &.btn-outline-secondary {

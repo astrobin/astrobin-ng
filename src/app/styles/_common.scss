@@ -21,25 +21,22 @@ body {
 
 .app-loading {
   opacity: 0;
-  transition: opacity 0.8s ease-in-out;
+  transition: opacity 1s ease-in-out;
   z-index: -1;
   display: block;
-  width: 2rem;
-  height: 2rem;
   position: absolute;
-  left: calc(50% - 1rem);
-  top: calc(50% - 1rem);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--lightestGrey);
 
   &::after {
-    content: " ";
     display: block;
-    width: 2rem;
-    height: 2rem;
-    margin: 1px;
-    border-radius: 50%;
-    border: .33rem solid var(--white);
-    border-color: var(--white) var(--white) var(--white) transparent;
-    animation: spin 1s linear infinite;
+    content: " \2729";
+    font-size: 2.5rem;
+    transform-origin: 50% 55%;
+    animation: spin-and-pulse 2s infinite;
+    text-shadow: 0 0 8px rgba(255, 255, 255, .75);
   }
 }
 
