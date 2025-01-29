@@ -7,7 +7,9 @@ export interface ComponentCanDeactivate {
   canDeactivate: () => boolean | Observable<boolean>;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class PendingChangesGuard  {
   constructor(public readonly translateService: TranslateService) {
   }

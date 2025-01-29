@@ -15,7 +15,9 @@ import { selectMarketplaceListingByHash } from "@features/equipment/store/equipm
 import { AuthService } from "@core/services/auth.service";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class MarketplaceListingOwnerGuardService extends BaseService implements CanActivate {
   constructor(
     public readonly store$: Store<MainState>,

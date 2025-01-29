@@ -12,7 +12,9 @@ import { debounceTime } from "rxjs/operators";
 export interface CustomWindowInterface extends Window {
 }
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class WindowRefService extends BaseService {
   private _isMobile = new BehaviorSubject<boolean>(false);
 

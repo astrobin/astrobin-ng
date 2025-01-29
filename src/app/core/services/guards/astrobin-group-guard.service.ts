@@ -11,7 +11,9 @@ import { Observable, Observer } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 import { AuthService } from "../auth.service";
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class AstroBinGroupGuardService extends BaseService  {
   constructor(
     public readonly store$: Store<MainState>,
