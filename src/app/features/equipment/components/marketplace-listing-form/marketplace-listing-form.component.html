@@ -71,7 +71,7 @@
       </form>
     </div>
 
-    <div *ngIf="formInitialized" class="col col-preview d-none d-md-block">
+    <div *ngIf="formInitialized" class="col-md-6 col-lg-7 col-preview d-none d-md-block">
       <div class="sticky-top">
         <div (click)="formPreviewClicked($event)" class="form-preview-overlay"></div>
         <h2 *ngIf="form.value.title">{{ form.value.title }}</h2>
