@@ -13,8 +13,6 @@ import { ApiModule } from "@core/services/api/api.module";
 import { ToastrModule } from "ngx-toastr";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
 import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@core/injection-tokens/search-filter.tokens";
-import { PremiumSubscriptionGuardService } from "@core/services/guards/premium-subscription-guard.service";
-import { UltimateSubscriptionGuardService } from "@core/services/guards/ultimate-subscription-guard.service";
 
 
 @NgModule({

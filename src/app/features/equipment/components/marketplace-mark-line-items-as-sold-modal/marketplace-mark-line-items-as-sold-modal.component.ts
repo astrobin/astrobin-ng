@@ -198,7 +198,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
           },
           {
             key: `itemName-${lineItem.id}`,
-            type: "html",
+            type: "formly-template",
             wrappers: ["default-wrapper"],
             template: lineItem.itemName || lineItem.itemPlainText,
             expressions: {

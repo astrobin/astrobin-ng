@@ -355,7 +355,7 @@ export class ImagePlateSolvingSettingsPageComponent
         },
         fieldGroup: [
           {
-            type: "html",
+            type: "formly-template",
             className: "col-12",
             template: `<label>${this.translateService.instant("Plate-solving hints")}</label>`
           },

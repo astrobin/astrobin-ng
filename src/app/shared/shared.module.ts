@@ -21,15 +21,12 @@ import { TimeagoModule } from "ngx-timeago";
 import { switchMap, take } from "rxjs/operators";
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
-import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { LanguageLoader } from "@app/translate-loader";
-import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 import { DirectivesModule } from "@shared/directives/directives.module";
 import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
-import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { HammerGestureConfig, HammerModule } from "@angular/platform-browser";
 import { AutoSizeInputModule } from "ngx-autosize-input";
@@ -98,17 +95,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     ReactiveFormsModule,
 
     FontAwesomeModule,
-    FormlyModule.forRoot({
-      extras: {
-        lazyRender: false,
-        resetFieldOnHide: false
-      },
-      wrappers: [
-        { name: "equipment-item-browser-wrapper", component: FormlyEquipmentItemBrowserWrapperComponent },
-        { name: "default-wrapper", component: FormlyWrapperComponent },
-        { name: "card-wrapper", component: FormlyCardWrapperComponent }
-      ]
-    }),
+    FormlyModule,
     FormlyBootstrapModule,
     FormlySelectModule,
     HammerModule,

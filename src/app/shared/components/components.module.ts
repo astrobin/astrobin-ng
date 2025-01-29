@@ -2,13 +2,12 @@ import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
-import { formlyConfig } from "@app/formly.config";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbAccordionModule, NgbCarouselModule, NgbCollapseModule, NgbDropdownModule, NgbModalConfig, NgbModalModule, NgbNavModule, NgbOffcanvasModule, NgbPopoverModule, NgbProgressbarModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
-import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
+import { FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";
-import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { TranslateModule } from "@ngx-translate/core";
 import { CameraComponent } from "@shared/components/misc/camera/camera.component";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { FormlyFieldImageCropperComponent } from "@shared/components/misc/formly-field-image-cropper/formly-field-image-cropper.component";
@@ -39,7 +38,6 @@ import { FileValueAccessorDirective } from "@shared/components/misc/formly-field
 import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { NothingHereComponent } from "@shared/components/misc/nothing-here/nothing-here.component";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { NestedCommentsComponent } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { NestedCommentComponent } from "@shared/components/misc/nested-comments/nested-comment.component";
 import { TimeagoModule } from "ngx-timeago";
@@ -148,7 +146,6 @@ import { ImageHoverComponent } from "@shared/components/misc/image-hover/image-h
 import { ImageViewerIotdTpStatsComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component";
 import { MasonryLayoutComponent } from "@shared/components/masonry-layout/masonry-layout.component";
 import { ImageGalleryLoadingComponent } from "@shared/components/image-gallery-loading-indicator/image-gallery-loading.component";
-import { SharedModule } from "@shared/shared.module";
 
 const modules = [
   CommonModule,
@@ -324,12 +321,6 @@ const services = [UsernameService];
   declarations: components,
   exports: components,
   providers: [
-    {
-      provide: FORMLY_CONFIG,
-      useFactory: formlyConfig,
-      multi: true,
-      deps: [TranslateService, JsonApiService]
-    },
     ...services
   ]
 })

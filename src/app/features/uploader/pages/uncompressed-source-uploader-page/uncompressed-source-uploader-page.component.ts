@@ -127,7 +127,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
 
 
       this.store$.dispatch(new DeleteImageUncompressedSourceFile({ pk: this.image.pk }));
-    })
+    });
   }
 
   private _initImage(): void {
@@ -154,23 +154,30 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
       },
       {
         key: "download",
-        type: "html",
-        template: this.image.uncompressedSourceFile
-          ? `
-            <p>
-              ${this.translate.instant("This image already has an uncompressed source file.")}
-              <a
-                class="btn btn-xs btn-primary no-external-link-icon ms-2"
-                href="${this.image.uncompressedSourceFile}"
-                target="_blank"
-              >
-                ${this.translate.instant("Download")}
-              </a>
-            </p>
-          `
-          : ``
+        type: "formly-template",
+        template: this._getDownloadTemplate()
       }
     ];
+  }
+
+
+  private _getDownloadTemplate(): string {
+    if (!this.image?.uncompressedSourceFile) {
+      return "";
+    }
+
+    return `
+    <p>
+      ${this.translate.instant("This image already has an uncompressed source file.")}
+
+        class="btn btn-xs btn-primary no-external-link-icon ms-2"
+        href="${this.image.uncompressedSourceFile}"
+        target="_blank"
+      >
+        ${this.translate.instant("Download")}
+      </a>
+    </p>
+  `;
   }
 
   private _initTitle(): void {

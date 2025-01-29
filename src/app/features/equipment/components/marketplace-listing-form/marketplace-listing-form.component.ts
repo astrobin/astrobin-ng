@@ -16,7 +16,7 @@ import {
   MarketplaceListingType
 } from "@features/equipment/types/marketplace-listing.interface";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { FORMLY_CONFIG, FormlyFieldConfig } from "@ngx-formly/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { LoadingService } from "@core/services/loading.service";
@@ -432,7 +432,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             },
             fieldGroup: [
               {
-                type: "html",
+                type: "formly-template",
                 template: this.translateService.instant("You cannot edit this line item because it has been sold."),
                 expressions: {
                   className: config => {
@@ -448,7 +448,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 }
               },
               {
-                type: "html",
+                type: "formly-template",
                 template: this.translateService.instant(
                   "You cannot edit this line item because it's marked as reserved."
                 ),
@@ -1307,7 +1307,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           }
         },
         {
-          type: "html",
+          type: "formly-template",
           className: "alert alert-info",
           expressions: {
             hide: config => !!this.initialLineItemCountForm.get("terms")?.value,

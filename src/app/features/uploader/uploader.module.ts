@@ -10,7 +10,11 @@ import { UploaderPageComponent } from "./pages/uploader-page/uploader-page.compo
 
 @NgModule({
   declarations: [RevisionUploaderPageComponent, UncompressedSourceUploaderPageComponent, UploaderPageComponent],
-  imports: [RouterModule.forChild(uploaderRoutes), SharedModule, UploadxModule],
+  imports: [
+    RouterModule.forChild(uploaderRoutes),
+    SharedModule,
+    UploadxModule
+  ],
   providers: [UploaderGuardService]
 })
 export class UploaderModule {

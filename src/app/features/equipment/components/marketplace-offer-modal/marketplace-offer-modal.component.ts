@@ -186,7 +186,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             },
             {
               key: `itemName-${lineItem.id}`,
-              type: "html",
+              type: "formly-template",
               wrappers: ["default-wrapper"],
               className: "col-12 col-lg pb-4 pb-lg-0 item-name",
               props: {

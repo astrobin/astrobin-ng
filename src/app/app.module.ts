@@ -54,6 +54,10 @@ import { HeaderComponent } from "@shared/components/header/header.component";
 import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
 import { FooterComponent } from "@shared/components/footer/footer.component";
 import { BreadcrumbComponent } from "@shared/components/misc/breadcrumb/breadcrumb.component";
+import { FormlyModule } from "@ngx-formly/core";
+import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
+import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
+import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -119,6 +123,18 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     AppRoutingModule,
 
     CookieModule.forRoot(),
+
+    FormlyModule.forRoot({
+      extras: {
+        lazyRender: false,
+        resetFieldOnHide: false
+      },
+      wrappers: [
+        { name: "equipment-item-browser-wrapper", component: FormlyEquipmentItemBrowserWrapperComponent },
+        { name: "default-wrapper", component: FormlyWrapperComponent },
+        { name: "card-wrapper", component: FormlyCardWrapperComponent }
+      ]
+    }),
     ServiceWorkerModule.register("ngsw-worker.js", {
       enabled: environment.production,
       registrationStrategy: "registerWhenStable:30000"
