@@ -21,11 +21,6 @@
         box-shadow: 3px 3px 3px rgba(255, 255, 255, .15) inset;
       }
 
-      &.loading {
-        background: url("/assets/images/white-loader.svg") var(--accentColor) no-repeat center !important;
-        background-size: 1rem !important;
-      }
-
       &[disabled] {
         color: var(--lighterAccentColor) !important;
         border-color: transparent !important;

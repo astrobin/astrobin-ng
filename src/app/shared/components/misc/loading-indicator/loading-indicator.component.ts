@@ -24,7 +24,7 @@ import { delay, distinctUntilChanged } from "rxjs/operators";
 
     <ng-template #noProgress>
       <div>
-        <fa-icon [icon]="['fas', 'circle-notch']" [animation]="'spin'" class="loading"></fa-icon>
+        <div class="loading-indicator"></div>
         <span class="sr-only">{{ "Loading..." | translate }}</span>
       </div>
 
