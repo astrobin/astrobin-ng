@@ -13,6 +13,7 @@ import { FilterType, FilterTypePriority, LegacyFilterType } from "@features/equi
 import { FilterService } from "@features/equipment/services/filter.service";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
 
 // This includes total per filter type.
 interface FilterSummary {
@@ -33,6 +34,19 @@ interface DetailedFilterSummary {
     name: string;
     number: number;
     duration: string;
+    binning: DeepSkyAcquisitionInterface["binning"];
+    iso: DeepSkyAcquisitionInterface["iso"];
+    gain: DeepSkyAcquisitionInterface["gain"];
+    fNumber: DeepSkyAcquisitionInterface["fNumber"];
+    sensorCooling: DeepSkyAcquisitionInterface["sensorCooling"];
+    darks: DeepSkyAcquisitionInterface["darks"];
+    flats: DeepSkyAcquisitionInterface["flats"];
+    flatDarks: DeepSkyAcquisitionInterface["flatDarks"];
+    bias: DeepSkyAcquisitionInterface["bias"];
+    bortle: DeepSkyAcquisitionInterface["bortle"];
+    meanSqm: DeepSkyAcquisitionInterface["meanSqm"];
+    meanFwhm: DeepSkyAcquisitionInterface["meanFwhm"];
+    temperature: DeepSkyAcquisitionInterface["temperature"];
   }[];
 }
 
@@ -254,6 +268,28 @@ interface DetailedFilterSummary {
                 <ng-container *ngIf="!detail.date">
                   {{ "Unknown date" | translate }}
                 </ng-container>
+
+                <div
+                  *ngIf="
+                    detail.binning ||
+                    detail.iso ||
+                    detail.gain ||
+                    detail.fNumber ||
+                    detail.sensorCooling ||
+                    detail.darks ||
+                    detail.flats ||
+                    detail.flatDarks ||
+                    detail.bias ||
+                    detail.bortle ||
+                    detail.meanSqm ||
+                    detail.meanFwhm ||
+                    detail.temperature
+                  "
+                  class="d-none d-lg-block"
+                >
+                  <ng-container *ngTemplateOutlet="additionalPropertiesTemplate; context: { $implicit: detail }">
+                  </ng-container>
+                </div>
               </td>
 
               <td [attr.data-label]="'Filter' | translate" class="d-lg-none">
@@ -263,6 +299,29 @@ interface DetailedFilterSummary {
                 </ng-container>
                 <ng-container *ngIf="!detail.name">
                   {{ "No filter" | translate }}
+                </ng-container>
+              </td>
+
+              <td
+                *ngIf="
+                  detail.binning ||
+                  detail.iso ||
+                  detail.gain ||
+                  detail.fNumber ||
+                  detail.sensorCooling ||
+                  detail.darks ||
+                  detail.flats ||
+                  detail.flatDarks ||
+                  detail.bias ||
+                  detail.bortle ||
+                  detail.meanSqm ||
+                  detail.meanFwhm ||
+                  detail.temperature
+                "
+                [attr.data-label]="'Additional properties' | translate"
+                class="d-lg-none"
+              >
+                <ng-container *ngTemplateOutlet="additionalPropertiesTemplate; context: { $implicit: detail }">
                 </ng-container>
               </td>
 
@@ -276,6 +335,24 @@ interface DetailedFilterSummary {
           </ng-container>
         </table>
       </div>
+
+      <ng-template #additionalPropertiesTemplate let-detail>
+        <div class="additional-properties">
+          <span *ngIf="detail.binning" class="iso">{{ "Binning" | translate }}: <span class="value">{{ detail.binning }}&times;{{ detail.binning }}</span></span>
+          <span *ngIf="detail.iso" class="iso">ISO: <span class="value">{{ detail.iso }}</span></span>
+          <span *ngIf="detail.gain" class="gain">Gain: <span class="value">{{ detail.gain }}</span></span>
+          <span *ngIf="detail.fNumber" class="f-number"><span class="value">f/{{ detail.fNumber }}</span></span>
+          <span *ngIf="detail.sensorCooling" class="sensor-cooling">{{ "Cooling" | translate }}: <span class="value">{{ detail.sensorCooling }}</span></span>
+          <span *ngIf="detail.darks" class="darks">{{ "Darks" | translate }}: <span class="value">{{ detail.darks }}</span></span>
+          <span *ngIf="detail.flats" class="flats">{{ "Flats" | translate }}: <span class="value">{{ detail.flats }}</span></span>
+          <span *ngIf="detail.flatDarks" class="flat-darks">{{ "Flat darks" | translate }}: <span class="value">{{ detail.flatDarks }}</span></span>
+          <span *ngIf="detail.bias" class="bias">{{ "Bias" | translate }}: <span class="value">{{ detail.bias }}</span></span>
+          <span *ngIf="detail.bortle" class="bortle">Bortle: <span class="value">{{ detail.bortle }}</span></span>
+          <span *ngIf="detail.meanSqm" class="mean-sqm">{{ "Mean SQM" | translate }}: <span class="value">{{ detail.meanSqm }}</span></span>
+          <span *ngIf="detail.meanFwhm" class="mean-fwhm">{{ "Mean FWHM" | translate }}: <span class="value">{{ detail.meanFwhm }}</span></span>
+          <span *ngIf="detail.temperature" class="temperature">{{ "Temperature" | translate }}: <span class="value">{{ detail.temperature }}</span></span>
+        </div>
+      </ng-template>
     </ng-template>
   `,
   styleUrls: ["./image-viewer-acquisition.component.scss"],
@@ -463,7 +540,38 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
       const brand = acquisition.filter2Brand || acquisition.filterMake || this.translateService.instant("DIY");
       const date = acquisition.date;
       const duration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
-      const key = `${date}_${brand}_${name || "UNKNOWN"}_${duration}`;
+      const binning = acquisition.binning;
+      const iso = acquisition.iso;
+      const gain = acquisition.gain;
+      const fNumber = acquisition.fNumber;
+      const sensorCooling = acquisition.sensorCooling;
+      const darks = acquisition.darks;
+      const flats = acquisition.flats;
+      const flatDarks = acquisition.flatDarks;
+      const bias = acquisition.bias;
+      const bortle = acquisition.bortle;
+      const meanSqm = acquisition.meanSqm;
+      const meanFwhm = acquisition.meanFwhm;
+      const temperature = acquisition.temperature;
+      const key = `
+        ${date}_
+        ${brand}_
+        ${name || "UNKNOWN"}_
+        ${duration}_
+        ${binning || "UNKNOWN"}_
+        ${iso || "UNKNOWN"}_
+        ${gain || "UNKNOWN"}_
+        ${fNumber || "UNKNOWN"}_
+        ${sensorCooling || "UNKNOWN"}_
+        ${darks || "UNKNOWN"}_
+        ${flats || "UNKNOWN"}_
+        ${flatDarks || "UNKNOWN"}_
+        ${bias || "UNKNOWN"}_
+        ${bortle || "UNKNOWN"}_
+        ${meanSqm || "UNKNOWN"}_
+        ${meanFwhm || "UNKNOWN"}_
+        ${temperature || "UNKNOWN"}
+      `;
 
       if (!detailedFilterSummaries[filterType]) {
         detailedFilterSummaries[filterType] = {
@@ -485,7 +593,20 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
           brand,
           name,
           number: acquisition.number,
-          duration
+          duration,
+          binning,
+          iso,
+          gain,
+          fNumber,
+          sensorCooling,
+          darks,
+          flats,
+          flatDarks,
+          bias,
+          bortle,
+          meanSqm,
+          meanFwhm,
+          temperature
         });
       }
 

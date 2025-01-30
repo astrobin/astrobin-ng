@@ -83,4 +83,36 @@
       margin-right: .5rem;
     }
   }
+
+  td, th {
+    vertical-align: middle;
+
+    &:last-child {
+      white-space: nowrap;
+    }
+  }
+
+  .additional-properties {
+    @media (min-width: $lg-min) {
+      margin-top: .25rem;
+    }
+
+    > span {
+      font-size: .8rem;
+      white-space: nowrap;
+      display: inline-block;
+      color: var(--lighterGrey);
+
+      .value {
+        color: var(--lightestGrey);
+      }
+    }
+
+    > span:not(:last-child) {
+      &:after {
+        content: '•';
+        margin: 0 .5rem;
+      }
+    }
+  }
 }
