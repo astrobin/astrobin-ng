@@ -110,6 +110,11 @@
           color: var(--accentColor);
           opacity: 1 !important;
         }
+
+        .btn.loading:before {
+          top: 2px;
+          left: 0;
+        }
       }
 
       astrobin-toggle-property .count,

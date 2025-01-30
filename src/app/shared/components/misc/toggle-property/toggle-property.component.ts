@@ -18,6 +18,7 @@ import { Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ViewportInitService } from "@shared/services/viewport-initialization.service";
 import { TogglePropertyBatchService } from "@shared/services/toggle-property-batch.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-toggle-property",
@@ -98,7 +99,8 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly windowRefService: WindowRefService,
     public readonly viewportInitService: ViewportInitService,
-    public readonly togglePropertyBatchService: TogglePropertyBatchService
+    public readonly togglePropertyBatchService: TogglePropertyBatchService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -191,7 +193,6 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
               new DeleteToggleProperty({ toggleProperty })
             );
           } else {
-            this.loading = false;
             this.changeDetectorRef.markForCheck();
           }
         });
@@ -209,7 +210,15 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       );
     }
 
-    this.changeDetectorRef.detectChanges();
+    this.toggled = !this.toggled;
+
+    if (this.count !== null && this.count !== undefined) {
+      if (!this.toggled && this.count > 0) {
+        this.count -= 1;
+      } else if (this.toggled) {
+        this.count += 1;
+      }
+    }
   }
 
   private _initUnsetTogglePropertyLabel(): void {
@@ -365,10 +374,6 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       this.utilsService.delay(50).subscribe(() => {
         this._toggleProperty = toggleProperty;
         this.toggled = true;
-        if (this.count !== null && this.count !== undefined) {
-          this.count += 1;
-        }
-        this.loading = false;
         this.toggling = false;
         this.changeDetectorRef.markForCheck();
       });
@@ -380,8 +385,15 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       filter(this._getFilterParams.bind(this)),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.loading = false;
       this.toggling = false;
+      this.toggled = false;
+      if (this.count !== null && this.count !== undefined) {
+        // Restore count.
+        this.count += 1;
+      }
+      this.popNotificationsService.error(
+        this.translateService.instant("An error occurred while trying to perform this operation.")
+      );
       this.changeDetectorRef.markForCheck();
     });
 
@@ -393,11 +405,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     ).subscribe(toggleProperty => {
       this._toggleProperty = null;
       this.toggled = false;
-      this.loading = false;
       this.toggling = false;
-      if (this.count !== null && this.count !== undefined && this.count > 0) {
-        this.count -= 1;
-      }
       this.changeDetectorRef.markForCheck();
     });
 
@@ -407,8 +415,15 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       filter(this._getFilterParams.bind(this)),
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.loading = false;
       this.toggling = false;
+      this.toggled = true;
+      if (this.count !== null && this.count !== undefined && this.count > 0) {
+        // Restore count.
+        this.count += 1;
+      }
+      this.popNotificationsService.error(
+        this.translateService.instant("An error occurred while trying to perform this operation.")
+      );
       this.changeDetectorRef.markForCheck();
     });
   }
