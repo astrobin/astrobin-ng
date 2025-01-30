@@ -6,7 +6,6 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { MainState } from "@app/store/state";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbAccordionModule, NgbCarouselModule, NgbDropdownModule, NgbModule, NgbNavModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { Actions, ofType } from "@ngrx/effects";
@@ -30,6 +29,7 @@ import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { HammerGestureConfig, HammerModule } from "@angular/platform-browser";
 import { AutoSizeInputModule } from "ngx-autosize-input";
+import { IconsModule } from "@shared/icons.module";
 
 declare const Hammer;
 
@@ -94,7 +94,6 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     FormsModule,
     ReactiveFormsModule,
 
-    FontAwesomeModule,
     FormlyModule,
     FormlyBootstrapModule,
     FormlySelectModule,
@@ -142,6 +141,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
       isolate: false
     }),
 
+    IconsModule,
     PipesModule
   ],
   exports: [
@@ -153,7 +153,6 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     FormsModule,
     ReactiveFormsModule,
 
-    FontAwesomeModule,
     FormlyModule,
     FormlyBootstrapModule,
     HammerModule,
@@ -174,6 +173,7 @@ export class AstroBinHammerConfig extends HammerGestureConfig {
     TimeagoModule,
     TranslateModule,
 
+    IconsModule,
     PipesModule
   ]
 })

@@ -27,10 +27,6 @@ import { AppComponent } from "@app/app.component";
 import { mainStateEffects, mainStateReducers, metaReducers, setInitialState } from "@app/store/state";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { environment } from "@env/environment";
-import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
-import { fab } from "@fortawesome/free-brands-svg-icons";
-import { fas } from "@fortawesome/free-solid-svg-icons";
-import { far } from "@fortawesome/free-regular-svg-icons";
 import { EffectsModule } from "@ngrx/effects";
 import { Store, StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
@@ -85,9 +81,6 @@ registerLocaleData(localeTurkish);
 registerLocaleData(localeChinese);
 registerLocaleData(localeChineseTraditional);
 
-export function initFontAwesome(iconLibrary: FaIconLibrary) {
-  iconLibrary.addIconPacks(fas, far, fab);
-}
 
 @Injectable()
 export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
@@ -180,7 +173,7 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
         deps: [HttpClient]
       },
       isolate: false
-    }),
+    })
   ],
   providers: [
     CookieService,
@@ -215,13 +208,10 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
 })
 export class AppModule {
   public constructor(
-    private readonly iconLibrary: FaIconLibrary,
     @Inject(PLATFORM_ID) private readonly platformId: Object,
     private readonly store$: Store,
     private readonly transferState: TransferState
   ) {
-    initFontAwesome(iconLibrary);
-
     if (isPlatformBrowser(this.platformId)) {
       const initialState = this.transferState.get(NGRX_STATE_KEY, null);
       if (initialState) {
