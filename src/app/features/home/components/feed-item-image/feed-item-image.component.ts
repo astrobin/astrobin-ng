@@ -25,6 +25,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
             [ngSrc]="userAvatar"
             width="60"
             height="60"
+            loading="lazy"
           >
 
           <div class="feed-item-header-text">
@@ -58,6 +59,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
               [alt]="displayName"
               [src]="feedItem.image"
               class="main-image"
+              loading="lazy"
             >
           </a>
         </div>

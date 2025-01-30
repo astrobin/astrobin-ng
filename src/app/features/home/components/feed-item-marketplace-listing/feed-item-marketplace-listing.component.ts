@@ -38,6 +38,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
             #image
             [alt]="feedItem.actionObjectDisplayName"
             [src]="feedItem.image"
+            loading="lazy"
             class="main-image"
           >
         </a>

@@ -82,6 +82,7 @@ import { DeviceService } from "@core/services/device.service";
                   <img
                     [src]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
                     [alt]="item.title"
+                    loading="lazy"
                   />
 
                   <astrobin-loading-indicator

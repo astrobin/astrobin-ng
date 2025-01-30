@@ -27,6 +27,7 @@ import { ClassicRoutesService } from "@core/services/classic-routes.service";
             src="/assets/images/actstream-group-action.jpg"
             alt=""
             class="main-image"
+            loading="lazy"
           />
         </a>
       </div>

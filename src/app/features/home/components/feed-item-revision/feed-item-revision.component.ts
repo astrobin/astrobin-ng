@@ -12,6 +12,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
         (click)="navigateToImage()"
         [src]="feedItem.image"
         alt=""
+        loading="lazy"
       >
     </div>
   `,
