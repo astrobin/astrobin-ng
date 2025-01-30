@@ -2,7 +2,6 @@ import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbAccordionModule, NgbCarouselModule, NgbCollapseModule, NgbDropdownModule, NgbModalConfig, NgbModalModule, NgbNavModule, NgbOffcanvasModule, NgbPopoverModule, NgbProgressbarModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { FormlyModule } from "@ngx-formly/core";
@@ -146,12 +145,12 @@ import { ImageHoverComponent } from "@shared/components/misc/image-hover/image-h
 import { ImageViewerIotdTpStatsComponent } from "@shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component";
 import { MasonryLayoutComponent } from "@shared/components/masonry-layout/masonry-layout.component";
 import { ImageGalleryLoadingComponent } from "@shared/components/image-gallery-loading-indicator/image-gallery-loading.component";
+import { IconsModule } from "@shared/icons.module";
 
 const modules = [
   CommonModule,
   DirectivesModule,
   DragDropModule,
-  FontAwesomeModule,
   FormsModule,
   FormlyBootstrapModule,
   FormlySelectModule,
@@ -183,7 +182,8 @@ const modules = [
   FormlyModule,
   UploadxModule,
   AutoSizeInputModule,
-  NgOptimizedImage
+  NgOptimizedImage,
+  IconsModule
 ];
 
 const components = [
