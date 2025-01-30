@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  buildVersion: "20250128.01",
+  buildVersion: "__BUILD_VERSION__",
   classicBaseUrl: "https://www.astrobin.com",
   classicApiUrl: "https://app.astrobin.com",  // Proxied by node (see: server.ts)
   cdnUrl: "https://cdn.astrobin.com",
