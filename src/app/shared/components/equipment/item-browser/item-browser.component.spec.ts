@@ -8,7 +8,7 @@ import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 describe("ItemBrowserComponent", () => {
   let component: ItemBrowserComponent;

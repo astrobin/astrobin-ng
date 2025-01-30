@@ -9,23 +9,23 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
-import { ImageInterface } from "@shared/interfaces/image.interface";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
-import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { TitleService } from "@shared/services/title/title.service";
-import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ThumbnailGroupApiService } from "@core/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { UploadState, UploadxService } from "ngx-uploadx";
 import { Observable } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
-import { ModalService } from "@shared/services/modal.service";
+import { ModalService } from "@core/services/modal.service";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { DeleteImageUncompressedSourceFile, DeleteImageUncompressedSourceFileFailure, DeleteImageUncompressedSourceFileSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-uncompressed-source-uploader-page",
@@ -127,7 +127,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
 
 
       this.store$.dispatch(new DeleteImageUncompressedSourceFile({ pk: this.image.pk }));
-    })
+    });
   }
 
   private _initImage(): void {
@@ -154,23 +154,30 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
       },
       {
         key: "download",
-        type: "html",
-        template: this.image.uncompressedSourceFile
-          ? `
-            <p>
-              ${this.translate.instant("This image already has an uncompressed source file.")}
-              <a
-                class="btn btn-xs btn-primary no-external-link-icon ms-2"
-                href="${this.image.uncompressedSourceFile}"
-                target="_blank"
-              >
-                ${this.translate.instant("Download")}
-              </a>
-            </p>
-          `
-          : ``
+        type: "formly-template",
+        template: this._getDownloadTemplate()
       }
     ];
+  }
+
+
+  private _getDownloadTemplate(): string {
+    if (!this.image?.uncompressedSourceFile) {
+      return "";
+    }
+
+    return `
+    <p>
+      ${this.translate.instant("This image already has an uncompressed source file.")}
+
+        class="btn btn-xs btn-primary no-external-link-icon ms-2"
+        href="${this.image.uncompressedSourceFile}"
+        target="_blank"
+      >
+        ${this.translate.instant("Download")}
+      </a>
+    </p>
+  `;
   }
 
   private _initTitle(): void {

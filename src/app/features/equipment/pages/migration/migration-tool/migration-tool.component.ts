@@ -1,45 +1,45 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { GearApiService } from "@core/services/api/classic/astrobin/gear/gear-api.service";
+import { LoadingService } from "@core/services/loading.service";
 import { delay, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { concat, EMPTY, forkJoin, Observable, of } from "rxjs";
-import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { Store } from "@ngrx/store";
 import { Actions } from "@ngrx/effects";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { HttpStatusCode } from "@angular/common/http";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { CameraApiService } from "@shared/services/api/classic/astrobin/camera/camera-api.service";
-import { TelescopeApiService } from "@shared/services/api/classic/astrobin/telescope/telescope-api.service";
-import { MountApiService } from "@shared/services/api/classic/astrobin/mount/mount-api.service";
+import { CameraApiService } from "@core/services/api/classic/astrobin/camera/camera-api.service";
+import { TelescopeApiService } from "@core/services/api/classic/astrobin/telescope/telescope-api.service";
+import { MountApiService } from "@core/services/api/classic/astrobin/mount/mount-api.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { MainState } from "@app/store/state";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
-import { GearService } from "@shared/services/gear/gear.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { GearService } from "@core/services/gear/gear.service";
 import {
   ItemBrowserComponent,
   ItemBrowserLayout
 } from "@shared/components/equipment/item-browser/item-browser.component";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
-import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
+import { FilterApiService } from "@core/services/api/classic/astrobin/filter/filter-api.service";
+import { SoftwareApiService } from "@core/services/api/classic/astrobin/software/software-api.service";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
-import { CombinedAccessoryAndFocalReducerApiService } from "@shared/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
-import { GearUserInfoInterface } from "@shared/interfaces/gear-user-info.interface";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { CombinedAccessoryAndFocalReducerApiService } from "@core/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
+import { GearUserInfoInterface } from "@core/interfaces/gear-user-info.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { GearMigrationStrategyApiService } from "@core/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ActiveToast } from "ngx-toastr";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { Constants } from "@shared/constants";
 
 @Component({

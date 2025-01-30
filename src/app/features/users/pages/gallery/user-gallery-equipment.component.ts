@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
@@ -8,13 +8,13 @@ import { EquipmentActionTypes, FindEquipmentPresets, FindEquipmentPresetsFailure
 import { Subscription } from "rxjs";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
 import { filter, map, take } from "rxjs/operators";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj } from "@core/services/utils/utils.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 import { SmartFolderType } from "@features/users/pages/gallery/user-gallery-smart-folders.component";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { Actions, ofType } from "@ngrx/effects";
-import { FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
 
 @Component({
   selector: "astrobin-user-gallery-equipment",

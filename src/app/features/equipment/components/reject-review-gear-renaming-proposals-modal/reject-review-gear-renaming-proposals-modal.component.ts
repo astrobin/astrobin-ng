@@ -7,7 +7,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Actions } from "@ngrx/effects";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { HttpClient } from "@angular/common/http";

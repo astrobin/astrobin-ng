@@ -1,4 +1,4 @@
-import { AccessoryInterface } from "@shared/interfaces/accessory.interface";
+import { AccessoryInterface } from "@core/interfaces/accessory.interface";
 
 export class AccessoryGenerator {
   static accessory(): AccessoryInterface {

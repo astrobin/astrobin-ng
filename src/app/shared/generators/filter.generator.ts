@@ -1,4 +1,4 @@
-import { FilterInterface } from "@shared/interfaces/filter.interface";
+import { FilterInterface } from "@core/interfaces/filter.interface";
 
 export class FilterGenerator {
   static filter(): FilterInterface {

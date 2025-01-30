@@ -3,9 +3,9 @@
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { InitializeAuthSuccessInterface, LoginFailureInterface, LoginPayloadInterface, LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
 import { Action } from "@ngrx/store";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 
 export enum AuthActionTypes {
   INITIALIZE = "[Auth] Initialize",

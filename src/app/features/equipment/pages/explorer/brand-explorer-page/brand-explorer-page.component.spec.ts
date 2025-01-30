@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { EMPTY, ReplaySubject } from "rxjs";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { EquipmentModule } from "@features/equipment/equipment.module";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 describe("BrandExplorerPageComponent", () => {
   let component: BrandExplorerPageComponent;

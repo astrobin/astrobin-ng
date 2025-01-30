@@ -2,7 +2,7 @@
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { SolutionInterface } from "@shared/interfaces/solution.interface";
+import { SolutionInterface } from "@core/interfaces/solution.interface";
 import { Action } from "@ngrx/store";
 
 export class LoadSolution implements PayloadActionInterface {

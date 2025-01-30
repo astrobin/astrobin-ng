@@ -2,23 +2,23 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inje
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { CreateToggleProperty, CreateTogglePropertySuccess, DeleteToggleProperty, LoadTogglePropertiesFailure, LoadTogglePropertiesSuccess, LoadToggleProperty, LoadTogglePropertyFailure, LoadTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { RouterService } from "@shared/services/router.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { DeviceService } from "@shared/services/device.service";
+import { RouterService } from "@core/services/router.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { DeviceService } from "@core/services/device.service";
 import { isPlatformBrowser } from "@angular/common";
 import { Observable, Subscription } from "rxjs";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { ViewportInitService } from "@shared/services/viewport-initialization.service";
-import { TogglePropertyBatchService } from "@shared/services/toggle-property-batch.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ViewportInitService } from "@core/services/viewport-initialization.service";
+import { TogglePropertyBatchService } from "@core/services/toggle-property-batch.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-toggle-property",

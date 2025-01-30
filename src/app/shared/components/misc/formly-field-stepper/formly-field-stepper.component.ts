@@ -16,9 +16,9 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@shared/services/loading.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import {
   NgWizardComponent,
   NgWizardService,

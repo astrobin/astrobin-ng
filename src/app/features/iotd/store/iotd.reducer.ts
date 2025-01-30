@@ -7,7 +7,7 @@ import {
   SubmitterSeenImage,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { IotdActions, IotdActionTypes } from "./iotd.actions";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";

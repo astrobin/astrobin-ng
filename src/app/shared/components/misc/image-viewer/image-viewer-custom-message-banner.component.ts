@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, Input, TemplateRef } from "@angular
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-viewer-custom-message-banner",

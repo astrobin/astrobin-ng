@@ -7,7 +7,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { map, switchMap, take } from "rxjs/operators";
 import {
   ApproveEquipmentItem,
@@ -18,7 +18,7 @@ import {
   GetOthersInBrandSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { Observable } from "rxjs";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";

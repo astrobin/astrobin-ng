@@ -6,7 +6,7 @@ import { SubscriptionsRouterPageComponent } from "@features/subscriptions/pages/
 import { SubscriptionsViewPaymentsPageComponent } from "@features/subscriptions/pages/subscriptions-view-payments-page/subscriptions-view-payments-page.component";
 import { SubscriptionsViewSubscriptionsPageComponent } from "@features/subscriptions/pages/subscriptions-view-subscriptions-page/subscriptions-view-subscriptions-page.component";
 import { SubscriptionsSuccessPageComponent } from "@features/subscriptions/pages/success-page/subscriptions-success-page.component";
-import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 
 export const subscriptionRoutes: Routes = [
   {

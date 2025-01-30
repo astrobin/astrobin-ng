@@ -6,7 +6,7 @@ import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { CreateLocationSuccess } from "@app/store/actions/location.actions";
-import { LocationApiService } from "@shared/services/api/classic/astrobin/location/location-api.service";
+import { LocationApiService } from "@core/services/api/classic/astrobin/location/location-api.service";
 import { LoadUserProfile, UpdateUserProfile } from "@features/account/store/auth.actions";
 import { selectUserProfile } from "@features/account/store/auth.selectors";
 

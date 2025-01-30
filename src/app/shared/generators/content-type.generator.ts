@@ -1,4 +1,4 @@
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 
 export class ContentTypeGenerator {
   static contentType(source: Partial<ContentTypeInterface> = {}): ContentTypeInterface {

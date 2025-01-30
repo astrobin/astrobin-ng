@@ -1,5 +1,5 @@
 import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { AstroBinGroupGenerator } from "@shared/generators/astrobin-group.generator";
 
 export class UserGenerator {

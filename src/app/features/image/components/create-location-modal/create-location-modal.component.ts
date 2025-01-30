@@ -10,12 +10,12 @@ import { AuthActionTypes, UpdateUserProfileSuccess } from "@features/account/sto
 import { map, take, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { CreateLocation } from "@app/store/actions/location.actions";
-import { LocationInterface } from "@shared/interfaces/location.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Observable } from "rxjs";
-import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
+import { UserInterface } from "@core/interfaces/user.interface";
 
 @Component({
   selector: "astrobin-create-location-modal",

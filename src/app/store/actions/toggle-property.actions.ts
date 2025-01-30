@@ -2,7 +2,7 @@
 
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 
 export class CreateToggleProperty implements PayloadActionInterface {
   readonly type = AppActionTypes.CREATE_TOGGLE_PROPERTY;

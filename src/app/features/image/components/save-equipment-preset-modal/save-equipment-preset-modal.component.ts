@@ -3,7 +3,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -19,7 +19,7 @@ import {
   UpdateEquipmentPresetSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-create-equipment-preset-modal",

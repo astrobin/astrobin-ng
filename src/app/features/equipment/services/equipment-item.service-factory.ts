@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { BaseService } from "@shared/services/base.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
 import { CameraService } from "@features/equipment/services/camera.service";
 import { SensorService } from "@features/equipment/services/sensor.service";
 import { TelescopeService } from "@features/equipment/services/telescope.service";

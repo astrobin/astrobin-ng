@@ -4,13 +4,13 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { filter, take, withLatestFrom } from "rxjs/operators";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import {
@@ -19,10 +19,10 @@ import {
 } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { MarketplaceOfferStatus } from "@features/equipment/types/marketplace-offer-status.type";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { SafeUrl } from "@angular/platform-browser";
 import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item",

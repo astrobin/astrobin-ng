@@ -4,19 +4,19 @@ import { IotdInterface, SubmissionInterface, VoteInterface } from "@features/iot
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 import { Observable } from "rxjs";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
-import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { LoadNestedComments } from "@app/store/actions/nested-comments.actions";
 

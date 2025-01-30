@@ -9,11 +9,11 @@ import { catchError, debounceTime, map, takeUntil, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { EquipmentActionTypes, GetAllBrands } from "@features/equipment/store/equipment.actions";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { selectEquipment, selectEquipmentContributors } from "@features/equipment/store/equipment.selectors";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { ActiveToast } from "ngx-toastr";
 import { isPlatformBrowser } from "@angular/common";
 

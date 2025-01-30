@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { UserService } from "@shared/services/user.service";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { UserService } from "@core/services/user.service";
 import { Constants } from "@shared/constants";
 
 @Pipe({

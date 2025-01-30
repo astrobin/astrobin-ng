@@ -1,10 +1,10 @@
 /* eslint-disable max-classes-per-file */
 
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
 
 export enum UserActionTypes {
   LOAD_GALLERY = "[User] Load Gallery",

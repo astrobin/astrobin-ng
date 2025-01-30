@@ -1,9 +1,9 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { CKEditorService } from "@shared/services/ckeditor.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { CKEditorService } from "@core/services/ckeditor.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformServer } from "@angular/common";
 
 declare const CKEDITOR: any;

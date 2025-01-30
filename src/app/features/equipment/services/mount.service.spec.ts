@@ -4,7 +4,7 @@ import { AppModule } from "@app/app.module";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { MountGenerator } from "@features/equipment/generators/mount.generator";
 import { MountType } from "@features/equipment/types/mount.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 describe("MountService", () => {
   let service: MountService;

@@ -1,4 +1,4 @@
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 
 export enum QueueSortOrder {
   NEWEST_FIRST = "NEWEST_FIRST",

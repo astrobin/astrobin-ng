@@ -12,18 +12,18 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { catchError, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
 import { Router } from "@angular/router";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EMPTY } from "rxjs";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-reject-item-modal",

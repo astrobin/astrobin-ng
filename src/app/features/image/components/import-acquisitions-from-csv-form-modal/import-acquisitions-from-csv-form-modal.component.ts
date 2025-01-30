@@ -4,11 +4,11 @@ import { FormGroup } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { Actions } from "@ngrx/effects";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 

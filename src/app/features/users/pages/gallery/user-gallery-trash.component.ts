@@ -1,25 +1,25 @@
 import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { FindImages, FindImagesSuccess, UndeleteImage, UndeleteImageSuccess } from "@app/store/actions/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { filter, map, switchMap, takeUntil } from "rxjs/operators";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { fromEvent, Observable, throttleTime } from "rxjs";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { SubscriptionName } from "@shared/types/subscription-name.type";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { SubscriptionName } from "@core/types/subscription-name.type";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-user-gallery-trash",

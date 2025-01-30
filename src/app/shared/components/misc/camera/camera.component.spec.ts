@@ -4,7 +4,7 @@ import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
 import { CameraComponent } from "./camera.component";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 describe("CameraComponent", () => {
   let component: CameraComponent;

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
+import { WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";

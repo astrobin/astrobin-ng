@@ -5,12 +5,12 @@ import { isPlatformBrowser } from "@angular/common";
 import { takeUntil } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { SearchPaginatedApiResultInterface } from "@shared/services/api/interfaces/search-paginated-api-result.interface";
+import { SearchPaginatedApiResultInterface } from "@core/services/api/interfaces/search-paginated-api-result.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { SearchService } from "@features/search/services/search.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { SearchService } from "@core/services/search.service";
 
 @Component({
   selector: "astrobin-scrollable-search-results-base",

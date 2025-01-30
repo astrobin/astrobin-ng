@@ -1,17 +1,17 @@
 import { Routes } from "@angular/router";
 import { ImageEditPageComponent } from "@features/image/pages/edit/image-edit-page.component";
-import { ImageResolver } from "@shared/resolvers/image.resolver";
-import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
-import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guard.service";
-import { ImageUserGroupsResolver } from "@shared/resolvers/image-user-groups.resolver";
-import { CurrentUsersLocationsResolver } from "@shared/resolvers/current-users-locations.resolver";
-import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
-import { ImageUserCollectionsResolver } from "@shared/resolvers/image-user-collections-resolver.service";
+import { ImageResolver } from "@core/resolvers/image.resolver";
+import { AuthGuardService } from "@core/services/guards/auth-guard.service";
+import { ImageOwnerGuardService } from "@core/services/guards/image-owner-guard.service";
+import { ImageUserGroupsResolver } from "@core/resolvers/image-user-groups.resolver";
+import { CurrentUsersLocationsResolver } from "@core/resolvers/current-users-locations.resolver";
+import { PendingChangesGuard } from "@core/services/guards/pending-changes-guard.service";
+import { ImageUserCollectionsResolver } from "@core/resolvers/image-user-collections-resolver.service";
 import { ImagePageComponent } from "@features/image/pages/image/image-page.component";
 import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revision/image-edit-revision-page.component";
 import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component";
-import { PlateSolvingSettingsResolver } from "@shared/resolvers/plate-solving-settings.resolver";
-import { PlateSolvingAdvancedSettingsResolver } from "@shared/resolvers/plate-solving-advanced-settings.resolver";
+import { PlateSolvingSettingsResolver } from "@core/resolvers/plate-solving-settings.resolver";
+import { PlateSolvingAdvancedSettingsResolver } from "@core/resolvers/plate-solving-advanced-settings.resolver";
 
 export const imageRoutes: Routes = [
   {

@@ -3,7 +3,6 @@ import { RouterModule } from "@angular/router";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { SharedModule } from "@shared/shared.module";
-import { SearchModule } from "@features/search/search.module";
 import { UserGalleryPageComponent } from "@features/users/pages/gallery/user-gallery-page.component";
 import { userRoutes } from "@features/users/user.routing";
 import { UserEffects } from "@features/users/store/user.effects";
@@ -50,7 +49,6 @@ import { UserGalleryEquipmentComponent } from "@features/users/pages/gallery/use
   imports: [
     RouterModule.forChild(userRoutes),
     SharedModule,
-    SearchModule,
     StoreModule.forFeature(userFeatureKey, userReducer),
     EffectsModule.forFeature([UserEffects])
   ]

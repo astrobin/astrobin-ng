@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { isObservable, Subject, Subscription } from "rxjs";
 import { debounceTime, distinctUntilChanged, map, take, tap } from "rxjs/operators";
 import { NgSelectComponent } from "@ng-select/ng-select";
 import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";

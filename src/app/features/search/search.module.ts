@@ -11,8 +11,7 @@ import { SearchFilterEditorModalComponent } from "./components/filters/search-fi
 import { SearchTelescopeFilterComponent } from "@features/search/components/filters/search-telescope-filter/search-telescope-filter.component";
 import { SearchCameraFilterComponent } from "@features/search/components/filters/search-camera-filter/search-camera-filter.component";
 import { SearchFilterSelectionModalComponent } from "@features/search/components/filters/search-filter-selection-modal/search-filter-selection-modal.component";
-import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@features/search/injection-tokens/search-filter.tokens";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { SearchTelescopeTypesFilterComponent } from "@features/search/components/filters/search-telescope-types-filter/search-telescope-types-filter.component";
 import { SearchCameraTypesFilterComponent } from "@features/search/components/filters/search-camera-types-filter/search-camera-types-filter.component";
 import { SearchAcquisitionMonthsFilterComponent } from "@features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component";
@@ -118,17 +117,11 @@ const allFilterComponents = [
     RouterModule.forChild(searchRoutes),
     SharedModule,
     StoreModule.forFeature(searchFeatureKey, searchReducer)
-  ],
-  providers: [
-    SearchService,
-    {
-      provide: SEARCH_FILTERS_TOKEN,
-      useValue: allFilterComponents
-    },
-    {
-      provide: AUTO_COMPLETE_ONLY_FILTERS_TOKEN,
-      useValue: [SearchTextFilterComponent]
-    }
   ]
 })
-export class SearchModule {}
+export class SearchModule {
+  constructor(searchService: SearchService) {
+    searchService.registerAllFilters(allFilterComponents);
+    searchService.registerAutoCompleteFilters([SearchTextFilterComponent]);
+  }
+}

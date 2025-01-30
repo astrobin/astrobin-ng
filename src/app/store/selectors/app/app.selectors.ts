@@ -1,7 +1,7 @@
 import { AppState } from "@app/store/reducers/app.reducers";
 import { MainState } from "@app/store/state";
 import { createSelector } from "@ngrx/store";
-import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
 
 export const selectApp = (state: MainState): AppState => state.app;
 

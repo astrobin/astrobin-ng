@@ -6,14 +6,14 @@ import { PaymentsApiService } from "@features/subscriptions/services/payments-ap
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { Constants } from "@shared/constants";
-import { SubscriptionName } from "@shared/types/subscription-name.type";
+import { SubscriptionName } from "@core/types/subscription-name.type";
 import * as countryJs from "country-js";
 import { BehaviorSubject, Observable } from "rxjs";
 import { filter, map, switchMap, take } from "rxjs/operators";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
+import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable({

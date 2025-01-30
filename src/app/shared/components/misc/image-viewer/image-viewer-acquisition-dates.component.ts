@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
-import { DateService } from "@shared/services/date.service";
+import { DateService } from "@core/services/date.service";
 
 @Component({
   selector: "astrobin-image-viewer-acquisition-dates",

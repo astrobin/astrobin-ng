@@ -8,14 +8,14 @@ import { ActivatedRoute, NavigationEnd, Params, Router } from "@angular/router";
 import { takeUntil } from "rxjs/operators";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { Observable } from "rxjs";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { CookieService } from "ngx-cookie";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemDisplayProperty } from "@shared/services/equipment-item.service";
-import { DeviceService } from "@shared/services/device.service";
+import { EquipmentItemDisplayProperty } from "@core/services/equipment-item.service";
+import { DeviceService } from "@core/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explorer-page-sorting";

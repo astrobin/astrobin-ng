@@ -2,7 +2,7 @@
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 
 export class LoadThumbnail implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_THUMBNAIL;

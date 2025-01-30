@@ -20,9 +20,9 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 const PROHIBITED_WORDS = [
   // English

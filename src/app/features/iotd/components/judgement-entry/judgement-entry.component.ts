@@ -4,20 +4,20 @@ import { BasePromotionEntryComponent } from "@features/iotd/components/base-prom
 import { selectFutureIotdForImage, selectJudgementQueueEntry } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Observable, of } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface } from "@core/interfaces/image.interface";
 import { CookieService } from "ngx-cookie";
 import { DeleteIotd, PostIotd } from "@features/iotd/store/iotd.actions";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { Actions } from "@ngrx/effects";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-judgement-entry",

@@ -5,17 +5,17 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { SearchModelInterface, SearchType } from "@features/search/interfaces/search-model.interface";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { SearchService } from "@features/search/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { SearchService } from "@core/services/search.service";
 import { filter, map, startWith, take, takeUntil } from "rxjs/operators";
 import { merge } from "rxjs";
-import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { TitleService } from "@shared/services/title/title.service";
+import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { TitleService } from "@core/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-search-page",

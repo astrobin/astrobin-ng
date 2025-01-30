@@ -1,13 +1,13 @@
 import { Component, Input } from "@angular/core";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-viewer-section-base",

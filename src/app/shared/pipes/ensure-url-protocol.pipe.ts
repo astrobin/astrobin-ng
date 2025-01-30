@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 @Pipe({
   name: "ensureUrlProtocol"

@@ -5,7 +5,7 @@ import { selectContentType, selectContentTypeById } from "@app/store/selectors/a
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
 import { EMPTY, Observable, of } from "rxjs";
 import { catchError, map, mergeMap, take } from "rxjs/operators";
 

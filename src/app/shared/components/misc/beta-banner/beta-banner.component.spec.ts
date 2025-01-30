@@ -5,7 +5,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { initialMainState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 describe("BetaBannerComponent", () => {
   let component: BetaBannerComponent;

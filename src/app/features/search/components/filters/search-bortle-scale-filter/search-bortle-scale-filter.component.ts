@@ -5,12 +5,12 @@ import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
-import { ImageService } from "@shared/services/image/image.service";
+import { BortleScale } from "@core/interfaces/deep-sky-acquisition.interface";
+import { ImageService } from "@core/services/image/image.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 

@@ -5,7 +5,7 @@ import { MainState } from "@app/store/state";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 declare const gtag: any;

@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { forkJoin, Observable, of } from "rxjs";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { filter, map, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";

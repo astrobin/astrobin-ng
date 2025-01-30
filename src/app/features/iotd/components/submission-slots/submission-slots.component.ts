@@ -12,7 +12,7 @@ import { Observable } from "rxjs";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-submission-slots",

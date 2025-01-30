@@ -1,7 +1,7 @@
 import { Routes } from "@angular/router";
 import { MigrationToolComponent } from "@features/equipment/pages/migration/migration-tool/migration-tool.component";
-import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
-import { GroupGuardService } from "@shared/services/guards/group-guard.service";
+import { AuthGuardService } from "@core/services/guards/auth-guard.service";
+import { GroupGuardService } from "@core/services/guards/group-guard.service";
 import { MigrationReviewComponent } from "@features/equipment/pages/migration/migration-review/migration-review.component";
 import { MigrationReviewItemComponent } from "@features/equipment/pages/migration/migration-review-item/migration-review-item.component";
 import { MigrationReviewItemGuardService } from "@features/equipment/services/migration-review-item-guard.service";
@@ -25,7 +25,7 @@ import { MarketplaceUserOffersPageComponent } from "@features/equipment/pages/ma
 import { MarketplaceSoldListingsPageComponent } from "@features/equipment/pages/marketplace/sold-listings/marketplace-sold-listings-page.component";
 import { MarketplaceUserSoldListingsPageComponent } from "@features/equipment/pages/marketplace/user-sold-listings/marketplace-user-sold-listings-page.component";
 import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment/pages/marketplace/user-expired-listings/marketplace-user-expired-listings-page.component";
-import { UsernameMatchGuard } from "@shared/services/guards/username-match-guard";
+import { UsernameMatchGuard } from "@core/services/guards/username-match-guard";
 import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages/marketplace/user-purchases/marketplace-user-purchases-page.component";
 import { MarketplaceUserFollowedListingsPageComponent } from "@features/equipment/pages/marketplace/user-followed-listings/marketplace-user-followed-listings-page.component";
 import { MarketplacePendingModerationListingsPageComponent } from "@features/equipment/pages/marketplace/pending-moderation-listings/marketplace-pending-moderation-listings-page.component";

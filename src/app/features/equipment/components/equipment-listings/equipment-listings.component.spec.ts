@@ -6,7 +6,7 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { TelescopeGenerator } from "@features/equipment/generators/telescope.generator";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 describe("EquipmentListingsComponent", () => {
   let component: EquipmentListingsComponent;

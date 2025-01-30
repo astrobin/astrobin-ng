@@ -5,12 +5,12 @@ import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage, ChangeUserProfile
 import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { AuthService } from "@shared/services/auth.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { AuthService } from "@core/services/auth.service";
+import { LoadingService } from "@core/services/loading.service";
 import { CookieService } from "ngx-cookie";
 import { TimeagoIntl } from "ngx-timeago";
 import { EMPTY, Observable, of } from "rxjs";
@@ -18,7 +18,7 @@ import { catchError, concatMap, map, mergeMap, switchMap, tap } from "rxjs/opera
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { selectUser, selectUserByUsername, selectUserProfile } from "@features/account/store/auth.selectors";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 @Injectable()
 export class AuthEffects {

@@ -2,7 +2,7 @@
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
+import { TelescopeInterface } from "@core/interfaces/telescope.interface";
 
 export class LoadTelescope implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_TELESCOPE;

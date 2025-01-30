@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { catchError, map, retry } from "rxjs/operators";
 import { EMPTY } from "rxjs";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";

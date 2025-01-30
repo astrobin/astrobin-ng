@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from "@angular/core";
-import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@shared/services/image-viewer.service";
+import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@core/services/image-viewer.service";
 import { fromEvent, Subscription, throttleTime } from "rxjs";
 import { fadeInOut } from "@shared/animations";
 

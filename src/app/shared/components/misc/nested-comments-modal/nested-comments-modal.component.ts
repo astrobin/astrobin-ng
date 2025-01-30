@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import {
   NestedCommentsAutoStartTopLevelStrategy,
   NestedCommentsTopLevelFormPlacement

@@ -2,30 +2,30 @@ import { Component, EventEmitter, Inject, OnInit, Output, PLATFORM_ID } from "@a
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { GeolocationService } from "@shared/services/geolocation.service";
-import { LoadingService } from "@shared/services/loading.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { GeolocationService } from "@core/services/geolocation.service";
+import { LoadingService } from "@core/services/loading.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { Constants } from "@shared/constants";
 import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import {
   MarketplaceListingInterface,
   MarketplaceListingType
 } from "@features/equipment/types/marketplace-listing.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { take } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 
 export const marketplaceFilterModelKeys: string[] = [
   "listingType",

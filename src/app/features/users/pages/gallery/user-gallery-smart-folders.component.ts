@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
 import { takeUntil } from "rxjs/operators";
 import { fadeInOut } from "@shared/animations";
-import { FindImagesResponseInterface } from "@shared/services/api/classic/images/image/image-api.service";
+import { FindImagesResponseInterface } from "@core/services/api/classic/images/image/image-api.service";
 
 export enum SmartFolderType {
   YEAR = "year",

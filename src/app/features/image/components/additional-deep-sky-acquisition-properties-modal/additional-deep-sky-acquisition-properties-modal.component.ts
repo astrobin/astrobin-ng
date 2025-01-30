@@ -3,7 +3,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { AdditionalAcquisitionPropertiesBase } from "@features/image/components/additional-acquisition-properties-base/additional-acquisition-properties-base";
 
 @Component({

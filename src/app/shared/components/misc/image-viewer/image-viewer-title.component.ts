@@ -2,16 +2,16 @@ import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateR
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
-import { ImageService } from "@shared/services/image/image.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ImageService } from "@core/services/image/image.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 
 @Component({
   selector: "astrobin-image-viewer-title",

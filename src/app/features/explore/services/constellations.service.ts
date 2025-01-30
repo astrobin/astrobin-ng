@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { Observable } from "rxjs";
 import {
   WikipediaApiService,
   WikipediaPageSummaryInterface
-} from "@shared/services/api/wikipedia/wikipedia-api.service";
+} from "@core/services/api/wikipedia/wikipedia-api.service";
 
 export interface ConstellationInterface {
   id: string;

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { SafeHtml } from "@angular/platform-browser";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: 'astrobin-image-viewer-additional-buttons',

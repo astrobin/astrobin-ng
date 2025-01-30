@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { ImageRevisionInterface } from "@shared/interfaces/image.interface";
+import { ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-image-viewer-revision-summary",

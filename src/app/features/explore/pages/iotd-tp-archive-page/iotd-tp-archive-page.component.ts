@@ -3,30 +3,30 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
 import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
 import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
 import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { filter, takeUntil } from "rxjs/operators";
 import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
 import { fadeInOut } from "@shared/animations";
-import { DataSource, FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@shared/interfaces/image.interface";
-import { ImageViewerNavigationContext, ImageViewerService } from "@shared/services/image-viewer.service";
-import { ImageService } from "@shared/services/image/image.service";
+import { DataSource, FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@core/interfaces/image.interface";
+import { ImageViewerNavigationContext, ImageViewerService } from "@core/services/image-viewer.service";
+import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
-import { RouterService } from "@shared/services/router.service";
+import { RouterService } from "@core/services/router.service";
 
 enum ArchiveType {
   IOTD = SearchAwardFilterValue.IOTD,

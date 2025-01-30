@@ -8,8 +8,8 @@ import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-fiel
 import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
 import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
 import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { debounceTime, distinctUntilChanged, first, startWith, switchMap } from "rxjs/operators";
 import { of } from "rxjs";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";

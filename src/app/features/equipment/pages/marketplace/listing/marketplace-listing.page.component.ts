@@ -6,15 +6,15 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MarketplaceListingInterface, MarketplaceListingType } from "@features/equipment/types/marketplace-listing.interface";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@shared/services/title/title.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { TitleService } from "@core/services/title/title.service";
+import { LoadingService } from "@core/services/loading.service";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { merge, Observable, of, Subscription } from "rxjs";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Actions, ofType } from "@ngrx/effects";
@@ -25,18 +25,18 @@ import { LoadNestedComment, LoadNestedComments, LoadNestedCommentsSuccess } from
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { selectMarketplaceListing, selectMarketplaceOffersByUser, selectMarketplacePrivateConversation, selectMarketplacePrivateConversations } from "@features/equipment/store/equipment.selectors";
 import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
-import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { RouterService } from "@shared/services/router.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { RouterService } from "@core/services/router.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { DeviceService } from "@shared/services/device.service";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { DeviceService } from "@core/services/device.service";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",

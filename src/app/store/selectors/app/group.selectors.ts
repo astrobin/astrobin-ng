@@ -1,7 +1,7 @@
 import { createSelector } from '@ngrx/store';
-import { GetGroupsParamsInterface } from "@shared/services/api/classic/groups/group-api.service";
+import { GetGroupsParamsInterface } from "@core/services/api/classic/groups/group-api.service";
 import { AppState } from "@app/store/reducers/app.reducers";
-import { GroupInterface } from "@shared/interfaces/group.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 
 export const selectGroups = createSelector(

@@ -6,24 +6,24 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
 import { FeedApiService } from "@features/home/services/feed-api.service";
 import { FeedService } from "@features/home/services/feed.service";
 import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { FrontPageSection, UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { FINAL_REVISION_LABEL, ImageInterface } from "@shared/interfaces/image.interface";
-import { ImageViewerNavigationContext, ImageViewerNavigationContextItem, ImageViewerService } from "@shared/services/image-viewer.service";
+import { FrontPageSection, UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { FINAL_REVISION_LABEL, ImageInterface } from "@core/interfaces/image.interface";
+import { ImageViewerNavigationContext, ImageViewerNavigationContextItem, ImageViewerService } from "@core/services/image-viewer.service";
 import { isPlatformBrowser } from "@angular/common";
 import { auditTime, finalize, fromEvent, Observable, Subscription } from "rxjs";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { fadeInOut } from "@shared/animations";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { ImageService } from "@shared/services/image/image.service";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
-import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { DeviceService } from "@shared/services/device.service";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { DeviceService } from "@core/services/device.service";
 
 enum FeedTab {
   FEED = "FEED",

@@ -2,8 +2,8 @@ import { Component, ViewChild } from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 

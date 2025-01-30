@@ -7,8 +7,8 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { DateService } from "@shared/services/date.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { DateService } from "@core/services/date.service";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 
 @Component({

@@ -35,7 +35,7 @@ import { EffectsModule } from "@ngrx/effects";
 import { Store, StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { SharedModule } from "@shared/shared.module";
 import { CookieModule, CookieService } from "ngx-cookie";
 import { TimeagoClock, TimeagoDefaultFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
@@ -45,11 +45,19 @@ import { translateLoaderFactory } from "./translate-loader";
 import * as Sentry from "@sentry/angular";
 import { Router, RouteReuseStrategy } from "@angular/router";
 import { CLIENT_IP } from "@app/client-ip.injector";
-import { TimeagoAppClock } from "@shared/services/timeago-app-clock.service";
-import { NGRX_STATE_KEY } from "@shared/services/store-transfer.service";
+import { TimeagoAppClock } from "@core/services/timeago-app-clock.service";
+import { NGRX_STATE_KEY } from "@core/services/store-transfer.service";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { SearchModule } from "@features/search/search.module";
 import { CustomRouteReuseStrategy } from "@app/custom-reuse-strategy";
+import { CoreModule } from "@app/core/core.module";
+import { HeaderComponent } from "@shared/components/header/header.component";
+import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
+import { FooterComponent } from "@shared/components/footer/footer.component";
+import { BreadcrumbComponent } from "@shared/components/misc/breadcrumb/breadcrumb.component";
+import { FormlyModule } from "@ngx-formly/core";
+import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
+import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
+import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -107,7 +115,26 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserAnimationsModule,
     HttpClientModule,
+
+    CoreModule,
+    SharedModule.forRoot(),
+
+    // This app.
+    AppRoutingModule,
+
     CookieModule.forRoot(),
+
+    FormlyModule.forRoot({
+      extras: {
+        lazyRender: false,
+        resetFieldOnHide: false
+      },
+      wrappers: [
+        { name: "equipment-item-browser-wrapper", component: FormlyEquipmentItemBrowserWrapperComponent },
+        { name: "default-wrapper", component: FormlyWrapperComponent },
+        { name: "card-wrapper", component: FormlyCardWrapperComponent }
+      ]
+    }),
     ServiceWorkerModule.register("ngsw-worker.js", {
       enabled: environment.production,
       registrationStrategy: "registerWhenStable:30000"
@@ -154,11 +181,6 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
       },
       isolate: false
     }),
-
-    // This app.
-    AppRoutingModule,
-    SharedModule.forRoot(),
-    SearchModule
   ],
   providers: [
     CookieService,
@@ -182,7 +204,13 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     },
     { provide: CLIENT_IP, useValue: "" } // provide a fallback value for CLIENT_IP
   ],
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    BetaBannerComponent,
+    BreadcrumbComponent,
+    HeaderComponent,
+    FooterComponent
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

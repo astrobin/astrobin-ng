@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
-import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ImageService } from "@core/services/image/image.service";
 import { DeleteImageRevision, DeleteOriginalImage, MarkImageAsFinal } from "@app/store/actions/image.actions";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
-import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 
 interface RevisionDataInterface {
   active: boolean;

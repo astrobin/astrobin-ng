@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
-import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
-import { ImageService } from "@shared/services/image/image.service";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ImageService } from "@core/services/image/image.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 import { TranslateService } from "@ngx-translate/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 
 
 enum SharingMode {

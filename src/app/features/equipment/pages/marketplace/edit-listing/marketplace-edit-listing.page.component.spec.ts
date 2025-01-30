@@ -11,7 +11,7 @@ import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/m
 import { ActivatedRoute } from "@angular/router";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 import { MarketplaceListingFormComponent } from "@features/equipment/components/marketplace-listing-form/marketplace-listing-form.component";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 describe("MarketplaceEditListingPageComponent", () => {
   let component: MarketplaceEditListingPageComponent;

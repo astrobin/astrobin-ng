@@ -5,7 +5,7 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 describe("ExplorerFiltersComponent", () => {
   let component: ExplorerFiltersComponent;

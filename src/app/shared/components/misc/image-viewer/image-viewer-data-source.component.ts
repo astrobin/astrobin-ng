@@ -1,19 +1,19 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { DataSource, ImageInterface, RemoteSource } from "@shared/interfaces/image.interface";
-import { ImageService } from "@shared/services/image/image.service";
+import { DataSource, ImageInterface, RemoteSource } from "@core/interfaces/image.interface";
+import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
-import { SearchService } from "@features/search/services/search.service";
+import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { LoadRemoteSourceAffiliates } from "@app/store/actions/remote-source-affiliates.actions";
 import { selectRemoteSourceAffiliates } from "@app/store/selectors/app/remote-source-affiliates.selectors";
 import { filter, takeUntil } from "rxjs/operators";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
-import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
+import { DeviceService } from "@core/services/device.service";
+import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
 
 @Component({
   selector: "astrobin-image-viewer-data-source",

@@ -6,7 +6,7 @@ import { MainState } from "@app/store/state";
 import { Location } from "@angular/common";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { RouterService } from "@shared/services/router.service";
+import { RouterService } from "@core/services/router.service";
 
 export enum MarketplaceNavPage {
   ACTIVE_LISTINGS,

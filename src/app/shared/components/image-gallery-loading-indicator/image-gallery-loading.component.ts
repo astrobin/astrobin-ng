@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, O
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
-import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
 
 @Component({
   selector: "astrobin-image-gallery-loading",

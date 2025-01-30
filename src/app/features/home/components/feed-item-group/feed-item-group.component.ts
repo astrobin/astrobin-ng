@@ -3,7 +3,7 @@ import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-feed-item-group",

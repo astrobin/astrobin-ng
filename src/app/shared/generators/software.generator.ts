@@ -1,4 +1,4 @@
-import { SoftwareInterface } from "@shared/interfaces/software.interface";
+import { SoftwareInterface } from "@core/interfaces/software.interface";
 
 export class SoftwareGenerator {
   static software(): SoftwareInterface {

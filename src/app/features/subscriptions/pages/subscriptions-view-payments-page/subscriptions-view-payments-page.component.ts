@@ -3,8 +3,8 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { TitleService } from "@shared/services/title/title.service";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { TitleService } from "@core/services/title/title.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({

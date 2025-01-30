@@ -2,7 +2,7 @@ import { Component, HostBinding, Inject, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformServer } from "@angular/common";
 import { TranslateService } from "@ngx-translate/core";
 

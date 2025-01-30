@@ -3,10 +3,10 @@ import { LoadCamera } from "@app/store/actions/camera.actions";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { CameraInterface } from "@shared/interfaces/camera.interface";
-import { GearService } from "@shared/services/gear/gear.service";
+import { CameraInterface } from "@core/interfaces/camera.interface";
+import { GearService } from "@core/services/gear/gear.service";
 import { Observable } from "rxjs";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-camera",

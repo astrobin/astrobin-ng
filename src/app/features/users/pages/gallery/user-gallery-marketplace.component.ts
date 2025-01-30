@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";

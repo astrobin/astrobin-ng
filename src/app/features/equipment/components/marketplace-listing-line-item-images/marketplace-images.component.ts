@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { IAlbum, Lightbox } from "ngx-lightbox";
 import { TranslateService } from "@ngx-translate/core";
 

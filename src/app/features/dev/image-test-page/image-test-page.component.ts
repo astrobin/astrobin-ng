@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-image-test-page",

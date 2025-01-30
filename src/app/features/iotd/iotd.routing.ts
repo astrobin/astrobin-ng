@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
 import { ReviewQueueComponent } from "@features/iotd/pages/review-queue/review-queue.component";
 import { SubmissionQueueComponent } from "@features/iotd/pages/submission-queue/submission-queue.component";
-import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
-import { GroupGuardService } from "@shared/services/guards/group-guard.service";
+import { AuthGuardService } from "@core/services/guards/auth-guard.service";
+import { GroupGuardService } from "@core/services/guards/group-guard.service";
 import { JudgementQueueComponent } from "@features/iotd/pages/judgement-queue/judgement-queue.component";
 
 export const iotdRoutes: Routes = [

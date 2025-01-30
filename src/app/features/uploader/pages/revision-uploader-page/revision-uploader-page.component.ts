@@ -10,17 +10,17 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
-import { ImageInterface } from "@shared/interfaces/image.interface";
-import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { TitleService } from "@shared/services/title/title.service";
-import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { ImageInterface } from "@core/interfaces/image.interface";
+import { ThumbnailGroupApiService } from "@core/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { TitleService } from "@core/services/title/title.service";
+import { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { UploadState, UploadxService } from "ngx-uploadx";
 import { Observable } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
-import { SubscriptionName } from "@shared/types/subscription-name.type";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { SubscriptionName } from "@core/types/subscription-name.type";
+import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { Actions } from "@ngrx/effects";
 
 @Component({

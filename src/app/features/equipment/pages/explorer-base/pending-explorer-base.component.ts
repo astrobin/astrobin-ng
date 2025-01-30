@@ -4,10 +4,10 @@ import { MainState } from "@app/store/state";
 import { Actions } from "@ngrx/effects";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
-import { EquipmentItemService } from "@shared/services/equipment-item.service";
-import { DeviceService } from "@shared/services/device.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { DeviceService } from "@core/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 
 export enum PendingType {

@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-cards",

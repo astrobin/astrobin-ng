@@ -5,7 +5,7 @@ import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 describe("BrandEditorComponent", () => {
   let component: BrandEditorFormComponent;

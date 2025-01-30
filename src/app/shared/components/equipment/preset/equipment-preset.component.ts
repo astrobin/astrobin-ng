@@ -3,10 +3,10 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { LoadingService } from "@shared/services/loading.service";
-import { EquipmentService } from "@shared/services/equipment.service";
+import { LoadingService } from "@core/services/loading.service";
+import { EquipmentService } from "@core/services/equipment.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 import { selectEquipmentPreset } from "@features/equipment/store/equipment.selectors";
 import { takeUntil } from "rxjs/operators";
 

@@ -8,7 +8,7 @@ import { UserGenerator } from "@shared/generators/user.generator";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { of } from "rxjs";
-import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import { MigrationFlag } from "@core/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { RouterTestingModule } from "@angular/router/testing";
 
 describe("MigrationReviewItemGuardService", () => {

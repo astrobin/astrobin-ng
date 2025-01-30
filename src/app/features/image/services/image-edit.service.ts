@@ -1,12 +1,12 @@
 import { Injectable, TemplateRef } from "@angular/core";
-import { BaseService } from "@shared/services/base.service";
-import { LoadingService } from "@shared/services/loading.service";
+import { BaseService } from "@core/services/base.service";
+import { LoadingService } from "@core/services/loading.service";
 import { FormControl, FormGroup, ValidationErrors } from "@angular/forms";
-import { ImageInterface, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
-import { GroupInterface } from "@shared/interfaces/group.interface";
+import { ImageInterface, SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
-import { LocationInterface } from "@shared/interfaces/location.interface";
+import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
+import { LocationInterface } from "@core/interfaces/location.interface";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { forkJoin, Observable } from "rxjs";
 import { Store } from "@ngrx/store";
@@ -21,13 +21,13 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemBaseInterface, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { DeleteEquipmentPreset, DeleteEquipmentPresetSuccess, EquipmentActionTypes, ItemBrowserClear, ItemBrowserSet, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 export type ImageEditModelInterface = Partial<Omit<ImageInterface,
   | "imagingTelescopes2"

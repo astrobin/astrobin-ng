@@ -2,14 +2,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
 import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
 import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { take } from "rxjs/operators";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { Router } from "@angular/router";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-iotd-tp-archive-item",

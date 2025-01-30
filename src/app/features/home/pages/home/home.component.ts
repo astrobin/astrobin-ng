@@ -3,15 +3,15 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { filter, pairwise, take, takeUntil } from "rxjs/operators";
-import { ImageService } from "@shared/services/image/image.service";
-import { ImageViewerService } from "@shared/services/image-viewer.service";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 
 @Component({
   selector: "astrobin-home",

@@ -4,7 +4,7 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 

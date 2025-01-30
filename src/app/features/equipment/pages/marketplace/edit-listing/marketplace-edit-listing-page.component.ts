@@ -3,10 +3,10 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
-import { TitleService } from "@shared/services/title/title.service";
+import { TitleService } from "@core/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import {
@@ -15,7 +15,7 @@ import {
   UpdateMarketplaceListingSuccess
 } from "@features/equipment/store/equipment.actions";
 import { map, take } from "rxjs/operators";
-import { EquipmentMarketplaceService } from "@shared/services/equipment-marketplace.service";
+import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",

@@ -7,18 +7,18 @@ import { ClearJudgementQueue, LoadFutureIods, LoadJudgementQueue } from "@featur
 import { selectFutureIotds, selectJudgementQueue } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
-import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { TitleService } from "@shared/services/title/title.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TitleService } from "@core/services/title/title.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { forkJoin, Observable } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
 import { TimeagoClock, TimeagoFormatter, TimeagoIntl, TimeagoPipe } from "ngx-timeago";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { filter, takeUntil, tap } from "rxjs/operators";
 
 @Component({

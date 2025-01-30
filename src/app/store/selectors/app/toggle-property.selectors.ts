@@ -1,7 +1,7 @@
 import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { createSelector } from "@ngrx/store";
-import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 
 export const selectToggleProperties = createSelector(
   selectApp,

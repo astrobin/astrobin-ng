@@ -8,7 +8,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { SearchBaseEquipmentFilterComponent } from "@features/search/components/filters/search-base-equipment-filter/search-base-equipment-filter.component";
 import { Actions } from "@ngrx/effects";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { SearchFilterCategory } from "@features/search/interfaces/search-filter-component.interface";
+import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 

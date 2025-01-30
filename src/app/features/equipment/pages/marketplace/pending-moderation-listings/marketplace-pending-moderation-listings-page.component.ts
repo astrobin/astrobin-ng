@@ -6,7 +6,7 @@ import {
 } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 
 @Component({
   selector: "astrobin-marketplace-pending-moderation-listings-page",

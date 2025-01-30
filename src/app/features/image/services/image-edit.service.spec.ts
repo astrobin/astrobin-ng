@@ -5,7 +5,7 @@ import { MockBuilder } from "ng-mocks";
 import { ImageModule } from "@features/image/image.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
-import { SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
+import { SolarSystemSubjectType, SubjectType } from "@core/interfaces/image.interface";
 
 describe("ImageEditService", () => {
   let service: ImageEditService;

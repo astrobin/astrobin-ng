@@ -3,8 +3,8 @@
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { Action } from "@ngrx/store";
-import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
-import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
 
 export interface InitializeAppSuccessInterface {
   language: string;

@@ -1,7 +1,7 @@
 import { Directive, ElementRef, Inject, Input, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
 import { auditTime, fromEvent, merge, Subscription } from "rxjs";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Directive({
   selector: "[astrobinSticky]"

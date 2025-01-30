@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { CookieService } from "ngx-cookie";
 import { isPlatformBrowser } from "@angular/common";
-import { ImageGalleryLayout } from "@shared/enums/image-gallery-layout.enum";
+import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
 
 @Component({
   selector: "astrobin-user-gallery-buttons",

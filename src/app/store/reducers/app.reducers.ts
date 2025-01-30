@@ -1,19 +1,19 @@
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
-import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
-import { CameraInterface } from "@shared/interfaces/camera.interface";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
-import { FINAL_REVISION_LABEL, ImageInterface, ORIGINAL_REVISION_LABEL } from "@shared/interfaces/image.interface";
-import { SolutionInterface } from "@shared/interfaces/solution.interface";
-import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
-import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
-import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
-import { GroupInterface } from "@shared/interfaces/group.interface";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { BackendConfigInterface } from "@core/interfaces/backend-config.interface";
+import { CameraInterface } from "@core/interfaces/camera.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
+import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ORIGINAL_REVISION_LABEL } from "@core/interfaces/image.interface";
+import { SolutionInterface } from "@core/interfaces/solution.interface";
+import { SubscriptionInterface } from "@core/interfaces/subscription.interface";
+import { TelescopeInterface } from "@core/interfaces/telescope.interface";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 
 
 export interface AppState {

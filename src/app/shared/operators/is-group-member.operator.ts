@@ -1,5 +1,5 @@
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { GroupInterface } from "@shared/interfaces/group.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
+import { GroupInterface } from "@core/interfaces/group.interface";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 

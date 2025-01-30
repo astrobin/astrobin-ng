@@ -1,7 +1,7 @@
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { select, Store } from "@ngrx/store";
 import { finalize, Observable, of, timer } from "rxjs";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { catchError, filter, map, mergeMap, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { MainState } from "@app/store/state";
 

@@ -1,7 +1,7 @@
 import { Directive, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { UtilsService, ViewportCheckOptions } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { UtilsService, ViewportCheckOptions } from "@core/services/utils/utils.service";
 import { fromEvent, merge, Subject, Subscription } from "rxjs";
 import { auditTime, takeUntil } from "rxjs/operators";
 

@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
+import { DeviceService } from "@core/services/device.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -14,9 +14,9 @@ import { map, take, takeUntil } from "rxjs/operators";
 import { DeleteCollection, DeleteCollectionFailure, UpdateCollection, UpdateCollectionFailure } from "@app/store/actions/collection.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: "astrobin-user-gallery-collection-menu",

@@ -2,25 +2,25 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, E
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { ApproveNestedComment, ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedComment, DeleteNestedComment, UpdateNestedComment, UpdateNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { RouterService } from "@shared/services/router.service";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { RouterService } from "@core/services/router.service";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { CreateTogglePropertySuccess, DeleteTogglePropertySuccess } from "@app/store/actions/toggle-property.actions";
-import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
-import { UserService } from "@shared/services/user.service";
+import { UserService } from "@core/services/user.service";
 
 @Component({
   selector: "astrobin-nested-comment",

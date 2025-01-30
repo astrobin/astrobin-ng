@@ -5,10 +5,10 @@ import { Location } from "@angular/common";
 import { Observable, Subscriber } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { MainState } from "@app/store/state";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { AuthActionTypes, LoadUser, LoadUserProfile, LoadUserProfileSuccess, LoadUserSuccess } from "@features/account/store/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 
 export const UserResolver: ResolveFn<{ user: UserInterface, userProfile: UserProfileInterface } | null> = (
   route: ActivatedRouteSnapshot,

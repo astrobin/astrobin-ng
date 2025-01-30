@@ -5,8 +5,8 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
-import { SearchService } from "@features/search/services/search.service";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { SearchService } from "@core/services/search.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 describe("SearchBarComponent", () => {
   let component: SearchBarComponent;

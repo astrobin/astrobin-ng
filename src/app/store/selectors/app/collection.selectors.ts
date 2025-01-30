@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store";
-import { CollectionInterface } from "@shared/interfaces/collection.interface";
-import { GetCollectionsParamsInterface } from "@shared/services/api/classic/collections/collection-api.service";
+import { CollectionInterface } from "@core/interfaces/collection.interface";
+import { GetCollectionsParamsInterface } from "@core/services/api/classic/collections/collection-api.service";
 import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 

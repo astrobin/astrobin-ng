@@ -1,22 +1,22 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { select, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from "rxjs/operators";
-import { UserProfileInterface, UserProfileStatsInterface } from "@shared/interfaces/user-profile.interface";
-import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { UserProfileInterface, UserProfileStatsInterface } from "@core/interfaces/user-profile.interface";
+import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceService } from "@shared/services/device.service";
-import { CommonApiService, FollowersInterface, FollowingInterface, MutualFollowersInterface } from "@shared/services/api/classic/common/common-api.service";
-import { SearchService } from "@features/search/services/search.service";
+import { DeviceService } from "@core/services/device.service";
+import { CommonApiService, FollowersInterface, FollowingInterface, MutualFollowersInterface } from "@core/services/api/classic/common/common-api.service";
+import { SearchService } from "@core/services/search.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { Subject } from "rxjs";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/account/store/auth.actions";
 
 @Component({

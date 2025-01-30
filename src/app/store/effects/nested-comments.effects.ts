@@ -3,17 +3,17 @@ import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { MainState } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { fromEvent, Observable, of } from "rxjs";
 import { catchError, debounceTime, filter, first, map, mapTo, mergeMap, take, tap } from "rxjs/operators";
 import { ApproveNestedCommentFailure, ApproveNestedCommentSuccess, CreateNestedCommentFailure, CreateNestedCommentSuccess, DeleteNestedCommentFailure, DeleteNestedCommentSuccess, LoadNestedCommentFailure, LoadNestedCommentsSuccess, LoadNestedCommentSuccess, UpdateNestedComment, UpdateNestedCommentFailure, UpdateNestedCommentSuccess } from "@app/store/actions/nested-comments.actions";
-import { NestedCommentsApiService } from "@shared/services/api/classic/nested-comments/nested-comments-api.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import { WindowRefService } from "@shared/services/window-ref.service";
+import { NestedCommentsApiService } from "@core/services/api/classic/nested-comments/nested-comments-api.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
+import { WindowRefService } from "@core/services/window-ref.service";
 import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
 import { isPlatformBrowser } from "@angular/common";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 
 @Injectable()

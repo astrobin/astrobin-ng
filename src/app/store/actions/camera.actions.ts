@@ -2,7 +2,7 @@
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { CameraInterface } from "@shared/interfaces/camera.interface";
+import { CameraInterface } from "@core/interfaces/camera.interface";
 
 export class LoadCamera implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_CAMERA;

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { LoadingService } from "@shared/services/loading.service";
+import { LoadingService } from "@core/services/loading.service";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
-import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserInterface } from "@core/interfaces/user.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -13,7 +13,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { AssignItem, AssignItemSuccess, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 
