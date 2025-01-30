@@ -8,6 +8,7 @@ import { initialMainState } from "@app/store/state";
 import { ContentTypeGenerator } from "@shared/generators/content-type.generator";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
+import { ActivatedRoute } from "@angular/router";
 
 describe("NestedCommentsComponent", () => {
   let component: NestedCommentsComponent;
@@ -16,7 +17,15 @@ describe("NestedCommentsComponent", () => {
   beforeEach(async () => {
     await MockBuilder(NestedCommentsComponent, AppModule).provide([
       provideMockStore({ initialState: initialMainState }),
-      provideMockActions(() => new ReplaySubject<any>())
+      provideMockActions(() => new ReplaySubject<any>()),
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: {
+            fragment: ""
+          }
+        }
+      }
     ]);
   });
 

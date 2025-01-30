@@ -74,14 +74,14 @@
       </div>
 
       <div class="actions">
-        <a
+        <button
           *ngIf="!comment.pendingModeration && !comment.deleted"
-          [href]="link"
-          class="link"
+          (click)="onShareClicked($event)"
+          class="btn btn-link btn-sm btn-no-block text-muted"
         >
-          <fa-icon icon="link"></fa-icon>
-          {{ "Link" | translate }}
-        </a>
+          <fa-icon icon="share"></fa-icon>
+          {{ "Share" | translate }}
+        </button>
 
         <button
           (click)="onEditClicked($event)"

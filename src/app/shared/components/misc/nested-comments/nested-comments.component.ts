@@ -19,6 +19,7 @@ import { UserInterface } from "@core/interfaces/user.interface";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { fadeInOut } from "@shared/animations";
+import { ActivatedRoute } from "@angular/router";
 
 export enum NestedCommentsAutoStartTopLevelStrategy {
   ALWAYS = "ALWAYS",
@@ -84,7 +85,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   topLevelFormHeight: number;
 
   @Output()
-    // eslint-disable-next-line @angular-eslint/no-output-native
+  // eslint-disable-next-line @angular-eslint/no-output-native
   close = new EventEmitter<void>();
 
   comments$: Observable<NestedCommentInterface[]>;
@@ -98,7 +99,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
 
   // This the comment type of NestedComment, used to like comments.
   protected commentContentType: ContentTypeInterface;
-
+  protected forceVisible = false;
   protected isInViewport = false;
 
   constructor(
@@ -108,13 +109,17 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     public readonly translateService: TranslateService,
     public readonly routerService: RouterService,
     public readonly utilsService: UtilsService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    const fragment = this.activatedRoute.snapshot.fragment;
+    this.forceVisible = !!fragment && !!fragment.match(/^c\d+$/);
 
     this._initCommentContentType();
   }

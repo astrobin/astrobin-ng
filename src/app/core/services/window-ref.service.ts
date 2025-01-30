@@ -185,6 +185,20 @@ export class WindowRefService extends BaseService {
     }
   }
 
+  async copyToClipboard(text: string) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (err) {
+      console.warn('Copy failed:', err);
+      return false;
+    }
+  }
+
   private _pushOrReplaceState(method: "pushState" | "replaceState", data: any, url: string) {
     if (isPlatformServer(this.platformId)) {
       return;

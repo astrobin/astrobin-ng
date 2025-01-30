@@ -21,6 +21,8 @@ import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
 import { UserService } from "@core/services/user.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { DeviceService } from "@core/services/device.service";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -86,7 +88,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly userService: UserService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
@@ -273,6 +277,37 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     });
   }
 
+  async onShareClicked(event: Event) {
+    event.preventDefault();
+
+    const isNativeShareSupported = typeof navigator !== 'undefined' && !!navigator.share;
+    const isMobile = this.deviceService.isMobile();
+
+    if (isNativeShareSupported && isMobile) {
+      try {
+        navigator.share({
+          title: this.link,
+          url: this.link,
+        }).catch(error => {
+          console.error('Sharing failed:', error);
+        })
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Sharing failed:', error);
+        }
+      }
+    } else {
+      const result: boolean = await this.windowRefService.copyToClipboard(this.link);
+
+      if (!result) {
+        this.popNotificationsService.error(this.translateService.instant("Failed to copy link to clipboard."));
+        return;
+      }
+
+      this.popNotificationsService.info(this.translateService.instant("Link copied to clipboard."))
+    }
+  }
+
   private _initAvatarUrl(): void {
     this.avatarUrl = UtilsService.convertDefaultAvatar(this.comment.authorAvatar);
   }
@@ -370,7 +405,11 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     }
 
     if (this.highlighted) {
-      this.windowRefService.scrollToElement(`#c${this.comment.id}`);
+      this.windowRefService.scrollToElement(`#c${this.comment.id}`, {
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest"
+      });
     }
   }
 

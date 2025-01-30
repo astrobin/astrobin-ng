@@ -9,6 +9,7 @@ import { auditTime, takeUntil } from "rxjs/operators";
   selector: "[astrobinScrollVisibility]"
 })
 export class ScrollVisibilityDirective implements OnInit, OnDestroy {
+  @Input() forceVisible = false;
   @Input() viewportOptions: ViewportCheckOptions = {};
   @Input() disconnectOnVisible = true;
 
@@ -91,7 +92,7 @@ export class ScrollVisibilityDirective implements OnInit, OnDestroy {
 
   private _checkVisibility() {
     const wasVisible = this._isVisible;
-    this._isVisible = this.utilsService.isNearOrInViewport(
+    this._isVisible = this.forceVisible || this.utilsService.isNearOrInViewport(
       this.elementRef.nativeElement,
       this.viewportOptions
     );
