@@ -1,6 +1,6 @@
 <button
   (click)="onClick($event)"
-  [class.loading]="(showLoadingIndicator && (loading || !initialized || toggled === undefined)) || toggling"
+  [class.loading]="(showLoadingIndicator && (loading || !initialized || toggled === undefined))"
   [class.toggled]="!!toggled"
   [class.toggling]="toggling"
   [class]="btnClass"
@@ -23,8 +23,17 @@
       *ngIf="showIcon"
       [icon]="togglePropertyIcon"
     ></fa-icon>
-    <span *ngIf="showLabel">{{ unsetTogglePropertyLabel }}</span>
-    <span *ngIf="count !== undefined && count !== null" class="count">{{ count | numberSuffix }}</span>
+    <span
+      *ngIf="showLabel"
+    >
+      {{ unsetTogglePropertyLabel }}
+    </span>
+    <span
+      *ngIf="count !== undefined && count !== null"
+      class="count"
+    >
+      {{ count | numberSuffix }}
+    </span>
   </ng-container>
 
   <ng-container *ngIf="!toggled">
@@ -32,7 +41,16 @@
       *ngIf="showIcon"
       [icon]="togglePropertyIcon"
     ></fa-icon>
-    <span *ngIf="showLabel">{{ setTogglePropertyLabel }}</span>
-    <span *ngIf="count !== undefined && count !== null" class="count">{{ count | numberSuffix }}</span>
+    <span
+      *ngIf="showLabel"
+    >
+      {{ setTogglePropertyLabel }}
+    </span>
+    <span
+      *ngIf="count !== undefined && count !== null"
+      class="count"
+    >
+      {{ count | numberSuffix }}
+    </span>
   </ng-container>
 </button>

@@ -69,7 +69,10 @@
   <link href="/assets/favicon.ico" rel="icon" type="image/x-icon" />
   <link href="/default.css?v=__BUILD_VERSION__" id="astrobin-theme" rel="stylesheet" type="text/css" />
 
-  <link href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/github-dark.min.css" rel="stylesheet">
+  <link rel="stylesheet"
+        href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/github-dark.min.css"
+        media="print"
+        onload="this.media='all'" />
 
   <link rel="manifest" href="/manifest.json">
 </head>
