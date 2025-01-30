@@ -76,6 +76,10 @@ export class ForumPreviewComponent extends BaseComponentDirective implements OnI
     return `${this.classicRoutesService.FORUM_HOME}topic/${topicId}`;
   }
 
+  protected topicTrackByFn(index: number, item: TopicInterface): number {
+    return item.id;
+  }
+
   private _loadTopics(): void {
     if (this.loading) {
       return;

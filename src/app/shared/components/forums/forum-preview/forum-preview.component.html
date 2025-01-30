@@ -22,7 +22,7 @@
       class="table mb-0"
     >
       <tbody>
-      <tr *ngFor="let topic of topics">
+      <tr *ngFor="let topic of topics; trackBy: topicTrackByFn">
         <td class="read-status">
           <fa-icon
             *ngIf="topic.read"
