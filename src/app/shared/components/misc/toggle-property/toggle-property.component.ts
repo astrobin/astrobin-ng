@@ -18,7 +18,7 @@ import { Observable, Subscription } from "rxjs";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { ViewportInitService } from "@core/services/viewport-initialization.service";
 import { TogglePropertyBatchService } from "@core/services/toggle-property-batch.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-toggle-property",
