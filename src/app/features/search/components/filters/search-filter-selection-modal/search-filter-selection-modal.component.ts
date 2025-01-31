@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbActiveModal, NgbModal, NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { SearchService } from "@core/services/search.service";
 import { merge, Observable, of, Subject } from "rxjs";
@@ -12,6 +12,7 @@ import { UserSubscriptionService } from "@core/services/user-subscription/user-s
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { DeviceService } from "@core/services/device.service";
 
 type FilterType = {
   category: SearchFilterCategory;
@@ -37,6 +38,7 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
   filterContainer: ViewContainerRef;
 
   public search: (text$: Observable<string>) => Observable<FilterType[]>;
+
   protected readonly SearchFilterCategory = SearchFilterCategory;
 
   constructor(
@@ -47,7 +49,8 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
     public readonly searchFilterService: SearchFilterService,
     public readonly utilsService: UtilsService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
   }

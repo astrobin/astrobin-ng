@@ -25,7 +25,7 @@
         [ngModelOptions]="{standalone: true}"
         [(ngModel)]="model.text.value"
         [placeholder]="placeholder"
-        autofocus
+        disableAutoFocusOnTouchDevices
         autoSizeInput
         [extraWidth]="16"
         [includePlaceholder]="true"
@@ -143,7 +143,7 @@
       <fa-icon
         *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
         (click)="onFilterSelectionClicked($event)"
-        [ngbTooltip]="'Filters' | translate"
+        [ngbTooltip]="isTouchDevice ? '' : ('Filters' | translate)"
         icon="sliders"
         container="body"
       >
@@ -163,7 +163,7 @@
           id="ordering-button"
         >
           <fa-icon
-            [ngbTooltip]="'Sort results' | translate"
+            [ngbTooltip]="isTouchDevice ? '' : ('Sort results' | translate)"
             icon="sort"
             container="body"
           ></fa-icon>
@@ -326,7 +326,7 @@
         >
           <fa-icon
             [icon]="getSearchTypeIcon(model.searchType)"
-            [ngbTooltip]="'Search area' | translate"
+            [ngbTooltip]="isTouchDevice ? '' : ('Search area' | translate)"
             container="body"
           ></fa-icon>
         </button>
@@ -390,7 +390,7 @@
         <fa-icon
           *ngIf="currentUserWrapper.user && (model.searchType === SearchType.IMAGE || model.searchType === undefined)"
           (click)="onLoadSaveClicked($event)"
-          [ngbTooltip]="'Load or save search' | translate"
+          [ngbTooltip]="isTouchDevice ? '' : ('Load or save search' | translate)"
           icon="database"
           container="body"
         ></fa-icon>

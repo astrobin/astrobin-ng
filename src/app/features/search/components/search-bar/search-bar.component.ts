@@ -167,12 +167,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   }
 
   ngAfterViewInit(): void {
-    if (this.isBrowser) {
-      if (this.deviceService.isTouchEnabled()) {
-        this.searchInputEl.nativeElement.blur();
-      } else {
-        this.searchInputEl.nativeElement.focus();
-      }
+    if (this.isBrowser && !this.isTouchDevice) {
+        this.searchInputEl?.nativeElement.focus();
     }
   }
 
@@ -312,6 +308,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     }
 
     this.searchInputNgModel.control.markAsPristine();
+
+    if (this.isTouchDevice) {
+      this.searchInputEl?.nativeElement.blur();
+    }
 
     this._updateModelWithMagicAutoComplete(this.model.text.value).subscribe(() => {
       this.resetAutoCompleteItems();
@@ -551,7 +551,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       }
 
       this.resetAutoCompleteItems();
-      this.searchInputEl.nativeElement.focus();
+
+      if (!this.isTouchDevice) {
+        this.searchInputEl.nativeElement.focus();
+      }
     });
   }
 
@@ -585,8 +588,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.filterComponentRefs.forEach(componentRef => componentRef.destroy());
     this.filterComponentRefs = [];
 
-    if (this.searchInputEl) {
-      this.searchInputEl.nativeElement.focus();
+    if (!this.isTouchDevice) {
+      this.searchInputEl?.nativeElement.focus();
     }
   }
 
@@ -601,7 +604,11 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       delete this.model[key];
 
       componentRef.destroy();
-      this.searchInputEl.nativeElement.focus();
+
+      if (!this.isTouchDevice) {
+        this.searchInputEl?.nativeElement.focus();
+      }
+
       this.onSearch(this.model, false);
     });
   }

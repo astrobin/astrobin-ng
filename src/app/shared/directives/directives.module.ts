@@ -9,6 +9,7 @@ import { StickyDirective } from "@shared/directives/sticky-active.directive";
 import { DynamicRouterLinkDirective } from "@shared/directives/dynamic-router-link.directive";
 import { ScrollVisibilityDirective } from "@shared/directives/scroll-visibility.directive";
 import { CollapseAnimationDirective } from "@shared/directives/collapsed-animation.directive";
+import { DisableAutoFocusOnTouchDevicesDirective } from "./disable-auto-focus-on-touch-devices.directive";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { CollapseAnimationDirective } from "@shared/directives/collapsed-animati
     StickyDirective,
     DynamicRouterLinkDirective,
     ScrollVisibilityDirective,
-    CollapseAnimationDirective
+    CollapseAnimationDirective,
+    DisableAutoFocusOnTouchDevicesDirective
   ],
   exports: [
     EventPreventDefaultDirective,
@@ -31,7 +33,8 @@ import { CollapseAnimationDirective } from "@shared/directives/collapsed-animati
     StickyDirective,
     DynamicRouterLinkDirective,
     ScrollVisibilityDirective,
-    CollapseAnimationDirective
+    CollapseAnimationDirective,
+    DisableAutoFocusOnTouchDevicesDirective
   ],
   imports: [CommonModule]
 })
