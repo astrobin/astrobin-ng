@@ -313,6 +313,8 @@ export class ImageViewerComponent
       return;
     }
 
+    this.popNotificationsService.clear();
+
     if (this.isLightBoxOpen) {
       return;
     }

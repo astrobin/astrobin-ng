@@ -23,6 +23,7 @@ import { VersionCheckService } from "@core/services/version-check.service";
 import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { GetUnreadCount } from "@features/notifications/store/notifications.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -55,7 +56,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     public readonly titleService: TitleService,
     public readonly versionCheckService: VersionCheckService,
     public readonly jsonApiService: JsonApiService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
 
@@ -105,10 +107,11 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
           return;
         }
 
+        this.popNotificationsService.clear();
+
         this.loadingService.setLoading(false);
         this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
         this.windowRefService.changeBodyOverflow("auto");
-        this.offcanvasService.dismiss();
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);
         this.setMetaTags(event.urlAfterRedirects);

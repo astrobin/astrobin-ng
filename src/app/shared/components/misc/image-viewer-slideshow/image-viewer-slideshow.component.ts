@@ -341,11 +341,13 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
     this.setImage(event.current, FINAL_REVISION_LABEL).subscribe({
       next: () => {
-        this._navigationInProgress = false;
       },
       error: () => {
-        this._navigationInProgress = false;
         this.closeSlideshow.emit(false);
+      },
+      complete: () => {
+        this._navigationInProgress = false;
+        this.popNotificationsService.clear();
       }
     });
   }
