@@ -22,6 +22,8 @@ import { AcceptCollaboratorRequest, DenyCollaboratorRequest, ForceCheckTogglePro
 import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { UserService } from "@core/services/user.service";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 
 @Component({
@@ -250,9 +252,20 @@ export class ImageViewerPhotographersComponent extends ImageViewerSectionBaseCom
     public readonly renderer: Renderer2,
     public readonly utilsService: UtilsService,
     public readonly userService: UserService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {

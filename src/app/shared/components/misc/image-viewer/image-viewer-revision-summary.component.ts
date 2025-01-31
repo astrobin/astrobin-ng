@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from "@angular/core";
 import { ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@core/services/search.service";
@@ -7,15 +7,25 @@ import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageViewerService } from "@core/services/image-viewer.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 @Component({
   selector: "astrobin-image-viewer-revision-summary",
   template: `
-    <div class="metadata-header">
+    <div
+      (click)="toggleCollapse()"
+      [class.collapsed]="collapsed"
+      class="metadata-header supports-collapsing"
+    >
       {{ "Revision" | translate }} {{ revision.label }}
     </div>
 
-    <div class="metadata-section">
+    <div
+      [collapsed]="collapsed"
+      collapseAnimation
+      class="metadata-section"
+    >
       <div class="metadata-item">
         <div class="metadata-label">
           <div class="revision-summary">
@@ -50,7 +60,19 @@ export class ImageViewerRevisionSummaryComponent extends ImageViewerSectionBaseC
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
     public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
   }
 }

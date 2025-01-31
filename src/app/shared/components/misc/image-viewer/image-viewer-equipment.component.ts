@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
@@ -24,6 +24,8 @@ import { ImageService } from "@core/services/image/image.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentService } from "@core/services/equipment.service";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 type LegacyEquipmentItem =
   | LegacyTelescopeInterface
@@ -37,11 +39,31 @@ type LegacyEquipmentItem =
   selector: "astrobin-image-viewer-equipment",
   template: `
     <ng-container *ngIf="hasEquipment">
-      <div *ngIf="hasGuidingEquipment" class="metadata-header">{{ "Imaging equipment" | translate }}</div>
-      <div *ngIf="!hasGuidingEquipment" class="metadata-header">{{ "Equipment" | translate }}</div>
-      <div class="metadata-section w-100">
+      <div
+        *ngIf="hasGuidingEquipment"
+        (click)="toggleCollapse()"
+        [class.collapsed]="collapsed"
+        class="metadata-header supports-collapsing"
+      >
+        {{ "Imaging equipment" | translate }}
+      </div>
+
+      <div
+        *ngIf="!hasGuidingEquipment"
+        (click)="toggleCollapse()"
+        [class.collapsed]="collapsed"
+        class="metadata-header supports-collapsing"
+      >
+        {{ "Equipment" | translate }}
+      </div>
+
+      <div
+        [collapsed]="collapsed"
+        collapseAnimation
+        class="metadata-section w-100"
+      >
         <div class="equipment-section">
-          <table class="table table-sm table-mobile-support">
+          <table class="table table-sm table-mobile-support mb-0">
             <tbody>
             <ng-container *ngFor="let attr of imagingAttributes">
               <tr *ngIf="this[attr].length > 0">
@@ -65,8 +87,21 @@ type LegacyEquipmentItem =
         </div>
       </div>
 
-      <div *ngIf="hasGuidingEquipment" class="metadata-header">{{ "Guiding equipment" | translate }}</div>
-      <div *ngIf="hasGuidingEquipment" class="metadata-section w-100">
+      <div
+        *ngIf="hasGuidingEquipment"
+        (click)="toggleCollapse()"
+        [class.collapsed]="collapsed"
+        class="metadata-header supports-collapsing"
+      >
+        {{ "Guiding equipment" | translate }}
+      </div>
+
+      <div
+        *ngIf="hasGuidingEquipment"
+        [collapsed]="collapsed"
+        collapseAnimation
+        class="metadata-section w-100"
+      >
         <div class="equipment-section">
           <ng-container *ngFor="let attr of guidingAttributes">
             <ng-container
@@ -191,9 +226,21 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
     public readonly windowRefService: WindowRefService,
     public readonly imageService: ImageService,
     public readonly translateService: TranslateService,
-    public readonly equipmentService: EquipmentService
+    public readonly equipmentService: EquipmentService,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {

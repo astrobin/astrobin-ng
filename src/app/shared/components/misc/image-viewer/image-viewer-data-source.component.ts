@@ -14,6 +14,8 @@ import { filter, takeUntil } from "rxjs/operators";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@core/services/device.service";
 import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 @Component({
   selector: "astrobin-image-viewer-data-source",
@@ -138,9 +140,20 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
     public readonly windowRefService: WindowRefService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {

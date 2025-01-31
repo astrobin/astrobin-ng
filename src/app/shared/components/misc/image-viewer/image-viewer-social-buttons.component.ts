@@ -23,6 +23,8 @@ import { ImageApiService, UsersWhoLikeOrBookmarkInterface } from "@core/services
 import { ForceCheckTogglePropertyAutoLoad } from "@app/store/actions/image.actions";
 import { LoadingService } from "@core/services/loading.service";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 
 @Component({
@@ -327,9 +329,20 @@ export class ImageViewerSocialButtonsComponent extends ImageViewerSectionBaseCom
     public readonly utilsService: UtilsService,
     public readonly imageApiService: ImageApiService,
     public readonly loadingService: LoadingService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
 
     this.store$.pipe(
       select(selectContentType, { appLabel: "astrobin", model: "image" }),

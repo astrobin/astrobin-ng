@@ -8,6 +8,7 @@ import { ScrollToggleDirective } from "@shared/directives/scroll-toggle.directiv
 import { StickyDirective } from "@shared/directives/sticky-active.directive";
 import { DynamicRouterLinkDirective } from "@shared/directives/dynamic-router-link.directive";
 import { ScrollVisibilityDirective } from "@shared/directives/scroll-visibility.directive";
+import { CollapseAnimationDirective } from "@shared/directives/collapsed-animation.directive";
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ScrollVisibilityDirective } from "@shared/directives/scroll-visibility.
     ScrollToggleDirective,
     StickyDirective,
     DynamicRouterLinkDirective,
-    ScrollVisibilityDirective
+    ScrollVisibilityDirective,
+    CollapseAnimationDirective
   ],
   exports: [
     EventPreventDefaultDirective,
@@ -28,7 +30,8 @@ import { ScrollVisibilityDirective } from "@shared/directives/scroll-visibility.
     ScrollToggleDirective,
     StickyDirective,
     DynamicRouterLinkDirective,
-    ScrollVisibilityDirective
+    ScrollVisibilityDirective,
+    CollapseAnimationDirective
   ],
   imports: [CommonModule]
 })

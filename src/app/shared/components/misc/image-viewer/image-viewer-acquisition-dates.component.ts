@@ -5,24 +5,26 @@ import { DateService } from "@core/services/date.service";
   selector: "astrobin-image-viewer-acquisition-dates",
   template: `
     <ng-container *ngIf="contiguousRanges?.length > 1 && dates?.length > 2; else singleRangeTemplate">
-      <div
+      <span
         [ngbTooltip]="fullDatesTemplate"
         container="body"
         data-toggle="tooltip"
         triggers="hover click"
       >
         {{ dateRange }}
-      </div>
+      </span>
     </ng-container>
 
     <ng-template #singleRangeTemplate>
-      {{ dateRange }}
+      <span>
+        {{ dateRange }}
+      </span>
     </ng-template>
 
     <ng-template #fullDatesTemplate>
-      <div *ngFor="let date_ of distinctDates">
+      <span *ngFor="let date_ of distinctDates">
         {{ date_ ? (date_ | date: "mediumDate") : "n/a" | translate }}
-      </div>
+      </span>
     </ng-template>
   `
 })

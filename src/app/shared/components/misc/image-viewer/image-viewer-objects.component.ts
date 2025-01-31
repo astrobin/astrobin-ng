@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@core/services/search.service";
@@ -11,12 +11,27 @@ import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@core/services/device.service";
 import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 @Component({
   selector: "astrobin-image-viewer-objects",
   template: `
-    <div *ngIf="objectsInField?.length > 0" class="metadata-header">{{ "Objects" | translate }}</div>
-    <div *ngIf="objectsInField?.length > 0" class="metadata-section bg-transparent">
+    <div
+      *ngIf="objectsInField?.length > 0"
+      (click)="toggleCollapse()"
+      [class.collapsed]="collapsed"
+      class="metadata-header supports-collapsing"
+    >
+      {{ "Objects" | translate }}
+    </div>
+
+    <div
+      *ngIf="objectsInField?.length > 0"
+      [collapsed]="collapsed"
+      collapseAnimation
+      class="metadata-section bg-transparent"
+    >
       <div class="metadata-item objects-in-field">
         <div class="metadata-label">
           <a
@@ -76,9 +91,21 @@ export class ImageViewerObjectsComponent extends ImageViewerSectionBaseComponent
     public readonly solutionService: SolutionService,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {

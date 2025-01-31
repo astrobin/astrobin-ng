@@ -14,6 +14,8 @@ import { AstroUtilsService } from "@core/services/astro-utils/astro-utils.servic
 import { SearchCoordsFilterComponent } from "@features/search/components/filters/search-coords-filter/search-coords-filter.component";
 import { TranslateService } from "@ngx-translate/core";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 @Component({
   selector: "astrobin-image-viewer-astrometry",
@@ -207,9 +209,20 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     public readonly windowRefService: WindowRefService,
     public readonly astroUtilsService: AstroUtilsService,
     public readonly translateService: TranslateService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {

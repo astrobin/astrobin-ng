@@ -260,19 +260,19 @@
 </ng-template>
 
 <ng-template #moreFromThisUserTemplate>
-  <div class="metadata-header mb-2">{{ "More from this user" | translate }}</div>
+  <div class="metadata-header mb-3">{{ "More from this user" | translate }}</div>
   <astrobin-image-search
     [model]="{ userId: image.user, ordering: '-likes', pageSize: 25 }"
     [loadMoreOnScroll]="false"
     [showRetailers]="false"
     [showMarketplaceItems]="false"
     [showStaticOverlay]="false"
-    class="more-from-this-photographer"
+    class="more-from-this-photographer mb-5"
   ></astrobin-image-search>
 </ng-template>
 
 <ng-template #similarToThisTemplate>
-  <div class="metadata-header mb-2">
+  <div class="metadata-header mb-3">
     <ng-container
       *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null; else relatedImagesLabelTemplate"
     >
@@ -403,7 +403,7 @@
 </ng-template>
 
 <ng-template #nestedCommentsTemplate>
-  <div class="image-viewer-comments-header metadata-header mt-5 mb-3">{{ "Comments" | translate }}</div>
+  <div class="image-viewer-comments-header metadata-header mb-3">{{ "Comments" | translate }}</div>
 
   <ng-container *ngIf="image && !image.allowComments">
     <p class="px-2">
@@ -419,6 +419,7 @@
         [contentType]="imageContentType"
         [objectId]="image.pk"
         [showCloseButton]="false"
+        class="d-block mb-5"
       ></astrobin-nested-comments>
     </ng-container>
   </ng-container>

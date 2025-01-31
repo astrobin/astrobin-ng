@@ -23,6 +23,7 @@ $globalLoadingIndicatorHeight: 6px;
   ::ng-deep {
     .metadata-striped {
       padding: .75rem 0;
+      margin-bottom: 2rem;
 
       & > * {
         display: block;
@@ -76,13 +77,14 @@ $globalLoadingIndicatorHeight: 6px;
 
     .metadata-header {
       @include darkest-background-texture;
-      margin: 2.5rem 0 0.25rem;
+      margin: 0 0 0.25rem;
       padding: .5rem .75rem;
       color: var(--lightestGrey);
       border-radius: var(--bs-border-radius);
 
       + .metadata-section {
         padding-top: .5rem;
+        margin-bottom: 2rem;
       }
     }
 
@@ -177,6 +179,34 @@ $globalLoadingIndicatorHeight: 6px;
             color: var(--gold);
             text-decoration-color: var(--gold);
           }
+        }
+      }
+    }
+
+    .metadata-header.supports-collapsing {
+      padding-right: 2rem;
+      position: relative;
+      cursor: pointer;
+
+      &:after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        width: 0;
+        height: 0;
+        border-top: 0.25rem solid var(--lighterGrey);
+        border-right: 0.25rem solid transparent;
+        border-bottom: 0.25rem solid transparent;
+        border-left: 0.25rem solid transparent;
+        transform: translateY(-50%) rotate(180deg);
+        transform-origin: 50% calc(50% - .25rem / 4);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      &.collapsed {
+        &:after {
+          transform: translateY(calc(-50% + .25rem / 2));
         }
       }
     }
