@@ -50,8 +50,7 @@
     }
 
     tbody {
-      // 2 to skip the spacer row
-      tr:nth-child(2) {
+      tr:first-child {
         td:first-child {
           border-top-left-radius: var(--bs-border-radius);
         }

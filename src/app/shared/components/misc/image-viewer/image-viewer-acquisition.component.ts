@@ -99,14 +99,26 @@ interface DetailedFilterSummary {
       <div
         (click)="toggleCollapse()"
         [class.collapsed]="collapsed"
-        class="metadata-header supports-collapsing d-md-none d-flex justify-content-between"
+        class="metadata-header supports-collapsing d-flex justify-content-between"
       >
         <span>{{ "Integration" | translate }}</span>
+
         <span
           *ngIf="deepSkyIntegrationTime"
           [innerHTML]="deepSkyIntegrationTime"
           class="no-wrap"
         ></span>
+
+        <span *ngIf="!deepSkyIntegrationTime">
+          {{ "n/d" | translate }}
+        </span>
+
+        <astrobin-image-viewer-acquisition-dates *ngIf="dates?.length" [dates]="dates"></astrobin-image-viewer-acquisition-dates>
+
+        <span *ngIf="dates?.length && image.averageMoonIllumination !== null" class="no-wrap">
+          <fa-icon icon="moon"></fa-icon>
+          {{ image.averageMoonIllumination | percent }}
+        </span>
       </div>
 
       <div
@@ -115,44 +127,7 @@ interface DetailedFilterSummary {
         class="metadata-section"
       >
         <table class="table d-none d-md-table m-0">
-          <thead>
-          <tr>
-            <th>
-              {{ "Integration" | translate }}
-            </th>
-
-            <th>&nbsp;</th>
-
-            <th>
-            <span
-              *ngIf="deepSkyIntegrationTime"
-              [innerHTML]="deepSkyIntegrationTime"
-              class="no-wrap"
-            ></span>
-
-              <span *ngIf="!deepSkyIntegrationTime">
-              {{ "n/d" | translate }}
-            </span>
-            </th>
-
-            <th *ngIf="dates?.length">
-              <astrobin-image-viewer-acquisition-dates [dates]="dates"></astrobin-image-viewer-acquisition-dates>
-            </th>
-
-            <th *ngIf="dates?.length">
-            <span *ngIf="image.averageMoonIllumination !== null" class="no-wrap">
-              <fa-icon icon="moon"></fa-icon>
-              {{ image.averageMoonIllumination | percent }}
-            </span>
-            </th>
-          </tr>
-          </thead>
-
           <tbody>
-          <tr class="spacer-row">
-            <td colspan="4"></td>
-          </tr>
-
           <tr *ngFor="let filterSummary of filterSummaries">
             <td [attr.data-label]="'Filter type' | translate">
               <div class="metadata-item">
@@ -288,7 +263,7 @@ interface DetailedFilterSummary {
         class="no-wrap"
       >
         <span class="number">{{ filterSummary.summary.number }}</span>
-        <span class="symbol px-1">&times;</span>
+        <span class="symbol">&times;</span>
         <span class="duration">{{ filterSummary.summary.duration }}</span>
         <span class="symbol">&Prime;</span>
       </span>
