@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2024-07-19 18:17+0200\n"
+"PO-Revision-Date: 2025-01-31 12:49+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.28 20240611-1"
+"X-Loco-Api-Version: 1.0.29 20241018-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -2011,7 +2011,7 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr ""
@@ -2800,7 +2800,7 @@ msgstr ""
 
 #: loco:61b24fc53b045a33935504c9
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another."
 msgstr ""
@@ -5420,8 +5420,8 @@ msgstr "<strong>{{0}}</strong> immagini del venditore"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.ts
 #: loco:66506df312b5e1267f07ed89
-msgid "<strong>{{0}}</strong> total images on AstroBin"
-msgstr "<strong>{{0}}</strong> immagini totali su AstroBin"
+msgid "<strong>{{0}}</strong> total images on AstorBin"
+msgstr "<strong>{{0}}</strong> immagini totali su AstorBin"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
 #: loco:66506df312b5e1267f07ed8a
@@ -5475,7 +5475,7 @@ msgstr "Aggiungi un altro articolo a questa inserzione"
 #: Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:66506df312b5e1267f07ed92
 msgid "Add this image to the selected collections."
-msgstr "Aggiungi questa immagine alle cartelle selezionate."
+msgstr "Aggiungi questa immagine alle raccolte selezionate."
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 #: loco:66506df312b5e1267f07ed93
@@ -5680,7 +5680,7 @@ msgstr "Scegli l'immagine"
 #: Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:66506df312b5e1267f07edaa
 msgid "Collections"
-msgstr "Cartelle"
+msgstr "Raccolte"
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component.ts
 #: loco:66506df312b5e1267f07edab
@@ -5983,7 +5983,7 @@ msgstr "Ulteriori informazioni sui Gruppi AstroBin."
 #: Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:66506df312b5e1267f07ede1
 msgid "Learn more about collections."
-msgstr "Scopri di più sulle cartelle."
+msgstr "Scopri di più sulle raccolte."
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 #: loco:66506df312b5e1267f07ede2
@@ -6560,7 +6560,7 @@ msgstr ""
 #: loco:66506df312b5e1267f07ee4b
 msgid "This field is disabled because you haven't created any collections yet."
 msgstr ""
-"Questo campo è disabilitato perché non hai ancora creato alcuna cartella."
+"Questo campo è disabilitato perché non hai ancora creato alcuna raccolta."
 
 #: Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing/marketplace-listing.component.html
 #: loco:66506df312b5e1267f07ee4c
@@ -7424,3 +7424,3116 @@ msgstr "Il costo della spedizione verrà concordato"
 #: loco:669a9163bac3f67aba0b85de
 msgid "To be agreed"
 msgstr "Da concordare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/nested-comments/nested-comment.component.html
+#: loco:679bfb73bbc95aa3e508ecc2
+msgid "(deleted)"
+msgstr "(cancellato)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508ecc3
+msgid "(view mutual)"
+msgstr "(vedi reciproci)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508ecc4
+msgid "({{ 0 }} in staging)"
+msgstr "({{ 0 }} nell'area di lavoro)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ecc5
+msgid ""
+", AstroBin cannot know if you want to see images OF the Orion constellations,"
+" images IN the Orion constellation, images of the Orion nebula, images taken "
+"with an Orion telescope, or images with somebody whose username is Orion. By "
+"using filters, you can specify what you are looking for exactly."
+msgstr ""
+", AstroBin non può sapere se vuoi vedere immagini DELLE costellazioni di "
+"Orione, immagini NELLA costellazione di Orione, immagini della nebulosa di "
+"Orione, immagini scattate con un telescopio di marca Orion o immagini con "
+"qualcuno il cui nome utente è Orion. Utilizzando i filtri, puoi specificare "
+"esattamente cosa stai cercando."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-thumbnail.component.ts
+#: loco:679bfb73bbc95aa3e508ecc6
+msgid "1 collection"
+msgstr "1 raccolta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-thumbnail.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-thumbnail.component.ts
+#: loco:679bfb73bbc95aa3e508ecc7
+msgid "1 image"
+msgstr "1 immagine"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component.ts
+#: loco:679bfb73bbc95aa3e508ecc8
+msgid "1 result"
+msgstr "1 risultato"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.ts
+#: loco:679bfb73bbc95aa3e508ecc9
+msgid "<strong>{{0}}</strong> total images on AstroBin"
+msgstr "<strong>{{0}</strong> immagini totali su AstroBin"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collections.component.ts
+#: loco:679bfb73bbc95aa3e508ecca
+msgid "A collection by {{ 0 }}"
+msgstr "Una raccolta di {{ 0 }}"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-page.component.ts
+#: loco:679bfb73bbc95aa3e508eccb
+msgid "A gallery on AstroBin."
+msgstr "Una galleria su AstroBin."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-navigation.component.ts
+#: loco:679bfb73bbc95aa3e508eccc
+msgid "About"
+msgstr "A proposito di"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-trash.component.ts
+#: loco:679bfb73bbc95aa3e508eccd
+msgid "Access to this feature is part of the AstroBin Ultimate plan."
+msgstr ""
+"L'accesso a questa funzionalità è incluso nell'abbonamento AstroBin Ultimate."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
+#: loco:679bfb73bbc95aa3e508ecce
+msgid "Acquisition attributes"
+msgstr "Attributi di acquisizione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508eccf
+msgid "Acquisition date"
+msgstr "Data di acquisizione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ecd0
+msgid "Acquisition details"
+msgstr "Dettagli di acquisizione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ecd1
+msgid "Acquisition months"
+msgstr "Mesi di acquisizione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508ecd2
+msgid "Acquisition sessions"
+msgstr "Sessioni di acquisizione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed/feed.component.ts
+#: loco:679bfb73bbc95aa3e508ecd3
+msgid "Activity feed"
+msgstr "Feed attività"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-equipment.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ecd4
+msgid "Add setup"
+msgstr "Aggiungi stup"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ecd5
+msgid "Add/Remove images"
+msgstr "Aggiungi/Rimuovi immagini"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ecd6
+msgid "Add/remove images"
+msgstr "Aggiungere/rimuovi immagini"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-objects.component.ts
+#: loco:679bfb73bbc95aa3e508ecd7
+msgid "Additional objects in this field"
+msgstr "Ulteriori oggetti in questo campo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ecd8
+msgid "Advanced annotations"
+msgstr "Annotazioni avanzate"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ecd9
+msgid "Advanced settings"
+msgstr "Impostazioni avanzate"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:679bfb73bbc95aa3e508ecda
+msgid "All rights reserved"
+msgstr "Tutti i diritti riservati"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ecdb
+msgid "All words"
+msgstr "Tutte le parole"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-settings-fields.service.ts
+#: loco:679bfb73bbc95aa3e508ecdc
+msgid "Allow image adjustments widget"
+msgstr "Consenti widget di regolazione immagine"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/collection.effects.ts
+#: loco:679bfb73bbc95aa3e508ecdd
+msgid "An error occurred while adding the image to the collection."
+msgstr ""
+"Si è verificato un errore durante l'aggiunta dell'immagine alla raccolta."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.ts
+#: loco:679bfb73bbc95aa3e508ecde
+msgid "An error occurred while deleting the search."
+msgstr "Si è verificato un errore durante l'eliminazione della ricerca."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component.ts
+#: loco:679bfb73bbc95aa3e508ecdf
+msgid ""
+"An error occurred while loading the image. Probably the photographer deleted "
+"it."
+msgstr ""
+"Si è verificato un errore durante il caricamento dell'immagine. "
+"Probabilmente il fotografo l'ha eliminata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/collection.effects.ts
+#: loco:679bfb73bbc95aa3e508ece0
+msgid "An error occurred while removing the image from the collection."
+msgstr ""
+"Si è verificato un errore durante la rimozione dell'immagine dalla raccolta."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.ts
+#: loco:679bfb73bbc95aa3e508ece1
+msgid "An error occurred while saving the search."
+msgstr "Si è verificato un errore durante il salvataggio della ricerca."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/collection.effects.ts
+#: loco:679bfb73bbc95aa3e508ece2
+msgid "An error occurred while setting the cover image."
+msgstr ""
+"Si è verificato un errore durante l'impostazione dell'immagine di copertina."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/toggle-property/toggle-property.component.ts
+#: loco:679bfb73bbc95aa3e508ece3
+msgid "An error occurred while trying to perform this operation."
+msgstr ""
+"Si è verificato un errore durante il tentativo di eseguire questa operazione."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-trash.component.ts
+#: loco:679bfb73bbc95aa3e508ece4
+msgid "An error occurred."
+msgstr "Si è verificato un errore."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:679bfb73bbc95aa3e508ece5
+msgid "An image on AstroBin."
+msgstr "Un'immagine su AstroBin."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ece6
+msgid "Animated images (GIF) only"
+msgstr "Solo immagini animate (GIF)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ece7
+msgid "Annotations"
+msgstr "Annotazioni"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ece8
+msgid "Any word"
+msgstr "Qualsiasi parola"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.html
+#: loco:679bfb73bbc95aa3e508ece9
+msgid "Apply one of your saved setups, or fill in the form below manually."
+msgstr ""
+"Applica uno dei setup salvati oppure compila manualmente il modulo "
+"sottostante."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508ecea
+msgid "April"
+msgstr "Aprile"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508eceb
+msgid "Are you sure you want to delete this collection?"
+msgstr "Vuoi davvero eliminare questa raccolta?"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-image-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ecec
+msgid "Are you sure you want to remove this image from the collection?"
+msgstr "Vuoi davvero rimuovere questa immagine dalla raccolta?"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508eced
+msgid "Asteroids"
+msgstr "Asteroidi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ecee
+msgid "AstroBin is plate-solving this image with Astrometry.net..."
+msgstr ""
+"AstroBin sta facendo la riduzione astrometrica di questa immagine con "
+"Astrometry.net..."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ecef
+msgid "AstroBin is plate-solving this image with PixInsight..."
+msgstr ""
+"AstroBin sta facendo la riduzione astrometrica di questa immagine con "
+"PixInsight..."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ecf0
+msgid "AstroBin is preparing to plate-solve this image..."
+msgstr "AstroBin si sta preparando a risolvere questa immagine..."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:679bfb73bbc95aa3e508ecf1
+msgid ""
+"AstroBin noticed that you have not saved this equipment configuration as a "
+"setup. Would you like to save it now, so you can easily load it in the "
+"future?"
+msgstr ""
+"AstroBin ha notato che non hai salvato questa strumentazione come setup. "
+"Vuoi salvarla ora, così potrai caricarla facilmente in futuro?"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ecf2
+msgid ""
+"AstroBin recommends using specific filters to find equipment items, "
+"celestial subjects, and users. You can add filters by selecting the"
+msgstr ""
+"AstroBin consiglia di usare filtri specifici per trovare elementi di "
+"equipaggiamento, soggetti celesti e utenti. Puoi aggiungere filtri "
+"selezionando"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/version-check.service.ts
+#: loco:679bfb73bbc95aa3e508ecf3
+msgid ""
+"AstroBin requires an update to continue working correctly. If you're editing "
+"a form or making changes, please save your work before clicking here to "
+"update."
+msgstr ""
+"AstroBin richiede un aggiornamento per continuare a funzionare correttamente."
+" Se stai modificando un modulo o stai apportando delle modifiche, salva il "
+"tuo lavoro prima di cliccare qui per aggiornare."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ecf4
+msgid ""
+"AstroBin's search is powerful and flexible. We recommend that you use "
+"specific filters, instead of doing a free text search, if possible."
+msgstr ""
+"La ricerca di AstroBin è potente e flessibile. Ti consigliamo di usare "
+"filtri specifici, invece di fare una ricerca di testo libero, se possibile."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ecf5
+msgid "Astrometry"
+msgstr "Astrometria"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ecf6
+msgid "Astrometry details"
+msgstr "Dettagli di astrometria"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ecf7
+msgid "Astrometry.net publicly visible"
+msgstr "Astrometry.net visibile pubblicamente"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508ecf8
+msgid "August"
+msgstr "Agosto"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
+#: loco:679bfb73bbc95aa3e508ecf9
+msgid "Aurora"
+msgstr "Aurora"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508ecfa
+msgid "Avg. moon"
+msgstr "Fase lunare media"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ecfb
+msgid "Barnard"
+msgstr "Barnard"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ecfc
+msgid "Basic settings"
+msgstr "Impostazioni di base"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ecfd
+msgid "Blind"
+msgstr "Cieca"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508ecfe
+msgid "Bookmark your own image"
+msgstr "Aggiungi ai segnalibri la tua immagine"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ecff
+msgid "Bortle scale"
+msgstr "Scala di Bortle"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-adjustments-editor.component.ts
+#: loco:679bfb73bbc95aa3e508ed00
+msgid "Brightness"
+msgstr "Luminosità"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-data-source.component.ts
+#: loco:679bfb73bbc95aa3e508ed01
+msgid "Browse images"
+msgstr "Sfoglia le immagini"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed02
+msgid ""
+"By submitting your image for consideration, you agree to the IOTD/TP {{ 0 }}"
+"rules{{ 1 }} and {{ 2 }}guidelines.{{ 3 }}"
+msgstr ""
+"Inviando la tua immagine per la valutazione, accetti le {{ 0 }}regole{{ 1 }} "
+"e le {{ 2 }}linee guida{{ 3 }} dell'IOTD/TP."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed03
+msgid "CGPN"
+msgstr "CGPN"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed04
+msgid "Camera pixel size"
+msgstr "Dimensione pixel della fotocamera"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed05
+msgid "Camera types"
+msgstr "Tipi di fotocamera"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/telescope.service.ts
+#: loco:679bfb73bbc95aa3e508ed06
+msgid "Catadioptric: Rowe-Ackermann Schmidt astrograph"
+msgstr "Catadiottrico: astrografo Schmidt Rowe-Ackermann"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed07
+msgid "Catalogs"
+msgstr "Cataloghi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ed08
+msgid "Celestial hemisphere"
+msgstr "Emisfero celeste"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed09
+msgid "Center Dec"
+msgstr "Centro Dec"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed0a
+msgid "Center RA"
+msgstr "Centro RA"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508ed0b
+msgid "Change header image"
+msgstr "Cambia l'immagine dell'intestazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed0c
+msgid "Classic view"
+msgstr "Visualizzazione classica"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ed0d
+msgid "Clear filters"
+msgstr "Cancella filtri"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed0e
+msgid "Clear or color"
+msgstr "Trasparente o colorato"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ed0f
+msgid "Click again to close lens."
+msgstr "Fare nuovamente clic per chiudere la lente."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ed10
+msgid "Click again to zoom out."
+msgstr "Fare nuovamente clic per ridurre lo zoom."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header-change-image.component.ts
+#: loco:679bfb73bbc95aa3e508ed11
+msgid "Click on an image to set a new header for your gallery."
+msgstr ""
+"Fai clic su un'immagine per impostare una nuova intestazione per la tua "
+"galleria."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-add-remove-images.component.ts
+#: loco:679bfb73bbc95aa3e508ed12
+msgid "Click on images to add/remove them."
+msgstr "Fare clic sulle immagini per aggiungerle/rimuoverle."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ed13
+msgid "Click to view full size in a new tab."
+msgstr "Clicca per visualizzare le dimensioni originali in una nuova scheda."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ed14
+msgid "Click to zoom, scroll to magnify."
+msgstr "Clicca e scrolla per ingrandire."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed15
+msgid "Collection deleted"
+msgstr "Raccolta eliminata"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed16
+msgid "Collection updated"
+msgstr "Raccolta aggiornata"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-navigation.component.ts
+#: loco:679bfb73bbc95aa3e508ed17
+msgid "Collections in separate tab"
+msgstr "Raccolte in scheda separata"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed18
+msgid "Color or mono cameras"
+msgstr "Fotocamere a colori o monocromatiche"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ed19
+msgid "Constellation"
+msgstr "Costellazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed1a
+msgid "Constellation borders"
+msgstr "Confini delle costellazioni"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed1b
+msgid "Constellation lines"
+msgstr "Linee di costellazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-adjustments-editor.component.ts
+#: loco:679bfb73bbc95aa3e508ed1c
+msgid "Contrast"
+msgstr "Contrasto"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ed1d
+msgid "Coordinates"
+msgstr "Coordinate"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ed1e
+msgid "Copy coordinates"
+msgstr "Copia le coordinate"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ed1f
+msgid ""
+"Copy the coordinates in decimal or sexagesimal format to your clipboard."
+msgstr "Copia le coordinate in formato decimale o sessagesimale negli appunti."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:679bfb73bbc95aa3e508ed20
+msgid "Copy this"
+msgstr "Copia questo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/collection.effects.ts
+#: loco:679bfb73bbc95aa3e508ed21
+msgid "Cover image set successfully."
+msgstr "Immagine di copertina impostata correttamente."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-navigation.component.ts
+#: loco:679bfb73bbc95aa3e508ed22
+msgid "Create collection"
+msgstr "Crea una raccolta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed23
+msgid "Create nested collection"
+msgstr "Crea una raccolta nidificata"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-title.component.ts
+#: loco:679bfb73bbc95aa3e508ed24
+msgid "Currently in the IOTD/TP queues"
+msgstr "Attualmente nelle code IOTD/TP"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed25
+msgid "Date acquired"
+msgstr "Data di acquisizione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
+#: loco:679bfb73bbc95aa3e508ed26
+msgid "Date and time"
+msgstr "Data e ora"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed27
+msgid "Date published"
+msgstr "Data di pubblicazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508ed28
+msgid "Dates"
+msgstr "Date"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508ed29
+msgid "December"
+msgstr "Dicembre"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ed2a
+msgid "Decimal"
+msgstr "Decimale"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-coords-filter/search-coords-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ed2b
+msgid "Declination"
+msgstr "Declinazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ed2c
+msgid "Declination (ascending)"
+msgstr "Declinazione (ascendente)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ed2d
+msgid "Declination (descending)"
+msgstr "Declinazione (discendente)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ed2e
+msgid "Deep sky"
+msgstr "Cielo profondo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed2f
+msgid "Delete collection"
+msgstr "Elimina raccolta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component.html
+#: loco:679bfb73bbc95aa3e508ed30
+msgid "Delete current file"
+msgstr "Elimina il file corrente"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-trash.component.ts
+#: loco:679bfb73bbc95aa3e508ed31
+msgid "Deleted"
+msgstr "Eliminato"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-photographers.component.ts
+#: loco:679bfb73bbc95aa3e508ed32
+msgid "Deny"
+msgstr "Respingere"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uploader-page/uploader-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed33
+msgid "Different take on existing data? Consider uploading as a revision."
+msgstr ""
+"Un'interpretazione diversa dei dati esistenti? Considera il caricamento come "
+"una revisione."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ed34
+msgid "Distinct awarded users"
+msgstr "Utenti premiati distinti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ed35
+msgid "Distribution of astrophotographers"
+msgstr "Distribuzione degli astrofotografi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ed36
+msgid "Distribution of data sources"
+msgstr "Distribuzione delle fonti di dati"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ed37
+msgid "Distribution of subject types"
+msgstr "Distribuzione dei tipi di soggetti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-wip-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ed38
+msgid "Don't notify followers about this image."
+msgstr "Non inviare notifiche ai tuoi follower su questa immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed39
+msgid "Download"
+msgstr "Scaricare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-revisions.component.ts
+#: loco:679bfb73bbc95aa3e508ed3a
+msgid "Download original"
+msgstr "Scarica l'originale"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed3b
+msgid "Downsample factor"
+msgstr "Fattore di downsampling"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508ed3c
+msgid "Early dismissal"
+msgstr "Uscita anticipata"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed3d
+msgid "Ecliptic"
+msgstr "Eclittica"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed3e
+msgid "Edit collection"
+msgstr "Modifica raccolta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed3f
+msgid "Edit plate-solving settings"
+msgstr "Modifica le impostazioni di riduzione astrometrica"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed40
+msgid "Edit project"
+msgstr "Modifica progetto"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed41
+msgid "Edit revision"
+msgstr "Modifica revisione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset/equipment-preset.component.html
+#: loco:679bfb73bbc95aa3e508ed42
+msgid "Edit setup"
+msgstr "Modifica setup"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-trash.component.ts
+#: loco:679bfb73bbc95aa3e508ed43
+msgid "Empty trash"
+msgstr "Svuota il cestino"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uploader-page/uploader-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed44
+msgid "Enjoy your unlimited uploads!"
+msgstr "Goditi i tuoi caricamenti illimitati!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed45
+msgid "Equatorial grid"
+msgstr "Griglia equatoriale"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
+#: loco:679bfb73bbc95aa3e508ed46
+msgid "Equipment attributes"
+msgstr "Attributi della strumentazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component.ts
+#: loco:679bfb73bbc95aa3e508ed47
+msgid ""
+"Equipment setup created! You will be able to load it later on a different "
+"image."
+msgstr "Setup creato! Potrai caricarlo più tardi su un'immagine diversa."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset-editor/equipment-preset-editor.component.ts
+#: loco:679bfb73bbc95aa3e508ed48
+msgid "Equipment setup created."
+msgstr "Setup creato."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/equipment.service.ts
+#: loco:679bfb73bbc95aa3e508ed49
+msgid "Equipment setup deleted."
+msgstr "Setup eliminato."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit.service.ts
+#: loco:679bfb73bbc95aa3e508ed4a
+msgid "Equipment setup loaded."
+msgstr "Setup caricato."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset-editor/equipment-preset-editor.component.ts
+#: loco:679bfb73bbc95aa3e508ed4b
+msgid "Equipment setup updated."
+msgstr "Setup aggiornato."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header-change-image.component.ts
+#: loco:679bfb73bbc95aa3e508ed4c
+msgid "Error changing header image!"
+msgstr "Errore durante la modifica dell'immagine dell'intestazione!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed4d
+msgid "Error deleting collection"
+msgstr "Errore durante l'eliminazione della raccolta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed4e
+msgid "Error updating collection"
+msgstr "Errore durante l'aggiornamento della raccolta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508ed4f
+msgid ""
+"Every image is assigned to {{ 0 }} of available Submitters. In the event "
+"that at least 80% of them don't view the image before its time in the "
+"IOTD/TP process expires, it's assigned to the other {{ 0 }} of Submitters "
+"and the process begins anew."
+msgstr ""
+"Ogni immagine viene assegnata a {{ 0 }} dei Propositori disponibili. Nel "
+"caso in cui almeno l'80% di loro non visualizzi l'immagine prima della "
+"scadenza del tempo nel processo IOTD/TP, viene assegnata agli altri {{ 0 }} "
+"Propositori e il processo ricomincia."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed50
+msgid "External link"
+msgstr "Link esterno"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed51
+msgid "External link to FITS"
+msgstr "Link esterno al FITS"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed52
+msgid "Extra large"
+msgstr "Molto grande"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/nested-comments/nested-comment.component.ts
+#: loco:679bfb73bbc95aa3e508ed53
+msgid "Failed to copy link to clipboard."
+msgstr "Impossibile copiare il collegamento negli appunti."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset-editor/equipment-preset-editor.component.ts
+#: loco:679bfb73bbc95aa3e508ed54
+msgid "Failed to create equipment setup."
+msgstr "Impossibile creare il setup."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset-editor/equipment-preset-editor.component.ts
+#: loco:679bfb73bbc95aa3e508ed55
+msgid "Failed to update equipment setup."
+msgstr "Impossibile aggiornare il setup."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed56
+msgid "Featured in groups"
+msgstr "In evidenza nei gruppi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508ed57
+msgid "February"
+msgstr "Febbraio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ed58
+msgid "Field radius"
+msgstr "Raggio del campo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ed59
+msgid "Field radius (large first)"
+msgstr "Raggio del campo (grandi prima)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ed5a
+msgid "Field radius (small first)"
+msgstr "Raggio del campo (piccoli prima)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
+#: loco:679bfb73bbc95aa3e508ed5b
+msgid "File attributes"
+msgstr "Attributi del file"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed5c
+msgid "File size"
+msgstr "Dimensione del file"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508ed5d
+msgid "Filter type"
+msgstr "Tipo di filtro"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed5e
+msgid "Filter types"
+msgstr "Tipi di filtro"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ed5f
+msgid "Find images in the same area"
+msgstr "Trova immagini nella stessa zona"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ed60
+msgid "Focal reducers"
+msgstr "Riduttori focali"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ed61
+msgid "Focus reducer"
+msgstr "Riduttore focale"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-photographers.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-photographers.component.ts
+#: loco:679bfb73bbc95aa3e508ed62
+msgid "Follow user"
+msgstr "Segui utente"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508ed63
+msgid "Following"
+msgstr "Seguiti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed64
+msgid "Font size"
+msgstr "Dimensione carattere"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:679bfb73bbc95aa3e508ed65
+msgid "Forums (BBCode)"
+msgstr "Forum (BBCode)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed66
+msgid "Free text"
+msgstr "Testo libero"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed67
+msgid "Full size"
+msgstr "Dimensione piena"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed68
+msgid "GCVS stars"
+msgstr "Stelle GCVS"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ed69
+msgid "Galactic coordinates"
+msgstr "Coordinate galattiche"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed6a
+msgid "Galactic equator"
+msgstr "Equatore galattico"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-navigation.component.ts
+#: loco:679bfb73bbc95aa3e508ed6b
+msgid "Gallery"
+msgstr "Galleria"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
+#: loco:679bfb73bbc95aa3e508ed6c
+msgid "General"
+msgstr "Generale"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed/feed.component.ts
+#: loco:679bfb73bbc95aa3e508ed6d
+msgid "Global feed"
+msgstr "Feed globale"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ed6e
+msgid "Guiding camera"
+msgstr "Fotocamera di guida"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ed6f
+msgid "Guiding equipment"
+msgstr "Strumentazione di guida"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ed70
+msgid "Guiding optics"
+msgstr "Ottica di guida"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset-summary/equipment-preset-summary.component.ts
+#: loco:679bfb73bbc95aa3e508ed71
+msgid "Guiding telescopes"
+msgstr "Telescopi di guida"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed72
+msgid "HD stars"
+msgstr "Stelle HD"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:679bfb73bbc95aa3e508ed73
+msgid "HTML"
+msgstr "HTML"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header-change-image.component.ts
+#: loco:679bfb73bbc95aa3e508ed74
+msgid "Header image changed."
+msgstr "L'immagine dell'intestazione è stata modificata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-image-size-filter/search-image-size-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ed75
+msgid "Height"
+msgstr "Altezza"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component.ts
+#: loco:679bfb73bbc95aa3e508ed76
+msgid ""
+"Here you can save an equipment setup, so you can easily load it later on a "
+"different image <em>(e.g. \"Home observatory\", \"Solar setup\", \"Travel "
+"setup 2022\", etc.)</em>"
+msgstr ""
+"Qui puoi salvare un setup, in modo da poterlo caricare facilmente in seguito "
+"su un'immagine diversa (ad esempio \"Osservatorio domestico\", "
+"\"Configurazione solare\", \"Configurazione di viaggio 2022\", ecc.)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-about.component.ts
+#: loco:679bfb73bbc95aa3e508ed77
+msgid "Hobbies"
+msgstr "Hobby "
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/pages/home/home.component.ts
+#: loco:679bfb73bbc95aa3e508ed78
+msgid "Home of Astrophotography"
+msgstr "Casa dell'Astrofotografia"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/ad-manager/ad-manager.component.ts
+#: loco:679bfb73bbc95aa3e508ed79
+msgid ""
+"However, please let us offer you a good reason to allow ads on AstroBin:"
+msgstr ""
+"Tuttavia, lasciaci fornirti una buona ragione per consentire la pubblicità "
+"su AstroBin:"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ed7a
+msgid "I agree to the IOTD/TP rules and guidelines"
+msgstr "Accetto le regole e le linee guida IOTD/TP"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
+#: loco:679bfb73bbc95aa3e508ed7b
+msgid "IOTD/TP Archive"
+msgstr "Archivio IOTD/TP"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed7c
+msgid "IOTD/TP award"
+msgstr "Premio IOTD/TP"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-title.component.ts
+#: loco:679bfb73bbc95aa3e508ed7d
+msgid "IOTD/TP stats"
+msgstr "Statistiche IOTD/TP"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ed7e
+msgid "IOTD/TP stats (last 365 days)"
+msgstr "Statistiche IOTD/TP (ultimi 365 giorni)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed7f
+msgid ""
+"If checked, SExtractor will be used to extract the necessary information "
+"from the image."
+msgstr ""
+"Se selezionata, verrà utilizzato SExtractor per estrarre le informazioni "
+"necessarie dall'immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed80
+msgid ""
+"If checked, the astrometry.net submission will be publicly visible. If you "
+"leave this unchecked,you won't be able to see the full log of the astrometry."
+"net submission, but the image will stillbe plate-solved and annotated."
+msgstr ""
+"Se selezionato, l'invio ad astrometry.net sarà visibile pubblicamente. Se lo "
+"lasci deselezionato, non sarai in grado di vedere il log completo dell'invio "
+"ad astrometry.net, ma l'immagine sarà comunque ridotta astrometricamente e "
+"annotata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed81
+msgid ""
+"If checked, the plate-solving will be done without the need for you to "
+"provide hinds."
+msgstr ""
+"Se selezionata, la riduzione astrometrica verrà eseguita senza che tu debba "
+"fornire suggerimenti."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/ad-manager/ad-manager.component.ts
+#: loco:679bfb73bbc95aa3e508ed82
+msgid ""
+"If you are on AstroBin Premium or AstroBin Ultimate, you can remove ads in "
+"your settings. If you are not, please consider supporting AstroBin by "
+"subscribing!"
+msgstr ""
+"Se sei su AstroBin Premium o AstroBin Ultimate, puoi rimuovere gli annunci "
+"nelle tue impostazioni. Se non lo sei, ti preghiamo di considerare di "
+"supportare AstroBin iscrivendoti!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed83
+msgid ""
+"If you have a large image, you can downsample it to speed up the plate-"
+"solving process."
+msgstr ""
+"Se si dispone di un'immagine di grandi dimensioni, è possibile ricampionarla "
+"per accelerare il processo di riduzione astrometrica."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/subscription-required-modal/subscription-required-modal.component.html
+#: loco:679bfb73bbc95aa3e508ed84
+msgid ""
+"If you just upgraded and still see this message, please allow a few minutes "
+"for your subscription to take effect."
+msgstr ""
+"Se hai appena effettuato l'aggiornamento e vedi ancora questo messaggio, "
+"attendi qualche minuto affinché l'abbonamento diventi effettivo."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-create.component.ts
+#: loco:679bfb73bbc95aa3e508ed85
+msgid ""
+"If you want to create a nested collection, select the parent collection here."
+msgstr ""
+"Se si desidera creare una raccolta nidificata, selezionare qui la raccolta "
+"genitore."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ed86
+msgid "If you want to perform a free text search, you can press"
+msgstr ""
+"Se si desidera effettuare una ricerca di testo libero, è possibile premere"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508ed87
+msgid "Image adjustments"
+msgstr "Regolazioni dell'immagine"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:679bfb73bbc95aa3e508ed88
+msgid "Image not found. It may have been deleted or you have an invalid link."
+msgstr ""
+"Immagine non trovata. Potrebbe essere stata eliminata o il link non è valido."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-icons/image-icons.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-icons/image-icons.component.ts
+#: loco:679bfb73bbc95aa3e508ed89
+msgid "Image of the Day"
+msgstr "Foto del Giorno"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/iotd-tp-archive-page/iotd-tp-archive-page.component.ts
+#: loco:679bfb73bbc95aa3e508ed8a
+msgid "Image of the day and Top Pick archive"
+msgstr "Archivio Foto del Giorno e Top Pick"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ed8b
+msgid "Image plate-solving failed."
+msgstr "La riduzione astrometrica non è riuscita."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ed8c
+msgid "Image successfully plate-solved."
+msgstr "Immagine ridotta astrometricamente."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ed8d
+msgid "Image too large for the interactive zoom."
+msgstr "Immagine troppo grande per lo zoom interattivo."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset-summary/equipment-preset-summary.component.html
+#: loco:679bfb73bbc95aa3e508ed8e
+msgid "Imaged with this setup"
+msgstr "Fotografato con questo setup"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ed8f
+msgid "Images in the same area"
+msgstr "Immagini nella stessa area"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ed90
+msgid "Imaging equipment"
+msgstr "Strumentazione di acquisizione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset-summary/equipment-preset-summary.component.ts
+#: loco:679bfb73bbc95aa3e508ed91
+msgid "Imaging telescopes or lenses"
+msgstr "Telescopi o lenti di acquisizione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: loco:679bfb73bbc95aa3e508ed92
+msgid "In 1 collection"
+msgstr "In 1 raccolta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: loco:679bfb73bbc95aa3e508ed93
+msgid "In 1 group"
+msgstr "In 1 gruppo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: loco:679bfb73bbc95aa3e508ed94
+msgid "In {{ 0 }} collections"
+msgstr "In {{ 0 }} raccolte"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: loco:679bfb73bbc95aa3e508ed95
+msgid "In {{ 0 }} groups"
+msgstr "In {{ 0 }} gruppi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ed96
+msgid "Info about the AstroBin Search"
+msgstr "Informazioni sulla ricerca AstroBin"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508ed97
+msgid "Integration"
+msgstr "Integrazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ed98
+msgid "Integration time"
+msgstr "Tempo di integrazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-adjustments-editor.component.ts
+#: loco:679bfb73bbc95aa3e508ed99
+msgid "Invalid URL parameters for image adjustments."
+msgstr "Parametri URL non validi per le regolazioni delle immagini."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508ed9a
+msgid "Invalid date"
+msgstr "Data non valida"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+#: loco:679bfb73bbc95aa3e508ed9b
+msgid "Invalid token"
+msgstr "Token non valido"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
+#: loco:679bfb73bbc95aa3e508ed9c
+msgid ""
+"It looks like you are editing text. Are you sure you want to close this "
+"window?"
+msgstr ""
+"Sembra che tu stia modificando del testo. Vuoi davvero chiudere questa "
+"finestra?"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508ed9d
+msgid "January"
+msgstr "Gennaio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-about.component.ts
+#: loco:679bfb73bbc95aa3e508ed9e
+msgid "Job"
+msgstr "Lavoro"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508ed9f
+msgid "July"
+msgstr "Luglio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508eda0
+msgid "June"
+msgstr "Giugno"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508eda1
+msgid "LBN"
+msgstr "LBN"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508eda2
+msgid "LDN"
+msgstr "LDN"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-smart-folders.component.ts
+#: loco:679bfb73bbc95aa3e508eda3
+msgid "Lacking data"
+msgstr "Mancano dati"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508eda4
+msgid "Large layout"
+msgstr "Layout grande"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/forums/forum-preview/forum-preview.component.html
+#: loco:679bfb73bbc95aa3e508eda5
+msgid "Last post by"
+msgstr "Ultimo post di"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/pages/home/home.component.ts
+#: loco:679bfb73bbc95aa3e508eda6
+msgid "Latest from the forums"
+msgstr "Ultime dai forum"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uploader-page/uploader-page.component.ts
+#: loco:679bfb73bbc95aa3e508eda7
+msgid "Learn more about the {{1}}subscription plans{{2}}."
+msgstr "Scopri di più sui {{1}}piani di abbonamento{{2}}."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/equipment.service.ts
+#: loco:679bfb73bbc95aa3e508eda8
+msgid "Lens"
+msgstr "Lente"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508eda9
+msgid "Lens mode"
+msgstr "Modalità lente"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508edaa
+msgid "Licenses"
+msgstr "Licenze"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-images.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-images.component.ts
+#: loco:679bfb73bbc95aa3e508edab
+msgid "Likes"
+msgstr "Mi piace"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508edac
+msgid "Lines"
+msgstr "Linee"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/nested-comments/nested-comment.component.ts
+#: loco:679bfb73bbc95aa3e508edad
+msgid "Link copied to clipboard."
+msgstr "Link copiato negli appunti."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508edae
+msgid "Load or save search"
+msgstr "Carica o salva la ricerca"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.html
+#: loco:679bfb73bbc95aa3e508edaf
+msgid "Load saved search"
+msgstr "Carica la ricerca salvata"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.html
+#: loco:679bfb73bbc95aa3e508edb0
+msgid "Load/Save search"
+msgstr "Carica/Salva ricerca"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image/image.component.html
+#: loco:679bfb73bbc95aa3e508edb1
+msgid "Loading GIF animation..."
+msgstr "Caricamento animazione GIF..."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:679bfb73bbc95aa3e508edb2
+msgid "Lucky imaging (e.g. based on short exposures)"
+msgstr "Lucky imaging (ad esempio basato su esposizioni brevi)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508edb3
+msgid "March"
+msgstr "Marzo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-filter/search-base-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edb4
+msgid "Match type"
+msgstr "Tipo di corrispondenza"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-slider/formly-field-slider.component.html
+#: loco:679bfb73bbc95aa3e508edb5
+msgid "Max"
+msgstr "Max"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-settings-fields.service.ts
+#: loco:679bfb73bbc95aa3e508edb6
+msgid "Max zoom level"
+msgstr "Livello zoom massimo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508edb7
+msgid "Max. magnitude"
+msgstr "Magnitudine massima"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edb8
+msgid "Maximum Bortle scale"
+msgstr "Scala Bortle massima"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508edb9
+msgid "May"
+msgstr "Maggio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508edba
+msgid "Mean SQM"
+msgstr "SQM mediano"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508edbb
+msgid "Medium layout"
+msgstr "Layout medio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508edbc
+msgid "Messier"
+msgstr "Messier"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-slider/formly-field-slider.component.html
+#: loco:679bfb73bbc95aa3e508edbd
+msgid "Min"
+msgstr "Min"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-bortle-scale-filter/search-bortle-scale-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edbe
+msgid "Minimum Bortle scale"
+msgstr "Scala Bortle minima"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508edbf
+msgid "Minimum data"
+msgstr "Data minimi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508edc0
+msgid "Mix of exposure times"
+msgstr "Mix di tempi di esposizione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508edc1
+msgid "Modified cameras only"
+msgstr "Solo fotocamere modificate"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
+#: loco:679bfb73bbc95aa3e508edc2
+msgid "Moon"
+msgstr "Luna"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508edc3
+msgid "Moon illumination"
+msgstr "Illuminazione lunare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508edc4
+msgid "More from this user"
+msgstr "Altro da questo utente"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508edc5
+msgid "Mount max. payload"
+msgstr "Carico utile massimo della montatura"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508edc6
+msgid "Mount weight"
+msgstr ""
+"Peso montatura\n"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508edc7
+msgid "Mouse mode"
+msgstr "Modalità mouse"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508edc8
+msgid "Move to staging area"
+msgstr "Sposta nell'area di lavoro"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508edc9
+msgid "Mutual followers"
+msgstr "Follower reciproci"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508edca
+msgid "My bookmarks"
+msgstr "I miei segnalibri"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508edcb
+msgid "My followed users"
+msgstr "Utenti seguiti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508edcc
+msgid "My images"
+msgstr "Le mie foto"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508edcd
+msgid "My likes"
+msgstr "I miei mi piace"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508edce
+msgid "NGC/IC"
+msgstr "NGC/IC"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508edcf
+msgid "Named stars"
+msgstr "Stelle con nome"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508edd0
+msgid "No changes to save."
+msgstr "Niente da salvare."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508edd1
+msgid "No filter"
+msgstr "Nessun filtro"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508edd2
+msgid "No filters applied yet. Search for something!"
+msgstr "Ancora nessun filtro applicato. Cerca qualcosa!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508edd3
+msgid "No followers."
+msgstr "Nessun follower."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-thumbnail.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-thumbnail.component.ts
+#: loco:679bfb73bbc95aa3e508edd4
+msgid "No images"
+msgstr "Nessuna immagine"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508edd5
+msgid "No mutual followers."
+msgstr "Nessun follower reciproco"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508edd6
+msgid "No parent"
+msgstr "Nessun genitore"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+#: loco:679bfb73bbc95aa3e508edd7
+msgid "No plate-solving information available."
+msgstr "Nessuna informazione di riduzione astrometrica disponibile."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component.ts
+#: loco:679bfb73bbc95aa3e508edd8
+msgid "No results"
+msgstr "Nessun risultato"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.html
+#: loco:679bfb73bbc95aa3e508edd9
+msgid "No saved searches found."
+msgstr "Nessuna ricerca salvata trovata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508edda
+msgid ""
+"No suggestions available, press <kbd>Enter</kbd> for a free text search."
+msgstr ""
+"Nessun suggerimento disponibile, premi <kbd>Invio</kbd> per una ricerca a "
+"testo libero."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-title.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-title.component.ts
+#: loco:679bfb73bbc95aa3e508eddb
+msgid "No views"
+msgstr "Nessuna visualizzazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:679bfb73bbc95aa3e508eddc
+msgid "No, just save the image"
+msgstr "No, salva solo l'immagine"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508eddd
+msgid "Not following anyone."
+msgstr "Nessun utente seguito."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508edde
+msgid "November"
+msgstr "Novembre"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508eddf
+msgid "Number of bookmarks"
+msgstr "Numero di segnalibri"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ede0
+msgid "Number of likes"
+msgstr "Numero di Mi piace"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ede1
+msgid "Number of views"
+msgstr "Numero di visualizzazioni"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-objects.component.ts
+#: loco:679bfb73bbc95aa3e508ede2
+msgid "Objects"
+msgstr "Oggetti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508ede3
+msgid "October"
+msgstr "Ottobre"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ede4
+msgid "Only show images acquired at a specific remote hosting facility."
+msgstr ""
+"Mostra solo le immagini acquisite presso una certa struttura di "
+"astrofotografia remota."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-country-filter/search-country-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ede5
+msgid "Only show images acquired by users from a specific country."
+msgstr ""
+"Mostra solo le immagini acquisite da utenti provenienti da un certo paese."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-acquisition-months-filter/search-acquisition-months-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ede6
+msgid "Only show images acquired in specific months of any year."
+msgstr "Mostra solo le immagini acquisite in un certo mese dell'anno."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-acquisition-type-filter/search-acquisition-type-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ede7
+msgid "Only show images acquired with a certain acquisition technique."
+msgstr ""
+"Mostra solo le immagini acquisite con una certa tecnica di acquisizione."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-camera-types-filter/search-camera-types-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ede8
+msgid "Only show images acquired with certain camera types."
+msgstr "Mostra solo le immagini acquisite con un certo tipo di fotocamera."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-filter-types-filter/search-filter-types-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ede9
+msgid "Only show images acquired with certain filter types."
+msgstr "Mostra solo le immagini acquisite con un certo tipo di filtro."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-telescope-types-filter/search-telescope-types-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edea
+msgid "Only show images acquired with certain telescope types."
+msgstr "Mostra solo le immagini acquisite con un certo tipo di telescopio."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-color-or-mono-filter/search-color-or-mono-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edeb
+msgid "Only show images acquired with color or monochrome sensors."
+msgstr ""
+"Mostra solo le immagini acquisite con un sensore a colori o monocromatico."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-modified-camera-filter/search-modified-camera-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edec
+msgid "Only show images acquired with modified cameras."
+msgstr "Mostra solo le immagini acquisite con una fotocamera modificata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-users-filter/search-users-filter.component.ts
+#: loco:679bfb73bbc95aa3e508eded
+msgid "Only show images by certain users (including collaborations)."
+msgstr ""
+"Mostra solo le immagini acquisite da certi utenti (collaboratori inclusi)."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-subject-filter/search-subjects-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edee
+msgid ""
+"Only show images featuring specific celestial subjects. Use a comma to "
+"separate multiple subjects."
+msgstr ""
+"Mostra solo le immagini con certi oggetti celesti. Usa la virgola per "
+"separarli."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-constellation-filter/search-constellation-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edef
+msgid "Only show images in a specific constellation."
+msgstr "Mostra solo le immagini in una costellazione specifica."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-minimum-data-filter/search-minimum-data-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edf0
+msgid "Only show images meeting a minimum data requirement."
+msgstr "Mostra solo le immagini che hanno un minimo di dati associati ad esse."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-subject-type-filter/search-subject-type-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edf1
+msgid "Only show images of a specific subject type."
+msgstr "Mostra solo le immagini di uno specifico tipo di oggetto."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-groups-filter/search-groups-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edf2
+msgid ""
+"Only show images that appear in specific groups that you are a member of."
+msgstr ""
+"Mostra solo le immagini che sono in un Gruppo specifico, di cui tu sei "
+"membro."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-award-filter/search-award-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edf3
+msgid "Only show images that won any of the selected IOTD/TP awards."
+msgstr "Mostra solo le immagini che sono state premiate nella IOTD/TP."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-data-source-filter/search-data-source-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edf4
+msgid "Only show images with data from a specific source."
+msgstr "Mostra solo le immagini con una certa origine dei dati."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-license-filter/search-license-filter.component.ts
+#: loco:679bfb73bbc95aa3e508edf5
+msgid "Only show images with the any of the selected licenses."
+msgstr "Mostra solo le immagini con una delle licenze selezionate."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/notifications/components/notifications-list/notifications-list.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/notifications/components/notifications-list/notifications-list.component.html
+#: loco:679bfb73bbc95aa3e508edf6
+msgid "Only unread"
+msgstr "Solo non lette"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-smart-folders.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-smart-folders.component.ts
+#: loco:679bfb73bbc95aa3e508edf7
+msgid "Only you can see this folder."
+msgstr "Solo tu puoi vedere questa cartella."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-smart-folder.component.ts
+#: loco:679bfb73bbc95aa3e508edf8
+msgid "Optics and cameras"
+msgstr "Ottica e camere"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508edf9
+msgid "Order by image tag"
+msgstr "Ordina per tag"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508edfa
+msgid "Orientation"
+msgstr "Orientazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508edfb
+msgid "Original"
+msgstr "Originale"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508edfc
+msgid "PGC"
+msgstr "PGC"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508edfd
+msgid "Parent collection"
+msgstr "Raccolta genitore"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-photographers.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-photographers.component.ts
+#: loco:679bfb73bbc95aa3e508edfe
+msgid "Pending confirmation"
+msgstr "In attesa di conferma"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508edff
+msgid "People who bookmarked this"
+msgstr "Utenti che hanno aggiunto questo elemento ai segnalibri"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508ee00
+msgid "People who like this"
+msgstr "Utenti a cui piace questo elemento"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed/feed.component.ts
+#: loco:679bfb73bbc95aa3e508ee01
+msgid "Personal feed"
+msgstr "Feed personale"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ee02
+msgid "Personal filters"
+msgstr "Filtri personali"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ee03
+msgid "Pinch and zoom!"
+msgstr "Ingrandisci con le dita!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ee04
+msgid "PixInsight queue size"
+msgstr "Dimensione della coda di PixInsight"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ee05
+msgid "PixInsight stage"
+msgstr "Stadio di PixInsight"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ee06
+msgid "Pixel scale"
+msgstr "Scala pixel"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee07
+msgid "Pixel scale (large first)"
+msgstr "Scala pixel (grande prima)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee08
+msgid "Pixel scale (small first)"
+msgstr "Scala pixel (piccola prima)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee09
+msgid "Planets"
+msgstr "Pianeti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee0a
+msgid "Plate-solving hints"
+msgstr "Suggerimenti di riduzione astrometrica"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ee0b
+msgid "Plate-solving information"
+msgstr "Informazioni sulla riduzione astrometrica"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee0c
+msgid "Plate-solving method"
+msgstr "Metodo di riduzione astrometrica"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee0d
+msgid "Plate-solving settings"
+msgstr "Impostazioni di riduzione astormetrica"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee0e
+msgid "Plate-solving will be restarted."
+msgstr "La riduzione astrometrica partirà di nuovo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ee0f
+msgid "Please agree to the IOTD/TP rules and guidelines."
+msgstr "Accetta le regole e linee guida della IOTD/TP."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset-editor/equipment-preset-editor.component.ts
+#: loco:679bfb73bbc95aa3e508ee10
+msgid "Please check the form for errors and try again."
+msgstr "Verifica gli errori sul modulo e riprova."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/preset-editor/equipment-preset-editor.component.html
+#: loco:679bfb73bbc95aa3e508ee11
+msgid ""
+"Please note: editing a setup will not affect images that have already been "
+"saved with this setup."
+msgstr ""
+"Nota bene: modificare un setup non modifica la strumentazione sulle immagini "
+"che sono state salvate usando questo setup."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-settings-fields.service.ts
+#: loco:679bfb73bbc95aa3e508ee12
+msgid ""
+"Please note: if you submit this image for IOTD/TP consideration, it will be "
+"displayed in full size to members of the IOTD/TP staff, regardless of this "
+"setting. This is necessary for them to evaluate the image properly."
+msgstr ""
+"Nota bene: se invii questa immagine per la valutazione IOTD/TP, verrà "
+"visualizzata a grandezza naturale ai membri dello staff IOTD/TP, "
+"indipendentemente da questa impostazione. Ciò è necessario affinché possano "
+"valutare correttamente l'immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.html
+#: loco:679bfb73bbc95aa3e508ee13
+msgid ""
+"Please note: you can also just add equipment to your image and save it as a "
+"setup later."
+msgstr ""
+"Nota: puoi anche semplicemente aggiungere la strumentazione all'immagine e "
+"salvarla come setup in un secondo momento."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ee14
+msgid "Please refresh the page to see the changes."
+msgstr "Aggiorna la pagina per vedere le modifiche."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/equipment-item-display-name/equipment-item-display-name.component.html
+#: loco:679bfb73bbc95aa3e508ee15
+msgid "Please support AstroBin by shopping at one of our partners!"
+msgstr "Sostieni AstroBin facendo acquisti presso uno dei nostri partner!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee16
+msgid "Press <kbd>Tab</kbd> for suggestion, <kbd>Enter</kbd> to just search."
+msgstr ""
+"Premi <kbd>Tab</kbd> per i suggerimenti, <kbd>Invio</kbd> per cercare "
+"semplicemente."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508ee17
+msgid "Promotions by Reviewers"
+msgstr "Promozioni dei Revisori"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508ee18
+msgid "Promotions by Submitters"
+msgstr ""
+"Promozioni da parte dei Propositori\n"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508ee19
+msgid "Publication date"
+msgstr "Data di pubblicazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-wip-banner.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-wip-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ee1a
+msgid "Publish"
+msgstr "Pubblicare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-wip-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ee1b
+msgid "Publish image"
+msgstr "Pubblica immagine"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee1c
+msgid "Quasars"
+msgstr "Quasar"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ee1d
+msgid "RA/Dec coordinates"
+msgstr "Coordinate RA/Dec"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee1e
+msgid "Radius"
+msgstr "Raggio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed/feed.component.ts
+#: loco:679bfb73bbc95aa3e508ee1f
+msgid "Recent images"
+msgstr "Immagini recenti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ee20
+msgid "Related images"
+msgstr "Immagini correlate"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee21
+msgid "Relevance"
+msgstr "Pertinenza"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-data-source.component.ts
+#: loco:679bfb73bbc95aa3e508ee22
+msgid "Remote hosting"
+msgstr "Hosting remoto"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/ad-manager/ad-manager.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/ad-manager/ad-manager.component.ts
+#: loco:679bfb73bbc95aa3e508ee23
+msgid "Remove ads"
+msgstr "Rimuovi le pubblicità"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-image-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ee24
+msgid "Remove from collection"
+msgstr "Rimuovi dalla raccolta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508ee25
+msgid "Remove shadow-ban"
+msgstr "Rimuovi shadow-ban"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component.html
+#: loco:679bfb73bbc95aa3e508ee26
+msgid "Replace current file"
+msgstr "Sostituisci il file corrente"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ee27
+msgid "Replace/delete uncompressed source file"
+msgstr "Sostituisci/elimina il file sorgente non compresso"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
+#: loco:679bfb73bbc95aa3e508ee28
+msgid "Report listing"
+msgstr "Segnala l'annuncio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee29
+msgid "Resolution of the field in arcseconds/pixel"
+msgstr "Risoluzione del campo in secondi d'arco/pixel"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee2a
+msgid "Restart plate-solving"
+msgstr "Riavviare la risoluzione astrometrica"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-trash.component.ts
+#: loco:679bfb73bbc95aa3e508ee2b
+msgid "Restore"
+msgstr "Ripristinare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit-revision/image-edit-revision-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee2c
+msgid "Revision not found"
+msgstr "Revisione non trovata"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-coords-filter/search-coords-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ee2d
+msgid "Right ascension"
+msgstr "Ascensione retta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee2e
+msgid "Right ascension (ascending)"
+msgstr "Ascensione retta (ascendente)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee2f
+msgid "Right ascension (descending)"
+msgstr "Ascensione retta (discendente)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee30
+msgid "Sample RAW frame (max 100 MB)"
+msgstr "Campione di fotogramma RAW (max 100 MB)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:679bfb73bbc95aa3e508ee31
+msgid "Satellite"
+msgstr "Satellitare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-adjustments-editor.component.ts
+#: loco:679bfb73bbc95aa3e508ee32
+msgid "Saturation"
+msgstr "Saturazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component.html
+#: loco:679bfb73bbc95aa3e508ee33
+msgid "Save equipment setup"
+msgstr "Salva setup di strumentazione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.html
+#: loco:679bfb73bbc95aa3e508ee34
+msgid "Save new search"
+msgstr "Salva nuova ricerca"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.html
+#: loco:679bfb73bbc95aa3e508ee35
+msgid "Save setup"
+msgstr "Salva il setup"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee36
+msgid "Scale max"
+msgstr "Scala massima"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee37
+msgid "Scale min"
+msgstr "Scala minima"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee38
+msgid "Scale units"
+msgstr "Unità di scala"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508ee39
+msgid "Search"
+msgstr "Ricerca"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee3a
+msgid "Search area"
+msgstr "Ricerca nell'area"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.ts
+#: loco:679bfb73bbc95aa3e508ee3b
+msgid "Search deleted successfully."
+msgstr "Ricerca eliminata con successo."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ee3c
+msgid "Search filters"
+msgstr "Filtri di ricerca"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.ts
+#: loco:679bfb73bbc95aa3e508ee3d
+msgid "Search saved successfully."
+msgstr "Ricerca salvata con successo."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-smart-folder.component.ts
+#: loco:679bfb73bbc95aa3e508ee3e
+msgid "Select a smart folder to see its content."
+msgstr "Seleziona una cartella smart per visualizzarne il contenuto."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee3f
+msgid "Select the font size for the labels."
+msgstr "Seleziona la dimensione del carattere per le annotazioni."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508ee40
+msgid "Send private message"
+msgstr "Invia messaggio privato"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/date.service.ts
+#: loco:679bfb73bbc95aa3e508ee41
+msgid "September"
+msgstr "Settembre"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-image-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ee42
+msgid "Set as cover image"
+msgstr "Imposta come immagine di copertina"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee43
+msgid "Settings saved."
+msgstr "Impostazioni salvate."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component.ts
+#: loco:679bfb73bbc95aa3e508ee44
+msgid "Setup name"
+msgstr "Nome del setup"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ee45
+msgid "Setups"
+msgstr "Setup"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ee46
+msgid ""
+"Setups are saved combinations of equipment for quick association with one's "
+"images."
+msgstr ""
+"I setup sono combinazioni di strumentazione salvate, da associare "
+"rapidamente alle proprie immagini."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:679bfb73bbc95aa3e508ee47
+msgid "Sexagesimal"
+msgstr "Sessagesimale"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508ee48
+msgid "Shadow-ban"
+msgstr "Shadow-ban"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:679bfb73bbc95aa3e508ee49
+msgid "Share"
+msgstr "Condividere"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:679bfb73bbc95aa3e508ee4a
+msgid "Sharing mode"
+msgstr "Modalità di condivisione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee4b
+msgid "Sharpless"
+msgstr "Sharpless"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/equipment-item-display-name/equipment-item-display-name.component.html
+#: loco:679bfb73bbc95aa3e508ee4c
+msgid "Shop"
+msgstr "Compra"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee4d
+msgid "Show suggestions"
+msgstr "Mostra suggerimenti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:679bfb73bbc95aa3e508ee4e
+msgid "Simple link"
+msgstr "Link semplice"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
+#: loco:679bfb73bbc95aa3e508ee4f
+msgid "Sky and subjects"
+msgstr "Cielo e oggetti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508ee50
+msgid "Small layout"
+msgstr "Layout piccolo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-navigation.component.ts
+#: loco:679bfb73bbc95aa3e508ee51
+msgid "Smart folders"
+msgstr "Cartelle smart"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee52
+msgid "Solar system"
+msgstr "Sistema solare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/nested-comments.effects.ts
+#: loco:679bfb73bbc95aa3e508ee53
+msgid ""
+"Something went wrong while approving the comment. Please try again later."
+msgstr ""
+"Si è verificato un problema durante l'approvazione del commento. Riprova più "
+"tardi."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/nested-comments.effects.ts
+#: loco:679bfb73bbc95aa3e508ee54
+msgid ""
+"Something went wrong while deleting the comment. Please try again later."
+msgstr ""
+"Si è verificato un problema durante l'eliminazione del commento. Riprova più "
+"tardi."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/nested-comments.effects.ts
+#: loco:679bfb73bbc95aa3e508ee55
+msgid ""
+"Something went wrong while updating the comment. Please try again later."
+msgstr ""
+"Si è verificato un problema durante l'aggiornamento del commento. Riprova "
+"più tardi."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-api.service.ts
+#: loco:679bfb73bbc95aa3e508ee56
+msgid ""
+"Something went wrong with clearing the image, but this setup was updated "
+"anyway."
+msgstr ""
+"Si è verificato un problema durante la cancellazione dell'immagine, ma "
+"questo setup è stata comunque aggiornata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee57
+msgid "Sort by"
+msgstr "Ordina per"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee58
+msgid "Sort results"
+msgstr "Ordina i risultati"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508ee59
+msgid ""
+"Staff members have a lot of images to inspect on a daily basis, and they can "
+"dismiss images if they believe they don't meet the requirements for IOTD/TP "
+"selection. If an image is dismissed {{ 0 }} times, it's removed from the "
+"process. This streamlines the process and ensures that any bias present in "
+"promotions could be overruled by other staff members."
+msgstr ""
+"I membri dello staff hanno molte immagini da ispezionare ogni giorno e "
+"possono scartare immagini se ritengono che non soddisfino i requisiti per la "
+"selezione IOTD/TP. Se un'immagine viene scartata {{ 0 }} volte, viene "
+"rimossa dal processo. Ciò semplifica il processo e garantisce che qualsiasi "
+"pregiudizio presente nelle promozioni possa essere annullato da altri membri "
+"dello staff."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-navigation.component.ts
+#: loco:679bfb73bbc95aa3e508ee5a
+msgid "Staging area"
+msgstr "Area di lavoro"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-navigation.component.ts
+#: loco:679bfb73bbc95aa3e508ee5b
+msgid "Staging area in separate tab"
+msgstr "Area di lavoro in un tab a parte"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee5c
+msgid "Star detection"
+msgstr "Rilevazione stellare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee5d
+msgid "Stars"
+msgstr "Stelle"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-smart-folders.component.ts
+#: loco:679bfb73bbc95aa3e508ee5e
+msgid "Subject types"
+msgstr "Tipi di oggetto"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ee5f
+msgid "Subjects"
+msgstr "Oggetti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ee60
+msgid "Submit for IOTD/TP consideration"
+msgstr "Proponi per la IOTD/TP"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508ee61
+msgid "Submitted"
+msgstr "Proposta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/image-search/image-search.component.ts
+#: loco:679bfb73bbc95aa3e508ee62
+msgid "Support AstroBin by shopping for {{0}} at our partners!"
+msgstr "Sostieni AstroBin acquistando {{0}} presso i nostri partner!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/image-search/image-search.component.ts
+#: loco:679bfb73bbc95aa3e508ee63
+msgid "Support AstroBin by shopping for {{0}} products at our partners!"
+msgstr "Sostieni AstroBin acquistando prodotti {{0}} presso i nostri partner!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/avatar/avatar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/avatar/avatar.component.html
+#: loco:679bfb73bbc95aa3e508ee64
+msgid "Supporting member"
+msgstr "Membro sostenitore"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508ee65
+msgid "Table layout"
+msgstr "Layout tabulare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ee66
+msgid "Telescope diameter"
+msgstr "Diametro del telescopio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ee67
+msgid "Telescope focal length"
+msgstr "Lunghezza focale del telescopio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ee68
+msgid "Telescope types"
+msgstr "Tipi di telescopio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508ee69
+msgid "Telescope weight"
+msgstr "Peso del telescopio"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/ad-manager/ad-manager.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/ad-manager/ad-manager.component.ts
+#: loco:679bfb73bbc95aa3e508ee6a
+msgid "Thank you for not blocking ads!"
+msgstr "Grazie per non aver bloccato la pubblicità!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee6b
+msgid ""
+"The AstroBin Advanced Plate-solving powered by PixInsight is available to "
+"AstroBin Ultimate subscribers."
+msgstr ""
+"La riduzione astrometrica avanzata di AstroBin basata su PixInsight è "
+"disponibile per gli abbonati ad AstroBin Ultimate."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+#: loco:679bfb73bbc95aa3e508ee6c
+msgid "The authentication token you provided is invalid. Please log in again."
+msgstr ""
+"Il token di autenticazione fornito non è valido. Effettua nuovamente "
+"l'accesso."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee6d
+msgid "The collaborator has been removed."
+msgstr "Il collaboratore è stato rimosso."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee6e
+msgid "The collaborator request has been denied."
+msgstr "La richiesta di collaborazione è stata respinta."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508ee6f
+msgid ""
+"The date and time when this image was submitted for IOTD/TP consideration. "
+"AstroBin may automatically resubmit your image multiple times if necessary."
+msgstr ""
+"La data e l'ora in cui questa immagine è stata inviata per la valutazione "
+"IOTD/TP. AstroBin potrebbe inviare automaticamente di nuovo la tua immagine "
+"più volte, se necessario."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508ee70
+msgid ""
+"The distinction between a free text search and a search using a specific "
+"filter can be illustrated with the following example. If you search for"
+msgstr ""
+"La distinzione tra una ricerca di testo libero e una ricerca che utilizza un "
+"filtro specifico può essere illustrata con il seguente esempio. Se si cerca"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee71
+msgid "The image has been deleted."
+msgstr "L'immagine è stata eliminata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee72
+msgid "The image has been restored."
+msgstr "L'immagine è stata ripristinata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee73
+msgid "The image has been submitted for IOTD/TP consideration."
+msgstr "L'immagine è stata inviata per la valutazione IOTD/TP."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee74
+msgid "The image revision has been deleted."
+msgstr "La revisione dell'immagine è stata eliminata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ee75
+msgid "The images in the collection will not be deleted."
+msgstr "Le immagini nella raccolta non verranno eliminate."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-settings-fields.service.ts
+#: loco:679bfb73bbc95aa3e508ee76
+msgid "The maximum zoom level that will be available for this image."
+msgstr "Il livello di zoom massimo che sarà disponibile per questa immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee77
+msgid ""
+"The original image has been deleted. The first revision is now the new "
+"original."
+msgstr ""
+"L'immagine originale è stata eliminata. La prima revisione è ora il nuovo "
+"originale."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-photographers.component.ts
+#: loco:679bfb73bbc95aa3e508ee78
+msgid "The owner of this image has requested to add you as a collaborator."
+msgstr ""
+"Il proprietario di questa immagine ha richiesto di aggiungerti come "
+"collaboratore."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ee79
+msgid "The photographer has not enabled comments for this image."
+msgstr "Il fotografo non ha abilitato i commenti per questa immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee7a
+msgid "The revision has been marked as final."
+msgstr "La revisione è stata contrassegnata come definitiva."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee7b
+msgid "The uncompressed source file has been deleted."
+msgstr "Il file sorgente non compresso è stato eliminato."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/forums/forum-preview/forum-preview.component.html
+#: loco:679bfb73bbc95aa3e508ee7c
+msgid "There are no recent topics."
+msgstr "Non ci sono argomenti recenti."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/ad-manager/ad-manager.component.ts
+#: loco:679bfb73bbc95aa3e508ee7d
+msgid ""
+"There are only astronomy ads on AstroBin, that are published after careful "
+"review and approval. Nothing fishy, nothing off-topic, and nothing that will "
+"use any of your private information."
+msgstr ""
+"Ci sono solo annunci di astronomia su AstroBin, che vengono pubblicati dopo "
+"un'attenta revisione e approvazione. Niente di sospetto, niente fuori tema e "
+"niente che utilizzi le tue informazioni private."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508ee7e
+msgid "There was an error deleting the image."
+msgstr "Si è verificato un errore durante l'eliminazione dell'immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508ee7f
+msgid "These are the users that follow you and are followed by you."
+msgstr "Questi sono gli utenti che ti seguono e che sono seguiti da te."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/nested-comments/nested-comment.component.html
+#: loco:679bfb73bbc95aa3e508ee80
+msgid "This comment is pending moderation."
+msgstr "Questo commento è in attesa di moderazione."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee81
+msgid "This image already has an uncompressed source file."
+msgstr "Questa immagine ha già un file sorgente non compresso."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-icons/image-icons.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-icons/image-icons.component.ts
+#: loco:679bfb73bbc95aa3e508ee82
+msgid "This image is in your staging area"
+msgstr "Questa immagine è nella tua area di lavoro"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-wip-banner.component.ts
+#: loco:679bfb73bbc95aa3e508ee83
+msgid "This image is in your staging area."
+msgstr "Questa immagine si trova nella tua area di lavoro."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.ts
+#: loco:679bfb73bbc95aa3e508ee84
+msgid "This name is already in use."
+msgstr "Questo nome è già in uso."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-text-filter/search-text-filter.component.ts
+#: loco:679bfb73bbc95aa3e508ee85
+msgid ""
+"This searches the title, description, and most image attributes, even if the "
+"exact words don't match perfectly. You can use quotation marks for exact "
+"matching, and the minus sign to exclude keywords. To do even more precise "
+"searches, add filters."
+msgstr ""
+"Questa ricerca riguarda il titolo, la descrizione e la maggior parte degli "
+"attributi delle immagini, anche se le parole esatte non corrispondono "
+"perfettamente. Puoi usare le virgolette per la corrispondenza esatta e il "
+"segno meno per escludere le parole chiave. Per fare ricerche ancora più "
+"precise, aggiungi filtri."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ee86
+msgid ""
+"This table shows the distribution of awards per data source, compared to the "
+"popularity of images acquired from that data source."
+msgstr ""
+"Questa tabella mostra la distribuzione dei premi per fonte di dati, "
+"confrontata con la popolarità delle immagini acquisite da quella fonte di "
+"dati."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ee87
+msgid ""
+"This table shows the distribution of awards per subject type, compared to "
+"the popularity of images of that subject type."
+msgstr ""
+"Questa tabella mostra la distribuzione dei premi per tipologia di soggetto, "
+"confrontata con la popolarità delle immagini di quella tipologia di soggetto."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ee88
+msgid ""
+"This table shows the number of distinct astrophotographers who have been "
+"assigned and IOTD/TP award compared to the total number of images awarded."
+msgstr ""
+"Questa tabella mostra il numero di astrofotografi distinti a cui è stato "
+"assegnato un premio IOTD/TP rispetto al numero totale di immagini assegnate."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-equipment.component.ts
+#: loco:679bfb73bbc95aa3e508ee89
+msgid "This user doesn't have any equipment setups."
+msgstr "Questo utente non ha alcun setup."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-revisions.component.ts
+#: loco:679bfb73bbc95aa3e508ee8a
+msgid ""
+"This will delete the original image, and the first revision will take its "
+"place. All metadata will remain intact."
+msgstr ""
+"Questo cancellerà l'immagine originale e la prima revisione prenderà il suo "
+"posto. Tutti i metadati rimarranno intatti."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-revisions.component.ts
+#: loco:679bfb73bbc95aa3e508ee8b
+msgid ""
+"This will delete this revision. Your original image and all metadata will "
+"remain intact. This operation cannot be undone."
+msgstr ""
+"Questo eliminerà questa revisione. La tua immagine originale e tutti i "
+"metadati rimarranno intatti. Questa operazione non può essere annullata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee8c
+msgid ""
+"To improve the accuracy of your plate-solution even further, please upload "
+"one of the XISF or FITS files from your data set. Such files normally have "
+"date and time headers that will allow AstroBin to calculate solar system "
+"body ephemerides and find planets and asteroids in your image (provided you "
+"also add location information to it).<br/><br/>For maximum accuracy, it's "
+"recommended that you use PixInsight's native and open format XISF. Learn "
+"more about XISF here:<br/><br/><a href=\"https://pixinsight.com/xisf/\" "
+"target=\"_blank\">https://pixinsight.com/xisf/</a><br/><br/> <strong>Please "
+"note:</strong> it's very important that the XISF or FITS file you upload is "
+"aligned to your processed image, otherwise the object annotations will not "
+"match. To improve your chances at a successful accurate plate-solution, "
+"calibrate your file the usual way (dark/bias/flats) but do not stretch it."
+msgstr ""
+"Per migliorare ulteriormente l'accuratezza della tua riduzione astrometrica, "
+"carica uno dei file XISF o FITS dal tuo set di dati. Tali file hanno "
+"normalmente intestazioni di data e ora che consentiranno ad AstroBin di "
+"calcolare le effemeridi dei corpi del sistema solare e di trovare pianeti e "
+"asteroidi nella tua immagine (a condizione che tu aggiunga anche "
+"informazioni sulla posizione).<br/><br/> Per la massima accuratezza, si "
+"consiglia di utilizzare il formato nativo e aperto XISF di PixInsight. "
+"Scopri di più su XISF qui:<br/><br/> <a href=\"https://pixinsight."
+"com/xisf/\" target=\"_blank\">https://pixinsight.com/xisf/</a><br/><br/> "
+"<strong>Nota bene:</strong> è molto importante che il file XISF o FITS "
+"caricato sia allineato all'immagine elaborata, altrimenti le annotazioni "
+"dell'oggetto non corrisponderanno. Per migliorare le tue possibilità di "
+"ottenere una riduzione astrometrica accurata e di successo, calibra il tuo "
+"file nel solito modo (dark/bias/flat) ma non fare lo stretch."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ee8d
+msgid "Toggle magnification mode, then click on the image."
+msgstr "Attiva la modalità di zoom, quindi clicca l'immagine"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ee8e
+msgid "Toggle touch/mouse mode."
+msgstr "Attiva/disattiva la modalità touch/mouse."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-title.component.ts
+#: loco:679bfb73bbc95aa3e508ee8f
+msgid "Top Pick"
+msgstr "Top Pick"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-title.component.ts
+#: loco:679bfb73bbc95aa3e508ee90
+msgid "Top Pick Nomination"
+msgstr "Topi Pick Nomination"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ee91
+msgid "Top pick"
+msgstr "Top pick"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ee92
+msgid "Total awarded images"
+msgstr "Totale immagini premiate"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
+#: loco:679bfb73bbc95aa3e508ee93
+msgid "Total submitted"
+msgstr "Totale inviato"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508ee94
+msgid "Touch mode"
+msgstr "Modalità touch"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-navigation.component.ts
+#: loco:679bfb73bbc95aa3e508ee95
+msgid "Trash"
+msgstr "Cestino"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-trash.component.ts
+#: loco:679bfb73bbc95aa3e508ee96
+msgid "Trash emptied."
+msgstr "Cestino svuotato."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508ee97
+msgid "Tycho-2 stars"
+msgstr "Stelle Tycho-2"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.ts
+#: loco:679bfb73bbc95aa3e508ee98
+msgid "Type here to search"
+msgstr "Digita qui per cercare"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508ee99
+msgid "Uncompressed source file"
+msgstr "File sorgente non compresso"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-photographers.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-photographers.component.ts
+#: loco:679bfb73bbc95aa3e508ee9a
+msgid "Unfollow user"
+msgstr "Non seguire più l'utente"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508ee9b
+msgid "Unknown date"
+msgstr "Data sconosciuta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/forums/forum-preview/forum-preview.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/forums/forum-preview/forum-preview.component.html
+#: loco:679bfb73bbc95aa3e508ee9c
+msgid "Unread"
+msgstr "Non letto"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item-condition/marketplace-line-item-condition.component.html
+#: loco:679bfb73bbc95aa3e508ee9d
+msgid "Unspecified"
+msgstr "Non specificato"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/version-check.service.ts
+#: loco:679bfb73bbc95aa3e508ee9e
+msgid "Update available"
+msgstr "Aggiornamento disponibile"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-trash.component.ts
+#: loco:679bfb73bbc95aa3e508ee9f
+msgid "Upgrade now!"
+msgstr "Fai l'upgrade!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508eea0
+msgid "Upgrade your account to enable plate-solving."
+msgstr "Aggiorna il tuo account per abilitare la riduzione astrometrica."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/upload-metadata/upload-data.service.ts
+#: loco:679bfb73bbc95aa3e508eea1
+msgid "Upload an image"
+msgstr "Carica un'immagine"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/upload-metadata/upload-data.service.ts
+#: loco:679bfb73bbc95aa3e508eea2
+msgid "Upload an image or a video"
+msgstr "Carica un'immagine o un video"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/upload-metadata/upload-data.service.ts
+#: loco:679bfb73bbc95aa3e508eea3
+msgid "Upload an image, a video, or an uncompressed source file"
+msgstr "Carica un'immagine, un video o un file sorgente non compresso"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/upload-metadata/upload-data.service.ts
+#: loco:679bfb73bbc95aa3e508eea4
+msgid "Upload an uncompressed source file"
+msgstr "Carica un file sorgente non compresso"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508eea5
+msgid "Upload new revision"
+msgstr "Carica nuova revisione"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508eea6
+msgid "Upload uncompressed source (XISF/FITS/PSD/TIFF)"
+msgstr "Carica la sorgente non compressa (XISF/FITS/PSD/TIFF)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-trash.component.ts
+#: loco:679bfb73bbc95aa3e508eea7
+msgid "Uploaded"
+msgstr "Caricato"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508eea8
+msgid "Use SExtractor"
+msgstr "Utilizzare SExtractor"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-settings-fields.service.ts
+#: loco:679bfb73bbc95aa3e508eea9
+msgid "Use default preference"
+msgstr "Usa la preferenza predefinita"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508eeaa
+msgid "User country"
+msgstr "Paese dell'utente"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508eeab
+msgid "VdB"
+msgstr "VdB"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508eeac
+msgid "Videos only"
+msgstr "Solo video"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508eead
+msgid "View IOTD/TP stats"
+msgstr "Visualizza le statistiche IOTD/TP"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/pages/home/home.component.ts
+#: loco:679bfb73bbc95aa3e508eeae
+msgid "View all"
+msgstr "Visualizza tutto"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508eeaf
+msgid "View histogram"
+msgstr "Visualizza istogramma"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:679bfb73bbc95aa3e508eeb0
+msgid "View sky map"
+msgstr "Visualizza la mappa del cielo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-images.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-images.component.ts
+#: loco:679bfb73bbc95aa3e508eeb1
+msgid "Views"
+msgstr "Visualizzazioni"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508eeb2
+msgid "Views by Submitters (available since September 19th, 2023)"
+msgstr "Visualizzazioni dei Propositori (disponibile dal 19 settembre 2023)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-data-source.component.ts
+#: loco:679bfb73bbc95aa3e508eeb3
+msgid "Visit website"
+msgstr "Visita il sito web"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component.ts
+#: loco:679bfb73bbc95aa3e508eeb4
+msgid ""
+"Warning! That's a large file you got there! AstroBin does not impose "
+"artificial limitation in the file size you can upload with an Ultimate "
+"subscription, but we cannot guarantee that all images above 500 MB or "
+"~16000x16000 pixels will work. Feel free to give it a shot tho!"
+msgstr ""
+"Attenzione! Hai un file di grandi dimensioni! AstroBin non impone "
+"limitazioni artificiali alle dimensioni del file che puoi caricare con un "
+"abbonamento Ultimate, ma non possiamo garantire che tutte le immagini "
+"superiori a 500 MB o ~16000x16000 pixel funzioneranno. Sentiti libero di "
+"provarci!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/image-search/image-search.component.ts
+#: loco:679bfb73bbc95aa3e508eeb5
+msgid ""
+"We found some items relevant to your search for sale on our marketplace!"
+msgstr ""
+"Abbiamo trovato alcuni articoli pertinenti alla tua ricerca in vendita sul "
+"nostro mercatino!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-data-source.component.ts
+#: loco:679bfb73bbc95aa3e508eeb6
+msgid "Weighted average Bortle scale"
+msgstr "Scala media pesata di Bortle"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508eeb7
+msgid ""
+"When {{ 0 }} distinct Reviewers promote the image, it moves on to the next "
+"stage of the process: evaluation for IOTD status."
+msgstr ""
+"Quando {{ 0 }} Revisori distinti promuovono l'immagine, questa passa alla "
+"fase successiva del processo: la valutazione per lo stato IOTD."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
+#: loco:679bfb73bbc95aa3e508eeb8
+msgid ""
+"When {{ 0 }} distinct Submitters promote the image, it moves on to the next "
+"stage of the process: evaluation for Top Pick status. This requirement, in "
+"addition to anonymization of images and distribution to only a subset of "
+"them, prevents biases and ensures that the best images are selected."
+msgstr ""
+"Quando {{ 0 }} Propositori distinti promuovono l'immagine, questa passa alla "
+"fase successiva del processo: la valutazione per lo stato di Top Pick. "
+"Questo requisito, oltre all'anonimizzazione delle immagini e alla "
+"distribuzione solo a un sottoinsieme di esse, impedisce pregiudizi e "
+"garantisce che vengano selezionate le immagini migliori."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:679bfb73bbc95aa3e508eeb9
+msgid "Wide field"
+msgstr "Campo largo"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-image-size-filter/search-image-size-filter.component.ts
+#: loco:679bfb73bbc95aa3e508eeba
+msgid "Width"
+msgstr "Larghezza"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:679bfb73bbc95aa3e508eebb
+msgid "Width and height"
+msgstr "Larghezza e altezza"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508eebc
+msgid "Width of the field in arcminutes"
+msgstr "Larghezza del campo in minuti d'arco"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679bfb73bbc95aa3e508eebd
+msgid "Width of the field in degrees"
+msgstr "Larghezza del campo in gradi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:679bfb73bbc95aa3e508eebe
+msgid "Would you like to save this equipment configuration as a setup?"
+msgstr ""
+"Desideri salvare questa configurazione della strumentazione come setup?"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-smart-folders.component.ts
+#: loco:679bfb73bbc95aa3e508eebf
+msgid "Years"
+msgstr "Anni"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
+#: loco:679bfb73bbc95aa3e508eec0
+msgid "Yes, close"
+msgstr "Sì, chiudi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:679bfb73bbc95aa3e508eec1
+msgid "Yes, save the setup"
+msgstr "Sì, salva il setup"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component.ts
+#: loco:679bfb73bbc95aa3e508eec2
+msgid ""
+"You are about to delete the uncompressed source file that you associated to "
+"this image. This action cannot be undone."
+msgstr ""
+"Stai per eliminare il file sorgente non compresso che hai associato a questa "
+"immagine. Questa azione non può essere annullata."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/store/effects/image.effects.ts
+#: loco:679bfb73bbc95aa3e508eec3
+msgid "You are now a collaborator to this image!"
+msgstr "Ora sei un collaboratore di questa immagine!"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-images.component.ts
+#: loco:679bfb73bbc95aa3e508eec4
+msgid ""
+"You can refine your search by using the advanced search page and filtering "
+"by user."
+msgstr ""
+"Puoi perfezionare la ricerca utilizzando la pagina di ricerca avanzata e "
+"filtrando per utente."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component.ts
+#: loco:679bfb73bbc95aa3e508eec5
+msgid "You don't have any recently used items in this class."
+msgstr "Non hai elementi utilizzati di recente in questa classe."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uploader-page/uploader-page.component.ts
+#: loco:679bfb73bbc95aa3e508eec6
+msgid ""
+"You have used <strong>{{1}}</strong> of the <strong>{{2}}</strong> images "
+"allowed in your plan."
+msgstr ""
+"Hai utilizzato <strong>{{1}</strong> delle <strong>{{2}</strong> immagini "
+"consentite nel tuo piano."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uploader-page/uploader-page.component.ts
+#: loco:679bfb73bbc95aa3e508eec7
+msgid ""
+"You have used <strong>{{1}}</strong> of your <strong>{{2}}</strong> upload "
+"slots."
+msgstr ""
+"Hai utilizzato <strong>{{1}}</strong> dei tuoi <strong>{{2}}</strong> slot "
+"di caricamento."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uploader-page/uploader-page.component.ts
+#: loco:679bfb73bbc95aa3e508eec8
+msgid ""
+"You have used <strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly "
+"upload slots."
+msgstr ""
+"Hai utilizzato <strong>{{1}}</strong> dei tuoi <strong>{{2}}</strong> slot "
+"di caricamento annuali."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-page.component.ts
+#: loco:679bfb73bbc95aa3e508eec9
+msgid "You shadow-banned this user. They won't be able to contact you."
+msgstr "Hai bannato questo utente. Non potrà contattarti."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component.ts
+#: loco:679bfb73bbc95aa3e508eeca
+msgid "You will overwrite your existing setup with the same name."
+msgstr "Sovrascriverai il setup esistente con lo stesso nome."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+#: loco:679bfb73bbc95aa3e508eecb
+msgid "Your image will be deleted along with all revisions and metadata."
+msgstr ""
+"La tua immagine verrà eliminata insieme a tutte le revisioni e ai metadati."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-image-menu.component.ts
+#: loco:679bfb73bbc95aa3e508eecc
+msgid ""
+"Your image will be deleted along with all revisions and metadata. If you "
+"want to delete a specific revision only, please do so from the image page."
+msgstr ""
+"La tua immagine verrà eliminata insieme a tutte le revisioni e i metadati. "
+"Se vuoi eliminare solo una revisione specifica, fallo dalla pagina "
+"dell'immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
+#: loco:679bfb73bbc95aa3e508eecd
+msgid "Zoom disabled by the image owner."
+msgstr "Zoom disabilitato dal proprietario dell'immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:679bfb73bbc95aa3e508eece
+msgid "Zoom mode"
+msgstr "Modalità zoom"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
+#: loco:679bfb73bbc95aa3e508eecf
+msgid "Zoom not available because the image is smaller than your viewport."
+msgstr ""
+"Zoom non disponibile perché l'immagine è più piccola della tua visuale."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508eed0
+msgid ""
+"after typing. Free text searches are usually more inclusive and may return "
+"more results, as they search in all available fields. AstroBin will still "
+"try to show relevant results by matching your free text search to a filter, "
+"if there is a perfect match."
+msgstr ""
+"dopo aver digitato. Le ricerche di testo libero sono solitamente più "
+"inclusive e possono restituire più risultati, poiché cercano in tutti i "
+"campi disponibili. AstroBin cercherà comunque di mostrare risultati "
+"pertinenti abbinando la tua ricerca di testo libero a un filtro, se c'è una "
+"corrispondenza perfetta."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-filter/search-base-filter.component.html
+#: loco:679bfb73bbc95aa3e508eed1
+msgid "and"
+msgstr "e"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:679bfb73bbc95aa3e508eed2
+msgid "icon on the right end of the search bar."
+msgstr "icona all'estremità destra della barra di ricerca."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:679bfb73bbc95aa3e508eed3
+msgid "n/d"
+msgstr "n/d"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-thumbnail.component.ts
+#: loco:679bfb73bbc95aa3e508eed4
+msgid "{{ 0 }} collections"
+msgstr "{{ 0 }} raccolte"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508eed5
+msgid "{{ 0 }} followers"
+msgstr "{{ 0 }} follower"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508eed6
+msgid "{{ 0 }} following"
+msgstr "{{ 0 }} seguiti"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:679bfb73bbc95aa3e508eed7
+msgid "{{ 0 }} frames"
+msgstr "{{ 0 }} fotogrammi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: loco:679bfb73bbc95aa3e508eed8
+msgid "{{ 0 }} images"
+msgstr "{{ 0 }} immagini"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eed9
+msgid "{{ actor }} and {{ count }} others bookmarked this image."
+msgstr ""
+"{{ actor }} e altri {{ count }} hanno aggiunto questa immagine ai segnalibri."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eeda
+msgid "{{ actor }} and {{ count }} others commented on this image."
+msgstr "{{ actor }} e altri {{ count }} hanno commentato questa immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eedb
+msgid "{{ actor }} bookmarked this image."
+msgstr "{{ actor }} ha aggiunto questa immagine ai segnalibri."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eedc
+msgid "{{ actor }} commented on this image."
+msgstr "{{ actor }} ha commentato questa immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eedd
+msgid "{{ actor }} created a marketplace listing."
+msgstr "{{ actor }} ha creato un annuncio sul marketplace."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eede
+msgid "{{ actor }} created a public group."
+msgstr "{{ actor }} ha creato un gruppo pubblico."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eedf
+msgid "{{ actor }} joined a group."
+msgstr "{{ actor }} si è unito a un gruppo."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eee0
+msgid "{{ actor }} liked this image."
+msgstr "A {{ actor }} è piaciuta questa immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eee1
+msgid "{{ actor }} published an image revision."
+msgstr "{{ actor }} ha pubblicato una revisione dell'immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-display-text/feed-item-display-text.component.ts
+#: loco:679bfb73bbc95aa3e508eee2
+msgid "{{ actor }} published an image."
+msgstr "{{ actor }} ha pubblicato un'immagine."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component.ts
+#: loco:679bfb73bbc95aa3e508eee3
+msgid "{{ count }} results"
+msgstr "{{ count }} risultati"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+#: loco:679cb59fcee7c620f80107d2
+msgid ""
+"If checked, the plate-solving will be done without the need for you to "
+"provide hints."
+msgstr ""

@@ -341,7 +341,7 @@ export class ImagePlateSolvingSettingsPageComponent
               label: this.translateService.instant("Plate-solving method"),
               toggleLabel: this.translateService.instant("Blind"),
               description: this.translateService.instant(
-                "If checked, the plate-solving will be done without the need for you to provide hinds."
+                "If checked, the plate-solving will be done without the need for you to provide hints."
               )
             }
           }
