@@ -1042,18 +1042,22 @@ export class ImageViewerComponent
     if (imageVisible) {
       if (nextButton) {
         this.renderer.setStyle(nextButton, "opacity", "1");
+        this.renderer.setStyle(nextButton, "pointer-events", "auto");
       }
 
       if (prevButton) {
         this.renderer.setStyle(prevButton, "opacity", "1");
+        this.renderer.setStyle(prevButton, "pointer-events", "auto");
       }
     } else {
       if (nextButton) {
         this.renderer.setStyle(nextButton, "opacity", "0", RendererStyleFlags2.Important);
+        this.renderer.setStyle(nextButton, "pointer-events", "none");
       }
 
       if (prevButton) {
         this.renderer.setStyle(prevButton, "opacity", "0", RendererStyleFlags2.Important);
+        this.renderer.setStyle(prevButton, "pointer-events", "none");
       }
     }
   }
