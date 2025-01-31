@@ -21,6 +21,8 @@ import { UserSubscriptionService } from "@core/services/user-subscription/user-s
 import { isPlatformBrowser } from "@angular/common";
 import { LoadImage } from "@app/store/actions/image.actions";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 @Component({
   selector: "astrobin-image-viewer-plate-solving-banner",
@@ -129,9 +131,20 @@ export class ImageViewerPlateSolvingBannerComponent
     public readonly userSubscriptionService: UserSubscriptionService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly imageApiService: ImageApiService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
   }
 
   ngOnInit() {

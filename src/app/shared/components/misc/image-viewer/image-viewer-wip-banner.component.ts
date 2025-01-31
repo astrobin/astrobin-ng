@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -16,6 +16,8 @@ import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { filter, take } from "rxjs/operators";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 @Component({
   selector: "astrobin-image-viewer-wip-banner",
@@ -106,9 +108,21 @@ export class ImageViewerWipBannerComponent extends ImageViewerSectionBaseCompone
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
     public readonly actions$: Actions,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
   }
 
   public ngOnInit(): void {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
@@ -14,6 +14,8 @@ import { FilterService } from "@features/equipment/services/filter.service";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
+import { CookieService } from "ngx-cookie";
+import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
 // This includes total per filter type.
 interface FilterSummary {
@@ -54,10 +56,19 @@ interface DetailedFilterSummary {
   selector: "astrobin-image-viewer-acquisition",
   template: `
     <ng-container *ngIf="image.solarSystemAcquisitions?.length && !image.deepSkyAcquisitions?.length">
-      <div class="metadata-header">{{ "Acquisition" | translate }}</div>
+      <div
+        (click)="toggleCollapse()"
+        [class.collapsed]="collapsed"
+        class="metadata-header supports-collapsing"
+      >
+        {{ "Acquisition" | translate }}
+      </div>
+
       <div
         *ngIf="image.solarSystemAcquisitions?.length && !image.deepSkyAcquisitions?.length"
         class="metadata-section px-2"
+        [collapsed]="collapsed"
+        collapseAnimation
       >
         <div *ngIf="solarSystemIntegration" class="metadata-item">
           <div class="metadata-icon">
@@ -84,111 +95,112 @@ interface DetailedFilterSummary {
       </div>
     </ng-container>
 
-    <div class="metadata-header d-lg-none d-flex justify-content-between">
-      <span>{{ "Integration" | translate }}</span>
-      <span
-        *ngIf="deepSkyIntegrationTime"
-        [innerHTML]="deepSkyIntegrationTime"
-        class="no-wrap"
-      ></span>
-    </div>
-    <div
-      *ngIf="image.deepSkyAcquisitions?.length && !image.solarSystemAcquisitions?.length"
-      class="metadata-section"
-    >
-      <table class="table table-mobile-support-md mb-0">
-        <thead>
-        <tr>
-          <th>
-            {{ "Integration" | translate }}
-          </th>
+    <ng-container *ngIf="image.deepSkyAcquisitions?.length && !image.solarSystemAcquisitions?.length">
+      <div
+        (click)="toggleCollapse()"
+        [class.collapsed]="collapsed"
+        class="metadata-header supports-collapsing d-md-none d-flex justify-content-between"
+      >
+        <span>{{ "Integration" | translate }}</span>
+        <span
+          *ngIf="deepSkyIntegrationTime"
+          [innerHTML]="deepSkyIntegrationTime"
+          class="no-wrap"
+        ></span>
+      </div>
 
-          <th>&nbsp;</th>
+      <div
+        [collapsed]="collapsed"
+        collapseAnimation
+        class="metadata-section"
+      >
+        <table class="table d-none d-md-table m-0">
+          <thead>
+          <tr>
+            <th>
+              {{ "Integration" | translate }}
+            </th>
 
-          <th>
+            <th>&nbsp;</th>
+
+            <th>
             <span
               *ngIf="deepSkyIntegrationTime"
               [innerHTML]="deepSkyIntegrationTime"
               class="no-wrap"
             ></span>
 
-            <span *ngIf="!deepSkyIntegrationTime">
+              <span *ngIf="!deepSkyIntegrationTime">
               {{ "n/d" | translate }}
             </span>
-          </th>
+            </th>
 
-          <th *ngIf="dates?.length">
-            <astrobin-image-viewer-acquisition-dates [dates]="dates"></astrobin-image-viewer-acquisition-dates>
-          </th>
+            <th *ngIf="dates?.length">
+              <astrobin-image-viewer-acquisition-dates [dates]="dates"></astrobin-image-viewer-acquisition-dates>
+            </th>
 
-          <th *ngIf="dates?.length">
+            <th *ngIf="dates?.length">
             <span *ngIf="image.averageMoonIllumination !== null" class="no-wrap">
               <fa-icon icon="moon"></fa-icon>
               {{ image.averageMoonIllumination | percent }}
             </span>
-          </th>
-        </tr>
-        </thead>
+            </th>
+          </tr>
+          </thead>
 
-        <tbody>
-        <tr class="spacer-row d-none d-lg-block">
-          <td colspan="4"></td>
-        </tr>
+          <tbody>
+          <tr class="spacer-row">
+            <td colspan="4"></td>
+          </tr>
 
-        <tr *ngFor="let filterSummary of filterSummaries">
-          <td [attr.data-label]="'Filter type' | translate">
-            <div class="metadata-item">
-              <div class="metadata-label">
-                <a
-                  (click)="openDeepSkyIntegrationDetails($event)"
-                  astrobinEventPreventDefault
-                  data-toggle="offcanvas"
-                >
-                  {{ humanizeFilterType(filterSummary.filterType) }}
-                </a>
+          <tr *ngFor="let filterSummary of filterSummaries">
+            <td [attr.data-label]="'Filter type' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
+                  <a
+                    (click)="openDeepSkyIntegrationDetails($event)"
+                    astrobinEventPreventDefault
+                    data-toggle="offcanvas"
+                  >
+                    {{ humanizeFilterType(filterSummary.filterType) }}
+                  </a>
+                </div>
               </div>
-            </div>
-          </td>
+            </td>
 
-          <td [attr.data-label]="'Frames' | translate" class="d-none d-lg-table-cell">
-            <div class="metadata-item">
-              <div class="metadata-label">
-                <ng-container *ngTemplateOutlet="deepSkyFramesTemplate; context: { $implicit: filterSummary }">
-                </ng-container>
-              </div>
-            </div>
-          </td>
-
-          <td [attr.data-label]="'Integration' | translate">
-            <div class="metadata-item">
-              <div class="metadata-label">
-                <span class="d-lg-none">
+            <td [attr.data-label]="'Frames' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
                   <ng-container *ngTemplateOutlet="deepSkyFramesTemplate; context: { $implicit: filterSummary }">
                   </ng-container>
-
-                  <span class="px-2 symbol">=</span>
-                </span>
-                <span
-                  [innerHTML]="imageService.formatIntegration(filterSummary.summary.totalIntegration)"
-                  class="no-wrap"
-                ></span>
+                </div>
               </div>
-            </div>
-          </td>
+            </td>
 
-          <td *ngIf="dates?.length" [attr.data-label]="'Dates' | translate">
-            <div class="metadata-item">
-              <div class="metadata-label">
-                <astrobin-image-viewer-acquisition-dates
-                  [dates]="filterSummary.summary.dates"
-                ></astrobin-image-viewer-acquisition-dates>
+            <td [attr.data-label]="'Integration' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
+                  <span
+                    [innerHTML]="imageService.formatIntegration(filterSummary.summary.totalIntegration)"
+                    class="no-wrap"
+                  ></span>
+                </div>
               </div>
-            </div>
-          </td>
+            </td>
 
-          <td *ngIf="dates?.length" [attr.data-label]="'Avg. moon' | translate">
-            <div class="metadata-item">
-              <div class="metadata-label">
+            <td *ngIf="dates?.length" [attr.data-label]="'Dates' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
+                  <astrobin-image-viewer-acquisition-dates
+                    [dates]="filterSummary.summary.dates"
+                  ></astrobin-image-viewer-acquisition-dates>
+                </div>
+              </div>
+            </td>
+
+            <td *ngIf="dates?.length" [attr.data-label]="'Avg. moon' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
                 <span
                   *ngIf="filterSummary.summary.averageMoonIllumination !== null"
                   class="no-wrap"
@@ -196,13 +208,79 @@ interface DetailedFilterSummary {
                   <fa-icon icon="moon"></fa-icon>
                   {{ filterSummary.summary.averageMoonIllumination | percent }}
                 </span>
+                </div>
               </div>
-            </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table table-bordered d-md-none m-0">
+          <tbody *ngFor="let filterSummary of filterSummaries; let last = last">
+          <tr>
+            <th [attr.data-label]="'Filter type' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
+                  <a
+                    (click)="openDeepSkyIntegrationDetails($event)"
+                    astrobinEventPreventDefault
+                    data-toggle="offcanvas"
+                  >
+                    {{ humanizeFilterType(filterSummary.filterType) }}
+                  </a>
+                </div>
+              </div>
+            </th>
+
+            <td [attr.data-label]="'Integration' | translate">
+              <div class="metadata-item justify-content-end">
+                <div class="metadata-label">
+                  <ng-container *ngTemplateOutlet="deepSkyFramesTemplate; context: { $implicit: filterSummary }">
+                  </ng-container>
+
+                  <span class="px-2 symbol">=</span>
+                  <span
+                    [innerHTML]="imageService.formatIntegration(filterSummary.summary.totalIntegration)"
+                    class="no-wrap"
+                  ></span>
+                </div>
+              </div>
+            </td>
+          <tr>
+
+          <tr>
+            <th *ngIf="dates?.length" [attr.data-label]="'Dates' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
+                  <astrobin-image-viewer-acquisition-dates
+                    [dates]="filterSummary.summary.dates"
+                  ></astrobin-image-viewer-acquisition-dates>
+                </div>
+              </div>
+            </th>
+
+            <td *ngIf="dates?.length" [attr.data-label]="'Avg. moon' | translate">
+              <div class="metadata-item justify-content-end">
+                <div class="metadata-label">
+                <span
+                  *ngIf="filterSummary.summary.averageMoonIllumination !== null"
+                  class="no-wrap"
+                >
+                  <fa-icon icon="moon"></fa-icon>
+                  {{ filterSummary.summary.averageMoonIllumination | percent }}
+                </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="dates?.length && !last" class="small-spacer-row">
+            <td colspan="2"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
 
     <ng-template #deepSkyFramesTemplate let-filterSummary>
       <span
@@ -226,7 +304,7 @@ interface DetailedFilterSummary {
           icon="bars-staggered"
           triggers="hover click"
         ></fa-icon>
-        <span class="d-lg-none">{{ "Mix of exposure times" | translate }}</span>
+        <span class="d-md-none">{{ "Mix of exposure times" | translate }}</span>
       </span>
     </ng-template>
 
@@ -342,15 +420,22 @@ interface DetailedFilterSummary {
           <span *ngIf="detail.iso" class="iso">ISO: <span class="value">{{ detail.iso }}</span></span>
           <span *ngIf="detail.gain" class="gain">Gain: <span class="value">{{ detail.gain }}</span></span>
           <span *ngIf="detail.fNumber" class="f-number"><span class="value">f/{{ detail.fNumber }}</span></span>
-          <span *ngIf="detail.sensorCooling" class="sensor-cooling">{{ "Cooling" | translate }}: <span class="value">{{ detail.sensorCooling }}</span></span>
-          <span *ngIf="detail.darks" class="darks">{{ "Darks" | translate }}: <span class="value">{{ detail.darks }}</span></span>
-          <span *ngIf="detail.flats" class="flats">{{ "Flats" | translate }}: <span class="value">{{ detail.flats }}</span></span>
-          <span *ngIf="detail.flatDarks" class="flat-darks">{{ "Flat darks" | translate }}: <span class="value">{{ detail.flatDarks }}</span></span>
+          <span *ngIf="detail.sensorCooling" class="sensor-cooling">{{ "Cooling" | translate }}: <span
+            class="value">{{ detail.sensorCooling }}</span></span>
+          <span *ngIf="detail.darks" class="darks">{{ "Darks" | translate }}: <span
+            class="value">{{ detail.darks }}</span></span>
+          <span *ngIf="detail.flats" class="flats">{{ "Flats" | translate }}: <span
+            class="value">{{ detail.flats }}</span></span>
+          <span *ngIf="detail.flatDarks" class="flat-darks">{{ "Flat darks" | translate }}: <span
+            class="value">{{ detail.flatDarks }}</span></span>
           <span *ngIf="detail.bias" class="bias">{{ "Bias" | translate }}: <span class="value">{{ detail.bias }}</span></span>
           <span *ngIf="detail.bortle" class="bortle">Bortle: <span class="value">{{ detail.bortle }}</span></span>
-          <span *ngIf="detail.meanSqm" class="mean-sqm">{{ "Mean SQM" | translate }}: <span class="value">{{ detail.meanSqm }}</span></span>
-          <span *ngIf="detail.meanFwhm" class="mean-fwhm">{{ "Mean FWHM" | translate }}: <span class="value">{{ detail.meanFwhm }}</span></span>
-          <span *ngIf="detail.temperature" class="temperature">{{ "Temperature" | translate }}: <span class="value">{{ detail.temperature }}</span></span>
+          <span *ngIf="detail.meanSqm" class="mean-sqm">{{ "Mean SQM" | translate }}: <span
+            class="value">{{ detail.meanSqm }}</span></span>
+          <span *ngIf="detail.meanFwhm" class="mean-fwhm">{{ "Mean FWHM" | translate }}: <span
+            class="value">{{ detail.meanFwhm }}</span></span>
+          <span *ngIf="detail.temperature" class="temperature">{{ "Temperature" | translate }}: <span
+            class="value">{{ detail.temperature }}</span></span>
         </div>
       </ng-template>
     </ng-template>
@@ -379,9 +464,21 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     public readonly deviceService: DeviceService,
     public readonly filterService: FilterService,
     public readonly translateService: TranslateService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService,
+    public readonly collapseSyncService: CollapseSyncService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    super(store$, searchService, router, imageViewerService, windowRefService);
+    super(
+      store$,
+      searchService,
+      router,
+      imageViewerService,
+      windowRefService,
+      cookieService,
+      collapseSyncService,
+      changeDetectorRef
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {
