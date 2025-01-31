@@ -108,7 +108,7 @@ export class CollapseAnimationDirective implements AfterViewInit, OnChanges, OnD
       this.renderer.setStyle(element, "margin-bottom", `${this._initialMarginBottom}px`);
 
       // Reset height to auto after animation to avoid future reflows
-      this.utilsService.delay(ANIMATION_DURATION).subscribe(() => {
+      this.utilsService.delay(ANIMATION_DURATION + ANIMATION_DURATION / 3).subscribe(() => {
         this.renderer.setStyle(element, "max-height", "none");
         this.renderer.removeStyle(element, "will-change"); // Cleanup
       });
