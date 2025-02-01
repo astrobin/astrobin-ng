@@ -106,7 +106,7 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
 
   private _setFollowsYou(): void {
     this.currentUser$.pipe(take(1)).subscribe(currentUser => {
-      if (!currentUser) {
+      if (!currentUser || currentUser.id === this.user?.id || currentUser.id === this.userId) {
         return;
       }
 
