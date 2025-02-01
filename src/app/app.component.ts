@@ -93,24 +93,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
   }
 
   initRouterEvents(): void {
-    let previousUrl: string | null = null;
-
     this.router.events?.subscribe(event => {
-      console.log(event);
-      if (event instanceof NavigationStart) {
-        // Compare the base URL (without fragment) of current and previous navigation
-        const currentBaseUrl = event.url.split('#')[0];
-        const previousBaseUrl = previousUrl?.split('#')[0] || null;
-
-        // Only set loading if:
-        // 1. There's no previous URL (first navigation)
-        // 2. Or the base URLs are different (actual route change)
-        if (!previousUrl || currentBaseUrl !== previousBaseUrl) {
-          this.loadingService.setLoading(true);
-        }
-
-        previousUrl = event.url;
-      } else if (event instanceof NavigationEnd) {
+      if (event instanceof NavigationEnd) {
         if (this.offcanvasService.hasOpenOffcanvas()) {
           this.offcanvasService.dismiss();
         }
@@ -121,7 +105,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
 
         this.popNotificationsService.clear();
 
-        this.loadingService.setLoading(false);
         this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
         this.windowRefService.changeBodyOverflow("auto");
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
