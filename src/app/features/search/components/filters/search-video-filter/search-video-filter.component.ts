@@ -56,4 +56,12 @@ export class SearchVideoFilterComponent extends SearchBaseFilterComponent {
       this.translateService.instant(new YesNoPipe().transform(this.value))
     );
   }
+
+  hasValue(value?: any): boolean {
+    if (value === null || value === undefined) {
+      value = this.value;
+    }
+
+    return value;
+  }
 }

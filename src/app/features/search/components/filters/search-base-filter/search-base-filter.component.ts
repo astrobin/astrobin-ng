@@ -101,11 +101,11 @@ export abstract class SearchBaseFilterComponent
   }
 
   hasValue(value?: any): boolean {
-    if (!value) {
+    if (value === null || value === undefined) {
       value = this.value;
     }
 
-    if (!value) {
+    if (value === null || value === undefined) {
       return false;
     }
 

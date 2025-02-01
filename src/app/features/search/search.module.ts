@@ -55,6 +55,7 @@ import { SearchAccessoryFilterComponent } from "@features/search/components/filt
 import { SearchSoftwareFilterComponent } from "@features/search/components/filters/search-software-filter/search-software-filter.component";
 import { SearchUsersFilterComponent } from "@features/search/components/filters/search-users-filter/search-users-filter.component";
 import { SearchSensorFilterComponent } from "@features/search/components/filters/search-sensor-filter/search-sensor-filter.component";
+import { SearchCollaborationFilterComponent } from "@features/search/components/filters/search-collaboration-filter/search-collaboration-filter.component";
 
 const allFilterComponents = [
   SearchTextFilterComponent,
@@ -101,7 +102,8 @@ const allFilterComponents = [
   SearchImageSizeFilterComponent,
   SearchGroupsFilterComponent,
   SearchPersonalFiltersFilterComponent,
-  SearchUsersFilterComponent
+  SearchUsersFilterComponent,
+  SearchCollaborationFilterComponent
 ];
 
 @NgModule({

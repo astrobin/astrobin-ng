@@ -1,6 +1,6 @@
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
-import { ComponentRef, Inject, Injectable, Optional, Type, ViewContainerRef } from "@angular/core";
+import { ComponentRef, Injectable, Type, ViewContainerRef } from "@angular/core";
 import { forkJoin, Observable, of, Subject } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -10,7 +10,6 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { map, tap } from "rxjs/operators";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { SearchFilterCategory, SearchFilterComponentInterface } from "@core/interfaces/search-filter-component.interface";
-import { AUTO_COMPLETE_ONLY_FILTERS_TOKEN, SEARCH_FILTERS_TOKEN } from "@core/injection-tokens/search-filter.tokens";
 import { DynamicSearchFilterLoaderService } from "@features/search/services/dynamic-search-filter-loader.service";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
 import { CameraService } from "@features/equipment/services/camera.service";
@@ -364,6 +363,10 @@ export class SearchService extends BaseService {
       {
         key: SearchAutoCompleteType.TEXT,
         method: this.autoCompleteFreeText$(query)
+      },
+      {
+        key: SearchAutoCompleteType.COLLABORATION,
+        method: this.autoCompleteCollaboration$(query)
       }
     ];
   }
@@ -1149,6 +1152,17 @@ export class SearchService extends BaseService {
           .slice(0, this._autoCompleteItemsLimit)
       )
     );
+  }
+
+  autoCompleteCollaboration$(query: string): Observable<SearchAutoCompleteItem[]> {
+    return this._autoCompleteYesNo$(query, SearchAutoCompleteType.COLLABORATION).pipe(
+      map(value => (
+        value.map(item => ({
+            ...item,
+            minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.COLLABORATION)
+          })
+        )
+      ))) as Observable<SearchAutoCompleteItem[]>;
   }
 
   private _autoCompleteMatch(query: string, candidate: string): boolean {

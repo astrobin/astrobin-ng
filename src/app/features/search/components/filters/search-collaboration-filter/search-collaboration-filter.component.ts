@@ -13,25 +13,24 @@ import { SearchFilterService } from "@features/search/services/search-filter.ser
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
-  selector: "astrobin-modified-camera-filter.search-filter-component",
+  selector: "astrobin-collaboration-filter.search-filter-component",
   templateUrl: "../search-base-filter/search-base-filter.component.html",
   styleUrls: ["../search-base-filter/search-base-filter.component.scss"]
 })
-export class SearchModifiedCameraFilterComponent extends SearchBaseFilterComponent {
-  static key = SearchAutoCompleteType.MODIFIED_CAMERA;
-  static minimumSubscription = PayableProductInterface.ULTIMATE;
-
-  readonly category = SearchFilterCategory.EQUIPMENT_ATTRIBUTES;
-  readonly label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchModifiedCameraFilterComponent.key as SearchAutoCompleteType);
-  readonly editFields = [
+export class SearchCollaborationFilterComponent extends SearchBaseFilterComponent {
+  static key = SearchAutoCompleteType.COLLABORATION;
+  static minimumSubscription = PayableProductInterface.LITE;
+  category = SearchFilterCategory.ACQUISITION_ATTRIBUTES;
+  label = this.searchFilterService.humanizeSearchAutoCompleteType(SearchCollaborationFilterComponent.key as SearchAutoCompleteType);
+  editFields = [
     {
-      key: SearchModifiedCameraFilterComponent.key,
+      key: SearchCollaborationFilterComponent.key,
       type: "checkbox",
       wrappers: ["default-wrapper"],
       props: {
         hideOptionalMarker: true,
         label: this.label,
-        description: this.translateService.instant("Only show images acquired with modified cameras.")
+        description: this.translateService.instant("Include/exclude images created by multiple photographers.")
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -57,13 +56,5 @@ export class SearchModifiedCameraFilterComponent extends SearchBaseFilterCompone
     return this.domSanitizer.bypassSecurityTrustHtml(
       this.translateService.instant(new YesNoPipe().transform(this.value))
     );
-  }
-
-  hasValue(value?: any): boolean {
-    if (value === null || value === undefined) {
-      value = this.value;
-    }
-
-    return value;
   }
 }

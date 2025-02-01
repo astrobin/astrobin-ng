@@ -44,5 +44,6 @@ export enum SearchAutoCompleteType {
   IMAGE_SIZE = "image_size",
   GROUPS = "groups",
   PERSONAL_FILTERS = "personal_filters",
-  USERS = "users"
+  USERS = "users",
+  COLLABORATION = "collaboration"
 }

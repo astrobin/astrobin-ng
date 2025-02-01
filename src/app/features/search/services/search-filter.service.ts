@@ -165,6 +165,8 @@ export class SearchFilterService extends BaseService {
         return this.translateService.instant("Personal filters");
       case SearchAutoCompleteType.USERS:
         return this.translateService.instant("Users");
+      case SearchAutoCompleteType.COLLABORATION:
+        return this.translateService.instant("Collaboration");
     }
   }
 
