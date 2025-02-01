@@ -126,7 +126,7 @@ interface DetailedFilterSummary {
         collapseAnimation
         class="metadata-section"
       >
-        <table class="table d-none d-md-table m-0">
+        <table class="table table-striped d-none d-md-table m-0">
           <tbody>
           <tr *ngFor="let filterSummary of filterSummaries">
             <td [attr.data-label]="'Filter type' | translate">
