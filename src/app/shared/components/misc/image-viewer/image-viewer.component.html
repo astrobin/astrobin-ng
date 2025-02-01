@@ -381,6 +381,11 @@
       [image]="image"
     ></astrobin-image-viewer-equipment>
 
+    <astrobin-image-viewer-guiding-equipment
+      *ngIf="image && imageService.hasGuidingEquipment(image)"
+      [image]="image"
+    ></astrobin-image-viewer-guiding-equipment>
+
     <astrobin-image-viewer-objects
       *ngIf="revision?.solution?.objectsInField || revision?.solution?.advancedAnnotations"
       [image]="image"

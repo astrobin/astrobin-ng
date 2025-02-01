@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnChanges, SimpleChanges } from "@angular/core";
-import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageViewerService } from "@core/services/image-viewer.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { TelescopeInterface as LegacyTelescopeInterface } from "@core/interfaces/telescope.interface";
 import { CameraInterface as LegacyCameraInterface } from "@core/interfaces/camera.interface";
 import { MountInterface as LegacyMountInterface } from "@core/interfaces/mount.interface";
@@ -21,19 +19,11 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { ImageService } from "@core/services/image/image.service";
-import { MatchType } from "@features/search/enums/match-type.enum";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentService } from "@core/services/equipment.service";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
-
-type LegacyEquipmentItem =
-  | LegacyTelescopeInterface
-  | LegacyCameraInterface
-  | LegacyMountInterface
-  | LegacyFilterInterface
-  | LegacyAccessoryInterface
-  | LegacySoftwareInterface;
+import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-base-equipment.component";
 
 @Component({
   selector: "astrobin-image-viewer-equipment",
@@ -66,7 +56,7 @@ type LegacyEquipmentItem =
           <table class="table table-sm table-mobile-support mb-0">
             <tbody>
             <ng-container *ngFor="let attr of imagingAttributes">
-              <tr *ngIf="this[attr].length > 0">
+              <tr *ngIf="this[attr]?.length">
                 <th>
                   <div class="equipment-label">
                     {{ attrToLabel[attr] }}
@@ -74,10 +64,15 @@ type LegacyEquipmentItem =
                 </th>
                 <td>
                   <div class="equipment-container">
-                    <ng-container
-                      [ngTemplateOutlet]="equipmentTemplate"
-                      [ngTemplateOutletContext]="{ $implicit: attr, enableKlassIcon: false }"
-                    ></ng-container>
+                    <astrobin-image-viewer-equipment-item
+                      [attr]="attr"
+                      [items]="this[attr]"
+                      [enableKlassIcon]="false"
+                      [attrToIcon]="attrToIcon"
+                      [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
+                      (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
+                      (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)">
+                    </astrobin-image-viewer-equipment-item>
                   </div>
                 </td>
               </tr>
@@ -86,75 +81,12 @@ type LegacyEquipmentItem =
           </table>
         </div>
       </div>
-
-      <div
-        *ngIf="hasGuidingEquipment"
-        (click)="toggleCollapse()"
-        [class.collapsed]="collapsed"
-        class="metadata-header supports-collapsing"
-      >
-        {{ "Guiding equipment" | translate }}
-      </div>
-
-      <div
-        *ngIf="hasGuidingEquipment"
-        [collapsed]="collapsed"
-        collapseAnimation
-        class="metadata-section w-100"
-      >
-        <div class="equipment-section">
-          <ng-container *ngFor="let attr of guidingAttributes">
-            <ng-container
-              [ngTemplateOutlet]="equipmentTemplate"
-              [ngTemplateOutletContext]="{ $implicit: attr, enableKlassIcon: true }"
-            ></ng-container>
-          </ng-container>
-        </div>
-      </div>
     </ng-container>
-
-    <ng-template #equipmentTemplate let-attr let-enableKlassIcon="enableKlassIcon">
-      <ng-container *ngIf="attr.indexOf('legacy') === -1; else legacyTemplate">
-        <a
-          *ngFor="let item of this[attr]"
-          [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
-          (click)="equipmentItemClicked($event, item)"
-          class="value"
-        >
-          <astrobin-equipment-item-display-name
-            [item]="item"
-            [enableKlassIcon]="enableKlassIcon"
-            [enableBrandLink]="false"
-            [enableNameLink]="false"
-            [enableSummaryModal]="false"
-            [showFrozenAsAmbiguous]="false"
-            [showItemUnapprovedInfo]="false"
-            [showRetailers]="true"
-          ></astrobin-equipment-item-display-name>
-        </a>
-      </ng-container>
-
-      <ng-template #legacyTemplate>
-        <a
-          *ngFor="let item of this[attr]"
-          [href]="legacyEquipmentUrl(item)"
-          (click)="legacyEquipmentItemClicked($event, item)"
-          class="value legacy-equipment"
-        >
-          <img
-            *ngIf="enableKlassIcon"
-            class="klass-icon"
-            src="/assets/images/{{ attrToIcon[attr] }}-white.png?v=1"
-            alt="" />
-          <span>{{ item.make }} {{ item.name }}</span>
-        </a>
-      </ng-template>
-    </ng-template>
   `,
   styleUrls: ["./image-viewer-equipment.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseComponent implements OnChanges {
+export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentComponent implements OnChanges {
   hasEquipment: boolean;
   hasImagingEquipment: boolean;
   hasGuidingEquipment: boolean;
@@ -171,10 +103,6 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
   legacyFocalReducers: LegacyFocalReducerInterface[] = [];
   software: SoftwareInterface[] = [];
   legacySoftware: LegacySoftwareInterface[];
-  guidingTelescopes: TelescopeInterface[] = [];
-  legacyGuidingTelescopes: LegacyTelescopeInterface[] = [];
-  guidingCameras: CameraInterface[] = [];
-  legacyGuidingCameras: LegacyCameraInterface[] = [];
 
   protected readonly imagingAttributes = [
     "telescopes",
@@ -191,12 +119,6 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
     "software",
     "legacySoftware"
   ];
-  protected readonly guidingAttributes = [
-    "guidingTelescopes",
-    "legacyGuidingTelescopes",
-    "guidingCameras",
-    "legacyGuidingCameras"
-  ];
   protected readonly attrToIcon = {
     "telescopes": "telescope",
     "legacyTelescopes": "telescope",
@@ -210,11 +132,7 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
     "legacyAccessories": "accessory",
     "legacyFocalReducers": "accessory",
     "software": "software",
-    "legacySoftware": "software",
-    "guidingTelescopes": "telescope",
-    "legacyGuidingTelescopes": "telescope",
-    "guidingCameras": "camera",
-    "legacyGuidingCameras": "camera"
+    "legacySoftware": "software"
   };
   protected attrToLabel: { [key: string]: string };
 
@@ -262,10 +180,6 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
       this.legacyFocalReducers = image.focalReducers;
       this.software = image.software2;
       this.legacySoftware = image.software;
-      this.guidingTelescopes = image.guidingTelescopes2;
-      this.legacyGuidingTelescopes = image.guidingTelescopes;
-      this.guidingCameras = image.guidingCameras2;
-      this.legacyGuidingCameras = image.guidingCameras;
     }
 
     let imagingTelescopesLabel: string;
@@ -317,57 +231,7 @@ export class ImageViewerEquipmentComponent extends ImageViewerSectionBaseCompone
       "legacyAccessories": this.legacyAccessories?.length > 1 ? this.translateService.instant("Accessories") : this.translateService.instant("Accessory"),
       "legacyFocalReducers": this.legacyFocalReducers?.length > 1 ? this.translateService.instant("Focal reducers") : this.translateService.instant("Focus reducer"),
       "software": this.translateService.instant("Software"),
-      "legacySoftware": this.translateService.instant("Software"),
-      "guidingTelescopes": this.translateService.instant("Guiding optics"),
-      "legacyGuidingTelescopes": this.translateService.instant("Guiding optics"),
-      "guidingCameras": this.guidingCameras?.length > 1 ? this.translateService.instant("Guiding cameras") : this.translateService.instant("Guiding camera"),
-      "legacyGuidingCameras": this.legacyGuidingCameras?.length > 1 ? this.translateService.instant("Guiding cameras") : this.translateService.instant("Guiding camera")
+      "legacySoftware": this.translateService.instant("Software")
     };
-  }
-
-  protected equipmentItemClicked(event: MouseEvent, item: EquipmentItem): void {
-    event.preventDefault();
-
-    const url = `/equipment/explorer/${item.klass.toLowerCase()}/${item.id}`;
-
-    if (event.ctrlKey || event.metaKey) {
-      this.windowRefService.nativeWindow.open(url);
-      return;
-    }
-
-    this.router.navigateByUrl(url).then(() => {
-      this.imageViewerService.closeSlideShow(false);
-    });
-  }
-
-  protected legacyEquipmentItemClicked(event: MouseEvent, item: LegacyEquipmentItem): void {
-    event.preventDefault();
-
-    if (event.ctrlKey || event.metaKey) {
-      const url = this.legacyEquipmentUrl(item);
-      this.windowRefService.nativeWindow.open(url);
-      return;
-    }
-
-    this.search({
-      text: {
-        value: this._legacyItemSearchText(item),
-        matchType: MatchType.ALL
-      }
-    });
-  }
-
-  protected legacyEquipmentUrl(item: LegacyEquipmentItem): string {
-    const params = this.searchService.modelToParams({
-      text: {
-        value: this._legacyItemSearchText(item),
-        matchType: MatchType.ALL
-      }
-    });
-    return `/search?p=${params}`;
-  }
-
-  private _legacyItemSearchText(item: LegacyEquipmentItem): string {
-    return "\"" + ((item.make || "") + " " + (item.name || "")).trim() + "\"";
   }
 }

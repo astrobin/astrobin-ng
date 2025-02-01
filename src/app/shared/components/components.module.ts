@@ -146,6 +146,8 @@ import { ImageViewerIotdTpStatsComponent } from "@shared/components/misc/image-v
 import { MasonryLayoutComponent } from "@shared/components/masonry-layout/masonry-layout.component";
 import { ImageGalleryLoadingComponent } from "@shared/components/image-gallery-loading-indicator/image-gallery-loading.component";
 import { IconsModule } from "@shared/icons.module";
+import { ImageViewerGuidingEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-guiding-equipment.component";
+import { ImageViewerEquipmentItemComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment-item.component";
 
 const modules = [
   CommonModule,
@@ -244,6 +246,8 @@ const components = [
   ImageViewerAstrometryComponent,
   ImageViewerObjectsComponent,
   ImageViewerEquipmentComponent,
+  ImageViewerGuidingEquipmentComponent,
+  ImageViewerEquipmentItemComponent,
   ImageViewerRevisionsComponent,
   ImageViewerRevisionSummaryComponent,
   ImageViewerGroupsAndCollectionsComponent,
