@@ -41,7 +41,17 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
             hideOptionalMarker: true
           }
         },
-        this.getMatchTypeField(`${SearchTextFilterComponent.key}.value`, " ")
+        this.getMatchTypeField(`${SearchTextFilterComponent.key}.value`, " "),
+        {
+          key: "onlySearchInTitlesAndDescriptions",
+          type: "checkbox",
+          wrappers: ["default-wrapper"],
+          defaultValue: false,
+          props: {
+            hideOptionalMarker: true,
+            label: this.translateService.instant("Only search in titles and descriptions")
+          }
+        }
       ]
     }
   ];
