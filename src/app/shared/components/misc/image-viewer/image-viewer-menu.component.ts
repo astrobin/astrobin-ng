@@ -34,16 +34,7 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
   selector: "astrobin-image-viewer-menu",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <a
-        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
-        [class]="itemClass"
-      >
-        {{ "Classic view" | translate }}
-      </a>
-
       <ng-container *ngIf="currentUserWrapper.user?.id === image.user">
-        <div [class]="dividerClass"></div>
-
         <a
           (click)="imageService.navigateToEdit(image)"
           astrobinEventPreventDefault
@@ -185,6 +176,13 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
           {{ "External link to FITS" | translate }}
         </a>
       </ng-container>
+
+      <a
+        [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
+        [class]="itemClass"
+      >
+        {{ "Classic view" | translate }}
+      </a>
     </ng-container>
 
     <ng-template #downloadOffcanvasTemplate let-offcanvas>
