@@ -6,10 +6,10 @@ import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 @Component({
   selector: 'astrobin-image-icons',
   template: `
-    <fa-icon *ngIf="image.isPlayable" icon="play"></fa-icon>
+    <fa-icon *ngIf="isPlayable" icon="play"></fa-icon>
 
     <fa-icon
-      *ngIf="image.isWip"
+      *ngIf="isWip"
       [ngbTooltip]="'This image is in your staging area' | translate"
       container="body"
       triggers="hover click"
@@ -48,7 +48,7 @@ import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
           !image.isIotd &&
           !image.isTopPick &&
           !image.isTopPickNomination &&
-          image.isInIotdQueue
+          isInIotdQueue
         "
         class="in-iotd-queue"
         icon="gavel"
@@ -70,12 +70,34 @@ export class ImageIconsComponent extends BaseComponentDirective implements OnCha
   @Input() image: ImageInterface | ImageSearchInterface;
 
   protected isCollaboration: boolean;
+  protected isWip: boolean;
+  protected isPlayable: boolean;
+  protected isInIotdQueue: boolean;
 
   ngOnChanges() {
+    this._setIsCollaboration();
+    this._setIsWip();
+    this._setIsPlayable();
+    this._setIsInIotdQueue();
+  }
+
+  private _setIsCollaboration(): void {
     if (this.image.hasOwnProperty('collaborators')) {
       this.isCollaboration = (this.image as ImageInterface).collaborators?.length > 0;
     } else if (this.image.hasOwnProperty('collaboratorIds')) {
       this.isCollaboration = (this.image as ImageSearchInterface).collaboratorIds?.length > 0;
     }
+  }
+
+  private _setIsWip(): void {
+    this.isWip = this.image.hasOwnProperty('isWip') && (this.image as ImageInterface).isWip;
+  }
+
+  private _setIsPlayable(): void {
+    this.isPlayable = this.image.hasOwnProperty('isPlayable') && (this.image as ImageInterface).isPlayable;
+  }
+
+  private _setIsInIotdQueue(): void {
+    this.isInIotdQueue = this.image.hasOwnProperty('isInIotdQueue') && (this.image as ImageInterface).isInIotdQueue;
   }
 }
