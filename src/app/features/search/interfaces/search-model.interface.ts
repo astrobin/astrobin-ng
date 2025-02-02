@@ -21,6 +21,7 @@ export interface SearchModelInterface {
   text?: {
     value: string;
     matchType?: MatchType;
+    onlySearchInTitlesAndDescriptions?: boolean;
   };
   itemType?: EquipmentItemType;
   itemId?: EquipmentItem["id"];

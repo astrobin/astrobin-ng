@@ -150,7 +150,8 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
           ...parsedParams,
           text: {
             value: parsedParams.text?.value || "",
-            matchType: parsedParams.text?.matchType
+            matchType: parsedParams.text?.matchType,
+            onlySearchInTitlesAndDescriptions: parsedParams.text?.onlySearchInTitlesAndDescriptions
           },
           page: 1
         };
