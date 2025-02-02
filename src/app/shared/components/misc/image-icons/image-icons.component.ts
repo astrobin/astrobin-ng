@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
 import { ImageInterface } from "@core/interfaces/image.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 
 @Component({
   selector: 'astrobin-image-icons',
@@ -56,7 +57,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
       ></fa-icon>
 
       <fa-icon
-        *ngIf="image.collaborators?.length"
+        *ngIf="isCollaboration"
         class="collaborators"
         icon="users"
       ></fa-icon>
@@ -65,6 +66,16 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   styleUrls: ['./image-icons.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageIconsComponent extends BaseComponentDirective {
-  @Input() image: ImageInterface;
+export class ImageIconsComponent extends BaseComponentDirective implements OnChanges {
+  @Input() image: ImageInterface | ImageSearchInterface;
+
+  protected isCollaboration: boolean;
+
+  ngOnChanges() {
+    if (this.image.hasOwnProperty('collaborators')) {
+      this.isCollaboration = (this.image as ImageInterface).collaborators?.length > 0;
+    } else if (this.image.hasOwnProperty('collaboratorIds')) {
+      this.isCollaboration = (this.image as ImageSearchInterface).collaboratorIds?.length > 0;
+    }
+  }
 }

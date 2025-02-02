@@ -61,4 +61,5 @@ export interface ImageSearchInterface {
   isTopPickNomination: boolean;
   username: string;
   userDisplayName: string;
+  collaboratorIds: number[];
 }
