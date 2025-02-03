@@ -426,6 +426,11 @@ export class ImageViewerComponent
     }
 
     const imageElement = this.imageArea.nativeElement.querySelector("astrobin-image img");
+
+    if (!imageElement) {
+      return;
+    }
+
     const imageRenderedWidth = imageElement.clientWidth;
     const imageNaturalWidth = imageElement.naturalWidth;
     const hdWidth = Math.min(imageNaturalWidth, 1824);
