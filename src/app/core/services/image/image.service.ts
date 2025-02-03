@@ -607,29 +607,29 @@ export class ImageService extends BaseService {
     pad = false,
     precision = 0
   ): string {
-    const degrees = Math.floor(dec);
-    const minutes = Math.floor((dec - degrees) * 60);
-    const seconds = Number((((dec - degrees) * 60 - minutes) * 60).toFixed(precision));
+    const totalSeconds = Math.abs(dec) * 3600;
+    const [minutes, seconds] = UtilsService.divmod(totalSeconds, 60);
+    const [degrees, finalMinutes] = UtilsService.divmod(minutes, 60);
 
-    const paddedDegrees = pad ? UtilsService.padNumber(degrees) : degrees;
-    const paddedMinutes = pad ? UtilsService.padNumber(minutes) : minutes;
-    const paddedSeconds = pad ? UtilsService.padNumber(seconds) : seconds;
-
-    const formattedDegrees = degrees >= 0 ? `+${paddedDegrees}` : paddedDegrees;
+    const finalDegrees = dec >= 0 ? degrees : -degrees;
+    const formattedDegrees = finalDegrees >= 0 ? `+${finalDegrees}` : finalDegrees;
+    const paddedMinutes = pad ? UtilsService.padNumber(finalMinutes) : finalMinutes;
+    const paddedSeconds = pad ? UtilsService.padNumber(Number(seconds.toFixed(precision))) : Number(seconds.toFixed(precision));
 
     if (html && symbols) {
       return `
-      <span class="degrees">${formattedDegrees}<span class="symbol">&deg;</span></span>
-      <span class="minutes">${paddedMinutes}<span class="symbol">&prime;</span></span>
-      <span class="seconds">${paddedSeconds}<span class="symbol">&Prime;</span></span>
-    `;
+        <span class="degrees">${formattedDegrees}<span class="symbol">&deg;</span></span>
+        <span class="minutes">${paddedMinutes}<span class="symbol">&prime;</span></span>
+        <span class="seconds">${paddedSeconds}<span class="symbol">&Prime;</span></span>
+      `;
     }
 
     if (html) {
       return `
-      <span class="degrees">${formattedDegrees}</span>
-      <span class="minutes">${paddedMinutes}</span>
-      <span class="seconds">${paddedSeconds}</span>`;
+        <span class="degrees">${formattedDegrees}</span>
+        <span class="minutes">${paddedMinutes}</span>
+        <span class="seconds">${paddedSeconds}</span>
+      `;
     }
 
     if (symbols) {

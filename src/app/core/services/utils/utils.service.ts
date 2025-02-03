@@ -41,6 +41,12 @@ export class UtilsService {
   ) {
   }
 
+  static divmod(a: number, b: number): [number, number] {
+    const quotient = Math.floor(a / b);
+    const remainder = a - quotient * b;
+    return [quotient, remainder];
+  }
+
   static padNumber(num: number, size: number = 2): string {
     let s = num + "";
     while (s.length < size) {
