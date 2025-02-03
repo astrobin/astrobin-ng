@@ -1,14 +1,12 @@
 @import "../../../../styles/breakpoints";
 
-$height: 500px;
-
 :host {
   position: relative;
 
   astrobin-image-loading-indicator,
   .iotd-image {
     width: 100%;
-    height: $height;
+    height: calc(50vh - 64px); // Half the page minus the header.
   }
 
   .iotd-image {
