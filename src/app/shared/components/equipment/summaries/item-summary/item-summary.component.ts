@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { CameraInterface, CameraType, instanceOfCamera } from "@features/equipment/types/camera.interface";
@@ -11,24 +11,12 @@ import { TelescopeInterface, TelescopeType } from "@features/equipment/types/tel
 import { distinctUntilKeyChangedOrNull, UtilsService } from "@core/services/utils/utils.service";
 import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import {
-  selectBrand,
-  selectEquipmentItem,
-  selectMostOftenUsedWithForItem
-} from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectEquipmentItem, selectMostOftenUsedWithForItem } from "@features/equipment/store/equipment.selectors";
 import { Observable, of } from "rxjs";
-import {
-  GetMostOftenUsedWith,
-  LoadBrand,
-  LoadEquipmentItem,
-  LoadSensor
-} from "@features/equipment/store/equipment.actions";
+import { GetMostOftenUsedWith, LoadBrand, LoadEquipmentItem, LoadSensor } from "@features/equipment/store/equipment.actions";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import {
-  EquipmentItemDisplayProperty,
-  EquipmentItemService
-} from "@core/services/equipment-item.service";
+import { EquipmentItemDisplayProperty, EquipmentItemService } from "@core/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { instanceOfSensor, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
@@ -305,7 +293,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       });
     }
 
-    if (this.showMostOftenUsedWith) {
+    if (this.item.reviewerDecision === EquipmentItemReviewerDecision.APPROVED && this.showMostOftenUsedWith) {
       const payload = { itemType: this.item.klass, itemId: this.item.id };
       this.store$.dispatch(new GetMostOftenUsedWith(payload));
       this.mostOftenUsedWith$ = this.store$.select(selectMostOftenUsedWithForItem, payload).pipe(
@@ -359,7 +347,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
   itemTypeSupportsMostOftenUsedWith(): boolean {
     return (
-      this.showMostOftenUsedWith &&
+      this.item.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
       [
         EquipmentItemType.CAMERA,
         EquipmentItemType.TELESCOPE,
