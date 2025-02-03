@@ -224,7 +224,12 @@
 
         <a [href]="classicRoutesService.INBOX" class="dropdown-item">
           <fa-icon icon="inbox"></fa-icon>
-          {{ "My messages" | translate }}
+          {{ "Messages" | translate }}
+        </a>
+
+        <a [routerLink]="'/equipment/marketplace/users/' + user.username + '/listings'" class="dropdown-item">
+          <fa-icon icon="shopping-cart"></fa-icon>
+          {{ "Marketplace listings" | translate }}
         </a>
 
         <a [href]="classicRoutesService.API_KEYS(user)" class="dropdown-item">
@@ -234,7 +239,7 @@
 
         <a [href]="classicRoutesService.SETTINGS" class="dropdown-item">
           <fa-icon icon="edit"></fa-icon>
-          {{ "My settings" | translate }}
+          {{ "Settings" | translate }}
         </a>
 
         <a (click)="toggleHighContrastTheme($event)" class="dropdown-item">
@@ -663,7 +668,13 @@
 
       <li class="nav-item">
         <a [href]="classicRoutesService.INBOX" class="nav-link">
-          {{ "My messages" | translate }}
+          {{ "Messages" | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a [routerLink]="'/equipment/marketplace/users/' + user.username + '/listings'" class="nav-link">
+          {{ "Marketplace listings" | translate }}
         </a>
       </li>
 
@@ -677,7 +688,7 @@
 
       <li class="nav-item">
         <a [href]="classicRoutesService.SETTINGS" class="nav-link">
-          {{ "My settings" | translate }}
+          {{ "Settings" | translate }}
         </a>
       </li>
 
