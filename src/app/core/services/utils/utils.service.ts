@@ -1158,6 +1158,20 @@ export class UtilsService {
     return Object.keys(obj);
   }
 
+  async getResizeObserver(): Promise<typeof ResizeObserver> {
+    try {
+      if (typeof ResizeObserver !== 'undefined') {
+        return ResizeObserver;
+      }
+
+      const module = await import('@juggle/resize-observer');
+      return module.ResizeObserver;
+    } catch (e) {
+      console.error('ResizeObserver not available and polyfill failed to load:', e);
+      throw e;
+    }
+  }
+
   private _getElementRect(element: HTMLElement): DOMRect {
     const now = Date.now();
     const cached = this._rectCache.get(element);

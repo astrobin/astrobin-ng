@@ -49,6 +49,7 @@
     "@fortawesome/free-brands-svg-icons": "6.6.0",
     "@fortawesome/free-regular-svg-icons": "6.6.0",
     "@fortawesome/free-solid-svg-icons": "6.6.0",
+    "@juggle/resize-observer": "3.4.0",
     "@kronscht/ng-wizard": "1.4.3",
     "@ng-bootstrap/ng-bootstrap": "15.1.2",
     "@ng-select/ng-select": "11.2.0",

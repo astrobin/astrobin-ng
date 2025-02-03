@@ -94,21 +94,24 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnDestroy {
       });
   }
 
-  ngAfterViewInit() {
-    if (this._isBrowser && this.container) {
-      requestAnimationFrame(() => {
-        if (this.container) {
-          const width = this.container.nativeElement.offsetWidth;
-          this._resize$.next(width);
+  async ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId) && this.container) {
+      try {
+        const ResizeObserverClass = await this.utilsService.getResizeObserver();
 
-          this._resizeObserver = new ResizeObserver(entries => {
+        this._resizeObserver = new ResizeObserverClass(entries => {
+          try {
             const newWidth = Math.round(entries[0].contentRect.width);
             this._resize$.next(newWidth);
-          });
+          } catch (e) {
+            console.error('Error in resize callback:', e);
+          }
+        });
 
-          this._resizeObserver.observe(this.container.nativeElement);
-        }
-      });
+        this._resizeObserver.observe(this.container.nativeElement);
+      } catch (e) {
+        console.error('Failed to initialize ResizeObserver:', e);
+      }
     }
   }
 

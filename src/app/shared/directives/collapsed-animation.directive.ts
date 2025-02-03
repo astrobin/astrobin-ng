@@ -10,7 +10,7 @@ const ANIMATION_DURATION = 150;
 export class CollapseAnimationDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input() collapsed = false;
 
-  private readonly _observer?: ResizeObserver;
+  private _observer?: ResizeObserver;
 
   private _contentHeight = 0;
   private _initialPaddingTop?: number;
@@ -26,11 +26,19 @@ export class CollapseAnimationDirective implements AfterViewInit, OnChanges, OnD
     public readonly changeDetectorRef: ChangeDetectorRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly utilsService: UtilsService
-  ) {
-    if (isPlatformBrowser(this.platformId)) {
+  ) {}
+
+  async ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    try {
+      // Get ResizeObserver (native or polyfill)
+      const ResizeObserverClass = await this.utilsService.getResizeObserver();
       let resizeTimeout: any;
 
-      this._observer = new ResizeObserver(() => {
+      this._observer = new ResizeObserverClass(() => {
         if (resizeTimeout) {
           return;
         }
@@ -41,21 +49,18 @@ export class CollapseAnimationDirective implements AfterViewInit, OnChanges, OnD
           this.changeDetectorRef.markForCheck();
         }, 100);
       });
-    }
-  }
 
-  ngAfterViewInit() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
+      // Initial setup in requestAnimationFrame as before
+      requestAnimationFrame(() => {
+        this._captureInitialMeasurements();
+        this._observer?.observe(this.elementRef.nativeElement);
+        this._initialized = true;
+        this._updateStyles();
+        this.changeDetectorRef.markForCheck();
+      });
+    } catch (e) {
+      console.error('Failed to initialize ResizeObserver:', e);
     }
-
-    requestAnimationFrame(() => {
-      this._captureInitialMeasurements();
-      this._observer?.observe(this.elementRef.nativeElement);
-      this._initialized = true;
-      this._updateStyles();
-      this.changeDetectorRef.markForCheck();
-    });
   }
 
   ngOnDestroy() {
