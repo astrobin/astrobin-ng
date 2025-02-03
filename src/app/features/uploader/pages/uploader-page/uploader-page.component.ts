@@ -145,6 +145,10 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     this._initFields();
 
     this.userSubscriptionService.fileSizeAllowed(0).subscribe(result => {
+      if (!this.fields) {
+        return false;
+      }
+
       const field = this.fields.filter(x => x.key === "image_file")[0];
       const validator = field.validators.validation.filter(x => x.name === "file-size")[0];
       validator.options.max = result.max;
