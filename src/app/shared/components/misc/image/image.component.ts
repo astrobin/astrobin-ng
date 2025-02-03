@@ -18,6 +18,8 @@ import { Actions, ofType } from "@ngrx/effects";
 import { isPlatformBrowser } from "@angular/common";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 declare const videojs: any;
 
@@ -106,7 +108,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     @Inject(PLATFORM_ID) private readonly platformId: Object,
     public readonly renderer: Renderer2,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    public readonly imageApiService: ImageApiService
+    public readonly imageApiService: ImageApiService,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
 
@@ -470,6 +474,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _createVideoJsPlayer() {
+    if (typeof videojs === "undefined") {
+      this.popNotificationsService.error(this.translateService.instant("Video player could not be loaded."));
+      return;
+    }
+
     this._videoJsPlayer = videojs(this.videoPlayerElement.nativeElement, {}, () => {
       this.utilsService.delay(1).subscribe(() => {
         requestAnimationFrame(() => {
