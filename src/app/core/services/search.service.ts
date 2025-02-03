@@ -410,6 +410,10 @@ export class SearchService extends BaseService {
   }
 
   autoCompleteSubjects$(query: string): Observable<SearchAutoCompleteItem[]> {
+    if (!query) {
+      return of([]);
+    }
+
     const messierRange = Array.from({ length: 110 }, (_, i) => i + 1);
     const ngcRange = Array.from({ length: 7840 }, (_, i) => i + 1);
     const icRange = Array.from({ length: 5386 }, (_, i) => i + 1);
