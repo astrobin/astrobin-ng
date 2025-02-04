@@ -82,7 +82,7 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
     //   that the current user has received, or that users with accepted offers have received.
     // - if the current user is a buyer, then the feedback items coming from the API are only the ones that the user has
     //   received.
-    return this.listing.feedbacks.some(feedback => {
+    return !!this.listing?.feedbacks && this.listing.feedbacks.some(feedback => {
       return feedback.recipient === this.user.id;
     });
   }
