@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -137,6 +137,22 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
               queryParamsHandling: "merge"
             });
             break;
+          case DefaultGallerySortingOption.COLLECTIONS: {
+            if (this.userProfile.displayCollectionsOnPublicGallery) {
+              this.router.navigate([], {
+                fragment: "gallery",
+                replaceUrl: true,
+                queryParamsHandling: "merge"
+              });
+            } else {
+              this.router.navigate([], {
+                fragment: "collections",
+                replaceUrl: true,
+                queryParamsHandling: "merge"
+              });
+            }
+            break;
+          }
           case DefaultGallerySortingOption.SUBJECT_TYPE:
             this.router.navigate([], {
               queryParams: { "folder-type": "subject" },
