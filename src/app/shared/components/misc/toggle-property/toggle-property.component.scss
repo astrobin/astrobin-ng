@@ -51,9 +51,30 @@
 
     &.toggled {
       .ng-fa-icon,
+      .label,
       .count {
         opacity: .4;
         filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, .5));
+      }
+    }
+  }
+
+  .btn:not(.btn-link) {
+    &.toggled {
+      box-shadow: 5px 5px 5px rgba(0, 0, 0, .5) inset;
+    }
+
+    &:not(.toggled) {
+      box-shadow: 3px 3px 3px rgba(255, 255, 255, .15) inset;
+    }
+
+    &.btn-sm {
+      &.toggled {
+        box-shadow: 3px 3px 3px rgba(0, 0, 0, .5) inset;
+      }
+
+      &:not(.toggled) {
+        box-shadow: 3px 3px 3px rgba(255, 255, 255, .15) inset;
       }
     }
   }
