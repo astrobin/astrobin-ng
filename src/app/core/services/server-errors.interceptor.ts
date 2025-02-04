@@ -49,6 +49,14 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
       /.*\/api\/v2\/images\/image-search\/\?params=.*/,
     ];
 
+    const ignoredAnyErrorPaths = [
+      /.*\/json-api\/common\/service-worker-control\/$/,
+    ];
+
+    if (ignoredAnyErrorPaths.some((regex) => regex.test(err.url))) {
+      return false;
+    }
+
     // The backend returned an unsuccessful response code.
     switch (err.status) {
       case 400:
