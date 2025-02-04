@@ -47,6 +47,15 @@ import { DeviceService } from "@core/services/device.service";
       </div>
 
       <div
+        *ngIf="!loading && collections?.length === 0 && currentUserWrapper.user?.id !== user.id"
+      >
+        <astrobin-nothing-here
+          [withAlert]="false"
+          [withInfoSign]="false"
+        ></astrobin-nothing-here>
+      </div>
+
+      <div
         *ngIf="!loading && (collections?.length > 0 || currentUserWrapper.user?.id === user.id)"
         class="d-flex flex-wrap gap-4 justify-content-center mb-5"
       >
