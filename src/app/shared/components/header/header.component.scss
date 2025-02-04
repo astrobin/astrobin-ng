@@ -364,3 +364,23 @@ astrobin-avatar {
 .form-control::placeholder {
   color: var(--lighterGrey) !important;
 }
+
+::ng-deep .offcanvas.notifications-offcanvas {
+  @media (max-width: $md-max) {
+    height: calc(100% - 6px) !important;
+
+    .notifications-menu {
+      // Fake putting it into the offcanvas header, or it's too complicated.
+      margin: 0 !important;
+      position: absolute;
+      top: 0;
+      right: 3rem;
+    }
+  }
+
+  @media (min-width: $lg-min) {
+    width: 80vw !important;
+    max-width: $lg-max !important;
+    font-size: .9rem;
+  }
+}

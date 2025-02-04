@@ -1,0 +1,56 @@
+@import "../../../../styles/mixins";
+@import "../../../../styles/breakpoints";
+
+
+.table.notifications {
+  vertical-align: middle;
+
+  .notification {
+    margin: 0;
+    padding: .5rem;
+
+    .read-indicator {
+      cursor: pointer;
+      padding: .5rem;
+      width: 1%;
+
+      &.read .read-icon {
+        color: var(--lightGrey);
+      }
+
+      &.unread .read-icon {
+        color: var(--accentColor);
+      }
+    }
+
+    .notification-context {
+      padding: .5rem;
+      width: 1%;
+    }
+
+    .message {
+      padding: .5rem;
+      cursor: pointer;
+
+      ::ng-deep {
+        a {
+          color: var(--lightestGrey);
+        }
+
+        strong {
+          color: var(--brightWhite);
+        }
+      }
+    }
+
+    .created {
+      padding: .5rem;
+      width: 1%;
+    }
+
+    abbr {
+      font-size: .85rem;
+      color: var(--lighterGrey);
+    }
+  }
+}

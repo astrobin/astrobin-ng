@@ -1166,14 +1166,14 @@ export class UtilsService {
 
   async getResizeObserver(): Promise<typeof ResizeObserver> {
     try {
-      if (typeof ResizeObserver !== 'undefined') {
+      if (typeof ResizeObserver !== "undefined") {
         return ResizeObserver;
       }
 
-      const module = await import('@juggle/resize-observer');
+      const module = await import("@juggle/resize-observer");
       return module.ResizeObserver;
     } catch (e) {
-      console.error('ResizeObserver not available and polyfill failed to load:', e);
+      console.error("ResizeObserver not available and polyfill failed to load:", e);
       throw e;
     }
   }

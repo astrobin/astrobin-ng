@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { Logout } from "@features/account/store/auth.actions";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -24,6 +24,7 @@ import { UserService } from "@core/services/user.service";
 import { SearchService } from "@core/services/search.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
+import { DeviceService } from "@core/services/device.service";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -93,6 +94,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   @ViewChild("sidebar") sidebar: ElementRef;
   @ViewChild("userSidebar") userSidebar: ElementRef;
   @ViewChildren("quickSearchInput") quickSearchInputs: QueryList<ElementRef>;
+  @ViewChild("notificationsOffcanvas") notificationsOffcanvas: TemplateRef<any>;
 
   protected unreadNotificationsCount$: Observable<number> = this.store$.select(selectUnreadNotificationsCount).pipe(
     takeUntil(this.destroyed$)
@@ -148,7 +150,9 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     public readonly utilsService: UtilsService,
     public readonly userService: UserService,
     public readonly searchService: SearchService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
   }
@@ -274,5 +278,12 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
 
   closeUserSidebarMenu() {
     this.userMenubarIsCollapsed = true;
+  }
+
+  openNotificationsOffcanvas(): void {
+    this.offcanvasService.open(this.notificationsOffcanvas,{
+      panelClass: "notifications-offcanvas",
+      position: this.deviceService.offcanvasPosition(),
+    });
   }
 }

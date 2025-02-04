@@ -1,0 +1,131 @@
+<ng-container *ngIf="{ unread: unreadCount$ | async, totalNotifications: totalNotifications$ | async } as counts">
+
+  <div class="notifications-menu mb-4">
+    <div class="d-none d-lg-flex gap-3 align-items-center justify-content-end">
+      <astrobin-toggle-button
+        [value]="onlyUnread"
+        (toggle)="toggleShowRead($event)"
+        [label]="'Only unread' | translate"
+      ></astrobin-toggle-button>
+
+      <button
+        (click)="markAllAsRead()"
+        [class.loading]="loadingService.loading$ | async"
+        [disabled]="(unreadCount$ | async) === 0"
+        class="btn btn-primary"
+        id="mark-all-as-read">
+        {{ "Mark all as read" | translate }}
+      </button>
+
+      <a class="btn btn-link link-secondary" routerLink="/notifications/settings">
+        <fa-icon icon="cog"></fa-icon>
+        <span class="sr-only">{{ "Settings" | translate }}</span>
+      </a>
+
+      <astrobin-refresh-button
+        (click)="refreshNotifications()"
+        [loading]="refreshing"
+      ></astrobin-refresh-button>
+    </div>
+
+    <div class="d-lg-none">
+      <div ngbDropdown>
+        <fa-icon
+          icon="ellipsis-v"
+          ngbDropdownToggle
+          class="dropdown-toggle no-toggle p-3 ms-2"
+        ></fa-icon>
+
+        <div ngbDropdownMenu>
+          <astrobin-toggle-button
+            ngbDropdownItem
+            [value]="onlyUnread"
+            (toggle)="toggleShowRead($event)"
+            [label]="'Only unread' | translate"
+          ></astrobin-toggle-button>
+
+          <button
+            ngbDropdownItem
+            (click)="markAllAsRead()"
+            [disabled]="(unreadCount$ | async) === 0"
+          >
+            {{ "Mark all as read" | translate }}
+          </button>
+
+          <button
+            ngbDropdownItem
+            routerLink="/notifications/settings">
+            {{ "Settings"| translate }}
+          </button>
+
+          <button
+            ngbDropdownItem
+            (click)="refreshNotifications()"
+          >
+            {{ "Refresh" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="notifications !== null; else loading">
+    <ng-container *ngIf="notifications.length > 0; else noNotifications">
+      <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="counts.totalNotifications">
+      </ngb-pagination>
+
+      <table class="table table-striped notifications">
+        <tbody>
+        <tr
+          *ngFor="let notification of notifications"
+          class="notification"
+          id="notification-{{notification.id}}"
+        >
+          <td
+            [class.read]="notification.read"
+            [class.unread]="!notification.read"
+            class="read-indicator"
+          >
+            <fa-icon (click)="toggleRead(notification)" class="read-icon" icon="eye"></fa-icon>
+          </td>
+
+          <td class="notification-context">
+            <fa-icon class="context-icon" [icon]="notification | notificationContextIcon"></fa-icon>
+          </td>
+
+          <td class="message">
+            <div
+              (click)="notificationClicked(notification)"
+              [innerHTML]="notification.message | normalizeNotificationLink"
+            ></div>
+            <div class="d-lg-none">
+              <ng-container *ngTemplateOutlet="createdTemplate; context: { $implicit: notification }"></ng-container>
+            </div>
+          </td>
+
+          <td class="created text-end d-none d-lg-table-cell">
+            <ng-container *ngTemplateOutlet="createdTemplate; context: { $implicit: notification }"></ng-container>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="counts.totalNotifications">
+      </ngb-pagination>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #createdTemplate let-notification>
+    <abbr [attr.title]="notification.created | localDate" class="no-wrap">
+      {{ notification.created | localDate | timeago:true }}
+    </abbr>
+  </ng-template>
+
+  <ng-template #noNotifications>
+    <astrobin-empty-list></astrobin-empty-list>
+  </ng-template>
+
+  <ng-template #loading>
+    <div *ngIf="loadingService.loading$ | async" class="app-loading active"></div>
+  </ng-template>
+</ng-container>
