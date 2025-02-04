@@ -90,19 +90,18 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
               *ngIf="currentUserWrapper.user?.id === image.user && !image.iotdDate && !image.isTopPick && !image.isTopPickNomination && image.isInIotdQueue"
               class="in-iotd-queue"
             >
-              <span class="label">
-                <fa-icon icon="gavel"></fa-icon>
-                {{ "Currently in the IOTD/TP queues" | translate }}
-              </span>
-
               <a
                 (click)="viewIotdTpStats()"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
-                class="ms-2"
                 href="#"
               >
-                <fa-icon icon="info-circle"></fa-icon>
+                <span class="label">
+                  <fa-icon icon="gavel"></fa-icon>
+                  {{ "Currently in the IOTD/TP queues" | translate }}
+                </span>
+
+                <fa-icon icon="info-circle" class="ms-2 d-inline-block"></fa-icon>
               </a>
             </span>
           </div>
