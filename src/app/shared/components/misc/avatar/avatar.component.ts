@@ -39,6 +39,9 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
   @Input()
   showPremiumBadge = false;
 
+  @Input()
+  showFollowsYouBadge = false;
+
   protected avatarUrl: string = "/assets/images/default-avatar.jpeg?v=2";
   protected url: string;
   protected followsYou = false;

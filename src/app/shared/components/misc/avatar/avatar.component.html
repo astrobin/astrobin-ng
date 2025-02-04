@@ -24,7 +24,7 @@
       </div>
 
       <div
-        *ngIf="followsYou"
+        *ngIf="showFollowsYouBadge && followsYou"
         @fadeInOut
         [ngbTooltip]="'Follows you' | translate"
         class="badge badge-follows-you"

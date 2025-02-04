@@ -35,7 +35,12 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
       <div class="user-info d-flex justify-content-between">
         <div class="d-flex gap-3 align-items-center">
           <div class="avatar-container position-relative">
-            <astrobin-avatar [user]="user" [link]="false" [showPremiumBadge]="true"></astrobin-avatar>
+            <astrobin-avatar
+              [user]="user"
+              [link]="false"
+              [showPremiumBadge]="true"
+              [showFollowsYouBadge]="true"
+            ></astrobin-avatar>
             <div class="edit-avatar" *ngIf="currentUserWrapper.user?.id === user.id">
               <a [href]="classicRoutesService.SETTINGS_AVATAR">
                 <fa-icon icon="pencil"></fa-icon>
