@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -52,7 +52,7 @@ import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manage
   styleUrls: ["./user-gallery-page.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserGalleryPageComponent extends BaseComponentDirective implements OnInit {
+export class UserGalleryPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @ViewChild("ad", { static: false, read: AdManagerComponent }) adManagerComponent: AdManagerComponent;
 
   protected user: UserInterface;
@@ -75,13 +75,6 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
-
-    router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      take(1)
-    ).subscribe(() => {
-      this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
-    });
   }
 
   ngOnInit(): void {
@@ -183,6 +176,10 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       this._listenToUserChanges();
       this.store$.dispatch(new FindCollections({ params: { user: this.user.id } }));
     });
+  }
+
+  ngAfterViewInit() {
+    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
   }
 
   private _listenToUserChanges() {

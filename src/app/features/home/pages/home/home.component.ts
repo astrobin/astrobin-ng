@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -66,7 +66,7 @@ import { ImageViewerService } from "@core/services/image-viewer.service";
   `,
   styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent extends BaseComponentDirective implements OnInit {
+export class HomeComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   protected isBrowser: boolean;
 
   constructor(
@@ -77,7 +77,7 @@ export class HomeComponent extends BaseComponentDirective implements OnInit {
     @Inject(PLATFORM_ID) private readonly platformId: Object,
     public readonly windowRefService: WindowRefService,
     public readonly router: Router,
-    public readonly route: ActivatedRoute,
+    public readonly activatedRoute: ActivatedRoute,
     public readonly imageService: ImageService,
     public readonly imageViewerService: ImageViewerService
   ) {
@@ -95,13 +95,6 @@ export class HomeComponent extends BaseComponentDirective implements OnInit {
         this.windowRefService.nativeWindow.location.reload();
       }
     });
-
-    router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      take(1)
-    ).subscribe(() => {
-      this.imageViewerService.autoOpenSlideshow(this.componentId, this.route);
-    });
   }
 
   ngOnInit() {
@@ -109,10 +102,14 @@ export class HomeComponent extends BaseComponentDirective implements OnInit {
 
     this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
 
-    if (this.route.snapshot.data.image) {
-      this.imageService.setMetaTags(this.route.snapshot.data.image);
+    if (this.activatedRoute.snapshot.data.image) {
+      this.imageService.setMetaTags(this.activatedRoute.snapshot.data.image);
     } else {
       this.titleService.setTitle(this.translateService.instant("Home of Astrophotography"));
     }
+  }
+
+  ngAfterViewInit() {
+    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
   }
 }

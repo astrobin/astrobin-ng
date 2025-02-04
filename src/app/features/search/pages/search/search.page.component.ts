@@ -1,4 +1,4 @@
-import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -22,7 +22,7 @@ import { ImageService } from "@core/services/image/image.service";
   templateUrl: "./search.page.component.html",
   styleUrls: ["./search.page.component.scss"]
 })
-export class SearchPageComponent extends BaseComponentDirective implements OnInit, OnDestroy {
+export class SearchPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnDestroy {
   readonly SearchType = SearchType;
 
   @ViewChild("ad", { static: false, read: AdManagerComponent }) adManagerComponent: AdManagerComponent;
@@ -59,13 +59,6 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     super(store$);
 
     this._isBrowser = isPlatformBrowser(platformId);
-
-    router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      take(1)
-    ).subscribe(() => {
-      this.imageViewerService.autoOpenSlideshow(this.componentId, activatedRoute);
-    });
   }
 
   ngOnInit() {
@@ -111,6 +104,10 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     ).subscribe((queryParams: Record<string, string>) => {
       this.loadModel(queryParams);
     });
+  }
+
+  ngAfterViewInit() {
+    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
   }
 
   ngOnDestroy() {
