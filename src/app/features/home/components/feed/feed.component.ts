@@ -194,7 +194,10 @@ enum FeedType {
         </li>
       </ul>
 
-      <div class="global-personal-switcher">
+      <div
+        *ngIf="!!currentUserProfile"
+        class="global-personal-switcher"
+      >
         <fa-icon
           (click)="onFeedTypeChange(FeedType.GLOBAL)"
           [class.active]="activeFeedType === FeedType.GLOBAL"
