@@ -7,6 +7,11 @@
   gap: .5rem;
   flex-wrap: nowrap;
 
+  .metadata-item {
+    min-width: 0;
+    overflow: hidden;
+  }
+
   .avatars {
     display: flex;
     gap: .5rem;
@@ -23,6 +28,18 @@
   .view-count {
     font-size: .85rem;
     color: var(--lightGrey);
+  }
+
+  .single-photographer-wrapper,
+  .photographer-name-and-follow-button {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .photographer-name-and-follow-button a {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-width: 0;
   }
 }
 

@@ -65,11 +65,12 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
         </div>
       </ng-container>
 
-      <div class="metadata-section photographers mb-3">
+      <div class="metadata-section photographers mb-3 flex-wrap">
         <div
           class="
             metadata-item
             flex-grow-1
+            justify-content-between
             gap-3
           "
         >
@@ -114,7 +115,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                 flex-nowrap
                 flex-grow-1
                 gap-3
-                w-100
+                single-photographer-wrapper
               "
             >
               <a
@@ -126,7 +127,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                 <img [src]="photographers[0].avatar" alt="" class="avatar" />
               </a>
 
-              <div class="d-flex gap-2 align-items-center">
+              <div class="d-flex gap-2 align-items-center photographer-name-and-follow-button">
                 <a
                   (click)="userService.openGallery(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                   [href]="userService.getGalleryUrl(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
