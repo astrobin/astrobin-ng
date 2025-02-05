@@ -28,7 +28,7 @@ export class SolutionApiService extends BaseClassicApiService {
     url = UtilsService.addOrUpdateUrlParam(url, "content_type", contentType + "");
     url = UtilsService.addOrUpdateUrlParam(url, "object_id", objectId);
     if (includePixInsightDetails) {
-      url = UtilsService.addOrUpdateUrlParam(url, "include_pixinsight_details", "true");
+      url = UtilsService.addOrUpdateUrlParam(url, "include-pixinsight-details", "true");
     }
 
     return this.http
