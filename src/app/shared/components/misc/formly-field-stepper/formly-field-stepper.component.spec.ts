@@ -138,24 +138,24 @@ describe("FormlyFieldStepperComponent", () => {
   describe("goToPreviousStep", () => {
     it("should work", () => {
       jest.spyOn(component.ngWizardService, "previous");
-      jest.spyOn(component.windowRef, "scroll");
+      jest.spyOn(component.windowRefService, "scroll");
 
       component.goToPreviousStep(null, 1);
 
       expect(component.ngWizardService.previous).toHaveBeenCalled();
-      expect(component.windowRef.scroll).toHaveBeenCalled();
+      expect(component.windowRefService.scroll).toHaveBeenCalled();
     });
   });
 
   describe("goToNextStep", () => {
     it("should work", () => {
       jest.spyOn(component.ngWizardService, "next");
-      jest.spyOn(component.windowRef, "scroll");
+      jest.spyOn(component.windowRefService, "scroll");
 
       component.goToNextStep(null, 0);
 
       expect(component.ngWizardService.next).toHaveBeenCalled();
-      expect(component.windowRef.scroll).toHaveBeenCalled();
+      expect(component.windowRefService.scroll).toHaveBeenCalled();
     });
   });
 

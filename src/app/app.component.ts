@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
-import { NavigationEnd, NavigationStart, Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -93,8 +93,20 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
   }
 
   initRouterEvents(): void {
+    let previousUrl: string | null = null;
+
     this.router.events?.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        // Get URLs without fragments
+        const currentUrlWithoutFragment = this._getUrlWithoutFragment(event.urlAfterRedirects);
+        const previousUrlWithoutFragment = previousUrl ? this._getUrlWithoutFragment(previousUrl) : null;
+
+        // Only clear breadcrumb if base URL changed (ignoring fragment)
+        if (currentUrlWithoutFragment !== previousUrlWithoutFragment) {
+          this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
+        }
+
+        // Regular cleanup operations
         if (this.offcanvasService.hasOpenOffcanvas()) {
           this.offcanvasService.dismiss();
         }
@@ -104,8 +116,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
         }
 
         this.popNotificationsService.clear();
-
-        this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
         this.windowRefService.changeBodyOverflow("auto");
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);
@@ -121,6 +131,9 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
             });
           });
         }
+
+        // Update previous URL for next navigation
+        previousUrl = event.urlAfterRedirects;
       }
     });
   }
@@ -200,6 +213,12 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
           .subscribe();
       }
     });
+  }
+
+  private _getUrlWithoutFragment(url: string): string {
+    const urlObject = new URL(url, window.location.origin);
+    urlObject.hash = "";
+    return urlObject.pathname + urlObject.search;
   }
 
   private _startPollingForServiceWorkerKillSwitch(): void {
