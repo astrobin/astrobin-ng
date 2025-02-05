@@ -165,6 +165,7 @@ export class FormlyFieldStepperComponent
 
     this._markFieldAsTouched(this.field.fieldGroup[index]);
     this.ngWizardService.previous();
+    this.windowRefService.scroll({ top: 0 });
   }
 
   goToNextStep(event: Event, index: number) {
@@ -174,6 +175,7 @@ export class FormlyFieldStepperComponent
 
     this._markFieldAsTouched(this.field.fieldGroup[index]);
     this.ngWizardService.next();
+    this.windowRefService.scroll({ top: 0 });
   }
 
   markPreviousStepsAsDone(stepIndex: number) {
