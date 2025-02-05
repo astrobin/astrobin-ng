@@ -99,8 +99,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     super.ngOnInit();
 
     this._updateTitle(this.activatedRoute.snapshot.data?.item);
-    this._updateDescription(this.activatedRoute.snapshot.data?.item);
     this._setBreadcrumb();
+    this._updateDescription(this.activatedRoute.snapshot.data?.item);
     this._setParams();
     this._setLocation();
 
@@ -112,6 +112,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       .subscribe(() => {
         this._setParams();
         this._updateTitle(this.activatedRoute.snapshot.data?.item);
+        this._setBreadcrumb();
       });
   }
 
