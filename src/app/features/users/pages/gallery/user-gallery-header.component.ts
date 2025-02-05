@@ -115,7 +115,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                 [setLabel]="'Follow' | translate"
                 [unsetLabel]="'Unfollow' | translate"
                 class="w-auto p-0"
-                btnClass="btn btn-outline-secondary btn-no-block"
+                btnClass="btn btn-dark btn-no-block"
                 propertyType="follow"
               ></astrobin-toggle-property>
             </div>
