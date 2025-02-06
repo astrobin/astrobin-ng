@@ -42,6 +42,7 @@ $header-height: 63px;
           max-width: 100vw;
           max-height: 100vh;
           object-fit: contain;
+          cursor: zoom-in;
 
           @supports (max-height: 100dvh) {
             max-height: 100dvh;
@@ -57,18 +58,12 @@ $header-height: 63px;
     &:not(.lens-enabled) {
       ::ng-deep {
         .ngxImageZoomContainer {
-          width: 100vw !important;
-          height: 100vh !important;
           display: flex;
           justify-content: center;
           align-items: center;
-
-          @supports (height: 100dvh) {
-            height: 100dvh !important;
-          }
+          overflow: visible;
 
           .ngxImageZoomThumbnail {
-            width: 100vw;
             max-width: 100vw;
             max-height: 100vh;
 
@@ -78,14 +73,20 @@ $header-height: 63px;
           }
 
           .ngxImageZoomFullContainer {
-            width: 100vw !important;
-            height: 100vh !important;
             border-radius: 0 !important;
-
-            @supports (height: 100dvh) {
-              height: 100dvh !important;
-            }
+            pointer-events: auto;
+            cursor: all-scroll;
+            overflow: visible;
+            user-select: none;
           }
+        }
+      }
+    }
+
+    &.zooming-enabled:not(.lens-enabled) {
+      ::ng-deep {
+        .ngxImageZoomThumbnail {
+          visibility: hidden;
         }
       }
     }
@@ -113,6 +114,7 @@ $header-height: 63px;
     bottom: .5rem;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 1;
 
     .instructions {
       background: rgba(0, 0, 0, .5);

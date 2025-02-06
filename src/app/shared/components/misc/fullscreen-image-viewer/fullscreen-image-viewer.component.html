@@ -64,18 +64,8 @@
     [ngTemplateOutlet]="instructionTemplate"
     [ngTemplateOutletContext]="{
       icon: 'mouse-pointer',
-      message: 'Click to zoom, scroll to magnify.' | translate
+      message: 'Scroll to magnify.' | translate
     }"
-  ></ng-container>
-</ng-template>
-
-<ng-template #clickAgainToZoomOutInstructionTemplate>
-  <ng-container
-    [ngTemplateOutlet]="instructionTemplate"
-    [ngTemplateOutletContext]="{
-        icon: 'mouse-pointer',
-        message: 'Click again to zoom out.' | translate
-      }"
   ></ng-container>
 </ng-template>
 
@@ -188,11 +178,12 @@
         [lensHeight]="zoomLensSize"
         [lensWidth]="zoomLensSize"
         [maxZoomRatio]="maxZoom"
-        [minZoomRatio]="0.1"
         [thumbImage]="hd"
-        zoomMode="toggle-click"
+        [scrollStepSize]=".05"
+        zoomMode="click"
         class="image-zoom"
         [class.lens-enabled]="enableLens"
+        [class.zooming-enabled]="zoomingEnabled"
       >
       </lib-ngx-image-zoom>
 
@@ -249,11 +240,6 @@
       <ng-container
         *ngIf="!zoomingEnabled && !showZoomIndicator"
         [ngTemplateOutlet]="clickAndScrollInstructionTemplate"
-      ></ng-container>
-
-      <ng-container
-        *ngIf="zoomingEnabled && !showZoomIndicator && !enableLens"
-        [ngTemplateOutlet]="clickAgainToZoomOutInstructionTemplate"
       ></ng-container>
 
       <ng-container

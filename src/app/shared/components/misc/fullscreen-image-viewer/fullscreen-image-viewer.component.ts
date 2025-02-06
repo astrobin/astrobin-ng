@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
+import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectCurrentFullscreenImage } from "@app/store/selectors/app/app.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { MainState } from "@app/store/state";
@@ -206,7 +206,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   get zoomingEnabled(): boolean {
-    return !!this.ngxImageZoom && (this.ngxImageZoom as any).zoomingEnabled;
+    return this.ngxImageZoom?.zoomService.zoomingEnabled;
   }
 
   protected get isVeryLargeImage(): boolean {
@@ -340,24 +340,56 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   onImagesLoaded(loaded: boolean) {
     this.ready = loaded;
-    // Prevents the jarring resetting of the zoom when the mouse wanders off the image.
-    this.utilsService.delay(100).subscribe(() => {
-      if (this.ngxImageZoom) {
-        (this.ngxImageZoom as any).clickMouseLeave = () => {
-        };
+    this._initImageZoom();
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private _initImageZoom() {
+    if (this.ngxImageZoom) {
+      const renderedThumbnailHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").height;
+      const thumbnailNaturalHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").naturalHeight;
+      const renderRatio = renderedThumbnailHeight / thumbnailNaturalHeight;
+      const renderedThumbnailWidth = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").naturalWidth * renderRatio;
+
+      this.ngxImageZoom.zoomService.thumbWidth = renderedThumbnailWidth;
+      this.ngxImageZoom.zoomService.thumbHeight = renderedThumbnailHeight;
+      this.ngxImageZoom.zoomService.minZoomRatio = renderedThumbnailWidth / this.naturalWidth;
+      this.ngxImageZoom.zoomService.magnification = 1;
+
+      this.setZoomScroll(1);
+
+      this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").addEventListener("mousewheel", (event: WheelEvent) => {
+        if (this.ngxImageZoom.zoomService.zoomingEnabled) {
+          return;
+        }
+
+        event.preventDefault();
+
+        this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
+        this.ngxImageZoom.zoomService.zoomOn(event)
         this.changeDetectorRef.markForCheck();
-      }
-    });
+      }, { once: true });
+
+      // Prevents the jarring resetting of the zoom when the mouse wanders off the image.
+      (this.ngxImageZoom as any).zoomInstance.onMouseLeave = () => {
+      };
+
+      this.changeDetectorRef.markForCheck();
+    } else {
+      this.utilsService.delay(50).subscribe(() => {
+        this._initImageZoom();
+      });
+    }
   }
 
   setZoomPosition(position: Coord) {
-    this.showZoomIndicator = true;
+    this.showZoomIndicator = this.zoomingEnabled;
     this._setZoomIndicatorTimeout();
   }
 
   setZoomScroll(scroll: number) {
     this._zoomScroll = scroll;
-    this.showZoomIndicator = true;
+    this.showZoomIndicator = this.zoomingEnabled;
     this._setZoomIndicatorTimeout();
   }
 
@@ -932,8 +964,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _setZoomLensSize(): void {
     this.zoomLensSize = Math.floor(this.windowRef.nativeWindow.innerWidth / 4);
     if (this.ngxImageZoom) {
-      this.ngxImageZoom.lensWidth = this.zoomLensSize;
-      this.ngxImageZoom.lensHeight = this.zoomLensSize;
+      this.ngxImageZoom.zoomService.lensWidth = this.zoomLensSize;
+      this.ngxImageZoom.zoomService.lensHeight = this.zoomLensSize;
     }
   }
 
@@ -945,6 +977,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this._zoomIndicatorTimeout = this.windowRef.nativeWindow.setTimeout(() => {
         this.showZoomIndicator = false;
+        this.changeDetectorRef.markForCheck();
       }, this._zoomIndicatorTimeoutDuration);
     }
   }
