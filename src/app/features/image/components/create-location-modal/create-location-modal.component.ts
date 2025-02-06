@@ -28,7 +28,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
   model = {};
   mapReady = false;
   mapError = false;
-  geocoder = this.googleMapsService.createGeocoder();
+  geocoder: google.maps.Geocoder;
   userId: UserInterface["id"];
 
   constructor(
@@ -46,6 +46,8 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
     super.ngOnInit();
 
     await this.googleMapsService.loadGoogleMaps();
+
+    this.geocoder = this.googleMapsService.createGeocoder();
 
     this.store$
       .select(selectApp)
