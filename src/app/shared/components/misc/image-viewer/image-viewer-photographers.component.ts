@@ -136,6 +136,28 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                   {{ photographers[0].displayName }}
                 </a>
 
+                <div
+                  *ngIf="currentUserWrapper.user?.id !== image.user"
+                  ngbDropdown
+                  container="body"
+                  class="no-toggle"
+                >
+                  <button
+                    class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2 m-0"
+                    ngbDropdownToggle
+                    id="photographer-actions-dropdown"
+                  >
+                    <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
+                  </button>
+                  <div ngbDropdownMenu aria-labelledby="photographer-actions-dropdown">
+                    <a
+                      [href]="classicRoutesService.SEND_MESSAGE(image.username)"
+                      class="dropdown-item"
+                      translate="Send private message"
+                    ></a>
+                  </div>
+                </div>
+
                 <astrobin-toggle-property
                   *ngIf="currentUserWrapper.user?.id !== image.user"
                   [contentType]="userContentType.id"
@@ -196,6 +218,28 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             >
               {{ user.displayName }}
             </a>
+
+            <div
+              *ngIf="currentUserWrapper.user?.id !== image.user"
+              ngbDropdown
+              container="body"
+              class="no-toggle me-2"
+            >
+              <button
+                class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2 m-0"
+                ngbDropdownToggle
+                id="photographer-actions-dropdown"
+              >
+                <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
+              </button>
+              <div ngbDropdownMenu aria-labelledby="photographer-actions-dropdown">
+                <a
+                  [href]="classicRoutesService.SEND_MESSAGE(image.username)"
+                  class="dropdown-item"
+                  translate="Send private message"
+                ></a>
+              </div>
+            </div>
 
             <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
               <astrobin-toggle-property
