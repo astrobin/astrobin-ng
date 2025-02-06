@@ -140,7 +140,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                   *ngIf="currentUserWrapper.user?.id !== image.user"
                   ngbDropdown
                   container="body"
-                  class="no-toggle"
+                  class="no-toggle m-0"
                 >
                   <button
                     class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2 m-0"
