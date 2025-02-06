@@ -79,8 +79,8 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
           </span>
         </p>
 
-        <p *ngIf="solution.pixinsightQueueSize">
-          {{ "PixInsight queue size" | translate }}: {{ solution.pixinsightSerialNumber}}
+        <p *ngIf="solution.pixinsightQueueSize !== null && solution.pixinsightQueueSize !== undefined">
+          {{ "PixInsight queue size" | translate }}: {{ +solution.pixinsightQueueSize + 1}}
         </p>
 
         <p *ngIf="solution.pixinsightStage">
