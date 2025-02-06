@@ -74,6 +74,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   thumbnailUrl: SafeUrl;
 
+  protected naturalWidth: number;
   protected width: number;
   protected height: number;
   protected imageLoadingProgress = 0;
