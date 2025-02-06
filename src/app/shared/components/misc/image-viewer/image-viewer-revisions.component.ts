@@ -166,9 +166,15 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
         published: image.published || image.uploaded,
         isFinal: image.isFinal,
         original: image.videoFile || image.imageFile,
-        gallery: image.thumbnails.find(thumbnail =>
+        gallery: image.thumbnails ? image.thumbnails.find(thumbnail =>
           thumbnail.revision == (image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL) &&
-          thumbnail.alias === ImageAlias.GALLERY)
+          thumbnail.alias === ImageAlias.GALLERY
+        ) : {
+          id: null,
+          revision: image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL,
+          alias: ImageAlias.GALLERY,
+          url: image.finalGalleryThumbnail || null
+        }
       },
       ...image.revisions.map(revision => ({
         id: revision.pk,

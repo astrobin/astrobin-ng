@@ -560,6 +560,10 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     if (this.revision?.imageFile && this.revision.imageFile.toLowerCase().endsWith(".gif")) {
       url = this.revision.imageFile;
     } else {
+      if (!this.image.thumbnails) {
+        return null;
+      }
+
       const allAvailableThumbnails: {
         revisionLabel: ImageRevisionInterface["label"];
         url: string;

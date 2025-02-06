@@ -1,13 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  HostListener,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-  TemplateRef,
-  ViewChild
-} from "@angular/core";
+import { AfterViewInit, Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -38,30 +29,19 @@ import { forkJoin, Observable, of, switchMap } from "rxjs";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
 import { filter, map, take, takeUntil } from "rxjs/operators";
-import {
-  EquipmentActionTypes,
-  FindEquipmentPresets,
-  ItemBrowserSet,
-  LoadEquipmentItem,
-  LoadEquipmentItemFailure,
-  LoadEquipmentItemSuccess
-} from "@features/equipment/store/equipment.actions";
+import { EquipmentActionTypes, FindEquipmentPresets, ItemBrowserSet, LoadEquipmentItem, LoadEquipmentItemFailure, LoadEquipmentItemSuccess } from "@features/equipment/store/equipment.actions";
 import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
 import { UserService } from "@core/services/user.service";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { CookieService } from "ngx-cookie";
 import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 import { Constants } from "@shared/constants";
 import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
 import { isPlatformBrowser } from "@angular/common";
-import {
-  AcquisitionForm,
-  OverrideAcquisitionFormModalComponent
-} from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { AcquisitionForm, OverrideAcquisitionFormModalComponent } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
 import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
 import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-acquisition.interface";
@@ -78,7 +58,7 @@ import { DeviceService } from "@core/services/device.service";
 })
 export class ImageEditPageComponent
   extends BaseComponentDirective
-  implements OnInit, ComponentCanDeactivate, AfterViewInit {
+  implements OnInit, ComponentCanDeactivate, AfterViewInit, OnDestroy {
   readonly Constants = Constants;
 
   readonly isBrowser: boolean;
@@ -145,7 +125,7 @@ export class ImageEditPageComponent
     ).subscribe(() => {
       const state = this.router.getCurrentNavigation()?.extras?.state;
       if (state) {
-        this._returnUrl = state['returnUrl'];
+        this._returnUrl = state["returnUrl"];
       }
     });
   }
@@ -240,6 +220,11 @@ export class ImageEditPageComponent
         this._initFields();
       });
     }
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this._destroyFields();
   }
 
   clearEquipment() {
@@ -606,7 +591,7 @@ export class ImageEditPageComponent
           });
         }
       });
-    }
+    };
 
     this.imageEditService.currentEquipmentPreset$().pipe(take(1)).subscribe(preset => {
       if (!preset) {
@@ -630,12 +615,30 @@ export class ImageEditPageComponent
         }
 
         forkJoin([
-          ...imagingTelescopes.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.TELESCOPE}).pipe(take(1))),
-          ...imagingCameras.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.CAMERA}).pipe(take(1))),
-          ...mounts.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.MOUNT}).pipe(take(1))),
-          ...filters.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.FILTER}).pipe(take(1))),
-          ...accessories.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.ACCESSORY}).pipe(take(1))),
-          ...software.map(id => this.store$.select(selectEquipmentItem, {id, type: EquipmentItemType.SOFTWARE}).pipe(take(1)))
+          ...imagingTelescopes.map(id => this.store$.select(selectEquipmentItem, {
+            id,
+            type: EquipmentItemType.TELESCOPE
+          }).pipe(take(1))),
+          ...imagingCameras.map(id => this.store$.select(selectEquipmentItem, {
+            id,
+            type: EquipmentItemType.CAMERA
+          }).pipe(take(1))),
+          ...mounts.map(id => this.store$.select(selectEquipmentItem, {
+            id,
+            type: EquipmentItemType.MOUNT
+          }).pipe(take(1))),
+          ...filters.map(id => this.store$.select(selectEquipmentItem, {
+            id,
+            type: EquipmentItemType.FILTER
+          }).pipe(take(1))),
+          ...accessories.map(id => this.store$.select(selectEquipmentItem, {
+            id,
+            type: EquipmentItemType.ACCESSORY
+          }).pipe(take(1))),
+          ...software.map(id => this.store$.select(selectEquipmentItem, {
+            id,
+            type: EquipmentItemType.SOFTWARE
+          }).pipe(take(1)))
         ]).subscribe((equipment: EquipmentItem[]) => {
           const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
           const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
@@ -646,13 +649,13 @@ export class ImageEditPageComponent
             <p>
               ${this.translateService.instant(
             "AstroBin noticed that you have not saved this equipment configuration as a setup. " +
-                "Would you like to save it now, so you can easily load it in the future?"
-              )}
+            "Would you like to save it now, so you can easily load it in the future?"
+          )}
             </p>
             <p>
               ${equipment.map(equipmentItem =>
-                (equipmentItem.brandName || this.translateService.instant("DIY")) + " " + equipmentItem.name).join(" &middot; ")
-              }
+            (equipmentItem.brandName || this.translateService.instant("DIY")) + " " + equipmentItem.name).join(" &middot; ")
+          }
             </p>
           `;
           componentInstance.showAreYouSure = false;
@@ -824,6 +827,10 @@ export class ImageEditPageComponent
           this.imageEditSettingsFieldsService.onFieldsInitialized();
         });
       });
+  }
+
+  private _destroyFields(): void {
+    this.imageEditService.fields = [];
   }
 
   private _initBreadcrumb(): void {

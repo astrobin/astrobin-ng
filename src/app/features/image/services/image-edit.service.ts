@@ -25,8 +25,8 @@ import { CollectionInterface } from "@core/interfaces/collection.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemBaseInterface, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
-import { DeleteEquipmentPreset, DeleteEquipmentPresetSuccess, EquipmentActionTypes, ItemBrowserClear, ItemBrowserSet, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { Actions, ofType } from "@ngrx/effects";
+import { ItemBrowserClear, ItemBrowserSet, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { Actions } from "@ngrx/effects";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 export type ImageEditModelInterface = Partial<Omit<ImageInterface,
@@ -274,7 +274,7 @@ export class ImageEditService extends BaseService {
           });
         }
       });
-    }
+    };
 
     return new Observable(observer => {
       if (this.hasEquipmentItems()) {

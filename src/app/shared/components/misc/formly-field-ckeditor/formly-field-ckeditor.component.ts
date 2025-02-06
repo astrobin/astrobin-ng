@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, PLATFORM_ID } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { CKEditorService } from "@core/services/ckeditor.service";
@@ -13,7 +13,7 @@ declare const CKEDITOR: any;
   templateUrl: "./formly-field-ckeditor.component.html",
   styleUrls: ["./formly-field-ckeditor.component.scss"]
 })
-export class FormlyFieldCKEditorComponent extends FieldType implements AfterViewInit {
+export class FormlyFieldCKEditorComponent extends FieldType implements AfterViewInit, OnDestroy {
   editor;
   showEditor = false;
 
@@ -22,7 +22,7 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
     public readonly ckeditorService: CKEditorService,
     public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
-    @Inject(PLATFORM_ID) public readonly platformId,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super();
@@ -32,8 +32,14 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
     this._initialize();
   }
 
+  ngOnDestroy() {
+    if (this.field?.id && typeof CKEDITOR.instances[this.field.id] !== "undefined") {
+      CKEDITOR.instances[this.field.id].destroy();
+    }
+  }
+
   private _showEditor(): void {
-    this.utilsService.delay(100).subscribe(() => {
+    this.utilsService.delay(20).subscribe(() => {
       if (this.editor?.instanceReady) {
         this.editor.resize(null, this.props.height || 300);
         this.showEditor = true;
@@ -49,6 +55,11 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
       return;
     }
 
+    if (this.editor) {
+      // Already initialized.
+      return;
+    }
+
     const document = this.windowRefService.nativeWindow.document;
     const editorBase = document.getElementById(this.field.id);
 
@@ -61,7 +72,7 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
 
       this._showEditor();
     } else {
-      this.utilsService.delay(100).subscribe(() => {
+      this.utilsService.delay(20).subscribe(() => {
         this._initialize();
       });
     }
