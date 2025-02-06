@@ -96,6 +96,19 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
         <div [innerHTML]="pixelScale" class="metadata-label">
         </div>
       </div>
+
+      <div *ngIf="orientation" class="metadata-item">
+        <div class="metadata-icon">
+          <fa-icon
+            [ngbTooltip]="'Orientation' | translate"
+            triggers="hover click"
+            container="body"
+            icon="rotate-left"
+          ></fa-icon>
+        </div>
+        <div [innerHTML]="orientation" class="metadata-label">
+        </div>
+      </div>
     </div>
 
     <ng-template #moreInfoTemplate let-offcanvas>
