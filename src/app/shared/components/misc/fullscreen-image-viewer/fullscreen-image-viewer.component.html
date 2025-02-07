@@ -180,7 +180,7 @@
         [maxZoomRatio]="maxZoom"
         [thumbImage]="hd"
         [scrollStepSize]=".05"
-        zoomMode="click"
+        [zoomMode]="enableLens ? 'toggle-click' : 'click'"
         class="image-zoom"
         [class.lens-enabled]="enableLens"
         [class.zooming-enabled]="zoomingEnabled"

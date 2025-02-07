@@ -55,6 +55,16 @@ $header-height: 63px;
       }
     }
 
+    &.zooming-enabled.lens-enabled {
+      ::ng-deep {
+        .ngxImageZoomContainer {
+          .ngxImageZoomThumbnail {
+            cursor: none;
+          }
+        }
+      }
+    }
+
     &:not(.lens-enabled) {
       ::ng-deep {
         .ngxImageZoomContainer {
