@@ -74,7 +74,7 @@ export class FormlyFieldTableComponent extends FieldArrayType implements OnInit,
                 this.field.props.excludeFromCountNonNullProperties
               )
             };
-            this.changeDetectorRef.detectChanges();
+            this.changeDetectorRef.markForCheck();
           });
         }
       });
