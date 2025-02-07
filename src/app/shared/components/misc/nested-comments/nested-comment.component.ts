@@ -23,6 +23,7 @@ import { isPlatformBrowser } from "@angular/common";
 import { UserService } from "@core/services/user.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { DeviceService } from "@core/services/device.service";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -73,6 +74,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   protected margin: string = `0px`;
   protected userGalleryUrl: string;
   protected avatarUrl: string;
+  protected html: SafeHtml;
 
   private readonly _isBrowser: boolean;
   private _elementWidth: number;
@@ -90,7 +92,8 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly domSanitizer: DomSanitizer
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
@@ -98,6 +101,8 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    this.html = this.domSanitizer.bypassSecurityTrustHtml(this.comment.html);
 
     this._initReplyFields();
     this._initEditFields();

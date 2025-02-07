@@ -1,16 +1,150 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Renderer2 } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { environment } from "@env/environment";
 import { LoadingService } from "@core/services/loading.service";
 import { AuthService } from "@core/services/auth.service";
 import { AbstractControl } from "@angular/forms";
+import { WindowRefService } from "@core/services/window-ref.service";
+import { catchError, map } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+
+declare const CKEDITOR: any;
 
 @Injectable({
   providedIn: "root"
 })
 export class CKEditorService extends BaseService {
-  constructor(public readonly loadingService: LoadingService, public readonly authService: AuthService) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly authService: AuthService,
+    public readonly windowRefService: WindowRefService,
+    public readonly http: HttpClient
+  ) {
     super(loadingService);
+  }
+
+  setupBBCodeFilter(renderer: Renderer2) {
+    const bbcodeFilter = new CKEDITOR.htmlParser.filter();
+
+    bbcodeFilter.addRules({
+      elements: {
+        p: (element) => {
+          element.replaceWithChildren();
+          element.add(new CKEDITOR.htmlParser.text("\n\n"));
+        },
+        blockquote: (element) => {
+          const quoted = new CKEDITOR.htmlParser.element("div");
+          quoted.children = element.children;
+          element.children = [quoted];
+          const citeText = element.attributes.cite;
+          if (citeText) {
+            const cite = new CKEDITOR.htmlParser.element("cite");
+            cite.add(new CKEDITOR.htmlParser.text(citeText.replace(/^"|"$/g, "")));
+            delete element.attributes.cite;
+            element.children.unshift(cite);
+          }
+        },
+        span: (element) => {
+          let bbcode;
+          if ((bbcode = element.attributes.bbcode)) {
+            if (bbcode === "img") {
+              element.name = "img";
+              element.attributes.src = element.children[0].value;
+              element.children = [];
+            } else if (bbcode === "email") {
+              element.name = "a";
+              element.attributes.href = "mailto:" + element.children[0].value;
+            }
+          } else if (element.attributes.style && element.attributes.style.includes("font-size:")) {
+            // Handle percentage-based font size
+            const sizeMatch = element.attributes.style.match(/font-size:(\d+)%/);
+            if (sizeMatch) {
+              const size = parseInt(sizeMatch[1], 10);
+              let remSize;
+
+              // Use the same three-tier system
+              if (size <= 50) {
+                remSize = ".5rem";
+              } else if (size <= 75) {
+                remSize = ".75rem";
+              } else if (size <= 100) {
+                remSize = "1rem";
+              } else if (size <= 150) {
+                remSize = "1.5rem";
+              } else {
+                remSize = "2rem";
+              }
+
+              // Replace the percentage-based style with rem-based
+              element.attributes.style = `font-size: ${remSize}`;
+            }
+          }
+        },
+        ol: (element) => {
+          if (element.attributes.listType) {
+            if (element.attributes.listType !== "decimal") {
+              element.attributes.style = "list-style-type:" + element.attributes.listType;
+            }
+          } else {
+            element.name = "ul";
+          }
+          delete element.attributes.listType;
+        },
+        a: (element) => {
+          if (!element.attributes.href) {
+            element.attributes.href = element.children[0].value;
+          }
+        },
+        smiley: (element) => {
+          element.name = "img";
+          const editorConfig = this.options(null);
+          const description = element.attributes.desc;
+          const image =
+            editorConfig.smiley_images[CKEDITOR.tools.indexOf(editorConfig.smiley_descriptions, description)];
+          const src = CKEDITOR.tools.htmlEncode(editorConfig.smiley_path + image);
+
+          element.attributes = {
+            src,
+            "data-cke-saved-src": src,
+            class: "smiley",
+            title: description,
+            alt: description
+          };
+        },
+        img: (element) => {
+          if (!renderer) {
+            return;
+          }
+
+          const src: string = element.attributes.src;
+          const placeholderSrc = "/assets/images/loading.gif";
+
+          if (src && src.indexOf("/ckeditor-files/") > 0) {
+            element.attributes.src = placeholderSrc;
+
+            const fileName = "f" + src.split("/").pop().split(".")[0].replace(/-/gi, "");
+            element.attributes.class = `loading ${fileName}`;
+
+            this._fetchThumbnail(src, (thumbnailSrc) => {
+              setTimeout(() => {
+                const imgElement = this.windowRefService.nativeWindow.document.querySelector(
+                  `img.${fileName}`
+                );
+                if (imgElement) {
+                  renderer.setAttribute(imgElement, "src", thumbnailSrc);
+                  renderer.setAttribute(imgElement, "data-src", src);
+                  renderer.removeClass(imgElement, "loading");
+                  renderer.removeClass(imgElement, `${fileName}`);
+                }
+              });
+            });
+          }
+        }
+      }
+    });
+
+    return bbcodeFilter;
   }
 
   plugins(): string[] {
@@ -50,6 +184,8 @@ export class CKEditorService extends BaseService {
       "notification",
       "notificationaggregator",
       "panel",
+      "pastefromgdocs",
+      "pastetools",
       "popup",
       "SimpleLink",
       "simpleuploads",
@@ -436,7 +572,7 @@ export class CKEditorService extends BaseService {
       smiley_descriptions: this.smileyDescriptions(),
       smiley_images: this.smileyImages(),
       specialChars: this.specialChars(),
-      fontSize_sizes: "50%/50%;100%/100%;200%/200%",
+      fontSize_sizes: "XS/50%;S/75%;M/100%;L/150%;XL/200%",
       autoGrow_minHeight: 300,
       autoGrow_maxHeight: 1200,
       autoGrow_onStartup: true,
@@ -486,5 +622,27 @@ export class CKEditorService extends BaseService {
         }
       }
     };
+  }
+
+  private _fetchThumbnail(src: string, callback: (thumbnailSrc: string) => void) {
+    const urlPath = new URL(src, this.windowRefService.nativeWindow.location.origin).pathname.slice(1);
+    const url = `${environment.classicBaseUrl}/json-api/common/ckeditor-upload/?path=${encodeURIComponent(urlPath)}`;
+
+    this.http
+      .get<{ thumbnail: string }>(url)
+      .pipe(
+        map((response) => response.thumbnail),
+        catchError((error) => {
+          console.error("Error fetching thumbnail:", error);
+          return of(src);
+        })
+      )
+      .subscribe((thumbnail) => {
+        if (thumbnail) {
+          callback(thumbnail);
+        } else {
+          callback(src);
+        }
+      });
   }
 }
