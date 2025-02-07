@@ -34,7 +34,10 @@
 }
 
 ::ng-deep .offcanvas-more-objects-in-field {
-  width: 40vw !important;
+  &:not(.offcanvas-bottom) {
+    width: 40vw !important;
+  }
+
   ul {
     display: flex;
     flex-wrap: wrap;
