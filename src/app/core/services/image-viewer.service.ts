@@ -53,7 +53,8 @@ export class ImageViewerService extends BaseService {
     public readonly router: Router,
     public readonly titleService: TitleService,
     public readonly imageService: ImageService,
-    public readonly applicationRef: ApplicationRef
+    public readonly applicationRef: ApplicationRef,
+    public readonly utilsService: UtilsService
   ) {
     super(loadingService);
 
@@ -119,11 +120,15 @@ export class ImageViewerService extends BaseService {
           }
         );
 
-        this._routerEventsSubscription = this.router.events.pipe(
-          takeUntil(this.slideshow.instance.closeSlideshow)  // Unsubscribe when slideshow closes
-        ).subscribe(event => {
-          if (event instanceof NavigationEnd) {
-            this.closeSlideShow(false);
+        this.utilsService.delay(100).subscribe(() => {
+          if (!this._routerEventsSubscription) {
+            this._routerEventsSubscription = this.router.events.pipe(
+              takeUntil(this.slideshow.instance.closeSlideshow)  // Unsubscribe when slideshow closes
+            ).subscribe(event => {
+              if (event instanceof NavigationEnd) {
+                this.closeSlideShow(false);
+              }
+            });
           }
         });
 
