@@ -216,7 +216,11 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
   }
 
   private _getUrlWithoutFragment(url: string): string {
-    const urlObject = new URL(url, window.location.origin);
+    if (!this._isBrowser) {
+      return;
+    }
+
+    const urlObject = new URL(url, this.windowRefService.nativeWindow.location.origin);
     urlObject.hash = "";
     return urlObject.pathname + urlObject.search;
   }
