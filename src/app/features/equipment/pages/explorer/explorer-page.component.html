@@ -108,6 +108,14 @@
                     </span>
                 </a>
                 <a
+                  (click)="search(item)"
+                  astrobinEventPreventDefault
+                  class="search"
+                  href="#"
+                >
+                  <fa-icon icon="search"></fa-icon>
+                </a>
+                <a
                   (click)="compareService.addWithErrorHandling(item)"
                   *ngIf="
                       [

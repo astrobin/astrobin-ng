@@ -33,6 +33,7 @@ import { VariantSelectorModalComponent } from "@shared/components/equipment/item
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { DeviceService } from "@core/services/device.service";
 import { ImageViewerService } from "@core/services/image-viewer.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -159,6 +160,17 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   filtersApplied(): void {
     this.getItems();
+  }
+
+  search(item: EquipmentItem) {
+    this.currentUserProfile$.pipe(take(1)).subscribe((userProfile: UserProfileInterface) => {
+      if (userProfile && !userProfile.enableNewSearchExperience) {
+        this.windowRefService.nativeWindow.location.href = this.equipmentItemService.getClassicSearchUrl(item);
+      } else {
+        const params = this.equipmentItemService.getSearchParams(item);
+        this.router.navigateByUrl(`/search?p=${params}`);
+      }
+    });
   }
 
   private _updateTitle(item?: EquipmentItem) {

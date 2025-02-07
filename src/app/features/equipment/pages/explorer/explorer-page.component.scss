@@ -31,22 +31,29 @@
     }
 
     @media screen and (max-width: $md-max) {
+      .search,
       .add-to-compare {
         display: none;
       }
     }
 
-      @media screen and (min-width: $lg-min) {
+    @media screen and (min-width: $lg-min) {
+      .search,
       .add-to-compare {
         padding: 0 .5rem;
         float: right;
         opacity: 0;
+        pointer-events: none;
         transition: opacity .1s ease-in-out;
       }
 
-      &:hover {
-        .add-to-compare {
-          opacity: 1;
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          .search,
+          .add-to-compare {
+            opacity: 1;
+            pointer-events: all;
+          }
         }
       }
     }

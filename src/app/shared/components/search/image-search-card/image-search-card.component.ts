@@ -9,7 +9,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
-import { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { SearchService } from "@core/services/search.service";
@@ -17,6 +16,9 @@ import { Router } from "@angular/router";
 import { filter, take } from "rxjs/operators";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { EquipmentItemService } from "@core/services/equipment-item.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-image-search-card",
@@ -72,9 +74,9 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
-    public readonly imageSearchApiService: ImageSearchApiService,
     public readonly searchService: SearchService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$);
   }
@@ -99,20 +101,18 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
   updateSearchUrl(): void {
     this.currentUserProfile$.pipe(take(1)).subscribe((userProfile: UserProfileInterface) => {
       if (userProfile && !userProfile.enableNewSearchExperience) {
-        const urlParams = new URLSearchParams();
-        urlParams.set("d", "i");
-        urlParams.set("sort", this.model.ordering || "-likes");
-
-        if (this.model.itemType) {
-          const paramName = this.imageSearchApiService.getFilterParamName(this.model.itemType, this.model.usageType);
-          urlParams.set(paramName, this.model.itemId.toString());
-        }
+        this.searchUrl = this.equipmentItemService.getClassicSearchUrl(
+          {
+            id: this.model.itemId,
+            klass: this.model.itemType
+          } as EquipmentItem,
+          this.model.usageType,
+          this.model.ordering
+        );
 
         if (this.model.username) {
-          urlParams.set("username", this.model.username.toString());
+          this.searchUrl = UtilsService.addOrUpdateUrlParam(this.searchUrl, "username", this.model.username.toString());
         }
-
-        this.searchUrl = `${this.classicRoutesService.SEARCH}?${urlParams.toString()}`;
       } else {
         const { itemId, itemType, ...model } = this.model;
 
@@ -120,17 +120,7 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
           filter(item => !!item),
           take(1)
         ).subscribe(item => {
-          const params = this.searchService.modelToParams({
-            ...model,
-            ordering: undefined,
-            [itemType.toLowerCase()]: {
-              value: [{
-                id: itemId,
-                name: (item.brandName || this.translateService.instant("DIY")) + " " + item.name,
-              }],
-              matchType: null
-            }
-          });
+          const params = this.equipmentItemService.getSearchParams(item, this.model.ordering);
           this.searchUrl = `/search?p=${params}`;
         });
 
