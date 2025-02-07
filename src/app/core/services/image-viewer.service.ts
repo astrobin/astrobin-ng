@@ -17,7 +17,7 @@ import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { EMPTY, Observable, Subject } from "rxjs";
+import { EMPTY, Observable, Subject, Subscription } from "rxjs";
 
 export interface ImageViewerNavigationContextItem {
   imageId: ImageInterface["hash"] | ImageInterface["pk"];
@@ -40,6 +40,7 @@ export class ImageViewerService extends BaseService {
   private _previousDescription: string;
   private _previousUrl: string;
   private _slideshowStateSubject = new Subject<boolean>();
+  private _routerEventsSubscription: Subscription;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -69,21 +70,11 @@ export class ImageViewerService extends BaseService {
         this.closeSlideShow(true);
       }
     });
-
-    this.router.events.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        if (this.slideshow) {
-          this.closeSlideShow(false);
-        }
-      }
-    });
   }
 
   autoOpenSlideshow(
     callerComponentId: string,
-    activatedRoute: ActivatedRoute,
+    activatedRoute: ActivatedRoute
   ): void {
     const queryParams = activatedRoute.snapshot.queryParams;
 
@@ -127,6 +118,14 @@ export class ImageViewerService extends BaseService {
             environmentInjector: this.applicationRef.injector
           }
         );
+
+        this._routerEventsSubscription = this.router.events.pipe(
+          takeUntil(this.slideshow.instance.closeSlideshow)  // Unsubscribe when slideshow closes
+        ).subscribe(event => {
+          if (event instanceof NavigationEnd) {
+            this.closeSlideShow(false);
+          }
+        });
 
         if (this._isBrowser) {
           const body = this.windowRefService.nativeWindow.document.body;
@@ -175,6 +174,11 @@ export class ImageViewerService extends BaseService {
       this.slideshow.location.nativeElement.remove();
       this.slideshow.destroy();
       this.slideshow = null;
+
+      if (this._routerEventsSubscription) {
+        this._routerEventsSubscription.unsubscribe();
+        this._routerEventsSubscription = null;
+      }
 
       if (this._isBrowser) {
         const body = this.windowRefService.nativeWindow.document.body;
