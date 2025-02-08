@@ -505,13 +505,7 @@ export class ImageService extends BaseService {
   }
 
   getPublicationDate(image: ImageInterface): string {
-    const final = this.getFinalRevision(image);
-
-    if (this.isImage(final)) {
-      return final.published || final.uploaded;
-    }
-
-    return final.uploaded;
+    return image.published || image.uploaded;
   }
 
   getCoordinates(

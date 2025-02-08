@@ -395,7 +395,7 @@
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
 
     <astrobin-image-viewer-revision-summary
-      *ngIf="revision !== image"
+      *ngIf="image?.revisions?.length > 0"
       [revision]="revision"
     ></astrobin-image-viewer-revision-summary>
 
