@@ -39,13 +39,6 @@
   .offcanvas-body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-  }
-
-  &:not(.offcanvas-bottom) {
-    .offcanvas-body {
-      justify-content: center;
-    }
   }
 
   .menu-item {
