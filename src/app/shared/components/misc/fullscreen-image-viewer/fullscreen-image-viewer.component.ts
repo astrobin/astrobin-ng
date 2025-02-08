@@ -83,6 +83,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected readonly Math = Math;
 
+  protected zoomScroll = 1;
   protected touchMode?: boolean = undefined;
   protected enableLens = true;
   protected zoomLensSize: number;
@@ -132,7 +133,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _hdThumbnailSubscription: Subscription;
   private _realThumbnailSubscription: Subscription;
   private _currentFullscreenImageSubscription: Subscription;
-  private _zoomScroll = 1;
   private _zoomIndicatorTimeout: number;
   private _zoomIndicatorTimeoutDuration = 1000;
   private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
@@ -358,7 +358,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this.setZoomScroll(1);
 
-      this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").addEventListener("mousewheel", (event: WheelEvent) => {
+      this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").addEventListener("wheel", (event: WheelEvent) => {
         if (this.ngxImageZoom.zoomService.zoomingEnabled) {
           return;
         }
@@ -372,6 +372,22 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       // Prevents the jarring resetting of the zoom when the mouse wanders off the image.
       (this.ngxImageZoom as any).zoomInstance.onMouseLeave = () => {
+      };
+
+      (this.ngxImageZoom as any).zoomInstance.onClick = (event: MouseEvent) => {
+        if (this.enableLens) {
+          if (this.zoomingEnabled) {
+            this.ngxImageZoom.zoomService.zoomOff();
+          } else {
+            this.ngxImageZoom.zoomService.zoomOn(event);
+          }
+        } else {
+          if (this.zoomingEnabled) {
+            this.hide(null);
+          } else {
+            this.ngxImageZoom.zoomService.zoomOn(event);
+          }
+        }
       };
 
       this.changeDetectorRef.markForCheck();
@@ -388,13 +404,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   setZoomScroll(scroll: number) {
-    this._zoomScroll = scroll;
+    this.zoomScroll = scroll;
     this.showZoomIndicator = this.zoomingEnabled;
     this._setZoomIndicatorTimeout();
-  }
-
-  getZoomScroll(): number {
-    return this._zoomScroll;
   }
 
   @HostListener("window:keyup.escape", ["$event"])

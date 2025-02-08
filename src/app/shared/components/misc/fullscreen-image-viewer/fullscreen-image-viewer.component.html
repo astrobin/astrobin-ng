@@ -187,15 +187,13 @@
       >
       </lib-ngx-image-zoom>
 
-      <ng-container *ngIf="getZoomScroll() as zoomScroll">
-        <div
-          *ngIf="showZoomIndicator"
-          class="image-zoom-indicator"
-          [class.beyond-one]="Math.round(zoomScroll * 100) >= 101"
-        >
-          {{ zoomScroll | number: "1.2-2" }}x
-        </div>
-      </ng-container>
+      <div
+        *ngIf="showZoomIndicator"
+        class="image-zoom-indicator"
+        [class.beyond-one]="Math.round(zoomScroll * 100) >= 101"
+      >
+        {{ zoomScroll | number: "1.2-2" }}x
+      </div>
     </ng-container>
 
     <ng-container *ngIf="isVeryLargeImage">
