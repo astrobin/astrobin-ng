@@ -40,14 +40,9 @@ import { TranslateService } from "@ngx-translate/core";
               {{ revision.description }}
             </div>
 
-            <div *ngIf="isRevision && revision.uploaded">
+            <div *ngIf="published">
               <strong>{{ "Published" | translate }}</strong>
-              {{ revision.uploaded | date: "medium" }}
-            </div>
-
-            <div *ngIf="!isRevision && (revision.published || revision.uploaded)">
-              <strong>{{ "Published" | translate }}</strong>
-              {{ (revision.published || revision.uploaded) | date: "medium" }}
+              {{ published | date: "medium" }}
             </div>
           </div>
         </div>
@@ -62,6 +57,7 @@ export class ImageViewerRevisionSummaryComponent extends ImageViewerSectionBaseC
 
   protected isRevision: boolean;
   protected label: string;
+  protected published: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -93,6 +89,12 @@ export class ImageViewerRevisionSummaryComponent extends ImageViewerSectionBaseC
       this.label = (this.revision as ImageRevisionInterface).label
     } else {
       this.label = this.translateService.instant("Original");
+    }
+
+    if(this.isRevision) {
+      this.published = (this.revision as ImageRevisionInterface).uploaded;
+    } else {
+      this.published = (this.revision as ImageInterface).published || (this.revision as ImageInterface).uploaded;
     }
   }
 }
