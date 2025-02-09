@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFilterCategory } from "@core/interfaces/search-filter-component.interface";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-search-text-filter.search-filter-component",
@@ -46,7 +47,6 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
           key: "onlySearchInTitlesAndDescriptions",
           type: "checkbox",
           wrappers: ["default-wrapper"],
-          defaultValue: false,
           props: {
             hideOptionalMarker: true,
             label: this.translateService.instant("Only search in titles and descriptions")
@@ -61,7 +61,8 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly searchFilterService: SearchFilterService
+    public readonly searchFilterService: SearchFilterService,
+    public readonly cookieService: CookieService
   ) {
     super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }

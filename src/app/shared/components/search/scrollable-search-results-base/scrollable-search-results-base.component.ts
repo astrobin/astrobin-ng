@@ -1,5 +1,5 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { auditTime, fromEvent, Observable } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { takeUntil } from "rxjs/operators";
@@ -39,7 +39,8 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
     public readonly elementRef: ElementRef,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly translateService: TranslateService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -52,12 +53,19 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
 
       fromEvent(scrollElement, "scroll")
         .pipe(auditTime(100), takeUntil(this.destroyed$))
-        .subscribe(() => this._onScroll());
+        .subscribe(() => {
+          this._onScroll();
+          this.changeDetectorRef.markForCheck();
+        });
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.model && changes.model.currentValue && this.isInViewport) {
+    if (
+      this.isInViewport &&
+      changes.model &&
+      changes.model.currentValue
+    ) {
       this.loadData();
     }
   }
@@ -116,12 +124,14 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
   loadData(): void {
     this.loading = false;
     this.initialLoading = true;
+    this.next = null;
 
     this.fetchData().subscribe(response => {
       this.results = response.results;
       this.next = response.next;
       this.initialLoading = false;
       this.updateLastResultsCount(response.count);
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -135,6 +145,8 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
           this.results = this.results.concat(response.results);
           this.next = response.next;
           this.loading = false;
+
+          this.changeDetectorRef.markForCheck();
 
           observer.next(response.results);
           observer.complete();

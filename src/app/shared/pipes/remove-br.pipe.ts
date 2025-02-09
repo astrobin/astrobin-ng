@@ -1,7 +1,7 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: 'removeBr'
+  name: "removeBr"
 })
 export class RemoveBrPipe implements PipeTransform {
   transform(value: string): string {
@@ -10,13 +10,13 @@ export class RemoveBrPipe implements PipeTransform {
     }
 
     // Replace multiple <br> tags with a single <br>
-    let result = value.replace(/(<br\s*\/?>\s*){2,}/gi, '<br>');
+    let result = value.replace(/(<br\s*\/?>\s*){2,}/gi, "<br>");
 
     // Remove leading <br> tags
-    result = result.replace(/^(<br\s*\/?>)+/gi, '');
+    result = result.replace(/^(<br\s*\/?>)+/gi, "");
 
     // Remove trailing <br> tags
-    result = result.replace(/(<br\s*\/?>)+$/gi, '');
+    result = result.replace(/(<br\s*\/?>)+$/gi, "");
 
     return result;
   }

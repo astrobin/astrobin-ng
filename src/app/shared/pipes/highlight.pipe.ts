@@ -19,7 +19,7 @@ export class HighlightPipe implements PipeTransform {
   ]);
 
   transform(value: string, search: string): string {
-    if (!search) {
+    if (!search || !value) {
       return value;
     }
 

@@ -4,6 +4,12 @@
     [class.show-auto-complete-items]="showAutoCompleteGroups"
     class="search-bar-input-container form-control"
   >
+    <div
+      *ngIf="loadingAutoCompleteItems"
+      @fadeInOut
+      class="loading-overlay"
+    ></div>
+
     <form
       (ngSubmit)="onFormSubmit()"
       (click)="searchInputEl.nativeElement.focus()"
@@ -21,7 +27,6 @@
         (keydown.escape)="closeAutoCompleteSuggestions($event)"
         (ngModelChange)="onModelChangeDebounced($event)"
         (keydown.tab)="openAutoCompleteSuggestions($event)"
-        (keydown.enter)="onFormSubmit()"
         [ngModelOptions]="{standalone: true}"
         [(ngModel)]="model.text.value"
         [placeholder]="placeholder"
@@ -56,7 +61,7 @@
           </button>
 
           <button
-            (click)="onSearch(model, true)"
+            (click)="onSearch(model, !searchSettingsModel.simpleMode)"
             astrobinEventPreventDefault
             astrobinEventStopPropagation
             class="btn btn-link btn-xs"
@@ -73,12 +78,22 @@
           ></span>
 
           <span
-            *ngIf="!hasAutoCompleteGroups()"
+            *ngIf="!searchSettingsModel.simpleMode && !hasAutoCompleteGroups()"
             [innerHTML]="'No suggestions available, press <kbd>Enter</kbd> for a free text search.' | translate"
+          ></span>
+
+          <span
+            *ngIf="searchSettingsModel.simpleMode"
+            [innerHTML]="'Press <kbd>Enter</kbd> to search.' | translate"
           ></span>
         </ng-container>
 
-        <fa-icon icon="info-circle" class="ms-2" (click)="showTabOrEnterInformation()"></fa-icon>
+        <fa-icon
+          *ngIf="!searchSettingsModel.simpleMode"
+          (click)="showTabOrEnterInformation()"
+          icon="info-circle"
+          class="ms-2"
+        ></fa-icon>
       </div>
     </form>
   </div>
@@ -123,11 +138,7 @@
 
   <div class="search-bar-icons">
     <ng-container *ngIf="loadingAutoCompleteItems; else resetAutoCompleteTemplate">
-      <fa-icon
-        animation="spin"
-        class="search-bar-loading-icon"
-        icon="spinner"
-      ></fa-icon>
+      <astrobin-loading-indicator class="search-bar-icons-loading-indicator"></astrobin-loading-indicator>
     </ng-container>
 
     <ng-template #resetAutoCompleteTemplate>
@@ -140,8 +151,9 @@
     </ng-template>
 
     <ng-template #iconsTemplate>
+
       <fa-icon
-        *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
+        *ngIf="!searchSettingsModel.simpleMode && (model.searchType === SearchType.IMAGE || model.searchType === undefined)"
         (click)="onFilterSelectionClicked($event)"
         [ngbTooltip]="isTouchDevice ? '' : ('Filters' | translate)"
         icon="sliders"
@@ -395,6 +407,15 @@
           container="body"
         ></fa-icon>
       </ng-container>
+
+      <fa-icon
+        *ngIf="model.searchType === SearchType.IMAGE || model.searchType === undefined"
+        (click)="onSearchSettingsClicked($event)"
+        [ngbTooltip]="isTouchDevice ? '' : ('Settings' | translate)"
+        icon="cog"
+        container="body"
+      >
+      </fa-icon>
     </ng-template>
   </div>
 </div>
@@ -457,23 +478,63 @@
   </div>
 
   <div class="offcanvas-body">
-    <p translate>
-      AstroBin recommends using specific filters to find equipment items, celestial subjects, and users. You can add filters
-      by selecting the <strong>Filters</strong> icon on the right end of the search bar.
-    </p>
+    <ng-container *ngTemplateOutlet="filterSearchRecommendationTemplate"></ng-container>
+  </div>
+</ng-template>
 
-    <p translate>
-      If you want to perform a free text search, you can press <kbd>Enter</kbd> after typing. Free text searches are
-      usually more inclusive and may return more results, as they search in all available fields. AstroBin will still
-      try to show relevant results by matching your free text search to a filter, if there is a perfect match.
-    </p>
+<ng-template #filterSearchRecommendationTemplate>
+  <p translate>
+    AstroBin recommends using specific filters to find equipment items, celestial subjects, and users. You can add
+    filters
+    by selecting the <strong>Filters</strong> icon on the right end of the search bar.
+  </p>
 
-    <p translate>
-      The distinction between a free text search and a search using a specific filter can be illustrated with the
-      following example. If you search for <strong>Orion</strong>, AstroBin cannot know if you want to see images OF
-      the Orion constellations, images IN the Orion constellation, images of the Orion nebula, images taken with an
-      Orion telescope, or images with somebody whose username is Orion. By using filters, you can specify what you are
-      looking for exactly.
-    </p>
+  <p translate>
+    If you want to perform a free text search, you can press <kbd>Enter</kbd> after typing. Free text searches are
+    usually more inclusive and may return more results, as they search in all available fields. AstroBin will still
+    try to show relevant results by matching your free text search to a filter, if there is a perfect match.
+  </p>
+
+  <p translate>
+    The distinction between a free text search and a search using a specific filter can be illustrated with the
+    following example. If you search for <strong>Orion</strong>, AstroBin cannot know if you want to see images OF
+    the Orion constellations, images IN the Orion constellation, images of the Orion nebula, images taken with an
+    Orion telescope, or images with somebody whose username is Orion. By using filters, you can specify what you are
+    looking for exactly.
+  </p>
+</ng-template>
+
+<ng-template #searchSettingsOffcanvasTemplate let-offcanvas>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">{{ "Search settings" | translate }}</h5>
+    <button
+      type="button"
+      class="btn-close text-reset"
+      (click)="offcanvas.close()"
+    ></button>
+  </div>
+
+  <div class="offcanvas-body d-flex flex-column justify-content-between">
+    <div>
+      <form
+        class="search-settings-form"
+      >
+        <formly-form
+          [form]="searchSettingsForm"
+          [fields]="searchSettingsFields"
+          [model]="searchSettingsModel"
+        ></formly-form>
+      </form>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button
+        type="button"
+        (click)="offcanvas.close()"
+        class="btn btn-secondary"
+      >
+        {{ "Close" | translate }}
+      </button>
+    </div>
   </div>
 </ng-template>

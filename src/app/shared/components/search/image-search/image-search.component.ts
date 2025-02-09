@@ -112,7 +112,7 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
     public readonly utilsService: UtilsService,
     public readonly userService: UserService
   ) {
-    super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
+    super(store$, windowRefService, elementRef, platformId, translateService, utilsService, changeDetectorRef);
     this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
@@ -141,8 +141,9 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
             this._removeDuplicateRetailers(result.equipmentBrandListings) : [];
           this.marketplaceLineItems = result.marketplaceLineItems || [];
 
-          this.searchService.searchCompleteSubject.next(result);
           this.changeDetectorRef.markForCheck();
+
+          this.searchService.searchCompleteSubject.next(result);
         })
       );
   }
