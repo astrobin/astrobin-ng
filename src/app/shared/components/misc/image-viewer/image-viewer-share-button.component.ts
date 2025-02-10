@@ -12,6 +12,9 @@ import { PopNotificationsService } from "@core/services/pop-notifications.servic
 import { UtilsService } from "@core/services/utils/utils.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Store } from "@ngrx/store";
+import { MainState } from "@app/store/state";
 
 enum SharingMode {
   LINK = "link",
@@ -60,14 +63,70 @@ enum ThumbnailSize {
           ></formly-form>
         </form>
 
-        <button class="btn btn-secondary mt-3" (click)="copy()">{{ copyButtonLabel }}</button>
+        <button class="btn btn-secondary mt-3" (click)="copyShareModelCode()">{{ copyButtonLabel }}</button>
+
+        <ng-container *ngIf="currentUser$ | async as currentUser">
+          <div *ngIf="currentUser?.id === image.user" class="mt-5">
+            <label>
+              {{ "Grab direct image links" | translate }}
+              <astrobin-private-information class="d-inline-block ms-2"></astrobin-private-information>
+            </label>
+
+            <p class="small">
+              {{ "If embedding direct links to images hosted on the AstroBin servers, kindly provide a link to AstroBin." | translate }}
+            </p>
+
+            <ul class="mt-3">
+              <li>
+                <span>{{ "Thumbnail" | translate }}</span>
+                <fa-icon
+                  *ngIf="smallThumbnail; else thumbnailNotAvailableTemplate"
+                  (click)="copyDirectLink(smallThumbnail)"
+                  icon="copy"
+                  class="ms-2"
+                ></fa-icon>
+              </li>
+              <li>
+                <span>{{ "Medium" | translate }}</span>
+                <fa-icon
+                  *ngIf="mediumThumbnail; else thumbnailNotAvailableTemplate"
+                  (click)="copyDirectLink(mediumThumbnail)"
+                  icon="copy"
+                  class="ms-2"
+                ></fa-icon>
+              </li>
+              <li>
+                <span>{{ "Large" | translate }}</span>
+                <fa-icon
+                  *ngIf="largeThumbnail; else thumbnailNotAvailableTemplate"
+                  (click)="copyDirectLink(largeThumbnail)"
+                  icon="copy"
+                  class="ms-2"
+                ></fa-icon>
+              </li>
+              <li>
+                <span>{{ "Extra-large" | translate }}</span>
+                <fa-icon
+                  *ngIf="extraLargeThumbnail; else thumbnailNotAvailableTemplate"
+                  (click)="copyDirectLink(extraLargeThumbnail)"
+                  icon="copy"
+                  class="ms-2"
+                ></fa-icon>
+              </li>
+            </ul>
+          </div>
+        </ng-container>
       </div>
+    </ng-template>
+
+    <ng-template #thumbnailNotAvailableTemplate>
+      <span class="d-inline-block ms-2">{{ "n/a" | translate }}</span>
     </ng-template>
   `,
   styleUrls: ["./image-viewer-share-button.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageViewerShareButtonComponent implements OnChanges, OnDestroy {
+export class ImageViewerShareButtonComponent extends BaseComponentDirective implements OnChanges, OnDestroy {
   @Input()
   image: ImageInterface;
 
@@ -167,7 +226,13 @@ export class ImageViewerShareButtonComponent implements OnChanges, OnDestroy {
 
   protected copyButtonLabel = this.translateService.instant("Copy");
 
+  protected smallThumbnail: string;
+  protected mediumThumbnail: string;
+  protected largeThumbnail: string;
+  protected extraLargeThumbnail: string;
+
   constructor(
+    public readonly store$: Store<MainState>,
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
     public readonly translateService: TranslateService,
@@ -177,10 +242,16 @@ export class ImageViewerShareButtonComponent implements OnChanges, OnDestroy {
     public readonly utilsService: UtilsService,
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
+    super(store$);
   }
 
   ngOnChanges(): void {
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+
+    this.smallThumbnail = this.revision.thumbnails.find(thumb => thumb.alias === ImageAlias.GALLERY)?.url;
+    this.mediumThumbnail = this.revision.thumbnails.find(thumb => thumb.alias === ImageAlias.REGULAR)?.url;
+    this.largeThumbnail = this.revision.thumbnails.find(thumb => thumb.alias === ImageAlias.HD)?.url;
+    this.extraLargeThumbnail = this.revision.thumbnails.find(thumb => thumb.alias === ImageAlias.QHD)?.url;
   }
 
   openShare(event: MouseEvent): void {
@@ -261,7 +332,7 @@ export class ImageViewerShareButtonComponent implements OnChanges, OnDestroy {
     }
   }
 
-  protected async copy() {
+  protected async copyShareModelCode() {
     const result: boolean = await this.windowRefService.copyToClipboard(this.shareModel.code);
 
     if (!result) {
@@ -276,5 +347,15 @@ export class ImageViewerShareButtonComponent implements OnChanges, OnDestroy {
       this.copyButtonLabel = this.translateService.instant("Copy");
       this.changeDetectorRef.markForCheck();
     });
+  }
+
+  protected async copyDirectLink(value: string) {
+    const result: boolean = await this.windowRefService.copyToClipboard(value);
+
+    if (result) {
+      this.popNotificationsService.info(this.translateService.instant("Copied!"));
+    } else {
+      this.popNotificationsService.error(this.translateService.instant("Failed to copy link to clipboard."));
+    }
   }
 }
