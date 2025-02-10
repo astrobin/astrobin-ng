@@ -445,7 +445,7 @@
   ></p>
 
   <astrobin-search-text-filter
-    *ngIf="model.text?.value"
+    *ngIf="!!model.text?.value"
     (valueChanges)="onFilterValueChanges(SearchTextFilterComponent.key, $event)"
     [value]="model.text"
     class="search-filter-component"

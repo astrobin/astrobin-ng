@@ -30,7 +30,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     text: {
       value: "",
       matchType: MatchType.ALL,
-      onlySearchInTitlesAndDescriptions: this.searchService.getOnlySearchInTitlesAndDescriptions()
+      onlySearchInTitlesAndDescriptions: this.searchService.isSimpleMode()
     },
     page: 1,
     pageSize: SearchService.DEFAULT_PAGE_SIZE
@@ -153,7 +153,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
             value: parsedParams.text?.value || "",
             matchType: parsedParams.text?.matchType || MatchType.ALL,
             onlySearchInTitlesAndDescriptions: parsedParams.text?.onlySearchInTitlesAndDescriptions ||
-              this.searchService.getOnlySearchInTitlesAndDescriptions()
+              this.searchService.isSimpleMode()
           },
           page: 1
         };
@@ -162,7 +162,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
           text: {
             value: "",
             matchType: MatchType.ALL,
-            onlySearchInTitlesAndDescriptions: this.searchService.getOnlySearchInTitlesAndDescriptions()
+            onlySearchInTitlesAndDescriptions: this.searchService.isSimpleMode()
           },
           page: 1,
           pageSize: SearchService.DEFAULT_PAGE_SIZE

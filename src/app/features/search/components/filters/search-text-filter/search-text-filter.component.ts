@@ -9,6 +9,7 @@ import { SearchFilterCategory } from "@core/interfaces/search-filter-component.i
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { CookieService } from "ngx-cookie";
+import { SearchService } from "@core/services/search.service";
 
 @Component({
   selector: "astrobin-search-text-filter.search-filter-component",
@@ -47,6 +48,7 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
           key: "onlySearchInTitlesAndDescriptions",
           type: "checkbox",
           wrappers: ["default-wrapper"],
+          defaultValue: this.searchService.isSimpleMode(),
           props: {
             hideOptionalMarker: true,
             label: this.translateService.instant("Only search in titles and descriptions")
@@ -62,7 +64,8 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
     public readonly searchFilterService: SearchFilterService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly searchService: SearchService
   ) {
     super(store$, translateService, domSanitizer, modalService, searchFilterService);
   }

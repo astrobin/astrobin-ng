@@ -74,7 +74,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   protected searchSettingsModel: {
     simpleMode: boolean;
   } = {
-    simpleMode: this.searchService.getOnlySearchInTitlesAndDescriptions()
+    simpleMode: this.searchService.isSimpleMode()
   };
 
   private _modelChanged: Subject<string> = new Subject<string>();
@@ -108,6 +108,17 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     if (isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.document?.addEventListener) {
       this.windowRefService.nativeWindow.document.addEventListener("click", this.onDocumentClick.bind(this));
     }
+
+    this.searchService.simpleModeChanges$.pipe(takeUntil(this.destroyed$)).subscribe(simpleMode => {
+      this.model = {
+        ...this.model,
+        text: {
+          value: this.model.text?.value,
+          matchType: this.model.text?.matchType,
+          onlySearchInTitlesAndDescriptions: simpleMode
+        }
+      }
+    });
 
     this._modelChanged.pipe(
       debounceTime(200),
@@ -813,7 +824,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         hooks: {
           onInit: (field: FormlyFieldConfig) => {
             field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe((value: boolean) => {
-              this.searchService.setOnlySearchInTitlesAndDescriptions(value);
+              this.searchService.setSimpleMode(value);
             });
           }
         }

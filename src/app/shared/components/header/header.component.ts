@@ -209,7 +209,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
           text: {
             value: this.quickSearchQuery,
             matchType: MatchType.ALL,
-            onlySearchInTitlesAndDescriptions: this.searchService.getOnlySearchInTitlesAndDescriptions()
+            onlySearchInTitlesAndDescriptions: this.searchService.isSimpleMode()
           }
         });
       }

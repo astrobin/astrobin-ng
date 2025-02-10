@@ -84,6 +84,9 @@ export class SearchService extends BaseService {
   searchCompleteSubject: Subject<SearchPaginatedApiResultInterface<any>> =
     new Subject<SearchPaginatedApiResultInterface<any>>();
   searchComplete$: Observable<SearchPaginatedApiResultInterface<any>>;
+
+  simpleModeChanges$: Observable<boolean>;
+
   private _autoCompleteItemsLimit = 15;
   private _autoCompleteTelescopeCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteSensorCache: { [query: string]: SearchAutoCompleteItem[] } = {};
@@ -93,7 +96,8 @@ export class SearchService extends BaseService {
   private _autoCompleteAccessoryCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteSoftwareCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteOnlyFilters: Type<SearchFilterComponentInterface>[] = [];
-  private _onlySearchInTitlesAndDescriptions: boolean;
+  private _simpleMode: boolean;
+  private _simpleModeChangesSubject: Subject<boolean> = new Subject();
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -117,7 +121,8 @@ export class SearchService extends BaseService {
     super(loadingService);
 
     this.searchComplete$ = this.searchCompleteSubject.asObservable();
-    this._onlySearchInTitlesAndDescriptions = this.cookieService.get(SEARCH_SETTINGS_SIMPLE_MODE_COOKIE) === "true";
+    this._simpleMode = this.cookieService.get(SEARCH_SETTINGS_SIMPLE_MODE_COOKIE) === "true";
+    this.simpleModeChanges$ = this._simpleModeChangesSubject.asObservable();
   }
 
   private _allFiltersTypes: Type<SearchFilterComponentInterface>[] = [];
@@ -153,7 +158,7 @@ export class SearchService extends BaseService {
         text: {
           value: "",
           matchType: MatchType.ALL,
-          onlySearchInTitlesAndDescriptions: this.getOnlySearchInTitlesAndDescriptions()
+          onlySearchInTitlesAndDescriptions: this.isSimpleMode()
         }
       };
     }
@@ -1176,13 +1181,14 @@ export class SearchService extends BaseService {
       ))) as Observable<SearchAutoCompleteItem[]>;
   }
 
-  getOnlySearchInTitlesAndDescriptions(): boolean {
-    return this._onlySearchInTitlesAndDescriptions;
+  isSimpleMode(): boolean {
+    return this._simpleMode;
   }
 
-  setOnlySearchInTitlesAndDescriptions(value: boolean): void {
-    this._onlySearchInTitlesAndDescriptions = value;
+  setSimpleMode(value: boolean): void {
+    this._simpleMode = value;
     this.cookieService.put(SEARCH_SETTINGS_SIMPLE_MODE_COOKIE, value.toString());
+    this._simpleModeChangesSubject.next(value);
   }
 
   private _autoCompleteMatch(query: string, candidate: string): boolean {
