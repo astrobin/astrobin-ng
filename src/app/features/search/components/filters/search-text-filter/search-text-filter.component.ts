@@ -49,6 +49,9 @@ export class SearchTextFilterComponent extends SearchBaseFilterComponent {
           type: "checkbox",
           wrappers: ["default-wrapper"],
           defaultValue: this.searchService.isSimpleMode(),
+          expressions: {
+            hide: () => this.searchService.isSimpleMode()
+          },
           props: {
             hideOptionalMarker: true,
             label: this.translateService.instant("Only search in titles and descriptions")

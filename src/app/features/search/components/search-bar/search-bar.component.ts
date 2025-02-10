@@ -818,7 +818,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
           toggleLabel: this.translateService.instant("Simple mode"),
           description: this.translateService.instant(
             "AstroBin will search only in titles and descriptions, and search filters will be disabled. " +
-            "We do not recommend this as you're more likely to get non-relevant search results."
+            "We recommend filters to perform more advanced and exact searches."
           )
         },
         hooks: {
