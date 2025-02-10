@@ -34,6 +34,7 @@ import { Throttle } from "@app/decorators";
 import { SolutionStatus } from "@core/interfaces/solution.interface";
 import { fadeInOut } from "@shared/animations";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
 
 
 @Component({
@@ -108,6 +109,7 @@ export class ImageViewerComponent
 
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
+
   protected readonly ImageAlias = ImageAlias;
   protected readonly isPlatformBrowser = isPlatformBrowser;
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
@@ -156,8 +158,10 @@ export class ImageViewerComponent
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
   protected readonly isBrowser: boolean;
+
   private _dataAreaScrollEventSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
+  private _activeOffcanvas: NgbOffcanvasRef;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -201,6 +205,10 @@ export class ImageViewerComponent
   ngOnInit(): void {
     this._initImageAlias();
     this._initContentTypes();
+
+    this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
+      this._activeOffcanvas = activeOffcanvas;
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -303,8 +311,8 @@ export class ImageViewerComponent
       return;
     }
 
-    if (this.offcanvasService.hasOpenOffcanvas()) {
-      this.offcanvasService.dismiss();
+    if (this._activeOffcanvas) {
+      this._activeOffcanvas.dismiss();
       return;
     }
 

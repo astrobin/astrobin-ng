@@ -146,11 +146,14 @@
 
 <ng-template #notificationsButtonTemplate>
   <!-- Notifications -->
-  <a class="btn btn-link nav-link position-relative" routerLink="/notifications">
+  <a
+    class="btn btn-link nav-link position-relative"
+    (click)="openNotificationsOffcanvas()"
+  >
     <fa-icon icon="bell"></fa-icon>
     <ng-container *ngIf="unreadNotificationsCount$ | async as unreadCount">
       <span *ngIf="!!unreadCount" class="badge bg-danger badge-pill rounded-pill m-0">
-        {{ unreadCount }}
+        {{ unreadCount | numberSuffix }}
       </span>
     </ng-container>
   </a>
@@ -728,4 +731,14 @@
 
 <ng-template #highContrastThemeEnabled>
   {{ "Disable high contrast theme" | translate }}
+</ng-template>
+
+<ng-template #notificationsOffcanvas let-offcanvas>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">{{ "Notifications" | translate }}</h5>
+    <button (click)="offcanvas.close()" class="btn-close text-reset"></button>
+  </div>
+  <div class="offcanvas-body">
+    <astrobin-notifications-list [standalone]="true"></astrobin-notifications-list>
+  </div>
 </ng-template>
