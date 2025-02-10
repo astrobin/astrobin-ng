@@ -687,7 +687,7 @@ export class ImageViewerComponent
       case "ORIGINAL": {
         const thumbnail = this.image.thumbnails?.find(thumbnail =>
           thumbnail.alias === this.alias &&
-          thumbnail.revision === ORIGINAL_REVISION_LABEL
+          thumbnail.revision === (this.image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL)
         );
         this.mouseHoverImage = thumbnail?.url ?? null;
         this.inlineSvg = null;
