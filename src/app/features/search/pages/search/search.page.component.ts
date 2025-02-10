@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -7,7 +7,7 @@ import { SearchModelInterface, SearchType } from "@features/search/interfaces/se
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { SearchService } from "@core/services/search.service";
-import { filter, map, startWith, take, takeUntil } from "rxjs/operators";
+import { filter, map, startWith, takeUntil } from "rxjs/operators";
 import { merge } from "rxjs";
 import { distinctUntilChangedObj, UtilsService } from "@core/services/utils/utils.service";
 import { ImageViewerService } from "@core/services/image-viewer.service";
@@ -16,6 +16,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { ImageService } from "@core/services/image/image.service";
+import { CookieService } from "ngx-cookie";
+import { MatchType } from "@features/search/enums/match-type.enum";
 
 @Component({
   selector: "astrobin-search-page",
@@ -23,23 +25,21 @@ import { ImageService } from "@core/services/image/image.service";
   styleUrls: ["./search.page.component.scss"]
 })
 export class SearchPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnDestroy {
-  readonly SearchType = SearchType;
-
   @ViewChild("ad", { static: false, read: AdManagerComponent }) adManagerComponent: AdManagerComponent;
-
   model: SearchModelInterface = {
     text: {
       value: "",
-      matchType: undefined
+      matchType: MatchType.ALL,
+      onlySearchInTitlesAndDescriptions: this.searchService.getOnlySearchInTitlesAndDescriptions()
     },
     page: 1,
     pageSize: SearchService.DEFAULT_PAGE_SIZE
   };
-
+  protected readonly SearchType = SearchType;
   protected allowAds: boolean;
   protected showAd: boolean;
 
-  private _isBrowser: boolean;
+  private readonly _isBrowser: boolean;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -54,7 +54,9 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly imageService: ImageService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly cookieService: CookieService,
+    public readonly changeDetectionRef: ChangeDetectorRef
   ) {
     super(store$);
 
@@ -75,6 +77,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
     ).subscribe(allowAds => {
       this.allowAds = allowAds;
       this.showAd = allowAds && !this.activatedRoute.snapshot.data.image;
+      this.changeDetectionRef.markForCheck();
     });
 
     this.imageViewerService.slideshowState$
@@ -82,10 +85,10 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
       .subscribe(isOpen => {
         this.showAd = this.allowAds && !isOpen;
 
-        if (!this.showAd && this.adManagerComponent) {
-        } else if (this.showAd && this.adManagerComponent) {
+        if (this.showAd && this.adManagerComponent) {
           this.utilsService.delay(100).subscribe(() => {
             this.adManagerComponent.refreshAd();
+            this.changeDetectionRef.markForCheck();
           });
         }
       });
@@ -103,6 +106,7 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
       distinctUntilChangedObj()
     ).subscribe((queryParams: Record<string, string>) => {
       this.loadModel(queryParams);
+      this.changeDetectionRef.markForCheck();
     });
   }
 
@@ -147,8 +151,9 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
           ...parsedParams,
           text: {
             value: parsedParams.text?.value || "",
-            matchType: parsedParams.text?.matchType,
-            onlySearchInTitlesAndDescriptions: parsedParams.text?.onlySearchInTitlesAndDescriptions
+            matchType: parsedParams.text?.matchType || MatchType.ALL,
+            onlySearchInTitlesAndDescriptions: parsedParams.text?.onlySearchInTitlesAndDescriptions ||
+              this.searchService.getOnlySearchInTitlesAndDescriptions()
           },
           page: 1
         };
@@ -156,7 +161,8 @@ export class SearchPageComponent extends BaseComponentDirective implements OnIni
         this.model = {
           text: {
             value: "",
-            matchType: undefined
+            matchType: MatchType.ALL,
+            onlySearchInTitlesAndDescriptions: this.searchService.getOnlySearchInTitlesAndDescriptions()
           },
           page: 1,
           pageSize: SearchService.DEFAULT_PAGE_SIZE

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
@@ -17,7 +17,8 @@ import { take } from "rxjs/operators";
 @Component({
   selector: "astrobin-user-search",
   templateUrl: "./user-search.component.html",
-  styleUrls: ["./user-search.component.scss"]
+  styleUrls: ["./user-search.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserSearchComponent extends ScrollableSearchResultsBaseComponent<UserSearchInterface> {
   @Input()
@@ -32,9 +33,10 @@ export class UserSearchComponent extends ScrollableSearchResultsBaseComponent<Us
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly utilsService: UtilsService,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
+    super(store$, windowRefService, elementRef, platformId, translateService, utilsService, changeDetectorRef);
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<UserSearchInterface>> {

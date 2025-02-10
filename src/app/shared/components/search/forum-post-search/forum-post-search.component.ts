@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
@@ -15,7 +15,8 @@ import { UtilsService } from "@core/services/utils/utils.service";
 @Component({
   selector: "astrobin-forum-post-search",
   templateUrl: "./forum-post-search.component.html",
-  styleUrls: ["./forum-post-search.component.scss"]
+  styleUrls: ["./forum-post-search.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ForumPostSearchComponent extends ScrollableSearchResultsBaseComponent<ForumPostSearchInterface> {
   @Input()
@@ -29,9 +30,10 @@ export class ForumPostSearchComponent extends ScrollableSearchResultsBaseCompone
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
+    super(store$, windowRefService, elementRef, platformId, translateService, utilsService, changeDetectorRef);
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<ForumPostSearchInterface>> {
