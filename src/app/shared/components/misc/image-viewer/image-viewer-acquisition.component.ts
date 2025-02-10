@@ -263,8 +263,8 @@ interface DetailedFilterSummary {
             </td>
           <tr>
 
-          <tr>
-            <th *ngIf="dates?.length" [attr.data-label]="'Dates' | translate">
+          <tr *ngIf="filterSummary.summary.dates?.length">
+            <th [attr.data-label]="'Dates' | translate">
               <div class="metadata-item">
                 <div class="metadata-label">
                   <astrobin-image-viewer-acquisition-dates
@@ -274,7 +274,7 @@ interface DetailedFilterSummary {
               </div>
             </th>
 
-            <td *ngIf="dates?.length" [attr.data-label]="'Avg. moon' | translate">
+            <td [attr.data-label]="'Avg. moon' | translate">
               <div class="metadata-item justify-content-end">
                 <div class="metadata-label">
                 <span
@@ -289,7 +289,7 @@ interface DetailedFilterSummary {
             </td>
           </tr>
 
-          <tr *ngIf="dates?.length && !last" class="small-spacer-row">
+          <tr *ngIf="filterSummary.summary.dates?.length && !last" class="small-spacer-row">
             <td colspan="2"></td>
           </tr>
           </tbody>
