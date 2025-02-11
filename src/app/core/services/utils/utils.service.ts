@@ -1165,17 +1165,17 @@ export class UtilsService {
   }
 
   async getResizeObserver(): Promise<typeof ResizeObserver> {
-    try {
-      if (typeof ResizeObserver !== 'undefined') {
-        return ResizeObserver;
-      }
-
-      const module = await import('@juggle/resize-observer');
-      return module.ResizeObserver;
-    } catch (e) {
-      console.error('ResizeObserver not available and polyfill failed to load:', e);
-      throw e;
+    if (typeof ResizeObserver !== "undefined") {
+      return ResizeObserver;
     }
+
+    if (window["PolyfillResizeObserver"]) {
+      return window["PolyfillResizeObserver"];
+    }
+
+    const module = await import("@juggle/resize-observer");
+    window["PolyfillResizeObserver"] = module.ResizeObserver;
+    return module.ResizeObserver;
   }
 
   private _getElementRect(element: HTMLElement): DOMRect {

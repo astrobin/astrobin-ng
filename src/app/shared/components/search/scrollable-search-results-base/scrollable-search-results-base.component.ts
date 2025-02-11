@@ -146,10 +146,10 @@ export abstract class ScrollableSearchResultsBaseComponent<T> extends BaseCompon
           this.next = response.next;
           this.loading = false;
 
-          this.changeDetectorRef.markForCheck();
-
           observer.next(response.results);
           observer.complete();
+
+          this.changeDetectorRef.markForCheck();
         });
       }
     });
