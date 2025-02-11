@@ -188,11 +188,12 @@
       </lib-ngx-image-zoom>
 
       <div
-        *ngIf="showZoomIndicator"
         class="image-zoom-indicator"
         [class.beyond-one]="Math.round(zoomScroll * 100) >= 101"
       >
-        {{ zoomScroll | number: "1.2-2" }}x
+        <a (click)="snapTo1x()" href="#" astrobinEventPreventDefault>
+          {{ zoomScroll | number: "1.2-2" }}x
+        </a>
       </div>
     </ng-container>
 
