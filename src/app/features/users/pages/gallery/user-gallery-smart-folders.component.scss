@@ -11,19 +11,19 @@ $size: 150px;
   .smart-folder-background {
     background: url("/assets/images/polaroids.png?v=20241008") no-repeat center;
     background-size: $size;
-    height: $size;
+    height: calc($size + 10px);
     width: $size;
   }
 
   .smart-folder-stars {
     background: url("/assets/images/stars.jpg?v=20241008") no-repeat center;
     background-size: $size;
-    height: calc($size - 44px);
-    width: calc($size - 44px);
+    height: 116px;
+    width: 116px;
     position: absolute;
-    top: 10px;
-    left: 22px;
-    opacity: .75;
+    top: 13px;
+    left: 17px;
+    opacity: 0.75;
     filter: blur(2px);
   }
 

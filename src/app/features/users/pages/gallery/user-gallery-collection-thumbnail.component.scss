@@ -9,16 +9,16 @@ $size: 150px;
   .collection-background {
     background: url("/assets/images/polaroids.png?v=20241008") no-repeat center;
     background-size: $size;
-    height: $size;
+    height: calc($size + 10px);
     width: $size;
     position: relative;
 
     img {
       position: absolute;
-      top: 7px !important;
-      left: 17px !important;
+      top: 13px !important;
+      left: 16px !important;
       width: calc(100% - 32px) !important;
-      height: calc(100% - 33px) !important;
+      height: calc(100% - 44px) !important;
       object-fit: cover;
 
       &.empty-collection-thumbnail {
