@@ -409,7 +409,7 @@ export class ImageViewerComponent
 
   protected onImageMouseEnter(event: MouseEvent): void {
     event.preventDefault();
-    if (!this.deviceService.isTouchEnabled()) {
+    if (!this.deviceService.isTouchEnabled() || this.deviceService.isHybridPC()) {
       this.imageArea.nativeElement.classList.add("hover");
     }
   }
