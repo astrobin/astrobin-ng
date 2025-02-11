@@ -58,7 +58,7 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
           "Just a heads-up: a network operation is taking a bit longer than usual. Thanks for your patience!"
         )
       );
-    }, 8000);
+    }, 10000);
 
     return attemptRequest(0).pipe(
       finalize(() => {
