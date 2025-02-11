@@ -16,6 +16,7 @@ import { isPlatformBrowser } from "@angular/common";
 const DEFAULT_BRIGHTNESS = 100;
 const DEFAULT_CONTRAST = 100;
 const DEFAULT_SATURATION = 100;
+const DEFAULT_INVERT = 0;
 
 @Component({
   selector: "astrobin-image-viewer-adjustment-editor",
@@ -58,6 +59,15 @@ const DEFAULT_SATURATION = 100;
           [(value)]="saturation"
           (valueChange)="applyFilters()"
         ></ngx-slider>
+      </div>
+
+      <div class="adjuster">
+        <fa-icon
+          (click)="invertImage()"
+          [class.active]="invert === 1"
+          class="invert"
+          icon="repeat"
+        ></fa-icon>
       </div>
 
       <div class="d-flex flex-nowrap">
@@ -156,6 +166,7 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
   protected brightness: number;
   protected contrast: number;
   protected saturation: number;
+  protected invert: number;
 
   protected readonly shareForm = new FormGroup({});
   protected shareModel = {};
@@ -179,12 +190,14 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
     if (
       this.activatedRoute.snapshot.queryParams.brightness ||
       this.activatedRoute.snapshot.queryParams.contrast ||
-      this.activatedRoute.snapshot.queryParams.saturation
+      this.activatedRoute.snapshot.queryParams.saturation ||
+      this.activatedRoute.snapshot.queryParams.invert
     ) {
       try {
         this.brightness = parseInt(this.activatedRoute.snapshot.queryParams.brightness || DEFAULT_BRIGHTNESS, 10);
         this.contrast = parseInt(this.activatedRoute.snapshot.queryParams.contrast || DEFAULT_CONTRAST, 10);
         this.saturation = parseInt(this.activatedRoute.snapshot.queryParams.saturation || DEFAULT_SATURATION, 10);
+        this.invert = parseInt(this.activatedRoute.snapshot.queryParams.invert || DEFAULT_INVERT, 10);
         this.applyFilters();
       } catch (e) {
         this.popNotificationService.error(
@@ -218,6 +231,16 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
     this.closeClick.emit();
   }
 
+  invertImage() {
+    if (this.invert === 0) {
+      this.invert = 1;
+    } else {
+      this.invert = 0;
+    }
+
+    this.applyFilters();
+  }
+
   applyFilters() {
     let url = this.imageService.getShareUrl(this.image, this.revisionLabel);
 
@@ -233,6 +256,10 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
       url = UtilsService.addOrUpdateUrlParam(url, "saturation", this.saturation.toString());
     }
 
+    if (this.invert !== DEFAULT_INVERT) {
+      url = UtilsService.addOrUpdateUrlParam(url, "invert", this.invert.toString());
+    }
+
     this.shareModel = {
       shareUrl: url
     };
@@ -241,7 +268,8 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
       this.imageComponent.elementRef.nativeElement.style.filter =
         `brightness(${this.brightness}%) ` +
         `contrast(${this.contrast}%) ` +
-        `saturate(${this.saturation}%)`;
+        `saturate(${this.saturation}%)` +
+        `invert(${this.invert})`;
     }
   }
 
@@ -249,6 +277,7 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
     this.brightness = DEFAULT_BRIGHTNESS;
     this.contrast = DEFAULT_CONTRAST;
     this.saturation = DEFAULT_SATURATION;
+    this.invert = DEFAULT_INVERT;
 
     this.removeQueryParams();
     this.shareModel = {
@@ -274,7 +303,7 @@ export class ImageViewerAdjustmentsEditorComponent implements OnInit, OnDestroy 
     const url = new URL(window.location.href);
 
     // Remove the specified parameters
-    ["brightness", "contrast", "saturation"].forEach(param => {
+    ["brightness", "contrast", "saturation", "invert"].forEach(param => {
       url.searchParams.delete(param);
     });
 
