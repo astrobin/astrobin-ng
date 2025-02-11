@@ -6,7 +6,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
 import { FeedApiService } from "@features/home/services/feed-api.service";
 import { FeedService } from "@features/home/services/feed.service";
 import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { FrontPageSection, UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { FrontpageSection, UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { FINAL_REVISION_LABEL, ImageInterface } from "@core/interfaces/image.interface";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem, ImageViewerService } from "@core/services/image-viewer.service";
 import { isPlatformBrowser } from "@angular/common";
@@ -24,6 +24,7 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { DeviceService } from "@core/services/device.service";
+import { UpdateUserProfile } from "@features/account/store/auth.actions";
 
 enum FeedTab {
   FEED = "FEED",
@@ -40,11 +41,11 @@ enum FeedType {
   template: `
     <div class="feed-container d-flex justify-content-between align-items-center mb-3">
       <ul
-        ngbNav
+        #nav="ngbNav"
         (activeIdChange)="onTabChange($event)"
         [(activeId)]="activeTab"
-        #nav="ngbNav"
         class="nav-tabs"
+        ngbNav
       >
         <li [ngbNavItem]="FeedTab.FEED" class="me-2">
           <a ngbNavLink translate="Activity feed"></a>
@@ -60,18 +61,18 @@ enum FeedType {
 
             <astrobin-image-gallery-loading
               *ngIf="loading && isBrowser"
-              [numberOfImages]="50"
               [activeLayout]="UserGalleryActiveLayout.LARGE"
+              [numberOfImages]="50"
               class="activity-feed-gallery-loading d-none d-md-block"
             ></astrobin-image-gallery-loading>
 
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
-                class="activity-feed-masonry-layout"
-                [layout]="'xl'"
-                [items]="feedItems"
-                [widthProperty]="'imageW'"
                 [heightProperty]="'imageH'"
+                [items]="feedItems"
+                [layout]="'xl'"
+                [widthProperty]="'imageW'"
+                class="activity-feed-masonry-layout"
               >
                 <ng-template let-item>
                   <astrobin-feed-item
@@ -111,9 +112,9 @@ enum FeedType {
 
             <astrobin-image-gallery-loading
               *ngIf="!loading && loadingMore"
-              class="d-none d-md-block mt-4 mb-2 mb-md-0 activity-feed-gallery-loading"
-              [numberOfImages]="50"
               [activeLayout]="UserGalleryActiveLayout.LARGE"
+              [numberOfImages]="50"
+              class="d-none d-md-block mt-4 mb-2 mb-md-0 activity-feed-gallery-loading"
             ></astrobin-image-gallery-loading>
 
             <astrobin-scroll-to-top></astrobin-scroll-to-top>
@@ -125,15 +126,15 @@ enum FeedType {
           <ng-template ngbNavContent>
             <astrobin-image-gallery-loading
               *ngIf="loading && isBrowser"
-              [numberOfImages]="50"
               [activeLayout]="UserGalleryActiveLayout.MEDIUM"
+              [numberOfImages]="50"
             ></astrobin-image-gallery-loading>
 
             <div [style.min-height.px]="lastKnownHeight">
               <astrobin-masonry-layout
-                [layout]="'medium'"
-                [items]="images"
                 [idProperty]="'pk'"
+                [items]="images"
+                [layout]="'medium'"
               >
                 <ng-template let-item>
                   <div class="image-container">
@@ -163,8 +164,8 @@ enum FeedType {
                   <astrobin-image-hover
                     *ngIf="!loadingItemId"
                     @fadeInOut
-                    [image]="item"
                     [activeLayout]="UserGalleryActiveLayout.MEDIUM"
+                    [image]="item"
                   ></astrobin-image-hover>
                 </ng-template>
               </astrobin-masonry-layout>
@@ -184,9 +185,9 @@ enum FeedType {
 
             <astrobin-image-gallery-loading
               *ngIf="!loading && loadingMore"
-              class="d-block mt-5"
-              [numberOfImages]="50"
               [activeLayout]="UserGalleryActiveLayout.MEDIUM"
+              [numberOfImages]="50"
+              class="d-block mt-5"
             ></astrobin-image-gallery-loading>
 
             <astrobin-scroll-to-top></astrobin-scroll-to-top>
@@ -207,8 +208,8 @@ enum FeedType {
 
         <fa-icon
           (click)="onFeedTypeChange(FeedType.PERSONAL)"
-          [icon]="['fas', 'user']"
           [class.active]="activeFeedType === FeedType.PERSONAL"
+          [icon]="['fas', 'user']"
           [ngbTooltip]="'Personal feed' | translate"
         ></fa-icon>
       </div>
@@ -248,7 +249,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
   protected loadingItemId: string = null;
 
   protected readonly isBrowser: boolean;
-
+  protected readonly Array = Array;
   private _page = 1;
   private _currentDataSubscription: Subscription;
   private _imageContentType: ContentTypeInterface;
@@ -289,20 +290,20 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
         return;
       }
 
-      switch (userProfile.defaultFrontPageSection) {
-        case FrontPageSection.GLOBAL:
+      switch (userProfile.defaultFrontpageSection) {
+        case FrontpageSection.GLOBAL:
           this.activeTab = FeedTab.FEED;
           this.activeFeedType = FeedType.GLOBAL;
           break;
-        case FrontPageSection.PERSONAL:
+        case FrontpageSection.PERSONAL:
           this.activeTab = FeedTab.FEED;
           this.activeFeedType = FeedType.PERSONAL;
           break;
-        case FrontPageSection.RECENT:
+        case FrontpageSection.RECENT:
           this.activeTab = FeedTab.RECENT;
           this.activeFeedType = FeedType.GLOBAL;
           break;
-        case FrontPageSection.FOLLOWED:
+        case FrontpageSection.FOLLOWED:
           this.activeTab = FeedTab.RECENT;
           this.activeFeedType = FeedType.PERSONAL;
           break;
@@ -346,7 +347,34 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
     this.images = null;
     this.loading = true;
 
-    this._loadData().subscribe();
+    this._loadData().subscribe(() => {
+      this._updateUserProfileDefaultFrontPageSection();
+    });
+  }
+
+  _updateUserProfileDefaultFrontPageSection() {
+    if (!this.currentUserProfile) {
+      return;
+    }
+
+    let newDefaultFrontpageSection: FrontpageSection;
+
+    if (this.activeTab === FeedTab.FEED && this.activeFeedType === FeedType.GLOBAL) {
+      newDefaultFrontpageSection = FrontpageSection.GLOBAL;
+    } else if (this.activeTab === FeedTab.FEED && this.activeFeedType === FeedType.PERSONAL) {
+      newDefaultFrontpageSection = FrontpageSection.PERSONAL;
+    } else if (this.activeTab === FeedTab.RECENT && this.activeFeedType === FeedType.GLOBAL) {
+      newDefaultFrontpageSection = FrontpageSection.RECENT;
+    } else if (this.activeTab === FeedTab.RECENT && this.activeFeedType === FeedType.PERSONAL) {
+      newDefaultFrontpageSection = FrontpageSection.FOLLOWED;
+    }
+
+    if (newDefaultFrontpageSection && newDefaultFrontpageSection !== this.currentUserProfile.defaultFrontpageSection) {
+      this.store$.dispatch(new UpdateUserProfile({
+        id: this.currentUserProfile.id,
+        defaultFrontpageSection: newDefaultFrontpageSection
+      }));
+    }
   }
 
   openImageById(feedItemId: FeedItemInterface["id"], imageId: ImageInterface["hash"] | ImageInterface["pk"]): void {
@@ -532,7 +560,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       this.changeDetectorRef.detectChanges();
     };
 
-    const _loadFeed = (section: FrontPageSection): Observable<PaginatedApiResultInterface<FeedItemInterface>> => {
+    const _loadFeed = (section: FrontpageSection): Observable<PaginatedApiResultInterface<FeedItemInterface>> => {
       return new Observable(observer => {
         this._currentDataSubscription = this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
           this.feedItems = this.feedService.removeDuplicates([
@@ -549,7 +577,7 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       });
     };
 
-    const _loadRecent = (section: FrontPageSection): Observable<PaginatedApiResultInterface<ImageInterface>> => {
+    const _loadRecent = (section: FrontpageSection): Observable<PaginatedApiResultInterface<ImageInterface>> => {
       return new Observable(observer => {
         this._currentDataSubscription = this.feedApiService.getFeed(this._page, section).subscribe(feedItems => {
           this.images = [
@@ -568,15 +596,15 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
 
     if (this.activeTab === FeedTab.FEED) {
       if (this.activeFeedType === FeedType.GLOBAL) {
-        return _loadFeed(FrontPageSection.GLOBAL);
+        return _loadFeed(FrontpageSection.GLOBAL);
       } else {
-        return _loadFeed(FrontPageSection.PERSONAL);
+        return _loadFeed(FrontpageSection.PERSONAL);
       }
     } else {
       if (this.activeFeedType === FeedType.GLOBAL) {
-        return _loadRecent(FrontPageSection.RECENT);
+        return _loadRecent(FrontpageSection.RECENT);
       } else {
-        return _loadRecent(FrontPageSection.FOLLOWED);
+        return _loadRecent(FrontpageSection.FOLLOWED);
       }
     }
   }
@@ -596,6 +624,4 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       model: "image"
     }));
   }
-
-  protected readonly Array = Array;
 }

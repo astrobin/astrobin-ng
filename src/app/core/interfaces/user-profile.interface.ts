@@ -1,7 +1,7 @@
 import { ImageMaxZoom, WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
 import { LocationInterface } from "@core/interfaces/location.interface";
 
-export enum FrontPageSection {
+export enum FrontpageSection {
   GLOBAL = "global",
   PERSONAL = "personal",
   RECENT = "recent",
@@ -39,7 +39,7 @@ export interface UserProfileInterface {
   retailerCountry: string;
   avatar: string;
   excludeFromCompetition: boolean;
-  defaultFrontPageSection: FrontPageSection;
+  defaultFrontpageSection: FrontpageSection;
   defaultGallerySorting: DefaultGallerySortingOption;
   defaultLicense: number;
   defaultWatermarkText: string;

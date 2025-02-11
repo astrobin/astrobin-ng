@@ -5,7 +5,7 @@ import { FeedItemInterface } from "@features/home/interfaces/feed-item.interface
 import { Observable } from "rxjs";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { HttpClient } from "@angular/common/http";
-import { FrontPageSection } from "@core/interfaces/user-profile.interface";
+import { FrontpageSection } from "@core/interfaces/user-profile.interface";
 import { ImageInterface } from "@core/interfaces/image.interface";
 
 @Injectable({
@@ -23,15 +23,15 @@ export class FeedApiService extends BaseClassicApiService {
 
   getFeed(
     page: number,
-    feedType?: FrontPageSection
+    feedType?: FrontpageSection
   ): Observable<PaginatedApiResultInterface<FeedItemInterface | ImageInterface>> {
     let url = `${this._url}/?page=${page}`;
 
-    if (feedType === FrontPageSection.PERSONAL) {
+    if (feedType === FrontpageSection.PERSONAL) {
       url += `&personal`;
-    } else if (feedType === FrontPageSection.FOLLOWED) {
+    } else if (feedType === FrontpageSection.FOLLOWED) {
       url += `&followed`;
-    } else if (feedType === FrontPageSection.RECENT) {
+    } else if (feedType === FrontpageSection.RECENT) {
       url += `&recent`;
     }
 

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AuthGroupInterface } from "@core/interfaces/auth-group.interface";
 import { PermissionInterface } from "@core/interfaces/permission.interface";
-import { FrontPageSection, UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { FrontpageSection, UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseService } from "@core/services/base.service";
 import { ImageMaxZoom, WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
@@ -195,7 +195,7 @@ export class CommonApiAdaptorService extends BaseService {
       retailerCountry: userProfile.retailer_country,
       avatar: userProfile.avatar,
       excludeFromCompetition: userProfile.exclude_from_competitions,
-      defaultFrontPageSection: FrontPageSection[userProfile.default_frontpage_section],
+      defaultFrontpageSection: userProfile.default_frontpage_section as FrontpageSection,
       defaultGallerySorting: userProfile.default_gallery_sorting,
       defaultLicense: userProfile.default_license,
       defaultWatermark: userProfile.default_watermark,
