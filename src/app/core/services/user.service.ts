@@ -68,10 +68,12 @@ export class UserService extends BaseService implements UserServiceInterface {
   getCollectionUrl(
     username: UserInterface["username"],
     collectionId: CollectionInterface["id"],
-    newGalleryExperience: boolean
+    newGalleryExperience: boolean,
+    displayCollectionsOnPublicGallery: boolean
   ): string {
+    const fragment = displayCollectionsOnPublicGallery ? "gallery" : "collections";
     if (newGalleryExperience) {
-      return `/u/${username}?collection=${collectionId}#gallery`;
+      return `/u/${username}?collection=${collectionId}#${fragment}`;
     }
 
     return this.classicRoutesService.GALLERY(username) + 'collections/' + collectionId;
@@ -100,14 +102,17 @@ export class UserService extends BaseService implements UserServiceInterface {
   openCollection(
     username: UserInterface["username"],
     collectionId: CollectionInterface["id"],
-    newGalleryExperience: boolean
+    newGalleryExperience: boolean,
+    displayCollectionsOnPublicGallery: boolean
   ): void {
+    const url = this.getCollectionUrl(username, collectionId, newGalleryExperience, displayCollectionsOnPublicGallery);
     if (newGalleryExperience) {
-      this.router.navigateByUrl('/u/' + username + '?collection=' + collectionId).then(() => {
+      this.router.navigateByUrl(url).then(() => {
         this.imageViewerService.closeSlideShow(false);
       });
     } else {
-      this.windowRefService.nativeWindow.location.href = this.classicRoutesService.GALLERY(username) + 'collections/' + collectionId;
+      this.loadingService.setLoading(true);
+      this.windowRefService.nativeWindow.location.href = url;
     }
   }
 }

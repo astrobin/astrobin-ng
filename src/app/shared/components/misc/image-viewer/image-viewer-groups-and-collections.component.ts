@@ -6,7 +6,7 @@ import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
 import { LoadGroups } from "@app/store/actions/group.actions";
 import { selectGroupsByParams } from "@app/store/selectors/app/group.selectors";
-import { filter, takeUntil } from "rxjs/operators";
+import { filter, take, takeUntil } from "rxjs/operators";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { LoadCollections } from "@app/store/actions/collection.actions";
 import { selectCollectionsByParams } from "@app/store/selectors/app/collection.selectors";
@@ -14,6 +14,9 @@ import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@core/services/device.service";
 import { UserService } from "@core/services/user.service";
+import { LoadUser, LoadUserProfile } from "@features/account/store/auth.actions";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
 
 @Component({
   selector: "astrobin-image-viewer-groups-and-collections",
@@ -92,8 +95,18 @@ import { UserService } from "@core/services/user.service";
           <div *ngIf="collections; else loadingTemplate" class="d-flex flex-column gap-2">
             <div *ngFor="let collection of collections" class="w-100">
               <a
-                (click)="userService.openCollection(image.username, collection.id, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-                [href]="userService.getCollectionUrl(image.username, collection.id, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                (click)="userService.openCollection(
+                  image.username,
+                  collection.id,
+                  currentUserWrapper.userProfile?.enableNewGalleryExperience,
+                  userProfile?.displayCollectionsOnPublicGallery
+                )"
+                [href]="userService.getCollectionUrl(
+                  image.username,
+                  collection.id,
+                  currentUserWrapper.userProfile?.enableNewGalleryExperience,
+                  userProfile?.displayCollectionsOnPublicGallery
+                )"
                 astrobinEventPreventDefault
               >
                 {{ collection.name }}
@@ -118,6 +131,7 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
 
   protected groups: GroupInterface[] = null;
   protected collections: CollectionInterface[] = null;
+  protected userProfile: UserProfileInterface = null;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -132,6 +146,20 @@ export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirec
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue) {
+      this.store$.select(selectUser, this.image.user).pipe(
+        filter(user => !!user),
+        take(1),
+      ).subscribe(user => {
+        this.store$.select(selectUserProfile, user.userProfile).pipe(
+          filter(userProfile => !!userProfile),
+          take(1)
+        ).subscribe(userProfile => {
+          this.userProfile = userProfile
+          this.changeDetectorRef.markForCheck();
+        });
+        this.store$.dispatch(new LoadUserProfile({ id: user.userProfile }));
+      });
+      this.store$.dispatch(new LoadUser({ id: this.image.user }));
     }
   }
 
