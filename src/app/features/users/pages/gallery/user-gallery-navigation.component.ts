@@ -416,7 +416,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
     if (["title", "uploaded", "acquired"].includes(sort)) {
       prop = "subsection";
       otherProp = "ordering";
-    } else if (["likes", "bookmarks", "comments"].includes(sort)) {
+    } else if (["views", "likes", "bookmarks", "comments"].includes(sort)) {
       prop = "ordering";
       otherProp = "subsection";
     }
