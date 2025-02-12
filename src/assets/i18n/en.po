@@ -711,6 +711,13 @@ msgid ""
 "the affected user."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.ts
+msgid ""
+"AstroBin will search only in titles and descriptions, and search filters "
+"will be disabled. We recommend filters to perform more advanced and exact "
+"searches."
+msgstr ""
+
 msgid ""
 "AstroBin would like to rename some of your gear items in order to be more "
 "consistent with naming conventions."
@@ -1152,10 +1159,6 @@ msgstr ""
 msgid "Click again to close lens."
 msgstr ""
 
-#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
-msgid "Click again to zoom out."
-msgstr ""
-
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header-change-image.component.ts
 msgid "Click on an image to set a new header for your gallery."
 msgstr ""
@@ -1164,15 +1167,27 @@ msgstr ""
 msgid "Click on images to add/remove them."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+msgid "Click to show annotations on button hover only (or hold A)"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+msgid "Click to show annotations on image hover (or hold A)"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 msgid "Click to view full size in a new tab."
 msgstr ""
 
-#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
-msgid "Click to zoom, scroll to magnify."
+msgid "Close"
 msgstr ""
 
-msgid "Close"
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid "Code"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+msgid "Collaboration"
 msgstr ""
 
 msgid "Collaborators"
@@ -1315,6 +1330,10 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
 msgid "Coordinates"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid "Copied!"
 msgstr ""
 
 msgid "Copy"
@@ -1899,15 +1918,11 @@ msgid "Exposure per frame"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
-msgid "External link"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
-msgid "External link to FITS"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
 msgid "Extra large"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid "Extra-large"
 msgstr ""
 
 msgid "Extremely bad"
@@ -2125,6 +2140,11 @@ msgstr ""
 msgid "Following"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/avatar/avatar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/avatar/avatar.component.html
+msgid "Follows you"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
 msgid "Font size"
 msgstr ""
@@ -2280,6 +2300,10 @@ msgstr ""
 msgid ""
 "Google Maps API could not be loaded. Please make sure you're not blocking "
 "it."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid "Grab direct image links"
 msgstr ""
 
 msgid "Green channel (G)"
@@ -2476,6 +2500,12 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-settings-fields.service.ts
 msgid "If checked, the video will loop."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid ""
+"If embedding direct links to images hosted on the AstroBin servers, kindly "
+"provide a link to AstroBin."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
@@ -2702,6 +2732,10 @@ msgstr ""
 msgid "In {{ 0 }} groups"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-collaboration-filter/search-collaboration-filter.component.ts
+msgid "Include/exclude images created by multiple photographers."
+msgstr ""
+
 msgid "Info"
 msgstr ""
 
@@ -2827,6 +2861,12 @@ msgid "June"
 msgstr ""
 
 msgid "Jupiter"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/timeout-retry.interceptor.ts
+msgid ""
+"Just a heads-up: a network operation is taking a bit longer than usual. "
+"Thanks for your patience!"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
@@ -3246,6 +3286,11 @@ msgstr ""
 msgid "Message user privately"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
+msgid "Messages"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
 msgid "Messier"
 msgstr ""
@@ -3426,9 +3471,6 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-nav/marketplace-nav.component.html
 msgid "My listings"
-msgstr ""
-
-msgid "My messages"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
@@ -3761,6 +3803,10 @@ msgid ""
 "when you didn't create individual filters back when you added this legacy "
 "item to the database. Sometimes this happens when you actually added "
 "multiple products using the same text box (e.g. 'Canon 70D / Canon 80D')."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-text-filter/search-text-filter.component.ts
+msgid "Only search in titles and descriptions"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-remote-source-filter/search-remote-source-filter.component.ts
@@ -4197,6 +4243,11 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+msgid "Press <kbd>Enter</kbd> to search."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
 msgid "Press <kbd>Tab</kbd> for suggestion, <kbd>Enter</kbd> to just search."
 msgstr ""
 
@@ -4612,6 +4663,10 @@ msgstr ""
 msgid "Scroll down to see them."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+msgid "Scroll to magnify."
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-social-buttons.component.ts
@@ -4653,6 +4708,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/load-save-search-modal/load-save-search-modal.component.ts
 msgid "Search saved successfully."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+msgid "Search settings"
 msgstr ""
 
 msgid "Secure payment by Stripe™"
@@ -4853,6 +4912,10 @@ msgstr ""
 msgid "Simple link"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.ts
+msgid "Simple mode"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 msgid "Simple text"
 msgstr ""
@@ -4969,6 +5032,12 @@ msgstr ""
 msgid ""
 "Sorry, unfortunately AstroBin does not have a bank account in the selected "
 "territory."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/timeout-retry.interceptor.ts
+msgid ""
+"Sorry, we're having trouble performing a network operation. Please try "
+"again later."
 msgstr ""
 
 msgid ""
@@ -5153,6 +5222,10 @@ msgid "Synthetic channel"
 msgstr ""
 
 msgid "TIFF support on AstroBin is experimental."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-title.component.ts
+msgid "TIFF/FITS"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
@@ -5797,6 +5870,10 @@ msgstr ""
 msgid "Thumbnail"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid "Thumbnail size"
+msgstr ""
+
 msgid "Time"
 msgstr ""
 
@@ -5902,6 +5979,13 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/iotd/iotd.component.ts
 msgid "Total submitted"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+msgid "Totals"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
@@ -6166,6 +6250,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-acquisition-fields.service.ts
 msgid "Video based acquisition sessions"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image/image.component.ts
+msgid "Video player could not be loaded."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component.ts
