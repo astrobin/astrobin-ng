@@ -46,12 +46,12 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
     const ignored404Paths = [
       /.*\/api\/v2\/equipment\/\w+\/\d+\/release-reviewer-lock\/$/,
       /.*\/json-api\/common\/ckeditor-upload\/*/,
-      /.*\/json-api\/common\/record-hit\/*/,
       /.*\/api\/v2\/images\/image-search\/\?params=.*/,
     ];
 
     const ignoredAnyErrorPaths = [
       /.*\/json-api\/common\/service-worker-control\/$/,
+      /.*\/json-api\/common\/record-hit\/*/,
     ];
 
     if (ignoredAnyErrorPaths.some((regex) => regex.test(err.url))) {
