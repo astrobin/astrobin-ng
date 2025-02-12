@@ -529,9 +529,13 @@ $largeViewPortBreakpoint: 2561px;
           object-fit: contain;
           opacity: 0;
           transition: opacity 0.3s;
-          cursor: none;
+          cursor: zoom-in;
           // Believe it or not, this is necessary to prevent the SVG to display with a white background.
           color-scheme: none;
+
+          ::ng-deep svg {
+            pointer-events: none;
+          }
         }
 
         .mouse-hover-svg-overlay {
@@ -589,6 +593,10 @@ $largeViewPortBreakpoint: 2561px;
       }
 
       &.hover:not(.adjustments-editor-visible) {
+        .mouse-hover-svg-container .mouse-hover.ready {
+          cursor: none;
+        }
+
         .mouse-hover.ready,
         .mouse-hover.ready + .mouse-hover-svg-overlay {
           opacity: 1 !important;
@@ -602,12 +610,10 @@ $largeViewPortBreakpoint: 2561px;
       }
 
       &.force-view-mousehover {
-        @media (pointer: coarse) {
-          .mouse-hover.ready,
-          .mouse-hover.ready + .mouse-hover-svg-overlay {
-            opacity: 1 !important;
-            pointer-events: auto;
-          }
+        .mouse-hover.ready,
+        .mouse-hover.ready + .mouse-hover-svg-overlay {
+          opacity: 1 !important;
+          pointer-events: auto;
         }
       }
 

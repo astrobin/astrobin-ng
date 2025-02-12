@@ -18,6 +18,9 @@ import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-vie
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { EMPTY, Observable, Subject, Subscription } from "rxjs";
+import { CookieService } from "ngx-cookie";
+
+export const SHOW_ANNOTATIONS_ON_MOUSE_HOVER_COOKIE = "astrobin-images-show-annotations-on-mouse-hover";
 
 export interface ImageViewerNavigationContextItem {
   imageId: ImageInterface["hash"] | ImageInterface["pk"];
@@ -34,6 +37,7 @@ export class ImageViewerService extends BaseService {
   slideshow: ComponentRef<ImageViewerSlideshowComponent>;
 
   public slideshowState$: Observable<boolean>;
+  public showAnnotationsOnMouseHover = false;
 
   private readonly _isBrowser: boolean;
   private _previousTitle: string;
@@ -54,7 +58,8 @@ export class ImageViewerService extends BaseService {
     public readonly titleService: TitleService,
     public readonly imageService: ImageService,
     public readonly applicationRef: ApplicationRef,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly cookieService: CookieService
   ) {
     super(loadingService);
 
@@ -71,6 +76,8 @@ export class ImageViewerService extends BaseService {
         this.closeSlideShow(true);
       }
     });
+
+    this._initShowAnnotationsOnMouseHover();
   }
 
   autoOpenSlideshow(
@@ -245,11 +252,25 @@ export class ImageViewerService extends BaseService {
     };
   }
 
+  toggleShowAnnotationsOnMouseHover(): void {
+    this.showAnnotationsOnMouseHover = !this.showAnnotationsOnMouseHover;
+    this.cookieService.put(SHOW_ANNOTATIONS_ON_MOUSE_HOVER_COOKIE, this.showAnnotationsOnMouseHover.toString());
+  }
+
   private _stopBodyScrolling(): void {
     this.windowRefService.changeBodyOverflow("hidden");
   }
 
   private _resumeBodyScrolling(): void {
     this.windowRefService.changeBodyOverflow("auto");
+  }
+
+  private _initShowAnnotationsOnMouseHover(): void {
+    const showAnnotationsOnMouseHoverCookie = this.cookieService.get(SHOW_ANNOTATIONS_ON_MOUSE_HOVER_COOKIE);
+
+    this.showAnnotationsOnMouseHover =
+      showAnnotationsOnMouseHoverCookie === "true" ||
+      showAnnotationsOnMouseHoverCookie === null ||
+      showAnnotationsOnMouseHoverCookie === undefined;
   }
 }

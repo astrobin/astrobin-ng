@@ -6,20 +6,33 @@
 
     .ng-fa-icon {
       margin: 0 !important;
+      transition: color .25s;
+    }
+
+    &.active .ng-fa-icon {
+      color: var(--accentColor);
+    }
+
+    &.disabled {
+      cursor: not-allowed !important;
+
+      .ng-fa-icon {
+        opacity: .5;
+      }
     }
   }
 
   .force-view-mousehover-button {
     display: none;
-
-    &.active .ng-fa-icon {
-      color: var(--accentColor);
-    }
   }
 
   @media (pointer: coarse) {
     .force-view-mousehover-button {
       display: block;
+    }
+
+    .force-toggle-annotations-on-mousehover-button {
+      display: none;
     }
   }
 }

@@ -74,6 +74,7 @@
     #imageArea
     class="image-area"
     [class.force-view-mousehover]="forceViewMouseHover"
+    [class.force-view-annotations-mousehover]="forceViewAnnotationsMouseHover"
     [class.adjustment-editor-visible]="adjustmentEditorVisible"
     [class.has-top-banner]="image && image.isIotd"
   >
@@ -104,12 +105,20 @@
 
         <astrobin-image-viewer-additional-buttons
           *ngIf="image && imageFileLoaded"
-          [image]="image"
-          [revisionLabel]="revisionLabel"
-          [hasMouseHover]="!!mouseHoverImage || !!inlineSvg"
-          [forceViewMouseHover]="forceViewMouseHover"
+          (toggleAnnotationsOnMouseHover)="imageViewerService.toggleShowAnnotationsOnMouseHover()"
+          (onToggleAnnotationsOnMouseHoverEnter)="onToggleAnnotationsOnMouseHoverEnter()"
+          (onToggleAnnotationsOnMouseHoverLeave)="onToggleAnnotationsOnMouseHoverLeave()"
           (toggleViewMouseHover)="toggleViewMouseHover()"
           (showAdjustmentsEditor)="adjustmentEditorVisible = true"
+          [image]="image"
+          [revisionLabel]="revisionLabel"
+          [hasMouseHover]="
+            revision.mouseHoverImage !== MouseHoverImageOptions.NOTHING &&
+            (!!nonSolutionMouseHoverImage || !!solutionMouseHoverImage || !!inlineSvg)
+          "
+          [showAnnotationsOnMouseHover]="imageViewerService.showAnnotationsOnMouseHover"
+          [allowTogglingAnnotationsOnMouseHover]="revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION"
+          [forceViewMouseHover]="forceViewMouseHover"
           class="additional-buttons"
         >
         </astrobin-image-viewer-additional-buttons>
@@ -147,8 +156,17 @@
         [revisionLabel]="revisionLabel"
       ></astrobin-image>
 
+      <!--
+        If the mouse-hover settings indicate a non-solution mouse-hover, we always show it on hover. Except if the
+        solution mouse-hover is being forced.
+      -->
       <div
-        *ngIf="mouseHoverImage && imageFileLoaded"
+        *ngIf="
+          imageFileLoaded &&
+          revision.mouseHoverImage !== MouseHoverImageOptions.SOLUTION &&
+          nonSolutionMouseHoverImage &&
+          !forceViewAnnotationsMouseHover
+        "
         (click)="enterFullscreen($event)"
         class="mouse-hover-container"
       >
@@ -157,13 +175,41 @@
           (mouseleave)="onImageMouseLeave($event)"
           alt=""
           class="mouse-hover ready"
-          src="{{ mouseHoverImage }}"
+          src="{{ nonSolutionMouseHoverImage }}"
+          [style.max-width.px]="revision.w"
+        />
+      </div>
+
+      <!--
+        If the mouse-hover settings indicate a solution mouse-hover, and there is one available, we show it according to
+        mouse-hover settings (hover on image vs hover on button).
+      -->
+      <div
+        *ngIf="
+          imageFileLoaded &&
+          (revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION || forceViewAnnotationsMouseHover) &&
+          solutionMouseHoverImage &&
+          !inlineSvg
+        "
+        (click)="enterFullscreen($event)"
+        class="mouse-hover-container"
+      >
+        <img
+          (mouseenter)="onImageMouseEnter($event)"
+          (mouseleave)="onImageMouseLeave($event)"
+          alt=""
+          class="mouse-hover ready"
+          src="{{ solutionMouseHoverImage }}"
           [style.max-width.px]="revision.w"
         />
       </div>
 
       <div
-        *ngIf="inlineSvg && imageFileLoaded"
+        *ngIf="
+          imageFileLoaded &&
+          (revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION || forceViewAnnotationsMouseHover) &&
+          inlineSvg
+        "
         (click)="enterFullscreen($event)"
         class="mouse-hover-svg-container"
       >
