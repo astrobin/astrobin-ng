@@ -248,6 +248,10 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
   ngOnChanges(): void {
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
 
+    if (!this.revision || !this.revision.thumbnails) {
+      return;
+    }
+
     this.smallThumbnail = this.revision.thumbnails.find(thumb => thumb.alias === ImageAlias.GALLERY)?.url;
     this.mediumThumbnail = this.revision.thumbnails.find(thumb => thumb.alias === ImageAlias.REGULAR)?.url;
     this.largeThumbnail = this.revision.thumbnails.find(thumb => thumb.alias === ImageAlias.HD)?.url;
