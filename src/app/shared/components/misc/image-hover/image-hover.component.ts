@@ -57,7 +57,7 @@ import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
         </span>
 
         <span *ngIf="staticOverlay?.includes('views')">
-          {{ image.views | numberSuffix }}
+          {{ views | numberSuffix }}
         </span>
 
         <span *ngIf="staticOverlay?.includes('integration') && !!integration" [innerHTML]="integration">
@@ -95,6 +95,7 @@ export class ImageHoverComponent implements OnChanges {
   protected likes: number;
   protected bookmarks: number;
   protected comments: number;
+  protected views: number;
   protected integration: string;
   protected ra: string;
   protected dec: string;
@@ -108,12 +109,14 @@ export class ImageHoverComponent implements OnChanges {
       this.likes = (this.image as ImageInterface).likeCount;
       this.bookmarks = (this.image as ImageInterface).bookmarkCount;
       this.comments = (this.image as ImageInterface).commentCount;
+      this.views = (this.image as ImageInterface).viewCount;
     } else {
       this.published = (this.image as ImageSearchInterface).published;
       this.uploaded = null;
       this.likes = (this.image as ImageSearchInterface).likes;
       this.bookmarks = (this.image as ImageSearchInterface).bookmarks;
       this.comments = (this.image as ImageSearchInterface).comments;
+      this.views = (this.image as ImageSearchInterface).views;
       this.integration = this.imageService.formatIntegration((this.image as ImageSearchInterface).integration);
       this.ra = this.imageService.formatRightAscension((this.image as ImageSearchInterface).coordRaMin);
       this.dec = this.imageService.formatDeclination((this.image as ImageSearchInterface).coordDecMin);
