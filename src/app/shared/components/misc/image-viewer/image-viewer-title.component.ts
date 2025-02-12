@@ -57,6 +57,24 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
 
             <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
+
+            <a
+              *ngIf="image.link"
+              [href]="image.link"
+              target="_blank"
+              rel="noopener"
+              class="no-external-link-icon">
+              <fa-icon icon="external-link-alt" class="me-1"></fa-icon> {{ "Link" | translate }}
+            </a>
+
+            <a
+              *ngIf="image.linkToFits"
+              [href]="image.linkToFits"
+              target="_blank"
+              rel="noopener"
+              class="no-external-link-icon">
+              <fa-icon icon="file" class="me-1"></fa-icon> {{ "TIFF/FITS" | translate }}
+            </a>
           </small>
 
           <div class="iotd-tp">
