@@ -26,18 +26,22 @@ import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
         </div>
       </div>
 
-      <div class="counters d-flex flex-column gap-1">
+      <div class="counters d-flex flex-column">
+        <div class="counter views">
+          <fa-icon icon="eye"></fa-icon>
+          <span class="value">{{ views | numberSuffix }}</span>
+        </div>
         <div class="counter likes">
           <fa-icon icon="thumbs-up"></fa-icon>
-          <span class="value">{{ likes }}</span>
+          <span class="value">{{ likes | numberSuffix }}</span>
         </div>
         <div class="counter bookmarks">
           <fa-icon icon="bookmark"></fa-icon>
-          <span class="value">{{ bookmarks }}</span>
+          <span class="value">{{ bookmarks | numberSuffix }}</span>
         </div>
         <div class="counter comments">
           <fa-icon icon="comment"></fa-icon>
-          <span class="value">{{ comments }}</span>
+          <span class="value">{{ comments | numberSuffix }}</span>
         </div>
       </div>
     </div>

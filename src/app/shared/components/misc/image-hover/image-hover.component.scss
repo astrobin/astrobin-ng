@@ -33,25 +33,6 @@
   font-size: .75rem;  // Base font size
   pointer-events: none;
 
-  @media (hover: hover) {
-    &:hover {
-      pointer-events: auto;
-      opacity: 1;
-    }
-  }
-
-  @container (max-width: 200px) {
-    font-size: .7rem;
-  }
-
-  @container (max-width: 150px) {
-    font-size: .6rem;
-  }
-
-  @container (max-width: 100px) {
-    font-size: .5rem;
-  }
-
   .title {
     color: var(--lightestGrey);
     display: -webkit-box;
@@ -80,21 +61,55 @@
   }
 
   .counters {
+    gap: .25rem;
+
     .counter {
       color: var(--lighterGrey);
       white-space: nowrap;
-      font-size: 0.85em;
+      font-size: 0.8em;
+      line-height: 1rem;
 
       .ng-fa-icon {
         width: 1em;  // Changed to em
         display: inline-block;
         text-align: center;
-        margin-right: .25em;  // Changed to em
+        margin-right: .35em;  // Changed to em
       }
 
       > .value {
         color: var(--white);
       }
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      pointer-events: auto;
+      opacity: 1;
+    }
+  }
+
+  @container (max-width: 200px) {
+    font-size: .7rem;
+
+    .counters {
+      gap: .1rem;
+    }
+  }
+
+  @container (max-width: 150px) {
+    font-size: .6rem;
+
+    .counters {
+      gap: .05rem;
+    }
+  }
+
+  @container (max-width: 100px) {
+    font-size: .5rem;
+
+    .counters {
+      gap: 0;
     }
   }
 }
