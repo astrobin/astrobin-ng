@@ -388,7 +388,7 @@ export class ImageViewerComponent
     }
 
     this.onToggleAnnotationsOnMouseHoverEnter();
-    this._adjustSvgOverlay();
+    this._onMouseHoverSvgLoad();
   }
 
   @HostListener("document:keyup.a", ["$event"])
@@ -586,7 +586,7 @@ export class ImageViewerComponent
   onToggleAnnotationsOnMouseHoverEnter(): void {
     this.forceViewAnnotationsMouseHover = true;
     this.forceViewMouseHover = true;
-    this._adjustSvgOverlay();
+    this._onMouseHoverSvgLoad();
   }
 
   onToggleAnnotationsOnMouseHoverLeave(): void {
@@ -845,7 +845,7 @@ export class ImageViewerComponent
     if (this.isBrowser) {
       this.utilsService.delay(100).subscribe(() => {
         const _doc = this.windowRefService.nativeWindow.document;
-        const svgObject = _doc.getElementById("mouse-hover-svg-" + this.image.pk) as HTMLObjectElement;
+        const svgObject = _doc.getElementById(`mouse-hover-svg-${this.image.pk}-${this.revision.pk}`) as HTMLObjectElement;
 
         if (svgObject) {
           const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);

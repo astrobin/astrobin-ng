@@ -218,7 +218,7 @@
           (mouseleave)="onImageMouseLeave($event)"
           (mousemove)="onSvgMouseMove($event)"
           [innerHTML]="inlineSvg"
-          [id]="'mouse-hover-svg-' + image.pk"
+          [id]="'mouse-hover-svg-' + image.pk + '-' + revision.pk"
           class="mouse-hover w-100 position-relative"
         ></div>
 
