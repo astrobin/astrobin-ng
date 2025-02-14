@@ -103,7 +103,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.isTouchDevice = this.deviceService.isTouchEnabled();
+    this.isTouchDevice = this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC();
 
     if (isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.document?.addEventListener) {
       this.windowRefService.nativeWindow.document.addEventListener("click", this.onDocumentClick.bind(this));
@@ -455,6 +455,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.firstSearchDone = true;
     this.resetAutoCompleteItems();
     this.searchInputNgModel.control.markAsPristine();
+
+    if (this.isTouchDevice) {
+      this.searchInputEl?.nativeElement.blur();
+    }
 
     if (
       findExactMatchFilter &&
