@@ -32,7 +32,7 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
     let loadingNotification: any = null;
 
     const attemptRequest = (attempt: number): Observable<HttpEvent<any>> => {
-      const timeoutMs = 750 * Math.pow(2, attempt); // 750, 1500, 3000, 6000, 12000, 24000ms
+      const timeoutMs = 1000 * Math.pow(2, attempt); // 1000, 2000, 4000, 8000, 16000, 32000 ms
       return next.handle(req).pipe(
         timeout(timeoutMs),
         catchError(error => {
