@@ -85,10 +85,15 @@
       @include textShadow;
     }
 
+    .username-and-follows {
+      gap: .25rem 1rem;
+    }
+
     .images-and-followers {
       font-size: .85rem;
       color: var(--white);
       @include textShadow;
+      gap: .25rem 1rem;
 
       span {
         white-space: nowrap;

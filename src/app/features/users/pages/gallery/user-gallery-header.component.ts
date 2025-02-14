@@ -48,8 +48,8 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
             </div>
           </div>
 
-          <div class="d-flex flex-column gap-2">
-            <div class="d-flex flex-column flex-sm-row gap-2 gap-sm-3 align-items-sm-center">
+          <div class="d-flex flex-column gap-3 gap-md-2">
+            <div class="d-flex flex-column flex-sm-row username-and-follows align-items-sm-center">
               <div class="d-flex flex-row align-items-center gap-3">
                 <astrobin-username
                   [user]="user" [link]="false"
@@ -119,7 +119,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                 propertyType="follow"
               ></astrobin-toggle-property>
             </div>
-            <div class="d-flex gap-3 align-items-center images-and-followers flex-wrap">
+            <div class="d-flex align-items-center images-and-followers flex-wrap">
               <span [translate]="'{{ 0 }} images'" [translateParams]="{'0': userProfile.imageCount}"></span>
               <span
                 *ngIf="userProfile.wipImageCount && currentUserWrapper.user?.id === user.id"
@@ -136,13 +136,11 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                 *ngIf="currentUserWrapper.user?.id === user.id"
                 (click)="userProfile.followingCount ? openFollowingOffcanvas() : null"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
-                class="d-none d-sm-inline"
                 [attr.data-toggle]="userProfile.followingCount ? 'offcanvas' : ''"
               ></span>
               <span
                 *ngIf="currentUserWrapper.user?.id !== user.id"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
-                class="d-none d-sm-inline"
               ></span>
               <span
                 *ngIf="currentUserWrapper.user?.id === user.id"
