@@ -17,20 +17,6 @@
   position: relative;
   overflow: hidden;
 
-  .btn-change-header-image {
-    position: absolute;
-    top: .5rem;
-    right: .5rem;
-    z-index: 1;
-    transition: opacity .25s ease-in-out;
-    opacity: 1;
-    padding: .5rem 1rem;
-    background: rgba(0, 0, 0, 0.75);
-    color: var(--lighterGrey);
-    text-shadow: 0 .15rem .15rem rgba(0, 0, 0, 0.5);
-    font-size: .9rem;
-  }
-
   .no-image {
     background: var(--black);
     width: 100%;
@@ -165,19 +151,6 @@
       astrobin-username {
         font-size: 1rem;
       }
-    }
-  }
-}
-
-
-@media (hover: hover) and (pointer: fine) {
-  .user-gallery-header .btn-change-header-image {
-    opacity: 0;
-  }
-
-  .user-gallery-header:hover {
-    .btn-change-header-image {
-      opacity: 1;
     }
   }
 }

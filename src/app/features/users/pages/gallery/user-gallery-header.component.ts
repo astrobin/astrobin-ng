@@ -23,12 +23,6 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
   selector: "astrobin-user-gallery-header",
   template: `
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="user-gallery-header">
-      <button
-        *ngIf="currentUserWrapper.user?.id === user.id"
-        (click)="openChangeHeaderImageOffcanvas()"
-        class="btn btn-link btn-no-block btn-change-header-image"
-        translate="Change header image"
-      ></button>
       <img *ngIf="userProfile.galleryHeaderImage" [src]="userProfile.galleryHeaderImage" alt="" />
       <div *ngIf="!userProfile.galleryHeaderImage" class="no-image"></div>
       <div class="header-gradient"></div>
@@ -72,11 +66,17 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                     <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
                   </button>
                   <div ngbDropdownMenu [attr.aria-labelledby]="'user-gallery-dropdown'">
+                    <button
+                      *ngIf="currentUserWrapper.user?.id === user.id"
+                      (click)="openChangeHeaderImageOffcanvas()"
+                      class="dropdown-item"
+                      translate="Change header image"
+                    ></button>
                     <a
                       *ngIf="currentUserWrapper.user?.id === user.id"
                       [href]="classicRoutesService.SETTINGS"
                       class="dropdown-item"
-                      translate="My settings"
+                      translate="Settings"
                     ></a>
                     <a
                       *ngIf="currentUserWrapper.user?.id !== user.id && !currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)"
