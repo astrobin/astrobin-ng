@@ -22,18 +22,17 @@ import { DeviceService } from "@core/services/device.service";
       </ng-container>
 
       <div *ngIf="!loading && parentCollection" class="collection-header">
-        <div class="mb-2 up">
+        <h2>
           <a
             [routerLink]="['/u', user.username]"
             [queryParams]="{ collection: parentCollection.parent }"
             [fragment]="userProfile.displayCollectionsOnPublicGallery ? 'gallery' : 'collections'"
+            class="up"
           >
-            <fa-icon icon="arrow-circle-up"></fa-icon>
+            <fa-icon icon="arrow-turn-up"></fa-icon>
           </a>
-        </div>
 
-        <h2>
-          {{ parentCollection.name }}
+          <span class="collection-name">{{ parentCollection.name }}</span>
 
           <astrobin-user-gallery-collection-menu
             *ngIf="currentUserWrapper.user?.id === user.id"
@@ -42,8 +41,11 @@ import { DeviceService } from "@core/services/device.service";
             [collection]="parentCollection"
           ></astrobin-user-gallery-collection-menu>
         </h2>
-        <small>{{ "A collection by {{ 0 }}" | translate: {"0": user.displayName} }}</small>
-        <p *ngIf="parentCollection.description" [innerHTML]="parentCollection.description"></p>
+        <p
+          *ngIf="parentCollection.description"
+          [innerHTML]="parentCollection.description"
+          class="m-0 p-0"
+        ></p>
       </div>
 
       <div
@@ -74,7 +76,7 @@ import { DeviceService } from "@core/services/device.service";
         </a>
 
         <a
-          *ngIf="currentUserWrapper.user?.id === user.id"
+          *ngIf="currentUserWrapper.user?.id === user.id && !parentCollection"
           (click)="createCollection()"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
@@ -84,11 +86,6 @@ import { DeviceService } from "@core/services/device.service";
             icon="plus"
             [ngbTooltip]="'Create collection'"
           ></fa-icon>
-
-          <span
-            *ngIf="!collections || collections.length === 0"
-            class="text-muted"
-          >{{ "Create collection" | translate }}</span>
         </a>
       </div>
     </ng-container>
