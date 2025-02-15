@@ -36,11 +36,17 @@ export class ConstellationsService {
   }
 
   getConstellationFullName(constellation: string, language: string): string {
+    if (!language) {
+      language = this.translateService.currentLang || "en";
+    }
+
     if (!this._constellations || !this._constellations[language]) {
       this._buildConstellationData(language);
     }
 
-    return this.getConstellations(language).find(c => c.id === constellation).name;
+    const constellationObject = this.getConstellations(language).find(c => c.id === constellation);
+
+    return constellationObject ? constellationObject.name : "";
   }
 
   private _buildConstellationData(language: string) {
