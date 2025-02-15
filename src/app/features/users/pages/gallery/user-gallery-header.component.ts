@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
@@ -312,7 +312,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
   styleUrls: ["./user-gallery-header.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnChanges {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
@@ -391,6 +391,10 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     } else if (this.activatedRoute.snapshot.queryParamMap.has("mutual-followers")) {
       this.openMutualFollowersOffcanvas();
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.stats = null;
   }
 
   protected openStatsOffcanvas() {
