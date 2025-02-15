@@ -230,7 +230,6 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
       <div class="offcanvas-body">
         <div *ngIf="followers; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
-            *ngIf="!searching && followers.followers?.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
@@ -256,7 +255,6 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
       <div class="offcanvas-body">
         <div *ngIf="following; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
-            *ngIf="!searching && following.following?.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
@@ -285,7 +283,6 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
         </p>
         <div *ngIf="mutualFollowers; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
-            *ngIf="!searching && mutualFollowers['mutual-followers']?.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"

@@ -1,19 +1,14 @@
-.image {
+.image-container {
   position: relative;
   cursor: pointer;
   transition: filter 0.2s ease-in-out;
-
-  img {
-    width: 80px;
-    height: 80px;
-  }
 
   .ng-fa-icon.check,
   .ng-fa-icon.loading-indicator {
     display: none;
     position: absolute;
-    top: -.75rem;
-    right: -.5rem;
+    top: .5rem;
+    right: .25rem;
     z-index: 1;
     font-size: 22px;
     line-height: 1rem;
@@ -28,11 +23,9 @@
   .ng-fa-icon.wip {
     display: none;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    bottom: .25rem;
+    right: .5rem;
     z-index: 1;
-    font-size: 2rem;
     color: var(--lightestGrey);
   }
 

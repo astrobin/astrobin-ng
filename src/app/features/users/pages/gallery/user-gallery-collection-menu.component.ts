@@ -177,6 +177,7 @@ export class UserGalleryCollectionMenuComponent
 
   protected addRemoveImages(): void {
     const offcanvas = this.offcanvasService.open(this.addRemoveImagesOffcanvas, {
+      panelClass: "add-remove-images-offcanvas",
       position: this.deviceService.offcanvasPosition()
     });
 
