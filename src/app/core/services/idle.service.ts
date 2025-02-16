@@ -1,6 +1,7 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { Inject, Injectable, OnDestroy, PLATFORM_ID } from "@angular/core";
 import { fromEvent, merge, Subscription } from "rxjs";
 import { throttleTime } from "rxjs/operators";
+import { isPlatformServer } from "@angular/common";
 
 @Injectable({ providedIn: "root" })
 export class IdleService implements OnDestroy {
@@ -8,7 +9,7 @@ export class IdleService implements OnDestroy {
   private readonly _idleThreshold = 5 * 60 * 1000; // 5 minutes
   private _idleSubscription: Subscription;
 
-  constructor() {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this._initIdleDetector();
   }
 
@@ -23,6 +24,10 @@ export class IdleService implements OnDestroy {
   }
 
   private _initIdleDetector(): void {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     const options = { passive: true };
     const mouseMove$ = fromEvent(document, "mousemove", options);
     const keyDown$ = fromEvent(document, "keydown", options);
