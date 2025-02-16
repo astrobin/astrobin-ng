@@ -2,6 +2,14 @@
 
   <div class="notifications-menu mb-4">
     <div class="d-none d-lg-flex gap-3 align-items-center justify-content-end">
+      <form class="context-form">
+        <formly-form
+          [form]="contextForm"
+          [fields]="contextFields"
+          [model]="contextModel"
+        ></formly-form>
+      </form>
+
       <astrobin-toggle-button
         [value]="onlyUnread"
         (toggle)="toggleShowRead($event)"

@@ -9,7 +9,7 @@ import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { TitleService } from "@core/services/title/title.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import { map, take, takeUntil, tap } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, map, take, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LoadNotifications, MarkAllAsRead, MarkAsRead, NotificationsActionTypes } from "@features/notifications/store/notifications.actions";
 import { selectNotifications } from "@features/notifications/store/notifications.selectors";
@@ -19,6 +19,8 @@ import { ImageViewerService } from "@core/services/image-viewer.service";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { isPlatformBrowser } from "@angular/common";
+import { FormGroup } from "@angular/forms";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-notifications-list",
@@ -38,6 +40,73 @@ export class NotificationsListComponent extends BaseComponentDirective implement
   protected unreadCount$ = this.store$.select(state => state.notifications.unreadCount).pipe(takeUntil(this.destroyed$));
   protected totalNotifications$ = this.store$.select(state => state.notifications.totalNotifications).pipe(takeUntil(this.destroyed$));
   protected notifications: NotificationInterface[] = null;
+
+  protected contextForm = new FormGroup({});
+  protected contextFields: FormlyFieldConfig[] = [
+    {
+      key: "",
+      fieldGroupClassName: "d-flex gap-2",
+      fieldGroup: [
+        {
+          key: "message",
+          type: "input",
+          className: "flex-grow-1 mb-0",
+          wrappers: ["default-wrapper"],
+          props: {
+            placeholder: this.translate.instant("Search"),
+          },
+          hooks: {
+            onInit: (field) => {
+              field.formControl.valueChanges.pipe(
+                debounceTime(300),
+                distinctUntilChanged(),
+                takeUntil(this.destroyed$)
+              ).subscribe(() => {
+                this.contextModel.message = field.formControl.value;
+                this.refreshNotifications();
+              });
+            }
+          }
+        },
+        {
+          key: "context",
+          type: "ng-select",
+          className: "mb-0 context-select",
+          wrappers: ["default-wrapper"],
+          props: {
+            clearable: true,
+            placeholder: this.translate.instant("Filter"),
+            options: [
+              { value: NotificationContext.IMAGE, label: this.translate.instant("Images") },
+              { value: NotificationContext.USER, label: this.translate.instant("Users") },
+              { value: NotificationContext.FORUM, label: this.translate.instant("Forum") },
+              { value: NotificationContext.MARKETPLACE, label: this.translate.instant("Marketplace") },
+              { value: NotificationContext.GROUPS, label: this.translate.instant("Groups") },
+              { value: NotificationContext.IOTD, label: this.translate.instant("IOTD/TP") },
+              { value: NotificationContext.EQUIPMENT, label: this.translate.instant("Equipment") },
+              { value: NotificationContext.SUBSCRIPTIONS, label: this.translate.instant("Subscriptions") },
+              { value: NotificationContext.AUTHENTICATION, label: this.translate.instant("Authentication") },
+              { value: NotificationContext.API, label: "API" }
+            ],
+          },
+          hooks: {
+            onInit: (field) => {
+              field.formControl.valueChanges.pipe(
+                takeUntil(this.destroyed$)
+              ).subscribe(() => {
+                this.contextModel.context = field.formControl.value;
+                this.refreshNotifications();
+              });
+            }
+          }
+        }
+      ]
+    }
+  ];
+  protected contextModel = {
+    message: null,
+    context: null
+  }
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -94,7 +163,12 @@ export class NotificationsListComponent extends BaseComponentDirective implement
   }
 
   loadNotifications(): void {
-    this.store$.dispatch(new LoadNotifications({ page: this.page, read: this.read }));
+    this.store$.dispatch(new LoadNotifications({
+      page: this.page,
+      read: this.read,
+      context: this.contextModel.context,
+      message: this.contextModel.message
+    }));
   }
 
   toggleRead(notification: NotificationInterface): void {

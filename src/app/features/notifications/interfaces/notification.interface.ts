@@ -1,14 +1,14 @@
 export enum NotificationContext {
-  SUBSCRIPTIONS = "subscriptions",
-  API = "api",
-  AUTHENTICATION = "authentication",
+  IMAGE = "image",
   USER = "user",
-  GROUPS = "groups",
   FORUM = "forum",
   MARKETPLACE = "marketplace",
+  GROUPS = "groups",
   IOTD = "iotd",
   EQUIPMENT = "equipment",
-  IMAGE = "image"
+  SUBSCRIPTIONS = "subscriptions",
+  AUTHENTICATION = "authentication",
+  API = "api"
 }
 
 export interface NotificationInterface {

@@ -1,13 +1,20 @@
 @import "../../../../styles/mixins";
 @import "../../../../styles/breakpoints";
 
+.context-form {
+  flex-grow: 1;
+
+  ::ng-deep .context-select {
+    min-width: 200px;
+  }
+}
 
 .table.notifications {
   vertical-align: middle;
 
   .notification {
     margin: 0;
-    padding: .5rem;
+    padding: .75rem .5rem;
 
     .read-indicator {
       cursor: pointer;
@@ -35,10 +42,26 @@
       ::ng-deep {
         a {
           color: var(--lightestGrey);
+          transition: color .1s ease;
         }
 
         strong {
           color: var(--brightWhite);
+          transition: color .1s ease;
+        }
+      }
+
+      @media (hover: hover) {
+        &:hover {
+          ::ng-deep {
+            a {
+              color: var(--accentColor);
+            }
+
+            strong {
+              color: var(--accentColor);
+            }
+          }
         }
       }
     }
