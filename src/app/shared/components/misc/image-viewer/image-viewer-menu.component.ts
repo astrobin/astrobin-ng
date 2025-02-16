@@ -157,26 +157,6 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
         </a>
       </ng-container>
 
-      <ng-container *ngIf="image.link || image.linkToFits">
-        <div [class]="dividerClass"></div>
-
-        <a
-          *ngIf="image.link"
-          [href]="image.link"
-          [class]="itemClass"
-        >
-          {{ "External link" | translate }}
-        </a>
-
-        <a
-          *ngIf="image.linkToFits"
-          [href]="image.linkToFits"
-          [class]="itemClass"
-        >
-          {{ "External link to FITS" | translate }}
-        </a>
-      </ng-container>
-
       <a
         [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
         [class]="itemClass"

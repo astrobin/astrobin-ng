@@ -71,6 +71,9 @@ import { SearchUsersFilterComponent } from "@features/search/components/filters/
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { SearchAutoCompleteItem } from "@features/search/interfaces/search-auto-complete-item.interface";
+import { CookieService } from "ngx-cookie";
+
+export const SEARCH_SETTINGS_SIMPLE_MODE_COOKIE = "astrobin-search-settings-simple-mode";
 
 @Injectable({
   providedIn: "root"
@@ -81,6 +84,9 @@ export class SearchService extends BaseService {
   searchCompleteSubject: Subject<SearchPaginatedApiResultInterface<any>> =
     new Subject<SearchPaginatedApiResultInterface<any>>();
   searchComplete$: Observable<SearchPaginatedApiResultInterface<any>>;
+
+  simpleModeChanges$: Observable<boolean>;
+
   private _autoCompleteItemsLimit = 15;
   private _autoCompleteTelescopeCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteSensorCache: { [query: string]: SearchAutoCompleteItem[] } = {};
@@ -89,9 +95,9 @@ export class SearchService extends BaseService {
   private _autoCompleteFilterCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteAccessoryCache: { [query: string]: SearchAutoCompleteItem[] } = {};
   private _autoCompleteSoftwareCache: { [query: string]: SearchAutoCompleteItem[] } = {};
-
-  private _allFiltersTypes: Type<SearchFilterComponentInterface>[] = [];
   private _autoCompleteOnlyFilters: Type<SearchFilterComponentInterface>[] = [];
+  private _simpleMode: boolean;
+  private _simpleModeChangesSubject: Subject<boolean> = new Subject();
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -109,11 +115,24 @@ export class SearchService extends BaseService {
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly modalService: NgbModal,
     public readonly commonApiService: CommonApiService,
-    public readonly searchFilterService: SearchFilterService
+    public readonly searchFilterService: SearchFilterService,
+    public readonly cookieService: CookieService
   ) {
     super(loadingService);
 
     this.searchComplete$ = this.searchCompleteSubject.asObservable();
+    this._simpleMode = this.cookieService.get(SEARCH_SETTINGS_SIMPLE_MODE_COOKIE) === "true";
+    this.simpleModeChanges$ = this._simpleModeChangesSubject.asObservable();
+  }
+
+  private _allFiltersTypes: Type<SearchFilterComponentInterface>[] = [];
+
+  get allFiltersTypes(): Type<SearchFilterComponentInterface>[] {
+    return this._allFiltersTypes;
+  }
+
+  get autoCompleteOnlyFiltersTypes(): Type<SearchFilterComponentInterface>[] {
+    return this._autoCompleteOnlyFilters;
   }
 
   registerAllFilters(filters: Type<SearchFilterComponentInterface>[]) {
@@ -122,14 +141,6 @@ export class SearchService extends BaseService {
 
   registerAutoCompleteFilters(filters: Type<SearchFilterComponentInterface>[]) {
     this._autoCompleteOnlyFilters = filters;
-  }
-
-  get allFiltersTypes(): Type<SearchFilterComponentInterface>[] {
-    return this._allFiltersTypes;
-  }
-
-  get autoCompleteOnlyFiltersTypes(): Type<SearchFilterComponentInterface>[] {
-    return this._autoCompleteOnlyFilters;
   }
 
   modelToParams(model: SearchModelInterface): string {
@@ -146,7 +157,8 @@ export class SearchService extends BaseService {
         ...model,
         text: {
           value: "",
-          matchType: undefined
+          matchType: MatchType.ALL,
+          onlySearchInTitlesAndDescriptions: this.isSimpleMode()
         }
       };
     }
@@ -1167,6 +1179,16 @@ export class SearchService extends BaseService {
           })
         )
       ))) as Observable<SearchAutoCompleteItem[]>;
+  }
+
+  isSimpleMode(): boolean {
+    return this._simpleMode;
+  }
+
+  setSimpleMode(value: boolean): void {
+    this._simpleMode = value;
+    this.cookieService.put(SEARCH_SETTINGS_SIMPLE_MODE_COOKIE, value.toString());
+    this._simpleModeChangesSubject.next(value);
   }
 
   private _autoCompleteMatch(query: string, candidate: string): boolean {

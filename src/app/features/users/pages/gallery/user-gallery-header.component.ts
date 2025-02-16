@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
@@ -23,19 +23,18 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
   selector: "astrobin-user-gallery-header",
   template: `
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="user-gallery-header">
-      <button
-        *ngIf="currentUserWrapper.user?.id === user.id"
-        (click)="openChangeHeaderImageOffcanvas()"
-        class="btn btn-link btn-no-block btn-change-header-image"
-        translate="Change header image"
-      ></button>
       <img *ngIf="userProfile.galleryHeaderImage" [src]="userProfile.galleryHeaderImage" alt="" />
       <div *ngIf="!userProfile.galleryHeaderImage" class="no-image"></div>
       <div class="header-gradient"></div>
       <div class="user-info d-flex justify-content-between">
         <div class="d-flex gap-3 align-items-center">
           <div class="avatar-container position-relative">
-            <astrobin-avatar [user]="user" [link]="false" [showPremiumBadge]="true"></astrobin-avatar>
+            <astrobin-avatar
+              [user]="user"
+              [link]="false"
+              [showPremiumBadge]="true"
+              [showFollowsYouBadge]="true"
+            ></astrobin-avatar>
             <div class="edit-avatar" *ngIf="currentUserWrapper.user?.id === user.id">
               <a [href]="classicRoutesService.SETTINGS_AVATAR">
                 <fa-icon icon="pencil"></fa-icon>
@@ -43,8 +42,8 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
             </div>
           </div>
 
-          <div class="d-flex flex-column gap-2">
-            <div class="d-flex flex-column flex-sm-row gap-2 gap-sm-3 align-items-sm-center">
+          <div class="d-flex flex-column gap-3 gap-md-2">
+            <div class="d-flex flex-column flex-sm-row username-and-follows align-items-sm-center">
               <div class="d-flex flex-row align-items-center gap-3">
                 <astrobin-username
                   [user]="user" [link]="false"
@@ -67,11 +66,17 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                     <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
                   </button>
                   <div ngbDropdownMenu [attr.aria-labelledby]="'user-gallery-dropdown'">
+                    <button
+                      *ngIf="currentUserWrapper.user?.id === user.id"
+                      (click)="openChangeHeaderImageOffcanvas()"
+                      class="dropdown-item"
+                      translate="Change header image"
+                    ></button>
                     <a
                       *ngIf="currentUserWrapper.user?.id === user.id"
                       [href]="classicRoutesService.SETTINGS"
                       class="dropdown-item"
-                      translate="My settings"
+                      translate="Settings"
                     ></a>
                     <a
                       *ngIf="currentUserWrapper.user?.id !== user.id && !currentUserWrapper.userProfile?.shadowBans?.includes(userProfile.id)"
@@ -110,11 +115,11 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                 [setLabel]="'Follow' | translate"
                 [unsetLabel]="'Unfollow' | translate"
                 class="w-auto p-0"
-                btnClass="btn btn-outline-secondary btn-no-block"
+                btnClass="btn btn-dark btn-no-block"
                 propertyType="follow"
               ></astrobin-toggle-property>
             </div>
-            <div class="d-flex gap-3 align-items-center images-and-followers flex-wrap">
+            <div class="d-flex align-items-center images-and-followers flex-wrap">
               <span [translate]="'{{ 0 }} images'" [translateParams]="{'0': userProfile.imageCount}"></span>
               <span
                 *ngIf="userProfile.wipImageCount && currentUserWrapper.user?.id === user.id"
@@ -131,13 +136,11 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                 *ngIf="currentUserWrapper.user?.id === user.id"
                 (click)="userProfile.followingCount ? openFollowingOffcanvas() : null"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
-                class="d-none d-sm-inline"
                 [attr.data-toggle]="userProfile.followingCount ? 'offcanvas' : ''"
               ></span>
               <span
                 *ngIf="currentUserWrapper.user?.id !== user.id"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
-                class="d-none d-sm-inline"
               ></span>
               <span
                 *ngIf="currentUserWrapper.user?.id === user.id"
@@ -227,7 +230,6 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
       <div class="offcanvas-body">
         <div *ngIf="followers; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
-            *ngIf="!searching && followers.followers?.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
@@ -253,7 +255,6 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
       <div class="offcanvas-body">
         <div *ngIf="following; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
-            *ngIf="!searching && following.following?.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
@@ -282,7 +283,6 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
         </p>
         <div *ngIf="mutualFollowers; else loadingTemplate" class="d-flex flex-column gap-1">
           <input
-            *ngIf="!searching && mutualFollowers['mutual-followers']?.length > 0"
             type="search"
             class="form-control mb-2"
             placeholder="{{ 'Search' | translate }}"
@@ -309,7 +309,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
   styleUrls: ["./user-gallery-header.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class UserGalleryHeaderComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnChanges {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
 
@@ -388,6 +388,10 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     } else if (this.activatedRoute.snapshot.queryParamMap.has("mutual-followers")) {
       this.openMutualFollowersOffcanvas();
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.stats = null;
   }
 
   protected openStatsOffcanvas() {

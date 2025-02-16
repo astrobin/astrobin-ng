@@ -127,6 +127,7 @@ import { DeviceService } from "@core/services/device.service";
                 </th>
                 <th>
                   {{ "Views" | translate }}
+                  <fa-icon *ngIf="options.ordering === 'views'" icon="sort-amount-down" class="ms-2"></fa-icon>
                 </th>
                 <th>
                   {{ "Likes" | translate }}

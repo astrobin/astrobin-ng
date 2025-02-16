@@ -20,6 +20,28 @@
   > ul.step-anchor {
     border-bottom-color: var(--grey);
     background: var(--black) !important;
+
+    @media (pointer: coarse) {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      align-items: center;
+      -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav-item {
+        flex: 0 0 auto;
+      }
+
+      .nav-link {
+        white-space: nowrap;
+      }
+    }
   }
 
   .nav-item {
@@ -144,7 +166,7 @@
   display: none;
 }
 
-@media (max-width: $md-max) {
+@media (min-width: $md-min) and (max-width: $md-max) {
   .ng-wizard-main {
     margin-top: -2rem;
   }

@@ -45,7 +45,7 @@
 
       <div
         *ngIf="!comment.pendingModeration"
-        [innerHTML]="comment.html"
+        [innerHTML]="html"
         class="text"
       ></div>
 
@@ -55,7 +55,7 @@
           {{ "This comment is pending moderation." | translate }}
         </p>
         <div *ngIf="allowModeration">
-          <p [innerHTML]="comment.html" class="text"></p>
+          <p [innerHTML]="html" class="text"></p>
           <button
             (click)="onApproveClicked($event)"
             [class.loading]="approving"

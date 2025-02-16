@@ -33,13 +33,14 @@ import { VariantSelectorModalComponent } from "@shared/components/equipment/item
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { DeviceService } from "@core/services/device.service";
 import { ImageViewerService } from "@core/services/image-viewer.service";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
   templateUrl: "./explorer-page.component.html",
   styleUrls: ["./explorer-page.component.scss"]
 })
-export class ExplorerPageComponent extends ExplorerBaseComponent implements OnInit {
+export class ExplorerPageComponent extends ExplorerBaseComponent implements OnInit, AfterViewInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly ExplorerPageSortOrder = EquipmentItemsSortOrder;
 
@@ -93,21 +94,14 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       deviceService,
       offcanvasService
     );
-
-    router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      take(1)
-    ).subscribe(() => {
-      this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
-    });
   }
 
   ngOnInit(): void {
     super.ngOnInit();
 
     this._updateTitle(this.activatedRoute.snapshot.data?.item);
-    this._updateDescription(this.activatedRoute.snapshot.data?.item);
     this._setBreadcrumb();
+    this._updateDescription(this.activatedRoute.snapshot.data?.item);
     this._setParams();
     this._setLocation();
 
@@ -119,7 +113,12 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       .subscribe(() => {
         this._setParams();
         this._updateTitle(this.activatedRoute.snapshot.data?.item);
+        this._setBreadcrumb();
       });
+  }
+
+  ngAfterViewInit() {
+    this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
   }
 
   onSelectedItemChanged(item: EquipmentItemBaseInterface) {
@@ -161,6 +160,17 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   filtersApplied(): void {
     this.getItems();
+  }
+
+  search(item: EquipmentItem) {
+    this.currentUserProfile$.pipe(take(1)).subscribe((userProfile: UserProfileInterface) => {
+      if (userProfile && !userProfile.enableNewSearchExperience) {
+        this.windowRefService.nativeWindow.location.href = this.equipmentItemService.getClassicSearchUrl(item);
+      } else {
+        const params = this.equipmentItemService.getSearchParams(item);
+        this.router.navigateByUrl(`/search?p=${params}`);
+      }
+    });
   }
 
   private _updateTitle(item?: EquipmentItem) {

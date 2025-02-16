@@ -23,6 +23,9 @@ import { MarketplaceListingShippingMethod } from "@features/equipment/types/mark
 import { MarketplaceListingCondition, MarketplaceShippingCostType } from "@features/equipment/types/marketplace-line-item.interface";
 import { HttpClient } from "@angular/common/http";
 import { BBCodeService } from "@core/services/bbcode.service";
+import { ImageSearchApiService } from "@core/services/api/classic/images/image/image-search-api.service";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
+import { SearchService } from "@core/services/search.service";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -48,7 +51,10 @@ export class EquipmentItemService extends BaseService {
     public readonly popNotificationsService: PopNotificationsService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly http: HttpClient,
-    public readonly bbcodeService: BBCodeService
+    public readonly bbcodeService: BBCodeService,
+    public readonly imageSearchApiService: ImageSearchApiService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly searchService: SearchService
   ) {
     super(loadingService);
   }
@@ -470,5 +476,31 @@ export class EquipmentItemService extends BaseService {
       field.formControl.markAsTouched();
       field.formControl.markAsDirty();
     }
+  }
+
+  getClassicSearchUrl(item: EquipmentItem, usageType?: EquipmentItemUsageType, ordering?: string): string {
+    const urlParams = new URLSearchParams();
+    urlParams.set("d", "i");
+    urlParams.set("sort", ordering || "-likes");
+
+    const paramName = this.imageSearchApiService.getFilterParamName(item.klass, usageType);
+    urlParams.set(paramName, item.id.toString());
+
+    return `${this.classicRoutesService.SEARCH}?${urlParams.toString()}`;
+  }
+
+  getSearchParams(item: EquipmentItem, ordering?: string): string {
+    return this.searchService.modelToParams({
+      itemId: item.id,
+      itemType: item.klass,
+      ordering,
+      [item.klass.toLowerCase()]: {
+        value: [{
+          id: item.id,
+          name: (item.brandName || this.translateService.instant("DIY")) + " " + item.name
+        }],
+        matchType: null
+      }
+    });
   }
 }

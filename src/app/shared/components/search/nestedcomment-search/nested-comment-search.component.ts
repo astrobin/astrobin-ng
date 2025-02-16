@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
@@ -16,7 +16,8 @@ import { UtilsService } from "@core/services/utils/utils.service";
 @Component({
   selector: "astrobin-nested-comment-search",
   templateUrl: "./nested-comment-search.component.html",
-  styleUrls: ["./nested-comment-search.component.scss"]
+  styleUrls: ["./nested-comment-search.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NestedCommentSearchComponent extends ScrollableSearchResultsBaseComponent<NestedCommentSearchInterface> {
   @Input()
@@ -30,9 +31,10 @@ export class NestedCommentSearchComponent extends ScrollableSearchResultsBaseCom
     public readonly elementRef: ElementRef,
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    super(store$, windowRefService, elementRef, platformId, translateService, utilsService);
+    super(store$, windowRefService, elementRef, platformId, translateService, utilsService, changeDetectorRef);
   }
 
   fetchData(): Observable<PaginatedApiResultInterface<NestedCommentSearchInterface>> {

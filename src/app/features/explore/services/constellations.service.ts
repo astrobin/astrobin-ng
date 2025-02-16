@@ -28,8 +28,25 @@ export class ConstellationsService {
   }
 
   getConstellations(language: string): ConstellationInterface[] {
-    this._buildConstellationData(language);
+    if (!this._constellations || !this._constellations[language]) {
+      this._buildConstellationData(language);
+    }
+
     return this._constellations[language] ? this._constellations[language] : this._constellations["en"];
+  }
+
+  getConstellationFullName(constellation: string, language: string): string {
+    if (!language) {
+      language = this.translateService.currentLang || "en";
+    }
+
+    if (!this._constellations || !this._constellations[language]) {
+      this._buildConstellationData(language);
+    }
+
+    const constellationObject = this.getConstellations(language).find(c => c.id === constellation);
+
+    return constellationObject ? constellationObject.name : "";
   }
 
   private _buildConstellationData(language: string) {

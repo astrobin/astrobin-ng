@@ -57,6 +57,24 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             <span *ngIf="resolution" class="resolution" [innerHTML]="resolution"></span>
 
             <span *ngIf="size" class="file-size" [innerHTML]="size | filesize"></span>
+
+            <a
+              *ngIf="image.link"
+              [href]="image.link"
+              target="_blank"
+              rel="noopener"
+              class="no-external-link-icon">
+              <fa-icon icon="external-link-alt" class="me-1"></fa-icon> {{ "Link" | translate }}
+            </a>
+
+            <a
+              *ngIf="image.linkToFits"
+              [href]="image.linkToFits"
+              target="_blank"
+              rel="noopener"
+              class="no-external-link-icon">
+              <fa-icon icon="file" class="me-1"></fa-icon> {{ "TIFF/FITS" | translate }}
+            </a>
           </small>
 
           <div class="iotd-tp">
@@ -90,19 +108,18 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
               *ngIf="currentUserWrapper.user?.id === image.user && !image.iotdDate && !image.isTopPick && !image.isTopPickNomination && image.isInIotdQueue"
               class="in-iotd-queue"
             >
-              <span class="label">
-                <fa-icon icon="gavel"></fa-icon>
-                {{ "Currently in the IOTD/TP queues" | translate }}
-              </span>
-
               <a
                 (click)="viewIotdTpStats()"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
-                class="ms-2"
                 href="#"
               >
-                <fa-icon icon="info-circle"></fa-icon>
+                <span class="label">
+                  <fa-icon icon="gavel"></fa-icon>
+                  {{ "Currently in the IOTD/TP queues" | translate }}
+                </span>
+
+                <fa-icon icon="info-circle" class="ms-2 d-inline-block"></fa-icon>
               </a>
             </span>
           </div>

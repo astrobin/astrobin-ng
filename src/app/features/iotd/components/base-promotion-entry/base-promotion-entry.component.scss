@@ -38,6 +38,12 @@
     &.loading {
       margin-bottom: 4rem !important;
     }
+
+    ::ng-deep {
+      img {
+        width: 100%;
+      }
+    }
   }
 
   .promotion-image-hover {

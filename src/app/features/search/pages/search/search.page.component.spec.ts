@@ -38,7 +38,8 @@ describe("SearchPageComponent", () => {
         {
           provide: ImageViewerService,
           useValue: {
-            slideshowState$: new BehaviorSubject<boolean>(false)
+            slideshowState$: new BehaviorSubject<boolean>(false),
+            autoOpenSlideshow: jest.fn()
           }
         }
       ]

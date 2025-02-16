@@ -104,21 +104,11 @@ interface DetailedFilterSummary {
         <span>{{ "Integration" | translate }}</span>
 
         <span
-          *ngIf="deepSkyIntegrationTime"
+          *ngIf="deepSkyIntegrationTime && collapsed"
+          @fadeInOut
           [innerHTML]="deepSkyIntegrationTime"
           class="no-wrap"
         ></span>
-
-        <span *ngIf="!deepSkyIntegrationTime">
-          {{ "n/d" | translate }}
-        </span>
-
-        <astrobin-image-viewer-acquisition-dates *ngIf="dates?.length" [dates]="dates"></astrobin-image-viewer-acquisition-dates>
-
-        <span *ngIf="dates?.length && image.averageMoonIllumination !== null" class="no-wrap">
-          <fa-icon icon="moon"></fa-icon>
-          {{ image.averageMoonIllumination | percent }}
-        </span>
       </div>
 
       <div
@@ -187,6 +177,56 @@ interface DetailedFilterSummary {
               </div>
             </td>
           </tr>
+
+          <tr class="totals" *ngIf="filterSummaries?.length > 1">
+            <td [attr.data-label]="'Totals' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
+                  <span class="no-wrap">{{ "Totals" | translate }}</span>
+                </div>
+              </div>
+            </td>
+
+            <td></td>
+
+            <td [attr.data-label]="'Integration' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
+                  <span
+                    *ngIf="deepSkyIntegrationTime"
+                    [innerHTML]="deepSkyIntegrationTime"
+                    class="no-wrap"
+                  ></span>
+
+                  <span *ngIf="!deepSkyIntegrationTime">
+                    {{ "n/d" | translate }}
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td *ngIf="dates?.length" [attr.data-label]="'Dates' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
+                  <astrobin-image-viewer-acquisition-dates
+                    *ngIf="dates?.length"
+                    [dates]="dates"
+                  ></astrobin-image-viewer-acquisition-dates>
+                </div>
+              </div>
+            </td>
+
+            <td *ngIf="dates?.length" [attr.data-label]="'Avg. moon' | translate">
+              <div class="metadata-item">
+                <div class="metadata-label">
+                  <span *ngIf="dates?.length && image.averageMoonIllumination !== null" class="no-wrap">
+                    <fa-icon icon="moon"></fa-icon>
+                    {{ image.averageMoonIllumination | percent }}
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
           </tbody>
         </table>
 
@@ -223,8 +263,8 @@ interface DetailedFilterSummary {
             </td>
           <tr>
 
-          <tr>
-            <th *ngIf="dates?.length" [attr.data-label]="'Dates' | translate">
+          <tr *ngIf="filterSummary.summary.dates?.length">
+            <th [attr.data-label]="'Dates' | translate">
               <div class="metadata-item">
                 <div class="metadata-label">
                   <astrobin-image-viewer-acquisition-dates
@@ -234,7 +274,7 @@ interface DetailedFilterSummary {
               </div>
             </th>
 
-            <td *ngIf="dates?.length" [attr.data-label]="'Avg. moon' | translate">
+            <td [attr.data-label]="'Avg. moon' | translate">
               <div class="metadata-item justify-content-end">
                 <div class="metadata-label">
                 <span
@@ -249,9 +289,47 @@ interface DetailedFilterSummary {
             </td>
           </tr>
 
-          <tr *ngIf="dates?.length && !last" class="small-spacer-row">
+          <tr *ngIf="filterSummary.summary.dates?.length && !last" class="small-spacer-row">
             <td colspan="2"></td>
           </tr>
+          </tbody>
+
+          <tbody *ngIf="filterSummaries?.length > 1">
+            <tr class="small-spacer-row">
+              <td colspan="2"></td>
+            </tr>
+
+            <tr class="totals">
+              <td [attr.data-label]="'Totals' | translate">
+                <span class="no-wrap">{{ "Totals" | translate }}</span>
+              </td>
+              <td [attr.data-label]="'Integration' | translate">
+                <span
+                  *ngIf="deepSkyIntegrationTime"
+                  [innerHTML]="deepSkyIntegrationTime"
+                  class="no-wrap"
+                ></span>
+
+                <span *ngIf="!deepSkyIntegrationTime">
+                  {{ "n/d" | translate }}
+                </span>
+              </td>
+            </tr>
+
+            <tr class="totals">
+              <td *ngIf="dates?.length" [attr.data-label]="'Dates' | translate">
+                <astrobin-image-viewer-acquisition-dates
+                  *ngIf="dates?.length"
+                  [dates]="dates"
+                ></astrobin-image-viewer-acquisition-dates>
+              </td>
+              <td *ngIf="dates?.length" [attr.data-label]="'Avg. moon' | translate">
+                <span *ngIf="dates?.length && image.averageMoonIllumination !== null" class="no-wrap">
+                  <fa-icon icon="moon"></fa-icon>
+                  {{ image.averageMoonIllumination | percent }}
+                </span>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

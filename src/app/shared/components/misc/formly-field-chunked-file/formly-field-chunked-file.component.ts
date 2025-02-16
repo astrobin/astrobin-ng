@@ -86,6 +86,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
   protected uploadLabel: string;
 
+  private _uploaderServiceEventsSubscription: Subscription;
   private _metadataChangesSubscription: Subscription;
   private _endpointChangesSubscription: Subscription;
   private _allowedTypesChangesSubscription: Subscription;
@@ -174,6 +175,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   ngOnDestroy(): void {
+    if (this._uploaderServiceEventsSubscription) {
+      this._uploaderServiceEventsSubscription.unsubscribe();
+    }
+
     if (this._metadataChangesSubscription) {
       this._metadataChangesSubscription.unsubscribe();
     }
@@ -189,7 +194,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
   private _initUploader(): void {
     this.uploaderService.init(this.uploadOptions);
-    this.uploaderService.events.subscribe((state: UploadState) => {
+    this._uploaderServiceEventsSubscription = this.uploaderService.events.subscribe((state: UploadState) => {
       this.uploadState = state;
 
       if (state.status === "error") {

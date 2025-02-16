@@ -17,7 +17,10 @@ import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSlideshowComponent } from "@shared/components/misc/image-viewer-slideshow/image-viewer-slideshow.component";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { EMPTY, Observable, Subject } from "rxjs";
+import { EMPTY, Observable, Subject, Subscription } from "rxjs";
+import { CookieService } from "ngx-cookie";
+
+export const SHOW_ANNOTATIONS_ON_MOUSE_HOVER_COOKIE = "astrobin-images-show-annotations-on-mouse-hover";
 
 export interface ImageViewerNavigationContextItem {
   imageId: ImageInterface["hash"] | ImageInterface["pk"];
@@ -34,12 +37,14 @@ export class ImageViewerService extends BaseService {
   slideshow: ComponentRef<ImageViewerSlideshowComponent>;
 
   public slideshowState$: Observable<boolean>;
+  public showAnnotationsOnMouseHover = false;
 
   private readonly _isBrowser: boolean;
   private _previousTitle: string;
   private _previousDescription: string;
   private _previousUrl: string;
   private _slideshowStateSubject = new Subject<boolean>();
+  private _routerEventsSubscription: Subscription;
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -52,7 +57,9 @@ export class ImageViewerService extends BaseService {
     public readonly router: Router,
     public readonly titleService: TitleService,
     public readonly imageService: ImageService,
-    public readonly applicationRef: ApplicationRef
+    public readonly applicationRef: ApplicationRef,
+    public readonly utilsService: UtilsService,
+    public readonly cookieService: CookieService
   ) {
     super(loadingService);
 
@@ -70,20 +77,12 @@ export class ImageViewerService extends BaseService {
       }
     });
 
-    this.router.events.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        if (this.slideshow) {
-          this.closeSlideShow(false);
-        }
-      }
-    });
+    this._initShowAnnotationsOnMouseHover();
   }
 
   autoOpenSlideshow(
     callerComponentId: string,
-    activatedRoute: ActivatedRoute,
+    activatedRoute: ActivatedRoute
   ): void {
     const queryParams = activatedRoute.snapshot.queryParams;
 
@@ -127,6 +126,18 @@ export class ImageViewerService extends BaseService {
             environmentInjector: this.applicationRef.injector
           }
         );
+
+        this.utilsService.delay(100).subscribe(() => {
+          if (!this._routerEventsSubscription) {
+            this._routerEventsSubscription = this.router.events.pipe(
+              takeUntil(this.slideshow.instance.closeSlideshow)  // Unsubscribe when slideshow closes
+            ).subscribe(event => {
+              if (event instanceof NavigationEnd) {
+                this.closeSlideShow(false);
+              }
+            });
+          }
+        });
 
         if (this._isBrowser) {
           const body = this.windowRefService.nativeWindow.document.body;
@@ -175,6 +186,11 @@ export class ImageViewerService extends BaseService {
       this.slideshow.location.nativeElement.remove();
       this.slideshow.destroy();
       this.slideshow = null;
+
+      if (this._routerEventsSubscription) {
+        this._routerEventsSubscription.unsubscribe();
+        this._routerEventsSubscription = null;
+      }
 
       if (this._isBrowser) {
         const body = this.windowRefService.nativeWindow.document.body;
@@ -236,11 +252,25 @@ export class ImageViewerService extends BaseService {
     };
   }
 
+  toggleShowAnnotationsOnMouseHover(): void {
+    this.showAnnotationsOnMouseHover = !this.showAnnotationsOnMouseHover;
+    this.cookieService.put(SHOW_ANNOTATIONS_ON_MOUSE_HOVER_COOKIE, this.showAnnotationsOnMouseHover.toString());
+  }
+
   private _stopBodyScrolling(): void {
     this.windowRefService.changeBodyOverflow("hidden");
   }
 
   private _resumeBodyScrolling(): void {
     this.windowRefService.changeBodyOverflow("auto");
+  }
+
+  private _initShowAnnotationsOnMouseHover(): void {
+    const showAnnotationsOnMouseHoverCookie = this.cookieService.get(SHOW_ANNOTATIONS_ON_MOUSE_HOVER_COOKIE);
+
+    this.showAnnotationsOnMouseHover =
+      showAnnotationsOnMouseHoverCookie === "true" ||
+      showAnnotationsOnMouseHoverCookie === null ||
+      showAnnotationsOnMouseHoverCookie === undefined;
   }
 }

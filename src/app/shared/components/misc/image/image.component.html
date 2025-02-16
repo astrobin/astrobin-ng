@@ -25,7 +25,7 @@
     (mouseleave)="imageMouseLeave.emit($event)"
     [alt]="image.title"
     [src]="thumbnailUrl"
-    [style.max-width.px]="width"
+    [style.max-width.px]="revision?.w"
     class="astrobin-image"
     id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revisionLabel }}-{{ alias }}"
   >

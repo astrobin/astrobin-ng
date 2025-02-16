@@ -16,6 +16,7 @@ import { LoadingService } from "@core/services/loading.service";
 import { Observable } from "rxjs";
 import { GoogleMapsService } from "@core/services/google-maps/google-maps.service";
 import { UserInterface } from "@core/interfaces/user.interface";
+import { google } from "@google/maps";
 
 @Component({
   selector: "astrobin-create-location-modal",
@@ -28,7 +29,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
   model = {};
   mapReady = false;
   mapError = false;
-  geocoder = this.googleMapsService.createGeocoder();
+  geocoder: google.maps.Geocoder;
   userId: UserInterface["id"];
 
   constructor(
@@ -46,6 +47,8 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
     super.ngOnInit();
 
     await this.googleMapsService.loadGoogleMaps();
+
+    this.geocoder = this.googleMapsService.createGeocoder();
 
     this.store$
       .select(selectApp)

@@ -65,11 +65,12 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
         </div>
       </ng-container>
 
-      <div class="metadata-section photographers mb-3">
+      <div class="metadata-section photographers mb-3 flex-wrap">
         <div
           class="
             metadata-item
             flex-grow-1
+            justify-content-between
             gap-3
           "
         >
@@ -114,7 +115,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                 flex-nowrap
                 flex-grow-1
                 gap-3
-                w-100
+                single-photographer-wrapper
               "
             >
               <a
@@ -126,7 +127,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                 <img [src]="photographers[0].avatar" alt="" class="avatar" />
               </a>
 
-              <div class="d-flex gap-2 align-items-center">
+              <div class="d-flex gap-2 align-items-center photographer-name-and-follow-button">
                 <a
                   (click)="userService.openGallery(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
                   [href]="userService.getGalleryUrl(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
@@ -134,6 +135,28 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                 >
                   {{ photographers[0].displayName }}
                 </a>
+
+                <div
+                  *ngIf="currentUserWrapper.user?.id !== image.user"
+                  ngbDropdown
+                  container="body"
+                  class="no-toggle m-0"
+                >
+                  <button
+                    class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2 m-0"
+                    ngbDropdownToggle
+                    id="photographer-actions-dropdown"
+                  >
+                    <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
+                  </button>
+                  <div ngbDropdownMenu aria-labelledby="photographer-actions-dropdown">
+                    <a
+                      [href]="classicRoutesService.SEND_MESSAGE(image.username)"
+                      class="dropdown-item"
+                      translate="Send private message"
+                    ></a>
+                  </div>
+                </div>
 
                 <astrobin-toggle-property
                   *ngIf="currentUserWrapper.user?.id !== image.user"
@@ -195,6 +218,28 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             >
               {{ user.displayName }}
             </a>
+
+            <div
+              *ngIf="currentUserWrapper.user?.id !== image.user"
+              ngbDropdown
+              container="body"
+              class="no-toggle me-2"
+            >
+              <button
+                class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2 m-0"
+                ngbDropdownToggle
+                id="photographer-actions-dropdown"
+              >
+                <fa-icon [icon]="['fas', 'ellipsis-v']" class="m-0"></fa-icon>
+              </button>
+              <div ngbDropdownMenu aria-labelledby="photographer-actions-dropdown">
+                <a
+                  [href]="classicRoutesService.SEND_MESSAGE(image.username)"
+                  class="dropdown-item"
+                  translate="Send private message"
+                ></a>
+              </div>
+            </div>
 
             <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
               <astrobin-toggle-property

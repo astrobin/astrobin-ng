@@ -16,6 +16,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { ConstellationsService } from "@features/explore/services/constellations.service";
 
 @Component({
   selector: "astrobin-image-viewer-astrometry",
@@ -45,7 +46,13 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             alt=""
           />
         </div>
-        <div (click)="constellationClicked($event, constellation)" class="metadata-link search">
+        <div
+          (click)="constellationClicked($event, constellation)"
+          [ngbTooltip]="isTouchDevice ? null : constellationFull"
+          triggers="hover click"
+          container="body"
+          class="metadata-link search"
+        >
           {{ constellation }}
         </div>
       </div>
@@ -96,6 +103,19 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
         <div [innerHTML]="pixelScale" class="metadata-label">
         </div>
       </div>
+
+      <div *ngIf="orientation" class="metadata-item">
+        <div class="metadata-icon">
+          <fa-icon
+            [ngbTooltip]="'Orientation' | translate"
+            triggers="hover click"
+            container="body"
+            icon="rotate-left"
+          ></fa-icon>
+        </div>
+        <div [innerHTML]="orientation" class="metadata-label">
+        </div>
+      </div>
     </div>
 
     <ng-template #moreInfoTemplate let-offcanvas>
@@ -112,7 +132,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
           </tr>
           <tr *ngIf="constellation">
             <th>{{ "Constellation" | translate }}</th>
-            <td>{{ constellation }}</td>
+            <td>{{ constellationFull }} ({{ constellation }})</td>
           </tr>
           <tr *ngIf="coordinates">
             <th>{{ "Coordinates" | translate }}</th>
@@ -184,9 +204,12 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseComponent implements OnChanges {
+  protected readonly isTouchDevice: boolean;
+
   revision: ImageInterface | ImageRevisionInterface;
   celestialHemisphere: string;
   constellation: string;
+  constellationFull: string;
   coordinates: string;
   coordinatesTextArea: string;
   fieldRadius: string;
@@ -211,7 +234,8 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
     public readonly translateService: TranslateService,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly cookieService: CookieService,
-    public readonly collapseSyncService: CollapseSyncService
+    public readonly collapseSyncService: CollapseSyncService,
+    public readonly constellationsService: ConstellationsService
   ) {
     super(
       store$,
@@ -223,6 +247,8 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
       collapseSyncService,
       changeDetectorRef
     );
+
+    this.isTouchDevice = deviceService.isTouchEnabled();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -231,6 +257,7 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
       this.revision = this.imageService.getRevision(image, this.revisionLabel);
       this.celestialHemisphere = this.imageService.getCelestialHemisphere(image, this.revisionLabel);
       this.constellation = this.imageService.getConstellation(image, this.revisionLabel);
+      this.constellationFull = this.constellationsService.getConstellationFullName(this.constellation, this.translateService.currentLang);
       this.coordinates = this.imageService.getCoordinates(image, this.revisionLabel);
       this.coordinatesTextArea =
         this.translateService.instant("Decimal") + ": \n" +

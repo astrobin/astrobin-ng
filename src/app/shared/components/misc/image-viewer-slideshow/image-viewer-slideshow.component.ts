@@ -373,8 +373,11 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   private _onKeyDown = (event: KeyboardEvent) => {
     if ((event.key === "ArrowLeft" || event.key === "ArrowRight") &&
-      (event.target instanceof HTMLTextAreaElement ||
-        (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable")))) {
+      (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable")))
+    ) {
       event.stopPropagation();
     }
   };

@@ -57,9 +57,21 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
         userSubscriptions: []
       };
     case AuthActionTypes.UPDATE_USER_PROFILE_SUCCESS:
+      const userProfileIndex = state.userProfiles.findIndex(userProfile => userProfile.id === action.payload.id);
+      let updatedUserProfiles = state.userProfiles;
+
+      if (userProfileIndex !== -1) {
+        updatedUserProfiles = [
+          ...state.userProfiles.slice(0, userProfileIndex),
+          action.payload,
+          ...state.userProfiles.slice(userProfileIndex + 1)
+        ];
+      }
+
       return {
         ...state,
-        userProfile: action.payload
+        userProfile: action.payload,
+        userProfiles: updatedUserProfiles
       };
     case AuthActionTypes.LOAD_USER_SUCCESS:
       return {

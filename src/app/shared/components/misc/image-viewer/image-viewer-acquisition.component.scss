@@ -73,6 +73,16 @@
   }
 }
 
+.table tr.totals td {
+  background: url($darkest-background-texture) repeat;
+  padding-top: 1rem;
+  box-shadow: none;
+
+  &:first-child {
+    font-weight: bold;
+  }
+}
+
 ::ng-deep .offcanvas-deep-sky-integration-details {
   &:not(.offcanvas-bottom) {
     width: 40vw !important;

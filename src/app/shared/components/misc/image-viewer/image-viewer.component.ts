@@ -35,6 +35,7 @@ import { SolutionStatus } from "@core/interfaces/solution.interface";
 import { fadeInOut } from "@shared/animations";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
+import { CookieService } from "ngx-cookie";
 
 
 @Component({
@@ -122,8 +123,10 @@ export class ImageViewerComponent
   protected supportsFullscreen: boolean;
   protected viewingFullscreenImage = false;
   protected showRevisions = false;
-  protected mouseHoverImage: string;
+  protected nonSolutionMouseHoverImage: string;
+  protected solutionMouseHoverImage: string;
   protected forceViewMouseHover = false;
+  protected forceViewAnnotationsMouseHover = false;
   protected inlineSvg: SafeHtml;
   protected advancedSolutionMatrix: {
     matrixRect: string;
@@ -186,7 +189,8 @@ export class ImageViewerComponent
     public readonly offcanvasService: NgbOffcanvas,
     public readonly modalService: NgbModal,
     public readonly solutionApiService: SolutionApiService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly cookieService: CookieService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -376,6 +380,43 @@ export class ImageViewerComponent
     this.previousClick.emit();
   }
 
+  @HostListener("document:keydown.a", ["$event"])
+  onAKeyDown(event: KeyboardEvent): any {
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    this.onToggleAnnotationsOnMouseHoverEnter();
+    this._onMouseHoverSvgLoad();
+  }
+
+  @HostListener("document:keyup.a", ["$event"])
+  onAKeyUp(event: KeyboardEvent): any {
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    this.onToggleAnnotationsOnMouseHoverLeave();
+  }
+
   setImage(
     image: ImageInterface,
     revisionLabel: ImageRevisionInterface["label"]
@@ -392,7 +433,8 @@ export class ImageViewerComponent
     this._initRevision();
     this._updateSupportsFullscreen();
     this._initAutoOpenFullscreen();
-    this._setMouseHoverImage();
+    this._setNonSolutionMouseHoverImage();
+    this._setSolutionMouseHoverImage();
     this._setShowPlateSolvingBanner();
     this._replaceIdWithHash();
 
@@ -404,7 +446,8 @@ export class ImageViewerComponent
     ).subscribe((image: ImageInterface) => {
       this.image = { ...image };
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-      this._setMouseHoverImage();
+      this._setNonSolutionMouseHoverImage();
+      this._setSolutionMouseHoverImage();
       this.changeDetectorRef.markForCheck();
     });
 
@@ -417,7 +460,21 @@ export class ImageViewerComponent
 
   protected onImageMouseEnter(event: MouseEvent): void {
     event.preventDefault();
-    if (!this.deviceService.isTouchEnabled()) {
+
+    if (this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC()) {
+      return;
+    }
+
+    if (
+      this.revision.mouseHoverImage !== MouseHoverImageOptions.NOTHING &&
+      (
+        this.revision.mouseHoverImage !== MouseHoverImageOptions.SOLUTION ||
+        (
+          this.revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION &&
+          this.imageViewerService.showAnnotationsOnMouseHover
+        )
+      )
+    ) {
       this.imageArea.nativeElement.classList.add("hover");
     }
   }
@@ -525,12 +582,24 @@ export class ImageViewerComponent
     }
 
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-    this._setMouseHoverImage();
+    this._setNonSolutionMouseHoverImage();
+    this._setSolutionMouseHoverImage();
     this.revisionSelected.emit(revisionLabel);
   }
 
   protected toggleViewMouseHover(): void {
     this.forceViewMouseHover = !this.forceViewMouseHover;
+  }
+
+  onToggleAnnotationsOnMouseHoverEnter(): void {
+    this.forceViewAnnotationsMouseHover = true;
+    this.forceViewMouseHover = true;
+    this._onMouseHoverSvgLoad();
+  }
+
+  onToggleAnnotationsOnMouseHoverLeave(): void {
+    this.forceViewAnnotationsMouseHover = false;
+    this.forceViewMouseHover = false;
   }
 
   protected enterFullscreen(event: MouseEvent | null): void {
@@ -651,53 +720,32 @@ export class ImageViewerComponent
     }
   }
 
-  private _setMouseHoverImage() {
+  private _setNonSolutionMouseHoverImage() {
     if (!this.revision) {
       return;
     }
 
     switch (this.revision.mouseHoverImage) {
       case MouseHoverImageOptions.NOTHING:
-      case null:
-        this.mouseHoverImage = null;
-        this.inlineSvg = null;
-        break;
       case MouseHoverImageOptions.SOLUTION:
-        if (this.revision?.solution?.pixinsightSvgAnnotationRegular) {
-          this.mouseHoverImage = null;
-          this._loadInlineSvg$(
-            environment.classicBaseUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
-          ).subscribe(inlineSvg => {
-            this.inlineSvg = inlineSvg;
-            this.changeDetectorRef.markForCheck();
-          });
-          this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
-            this.advancedSolutionMatrix = matrix;
-            this.loadingAdvancedSolutionMatrix = false;
-            this.changeDetectorRef.markForCheck();
-          });
-        } else if (this.revision?.solution?.imageFile) {
-          this.mouseHoverImage = this.revision.solution.imageFile;
-          this.inlineSvg = null;
-        } else {
-          this.mouseHoverImage = null;
-          this.inlineSvg = null;
-        }
+      case null:
+        this.nonSolutionMouseHoverImage = null;
+        this.inlineSvg = null;
         break;
       case MouseHoverImageOptions.INVERTED: {
         const thumbnail = this.revision.thumbnails?.find(thumbnail =>
           thumbnail.alias === this.alias + "_inverted"
         );
-        this.mouseHoverImage = thumbnail?.url ?? null;
+        this.nonSolutionMouseHoverImage = thumbnail?.url ?? null;
         this.inlineSvg = null;
       }
         break;
       case "ORIGINAL": {
         const thumbnail = this.image.thumbnails?.find(thumbnail =>
           thumbnail.alias === this.alias &&
-          thumbnail.revision === ORIGINAL_REVISION_LABEL
+          thumbnail.revision === (this.image.isFinal ? FINAL_REVISION_LABEL : ORIGINAL_REVISION_LABEL)
         );
-        this.mouseHoverImage = thumbnail?.url ?? null;
+        this.nonSolutionMouseHoverImage = thumbnail?.url ?? null;
         this.inlineSvg = null;
       }
         break;
@@ -709,13 +757,40 @@ export class ImageViewerComponent
           const thumbnail = matchingRevision.thumbnails?.find(
             thumbnail => thumbnail.alias === this.alias
           );
-          this.mouseHoverImage = thumbnail?.url ?? null;
+          this.nonSolutionMouseHoverImage = thumbnail?.url ?? null;
           this.inlineSvg = null;
         } else {
-          this.mouseHoverImage = null;
+          this.nonSolutionMouseHoverImage = null;
           this.inlineSvg = null;
         }
       }
+    }
+  }
+
+  private _setSolutionMouseHoverImage() {
+    if (!this.revision) {
+      return;
+    }
+
+    if (this.revision?.solution?.pixinsightSvgAnnotationRegular) {
+      this._loadInlineSvg$(
+        environment.classicBaseUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
+      ).subscribe(inlineSvg => {
+        this.solutionMouseHoverImage = null;
+        this.inlineSvg = inlineSvg;
+        this.changeDetectorRef.markForCheck();
+      });
+      this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
+        this.advancedSolutionMatrix = matrix;
+        this.loadingAdvancedSolutionMatrix = false;
+        this.changeDetectorRef.markForCheck();
+      });
+    } else if (this.revision?.solution?.imageFile) {
+      this.solutionMouseHoverImage = this.revision.solution.imageFile;
+      this.inlineSvg = null;
+    } else {
+      this.solutionMouseHoverImage = null;
+      this.inlineSvg = null;
     }
   }
 
@@ -778,7 +853,7 @@ export class ImageViewerComponent
     if (this.isBrowser) {
       this.utilsService.delay(100).subscribe(() => {
         const _doc = this.windowRefService.nativeWindow.document;
-        const svgObject = _doc.getElementById("mouse-hover-svg-" + this.image.pk) as HTMLObjectElement;
+        const svgObject = _doc.getElementById(`mouse-hover-svg-${this.image.pk}-${this.revision.pk}`) as HTMLObjectElement;
 
         if (svgObject) {
           const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -1169,4 +1244,6 @@ export class ImageViewerComponent
       )
       .subscribe();
   }
+
+  protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
 }

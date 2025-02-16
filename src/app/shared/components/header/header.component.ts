@@ -209,7 +209,13 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
           [result.type]: result.value
         });
       } else {
-        params = this.searchService.modelToParams({ text: { value: this.quickSearchQuery, matchType: MatchType.ALL } });
+        params = this.searchService.modelToParams({
+          text: {
+            value: this.quickSearchQuery,
+            matchType: MatchType.ALL,
+            onlySearchInTitlesAndDescriptions: this.searchService.isSimpleMode()
+          }
+        });
       }
 
       this.router.navigateByUrl(`/search?p=${params}`).then(() => {

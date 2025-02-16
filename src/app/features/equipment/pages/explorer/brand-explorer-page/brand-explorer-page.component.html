@@ -159,7 +159,7 @@
 
               <astrobin-image-search-card
                 [header]="'Acquired with this brand' | translate"
-                [model]="{ text: { value: activeBrand.name, matchType: MatchType.ALL } }"
+                [model]="{ text: { value: activeBrand.name, matchType: MatchType.ALL, onlySearchInTitlesAndDescriptions: false } }"
                 [showRetailers]="false"
                 [showMarketplaceItems]="false"
                 [showStaticOverlay]="false"

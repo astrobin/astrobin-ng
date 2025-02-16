@@ -10,6 +10,7 @@
 
       small {
         font-size: .75rem;
+        line-height: 1rem;
         color: var(--lightGrey);
         display: flex;
         align-items: center;
@@ -17,7 +18,7 @@
         gap: .75rem;
         margin-top: .5rem;
 
-        > span:not(:last-child) {
+        > :not(:last-child) {
           &::after {
             content: '\b7'; /* middot */
             display: inline-block;

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2025-01-31 12:49+0100\n"
+"PO-Revision-Date: 2025-02-12 22:14+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -10019,4 +10019,134 @@ msgstr ""
 msgid ""
 "If checked, the plate-solving will be done without the need for you to "
 "provide hints."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.ts
+#: loco:67ad0eaec8699d04b30a6152
+msgid ""
+"AstroBin will search only in titles and descriptions, and search filters "
+"will be disabled. We recommend filters to perform more advanced and exact "
+"searches."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:67ad0eaec8699d04b30a6153
+msgid "Click to show annotations on button hover only (or hold A)"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:67ad0eaec8699d04b30a6154
+msgid "Click to show annotations on image hover (or hold A)"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:67ad0eaec8699d04b30a6155
+msgid "Code"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+#: loco:67ad0eaec8699d04b30a6156
+msgid "Collaboration"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:67ad0eaec8699d04b30a6157
+msgid "Copied!"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:67ad0eaec8699d04b30a6158
+msgid "Extra-large"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/avatar/avatar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/avatar/avatar.component.html
+#: loco:67ad0eaec8699d04b30a6159
+msgid "Follows you"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:67ad0eaec8699d04b30a615a
+msgid "Grab direct image links"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:67ad0eaec8699d04b30a615b
+msgid ""
+"If embedding direct links to images hosted on the AstroBin servers, kindly "
+"provide a link to AstroBin."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-collaboration-filter/search-collaboration-filter.component.ts
+#: loco:67ad0eaec8699d04b30a615c
+msgid "Include/exclude images created by multiple photographers."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/timeout-retry.interceptor.ts
+#: loco:67ad0eaec8699d04b30a615d
+msgid ""
+"Just a heads-up: a network operation is taking a bit longer than usual. "
+"Thanks for your patience!"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
+#: loco:67ad0eaec8699d04b30a615e
+msgid "Messages"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-text-filter/search-text-filter.component.ts
+#: loco:67ad0eaec8699d04b30a615f
+msgid "Only search in titles and descriptions"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:67ad0eaec8699d04b30a6160
+msgid "Press <kbd>Enter</kbd> to search."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67ad0eaec8699d04b30a6161
+msgid "Scroll to magnify."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
+#: loco:67ad0eaec8699d04b30a6162
+msgid "Search settings"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.ts
+#: loco:67ad0eaec8699d04b30a6163
+msgid "Simple mode"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/timeout-retry.interceptor.ts
+#: loco:67ad0eaec8699d04b30a6164
+msgid ""
+"Sorry, we're having trouble performing a network operation. Please try again "
+"later."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-title.component.ts
+#: loco:67ad0eaec8699d04b30a6165
+msgid "TIFF/FITS"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+#: loco:67ad0eaec8699d04b30a6166
+msgid "Thumbnail size"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
+#: loco:67ad0eaec8699d04b30a6167
+msgid "Totals"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image/image.component.ts
+#: loco:67ad0eaec8699d04b30a6168
+msgid "Video player could not be loaded."
 msgstr ""

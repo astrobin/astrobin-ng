@@ -3,6 +3,7 @@
 
   .tooltip-inner {
     box-shadow: 0 0 1rem black;
+    pointer-events: none;
   }
 
   &.tooltip-warning {

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
+import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectCurrentFullscreenImage } from "@app/store/selectors/app/app.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { MainState } from "@app/store/state";
@@ -12,7 +12,7 @@ import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageService } from "@core/services/image/image.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
-import { BehaviorSubject, combineLatest, merge, Observable, scan, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
 import { distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
 import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
@@ -83,6 +83,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected readonly Math = Math;
 
+  protected zoomScroll = 1;
   protected touchMode?: boolean = undefined;
   protected enableLens = true;
   protected zoomLensSize: number;
@@ -132,22 +133,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _hdThumbnailSubscription: Subscription;
   private _realThumbnailSubscription: Subscription;
   private _currentFullscreenImageSubscription: Subscription;
-  private _zoomScroll = 1;
   private _zoomIndicatorTimeout: number;
   private _zoomIndicatorTimeoutDuration = 1000;
   private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _eagerLoadingSubscription: Subscription;
   private _firstRenderSubject = new BehaviorSubject<boolean>(false);
-
+  readonly firstRender$ = this._firstRenderSubject.asObservable().pipe(
+    filter(rendered => rendered)
+  );
   private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
-
-  readonly firstRender$ = this._firstRenderSubject.asObservable().pipe(
-    filter(rendered => rendered)
-  );
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -206,7 +204,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   get zoomingEnabled(): boolean {
-    return !!this.ngxImageZoom && (this.ngxImageZoom as any).zoomingEnabled;
+    return this.ngxImageZoom?.zoomService.zoomingEnabled;
   }
 
   protected get isVeryLargeImage(): boolean {
@@ -340,29 +338,24 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   onImagesLoaded(loaded: boolean) {
     this.ready = loaded;
-    // Prevents the jarring resetting of the zoom when the mouse wanders off the image.
-    this.utilsService.delay(100).subscribe(() => {
-      if (this.ngxImageZoom) {
-        (this.ngxImageZoom as any).clickMouseLeave = () => {
-        };
-        this.changeDetectorRef.markForCheck();
-      }
-    });
+    this._initImageZoom();
+    this.changeDetectorRef.markForCheck();
   }
 
   setZoomPosition(position: Coord) {
-    this.showZoomIndicator = true;
+    this.showZoomIndicator = this.zoomingEnabled;
     this._setZoomIndicatorTimeout();
   }
 
   setZoomScroll(scroll: number) {
-    this._zoomScroll = scroll;
-    this.showZoomIndicator = true;
+    this.zoomScroll = scroll;
+    this.showZoomIndicator = this.zoomingEnabled;
     this._setZoomIndicatorTimeout();
   }
 
-  getZoomScroll(): number {
-    return this._zoomScroll;
+  snapTo1x() {
+    this.ngxImageZoom.setMagnification = 1;
+    this.ngxImageZoom.zoomService.zoomOn({ offsetX: 0, offsetY: 0 } as MouseEvent);
   }
 
   @HostListener("window:keyup.escape", ["$event"])
@@ -534,6 +527,60 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       const targetOffsetY = (rect.height / 2 - y);
 
       this._animateZoom(targetScale, targetOffsetX, targetOffsetY);
+    }
+  }
+
+  private _initImageZoom() {
+    if (this.ngxImageZoom) {
+      const renderedThumbnailHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").height;
+      const thumbnailNaturalHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").naturalHeight;
+      const renderRatio = renderedThumbnailHeight / thumbnailNaturalHeight;
+      const renderedThumbnailWidth = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").naturalWidth * renderRatio;
+
+      this.ngxImageZoom.zoomService.thumbWidth = renderedThumbnailWidth;
+      this.ngxImageZoom.zoomService.thumbHeight = renderedThumbnailHeight;
+      this.ngxImageZoom.zoomService.minZoomRatio = renderedThumbnailWidth / this.naturalWidth;
+      this.ngxImageZoom.zoomService.magnification = 1;
+
+      this.setZoomScroll(1);
+
+      this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").addEventListener("wheel", (event: WheelEvent) => {
+        if (this.ngxImageZoom.zoomService.zoomingEnabled) {
+          return;
+        }
+
+        event.preventDefault();
+
+        this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
+        this.ngxImageZoom.zoomService.zoomOn(event);
+        this.changeDetectorRef.markForCheck();
+      }, { once: true });
+
+      // Prevents the jarring resetting of the zoom when the mouse wanders off the image.
+      (this.ngxImageZoom as any).zoomInstance.onMouseLeave = () => {
+      };
+
+      (this.ngxImageZoom as any).zoomInstance.onClick = (event: MouseEvent) => {
+        if (this.enableLens) {
+          if (this.zoomingEnabled) {
+            this.ngxImageZoom.zoomService.zoomOff();
+          } else {
+            this.ngxImageZoom.zoomService.zoomOn(event);
+          }
+        } else {
+          if (this.zoomingEnabled) {
+            this.hide(null);
+          } else {
+            this.ngxImageZoom.zoomService.zoomOn(event);
+          }
+        }
+      };
+
+      this.changeDetectorRef.markForCheck();
+    } else {
+      this.utilsService.delay(50).subscribe(() => {
+        this._initImageZoom();
+      });
     }
   }
 
@@ -802,7 +849,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
               createImageBitmap(this._canvasImage).then(bitmap => {
                 this._imageBitmap = bitmap;
                 const canvas = this.touchRealCanvas.nativeElement;
-                this._canvasContext = canvas.getContext('2d', {
+                this._canvasContext = canvas.getContext("2d", {
                   alpha: false,
                   willReadFrequently: false
                 });
@@ -819,7 +866,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
                 this.changeDetectorRef.markForCheck();
               });
             } catch (error) {
-              console.error('Failed to initialize canvas:', error);
+              console.error("Failed to initialize canvas:", error);
             }
           };
 
@@ -897,7 +944,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _performDrawCanvas(): void {
-    if (!this._canvasContext || !this._imageBitmap) return;
+    if (!this._canvasContext || !this._imageBitmap) {
+      return;
+    }
 
     const ctx = this._canvasContext;
     const { width, height, centerX, centerY } = this._canvasContainerDimensions;
@@ -906,7 +955,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Cache transform matrix
     const transform = `${this.touchScale},${centerX + this._touchScaleOffset.x * this.touchScale},${centerY + this._touchScaleOffset.y * this.touchScale}`;
 
-    if (this._lastTransform === transform) return;
+    if (this._lastTransform === transform) {
+      return;
+    }
     this._lastTransform = transform;
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -932,8 +983,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _setZoomLensSize(): void {
     this.zoomLensSize = Math.floor(this.windowRef.nativeWindow.innerWidth / 4);
     if (this.ngxImageZoom) {
-      this.ngxImageZoom.lensWidth = this.zoomLensSize;
-      this.ngxImageZoom.lensHeight = this.zoomLensSize;
+      this.ngxImageZoom.zoomService.lensWidth = this.zoomLensSize;
+      this.ngxImageZoom.zoomService.lensHeight = this.zoomLensSize;
     }
   }
 
@@ -945,6 +996,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this._zoomIndicatorTimeout = this.windowRef.nativeWindow.setTimeout(() => {
         this.showZoomIndicator = false;
+        this.changeDetectorRef.markForCheck();
       }, this._zoomIndicatorTimeoutDuration);
     }
   }

@@ -1,14 +1,9 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, Inject, Input, OnDestroy, PLATFORM_ID, Renderer2, TemplateRef, ViewChild } from "@angular/core";
-import { Subject } from "rxjs";
+import { auditTime, Subject } from "rxjs";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
-
-interface MasonryItem<T> {
-  data: T;
-  visible: boolean;
-}
+import { distinctUntilChanged, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-masonry-layout",
@@ -84,7 +79,7 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnDestroy {
 
     this._resize$
       .pipe(
-        debounceTime(16),
+        auditTime(16),
         distinctUntilChanged(),
         takeUntil(this._destroyed$)
       )
@@ -95,22 +90,24 @@ export class MasonryLayoutComponent<T> implements AfterViewInit, OnDestroy {
   }
 
   async ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId) && this.container) {
+    if (this._isBrowser && this.container) {
+      // Immediate synchronous width calculation
+      this.containerWidth = Math.round(this.container.nativeElement.getBoundingClientRect().width);
+      this.changeDetectorRef.detectChanges();
+
       try {
         const ResizeObserverClass = await this.utilsService.getResizeObserver();
 
         this._resizeObserver = new ResizeObserverClass(entries => {
-          try {
-            const newWidth = Math.round(entries[0].contentRect.width);
+          const newWidth = Math.round(entries[0].contentRect.width);
+          if (newWidth !== this.containerWidth) {
             this._resize$.next(newWidth);
-          } catch (e) {
-            console.error('Error in resize callback:', e);
           }
         });
 
         this._resizeObserver.observe(this.container.nativeElement);
       } catch (e) {
-        console.error('Failed to initialize ResizeObserver:', e);
+        console.error("Failed to initialize ResizeObserver:", e);
       }
     }
   }

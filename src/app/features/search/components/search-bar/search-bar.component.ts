@@ -22,19 +22,24 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { LoadSaveSearchModalComponent } from "@features/search/components/filters/load-save-search-modal/load-save-search-modal.component";
 import { SearchTextFilterComponent } from "@features/search/components/filters/search-text-filter/search-text-filter.component";
 import { MatchType } from "@features/search/enums/match-type.enum";
-import { NgModel } from "@angular/forms";
+import { FormGroup, NgModel } from "@angular/forms";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { SearchAutoCompleteItem } from "@features/search/interfaces/search-auto-complete-item.interface";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { CookieService } from "ngx-cookie";
+import { fadeInOut } from "@shared/animations";
 
 type SearchAutoCompleteGroups = {
   [key in SearchAutoCompleteType]?: SearchAutoCompleteItem[];
 };
 
+
 @Component({
   selector: "astrobin-search-bar",
   templateUrl: "./search-bar.component.html",
-  styleUrls: ["./search-bar.component.scss"]
+  styleUrls: ["./search-bar.component.scss"],
+  animations: [fadeInOut]
 })
 export class SearchBarComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @ViewChild("searchInput", { static: false, read: ElementRef }) searchInputEl: ElementRef;
@@ -42,6 +47,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   @ViewChild("filterContainer", { read: ViewContainerRef }) filterContainer: ViewContainerRef;
   @ViewChild("temporaryFilterContainer", { read: ViewContainerRef }) temporaryFilterContainer: ViewContainerRef;
   @ViewChild("tabOrEnterInformationOffcanvasTemplate") tabOrEnterInformationOffcanvasTemplate: TemplateRef<any>;
+  @ViewChild("searchSettingsOffcanvasTemplate") searchSettingsOffcanvasTemplate: TemplateRef<any>;
   @ViewChildren("autoCompleteItem") autoCompleteItemsRefs!: QueryList<ElementRef>;
 
   @Input() model: SearchModelInterface = {};
@@ -52,6 +58,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   protected readonly SearchTextFilterComponent = SearchTextFilterComponent;
   protected readonly placeholder = this.translateService.instant("Type here to search");
   protected readonly isBrowser: boolean;
+
   protected isTouchDevice = false;
   protected showAutoCompleteGroups = false;
   protected autoCompleteGroups: SearchAutoCompleteGroups = {};
@@ -59,9 +66,17 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   protected loadingAutoCompleteItems = false;
   protected selectedAutoCompleteItemIndex = -1;
   protected filterComponentRefs: ComponentRef<SearchFilterComponentInterface>[] = [];
-  protected firstSearchDone = false; // Used to track when a search has been performed, in order to display an alert
-  // message
-  // regarding free text search.
+  // Used to track when a search has been performed, in order to display an alert message regarding free text search.
+  protected firstSearchDone = false;
+
+  protected readonly searchSettingsForm: FormGroup = new FormGroup({});
+  protected searchSettingsFields: FormlyFieldConfig[] = [];
+  protected searchSettingsModel: {
+    simpleMode: boolean;
+  } = {
+    simpleMode: this.searchService.isSimpleMode()
+  };
+
   private _modelChanged: Subject<string> = new Subject<string>();
   private _abortAutoComplete = false;
 
@@ -77,7 +92,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly elementRef: ElementRef,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly cookieService: CookieService
   ) {
     super(store$);
 
@@ -87,11 +103,22 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.isTouchDevice = this.deviceService.isTouchEnabled();
+    this.isTouchDevice = this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC();
 
     if (isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.document?.addEventListener) {
       this.windowRefService.nativeWindow.document.addEventListener("click", this.onDocumentClick.bind(this));
     }
+
+    this.searchService.simpleModeChanges$.pipe(takeUntil(this.destroyed$)).subscribe(simpleMode => {
+      this.model = {
+        ...this.model,
+        text: {
+          value: this.model.text?.value,
+          matchType: this.model.text?.matchType,
+          onlySearchInTitlesAndDescriptions: simpleMode
+        }
+      }
+    });
 
     this._modelChanged.pipe(
       debounceTime(200),
@@ -99,6 +126,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       takeUntil(this.destroyed$)
     ).subscribe(value => {
       if (this.model.searchType !== SearchType.IMAGE && this.model.searchType !== undefined) {
+        return;
+      }
+
+      if (this.searchSettingsModel.simpleMode) {
         return;
       }
 
@@ -150,6 +181,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         this.resetAutoCompleteItems();
       });
     }
+
+    this._initSearchSettingsFields();
   };
 
   ngOnChanges(changes: SimpleChanges) {
@@ -168,7 +201,7 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
 
   ngAfterViewInit(): void {
     if (this.isBrowser && !this.isTouchDevice) {
-        this.searchInputEl?.nativeElement.focus();
+      this.searchInputEl?.nativeElement.focus();
     }
   }
 
@@ -313,9 +346,13 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       this.searchInputEl?.nativeElement.blur();
     }
 
-    this._updateModelWithMagicAutoComplete(this.model.text.value).subscribe(() => {
-      this.resetAutoCompleteItems();
-    });
+    if (!this.searchSettingsModel.simpleMode) {
+      this._updateModelWithMagicAutoComplete(this.model.text.value).subscribe(() => {
+        this.resetAutoCompleteItems();
+      });
+    } else {
+      this.modelChanged.emit(this.model);
+    }
   }
 
   onAutoCompleteItemClicked(autoCompleteItem: SearchAutoCompleteItem): Observable<SearchModelInterface> {
@@ -337,7 +374,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
             ...this.model,
             text: {
               value: "",
-              matchType: undefined
+              matchType: MatchType.ALL,
+              onlySearchInTitlesAndDescriptions: this.searchSettingsModel.simpleMode
             }
           };
           this._updateModel(autoCompleteItem);
@@ -352,7 +390,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
             ...this.model,
             text: {
               value: "",
-              matchType: undefined
+              matchType: MatchType.ALL,
+              onlySearchInTitlesAndDescriptions: this.searchSettingsModel.simpleMode
             }
           };
           filterComponentType = this.searchService.getFilterComponentTypeByKey(autoCompleteItem.type);
@@ -416,6 +455,10 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.firstSearchDone = true;
     this.resetAutoCompleteItems();
     this.searchInputNgModel.control.markAsPristine();
+
+    if (this.isTouchDevice) {
+      this.searchInputEl?.nativeElement.blur();
+    }
 
     if (
       findExactMatchFilter &&
@@ -495,7 +538,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
         [this.searchService.getKeyByFilterComponentType(filterComponentType)]: currentValue,
         text: {
           value: "",
-          matchType: undefined
+          matchType: MatchType.ALL,
+          onlySearchInTitlesAndDescriptions: this.searchSettingsModel.simpleMode
         }
       };
 
@@ -574,7 +618,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     this.model = {
       text: {
         value: "",
-        matchType: undefined
+        matchType: MatchType.ALL,
+        onlySearchInTitlesAndDescriptions: this.searchSettingsModel.simpleMode
       },
       page: 1,
       pageSize: SearchService.DEFAULT_PAGE_SIZE
@@ -688,6 +733,15 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     });
   }
 
+  onSearchSettingsClicked(event: Event): void {
+    event.preventDefault();
+
+    this.offcanvasService.open(this.searchSettingsOffcanvasTemplate, {
+      panelClass: "search-settings-offcanvas",
+      position: this.deviceService.offcanvasPosition()
+    });
+  }
+
   getSearchTypeIcon(searchType: SearchType): IconProp {
     switch (searchType) {
       case SearchType.IMAGE:
@@ -725,8 +779,12 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
       return of(null);
     }
 
+    this.loadingAutoCompleteItems = true;
+
     return this.searchService.magicAutocomplete$(value).pipe(
       tap((item: SearchAutoCompleteItem) => {
+        this.loadingAutoCompleteItems = false;
+
         if (item) {
           this.onAutoCompleteItemClicked(item).subscribe();
         } else {
@@ -736,7 +794,8 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
               value,
               matchType: this.model.text.matchType !== undefined
                 ? this.model.text.matchType
-                : value.includes(" ") ? MatchType.ALL : undefined
+                : value.includes(" ") ? MatchType.ALL : undefined,
+              onlySearchInTitlesAndDescriptions: this.searchSettingsModel.simpleMode
             }
           };
 
@@ -750,5 +809,30 @@ export class SearchBarComponent extends BaseComponentDirective implements OnInit
     return this.filterComponentRefs.find(
       componentRef => this.searchService.getKeyByFilterComponentType(componentRef.componentType) === this.searchService.getKeyByFilterComponentType(filterComponentType)
     );
+  }
+
+  private _initSearchSettingsFields(): void {
+    this.searchSettingsFields = [
+      {
+        key: "simpleMode",
+        type: "toggle",
+        wrappers: ["default-wrapper"],
+        props: {
+          hideOptionalMarker: true,
+          toggleLabel: this.translateService.instant("Simple mode"),
+          description: this.translateService.instant(
+            "AstroBin will search only in titles and descriptions, and search filters will be disabled. " +
+            "We recommend filters to perform more advanced and exact searches."
+          )
+        },
+        hooks: {
+          onInit: (field: FormlyFieldConfig) => {
+            field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe((value: boolean) => {
+              this.searchService.setSimpleMode(value);
+            });
+          }
+        }
+      }
+    ];
   }
 }

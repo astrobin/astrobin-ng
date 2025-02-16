@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -10,13 +10,14 @@ import { FindImages, FindImagesSuccess } from "@app/store/actions/image.actions"
 import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
-import { fromEvent, throttleTime } from "rxjs";
-import { filter, map, take, takeUntil } from "rxjs/operators";
+import { fromEvent, Subject, throttleTime } from "rxjs";
+import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil } from "rxjs/operators";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { fadeInOut } from "@shared/animations";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { AddImageToCollection, AddImageToCollectionFailure, AddImageToCollectionSuccess, LoadCollections, RemoveImageFromCollection, RemoveImageFromCollectionFailure, RemoveImageFromCollectionSuccess } from "@app/store/actions/collection.actions";
 import { ImageService } from "@core/services/image/image.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-user-gallery-collection-add-remove-images",
@@ -26,28 +27,51 @@ import { ImageService } from "@core/services/image/image.service";
         {{ "Click on images to add/remove them." | translate }}
       </p>
 
+      <input
+        (ngModelChange)="imagesSearchSubject.next($event)"
+        [ngModelOptions]="{standalone: true}"
+        [(ngModel)]="imagesSearch"
+        class="form-control mb-2"
+        type="search"
+        placeholder="{{ 'Search' | translate }}"
+      />
+
       <astrobin-loading-indicator
         *ngIf="loadingImages"
         @fadeInOut
         class="mt-2"
       ></astrobin-loading-indicator>
 
-      <div
-        *ngFor="let image of images"
-        @fadeInOut
-        (click)="toggleSelected(image)"
-        [class.selected]="collection.images?.includes(image.pk)"
-        [class.toggling]="togglingImages.includes(image.pk)"
-        [class.wip]="image.isWip"
-        [ngbTooltip]="image.title"
-        class="image"
-        container="body"
+      <astrobin-masonry-layout
+        *ngIf="!searching && images?.length > 0"
+        [idProperty]="'pk'"
+        [items]="images"
+        layout="medium"
+        leftAlignLastRow="true"
       >
-        <img [src]="imageService.getGalleryThumbnail(image)" alt="" />
-        <fa-icon class="check" icon="circle-check"></fa-icon>
-        <fa-icon class="loading-indicator" icon="circle-notch" animation="spin"></fa-icon>
-        <fa-icon class="wip" icon="lock"></fa-icon>
-      </div>
+        <ng-template let-item>
+          <div
+            @fadeInOut
+            (click)="toggleSelected(item)"
+            [class.selected]="collection.images?.includes(item.pk)"
+            [class.toggling]="togglingImages.includes(item.pk)"
+            [class.wip]="item.isWip"
+            [ngbTooltip]="item.title"
+            class="image-container"
+            container="body"
+          >
+            <img
+              [src]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
+              [alt]="item.title"
+              loading="lazy"
+            />
+
+            <fa-icon class="check" icon="circle-check"></fa-icon>
+            <fa-icon class="loading-indicator" icon="circle-notch" animation="spin"></fa-icon>
+            <fa-icon class="wip" icon="lock"></fa-icon>
+          </div>
+        </ng-template>
+      </astrobin-masonry-layout>
 
       <astrobin-loading-indicator
         *ngIf="loadingMoreImages"
@@ -57,13 +81,19 @@ import { ImageService } from "@core/services/image/image.service";
     </div>
   `,
   styleUrls: ["./user-gallery-collection-add-remove-images.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponentDirective implements OnInit {
   @Input() user: UserInterface;
   @Input() userProfile: UserProfileInterface;
   @Input() collection: CollectionInterface;
 
+  protected readonly ImageAlias = ImageAlias;
+
+  protected searching = true;
+  protected imagesSearch: string;
+  protected imagesSearchSubject = new Subject<string>();
   protected images: ImageInterface[] = [];
   protected loadingImages = false;
   protected loadingMoreImages = false;
@@ -80,7 +110,8 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
     public readonly windowRefService: WindowRefService,
     @Inject(PLATFORM_ID) private platformId: Object,
     public readonly utilsService: UtilsService,
-    public readonly imageService: ImageService
+    public readonly imageService: ImageService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
@@ -91,6 +122,16 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
 
     this._setupOnScroll();
 
+    this.imagesSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroyed$)
+    ).subscribe(searchTerm => {
+      this._searchImages(searchTerm);
+      this.changeDetectorRef.markForCheck();
+    });
+
+
     this.action$.pipe(
       ofType(AppActionTypes.FIND_IMAGES_SUCCESS),
       map((action: FindImagesSuccess) => action.payload),
@@ -100,16 +141,11 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
       this.loadingMoreImages = false;
       this._next = payload.response.next;
       this.images = this.images.concat(payload.response.results);
+      this.searching = false;
+      this.changeDetectorRef.markForCheck();
     });
 
-    this.store$.dispatch(new FindImages({
-      options: {
-        userId: this.user.id,
-        gallerySerializer: true,
-        includeStagingArea: true,
-        page: this._page
-      }
-    }));
+    this._searchImages(null);
 
     // Loads the collection again to get the images in it.
     this.store$.dispatch(new LoadCollections({
@@ -141,6 +177,7 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
       take(1)
     ).subscribe(() => {
       this.togglingImages = this.togglingImages.filter(pk => pk !== image.pk);
+      this.changeDetectorRef.markForCheck();
     });
 
     this.action$.pipe(
@@ -150,6 +187,7 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
       take(1)
     ).subscribe(() => {
       this.collection.images = [...(this.collection.images || []), image.pk];
+      this.changeDetectorRef.markForCheck();
     });
 
     this.action$.pipe(
@@ -159,6 +197,7 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
       take(1)
     ).subscribe(() => {
       this.collection.images = (this.collection.images || []).filter(pk => pk !== image.pk);
+      this.changeDetectorRef.markForCheck();
     });
 
     if (this.collection.images?.includes(image.pk)) {
@@ -172,6 +211,24 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
         imageId: image.pk
       }));
     }
+  }
+
+  private _searchImages(searchTerm: string) {
+    this.loadingImages = true;
+    this.searching = true;
+    this.images = [];
+    this._page = 1;
+    this._next = null;
+
+    this.store$.dispatch(new FindImages({
+      options: {
+        userId: this.user.id,
+        gallerySerializer: true,
+        includeStagingArea: true,
+        q: searchTerm,
+        page: this._page
+      }
+    }));
   }
 
   private _setupOnScroll() {
@@ -204,6 +261,8 @@ export class UserGalleryCollectionAddRemoveImagesComponent extends BaseComponent
                 page: this._page
               }
             }));
+
+            this.changeDetectorRef.markForCheck();
           }
         }
       );

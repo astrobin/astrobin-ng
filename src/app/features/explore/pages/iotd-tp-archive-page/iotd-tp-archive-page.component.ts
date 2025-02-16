@@ -159,6 +159,9 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
 
   private readonly _isBrowser: boolean;
 
+  // Used to cancel a pending request if the tab changes.
+  private _currentRequestId = 0;
+
   private _page = 1;
   private _next: string | null = null;
   private _nearEndOfContextSubscription: Subscription;
@@ -252,6 +255,9 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
 
     this.activeTab = event.nextId;
 
+    // Cancel any ongoing request by bumping the request id.
+    this._currentRequestId++;
+
     this._page = 1;
     this._next = null;
     this.items = null;
@@ -308,6 +314,8 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
 
   private _loadData(): Observable<(IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface)[]> {
     return new Observable(subscriber => {
+      const requestId = ++this._currentRequestId;
+
       let api: Observable<PaginatedApiResultInterface<(
         IotdArchiveInterface |
         TopPickArchiveInterface |
@@ -333,6 +341,11 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       }
 
       api.subscribe(response => {
+        // Only process the response if this request is still current.
+        if (requestId !== this._currentRequestId) {
+          return;
+        }
+
         this._next = response.next;
 
         this.loading = false;

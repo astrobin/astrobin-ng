@@ -1,34 +1,15 @@
-import {
-  AfterContentChecked,
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Inject,
-  OnDestroy,
-  OnInit,
-  PLATFORM_ID,
-  QueryList,
-  Renderer2,
-  ViewChild,
-  ViewChildren
-} from "@angular/core";
+import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, QueryList, Renderer2, ViewChild, ViewChildren } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@core/services/loading.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { WindowRefService } from "@core/services/window-ref.service";
-import {
-  NgWizardComponent,
-  NgWizardService,
-  NgWizardStep,
-  NgWizardStepComponent,
-  STEP_STATE,
-  StepChangedArgs
-} from "@kronscht/ng-wizard";
+import { NgWizardComponent, NgWizardService, NgWizardStep, NgWizardStepComponent, STEP_STATE, StepChangedArgs } from "@kronscht/ng-wizard";
 import { isPlatformServer } from "@angular/common";
 import { Subscription } from "rxjs";
+import { DeviceService } from "@core/services/device.service";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
@@ -58,14 +39,16 @@ export class FormlyFieldStepperComponent
   constructor(
     public readonly ngWizardService: NgWizardService,
     public readonly translateService: TranslateService,
-    public readonly windowRef: WindowRefService,
+    public readonly windowRefService: WindowRefService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly loadingService: LoadingService,
     public readonly router: Router,
     public readonly route: ActivatedRoute,
     public readonly renderer: Renderer2,
-    @Inject(PLATFORM_ID) public readonly platformId,
-    public readonly cd: ChangeDetectorRef
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly deviceService: DeviceService,
+    public readonly utilsService: UtilsService
   ) {
     super();
   }
@@ -107,7 +90,7 @@ export class FormlyFieldStepperComponent
   }
 
   ngAfterContentChecked(): void {
-    this.cd.detectChanges();
+    this.changeDetectorRef.detectChanges();
   }
 
   onStepChanged(event?: StepChangedArgs) {
@@ -118,6 +101,9 @@ export class FormlyFieldStepperComponent
     this.router.navigate([], { fragment: "" + (event.step.index + 1) }).then(() => {
       this.markPreviousStepsAsDone(event.step.index);
       this.setHighestVisitedStep(event.step.index);
+      this.utilsService.delay(100).subscribe(() => {
+        this._scrollActiveNavItemIntoView();
+      })
     });
   }
 
@@ -179,7 +165,7 @@ export class FormlyFieldStepperComponent
 
     this._markFieldAsTouched(this.field.fieldGroup[index]);
     this.ngWizardService.previous();
-    this.windowRef.scroll({ top: 0 });
+    this.windowRefService.scroll({ top: 0 });
   }
 
   goToNextStep(event: Event, index: number) {
@@ -189,7 +175,7 @@ export class FormlyFieldStepperComponent
 
     this._markFieldAsTouched(this.field.fieldGroup[index]);
     this.ngWizardService.next();
-    this.windowRef.scroll({ top: 0 });
+    this.windowRefService.scroll({ top: 0 });
   }
 
   markPreviousStepsAsDone(stepIndex: number) {
@@ -218,5 +204,37 @@ export class FormlyFieldStepperComponent
     } else {
       fieldConfig.formControl.markAsTouched({ onlySelf: true });
     }
+  }
+
+  private _scrollActiveNavItemIntoView(): void {
+    if (isPlatformServer(this.platformId) || !this.deviceService.isTouchEnabled() || !this.wizardElement) {
+      return;
+    }
+
+    const nav = this.wizardElement.nativeElement.querySelector("ul.nav");
+
+    if (!nav) {
+      return;
+    }
+
+    const activeItem = nav.querySelector("li.nav-item.active");
+
+    if (!activeItem) {
+      return;
+    }
+
+    const navRect = nav.getBoundingClientRect();
+    const itemRect = activeItem.getBoundingClientRect();
+
+    // If active item is fully visible, do nothing.
+    if (itemRect.left >= navRect.left && itemRect.right <= navRect.right) {
+      return;
+    }
+
+    // Scroll so that the active item is left-aligned.
+    nav.scrollTo({
+      left: activeItem.offsetLeft,
+      behavior: "smooth"
+    });
   }
 }

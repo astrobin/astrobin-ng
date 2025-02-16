@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from "@angular/core";
-import { ImageRevisionInterface } from "@core/interfaces/image.interface";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@core/services/search.service";
 import { Router } from "@angular/router";
@@ -9,6 +9,7 @@ import { ImageViewerService } from "@core/services/image-viewer.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-image-viewer-revision-summary",
@@ -18,7 +19,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
       [class.collapsed]="collapsed"
       class="metadata-header supports-collapsing"
     >
-      {{ "Revision" | translate }} {{ revision.label }}
+      {{ "Revision" | translate }}: {{ label }}
     </div>
 
     <div
@@ -29,19 +30,19 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
       <div class="metadata-item">
         <div class="metadata-label">
           <div class="revision-summary">
-            <div *ngIf="revision.title">
+            <div *ngIf="isRevision && revision.title">
               <strong>{{ "Title" | translate }}</strong>
               {{ revision.title }}
             </div>
 
-            <div *ngIf="revision.description">
+            <div *ngIf="isRevision && revision.description">
               <strong>{{ "Description" | translate }}</strong>
               {{ revision.description }}
             </div>
 
-            <div *ngIf="revision.uploaded">
+            <div *ngIf="published">
               <strong>{{ "Published" | translate }}</strong>
-              {{ revision.uploaded | date: "medium" }}
+              {{ published | date: "medium" }}
             </div>
           </div>
         </div>
@@ -51,8 +52,12 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
   styleUrls: ["./image-viewer-revision-summary.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageViewerRevisionSummaryComponent extends ImageViewerSectionBaseComponent {
-  @Input() revision: ImageRevisionInterface;
+export class ImageViewerRevisionSummaryComponent extends ImageViewerSectionBaseComponent implements OnChanges {
+  @Input() revision: ImageInterface | ImageRevisionInterface;
+
+  protected isRevision: boolean;
+  protected label: string;
+  protected published: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -62,7 +67,8 @@ export class ImageViewerRevisionSummaryComponent extends ImageViewerSectionBaseC
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly collapseSyncService: CollapseSyncService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly translateService: TranslateService
   ) {
     super(
       store$,
@@ -74,5 +80,21 @@ export class ImageViewerRevisionSummaryComponent extends ImageViewerSectionBaseC
       collapseSyncService,
       changeDetectorRef
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.isRevision =this.revision.hasOwnProperty("label");
+
+    if (this.isRevision) {
+      this.label = (this.revision as ImageRevisionInterface).label
+    } else {
+      this.label = this.translateService.instant("Original");
+    }
+
+    if(this.isRevision) {
+      this.published = (this.revision as ImageRevisionInterface).uploaded;
+    } else {
+      this.published = (this.revision as ImageInterface).published || (this.revision as ImageInterface).uploaded;
+    }
   }
 }

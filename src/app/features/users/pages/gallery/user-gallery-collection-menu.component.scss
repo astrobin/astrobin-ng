@@ -1,3 +1,13 @@
 .dropdown-toggle {
   padding: .5rem;
 }
+
+::ng-deep .add-remove-images-offcanvas {
+  &:not(.offcanvas-bottom) {
+    width: 40vw !important;
+  }
+
+  &.offcanvas-bottom {
+    height: 85vh !important;
+  }
+}

@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
-import { NavigationEnd, NavigationStart, Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -11,7 +11,7 @@ import { catchError, filter, map, switchMap, take } from "rxjs/operators";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { CookieConsentService } from "@core/services/cookie-consent/cookie-consent.service";
 import { CookieConsentEnum } from "@core/types/cookie-consent.enum";
-import { Observable, Subscription, timer } from "rxjs";
+import { Observable, of, Subscription, timer } from "rxjs";
 import { DOCUMENT, isPlatformBrowser } from "@angular/common";
 import { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
@@ -24,6 +24,7 @@ import { JsonApiService } from "@core/services/api/classic/json/json-api.service
 import { GetUnreadCount } from "@features/notifications/store/notifications.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { IdleService } from "@core/services/idle.service";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -57,7 +58,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     public readonly versionCheckService: VersionCheckService,
     public readonly jsonApiService: JsonApiService,
     public readonly modalService: NgbModal,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly idleService: IdleService
   ) {
     super(store$);
 
@@ -93,8 +95,20 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
   }
 
   initRouterEvents(): void {
+    let previousUrl: string | null = null;
+
     this.router.events?.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        // Get URLs without fragments
+        const currentUrlWithoutFragment = this._getUrlWithoutFragment(event.urlAfterRedirects);
+        const previousUrlWithoutFragment = previousUrl ? this._getUrlWithoutFragment(previousUrl) : null;
+
+        // Only clear breadcrumb if base URL changed (ignoring fragment)
+        if (currentUrlWithoutFragment !== previousUrlWithoutFragment) {
+          this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
+        }
+
+        // Regular cleanup operations
         if (this.offcanvasService.hasOpenOffcanvas()) {
           this.offcanvasService.dismiss();
         }
@@ -104,8 +118,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
         }
 
         this.popNotificationsService.clear();
-
-        this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [] }));
         this.windowRefService.changeBodyOverflow("auto");
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
         this.setCanonicalUrl(event.urlAfterRedirects);
@@ -121,6 +133,9 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
             });
           });
         }
+
+        // Update previous URL for next navigation
+        previousUrl = event.urlAfterRedirects;
       }
     });
   }
@@ -202,21 +217,35 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     });
   }
 
+  private _getUrlWithoutFragment(url: string): string {
+    if (!this._isBrowser) {
+      return;
+    }
+
+    const urlObject = new URL(url, this.windowRefService.nativeWindow.location.origin);
+    urlObject.hash = "";
+    return urlObject.pathname + urlObject.search;
+  }
+
   private _startPollingForServiceWorkerKillSwitch(): void {
     if (!this._isBrowser) {
       return;
     }
 
-    this._serviceWorkerKillSwitchSubscription = timer(0, 30000) // Start immediately, then every 30 seconds
+    // Start immediately and poll every 60 seconds.
+    this._serviceWorkerKillSwitchSubscription = timer(0, 6000)
       .pipe(
+        // Only proceed if the user was active within the idle threshold.
+        filter(() => !this.idleService.isUserIdle()),
         switchMap(() =>
           this.jsonApiService.serviceWorkerEnabled().pipe(
             catchError((err) => {
               console.error("Kill switch API error:", err);
-              return []; // Return empty to avoid breaking the stream
+              return of(null); // Emit null so we can filter it later.
             })
           )
-        )
+        ),
+        filter((enabled): enabled is boolean => enabled !== null)
       )
       .subscribe((enabled: boolean) => {
         if (!enabled) {

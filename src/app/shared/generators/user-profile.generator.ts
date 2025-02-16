@@ -1,4 +1,4 @@
-import { FrontPageSection, DefaultGallerySortingOption, UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { FrontpageSection, DefaultGallerySortingOption, UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@core/interfaces/image.interface";
 
 export class UserProfileGenerator {
@@ -23,7 +23,7 @@ export class UserProfileGenerator {
       retailerCountry: null,
       avatar: null,
       excludeFromCompetition: false,
-      defaultFrontPageSection: FrontPageSection.GLOBAL,
+      defaultFrontpageSection: FrontpageSection.GLOBAL,
       defaultGallerySorting: DefaultGallerySortingOption.PUBLICATION,
       defaultLicense: 0,
       defaultWatermark: false,

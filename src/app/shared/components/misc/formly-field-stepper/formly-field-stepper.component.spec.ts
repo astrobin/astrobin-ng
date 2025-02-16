@@ -5,6 +5,7 @@ import { MockBuilder } from "ng-mocks";
 import { NgWizardStep, STEP_STATE, StepChangedArgs } from "@kronscht/ng-wizard";
 import { of } from "rxjs";
 import { FormlyFieldStepperComponent } from "./formly-field-stepper.component";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 describe("FormlyFieldStepperComponent", () => {
   let component: FormlyFieldStepperComponent;
@@ -17,7 +18,8 @@ describe("FormlyFieldStepperComponent", () => {
         useValue: {
           fragment: of("1")
         }
-      }
+      },
+      UtilsService
     ]);
   });
 
@@ -49,7 +51,7 @@ describe("FormlyFieldStepperComponent", () => {
         }
       } as StepChangedArgs);
 
-      tick();
+      tick(101);
 
       expect(component.router.navigate).toHaveBeenCalledWith([], { fragment: "3" });
       expect(component.markPreviousStepsAsDone).toHaveBeenCalled();
@@ -136,27 +138,31 @@ describe("FormlyFieldStepperComponent", () => {
   });
 
   describe("goToPreviousStep", () => {
-    it("should work", () => {
+    it("should work", fakeAsync(() => {
       jest.spyOn(component.ngWizardService, "previous");
-      jest.spyOn(component.windowRef, "scroll");
+      jest.spyOn(component.windowRefService, "scroll");
 
       component.goToPreviousStep(null, 1);
 
+      tick(101);
+
       expect(component.ngWizardService.previous).toHaveBeenCalled();
-      expect(component.windowRef.scroll).toHaveBeenCalled();
-    });
+      expect(component.windowRefService.scroll).toHaveBeenCalled();
+    }));
   });
 
   describe("goToNextStep", () => {
-    it("should work", () => {
+    it("should work", fakeAsync(() => {
       jest.spyOn(component.ngWizardService, "next");
-      jest.spyOn(component.windowRef, "scroll");
+      jest.spyOn(component.windowRefService, "scroll");
 
       component.goToNextStep(null, 0);
 
+      tick(101);
+
       expect(component.ngWizardService.next).toHaveBeenCalled();
-      expect(component.windowRef.scroll).toHaveBeenCalled();
-    });
+      expect(component.windowRefService.scroll).toHaveBeenCalled();
+    }));
   });
 
   describe("setHighestVisitedStep", () => {

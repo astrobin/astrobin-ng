@@ -7,6 +7,8 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
 import { SearchService } from "@core/services/search.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { MatchType } from "@features/search/enums/match-type.enum";
+import { of } from "rxjs";
 
 describe("SearchBarComponent", () => {
   let component: SearchBarComponent;
@@ -26,13 +28,17 @@ describe("SearchBarComponent", () => {
           }
         }
       }
-    ]).mock(SearchService);
+    ]).mock(SearchService, {
+      simpleModeChanges$: of(false)
+    });
 
     fixture = TestBed.createComponent(SearchBarComponent);
     component = fixture.componentInstance;
     component.model = {
       text: {
-        value: ""
+        value: "",
+        matchType: MatchType.ALL,
+        onlySearchInTitlesAndDescriptions: false
       }
     }
     fixture.detectChanges();

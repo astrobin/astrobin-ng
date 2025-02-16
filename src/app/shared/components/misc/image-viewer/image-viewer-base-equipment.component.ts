@@ -68,7 +68,8 @@ export abstract class ImageViewerBaseEquipmentComponent extends ImageViewerSecti
     this.search({
       text: {
         value: this._legacyItemSearchText(item),
-        matchType: MatchType.ALL
+        matchType: MatchType.ALL,
+        onlySearchInTitlesAndDescriptions: false
       }
     });
   }
@@ -77,7 +78,8 @@ export abstract class ImageViewerBaseEquipmentComponent extends ImageViewerSecti
     const params = this.searchService.modelToParams({
       text: {
         value: this._legacyItemSearchText(item),
-        matchType: MatchType.ALL
+        matchType: MatchType.ALL,
+        onlySearchInTitlesAndDescriptions: false
       }
     });
     return `/search?p=${params}`;
