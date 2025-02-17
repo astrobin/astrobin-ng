@@ -32,7 +32,8 @@
       </astrobin-image>
 
       <astrobin-image
-        (click)="viewFullscreen(entry.pk)"
+        (click)="viewFullscreen($event, entry.pk)"
+        (touchstart)="viewFullscreen($event, entry.pk)"
         *ngIf="!entry.videoFile"
         [alias]="ImageAlias.HD_ANONYMIZED_CROP"
         [autoHeight]="imageAutoHeight"
