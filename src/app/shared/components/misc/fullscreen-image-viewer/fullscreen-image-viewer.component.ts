@@ -290,29 +290,29 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.changeDetectorRef.markForCheck();
       });
 
-      this.show = true;
-      this.titleService.disablePageZoom();
-      this.enterFullscreen.emit();
+      this._currentFullscreenImageEventSubscription = this.store$.pipe(
+        select(selectCurrentFullscreenImageEvent),
+        take(1)
+      ).subscribe(event => {
+        if (event instanceof MouseEvent) {
+          this.setTouchMouseMode(false);
+          this.changeDetectorRef.markForCheck();
+        } else if (event instanceof TouchEvent) {
+          this.setTouchMouseMode(true);
+          this.changeDetectorRef.markForCheck();
+        }
 
-      // Only initialize thumbnails if not already eagerly loading
-      if (!this._eagerLoadingSubscription && !this.hdThumbnail && !this.realThumbnail) {
-        this._initThumbnailSubscriptions();
-      }
+        this.show = true;
+        this.titleService.disablePageZoom();
+        this.enterFullscreen.emit();
 
-      this.changeDetectorRef.markForCheck();
-    });
+        // Only initialize thumbnails if not already eagerly loading
+        if (!this._eagerLoadingSubscription && !this.hdThumbnail && !this.realThumbnail) {
+          this._initThumbnailSubscriptions();
+        }
 
-    this._currentFullscreenImageEventSubscription = this.store$.pipe(
-      select(selectCurrentFullscreenImageEvent),
-      distinctUntilChanged()
-    ).subscribe(event => {
-      if (event instanceof MouseEvent) {
-        this.setTouchMouseMode(false);
         this.changeDetectorRef.markForCheck();
-      } else if (event instanceof TouchEvent) {
-        this.setTouchMouseMode(true);
-        this.changeDetectorRef.markForCheck();
-      }
+      });
     });
   }
 
@@ -837,7 +837,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
         tap(() => {
-          this.canvasLoading = true;
           this.realThumbnailLoading = true;
           this._realLoadingProgressSubject.next(0);
           this.changeDetectorRef.markForCheck();
@@ -857,7 +856,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.realThumbnail = url;
         this.realThumbnailLoading = false;
 
-        this._initCanvas();
+        if (this.touchMode) {
+          this._initCanvas();
+        }
+
         this.changeDetectorRef.markForCheck();
       });
 
@@ -911,6 +913,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
+    if (this.canvasLoading) {
+      return;
+    }
+
+    this.canvasLoading = true;
     this._canvasImage = new Image();
     this._canvasImage.decoding = "async";
 
