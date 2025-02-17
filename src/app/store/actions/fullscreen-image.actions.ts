@@ -8,7 +8,12 @@ import { ImageInterface } from "@core/interfaces/image.interface";
 export class ShowFullscreenImage implements PayloadActionInterface {
   readonly type = AppActionTypes.SHOW_FULLSCREEN_IMAGE;
 
-  constructor(public payload: ImageInterface["pk"]) {
+  constructor(
+    public payload: {
+      imageId: ImageInterface["pk"],
+      event?: MouseEvent | TouchEvent | null
+    }
+  ) {
   }
 }
 

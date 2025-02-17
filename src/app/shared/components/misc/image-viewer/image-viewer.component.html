@@ -145,6 +145,7 @@
         #imageComponent
         @fadeInOut
         (imageClick)="enterFullscreen($event)"
+        (imageTouchstart)="enterFullscreen($event)"
         (loaded)="onImageLoaded()"
         (imageMouseEnter)="onImageMouseEnter($event)"
         (imageMouseLeave)="onImageMouseLeave($event)"
@@ -168,6 +169,7 @@
           !forceViewAnnotationsMouseHover
         "
         (click)="enterFullscreen($event)"
+        (touchstart)="enterFullscreen($event)"
         class="mouse-hover-container"
       >
         <img
@@ -192,6 +194,7 @@
           !inlineSvg
         "
         (click)="enterFullscreen($event)"
+        (touchstart)="enterFullscreen($event)"
         class="mouse-hover-container"
       >
         <img
@@ -211,6 +214,7 @@
           inlineSvg
         "
         (click)="enterFullscreen($event)"
+        (touchstart)="enterFullscreen($event)"
         class="mouse-hover-svg-container"
       >
         <div

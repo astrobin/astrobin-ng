@@ -259,7 +259,7 @@
   >
     <div
       *ngIf="isHybridPC"
-      (click)="toggleTouchMouseMode()"
+      (click)="setTouchMouseMode(!touchMode)"
       [ngbTooltip]="'Toggle touch/mouse mode.' | translate"
       container="body"
     >
@@ -290,7 +290,7 @@
 <div
   *ngIf="show"
   @fadeInOut
-  [class.touch]="(isTouchDevice && !isHybridPC) || (isHybridPC && touchMode)"
+  [class.touch]="touchMode"
   class="fullscreen-image-viewer h-100"
 >
   <ng-container
@@ -300,13 +300,13 @@
     } as thumbnails"
   >
     <ng-container
-      *ngIf="(isTouchDevice && !isHybridPC) || (isHybridPC && touchMode)"
+      *ngIf="touchMode"
       [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
       [ngTemplateOutlet]="touchDeviceTemplate"
     >
     </ng-container>
 
-    <ng-container *ngIf="(!isTouchDevice && !isHybridPC) || (isHybridPC && !touchMode)">
+    <ng-container *ngIf="!touchMode">
       <ng-container
         [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
         [ngTemplateOutlet]="nonTouchDeviceTemplate"

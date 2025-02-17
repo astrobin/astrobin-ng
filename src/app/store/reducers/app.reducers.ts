@@ -23,6 +23,7 @@ export interface AppState {
   breadcrumb: BreadcrumbInterface[];
 
   currentFullscreenImage: ImageInterface["pk"] | null;
+  currentFullscreenImageEvent: MouseEvent | TouchEvent | null;
 
   // The user's language.
   language: string;
@@ -77,6 +78,7 @@ export const initialAppState: AppState = {
   initialized: false,
   breadcrumb: [],
   currentFullscreenImage: null,
+  currentFullscreenImageEvent: null,
   language: "en",
   subscriptions: [],
   backendConfig: null,
@@ -209,7 +211,8 @@ export function appReducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.SHOW_FULLSCREEN_IMAGE: {
       return {
         ...state,
-        currentFullscreenImage: action.payload
+        currentFullscreenImage: action.payload.imageId,
+        currentFullscreenImageEvent: action.payload.event
       };
     }
 
