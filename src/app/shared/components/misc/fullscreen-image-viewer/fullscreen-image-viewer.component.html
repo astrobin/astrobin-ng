@@ -260,27 +260,32 @@
     <div
       *ngIf="isHybridPC"
       (click)="setTouchMouseMode(!touchMode)"
-      [ngbTooltip]="'Toggle touch/mouse mode.' | translate"
+      [ngbTooltip]="isTouchDevice ? null : 'Toggle touch/mouse mode.' | translate"
+      triggers="hover"
       container="body"
     >
       <ng-container *ngIf="touchMode">
+        <fa-icon icon="hand-pointer" class="me-2"></fa-icon>
         <span>{{ "Touch mode" | translate }}</span>
       </ng-container>
       <ng-container *ngIf="!touchMode">
+        <fa-icon icon="mouse-pointer" class="me-2"></fa-icon>
         <span>{{ "Mouse mode" | translate }}</span>
       </ng-container>
     </div>
 
     <div
-      *ngIf="!isTouchDevice || (isHybridPC && !touchMode)"
+      *ngIf="!touchMode"
       (click)="toggleEnableLens()"
       [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
       container="body"
     >
       <ng-container *ngIf="!enableLens">
+        <fa-icon icon="expand" class="me-2"></fa-icon>
         <span>{{ "Zoom mode" | translate }}</span>
       </ng-container>
       <ng-container *ngIf="enableLens">
+        <fa-icon icon="magnifying-glass" class="me-2"></fa-icon>
         <span>{{ "Lens mode" | translate }}</span>
       </ng-container>
     </div>
