@@ -22,22 +22,22 @@
     <div class="col-image">
       <astrobin-image
         #image
-        (click)="viewFullscreen($event, entry.pk)"
-        (touchstart)="viewFullscreen($event, entry.pk)"
+        (intentionalClick)="viewFullscreen($event, entry.pk)"
         [alias]="imageAlias"
         [autoHeight]="imageAutoHeight"
         [id]="entry.pk"
+        astrobinPreventScrollClick
         class="promotion-image"
       >
       </astrobin-image>
 
       <astrobin-image
-        (click)="viewFullscreen($event, entry.pk)"
-        (touchstart)="viewFullscreen($event, entry.pk)"
+        (intentionalClick)="viewFullscreen($event, entry.pk)"
         *ngIf="!entry.videoFile"
         [alias]="ImageAlias.HD_ANONYMIZED_CROP"
         [autoHeight]="imageAutoHeight"
         [id]="entry.pk"
+        astrobinPreventScrollClick
         class="promotion-image-hover"
       >
       </astrobin-image>

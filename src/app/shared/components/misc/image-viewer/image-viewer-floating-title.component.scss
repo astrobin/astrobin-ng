@@ -1,5 +1,6 @@
 @import "../../../../styles/breakpoints";
 @import "../../../../styles/mixins";
+@import "./image-viewer-mixins";
 
 :host {
   @include darkest-background-texture;
@@ -19,6 +20,14 @@
 
   @media (max-width: $md-max) and (max-aspect-ratio: 1/1) {
     position: fixed;
+  }
+
+  @include portrait-layout {
+    display: none;
+  }
+
+  @media (max-height: 600px) {
+    display: none;
   }
 
   .image-title {
