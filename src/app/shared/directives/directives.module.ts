@@ -10,6 +10,7 @@ import { DynamicRouterLinkDirective } from "@shared/directives/dynamic-router-li
 import { ScrollVisibilityDirective } from "@shared/directives/scroll-visibility.directive";
 import { CollapseAnimationDirective } from "@shared/directives/collapsed-animation.directive";
 import { DisableAutoFocusOnTouchDevicesDirective } from "./disable-auto-focus-on-touch-devices.directive";
+import { PreventScrollClickDirective } from "@shared/directives/prevent-scroll-click.directive";
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { DisableAutoFocusOnTouchDevicesDirective } from "./disable-auto-focus-on
     DynamicRouterLinkDirective,
     ScrollVisibilityDirective,
     CollapseAnimationDirective,
-    DisableAutoFocusOnTouchDevicesDirective
+    DisableAutoFocusOnTouchDevicesDirective,
+    PreventScrollClickDirective
   ],
   exports: [
     EventPreventDefaultDirective,
@@ -34,7 +36,8 @@ import { DisableAutoFocusOnTouchDevicesDirective } from "./disable-auto-focus-on
     DynamicRouterLinkDirective,
     ScrollVisibilityDirective,
     CollapseAnimationDirective,
-    DisableAutoFocusOnTouchDevicesDirective
+    DisableAutoFocusOnTouchDevicesDirective,
+    PreventScrollClickDirective
   ],
   imports: [CommonModule]
 })

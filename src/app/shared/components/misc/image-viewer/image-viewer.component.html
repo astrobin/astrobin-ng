@@ -168,8 +168,8 @@
           nonSolutionMouseHoverImage &&
           !forceViewAnnotationsMouseHover
         "
-        (click)="enterFullscreen($event)"
-        (touchstart)="enterFullscreen($event)"
+        (intentionalClick)="enterFullscreen($event)"
+        astrobinPreventScrollClick
         class="mouse-hover-container"
       >
         <img
@@ -193,8 +193,8 @@
           solutionMouseHoverImage &&
           !inlineSvg
         "
-        (click)="enterFullscreen($event)"
-        (touchstart)="enterFullscreen($event)"
+        (intentionalClick)="enterFullscreen($event)"
+        astrobinPreventScrollClick
         class="mouse-hover-container"
       >
         <img
@@ -213,8 +213,8 @@
           (revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION || forceViewAnnotationsMouseHover) &&
           inlineSvg
         "
-        (click)="enterFullscreen($event)"
-        (touchstart)="enterFullscreen($event)"
+        (intentionalClick)="enterFullscreen($event)"
+        astrobinPreventScrollClick
         class="mouse-hover-svg-container"
       >
         <div
