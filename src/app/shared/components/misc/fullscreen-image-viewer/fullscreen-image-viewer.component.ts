@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Even
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
-import { selectCurrentFullscreenImage } from "@app/store/selectors/app/app.selectors";
+import { selectCurrentFullscreenImage, selectCurrentFullscreenImageEvent } from "@app/store/selectors/app/app.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
@@ -133,6 +133,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _hdThumbnailSubscription: Subscription;
   private _realThumbnailSubscription: Subscription;
   private _currentFullscreenImageSubscription: Subscription;
+  private _currentFullscreenImageEventSubscription: Subscription;
   private _zoomIndicatorTimeout: number;
   private _zoomIndicatorTimeoutDuration = 1000;
   private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
@@ -168,7 +169,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this.isHybridPC = this.deviceService.isHybridPC();
     this.isTouchDevice = this.deviceService.isTouchEnabled();
+
+    const touchModeCookie = this.cookieService.get(this.TOUCH_OR_MOUSE_MODE_COOKIE_NAME);
     this.touchMode = this.cookieService.get(this.TOUCH_OR_MOUSE_MODE_COOKIE_NAME) === "touch";
+
+    if (!touchModeCookie) {
+      this.setTouchMouseMode(this.isTouchDevice);
+    } else {
+      this.touchMode = touchModeCookie === "touch";
+    }
+
     this.enableLens = this.cookieService.get(this.LENS_ENABLED_COOKIE_NAME) === "true";
     this.hdImageLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
     this.realImageLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
@@ -253,6 +263,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this._currentFullscreenImageSubscription.unsubscribe();
     }
 
+    if (this._currentFullscreenImageEventSubscription) {
+      this._currentFullscreenImageEventSubscription.unsubscribe();
+    }
+
     this._currentFullscreenImageSubscription = this.store$.pipe(
       select(selectCurrentFullscreenImage),
       distinctUntilChanged(),
@@ -269,34 +283,36 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this._resetTouchZoom();
         this.titleService.enablePageZoom();
 
-        this._lastTransform = null;
-        if (this._imageBitmap) {
-          this._imageBitmap.close();
-          this._imageBitmap = null;
-        }
-
-        this._canvasContext = null;
-        this._canvasImage = null;
-        this._firstRenderSubject.next(false);
-        this.canvasLoading = false;
-        this._canvasContainerDimensions = null;
-        this._canvasImageDimensions = null;
+        this._resetCanvas();
 
         cancelAnimationFrame(this._animationFrame);
         this.exitFullscreen.emit();
         this.changeDetectorRef.markForCheck();
       });
 
-      this.show = true;
-      this.titleService.disablePageZoom();
-      this.enterFullscreen.emit();
+      this._currentFullscreenImageEventSubscription = this.store$.pipe(
+        select(selectCurrentFullscreenImageEvent),
+        take(1)
+      ).subscribe(event => {
+        if (event instanceof MouseEvent) {
+          this.setTouchMouseMode(false);
+          this.changeDetectorRef.markForCheck();
+        } else if (event instanceof TouchEvent) {
+          this.setTouchMouseMode(true);
+          this.changeDetectorRef.markForCheck();
+        }
 
-      // Only initialize thumbnails if not already eagerly loading
-      if (!this._eagerLoadingSubscription && !this.hdThumbnail && !this.realThumbnail) {
-        this._initThumbnailSubscriptions();
-      }
+        this.show = true;
+        this.titleService.disablePageZoom();
+        this.enterFullscreen.emit();
 
-      this.changeDetectorRef.markForCheck();
+        // Only initialize thumbnails if not already eagerly loading
+        if (!this._eagerLoadingSubscription && !this.hdThumbnail && !this.realThumbnail) {
+          this._initThumbnailSubscriptions();
+        }
+
+        this.changeDetectorRef.markForCheck();
+      });
     });
   }
 
@@ -376,9 +392,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
-  protected toggleTouchMouseMode(): void {
-    this.touchMode = !this.touchMode;
+  protected setTouchMouseMode(touch: boolean): void {
+    this.touchMode = touch;
     this.cookieService.put(this.TOUCH_OR_MOUSE_MODE_COOKIE_NAME, this.touchMode ? "touch" : "mouse");
+    if (this.touchMode) {
+      this._initCanvas();
+    } else {
+      this._resetCanvas();
+    }
   }
 
   protected onPinchStart(event: HammerInput): void {
@@ -816,7 +837,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
         tap(() => {
-          this.canvasLoading = true;
           this.realThumbnailLoading = true;
           this._realLoadingProgressSubject.next(0);
           this.changeDetectorRef.markForCheck();
@@ -834,47 +854,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         )
       ).subscribe(url => {
         this.realThumbnail = url;
+        this.realThumbnailLoading = false;
 
-        const initCanvas = () => {
-          if (!this.touchRealCanvas) {
-            this.utilsService.delay(10).subscribe(() => initCanvas());
-            return;
-          }
+        if (this.touchMode) {
+          this._initCanvas();
+        }
 
-          this._canvasImage = new Image();
-          this._canvasImage.decoding = "async";
-
-          this._canvasImage.onload = () => {
-            try {
-              createImageBitmap(this._canvasImage).then(bitmap => {
-                this._imageBitmap = bitmap;
-                const canvas = this.touchRealCanvas.nativeElement;
-                this._canvasContext = canvas.getContext("2d", {
-                  alpha: false,
-                  willReadFrequently: false
-                });
-
-                this._updateCanvasDimensions();
-                this._drawCanvas();
-
-                this.firstRender$.pipe(take(1)).subscribe(() => {
-                  this.canvasLoading = false;
-                  this._realLoadingProgressSubject.next(100);
-                  this.changeDetectorRef.markForCheck();
-                });
-
-                this.changeDetectorRef.markForCheck();
-              });
-            } catch (error) {
-              console.error("Failed to initialize canvas:", error);
-            }
-          };
-
-          this._canvasImage.src = this.realThumbnailUnsafeUrl;
-          this.changeDetectorRef.markForCheck();
-        };
-
-        initCanvas();
         this.changeDetectorRef.markForCheck();
       });
 
@@ -902,6 +887,67 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       x: Math.min(Math.max(this._touchScaleOffset.x, -maxOffsetX), maxOffsetX),
       y: Math.min(Math.max(this._touchScaleOffset.y, -maxOffsetY), maxOffsetY)
     };
+  }
+
+  private _resetCanvas() {
+    this._lastTransform = null;
+    if (this._imageBitmap) {
+      this._imageBitmap.close();
+      this._imageBitmap = null;
+    }
+
+    this._canvasContext = null;
+    this._canvasImage = null;
+    this._firstRenderSubject.next(false);
+    this.canvasLoading = false;
+    this._canvasContainerDimensions = null;
+    this._canvasImageDimensions = null;
+  }
+
+  private _initCanvas() {
+    if (!this.touchRealCanvas) {
+      this.utilsService.delay(10).subscribe(() => {
+        this._initCanvas();
+        this.changeDetectorRef.markForCheck();
+      });
+      return;
+    }
+
+    if (this.canvasLoading) {
+      return;
+    }
+
+    this.canvasLoading = true;
+    this._canvasImage = new Image();
+    this._canvasImage.decoding = "async";
+
+    this._canvasImage.onload = () => {
+      try {
+        createImageBitmap(this._canvasImage).then(bitmap => {
+          this._imageBitmap = bitmap;
+          const canvas = this.touchRealCanvas.nativeElement;
+          this._canvasContext = canvas.getContext("2d", {
+            alpha: false,
+            willReadFrequently: false
+          });
+
+          this._updateCanvasDimensions();
+          this._drawCanvas();
+
+          this.firstRender$.pipe(take(1)).subscribe(() => {
+            this.canvasLoading = false;
+            this._realLoadingProgressSubject.next(100);
+            this.changeDetectorRef.markForCheck();
+          });
+
+          this.changeDetectorRef.markForCheck();
+        });
+      } catch (error) {
+        console.error("Failed to initialize canvas:", error);
+      }
+    };
+
+    this._canvasImage.src = this.realThumbnailUnsafeUrl;
   }
 
   private _updateCanvasDimensions(): void {

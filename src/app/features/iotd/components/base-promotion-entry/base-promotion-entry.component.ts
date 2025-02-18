@@ -191,9 +191,16 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   abstract setExpiration(pk: PromotionImageInterface["pk"]): void;
 
-  viewFullscreen(pk: PromotionImageInterface["pk"]): void {
+  viewFullscreen(event: MouseEvent | TouchEvent, pk: PromotionImageInterface["pk"]): void {
+    if (event) {
+      event.preventDefault();
+    }
+
     if (!this.image.loading && !!this.image.image && !this.image.image.videoFile) {
-      this.store$.dispatch(new ShowFullscreenImage(pk));
+      this.store$.dispatch(new ShowFullscreenImage({
+        imageId: pk,
+        event
+      }));
     }
   }
 }

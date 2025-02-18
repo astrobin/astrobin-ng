@@ -21,6 +21,7 @@
   <img
     (load)="onLoad($event)"
     (click)="onClick($event)"
+    (touchstart)="onTouchstart($event)"
     (mouseenter)="imageMouseEnter.emit($event)"
     (mouseleave)="imageMouseLeave.emit($event)"
     [alt]="image.title"
