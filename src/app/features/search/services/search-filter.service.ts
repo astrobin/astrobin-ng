@@ -173,9 +173,11 @@ export class SearchFilterService extends BaseService {
   humanizeMatchType(type: MatchType): string {
     switch (type) {
       case MatchType.ALL:
-        return this.translateService.instant("All words");
+        return this.translateService.instant("All");
       case MatchType.ANY:
-        return this.translateService.instant("Any word");
+        return this.translateService.instant("Any");
+      case MatchType.EXACT:
+        return this.translateService.instant("Exact");
     }
   }
 

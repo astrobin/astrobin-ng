@@ -122,7 +122,28 @@ export abstract class SearchBaseFilterComponent
     return true;
   }
 
-  getMatchTypeField(listKey: string, stringSeparator = ","): FormlyFieldConfig {
+  getMatchTypeField(listKey: string, stringSeparator = ",", supportsExactMatch = false): FormlyFieldConfig {
+    let options = [
+      {
+        value: MatchType.ALL,
+        label: this.searchFilterService.humanizeMatchType(MatchType.ALL),
+        description: this.translateService.instant("Find results that match all the words or items.")
+      },
+      {
+        value: MatchType.ANY,
+        label: this.searchFilterService.humanizeMatchType(MatchType.ANY),
+        description: this.translateService.instant("Find results that match any of the words or items.")
+      }
+    ];
+
+    if (supportsExactMatch) {
+      options.push({
+        value: MatchType.EXACT,
+        label: this.searchFilterService.humanizeMatchType(MatchType.EXACT),
+        description: this.translateService.instant("Find results that match the exact words or items, no more, no less.")
+      });
+    }
+
     return {
       key: `matchType`,
       type: "ng-select",
@@ -140,16 +161,7 @@ export abstract class SearchBaseFilterComponent
         searchable: false,
         label: this.translateService.instant("Match type"),
         hideOptionalMarker: true,
-        options: [
-          {
-            value: MatchType.ALL,
-            label: this.searchFilterService.humanizeMatchType(MatchType.ALL)
-          },
-          {
-            value: MatchType.ANY,
-            label: this.searchFilterService.humanizeMatchType(MatchType.ANY)
-          }
-        ]
+        options
       },
       hooks: {
         onInit: field => {

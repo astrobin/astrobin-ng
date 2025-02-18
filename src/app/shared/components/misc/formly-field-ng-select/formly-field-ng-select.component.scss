@@ -1,5 +1,15 @@
 @import "../../../../styles/breakpoints";
 
+@mixin optionTitle {
+  font-weight: bold;
+}
+
+@mixin optionDescription {
+  margin-top: .5rem;
+  font-size: .9rem;
+  color: var(--mutedAccentColor);
+}
+
 .ng-select-container,
 .full-screen-body-template-container ::ng-deep .full-screen-body-template-content {
   padding: 1rem;
@@ -49,15 +59,15 @@ label {
 }
 
 ::ng-deep {
-  .option-template {
-    &__title {
-      font-weight: bold;
-    }
+  .option-template__title,
+  .ng-option .title {
+    @include optionTitle;
+  }
 
-    &__description {
-      margin-top: .5rem;
-      font-size: .9rem;
-      color: var(--mutedAccentColor);
-    }
+  .option-template__description,
+  .ng-option .description {
+    @include optionDescription;
   }
 }
+
+

@@ -33,6 +33,6 @@ export class SearchMountFilterComponent extends SearchBaseEquipmentFilterCompone
     public readonly actions$: Actions
   ) {
     super(store$, translateService, domSanitizer, modalService, searchFilterService, actions$);
-    this.initFields(SearchMountFilterComponent.key);
+    this.initFields(SearchMountFilterComponent.key, true);
   }
 }

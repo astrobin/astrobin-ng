@@ -499,6 +499,7 @@ export class EquipmentItemService extends BaseService {
           id: item.id,
           name: (item.brandName || this.translateService.instant("DIY")) + " " + item.name
         }],
+        exactMatch: true,
         matchType: null
       }
     });

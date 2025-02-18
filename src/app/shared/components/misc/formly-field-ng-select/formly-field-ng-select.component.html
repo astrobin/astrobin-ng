@@ -69,7 +69,10 @@
       </ng-template>
 
       <ng-template let-item="item" ng-option-tmp>
-        <ng-container *ngIf="!props.optionTemplate">{{ item.label }}</ng-container>
+        <ng-container *ngIf="!props.optionTemplate">
+          <div class="title">{{ item.label }}</div>
+          <div *ngIf="item.description" class="description">{{ item.description }}</div>
+        </ng-container>
         <ng-container
           *ngIf="props.optionTemplate"
           [ngTemplateOutletContext]="{ item }"
