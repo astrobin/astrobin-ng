@@ -394,7 +394,7 @@ interface DetailedFilterSummary {
             <tr *ngFor="let detail of detailedFilterSummaries[filterType].details">
               <td [attr.data-label]="'Date' | translate" class="date">
                 <ng-container *ngIf="detail.date">
-                  {{ detail.date | localDate | date:"mediumDate" }}
+                  {{ detail.date | date:"mediumDate" }}
                 </ng-container>
                 <ng-container *ngIf="!detail.date">
                   {{ "Unknown date" | translate }}
@@ -402,19 +402,19 @@ interface DetailedFilterSummary {
 
                 <div
                   *ngIf="
-                    detail.binning ||
-                    detail.iso ||
-                    detail.gain ||
-                    detail.fNumber ||
-                    detail.sensorCooling ||
-                    detail.darks ||
-                    detail.flats ||
-                    detail.flatDarks ||
-                    detail.bias ||
-                    detail.bortle ||
-                    detail.meanSqm ||
-                    detail.meanFwhm ||
-                    detail.temperature
+                    (detail.binning ?? null) !== null ||
+                    (detail.iso ?? null) !== null ||
+                    (detail.gain ?? null) !== null ||
+                    (detail.fNumber ?? null) !== null ||
+                    (detail.sensorCooling ?? null) !== null ||
+                    (detail.darks ?? null) !== null ||
+                    (detail.flats ?? null) !== null ||
+                    (detail.flatDarks ?? null) !== null ||
+                    (detail.bias ?? null) !== null ||
+                    (detail.bortle ?? null) !== null ||
+                    (detail.meanSqm ?? null) !== null ||
+                    (detail.meanFwhm ?? null) !== null ||
+                    (detail.temperature ?? null) !== null
                   "
                   class="d-none d-lg-block"
                 >
@@ -435,19 +435,19 @@ interface DetailedFilterSummary {
 
               <td
                 *ngIf="
-                  detail.binning ||
-                  detail.iso ||
-                  detail.gain ||
-                  detail.fNumber ||
-                  detail.sensorCooling ||
-                  detail.darks ||
-                  detail.flats ||
-                  detail.flatDarks ||
-                  detail.bias ||
-                  detail.bortle ||
-                  detail.meanSqm ||
-                  detail.meanFwhm ||
-                  detail.temperature
+                  (detail.binning ?? null) !== null ||
+                  (detail.iso ?? null) !== null ||
+                  (detail.gain ?? null) !== null ||
+                  (detail.fNumber ?? null) !== null ||
+                  (detail.sensorCooling ?? null) !== null ||
+                  (detail.darks ?? null) !== null ||
+                  (detail.flats ?? null) !== null ||
+                  (detail.flatDarks ?? null) !== null ||
+                  (detail.bias ?? null) !== null ||
+                  (detail.bortle ?? null) !== null ||
+                  (detail.meanSqm ?? null) !== null ||
+                  (detail.meanFwhm ?? null) !== null ||
+                  (detail.temperature ?? null) !== null
                 "
                 [attr.data-label]="'Additional properties' | translate"
                 class="d-lg-none"
@@ -469,26 +469,57 @@ interface DetailedFilterSummary {
 
       <ng-template #additionalPropertiesTemplate let-detail>
         <div class="additional-properties">
-          <span *ngIf="detail.binning" class="iso">{{ "Binning" | translate }}: <span class="value">{{ detail.binning }}&times;{{ detail.binning }}</span></span>
-          <span *ngIf="detail.iso" class="iso">ISO: <span class="value">{{ detail.iso }}</span></span>
-          <span *ngIf="detail.gain" class="gain">Gain: <span class="value">{{ detail.gain }}</span></span>
-          <span *ngIf="detail.fNumber" class="f-number"><span class="value">f/{{ detail.fNumber }}</span></span>
-          <span *ngIf="detail.sensorCooling" class="sensor-cooling">{{ "Cooling" | translate }}: <span
-            class="value">{{ detail.sensorCooling }}</span></span>
-          <span *ngIf="detail.darks" class="darks">{{ "Darks" | translate }}: <span
-            class="value">{{ detail.darks }}</span></span>
-          <span *ngIf="detail.flats" class="flats">{{ "Flats" | translate }}: <span
-            class="value">{{ detail.flats }}</span></span>
-          <span *ngIf="detail.flatDarks" class="flat-darks">{{ "Flat darks" | translate }}: <span
-            class="value">{{ detail.flatDarks }}</span></span>
-          <span *ngIf="detail.bias" class="bias">{{ "Bias" | translate }}: <span class="value">{{ detail.bias }}</span></span>
-          <span *ngIf="detail.bortle" class="bortle">Bortle: <span class="value">{{ detail.bortle }}</span></span>
-          <span *ngIf="detail.meanSqm" class="mean-sqm">{{ "Mean SQM" | translate }}: <span
-            class="value">{{ detail.meanSqm }}</span></span>
-          <span *ngIf="detail.meanFwhm" class="mean-fwhm">{{ "Mean FWHM" | translate }}: <span
-            class="value">{{ detail.meanFwhm }}</span></span>
-          <span *ngIf="detail.temperature" class="temperature">{{ "Temperature" | translate }}: <span
-            class="value">{{ detail.temperature }}</span></span>
+          <span *ngIf="(detail.binning ?? null) !== null" class="iso">
+            {{ "Binning" | translate }}: <span class="value">{{ detail.binning }}&times;{{ detail.binning }}</span>
+          </span>
+
+          <span *ngIf="(detail.iso ?? null) !== null" class="iso">
+            ISO: <span class="value">{{ detail.iso }}</span>
+          </span>
+
+          <span *ngIf="(detail.gain ?? null) !== null" class="gain">
+            Gain: <span class="value">{{ detail.gain }}</span>
+          </span>
+
+          <span *ngIf="(detail.fNumber ?? null) !== null" class="f-number">
+            <span class="value">f/{{ detail.fNumber }}</span>
+          </span>
+
+          <span *ngIf="(detail.sensorCooling ?? null) !== null" class="sensor-cooling">
+            {{ "Cooling" | translate }}: <span class="value">{{ detail.sensorCooling }}</span>
+          </span>
+
+          <span *ngIf="(detail.darks ?? null) !== null" class="darks">
+            {{ "Darks" | translate }}: <span class="value">{{ detail.darks }}</span>
+          </span>
+
+          <span *ngIf="(detail.flats ?? null) !== null" class="flats">
+            {{ "Flats" | translate }}: <span class="value">{{ detail.flats }}</span>
+          </span>
+
+          <span *ngIf="(detail.flatDarks ?? null) !== null" class="flat-darks">
+            {{ "Flat darks" | translate }}: <span class="value">{{ detail.flatDarks }}</span>
+          </span>
+
+          <span *ngIf="(detail.bias ?? null) !== null" class="bias">
+            {{ "Bias" | translate }}: <span class="value">{{ detail.bias }}</span>
+          </span>
+
+          <span *ngIf="(detail.bortle ?? null) !== null" class="bortle">
+            Bortle: <span class="value">{{ detail.bortle }}</span>
+          </span>
+
+          <span *ngIf="(detail.meanSqm ?? null) !== null" class="mean-sqm">
+            {{ "Mean SQM" | translate }}: <span class="value">{{ detail.meanSqm }}</span>
+          </span>
+
+          <span *ngIf="(detail.meanFwhm ?? null) !== null" class="mean-fwhm">
+            {{ "Mean FWHM" | translate }}: <span class="value">{{ detail.meanFwhm }}</span>
+          </span>
+
+          <span *ngIf="(detail.temperature ?? null) !== null" class="temperature">
+            {{ "Temperature" | translate }}: <span class="value">{{ detail.temperature }}</span>
+          </span>
         </div>
       </ng-template>
     </ng-template>
