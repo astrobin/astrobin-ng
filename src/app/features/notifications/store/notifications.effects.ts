@@ -65,7 +65,12 @@ export class NotificationsEffects {
       ofType(NotificationsActionTypes.LOAD_NOTIFICATIONS),
       mergeMap((action: LoadNotifications) => {
         this.loadingService.setLoading(true);
-        return this.notificationsApiService.getAll(action.payload.page, action.payload.read).pipe(
+        return this.notificationsApiService.getAll(
+          action.payload.page,
+          action.payload.read,
+          action.payload.context,
+          action.payload.message
+        ).pipe(
           map(response => new LoadNotificationsSuccess({
             notifications: response.results,
             total: response.count

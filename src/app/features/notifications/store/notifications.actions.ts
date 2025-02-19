@@ -4,7 +4,7 @@ import { PayloadActionInterface } from "@app/store/actions/payload-action.interf
 import { Action } from "@ngrx/store";
 import { NotificationSettingInterface } from "@features/notifications/interfaces/notification-setting.interface";
 import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
-import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 
 export enum NotificationsActionTypes {
   LOAD_TYPES = "[Notifications] Load types",
@@ -72,7 +72,12 @@ export class SetNotificationSettingSuccess implements PayloadActionInterface {
 export class LoadNotifications implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.LOAD_NOTIFICATIONS;
 
-  constructor(public payload: { page: number, read?: boolean }) {
+  constructor(public payload: {
+    page: number,
+    read?: boolean,
+    context?: NotificationContext,
+    message?: string | null
+  }) {
   }
 }
 

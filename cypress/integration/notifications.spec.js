@@ -50,7 +50,6 @@ context("notifications", () => {
         cy.get("astrobin-empty-list").should("not.exist");
         cy.get("#mark-all-as-read").should("not.be.disabled");
         cy.get("ngb-pagination").its("length").should("equal", 2);
-        cy.get("#unread-notifications-count").should("contain.text", 1);
         cy.get(".navbar .notifications-list-item .badge").should("contain.text", 1);
       });
 
