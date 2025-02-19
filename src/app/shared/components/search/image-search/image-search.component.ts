@@ -258,4 +258,6 @@ export class ImageSearchComponent extends ScrollableSearchResultsBaseComponent<I
       return acc;
     }, []);
   }
+
+  protected readonly ImageAlias = ImageAlias;
 }

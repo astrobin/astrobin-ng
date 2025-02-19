@@ -110,12 +110,20 @@
                 (click)="openImage($event, item)"
                 [href]="'/i/' + (item.hash || item.objectId)"
               >
-                <img
-                  #imageElement
-                  [src]="item.regularThumbnail"
-                  [alt]="item.title"
-                  loading="lazy"
-                />
+                <ng-container *ngIf="imageService.getObjectFit(item) as fit">
+                  <div
+                    [astrobinLazyBackground]="item.regularThumbnail"
+                    [highResolutionUrl]="item.hdThumbnail"
+                    [useHighResolution]="fit.scale > 4"
+                    [ngStyle]="{
+                        'background-position': fit.position.x + '% ' + fit.position.y + '%',
+                        'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',
+                        'background-repeat': 'no-repeat'
+                      }"
+                    [attr.aria-label]="item.title"
+                    role="img"
+                  ></div>
+                </ng-container>
 
                 <astrobin-loading-indicator
                   *ngIf="loadingImageId?.toString() === item.objectId.toString()"
