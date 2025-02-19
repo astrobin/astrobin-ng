@@ -19,7 +19,7 @@
       <button
         (click)="markAllAsRead()"
         [class.loading]="loadingService.loading$ | async"
-        [disabled]="(unreadCount$ | async) === 0"
+        [disabled]="!!contextModel.message || !!contextModel.context || (unreadCount$ | async) === 0"
         class="btn btn-primary"
         id="mark-all-as-read">
         {{ "Mark all as read" | translate }}
@@ -55,7 +55,7 @@
           <button
             ngbDropdownItem
             (click)="markAllAsRead()"
-            [disabled]="(unreadCount$ | async) === 0"
+            [disabled]="!!contextModel.message || !!contextModel.context || (unreadCount$ | async) === 0"
           >
             {{ "Mark all as read" | translate }}
           </button>
