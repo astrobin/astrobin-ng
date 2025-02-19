@@ -298,7 +298,7 @@
     <div *ngIf="image?.descriptionBbcode" class="metadata-section">
       <div
         (click)="onDescriptionClicked($event)"
-        [innerHTML]="image.descriptionBbcode | BBCodeToHtml"
+        [innerHTML]="image.descriptionBbcode | BBCodeToHtml | highlight: searchModel?.text?.value"
         class="metadata-item description"
       ></div>
     </div>
@@ -390,6 +390,7 @@
     <astrobin-image-viewer-title
       [image]="image"
       [revisionLabel]="revisionLabel"
+      [searchModel]="searchModel"
     ></astrobin-image-viewer-title>
 
     <astrobin-image-viewer-floating-title
@@ -412,23 +413,27 @@
 
       <astrobin-image-viewer-data-source
         [image]="image"
+        [searchModel]="searchModel"
       ></astrobin-image-viewer-data-source>
 
       <astrobin-image-viewer-astrometry
         *ngIf="revision?.solution?.ra !== null && revision?.solution?.dec !== null"
         [image]="image"
         [revisionLabel]="revisionLabel"
+        [searchModel]="searchModel"
       ></astrobin-image-viewer-astrometry>
     </div>
 
     <astrobin-image-viewer-acquisition
       *ngIf="image?.deepSkyAcquisitions?.length || image?.solarSystemAcquisitions?.length"
       [image]="image"
+      [searchModel]="searchModel"
     ></astrobin-image-viewer-acquisition>
 
     <astrobin-image-viewer-equipment
       *ngIf="image && imageService.hasEquipment(image)"
       [image]="image"
+      [searchModel]="searchModel"
     ></astrobin-image-viewer-equipment>
 
     <astrobin-image-viewer-guiding-equipment
@@ -440,6 +445,7 @@
       *ngIf="revision?.solution?.objectsInField || revision?.solution?.advancedAnnotations"
       [image]="image"
       [revisionLabel]="revisionLabel"
+      [searchModel]="searchModel"
     ></astrobin-image-viewer-objects>
 
     <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>

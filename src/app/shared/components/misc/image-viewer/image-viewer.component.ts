@@ -36,6 +36,8 @@ import { fadeInOut } from "@shared/animations";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
 import { CookieService } from "ngx-cookie";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { SearchService } from "@core/services/search.service";
 
 
 @Component({
@@ -160,6 +162,7 @@ export class ImageViewerComponent
   protected showAd = false;
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
+  protected searchModel: SearchModelInterface;
   protected readonly isBrowser: boolean;
 
   private _dataAreaScrollEventSubscription: Subscription;
@@ -190,7 +193,8 @@ export class ImageViewerComponent
     public readonly modalService: NgbModal,
     public readonly solutionApiService: SolutionApiService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly searchService: SearchService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -429,6 +433,8 @@ export class ImageViewerComponent
     this.image = image;
     this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
 
+
+    this._initSearchModel();
     this._initAdjustmentEditor();
     this._initRevision();
     this._updateSupportsFullscreen();
@@ -1042,6 +1048,18 @@ export class ImageViewerComponent
       appLabel: "auth",
       model: "user"
     }));
+  }
+
+  private _initSearchModel() {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const currentUrl = this.windowRefService.getCurrentUrl();
+    const p = UtilsService.getUrlParam(currentUrl.toString(), "p");
+    if (p) {
+      this.searchModel = this.searchService.paramsToModel(p);
+    }
   }
 
   private _initRevision() {

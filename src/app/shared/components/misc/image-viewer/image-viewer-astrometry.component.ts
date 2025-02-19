@@ -53,7 +53,7 @@ import { ConstellationsService } from "@features/explore/services/constellations
           container="body"
           class="metadata-link search"
         >
-          {{ constellation }}
+          <span [class.highlighted]="constellationIsSearchTerm">{{ constellation }}</span>
         </div>
       </div>
 
@@ -206,16 +206,17 @@ import { ConstellationsService } from "@features/explore/services/constellations
 export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseComponent implements OnChanges {
   protected readonly isTouchDevice: boolean;
 
-  revision: ImageInterface | ImageRevisionInterface;
-  celestialHemisphere: string;
-  constellation: string;
-  constellationFull: string;
-  coordinates: string;
-  coordinatesTextArea: string;
-  fieldRadius: string;
-  pixelScale: string;
-  orientation: string;
-  astrometryNetJobId: string;
+  protected revision: ImageInterface | ImageRevisionInterface;
+  protected celestialHemisphere: string;
+  protected constellation: string;
+  protected constellationFull: string;
+  protected constellationIsSearchTerm = false;
+  protected coordinates: string;
+  protected coordinatesTextArea: string;
+  protected fieldRadius: string;
+  protected pixelScale: string;
+  protected orientation: string;
+  protected astrometryNetJobId: string;
 
   @ViewChild("moreInfoTemplate")
   moreInfoTemplate: TemplateRef<any>;
@@ -258,6 +259,7 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
       this.celestialHemisphere = this.imageService.getCelestialHemisphere(image, this.revisionLabel);
       this.constellation = this.imageService.getConstellation(image, this.revisionLabel);
       this.constellationFull = this.constellationsService.getConstellationFullName(this.constellation, this.translateService.currentLang);
+      this.constellationIsSearchTerm = this.searchModel?.constellation === this.constellation;
       this.coordinates = this.imageService.getCoordinates(image, this.revisionLabel);
       this.coordinatesTextArea =
         this.translateService.instant("Decimal") + ": \n" +

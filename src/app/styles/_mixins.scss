@@ -107,3 +107,10 @@ $darkest-background-texture: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAA
     height: calc(33.33vw - 1rem);
   }
 }
+
+@mixin highlight {
+  background-color: var(--gold);
+  color: var(--black);
+  padding: .125rem;
+  border-radius: .125rem;
+}

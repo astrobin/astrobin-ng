@@ -84,6 +84,10 @@
 }
 
 ::ng-deep .offcanvas-deep-sky-integration-details {
+  .highlight {
+    @include highlight;
+  }
+
   &:not(.offcanvas-bottom) {
     width: 40vw !important;
 
