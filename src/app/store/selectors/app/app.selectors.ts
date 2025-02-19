@@ -29,3 +29,7 @@ export const selectIotdMaxFutureIotds = createSelector(
 export const selectCurrentFullscreenImage = createSelector(
   selectApp, state => state.currentFullscreenImage
 );
+
+export const selectCurrentFullscreenImageEvent = createSelector(
+  selectApp, state => state.currentFullscreenImageEvent
+);

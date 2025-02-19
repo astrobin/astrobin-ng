@@ -182,8 +182,9 @@ export class DeviceService extends BaseService {
     const _window = this.windowRefService.nativeWindow;
     const hasTouch = 'ontouchstart' in _window || navigator.maxTouchPoints > 0;
     const hasFinePointer = _window.matchMedia("(pointer: fine)").matches;
+    const isLargeScreen = _window.matchMedia("(min-width: 1920px)").matches;
 
-    return hasTouch && hasFinePointer;
+    return hasTouch && (hasFinePointer || isLargeScreen);
   }
 
   isMobile(): boolean {

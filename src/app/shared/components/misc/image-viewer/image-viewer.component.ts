@@ -602,7 +602,7 @@ export class ImageViewerComponent
     this.forceViewMouseHover = false;
   }
 
-  protected enterFullscreen(event: MouseEvent | null): void {
+  protected enterFullscreen(event: MouseEvent | TouchEvent | null): void {
     if (event) {
       event.preventDefault();
     }
@@ -634,7 +634,7 @@ export class ImageViewerComponent
           return;
         }
 
-        this.store$.dispatch(new ShowFullscreenImage(this.image.pk));
+        this.store$.dispatch(new ShowFullscreenImage({ imageId: this.image.pk, event }));
         this.viewingFullscreenImage = true;
         this.changeDetectorRef.markForCheck();
         this.toggleFullscreen.emit(true);

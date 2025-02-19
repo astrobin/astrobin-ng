@@ -1,8 +1,7 @@
 @import "src/app/styles/breakpoints";
 @import "src/app/styles/mixins";
+@import "./image-viewer-mixins";
 
-$portraitLayoutBreakpoint: $md-max;
-$maxAspectRatio: 1;
 $globalLoadingIndicatorHeight: 6px;
 $largeViewPortBreakpoint: 2561px;
 
@@ -276,7 +275,7 @@ $largeViewPortBreakpoint: 2561px;
         width: 75%;
       }
 
-      @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
+      @include portrait-layout {
         width: 100%;
         min-height: calc(50vh - 3rem);
         max-height: calc(70vh - 3rem);
@@ -360,7 +359,7 @@ $largeViewPortBreakpoint: 2561px;
         justify-content: center;
         align-items: center;
 
-        @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
+        @include portrait-layout {
           position: fixed;
           opacity: .8 !important;
           font-size: 1.25rem !important;
@@ -684,7 +683,7 @@ $largeViewPortBreakpoint: 2561px;
           left: 75%;
         }
 
-        @media (max-width: $md-max) {
+        @include portrait-layout {
           display: none;
         }
       }
@@ -816,7 +815,7 @@ $largeViewPortBreakpoint: 2561px;
         width: 25%;
       }
 
-      @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
+      @include portrait-layout {
         width: 100%;
         height: unset;
 
@@ -827,7 +826,7 @@ $largeViewPortBreakpoint: 2561px;
       }
     }
 
-    @media (max-width: $portraitLayoutBreakpoint), (orientation: portrait) and (max-aspect-ratio: $maxAspectRatio) {
+    @include portrait-layout {
       overflow-y: auto;
       flex-direction: column;
       justify-content: flex-start;

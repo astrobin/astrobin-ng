@@ -229,6 +229,16 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
           >
             {{ "Advanced annotations" | translate }}
           </a>
+
+          <a
+            *ngIf="revision.solution.pixinsightSvgAnnotationRegular"
+            (click)="downloadImage('advanced_annotations_large_font')"
+            astrobinEventPreventDefault
+            astrobinEventStopPropagation
+            class="menu-item"
+          >
+            {{ "Advanced annotations (large font)" | translate }}
+          </a>
         </ng-container>
 
         <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
@@ -478,7 +488,9 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
     );
   }
 
-  downloadImage(version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations") {
+  downloadImage(
+    version: ImageAlias | "original" | "basic_annotations" | "advanced_annotations" | "advanced_annotations_large_font"
+  ) {
     const url = `${environment.classicBaseUrl}/download/${this.image.hash || this.image.pk}/${this.revisionLabel}/${version}/`;
     this.windowRefService.nativeWindow.open(url, "_blank");
   }

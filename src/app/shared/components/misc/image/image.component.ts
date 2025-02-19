@@ -56,6 +56,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   imageClick = new EventEmitter<MouseEvent>();
 
   @Output()
+  imageTouchstart = new EventEmitter<TouchEvent>();
+
+  @Output()
   imageMouseEnter = new EventEmitter<MouseEvent>();
 
   @Output()
@@ -286,6 +289,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   onClick(event: MouseEvent) {
     event.preventDefault();
     this.imageClick.emit(event);
+  }
+
+  onTouchstart(event: TouchEvent) {
+    event.preventDefault();
+    this.imageTouchstart.emit(event);
   }
 
   private _getImageObject(): Observable<ImageInterface> {

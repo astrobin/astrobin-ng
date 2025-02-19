@@ -145,6 +145,7 @@
         #imageComponent
         @fadeInOut
         (imageClick)="enterFullscreen($event)"
+        (imageTouchstart)="enterFullscreen($event)"
         (loaded)="onImageLoaded()"
         (imageMouseEnter)="onImageMouseEnter($event)"
         (imageMouseLeave)="onImageMouseLeave($event)"
@@ -167,7 +168,8 @@
           nonSolutionMouseHoverImage &&
           !forceViewAnnotationsMouseHover
         "
-        (click)="enterFullscreen($event)"
+        (intentionalClick)="enterFullscreen($event)"
+        astrobinPreventScrollClick
         class="mouse-hover-container"
       >
         <img
@@ -191,7 +193,8 @@
           solutionMouseHoverImage &&
           !inlineSvg
         "
-        (click)="enterFullscreen($event)"
+        (intentionalClick)="enterFullscreen($event)"
+        astrobinPreventScrollClick
         class="mouse-hover-container"
       >
         <img
@@ -210,7 +213,8 @@
           (revision.mouseHoverImage === MouseHoverImageOptions.SOLUTION || forceViewAnnotationsMouseHover) &&
           inlineSvg
         "
-        (click)="enterFullscreen($event)"
+        (intentionalClick)="enterFullscreen($event)"
+        astrobinPreventScrollClick
         class="mouse-hover-svg-container"
       >
         <div

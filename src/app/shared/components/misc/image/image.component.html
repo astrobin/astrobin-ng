@@ -20,12 +20,13 @@
 <ng-template #imageTemplate>
   <img
     (load)="onLoad($event)"
-    (click)="onClick($event)"
+    (intentionalClick)="onClick($event)"
     (mouseenter)="imageMouseEnter.emit($event)"
     (mouseleave)="imageMouseLeave.emit($event)"
     [alt]="image.title"
     [src]="thumbnailUrl"
     [style.max-width.px]="revision?.w"
+    astrobinPreventScrollClick
     class="astrobin-image"
     id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revisionLabel }}-{{ alias }}"
   >

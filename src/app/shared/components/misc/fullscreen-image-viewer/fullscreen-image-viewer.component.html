@@ -259,28 +259,33 @@
   >
     <div
       *ngIf="isHybridPC"
-      (click)="toggleTouchMouseMode()"
-      [ngbTooltip]="'Toggle touch/mouse mode.' | translate"
+      (click)="setTouchMouseMode(!touchMode)"
+      [ngbTooltip]="isTouchDevice ? null : 'Toggle touch/mouse mode.' | translate"
+      triggers="hover"
       container="body"
     >
       <ng-container *ngIf="touchMode">
+        <fa-icon icon="hand-pointer" class="me-2"></fa-icon>
         <span>{{ "Touch mode" | translate }}</span>
       </ng-container>
       <ng-container *ngIf="!touchMode">
+        <fa-icon icon="mouse-pointer" class="me-2"></fa-icon>
         <span>{{ "Mouse mode" | translate }}</span>
       </ng-container>
     </div>
 
     <div
-      *ngIf="!isTouchDevice || (isHybridPC && !touchMode)"
+      *ngIf="!touchMode"
       (click)="toggleEnableLens()"
       [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
       container="body"
     >
       <ng-container *ngIf="!enableLens">
+        <fa-icon icon="expand" class="me-2"></fa-icon>
         <span>{{ "Zoom mode" | translate }}</span>
       </ng-container>
       <ng-container *ngIf="enableLens">
+        <fa-icon icon="magnifying-glass" class="me-2"></fa-icon>
         <span>{{ "Lens mode" | translate }}</span>
       </ng-container>
     </div>
@@ -290,7 +295,7 @@
 <div
   *ngIf="show"
   @fadeInOut
-  [class.touch]="(isTouchDevice && !isHybridPC) || (isHybridPC && touchMode)"
+  [class.touch]="touchMode"
   class="fullscreen-image-viewer h-100"
 >
   <ng-container
@@ -300,13 +305,13 @@
     } as thumbnails"
   >
     <ng-container
-      *ngIf="(isTouchDevice && !isHybridPC) || (isHybridPC && touchMode)"
+      *ngIf="touchMode"
       [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
       [ngTemplateOutlet]="touchDeviceTemplate"
     >
     </ng-container>
 
-    <ng-container *ngIf="(!isTouchDevice && !isHybridPC) || (isHybridPC && !touchMode)">
+    <ng-container *ngIf="!touchMode">
       <ng-container
         [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
         [ngTemplateOutlet]="nonTouchDeviceTemplate"
