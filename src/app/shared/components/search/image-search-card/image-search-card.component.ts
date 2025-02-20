@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -23,7 +23,8 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 @Component({
   selector: "astrobin-image-search-card",
   templateUrl: "./image-search-card.component.html",
-  styleUrls: ["./image-search-card.component.scss"]
+  styleUrls: ["./image-search-card.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageSearchCardComponent extends BaseComponentDirective implements OnChanges {
   readonly EquipmentItemType = EquipmentItemType;
@@ -76,7 +77,8 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
     @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>,
     public readonly searchService: SearchService,
     public readonly router: Router,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -113,6 +115,8 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
         if (this.model.username) {
           this.searchUrl = UtilsService.addOrUpdateUrlParam(this.searchUrl, "username", this.model.username.toString());
         }
+
+        this.changeDetectorRef.markForCheck();
       } else {
         const { itemId, itemType, ...model } = this.model;
 
@@ -122,6 +126,7 @@ export class ImageSearchCardComponent extends BaseComponentDirective implements 
         ).subscribe(item => {
           const params = this.equipmentItemService.getSearchParams(item, this.model.ordering);
           this.searchUrl = `/search?p=${params}`;
+          this.changeDetectorRef.markForCheck();
         });
 
         this.store$.dispatch(new LoadEquipmentItem({ id: itemId, type: itemType }));
