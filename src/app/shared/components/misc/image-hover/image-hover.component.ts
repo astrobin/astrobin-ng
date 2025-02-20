@@ -1,8 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, Input, OnChanges, PLATFORM_ID } from "@angular/core";
 import { ImageInterface } from "@core/interfaces/image.interface";
 import { ImageSearchInterface } from "@core/interfaces/image-search.interface";
 import { ImageService } from "@core/services/image/image.service";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
+import { SearchService } from "@core/services/search.service";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { isPlatformBrowser } from "@angular/common";
+import { WindowRefService } from "@core/services/window-ref.service";
 
 @Component({
   selector: 'astrobin-image-hover',
@@ -18,8 +22,8 @@ import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
       [class.large]="activeLayout === ActiveLayout.LARGE"
     >
       <div class="flex-grow-1">
-        <div class="title">{{ image.title }}</div>
-        <div *ngIf="showAuthor" class="author">{{ image.userDisplayName }}</div>
+        <div class="title" [innerHTML]="image.title | highlight: searchTerms"></div>
+        <div *ngIf="showAuthor" class="author" [innerHTML]="image.userDisplayName | highlight: searchTerms"></div>
         <div *ngIf="published" class="published">{{ published | localDate | timeago }}</div>
         <div *ngIf="!published && uploaded"
              class="uploaded">{{ uploaded | localDate | timeago }}
@@ -93,6 +97,7 @@ export class ImageHoverComponent implements OnChanges {
   @Input() activeLayout: string;
 
   protected readonly ActiveLayout = ImageGalleryLayout;
+  protected readonly isBrowser: boolean;
 
   protected published: string;
   protected uploaded: string;
@@ -103,8 +108,16 @@ export class ImageHoverComponent implements OnChanges {
   protected integration: string;
   protected ra: string;
   protected dec: string;
+  protected searchTerms: string;
 
-  constructor(public readonly imageService: ImageService) {}
+  constructor(
+    public readonly imageService: ImageService,
+    public readonly searchService: SearchService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly windowRefService: WindowRefService
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnChanges(): void {
     if (this.image.hasOwnProperty('likeCount')) {
@@ -124,6 +137,21 @@ export class ImageHoverComponent implements OnChanges {
       this.integration = this.imageService.formatIntegration((this.image as ImageSearchInterface).integration);
       this.ra = this.imageService.formatRightAscension((this.image as ImageSearchInterface).coordRaMin);
       this.dec = this.imageService.formatDeclination((this.image as ImageSearchInterface).coordDecMin);
+    }
+
+    this._initSearchTerms();
+  }
+
+  private _initSearchTerms() {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const currentUrl = this.windowRefService.getCurrentUrl();
+    const p = UtilsService.getUrlParam(currentUrl.toString(), "p");
+    if (p) {
+      const searchModel = this.searchService.paramsToModel(p);
+      this.searchTerms = searchModel?.text?.value;
     }
   }
 }
