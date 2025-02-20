@@ -1,10 +1,12 @@
 @import "mixins";
 
-.image-viewer-offcanvas {
+.image-viewer-offcanvas,
+.equipment-item-display-name-retailers-offcanvas {
   z-index: 1048;
 }
 
-.image-viewer-offcanvas-backdrop {
+.image-viewer-offcanvas-backdrop,
+.equipment-item-display-name-retailers-offcanvas-backdrop {
   z-index: 1047;
 }
 
