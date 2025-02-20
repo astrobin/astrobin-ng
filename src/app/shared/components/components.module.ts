@@ -2,7 +2,7 @@ import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
-import { NgbAccordionModule, NgbCarouselModule, NgbCollapseModule, NgbDropdownModule, NgbModalConfig, NgbModalModule, NgbNavModule, NgbOffcanvasModule, NgbPopoverModule, NgbProgressbarModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbAccordionModule, NgbCarouselModule, NgbCollapseModule, NgbDropdownModule, NgbModalConfig, NgbModalModule, NgbNavModule, NgbOffcanvasModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";
@@ -148,6 +148,7 @@ import { ImageGalleryLoadingComponent } from "@shared/components/image-gallery-l
 import { IconsModule } from "@shared/icons.module";
 import { ImageViewerGuidingEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-guiding-equipment.component";
 import { ImageViewerEquipmentItemComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment-item.component";
+import { NotificationsListComponent } from "@shared/components/misc/notifications-list/notifications-list.component";
 
 const modules = [
   CommonModule,
@@ -166,6 +167,7 @@ const modules = [
   NgbNavModule,
   NgbModalModule,
   NgbOffcanvasModule,
+  NgbPaginationModule,
   NgbPopoverModule,
   NgbProgressbarModule,
   NgbTooltipModule,
@@ -275,6 +277,7 @@ const components = [
   NestedCommentsCountComponent,
   NestedCommentsModalComponent,
   NothingHereComponent,
+  NotificationsListComponent,
   PrivateInformationComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,

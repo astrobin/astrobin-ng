@@ -79,11 +79,20 @@ import { DeviceService } from "@core/services/device.service";
                   class="image-link"
                   astrobinEventPreventDefault
                 >
-                  <img
-                    [src]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
-                    [alt]="item.title"
-                    loading="lazy"
-                  />
+                  <ng-container *ngIf="imageService.getObjectFit(item) as fit">
+                    <div
+                      [astrobinLazyBackground]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
+                      [highResolutionUrl]="imageService.getThumbnail(item, ImageAlias.HD)"
+                      [useHighResolution]="fit.scale > 4 || activeLayout === ImageGalleryLayout.LARGE"
+                      [ngStyle]="{
+                        'background-position': fit.position.x + '% ' + fit.position.y + '%',
+                        'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',
+                        'background-repeat': 'no-repeat'
+                      }"
+                      [attr.aria-label]="item.title"
+                      role="img"
+                    ></div>
+                  </ng-container>
 
                   <astrobin-loading-indicator
                     *ngIf="loadingImageId === item.pk"
@@ -484,4 +493,6 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
       }
     }));
   }
+
+  protected readonly ImageGalleryLayout = ImageGalleryLayout;
 }

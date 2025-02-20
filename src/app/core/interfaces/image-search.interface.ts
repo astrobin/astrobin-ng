@@ -53,6 +53,7 @@ export interface ImageSearchInterface {
   finalH: number;
   galleryThumbnail: string;
   regularThumbnail: string;
+  hdThumbnail: string;
 
   video: boolean;
   animated: boolean;

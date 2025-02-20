@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
-import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import { BaseClassicApiService } from "@core/services/api/classic/base-classic-api.service";
 import { LoadingService } from "@core/services/loading.service";
 import { Observable } from "rxjs";
@@ -19,11 +19,24 @@ export class NotificationsApiService extends BaseClassicApiService {
     super(loadingService);
   }
 
-  getAll(page = 1, read?: boolean): Observable<NotificationListResponseInterface> {
+  getAll(
+    page = 1,
+    read?: boolean,
+    context?: NotificationContext,
+    message?: string | null
+  ): Observable<NotificationListResponseInterface> {
     let url = `${this.configUrl}/notification/?page=${page}`;
 
     if (read !== undefined) {
       url = UtilsService.addOrUpdateUrlParam(url, "read", read.toString());
+    }
+
+    if (context) {
+      url = UtilsService.addOrUpdateUrlParam(url, "context_search", context);
+    }
+
+    if (message) {
+      url = UtilsService.addOrUpdateUrlParam(url, "message", message);
     }
 
     return this.http.get<NotificationListResponseInterface>(url);

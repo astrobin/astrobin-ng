@@ -26,7 +26,7 @@ import { TitleService } from "@core/services/title/title.service";
 import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
-import { ImageViewerService, SHOW_ANNOTATIONS_ON_MOUSE_HOVER_COOKIE } from "@core/services/image-viewer.service";
+import { ImageViewerService } from "@core/services/image-viewer.service";
 import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
@@ -34,7 +34,10 @@ import { Throttle } from "@app/decorators";
 import { SolutionStatus } from "@core/interfaces/solution.interface";
 import { fadeInOut } from "@shared/animations";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
 import { CookieService } from "ngx-cookie";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
+import { SearchService } from "@core/services/search.service";
 
 
 @Component({
@@ -109,6 +112,7 @@ export class ImageViewerComponent
 
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
+
   protected readonly ImageAlias = ImageAlias;
   protected readonly isPlatformBrowser = isPlatformBrowser;
   // This is computed from `image` and `revisionLabel` and is used to display data for the current revision.
@@ -158,9 +162,12 @@ export class ImageViewerComponent
   protected showAd = false;
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
+  protected searchModel: SearchModelInterface;
   protected readonly isBrowser: boolean;
+
   private _dataAreaScrollEventSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
+  private _activeOffcanvas: NgbOffcanvasRef;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -186,7 +193,8 @@ export class ImageViewerComponent
     public readonly modalService: NgbModal,
     public readonly solutionApiService: SolutionApiService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly searchService: SearchService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -205,6 +213,10 @@ export class ImageViewerComponent
   ngOnInit(): void {
     this._initImageAlias();
     this._initContentTypes();
+
+    this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
+      this._activeOffcanvas = activeOffcanvas;
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -307,8 +319,8 @@ export class ImageViewerComponent
       return;
     }
 
-    if (this.offcanvasService.hasOpenOffcanvas()) {
-      this.offcanvasService.dismiss();
+    if (this._activeOffcanvas) {
+      this._activeOffcanvas.dismiss();
       return;
     }
 
@@ -421,6 +433,8 @@ export class ImageViewerComponent
     this.image = image;
     this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
 
+
+    this._initSearchModel();
     this._initAdjustmentEditor();
     this._initRevision();
     this._updateSupportsFullscreen();
@@ -1034,6 +1048,18 @@ export class ImageViewerComponent
       appLabel: "auth",
       model: "user"
     }));
+  }
+
+  private _initSearchModel() {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const currentUrl = this.windowRefService.getCurrentUrl();
+    const p = UtilsService.getUrlParam(currentUrl.toString(), "p");
+    if (p) {
+      this.searchModel = this.searchService.paramsToModel(p);
+    }
   }
 
   private _initRevision() {

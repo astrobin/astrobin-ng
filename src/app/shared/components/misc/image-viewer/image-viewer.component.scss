@@ -20,6 +20,10 @@ $largeViewPortBreakpoint: 2561px;
 }
 
 :host {
+  ::ng-deep .highlight {
+    @include highlight;
+  }
+
   ::ng-deep {
     .metadata-striped {
       padding: .75rem 0;

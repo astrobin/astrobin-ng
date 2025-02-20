@@ -8,12 +8,13 @@ astrobin-masonry-layout {
       position: relative;
 
       &,
-      img {
+      img,
+      [role=img] {
         border-radius: .75rem;
         transition: filter .25s ease-in-out;
       }
 
-      img {
+      [role=img] {
         width: 100%;
         object-fit: cover;
       }
@@ -23,7 +24,8 @@ astrobin-masonry-layout {
       &:hover {
         .image-container {
           &,
-          img {
+          img,
+          [role=img] {
             filter: brightness(1.25);
           }
         }

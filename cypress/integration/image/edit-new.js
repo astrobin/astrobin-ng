@@ -255,8 +255,11 @@ context("Image edit (new)", () => {
     cy.wait("@getBrand1");
 
     cy.get("#image-imaging-telescopes-field .ng-option:first-child").click();
-    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value")
-      .contains("Test Brand Foo 123")
+    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value span")
+      .contains("Test Brand")
+      .should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value span")
+      .contains("Foo 123")
       .should("be.visible");
   });
 

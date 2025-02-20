@@ -64,6 +64,9 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   @Input()
   cut = "";
 
+  @Input()
+  highlightTerms: string;
+
   @ViewChild("retailersTemplate", { static: true })
   retailersTemplate: TemplateRef<any>;
 
