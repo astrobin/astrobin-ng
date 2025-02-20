@@ -83,8 +83,11 @@ context("Image edit (existing). test quick add equipment", () => {
     cy.get("[ng-reflect-id=\"image-imaging-telescopes-field\"] + .quick-add").should("be.visible");
     cy.get("[ng-reflect-id=\"image-imaging-telescopes-field\"] + .quick-add .quick-add-item").click();
 
-    cy.get("#image-imaging-telescopes-field .ng-value")
-      .contains("Test Brand Test Telescope 3")
+    cy.get("#image-imaging-telescopes-field .ng-value span")
+      .contains("Test Brand")
+      .should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-value span")
+      .contains("Test Telescope 3")
       .should("be.visible");
   });
 
