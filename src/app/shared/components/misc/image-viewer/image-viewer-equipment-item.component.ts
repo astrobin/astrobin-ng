@@ -22,7 +22,8 @@ export type LegacyEquipmentItem =
       <a *ngFor="let item of items"
          [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id"
          (click)="onEquipmentItemClicked($event, item)"
-         class="value">
+         class="value"
+      >
         <astrobin-equipment-item-display-name
           [item]="item"
           [enableKlassIcon]="enableKlassIcon"

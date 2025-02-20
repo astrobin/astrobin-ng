@@ -446,6 +446,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
           const componentInstance: SubscriptionRequiredModalComponent = modalRef.componentInstance;
           componentInstance.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
         }
+        this.changeDetectorRef.markForCheck();
       });
     });
   }
