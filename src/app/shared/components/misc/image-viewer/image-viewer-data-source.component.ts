@@ -16,6 +16,7 @@ import { DeviceService } from "@core/services/device.service";
 import { RemoteSourceAffiliateInterface } from "@core/interfaces/remote-source-affiliate.interface";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-image-viewer-data-source",
@@ -32,7 +33,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
           />
         </div>
         <div (click)="dataSourceClicked($event)" class="metadata-link search">
-          {{ dataSource }}
+          <span [class.highlight]="dataSourceIsSearchTerm">{{ dataSource }}</span>
         </div>
       </div>
 
@@ -50,7 +51,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
           (click)="remoteDataSourceClicked($event)"
           [ngClass]="remoteDataSourceIsSponsor ? 'metadata-link metadata-link-sponsor' : 'metadata-label'"
         >
-          {{ remoteDataSource }}
+          <span [class.highlight]="remoteDataSourceIsSearchTerm">{{ remoteDataSource }}</span>
         </div>
       </div>
 
@@ -63,9 +64,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             icon="map-marker-alt"
           ></fa-icon>
         </div>
-        <div class="metadata-label">
-          {{ location }}
-        </div>
+        <div class="metadata-label" [innerHTML]="location | highlight: highlightTerms"></div>
       </div>
 
       <div *ngIf="bortle" class="metadata-item">
@@ -120,13 +119,16 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseComponent implements OnChanges {
-  dataSource: string;
-  dataSourceIcon: string;
-  remoteDataSource: string;
-  remoteDataSourceAffiliate: RemoteSourceAffiliateInterface;
-  remoteDataSourceIsSponsor = false;
-  locations: string[];
-  bortle: number;
+  protected dataSource: string;
+  protected dataSourceIcon: string;
+  protected dataSourceIsSearchTerm = false;
+  protected remoteDataSource: string;
+  protected remoteDataSourceAffiliate: RemoteSourceAffiliateInterface;
+  protected remoteDataSourceIsSponsor = false;
+  protected remoteDataSourceIsSearchTerm = false;
+  protected locations: string[];
+  protected bortle: number;
+  protected highlightTerms: string;
 
   @ViewChild("remoteSourceAffiliateSponsorOffcanvasTemplate")
   protected remoteSourceAffiliateSponsorOffcanvasTemplate: TemplateRef<any>;
@@ -165,6 +167,14 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
       this.setLocations(image);
       this.setBortle(image);
     }
+
+    if (changes.searchModel && changes.searchModel.currentValue) {
+      this.highlightTerms = "";
+
+      if (this.searchModel?.text?.value) {
+        this.highlightTerms = this.searchModel.text.value;
+      }
+    }
   }
 
   setDataSource(image: ImageInterface) {
@@ -175,11 +185,19 @@ export class ImageViewerDataSourceComponent extends ImageViewerSectionBaseCompon
     ) {
       this.dataSourceIcon = this.imageService.getDataSourceIcon(this.image.dataSource, "white");
       this.dataSource = this.imageService.humanizeDataSource(this.image.dataSource);
+
+      if (this.searchModel?.data_source === this.image.dataSource) {
+        this.dataSourceIsSearchTerm = true;
+      }
     }
   }
 
   setRemoteDataSource(image: ImageInterface) {
     this.remoteDataSource = RemoteSource[this.image.remoteSource];
+
+    if (this.searchModel?.remote_source === this.image.remoteSource) {
+      this.remoteDataSourceIsSearchTerm = true;
+    }
   }
 
   setRemoteDataSourceAffiliate(image: ImageInterface) {

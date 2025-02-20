@@ -133,25 +133,35 @@ context("Image edit (existing), test equipment presets", () => {
 
     cy.wait(500);
 
-    cy.get("#image-imaging-telescopes-field .ng-value").contains("Test Brand Test Telescope 1").should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-value span").contains("Test Telescope 1").should("be.visible");
 
-    cy.get("#image-imaging-telescopes-field .ng-value").contains("Test Brand Test Telescope 2").should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-value span").contains("Test Telescope 2").should("be.visible");
 
-    cy.get("#image-imaging-cameras-field .ng-value").contains("Test Brand Test Camera 1").should("be.visible");
+    cy.get("#image-imaging-cameras-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-imaging-cameras-field .ng-value span").contains("Test Camera 1").should("be.visible");
 
-    cy.get("#image-imaging-cameras-field .ng-value").contains("Test Brand Test Camera 2").should("be.visible");
+    cy.get("#image-imaging-cameras-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-imaging-cameras-field .ng-value span").contains("Test Camera 2").should("be.visible");
 
-    cy.get("#image-mounts-field .ng-value").contains("Test Brand Test Mount 1").should("be.visible");
+    cy.get("#image-mounts-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-mounts-field .ng-value span").contains("Test Mount 1").should("be.visible");
 
-    cy.get("#image-filters-field .ng-value").contains("Test Brand Test Filter 1").should("be.visible");
+    cy.get("#image-filters-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-filters-field .ng-value span").contains("Test Filter 1").should("be.visible");
 
-    cy.get("#image-accessories-field .ng-value").contains("Test Brand Test Accessory 1").should("be.visible");
+    cy.get("#image-accessories-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-accessories-field .ng-value span").contains("Test Accessory 1").should("be.visible");
 
-    cy.get("#image-software-field .ng-value").contains("Test Brand Test Software 1").should("be.visible");
+    cy.get("#image-software-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-software-field .ng-value span").contains("Test Software 1").should("be.visible");
 
-    cy.get("#image-guiding-telescopes-field .ng-value").contains("Test Brand Test Telescope 3").should("be.visible");
+    cy.get("#image-guiding-telescopes-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-guiding-telescopes-field .ng-value span").contains("Test Telescope 3").should("be.visible");
 
-    cy.get("#image-guiding-cameras-field .ng-value").contains("Test Brand Test Camera 3").should("be.visible");
+    cy.get("#image-guiding-cameras-field .ng-value span").contains("Test Brand").should("be.visible");
+    cy.get("#image-guiding-cameras-field .ng-value span").contains("Test Camera 3").should("be.visible");
   });
 
   it("should prefill the name when saving active preset", () => {
@@ -229,8 +239,11 @@ context("Image edit (existing), test equipment presets", () => {
     cy.wait("@findTelescopes");
 
     cy.get("#image-imaging-telescopes-field .ng-option:first-child").click();
-    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value")
-      .contains("Test Brand Foo 123")
+    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value span")
+      .contains("Test Brand")
+      .should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value span")
+      .contains("Foo 123")
       .should("be.visible");
   });
 

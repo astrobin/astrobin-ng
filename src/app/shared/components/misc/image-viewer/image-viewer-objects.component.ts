@@ -40,7 +40,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             href="#"
             class="value"
           >
-            <span class="name" [innerHTML]="item"></span>
+            <span class="name" [innerHTML]="item | highlight: highlightTerms"></span>
           </a>
 
           <a
@@ -64,7 +64,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
         <ul>
           <li *ngFor="let item of moreObjectsInField">
             <a (click)="objectInFieldClicked($event, item)" href="#" class="value">
-              <span class="name" [innerHTML]="item"></span>
+              <span class="name" [innerHTML]="item | highlight: highlightTerms"></span>
             </a>
           </li>
         </ul>
@@ -75,12 +75,13 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerObjectsComponent extends ImageViewerSectionBaseComponent implements OnChanges {
-  revision: ImageInterface | ImageRevisionInterface;
-  objectsInField: string[];
-  moreObjectsInField: string[];
+  protected revision: ImageInterface | ImageRevisionInterface;
+  protected objectsInField: string[];
+  protected moreObjectsInField: string[];
+  protected highlightTerms: string;
 
   @ViewChild("moreObjectsInFieldTemplate")
-  moreObjectsInFieldTemplate: TemplateRef<any>;
+  protected moreObjectsInFieldTemplate: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -115,6 +116,18 @@ export class ImageViewerObjectsComponent extends ImageViewerSectionBaseComponent
       this.objectsInField = this.solutionService.getObjectsInField(this.revision.solution);
       this.moreObjectsInField = this.objectsInField.slice(10);
       this.objectsInField = this.objectsInField.slice(0, 10);
+    }
+
+    if (changes.searchModel && changes.searchModel.currentValue) {
+      this.highlightTerms = "";
+
+      if (this.searchModel.text?.value) {
+        this.highlightTerms = this.searchModel.text.value;
+      }
+
+      if (this.searchModel.subjects?.value) {
+        this.highlightTerms = " " + this.searchModel.subjects.value.join(" ");
+      }
     }
   }
 
