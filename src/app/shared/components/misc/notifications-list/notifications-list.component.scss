@@ -14,7 +14,6 @@
 
   .notification {
     margin: 0;
-    padding: .75rem .5rem;
 
     .read-indicator {
       cursor: pointer;
@@ -36,8 +35,9 @@
     }
 
     .message {
-      padding: .5rem;
+      padding: 1rem .5rem;
       cursor: pointer;
+      color: var(--lightestGrey);
 
       ::ng-deep {
         a {
@@ -46,8 +46,13 @@
         }
 
         strong {
-          color: var(--brightWhite);
           transition: color .1s ease;
+          color: inherit;
+          font-weight: normal !important;
+          text-decoration: underline;
+          text-decoration-color: var(--lightGrey);
+          text-decoration-thickness: 1px;
+          text-underline-offset: 3px;
         }
       }
 
@@ -60,6 +65,7 @@
 
             strong {
               color: var(--accentColor);
+              text-decoration-color: var(--darkerAccentColor);
             }
           }
         }
