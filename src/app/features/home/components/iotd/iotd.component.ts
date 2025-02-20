@@ -27,8 +27,9 @@ import { fadeInOut } from "@shared/animations";
           'background-image': 'url(' + iotd.thumbnail + ')',
           'background-position': objectPosition || '50% 50%',
           'background-repeat': 'no-repeat',
-          'background-size': 'cover'
+          'background-size': objectScale || 'cover'
         }"
+        role="img"
         class="iotd-image"
       ></a>
 
@@ -282,6 +283,7 @@ import { fadeInOut } from "@shared/animations";
 export class IotdComponent extends BaseComponentDirective implements OnInit {
   protected iotd: IotdInterface;
   protected objectPosition: string;
+  protected objectScale: number;
   protected iotdStats: IotdStatsInterface;
 
   @ViewChild("iotdStatsOffcanvasTemplate") private _iotdStatsOffcanvasTemplate: TemplateRef<any>;
@@ -301,7 +303,9 @@ export class IotdComponent extends BaseComponentDirective implements OnInit {
   ngOnInit() {
     this.iotdApiService.getCurrentIotd().subscribe(iotd => {
       this.iotd = iotd;
-      this.objectPosition = this.imageService.getObjectPosition(iotd);
+      const objectFit = this.imageService.getObjectFit(iotd);
+      this.objectPosition = `${objectFit.position.x}% ${objectFit.position.y}%`;
+      this.objectScale = objectFit.scale;
       this.changeDetectorRef.markForCheck();
     });
   }

@@ -11,6 +11,7 @@ import { ScrollVisibilityDirective } from "@shared/directives/scroll-visibility.
 import { CollapseAnimationDirective } from "@shared/directives/collapsed-animation.directive";
 import { DisableAutoFocusOnTouchDevicesDirective } from "./disable-auto-focus-on-touch-devices.directive";
 import { PreventScrollClickDirective } from "@shared/directives/prevent-scroll-click.directive";
+import { LazyBackgroundDirective } from "@shared/directives/lazy-background.directive";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { PreventScrollClickDirective } from "@shared/directives/prevent-scroll-c
     ScrollVisibilityDirective,
     CollapseAnimationDirective,
     DisableAutoFocusOnTouchDevicesDirective,
-    PreventScrollClickDirective
+    PreventScrollClickDirective,
+    LazyBackgroundDirective
   ],
   exports: [
     EventPreventDefaultDirective,
@@ -37,7 +39,8 @@ import { PreventScrollClickDirective } from "@shared/directives/prevent-scroll-c
     ScrollVisibilityDirective,
     CollapseAnimationDirective,
     DisableAutoFocusOnTouchDevicesDirective,
-    PreventScrollClickDirective
+    PreventScrollClickDirective,
+    LazyBackgroundDirective
   ],
   imports: [CommonModule]
 })

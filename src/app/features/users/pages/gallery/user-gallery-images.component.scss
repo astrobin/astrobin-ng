@@ -31,10 +31,15 @@
       }
     }
 
-    img {
+    [role=img] {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+
+      &,
+      > div {
+        border-radius: .75rem;
+        overflow: hidden;
+      }
     }
 
     astrobin-loading-indicator {

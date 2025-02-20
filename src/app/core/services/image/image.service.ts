@@ -1012,38 +1012,65 @@ export class ImageService extends BaseService {
     });
   }
 
-  getObjectPosition(image: ImageSearchInterface | ImageInterface | FeedItemInterface | IotdInterface): string {
+  getObjectFit(image: ImageSearchInterface | ImageInterface | FeedItemInterface | IotdInterface): {
+    position: {
+      x: number,
+      y: number
+    },
+    scale: number
+  } {
+    const w = this.getW(image);
+    const h = this.getH(image);
+
     if (!image.hasOwnProperty("squareCropping")) {
-      return "50% 50%"; // Fallback to center
+      return { position: { x: 50, y: 50 }, scale: 1 };
     }
 
     if (!(image as (ImageSearchInterface | ImageInterface)).squareCropping) {
-      return "50% 50%"; // Fallback to center
+      return { position: { x: 50, y: 50 }, scale: 1 };
     }
 
     const coords = (image as (ImageSearchInterface | ImageInterface)).squareCropping.split(",").map(Number);
 
-    // Validate that we have exactly 4 numeric coordinates
     if (coords.length !== 4 || coords.some(isNaN)) {
-      return "50% 50%"; // Fallback to center if parsing failed
+      return { position: { x: 50, y: 50 }, scale: 1 };
+    }
+
+    if (coords[0] === 0 && coords[1] === 0 && coords[2] === 0 && coords[3] === 0) {
+      return { position: { x: 50, y: 50 }, scale: 1 };
     }
 
     let [x1, y1, x2, y2] = coords;
 
     x1 = Math.max(0, x1);
     y1 = Math.max(0, y1);
-    x2 = Math.min(this.getW(image), x2);
-    y2 = Math.min(this.getH(image), y2);
+    x2 = Math.min(w, x2);
+    y2 = Math.min(h, y2);
 
-    // Calculate the center of the cropping square
+    // Calculate the center point
     const centerX = (x1 + x2) / 2;
     const centerY = (y1 + y2) / 2;
 
-    // Return the position in the format 'x% y%'
-    const positionX = (centerX / this.getW(image)) * 100;
-    const positionY = (centerY / this.getH(image)) * 100;
+    // Calculate position as percentages
+    const positionX = (centerX / w) * 100;
+    const positionY = (centerY / h) * 100;
 
-    return `${positionX}% ${positionY}%`;
+    // Calculate the scale needed for both dimensions
+    const selectionWidth = x2 - x1;
+    const selectionHeight = y2 - y1;
+    const scaleX = this.getW(image) / selectionWidth;
+    const scaleY = this.getH(image) / selectionHeight;
+
+    // Use the larger scale to ensure the selection area fully covers the thumbnail
+    const scale = Math.max(scaleX, scaleY);
+
+    return {
+      position: {
+        x: positionX,
+        y: positionY
+      },
+      scale: scale
+    };
   }
 
   getW(image: ImageSearchInterface | ImageInterface | FeedItemInterface | IotdInterface) {
