@@ -1,37 +1,39 @@
+@import "mixins";
+
 .popover {
-  box-shadow: 0 0 1rem var(--black);
+  box-shadow: 0 0 2rem rgba(0, 0, 0, .9);
 
   .popover-header {
-    background-color: var(--lightestGrey);
-    color: var(--black);
+    @include darkest-background-texture;
+    color: var(--white);
     font-weight: bold;
-    border-bottom-color: var(--lighterGrey);
+    border-bottom-color: var(--grey);
   }
 
   .popover-body {
+    background: var(--bs-popover-bg);
     padding: 1.5rem 1rem;
     font-size: .85rem;
     line-height: 1.15rem;
-    background-color: var(--white);
-    color: var(--darkestGrey);
+    color: var(--lighterGrey);
 
     h4 {
       font-size: 1rem;
       font-weight: bold;
       margin-bottom: .75rem;
-      color: var(--black);
+      color: var(--white);
     }
 
     strong {
-      color: var(--black);
+      color: var(--white);
     }
   }
 }
 
 .bs-popover-top > .arrow::after, .bs-popover-auto[x-placement^=top] > .arrow::after {
-  border-top-color: var(--white);
+  border-top-color: var(--black);
 }
 
 .bs-popover-bottom > .arrow::after, .bs-popover-auto[x-placement^=bottom] > .arrow::after {
-  border-bottom-color: var(--white);
+  border-bottom-color: var(--black);
 }

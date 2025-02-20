@@ -78,7 +78,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   multiple = false;
 
   @Input()
-  enableSummaryModal = false;
+  enableSummaryPopover = false;
 
   @Input()
   enableVariantSelection = true;

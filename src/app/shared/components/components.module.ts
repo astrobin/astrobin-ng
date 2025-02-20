@@ -63,7 +63,6 @@ import { CountDownComponent } from "@shared/components/misc/count-down/count-dow
 import { ScrollToTopComponent } from "@shared/components/misc/scroll-to-top/scroll-to-top.component";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
-import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
 import { EquipmentItemDisplayNameComponent } from "@shared/components/equipment/equipment-item-display-name/equipment-item-display-name.component";
 import { DirectivesModule } from "@shared/directives/directives.module";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
@@ -309,7 +308,6 @@ const components = [
   ItemBrowserByPropertiesComponent,
   ItemBrowserComponent,
   ItemSummaryComponent,
-  ItemSummaryModalComponent,
   ItemUnapprovedInfoModalComponent,
   MountEditorComponent,
   OthersInBrandComponent,

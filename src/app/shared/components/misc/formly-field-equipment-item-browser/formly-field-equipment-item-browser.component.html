@@ -9,7 +9,7 @@
   [enableCreation]="props.enableCreation"
   [enableFullscreen]="props.enableFullscreen"
   [enableSelectFrozen]="props.enableSelectFrozen !== undefined ? props.enableSelectFrozen : true"
-  [enableSummaryModal]="false"
+  [enableSummaryPopover]="false"
   [enableVariantSelection]="props.enableVariantSelection !== undefined ? props.enableVariantSelection : true"
   [excludeId]="props.excludeId"
   [hideOptionalMarker]="props.hideOptionalMarker"
@@ -40,7 +40,7 @@
         <ng-container *ngFor="let item of recent; let last = last">
           <a (click)="quickAddItem(item)" astrobinEventPreventDefault class="quick-add-item" href="#">
             <astrobin-equipment-item-display-name
-              [enableSummaryModal]="false"
+              [enableSummaryPopover]="false"
               [item]="item"
             ></astrobin-equipment-item-display-name>
           </a>

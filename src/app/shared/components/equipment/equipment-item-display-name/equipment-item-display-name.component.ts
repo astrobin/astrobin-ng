@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -7,7 +7,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { filter, take } from "rxjs/operators";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
 import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
@@ -18,7 +17,8 @@ import { DeviceService } from "@core/services/device.service";
 @Component({
   selector: "astrobin-equipment-item-display-name",
   templateUrl: "./equipment-item-display-name.component.html",
-  styleUrls: ["./equipment-item-display-name.component.scss"]
+  styleUrls: ["./equipment-item-display-name.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EquipmentItemDisplayNameComponent extends BaseComponentDirective implements OnChanges {
   readonly EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
@@ -39,7 +39,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   klassIconColor = "white";
 
   @Input()
-  enableSummaryModal = false;
+  enableSummaryPopover = false;
 
   @Input()
   showBrand = true;
@@ -86,7 +86,8 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
     public readonly equipmentItemService: EquipmentItemService,
     public readonly modalService: NgbModal,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -113,6 +114,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
             )
             .subscribe(brand => {
               this.brandName = brand.name;
+              this.changeDetectorRef.markForCheck();
             });
           this.store$.dispatch(new LoadBrand({ id: this.item.brand }));
         }
@@ -123,7 +125,10 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
       this.equipmentItemService
         .getName$(this.item)
         .pipe(take(1))
-        .subscribe(name => (this.itemName = name.replace(this.cut, "")));
+        .subscribe(name => {
+          this.itemName = name.replace(this.cut, "");
+          this.changeDetectorRef.markForCheck();
+        });
 
       this.nameLink = `/equipment/explorer/${this.item.klass.toLowerCase()}/${this.item.id}`;
     };
@@ -138,6 +143,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
         .subscribe((item: EquipmentItem) => {
           this.item = item;
           _onChanges(item);
+          this.changeDetectorRef.markForCheck();
         });
     } else {
       _onChanges(this.item);
@@ -145,12 +151,11 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   }
 
   openRetailersOffcanvas() {
-    this.offcanvasService.open(this.retailersTemplate, { position: this.deviceService.offcanvasPosition() });
-  }
-
-  openItemSummaryModal(item: EquipmentItemBaseInterface) {
-    const modal: NgbModalRef = this.modalService.open(ItemSummaryModalComponent);
-    modal.componentInstance.item = item;
+    this.offcanvasService.open(this.retailersTemplate, {
+      panelClass: "equipment-item-display-name-retailers-offcanvas",
+      backdropClass: "equipment-item-display-name-retailers-offcanvas-backdrop",
+      position: this.deviceService.offcanvasPosition()
+    });
   }
 
   openItemUnapprovedInfoModal(item: EquipmentItemBaseInterface) {

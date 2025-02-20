@@ -4,52 +4,52 @@
 
 <div class="brand-name-icons">
   <ng-container *ngIf="showBrand">
-  <span *ngIf="!!brandName; else loading" class="brand">
-    <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
+    <span *ngIf="!!brandName; else loading" class="brand">
+      <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
 
-    <ng-container *ngIf="!enableBrandLink || !brandLink">
-      <span [innerHTML]="brandName | highlight: highlightTerms"></span>
-    </ng-container>
-  </span>
+      <ng-container *ngIf="!enableBrandLink || !brandLink">
+        <span [innerHTML]="brandName | highlight: highlightTerms"></span>
+      </ng-container>
+    </span>
   </ng-container>
 
   <span *ngIf="!!itemName; else loading" class="name">
-  <ng-template #nameTemplate>
-    <span [innerHTML]="itemName | highlight: highlightTerms"></span>
-    <a
-      (click)="openItemUnapprovedInfoModal(item)"
-      *ngIf="showItemUnapprovedInfo && item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED"
-      astrobinEventPreventDefault
-      astrobinEventStopPropagation
-      href="#"
-    >
-      <fa-icon icon="asterisk"></fa-icon>
-    </a>
+    <ng-template #nameTemplate>
+      <span [innerHTML]="itemName | highlight: highlightTerms"></span>
+      <a
+        (click)="openItemUnapprovedInfoModal(item)"
+        *ngIf="showItemUnapprovedInfo && item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED"
+        astrobinEventPreventDefault
+        astrobinEventStopPropagation
+        href="#"
+      >
+        <fa-icon icon="asterisk"></fa-icon>
+      </a>
 
-    <fa-icon
-      *ngIf="showFrozenAsAmbiguous && item.frozenAsAmbiguous"
-      [ngbTooltip]="'Frozen as ambiguous' | translate"
-      icon="snowflake"
-    ></fa-icon>
+      <fa-icon
+        *ngIf="showFrozenAsAmbiguous && item.frozenAsAmbiguous"
+        [ngbTooltip]="'Frozen as ambiguous' | translate"
+        icon="snowflake"
+      ></fa-icon>
 
-    <fa-icon
-      *ngIf="item.followed"
-      [ngbTooltip]="'You follow this equipment item' | translate"
-      container="body"
-      icon="bell"
-    ></fa-icon>
-  </ng-template>
+      <fa-icon
+        *ngIf="item.followed"
+        [ngbTooltip]="'You follow this equipment item' | translate"
+        container="body"
+        icon="bell"
+      ></fa-icon>
+    </ng-template>
 
-  <ng-container *ngIf="enableNameLink; else noNameLinkTemplate">
-    <a [routerLink]="nameLink">
+    <ng-container *ngIf="enableNameLink; else noNameLinkTemplate">
+      <a [routerLink]="nameLink">
+        <ng-container [ngTemplateOutlet]="nameTemplate"></ng-container>
+      </a>
+    </ng-container>
+
+    <ng-template #noNameLinkTemplate>
       <ng-container [ngTemplateOutlet]="nameTemplate"></ng-container>
-    </a>
-  </ng-container>
-
-  <ng-template #noNameLinkTemplate>
-    <ng-container [ngTemplateOutlet]="nameTemplate"></ng-container>
-  </ng-template>
-</span>
+    </ng-template>
+  </span>
 
   <a
     *ngIf="
@@ -61,21 +61,23 @@
     astrobinEventPreventDefault
     astrobinEventStopPropagation
     class="btn-retailers"
-    href=""
+    href="#"
   >
     <fa-icon icon="shopping-cart"></fa-icon>
   </a>
 
-  <a
-    *ngIf="enableSummaryModal"
-    (click)="openItemSummaryModal(item)"
-    astrobinEventPreventDefault
+  <button
+    *ngIf="enableSummaryPopover"
+    [ngbPopover]="itemSummaryPopoverTemplate"
     astrobinEventStopPropagation
-    class="btn-info-modal"
-    href="#"
+    astrobinEventPreventDefault
+    class="btn btn-link btn-info-modal btn-no-block"
+    popoverClass="popover-equipment-item-summary"
+    container="body"
+    triggers="click"
   >
     <fa-icon icon="info-circle"></fa-icon>
-  </a>
+  </button>
 </div>
 
 <ng-template #loading>
@@ -113,4 +115,31 @@
       </div>
     </div>
   </ng-template>
+</ng-template>
+
+<ng-template #itemSummaryPopoverTemplate let-pop="ngbPopover">
+  <div class="popover-header d-flex justify-content-between align-items-center gap-3">
+    <span>{{ (item.brandName || ('DYI' | translate)) + ' ' + item.name }}</span>
+    <button type="button" class="btn btn-link link-secondary" (click)="pop.close()">
+      <span aria-hidden="true">
+        <fa-icon icon="times" class="m-0"></fa-icon>
+      </span>
+    </button>
+  </div>
+  <div class="popover-content">
+    <astrobin-equipment-item-summary
+      [item]="item"
+      [showName]="false"
+      [showImage]="false"
+      [showMeta]="false"
+      [showClass]="false"
+      [showStats]="false"
+      [showEditButtons]="false"
+      [showEmptyProperties]="false"
+      [showProperties]="true"
+      [showMostOftenUsedWith]="false"
+      [showSubItem]="false"
+      [striped]="false"
+    ></astrobin-equipment-item-summary>
+  </div>
 </ng-template>
