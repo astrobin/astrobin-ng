@@ -53,19 +53,19 @@ import { WindowRefService } from "@core/services/window-ref.service";
     <ng-template #staticOverlayTemplate>
       <div class="static-overlay-content">
         <span *ngIf="staticOverlay?.includes('comments')">
-          {{ comments | numberSuffix }}
+          <fa-icon icon="comment"></fa-icon> {{ comments | numberSuffix }}
         </span>
 
         <span *ngIf="staticOverlay?.includes('likes')">
-          {{ likes | numberSuffix }}
+          <fa-icon icon="thumbs-up"></fa-icon> {{ likes | numberSuffix }}
         </span>
 
         <span *ngIf="staticOverlay?.includes('bookmarks')">
-          {{ bookmarks | numberSuffix }}
+          <fa-icon icon="bookmark"></fa-icon> {{ bookmarks | numberSuffix }}
         </span>
 
         <span *ngIf="staticOverlay?.includes('views')">
-          {{ views | numberSuffix }}
+          <fa-icon icon="eye"></fa-icon> {{ views | numberSuffix }}
         </span>
 
         <span *ngIf="staticOverlay?.includes('integration') && !!integration" [innerHTML]="integration">
