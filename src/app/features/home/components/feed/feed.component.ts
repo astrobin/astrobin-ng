@@ -144,12 +144,20 @@ enum FeedType {
                       astrobinEventPreventDefault
                       class="image-link"
                     >
-                      <!-- ImageSerializerGallery always only has the regular thumbnail and no more -->
-                      <img
-                        *ngIf="item?.thumbnails?.length"
-                        [alt]="item.title"
-                        [src]="item.thumbnails[0].url"
-                      />
+                      <ng-container *ngIf="imageService.getObjectFit(item) as fit">
+                        <div
+                          [astrobinLazyBackground]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
+                          [highResolutionUrl]="imageService.getThumbnail(item, ImageAlias.HD)"
+                          [useHighResolution]="fit.scale > 4"
+                          [ngStyle]="{
+                            'background-position': fit.position.x + '% ' + fit.position.y + '%',
+                            'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',
+                            'background-repeat': 'no-repeat'
+                          }"
+                          [attr.aria-label]="item.title"
+                          role="img"
+                        ></div>
+                      </ng-container>
 
                       <astrobin-loading-indicator
                         *ngIf="loadingItemId === item.hash || loadingItemId === item.pk.toString()"
@@ -624,4 +632,6 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       model: "image"
     }));
   }
+
+  protected readonly ImageAlias = ImageAlias;
 }
