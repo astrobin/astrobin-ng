@@ -6,14 +6,14 @@
   <ng-container *ngIf="model && model.value">
     <ng-container *ngIf="!!object?.item; else noItemObject">
       <astrobin-equipment-item-display-name
-        [enableSummaryModal]="enableSummaryModal"
+        [enableSummaryPopover]="enableSummaryPopover"
         [item]="object.item"
       ></astrobin-equipment-item-display-name>
     </ng-container>
     <ng-template #noItemObject>
       <astrobin-equipment-item-display-name
         *ngIf="!!object?.value; else loading"
-        [enableSummaryModal]="enableSummaryModal"
+        [enableSummaryPopover]="enableSummaryPopover"
         [itemId]="object.value"
         [itemType]="type"
       ></astrobin-equipment-item-display-name>

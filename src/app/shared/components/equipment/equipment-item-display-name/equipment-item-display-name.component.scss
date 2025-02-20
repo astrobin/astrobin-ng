@@ -1,7 +1,10 @@
+@import "../../../../styles/mixins";
+
 :host {
   display: inline-flex;
   align-items: center;
   gap: .5rem;
+  position: relative;
 
 
   .klass-icon {
@@ -64,12 +67,25 @@
   }
 
   .btn-info-modal {
-    color: var(--lightestGrey);
-    margin-left: .25rem;
+    color: var(--lighterGrey);
     padding: 0 .25rem;
+    position: absolute;
+    top: -.5rem;
+    right: -.5rem;
+    opacity: 0;
+    transition: opacity .2s, color .2s;
+    filter: drop-shadow(0 0 .25rem rgba(0, 0, 0, .5));
 
     fa-icon {
       margin-right: 0;
+      font-size: .85rem;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--white);
+        text-decoration: none;
+      }
     }
   }
 
@@ -95,6 +111,14 @@
       }
     }
   }
+
+  @media (hover: hover) {
+    &:hover {
+      .btn-info-modal {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .offcanvas-retailers {
@@ -107,3 +131,38 @@
   }
 }
 
+::ng-deep {
+  .popover-equipment-item-summary .popover-body {
+    padding: 0 !important;
+
+    .popover-header {
+      @include darkest-background-texture;
+      color: var(--white);
+      padding: .75rem;
+
+      .ng-fa-icon {
+        color: var(--lighterGrey);
+        transition: color .3s;
+
+        @media (hover: hover) {
+          &:hover {
+            color: var(--white);
+          }
+        }
+      }
+    }
+
+    .popover-content {
+      padding: .75rem;
+    }
+
+    .table.properties {
+      margin-top: 0;
+
+      td,
+      th {
+        box-shadow: none;
+      }
+    }
+  }
+}

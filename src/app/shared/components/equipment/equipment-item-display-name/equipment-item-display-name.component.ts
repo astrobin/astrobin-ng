@@ -7,7 +7,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { filter, take } from "rxjs/operators";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
-import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
 import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
@@ -39,7 +38,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   klassIconColor = "white";
 
   @Input()
-  enableSummaryModal = false;
+  enableSummaryPopover = false;
 
   @Input()
   showBrand = true;
@@ -143,11 +142,6 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
 
   openRetailersOffcanvas() {
     this.offcanvasService.open(this.retailersTemplate, { position: this.deviceService.offcanvasPosition() });
-  }
-
-  openItemSummaryModal(item: EquipmentItemBaseInterface) {
-    const modal: NgbModalRef = this.modalService.open(ItemSummaryModalComponent);
-    modal.componentInstance.item = item;
   }
 
   openItemUnapprovedInfoModal(item: EquipmentItemBaseInterface) {
