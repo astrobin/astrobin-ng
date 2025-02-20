@@ -26,6 +26,10 @@ export abstract class ImageViewerSectionBaseComponent extends BaseComponentDirec
   @Input()
   revisionLabel: ImageRevisionInterface["label"] = FINAL_REVISION_LABEL;
 
+  // Used to highlight things on the page.
+  @Input()
+  searchModel: SearchModelInterface;
+
   protected collapsed = false;
   private collapseSubscription: Subscription;
 

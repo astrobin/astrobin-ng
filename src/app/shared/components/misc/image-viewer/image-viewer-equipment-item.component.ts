@@ -25,6 +25,7 @@ export type LegacyEquipmentItem =
          class="value"
       >
         <astrobin-equipment-item-display-name
+          [highlightTerms]="highlightTerms"
           [item]="item"
           [enableKlassIcon]="enableKlassIcon"
           [enableBrandLink]="false"
@@ -46,7 +47,8 @@ export type LegacyEquipmentItem =
              class="klass-icon"
              [src]="'/assets/images/' + attrToIcon[attr] + '-white.png?v=1'"
              alt="" />
-        <span>{{ item.make }} {{ item.name }}</span>
+        <span [innerHTML]="item.make | highlight: highlightTerms"></span>&nbsp;
+        <span [innerHTML]="item.name | highlight: highlightTerms"></span>
       </a>
     </ng-template>
   `,
@@ -68,6 +70,8 @@ export class ImageViewerEquipmentItemComponent {
 
   // Function provided by the parent to build legacy URLs.
   @Input() legacyEquipmentUrl: (item: any) => string;
+
+  @Input() highlightTerms: string;
 
   // Emits when a non-legacy item is clicked.
   @Output() equipmentItemClicked = new EventEmitter<{ event: MouseEvent; item: EquipmentItem }>();

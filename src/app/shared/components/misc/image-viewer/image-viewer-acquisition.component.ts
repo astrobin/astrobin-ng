@@ -127,7 +127,9 @@ interface DetailedFilterSummary {
                     astrobinEventPreventDefault
                     data-toggle="offcanvas"
                   >
-                    {{ humanizeFilterType(filterSummary.filterType) }}
+                    <span [class.highlight]="highlightFilterType(filterSummary.filterType)">
+                      {{ humanizeFilterType(filterSummary.filterType) }}
+                    </span>
                   </a>
                 </div>
               </div>
@@ -241,7 +243,9 @@ interface DetailedFilterSummary {
                     astrobinEventPreventDefault
                     data-toggle="offcanvas"
                   >
-                    {{ humanizeFilterType(filterSummary.filterType) }}
+                    <span [class.highlight]="highlightFilterType(filterSummary.filterType)">
+                      {{ humanizeFilterType(filterSummary.filterType) }}
+                    </span>
                   </a>
                 </div>
               </div>
@@ -375,7 +379,9 @@ interface DetailedFilterSummary {
             </tr>
             <tr>
               <th>
-                {{ humanizeFilterType(filterType) }}
+                <span [class.highlight]="highlightFilterType(filterType)">
+                  {{ humanizeFilterType(filterType) }}
+                </span>
               </th>
               <th class="d-lg-none"></th>
               <th>
@@ -622,6 +628,14 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
       backdropClass: "image-viewer-offcanvas-backdrop",
       position: this.deviceService.offcanvasPosition()
     });
+  }
+
+  protected highlightFilterType(filterType: string): boolean {
+    return (
+      this.searchModel &&
+      this.searchModel.filter_types &&
+      this.searchModel.filter_types.value?.indexOf(filterType) !== -1
+    );
   }
 
   private _buildFilterSummaries(): { filterType: string, summary: FilterSummary }[] {

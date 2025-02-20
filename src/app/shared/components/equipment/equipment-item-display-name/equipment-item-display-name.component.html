@@ -8,14 +8,14 @@
       <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
 
       <ng-container *ngIf="!enableBrandLink || !brandLink">
-        {{ brandName }}
+        <span [innerHTML]="brandName | highlight: highlightTerms"></span>
       </ng-container>
     </span>
   </ng-container>
 
   <span *ngIf="!!itemName; else loading" class="name">
     <ng-template #nameTemplate>
-      {{ itemName }}
+      <span [innerHTML]="itemName | highlight: highlightTerms"></span>
       <a
         (click)="openItemUnapprovedInfoModal(item)"
         *ngIf="showItemUnapprovedInfo && item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED"

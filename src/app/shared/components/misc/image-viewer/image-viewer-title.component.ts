@@ -22,7 +22,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
       <div class="image-viewer-title d-flex flex-row justify-content-between align-items-start gap-2">
         <h2 class="flex-grow-1 mb-0 text-center text-sm-start">
-          {{ image.title }}
+          <span [innerHTML]="image.title | highlight: searchModel?.text?.value"></span>
 
           <small
             *ngIf="currentUserWrapper.user?.id === image.user && image.uploaderName"

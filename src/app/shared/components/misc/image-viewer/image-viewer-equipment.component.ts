@@ -24,6 +24,7 @@ import { EquipmentService } from "@core/services/equipment.service";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
 import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-base-equipment.component";
+import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 
 @Component({
   selector: "astrobin-image-viewer-equipment",
@@ -66,9 +67,10 @@ import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image
                   <div class="equipment-container">
                     <astrobin-image-viewer-equipment-item
                       [attr]="attr"
-                      [items]="this[attr]"
-                      [enableKlassIcon]="false"
                       [attrToIcon]="attrToIcon"
+                      [enableKlassIcon]="false"
+                      [highlightTerms]="highlightTerms"
+                      [items]="this[attr]"
                       [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
                       (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
                       (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)">
@@ -135,6 +137,7 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
     "legacySoftware": "software"
   };
   protected attrToLabel: { [key: string]: string };
+  protected highlightTerms: string;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -162,6 +165,29 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.searchModel && changes.searchModel.currentValue) {
+      this.highlightTerms = "";
+
+      if (this.searchModel.text?.value) {
+        this.highlightTerms = this.searchModel.text.value;
+      }
+
+      for (const klass of [
+        SearchAutoCompleteType.TELESCOPE,
+        SearchAutoCompleteType.CAMERA,
+        SearchAutoCompleteType.MOUNT,
+        SearchAutoCompleteType.FILTER,
+        SearchAutoCompleteType.ACCESSORY,
+        SearchAutoCompleteType.SOFTWARE
+      ]) {
+        if (this.searchModel[klass]?.value) {
+          for (const item of this.searchModel[klass].value) {
+            this.highlightTerms += " " + item.name;
+          }
+        }
+      }
+    }
+
     if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
       const image = this.image;
       this.hasEquipment = this.imageService.hasEquipment(image);
