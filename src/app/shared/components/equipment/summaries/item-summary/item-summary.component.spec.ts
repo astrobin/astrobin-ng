@@ -6,6 +6,9 @@ import { AppModule } from "@app/app.module";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialMainState } from "@app/store/state";
+import { SimpleChange } from "@angular/core";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { of } from "rxjs";
 
 describe("EquipmentItemSummaryComponent", () => {
   let component: ItemSummaryComponent;
@@ -21,6 +24,8 @@ describe("EquipmentItemSummaryComponent", () => {
     fixture = TestBed.createComponent(ItemSummaryComponent);
     component = fixture.componentInstance;
     component.item = CameraGenerator.camera();
+    jest.spyOn(component.equipmentItemService, "getType").mockReturnValue(EquipmentItemType.CAMERA);
+    jest.spyOn(component.cameraService, "getPrintableProperty$").mockReturnValue(of("value"));
     fixture.detectChanges();
   });
 
@@ -33,7 +38,9 @@ describe("EquipmentItemSummaryComponent", () => {
       component.item = CameraGenerator.camera({
         updated: null
       });
-      expect(component.showLastUpdate()).toBe(false);
+      component.ngOnChanges({ item: new SimpleChange(null, component.item, true) });
+      fixture.detectChanges();
+      expect(component.lastUpdateVisible).toBe(false);
     });
 
     it("should be false when `created` and `updated` are less than a minute apart", () => {
@@ -41,7 +48,9 @@ describe("EquipmentItemSummaryComponent", () => {
         created: "2020-01-01T00:00:00",
         updated: "2020-01-01T00:00:30"
       });
-      expect(component.showLastUpdate()).toBe(false);
+      component.ngOnChanges({ item: new SimpleChange(null, component.item, true) });
+      fixture.detectChanges();
+      expect(component.lastUpdateVisible).toBe(false);
     });
 
     it("should be true when `created` and `updated` are a minute apart or more", () => {
@@ -49,7 +58,9 @@ describe("EquipmentItemSummaryComponent", () => {
         created: "2020-01-01T00:00:00",
         updated: "2020-01-01T00:01:00"
       });
-      expect(component.showLastUpdate()).toBe(true);
+      component.ngOnChanges({ item: new SimpleChange(null, component.item, true) });
+      fixture.detectChanges();
+      expect(component.lastUpdateVisible).toBe(true);
     });
   });
 });
