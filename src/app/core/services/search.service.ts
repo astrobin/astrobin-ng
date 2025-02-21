@@ -518,6 +518,7 @@ export class SearchService extends BaseService {
                 label,
                 value: {
                   value: [value],
+                  exactMatch: true,
                   matchType: null
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.TELESCOPE)
@@ -561,6 +562,7 @@ export class SearchService extends BaseService {
                 label,
                 value: {
                   value: [value],
+                  exactMatch: true,
                   matchType: null
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.SENSOR)
@@ -604,6 +606,7 @@ export class SearchService extends BaseService {
                 label,
                 value: {
                   value: [value],
+                  exactMatch: true,
                   matchType: null
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.CAMERA)
@@ -647,6 +650,7 @@ export class SearchService extends BaseService {
                 label,
                 value: {
                   value: [value],
+                  exactMatch: true,
                   matchType: null
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.MOUNT)
@@ -690,6 +694,7 @@ export class SearchService extends BaseService {
                 label,
                 value: {
                   value: [value],
+                  exactMatch: false,
                   matchType: null
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.FILTER)
@@ -733,6 +738,7 @@ export class SearchService extends BaseService {
                 label,
                 value: {
                   value: [value],
+                  exactMatch: false,
                   matchType: null
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.ACCESSORY)
@@ -776,6 +782,7 @@ export class SearchService extends BaseService {
                 label,
                 value: {
                   value: [value],
+                  exactMatch: false,
                   matchType: null
                 },
                 minimumSubscription: this._getMinimumSubscription(SearchAutoCompleteType.SOFTWARE)

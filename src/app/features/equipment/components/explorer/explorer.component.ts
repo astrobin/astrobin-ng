@@ -3,7 +3,7 @@ import { Action, Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@core/services/title/title.service";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -46,6 +46,8 @@ import { UserService } from "@core/services/user.service";
 import { DeviceService } from "@core/services/device.service";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageViewerService } from "@core/services/image-viewer.service";
+import { MatchType } from "@features/search/enums/match-type.enum";
+import { SearchModelInterface } from "@features/search/interfaces/search-model.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -114,6 +116,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   selectedItem: EquipmentItemBaseInterface | null = null;
   cameraVariants: CameraInterface[] = [];
 
+  searchModel: SearchModelInterface;
+
   editMode = false;
   editForm = new FormGroup({});
   editModel: Partial<EditProposalInterface<EquipmentItemBaseInterface>> = {};
@@ -154,7 +158,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       );
     })
   );
+
   protected readonly ImageAlias = ImageAlias;
+  protected readonly MatchType = MatchType;
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
 
@@ -309,6 +315,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       )
       .subscribe(item => {
         this.selectedItem = item;
+        this._setSearchModel();
         this.changeDetectorRef.markForCheck();
       });
 
@@ -608,6 +615,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     }
 
     this.selectedItem = null;
+    this._setSearchModel();
     this._endEditMode();
 
     if (overrideGoBackOnClose ?? this.goBackOnClose) {
@@ -628,6 +636,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       );
     }
 
+    this._setSearchModel();
     this._endEditMode();
     this._loadEditProposals();
     this._loadMarketplaceLineItems();
@@ -837,5 +846,28 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         }));
       }
     });
+  }
+
+  private _setSearchModel() {
+    if (!this.selectedItem) {
+      this.searchModel = null;
+      return;
+    }
+
+    this.searchModel = {
+      itemId: this.selectedItem.id,
+      itemType: EquipmentItemType[this.selectedItem.klass],
+      [this.selectedItem.klass.toLowerCase()]: {
+        value: [
+          {
+            id: this.selectedItem.id,
+            name: (this.selectedItem.brandName || this.translateService.instant("DIY")) +
+              " " +
+              this.selectedItem.name
+          }
+        ],
+        exactMatch: true
+      }
+    };
   }
 }

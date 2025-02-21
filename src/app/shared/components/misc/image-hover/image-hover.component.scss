@@ -15,6 +15,13 @@
   font-weight: bold;
   font-size: .85rem;
   transition: opacity .25s ease-in-out;
+  white-space: nowrap;
+
+  .ng-fa-icon {
+    width: 1em;
+    display: inline-block;
+    margin-right: .25em;
+  }
 }
 
 .hover {

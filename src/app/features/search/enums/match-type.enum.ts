@@ -1,4 +1,5 @@
 export enum MatchType {
   ALL = "ALL",
-  ANY = "ANY"
+  ANY = "ANY",
+  EXACT = "EXACT"
 }

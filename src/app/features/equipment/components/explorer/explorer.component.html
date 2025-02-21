@@ -509,10 +509,7 @@
 
       <astrobin-image-search-card
         [header]="'Acquired with this item' | translate"
-        [model]="{
-          itemId: selectedItem.id,
-          itemType: activeType
-        }"
+        [model]="searchModel"
         [showRetailers]="false"
         [showMarketplaceItems]="false"
         [showStaticOverlay]="false"

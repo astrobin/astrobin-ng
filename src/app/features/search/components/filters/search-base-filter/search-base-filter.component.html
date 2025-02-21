@@ -10,13 +10,25 @@
 
   <span
     (click)="edit()"
-    *ngIf="value?.matchType"
+    *ngIf="value?.value?.length === 1 && value?.exactMatch; else notExactMatchTemplate"
     [ngbTooltip]="'Match type' | translate"
     class="search-filter__match-type"
   >
     <fa-icon icon="equals"></fa-icon>
-    <span>{{ value.matchType }}</span>
+    <span>{{ "EXACT" | translate }}</span>
   </span>
+
+  <ng-template #notExactMatchTemplate>
+    <span
+      (click)="edit()"
+      *ngIf="value?.matchType"
+      [ngbTooltip]="'Match type' | translate"
+      class="search-filter__match-type"
+    >
+      <fa-icon icon="equals"></fa-icon>
+      <span>{{ value.matchType }}</span>
+    </span>
+  </ng-template>
 
   <span
     *ngIf="editFields?.length > 0 || mayBeRemoved || infoText"

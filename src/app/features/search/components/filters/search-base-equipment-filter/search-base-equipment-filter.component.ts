@@ -42,7 +42,7 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
     );
   }
 
-  initFields(key: SearchAutoCompleteType): void {
+  initFields(key: SearchAutoCompleteType, supportsExactMatch = false): void {
     this.editFields = [
       {
         key,
@@ -53,7 +53,11 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
             wrappers: ["default-wrapper"],
             expressions: {
               className: () => {
-                return this.value?.value?.length <= 1 ? "mb-0" : "";
+                if (supportsExactMatch) {
+                  return this.value?.value.length === 0 ? "mb-0" : "";
+                } else {
+                  return this.value?.value?.length <= 1 ? "mb-0" : "";
+                }
               }
             },
             props: {
@@ -74,17 +78,36 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
               }
             }
           },
-          this.getMatchTypeField(`${key}.value`)
+          {
+            key: "exactMatch",
+            type: "toggle",
+            wrappers: ["default-wrapper"],
+            expressions: {
+              className: () => {
+                let value = this.editForm.get(key).value.value;
+                return !value || value?.length > 1 || value?.length === 0 ? "d-none" : "";
+              }
+            },
+            props: {
+              toggleLabel: this.translateService.instant("Exact match"),
+              description: this.translateService.instant(
+                "Only images that use exactly these items (images featuring additional equipment of the same type" +
+                " will be excluded)."
+              ),
+            }
+          },
+          this.getMatchTypeField(`${key}.value`, undefined, supportsExactMatch)
         ]
       }
     ];
   }
 
-  readonly valueTransformer: (value: { value: EquipmentItem["id"][], matchType: MatchType }) => Observable<{
+  readonly valueTransformer: (value: { value: EquipmentItem["id"][], exactMatch: boolean, matchType: MatchType }) => Observable<{
     value: {
       id: EquipmentItem["id"];
       name: string
     }[],
+    exactMatch: boolean,
     matchType: MatchType
   }> = value => {
     return new Observable<{
@@ -92,6 +115,7 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
         id: EquipmentItem["id"];
         name: string
       }[],
+      exactMatch: boolean,
       matchType: MatchType
     }>(observer => {
       const observables$ = value.value.map((id: EquipmentItem["id"]) =>
@@ -111,6 +135,7 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
               equipmentItem.brandName || `(${this.translateService.instant("DIY")})`
             ) + " " + equipmentItem.name
           })),
+          exactMatch: value.exactMatch,
           matchType: value.matchType
         };
         observer.next(newValue);
