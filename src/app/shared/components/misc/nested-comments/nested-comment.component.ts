@@ -102,8 +102,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.html = this.domSanitizer.bypassSecurityTrustHtml(this.comment.html);
-
+    this._updateHtml();
     this._initReplyFields();
     this._initEditFields();
     this._initHighlighted();
@@ -141,10 +140,13 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       .pipe(
         ofType(AppActionTypes.UPDATE_NESTED_COMMENT_SUCCESS),
         filter((action: UpdateNestedCommentSuccess) => action.payload.nestedComment.id === this.comment.id),
+        map((action: UpdateNestedCommentSuccess) => action.payload.nestedComment),
         take(1),
         tap(() => this.cancelEdit())
       )
-      .subscribe(() => {
+      .subscribe(comment => {
+        this.comment = comment;
+        this._updateHtml();
         this.changeDetectorRef.markForCheck();
       });
 
@@ -445,5 +447,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
         currentUserWrapper.userProfile?.enableNewGalleryExperience
       );
     });
+  }
+
+  private _updateHtml(): void {
+    this.html = this.domSanitizer.bypassSecurityTrustHtml(this.comment.html);
   }
 }
