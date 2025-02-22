@@ -732,7 +732,7 @@ export class UtilsService {
       "KR", // South Korea
       "LK", // Sri Lanka
       "SY", // Syria
-      "TW", // Taiwan
+      "TW", // Republic of China (Taiwan)
       "TJ", // Tajikistan
       "TH", // Thailand
       "TL", // Timor-Leste
