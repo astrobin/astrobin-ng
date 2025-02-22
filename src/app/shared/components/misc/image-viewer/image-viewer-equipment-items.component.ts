@@ -16,7 +16,7 @@ export type LegacyEquipmentItem =
   | LegacySoftwareInterface;
 
 @Component({
-  selector: "astrobin-image-viewer-equipment-item",
+  selector: "astrobin-image-viewer-equipment-items",
   template: `
     <ng-container *ngIf="!isLegacy(); else legacyTemplate">
       <a *ngFor="let item of items"
@@ -25,7 +25,7 @@ export type LegacyEquipmentItem =
          class="value"
       >
         <astrobin-equipment-item-display-name
-          [highlightTerms]="highlightTerms"
+          [highlightTerms]="highlightedItems?.includes(item.id) ? null : highlightTerms"
           [item]="item"
           [enableKlassIcon]="enableKlassIcon"
           [enableBrandLink]="false"
@@ -33,7 +33,9 @@ export type LegacyEquipmentItem =
           [enableSummaryPopover]="true"
           [showFrozenAsAmbiguous]="false"
           [showItemUnapprovedInfo]="false"
-          [showRetailers]="true">
+          [showRetailers]="true"
+          [class.highlighted]="highlightedItems?.includes(item.id)"
+        >
         </astrobin-equipment-item-display-name>
       </a>
     </ng-container>
@@ -47,15 +49,14 @@ export type LegacyEquipmentItem =
              class="klass-icon"
              [src]="'/assets/images/' + attrToIcon[attr] + '-white.png?v=1'"
              alt="" />
-        <span [innerHTML]="item.make | highlight: highlightTerms"></span>&nbsp;
-        <span [innerHTML]="item.name | highlight: highlightTerms"></span>
+        <span [innerHTML]="(item.make + ' ' + item.name) | highlight: highlightTerms"></span>&nbsp;
       </a>
     </ng-template>
   `,
-  styleUrls: ["./image-viewer-equipment-item.component.scss"],
+  styleUrls: ["./image-viewer-equipment-items.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageViewerEquipmentItemComponent {
+export class ImageViewerEquipmentItemsComponent {
   // The attribute name (e.g. "telescopes", "legacyCameras", "guidingTelescopes", etc.)
   @Input() attr: string;
 
@@ -72,6 +73,10 @@ export class ImageViewerEquipmentItemComponent {
   @Input() legacyEquipmentUrl: (item: any) => string;
 
   @Input() highlightTerms: string;
+
+  // This is different from `highlightTerms`, which applies to free text search. If the item (as an object) is in the
+  // search parameters, it should be highlighted as a whole.
+  @Input() highlightedItems: EquipmentItem["id"][];
 
   // Emits when a non-legacy item is clicked.
   @Output() equipmentItemClicked = new EventEmitter<{ event: MouseEvent; item: EquipmentItem }>();
