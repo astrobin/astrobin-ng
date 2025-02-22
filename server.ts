@@ -19,7 +19,7 @@ export function app(): express.Express {
   const indexHtml = existsSync(join(distFolder, "index.original.html")) ? "index.original.html" : "index";
   // Determine the proxy target based on the environment
   const isProduction = process.env.NODE_ENV === "production";
-  const target = isProduction ? "https://www.astrobin.com" : "http://localhost:8084";
+  const target = isProduction ? "https://www.astrobin.com" : "http://localhost:8083";
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine(
