@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild, ViewContainerRef } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild, ViewContainerRef } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -9,9 +9,13 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import { filter, take } from "rxjs/operators";
+import { catchError, filter, take } from "rxjs/operators";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { SafeHtml } from "@angular/platform-browser";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { TranslateService } from "@ngx-translate/core";
+import { EMPTY } from "rxjs";
 
 @Component({
   selector: "astrobin-feed-item-image",
@@ -69,12 +73,50 @@ import { WindowRefService } from "@core/services/window-ref.service";
             <astrobin-feed-item-display-text [feedItem]="feedItem"></astrobin-feed-item-display-text>
           </div>
 
-          <div
-            *ngIf="feedItem.data?.commentHtml"
-            [innerHTML]="feedItem.data.commentHtml"
-            class="comment-body"
-          >
-          </div>
+          <ng-container *ngIf="feedItem.data?.commentHtml">
+            <div
+              *ngIf="!translatedHtml"
+              [innerHTML]="feedItem.data.commentHtml"
+              class="comment-body d-md-none"
+            >
+            </div>
+
+            <div
+              *ngIf="translatedHtml"
+              [innerHTML]="translatedHtml"
+              class="comment-body d-md-none"
+            >
+            </div>
+
+            <div
+              *ngIf="
+                feedItem.data?.commentHtml &&
+                feedItem.data?.commentLanguage &&
+                feedItem.data?.commentLanguage !== translateService.currentLang &&
+                currentUserWrapper.user
+              "
+              class="translate-button d-md-none"
+            >
+              <button
+                *ngIf="!translatedHtml"
+                (click)="onTranslateCommentClicked($event)"
+                [class.loading]="translating"
+                class="btn btn-link btn-sm w-auto btn-no-block text-muted text-start mb-3"
+              >
+                <fa-icon icon="language"></fa-icon>
+                {{ "Translate" | translate }}
+              </button>
+
+              <button
+                *ngIf="translatedHtml"
+                (click)="onSeeOriginalCommentClicked($event)"
+                class="btn btn-link btn-sm w-auto btn-no-block text-muted text-start mb-3"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                {{ "See original" | translate }}
+              </button>
+            </div>
+          </ng-container>
 
           <div class="feed-item-extra d-flex justify-content-between align-items-center">
             <span class="timestamp">
@@ -125,13 +167,18 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
   protected userUsername: string;
   protected userDisplayName: string;
   protected userAvatar: string;
+  protected translating = false;
+  protected translatedHtml: SafeHtml;
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly imageViewerService: ImageViewerService,
     public readonly viewContainerRef: ViewContainerRef,
     public readonly modalService: NgbModal,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly jsonApiService: JsonApiService,
+    public readonly translateService: TranslateService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -174,6 +221,39 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
     this.store$.dispatch(new LoadContentTypeById({
       id: this._getContentType()
     }));
+  }
+
+  protected onTranslateCommentClicked(event: MouseEvent): void {
+    event.preventDefault();
+
+    this.translating = true;
+    this.jsonApiService.translate(
+      this.feedItem.data.commentHtml,
+      this.feedItem.data.commentLanguage,
+      this.translateService.currentLang,
+      {
+        format: "html"
+      }
+    ).pipe(
+      catchError(() => {
+        this.translating = false;
+        this.translatedHtml = null;
+        this.changeDetectorRef.markForCheck();
+        return EMPTY;
+      })
+    ).subscribe(response => {
+      if (response) {
+        this.translatedHtml = response.translation;
+        this.translating = false;
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  protected onSeeOriginalCommentClicked(event: MouseEvent): void {
+    event.preventDefault();
+    this.translatedHtml = null;
+    this.changeDetectorRef.markForCheck();
   }
 
   private _getUserAvatar(): string {

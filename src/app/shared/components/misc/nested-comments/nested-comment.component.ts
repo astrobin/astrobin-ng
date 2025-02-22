@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { NestedCommentInterface } from "@core/interfaces/nested-comment.interface";
 import { UserInterface } from "@core/interfaces/user.interface";
-import { filter, map, take, takeUntil, tap } from "rxjs/operators";
+import { catchError, filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -24,6 +24,8 @@ import { UserService } from "@core/services/user.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { DeviceService } from "@core/services/device.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { of } from "rxjs";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -68,6 +70,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   editFields: FormlyFieldConfig[];
   showEditForm = false;
 
+  translating = false;
+  translated = false;
+
   protected approving = false;
   protected deleting = false;
   protected link: string;
@@ -93,7 +98,8 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly deviceService: DeviceService,
-    public readonly domSanitizer: DomSanitizer
+    public readonly domSanitizer: DomSanitizer,
+    public readonly jsonApiService: JsonApiService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
@@ -313,6 +319,35 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
 
       this.popNotificationsService.info(this.translateService.instant("Link copied to clipboard."))
     }
+  }
+
+  onTranslateClicked(event: Event) {
+    event.preventDefault();
+
+    this.translating = true;
+    this.jsonApiService.translate(
+      this.comment.text, this.comment.detectedLanguage, this.translateService.currentLang, {
+        format: "bbcode"
+      }
+    ).pipe(
+      catchError((err) => {
+        this.translating = false;
+        this.changeDetectorRef.markForCheck();
+        return of(null);
+      })
+    ).subscribe(response => {
+      if (response) {
+        this.html = this.domSanitizer.bypassSecurityTrustHtml(response.translation);
+        this.translating = false;
+        this.translated = true;
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  onSeeOriginalClicked(event: Event) {
+    this._updateHtml();
+    this.translated = false;
   }
 
   private _initAvatarUrl(): void {

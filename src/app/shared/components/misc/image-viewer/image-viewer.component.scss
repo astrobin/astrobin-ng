@@ -780,6 +780,10 @@ $largeViewPortBreakpoint: 2561px;
           }
         }
 
+        .btn-translate-description {
+          margin-top: -1.5rem;
+        }
+
         astrobin-nested-comments ::ng-deep {
           .card {
             box-shadow: none;

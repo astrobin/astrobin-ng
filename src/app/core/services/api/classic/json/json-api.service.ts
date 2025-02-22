@@ -62,4 +62,26 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
       .get<{ swEnabled: boolean }>(`${this.configUrl}/common/service-worker-control/`)
       .pipe(map(response => response.swEnabled));
   }
+
+  translate(
+    text: string,
+    sourceLanguage: string,
+    targetLanguage: string,
+    options: {
+      format?: "bbcode" | "html"
+    } = {}
+  ): Observable<{
+    translation: string,
+    remaining_requests: number
+  }> {
+    return this.http.post<{
+      translation: string,
+      remaining_requests: number
+    }>(`${this.configUrl}/common/translate/`, {
+      text,
+      source_language: sourceLanguage,
+      target_language: targetLanguage,
+      format: options.format
+    });
+  }
 }

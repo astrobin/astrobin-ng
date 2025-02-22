@@ -84,6 +84,29 @@
         </button>
 
         <button
+          *ngIf="
+            !translated &&
+            !!currentUserWrapper.user &&
+            comment.detectedLanguage && comment.detectedLanguage !== translateService.currentLang
+          "
+          (click)="onTranslateClicked($event)"
+          [class.loading]="translating"
+          class="btn btn-link btn-sm btn-no-block text-muted"
+        >
+          <fa-icon icon="language"></fa-icon>
+          {{ "Translate" | translate }}
+        </button>
+
+        <button
+          *ngIf="translated"
+          (click)="onSeeOriginalClicked($event)"
+          class="btn btn-link btn-sm btn-no-block text-muted"
+        >
+          <fa-icon icon="language"></fa-icon>
+          {{ "See original" | translate }}
+        </button>
+
+        <button
           (click)="onEditClicked($event)"
           *ngIf="
             !comment.deleted &&

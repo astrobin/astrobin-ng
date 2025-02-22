@@ -20,10 +20,6 @@ img {
   ::ng-deep img {
     max-width: 100%;
   }
-
-  @media (min-width: $md-min) {
-    display: none;
-  }
 }
 
 .feed-item-header-text-1 {
@@ -31,7 +27,6 @@ img {
     color: var(--lightestGrey);
   }
 }
-
 
 astrobin-toggle-property ::ng-deep .count {
   color: var(--lightestGrey) !important;

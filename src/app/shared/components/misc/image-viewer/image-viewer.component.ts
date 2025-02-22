@@ -6,7 +6,7 @@ import { select, Store } from "@ngrx/store";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { DeviceService } from "@core/services/device.service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
+import { catchError, delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageService } from "@core/services/image/image.service";
 import { ActivatedRoute } from "@angular/router";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
@@ -163,6 +163,10 @@ export class ImageViewerComponent
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
   protected searchModel: SearchModelInterface;
+
+  protected translatingDescription = false;
+  protected translatedDescription: SafeHtml;
+
   protected readonly isBrowser: boolean;
 
   private _dataAreaScrollEventSubscription: Subscription;
@@ -194,7 +198,7 @@ export class ImageViewerComponent
     public readonly solutionApiService: SolutionApiService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly cookieService: CookieService,
-    public readonly searchService: SearchService
+    public readonly searchService: SearchService,
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -701,6 +705,50 @@ export class ImageViewerComponent
         this.lightbox.open([{ src, thumb }], 0);
       }
     }
+  }
+
+  protected onTranslateDescriptionClicked(event: Event): void {
+    event.preventDefault();
+
+    let scrollPosition : number;
+
+    if (this.isBrowser) {
+      scrollPosition = this.dataArea.nativeElement.scrollTop;
+    }
+
+    this.translatingDescription = true;
+    this.jsonApiService.translate(
+      this.image.descriptionBbcode || this.image.description,
+      this.image.detectedLanguage,
+      this.translateService.currentLang,
+      {
+        format: !!this.image.descriptionBbcode ? "bbcode" : "html"
+      }
+    ).pipe(
+      catchError(() => {
+        this.translatingDescription = false;
+        this.translatedDescription = null;
+        this.changeDetectorRef.markForCheck();
+        return of(null);
+      })
+    ).subscribe(response => {
+      if (response) {
+        this.translatingDescription = false;
+        this.translatedDescription = this.domSanitizer.bypassSecurityTrustHtml(response.translation);
+
+        if (scrollPosition) {
+          this.dataArea.nativeElement.scrollTop = scrollPosition;
+        }
+
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  protected onSeeOriginalDescriptionClicked(event: Event): void {
+    event.preventDefault();
+    this.translatingDescription = false;
+    this.translatedDescription = null;
   }
 
   private _ignoreNavigationEvent(event: KeyboardEvent): boolean {
