@@ -17,6 +17,13 @@ import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
         <p [innerHTML]="userProfile.about"></p>
       </div>
 
+      <div *ngIf="userProfile.website" class="website">
+        <h5 translate="Website"></h5>
+        <a [href]="userProfile.website" target="_blank" rel="noopener">
+          {{ userProfile.website }}
+        </a>
+      </div>
+
       <div *ngIf="userProfile.job" class="job">
         <h5 translate="Job"></h5>
         <p [innerHTML]="userProfile.job"></p>
