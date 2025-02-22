@@ -439,6 +439,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       this.loading ||
       this.loadingMore ||
       this.next === null ||
+      // If the element is not visible, don't load more.
+      this.elementRef.nativeElement.offsetHeight === 0 ||
       !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
     ) {
       return;
