@@ -10,7 +10,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
-import { LegacyEquipmentItem } from "@shared/components/misc/image-viewer/image-viewer-equipment-item.component";
+import { LegacyEquipmentItem } from "@shared/components/misc/image-viewer/image-viewer-equipment-items.component";
 
 
 @Component({

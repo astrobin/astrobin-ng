@@ -25,6 +25,7 @@ import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
 import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-base-equipment.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-image-viewer-equipment",
@@ -65,16 +66,17 @@ import { SearchAutoCompleteType } from "@features/search/enums/search-auto-compl
                 </th>
                 <td>
                   <div class="equipment-container">
-                    <astrobin-image-viewer-equipment-item
+                    <astrobin-image-viewer-equipment-items
                       [attr]="attr"
                       [attrToIcon]="attrToIcon"
                       [enableKlassIcon]="false"
                       [highlightTerms]="highlightTerms"
+                      [highlightedItems]="highlightedItems[attr]"
                       [items]="this[attr]"
                       [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
                       (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
                       (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)">
-                    </astrobin-image-viewer-equipment-item>
+                    </astrobin-image-viewer-equipment-items>
                   </div>
                 </td>
               </tr>
@@ -121,6 +123,14 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
     "software",
     "legacySoftware"
   ];
+  protected readonly searchParamToImagingAttribute = {
+    [SearchAutoCompleteType.TELESCOPE]: "telescopes",
+    [SearchAutoCompleteType.CAMERA]: "cameras",
+    [SearchAutoCompleteType.MOUNT]: "mounts",
+    [SearchAutoCompleteType.FILTER]: "filters",
+    [SearchAutoCompleteType.ACCESSORY]: "accessories",
+    [SearchAutoCompleteType.SOFTWARE]: "software"
+  };
   protected readonly attrToIcon = {
     "telescopes": "telescope",
     "legacyTelescopes": "telescope",
@@ -136,6 +146,7 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
     "software": "software",
     "legacySoftware": "software"
   };
+  protected highlightedItems: { [key: string]: EquipmentItem["id"][] } = {};
   protected attrToLabel: { [key: string]: string };
   protected highlightTerms: string;
 
@@ -172,7 +183,7 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
         this.highlightTerms = this.searchModel.text.value;
       }
 
-      for (const klass of [
+      for (const searchParam of [
         SearchAutoCompleteType.TELESCOPE,
         SearchAutoCompleteType.CAMERA,
         SearchAutoCompleteType.MOUNT,
@@ -180,9 +191,17 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
         SearchAutoCompleteType.ACCESSORY,
         SearchAutoCompleteType.SOFTWARE
       ]) {
-        if (this.searchModel[klass]?.value) {
-          for (const item of this.searchModel[klass].value) {
-            this.highlightTerms += " " + item.name;
+        if (this.searchModel[searchParam]?.value) {
+          for (const item of this.searchModel[searchParam].value) {
+            try {
+              const attr = this.searchParamToImagingAttribute[searchParam];
+              this.highlightedItems[attr] = this.highlightedItems[attr] || [];
+              if (item.id) {
+                this.highlightedItems[attr].push(item.id);
+              }
+            } catch (e) {
+              console.error("Error highlighting equipment items", e);
+            }
           }
         }
       }

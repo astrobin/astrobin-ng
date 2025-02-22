@@ -83,7 +83,7 @@ import { DeviceService } from "@core/services/device.service";
                     <div
                       [astrobinLazyBackground]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
                       [highResolutionUrl]="imageService.getThumbnail(item, ImageAlias.HD)"
-                      [useHighResolution]="fit.scale > 4 || activeLayout === ImageGalleryLayout.LARGE"
+                      [useHighResolution]="fit.scale > 3 || activeLayout === ImageGalleryLayout.LARGE"
                       [ngStyle]="{
                         'background-position': fit.position.x + '% ' + fit.position.y + '%',
                         'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',

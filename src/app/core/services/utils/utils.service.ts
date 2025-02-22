@@ -732,7 +732,7 @@ export class UtilsService {
       "KR", // South Korea
       "LK", // Sri Lanka
       "SY", // Syria
-      "TW", // Taiwan
+      "TW", // Republic of China (Taiwan)
       "TJ", // Tajikistan
       "TH", // Thailand
       "TL", // Timor-Leste
@@ -986,6 +986,10 @@ export class UtilsService {
     }
 
     return windowRefService.nativeWindow;
+  }
+
+  static clamp(value: number, min: number, max: number): number {
+    return Math.min(Math.max(value, min), max);
   }
 
   supportsDateInput() {

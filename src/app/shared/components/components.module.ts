@@ -146,7 +146,7 @@ import { MasonryLayoutComponent } from "@shared/components/masonry-layout/masonr
 import { ImageGalleryLoadingComponent } from "@shared/components/image-gallery-loading-indicator/image-gallery-loading.component";
 import { IconsModule } from "@shared/icons.module";
 import { ImageViewerGuidingEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-guiding-equipment.component";
-import { ImageViewerEquipmentItemComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment-item.component";
+import { ImageViewerEquipmentItemsComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment-items.component";
 import { NotificationsListComponent } from "@shared/components/misc/notifications-list/notifications-list.component";
 
 const modules = [
@@ -248,7 +248,7 @@ const components = [
   ImageViewerObjectsComponent,
   ImageViewerEquipmentComponent,
   ImageViewerGuidingEquipmentComponent,
-  ImageViewerEquipmentItemComponent,
+  ImageViewerEquipmentItemsComponent,
   ImageViewerRevisionsComponent,
   ImageViewerRevisionSummaryComponent,
   ImageViewerGroupsAndCollectionsComponent,

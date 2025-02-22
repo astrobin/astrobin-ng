@@ -44,7 +44,7 @@ import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image
                 </th>
                 <td>
                   <div class="equipment-container">
-                    <astrobin-image-viewer-equipment-item
+                    <astrobin-image-viewer-equipment-items
                       [attr]="attr"
                       [items]="this[attr]"
                       [enableKlassIcon]="false"
@@ -52,7 +52,7 @@ import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image
                       [legacyEquipmentUrl]="legacyEquipmentUrl.bind(this)"
                       (equipmentItemClicked)="equipmentItemClicked($event.event, $event.item)"
                       (legacyEquipmentItemClicked)="legacyEquipmentItemClicked($event.event, $event.item)">
-                    </astrobin-image-viewer-equipment-item>
+                    </astrobin-image-viewer-equipment-items>
                   </div>
                 </td>
               </tr>

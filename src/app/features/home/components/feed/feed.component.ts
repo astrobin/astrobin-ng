@@ -148,7 +148,7 @@ enum FeedType {
                         <div
                           [astrobinLazyBackground]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
                           [highResolutionUrl]="imageService.getThumbnail(item, ImageAlias.HD)"
-                          [useHighResolution]="fit.scale > 4"
+                          [useHighResolution]="fit.scale > 3"
                           [ngStyle]="{
                             'background-position': fit.position.x + '% ' + fit.position.y + '%',
                             'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',
@@ -439,6 +439,8 @@ export class FeedComponent extends BaseComponentDirective implements OnInit, OnD
       this.loading ||
       this.loadingMore ||
       this.next === null ||
+      // If the element is not visible, don't load more.
+      this.elementRef.nativeElement.querySelector('.tab-pane.active').offsetHeight === 0 ||
       !this.utilsService.isNearBottom(this.windowRefService, this.elementRef)
     ) {
       return;

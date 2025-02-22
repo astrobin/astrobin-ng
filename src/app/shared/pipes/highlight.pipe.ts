@@ -23,17 +23,57 @@ export class HighlightPipe implements PipeTransform {
       return value;
     }
 
-    // Remove punctuation from search string and split into words
-    const sanitizedSearch = search.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').trim();
-    const words = sanitizedSearch.split(' ')
-      .filter(word => word.length > 1 && !this.stopWords.has(word.toLowerCase())); // Exclude single characters and stop words
+    // Extract quoted phrases and individual words
+    const searchTerms: string[] = [];
+    let currentTerm = '';
+    let inQuotes = false;
 
-    if (words.length === 0) {
+    for (let i = 0; i < search.length; i++) {
+      const char = search[i];
+
+      if (char === '"') {
+        if (inQuotes) {
+          // End of quoted phrase
+          if (currentTerm.trim()) {
+            searchTerms.push(currentTerm.trim());
+          }
+          currentTerm = '';
+        }
+        inQuotes = !inQuotes;
+      } else if (char === ' ' && !inQuotes) {
+        // Space outside quotes
+        if (currentTerm.trim()) {
+          searchTerms.push(currentTerm.trim());
+        }
+        currentTerm = '';
+      } else {
+        currentTerm += char;
+      }
+    }
+
+    // Add the last term if exists
+    if (currentTerm.trim()) {
+      searchTerms.push(currentTerm.trim());
+    }
+
+    // Filter out stop words and single characters (unless they're in quotes)
+    const filteredTerms = searchTerms
+      .filter(term => {
+        const isQuoted = search.includes(`"${term}"`);
+        return isQuoted || (term.length > 1 && !this.stopWords.has(term.toLowerCase()));
+      });
+
+    if (filteredTerms.length === 0) {
       return value;
     }
 
-    // Create a regex to match any of the words
-    const regex = new RegExp(`(${words.join('|')})`, 'gi');
+    // Escape special regex characters in the search terms
+    const escapedTerms = filteredTerms.map(term =>
+      term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    );
+
+    // Create a regex to match any of the terms
+    const regex = new RegExp(`(${escapedTerms.join('|')})`, 'gi');
 
     // Replace matches with highlighted span
     return value.replace(regex, '<span class="highlight">$1</span>');

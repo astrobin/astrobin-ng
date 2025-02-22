@@ -22,6 +22,20 @@ astrobin-equipment-item-display-name {
       background: var(--lightGrey);
     }
   }
+
+  &.highlighted {
+    background-color: var(--gold);
+    color: var(--black);
+
+    ::ng-deep {
+      .ng-fa-icon[icon="shopping-cart"] {
+        color: var(--black) !important;
+      }
+      .ng-fa-icon[icon="info-circle"] {
+        color: var(--white) !important;
+      }
+    }
+  }
 }
 
 .legacy-equipment {
