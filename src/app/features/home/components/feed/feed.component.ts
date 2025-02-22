@@ -148,7 +148,7 @@ enum FeedType {
                         <div
                           [astrobinLazyBackground]="imageService.getThumbnail(item, ImageAlias.REGULAR)"
                           [highResolutionUrl]="imageService.getThumbnail(item, ImageAlias.HD)"
-                          [useHighResolution]="fit.scale > 4"
+                          [useHighResolution]="fit.scale > 3"
                           [ngStyle]="{
                             'background-position': fit.position.x + '% ' + fit.position.y + '%',
                             'background-size': fit.scale > 1.5 ? (fit.scale * 100) + '%' : 'cover',

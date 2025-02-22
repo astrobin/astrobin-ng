@@ -988,6 +988,10 @@ export class UtilsService {
     return windowRefService.nativeWindow;
   }
 
+  static clamp(value: number, min: number, max: number): number {
+    return Math.min(Math.max(value, min), max);
+  }
+
   supportsDateInput() {
     if (isPlatformServer(this.platformId)) {
       return false;

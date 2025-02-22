@@ -1052,17 +1052,23 @@ export class ImageService extends BaseService {
     const centerY = (y1 + y2) / 2;
 
     // Calculate position as percentages
-    const positionX = (centerX / w) * 100;
-    const positionY = (centerY / h) * 100;
+    let positionX = (centerX / w) * 100;
+    let positionY = (centerY / h) * 100;
 
     // Calculate the scale needed for both dimensions
     const selectionWidth = x2 - x1;
     const selectionHeight = y2 - y1;
-    const scaleX = this.getW(image) / selectionWidth;
-    const scaleY = this.getH(image) / selectionHeight;
+    const scaleX = w / selectionWidth;
+    const scaleY = h / selectionHeight;
 
-    // Use the larger scale to ensure the selection area fully covers the thumbnail
-    const scale = Math.max(scaleX, scaleY);
+    // Use the smaller scale to ensure the selection area does not exceed the container boundaries
+    const scale = Math.min(scaleX, scaleY);
+
+    if (scale > 1) {
+      // Adjust positions for scaled background image
+      positionX = UtilsService.clamp((positionX * scale - 50) / (scale - 1), 0, 100);
+      positionY = UtilsService.clamp((positionY * scale - 50) / (scale - 1), 0, 100);
+    }
 
     return {
       position: {
