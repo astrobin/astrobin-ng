@@ -376,7 +376,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     if (
       this._isBrowser &&
       // If the element is not visible, don't load more.
-      this.elementRef.nativeElement.offsetHeight !== 0 &&
+      this.elementRef.nativeElement.querySelector('.tab-pane.active').offsetHeight !== 0 ||
       this.utilsService.isNearBottom(this.windowRefService, this.elementRef) &&
       !!this._next &&
       !this.loading &&
