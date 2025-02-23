@@ -28,8 +28,7 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    const maxAttempts = 6; // initial attempt + 3 retries
-    let loadingNotification: any = null;
+    const maxAttempts = 7; // initial attempt + 7 retries
 
     const attemptRequest = (attempt: number): Observable<HttpEvent<any>> => {
       const timeoutMs = 1000 * Math.pow(2, attempt); // 1000, 2000, 4000, 8000, 16000, 32000 ms
@@ -39,9 +38,6 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
           if (attempt < maxAttempts - 1) {
             return attemptRequest(attempt + 1);
           } else {
-            if (loadingNotification) {
-              this.popNotificationsService.remove(loadingNotification.toastId);
-            }
             this.popNotificationsService.error(
               this.translateService.instant(
                 "Sorry, we're having trouble performing a network operation. Please try again later.")
@@ -52,21 +48,6 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
       );
     };
 
-    const notificationTimer = setTimeout(() => {
-      loadingNotification = this.popNotificationsService.info(
-        this.translateService.instant(
-          "Just a heads-up: a network operation is taking a bit longer than usual. Thanks for your patience!"
-        )
-      );
-    }, 10000);
-
-    return attemptRequest(0).pipe(
-      finalize(() => {
-        clearTimeout(notificationTimer);
-        if (loadingNotification) {
-          this.popNotificationsService.remove(loadingNotification.toastId);
-        }
-      })
-    );
+    return attemptRequest(0);
   }
 }
