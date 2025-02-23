@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -141,7 +141,8 @@ enum ArchiveType {
     </ng-template>
   `,
   styleUrls: ["./iotd-tp-archive-page.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IotdTpArchivePageComponent extends BaseComponentDirective implements OnInit {
   readonly title = this.translateService.instant("Image of the day and Top Pick archive");
@@ -181,7 +182,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     public readonly searchService: SearchService,
     public readonly searchFilterService: SearchFilterService,
     public readonly router: Router,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
@@ -193,6 +194,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       this._initTitleAndBreadcrumb();
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -224,6 +226,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
             };
           })
       );
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -263,7 +266,9 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     this.items = null;
 
     this.utilsService.delay(100).subscribe(() => {
-      this._loadData().subscribe();
+      this._loadData().subscribe(() => {
+        this.changeDetectorRef.markForCheck();
+      });
       this.changeDetectorRef.markForCheck();
     });
   }
@@ -285,9 +290,12 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   private _initScrollListener() {
     if (this._isBrowser) {
       fromEvent(this.windowRefService.nativeWindow, "scroll").pipe(
-        auditTime(100),
+        auditTime(250),
         takeUntil(this.destroyed$)
-      ).subscribe(() => this._onScroll());
+      ).subscribe(() => {
+        this._onScroll();
+        this.changeDetectorRef.markForCheck();
+      });
     }
   }
 
@@ -307,12 +315,19 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       doInit();
+      this.changeDetectorRef.markForCheck();
     });
 
     doInit();
   }
 
   private _loadData(): Observable<(IotdArchiveInterface | TopPickArchiveInterface | TopPickNominationArchiveInterface)[]> {
+    if (this._page === 1) {
+      this.loading = true;
+    } else {
+      this.loadingMore = true;
+    }
+
     return new Observable(subscriber => {
       const requestId = ++this._currentRequestId;
 
@@ -334,22 +349,16 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
           break;
       }
 
-      if (this._page === 1) {
-        this.loading = true;
-      } else {
-        this.loadingMore = true;
-      }
-
       api.subscribe(response => {
+        this.loading = false;
+        this.loadingMore = false;
+
         // Only process the response if this request is still current.
         if (requestId !== this._currentRequestId) {
           return;
         }
 
         this._next = response.next;
-
-        this.loading = false;
-        this.loadingMore = false;
 
         switch (this.activeTab) {
           case ArchiveType.IOTD:
@@ -376,14 +385,16 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     if (
       this._isBrowser &&
       // If the element is not visible, don't load more.
-      this.elementRef.nativeElement.querySelector('.tab-pane.active').offsetHeight !== 0 ||
+      this.elementRef.nativeElement.querySelector('.tab-pane.active').offsetHeight !== 0 &&
       this.utilsService.isNearBottom(this.windowRefService, this.elementRef) &&
       !!this._next &&
       !this.loading &&
       !this.loadingMore
     ) {
       this._page++;
-      this._loadData().subscribe();
+      this._loadData().subscribe(() => {
+        this.changeDetectorRef.markForCheck();
+      });
     }
   }
 
@@ -421,6 +432,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
           ];
 
           slideshow.instance.setNavigationContext(newNavigationContext);
+          this.changeDetectorRef.markForCheck();
         });
       });
   }

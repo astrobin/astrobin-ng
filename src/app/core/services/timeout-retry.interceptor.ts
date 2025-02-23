@@ -28,10 +28,10 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    const maxAttempts = 7; // initial attempt + 7 retries
+    const maxAttempts = 6; // initial attempt + 6 retries
 
     const attemptRequest = (attempt: number): Observable<HttpEvent<any>> => {
-      const timeoutMs = 1000 * Math.pow(2, attempt); // 1000, 2000, 4000, 8000, 16000, 32000 ms
+      const timeoutMs = 2000 * Math.pow(2, attempt); // 2000, 4000, 8000, 16000, 32000 ms
       return next.handle(req).pipe(
         timeout(timeoutMs),
         catchError(error => {
