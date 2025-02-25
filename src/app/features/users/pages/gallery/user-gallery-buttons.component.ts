@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -128,13 +128,13 @@ import { UserInterface } from "@core/interfaces/user.interface";
         <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
       </div>
       <div class="offcanvas-body">
-        <p class="alert alert-dark mb-3">
-          {{ "The CSV below contains the images currently visible on this page. To include more images, scroll down to load more before exporting." | translate }}
+        <p class="mb-3">
+          {{ "The CSV below contains the images currently visible on this page. To include more images, scroll down your gallery to load more before exporting." | translate }}
         </p>
 
         <textarea
           class="form-control mb-3"
-          rows="10"
+          rows="15"
           readonly
           [value]="csvContent"
         ></textarea>
@@ -152,7 +152,7 @@ import { UserInterface } from "@core/interfaces/user.interface";
   styleUrls: ["./user-gallery-buttons.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserGalleryButtonsComponent extends BaseComponentDirective implements OnInit {
+export class UserGalleryButtonsComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
   activeLayout: ImageGalleryLayout = ImageGalleryLayout.MEDIUM;
 
@@ -180,6 +180,7 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
   protected csvContent: string = "";
   protected isOwner: boolean = false;
 
+  private _currentUser: UserInterface | null = null;
   private readonly _isBrowser: boolean;
   private readonly _cookieKey = "astrobin-user-gallery-layout";
 
@@ -210,10 +211,17 @@ export class UserGalleryButtonsComponent extends BaseComponentDirective implemen
     this.currentUserWrapper$
       .pipe(takeUntil(this.destroyed$))
       .subscribe(currentUserWrapper => {
+        this._currentUser = currentUserWrapper?.user;
         if (currentUserWrapper && this.user) {
           this.isOwner = currentUserWrapper.user?.id === this.user.id;
         }
       });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.user && changes.user.currentValue) {
+      this.isOwner = this._currentUser?.id === this.user.id
+    }
   }
 
   setLayout(layout: ImageGalleryLayout) {
