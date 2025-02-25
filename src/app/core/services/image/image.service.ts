@@ -440,32 +440,53 @@ export class ImageService extends BaseService {
     return null;
   }
 
-  formatIntegration(integration: number): string {
+  formatIntegration(integration: number, useHtml: boolean = true): string {
     const seconds = integration % 60;
     const minutes = Math.floor(integration / 60) % 60;
     const hours = Math.floor(integration / 3600);
 
-    const hourSymbol = "<span class='symbol'>h</span>";
-    const minuteSymbol = "<span class='symbol'>&prime;</span>";
-    const secondSymbol = "<span class='symbol'>&Prime;</span>";
+    if (useHtml) {
+      const hourSymbol = "<span class='symbol'>h</span>";
+      const minuteSymbol = "<span class='symbol'>&prime;</span>";
+      const secondSymbol = "<span class='symbol'>&Prime;</span>";
 
-    if (hours > 0) {
-      if (minutes > 0 || seconds > 0) {
-        const minutePart = minutes > 0 ? `${minutes}${minuteSymbol} ` : "";
-        const secondPart = seconds > 0 ? `${seconds.toFixed(2).replace(".00", "")}${secondSymbol}` : "";
-        return `${hours}${hourSymbol} ${minutePart}${secondPart}`.trim();
+      if (hours > 0) {
+        if (minutes > 0 || seconds > 0) {
+          const minutePart = minutes > 0 ? `${minutes}${minuteSymbol} ` : "";
+          const secondPart = seconds > 0 ? `${seconds.toFixed(2).replace(".00", "")}${secondSymbol}` : "";
+          return `${hours}${hourSymbol} ${minutePart}${secondPart}`.trim();
+        }
+        return `${hours}${hourSymbol}`;
       }
-      return `${hours}${hourSymbol}`;
-    }
 
-    if (minutes > 0) {
-      if (seconds > 0) {
-        return `${minutes}${minuteSymbol} ${seconds}${secondSymbol}`;
+      if (minutes > 0) {
+        if (seconds > 0) {
+          return `${minutes}${minuteSymbol} ${seconds}${secondSymbol}`;
+        }
+        return `${minutes}${minuteSymbol}`;
       }
-      return `${minutes}${minuteSymbol}`;
-    }
 
-    return `${seconds}${secondSymbol}`;
+      return `${seconds}${secondSymbol}`;
+    } else {
+      // Plain text version
+      if (hours > 0) {
+        if (minutes > 0 || seconds > 0) {
+          const minutePart = minutes > 0 ? `${minutes}m ` : "";
+          const secondPart = seconds > 0 ? `${seconds.toFixed(2).replace(".00", "")}s` : "";
+          return `${hours}h ${minutePart}${secondPart}`.trim();
+        }
+        return `${hours}h`;
+      }
+
+      if (minutes > 0) {
+        if (seconds > 0) {
+          return `${minutes}m ${seconds}s`;
+        }
+        return `${minutes}m`;
+      }
+
+      return `${seconds}s`;
+    }
   };
 
   getDeepSkyIntegration(image: ImageInterface): string {
