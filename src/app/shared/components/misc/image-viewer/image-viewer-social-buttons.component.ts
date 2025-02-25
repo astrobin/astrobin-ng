@@ -113,7 +113,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
     </ng-template>
 
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <div class="social-buttons d-flex gap-2 align-items-center">
+      <div class="buttons d-flex gap-2 align-items-center">
         <ng-container *ngIf="imageContentType && currentUserWrapper$ | async as currentUserWrapper">
           <ng-container
             [ngTemplateOutlet]="likeButtonTemplate"
