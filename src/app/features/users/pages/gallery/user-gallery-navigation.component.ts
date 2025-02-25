@@ -17,6 +17,7 @@ import { DeviceService } from "@core/services/device.service";
 import { FindImagesOptionsInterface } from "@core/services/api/classic/images/image/image-api.service";
 import { ImageGalleryLayout } from "@core/enums/image-gallery-layout.enum";
 import { UpdateUserProfile } from "@features/account/store/auth.actions";
+import { ImageInterface } from "@core/interfaces/image.interface";
 
 type GalleryNavigationComponent =
   "gallery" |
@@ -92,6 +93,8 @@ type GalleryNavigationComponent =
                 [(activeLayout)]="activeLayout"
                 [subsection]="publicGalleryOptions.subsection"
                 [ordering]="publicGalleryOptions.ordering"
+                [images]="galleryImages"
+                [user]="user"
                 (sortChange)="onSortChange($event)"
               ></astrobin-user-gallery-buttons>
 
@@ -103,6 +106,7 @@ type GalleryNavigationComponent =
                 [user]="user"
                 [userProfile]="userProfile"
                 [options]="publicGalleryOptions"
+                (imagesLoaded)="onImagesLoaded($event)"
               ></astrobin-user-gallery-images>
             </ng-template>
           </li>
@@ -120,6 +124,8 @@ type GalleryNavigationComponent =
                 [(activeLayout)]="activeLayout"
                 [subsection]="stagingAreaOptions.subsection"
                 [ordering]="stagingAreaOptions.ordering"
+                [images]="galleryImages"
+                [user]="user"
               ></astrobin-user-gallery-buttons>
               <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
               <astrobin-user-gallery-images
@@ -127,6 +133,7 @@ type GalleryNavigationComponent =
                 [user]="user"
                 [userProfile]="userProfile"
                 [options]="stagingAreaOptions"
+                (imagesLoaded)="onImagesLoaded($event)"
               ></astrobin-user-gallery-images>
             </ng-template>
           </li>
@@ -149,6 +156,8 @@ type GalleryNavigationComponent =
                   (sortChange)="onSortChange($event)"
                   [subsection]="publicGalleryOptions.subsection"
                   [ordering]="publicGalleryOptions.ordering"
+                  [images]="galleryImages"
+                  [user]="user"
                 ></astrobin-user-gallery-buttons>
 
                 <ng-container *ngTemplateOutlet="quickSearchTemplate"></ng-container>
@@ -159,6 +168,7 @@ type GalleryNavigationComponent =
                   [user]="user"
                   [userProfile]="userProfile"
                   [options]="publicGalleryOptions"
+                  (imagesLoaded)="onImagesLoaded($event)"
                 ></astrobin-user-gallery-images>
               </ng-container>
             </ng-template>
@@ -286,6 +296,7 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
   protected searchModel: string | null = null;
   protected publicGalleryOptions: FindImagesOptionsInterface;
   protected stagingAreaOptions: FindImagesOptionsInterface;
+  protected galleryImages: ImageInterface[] = [];
   private _searchSubject: Subject<string> = new Subject<string>();
 
   constructor(
@@ -446,6 +457,11 @@ export class UserGalleryNavigationComponent extends BaseComponentDirective imple
       id: this.userProfile.id,
       displayWipImagesOnPublicGallery: !value
     }));
+  }
+
+  protected onImagesLoaded(images: any[]) {
+    this.galleryImages = images;
+    this.changeDetectorRef.markForCheck();
   }
 
   private _updateSearchModel() {
