@@ -627,30 +627,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
   }
 
   private _buildFilterSummaries(): { filterType: string, summary: FilterSummary }[] {
-    // Get basic filter summaries from service with dates included
     const filterSummaries = this.filterAcquisitionService.buildFilterSummaries(this.image, true);
-
-    // Process moon illumination data if not already done by the service
-    for (const filterType in filterSummaries) {
-      if (filterSummaries[filterType].averageMoonIllumination === undefined) {
-        const moonIlluminations = this.image.deepSkyAcquisitions
-          .filter(
-            acquisition =>
-              acquisition.filter2Type === filterType ||
-              (acquisition.filter2Type === undefined && filterType === "UNKNOWN") ||
-              (acquisition.filterType === undefined && filterType === "UNKNOWN")
-          )
-          .map(acquisition => acquisition.moonIllumination)
-          .filter(moonIllumination => moonIllumination !== null);
-
-        filterSummaries[filterType].averageMoonIllumination = moonIlluminations.reduce(
-          (acc, moonIllumination) => acc + moonIllumination,
-          0
-        ) / moonIlluminations.length || null;
-      }
-    }
-
-    // Get sorted summaries as array
     return this.filterAcquisitionService.getSortedFilterSummaries(filterSummaries);
   }
 
