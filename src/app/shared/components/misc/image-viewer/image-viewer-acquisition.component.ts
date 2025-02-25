@@ -594,6 +594,9 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
   }
 
   humanizeFilterType(filterType: string): string {
+    // Using filterAcquisitionService.humanizeFilterType since this particular
+    // method in FilterAcquisitionService is specifically for handling filter
+    // types from acquisitions, which is different from just the label.
     return this.filterAcquisitionService.humanizeFilterType(filterType);
   }
 

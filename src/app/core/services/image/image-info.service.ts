@@ -32,7 +32,7 @@ export class ImageInfoService {
     // Telescopes
     let telescopesLabel: string;
     if (image.imagingTelescopes2?.length === 1) {
-      telescopesLabel = this.equipmentService.humanizeTelescopeType(image.imagingTelescopes2[0]);
+      telescopesLabel = this.equipmentService.humanizeTelescopeLabel(image.imagingTelescopes2[0]);
     } else {
       telescopesLabel = this.translateService.instant("Optics");
     }
@@ -40,7 +40,7 @@ export class ImageInfoService {
     // Cameras
     let camerasLabel: string;
     if (image.imagingCameras2?.length === 1) {
-      camerasLabel = this.equipmentService.humanizeCameraType(image.imagingCameras2[0]);
+      camerasLabel = this.equipmentService.humanizeCameraLabel(image.imagingCameras2[0]);
     } else if (image.imagingCameras?.length === 1) {
       camerasLabel = this.translateService.instant("Camera");
     } else {
@@ -48,22 +48,39 @@ export class ImageInfoService {
     }
 
     // Mounts
-    const mountsLabel = (image.mounts2?.length || 0) + (image.mounts?.length || 0) === 1
-      ? this.translateService.instant("Mount")
-      : this.translateService.instant("Mounts");
+    let mountsLabel: string;
+    if ((image.mounts2?.length || 0) + (image.mounts?.length || 0) === 1) {
+      if (image.mounts2?.length === 1) {
+        mountsLabel = this.equipmentService.humanizeMountLabel(image.mounts2[0]);
+      } else {
+        mountsLabel = this.translateService.instant("Mount");
+      }
+    } else {
+      mountsLabel = this.translateService.instant("Mounts");
+    }
 
     // Filters
-    const filtersLabel = (image.filters2?.length || 0) + (image.filters?.length || 0) === 1
-      ? this.translateService.instant("Filter")
-      : this.translateService.instant("Filters");
+    let filtersLabel: string;
+    if ((image.filters2?.length || 0) + (image.filters?.length || 0) === 1) {
+      if (image.filters2?.length === 1) {
+        filtersLabel = this.equipmentService.humanizeFilterLabel(image.filters2[0]);
+      } else {
+        filtersLabel = this.translateService.instant("Filter");
+      }
+    } else {
+      filtersLabel = this.translateService.instant("Filters");
+    }
 
     // Accessories
-    const accessoriesLabel = (image.accessories2?.length || 0) + (image.accessories?.length || 0) === 1
-      ? this.translateService.instant("Accessory")
-      : this.translateService.instant("Accessories");
+    let accessoriesLabel: string;
+    if ((image.accessories2?.length || 0) + (image.accessories?.length || 0) === 1) {
+      accessoriesLabel = this.equipmentService.humanizeAccessoryLabel();
+    } else {
+      accessoriesLabel = this.translateService.instant("Accessories");
+    }
 
     // Software
-    const softwareLabel = this.translateService.instant("Software");
+    const softwareLabel = this.equipmentService.humanizeSoftwareLabel();
 
     return {
       telescopes: telescopesLabel,

@@ -17,8 +17,12 @@ describe("ImageInfoService", () => {
     };
 
     equipmentService = {
-      humanizeTelescopeType: jest.fn().mockReturnValue("Refractor"),
-      humanizeCameraType: jest.fn().mockReturnValue("DSLR")
+      humanizeTelescopeLabel: jest.fn().mockReturnValue("Telescope"),
+      humanizeCameraLabel: jest.fn().mockReturnValue("Camera"),
+      humanizeMountLabel: jest.fn().mockReturnValue("Mount"),
+      humanizeFilterLabel: jest.fn().mockReturnValue("Filter"),
+      humanizeAccessoryLabel: jest.fn().mockReturnValue("Accessory"),
+      humanizeSoftwareLabel: jest.fn().mockReturnValue("Software")
     };
 
     filterAcquisitionService = {
@@ -56,17 +60,19 @@ describe("ImageInfoService", () => {
 
       const labels = service.getEquipmentLabels(mockImage as ImageInterface);
 
-      expect(labels.telescopes).toBe("Refractor");
-      expect(labels.cameras).toBe("DSLR");
+      expect(labels.telescopes).toBe("Telescope");
+      expect(labels.cameras).toBe("Camera");
       expect(labels.mounts).toBe("Mount");
       expect(labels.filters).toBe("Filter");
       expect(labels.accessories).toBe("Accessory");
       expect(labels.software).toBe("Software");
 
-      expect(translateService.instant).toHaveBeenCalledWith("Mount");
-      expect(translateService.instant).toHaveBeenCalledWith("Filter");
-      expect(translateService.instant).toHaveBeenCalledWith("Accessory");
-      expect(translateService.instant).toHaveBeenCalledWith("Software");
+      expect(equipmentService.humanizeTelescopeLabel).toHaveBeenCalled();
+      expect(equipmentService.humanizeCameraLabel).toHaveBeenCalled();
+      expect(equipmentService.humanizeMountLabel).toHaveBeenCalled();
+      expect(equipmentService.humanizeFilterLabel).toHaveBeenCalled();
+      expect(equipmentService.humanizeAccessoryLabel).toHaveBeenCalled();
+      expect(equipmentService.humanizeSoftwareLabel).toHaveBeenCalled();
     });
 
     it("should get plural labels for multiple items", () => {
@@ -93,7 +99,6 @@ describe("ImageInfoService", () => {
       expect(translateService.instant).toHaveBeenCalledWith("Mounts");
       expect(translateService.instant).toHaveBeenCalledWith("Filters");
       expect(translateService.instant).toHaveBeenCalledWith("Accessories");
-      expect(translateService.instant).toHaveBeenCalledWith("Software");
     });
 
     it("should handle legacy equipment", () => {
