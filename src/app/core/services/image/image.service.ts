@@ -441,52 +441,38 @@ export class ImageService extends BaseService {
   }
 
   formatIntegration(integration: number, useHtml: boolean = true): string {
+    // Handle NaN case
+    if (isNaN(integration)) {
+      return useHtml ? `0<span class='symbol'>&Prime;</span>` : "0s";
+    }
+    
     const seconds = integration % 60;
     const minutes = Math.floor(integration / 60) % 60;
     const hours = Math.floor(integration / 3600);
 
-    if (useHtml) {
-      const hourSymbol = "<span class='symbol'>h</span>";
-      const minuteSymbol = "<span class='symbol'>&prime;</span>";
-      const secondSymbol = "<span class='symbol'>&Prime;</span>";
+    // Define symbols based on mode (HTML or plain text)
+    const hourSymbol = useHtml ? "<span class='symbol'>h</span>" : "h";
+    const minuteSymbol = useHtml ? "<span class='symbol'>&prime;</span>" : "m";
+    const secondSymbol = useHtml ? "<span class='symbol'>&Prime;</span>" : "s";
 
-      if (hours > 0) {
-        if (minutes > 0 || seconds > 0) {
-          const minutePart = minutes > 0 ? `${minutes}${minuteSymbol} ` : "";
-          const secondPart = seconds > 0 ? `${seconds.toFixed(2).replace(".00", "")}${secondSymbol}` : "";
-          return `${hours}${hourSymbol} ${minutePart}${secondPart}`.trim();
-        }
-        return `${hours}${hourSymbol}`;
+    // Format the integration time using the appropriate symbols
+    if (hours > 0) {
+      if (minutes > 0 || seconds > 0) {
+        const minutePart = minutes > 0 ? `${minutes}${minuteSymbol} ` : "";
+        const secondPart = seconds > 0 ? `${seconds.toFixed(2).replace(".00", "")}${secondSymbol}` : "";
+        return `${hours}${hourSymbol} ${minutePart}${secondPart}`.trim();
       }
-
-      if (minutes > 0) {
-        if (seconds > 0) {
-          return `${minutes}${minuteSymbol} ${seconds}${secondSymbol}`;
-        }
-        return `${minutes}${minuteSymbol}`;
-      }
-
-      return `${seconds}${secondSymbol}`;
-    } else {
-      // Plain text version
-      if (hours > 0) {
-        if (minutes > 0 || seconds > 0) {
-          const minutePart = minutes > 0 ? `${minutes}m ` : "";
-          const secondPart = seconds > 0 ? `${seconds.toFixed(2).replace(".00", "")}s` : "";
-          return `${hours}h ${minutePart}${secondPart}`.trim();
-        }
-        return `${hours}h`;
-      }
-
-      if (minutes > 0) {
-        if (seconds > 0) {
-          return `${minutes}m ${seconds}s`;
-        }
-        return `${minutes}m`;
-      }
-
-      return `${seconds}s`;
+      return `${hours}${hourSymbol}`;
     }
+
+    if (minutes > 0) {
+      if (seconds > 0) {
+        return `${minutes}${minuteSymbol} ${seconds}${secondSymbol}`;
+      }
+      return `${minutes}${minuteSymbol}`;
+    }
+
+    return `${seconds}${secondSymbol}`;
   };
 
   getDeepSkyIntegration(image: ImageInterface): string {
