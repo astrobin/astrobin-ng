@@ -135,7 +135,7 @@ describe("ImageInfoService", () => {
 
   describe("formatEquipmentItem", () => {
     it("should format item with brand and name", () => {
-      const item = { brand: "Brand", name: "Item" } as any;
+      const item = { brand: 1, brandName: "Brand", name: "Item" } as any;
       expect(service.formatEquipmentItem(item)).toBe("Brand Item");
     });
 
