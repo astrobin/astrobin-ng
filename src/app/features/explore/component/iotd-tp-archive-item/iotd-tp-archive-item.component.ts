@@ -68,7 +68,7 @@ export class IotdTpArchiveItemComponent extends BaseComponentDirective implement
   }
 
   ngOnInit(): void {
-    this.thumbnailUrl = this.item.image.thumbnails.find(thumbnail => thumbnail.alias = ImageAlias.REGULAR)?.url;
+    this.thumbnailUrl = this.item.image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.REGULAR)?.url;
     this.date = (this.item as any).date ? (this.item as any).date : this.item.created;
 
     this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
