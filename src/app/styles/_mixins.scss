@@ -114,3 +114,24 @@ $darkest-background-texture: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAA
   padding: .125rem;
   border-radius: .125rem;
 }
+
+@mixin equipment-item-pill {
+  display: inline-block;
+  color: var(--lightestGrey);
+  background: var(--grey);
+  border-radius: .5rem;
+  padding: .25rem .75rem;
+
+  ::ng-deep {
+    .brand {
+      font-weight: normal !important;
+      color: var(--white);
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background: var(--lightGrey);
+    }
+  }
+}
