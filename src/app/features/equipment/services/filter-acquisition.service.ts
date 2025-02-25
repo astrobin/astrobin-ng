@@ -35,7 +35,7 @@ export class FilterAcquisitionService {
 
     if (filterType === "UNKNOWN" || filterType === "OTHER" || filterType === "CLEAR_OR_COLOR") {
       if (acquisition.filter2) {
-        filterType = `${acquisition.filter2Brand} ${acquisition.filter2Name}`;
+        filterType = `${acquisition.filter2Brand || this.translateService.instant("DIY")} ${acquisition.filter2Name}`;
       } else if (acquisition.filter) {
         filterType = `${acquisition.filterMake} ${acquisition.filterName}`;
       }
@@ -46,7 +46,7 @@ export class FilterAcquisitionService {
 
   /**
    * Normalizes a duration value for consistent display
-   * 
+   *
    * This fixes a TypeError that occurred when calling toString() on null values.
    * The method now safely handles null/undefined values by returning "0".
    * It also ensures consistent formatting of numbers by removing trailing zeros
@@ -62,11 +62,11 @@ export class FilterAcquisitionService {
 
   /**
    * Builds filter summaries from image acquisition data
-   * 
+   *
    * This method incorporates various safety checks to handle potential null/undefined values
-   * in acquisition data. It aggregates acquisition data by filter type, calculates total integration 
+   * in acquisition data. It aggregates acquisition data by filter type, calculates total integration
    * time, and properly handles cases where frames have different exposure durations.
-   * 
+   *
    * The implementation is defensive against:
    * - null/undefined image parameter
    * - null/missing deepSkyAcquisitions array
@@ -158,19 +158,19 @@ export class FilterAcquisitionService {
     filterSummaryArray.sort((a, b) => {
       let priorityA: number;
       let priorityB: number;
-      
+
       try {
         priorityA = FilterTypePriority[a.filterType as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
       } catch (e) {
         priorityA = Number.MAX_SAFE_INTEGER;
       }
-      
+
       try {
         priorityB = FilterTypePriority[b.filterType as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
       } catch (e) {
         priorityB = Number.MAX_SAFE_INTEGER;
       }
-      
+
       return priorityA - priorityB;
     });
 

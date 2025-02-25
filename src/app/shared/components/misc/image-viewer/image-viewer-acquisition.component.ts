@@ -658,16 +658,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     const detailedFilterSummaries: { [key: string]: DetailedFilterSummary } = {};
 
     this.image.deepSkyAcquisitions.forEach(acquisition => {
-      let filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
-
-      if (filterType === "UNKNOWN" || filterType === "OTHER" || filterType === "CLEAR_OR_COLOR") {
-        if (acquisition.filter2) {
-          filterType = `${acquisition.filter2Brand} ${acquisition.filter2Name}`;
-        } else if (acquisition.filter) {
-          filterType = `${acquisition.filterMake} ${acquisition.filterName}`;
-        }
-      }
-
+      const filterType = this.filterAcquisitionService.determineFilterType(acquisition);
       const name = acquisition.filter2Name || acquisition.filterName;
       const brand = acquisition.filter2Brand || acquisition.filterMake || this.translateService.instant("DIY");
       const date = acquisition.date;
