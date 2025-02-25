@@ -18,8 +18,8 @@ import { MainState } from "@app/store/state";
 import { UserService } from "@core/services/user.service";
 import { DatePipe } from "@angular/common";
 import { EquipmentService } from "@core/services/equipment.service";
-import { FilterTypePriority } from "@features/equipment/types/filter.interface";
-import { FilterService } from "@features/equipment/services/filter.service";
+import { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
+import { ImageInfoService } from "@core/services/image/image-info.service";
 
 enum SharingMode {
   LINK = "link",
@@ -252,7 +252,8 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
     public readonly utilsService: UtilsService,
     public readonly changeDetectorRef: ChangeDetectorRef,
     private readonly datePipe: DatePipe,
-    private readonly filterService: FilterService
+    private readonly filterAcquisitionService: FilterAcquisitionService,
+    private readonly imageInfoService: ImageInfoService
   ) {
     super(store$);
   }
@@ -490,47 +491,7 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
    * Builds filter summaries from image acquisition data
    */
   private buildFilterSummaries(): { [key: string]: { totalIntegration: number, number: number, duration: string } } {
-    const filterSummaries: { [key: string]: { totalIntegration: number, number: number, duration: string } } = {};
-
-    if (this.image.deepSkyAcquisitions?.length > 0) {
-      this.image.deepSkyAcquisitions.forEach(acquisition => {
-        let filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
-
-        if (filterType === "UNKNOWN" || filterType === "OTHER" || filterType === "CLEAR_OR_COLOR") {
-          if (acquisition.filter2) {
-            filterType = `${acquisition.filter2Brand} ${acquisition.filter2Name}`;
-          } else if (acquisition.filterMake && acquisition.filterName) {
-            filterType = acquisition.filterMake + " " + acquisition.filterName;
-          }
-        }
-
-        const duration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
-
-        if (!filterSummaries[filterType]) {
-          filterSummaries[filterType] = {
-            totalIntegration: 0,
-            number: 0,
-            duration
-          };
-        }
-
-        if (acquisition.number !== null && acquisition.duration !== null) {
-          filterSummaries[filterType].totalIntegration += acquisition.number * parseFloat(acquisition.duration);
-
-          const fixedAcquisitionDuration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
-          const filterExistingDuration = parseFloat(filterSummaries[filterType].duration).toFixed(2).replace(".00", "");
-
-          if (filterExistingDuration === fixedAcquisitionDuration) {
-            filterSummaries[filterType].number += acquisition.number;
-          } else {
-            filterSummaries[filterType].number = null;
-            filterSummaries[filterType].duration = null;
-          }
-        }
-      });
-    }
-
-    return filterSummaries;
+    return this.filterAcquisitionService.buildFilterSummaries(this.image);
   }
 
   /**
@@ -539,37 +500,7 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
   private addFilterSummaries(lines: string[], filterSummaries: {
     [key: string]: { totalIntegration: number, number: number, duration: string }
   }): void {
-    if (Object.keys(filterSummaries).length > 0) {
-      lines.push("");
-      lines.push(this.translateService.instant("Integration per filter") + ":");
-
-      // Get filter types and sort them by priority
-      const sortedFilterTypes = Object.keys(filterSummaries).sort((a, b) => {
-        const priorityA = FilterTypePriority[a as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
-        const priorityB = FilterTypePriority[b as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
-        return priorityA - priorityB;
-      });
-
-      for (const filterType of sortedFilterTypes) {
-        const summary = filterSummaries[filterType];
-        const integrationStr = this.imageService.formatIntegration(summary.totalIntegration, false); // Use plain text format
-        let framesStr = "";
-
-        if (summary.number && summary.duration) {
-          framesStr = ` (${summary.number} × ${summary.duration}')`;
-        }
-
-        // Humanize the filter type if possible
-        let humanizedFilterType = this.filterService.humanizeTypeShort(filterType as any) || filterType;
-
-        // Match image-viewer-acquisition.component.ts behavior: display UNKNOWN as "No filter"
-        if (filterType === "UNKNOWN") {
-          humanizedFilterType = this.translateService.instant("No filter");
-        }
-
-        lines.push(`- ${humanizedFilterType}: ${integrationStr}${framesStr}`);
-      }
-    }
+    this.imageInfoService.addFilterSummaries(lines, filterSummaries, this.imageService);
   }
 
   /**
@@ -590,229 +521,9 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
    * Adds equipment details, including telescopes, cameras, mounts, etc.
    */
   private addEquipmentDetails(lines: string[]): void {
-    if (this.imageService.hasEquipment(this.image)) {
-      lines.push(this.translateService.instant("Equipment") + ":");
-
-      // Determine proper singular/plural labels for each equipment type
-      const labels = this.getEquipmentLabels();
-
-      // Add equipment by type
-      this.addTelescopesEquipment(lines, labels.telescopes);
-      this.addCamerasEquipment(lines, labels.cameras);
-      this.addMountsEquipment(lines, labels.mounts);
-      this.addFiltersEquipment(lines, labels.filters);
-      this.addAccessoriesEquipment(lines, labels.accessories);
-      this.addFocalReducersEquipment(lines);
-      this.addSoftwareEquipment(lines, labels.software);
-
-      lines.push("");
-    }
+    this.imageInfoService.addEquipmentDetails(this.image, lines);
   }
 
-  /**
-   * Gets equipment type labels (singular or plural based on quantity)
-   */
-  private getEquipmentLabels(): {
-    telescopes: string;
-    cameras: string;
-    mounts: string;
-    filters: string;
-    accessories: string;
-    software: string;
-  } {
-    // Telescopes
-    let telescopesLabel: string;
-    if (this.image.imagingTelescopes2?.length === 1) {
-      telescopesLabel = this.equipmentService.humanizeTelescopeType(this.image.imagingTelescopes2[0]);
-    } else if (this.image.imagingTelescopes?.length === 1) {
-      telescopesLabel = this.translateService.instant("Optics");
-    } else {
-      telescopesLabel = this.translateService.instant("Optics");
-    }
-
-    // Cameras
-    let camerasLabel: string;
-    if (this.image.imagingCameras2?.length === 1) {
-      camerasLabel = this.equipmentService.humanizeCameraType(this.image.imagingCameras2[0]);
-    } else if (this.image.imagingCameras?.length === 1) {
-      camerasLabel = this.translateService.instant("Camera");
-    } else {
-      camerasLabel = this.translateService.instant("Cameras");
-    }
-
-    // Mounts
-    const mountsLabel = (this.image.mounts2?.length || 0) + (this.image.mounts?.length || 0) === 1
-      ? this.translateService.instant("Mount")
-      : this.translateService.instant("Mounts");
-
-    // Filters
-    const filtersLabel = (this.image.filters2?.length || 0) + (this.image.filters?.length || 0) === 1
-      ? this.translateService.instant("Filter")
-      : this.translateService.instant("Filters");
-
-    // Accessories
-    const accessoriesLabel = (this.image.accessories2?.length || 0) + (this.image.accessories?.length || 0) === 1
-      ? this.translateService.instant("Accessory")
-      : this.translateService.instant("Accessories");
-
-    // Software
-    const softwareLabel = this.translateService.instant("Software");
-
-    return {
-      telescopes: telescopesLabel,
-      cameras: camerasLabel,
-      mounts: mountsLabel,
-      filters: filtersLabel,
-      accessories: accessoriesLabel,
-      software: softwareLabel
-    };
-  }
-
-  /**
-   * Adds telescope equipment information
-   */
-  private addTelescopesEquipment(lines: string[], label: string): void {
-    // Telescopes (newer version)
-    if (this.image.imagingTelescopes2?.length > 0) {
-      const telescopes = this.image.imagingTelescopes2.map(telescope =>
-        `${telescope.brandName} ${telescope.name}`
-      );
-      lines.push(`- ${label}: ${telescopes.join(", ")}`);
-    }
-
-    // Telescopes (legacy)
-    if (this.image.imagingTelescopes?.length > 0) {
-      const telescopes = this.image.imagingTelescopes.map(telescope =>
-        telescope.make ? `${telescope.make} ${telescope.name}` : telescope.name
-      );
-      lines.push(`- ${label}: ${telescopes.join(", ")}`);
-    }
-  }
-
-  /**
-   * Adds camera equipment information
-   */
-  private addCamerasEquipment(lines: string[], label: string): void {
-    // Cameras (newer version)
-    if (this.image.imagingCameras2?.length > 0) {
-      const cameras = this.image.imagingCameras2.map(camera =>
-        `${camera.brandName} ${camera.name}`
-      );
-      lines.push(`- ${label}: ${cameras.join(", ")}`);
-    }
-
-    // Cameras (legacy)
-    if (this.image.imagingCameras?.length > 0) {
-      const cameras = this.image.imagingCameras.map(camera =>
-        camera.make ? `${camera.make} ${camera.name}` : camera.name
-      );
-      lines.push(`- ${label}: ${cameras.join(", ")}`);
-    }
-  }
-
-  /**
-   * Adds mount equipment information
-   */
-  private addMountsEquipment(lines: string[], label: string): void {
-    // Mounts (newer version)
-    if (this.image.mounts2?.length > 0) {
-      const mounts = this.image.mounts2.map(mount =>
-        `${mount.brandName} ${mount.name}`
-      );
-      lines.push(`- ${label}: ${mounts.join(", ")}`);
-    }
-
-    // Mounts (legacy)
-    if (this.image.mounts?.length > 0) {
-      const mounts = this.image.mounts.map(mount =>
-        mount.make ? `${mount.make} ${mount.name}` : mount.name
-      );
-      lines.push(`- ${label}: ${mounts.join(", ")}`);
-    }
-  }
-
-  /**
-   * Adds filter equipment information
-   */
-  private addFiltersEquipment(lines: string[], label: string): void {
-    // Filters (newer version)
-    if (this.image.filters2?.length > 0) {
-      const filters = this.image.filters2.map(filter =>
-        `${filter.brandName} ${filter.name}`
-      );
-      lines.push(`- ${label}: ${filters.join(", ")}`);
-    }
-
-    // Filters (legacy)
-    if (this.image.filters?.length > 0) {
-      const filters = this.image.filters.map(filter =>
-        filter.make ? `${filter.make} ${filter.name}` : filter.name
-      );
-      lines.push(`- ${label}: ${filters.join(", ")}`);
-    }
-  }
-
-  /**
-   * Adds accessories equipment information
-   */
-  private addAccessoriesEquipment(lines: string[], label: string): void {
-    // Accessories (newer version)
-    if (this.image.accessories2?.length > 0) {
-      const accessories = this.image.accessories2.map(accessory =>
-        `${accessory.brandName} ${accessory.name}`
-      );
-      lines.push(`- ${label}: ${accessories.join(", ")}`);
-    }
-
-    // Accessories (legacy)
-    if (this.image.accessories?.length > 0) {
-      const accessories = this.image.accessories.map(accessory =>
-        accessory.make ? `${accessory.make} ${accessory.name}` : accessory.name
-      );
-      lines.push(`- ${label}: ${accessories.join(", ")}`);
-    }
-  }
-
-  /**
-   * Adds focal reducer equipment information
-   */
-  private addFocalReducersEquipment(lines: string[]): void {
-    // Focal reducers (legacy)
-    if (this.image.focalReducers?.length > 0) {
-      const focalReducersLabel = this.image.focalReducers.length > 1 ?
-        this.translateService.instant("Focal reducers") :
-        this.translateService.instant("Focal reducer");
-      const focalReducers = this.image.focalReducers.map(fr =>
-        fr.make ? `${fr.make} ${fr.name}` : fr.name
-      );
-      lines.push(`- ${focalReducersLabel}: ${focalReducers.join(", ")}`);
-    }
-  }
-
-  /**
-   * Adds software information
-   */
-  private addSoftwareEquipment(lines: string[], label: string): void {
-    // Software (newer version)
-    if (this.image.software2?.length > 0) {
-      const software = this.image.software2.map(sw =>
-        `${sw.brandName} ${sw.name}`
-      );
-      lines.push(`- ${label}: ${software.join(", ")}`);
-    }
-
-    // Software (legacy)
-    if (this.image.software?.length > 0) {
-      const software = this.image.software.map(sw =>
-        sw.make ? `${sw.make} ${sw.name}` : sw.name
-      );
-      lines.push(`- ${label}: ${software.join(", ")}`);
-    }
-  }
-
-  /**
-   * Adds share URL
-   */
   private addShareUrlInformation(lines: string[]): void {
     const url = this.imageService.getShareUrl(this.image, this.revision ? this.revisionLabel : null);
     lines.push(this.translateService.instant("For more information, visit AstroBin") + ":");

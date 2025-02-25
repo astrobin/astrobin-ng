@@ -16,15 +16,9 @@ import { WindowRefService } from "@core/services/window-ref.service";
 import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
-
-// This includes total per filter type.
-interface FilterSummary {
-  totalIntegration: number;
-  dates: string[];
-  averageMoonIllumination: number;
-  number: number;
-  duration: string;
-}
+import { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
+import { ImageInfoService } from "@core/services/image/image-info.service";
+import { FilterSummary } from "@features/equipment/services/filter-acquisition.service";
 
 // This includes each session.
 interface DetailedFilterSummary {
@@ -557,7 +551,9 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly collapseSyncService: CollapseSyncService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly filterAcquisitionService: FilterAcquisitionService,
+    private readonly imageInfoService: ImageInfoService
   ) {
     super(
       store$,
@@ -598,18 +594,7 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
   }
 
   humanizeFilterType(filterType: string): string {
-    if (filterType === "UNKNOWN") {
-      return this.translateService.instant("No filter");
-    }
-
-    if (
-      !Object.values(FilterType).includes(filterType as FilterType) &&
-      !Object.values(LegacyFilterType).includes(filterType as LegacyFilterType)
-    ) {
-      return filterType;
-    }
-
-    return this.filterService.humanizeTypeShort(filterType as FilterType);
+    return this.filterAcquisitionService.humanizeFilterType(filterType);
   }
 
   openDeepSkyIntegrationDetails(event: MouseEvent): void {
@@ -639,82 +624,31 @@ export class ImageViewerAcquisitionComponent extends ImageViewerSectionBaseCompo
   }
 
   private _buildFilterSummaries(): { filterType: string, summary: FilterSummary }[] {
-    const filterSummaries: { [key: string]: FilterSummary } = {};
+    // Get basic filter summaries from service with dates included
+    const filterSummaries = this.filterAcquisitionService.buildFilterSummaries(this.image, true);
 
-    this.image.deepSkyAcquisitions.forEach(acquisition => {
-      let filterType = acquisition.filter2Type || acquisition.filterType || "UNKNOWN";
-
-      if (filterType === "UNKNOWN" || filterType === "OTHER" || filterType === "CLEAR_OR_COLOR") {
-        if (acquisition.filter2) {
-          filterType = `${acquisition.filter2Brand} ${acquisition.filter2Name}`;
-        } else if (acquisition.filter) {
-          filterType = `${acquisition.filterMake} ${acquisition.filterName}`;
-        }
-      }
-
-      const date = acquisition.date;
-      const duration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
-
-      if (!filterSummaries[filterType]) {
-        filterSummaries[filterType] = {
-          totalIntegration: 0,
-          dates: [],
-          averageMoonIllumination: null,
-          number: 0,
-          duration
-        };
-      }
-
-      if (acquisition.number !== null && acquisition.duration !== null) {
-        filterSummaries[filterType].totalIntegration += acquisition.number * parseFloat(acquisition.duration);
-
-        const fixedAcquisitionDuration = parseFloat(acquisition.duration).toFixed(2).replace(".00", "");
-        const filterExistingDuration = parseFloat(filterSummaries[filterType].duration).toFixed(2).replace(".00", "");
-
-        if (filterExistingDuration === fixedAcquisitionDuration) {
-          filterSummaries[filterType].number += acquisition.number;
-        } else {
-          filterSummaries[filterType].number = null;
-          filterSummaries[filterType].duration = null;
-        }
-      }
-
-      if (date) {
-        filterSummaries[filterType].dates.push(date);
-      }
-    });
-
+    // Process moon illumination data if not already done by the service
     for (const filterType in filterSummaries) {
-      const moonIlluminations = this.image.deepSkyAcquisitions
-        .filter(
-          acquisition =>
-            acquisition.filter2Type === filterType ||
-            (acquisition.filter2Type === undefined && filterType === "UNKNOWN") ||
-            (acquisition.filterType === undefined && filterType === "UNKNOWN")
-        )
-        .map(acquisition => acquisition.moonIllumination)
-        .filter(moonIllumination => moonIllumination !== null);
+      if (filterSummaries[filterType].averageMoonIllumination === undefined) {
+        const moonIlluminations = this.image.deepSkyAcquisitions
+          .filter(
+            acquisition =>
+              acquisition.filter2Type === filterType ||
+              (acquisition.filter2Type === undefined && filterType === "UNKNOWN") ||
+              (acquisition.filterType === undefined && filterType === "UNKNOWN")
+          )
+          .map(acquisition => acquisition.moonIllumination)
+          .filter(moonIllumination => moonIllumination !== null);
 
-      filterSummaries[filterType].averageMoonIllumination = moonIlluminations.reduce(
-        (acc, moonIllumination) => acc + moonIllumination,
-        0
-      ) / moonIlluminations.length || null; // handle the case where there are no valid moonIlluminations
+        filterSummaries[filterType].averageMoonIllumination = moonIlluminations.reduce(
+          (acc, moonIllumination) => acc + moonIllumination,
+          0
+        ) / moonIlluminations.length || null;
+      }
     }
 
-    // Convert the object into an array of entries
-    const filterSummaryArray = Object.entries(filterSummaries).map(([filterType, summary]) => ({
-      filterType,
-      summary
-    }));
-
-    // Sort the array based on FilterTypePriority
-    filterSummaryArray.sort((a, b) => {
-      const priorityA = FilterTypePriority[a.filterType as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
-      const priorityB = FilterTypePriority[b.filterType as keyof typeof FilterTypePriority] ?? Number.MAX_SAFE_INTEGER;
-      return priorityA - priorityB;
-    });
-
-    return filterSummaryArray;
+    // Get sorted summaries as array
+    return this.filterAcquisitionService.getSortedFilterSummaries(filterSummaries);
   }
 
   private _buildDetailedFilterSummaries(): { [key: string]: DetailedFilterSummary } {
