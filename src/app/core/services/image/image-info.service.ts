@@ -104,7 +104,7 @@ export class ImageInfoService {
       return `${item.make} ${item.name}`;
     }
 
-    return `${item.brand ? item.brand : this.translateService.instant("DIY")} ${item.name}`;
+    return `${item.brand ? item.brandName : this.translateService.instant("DIY")} ${item.name}`;
   }
 
   /**
