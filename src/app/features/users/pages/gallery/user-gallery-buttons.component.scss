@@ -13,5 +13,25 @@
       color: var(--accentColor);
       pointer-events: none;
     }
+    
+    &.disabled {
+      opacity: 0.5;
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+}
+
+::ng-deep {
+  .gallery-csv-export-offcanvas {
+    &:not(.offcanvas-bottom) {
+      width: 40vw;
+    }
+    
+    textarea {
+      font-family: monospace;
+      font-size: 0.85rem;
+      resize: none;
+    }
   }
 }
