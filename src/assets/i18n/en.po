@@ -46,15 +46,6 @@ msgstr ""
 msgid "+ {{numVariants}} variants"
 msgstr ""
 
-#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
-msgid ""
-", AstroBin cannot know if you want to see images OF the Orion "
-"constellations, images IN the Orion constellation, images of the Orion "
-"nebula, images taken with an Orion telescope, or images with somebody whose "
-"username is Orion. By using filters, you can specify what you are looking "
-"for exactly."
-msgstr ""
-
 msgid ""
 "0 means invisible; 100 means completely opaque. Recommended values are: 10 "
 "if the watermark will appear on the dark sky background, 50 if on some "
@@ -136,10 +127,6 @@ msgid "A brand with this name already exists."
 msgstr ""
 
 msgid "A brand with this website already exists."
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collections.component.ts
-msgid "A collection by {{ 0 }}"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-page.component.ts
@@ -309,6 +296,10 @@ msgstr ""
 msgid "Advanced annotations"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
+msgid "Advanced annotations (large font)"
+msgstr ""
+
 msgid "Advanced plate-solving"
 msgstr ""
 
@@ -331,6 +322,10 @@ msgstr ""
 msgid "Alias"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+msgid "All"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 msgid ""
 "All items in the bundle will be sold together. Users will not be able to "
@@ -343,10 +338,6 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 msgid "All rights reserved"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
-msgid "All words"
 msgstr ""
 
 msgid "All your recent items of this equipment class are already used above."
@@ -452,10 +443,6 @@ msgid "Any changes you make will be reviewed by other members."
 msgstr ""
 
 msgid "Any moderator"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
-msgid "Any word"
 msgstr ""
 
 msgid "Anybody can review edit proposals made by any other member."
@@ -664,7 +651,8 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
 msgid ""
 "AstroBin recommends using specific filters to find equipment items, "
-"celestial subjects, and users. You can add filters by selecting the"
+"celestial subjects, and users. You can add filters by selecting the "
+"<strong>Filters</strong> icon on the right end of the search bar."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
@@ -773,6 +761,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
 msgid "Aurora"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/notifications-list/notifications-list.component.ts
+msgid "Authentication"
 msgstr ""
 
 msgid "Authentication error. Please log out and in again."
@@ -1455,6 +1447,10 @@ msgstr ""
 msgid "DIY"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/equipment-item-display-name/equipment-item-display-name.component.html
+msgid "DYI"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
 msgid "Damaged or defective"
 msgstr ""
@@ -1687,6 +1683,10 @@ msgstr ""
 msgid "E-mail"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-filter/search-base-filter.component.html
+msgid "EXACT"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-iotd-tp-stats.component.ts
 msgid "Early dismissal"
 msgstr ""
@@ -1805,9 +1805,6 @@ msgstr ""
 msgid "Equipment item for sale"
 msgstr ""
 
-msgid "Equipment item summary"
-msgstr ""
-
 msgid "Equipment item unassigned: any moderator can review it."
 msgstr ""
 
@@ -1885,6 +1882,14 @@ msgid ""
 msgstr ""
 
 msgid "Everybody"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
+msgid "Exact"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-equipment-filter/search-base-equipment-filter.component.ts
+msgid "Exact match"
 msgstr ""
 
 msgid "Excellent"
@@ -2072,6 +2077,18 @@ msgstr ""
 msgid "Find mount"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-filter/search-base-filter.component.ts
+msgid "Find results that match all the words or items."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-filter/search-base-filter.component.ts
+msgid "Find results that match any of the words or items."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-filter/search-base-filter.component.ts
+msgid "Find results that match the exact words or items, no more, no less."
+msgstr ""
+
 msgid "Find sensor"
 msgstr ""
 
@@ -2160,7 +2177,8 @@ msgid ""
 "the {{0}}pricing{{1}} page."
 msgstr ""
 
-msgid "For more information, please check out our Twitter feed:"
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/read-only-mode/read-only-mode.component.html
+msgid "For more information, please check out our X feed:"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-marketplace.service.ts
@@ -2459,6 +2477,10 @@ msgstr ""
 msgid "IOTD"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/notifications-list/notifications-list.component.ts
+msgid "IOTD/TP"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/header/header.component.html
 msgid "IOTD/TP Archive"
 msgstr ""
@@ -2593,7 +2615,12 @@ msgid ""
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
-msgid "If you want to perform a free text search, you can press"
+msgid ""
+"If you want to perform a free text search, you can press <kbd>Enter</kbd> "
+"after typing. Free text searches are usually more inclusive and may return "
+"more results, as they search in all available fields. AstroBin will still "
+"try to show relevant results by matching your free text search to a filter, "
+"if there is a perfect match."
 msgstr ""
 
 msgid ""
@@ -2861,12 +2888,6 @@ msgid "June"
 msgstr ""
 
 msgid "Jupiter"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/core/services/timeout-retry.interceptor.ts
-msgid ""
-"Just a heads-up: a network operation is taking a bit longer than usual. "
-"Thanks for your patience!"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
@@ -3480,9 +3501,6 @@ msgstr ""
 msgid "My places"
 msgstr ""
 
-msgid "My settings"
-msgstr ""
-
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
 msgid "NGC/IC"
 msgstr ""
@@ -3602,6 +3620,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
 msgid "No plate-solving information available."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/summaries/item-summary/item-summary.component.html
+msgid "No properties to display"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component.ts
@@ -3803,6 +3825,12 @@ msgid ""
 "when you didn't create individual filters back when you added this legacy "
 "item to the database. Sometimes this happens when you actually added "
 "multiple products using the same text box (e.g. 'Canon 70D / Canon 80D')."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-equipment-filter/search-base-equipment-filter.component.ts
+msgid ""
+"Only images that use exactly these items (images featuring additional "
+"equipment of the same type will be excluded)."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-text-filter/search-text-filter.component.ts
@@ -5367,7 +5395,12 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
 msgid ""
 "The distinction between a free text search and a search using a specific "
-"filter can be illustrated with the following example. If you search for"
+"filter can be illustrated with the following example. If you search for "
+"<strong>Orion</strong>, AstroBin cannot know if you want to see images OF "
+"the Orion constellations, images IN the Orion constellation, images of the "
+"Orion nebula, images taken with an Orion telescope, or images with somebody "
+"whose username is Orion. By using filters, you can specify what you are "
+"looking for exactly."
 msgstr ""
 
 msgid "The final font size will depend on how long your watermark is."
@@ -6812,14 +6845,6 @@ msgstr ""
 msgid "Zoom not available because the image is smaller than your viewport."
 msgstr ""
 
-#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
-msgid ""
-"after typing. Free text searches are usually more inclusive and may return "
-"more results, as they search in all available fields. AstroBin will still "
-"try to show relevant results by matching your free text search to a filter, "
-"if there is a perfect match."
-msgstr ""
-
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-filter/search-base-filter.component.html
 msgid "and"
 msgstr ""
@@ -6843,10 +6868,6 @@ msgid "e.g. 'Home observatory'"
 msgstr ""
 
 msgid "f-number"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
-msgid "icon on the right end of the search bar."
 msgstr ""
 
 msgid "modified"
