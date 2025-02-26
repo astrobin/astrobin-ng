@@ -1,4 +1,5 @@
 @import "../../../../../styles/breakpoints";
+@import "../../../../../styles/mixins";
 
 :host {
   .image {
@@ -71,11 +72,24 @@
   }
 
   .related-items {
-    a {
-      padding-left: 0.5rem;
+    a, button {
+      text-decoration: none;
+      padding: 0;
+      border: none;
     }
+
     button {
-      padding-left: 0.5rem;
+      background: transparent;
+
+      &:hover, &:focus {
+        text-decoration: none;
+      }
+    }
+
+    .related-item-pill.more-button {
+      @include equipment-item-pill;
+      color: var(--accentColor);
+      cursor: pointer;
     }
   }
 
@@ -240,5 +254,28 @@
       }
     }
   }
+}
 
+::ng-deep .offcanvas-more-related-items {
+  .offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+
+    .related-item-wrapper {
+      .equipment-pill {
+        @include equipment-item-pill;
+        width: 100%;
+
+        a {
+          color: inherit;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
 }

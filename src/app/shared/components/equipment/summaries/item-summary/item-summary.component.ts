@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { EquipmentItemReviewerDecision, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -28,7 +28,7 @@ import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { WindowRefService } from "@core/services/window-ref.service";
@@ -37,7 +37,7 @@ import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subs
 import { SimplifiedSubscriptionName } from "@core/types/subscription-name.type";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
 import { LoadingService } from "@core/services/loading.service";
-import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/summaries/item/summary/more-related-items-modal/more-related-items-modal.component";
+import { DeviceService } from "@core/services/device.service";
 
 interface EquipmentItemProperty {
   name: string;
@@ -56,7 +56,6 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   readonly UtilsService = UtilsService;
   readonly EquipmentItemDisplayProperty = EquipmentItemDisplayProperty;
   readonly SHOW_MAX_RELATED_ITEMS = 2;
-
   @Input() item: EquipmentItem;
   @Input() showName = true;
   @Input() showImage = true;
@@ -76,14 +75,6 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   @Input() striped = true;
   @Input() bordered = false;
   @Output() editButtonClick = new EventEmitter<EquipmentItem>();
-
-  protected brand: BrandInterface;
-  protected subItem: EquipmentItem;
-  protected relatedItems: EquipmentItem[];
-  protected subItemCollapsed = true;
-  protected properties: EquipmentItemProperty[];
-  protected mostOftenUsedWith$: Observable<{ item$: Observable<EquipmentItem>; matches: number }[]>;
-
   image: string;
   placeholder: string;
   subItemLabel: string;
@@ -93,6 +84,16 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   assignee$: Observable<UserInterface | null>;
   reviewedBy$: Observable<UserInterface>;
   lastUpdateVisible: boolean;
+
+  @ViewChild("moreRelatedItemsOffcanvas")
+  protected moreRelatedItemsOffcanvas: TemplateRef<any>;
+
+  protected brand: BrandInterface;
+  protected subItem: EquipmentItem;
+  protected relatedItems: EquipmentItem[];
+  protected subItemCollapsed = true;
+  protected properties: EquipmentItemProperty[];
+  protected mostOftenUsedWith$: Observable<{ item$: Observable<EquipmentItem>; matches: number }[]>;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -107,162 +108,15 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     public readonly filterService: FilterService,
     public readonly accessoryService: AccessoryService,
     public readonly modalService: NgbModal,
+    public readonly offcanvasService: NgbOffcanvas,
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly windowRefService: WindowRefService,
     public readonly authService: AuthService,
     public readonly loadingService: LoadingService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
-  }
-
-  private _classProperty(itemType: EquipmentItemType): EquipmentItemProperty {
-    return this.showClass
-      ? { name: this.translateService.instant("Class"), value: of(this.equipmentItemService.humanizeType(itemType)) }
-      : null;
-  }
-
-  private _variantOfProperty(variantOfItem: EquipmentItem | null): EquipmentItemProperty {
-    return variantOfItem
-      ? {
-        name: this.equipmentItemService.getPrintablePropertyName(
-          variantOfItem.klass,
-          EquipmentItemDisplayProperty.VARIANT_OF
-        ),
-        value: this.equipmentItemService.getFullDisplayName$(variantOfItem),
-        link: `/equipment/explorer/${variantOfItem.klass.toLowerCase()}/${variantOfItem.id}`
-      }
-      : null;
-  }
-
-  private _sensorProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
-    const props: EquipmentItemProperty[] = [
-      this._classProperty(EquipmentItemType.SENSOR),
-      this._variantOfProperty(variantOfItem),
-      { name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXELS, true), value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.PIXELS) },
-      { name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_SIZE, true), value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.PIXEL_SIZE) },
-      { name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_SIZE, true), value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.SENSOR_SIZE) },
-      { name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY, true), value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.FULL_WELL_CAPACITY) },
-      { name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE, true), value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.READ_NOISE) },
-      { name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY, true), value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.QUANTUM_EFFICIENCY) },
-      { name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE, true), value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.FRAME_RATE) },
-      { name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC, true), value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.ADC) },
-      { name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO, true), value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.COLOR_OR_MONO) }
-    ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
-  }
-
-  private _cameraProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
-    const item: CameraInterface = this.item as CameraInterface;
-    const props: EquipmentItemProperty[] = [
-      this._classProperty(EquipmentItemType.CAMERA),
-      this._variantOfProperty(variantOfItem),
-      { name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE, true), value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.TYPE) },
-      item.type === CameraType.DEDICATED_DEEP_SKY
-        ? { name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true), value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED) }
-        : null,
-      item.type === CameraType.DEDICATED_DEEP_SKY && item.cooled
-        ? { name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true), value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING) }
-        : null,
-      { name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS, true), value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.BACK_FOCUS) }
-    ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
-  }
-
-  private _telescopeProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
-    const item: TelescopeInterface = this.item as TelescopeInterface;
-    const type_ = { name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE, true), value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.TYPE) };
-    const aperture = { name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE, true), value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.APERTURE) };
-    const focalLength = { name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH, true), value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.FOCAL_LENGTH) };
-    const weight = { name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT, true), value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.WEIGHT) };
-    const props: EquipmentItemProperty[] = [
-      this._classProperty(EquipmentItemType.TELESCOPE),
-      this._variantOfProperty(variantOfItem),
-      type_,
-      item.type !== TelescopeType.CAMERA_LENS ? aperture : null,
-      focalLength,
-      weight
-    ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
-  }
-
-  private _mountProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
-    const item: MountInterface = this.item as MountInterface;
-    let props: EquipmentItemProperty[] = [
-      this._classProperty(EquipmentItemType.MOUNT),
-      this._variantOfProperty(variantOfItem),
-      { name: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE, true), value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.TYPE) },
-      { name: this.mountService.getPrintablePropertyName(MountDisplayProperty.WEIGHT, true), value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.WEIGHT) },
-      { name: this.mountService.getPrintablePropertyName(MountDisplayProperty.MAX_PAYLOAD, true), value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.MAX_PAYLOAD) },
-      { name: this.mountService.getPrintablePropertyName(MountDisplayProperty.COMPUTERIZED, true), value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.COMPUTERIZED) }
-    ];
-    if (item.computerized) {
-      props = [
-        ...props,
-        ...[
-          { name: this.mountService.getPrintablePropertyName(MountDisplayProperty.PERIODIC_ERROR, true), value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PERIODIC_ERROR) },
-          { name: this.mountService.getPrintablePropertyName(MountDisplayProperty.PEC, true), value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PEC) },
-          { name: this.mountService.getPrintablePropertyName(MountDisplayProperty.SLEW_SPEED, true), value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.SLEW_SPEED) }
-        ]
-      ];
-    }
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
-  }
-
-  private _filterProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
-    const item: FilterInterface = this.item as FilterInterface;
-    const props: EquipmentItemProperty[] = [
-      this._classProperty(EquipmentItemType.FILTER),
-      this._variantOfProperty(variantOfItem),
-      { name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE, true), value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.TYPE) },
-      { name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH, true), value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.BANDWIDTH) },
-      { name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE, true), value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.SIZE) }
-    ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
-  }
-
-  private _accessoryProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
-    const item: AccessoryInterface = this.item as AccessoryInterface;
-    const props: EquipmentItemProperty[] = [
-      this._classProperty(EquipmentItemType.ACCESSORY),
-      this._variantOfProperty(variantOfItem),
-      { name: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE, true), value: this.accessoryService.getPrintableProperty$(item, AccessoryDisplayProperty.TYPE) }
-    ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
-  }
-
-  private _softwareProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
-    const props: EquipmentItemProperty[] = [
-      this._classProperty(EquipmentItemType.SOFTWARE),
-      this._variantOfProperty(variantOfItem)
-    ];
-    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
-  }
-
-  private computeProperties$(): Observable<EquipmentItemProperty[]> {
-    const type: EquipmentItemType = this.equipmentItemService.getType(this.item);
-    const variantOf = this.item.variantOf;
-    const _properties$ = (variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> => {
-      switch (type) {
-        case EquipmentItemType.SENSOR: return this._sensorProperties$(variantOfItem);
-        case EquipmentItemType.CAMERA: return this._cameraProperties$(variantOfItem);
-        case EquipmentItemType.TELESCOPE: return this._telescopeProperties$(variantOfItem);
-        case EquipmentItemType.MOUNT: return this._mountProperties$(variantOfItem);
-        case EquipmentItemType.FILTER: return this._filterProperties$(variantOfItem);
-        case EquipmentItemType.ACCESSORY: return this._accessoryProperties$(variantOfItem);
-        case EquipmentItemType.SOFTWARE: return this._softwareProperties$(variantOfItem);
-      }
-    };
-    if (variantOf) {
-      const data = { id: variantOf, type };
-      this.store$.dispatch(new LoadEquipmentItem(data));
-      return this.store$.select(selectEquipmentItem, data).pipe(
-        filter(variantOfItem => !!variantOfItem),
-        take(1),
-        switchMap(variantOfItem => _properties$(variantOfItem))
-      );
-    }
-    return _properties$(null);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -424,10 +278,10 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   }
 
   viewMoreRelatedItems() {
-    const modalRef: NgbModalRef = this.modalService.open(MoreRelatedItemsModalComponent);
-    const componentInstance: MoreRelatedItemsModalComponent = modalRef.componentInstance;
-    componentInstance.items = this.relatedItems.slice(this.SHOW_MAX_RELATED_ITEMS);
-    componentInstance.title = this.relatedItemsLabel;
+    this.offcanvasService.open(this.moreRelatedItemsOffcanvas, {
+      position: this.deviceService.offcanvasPosition(),
+      panelClass: "offcanvas-more-related-items"
+    });
   }
 
   viewMoreMostOftenUsedWith() {
@@ -449,5 +303,245 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         this.changeDetectorRef.markForCheck();
       });
     });
+  }
+
+  private _classProperty(itemType: EquipmentItemType): EquipmentItemProperty {
+    return this.showClass
+      ? { name: this.translateService.instant("Class"), value: of(this.equipmentItemService.humanizeType(itemType)) }
+      : null;
+  }
+
+  private _variantOfProperty(variantOfItem: EquipmentItem | null): EquipmentItemProperty {
+    return variantOfItem
+      ? {
+        name: this.equipmentItemService.getPrintablePropertyName(
+          variantOfItem.klass,
+          EquipmentItemDisplayProperty.VARIANT_OF
+        ),
+        value: this.equipmentItemService.getFullDisplayName$(variantOfItem),
+        link: `/equipment/explorer/${variantOfItem.klass.toLowerCase()}/${variantOfItem.id}`
+      }
+      : null;
+  }
+
+  private _sensorProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
+    const props: EquipmentItemProperty[] = [
+      this._classProperty(EquipmentItemType.SENSOR),
+      this._variantOfProperty(variantOfItem),
+      {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXELS, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.PIXELS)
+      },
+      {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_SIZE, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.PIXEL_SIZE)
+      },
+      {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_SIZE, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.SENSOR_SIZE)
+      },
+      {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.FULL_WELL_CAPACITY)
+      },
+      {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.READ_NOISE)
+      },
+      {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.QUANTUM_EFFICIENCY)
+      },
+      {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.FRAME_RATE)
+      },
+      {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.ADC)
+      },
+      {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.COLOR_OR_MONO)
+      }
+    ];
+    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+  }
+
+  private _cameraProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
+    const item: CameraInterface = this.item as CameraInterface;
+    const props: EquipmentItemProperty[] = [
+      this._classProperty(EquipmentItemType.CAMERA),
+      this._variantOfProperty(variantOfItem),
+      {
+        name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE, true),
+        value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.TYPE)
+      },
+      item.type === CameraType.DEDICATED_DEEP_SKY
+        ? {
+          name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
+          value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
+        }
+        : null,
+      item.type === CameraType.DEDICATED_DEEP_SKY && item.cooled
+        ? {
+          name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
+          value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)
+        }
+        : null,
+      {
+        name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS, true),
+        value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.BACK_FOCUS)
+      }
+    ];
+    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+  }
+
+  private _telescopeProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
+    const item: TelescopeInterface = this.item as TelescopeInterface;
+    const type_ = {
+      name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE, true),
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.TYPE)
+    };
+    const aperture = {
+      name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE, true),
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.APERTURE)
+    };
+    const focalLength = {
+      name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH, true),
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.FOCAL_LENGTH)
+    };
+    const weight = {
+      name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT, true),
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.WEIGHT)
+    };
+    const props: EquipmentItemProperty[] = [
+      this._classProperty(EquipmentItemType.TELESCOPE),
+      this._variantOfProperty(variantOfItem),
+      type_,
+      item.type !== TelescopeType.CAMERA_LENS ? aperture : null,
+      focalLength,
+      weight
+    ];
+    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+  }
+
+  private _mountProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
+    const item: MountInterface = this.item as MountInterface;
+    let props: EquipmentItemProperty[] = [
+      this._classProperty(EquipmentItemType.MOUNT),
+      this._variantOfProperty(variantOfItem),
+      {
+        name: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE, true),
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.TYPE)
+      },
+      {
+        name: this.mountService.getPrintablePropertyName(MountDisplayProperty.WEIGHT, true),
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.WEIGHT)
+      },
+      {
+        name: this.mountService.getPrintablePropertyName(MountDisplayProperty.MAX_PAYLOAD, true),
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.MAX_PAYLOAD)
+      },
+      {
+        name: this.mountService.getPrintablePropertyName(MountDisplayProperty.COMPUTERIZED, true),
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.COMPUTERIZED)
+      }
+    ];
+    if (item.computerized) {
+      props = [
+        ...props,
+        ...[
+          {
+            name: this.mountService.getPrintablePropertyName(MountDisplayProperty.PERIODIC_ERROR, true),
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PERIODIC_ERROR)
+          },
+          {
+            name: this.mountService.getPrintablePropertyName(MountDisplayProperty.PEC, true),
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PEC)
+          },
+          {
+            name: this.mountService.getPrintablePropertyName(MountDisplayProperty.SLEW_SPEED, true),
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.SLEW_SPEED)
+          }
+        ]
+      ];
+    }
+    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+  }
+
+  private _filterProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
+    const item: FilterInterface = this.item as FilterInterface;
+    const props: EquipmentItemProperty[] = [
+      this._classProperty(EquipmentItemType.FILTER),
+      this._variantOfProperty(variantOfItem),
+      {
+        name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE, true),
+        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.TYPE)
+      },
+      {
+        name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH, true),
+        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.BANDWIDTH)
+      },
+      {
+        name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE, true),
+        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.SIZE)
+      }
+    ];
+    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+  }
+
+  private _accessoryProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
+    const item: AccessoryInterface = this.item as AccessoryInterface;
+    const props: EquipmentItemProperty[] = [
+      this._classProperty(EquipmentItemType.ACCESSORY),
+      this._variantOfProperty(variantOfItem),
+      {
+        name: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE, true),
+        value: this.accessoryService.getPrintableProperty$(item, AccessoryDisplayProperty.TYPE)
+      }
+    ];
+    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+  }
+
+  private _softwareProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
+    const props: EquipmentItemProperty[] = [
+      this._classProperty(EquipmentItemType.SOFTWARE),
+      this._variantOfProperty(variantOfItem)
+    ];
+    return of(props.map(p => p ? { ...p, show: p.value.pipe(map(val => !!val || this.showEmptyProperties)) } : p));
+  }
+
+  private computeProperties$(): Observable<EquipmentItemProperty[]> {
+    const type: EquipmentItemType = this.equipmentItemService.getType(this.item);
+    const variantOf = this.item.variantOf;
+    const _properties$ = (variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> => {
+      switch (type) {
+        case EquipmentItemType.SENSOR:
+          return this._sensorProperties$(variantOfItem);
+        case EquipmentItemType.CAMERA:
+          return this._cameraProperties$(variantOfItem);
+        case EquipmentItemType.TELESCOPE:
+          return this._telescopeProperties$(variantOfItem);
+        case EquipmentItemType.MOUNT:
+          return this._mountProperties$(variantOfItem);
+        case EquipmentItemType.FILTER:
+          return this._filterProperties$(variantOfItem);
+        case EquipmentItemType.ACCESSORY:
+          return this._accessoryProperties$(variantOfItem);
+        case EquipmentItemType.SOFTWARE:
+          return this._softwareProperties$(variantOfItem);
+      }
+    };
+    if (variantOf) {
+      const data = { id: variantOf, type };
+      this.store$.dispatch(new LoadEquipmentItem(data));
+      return this.store$.select(selectEquipmentItem, data).pipe(
+        filter(variantOfItem => !!variantOfItem),
+        take(1),
+        switchMap(variantOfItem => _properties$(variantOfItem))
+      );
+    }
+    return _properties$(null);
   }
 }
