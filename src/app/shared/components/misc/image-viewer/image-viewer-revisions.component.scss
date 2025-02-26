@@ -3,7 +3,7 @@
 :host {
   .revisions {
     position: absolute;
-    bottom: 1rem;
+    bottom: 0;
     left: 0;
     right: 0;
     width: 100%;
@@ -12,13 +12,13 @@
     align-items: center;
     flex-wrap: wrap;
     gap: .5rem;
-    padding: 1rem 1rem 0 1rem;
+    padding: 1rem;
 
     .revision {
       width: 3rem;
       height: 3rem;
       position: relative;
-      transition: transform .2s ease-in-out;
+      transition: transform .2s ease-in-out, background .2s ease-in-out;
 
       img {
         width: 100%;
