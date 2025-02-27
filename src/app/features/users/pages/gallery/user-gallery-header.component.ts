@@ -124,28 +124,63 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
               ></astrobin-toggle-property>
             </div>
             <div class="d-flex align-items-center images-and-followers flex-wrap">
-              <span [translate]="'{{ 0 }} images'" [translateParams]="{'0': userProfile.imageCount}"></span>
               <span
-                *ngIf="userProfile.wipImageCount && currentUserWrapper.user?.id === user.id"
+                *ngIf="userProfile.imageCount === 1"
+                translate="1 image"
+              ></span>
+              <span
+                *ngIf="userProfile.imageCount !== 1"
+                [translate]="'{{ 0 }} images'"
+                [translateParams]="{'0': userProfile.imageCount}"
+              ></span>
+
+              <span
+                *ngIf="userProfile.wipImageCount === 1 && currentUserWrapper.user?.id === user.id"
+                translate="(1 in staging)"
+                class="d-none d-sm-inline"
+              ></span>
+              <span
+                *ngIf="userProfile.wipImageCount > 1 && currentUserWrapper.user?.id === user.id"
                 [translate]="'({{ 0 }} in staging)'"
                 [translateParams]="{'0': userProfile.wipImageCount}"
                 class="d-none d-sm-inline"
               ></span>
+
               <span
+                *ngIf="userProfile.followersCount === 1"
+                (click)="openFollowersOffcanvas()"
+                translate="1 follower"
+                data-toggle="offcanvas"
+              ></span>
+              <span
+                *ngIf="userProfile.followersCount !== 1"
                 (click)="userProfile.followersCount ? openFollowersOffcanvas() : null"
                 [translate]="'{{ 0 }} followers'" [translateParams]="{'0': userProfile.followersCount}"
                 [attr.data-toggle]="userProfile.followersCount ? 'offcanvas' : ''"
               ></span>
+
               <span
-                *ngIf="currentUserWrapper.user?.id === user.id"
+                *ngIf="currentUserWrapper.user?.id === user.id && userProfile.followingCount === 1"
+                (click)="openFollowingOffcanvas()"
+                translate="1 following"
+                data-toggle="offcanvas"
+              ></span>
+              <span
+                *ngIf="currentUserWrapper.user?.id === user.id && userProfile.followingCount !== 1"
                 (click)="userProfile.followingCount ? openFollowingOffcanvas() : null"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
                 [attr.data-toggle]="userProfile.followingCount ? 'offcanvas' : ''"
               ></span>
+
               <span
-                *ngIf="currentUserWrapper.user?.id !== user.id"
+                *ngIf="currentUserWrapper.user?.id !== user.id && userProfile.followingCount === 1"
+                translate="1 following"
+              ></span>
+              <span
+                *ngIf="currentUserWrapper.user?.id !== user.id && userProfile.followingCount !== 1"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
               ></span>
+
               <span
                 *ngIf="currentUserWrapper.user?.id === user.id"
                 (click)="openMutualFollowersOffcanvas()"
@@ -153,6 +188,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                 class="d-none d-sm-inline"
                 data-toggle="offcanvas"
               ></span>
+
               <a
                 (click)="openStatsOffcanvas()"
                 astrobinEventPreventDefault
@@ -493,7 +529,7 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   protected removeShadowBan(userProfileId: UserProfileInterface["id"]) {
     this.store$.dispatch(new RemoveShadowBanUserProfile({ id: userProfileId }));
   }
-  
+
   protected handleImageError(event: Event) {
     const imgElement = event.target as HTMLImageElement;
     imgElement.style.display = 'none';
