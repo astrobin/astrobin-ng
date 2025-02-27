@@ -9,6 +9,7 @@ import { UtilsService } from "@core/services/utils/utils.service";
 import { PlateSolvingSettingsInterface } from "@core/interfaces/plate-solving-settings.interface";
 import { PlateSolvingAdvancedSettingsInterface } from "@core/interfaces/plate-solving-advanced-settings.interface";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
+import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 
 @Injectable({
   providedIn: "root"

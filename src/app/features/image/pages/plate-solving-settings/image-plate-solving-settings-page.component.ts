@@ -19,6 +19,8 @@ import { PlateSolvingAdvancedSettingsInterface } from "@core/interfaces/plate-so
 import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { switchMap } from "rxjs/operators";
+import { ImageService } from "@core/services/image/image.service";
+import { SolutionStatus } from "@core/interfaces/solution.interface";
 
 @Component({
   selector: "astrobin-image-plate-solving-settings-page",
@@ -44,7 +46,18 @@ import { switchMap } from "rxjs/operators";
               [formGroup]="advancedForm"
               class="mt-4"
             >
-              <formly-form [form]="advancedForm" [model]="advancedModel" [fields]="advancedFields"></formly-form>
+              <div *ngIf="!hasValidBasicSolution" class="alert alert-warning mb-4">
+                <strong>{{ "Note:" | translate }}</strong>
+                {{ "Advanced plate-solving settings can only be edited after the image has been successfully plate-solved with basic plate-solving." | translate }}
+              </div>
+
+              <formly-form
+                *ngIf="hasValidBasicSolution"
+                [form]="advancedForm"
+                [model]="advancedModel"
+                [fields]="advancedFields"
+              >
+              </formly-form>
             </form>
           </ng-template>
         </li>
@@ -126,6 +139,30 @@ export class ImagePlateSolvingSettingsPageComponent
   protected advancedModel: PlateSolvingAdvancedSettingsInterface;
   protected advancedFields: FormlyFieldConfig[];
 
+  protected radiusCategory: string = null;
+  protected radiusCategoryLabel: string = null;
+  protected hiddenFields: string[] = [];
+  protected hasValidBasicSolution: boolean = false;
+
+  // Map of field names to display labels for hidden fields notification
+  private readonly fieldLabels = {
+    'showHd': 'HD stars',
+    'showMessier': 'Messier',
+    'showNgcIc': 'NGC/IC',
+    'showVdb': 'VdB',
+    'showSharpless': 'Sharpless',
+    'showBarnard': 'Barnard',
+    'showLbn': 'LBN',
+    'showLdn': 'LDN',
+    'showPgc': 'PGC',
+    'showPlanets': 'Planets',
+    'showAsteroids': 'Asteroids',
+    'showGcvs': 'GCVS stars',
+    'showTycho2': 'Tycho-2 stars',
+    'showCgpn': 'CGPN',
+    'showQuasars': 'Quasars'
+  };
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly activatedRoute: ActivatedRoute,
@@ -135,6 +172,7 @@ export class ImagePlateSolvingSettingsPageComponent
     public readonly plateSolvingSettingsApiService: PlateSolvingSettingsApiService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly router: Router,
+    public readonly imageService: ImageService,
     public loadingService: LoadingService
   ) {
     super(store$);
@@ -258,6 +296,297 @@ export class ImagePlateSolvingSettingsPageComponent
   private _initCanPlateSolveAdvanced() {
     this.userSubscriptionService.canPlateSolveAdvanced$().subscribe(canPlateSolveAdvanced => {
       this.canPlateSolveAdvanced = canPlateSolveAdvanced;
+    });
+  }
+
+  /**
+   * Categorizes a solution's field radius
+   * @param radius - The field radius in degrees
+   * @returns - The category string or null if radius is null
+   */
+  private getRadiusCategory(radius: string | number): string {
+    if (radius === null || radius === undefined) {
+      return null;
+    }
+
+    const radiusValue = parseFloat(radius as string);
+    if (isNaN(radiusValue)) {
+      return null;
+    }
+
+    if (radiusValue > 30) {
+      return "very_large";  // >30 degrees
+    } else if (radiusValue > 15) {
+      return "large";       // 15-30 degrees
+    } else if (radiusValue > 4) {
+      return "medium";      // 4-15 degrees
+    } else if (radiusValue > 1) {
+      return "small";       // 1-4 degrees
+    } else {
+      return "very_small";  // <1 degree
+    }
+  }
+
+  /**
+   * Get human-readable label for radius category
+   * @param category - The radius category
+   * @returns - Human-readable label
+   */
+  private getRadiusCategoryLabel(category: string): string {
+    switch (category) {
+      case "very_large": return this.translateService.instant("Very large (>30°)");
+      case "large": return this.translateService.instant("Large (15-30°)");
+      case "medium": return this.translateService.instant("Medium (4-15°)");
+      case "small": return this.translateService.instant("Small (1-4°)");
+      case "very_small": return this.translateService.instant("Very small (<1°)");
+      default: return "";
+    }
+  }
+
+  /**
+   * Get the default advanced settings for a specific radius category
+   * @param radiusCategory - The radius category
+   * @returns - A dictionary of default settings appropriate for the radius category
+   */
+  private getDefaultAdvancedSettingsForRadiusCategory(radiusCategory: string): Record<string, any> {
+    const defaults: Record<string, any> = {};
+
+    // If no radius category, return empty defaults
+    if (!radiusCategory) {
+      return defaults;
+    }
+
+    // Default settings for all field sizes
+    defaults.showGrid = true;
+    defaults.showEcliptic = true;
+    defaults.showGalacticEquator = true;
+    defaults.showConstellationBorders = true;
+    defaults.showConstellationLines = true;
+
+    // Very large field - only show structural elements (>30 degrees)
+    if (radiusCategory === "very_large") {
+      defaults.scaledFontSize = "S";
+      defaults.showNamedStars = true;
+      defaults.showHd = false;
+      defaults.showMessier = true;
+      defaults.showNgcIc = false;
+      defaults.showVdb = false;
+      defaults.showSharpless = false;
+      defaults.showBarnard = false;
+      defaults.showLbn = false;
+      defaults.showLdn = false;
+      defaults.showPgc = false;
+      defaults.showPlanets = true;
+      defaults.showAsteroids = false;
+      defaults.showGcvs = false;
+      defaults.showTycho2 = false;
+      defaults.showCgpn = false;
+      defaults.showQuasars = false;
+    }
+
+    // Large field (15-30 degrees)
+    else if (radiusCategory === "large") {
+      defaults.scaledFontSize = "S";
+      defaults.showNamedStars = true;
+      defaults.showHd = true;
+      defaults.hdMaxMagnitude = "4.5";
+      defaults.showMessier = true;
+      defaults.showNgcIc = false;
+      defaults.showVdb = false;
+      defaults.showSharpless = true;
+      defaults.showBarnard = false;
+      defaults.showLbn = false;
+      defaults.showLdn = false;
+      defaults.showPgc = false;
+      defaults.showPlanets = true;
+      defaults.showAsteroids = false;
+      defaults.showGcvs = false;
+      defaults.showTycho2 = false;
+      defaults.showCgpn = true;
+      defaults.showQuasars = false;
+    }
+
+    // Medium field (4-15 degrees)
+    else if (radiusCategory === "medium") {
+      defaults.scaledFontSize = "M";
+      defaults.showNamedStars = true;
+      defaults.showHd = true;
+      defaults.hdMaxMagnitude = "6.0";
+      defaults.showMessier = true;
+      defaults.showNgcIc = true;
+      defaults.showVdb = true;
+      defaults.showSharpless = true;
+      defaults.showBarnard = true;
+      defaults.showLbn = true;
+      defaults.showLdn = true;
+      defaults.showPgc = false;
+      defaults.showPlanets = true;
+      defaults.showAsteroids = true;
+      defaults.showGcvs = false;
+      defaults.showTycho2 = false;
+      defaults.showCgpn = true;
+      defaults.showQuasars = false;
+    }
+
+    // Small field (1-4 degrees)
+    else if (radiusCategory === "small") {
+      defaults.scaledFontSize = "M";
+      defaults.showNamedStars = true;
+      defaults.showHd = true;
+      defaults.hdMaxMagnitude = "6";
+      defaults.showMessier = true;
+      defaults.showNgcIc = true;
+      defaults.showVdb = true;
+      defaults.showSharpless = true;
+      defaults.showBarnard = true;
+      defaults.showLbn = true;
+      defaults.showLdn = true;
+      defaults.showPgc = true;
+      defaults.showPlanets = true;
+      defaults.showAsteroids = true;
+      defaults.showGcvs = true;
+      defaults.gcvsMaxMagnitude = "10.0";
+      defaults.showTycho2 = false;
+      defaults.showCgpn = true;
+      defaults.showQuasars = false;
+    }
+
+    // Very small field (<1 degree) - show everything
+    else if (radiusCategory === "very_small") {
+      defaults.scaledFontSize = "M";
+      defaults.showNamedStars = true;
+      defaults.showHd = true;
+      defaults.hdMaxMagnitude = "8";
+      defaults.showMessier = true;
+      defaults.showNgcIc = true;
+      defaults.showVdb = true;
+      defaults.showSharpless = true;
+      defaults.showBarnard = true;
+      defaults.showLbn = true;
+      defaults.showLdn = true;
+      defaults.showPgc = true;
+      defaults.showPlanets = true;
+      defaults.showAsteroids = true;
+      defaults.showGcvs = true;
+      defaults.gcvsMaxMagnitude = "12.0";
+      defaults.showTycho2 = true;
+      defaults.tycho2MaxMagnitude = "11.0";
+      defaults.showCgpn = true;
+      defaults.showQuasars = true;
+    }
+
+    return defaults;
+  }
+
+  /**
+   * Process and update the advanced model and fields based on radius category
+   */
+  private _processFieldsBasedOnRadiusCategory(): void {
+    // Get the image from the activated route
+    const image = this.activatedRoute.snapshot.data.image;
+
+    // Get the correct revision based on the revision label
+    const revision = this.revisionLabel
+      ? this.imageService.getRevision(image, this.revisionLabel)
+      : image;
+
+    // Get the solution radius from the specific revision
+    const radius = revision?.solution?.radius || null;
+
+    // Check if the solution is valid (SUCCESS or higher)
+    this.hasValidBasicSolution = revision?.solution?.status >= SolutionStatus.SUCCESS;
+
+    // Set radius category and label
+    this.radiusCategory = this.getRadiusCategory(radius);
+    this.radiusCategoryLabel = this.getRadiusCategoryLabel(this.radiusCategory);
+
+    if (!this.radiusCategory) {
+      return;
+    }
+
+    // Get default settings for this radius category
+    const defaults = this.getDefaultAdvancedSettingsForRadiusCategory(this.radiusCategory);
+
+    // List of fields that should be hidden based on radius category
+    this.hiddenFields = [];
+
+    // For each toggle field in the advanced form
+    Object.keys(this.fieldLabels).forEach(fieldName => {
+      // If field is disabled in defaults, it should be hidden
+      if (defaults[fieldName] === false) {
+        // Add to hidden fields list for display in notice
+        this.hiddenFields.push(this.fieldLabels[fieldName]);
+
+        // Find and disable this field in the advancedFields
+        this.updateAdvancedField(fieldName, false);
+      }
+    });
+  }
+
+  /**
+   * Update a specific field in the advancedFields configuration
+   * @param fieldName - The name of the field to update
+   * @param enabled - Whether the field should be enabled
+   */
+  private updateAdvancedField(fieldName: string, enabled: boolean): void {
+    // Set the model value to false (disabled)
+    if (this.advancedModel && this.advancedModel.hasOwnProperty(fieldName)) {
+      this.advancedModel[fieldName] = enabled;
+    }
+
+    const disabledMessage = this.translateService.instant('Option disabled based on field radius.');
+
+    // Look through advancedFields to find and update the field's properties
+    this.advancedFields.forEach(section => {
+      if (section.fieldGroup) {
+        section.fieldGroup.forEach(field => {
+          // For nested field groups (cards/sections)
+          if (field.fieldGroup) {
+            field.fieldGroup.forEach(nestedField => {
+              if (nestedField.key === fieldName) {
+                // If field is found, add expressions to disable it
+                if (!enabled) {
+                  nestedField.props = nestedField.props || {};
+                  nestedField.props.disabled = true;
+
+                  // Add a note to the field's description explaining why it's disabled
+                  const originalDescription = nestedField.props.description || '';
+                  nestedField.props.description = originalDescription +
+                    (originalDescription ? ' ' : '') + disabledMessage;
+                }
+              }
+
+              // For even more nested field groups (e.g., fieldGroups in a toggle with magnitude)
+              if (nestedField.fieldGroup) {
+                nestedField.fieldGroup.forEach(deepNestedField => {
+                  if (deepNestedField.key === fieldName) {
+                    if (!enabled) {
+                      deepNestedField.props = deepNestedField.props || {};
+                      deepNestedField.props.disabled = true;
+
+                      // Add a note to the field's description explaining why it's disabled
+                      const deepOriginalDescription = deepNestedField.props.description || '';
+                      deepNestedField.props.description = deepOriginalDescription +
+                        (deepOriginalDescription ? ' ' : '') + disabledMessage;
+                    }
+                  }
+                });
+              }
+            });
+          } else if (field.key === fieldName) {
+            // Direct field match
+            if (!enabled) {
+              field.props = field.props || {};
+              field.props.disabled = true;
+
+              // Add a note to the field's description explaining why it's disabled
+              const originalDescription = field.props.description || '';
+              field.props.description = originalDescription +
+                (originalDescription ? ' ' : '') + disabledMessage;
+            }
+          }
+        });
+      }
     });
   }
 
@@ -730,7 +1059,7 @@ export class ImagePlateSolvingSettingsPageComponent
         },
         fieldGroup: [
           {
-            key: "showPlaners",
+            key: "showPlanets",
             type: "toggle",
             wrappers: ["default-wrapper"],
             props: {
@@ -768,5 +1097,8 @@ export class ImagePlateSolvingSettingsPageComponent
         }
       }
     ];
+
+    // Process the fields based on the radius category after all fields are initialized
+    this._processFieldsBasedOnRadiusCategory();
   }
 }

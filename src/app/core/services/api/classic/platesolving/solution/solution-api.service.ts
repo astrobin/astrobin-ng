@@ -53,4 +53,14 @@ export class SolutionApiService extends BaseClassicApiService {
   getAdvancedMatrix(solutionId: number): Observable<any> {
     return this.http.get<any>(`${this.configUrl}/${solutionId}/advanced-matrix/`);
   }
+
+  startBasicSolver(contentType: ContentTypeInterface["id"], objectId: string): Observable<void> {
+    const url = this.configUrl + "/start/";
+    const payload = {
+      content_type_id: contentType,
+      object_id: objectId
+    };
+
+    return this.http.post<void>(url, payload);
+  }
 }
