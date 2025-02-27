@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostBinding, Inject, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerSectionBaseComponent } from "@shared/components/misc/image-viewer/image-viewer-section-base.component";
 import { SearchService } from "@core/services/search.service";
@@ -11,7 +11,7 @@ import { DeviceService } from "@core/services/device.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
 import { SolutionService } from "@core/services/solution/solution.service";
-import { LoadSolution } from "@app/store/actions/solution.actions";
+import { LoadSolution, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -19,10 +19,12 @@ import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.i
 import { Subscription } from "rxjs";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { isPlatformBrowser } from "@angular/common";
-import { LoadImage } from "@app/store/actions/image.actions";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { filter, map, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-viewer-plate-solving-banner",
@@ -33,7 +35,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
       <div class="flex-grow-1">
         <fa-icon icon="spinner" animation="spin" class="me-2"></fa-icon>
 
-        <span *ngIf="!solution">
+        <span *ngIf="!solution || !solution.status">
           {{ "AstroBin is preparing to plate-solve this image..." | translate }}
         </span>
 
@@ -41,12 +43,22 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
           {{ "AstroBin is plate-solving this image with Astrometry.net..." | translate }}
         </span>
 
-        <span *ngIf="!!solution && solution.status === SolutionStatus.ADVANCED_PENDING">
+        <span *ngIf="
+          !!solution &&
+          (
+            solution.status === SolutionStatus.ADVANCED_PENDING ||
+            (solution.status === SolutionStatus.SUCCESS && performAdvancedSolve)
+          )
+        ">
           {{ "AstroBin is plate-solving this image with PixInsight..." | translate }}
         </span>
       </div>
 
-      <button class="btn btn-link btn-no-block" (click)="openInformationOffcanvas()">
+      <button
+        *ngIf="!!solution && (solution.submissionId || solution.pixinsightSerialNumber)"
+        (click)="openInformationOffcanvas()"
+        class="btn btn-link btn-no-block"
+      >
         <fa-icon icon="info-circle" class="me-0"></fa-icon>
       </button>
     </div>
@@ -99,7 +111,11 @@ export class ImageViewerPlateSolvingBannerComponent
   extends ImageViewerSectionBaseComponent implements OnInit, OnChanges {
   protected solution: SolutionInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
+  protected performAdvancedSolve = false;
   protected readonly SolutionStatus = SolutionStatus;
+
+  @Output()
+  solutionChange = new EventEmitter<SolutionInterface>();
 
   @ViewChild("informationOffcanvasTemplate")
   private _informationOffcanvasTemplate: TemplateRef<any>;
@@ -111,12 +127,15 @@ export class ImageViewerPlateSolvingBannerComponent
   private _previouslySolving = false;
   private _isSolving = false;
   private _pollingSubscription: Subscription;
-  private _performAdvancedSolve = false;
   private readonly _successMessage = this.translateService.instant("Image successfully plate-solved.");
-  private readonly _failureMessage = this.translateService.instant("Image plate-solving failed.");
+  private readonly _failureMessage = this.translateService.instant("Image plate-solving with Astrometry.net failed.");
+  private readonly _advancedFailureMessage = this.translateService.instant(
+    "Image plate-solving with PixInsight failed."
+  );
 
   constructor(
     public readonly store$: Store<MainState>,
+    public readonly actions$: Actions,
     public readonly searchService: SearchService,
     public readonly router: Router,
     public readonly imageViewerService: ImageViewerService,
@@ -152,8 +171,9 @@ export class ImageViewerPlateSolvingBannerComponent
 
     if (isPlatformBrowser(this.platformId)) {
       this.userSubscriptionService.canPlateSolveAdvanced$().subscribe(canPlateSolveAdvanced => {
-        this._performAdvancedSolve = canPlateSolveAdvanced;
+        this.performAdvancedSolve = canPlateSolveAdvanced;
         this._pollSolution();
+        this.changeDetectorRef.markForCheck();
       });
     }
   }
@@ -161,38 +181,65 @@ export class ImageViewerPlateSolvingBannerComponent
   ngOnChanges(changes: SimpleChanges) {
     if (changes.image && changes.image.currentValue || changes.revisionLabel && changes.revisionLabel.currentValue) {
       this._initImage(this.image);
+      this._listenForSolutionChanges();
     }
+  }
+
+  private _listenForSolutionChanges() {
+    this.actions$.pipe(
+      ofType(AppActionTypes.LOAD_SOLUTION_SUCCESS),
+      map((action: LoadSolutionSuccess) => action.payload),
+      filter(solution =>
+        solution.objectId === this.solution.objectId &&
+        solution.contentType === this.solution.contentType
+      ),
+      takeUntil(this.destroyed$)
+    ).subscribe(solution => {
+      this.solution = solution;
+      this._onSolutionChange();
+    });
   }
 
   private _initImage(image: ImageInterface) {
     this.revision = this.imageService.getRevision(image, this.revisionLabel);
     if (this.revision) {
       this.solution = this.revision.solution;
-      this._isSolving = this.solutionService.isSolving(this.solution);
-      this._hostClass = this._isSolving ? "" : "d-none";
-
-      if (this._isSolving) {
-        this._previouslySolving = true;
-      }
-
-      if (this._solutionSucceeded()) {
-        if (this.solution.status !== SolutionStatus.ADVANCED_SUCCESS && !this._performAdvancedSolve) {
-          this.popNotificationsService.success(this._successMessage);
-          this._cancelPolling();
-        }
-      } else if (this._solutionFailed()) {
-        this.popNotificationsService.error(this._failureMessage);
-        this._cancelPolling();
-      }
+      this._onSolutionChange();
     }
   }
 
-  protected openInformationOffcanvas() {
-    if (!this.solution) {
-      this.popNotificationsService.error(this.translateService.instant("No plate-solving information available."));
-      return;
+  private _onSolutionChange() {
+    this._isSolving = (
+      this.solutionService.isSolving(this.solution) ||
+      !this.solution ||
+      !this.solution.status ||
+      (
+        this.solution.status === SolutionStatus.SUCCESS && this.performAdvancedSolve
+      )
+    );
+    this._hostClass = this._isSolving ? "" : "d-none";
+
+    if (this._isSolving) {
+      this._previouslySolving = true;
     }
 
+    if (this._solutionSucceeded()) {
+      if (this.solution.status !== SolutionStatus.ADVANCED_SUCCESS && !this.performAdvancedSolve) {
+        this.popNotificationsService.success(this._successMessage);
+        this._cancelPolling();
+      }
+    } else if (this._solutionFailed()) {
+      this.popNotificationsService.error(this._failureMessage);
+      this._cancelPolling();
+    } else if (this._solutionAdvancedFailed()) {
+      this.popNotificationsService.error(this._advancedFailureMessage);
+      this._cancelPolling();
+    }
+
+    this.solutionChange.emit(this.solution);
+  }
+
+  protected openInformationOffcanvas() {
     this.offcanvasService.open(this._informationOffcanvasTemplate, {
       panelClass: "image-viewer-offcanvas",
       backdropClass: "image-viewer-offcanvas-backdrop",
@@ -207,8 +254,7 @@ export class ImageViewerPlateSolvingBannerComponent
 
     return this._previouslySolving &&
       (
-        this.solution.status === SolutionStatus.SUCCESS ||
-        this.solution.status === SolutionStatus.ADVANCED_SUCCESS
+        this.solution.status === SolutionStatus.SUCCESS
       );
   }
 
@@ -219,7 +265,17 @@ export class ImageViewerPlateSolvingBannerComponent
 
     return this._previouslySolving &&
       (
-        this.solution.status === SolutionStatus.FAILED ||
+        this.solution.status === SolutionStatus.FAILED
+      );
+  }
+
+  _solutionAdvancedFailed(): boolean {
+    if (!this.solution) {
+      return false;
+    }
+
+    return this._previouslySolving &&
+      (
         this.solution.status === SolutionStatus.ADVANCED_FAILED
       );
   }
@@ -238,20 +294,19 @@ export class ImageViewerPlateSolvingBannerComponent
         this._initImage(image);
         this.changeDetectorRef.markForCheck();
       });
-      return;
+    } else {
+      const payload = {
+        contentType: this.solution.contentType,
+        objectId: this.solution.objectId,
+        forceRefresh: true,
+        includePixInsightDetails: true
+      };
+
+      this.store$.dispatch(new LoadSolution(payload));
     }
 
-    const payload = {
-      contentType: this.solution.contentType,
-      objectId: this.solution.objectId,
-      forceRefresh: true,
-      includePixInsightDetails: true
-    };
-
-    this.store$.dispatch(new LoadSolution(payload));
-
     if (this._isSolving) {
-      this._pollingSubscription = this.utilsService.delay(30000).subscribe(() => {
+      this._pollingSubscription = this.utilsService.delay(10000).subscribe(() => {
         this._pollSolution();
         this.changeDetectorRef.markForCheck();
       });
