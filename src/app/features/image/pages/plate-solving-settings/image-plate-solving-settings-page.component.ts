@@ -534,7 +534,7 @@ export class ImagePlateSolvingSettingsPageComponent
       this.advancedModel[fieldName] = enabled;
     }
 
-    const disabledMessage = this.translateService.instant('(Disabled based on field radius)');
+    const disabledMessage = this.translateService.instant('Option disabled based on field radius.');
 
     // Look through advancedFields to find and update the field's properties
     this.advancedFields.forEach(section => {
