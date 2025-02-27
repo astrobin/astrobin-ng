@@ -16,7 +16,7 @@ import { UtilsService } from "@core/services/utils/utils.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
-import { Subscription } from "rxjs";
+import { forkJoin, Subscription } from "rxjs";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { isPlatformBrowser } from "@angular/common";
 import { ImageApiService } from "@core/services/api/classic/images/image/image-api.service";
@@ -30,6 +30,7 @@ import { filter, map, takeUntil } from "rxjs/operators";
   selector: "astrobin-image-viewer-plate-solving-banner",
   template: `
     <div
+      *ngIf="performSolve"
       class="image-viewer-banner alert alert-dark d-flex align-items-center gap-2"
     >
       <div class="flex-grow-1">
@@ -111,6 +112,7 @@ export class ImageViewerPlateSolvingBannerComponent
   extends ImageViewerSectionBaseComponent implements OnInit, OnChanges {
   protected solution: SolutionInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
+  protected performSolve = false;
   protected performAdvancedSolve = false;
   protected readonly SolutionStatus = SolutionStatus;
 
@@ -170,9 +172,17 @@ export class ImageViewerPlateSolvingBannerComponent
     super.ngOnInit();
 
     if (isPlatformBrowser(this.platformId)) {
-      this.userSubscriptionService.canPlateSolveAdvanced$().subscribe(canPlateSolveAdvanced => {
+      forkJoin({
+        canPlateSolve: this.userSubscriptionService.canPlateSolve$(),
+        canPlateSolveAdvanced: this.userSubscriptionService.canPlateSolveAdvanced$()
+      }).subscribe(({ canPlateSolve, canPlateSolveAdvanced }) => {
+        this.performSolve = canPlateSolve;
         this.performAdvancedSolve = canPlateSolveAdvanced;
-        this._pollSolution();
+
+        if (this.performSolve) {
+          this._pollSolution();
+        }
+
         this.changeDetectorRef.markForCheck();
       });
     }
@@ -288,6 +298,11 @@ export class ImageViewerPlateSolvingBannerComponent
   }
 
   _pollSolution() {
+    // Only proceed if the user can solve
+    if (!this.performSolve) {
+      return;
+    }
+
     if (!this.solution) {
       this.imageApiService.getImage(this.image.pk).subscribe(image => {
         this.image = image;
