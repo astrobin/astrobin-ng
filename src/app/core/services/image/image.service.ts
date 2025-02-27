@@ -445,7 +445,7 @@ export class ImageService extends BaseService {
     if (isNaN(integration)) {
       return useHtml ? `0<span class='symbol'>&Prime;</span>` : "0s";
     }
-    
+
     const seconds = integration % 60;
     const minutes = Math.floor(integration / 60) % 60;
     const hours = Math.floor(integration / 3600);
@@ -790,7 +790,7 @@ export class ImageService extends BaseService {
 
     const isSolarSystemPlateSolvable =
       image.subjectType === SubjectType.SOLAR_SYSTEM &&
-      image.solarSystemMainSubject !== SolarSystemSubjectType.COMET;
+      image.solarSystemMainSubject === SolarSystemSubjectType.COMET;
 
     return isDeepSkyPlateSolvable || isSolarSystemPlateSolvable;
   }
