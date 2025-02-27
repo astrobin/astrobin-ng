@@ -61,7 +61,7 @@ export class EquipmentService extends BaseService {
     });
   }
 
-  humanizeTelescopeType(item: TelescopeInterface): string {
+  humanizeTelescopeLabel(item: TelescopeInterface): string {
     if (item.type === TelescopeType.CAMERA_LENS) {
       return this.translateService.instant("Lens");
     }
@@ -77,33 +77,49 @@ export class EquipmentService extends BaseService {
     return this.translateService.instant("Telescope");
   }
 
-  humanizeCameraType(item: CameraInterface): string {
+  humanizeCameraLabel(item: CameraInterface): string {
     return this.translateService.instant("Camera");
   }
 
-  humanizeMountType(item: MountInterface): string {
+  humanizeMountLabel(item: MountInterface): string {
     return this.translateService.instant("Mount");
   }
 
-  humanizeFilterType(item: FilterInterface): string {
+  humanizeFilterLabel(item: FilterInterface): string {
     return this.translateService.instant("Filter");
   }
 
-  humanizeEquipmentItemType(item: EquipmentItem): string {
+  humanizeAccessoryLabel(): string {
+    return this.translateService.instant("Accessory");
+  }
+
+  humanizeSoftwareLabel(): string {
+    return this.translateService.instant("Software");
+  }
+
+  humanizeEquipmentItemLabel(item: EquipmentItem): string {
     if (item.klass === EquipmentItemType.TELESCOPE) {
-      return this.humanizeTelescopeType(item as TelescopeInterface);
+      return this.humanizeTelescopeLabel(item as TelescopeInterface);
     }
 
     if (item.klass === EquipmentItemType.CAMERA) {
-      return this.humanizeCameraType(item as CameraInterface);
+      return this.humanizeCameraLabel(item as CameraInterface);
     }
 
     if (item.klass === EquipmentItemType.MOUNT) {
-      return this.humanizeMountType(item as MountInterface);
+      return this.humanizeMountLabel(item as MountInterface);
     }
 
     if (item.klass === EquipmentItemType.FILTER) {
-      return this.humanizeFilterType(item as FilterInterface);
+      return this.humanizeFilterLabel(item as FilterInterface);
+    }
+
+    if (item.klass === EquipmentItemType.ACCESSORY) {
+      return this.humanizeAccessoryLabel();
+    }
+
+    if (item.klass === EquipmentItemType.SOFTWARE) {
+      return this.humanizeSoftwareLabel();
     }
 
     return this.translateService.instant("Equipment");
