@@ -294,11 +294,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         select(selectCurrentFullscreenImageEvent),
         take(1)
       ).subscribe(event => {
-        if (event instanceof MouseEvent) {
-          this.setTouchMouseMode(false);
-          this.changeDetectorRef.markForCheck();
-        } else if (event instanceof TouchEvent) {
+        if (this._isTouchEvent(event)) {
           this.setTouchMouseMode(true);
+          this.changeDetectorRef.markForCheck();
+        } else if (event instanceof MouseEvent) {
+          this.setTouchMouseMode(false);
           this.changeDetectorRef.markForCheck();
         }
 
@@ -1074,5 +1074,22 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       img.onerror = (err) => subscriber.error(err);
       img.src = url;
     });
+  }
+  
+  /**
+   * Safely check if an event is a touch event without directly using instanceof TouchEvent
+   * This handles browsers where TouchEvent might not be defined
+   */
+  private _isTouchEvent(event: any): boolean {
+    if (!event) {
+      return false;
+    }
+    
+    // Check for touch event properties instead of using instanceof
+    return (
+      typeof event.touches !== 'undefined' || 
+      typeof event.changedTouches !== 'undefined' ||
+      (event.type && event.type.startsWith('touch'))
+    );
   }
 }
