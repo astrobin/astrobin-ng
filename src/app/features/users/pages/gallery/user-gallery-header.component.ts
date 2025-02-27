@@ -23,8 +23,12 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
   selector: "astrobin-user-gallery-header",
   template: `
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="user-gallery-header">
-      <img *ngIf="userProfile.galleryHeaderImage" [src]="userProfile.galleryHeaderImage" alt="" />
-      <div *ngIf="!userProfile.galleryHeaderImage" class="no-image"></div>
+      <img *ngIf="userProfile.galleryHeaderImage" [src]="userProfile.galleryHeaderImage" (error)="handleImageError($event)" alt="" />
+      <div *ngIf="!userProfile.galleryHeaderImage" class="no-image">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+      </div>
       <div class="header-gradient"></div>
       <div class="user-info d-flex justify-content-between">
         <div class="d-flex gap-3 align-items-center">
@@ -488,6 +492,14 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
 
   protected removeShadowBan(userProfileId: UserProfileInterface["id"]) {
     this.store$.dispatch(new RemoveShadowBanUserProfile({ id: userProfileId }));
+  }
+  
+  protected handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.style.display = 'none';
+    // Clear the galleryHeaderImage so that the no-image div shows
+    this.userProfile.galleryHeaderImage = null;
+    this.changeDetectorRef.markForCheck();
   }
 
   private _searchFollowers(searchTerm?: string) {

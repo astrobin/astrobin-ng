@@ -18,9 +18,97 @@
   overflow: hidden;
 
   .no-image {
-    background: var(--black);
+    background: linear-gradient(135deg, #0f2040 0%, #060b14 40%, #000000 100%);
     width: 100%;
     height: 100%;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='rgba(255,255,255,0.25)'%3E%3Cpath d='M25 30l2-2 2 2-2 2z'/%3E%3Cpath d='M15 40l1-1 1 1-1 1z'/%3E%3Cpath d='M55 15l3-3 3 3-3 3z'/%3E%3Cpath d='M90 25l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M130 15l2-2 2 2-2 2z'/%3E%3Cpath d='M160 35l1-1 1 1-1 1z'/%3E%3Cpath d='M180 50l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M150 75l1-1 1 1-1 1z'/%3E%3Cpath d='M175 90l2-2 2 2-2 2z'/%3E%3Cpath d='M185 120l1-1 1 1-1 1z'/%3E%3Cpath d='M160 145l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M170 170l1-1 1 1-1 1z'/%3E%3Cpath d='M130 150l2-2 2 2-2 2z'/%3E%3Cpath d='M110 175l1-1 1 1-1 1z'/%3E%3Cpath d='M80 155l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M60 175l1-1 1 1-1 1z'/%3E%3Cpath d='M45 155l2-2 2 2-2 2z'/%3E%3Cpath d='M20 165l1-1 1 1-1 1z'/%3E%3Cpath d='M10 135l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M5 110l1-1 1 1-1 1z'/%3E%3Cpath d='M25 95l2-2 2 2-2 2z'/%3E%3Cpath d='M15 75l1-1 1 1-1 1z'/%3E%3Cpath d='M35 60l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M65 80l1-1 1 1-1 1z'/%3E%3Cpath d='M95 65l2-2 2 2-2 2z'/%3E%3Cpath d='M120 85l1-1 1 1-1 1z'/%3E%3Cpath d='M105 105l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M85 120l1-1 1 1-1 1z'/%3E%3Cpath d='M60 110l2-2 2 2-2 2z'/%3E%3Cpath d='M40 125l1-1 1 1-1 1z'/%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.6;
+      animation: twinkle 20s linear infinite;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='rgba(255,255,255,0.1)'%3E%3Cpath d='M35 40l2-2 2 2-2 2z'/%3E%3Cpath d='M75 25l1-1 1 1-1 1z'/%3E%3Cpath d='M115 35l3-3 3 3-3 3z'/%3E%3Cpath d='M150 15l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M190 45l2-2 2 2-2 2z'/%3E%3Cpath d='M220 25l1-1 1 1-1 1z'/%3E%3Cpath d='M250 60l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M210 85l1-1 1 1-1 1z'/%3E%3Cpath d='M235 110l2-2 2 2-2 2z'/%3E%3Cpath d='M245 140l1-1 1 1-1 1z'/%3E%3Cpath d='M220 175l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M250 200l1-1 1 1-1 1z'/%3E%3Cpath d='M190 180l2-2 2 2-2 2z'/%3E%3Cpath d='M170 215l1-1 1 1-1 1z'/%3E%3Cpath d='M140 185l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M120 215l1-1 1 1-1 1z'/%3E%3Cpath d='M95 175l2-2 2 2-2 2z'/%3E%3Cpath d='M70 195l1-1 1 1-1 1z'/%3E%3Cpath d='M40 165l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M55 140l1-1 1 1-1 1z'/%3E%3Cpath d='M25 115l2-2 2 2-2 2z'/%3E%3Cpath d='M55 95l1-1 1 1-1 1z'/%3E%3Cpath d='M75 70l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M125 50l1-1 1 1-1 1z'/%3E%3Cpath d='M155 95l2-2 2 2-2 2z'/%3E%3Cpath d='M175 125l1-1 1 1-1 1z'/%3E%3Cpath d='M145 155l1.5-1.5 1.5 1.5-1.5 1.5z'/%3E%3Cpath d='M115 140l1-1 1 1-1 1z'/%3E%3Cpath d='M90 100l2-2 2 2-2 2z'/%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.4;
+      animation: twinkle-slow 30s linear infinite;
+    }
+
+    /* Add some brighter stars */
+    &::before, &::after {
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      z-index: 1;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      width: 2px;
+      height: 2px;
+      box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.4);
+    }
+
+    .star:nth-child(1) {
+      top: 25%;
+      left: 15%;
+      width: 3px;
+      height: 3px;
+      animation: twinkle 4s ease-in-out infinite;
+    }
+
+    .star:nth-child(2) {
+      top: 40%;
+      left: 75%;
+      width: 2px;
+      height: 2px;
+      animation: twinkle 6s ease-in-out infinite;
+    }
+
+    .star:nth-child(3) {
+      top: 65%;
+      left: 35%;
+      width: 3px;
+      height: 3px;
+      animation: twinkle 5s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0% {
+        opacity: 0.4;
+      }
+      50% {
+        opacity: 0.7;
+      }
+      100% {
+        opacity: 0.4;
+      }
+    }
+
+    @keyframes twinkle-slow {
+      0% {
+        opacity: 0.2;
+      }
+      33% {
+        opacity: 0.4;
+      }
+      66% {
+        opacity: 0.2;
+      }
+      100% {
+        opacity: 0.4;
+      }
+    }
   }
 
   img {
