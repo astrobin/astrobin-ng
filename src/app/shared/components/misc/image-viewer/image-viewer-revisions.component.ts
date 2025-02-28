@@ -21,6 +21,7 @@ interface RevisionDataInterface {
   isFinal: boolean;
   original: string;
   gallery: ImageThumbnailInterface;
+  deleting?: boolean;
 }
 
 @Component({
@@ -30,9 +31,10 @@ interface RevisionDataInterface {
       <div *ngIf="revisionData && revisionData.length > 1" class="revisions">
         <div
           *ngFor="let revision of revisionData"
-          (click)="onRevisionSelected(revision.label)"
+          (click)="!revision.deleting && onRevisionSelected(revision.label)"
           [class.active]="revision.active"
           [class.final]="revision.isFinal"
+          [class.deleting]="revision.deleting"
           class="revision"
         >
           <img
@@ -47,7 +49,7 @@ interface RevisionDataInterface {
           </span>
 
           <div
-            *ngIf="currentUserWrapper.user?.id === image.user"
+            *ngIf="currentUserWrapper.user?.id === image.user && !revision.deleting"
             class="no-toggle z-index-1"
             ngbDropdown
             container="body"
@@ -110,6 +112,12 @@ interface RevisionDataInterface {
               >
                 {{ "Delete" | translate }}
               </a>
+            </div>
+          </div>
+          
+          <div *ngIf="revision.deleting" class="loading-overlay">
+            <div class="spinner-border spinner-border-sm text-light" role="status">
+              <span class="sr-only">Loading...</span>
             </div>
           </div>
         </div>
@@ -220,6 +228,12 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
   }
 
   deleteOriginal(): void {
+    // Find the original revision and mark it as deleting
+    const originalRevision = this.revisionData.find(revision => revision.label === ORIGINAL_REVISION_LABEL);
+    if (originalRevision) {
+      originalRevision.deleting = true;
+    }
+    
     this.store$.dispatch(new DeleteOriginalImage({ pk: this.image.pk }));
   }
 
@@ -235,6 +249,12 @@ export class ImageViewerRevisionsComponent extends BaseComponentDirective implem
   }
 
   deleteRevision(pk: ImageRevisionInterface["pk"]): void {
+    // Find the revision and mark it as deleting
+    const revisionToDelete = this.revisionData.find(revision => revision.id === pk);
+    if (revisionToDelete) {
+      revisionToDelete.deleting = true;
+    }
+    
     this.store$.dispatch(new DeleteImageRevision({ pk }));
   }
 }
