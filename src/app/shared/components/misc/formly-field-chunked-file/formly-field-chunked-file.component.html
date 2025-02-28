@@ -1,41 +1,48 @@
-<div [attr.id]="field.id" class="chunked-file" uploadxDrop>
-  <label [class.active]="isActive()" class="upload-btn">
-    <span [style.width.%]="uploadState?.progress" class="progress-area">
-      <span class="background"></span>
-    </span>
+<astrobin-drag-drop-area
+  [attr.id]="field.id"
+  [multipleFiles]="uploadOptions?.multiple"
+  (filesDrop)="handleFilesDrop($event)"
+>
+  <div class="chunked-file">
+    <label [class.active]="isActive()" class="upload-btn">
+      <div [style.width.%]="uploadState.progress" class="progress-area" *ngIf="uploadState?.progress">
+        <span class="background"></span>
+      </div>
 
-    <span class="file">
-      <ng-container *ngIf="upload && upload.name; else withoutFile">
-        {{ upload.name }} ({{ uploadSize | filesize }})
+      <span class="file">
+        <ng-container *ngIf="upload && upload.name; else withoutFile">
+          {{ upload.name }} ({{ uploadSize | filesize }})
 
-        <ng-container
-          *ngIf="field.props.additionalInfoTemplate && (uploadState.status === 'added' || uploadState.status === 'queue')"
-        >
-          <div class="additional-info">
-            <ng-container *ngTemplateOutlet="field.props.additionalInfoTemplate"></ng-container>
-          </div>
+          <ng-container
+            *ngIf="field.props.additionalInfoTemplate && (uploadState.status === 'added' || uploadState.status === 'queue')"
+          >
+            <div class="additional-info">
+              <ng-container *ngTemplateOutlet="field.props.additionalInfoTemplate"></ng-container>
+            </div>
+          </ng-container>
+
+          <span
+            *ngIf="uploadState.status !== 'added' && uploadState.status !== 'queue'"
+            class="status"
+          >
+            {{ status$ | async }}
+          </span>
         </ng-container>
 
-        <span
-          *ngIf="uploadState.status !== 'added' && uploadState.status !== 'queue'"
-          class="status"
-        >
-          {{ status$ | async }}
-        </span>
-      </ng-container>
+        <ng-template #withoutFile>
+          <fa-icon icon="upload"></fa-icon>
+          <div class="choose-file">{{ uploadLabel }}</div>
+        </ng-template>
+      </span>
 
-      <ng-template #withoutFile>
-        <fa-icon icon="upload"></fa-icon>
-        <div class="choose-file">{{ uploadLabel }}</div>
-      </ng-template>
-    </span>
-
-    <input
-      [formControl]="formControl"
-      [formlyAttributes]="field"
-      [uploadx]="uploadOptions"
-      class="chunked"
-      type="file"
-    />
-  </label>
-</div>
+      <input
+        (state)="uploadState = $event"
+        [formControl]="formControl"
+        [formlyAttributes]="field"
+        [uploadx]="uploadOptions"
+        class="chunked"
+        type="file"
+      />
+    </label>
+  </div>
+</astrobin-drag-drop-area>

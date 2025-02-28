@@ -9,9 +9,9 @@
 
 <ng-template #uploaderTemplate>
   <div class="row" *ngIf="(mayUploadRevision$ | async) === true; else mayNotUpload">
-    <div class="col-sm-12 col-md-3" *ngIf="imageThumbnail$ | async as thumbnail">
+    <div class="col-sm-12 col-md-3" *ngIf="imageThumbnail">
       <div class="thumbnail">
-        <img [attr.src]="thumbnail" alt="image.title" />
+        <img [attr.src]="imageThumbnail" [alt]="image.title" />
       </div>
     </div>
 

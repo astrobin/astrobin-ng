@@ -147,6 +147,7 @@ import { IconsModule } from "@shared/icons.module";
 import { ImageViewerGuidingEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-guiding-equipment.component";
 import { ImageViewerEquipmentItemsComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment-items.component";
 import { NotificationsListComponent } from "@shared/components/misc/notifications-list/notifications-list.component";
+import { DragDropAreaComponent } from "@shared/components/misc/formly-field-chunked-file/drag-drop-area.component";
 
 const modules = [
   CommonModule,
@@ -197,6 +198,7 @@ const components = [
   CountrySelectionModalComponent,
   CustomToastComponent,
   DataDoesNotUpdateInRealTimeComponent,
+  DragDropAreaComponent,
   EmptyListComponent,
   FileValueAccessorDirective,
   FormlyCardWrapperComponent,

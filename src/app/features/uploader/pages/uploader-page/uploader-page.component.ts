@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
@@ -18,11 +18,13 @@ import { SubscriptionName } from "@core/types/subscription-name.type";
 import { UploadState, UploadxService } from "ngx-uploadx";
 import { takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-uploader-page",
   templateUrl: "./uploader-page.component.html",
-  styleUrls: ["./uploader-page.component.scss"]
+  styleUrls: ["./uploader-page.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploaderPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @ViewChild("additionalInfoTemplate") additionalInfoTemplate: TemplateRef<any>;
@@ -59,7 +61,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly router: Router,
-    public readonly route: ActivatedRoute
+    public readonly route: ActivatedRoute,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -113,10 +116,6 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       })
     );
 
-    this.store$.select(selectBackendConfig).subscribe(backendConfig => {
-      this.uploadDataService.setEndpoint(`${environment.classicApiUrl}${backendConfig.IMAGE_UPLOAD_ENDPOINT}`);
-    });
-
     this.uploadDataService.setMetadata("image-upload", {
       is_wip: true,
       skip_notifications: true
@@ -138,6 +137,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
           this.router.navigate([`/i/${hash}/edit`]);
         }
       }
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -152,6 +153,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       const field = this.fields.filter(x => x.key === "image_file")[0];
       const validator = field.validators.validation.filter(x => x.name === "file-size")[0];
       validator.options.max = result.max;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -225,6 +227,11 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
         type: "chunked-file",
         props: {
           required: true,
+          endpoint: `${environment.classicApiUrl}/api/v2/images/image-upload/`,
+          allowedTypes: Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",") + "," + Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS.join(","),
+          uploadLabel: this.uploadDataService.getUploadLabel(
+            Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS).join(",")
+          ),
           experimentalTiffSupportWarning: true,
           veryLargeSizeWarning: true,
           additionalInfoTemplate: this.additionalInfoTemplate
