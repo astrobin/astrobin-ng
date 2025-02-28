@@ -57,17 +57,7 @@ export class UploadDataService implements UploadDataServiceInterface {
     this._metadataChanges.next({ id, metadata: this._metadata[id] });
   }
 
-  setEndpoint(endpoint: string) {
-    this._endpointChanges.next(endpoint);
-  }
-
-  setAllowedTypes(allowedTypes: string) {
-    const uploadLabel = this._setUploadLabel(allowedTypes);
-    this._allowedTypesChanges.next({ allowedTypes, uploadLabel });
-  }
-
-
-  private _setUploadLabel(allowedTypes: string): string {
+  getUploadLabel(allowedTypes: string): string {
     const hasImageTypes = allowedTypes.indexOf(".jpg") > -1;
     const hasVideoTypes = allowedTypes.indexOf(".mp4") > -1;
     const hasUncompressedSourceTypes = allowedTypes.indexOf(".fits") > -1;
