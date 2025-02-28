@@ -1,12 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { selectEquipmentContributors } from "@features/equipment/store/equipment.selectors";
-import { takeUntil, tap } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import { LoadUser } from "@features/account/store/auth.actions";
-import { UserInterface } from "@core/interfaces/user.interface";
 import { Observable } from "rxjs";
-import { selectUser } from "@features/account/store/auth.selectors";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 
 @Component({
@@ -16,21 +13,12 @@ import { ContributorInterface } from "@features/equipment/types/contributor.inte
 })
 export class ContributorsPageComponent extends ExplorerBaseComponent implements OnInit {
   readonly contributors$: Observable<ContributorInterface[]> = this.store$.select(selectEquipmentContributors).pipe(
-    takeUntil(this.destroyed$),
-    tap(contributors => {
-      for (const contributor of contributors) {
-        this.store$.dispatch(new LoadUser({ id: contributor[0] }));
-      }
-    })
+    takeUntil(this.destroyed$)
   );
 
   ngOnInit() {
     super.ngOnInit();
 
     this.store$.dispatch(new GetContributors());
-  }
-
-  selectUser(id: number): Observable<UserInterface> {
-    return this.store$.select(selectUser, id);
   }
 }

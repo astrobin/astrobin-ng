@@ -14,8 +14,9 @@
     margin-bottom: 3rem;
 
     ::ng-deep {
-      astrobin-avatar img {
+      .avatar {
         max-width: 66.67%;
+        border-radius: 50%;
       }
 
       .username {
