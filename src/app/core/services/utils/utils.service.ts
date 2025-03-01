@@ -912,6 +912,11 @@ export class UtilsService {
     const result: Record<string, string>[] = [];
 
     for (const line of lines.slice(1)) {
+      // Skip empty lines
+      if (!line.trim()) {
+        continue;
+      }
+      
       const values = line.split(",");
       if (values.length !== headers.length) {
         continue;
@@ -919,7 +924,10 @@ export class UtilsService {
 
       const row: Record<string, string> = {};
       for (let i = 0; i < headers.length; i++) {
-        row[headers[i]] = values[i];
+        // Only add non-empty values to prevent validation errors
+        if (values[i] && values[i].trim() !== "") {
+          row[headers[i]] = values[i].trim();
+        }
       }
       result.push(row);
     }

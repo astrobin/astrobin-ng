@@ -9,16 +9,15 @@ import { ImageInterface } from "@core/interfaces/image.interface";
 import { ImageService } from "@core/services/image/image.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@core/services/device.service";
-import { FilterType, FilterTypePriority, LegacyFilterType } from "@features/equipment/types/filter.interface";
+import { FilterTypePriority } from "@features/equipment/types/filter.interface";
 import { FilterService } from "@features/equipment/services/filter.service";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { DeepSkyAcquisitionInterface } from "@core/interfaces/deep-sky-acquisition.interface";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
-import { FilterAcquisitionService } from "@features/equipment/services/filter-acquisition.service";
+import { FilterAcquisitionService, FilterSummary } from "@features/equipment/services/filter-acquisition.service";
 import { ImageInfoService } from "@core/services/image/image-info.service";
-import { FilterSummary } from "@features/equipment/services/filter-acquisition.service";
 
 // This includes each session.
 interface DetailedFilterSummary {
@@ -53,9 +52,15 @@ interface DetailedFilterSummary {
       <div
         (click)="toggleCollapse()"
         [class.collapsed]="collapsed"
-        class="metadata-header supports-collapsing"
+        class="metadata-header supports-collapsing d-flex justify-content-between"
       >
-        {{ "Acquisition" | translate }}
+        <span *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+            {{ "Acquisition" | translate }}
+            <astrobin-image-viewer-acquisition-csv-export
+                *ngIf="currentUserWrapper.user?.id === image.user"
+                [image]="image"
+            ></astrobin-image-viewer-acquisition-csv-export>
+        </span>
       </div>
 
       <div
@@ -95,14 +100,22 @@ interface DetailedFilterSummary {
         [class.collapsed]="collapsed"
         class="metadata-header supports-collapsing d-flex justify-content-between"
       >
-        <span>{{ "Integration" | translate }}</span>
+        <span *ngIf="currentUserWrapper$ | async as currentUserWrapper">
+            {{ "Integration" | translate }}
+          <astrobin-image-viewer-acquisition-csv-export
+            *ngIf="currentUserWrapper.user?.id === image.user"
+            [image]="image"
+          ></astrobin-image-viewer-acquisition-csv-export>
+        </span>
 
-        <span
-          *ngIf="deepSkyIntegrationTime && collapsed"
-          @fadeInOut
-          [innerHTML]="deepSkyIntegrationTime"
-          class="no-wrap"
-        ></span>
+        <span class="d-flex align-items-center">
+          <span
+            *ngIf="deepSkyIntegrationTime && collapsed"
+            @fadeInOut
+            [innerHTML]="deepSkyIntegrationTime"
+            class="no-wrap"
+          ></span>
+        </span>
       </div>
 
       <div
