@@ -1,0 +1,17 @@
+.export-csv-button {
+  cursor: pointer;
+
+  &:hover {
+    color: var(--accentColor);
+  }
+}
+
+:host {
+  display: inline-block;
+}
+
+::ng-deep .acquisition-csv-export-offcanvas {
+  &:not(.offcanvas-bottom) {
+    width: 40vw !important;
+  }
+}

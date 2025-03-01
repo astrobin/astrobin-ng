@@ -107,6 +107,7 @@ import { ImageViewerPhotographersComponent } from "@shared/components/misc/image
 import { ImageViewerDataSourceComponent } from "@shared/components/misc/image-viewer/image-viewer-data-source.component";
 import { ImageViewerAcquisitionComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition.component";
 import { ImageViewerAcquisitionDatesComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition-dates.component";
+import { ImageViewerAcquisitionCsvExportComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition-csv-export.component";
 import { ImageViewerAstrometryComponent } from "@shared/components/misc/image-viewer/image-viewer-astrometry.component";
 import { ImageViewerEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment.component";
 import { ImageViewerRevisionsComponent } from "@shared/components/misc/image-viewer/image-viewer-revisions.component";
@@ -245,6 +246,7 @@ const components = [
   ImageViewerDataSourceComponent,
   ImageViewerAcquisitionComponent,
   ImageViewerAcquisitionDatesComponent,
+  ImageViewerAcquisitionCsvExportComponent,
   ImageViewerAstrometryComponent,
   ImageViewerObjectsComponent,
   ImageViewerEquipmentComponent,
