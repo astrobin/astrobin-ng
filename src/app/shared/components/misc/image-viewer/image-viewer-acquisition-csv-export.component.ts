@@ -34,14 +34,19 @@ import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-a
         ></button>
       </div>
       <div class="offcanvas-body">
-        <p>{{ 'Copy the CSV data below' | translate }}</p>
-        
         <textarea
           class="form-control"
           rows="20"
           readonly
           [value]="csvContent"
         ></textarea>
+
+        <div class="form-text mt-2">
+          {{ 'This format is compatible with the CSV import feature in the image data editor.' | translate }}
+          <a href="https://welcome.astrobin.com/importing-acquisitions-from-csv" target="_blank">
+            {{ 'Learn more' | translate }}.
+          </a>
+        </div>
 
         <button class="btn btn-secondary mt-3" (click)="copyCsvContent()">{{ copyButtonLabel }}</button>
       </div>
@@ -53,14 +58,14 @@ import { SolarSystemAcquisitionInterface } from "@core/interfaces/solar-system-a
 export class ImageViewerAcquisitionCsvExportComponent implements OnChanges {
   @Input() image: ImageInterface;
   @Input() filterType: string;
-  
+
   @ViewChild("csvExportTemplate")
   csvExportTemplate: TemplateRef<any>;
-  
+
   csvContent: string = "";
   copyButtonLabel = this.translateService.instant("Copy");
   showExportButton = false;
-  
+
   constructor(
     public readonly offcanvasService: NgbOffcanvas,
     public readonly deviceService: DeviceService,
@@ -71,44 +76,44 @@ export class ImageViewerAcquisitionCsvExportComponent implements OnChanges {
     public readonly utilsService: UtilsService,
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {}
-  
+
   ngOnChanges(): void {
     // Show export button if there are acquisitions
-    this.showExportButton = 
-      (this.image?.deepSkyAcquisitions?.length > 0) || 
+    this.showExportButton =
+      (this.image?.deepSkyAcquisitions?.length > 0) ||
       (this.image?.solarSystemAcquisitions?.length > 0);
   }
-  
+
   openCsvExport(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    
+
     this.generateCsvContent();
-    
+
     this.offcanvasService.open(this.csvExportTemplate, {
       position: this.deviceService.offcanvasPosition(),
       panelClass: "image-viewer-offcanvas acquisition-csv-export-offcanvas",
       backdropClass: "image-viewer-offcanvas-backdrop"
     });
   }
-  
+
   async copyCsvContent(): Promise<void> {
     const result: boolean = await this.windowRefService.copyToClipboard(this.csvContent);
-    
+
     if (!result) {
       this.popNotificationsService.error(this.translateService.instant("Failed to copy CSV to clipboard."));
       return;
     }
-    
+
     this.copyButtonLabel = this.translateService.instant("Copied!");
     this.changeDetectorRef.markForCheck();
-    
+
     this.utilsService.delay(2000).subscribe(() => {
       this.copyButtonLabel = this.translateService.instant("Copy");
       this.changeDetectorRef.markForCheck();
     });
   }
-  
+
   private generateCsvContent(): void {
     if (this.image?.deepSkyAcquisitions?.length > 0) {
       this.csvContent = this.generateDeepSkyCsv();
@@ -118,156 +123,180 @@ export class ImageViewerAcquisitionCsvExportComponent implements OnChanges {
       this.csvContent = "";
     }
   }
-  
+
   private generateDeepSkyCsv(): string {
     if (!this.image?.deepSkyAcquisitions?.length) {
       return "";
     }
-    
-    // Define headers
+
+    // Define headers according to the import format
     const headers = [
-      "Date",
-      "Filter Type",
-      "Filter Brand",
-      "Filter Name",
-      "Number",
-      "Duration",
-      "Binning",
-      "ISO",
-      "Gain",
-      "F-Number",
-      "Sensor Cooling",
-      "Darks",
-      "Flats",
-      "Flat Darks",
-      "Bias",
-      "Bortle",
-      "Mean SQM",
-      "Mean FWHM",
-      "Temperature",
-      "Moon Illumination"
+      "date",
+      "filter",
+      "filterName", // Added for better usability
+      "number",
+      "duration",
+      "iso",
+      "binning",
+      "gain",
+      "sensorCooling",
+      "fNumber",
+      "darks",
+      "flats",
+      "flatDarks",
+      "bias",
+      "bortle",
+      "meanSqm",
+      "meanFwhm",
+      "temperature"
     ];
-    
+
     // Create CSV content
     let csvContent = headers.join(",") + "\n";
-    
+
     const rows = this.image.deepSkyAcquisitions.map(acq => this.formatDeepSkyAcquisitionRow(acq));
     csvContent += rows.join("\n");
-    
+
     return csvContent;
   }
-  
+
   private formatDeepSkyAcquisitionRow(acq: DeepSkyAcquisitionInterface): string {
     // Helper function to escape CSV values
     const escapeValue = (value: any): string => {
       if (value === null || value === undefined) {
         return "";
       }
-      
+
       const stringValue = String(value);
       // If the value contains commas, quotes, or newlines, wrap it in quotes
       if (stringValue.includes(",") || stringValue.includes('"') || stringValue.includes("\n")) {
         return '"' + stringValue.replace(/"/g, '""') + '"';
       }
-      
+
       return stringValue;
     };
-    
+
+    // Format duration correctly - convert to seconds if needed
+    let durationInSeconds = acq.duration;
+    if (acq.duration && !isNaN(parseFloat(acq.duration))) {
+      // If duration is in minutes (as commonly displayed), convert to seconds
+      const durationNum = parseFloat(acq.duration);
+      if (durationNum < 100) { // Assume it's minutes if small number
+        durationInSeconds = (durationNum * 60).toFixed(4);
+      } else {
+        // Ensure 4 decimal places max
+        durationInSeconds = parseFloat(acq.duration).toFixed(4);
+      }
+    }
+
+    // Create human-readable filter name based on whether it's new equipment or legacy
+    let humanReadableFilterName = "";
+
+    if (acq.filter2) {
+      // New equipment database
+      const brand = acq.filter2Brand || this.translateService.instant("DIY");
+      const name = acq.filter2Name || "";
+      if (name) {
+        humanReadableFilterName = `${brand} ${name}`;
+      }
+    } else if (acq.filter) {
+      // Legacy equipment database
+      const make = acq.filterMake || "";
+      const name = acq.filterName || "";
+      if (name) {
+        humanReadableFilterName = make ? `${make} ${name}` : name;
+      }
+    }
+
     // Create array of values
     const values = [
       escapeValue(acq.date),
-      escapeValue(acq.filter2Type || acq.filterType),
-      escapeValue(acq.filter2Brand || acq.filterMake),
-      escapeValue(acq.filter2Name || acq.filterName),
+      escapeValue(acq.filter2 || acq.filter), // Use the filter ID
+      escapeValue(humanReadableFilterName),
       escapeValue(acq.number),
-      escapeValue(acq.duration),
-      escapeValue(acq.binning),
+      escapeValue(durationInSeconds),
       escapeValue(acq.iso),
-      escapeValue(acq.gain),
-      escapeValue(acq.fNumber),
+      escapeValue(acq.binning),
+      escapeValue(acq.gain !== null ? parseFloat(String(acq.gain)).toFixed(2) : ""),
       escapeValue(acq.sensorCooling),
+      escapeValue(acq.fNumber !== null ? parseFloat(String(acq.fNumber)).toFixed(2) : ""),
       escapeValue(acq.darks),
       escapeValue(acq.flats),
       escapeValue(acq.flatDarks),
       escapeValue(acq.bias),
       escapeValue(acq.bortle),
-      escapeValue(acq.meanSqm),
-      escapeValue(acq.meanFwhm),
-      escapeValue(acq.temperature),
-      escapeValue(acq.moonIllumination !== null && acq.moonIllumination !== undefined ? 
-        Number(acq.moonIllumination).toFixed(2) : null)
+      escapeValue(acq.meanSqm !== null ? parseFloat(String(acq.meanSqm)).toFixed(2) : ""),
+      escapeValue(acq.meanFwhm !== null ? parseFloat(String(acq.meanFwhm)).toFixed(2) : ""),
+      escapeValue(acq.temperature !== null ? parseFloat(String(acq.temperature)).toFixed(2) : "")
     ];
-    
+
     return values.join(",");
   }
-  
+
   private generateSolarSystemCsv(): string {
     if (!this.image?.solarSystemAcquisitions?.length) {
       return "";
     }
-    
-    // Define headers
+
+    // Define headers according to the import format
     const headers = [
-      "Date",
-      "Time",
-      "Frames",
-      "FPS",
-      "Exposure Per Frame",
-      "Focal Length",
-      "ISO", 
-      "Gain",
-      "CMI",
-      "CMII",
-      "CMIII",
-      "Seeing",
-      "Transparency",
-      "Moon Illumination"
+      "date",
+      "time",
+      "frames",
+      "fps",
+      "exposurePerFrame",
+      "focalLength",
+      "iso",
+      "gain",
+      "cmi",
+      "cmii",
+      "cmiii",
+      "seeing",
+      "transparency"
     ];
-    
+
     // Create CSV content
     let csvContent = headers.join(",") + "\n";
-    
+
     const rows = this.image.solarSystemAcquisitions.map(acq => this.formatSolarSystemAcquisitionRow(acq));
     csvContent += rows.join("\n");
-    
+
     return csvContent;
   }
-  
+
   private formatSolarSystemAcquisitionRow(acq: SolarSystemAcquisitionInterface): string {
     // Helper function to escape CSV values
     const escapeValue = (value: any): string => {
       if (value === null || value === undefined) {
         return "";
       }
-      
+
       const stringValue = String(value);
       // If the value contains commas, quotes, or newlines, wrap it in quotes
       if (stringValue.includes(",") || stringValue.includes('"') || stringValue.includes("\n")) {
         return '"' + stringValue.replace(/"/g, '""') + '"';
       }
-      
+
       return stringValue;
     };
-    
+
     // Create array of values
     const values = [
       escapeValue(acq.date),
       escapeValue(acq.time),
       escapeValue(acq.frames),
-      escapeValue(acq.fps),
-      escapeValue(acq.exposurePerFrame),
+      escapeValue(acq.fps !== null ? parseFloat(String(acq.fps)).toFixed(5) : ""),
+      escapeValue(acq.exposurePerFrame !== null ? parseFloat(String(acq.exposurePerFrame)).toFixed(2) : ""),
       escapeValue(acq.focalLength),
       escapeValue(acq.iso),
-      escapeValue(acq.gain),
-      escapeValue(acq.cmi),
-      escapeValue(acq.cmii),
-      escapeValue(acq.cmiii),
+      escapeValue(acq.gain !== null ? parseFloat(String(acq.gain)).toFixed(2) : ""),
+      escapeValue(acq.cmi !== null ? parseFloat(String(acq.cmi)).toFixed(2) : ""),
+      escapeValue(acq.cmii !== null ? parseFloat(String(acq.cmii)).toFixed(2) : ""),
+      escapeValue(acq.cmiii !== null ? parseFloat(String(acq.cmiii)).toFixed(2) : ""),
       escapeValue(acq.seeing),
-      escapeValue(acq.transparency),
-      escapeValue(acq.moonIllumination !== null && acq.moonIllumination !== undefined ? 
-        Number(acq.moonIllumination).toFixed(2) : null)
+      escapeValue(acq.transparency)
     ];
-    
+
     return values.join(",");
   }
 }
