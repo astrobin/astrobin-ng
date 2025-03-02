@@ -63,6 +63,10 @@ export class SearchFilterSelectionModalComponent extends BaseComponentDirective 
   }
 
   categoryFilters(category: SearchFilterCategory): FilterType[] {
+    if (!this.filters) {
+      return [];
+    }
+
     return this.filters.filter(filterType => filterType.category === category);
   }
 
