@@ -33,11 +33,22 @@ import { DeviceService } from "@core/services/device.service";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <ng-container *ngIf="!!activeLayout; else loadingTemplate">
-        <astrobin-nothing-here
+        <div
           *ngIf="!loading && images.length === 0"
-          [withAlert]="false"
-          [withInfoSign]="false"
-        ></astrobin-nothing-here>
+        >
+          <astrobin-nothing-here
+            [withAlert]="false"
+            [withInfoSign]="false"
+            class="d-inline-block"
+          ></astrobin-nothing-here>
+
+          <a
+            *ngIf="currentUserWrapper.user?.id === user.id"
+            [routerLink]="['/uploader']"
+          >
+            {{ "Upload an image or a video now!" | translate }}
+          </a>
+        </div>
 
         <p
           *ngIf="options.q"
