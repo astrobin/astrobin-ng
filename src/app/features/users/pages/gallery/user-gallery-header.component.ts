@@ -229,7 +229,14 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
         <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
       </div>
       <div class="offcanvas-body">
-        <table *ngIf="stats; else loadingTemplate" class="table table-striped">
+        <ng-container *ngIf="stats === null" [ngTemplateOutlet]="loadingTemplate">
+        </ng-container>
+
+        <ng-container *ngIf="stats !== null && Object.keys(stats).length === 0">
+          <p translate="No additional information available at the moment. Please check again later!"></p>
+        </ng-container>
+
+        <table *ngIf="stats !== null && Object.keys(stats).length > 0" class="table table-striped">
           <tbody>
           <tr *ngFor="let stat of stats.stats">
             <td>{{ stat[0] }}</td>
@@ -343,7 +350,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
     </ng-template>
 
     <ng-template #loadingTemplate>
-      <astrobin-loading-indicator></astrobin-loading-indicator>
+      <astrobin-loading-indicator class="h-auto"></astrobin-loading-indicator>
     </ng-template>
   `,
   styleUrls: ["./user-gallery-header.component.scss"],
@@ -576,4 +583,6 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     });
     this.store$.dispatch(new LoadContentType({ appLabel: "auth", model: "user" }));
   }
+
+  protected readonly Object = Object;
 }
