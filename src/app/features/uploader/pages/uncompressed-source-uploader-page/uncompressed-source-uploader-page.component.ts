@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -26,11 +26,14 @@ import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
+import { ImageService } from "@core/services/image/image.service";
 
 @Component({
   selector: "astrobin-uncompressed-source-uploader-page",
   templateUrl: "./uncompressed-source-uploader-page.component.html",
-  styleUrls: ["./uncompressed-source-uploader-page.component.scss"]
+  styleUrls: ["./uncompressed-source-uploader-page.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UncompressedSourceUploaderPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   readonly form = new FormGroup({});
@@ -41,7 +44,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
 
   uploadState: UploadState;
   fields: FormlyFieldConfig[];
-  imageThumbnail$: Observable<string>;
+  imageThumbnail: string;
   image: ImageInterface;
   deleting = false;
 
@@ -55,10 +58,11 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly route: ActivatedRoute,
     public readonly titleService: TitleService,
-    public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
     public readonly imageApiService: ImageApiService,
     public readonly modalService: ModalService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly imageService: ImageService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -73,8 +77,9 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   }
 
   ngAfterViewInit(): void {
-    this.utilsService.delay(0).subscribe(() => {
+    this.utilsService.delay(1).subscribe(() => {
       this._initUploadService();
+      this.changeDetectorRef.detectChanges();
     });
   }
 
@@ -100,8 +105,9 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
       "This action cannot be undone."
     );
 
-    modalRef.closed.subscribe(() => {
+    modalRef.closed.pipe(take(1)).subscribe(() => {
       this.deleting = true;
+      this.changeDetectorRef.markForCheck();
 
       this.actions$.pipe(
         ofType(AppActionTypes.DELETE_IMAGE_UNCOMPRESSED_SOURCE_FILE_SUCCESS),
@@ -115,6 +121,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
           }
           return field;
         });
+        this.changeDetectorRef.markForCheck();
       });
 
       this.actions$.pipe(
@@ -123,6 +130,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
         take(1)
       ).subscribe(() => {
         this.deleting = false;
+        this.changeDetectorRef.markForCheck();
       });
 
 
@@ -139,6 +147,8 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
       takeUntil(this.destroyed$)
     ).subscribe(image => {
       this.image = image;
+      this._initThumbnail();
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -149,7 +159,12 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
         id: "image_file",
         type: "chunked-file",
         props: {
-          required: true
+          required: true,
+          endpoint: `${environment.classicApiUrl}/api/v2/images/uncompressed-source-upload/`,
+          allowedTypes: Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS,
+          uploadLabel: this.uploadDataService.getUploadLabel(
+            Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
+          ),
         }
       },
       {
@@ -169,7 +184,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     return `
     <p>
       ${this.translate.instant("This image already has an uncompressed source file.")}
-
+      <a
         class="btn btn-xs btn-primary no-external-link-icon ms-2"
         href="${this.image.uncompressedSourceFile}"
         target="_blank"
@@ -197,9 +212,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   }
 
   private _initThumbnail(): void {
-    this.imageThumbnail$ = this.thumbnailGroupApiService
-      .getThumbnailGroup(this.image.pk, Constants.ORIGINAL_REVISION)
-      .pipe(map(thumbnailGroup => thumbnailGroup.gallery));
+    this.imageThumbnail = this.imageService.getThumbnail(this.image, ImageAlias.GALLERY);
   }
 
   private _initUploadService(): void {
@@ -207,9 +220,6 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     this.uploadDataService.patchMetadata("image-upload", {
       allowedExtensions: Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS
     });
-
-    this.uploadDataService.setEndpoint(`${environment.classicApiUrl}/api/v2/images/uncompressed-source-upload/`);
-    this.uploadDataService.setAllowedTypes(Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(","));
 
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;
@@ -224,6 +234,8 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
             this.windowRef.nativeWindow.location.assign(this.classicRoutesService.IMAGE(image.hash || "" + image.pk));
           });
       }
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 }

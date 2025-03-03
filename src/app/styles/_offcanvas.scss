@@ -53,6 +53,7 @@
     margin: .25rem .5rem;
     border-radius: var(--bs-border-radius);
     box-shadow: 0 1px .2rem rgba(0, 0, 0, .05);
+    cursor: pointer;
 
     &:hover {
       color: var(--white);
@@ -60,7 +61,7 @@
   }
 
   .menu-divider {
-    height: .5rem;
+    height: .75rem;
     border: 0;
     background: none;
   }

@@ -86,7 +86,6 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 import { TogglePropertyComponent } from "@shared/components/misc/toggle-property/toggle-property.component";
-import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/summaries/item/summary/more-related-items-modal/more-related-items-modal.component";
 import { StockStatusComponent } from "@shared/components/equipment/stock-status/stock-status.component";
 import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -108,6 +107,7 @@ import { ImageViewerPhotographersComponent } from "@shared/components/misc/image
 import { ImageViewerDataSourceComponent } from "@shared/components/misc/image-viewer/image-viewer-data-source.component";
 import { ImageViewerAcquisitionComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition.component";
 import { ImageViewerAcquisitionDatesComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition-dates.component";
+import { ImageViewerAcquisitionCsvExportComponent } from "@shared/components/misc/image-viewer/image-viewer-acquisition-csv-export.component";
 import { ImageViewerAstrometryComponent } from "@shared/components/misc/image-viewer/image-viewer-astrometry.component";
 import { ImageViewerEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment.component";
 import { ImageViewerRevisionsComponent } from "@shared/components/misc/image-viewer/image-viewer-revisions.component";
@@ -148,6 +148,7 @@ import { IconsModule } from "@shared/icons.module";
 import { ImageViewerGuidingEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-guiding-equipment.component";
 import { ImageViewerEquipmentItemsComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment-items.component";
 import { NotificationsListComponent } from "@shared/components/misc/notifications-list/notifications-list.component";
+import { DragDropAreaComponent } from "@shared/components/misc/formly-field-chunked-file/drag-drop-area.component";
 
 const modules = [
   CommonModule,
@@ -198,6 +199,7 @@ const components = [
   CountrySelectionModalComponent,
   CustomToastComponent,
   DataDoesNotUpdateInRealTimeComponent,
+  DragDropAreaComponent,
   EmptyListComponent,
   FileValueAccessorDirective,
   FormlyCardWrapperComponent,
@@ -244,6 +246,7 @@ const components = [
   ImageViewerDataSourceComponent,
   ImageViewerAcquisitionComponent,
   ImageViewerAcquisitionDatesComponent,
+  ImageViewerAcquisitionCsvExportComponent,
   ImageViewerAstrometryComponent,
   ImageViewerObjectsComponent,
   ImageViewerEquipmentComponent,
@@ -269,7 +272,6 @@ const components = [
   MarketplaceListingCardComponent,
   MarketplaceListingCardsComponent,
   MobileMenuComponent,
-  MoreRelatedItemsModalComponent,
   MostOftenUsedWithModalComponent,
   NestedCommentComponent,
   NestedCommentsComponent,

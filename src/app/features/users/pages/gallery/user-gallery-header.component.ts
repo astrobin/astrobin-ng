@@ -23,8 +23,12 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
   selector: "astrobin-user-gallery-header",
   template: `
     <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="user-gallery-header">
-      <img *ngIf="userProfile.galleryHeaderImage" [src]="userProfile.galleryHeaderImage" alt="" />
-      <div *ngIf="!userProfile.galleryHeaderImage" class="no-image"></div>
+      <img *ngIf="userProfile.galleryHeaderImage" [src]="userProfile.galleryHeaderImage" (error)="handleImageError($event)" alt="" />
+      <div *ngIf="!userProfile.galleryHeaderImage" class="no-image">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+      </div>
       <div class="header-gradient"></div>
       <div class="user-info d-flex justify-content-between">
         <div class="d-flex gap-3 align-items-center">
@@ -120,28 +124,63 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
               ></astrobin-toggle-property>
             </div>
             <div class="d-flex align-items-center images-and-followers flex-wrap">
-              <span [translate]="'{{ 0 }} images'" [translateParams]="{'0': userProfile.imageCount}"></span>
               <span
-                *ngIf="userProfile.wipImageCount && currentUserWrapper.user?.id === user.id"
+                *ngIf="userProfile.imageCount === 1"
+                translate="1 image"
+              ></span>
+              <span
+                *ngIf="userProfile.imageCount !== 1"
+                [translate]="'{{ 0 }} images'"
+                [translateParams]="{'0': userProfile.imageCount}"
+              ></span>
+
+              <span
+                *ngIf="userProfile.wipImageCount === 1 && currentUserWrapper.user?.id === user.id"
+                translate="(1 in staging)"
+                class="d-none d-sm-inline"
+              ></span>
+              <span
+                *ngIf="userProfile.wipImageCount > 1 && currentUserWrapper.user?.id === user.id"
                 [translate]="'({{ 0 }} in staging)'"
                 [translateParams]="{'0': userProfile.wipImageCount}"
                 class="d-none d-sm-inline"
               ></span>
+
               <span
+                *ngIf="userProfile.followersCount === 1"
+                (click)="openFollowersOffcanvas()"
+                translate="1 follower"
+                data-toggle="offcanvas"
+              ></span>
+              <span
+                *ngIf="userProfile.followersCount !== 1"
                 (click)="userProfile.followersCount ? openFollowersOffcanvas() : null"
                 [translate]="'{{ 0 }} followers'" [translateParams]="{'0': userProfile.followersCount}"
                 [attr.data-toggle]="userProfile.followersCount ? 'offcanvas' : ''"
               ></span>
+
               <span
-                *ngIf="currentUserWrapper.user?.id === user.id"
+                *ngIf="currentUserWrapper.user?.id === user.id && userProfile.followingCount === 1"
+                (click)="openFollowingOffcanvas()"
+                translate="1 following"
+                data-toggle="offcanvas"
+              ></span>
+              <span
+                *ngIf="currentUserWrapper.user?.id === user.id && userProfile.followingCount !== 1"
                 (click)="userProfile.followingCount ? openFollowingOffcanvas() : null"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
                 [attr.data-toggle]="userProfile.followingCount ? 'offcanvas' : ''"
               ></span>
+
               <span
-                *ngIf="currentUserWrapper.user?.id !== user.id"
+                *ngIf="currentUserWrapper.user?.id !== user.id && userProfile.followingCount === 1"
+                translate="1 following"
+              ></span>
+              <span
+                *ngIf="currentUserWrapper.user?.id !== user.id && userProfile.followingCount !== 1"
                 [translate]="'{{ 0 }} following'" [translateParams]="{'0': userProfile.followingCount}"
               ></span>
+
               <span
                 *ngIf="currentUserWrapper.user?.id === user.id"
                 (click)="openMutualFollowersOffcanvas()"
@@ -149,6 +188,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                 class="d-none d-sm-inline"
                 data-toggle="offcanvas"
               ></span>
+
               <a
                 (click)="openStatsOffcanvas()"
                 astrobinEventPreventDefault
@@ -189,7 +229,14 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
         <button type="button" class="btn-close" (click)="offcanvas.close()"></button>
       </div>
       <div class="offcanvas-body">
-        <table *ngIf="stats; else loadingTemplate" class="table table-striped">
+        <ng-container *ngIf="stats === null" [ngTemplateOutlet]="loadingTemplate">
+        </ng-container>
+
+        <ng-container *ngIf="stats !== null && Object.keys(stats).length === 0">
+          <p translate="No additional information available at the moment. Please check again later!"></p>
+        </ng-container>
+
+        <table *ngIf="stats !== null && Object.keys(stats).length > 0" class="table table-striped">
           <tbody>
           <tr *ngFor="let stat of stats.stats">
             <td>{{ stat[0] }}</td>
@@ -303,7 +350,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
     </ng-template>
 
     <ng-template #loadingTemplate>
-      <astrobin-loading-indicator></astrobin-loading-indicator>
+      <astrobin-loading-indicator class="h-auto"></astrobin-loading-indicator>
     </ng-template>
   `,
   styleUrls: ["./user-gallery-header.component.scss"],
@@ -490,6 +537,14 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     this.store$.dispatch(new RemoveShadowBanUserProfile({ id: userProfileId }));
   }
 
+  protected handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.style.display = 'none';
+    // Clear the galleryHeaderImage so that the no-image div shows
+    this.userProfile.galleryHeaderImage = null;
+    this.changeDetectorRef.markForCheck();
+  }
+
   private _searchFollowers(searchTerm?: string) {
     this.searching = true;
     this.commonApiService.getUserProfileFollowers(this.userProfile.id, searchTerm).subscribe(followers => {
@@ -528,4 +583,6 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     });
     this.store$.dispatch(new LoadContentType({ appLabel: "auth", model: "user" }));
   }
+
+  protected readonly Object = Object;
 }

@@ -550,6 +550,7 @@ $largeViewPortBreakpoint: 2561px;
           transition: opacity 0.3s;
           padding: .5rem .75rem;
           font-size: .9rem;
+          z-index: 1;
 
           @media (max-width: $sm-max) {
             font-size: .65rem;
@@ -650,6 +651,12 @@ $largeViewPortBreakpoint: 2561px;
         astrobin-image-viewer-revisions.show {
           opacity: 1;
           pointer-events: auto;
+        }
+      }
+
+      @media (pointer: fine) {
+        &.hover astrobin-image-viewer-revisions ::ng-deep .revisions {
+          background: rgba(0, 0, 0, .5);
         }
       }
     }

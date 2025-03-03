@@ -20,6 +20,8 @@ label {
   border-radius: .375rem;
   cursor: not-allowed;
   pointer-events: none;
+  position: relative;
+  overflow: hidden;
 
   &.active {
     cursor: pointer;
@@ -59,6 +61,7 @@ label {
     text-transform: uppercase;
     color: var(--lighterGrey);
     text-align: center;
+    z-index: 1;
 
     [icon=upload] {
       display: block;

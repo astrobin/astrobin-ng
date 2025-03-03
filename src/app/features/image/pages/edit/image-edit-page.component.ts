@@ -445,9 +445,12 @@ export class ImageEditPageComponent
 
         this.loadingService.setLoading(true);
 
-        _fixNumbers(acquisitions);
-        _fixFilters(acquisitions);
-        _loadFilters$(acquisitions).subscribe(filters => {
+        // Additional cleanup - remove any empty objects
+        const validAcquisitions = acquisitions.filter(acq => Object.keys(acq).length > 0);
+
+        _fixNumbers(validAcquisitions);
+        _fixFilters(validAcquisitions);
+        _loadFilters$(validAcquisitions).subscribe(filters => {
           filters.forEach(filter => {
             if (filter !== null) {
               this.imageEditService.model.filters2.push(filter.id);
@@ -455,7 +458,7 @@ export class ImageEditPageComponent
             }
           });
 
-          _setModel(acquisitions);
+          _setModel(validAcquisitions);
           this.loadingService.setLoading(false);
         });
       });

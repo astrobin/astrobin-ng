@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnDestroy, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { select, Store } from "@ngrx/store";
@@ -33,11 +33,22 @@ import { DeviceService } from "@core/services/device.service";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <ng-container *ngIf="!!activeLayout; else loadingTemplate">
-        <astrobin-nothing-here
+        <div
           *ngIf="!loading && images.length === 0"
-          [withAlert]="false"
-          [withInfoSign]="false"
-        ></astrobin-nothing-here>
+        >
+          <astrobin-nothing-here
+            [withAlert]="false"
+            [withInfoSign]="false"
+            class="d-inline-block"
+          ></astrobin-nothing-here>
+
+          <a
+            *ngIf="currentUserWrapper.user?.id === user.id"
+            [routerLink]="['/uploader']"
+          >
+            {{ "Upload an image or a video now!" | translate }}
+          </a>
+        </div>
 
         <p
           *ngIf="options.q"
@@ -244,6 +255,8 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
   @Input() expectedImageCount: number;
   @Input() activeLayout: ImageGalleryLayout;
 
+  @Output() imagesLoaded = new EventEmitter<ImageInterface[]>();
+
   protected readonly ImageAlias = ImageAlias;
   protected readonly UserGalleryActiveLayout = ImageGalleryLayout;
 
@@ -374,6 +387,8 @@ export class UserGalleryImagesComponent extends BaseComponentDirective implement
           thumbnailUrl: this.imageService.getGalleryThumbnail(image)
         })));
       }
+
+      this.imagesLoaded.emit(this.images);
 
       this.changeDetectorRef.markForCheck();
     });

@@ -26,6 +26,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
 import { ImageViewerBaseEquipmentComponent } from "@shared/components/misc/image-viewer/image-viewer-base-equipment.component";
 import { SearchAutoCompleteType } from "@features/search/enums/search-auto-complete-type.enum";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { ImageInfoService } from "@core/services/image/image-info.service";
 
 @Component({
   selector: "astrobin-image-viewer-equipment",
@@ -161,7 +162,8 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
     public readonly equipmentService: EquipmentService,
     public readonly cookieService: CookieService,
     public readonly collapseSyncService: CollapseSyncService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly imageInfoService: ImageInfoService
   ) {
     super(
       store$,
@@ -227,55 +229,22 @@ export class ImageViewerEquipmentComponent extends ImageViewerBaseEquipmentCompo
       this.legacySoftware = image.software;
     }
 
-    let imagingTelescopesLabel: string;
-    let imagingCamerasLabel: string;
-    let mountsLabel: string;
-    let filtersLabel: string;
-    let accessoriesLabel: string;
-
-    if (this.telescopes.length === 1) {
-      imagingTelescopesLabel = this.equipmentService.humanizeTelescopeType(this.telescopes[0]);
-    } else {
-      imagingTelescopesLabel = this.translateService.instant("Optics");
-    }
-
-    if (this.cameras.length === 1) {
-      imagingCamerasLabel = this.equipmentService.humanizeCameraType(this.cameras[0]);
-    } else {
-      imagingCamerasLabel = this.translateService.instant("Cameras");
-    }
-
-    if (this.mounts.length === 1) {
-      mountsLabel = this.translateService.instant("Mount");
-    } else {
-      mountsLabel = this.translateService.instant("Mounts");
-    }
-
-    if (this.filters.length === 1) {
-      filtersLabel = this.translateService.instant("Filter");
-    } else {
-      filtersLabel = this.translateService.instant("Filters");
-    }
-
-    if (this.accessories.length === 1) {
-      accessoriesLabel = this.translateService.instant("Accessory");
-    } else {
-      accessoriesLabel = this.translateService.instant("Accessories");
-    }
+    // Get equipment labels from ImageInfoService
+    const labels = this.imageInfoService.getEquipmentLabels(this.image);
 
     this.attrToLabel = {
-      "telescopes": imagingTelescopesLabel,
+      "telescopes": labels.telescopes,
       "legacyTelescopes": this.translateService.instant("Optics"),
-      "cameras": imagingCamerasLabel,
+      "cameras": labels.cameras,
       "legacyCameras": this.legacyCameras?.length > 1 ? this.translateService.instant("Cameras") : this.translateService.instant("Camera"),
-      "mounts": mountsLabel,
+      "mounts": labels.mounts,
       "legacyMounts": this.legacyMounts?.length > 1 ? this.translateService.instant("Mounts") : this.translateService.instant("Mount"),
-      "filters": filtersLabel,
+      "filters": labels.filters,
       "legacyFilters": this.legacyFilters?.length > 1 ? this.translateService.instant("Filters") : this.translateService.instant("Filter"),
-      "accessories": accessoriesLabel,
+      "accessories": labels.accessories,
       "legacyAccessories": this.legacyAccessories?.length > 1 ? this.translateService.instant("Accessories") : this.translateService.instant("Accessory"),
       "legacyFocalReducers": this.legacyFocalReducers?.length > 1 ? this.translateService.instant("Focal reducers") : this.translateService.instant("Focus reducer"),
-      "software": this.translateService.instant("Software"),
+      "software": labels.software,
       "legacySoftware": this.translateService.instant("Software")
     };
   }

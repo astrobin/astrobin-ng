@@ -79,21 +79,18 @@
             <ng-container *ngFor="let relatedItem of relatedItems.slice(0, SHOW_MAX_RELATED_ITEMS); let last = last">
               <a
                 [routerLink]="['/equipment/explorer', relatedItem.klass.toLowerCase(), relatedItem.id]"
-                class="me-2"
               >
                 <astrobin-equipment-item-display-name [item]="relatedItem"></astrobin-equipment-item-display-name>
               </a>
 
-              <ng-container *ngIf="!last">
-                &middot;
-              </ng-container>
-
+              <span *ngIf="!last" class="d-inline-block me-2">
+                ,
+              </span>
             </ng-container>
 
             <ng-container *ngIf="relatedItems.length > SHOW_MAX_RELATED_ITEMS">
-              &middot;
-              <button (click)="viewMoreRelatedItems()" class="btn btn-link btn-no-block">
-                {{ moreRelatedItemsLabel }}
+              <button (click)="viewMoreRelatedItems()" class="btn btn-link btn-no-block ms-2">
+                <span class="related-item-pill more-button">{{ moreRelatedItemsLabel }}</span>
               </button>
             </ng-container>
           </td>
@@ -256,4 +253,23 @@
 
 <ng-template #loadingTemplate>
   <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #moreRelatedItemsOffcanvas let-offcanvas>
+  <div class="offcanvas-header">
+    <h4 class="offcanvas-title">{{ relatedItemsLabel }}</h4>
+    <button (click)="offcanvas.dismiss()" class="btn-close" type="button" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div *ngFor="let relatedItem of relatedItems" class="related-item-wrapper">
+      <div class="equipment-pill">
+        <a
+          (click)="offcanvas.dismiss()"
+          [routerLink]="['/equipment/explorer', relatedItem.klass.toLowerCase(), relatedItem.id]"
+        >
+          <astrobin-equipment-item-display-name [item]="relatedItem"></astrobin-equipment-item-display-name>
+        </a>
+      </div>
+    </div>
+  </div>
 </ng-template>

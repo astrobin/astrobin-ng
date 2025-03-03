@@ -485,25 +485,11 @@
 </ng-template>
 
 <ng-template #filterSearchRecommendationTemplate>
-  <p translate>
-    AstroBin recommends using specific filters to find equipment items, celestial subjects, and users. You can add
-    filters
-    by selecting the <strong>Filters</strong> icon on the right end of the search bar.
-  </p>
+  <p [innerHTML]="'AstroBin recommends using specific filters to find equipment items, celestial subjects, and users. You can add filters by selecting the <strong>Filters</strong> icon on the right end of the search bar.' | translate"></p>
 
-  <p translate>
-    If you want to perform a free text search, you can press <kbd>Enter</kbd> after typing. Free text searches are
-    usually more inclusive and may return more results, as they search in all available fields. AstroBin will still
-    try to show relevant results by matching your free text search to a filter, if there is a perfect match.
-  </p>
+  <p [innerHTML]="'If you want to perform a free text search, you can press <kbd>Enter</kbd> after typing. Free text searches are usually more inclusive and may return more results, as they search in all available fields. AstroBin will still try to show relevant results by matching your free text search to a filter, if there is a perfect match.' | translate"></p>
 
-  <p translate>
-    The distinction between a free text search and a search using a specific filter can be illustrated with the
-    following example. If you search for <strong>Orion</strong>, AstroBin cannot know if you want to see images OF
-    the Orion constellations, images IN the Orion constellation, images of the Orion nebula, images taken with an
-    Orion telescope, or images with somebody whose username is Orion. By using filters, you can specify what you are
-    looking for exactly.
-  </p>
+  <p [innerHTML]="'The distinction between a free text search and a search using a specific filter can be illustrated with the following example. If you search for <strong>Orion</strong>, AstroBin cannot know if you want to see images OF the Orion constellations, images IN the Orion constellation, images of the Orion nebula, images taken with an Orion telescope, or images with somebody whose username is Orion. By using filters, you can specify what you are looking for exactly.' | translate"></p>
 </ng-template>
 
 <ng-template #searchSettingsOffcanvasTemplate let-offcanvas>

@@ -714,7 +714,11 @@
 
 <ng-template #astrobinIndexTemplate>
   <span
-    *ngIf="!userProfile?.excludeFromCompetition"
+    *ngIf="
+      !userProfile?.excludeFromCompetition &&
+      userProfile?.astroBinIndex !== null &&
+      userProfile?.contributionIndex !== null
+    "
     [ngbPopover]="indexesPopoverContentTemplate"
     class="indexes"
     triggers="mouseenter:click"

@@ -92,6 +92,10 @@ export class CountryService extends BaseService {
   }
 
   getCountries(locale: string = "en"): { code: string, name: string }[] {
+    if (locale == null) {
+      locale = "en";
+    }
+
     locale = this._simplifyLocale(locale);
 
     const countryCodes = countries.getAlpha2Codes();

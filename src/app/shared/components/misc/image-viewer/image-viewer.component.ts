@@ -31,7 +31,7 @@ import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap"
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
 import { Throttle } from "@app/decorators";
-import { SolutionStatus } from "@core/interfaces/solution.interface";
+import { SolutionInterface, SolutionStatus } from "@core/interfaces/solution.interface";
 import { fadeInOut } from "@shared/animations";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap/offcanvas/offcanvas-ref";
@@ -121,6 +121,7 @@ export class ImageViewerComponent
   protected imageFileLoaded = false;
   protected alias: ImageAlias = ImageAlias.QHD;
   protected imageContentType: ContentTypeInterface;
+  protected revisionContentType: ContentTypeInterface;
   protected userContentType: ContentTypeInterface;
   protected supportsFullscreen: boolean;
   protected viewingFullscreenImage = false;
@@ -489,6 +490,13 @@ export class ImageViewerComponent
     }
   }
 
+  protected onSolutionChange(solution: SolutionInterface) {
+    if (solution) {
+      this.revision.solution = solution;
+      this._setSolutionMouseHoverImage();
+    }
+  }
+
   protected onImageMouseLeave(event: MouseEvent): void {
     event.preventDefault();
     this.imageArea.nativeElement.classList.remove("hover");
@@ -496,7 +504,7 @@ export class ImageViewerComponent
 
   @Throttle(20)
   protected onSvgMouseMove(event: MouseEvent): void {
-    if (!this.advancedSolutionMatrix) {
+    if (!this.advancedSolutionMatrix || !this.advancedSolutionMatrix.raMatrix) {
       return;
     }
 
@@ -594,6 +602,7 @@ export class ImageViewerComponent
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     this._setNonSolutionMouseHoverImage();
     this._setSolutionMouseHoverImage();
+    this._setShowPlateSolvingBanner();
     this.revisionSelected.emit(revisionLabel);
   }
 
@@ -876,6 +885,11 @@ export class ImageViewerComponent
       return;
     }
 
+    // If the image is plate-solvable but doesn't have a solution yet, start the solver
+    if (!this.revision.solution || this.revision.solution.status === SolutionStatus.MISSING) {
+      this._startBasicSolver();
+    }
+
     this.showPlateSolvingBanner = true;
   }
 
@@ -1079,6 +1093,15 @@ export class ImageViewerComponent
     });
 
     this.store$.pipe(
+      select(selectContentType, { appLabel: "astrobin", model: "imagerevision" }),
+      filter(contentType => !!contentType),
+      take(1)
+    ).subscribe(contentType => {
+      this.revisionContentType = contentType;
+      this.changeDetectorRef.markForCheck();
+    });
+
+    this.store$.pipe(
       select(selectContentType, { appLabel: "auth", model: "user" }),
       filter(contentType => !!contentType),
       take(1)
@@ -1090,6 +1113,11 @@ export class ImageViewerComponent
     this.store$.dispatch(new LoadContentType({
       appLabel: "astrobin",
       model: "image"
+    }));
+
+    this.store$.dispatch(new LoadContentType({
+      appLabel: "astrobin",
+      model: "imagerevision"
     }));
 
     this.store$.dispatch(new LoadContentType({
@@ -1309,6 +1337,33 @@ export class ImageViewerComponent
         take(1)
       )
       .subscribe();
+  }
+
+  private _startBasicSolver() {
+    if (!this.imageContentType || !this.revisionContentType || !this.revision) {
+      // If not ready yet, retry after a delay
+      this.utilsService.delay(200).subscribe(() => {
+        this._startBasicSolver();
+      });
+      return;
+    }
+
+    let contentTypeId: ContentTypeInterface["id"];
+
+    // Determine the correct objectId and contentType to use
+    if (this.revision.hasOwnProperty("label")) {
+      contentTypeId = this.revisionContentType.id;
+    } else {
+      contentTypeId = this.imageContentType.id;
+    }
+
+    this.solutionApiService.startBasicSolver(contentTypeId, this.revision.pk.toString())
+      .pipe(take(1))
+      .subscribe(() => {
+        // Solution won't be immediately available
+        // The banner component will handle polling for updates
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   protected readonly MouseHoverImageOptions = MouseHoverImageOptions;

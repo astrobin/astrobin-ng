@@ -125,9 +125,11 @@ import { EMPTY } from "rxjs";
 
             <div class="d-flex gap-3">
               <astrobin-toggle-property
-                *ngIf="currentUserWrapper.user?.username !== feedItem.actionObjectUserUsername"
                 [contentType]="contentType"
                 [count]="feedItem.data?.likeCount"
+                [disabled]="
+                  currentUserWrapper.user?.username === feedItem.actionObjectUserUsername ||
+                  currentUserWrapper.user?.username === feedItem.targetUserUsername"
                 [objectId]="+objectId"
                 [showLabel]="false"
                 [showLoadingIndicator]="false"

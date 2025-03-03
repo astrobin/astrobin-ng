@@ -85,7 +85,7 @@ export abstract class SearchBaseEquipmentFilterComponent extends SearchBaseFilte
             expressions: {
               className: () => {
                 let value = this.editForm.get(key).value.value;
-                return !value || value?.length > 1 || value?.length === 0 ? "d-none" : "";
+                return !value || value?.length > 1 || value?.length === 0 || !supportsExactMatch ? "d-none" : "";
               }
             },
             props: {

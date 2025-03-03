@@ -413,6 +413,7 @@
 
     <astrobin-image-viewer-plate-solving-banner
       *ngIf="image && showPlateSolvingBanner && (currentUserWrapper.user?.id === image.user || currentUserWrapper.user?.isSuperUser)"
+      (solutionChange)="onSolutionChange($event)"
       [image]="image"
       [revisionLabel]="revisionLabel"
       class="image-viewer-banner-component"

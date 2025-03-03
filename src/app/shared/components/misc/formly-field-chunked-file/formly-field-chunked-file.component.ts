@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
@@ -55,41 +55,19 @@ export class TusPost extends Tus {
   selector: "astrobin-formly-field-chunked-file",
   templateUrl: "./formly-field-chunked-file.component.html",
   styleUrls: ["./formly-field-chunked-file.component.scss"],
-  animations: [fadeInOut]
+  animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit, OnDestroy {
   upload: FileUpload;
   uploadSize: number;
   uploadState: UploadState;
-  uploadOptions: UploadxOptions = {
-    allowedTypes: Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(","),
-    uploaderClass: TusPost,
-    maxChunkSize: 2 * 1024 * 1024,
-    multiple: false,
-    autoUpload: false,
-    storeIncompleteHours: 0,
-    retryConfig: {
-      shouldRetry: (code, attempts) => {
-        const retryCodes = [423, 503, 504, 520];
-        return retryCodes.indexOf(code) !== -1 && attempts < 5;
-      }
-    },
-    authorize: req => {
-      const token = this.authService.getClassicApiToken();
-      req.headers.Authorization = `Token ${token}`;
-      return req;
-    },
-    metadata: {
-      filename: UtilsService.uuid()
-    }
-  };
+  uploadOptions: UploadxOptions;
 
   protected uploadLabel: string;
 
   private _uploaderServiceEventsSubscription: Subscription;
   private _metadataChangesSubscription: Subscription;
-  private _endpointChangesSubscription: Subscription;
-  private _allowedTypesChangesSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -101,7 +79,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly windowRefService: WindowRefService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly ngZone: NgZone
   ) {
     super();
   }
@@ -112,7 +91,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     }
 
     if (this.isInitializingUpload()) {
-      return this.translateService.stream("Initializing upload, please wait...");
+      return this.translateService.stream("Uploading...");
     } else if (this.isUploading()) {
       return this.translateService.stream("Uploading...");
     } else if (this.isFinalizingUpload() || this.isComplete()) {
@@ -123,6 +102,31 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   ngOnInit() {
+    this.uploadLabel = this.field.props.uploadLabel || this.translateService.instant("Upload");
+    this.uploadOptions = {
+      endpoint: this.field.props.endpoint,
+      allowedTypes: this.field.props.allowedTypes || Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(","),
+      uploaderClass: TusPost,
+      maxChunkSize: 2 * 1024 * 1024,
+      multiple: typeof this.field.props.multile !== "undefined" ? this.field.props.multiple : false,
+      autoUpload: typeof this.field.props.autoUpload !== "undefined" ? this.field.props.autoUpload : false,
+      storeIncompleteHours: 0,
+      retryConfig: {
+        shouldRetry: (code, attempts) => {
+          const retryCodes = [423, 503, 504, 520];
+          return retryCodes.indexOf(code) !== -1 && attempts < 5;
+        }
+      },
+      authorize: req => {
+        const token = this.authService.getClassicApiToken();
+        req.headers.Authorization = `Token ${token}`;
+        return req;
+      },
+      metadata: {
+        filename: UtilsService.uuid()
+      }
+    };
+
     this.store$
       .select(selectBackendConfig)
       .pipe(
@@ -130,22 +134,22 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         take(1)
       )
       .subscribe(backendConfig => {
-        this.uploadOptions.maxChunkSize = Math.min(
-          this.uploadOptions.maxChunkSize,
-          backendConfig.DATA_UPLOAD_MAX_MEMORY_SIZE
-        );
+        this.uploadOptions = {
+          ...this.uploadOptions,
+          maxChunkSize: Math.min(
+            this.uploadOptions.maxChunkSize,
+            backendConfig.DATA_UPLOAD_MAX_MEMORY_SIZE
+          )
+        };
         this._initUploader();
+        this.changeDetectorRef.markForCheck();
       });
 
-    const isImageUploader = this.uploadOptions.allowedTypes === Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",");
-    if (isImageUploader) {
-      const types = Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS);
-      this.uploadOptions.allowedTypes = types.join(",");
-      this.uploadDataService.setAllowedTypes(this.uploadOptions.allowedTypes);
-    }
-
-    if (!!this.props.autoUpload) {
-      this.uploadOptions.autoUpload = this.props.autoUpload;
+    if (!!this.field.props.autoUpload) {
+      this.uploadOptions = {
+        ...this.uploadOptions,
+        autoUpload: this.field.props.autoUpload
+      };
     }
   }
 
@@ -174,6 +178,19 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     return this.uploadState && this.uploadState.status === "complete";
   }
 
+  /**
+   * Handle files dropped through the drag-drop area component
+   */
+  handleFilesDrop(files: FileList | File[]): void {
+    // Run inside NgZone to ensure change detection works properly
+    this.ngZone.run(() => {
+      if (files && files.length) {
+        // Handle the files through the uploader service
+        this.uploaderService.handleFiles(files, this.uploadOptions);
+      }
+    });
+  }
+
   ngOnDestroy(): void {
     if (this._uploaderServiceEventsSubscription) {
       this._uploaderServiceEventsSubscription.unsubscribe();
@@ -182,21 +199,11 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     if (this._metadataChangesSubscription) {
       this._metadataChangesSubscription.unsubscribe();
     }
-
-    if (this._endpointChangesSubscription) {
-      this._endpointChangesSubscription.unsubscribe();
-    }
-
-    if (this._allowedTypesChangesSubscription) {
-      this._allowedTypesChangesSubscription.unsubscribe();
-    }
   }
 
   private _initUploader(): void {
     this.uploaderService.init(this.uploadOptions);
     this._uploaderServiceEventsSubscription = this.uploaderService.events.subscribe((state: UploadState) => {
-      this.uploadState = state;
-
       if (state.status === "error") {
         let message: string;
 
@@ -263,10 +270,11 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           if (result[0] && result[1] && result[2]) {
             this.upload = new FileUpload(state);
             this.uploadSize = state.size;
-            this.formControl.setValue(this.uploadState.file);
+            this.formControl.setValue(state.file);
           } else {
             this.formControl.setValue(null);
           }
+          this.changeDetectorRef.markForCheck();
         });
       }
 
@@ -274,30 +282,22 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     });
 
     this._metadataChangesSubscription = this.uploadDataService.metadataChanges$
-      .pipe(filter(event => !!event))
+      .pipe(
+        filter(event => !!event)
+      )
       .subscribe(event => {
-        this.uploadOptions.metadata = {
-          ...this.uploadOptions.metadata,
-          ...event.metadata
+        this.uploadOptions = {
+          ...this.uploadOptions,
+          metadata: {
+            ...this.uploadOptions.metadata,
+            ...event.metadata
+          }
         };
         this.uploaderService.queue.forEach(
           queue => (queue.metadata = { ...queue.metadata, ...this.uploadOptions.metadata })
         );
+        this.changeDetectorRef.markForCheck();
       });
-
-    this._endpointChangesSubscription = this.uploadDataService.endpointChanges$.subscribe(endpoint => {
-      this.uploadOptions.endpoint = endpoint;
-      this.changeDetectorRef.markForCheck();
-    });
-
-    this._allowedTypesChangesSubscription = this.uploadDataService.allowedTypesChanges$.subscribe(({
-      allowedTypes,
-      uploadLabel
-    }) => {
-      this.uploadOptions.allowedTypes = allowedTypes;
-      this.uploadLabel = uploadLabel;
-      this.changeDetectorRef.markForCheck();
-    });
   }
 
   private _checkFileExtension(filename: string): Observable<boolean> {
@@ -316,6 +316,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   private _checkFileSize(filename: string, size: number): Observable<boolean> {
     return new Observable<boolean>(observer => {
       this.store$.select(selectBackendConfig).pipe(
+        filter(backendConfig => !!backendConfig),
+        take(1),
         switchMap(backendConfig => {
           if (!!backendConfig.MAX_FILE_SIZE && size > backendConfig.MAX_FILE_SIZE) {
             this.popNotificationsService.error(
@@ -448,7 +450,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     const MB = 1024 * 1024;
     let message;
 
-    if (!this.props.veryLargeSizeWarning) {
+    if (!this.field.props.veryLargeSizeWarning) {
       return;
     }
 
@@ -485,7 +487,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   private _warnAbout16BitTiff(filename: string): void {
-    if (!this.props.experimentalTiffSupportWarning) {
+    if (!this.field.props.experimentalTiffSupportWarning) {
       return;
     }
 

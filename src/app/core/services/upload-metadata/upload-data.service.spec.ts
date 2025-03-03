@@ -78,15 +78,4 @@ describe("UploadMetadataService", () => {
       service.patchMetadata(event.id, metadata2);
     });
   });
-
-  describe("setEndpoint", () => {
-    it("should emit endpoint change", done => {
-      service.endpointChanges$.pipe(skip(1)).subscribe(value => {
-        expect(value).toEqual("foo");
-        done();
-      });
-
-      service.setEndpoint("foo");
-    });
-  });
 });

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -11,22 +11,24 @@ import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
 import { ImageInterface } from "@core/interfaces/image.interface";
-import { ThumbnailGroupApiService } from "@core/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { TitleService } from "@core/services/title/title.service";
 import { UploadDataService } from "@core/services/upload-metadata/upload-data.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { UploadState, UploadxService } from "ngx-uploadx";
 import { Observable } from "rxjs";
-import { map, switchMap, takeUntil } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { SubscriptionName } from "@core/types/subscription-name.type";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { Actions } from "@ngrx/effects";
+import { ImageService } from "@core/services/image/image.service";
+import { ImageAlias } from "@core/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-revision-uploader-page",
   templateUrl: "./revision-uploader-page.component.html",
-  styleUrls: ["./revision-uploader-page.component.scss"]
+  styleUrls: ["./revision-uploader-page.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RevisionUploaderPageComponent extends BaseComponentDirective implements OnInit {
   SubscriptionName = SubscriptionName;
@@ -49,6 +51,11 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       type: "chunked-file",
       props: {
         required: true,
+        endpoint: `${environment.classicApiUrl}/api/v2/images/image-revision-upload/`,
+        allowedTypes: Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",") + "," + Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS.join(","),
+        uploadLabel: this.uploadDataService.getUploadLabel(
+          Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS).join(",")
+        ),
         experimentalTiffSupportWarning: true,
         veryLargeSizeWarning: true
       }
@@ -87,7 +94,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     }
   ];
 
-  imageThumbnail$: Observable<string>;
+  imageThumbnail: string;
 
   image: ImageInterface;
 
@@ -103,9 +110,10 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly route: ActivatedRoute,
     public readonly titleService: TitleService,
-    public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly imageService: ImageService
   ) {
     super(store$);
   }
@@ -313,26 +321,20 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       description: Constants.NO_VALUE
     });
 
-    this.store$.select(selectBackendConfig).subscribe(backendConfig => {
-      this.uploadDataService.setEndpoint(
-        `${environment.classicBaseUrl}${backendConfig.IMAGE_REVISION_UPLOAD_ENDPOINT}`
-      );
-    });
-
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;
 
       if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
-        this.router.navigate(['i', response.image, response.label, 'edit']);
+        this.router.navigate(["i", response.image, response.label, "edit"]);
       }
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 
   private _setThumbnail() {
-    this.imageThumbnail$ = this.thumbnailGroupApiService
-      .getThumbnailGroup(this.image.pk, Constants.ORIGINAL_REVISION)
-      .pipe(map(thumbnailGroup => thumbnailGroup.gallery));
+    this.imageThumbnail = this.imageService.getThumbnail(this.image, ImageAlias.GALLERY);
   }
 
   private _setRevisionCount() {

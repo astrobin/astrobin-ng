@@ -440,15 +440,22 @@ export class ImageService extends BaseService {
     return null;
   }
 
-  formatIntegration(integration: number): string {
+  formatIntegration(integration: number, useHtml: boolean = true): string {
+    // Handle NaN case
+    if (isNaN(integration)) {
+      return useHtml ? `0<span class='symbol'>&Prime;</span>` : "0s";
+    }
+
     const seconds = integration % 60;
     const minutes = Math.floor(integration / 60) % 60;
     const hours = Math.floor(integration / 3600);
 
-    const hourSymbol = "<span class='symbol'>h</span>";
-    const minuteSymbol = "<span class='symbol'>&prime;</span>";
-    const secondSymbol = "<span class='symbol'>&Prime;</span>";
+    // Define symbols based on mode (HTML or plain text)
+    const hourSymbol = useHtml ? "<span class='symbol'>h</span>" : "h";
+    const minuteSymbol = useHtml ? "<span class='symbol'>&prime;</span>" : "m";
+    const secondSymbol = useHtml ? "<span class='symbol'>&Prime;</span>" : "s";
 
+    // Format the integration time using the appropriate symbols
     if (hours > 0) {
       if (minutes > 0 || seconds > 0) {
         const minutePart = minutes > 0 ? `${minutes}${minuteSymbol} ` : "";
@@ -783,7 +790,7 @@ export class ImageService extends BaseService {
 
     const isSolarSystemPlateSolvable =
       image.subjectType === SubjectType.SOLAR_SYSTEM &&
-      image.solarSystemMainSubject !== SolarSystemSubjectType.COMET;
+      image.solarSystemMainSubject === SolarSystemSubjectType.COMET;
 
     return isDeepSkyPlateSolvable || isSolarSystemPlateSolvable;
   }
@@ -1012,13 +1019,19 @@ export class ImageService extends BaseService {
     });
   }
 
-  getObjectFit(image: ImageSearchInterface | ImageInterface | FeedItemInterface | IotdInterface): {
+  getObjectFit(
+    image: ImageSearchInterface | ImageInterface | ImageRevisionInterface | FeedItemInterface | IotdInterface
+  ): {
     position: {
       x: number,
       y: number
     },
     scale: number
   } {
+    if (image.hasOwnProperty("revisions")) {
+      image = this.getFinalRevision(image as ImageInterface) as ImageRevisionInterface;
+    }
+
     const w = this.getW(image);
     const h = this.getH(image);
 
@@ -1061,8 +1074,8 @@ export class ImageService extends BaseService {
     const scaleX = w / selectionWidth;
     const scaleY = h / selectionHeight;
 
-    // Use the smaller scale to ensure the selection area does not exceed the container boundaries
-    const scale = Math.min(scaleX, scaleY);
+    // Use the average scale to compromise between the two
+    const scale = (scaleX + scaleY) / 2;
 
     if (scale > 1) {
       // Adjust positions for scaled background image
@@ -1079,7 +1092,9 @@ export class ImageService extends BaseService {
     };
   }
 
-  getW(image: ImageSearchInterface | ImageInterface | FeedItemInterface | IotdInterface) {
+  getW(
+    image: ImageSearchInterface | ImageInterface | ImageRevisionInterface | FeedItemInterface | IotdInterface
+  ) {
     if (image.hasOwnProperty("finalW")) {
       return (image as ImageSearchInterface).finalW;
     }
@@ -1091,7 +1106,9 @@ export class ImageService extends BaseService {
     return 200;
   }
 
-  getH(image: ImageSearchInterface | ImageInterface | FeedItemInterface | IotdInterface) {
+  getH(
+    image: ImageSearchInterface | ImageInterface | ImageRevisionInterface | FeedItemInterface | IotdInterface
+  ) {
     if (image.hasOwnProperty("finalH")) {
       return (image as ImageSearchInterface).finalH;
     }

@@ -1,1 +1,1 @@
-export type ContributorInterface = number[];
+export type ContributorInterface = any[];
