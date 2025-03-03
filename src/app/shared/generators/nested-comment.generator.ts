@@ -19,7 +19,8 @@ export class NestedCommentGenerator {
       pendingModeration: source.pendingModeration || false,
       moderator: source.moderator || null,
       likes: source.likes || [],
-      depth: source.depth || 1
+      depth: source.depth || 1,
+      detectedLanguage: source.detectedLanguage || null,
     };
   }
 }
