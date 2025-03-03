@@ -297,7 +297,10 @@
     <div class="metadata-header">{{ "Description" | translate }}</div>
 
     <div *ngIf="translatedDescription" class="metadata-section">
-      <div class="metadata-item description" [innerHTML]="translatedDescription"></div>
+      <div class="metadata-item description translated-content">
+        <small class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
+        <div [innerHTML]="translatedDescription"></div>
+      </div>
     </div>
 
     <div *ngIf="!translatedDescription && image?.descriptionBbcode" class="metadata-section">

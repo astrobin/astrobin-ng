@@ -9,13 +9,12 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
-import { catchError, filter, take } from "rxjs/operators";
+import { filter, take } from "rxjs/operators";
 import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { SafeHtml } from "@angular/platform-browser";
-import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
 import { TranslateService } from "@ngx-translate/core";
-import { EMPTY } from "rxjs";
+import { ContentTranslateService } from "@core/services/content-translate.service";
 
 @Component({
   selector: "astrobin-feed-item-image",
@@ -83,9 +82,11 @@ import { EMPTY } from "rxjs";
 
             <div
               *ngIf="translatedHtml"
-              [innerHTML]="translatedHtml"
-              class="comment-body d-md-none"
+              class="comment-body d-md-none translated-content"
             >
+              <small class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
+              <div [innerHTML]="translatedHtml"></div>
+            
             </div>
 
             <div
@@ -178,8 +179,8 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
     public readonly viewContainerRef: ViewContainerRef,
     public readonly modalService: NgbModal,
     public readonly windowRefService: WindowRefService,
-    public readonly jsonApiService: JsonApiService,
     public readonly translateService: TranslateService,
+    public readonly contentTranslateService: ContentTranslateService,
     public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
@@ -229,33 +230,73 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
     event.preventDefault();
 
     this.translating = true;
-    this.jsonApiService.translate(
-      this.feedItem.data.commentHtml,
-      this.feedItem.data.commentLanguage,
-      this.translateService.currentLang,
-      {
-        format: "html"
-      }
-    ).pipe(
-      catchError(() => {
-        this.translating = false;
-        this.translatedHtml = null;
-        this.changeDetectorRef.markForCheck();
-        return EMPTY;
+
+    // Check if we have a cached translation first
+    const feedId = `feed-${this.feedItem.id}`;
+    const isTranslated = this.contentTranslateService.hasTranslation("feed", feedId);
+
+    if (isTranslated) {
+      this._loadTranslatedContent();
+      return;
+    }
+
+    // Otherwise perform a new translation
+    this.contentTranslateService
+      .translate({
+        text: this.feedItem.data.commentHtml,
+        sourceLanguage: this.feedItem.data.commentLanguage,
+        format: "html",
+        itemType: "feed",
+        itemId: feedId
       })
-    ).subscribe(response => {
-      if (response) {
-        this.translatedHtml = response.translation;
-        this.translating = false;
-        this.changeDetectorRef.markForCheck();
-      }
-    });
+      .subscribe(
+        translatedHtml => {
+          this.translatedHtml = translatedHtml;
+          this.translating = false;
+          this.changeDetectorRef.markForCheck();
+        },
+        error => {
+          this.translating = false;
+          this.translatedHtml = null;
+          this.changeDetectorRef.markForCheck();
+        }
+      );
   }
 
   protected onSeeOriginalCommentClicked(event: MouseEvent): void {
     event.preventDefault();
     this.translatedHtml = null;
+
+    // Clear translation preference in localStorage
+    const feedId = `feed-${this.feedItem.id}`;
+    this.contentTranslateService.clearTranslation("feed", feedId);
+
     this.changeDetectorRef.markForCheck();
+  }
+
+  private _loadTranslatedContent(): void {
+    const feedId = `feed-${this.feedItem.id}`;
+
+    this.contentTranslateService
+      .translate({
+        text: this.feedItem.data.commentHtml,
+        sourceLanguage: this.feedItem.data.commentLanguage,
+        format: "html",
+        itemType: "feed",
+        itemId: feedId
+      })
+      .subscribe(
+        translatedHtml => {
+          this.translatedHtml = translatedHtml;
+          this.translating = false;
+          this.changeDetectorRef.markForCheck();
+        },
+        error => {
+          this.translating = false;
+          this.translatedHtml = null;
+          this.changeDetectorRef.markForCheck();
+        }
+      );
   }
 
   private _getUserAvatar(): string {

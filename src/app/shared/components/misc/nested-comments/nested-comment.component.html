@@ -45,9 +45,12 @@
 
       <div
         *ngIf="!comment.pendingModeration"
-        [innerHTML]="html"
         class="text"
-      ></div>
+        [class.translated-content]="translated"
+      >
+        <small *ngIf="translated" class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
+        <div [innerHTML]="html"></div>
+      </div>
 
       <div *ngIf="comment.pendingModeration" class="text">
         <p class="alert alert-dark alert-mini w-100">
