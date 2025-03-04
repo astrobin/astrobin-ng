@@ -71,7 +71,7 @@ export function normalizeToSupportedLanguage(lang: string): string {
     return "zh_Hans";
   }
 
-  if (Object.keys(Constants.LANGUAGES).indexOf(lang.toLowerCase()) === -1) {
+  if (!Constants.LANGUAGES.find(x => x.code === lang.toLowerCase())) {
     return "en";
   }
 
