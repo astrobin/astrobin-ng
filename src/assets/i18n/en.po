@@ -15,6 +15,11 @@ msgstr ""
 msgid " Automatic renewal"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+msgid "(1 in staging)"
+msgstr ""
+
 msgid "(DIY)"
 msgstr ""
 
@@ -61,6 +66,18 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-thumbnail.component.ts
 msgid "1 collection"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+msgid "1 follower"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+msgid "1 following"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-thumbnail.component.ts
@@ -301,6 +318,12 @@ msgid "Advanced annotations (large font)"
 msgstr ""
 
 msgid "Advanced plate-solving"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+msgid ""
+"Advanced plate-solving settings can only be edited after the image has been "
+"successfully plate-solved with basic plate-solving."
 msgstr ""
 
 msgid "Advanced search"
@@ -965,6 +988,10 @@ msgstr ""
 msgid "CMIII"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+msgid "CSV data copied to clipboard."
+msgstr ""
+
 msgid "Calibration"
 msgstr ""
 
@@ -1552,6 +1579,10 @@ msgstr ""
 msgid "Description for the entire listing"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid "Detailed information"
+msgstr ""
+
 msgid "Developer(s)"
 msgstr ""
 
@@ -1919,6 +1950,21 @@ msgstr ""
 msgid "Explorer"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+msgid "Export CSV"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition-csv-export.component.ts
+msgid "Export acquisition sessions"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition-csv-export.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition-csv-export.component.ts
+msgid "Export to CSV"
+msgstr ""
+
 msgid "Exposure per frame"
 msgstr ""
 
@@ -1940,6 +1986,14 @@ msgid "FAQ"
 msgstr ""
 
 msgid "FPS"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+msgid "Failed to copy CSV data to clipboard."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition-csv-export.component.ts
+msgid "Failed to copy CSV to clipboard."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/nested-comments/nested-comment.component.ts
@@ -2124,6 +2178,10 @@ msgstr ""
 msgid "Focal modifier / field corrector"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image-info.service.ts
+msgid "Focal reducer"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-equipment.component.ts
 msgid "Focal reducers"
 msgstr ""
@@ -2179,6 +2237,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/read-only-mode/read-only-mode.component.html
 msgid "For more information, please check out our X feed:"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid "For more information, visit AstroBin"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-marketplace.service.ts
@@ -2669,7 +2731,11 @@ msgid "Image of the day and Top Pick archive"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
-msgid "Image plate-solving failed."
+msgid "Image plate-solving with Astrometry.net failed."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
+msgid "Image plate-solving with PixInsight failed."
 msgstr ""
 
 msgid "Image queue"
@@ -2773,13 +2839,14 @@ msgstr ""
 msgid "Infrared (IR)"
 msgstr ""
 
-msgid "Initializing upload, please wait..."
-msgstr ""
-
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition.component.ts
 msgid "Integration"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image-info.service.ts
+msgid "Integration per filter"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
@@ -2929,6 +2996,10 @@ msgid "Landscape"
 msgstr ""
 
 msgid "Large"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+msgid "Large (15-30°)"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
@@ -3285,6 +3356,10 @@ msgstr ""
 msgid "Medium"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+msgid "Medium (4-15°)"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
 msgid "Medium layout"
 msgstr ""
@@ -3554,6 +3629,10 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
+msgid "No additional information available at the moment. Please check again later!"
+msgstr ""
+
 msgid "No changes are proposed, or all proposed changes are outdated."
 msgstr ""
 
@@ -3618,10 +3697,6 @@ msgstr ""
 msgid "No plate-solving"
 msgstr ""
 
-#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-plate-solving-banner.component.ts
-msgid "No plate-solving information available."
-msgstr ""
-
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/summaries/item-summary/item-summary.component.html
 msgid "No properties to display"
 msgstr ""
@@ -3680,6 +3755,10 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
 msgid "Not following anyone."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+msgid "Note:"
 msgstr ""
 
 msgid "Nothing"
@@ -3938,6 +4017,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-smart-folder.component.ts
 msgid "Optics and cameras"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+msgid "Option disabled based on field radius."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-collection-menu.component.ts
@@ -4971,6 +5054,10 @@ msgstr ""
 msgid "Small"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+msgid "Small (1-4°)"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
 msgid "Small layout"
 msgstr ""
@@ -5362,6 +5449,12 @@ msgid ""
 "Wikipedia."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-buttons.component.ts
+msgid ""
+"The CSV below contains the images currently visible on this page. To "
+"include more images, scroll down your gallery to load more before exporting."
+msgstr ""
+
 msgid ""
 "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total "
 "images, and you currently have <strong>{{numberOfImages}}</strong> images "
@@ -5690,6 +5783,12 @@ msgstr ""
 msgid "This field only searches images with solar system acquisitions filled in."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-acquisition-csv-export.component.ts
+msgid ""
+"This format is compatible with the CSV import feature in the image data "
+"editor."
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component.ts
 msgid "This image already has an uncompressed source file."
 msgstr ""
@@ -6000,6 +6099,10 @@ msgstr ""
 msgid "Total awarded images"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid "Total integration"
+msgstr ""
+
 msgid "Total lunar eclipse"
 msgstr ""
 
@@ -6186,6 +6289,10 @@ msgstr ""
 msgid "Upload an image or a video"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-images.component.ts
+msgid "Upload an image or a video now!"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/upload-metadata/upload-data.service.ts
 msgid "Upload an image, a video, or an uncompressed source file"
 msgstr ""
@@ -6275,6 +6382,14 @@ msgid "Very bad"
 msgstr ""
 
 msgid "Very good"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+msgid "Very large (>30°)"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
+msgid "Very small (<1°)"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component.ts
@@ -6847,6 +6962,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-filter/search-base-filter.component.html
 msgid "and"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
+msgid "by"
 msgstr ""
 
 msgid "consider making an edit proposal instead."

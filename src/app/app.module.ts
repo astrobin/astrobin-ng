@@ -55,7 +55,6 @@ import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/m
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 
-// Supported languages
 registerLocaleData(localeEnglish);
 registerLocaleData(localeBritishEnglish);
 registerLocaleData(localeFrench);
@@ -64,8 +63,6 @@ registerLocaleData(localeItalian);
 registerLocaleData(localeSpanish);
 registerLocaleData(localePortuguese);
 registerLocaleData(localeChineseSimplified);
-
-// Community languages
 registerLocaleData(localeArabic);
 registerLocaleData(localeGreek);
 registerLocaleData(localeFinnish);
@@ -76,8 +73,6 @@ registerLocaleData(localeUkrainian);
 registerLocaleData(localeRussian);
 registerLocaleData(localeAlbanian);
 registerLocaleData(localeTurkish);
-
-// Other languages
 registerLocaleData(localeChinese);
 registerLocaleData(localeChineseTraditional);
 
