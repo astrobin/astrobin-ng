@@ -282,6 +282,7 @@ export interface ImageInterface {
   uncompressedSourceFile?: string;
   finalGalleryThumbnail?: string;
   isPlayable?: boolean;  // Only set by the gallery serializer.
+  detectedLanguage?: string;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;

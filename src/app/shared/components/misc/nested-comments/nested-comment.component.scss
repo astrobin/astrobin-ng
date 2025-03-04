@@ -77,6 +77,16 @@
       &:not(:first-child) {
         margin-left: .75rem;
       }
+
+      &.btn-link {
+        transition: color .3s ease;
+
+        @media (hover: hover) {
+          &:hover {
+            color: var(--lighterGrey) !important;
+          }
+        }
+      }
     }
 
     a {

@@ -6,7 +6,7 @@ import { select, Store } from "@ngrx/store";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { DeviceService } from "@core/services/device.service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
+import { catchError, delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageService } from "@core/services/image/image.service";
 import { ActivatedRoute } from "@angular/router";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
@@ -23,6 +23,7 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "@env/environment";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@core/services/title/title.service";
+import { ContentTranslateService } from "@core/services/content-translate.service";
 import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
@@ -164,6 +165,10 @@ export class ImageViewerComponent
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
   protected searchModel: SearchModelInterface;
+
+  protected translatingDescription = false;
+  protected translatedDescription: SafeHtml;
+
   protected readonly isBrowser: boolean;
 
   private _dataAreaScrollEventSubscription: Subscription;
@@ -195,7 +200,8 @@ export class ImageViewerComponent
     public readonly solutionApiService: SolutionApiService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly cookieService: CookieService,
-    public readonly searchService: SearchService
+    public readonly searchService: SearchService,
+    public readonly contentTranslateService: ContentTranslateService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -444,6 +450,7 @@ export class ImageViewerComponent
     this._setSolutionMouseHoverImage();
     this._setShowPlateSolvingBanner();
     this._replaceIdWithHash();
+    this._checkForCachedTranslation();
 
     // Updates to the current image.
     this.store$.pipe(
@@ -710,6 +717,100 @@ export class ImageViewerComponent
         this.lightbox.open([{ src, thumb }], 0);
       }
     }
+  }
+
+  protected onTranslateDescriptionClicked(event: Event): void {
+    event.preventDefault();
+
+    let scrollPosition : number;
+
+    if (this.isBrowser) {
+      scrollPosition = this.dataArea.nativeElement.scrollTop;
+    }
+
+    this.translatingDescription = true;
+
+    const imageId = this.image.hash || this.image.pk.toString();
+
+    // Check if we already have a cached translation
+    const isTranslated = this.contentTranslateService.hasTranslation("image-description", imageId);
+    if (isTranslated) {
+      this._loadTranslatedDescription(scrollPosition);
+      return;
+    }
+
+    // Determine format based on what's available
+    const format = !!this.image.descriptionBbcode ? "bbcode" : "html";
+    const text = this.image.descriptionBbcode || this.image.description;
+
+    // Get translation through service
+    this.contentTranslateService
+      .translate({
+        text,
+        sourceLanguage: this.image.detectedLanguage,
+        format,
+        itemType: "image-description",
+        itemId: imageId
+      })
+      .subscribe(
+        translatedHtml => {
+          this.translatingDescription = false;
+          this.translatedDescription = translatedHtml;
+
+          if (scrollPosition) {
+            this.dataArea.nativeElement.scrollTop = scrollPosition;
+          }
+
+          this.changeDetectorRef.markForCheck();
+        },
+        error => {
+          this.translatingDescription = false;
+          this.translatedDescription = null;
+          this.changeDetectorRef.markForCheck();
+        }
+      );
+  }
+
+  protected onSeeOriginalDescriptionClicked(event: Event): void {
+    event.preventDefault();
+    this.translatingDescription = false;
+    this.translatedDescription = null;
+
+    // Clear the cached translation
+    const imageId = this.image.hash || this.image.pk.toString();
+    this.contentTranslateService.clearTranslation("image-description", imageId);
+  }
+
+  private _loadTranslatedDescription(scrollPosition?: number): void {
+    const imageId = this.image.hash || this.image.pk.toString();
+    const format = !!this.image.descriptionBbcode ? "bbcode" : "html";
+    const text = this.image.descriptionBbcode || this.image.description;
+
+    this.contentTranslateService
+      .translate({
+        text,
+        sourceLanguage: this.image.detectedLanguage,
+        format,
+        itemType: "image-description",
+        itemId: imageId
+      })
+      .subscribe(
+        translatedHtml => {
+          this.translatingDescription = false;
+          this.translatedDescription = translatedHtml;
+
+          if (scrollPosition) {
+            this.dataArea.nativeElement.scrollTop = scrollPosition;
+          }
+
+          this.changeDetectorRef.markForCheck();
+        },
+        error => {
+          this.translatingDescription = false;
+          this.translatedDescription = null;
+          this.changeDetectorRef.markForCheck();
+        }
+      );
   }
 
   private _ignoreNavigationEvent(event: KeyboardEvent): boolean {
@@ -1094,17 +1195,27 @@ export class ImageViewerComponent
     if (this.revisionLabel === ORIGINAL_REVISION_LABEL) {
       this.revision = this.image;
       this.onRevisionSelected(ORIGINAL_REVISION_LABEL, false);
-      return;
-    }
-
-    if (this.revisionLabel === FINAL_REVISION_LABEL || this.revisionLabel === null || this.revisionLabel === undefined) {
+    } else if (this.revisionLabel === FINAL_REVISION_LABEL || this.revisionLabel === null || this.revisionLabel === undefined) {
       this.revision = this.imageService.getFinalRevision(this.image);
       this.onRevisionSelected(FINAL_REVISION_LABEL, false);
+    } else {
+      this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+      this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
+    }
+  }
+
+  private _checkForCachedTranslation(): void {
+    if (!this.image || !this.isBrowser) {
       return;
     }
 
-    this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
-    this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
+    const imageId = this.image.hash || this.image.pk.toString();
+    const hasTranslation = this.contentTranslateService.hasTranslation("image-description", imageId);
+
+    if (hasTranslation && this.image.detectedLanguage && this.image.detectedLanguage !== this.translateService.currentLang) {
+      // Load the cached translation
+      this._loadTranslatedDescription();
+    }
   }
 
   private _updateSupportsFullscreen(): void {

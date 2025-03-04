@@ -292,10 +292,18 @@
   </div>
 </ng-template>
 
-<ng-template #descriptionTemplate>
+<ng-template #descriptionTemplate let-currentUser="currentUser">
   <ng-container *ngIf="image?.descriptionBbcode || image.description">
     <div class="metadata-header">{{ "Description" | translate }}</div>
-    <div *ngIf="image?.descriptionBbcode" class="metadata-section">
+
+    <div *ngIf="translatedDescription" class="metadata-section">
+      <div class="metadata-item description translated-content">
+        <small class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
+        <div [innerHTML]="translatedDescription"></div>
+      </div>
+    </div>
+
+    <div *ngIf="!translatedDescription && image?.descriptionBbcode" class="metadata-section">
       <div
         (click)="onDescriptionClicked($event)"
         [innerHTML]="image.descriptionBbcode | BBCodeToHtml | highlight: searchModel?.text?.value"
@@ -303,9 +311,42 @@
       ></div>
     </div>
 
-    <div *ngIf="image?.description && !image.descriptionBbcode" class="metadata-section">
+    <div *ngIf="!translatedDescription && !image.descriptionBbcode && image?.description" class="metadata-section">
       <div class="metadata-item description" [innerHTML]="image.description"></div>
     </div>
+
+    <button
+      *ngIf="
+        image &&
+        image.detectedLanguage &&
+        image.detectedLanguage !== translateService.currentLang &&
+        (image.descriptionBbcode || image.description) &&
+        !translatedDescription &&
+        currentUser
+      "
+      (click)="onTranslateDescriptionClicked($event)"
+      class="btn btn-link text-muted btn-no-block w-auto text-start ms-2 mb-5 btn-translate-description"
+    >
+      <fa-icon icon="language"></fa-icon>
+      {{ "Translate" | translate }}
+
+      <fa-icon
+        *ngIf="translatingDescription"
+        @fadeInOut
+        class="ms-2"
+        icon="circle-notch"
+        animation="spin"
+      ></fa-icon>
+    </button>
+
+    <button
+      *ngIf="translatedDescription"
+      (click)="onSeeOriginalDescriptionClicked($event)"
+      class="btn btn-link text-muted btn-no-block w-auto text-start ms-2 mb-5 btn-translate-description"
+    >
+      <fa-icon icon="language"></fa-icon>
+      {{ "See original" | translate }}
+    </button>
   </ng-container>
 </ng-template>
 
@@ -449,7 +490,9 @@
       [searchModel]="searchModel"
     ></astrobin-image-viewer-objects>
 
-    <ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="descriptionTemplate" [ngTemplateOutletContext]="{
+      currentUser: currentUserWrapper.user
+    }"></ng-container>
 
     <astrobin-image-viewer-revision-summary
       *ngIf="image?.revisions?.length > 0"

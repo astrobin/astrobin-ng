@@ -23,7 +23,8 @@ import { isPlatformBrowser } from "@angular/common";
 import { UserService } from "@core/services/user.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { DeviceService } from "@core/services/device.service";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { SafeHtml } from "@angular/platform-browser";
+import { ContentTranslateService } from "@core/services/content-translate.service";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -68,6 +69,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   editFields: FormlyFieldConfig[];
   showEditForm = false;
 
+  translating = false;
+  translated = false;
+
   protected approving = false;
   protected deleting = false;
   protected link: string;
@@ -93,7 +97,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly deviceService: DeviceService,
-    public readonly domSanitizer: DomSanitizer
+    public readonly contentTranslateService: ContentTranslateService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
@@ -315,6 +319,75 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     }
   }
 
+  onTranslateClicked(event: Event) {
+    event.preventDefault();
+
+    this.translating = true;
+
+    // Check if we have a cached translation
+    const isTranslated = this.contentTranslateService.hasTranslation("comment", this.comment.id.toString());
+    if (isTranslated) {
+      this.translated = true;
+      this._loadTranslatedContent();
+      return;
+    }
+
+    // Otherwise perform new translation
+    this.contentTranslateService
+      .translate({
+        text: this.comment.text,
+        sourceLanguage: this.comment.detectedLanguage,
+        format: "bbcode",
+        itemType: "comment",
+        itemId: this.comment.id.toString()
+      })
+      .subscribe(
+        translatedHtml => {
+          this.html = translatedHtml;
+          this.translating = false;
+          this.translated = true;
+          this.changeDetectorRef.markForCheck();
+        },
+        error => {
+          this.translating = false;
+          this.changeDetectorRef.markForCheck();
+        }
+      );
+  }
+
+  onSeeOriginalClicked(event: Event) {
+    event.preventDefault();
+    this._updateHtml();
+    this.translated = false;
+
+    // Clear translation preference in localStorage
+    this.contentTranslateService.clearTranslation("comment", this.comment.id.toString());
+  }
+
+  private _loadTranslatedContent(): void {
+    this.contentTranslateService
+      .translate({
+        text: this.comment.text,
+        sourceLanguage: this.comment.detectedLanguage,
+        format: "bbcode",
+        itemType: "comment",
+        itemId: this.comment.id.toString()
+      })
+      .subscribe(
+        translatedHtml => {
+          this.html = translatedHtml;
+          this.translating = false;
+          this.changeDetectorRef.markForCheck();
+        },
+        error => {
+          this._updateHtml();
+          this.translating = false;
+          this.translated = false;
+          this.changeDetectorRef.markForCheck();
+        }
+      );
+  }
+
   private _initAvatarUrl(): void {
     this.avatarUrl = UtilsService.convertDefaultAvatar(this.comment.authorAvatar);
   }
@@ -450,6 +523,13 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   }
 
   private _updateHtml(): void {
-    this.html = this.domSanitizer.bypassSecurityTrustHtml(this.comment.html);
+    // If the content is already translated in localStorage, load the translation
+    if (this.contentTranslateService.hasTranslation("comment", this.comment.id.toString())) {
+      this.translated = true;
+      this._loadTranslatedContent();
+    } else {
+      // Otherwise use the original HTML
+      this.html = this.contentTranslateService.sanitizeContent(this.comment.html, "html");
+    }
   }
 }

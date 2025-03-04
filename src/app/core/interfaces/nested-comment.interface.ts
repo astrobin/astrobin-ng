@@ -19,4 +19,5 @@ export interface NestedCommentInterface {
   moderator?: UserInterface["id"] | null;
   likes?: UserInterface["id"][];
   depth: number;
+  detectedLanguage: string | null;
 }

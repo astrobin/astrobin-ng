@@ -84,3 +84,13 @@ hr {
     display: block;
   }
 }
+
+/* Translation styles */
+.translated-content {
+  background-color: rgba(255, 255, 0, 0.025);
+  padding: 10px;
+  border-left: 3px solid rgba(255, 255, 0, 0.5);
+  margin-bottom: 15px;
+  display: block;
+  position: relative;
+}

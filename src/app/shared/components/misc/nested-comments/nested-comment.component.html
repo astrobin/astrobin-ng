@@ -45,9 +45,12 @@
 
       <div
         *ngIf="!comment.pendingModeration"
-        [innerHTML]="html"
         class="text"
-      ></div>
+        [class.translated-content]="translated"
+      >
+        <small *ngIf="translated" class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
+        <div [innerHTML]="html"></div>
+      </div>
 
       <div *ngIf="comment.pendingModeration" class="text">
         <p class="alert alert-dark alert-mini w-100">
@@ -81,6 +84,29 @@
         >
           <fa-icon icon="share"></fa-icon>
           {{ "Share" | translate }}
+        </button>
+
+        <button
+          *ngIf="
+            !translated &&
+            !!currentUserWrapper.user &&
+            comment.detectedLanguage && comment.detectedLanguage !== translateService.currentLang
+          "
+          (click)="onTranslateClicked($event)"
+          [class.loading]="translating"
+          class="btn btn-link btn-sm btn-no-block text-muted"
+        >
+          <fa-icon icon="language"></fa-icon>
+          {{ "Translate" | translate }}
+        </button>
+
+        <button
+          *ngIf="translated"
+          (click)="onSeeOriginalClicked($event)"
+          class="btn btn-link btn-sm btn-no-block text-muted"
+        >
+          <fa-icon icon="language"></fa-icon>
+          {{ "See original" | translate }}
         </button>
 
         <button
