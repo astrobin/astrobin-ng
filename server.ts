@@ -50,15 +50,7 @@ export function app(): express.Express {
     target: target,
     changeOrigin: true,
     proxyTimeout: 60000,
-    timeout: 30000,
-    agent: {
-      maxSockets: 10,
-      keepAlive: false
-    },
-    headers: {
-      'Connection': 'close'
-    },
-    logLevel: 'debug'
+    timeout: 30000
   });
 
   // Apply the proxy middleware to the /api route
