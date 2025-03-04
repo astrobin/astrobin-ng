@@ -10,37 +10,78 @@
     </div>
 
     <div class="nested-comment-content">
-      <div class="meta">
-        <a
-          *ngIf="!comment.deleted"
-          (click)="userService.openGallery(comment.authorUsername, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-          [href]="userGalleryUrl"
-          astrobinEventPreventDefault
-          class="username"
-        >
-          {{ comment.authorDisplayName }}
-        </a>
+      <div class="meta d-flex justify-content-between align-items-center">
+        <div>
+          <a
+            *ngIf="!comment.deleted"
+            (click)="userService.openGallery(comment.authorUsername, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+            [href]="userGalleryUrl"
+            astrobinEventPreventDefault
+            class="username"
+          >
+            {{ comment.authorDisplayName }}
+          </a>
 
-        <span *ngIf="comment.deleted" class="username">
+          <span *ngIf="comment.deleted" class="username">
           {{ "(deleted)" | translate }}
         </span>
 
-        <span [attr.data-test-value]="comment.created" class="timestamp">
+          <span [attr.data-test-value]="comment.created" class="timestamp">
           {{ comment.created | localDate | timeago: true }}
         </span>
 
-        <span
-          *ngIf="comment.likes.length === 1"
-          [translate]="'1 like'"
-          class="likes"
-        ></span>
+          <astrobin-toggle-property
+            *ngIf="
+            !comment.pendingModeration &&
+            !comment.deleted &&
+            commentContentType
+          "
+            [contentType]="commentContentType.id"
+            [disabled]="
+            !currentUserWrapper.user?.id ||
+            currentUserWrapper.user.id === comment.author
+          "
+            [objectId]="comment.id"
+            [count]="comment.likes.length"
+            [userId]="currentUserWrapper.user?.id"
+            [showLabel]="false"
+            [toggled]="comment.likes.includes(currentUserWrapper.user?.id)"
+            btnClass="btn btn-sm btn-link link-secondary"
+            class="btn-no-block"
+            propertyType="like"
+          ></astrobin-toggle-property>
+        </div>
 
-        <span
-          *ngIf="comment.likes.length > 1"
-          [translateParams]="{ '0': comment.likes.length }"
-          [translate]="'{{0}} likes'"
-          class="likes"
-        ></span>
+        <div ngbDropdown class="d-inline-block">
+          <button
+            class="btn btn-link btn-sm btn-no-block text-muted no-toggle"
+            [attr.id]="'dropdown-comment-' + comment.id"
+            ngbDropdownToggle
+          >
+            <fa-icon icon="ellipsis-v"></fa-icon>
+          </button>
+          <div ngbDropdownMenu [attr.aria-labelledby]="'dropdown-comment-' + comment.id">
+            <button
+              *ngIf="!comment.pendingModeration && !comment.deleted"
+              (click)="onShareClicked($event)"
+              class="dropdown-item"
+            >
+              {{ "Share" | translate }}
+            </button>
+
+            <button
+              (click)="onEditClicked($event)"
+              *ngIf="
+            !comment.deleted &&
+            currentUserWrapper.user?.id === comment.author
+          "
+              [hidden]="showReplyForm"
+              class="dropdown-item"
+            >
+              {{ "Edit" | translate }}
+            </button>
+          </div>
+        </div>
       </div>
 
       <div
@@ -78,15 +119,6 @@
 
       <div class="actions">
         <button
-          *ngIf="!comment.pendingModeration && !comment.deleted"
-          (click)="onShareClicked($event)"
-          class="btn btn-link btn-sm btn-no-block text-muted"
-        >
-          <fa-icon icon="share"></fa-icon>
-          {{ "Share" | translate }}
-        </button>
-
-        <button
           *ngIf="
             !translated &&
             !!currentUserWrapper.user &&
@@ -94,7 +126,7 @@
           "
           (click)="onTranslateClicked($event)"
           [class.loading]="translating"
-          class="btn btn-link btn-sm btn-no-block text-muted"
+          class="btn btn-link btn-sm btn-no-block text-muted translate"
         >
           <fa-icon icon="language"></fa-icon>
           {{ "Translate" | translate }}
@@ -103,23 +135,10 @@
         <button
           *ngIf="translated"
           (click)="onSeeOriginalClicked($event)"
-          class="btn btn-link btn-sm btn-no-block text-muted"
+          class="btn btn-link btn-sm btn-no-block text-muted translated"
         >
           <fa-icon icon="language"></fa-icon>
           {{ "See original" | translate }}
-        </button>
-
-        <button
-          (click)="onEditClicked($event)"
-          *ngIf="
-            !comment.deleted &&
-            currentUserWrapper.user?.id === comment.author
-          "
-          [hidden]="showReplyForm"
-          class="btn btn-link btn-sm btn-no-block text-muted"
-        >
-          <fa-icon icon="edit"></fa-icon>
-          {{ "Edit" | translate }}
         </button>
 
         <button
@@ -141,29 +160,10 @@
             )
           "
           [hidden]="showReplyForm"
-          class="btn btn-primary btn-sm btn-no-block reply"
+          class="btn btn-sm btn-no-block btn-link reply"
         >
-          <fa-icon icon="reply"></fa-icon>
           {{ "Reply" | translate }}
         </button>
-
-        <astrobin-toggle-property
-          *ngIf="
-            !comment.pendingModeration &&
-            !comment.deleted &&
-            commentContentType &&
-            currentUserWrapper.user?.id &&
-            currentUserWrapper.user.id !== comment.author
-          "
-          [contentType]="commentContentType.id"
-          [objectId]="comment.id"
-          [userId]="currentUserWrapper.user?.id"
-          [showLabel]="true"
-          [toggled]="comment.likes.includes(currentUserWrapper.user?.id)"
-          btnClass="btn btn-sm btn-primary"
-          class="btn-no-block"
-          propertyType="like"
-        ></astrobin-toggle-property>
       </div>
 
       <div *ngIf="showEditForm" class="edit-form">

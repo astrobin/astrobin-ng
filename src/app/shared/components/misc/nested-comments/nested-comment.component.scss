@@ -35,6 +35,17 @@
   .meta {
     font-size: .9rem;
     margin-bottom: .5rem;
+
+    .dropdown {
+      .dropdown-toggle {
+        padding: .5rem;
+        margin-right: -1rem;
+      }
+
+      .dropdown-item {
+        font-size: .9rem;
+      }
+    }
   }
 
   .text {
@@ -53,22 +64,35 @@
     font-size: .75rem;
   }
 
-  .likes {
-    color: var(--lighterGrey);
+
+  astrobin-toggle-property {
+    display: inline-flex;
+    margin-left: .75rem;
+
+    ::ng-deep {
+      .btn:not(.toggled) .ng-fa-icon {
+        color: var(--lighterGrey);
+      }
+
+      .btn.toggled .ng-fa-icon {
+        color: var(--accentColor);
+        opacity: 1 !important;
+      }
+
+      .ng-fa-icon {
+        margin-right: 0;
+      }
+
+      .count {
+        font-size: .7rem;
+        margin-left: .25rem !important;
+      }
+    }
   }
 
   .actions {
     margin-top: 1rem;
-
-    astrobin-toggle-property {
-      display: inline-flex;
-      margin-left: .75rem;
-
-      ::ng-deep .btn {
-        font-size: .7rem;
-        padding: .125rem .4rem;
-      }
-    }
+    margin-left: -.25rem; // To counteract the padding of the first button.
 
     a,
     .btn {
@@ -86,6 +110,14 @@
             color: var(--lighterGrey) !important;
           }
         }
+      }
+
+      &.translate {
+        margin-right: .75rem;
+      }
+
+      &.reply {
+        margin-left: -.25rem;
       }
     }
 
