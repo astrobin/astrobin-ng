@@ -282,7 +282,7 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
       try {
         navigator.share({
           title: this.image.title,
-          url: this.getSharingValue(SharingMode.DETAILED)
+          url: this.getSharingValue(SharingMode.LINK)
         }).catch(error => {
           console.error("Sharing failed:", error);
         });
