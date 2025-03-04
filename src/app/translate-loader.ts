@@ -60,6 +60,7 @@ import { strings as timeagoZhTw } from "ngx-timeago/language-strings/zh-TW";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { TranslatePoHttpLoader } from "@tobyodonnell-aiau/ngx-translate-po-http-loader";
+import { Constants } from "@shared/constants";
 
 export function normalizeToSupportedLanguage(lang: string): string {
   if (!lang) {
@@ -70,7 +71,7 @@ export function normalizeToSupportedLanguage(lang: string): string {
     return "zh_Hans";
   }
 
-  if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh_hans", "ja", "hu"].indexOf(lang.toLowerCase()) === -1) {
+  if (Object.keys(Constants.LANGUAGES).indexOf(lang.toLowerCase()) === -1) {
     return "en";
   }
 

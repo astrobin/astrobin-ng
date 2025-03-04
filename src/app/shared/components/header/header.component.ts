@@ -25,11 +25,8 @@ import { SearchService } from "@core/services/search.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
 import { DeviceService } from "@core/services/device.service";
+import { AvailableLanguageInterface, Constants } from "@shared/constants";
 
-interface AvailableLanguageInterface {
-  code: string;
-  label: string;
-}
 
 @Component({
   selector: "astrobin-header",
@@ -46,29 +43,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   showMobileSearch = false;
   isSearchPage = false;
   quickSearchQuery: string;
-  languages: AvailableLanguageInterface[] = [
-    { code: "en", label: "English (US)" },
-    { code: "en-GB", label: "English (UK)" },
-    { code: "-", label: "-" },
-    { code: "de", label: "Deutsch" },
-    { code: "es", label: "Español" },
-    { code: "fr", label: "Français" },
-    { code: "it", label: "Italiano" },
-    { code: "pt", label: "Português" },
-    { code: "zh-hans", label: "中文 (简体)" },
-    { code: "-", label: "-" },
-    { code: "ar", label: "العربية" },
-    { code: "el", label: "Ελληνικά" },
-    { code: "fi", label: "Suomi" },
-    { code: "ja", label: "日本語" },
-    { code: "hu", label: "Magyar" },
-    { code: "nl", label: "Nederlands" },
-    { code: "pl", label: "Polski" },
-    { code: "uk", label: "Українська" },
-    { code: "ru", label: "Русский" },
-    { code: "sq", label: "Shqipe" },
-    { code: "tr", label: "Türkçe" }
-  ];
+  languages: AvailableLanguageInterface[] = Constants.LANGUAGES;
   languageCodeDisplays: AvailableLanguageInterface[] = [
     { code: "en", label: "EN" },
     { code: "en-GB", label: "EN (GB)" },
