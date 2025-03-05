@@ -145,17 +145,17 @@ context("Nested comments", () => {
   it("should show likes", () => {
     cy.get(".nested-comment")
       .eq(0)
-      .find(".likes")
-      .should("contain.text", "1 like");
+      .find("astrobin-toggle-property .count")
+      .should("contain.text", "1");
 
     cy.get(".nested-comment")
       .eq(1)
-      .find(".likes")
-      .should("not.exist");
+      .find("astrobin-toggle-property .count")
+      .should("contain.text", "0");
 
     cy.get(".nested-comment")
       .eq(2)
-      .find(".likes")
-      .should("not.exist");
+      .find("astrobin-toggle-property .count")
+      .should("contain.text", "0");
   });
 });
