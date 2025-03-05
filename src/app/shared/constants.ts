@@ -14,7 +14,6 @@ export class Constants {
     { code: "it", label: "Italiano" },
     { code: "pt", label: "Português" },
     { code: "zh-hans", label: "中文 (简体)" },
-    { code: "ar", label: "العربية" },
     { code: "el", label: "Ελληνικά" },
     { code: "fi", label: "Suomi" },
     { code: "ja", label: "日本語" },

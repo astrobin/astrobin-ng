@@ -85,9 +85,6 @@ msgstr ""
 msgid "1 image"
 msgstr ""
 
-msgid "1 like"
-msgstr ""
-
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/scrollable-search-results-base/scrollable-search-results-base.component.ts
 msgid "1 result"
 msgstr ""
@@ -4828,6 +4825,10 @@ msgstr ""
 msgid "Secure payment by Stripe™"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
+msgid "See original"
+msgstr ""
+
 msgid "Seeing"
 msgstr ""
 
@@ -6131,6 +6132,14 @@ msgstr ""
 msgid "Transit"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
+msgid "Translate"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
+msgid "Translated"
+msgstr ""
+
 msgid "Transparency"
 msgstr ""
 
@@ -7113,11 +7122,6 @@ msgid "{{0}} followers"
 msgstr ""
 
 msgid "{{0}} images in common"
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/nested-comments/nested-comment.component.html
-#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/nested-comments/nested-comment.component.html
-msgid "{{0}} likes"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
