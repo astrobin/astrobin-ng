@@ -517,7 +517,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     ).subscribe(currentUserWrapper => {
       this.userGalleryUrl = this.userService.getGalleryUrl(
         this.comment.authorUsername,
-        currentUserWrapper.userProfile?.enableNewGalleryExperience
+        !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
       );
     });
   }

@@ -14,7 +14,10 @@
         <div>
           <a
             *ngIf="!comment.deleted"
-            (click)="userService.openGallery(comment.authorUsername, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+            (click)="userService.openGallery(
+              comment.authorUsername,
+              !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+           )"
             [href]="userGalleryUrl"
             astrobinEventPreventDefault
             class="username"

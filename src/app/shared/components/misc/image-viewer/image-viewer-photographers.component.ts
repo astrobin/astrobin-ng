@@ -79,7 +79,10 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
               <a
                 *ngFor="let user of photographers"
                 (click)="avatarClicked($event, user)"
-                [href]="userService.getGalleryUrl(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                [href]="userService.getGalleryUrl(
+                  user.username,
+                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                )"
                 class="position-relative"
               >
                 <img [src]="user.avatar" alt="" class="avatar" />
@@ -119,8 +122,14 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
               "
             >
               <a
-                (click)="userService.openGallery(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-                [href]="userService.getGalleryUrl(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                (click)="userService.openGallery(
+                  photographers[0].username,
+                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                )"
+                [href]="userService.getGalleryUrl(
+                  photographers[0].username,
+                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                )"
                 astrobinEventPreventDefault
                 class="position-relative"
               >
@@ -129,8 +138,14 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
 
               <div class="d-flex gap-2 align-items-center photographer-name-and-follow-button">
                 <a
-                  (click)="userService.openGallery(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-                  [href]="userService.getGalleryUrl(photographers[0].username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+                  (click)="userService.openGallery(
+                    photographers[0].username,
+                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                  )"
+                  [href]="userService.getGalleryUrl(
+                    photographers[0].username,
+                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+                  )"
                   astrobinEventPreventDefault
                 >
                   {{ photographers[0].displayName }}
@@ -203,16 +218,28 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             class="user"
           >
             <a
-              (click)="userService.openGallery(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-              [href]="userService.getGalleryUrl(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+              (click)="userService.openGallery(
+                user.username,
+                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+              )"
+              [href]="userService.getGalleryUrl(
+                user.username,
+                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+              )"
               astrobinEventPreventDefault
             >
               <img [src]="user.avatar" alt="" />
             </a>
 
             <a
-              (click)="userService.openGallery(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-              [href]="userService.getGalleryUrl(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+              (click)="userService.openGallery(
+                user.username,
+                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+              )"
+              [href]="userService.getGalleryUrl(
+                user.username,
+                !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+              )"
               astrobinEventPreventDefault
               class="d-block flex-grow-1 text-start no-wrap"
             >

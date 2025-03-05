@@ -49,7 +49,10 @@ export class UserSearchComponent extends ScrollableSearchResultsBaseComponent<Us
 
   openUser(user: UserSearchInterface) {
     this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
-      this.userService.openGallery(user.username, currentUserProfile?.enableNewGalleryExperience);
+      this.userService.openGallery(
+        user.username,
+        !currentUserProfile || currentUserProfile.enableNewGalleryExperience
+      );
     });
   }
 }
