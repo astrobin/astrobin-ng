@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2025-03-05 12:59+0100\n"
+"PO-Revision-Date: 2025-03-05 15:56+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Simplified Chinese\n"
 "Language: zh-Hans\n"
@@ -1983,7 +1983,7 @@ msgstr "胶片相机"
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-equipment.component.ts
 #: loco:6151f41acae9ba5e6a4b2a51
 msgid "Filters"
-msgstr "滤镜"
+msgstr "筛选"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/item-browser/item-browser.component.ts
 #: loco:6151f41acae9ba5e6a4b2a52
@@ -4032,7 +4032,7 @@ msgstr "应用"
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/explorer/explorer-filters/explorer-filters.component.html
 #: loco:62ab63ab8f947e59c74f08b5
 msgid "Clear all filters"
-msgstr "清除所有滤镜"
+msgstr "清除所有筛选"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/item-browser-by-properties/item-browser-by-properties.component.ts
 #: loco:62ab63ab8f947e59c74f08b6
@@ -11156,18 +11156,15 @@ msgstr "由"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
 #: loco:67c83c4dc95f5b24ef03d122
-#, fuzzy
 msgid "See original"
 msgstr "查看原文"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
 #: loco:67c83c4dc95f5b24ef03d123
-#, fuzzy
 msgid "Translate"
 msgstr "翻译"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
 #: loco:67c83c4dc95f5b24ef03d124
-#, fuzzy
 msgid "Translated"
 msgstr "已翻译"
