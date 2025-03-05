@@ -53,7 +53,6 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     { code: "it", label: "IT" },
     { code: "pt", label: "PT" },
     { code: "zh-hans", label: "ZH (CN)" },
-    { code: "ar", label: "AR" },
     { code: "el", label: "EL" },
     { code: "fi", label: "FI" },
     { code: "ja", label: "JA" },
