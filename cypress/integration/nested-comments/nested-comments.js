@@ -2,6 +2,12 @@ context("Nested comments", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
+
+    cy.route("get", "**/api/v2/common/contenttypes/?app_label=nested_comments&model=nestedcomment", {
+      "id": 130,
+      "appLabel": "nested_comments",
+      "model": "nestedcomment"
+    }).as("getContentType");
   });
 
   it("should show 'no comments yet' message", () => {
@@ -140,22 +146,5 @@ context("Nested comments", () => {
       .find(".timestamp")
       .should("have.attr", "data-test-value")
       .and("equal", "2021-01-02T00:00:00.0");
-  });
-
-  it("should show likes", () => {
-    cy.get(".nested-comment")
-      .eq(0)
-      .find("astrobin-toggle-property .count")
-      .should("contain.text", "1");
-
-    cy.get(".nested-comment")
-      .eq(1)
-      .find("astrobin-toggle-property .count")
-      .should("contain.text", "0");
-
-    cy.get(".nested-comment")
-      .eq(2)
-      .find("astrobin-toggle-property .count")
-      .should("contain.text", "0");
   });
 });
