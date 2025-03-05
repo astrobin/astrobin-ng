@@ -419,12 +419,6 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           observer.complete();
         };
 
-        this.popNotificationsService.warning(
-          this.translateService.instant(
-            "Video support is experimental. Please report any issue you might encounter."
-          )
-        );
-
         video.onerror = () => {
           // We will let the backend verify the video and get the width and height.
           handleCompletion();
