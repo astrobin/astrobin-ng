@@ -39,16 +39,6 @@
   ></ng-container>
 </ng-template>
 
-<ng-template #notLargeEnoughToZoomInstructionTemplate>
-  <ng-container
-    [ngTemplateOutlet]="instructionTemplate"
-    [ngTemplateOutletContext]="{
-      icon: 'info-circle',
-      message: 'Zoom not available because the image is smaller than your viewport.' | translate
-    }"
-  ></ng-container>
-</ng-template>
-
 <ng-template #pinchAndZoomInstructionTemplate>
   <ng-container
     [ngTemplateOutlet]="instructionTemplate"
@@ -83,14 +73,14 @@
   <div class="touch-device">
     <div
       class="loading-indicator-container has-message"
-      *ngIf="!isVeryLargeImage && isLargeEnough && (hdThumbnailLoading || realThumbnailLoading || canvasLoading)"
+      *ngIf="!isVeryLargeImage && (hdThumbnailLoading || realThumbnailLoading || canvasLoading)"
     >
       <astrobin-loading-indicator [progress]="loadingProgress$ | async"></astrobin-loading-indicator>
     </div>
 
     <ng-container *ngIf="!isVeryLargeImage">
       <div
-        *ngIf="real && allowReal && isLargeEnough"
+        *ngIf="real && allowReal"
         @fadeInOut
         #touchRealContainer
         class="touch-real-container"
@@ -135,16 +125,14 @@
         />
       </a>
       <ng-container
-        *ngIf="hd && real && isLargeEnough && allowReal && realThumbnailUnsafeUrl"
+        *ngIf="hd && real && allowReal && realThumbnailUnsafeUrl"
         [ngTemplateOutlet]="imageTooLargeToZoomTemplate"
       ></ng-container>
     </ng-container>
 
-    <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && allowReal && real && !canvasLoading"
+    <ng-container *ngIf="!isVeryLargeImage && allowReal && real && !canvasLoading"
                   [ngTemplateOutlet]="pinchAndZoomInstructionTemplate"></ng-container>
-    <ng-container *ngIf="hd && !isLargeEnough"
-                  [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"></ng-container>
-    <ng-container *ngIf="hd && isLargeEnough && !allowReal"
+    <ng-container *ngIf="hd && !allowReal"
                   [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
   </div>
 
@@ -158,7 +146,7 @@
 
     <ng-container *ngIf="!isVeryLargeImage">
       <img
-        *ngIf="hd && (!real || !allowReal || !isLargeEnough)"
+        *ngIf="hd && (!real || !allowReal)"
         [src]="hd"
         class="hd-image"
         alt=""
@@ -167,7 +155,7 @@
 
       <lib-ngx-image-zoom
         #ngxImageZoom
-        *ngIf="real && isLargeEnough && allowReal"
+        *ngIf="real && allowReal"
         (zoomPosition)="setZoomPosition($event)"
         (zoomScroll)="setZoomScroll($event)"
         (imagesLoaded)="onImagesLoaded($event)"
@@ -220,22 +208,17 @@
         />
       </a>
       <ng-container
-        *ngIf="hd && real && isLargeEnough && allowReal && realThumbnailUnsafeUrl"
+        *ngIf="hd && real && allowReal && realThumbnailUnsafeUrl"
         [ngTemplateOutlet]="imageTooLargeToZoomTemplate"
       ></ng-container>
     </ng-container>
 
     <ng-container
-      *ngIf="hd && real && !isLargeEnough"
-      [ngTemplateOutlet]="notLargeEnoughToZoomInstructionTemplate"
-    ></ng-container>
-
-    <ng-container
-      *ngIf="hd && isLargeEnough && !allowReal"
+      *ngIf="hd && !allowReal"
       [ngTemplateOutlet]="fullSizeLimitationTemplate"
     ></ng-container>
 
-    <ng-container *ngIf="!isVeryLargeImage && isLargeEnough && real && allowReal">
+    <ng-container *ngIf="!isVeryLargeImage && real && allowReal">
       <ng-container
         *ngIf="!zoomingEnabled && !showZoomIndicator"
         [ngTemplateOutlet]="clickAndScrollInstructionTemplate"
@@ -253,7 +236,7 @@
 
 <ng-template #zoomModesTemplate let-real="real">
   <div
-    *ngIf="(!isVeryLargeImage && isLargeEnough && allowReal && !!real) &&
+    *ngIf="(!isVeryLargeImage && allowReal && !!real) &&
            (isHybridPC || !isTouchDevice || (isHybridPC && !touchMode))"
     class="zoom-modes"
   >

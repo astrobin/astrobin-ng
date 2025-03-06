@@ -646,16 +646,6 @@ export class ImageViewerComponent
           return;
         }
 
-        if (
-          this.revision.w <= this.windowRefService.nativeWindow.innerWidth &&
-          this.revision.h <= this.windowRefService.nativeWindow.innerHeight
-        ) {
-          this.popNotificationsService.info(
-            this.translateService.instant("Zoom not available because the image is smaller than your viewport.")
-          );
-          return;
-        }
-
         this.store$.dispatch(new ShowFullscreenImage({ imageId: this.image.pk, event }));
         this.viewingFullscreenImage = true;
         this.changeDetectorRef.markForCheck();
@@ -1221,11 +1211,7 @@ export class ImageViewerComponent
   private _updateSupportsFullscreen(): void {
     this.supportsFullscreen = (
       this.revision &&
-      !this.revision.videoFile &&
-      (
-        !this.revision.imageFile ||
-        !this.revision.imageFile.toLowerCase().endsWith(".gif")
-      )
+      !this.revision.videoFile
     );
   }
 

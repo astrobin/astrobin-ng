@@ -90,7 +90,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected showZoomIndicator = false;
   protected isHybridPC = false;
   protected isTouchDevice = false;
-  protected isLargeEnough = false;
   protected hdThumbnail: SafeUrl;
   protected realThumbnail: SafeUrl;
   protected realThumbnailUnsafeUrl: string;
@@ -787,10 +786,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.naturalWidth = this._revision.w;
         this.naturalHeight = this._revision.h;
         this.maxZoom = image.maxZoom || image.defaultMaxZoom || 8;
-        this.isLargeEnough = (
-          this._revision.w > this.windowRef.nativeWindow.innerWidth ||
-          this._revision.h > this.windowRef.nativeWindow.innerHeight
-        );
 
         this.hdThumbnailLoading = true;
         this._hdLoadingProgressSubject.next(0);
@@ -809,67 +804,104 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         });
       })
     ).subscribe(() => {
-      this._hdThumbnailSubscription = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
-        tap(() => {
+      // Check if the image is a GIF
+      const isGif = this._revision.imageFile && this._revision.imageFile.toLowerCase().endsWith('.gif');
+
+      if (isGif) {
+        // For GIFs, use the original file directly for both HD and REAL thumbnails
+        this.hdThumbnailLoading = true;
+        this.realThumbnailLoading = true;
+
+        this._hdLoadingProgressSubject.next(0);
+        this._realLoadingProgressSubject.next(0);
+
+        this.imageService.loadImageFile(this._revision.imageFile, (progress: number) => {
+          this._hdLoadingProgressSubject.next(progress);
+          this._realLoadingProgressSubject.next(progress);
+        }).pipe(
+          switchMap(url =>
+            this._preloadImage(url).pipe(
+              map(() => this.domSanitizer.bypassSecurityTrustUrl(url))
+            )
+          )
+        ).subscribe(url => {
+          this.hdThumbnail = url;
+          this.realThumbnail = url;
+          this.realThumbnailUnsafeUrl = this._revision.imageFile;
+
+          this.hdThumbnailLoading = false;
+          this.realThumbnailLoading = false;
+
+          if (this.touchMode) {
+            this._initCanvas();
+          }
+
           this.changeDetectorRef.markForCheck();
-        }),
-        filter(thumbnail => !!thumbnail),
-        switchMap(thumbnail =>
-          this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
-            this._hdLoadingProgressSubject.next(progress);
-          }).pipe(
-            switchMap(url =>
-              this._preloadImage(url).pipe(
-                map(() => this.domSanitizer.bypassSecurityTrustUrl(url)),
-                tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false }))),
-                tap(() => {
-                  this.hdThumbnailLoading = false;
-                  this.changeDetectorRef.markForCheck();
-                })
+        });
+      } else {
+        // Normal image handling for non-GIFs
+        this._hdThumbnailSubscription = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
+          tap(() => {
+            this.changeDetectorRef.markForCheck();
+          }),
+          filter(thumbnail => !!thumbnail),
+          switchMap(thumbnail =>
+            this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
+              this._hdLoadingProgressSubject.next(progress);
+            }).pipe(
+              switchMap(url =>
+                this._preloadImage(url).pipe(
+                  map(() => this.domSanitizer.bypassSecurityTrustUrl(url)),
+                  tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false }))),
+                  tap(() => {
+                    this.hdThumbnailLoading = false;
+                    this.changeDetectorRef.markForCheck();
+                  })
+                )
               )
             )
           )
-        )
-      ).subscribe(url => {
-        this.hdThumbnail = url;
-        this.changeDetectorRef.markForCheck();
-      });
-
-      this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
-        tap(() => {
-          this.realThumbnailLoading = true;
-          this._realLoadingProgressSubject.next(0);
+        ).subscribe(url => {
+          this.hdThumbnail = url;
           this.changeDetectorRef.markForCheck();
-        }),
-        filter(thumbnail => !!thumbnail),
-        tap(thumbnail => {
-          this.realThumbnailUnsafeUrl = thumbnail.url;
+        });
+
+        this._realThumbnailSubscription = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
+          tap(() => {
+            this.realThumbnailLoading = true;
+            this._realLoadingProgressSubject.next(0);
+            this.changeDetectorRef.markForCheck();
+          }),
+          filter(thumbnail => !!thumbnail),
+          tap(thumbnail => {
+            this.realThumbnailUnsafeUrl = thumbnail.url;
+            this.changeDetectorRef.markForCheck();
+          }),
+          switchMap(thumbnail =>
+            this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
+              // Cap at 99% to avoid showing 100% before canvas is ready
+              this._realLoadingProgressSubject.next(Math.min(progress, 99));
+            })
+          )
+        ).subscribe(url => {
+          this.realThumbnail = url;
+          this.realThumbnailLoading = false;
+
+          if (this.touchMode) {
+            this._initCanvas();
+          }
+
           this.changeDetectorRef.markForCheck();
-        }),
-        switchMap(thumbnail =>
-          this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
-            // Cap at 99% to avoid showing 100% before canvas is ready
-            this._realLoadingProgressSubject.next(Math.min(progress, 99));
-          })
-        )
-      ).subscribe(url => {
-        this.realThumbnail = url;
-        this.realThumbnailLoading = false;
+        });
 
-        if (this.touchMode) {
-          this._initCanvas();
-        }
+        subscriptions.add(this._hdThumbnailSubscription);
+        subscriptions.add(this._realThumbnailSubscription);
 
-        this.changeDetectorRef.markForCheck();
-      });
-
-      subscriptions.add(this._hdThumbnailSubscription);
-      subscriptions.add(this._realThumbnailSubscription);
+        this.store$.dispatch(new LoadThumbnail({ data: this._getHdOptions(), bustCache: false }));
+      }
     });
 
     subscriptions.add(this._imageSubscription);
-
-    this.store$.dispatch(new LoadThumbnail({ data: this._getHdOptions(), bustCache: false }));
 
     return subscriptions;
   }
@@ -1075,7 +1107,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       img.src = url;
     });
   }
-  
+
   /**
    * Safely check if an event is a touch event without directly using instanceof TouchEvent
    * This handles browsers where TouchEvent might not be defined
@@ -1084,10 +1116,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!event) {
       return false;
     }
-    
+
     // Check for touch event properties instead of using instanceof
     return (
-      typeof event.touches !== 'undefined' || 
+      typeof event.touches !== 'undefined' ||
       typeof event.changedTouches !== 'undefined' ||
       (event.type && event.type.startsWith('touch'))
     );
