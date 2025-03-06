@@ -11,6 +11,11 @@ $background: rgba(0, 0, 0, 0.95);
   overflow: hidden;
   background: $background;
 
+  // For swipe animations
+  will-change: transform;
+  transform: translateY(0) scale(1);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
   @media (hover: none) and (pointer: coarse) {
     height: 100%;
   }
@@ -142,3 +147,23 @@ $background: rgba(0, 0, 0, 0.95);
     }
   }
 }
+
+// Animation for the content behind when closing the viewer
+::ng-deep body.image-viewer-closing {
+  astrobin-root {
+    // Show the content with a fade-in animation
+    visibility: visible !important;
+    opacity: 0;
+    animation: fade-in-content 1s ease forwards;
+  }
+}
+
+@keyframes fade-in-content {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

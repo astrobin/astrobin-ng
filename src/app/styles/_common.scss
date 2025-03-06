@@ -11,11 +11,15 @@ body {
   @include main-background-texture;
   font-family: "Noto Sans", Helvetica, Arial, sans-serif;
 
-  &.image-viewer-open astrobin-root {
-    overflow: hidden;
-    visibility: hidden;
-    transform: translateZ(0);
-    pointer-events: none;
+  &.image-viewer-open {
+    background: var(--black);
+
+    astrobin-root {
+      overflow: hidden;
+      visibility: hidden;
+      transform: translateZ(0);
+      pointer-events: none;
+    }
   }
 }
 
