@@ -26,6 +26,8 @@ import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { TitleService } from "@core/services/title/title.service";
 import { fadeInOut } from "@shared/animations";
+import { SwipeDownService } from "@core/services/swipe-down.service";
+import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 declare type HammerInput = any;
 
@@ -148,6 +150,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
 
+  // Swipe-down properties
+  protected touchStartY: { value: number } = { value: 0 };
+  protected touchCurrentY: { value: number } = { value: 0 };
+  protected touchPreviousY: { value: number } = { value: 0 };
+  protected isSwiping: { value: boolean } = { value: false };
+  protected swipeProgress: { value: number } = { value: 0 };
+  protected swipeThreshold: number = 150;
+  protected swipeDirectionDown: { value: boolean } = { value: true };
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
@@ -163,7 +174,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly windowRefService: WindowRefService,
     public readonly titleService: TitleService,
     public readonly renderer: Renderer2,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly swipeDownService: SwipeDownService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
 
@@ -1133,6 +1146,82 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       typeof event.touches !== 'undefined' ||
       typeof event.changedTouches !== 'undefined' ||
       (event.type && event.type.startsWith('touch'))
+    );
+  }
+  
+  /**
+   * Checks if we can swipe to close the viewer
+   * Only allow swipe-down when the image is not zoomed in beyond fit-to-screen
+   */
+  protected canSwipeToClose(): boolean {
+    // For GIFs we can always swipe to close (no zoom)
+    if (this.isGif) {
+      return true;
+    }
+    
+    // For very large images we can always swipe to close (no interactive zoom)
+    if (this.isVeryLargeImage) {
+      return true;
+    }
+    
+    if (this.touchMode) {
+      // In touch mode, we can only swipe when the touchScale is 1 (fully zoomed out)
+      return this.touchScale <= 1;
+    } else {
+      // In mouse mode, we can only swipe when the zoom is at 1x
+      return !this.zoomingEnabled || this.zoomScroll <= 1;
+    }
+  }
+  
+  /**
+   * Handle touch start for swipe-down gesture
+   */
+  protected onTouchStart(event: TouchEvent): void {
+    this.swipeDownService.handleTouchStart(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown
+    );
+  }
+
+  /**
+   * Handle touch move for swipe-down gesture
+   */
+  protected onTouchMove(event: TouchEvent): void {
+    this.swipeDownService.handleTouchMove(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.isSwiping,
+      this.swipeProgress,
+      this.swipeThreshold,
+      new ElementRef(event.currentTarget),
+      this.renderer,
+      () => this.canSwipeToClose()
+    );
+  }
+
+  /**
+   * Handle touch end for swipe-down gesture
+   */
+  protected onTouchEnd(event: TouchEvent): void {
+    this.swipeDownService.handleTouchEnd(
+      this.isSwiping,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.swipeThreshold,
+      this.swipeProgress,
+      new ElementRef(event.currentTarget),
+      this.renderer,
+      () => {
+        this.hide(null);
+      }
     );
   }
 }

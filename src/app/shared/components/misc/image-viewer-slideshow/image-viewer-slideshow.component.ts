@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
+import { SwipeDownService } from "@core/services/swipe-down.service";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@core/services/image-viewer.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -144,13 +145,13 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   protected callerComponentId: string;
   
   // Swipe handling properties
-  protected touchStartY: number = 0;
-  protected touchCurrentY: number = 0;
-  protected touchPreviousY: number = 0; // Used to track direction changes
-  protected isSwiping: boolean = false;
-  protected swipeProgress: number = 0;
+  protected touchStartY: { value: number } = { value: 0 };
+  protected touchCurrentY: { value: number } = { value: 0 };
+  protected touchPreviousY: { value: number } = { value: 0 }; // Used to track direction changes
+  protected isSwiping: { value: boolean } = { value: false };
+  protected swipeProgress: { value: number } = { value: 0 };
   protected swipeThreshold: number = 150; // Minimum distance to consider a swipe
-  protected swipeDirectionDown: boolean = true; // Track if the swipe is currently going down
+  protected swipeDirectionDown: { value: boolean } = { value: true }; // Track if the swipe is currently going down
 
   private readonly _isBrowser: boolean;
   private _delayedLoadSubscription: Subscription = new Subscription();
@@ -170,7 +171,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     public readonly renderer: Renderer2,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly swipeDownService: SwipeDownService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
@@ -209,9 +211,9 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     }
     
     // Reset any in-progress swipe animation
-    if (this.isSwiping) {
-      this.isSwiping = false;
-      this.swipeProgress = 0;
+    if (this.isSwiping.value) {
+      this.isSwiping.value = false;
+      this.swipeProgress.value = 0;
       this._resetSwipeAnimation();
     }
     
@@ -221,186 +223,57 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   
   // Touch event handlers for swipe-down gesture
   protected onTouchStart(event: TouchEvent): void {
-    if (!this.deviceService.isTouchEnabled() || this.fullscreen) {
+    if (this.fullscreen) {
       return;
     }
     
-    // Only allow swipes to start if we're not in an active scrollable element
-    
-    // Get the target element where the touch started
-    const target = event.target as HTMLElement;
-    
-    // Find all scrollable parents of the touch target
-    let element = target;
-    while (element && element !== document.body) {
-      // Check if this element is scrollable and has been scrolled
-      if (element.scrollHeight > element.clientHeight && element.scrollTop > 0) {
-        // Element is scrolled - don't initiate swipe
-        this.touchStartY = 0;
-        return;
-      }
-      element = element.parentElement;
-    }
-    
-    // We're not in a scrolled element, track the touch
-    this.touchStartY = event.touches[0].clientY;
-    this.touchCurrentY = this.touchStartY;
-    this.touchPreviousY = this.touchStartY;
-    this.swipeDirectionDown = true;
+    this.swipeDownService.handleTouchStart(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown
+    );
   }
 
   protected onTouchMove(event: TouchEvent): void {
-    if (!this.deviceService.isTouchEnabled() || this.fullscreen || this.touchStartY === 0) {
+    if (this.fullscreen) {
       return;
     }
     
-    // Get the target element where the touch is now
-    const target = event.target as HTMLElement;
-    
-    // Check all parent elements for scrolling
-    let element = target;
-    while (element && element !== document.body) {
-      // If any parent element is scrolled, cancel swipe
-      if (element.scrollHeight > element.clientHeight && element.scrollTop > 0) {
-        // Element is scrolled - cancel any active swipe
-        if (this.isSwiping) {
-          this.isSwiping = false;
-          this.swipeProgress = 0;
-          this._resetSwipeAnimation();
-        }
-        this.touchStartY = 0;
-        return;
-      }
-      element = element.parentElement;
-    }
-    
-    // Save previous position to detect direction changes
-    this.touchPreviousY = this.touchCurrentY;
-    
-    // Update current position
-    this.touchCurrentY = event.touches[0].clientY;
-    
-    // Determine swipe direction
-    this.swipeDirectionDown = this.touchCurrentY > this.touchPreviousY;
-    
-    const deltaY = this.touchCurrentY - this.touchStartY;
-    
-    // Only handle swipe down (positive deltaY)
-    if (deltaY > 0) {
-      // Prevent default to disable scrolling while swiping
-      event.preventDefault();
-      this.isSwiping = true;
-      
-      // Calculate swipe progress without capping at 1
-      this.swipeProgress = deltaY / this.swipeThreshold;
-      
-      // Apply transform to the component
-      this._applySwipeAnimation();
-    }
+    this.swipeDownService.handleTouchMove(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.isSwiping,
+      this.swipeProgress,
+      this.swipeThreshold,
+      this.elementRef,
+      this.renderer
+    );
   }
 
   protected onTouchEnd(event: TouchEvent): void {
-    if (!this.isSwiping) {
+    if (this.fullscreen) {
       return;
     }
     
-    const deltaY = this.touchCurrentY - this.touchStartY;
-    
-    // Only close if both conditions are met:
-    // 1. The swipe distance exceeds the threshold
-    // 2. The swipe was going downward at the end (not reversed)
-    if (deltaY >= this.swipeThreshold && this.swipeDirectionDown) {
-      // Swipe down threshold met and direction was downward at release
-      this.isSwiping = false;
-      
-      // Set a final animation state (further down and more transparent)
-      const finalTranslateY = deltaY + 100; // Add 100px more to current position
-      const finalScale = 0.7;
-      const finalOpacity = 0.2;
-      
-      // Apply the final animation state with transition
-      if (this.elementRef && this.elementRef.nativeElement) {
-        this.renderer.setStyle(
-          this.elementRef.nativeElement,
-          'transform',
-          `translateY(${finalTranslateY}px) scale(${finalScale})`
-        );
-        
-        this.renderer.setStyle(
-          this.elementRef.nativeElement,
-          'opacity',
-          `${finalOpacity}`
-        );
-        
-        this.renderer.setStyle(
-          this.elementRef.nativeElement,
-          'transition',
-          'transform 0.2s ease-out, opacity 0.2s ease-out'
-        );
-      }
-      
-      // Add a class to the body to animate the background content in
-      if (this._isBrowser) {
-        document.body.classList.add('image-viewer-closing');
-      }
-      
-      // Close the slideshow after both animations complete (after the 300ms animation completes)
-      this.utilsService.delay(300).subscribe(() => {
-        // Clear any notifications
-        this.popNotificationsService.clear();
-        
-        // Then close the slideshow - the class will be automatically removed when component is destroyed
+    this.swipeDownService.handleTouchEnd(
+      this.isSwiping,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.swipeThreshold,
+      this.swipeProgress,
+      this.elementRef,
+      this.renderer,
+      () => {
         this.closeSlideshow.emit(true);
-      });
-    } else {
-      // Reset the animation if either:
-      // - The threshold was not met, OR
-      // - The swipe direction was reversed at the end
-      this.isSwiping = false;
-      this.swipeProgress = 0;
-      this._resetSwipeAnimation();
-    }
-    
-    // Reset touch tracking
-    this.touchStartY = 0;
-    this.touchCurrentY = 0;
-    this.touchPreviousY = 0;
-  }
-  
-  private _applySwipeAnimation(): void {
-    if (!this.elementRef || !this.elementRef.nativeElement) {
-      return;
-    }
-    
-    // Calculate visual effects with limiters to prevent extreme values
-    // Scale effect is limited to not go below 0.7
-    const scale = Math.max(0.7, 1 - (this.swipeProgress * 0.1));
-    
-    // Translation has no maximum - let it follow finger as far as needed
-    const translateY = this.swipeProgress * 100;
-    
-    // Opacity is limited to not go below 0.3
-    const opacity = Math.max(0.3, 1 - (this.swipeProgress * 0.3));
-    
-    // Apply styles to the host element (this affects the entire component)
-    this.renderer.setStyle(
-      this.elementRef.nativeElement,
-      'transform',
-      `translateY(${translateY}px) scale(${scale})`
+      }
     );
-    
-    this.renderer.setStyle(
-      this.elementRef.nativeElement,
-      'opacity',
-      `${opacity}`
-    );
-    
-    this.renderer.setStyle(
-      this.elementRef.nativeElement,
-      'transition',
-      'none'
-    );
-    
   }
   
   private _resetSwipeAnimation(): void {
@@ -426,7 +299,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       'transition',
       'transform 0.3s ease, opacity 0.3s ease'
     );
-    
   }
 
   setCallerComponentId(callerComponentId: string) {
