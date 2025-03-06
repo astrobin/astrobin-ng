@@ -631,6 +631,15 @@ export class ImageViewerComponent
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (this.supportsFullscreen) {
+        // Check if this is a GIF file and the device uses touch
+        const isGif = this.revision.imageFile && this.revision.imageFile.toLowerCase().endsWith('.gif');
+        if (isGif && this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC()) {
+          this.popNotificationsService.warning(
+            this.translateService.instant("Sorry, zooming on GIF animations is not available on touch devices.")
+          );
+          return;
+        }
+
         const limit = this.image.fullSizeDisplayLimitation;
         const allowReal = (
           limit === FullSizeLimitationDisplayOptions.EVERYBODY ||
@@ -642,16 +651,6 @@ export class ImageViewerComponent
         if (!allowReal) {
           this.popNotificationsService.info(
             this.translateService.instant("Zoom disabled by the image owner.")
-          );
-          return;
-        }
-
-        if (
-          this.revision.w <= this.windowRefService.nativeWindow.innerWidth &&
-          this.revision.h <= this.windowRefService.nativeWindow.innerHeight
-        ) {
-          this.popNotificationsService.info(
-            this.translateService.instant("Zoom not available because the image is smaller than your viewport.")
           );
           return;
         }
@@ -1221,11 +1220,7 @@ export class ImageViewerComponent
   private _updateSupportsFullscreen(): void {
     this.supportsFullscreen = (
       this.revision &&
-      !this.revision.videoFile &&
-      (
-        !this.revision.imageFile ||
-        !this.revision.imageFile.toLowerCase().endsWith(".gif")
-      )
+      !this.revision.videoFile
     );
   }
 
