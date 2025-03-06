@@ -39,6 +39,16 @@
   ></ng-container>
 </ng-template>
 
+<ng-template #gifNoZoomTemplate>
+  <ng-container
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+      icon: 'info-circle',
+      message: 'Zooming is not available for GIF animations on touch devices.' | translate
+    }"
+  ></ng-container>
+</ng-template>
+
 <ng-template #pinchAndZoomInstructionTemplate>
   <ng-container
     [ngTemplateOutlet]="instructionTemplate"
@@ -79,8 +89,18 @@
     </div>
 
     <ng-container *ngIf="!isVeryLargeImage">
+      <!-- For GIFs, show a simple image without zooming capabilities -->
+      <div *ngIf="isGif && real && allowReal" @fadeInOut class="gif-container">
+        <img 
+          [src]="realThumbnailUnsafeUrl" 
+          alt=""
+          class="gif-image"
+        />
+      </div>
+      
+      <!-- For regular images, use the canvas-based zoom -->
       <div
-        *ngIf="real && allowReal"
+        *ngIf="!isGif && real && allowReal"
         @fadeInOut
         #touchRealContainer
         class="touch-real-container"
@@ -130,7 +150,10 @@
       ></ng-container>
     </ng-container>
 
-    <ng-container *ngIf="!isVeryLargeImage && allowReal && real && !canvasLoading"
+    <!-- Show appropriate messages based on image type -->
+    <ng-container *ngIf="isGif && allowReal && real"
+                  [ngTemplateOutlet]="gifNoZoomTemplate"></ng-container>
+    <ng-container *ngIf="!isGif && !isVeryLargeImage && allowReal && real && !canvasLoading"
                   [ngTemplateOutlet]="pinchAndZoomInstructionTemplate"></ng-container>
     <ng-container *ngIf="hd && !allowReal"
                   [ngTemplateOutlet]="fullSizeLimitationTemplate"></ng-container>
@@ -153,6 +176,7 @@
         [style.max-width.px]="naturalWidth"
       />
 
+      <!-- For GIFs on non-touch devices, we can use ngx-image-zoom as it works well there -->
       <lib-ngx-image-zoom
         #ngxImageZoom
         *ngIf="real && allowReal"
@@ -241,7 +265,7 @@
     class="zoom-modes"
   >
     <div
-      *ngIf="isHybridPC"
+      *ngIf="isHybridPC && !isGif"
       (click)="setTouchMouseMode(!touchMode)"
       [ngbTooltip]="isTouchDevice ? null : 'Toggle touch/mouse mode.' | translate"
       triggers="hover"
@@ -288,13 +312,13 @@
     } as thumbnails"
   >
     <ng-container
-      *ngIf="touchMode"
+      *ngIf="touchMode && !isGif"
       [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
       [ngTemplateOutlet]="touchDeviceTemplate"
     >
     </ng-container>
 
-    <ng-container *ngIf="!touchMode">
+    <ng-container *ngIf="!touchMode || isGif">
       <ng-container
         [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
         [ngTemplateOutlet]="nonTouchDeviceTemplate"

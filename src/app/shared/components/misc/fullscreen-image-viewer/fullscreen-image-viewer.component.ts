@@ -107,6 +107,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected naturalHeight: number;
   protected maxZoom = 8;
   protected canvasLoading = false;
+  protected isGif = false;
 
   private _revision: ImageInterface | ImageRevisionInterface;
 
@@ -392,6 +393,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected setTouchMouseMode(touch: boolean): void {
+    // Never allow touch mode for GIFs
+    if (this.isGif && touch) {
+      return;
+    }
+    
     this.touchMode = touch;
     this.cookieService.put(this.TOUCH_OR_MOUSE_MODE_COOKIE_NAME, this.touchMode ? "touch" : "mouse");
     if (this.touchMode) {
@@ -805,9 +811,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       })
     ).subscribe(() => {
       // Check if the image is a GIF
-      const isGif = this._revision.imageFile && this._revision.imageFile.toLowerCase().endsWith('.gif');
+      this.isGif = this._revision.imageFile && this._revision.imageFile.toLowerCase().endsWith('.gif');
+      
+      // For GIFs, always use non-touch mode
+      if (this.isGif && this.touchMode) {
+        this.setTouchMouseMode(false);
+      }
 
-      if (isGif) {
+      if (this.isGif) {
         // For GIFs, use the original file directly for both HD and REAL thumbnails
         this.hdThumbnailLoading = true;
         this.realThumbnailLoading = true;
@@ -832,7 +843,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.hdThumbnailLoading = false;
           this.realThumbnailLoading = false;
 
-          if (this.touchMode) {
+          if (this.touchMode && !this.isGif) {
             this._initCanvas();
           }
 
@@ -887,7 +898,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.realThumbnail = url;
           this.realThumbnailLoading = false;
 
-          if (this.touchMode) {
+          if (this.touchMode && !this.isGif) {
             this._initCanvas();
           }
 

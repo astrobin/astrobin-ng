@@ -631,6 +631,15 @@ export class ImageViewerComponent
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (this.supportsFullscreen) {
+        // Check if this is a GIF file and the device uses touch
+        const isGif = this.revision.imageFile && this.revision.imageFile.toLowerCase().endsWith('.gif');
+        if (isGif && this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC()) {
+          this.popNotificationsService.warning(
+            this.translateService.instant("Sorry, zooming on GIF animations is not available on touch devices.")
+          );
+          return;
+        }
+
         const limit = this.image.fullSizeDisplayLimitation;
         const allowReal = (
           limit === FullSizeLimitationDisplayOptions.EVERYBODY ||
