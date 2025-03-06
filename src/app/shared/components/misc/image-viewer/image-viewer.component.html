@@ -5,6 +5,9 @@
 <div
   *ngIf="!!image" [hidden]="!imageObjectLoaded"
   class="main-area-container overflow-hidden d-flex flex-column w-100 h-100"
+  (touchstart)="onTouchStart($event)"
+  (touchmove)="onTouchMove($event)"
+  (touchend)="onTouchEnd($event)"
 >
   <astrobin-mobile-menu
     (menuClose)="onMobileMenuClose()"

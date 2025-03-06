@@ -171,6 +171,15 @@ export class ImageViewerComponent
 
   protected readonly isBrowser: boolean;
 
+  // Swipe handling properties
+  protected touchStartY: number = 0;
+  protected touchCurrentY: number = 0;
+  protected touchPreviousY: number = 0; // Used to track direction changes
+  protected isSwiping: boolean = false;
+  protected swipeProgress: number = 0;
+  protected swipeThreshold: number = 150; // Minimum distance to consider a swipe
+  protected swipeDirectionDown: boolean = true; // Track if the swipe is currently going down
+
   private _dataAreaScrollEventSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
   private _activeOffcanvas: NgbOffcanvasRef;
@@ -201,7 +210,8 @@ export class ImageViewerComponent
     public readonly popNotificationsService: PopNotificationsService,
     public readonly cookieService: CookieService,
     public readonly searchService: SearchService,
-    public readonly contentTranslateService: ContentTranslateService
+    public readonly contentTranslateService: ContentTranslateService,
+    public readonly elementRef: ElementRef
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -224,6 +234,183 @@ export class ImageViewerComponent
     this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
       this._activeOffcanvas = activeOffcanvas;
     });
+  }
+
+  // Touch event handlers for swipe-down gesture
+  protected onTouchStart(event: TouchEvent): void {
+    if (!this.deviceService.isTouchEnabled() || this.viewingFullscreenImage || this._activeOffcanvas) {
+      return;
+    }
+
+    // Start tracking the touch from anywhere at the top of the view
+    const scrollTop = this.mainArea?.nativeElement?.scrollTop || 0;
+    if (scrollTop <= 10) {
+      this.touchStartY = event.touches[0].clientY;
+      this.touchCurrentY = this.touchStartY;
+      this.touchPreviousY = this.touchStartY;
+      this.swipeDirectionDown = true;
+    }
+  }
+
+  protected onTouchMove(event: TouchEvent): void {
+    if (!this.deviceService.isTouchEnabled() || this.viewingFullscreenImage || this._activeOffcanvas || this.touchStartY === 0) {
+      return;
+    }
+
+    // Save previous position to detect direction changes
+    this.touchPreviousY = this.touchCurrentY;
+
+    // Update current position
+    this.touchCurrentY = event.touches[0].clientY;
+
+    // Determine swipe direction
+    this.swipeDirectionDown = this.touchCurrentY > this.touchPreviousY;
+
+    const deltaY = this.touchCurrentY - this.touchStartY;
+
+    // Only handle swipe down (positive deltaY)
+    if (deltaY > 0) {
+      // Prevent default to disable scrolling while swiping
+      event.preventDefault();
+      this.isSwiping = true;
+
+      // Calculate swipe progress without capping at 1
+      this.swipeProgress = deltaY / this.swipeThreshold;
+
+      // Apply transform to the main container
+      this._applySwipeAnimation();
+    }
+  }
+
+  protected onTouchEnd(event: TouchEvent): void {
+    if (!this.isSwiping) {
+      return;
+    }
+
+    const deltaY = this.touchCurrentY - this.touchStartY;
+
+    // Only close if both conditions are met:
+    // 1. The swipe distance exceeds the threshold
+    // 2. The swipe was going downward at the end (not reversed)
+    if (deltaY >= this.swipeThreshold && this.swipeDirectionDown) {
+      // Swipe down threshold met and direction was downward at release
+      this.isSwiping = false;
+
+      // Set a final animation state (further down and more transparent)
+      const finalTranslateY = deltaY + 100; // Add 100px more to current position
+      const finalScale = 0.7;
+      const finalOpacity = 0.2;
+
+      // Apply the final animation state with transition
+      if (this.elementRef && this.elementRef.nativeElement) {
+        this.renderer.setStyle(
+          this.elementRef.nativeElement,
+          'transform',
+          `translateY(${finalTranslateY}px) scale(${finalScale})`
+        );
+
+        this.renderer.setStyle(
+          this.elementRef.nativeElement,
+          'opacity',
+          `${finalOpacity}`
+        );
+
+        this.renderer.setStyle(
+          this.elementRef.nativeElement,
+          'transition',
+          'transform 0.2s ease-out, opacity 0.2s ease-out'
+        );
+      }
+
+      // Close the viewer after the animation completes
+      setTimeout(() => {
+        this.closeClick.emit();
+      }, 200);
+    } else {
+      // Reset the animation if either:
+      // - The threshold was not met, OR
+      // - The swipe direction was reversed at the end
+      this.isSwiping = false;
+      this.swipeProgress = 0;
+      this._resetSwipeAnimation();
+    }
+
+    // Reset touch tracking
+    this.touchStartY = 0;
+    this.touchCurrentY = 0;
+    this.touchPreviousY = 0;
+  }
+
+  private _applySwipeAnimation(): void {
+    if (!this.elementRef || !this.elementRef.nativeElement) {
+      return;
+    }
+
+    // Calculate visual effects with limiters to prevent extreme values
+    // Scale effect is limited to not go below 0.7
+    const scale = Math.max(0.7, 1 - (this.swipeProgress * 0.1));
+
+    // Translation has no maximum - let it follow finger as far as needed
+    const translateY = this.swipeProgress * 100;
+
+    // Opacity is limited to not go below 0.3
+    const opacity = Math.max(0.3, 1 - (this.swipeProgress * 0.3));
+
+    // Apply styles to the host element (this affects the entire component including mobile menu)
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transform',
+      `translateY(${translateY}px) scale(${scale})`
+    );
+
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'opacity',
+      `${opacity}`
+    );
+
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transition',
+      'none'
+    );
+  }
+
+  private _resetSwipeAnimation(): void {
+    if (!this.elementRef || !this.elementRef.nativeElement) {
+      return;
+    }
+
+    // Reset host element animation
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transform',
+      'translateY(0) scale(1)'
+    );
+
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'opacity',
+      '1'
+    );
+
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transition',
+      'transform 0.3s ease, opacity 0.3s ease'
+    );
+  }
+
+  // Mobile menu event handlers
+  protected onMobileMenuOpen(): void {
+    // Reset any swipe state when menu opens
+    this.isSwiping = false;
+    this.swipeProgress = 0;
+    this._resetSwipeAnimation();
+  }
+
+  protected onMobileMenuClose(): void {
+    // No special handling needed when menu closes
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -286,6 +473,13 @@ export class ImageViewerComponent
   }
 
   ngOnDestroy() {
+    // Reset any in-progress swipe animation
+    if (this.isSwiping) {
+      this.isSwiping = false;
+      this.swipeProgress = 0;
+      this._resetSwipeAnimation();
+    }
+
     if (this._dataAreaScrollEventSubscription) {
       this._dataAreaScrollEventSubscription.unsubscribe();
     }
