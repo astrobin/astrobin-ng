@@ -85,7 +85,10 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
 
   protected openGallery(): void {
     this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
-      this.userService.openGallery(this.user.username, currentUserProfile?.enableNewGalleryExperience);
+      this.userService.openGallery(
+        this.user.username,
+        !currentUserProfile || currentUserProfile.enableNewGalleryExperience
+      );
     });
   }
 
@@ -103,7 +106,10 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
 
   private _setUrl(): void {
     this.currentUserProfile$.pipe(take(1)).subscribe(currentUserProfile => {
-      return this.userService.getGalleryUrl(this.user.username, currentUserProfile?.enableNewGalleryExperience);
+      return this.userService.getGalleryUrl(
+        this.user.username,
+        !currentUserProfile || currentUserProfile.enableNewGalleryExperience
+      );
     });
   }
 

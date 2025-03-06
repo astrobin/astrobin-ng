@@ -1,8 +1,14 @@
 <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper; else loadingTemplate">
   <a
     *ngIf="user && link"
-    (click)="userService.openGallery(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
-    [href]="userService.getGalleryUrl(user.username, currentUserWrapper.userProfile?.enableNewGalleryExperience)"
+    (click)="userService.openGallery(
+      user.username,
+      !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+    )"
+    [href]="userService.getGalleryUrl(
+      user.username,
+     !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
+    )"
     [target]="linkTarget"
     astrobinEventPreventDefault
     astrobinEventStopPropagation

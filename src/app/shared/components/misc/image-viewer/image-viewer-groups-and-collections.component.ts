@@ -98,13 +98,13 @@ import { selectUser, selectUserProfile } from "@features/account/store/auth.sele
                 (click)="userService.openCollection(
                   image.username,
                   collection.id,
-                  currentUserWrapper.userProfile?.enableNewGalleryExperience,
+                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
                   userProfile?.displayCollectionsOnPublicGallery
                 )"
                 [href]="userService.getCollectionUrl(
                   image.username,
                   collection.id,
-                  currentUserWrapper.userProfile?.enableNewGalleryExperience,
+                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
                   userProfile?.displayCollectionsOnPublicGallery
                 )"
                 astrobinEventPreventDefault
