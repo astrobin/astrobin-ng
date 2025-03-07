@@ -145,33 +145,29 @@ export class SwipeDownToCloseService {
     const wrappedTouchStart = (event: TouchEvent) => {
       handleTouchStart(event);
     };
-    
+
     const wrappedTouchMove = (event: TouchEvent) => {
       handleTouchMove(event);
     };
-    
+
     const wrappedTouchEnd = (event: TouchEvent) => {
       // Only process if we're swiping
       if (!this.isSwiping.value) {
         return;
       }
-      
+
       // We don't need to check for swipe direction or cancellation here
       // as the swipeDownService.handleTouchEnd will do that for us
-      
+
       // Handle as normal swipe
       handleTouchEnd(event);
     };
-    
+
     // Attach event listeners to the offcanvas panel
     // Don't use capture for regular click handling to work
     offcanvasElement.addEventListener("touchstart", wrappedTouchStart, { passive: false });
     offcanvasElement.addEventListener("touchmove", wrappedTouchMove, { passive: false });
     offcanvasElement.addEventListener("touchend", wrappedTouchEnd);
-
-    // We don't need to attach to header and body anymore,
-    // as the parent will handle the events properly now
-    // This reduces chances of interference with normal click behavior
 
     // Keep reference to listeners for potential cleanup
     (offcanvasElement as any).__swipeListeners = {
