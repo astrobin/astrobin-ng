@@ -138,12 +138,9 @@ export class SwipeDownService {
         // Check if the upward movement is significant (more than 10px)
         const upwardMovement = touchPreviousY.value - touchCurrentY.value;
         if (upwardMovement > 10) {
-          // Mark that the user intends to cancel, but don't stop tracking
+          // Mark that the user intends to cancel, but don't stop tracking or animate
+          // We'll only use this flag when they release their finger
           this._swipeCancellationIntended = true;
-          
-          // Update the animation to reflect the current progress
-          // but we won't reset completely to allow the user to recover
-          this._applySwipeAnimation(elementRef, renderer, swipeProgress.value, animationType);
         }
       } else if (this._swipeCancellationIntended) {
         // If moving down again after previously moving up
@@ -154,18 +151,30 @@ export class SwipeDownService {
       }
     }
 
-    // Only handle swipe down (positive deltaY)
-    if (deltaY > 0) {
+    // Handle both downward and upward movement - always update the animation
+    if (isSwiping.value) {
       // Prevent default to disable scrolling while swiping
       event.preventDefault();
-      isSwiping.value = true;
-
-      // Calculate swipe progress
-      swipeProgress.value = deltaY / swipeThreshold;
-
-      // Apply transform to the component
+      
+      // Always update the animation to follow the finger, even if cancellation will happen on touchend
+      // If the finger moves above the start position, treat delta as 0
+      // This prevents the element from moving upward from its original position
+      const limitedDeltaY = Math.max(0, deltaY);
+      
+      // Calculate swipe progress based on limited delta
+      swipeProgress.value = limitedDeltaY / swipeThreshold;
+      
+      // Apply transform to the component - always apply the current animation
+      // state to keep the element following the finger
       this._applySwipeAnimation(elementRef, renderer, swipeProgress.value, animationType);
-
+      
+      return true;
+    } else if (deltaY > 0) {
+      // If we're just starting to swipe down, initialize
+      event.preventDefault();
+      isSwiping.value = true;
+      swipeProgress.value = deltaY / swipeThreshold;
+      this._applySwipeAnimation(elementRef, renderer, swipeProgress.value, animationType);
       return true;
     }
 
@@ -198,8 +207,21 @@ export class SwipeDownService {
     closeCallback: () => void,
     animationType: 'full' | 'translate-only' = 'full'
   ): void {
-    // If we're not swiping, don't proceed with any end logic
+    // If we're not swiping or have no valid touch, just reset state and return
     if (!isSwiping.value || touchStartY.value === 0) {
+      // Clean up any lingering styles or transformations
+      if (elementRef && elementRef.nativeElement) {
+        // Reset transform properties immediately
+        this._resetSwipeAnimation(elementRef, renderer, animationType);
+      }
+      
+      // Reset all state variables
+      isSwiping.value = false;
+      touchStartY.value = 0;
+      touchCurrentY.value = 0;
+      touchPreviousY.value = 0;
+      swipeProgress.value = 0;
+      this._swipeCancellationIntended = false;
       return;
     }
 
@@ -208,12 +230,18 @@ export class SwipeDownService {
     // Reset the swiping state
     isSwiping.value = false;
     
-    // Check if the user intended to cancel (had significant upward movement)
-    if (this._swipeCancellationIntended || deltaY <= 0) {
+    // CRITICAL: Check if the last direction was upward - if so, ABORT the swipe
+    // This is the key feature: if user swiped down then up without lifting finger, abort
+    if (!swipeDirectionDown.value || this._swipeCancellationIntended || deltaY <= 0 || deltaY < swipeThreshold) {
+      
       swipeProgress.value = 0;
       
       // Use CSS animation for smoother return for both offcanvas and image viewer
       if (elementRef && elementRef.nativeElement) {
+        // Clear any existing animation classes first
+        renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animate');
+        renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-offcanvas-animate');
+        
         // Mark as animating
         renderer.addClass(elementRef.nativeElement, 'swipe-to-close-animating');
         
@@ -223,8 +251,14 @@ export class SwipeDownService {
         // Listen for animation end
         const onAnimationEnd = (event: any) => {
           if (event.animationName === 'return-to-normal') {
+            // Remove all animation-related classes
             renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-return-to-normal');
             renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animating');
+            
+            // Also remove any transform styling that might be leftover
+            renderer.removeStyle(elementRef.nativeElement, 'transform');
+            renderer.removeStyle(elementRef.nativeElement, 'opacity');
+            
             elementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
           }
         };
@@ -246,7 +280,7 @@ export class SwipeDownService {
       return;
     }
     
-    // Trigger if the swipe distance is sufficient
+    // Only get here if swipe was downward and exceeded threshold
     if (deltaY >= swipeThreshold) {
       // Determine the animation based on type
       // Use CSS animation class for better performance for both offcanvas and image viewer
@@ -408,10 +442,24 @@ export class SwipeDownService {
       return;
     }
     
-    // We want to smoothly animate back to the original position,
-    // so we don't clear the transition here anymore
-
-    // First set the transition to enable smooth animation back
+    // Clean up any existing animation classes
+    renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animate');
+    renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-offcanvas-animate');
+    renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-return-to-normal');
+    renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animating');
+    
+    // Also remove any inline transform that might be in place
+    renderer.removeStyle(elementRef.nativeElement, 'transform');
+    if (animationType !== 'translate-only') {
+      renderer.removeStyle(elementRef.nativeElement, 'opacity');
+    }
+    
+    // Force a reflow to ensure the style removal takes effect
+    if (typeof window !== 'undefined') {
+      void elementRef.nativeElement.offsetHeight;
+    }
+    
+    // Now set the transition to enable smooth animation back
     if (animationType === 'translate-only') {
       renderer.setStyle(
         elementRef.nativeElement,
