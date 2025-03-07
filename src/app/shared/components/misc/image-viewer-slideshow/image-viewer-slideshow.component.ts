@@ -301,42 +301,41 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       return;
     }
     
-    // First clear the transition to ensure we don't get stuck
-    this.renderer.setStyle(
+    // Use CSS animation classes instead of manual style manipulation
+    // This delegates animation to the GPU and composite layers
+    
+    // Mark as animating for pointer-events optimizations
+    this.renderer.addClass(
       this.elementRef.nativeElement,
-      'transition',
-      'none'
+      'swipe-to-close-animating'
     );
     
-    // Force a reflow to ensure the transition removal is processed
-    if (typeof window !== 'undefined') {
-      void this.elementRef.nativeElement.offsetHeight;
-    }
-    
-    // Reset styles
-    this.renderer.setStyle(
+    // Add the return-to-normal animation class
+    this.renderer.addClass(
       this.elementRef.nativeElement,
-      'transform',
-      'translateY(0) scale(1)'
+      'swipe-to-close-return-to-normal'
     );
     
-    this.renderer.setStyle(
-      this.elementRef.nativeElement,
-      'opacity',
-      '1'
-    );
+    // Listen for animation end to clean up classes
+    const onAnimationEnd = (event: AnimationEvent) => {
+      if (event.animationName === 'return-to-normal') {
+        // Remove animation classes
+        this.renderer.removeClass(
+          this.elementRef.nativeElement,
+          'swipe-to-close-return-to-normal'
+        );
+        this.renderer.removeClass(
+          this.elementRef.nativeElement,
+          'swipe-to-close-animating'
+        );
+        
+        // Remove the event listener to avoid memory leaks
+        this.elementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
+      }
+    };
     
-    // Force another reflow
-    if (typeof window !== 'undefined') {
-      void this.elementRef.nativeElement.offsetHeight;
-    }
-    
-    // Now add the transition back
-    this.renderer.setStyle(
-      this.elementRef.nativeElement,
-      'transition',
-      'transform 0.3s ease, opacity 0.3s ease'
-    );
+    // Add the event listener
+    this.elementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
   }
 
   setCallerComponentId(callerComponentId: string) {

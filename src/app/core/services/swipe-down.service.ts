@@ -211,7 +211,26 @@ export class SwipeDownService {
     // Check if the user intended to cancel (had significant upward movement)
     if (this._swipeCancellationIntended || deltaY <= 0) {
       swipeProgress.value = 0;
-      this._resetSwipeAnimation(elementRef, renderer, animationType);
+      
+      // Use CSS animation for smoother return for both offcanvas and image viewer
+      if (elementRef && elementRef.nativeElement) {
+        // Mark as animating
+        renderer.addClass(elementRef.nativeElement, 'swipe-to-close-animating');
+        
+        // Add appropriate animation class
+        renderer.addClass(elementRef.nativeElement, 'swipe-to-close-return-to-normal');
+        
+        // Listen for animation end
+        const onAnimationEnd = (event: any) => {
+          if (event.animationName === 'return-to-normal') {
+            renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-return-to-normal');
+            renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animating');
+            elementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
+          }
+        };
+        
+        elementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
+      }
       
       // For image viewer, make sure the image-viewer-open class is restored if we're cancelling
       if (animationType !== 'translate-only' && typeof document !== "undefined") {
@@ -230,48 +249,39 @@ export class SwipeDownService {
     // Trigger if the swipe distance is sufficient
     if (deltaY >= swipeThreshold) {
       // Determine the animation based on type
-      if (animationType === 'translate-only') {
-        // For offcanvas - translate all the way off screen
-        const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 1000;
+      // Use CSS animation class for better performance for both offcanvas and image viewer
+      if (elementRef && elementRef.nativeElement) {
+        // Mark as animating
+        renderer.addClass(elementRef.nativeElement, 'swipe-to-close-animating');
         
-        if (elementRef && elementRef.nativeElement) {
-          renderer.setStyle(
-            elementRef.nativeElement,
-            "transform",
-            `translateY(${viewportHeight}px)`
-          );
-          
-          renderer.setStyle(
-            elementRef.nativeElement,
-            "transition",
-            "transform 0.3s ease-out"
-          );
+        // Add animation class based on type
+        if (animationType === 'translate-only') {
+          // For offcanvas, add a different animation class
+          renderer.addClass(elementRef.nativeElement, 'swipe-to-close-offcanvas-animate');
+        } else {
+          // For image viewer
+          renderer.addClass(elementRef.nativeElement, 'swipe-to-close-animate');
         }
-      } else {
-        // For image viewer - apply scale and opacity
-        const finalTranslateY = deltaY + 100; 
-        const finalScale = 0.7;
-        const finalOpacity = 0.2;
         
-        if (elementRef && elementRef.nativeElement) {
-          renderer.setStyle(
-            elementRef.nativeElement,
-            "transform",
-            `translateY(${finalTranslateY}px) scale(${finalScale})`
-          );
-  
-          renderer.setStyle(
-            elementRef.nativeElement,
-            "opacity",
-            `${finalOpacity}`
-          );
-  
-          renderer.setStyle(
-            elementRef.nativeElement,
-            "transition",
-            "transform 0.2s ease-out, opacity 0.2s ease-out"
-          );
-        }
+        // Listen for animation end
+        const onAnimationEnd = (event: any) => {
+          const expectedAnimation = animationType === 'translate-only' 
+            ? 'offcanvas-swipe-to-close' 
+            : 'swipe-to-close';
+            
+          if (event.animationName === expectedAnimation) {
+            // Animation complete - clean up event listener and classes
+            renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animating');
+            if (animationType === 'translate-only') {
+              renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-offcanvas-animate');
+            } else {
+              renderer.removeClass(elementRef.nativeElement, 'swipe-to-close-animate');
+            }
+            elementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
+          }
+        };
+        
+        elementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
       }
 
       // Close the element after a short delay
@@ -330,6 +340,22 @@ export class SwipeDownService {
       "transition",
       "none"
     );
+    
+    // Set will-change to let the browser know we'll be animating these properties
+    // This enables hardware acceleration for smoother animations
+    if (animationType === 'translate-only') {
+      renderer.setStyle(
+        elementRef.nativeElement,
+        "will-change",
+        "transform"
+      );
+    } else {
+      renderer.setStyle(
+        elementRef.nativeElement,
+        "will-change",
+        "transform, opacity"
+      );
+    }
     
     // Force browser to acknowledge the transition removal before setting new styles
     // This fixes issues where animations might get "stuck"
@@ -390,7 +416,14 @@ export class SwipeDownService {
       renderer.setStyle(
         elementRef.nativeElement,
         "transition",
-        "transform 0.3s ease-out"
+        "transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)"
+      );
+      
+      // Use hardware acceleration to improve performance
+      renderer.setStyle(
+        elementRef.nativeElement,
+        "will-change",
+        "transform"
       );
       
       // Force a reflow to ensure the browser registers the transition
@@ -409,7 +442,14 @@ export class SwipeDownService {
       renderer.setStyle(
         elementRef.nativeElement,
         "transition",
-        "transform 0.3s ease-out, opacity 0.3s ease-out"
+        "transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)"
+      );
+      
+      // Use hardware acceleration to improve performance
+      renderer.setStyle(
+        elementRef.nativeElement,
+        "will-change",
+        "transform, opacity"
       );
       
       // Force a reflow to ensure the browser registers the transition
@@ -437,9 +477,13 @@ export class SwipeDownService {
         if (elementRef && elementRef.nativeElement) {
           if (animationType === 'translate-only') {
             renderer.setStyle(elementRef.nativeElement, "transform", "translateY(0)");
+            // Clean up will-change to free resources when not animating
+            renderer.setStyle(elementRef.nativeElement, "will-change", "auto");
           } else {
             renderer.setStyle(elementRef.nativeElement, "transform", "translateY(0) scale(1)");
             renderer.setStyle(elementRef.nativeElement, "opacity", "1");
+            // Clean up will-change to free resources when not animating
+            renderer.setStyle(elementRef.nativeElement, "will-change", "auto");
           }
         }
       }, 350); // Just after transition should be complete
