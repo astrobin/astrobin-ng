@@ -201,7 +201,8 @@ export class ImageViewerComponent
     public readonly popNotificationsService: PopNotificationsService,
     public readonly cookieService: CookieService,
     public readonly searchService: SearchService,
-    public readonly contentTranslateService: ContentTranslateService
+    public readonly contentTranslateService: ContentTranslateService,
+    public readonly elementRef: ElementRef
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -224,6 +225,15 @@ export class ImageViewerComponent
     this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
       this._activeOffcanvas = activeOffcanvas;
     });
+  }
+
+  // Mobile menu event handlers
+  protected onMobileMenuOpen(): void {
+    // No special handling needed when menu opens
+  }
+
+  protected onMobileMenuClose(): void {
+    // No special handling needed when menu closes
   }
 
   ngOnChanges(changes: SimpleChanges) {

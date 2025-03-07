@@ -304,6 +304,9 @@
   @fadeInOut
   [class.touch]="touchMode"
   class="fullscreen-image-viewer h-100"
+  (touchstart)="onTouchStart($event)"
+  (touchmove)="onTouchMove($event)"
+  (touchend)="onTouchEnd($event)"
 >
   <ng-container
     *ngIf="{

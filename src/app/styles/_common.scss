@@ -11,11 +11,33 @@ body {
   @include main-background-texture;
   font-family: "Noto Sans", Helvetica, Arial, sans-serif;
 
-  &.image-viewer-open astrobin-root {
-    overflow: hidden;
-    visibility: hidden;
-    transform: translateZ(0);
-    pointer-events: none;
+  &.image-viewer-open {
+    background: var(--black);
+
+    astrobin-root {
+      overflow: hidden;
+      visibility: hidden;
+      transform: translateZ(0);
+      pointer-events: none;
+    }
+  }
+  
+  &.image-viewer-closing {
+    astrobin-root {
+      // Show the content with a fade-in animation
+      visibility: visible !important;
+      opacity: 0;
+      animation: fade-in-content 1s ease forwards;
+    }
+  }
+}
+
+@keyframes fade-in-content {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

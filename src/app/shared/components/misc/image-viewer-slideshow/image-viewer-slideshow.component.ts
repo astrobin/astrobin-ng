@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, ViewChild } from "@angular/core";
+import { SwipeDownService } from "@core/services/swipe-down.service";
 import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface } from "@core/interfaces/image.interface";
 import { ImageViewerNavigationContext, ImageViewerNavigationContextItem } from "@core/services/image-viewer.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -27,7 +28,13 @@ const SLIDESHOW_WINDOW = 3;
 @Component({
   selector: "astrobin-image-viewer-slideshow",
   template: `
-    <div #carouselContainer class="carousel-container">
+    <div 
+      #carouselContainer 
+      class="carousel-container"
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
+      (touchend)="onTouchEnd($event)"
+    >
       <div class="carousel-area">
         <ngb-carousel
           #carousel
@@ -136,6 +143,15 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
   protected fullscreen = false;
   protected loadingImage = false;
   protected callerComponentId: string;
+  
+  // Swipe handling properties
+  protected touchStartY: { value: number } = { value: 0 };
+  protected touchCurrentY: { value: number } = { value: 0 };
+  protected touchPreviousY: { value: number } = { value: 0 }; // Used to track direction changes
+  protected isSwiping: { value: boolean } = { value: false };
+  protected swipeProgress: { value: number } = { value: 0 };
+  protected swipeThreshold: number = 150; // Minimum distance to consider a swipe
+  protected swipeDirectionDown: { value: boolean } = { value: true }; // Track if the swipe is currently going down
 
   private readonly _isBrowser: boolean;
   private _delayedLoadSubscription: Subscription = new Subscription();
@@ -155,7 +171,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     public readonly renderer: Renderer2,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly swipeDownService: SwipeDownService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
@@ -188,7 +205,100 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
     if (this._isBrowser) {
       const _doc = this.windowRefService.nativeWindow.document;
       _doc.removeEventListener("keydown", this._boundOnKeyDown, true);
+      
+      // Make sure to clean up any transition classes
+      document.body.classList.remove('image-viewer-closing');
     }
+    
+    // Reset any in-progress swipe animation
+    if (this.isSwiping.value) {
+      this.isSwiping.value = false;
+      this.swipeProgress.value = 0;
+      this._resetSwipeAnimation();
+    }
+    
+    // Clear any notifications
+    this.popNotificationsService.clear();
+  }
+  
+  // Touch event handlers for swipe-down gesture
+  protected onTouchStart(event: TouchEvent): void {
+    if (this.fullscreen) {
+      return;
+    }
+    
+    this.swipeDownService.handleTouchStart(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown
+    );
+  }
+
+  protected onTouchMove(event: TouchEvent): void {
+    if (this.fullscreen) {
+      return;
+    }
+    
+    this.swipeDownService.handleTouchMove(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.isSwiping,
+      this.swipeProgress,
+      this.swipeThreshold,
+      this.elementRef,
+      this.renderer
+    );
+  }
+
+  protected onTouchEnd(event: TouchEvent): void {
+    if (this.fullscreen) {
+      return;
+    }
+    
+    this.swipeDownService.handleTouchEnd(
+      this.isSwiping,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.swipeThreshold,
+      this.swipeProgress,
+      this.elementRef,
+      this.renderer,
+      () => {
+        this.closeSlideshow.emit(true);
+      }
+    );
+  }
+  
+  private _resetSwipeAnimation(): void {
+    if (!this.elementRef || !this.elementRef.nativeElement) {
+      return;
+    }
+    
+    // Reset host element animation
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transform',
+      'translateY(0) scale(1)'
+    );
+    
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'opacity',
+      '1'
+    );
+    
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transition',
+      'transform 0.3s ease, opacity 0.3s ease'
+    );
   }
 
   setCallerComponentId(callerComponentId: string) {
