@@ -110,9 +110,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected maxZoom = 8;
   protected canvasLoading = false;
   protected isGif = false;
+  protected zoomFrozen = false;
+  // Swipe-down properties
+  protected touchStartY: { value: number } = { value: 0 };
+  protected touchCurrentY: { value: number } = { value: 0 };
+  protected touchPreviousY: { value: number } = { value: 0 };
+  protected isSwiping: { value: boolean } = { value: false };
+  protected swipeProgress: { value: number } = { value: 0 };
+  protected swipeThreshold: number = 150;
+  protected swipeDirectionDown: { value: boolean } = { value: true };
 
   private _revision: ImageInterface | ImageRevisionInterface;
-
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
@@ -130,7 +138,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _panLastTime: number = 0;
   private _pinchLastTime: number = 0;
   private _animationFrame: number = null;
-
   private _imageSubscription: Subscription;
   private _hdThumbnailSubscription: Subscription;
   private _realThumbnailSubscription: Subscription;
@@ -142,6 +149,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _eagerLoadingSubscription: Subscription;
   private _firstRenderSubject = new BehaviorSubject<boolean>(false);
+
   readonly firstRender$ = this._firstRenderSubject.asObservable().pipe(
     filter(rendered => rendered)
   );
@@ -149,15 +157,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
-
-  // Swipe-down properties
-  protected touchStartY: { value: number } = { value: 0 };
-  protected touchCurrentY: { value: number } = { value: 0 };
-  protected touchPreviousY: { value: number } = { value: 0 };
-  protected isSwiping: { value: boolean } = { value: false };
-  protected swipeProgress: { value: number } = { value: 0 };
-  protected swipeThreshold: number = 150;
-  protected swipeDirectionDown: { value: boolean } = { value: true };
+  // Store original handlers and position for freezing/unfreezing
+  private _originalOnMouseMove: any = null;
+  private _originalOnMouseWheel: any = null;
+  private _frozenZoomPosition: { x: number, y: number } = null;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -332,6 +335,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   ngOnDestroy() {
     super.ngOnDestroy();
 
+    // Restore original event handlers if needed
+    this._restoreOriginalEventHandlers();
+
     if (this._imageBitmap) {
       this._imageBitmap.close();
     }
@@ -394,7 +400,42 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       event.stopPropagation();
     }
 
+    // Reset frozen state when hiding
+    if (this.zoomFrozen) {
+      this.zoomFrozen = false;
+      this._restoreOriginalEventHandlers();
+    }
+
     this.store$.dispatch(new HideFullscreenImage());
+  }
+
+  @HostListener("window:keyup.f", ["$event"])
+  toggleZoomFreeze(event: KeyboardEvent): void {
+    if (!this.zoomingEnabled || this.touchMode || this.isVeryLargeImage) {
+      return;
+    }
+
+    // Don't interfere with input fields
+    if (event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Toggle frozen state
+    this.zoomFrozen = !this.zoomFrozen;
+
+    if (this.zoomFrozen) {
+      // Directly remove the mouse events from the ngx-image-zoom component
+      this._deregisterZoomEvents();
+    } else {
+      // Re-register the events to enable normal behavior
+      this._registerZoomEvents();
+    }
+
+    this.changeDetectorRef.markForCheck();
   }
 
   protected toggleEnableLens(): void {
@@ -410,7 +451,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (this.isGif && touch) {
       return;
     }
-    
+
     this.touchMode = touch;
     this.cookieService.put(this.TOUCH_OR_MOUSE_MODE_COOKIE_NAME, this.touchMode ? "touch" : "mouse");
     if (this.touchMode) {
@@ -567,6 +608,138 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this._animateZoom(targetScale, targetOffsetX, targetOffsetY);
     }
+  }
+
+  /**
+   * Checks if we can swipe to close the viewer
+   * Only allow swipe-down when the image is not zoomed in beyond fit-to-screen
+   */
+  protected canSwipeToClose(): boolean {
+    // For GIFs we can always swipe to close (no zoom)
+    if (this.isGif) {
+      return true;
+    }
+
+    // For very large images we can always swipe to close (no interactive zoom)
+    if (this.isVeryLargeImage) {
+      return true;
+    }
+
+    if (this.touchMode) {
+      // In touch mode, we can only swipe when the touchScale is 1 (fully zoomed out)
+      return this.touchScale <= 1;
+    } else {
+      // In mouse mode, we can only swipe when the zoom is at 1x
+      return !this.zoomingEnabled || this.zoomScroll <= 1;
+    }
+  }
+
+  /**
+   * Handle touch start for swipe-down gesture
+   */
+  protected onTouchStart(event: TouchEvent): void {
+    this.swipeDownService.handleTouchStart(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown
+    );
+  }
+
+  /**
+   * Handle touch move for swipe-down gesture
+   */
+  protected onTouchMove(event: TouchEvent): void {
+    this.swipeDownService.handleTouchMove(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.isSwiping,
+      this.swipeProgress,
+      this.swipeThreshold,
+      new ElementRef(event.currentTarget),
+      this.renderer,
+      () => this.canSwipeToClose()
+    );
+  }
+
+  /**
+   * Handle touch end for swipe-down gesture
+   */
+  protected onTouchEnd(event: TouchEvent): void {
+    this.swipeDownService.handleTouchEnd(
+      this.isSwiping,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.swipeThreshold,
+      this.swipeProgress,
+      new ElementRef(event.currentTarget),
+      this.renderer,
+      () => {
+        this.hide(null);
+      }
+    );
+  }
+
+  // Replace both mousemove and wheel handlers to completely freeze the zoom
+  private _deregisterZoomEvents(): void {
+    if (!this.ngxImageZoom || !(this.ngxImageZoom as any).zoomInstance) {
+      return;
+    }
+
+    // Store current zoom position
+    this._frozenZoomPosition = {
+      x: this.ngxImageZoom.zoomService.lensLeft,
+      y: this.ngxImageZoom.zoomService.lensTop
+    };
+
+    // Store the original handlers
+    this._originalOnMouseMove = (this.ngxImageZoom as any).zoomInstance.onMouseMove;
+    this._originalOnMouseWheel = (this.ngxImageZoom as any).zoomInstance.onMouseWheel;
+
+    // Replace with empty handler - this freezes the zoom position
+    (this.ngxImageZoom as any).zoomInstance.onMouseMove = (event: MouseEvent) => {
+      // Do nothing - freezes the zoom position
+    };
+    
+    // Block wheel events to prevent zooming while frozen
+    (this.ngxImageZoom as any).zoomInstance.onMouseWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
+    };
+  }
+
+  // Helper method to restore all original event handlers
+  private _restoreOriginalEventHandlers(): void {
+    if (!this.ngxImageZoom || !(this.ngxImageZoom as any).zoomInstance) {
+      return;
+    }
+
+    // Restore the original mouse move handler
+    if (this._originalOnMouseMove) {
+      (this.ngxImageZoom as any).zoomInstance.onMouseMove = this._originalOnMouseMove;
+      this._originalOnMouseMove = null;
+    }
+    
+    // Restore the original wheel handler
+    if (this._originalOnMouseWheel) {
+      (this.ngxImageZoom as any).zoomInstance.onMouseWheel = this._originalOnMouseWheel;
+      this._originalOnMouseWheel = null;
+    }
+  }
+
+  // Restore original event handlers
+  private _registerZoomEvents(): void {
+    this._restoreOriginalEventHandlers();
+
+    // Clear saved zoom position
+    this._frozenZoomPosition = null;
   }
 
   private _initImageZoom() {
@@ -824,8 +997,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       })
     ).subscribe(() => {
       // Check if the image is a GIF
-      this.isGif = this._revision.imageFile && this._revision.imageFile.toLowerCase().endsWith('.gif');
-      
+      this.isGif = this._revision.imageFile && this._revision.imageFile.toLowerCase().endsWith(".gif");
+
       // For GIFs, always use non-touch mode
       if (this.isGif && this.touchMode) {
         this.setTouchMouseMode(false);
@@ -876,7 +1049,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
               switchMap(url =>
                 this._preloadImage(url).pipe(
                   map(() => this.domSanitizer.bypassSecurityTrustUrl(url)),
-                  tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false }))),
+                  tap(() => this.store$.dispatch(new LoadThumbnail({
+                    data: this._getRealOptions(),
+                    bustCache: false
+                  }))),
                   tap(() => {
                     this.hdThumbnailLoading = false;
                     this.changeDetectorRef.markForCheck();
@@ -1143,85 +1319,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Check for touch event properties instead of using instanceof
     return (
-      typeof event.touches !== 'undefined' ||
-      typeof event.changedTouches !== 'undefined' ||
-      (event.type && event.type.startsWith('touch'))
-    );
-  }
-  
-  /**
-   * Checks if we can swipe to close the viewer
-   * Only allow swipe-down when the image is not zoomed in beyond fit-to-screen
-   */
-  protected canSwipeToClose(): boolean {
-    // For GIFs we can always swipe to close (no zoom)
-    if (this.isGif) {
-      return true;
-    }
-    
-    // For very large images we can always swipe to close (no interactive zoom)
-    if (this.isVeryLargeImage) {
-      return true;
-    }
-    
-    if (this.touchMode) {
-      // In touch mode, we can only swipe when the touchScale is 1 (fully zoomed out)
-      return this.touchScale <= 1;
-    } else {
-      // In mouse mode, we can only swipe when the zoom is at 1x
-      return !this.zoomingEnabled || this.zoomScroll <= 1;
-    }
-  }
-  
-  /**
-   * Handle touch start for swipe-down gesture
-   */
-  protected onTouchStart(event: TouchEvent): void {
-    this.swipeDownService.handleTouchStart(
-      event,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown
-    );
-  }
-
-  /**
-   * Handle touch move for swipe-down gesture
-   */
-  protected onTouchMove(event: TouchEvent): void {
-    this.swipeDownService.handleTouchMove(
-      event,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown,
-      this.isSwiping,
-      this.swipeProgress,
-      this.swipeThreshold,
-      new ElementRef(event.currentTarget),
-      this.renderer,
-      () => this.canSwipeToClose()
-    );
-  }
-
-  /**
-   * Handle touch end for swipe-down gesture
-   */
-  protected onTouchEnd(event: TouchEvent): void {
-    this.swipeDownService.handleTouchEnd(
-      this.isSwiping,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown,
-      this.swipeThreshold,
-      this.swipeProgress,
-      new ElementRef(event.currentTarget),
-      this.renderer,
-      () => {
-        this.hide(null);
-      }
+      typeof event.touches !== "undefined" ||
+      typeof event.changedTouches !== "undefined" ||
+      (event.type && event.type.startsWith("touch"))
     );
   }
 }
