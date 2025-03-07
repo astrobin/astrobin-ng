@@ -132,3 +132,13 @@
     opacity: .35;
   }
 }
+
+// Animation for fading out elements
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

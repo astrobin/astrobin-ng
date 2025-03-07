@@ -208,6 +208,12 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       
       // Make sure to clean up any transition classes
       document.body.classList.remove('image-viewer-closing');
+      
+      // Clear any safety timer that might be running
+      if ((this as any).__safetyTimer) {
+        clearTimeout((this as any).__safetyTimer);
+        (this as any).__safetyTimer = null;
+      }
     }
     
     // Reset any in-progress swipe animation
@@ -260,6 +266,16 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       return;
     }
     
+    // Add class for background animation
+    if (typeof document !== "undefined") {
+      const safetyTimer = setTimeout(() => {
+        document.body.classList.remove("image-viewer-closing");
+      }, 1000);
+      
+      (this as any).__safetyTimer = safetyTimer;
+      document.body.classList.add("image-viewer-closing");
+    }
+    
     this.swipeDownService.handleTouchEnd(
       this.isSwiping,
       this.touchStartY,
@@ -271,6 +287,15 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this.elementRef,
       this.renderer,
       () => {
+        if ((this as any).__safetyTimer) {
+          clearTimeout((this as any).__safetyTimer);
+          (this as any).__safetyTimer = null;
+        }
+        
+        if (typeof document !== "undefined") {
+          document.body.classList.remove("image-viewer-closing");
+        }
+        
         this.closeSlideshow.emit(true);
       }
     );

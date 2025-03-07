@@ -20,7 +20,7 @@ import localeTurkish from "@angular/common/locales/tr";
 import localeChinese from "@angular/common/locales/zh";
 import localeChineseSimplified from "@angular/common/locales/zh-Hans";
 import localeChineseTraditional from "@angular/common/locales/zh-Hant";
-import { ErrorHandler, Inject, Injectable, NgModule, PLATFORM_ID } from "@angular/core";
+import { APP_INITIALIZER, ErrorHandler, Inject, Injectable, NgModule, PLATFORM_ID } from "@angular/core";
 import { BrowserModule, Title, TransferState } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
@@ -38,6 +38,7 @@ import { TimeagoClock, TimeagoDefaultFormatter, TimeagoFormatter, TimeagoIntl, T
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { translateLoaderFactory } from "./translate-loader";
+import { SwipeDownToCloseService } from "@core/services/swipe-down-to-close.service";
 import * as Sentry from "@sentry/angular";
 import { Router, RouteReuseStrategy } from "@angular/router";
 import { CLIENT_IP } from "@app/client-ip.injector";
@@ -174,6 +175,18 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     CookieService,
     Title,
     WindowRefService,
+    SwipeDownToCloseService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (swipeDownToCloseService: SwipeDownToCloseService) => {
+        return () => {
+          // The service is initialized in its constructor
+          return Promise.resolve();
+        };
+      },
+      deps: [SwipeDownToCloseService],
+      multi: true
+    },
     {
       provide: Sentry.TraceService,
       deps: [Router]
