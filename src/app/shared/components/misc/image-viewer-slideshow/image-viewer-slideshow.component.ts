@@ -208,6 +208,12 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       
       // Make sure to clean up any transition classes
       document.body.classList.remove('image-viewer-closing');
+      
+      // Clear any safety timer that might be running
+      if ((this as any).__safetyTimer) {
+        clearTimeout((this as any).__safetyTimer);
+        (this as any).__safetyTimer = null;
+      }
     }
     
     // Reset any in-progress swipe animation
@@ -260,6 +266,16 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       return;
     }
     
+    // Only process if we're swiping
+    if (!this.isSwiping.value) {
+      return;
+    }
+    
+    // Add class for background animation - the service will handle cancel detection
+    if (typeof document !== "undefined") {
+      document.body.classList.add("image-viewer-closing");
+    }
+    
     this.swipeDownService.handleTouchEnd(
       this.isSwiping,
       this.touchStartY,
@@ -271,6 +287,10 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this.elementRef,
       this.renderer,
       () => {
+        if (typeof document !== "undefined") {
+          document.body.classList.remove("image-viewer-closing");
+        }
+        
         this.closeSlideshow.emit(true);
       }
     );
@@ -281,24 +301,41 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       return;
     }
     
-    // Reset host element animation
-    this.renderer.setStyle(
+    // Use CSS animation classes instead of manual style manipulation
+    // This delegates animation to the GPU and composite layers
+    
+    // Mark as animating for pointer-events optimizations
+    this.renderer.addClass(
       this.elementRef.nativeElement,
-      'transform',
-      'translateY(0) scale(1)'
+      'swipe-to-close-animating'
     );
     
-    this.renderer.setStyle(
+    // Add the return-to-normal animation class
+    this.renderer.addClass(
       this.elementRef.nativeElement,
-      'opacity',
-      '1'
+      'swipe-to-close-return-to-normal'
     );
     
-    this.renderer.setStyle(
-      this.elementRef.nativeElement,
-      'transition',
-      'transform 0.3s ease, opacity 0.3s ease'
-    );
+    // Listen for animation end to clean up classes
+    const onAnimationEnd = (event: AnimationEvent) => {
+      if (event.animationName === 'return-to-normal') {
+        // Remove animation classes
+        this.renderer.removeClass(
+          this.elementRef.nativeElement,
+          'swipe-to-close-return-to-normal'
+        );
+        this.renderer.removeClass(
+          this.elementRef.nativeElement,
+          'swipe-to-close-animating'
+        );
+        
+        // Remove the event listener to avoid memory leaks
+        this.elementRef.nativeElement.removeEventListener('animationend', onAnimationEnd);
+      }
+    };
+    
+    // Add the event listener
+    this.elementRef.nativeElement.addEventListener('animationend', onAnimationEnd);
   }
 
   setCallerComponentId(callerComponentId: string) {

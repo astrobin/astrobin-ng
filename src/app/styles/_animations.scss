@@ -132,3 +132,43 @@
     opacity: .35;
   }
 }
+
+// Animation for fading out elements
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+// Animations for swipe gestures
+@keyframes return-to-normal {
+  0% {
+    // Allow keyframes to start from whatever the current state is
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes swipe-to-close {
+  0% {
+    // Allow keyframes to start from whatever the current state is
+  }
+  100% {
+    transform: translateY(100vh) scale(0.7);
+    opacity: 0;
+  }
+}
+
+@keyframes offcanvas-swipe-to-close {
+  0% {
+    // Allow keyframes to start from whatever the current state is 
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
