@@ -323,7 +323,8 @@ export class SwipeDownService {
     // Translation has no maximum - let it follow finger as far as needed
     const translateY = limitedProgress * 100;
     
-    // Clear any previous transitions first - ensures animation state is fresh
+    // When applying swipe animation, always ensure we have no transition
+    // so the element follows the finger directly without any smoothing
     renderer.setStyle(
       elementRef.nativeElement,
       "transition",
@@ -381,38 +382,42 @@ export class SwipeDownService {
       return;
     }
     
-    // First clear the transition to ensure we don't get stuck in transition states
-    renderer.setStyle(
-      elementRef.nativeElement,
-      "transition",
-      "none"
-    );
-    
-    // Force a reflow to ensure the browser registers the transition removal
-    if (typeof window !== 'undefined') {
-      void elementRef.nativeElement.offsetHeight;
-    }
+    // We want to smoothly animate back to the original position,
+    // so we don't clear the transition here anymore
 
+    // First set the transition to enable smooth animation back
     if (animationType === 'translate-only') {
-      // For offcanvas - only reset translation
+      renderer.setStyle(
+        elementRef.nativeElement,
+        "transition",
+        "transform 0.3s ease-out"
+      );
+      
+      // Force a reflow to ensure the browser registers the transition
+      if (typeof window !== 'undefined') {
+        void elementRef.nativeElement.offsetHeight;
+      }
+      
+      // Now apply the transform to animate smoothly back to original position
       renderer.setStyle(
         elementRef.nativeElement,
         "transform",
         "translateY(0)"
       );
+    } else {
+      // For image viewer - set both transitions at once
+      renderer.setStyle(
+        elementRef.nativeElement,
+        "transition",
+        "transform 0.3s ease-out, opacity 0.3s ease-out"
+      );
       
-      // Force another reflow before applying the transition
+      // Force a reflow to ensure the browser registers the transition
       if (typeof window !== 'undefined') {
         void elementRef.nativeElement.offsetHeight;
       }
       
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "transition",
-        "transform 0.3s ease"
-      );
-    } else {
-      // Full reset with scale and opacity
+      // Now apply both transform and opacity to animate back
       renderer.setStyle(
         elementRef.nativeElement,
         "transform",
@@ -423,17 +428,6 @@ export class SwipeDownService {
         elementRef.nativeElement,
         "opacity",
         "1"
-      );
-      
-      // Force another reflow before applying the transition
-      if (typeof window !== 'undefined') {
-        void elementRef.nativeElement.offsetHeight;
-      }
-
-      renderer.setStyle(
-        elementRef.nativeElement,
-        "transition",
-        "transform 0.3s ease, opacity 0.3s ease"
       );
     }
     
