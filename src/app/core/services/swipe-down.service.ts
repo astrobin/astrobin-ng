@@ -205,13 +205,19 @@ export class SwipeDownService {
 
     const deltaY = touchCurrentY.value - touchStartY.value;
     
-    // Reset the swiping state regardless of outcome
+    // Reset the swiping state
     isSwiping.value = false;
     
     // Check if the user intended to cancel (had significant upward movement)
-    if (this._swipeCancellationIntended) {
+    if (this._swipeCancellationIntended || deltaY <= 0) {
       swipeProgress.value = 0;
       this._resetSwipeAnimation(elementRef, renderer, animationType);
+      
+      // For image viewer, make sure the image-viewer-open class is restored if we're cancelling
+      if (animationType !== 'translate-only' && typeof document !== "undefined") {
+        document.body.classList.remove("image-viewer-closing");
+        document.body.classList.add("image-viewer-open");
+      }
       
       // Reset state
       touchStartY.value = 0;
@@ -221,41 +227,32 @@ export class SwipeDownService {
       return;
     }
     
-    // Only trigger if the swipe distance is sufficient and no cancellation was intended
+    // Trigger if the swipe distance is sufficient
     if (deltaY >= swipeThreshold) {
-      // Swipe down threshold met and direction was downward at release
-      isSwiping.value = false;
-
-      // For offcanvas, send it completely off-screen instead of using a fixed distance
-      // This ensures the animation is continuous even when the callback is triggered
+      // Determine the animation based on type
       if (animationType === 'translate-only') {
-        // Get the viewport height to ensure we move it completely off-screen
+        // For offcanvas - translate all the way off screen
         const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 1000;
-        const finalTranslateY = viewportHeight; // Move completely off-screen
         
-        // Apply the final animation with a slightly longer transition
         if (elementRef && elementRef.nativeElement) {
-          // For offcanvas - only translate with a continuous motion
-          console.log('SwipeDownService: Animating offcanvas completely off-screen');
           renderer.setStyle(
             elementRef.nativeElement,
             "transform",
-            `translateY(${finalTranslateY}px)`
+            `translateY(${viewportHeight}px)`
           );
           
           renderer.setStyle(
             elementRef.nativeElement,
             "transition",
-            "transform 0.3s ease-out" // Slightly longer transition
+            "transform 0.3s ease-out"
           );
         }
       } else {
-        // For image viewer, use the standard partial animation with scaling and opacity
-        const finalTranslateY = deltaY + 100; // Add 100px more to current position
+        // For image viewer - apply scale and opacity
+        const finalTranslateY = deltaY + 100; 
         const finalScale = 0.7;
         const finalOpacity = 0.2;
         
-        // Apply the final animation state with transition
         if (elementRef && elementRef.nativeElement) {
           renderer.setStyle(
             elementRef.nativeElement,
@@ -277,7 +274,7 @@ export class SwipeDownService {
         }
       }
 
-      // Close the element after a shorter delay for better responsiveness
+      // Close the element after a short delay
       this.utilsService.delay(100).subscribe(() => {
         // Clear notifications
         this.popNotificationsService.clear();
@@ -286,12 +283,15 @@ export class SwipeDownService {
         closeCallback();
       });
     } else {
-      // Reset the animation if either:
-      // - The threshold was not met, OR
-      // - The swipe direction was reversed at the end
-      isSwiping.value = false;
+      // Threshold not met - reset animation
       swipeProgress.value = 0;
-      this._resetSwipeAnimation(elementRef, renderer);
+      this._resetSwipeAnimation(elementRef, renderer, animationType);
+      
+      // For image viewer, make sure the image-viewer-open class is restored
+      if (animationType !== 'translate-only' && typeof document !== "undefined") {
+        document.body.classList.remove("image-viewer-closing");
+        document.body.classList.add("image-viewer-open");
+      }
     }
 
     // Reset touch tracking
@@ -317,8 +317,25 @@ export class SwipeDownService {
       return;
     }
 
+    // Set a limit on progress to avoid extreme values that might cause issues
+    const limitedProgress = Math.min(progress, 10); // Cap at 10x threshold
+
     // Translation has no maximum - let it follow finger as far as needed
-    const translateY = progress * 100;
+    const translateY = limitedProgress * 100;
+    
+    // Clear any previous transitions first - ensures animation state is fresh
+    renderer.setStyle(
+      elementRef.nativeElement,
+      "transition",
+      "none"
+    );
+    
+    // Force browser to acknowledge the transition removal before setting new styles
+    // This fixes issues where animations might get "stuck"
+    if (typeof window !== 'undefined') {
+      // Force a layout reflow
+      void elementRef.nativeElement.offsetHeight;
+    }
     
     if (animationType === 'translate-only') {
       // For offcanvas and similar elements - only translate, no scaling or opacity
@@ -330,10 +347,10 @@ export class SwipeDownService {
     } else {
       // Full animation with scale and opacity effects (for image viewer)
       // Scale effect is limited to not go below 0.7
-      const scale = Math.max(0.7, 1 - (progress * 0.1));
+      const scale = Math.max(0.7, 1 - (limitedProgress * 0.1));
       
       // Opacity is limited to not go below 0.3
-      const opacity = Math.max(0.3, 1 - (progress * 0.3));
+      const opacity = Math.max(0.3, 1 - (limitedProgress * 0.3));
       
       renderer.setStyle(
         elementRef.nativeElement,
@@ -347,12 +364,6 @@ export class SwipeDownService {
         `${opacity}`
       );
     }
-
-    renderer.setStyle(
-      elementRef.nativeElement,
-      "transition",
-      "none"
-    );
   }
 
   /**
@@ -369,6 +380,18 @@ export class SwipeDownService {
     if (!elementRef || !elementRef.nativeElement) {
       return;
     }
+    
+    // First clear the transition to ensure we don't get stuck in transition states
+    renderer.setStyle(
+      elementRef.nativeElement,
+      "transition",
+      "none"
+    );
+    
+    // Force a reflow to ensure the browser registers the transition removal
+    if (typeof window !== 'undefined') {
+      void elementRef.nativeElement.offsetHeight;
+    }
 
     if (animationType === 'translate-only') {
       // For offcanvas - only reset translation
@@ -377,6 +400,11 @@ export class SwipeDownService {
         "transform",
         "translateY(0)"
       );
+      
+      // Force another reflow before applying the transition
+      if (typeof window !== 'undefined') {
+        void elementRef.nativeElement.offsetHeight;
+      }
       
       renderer.setStyle(
         elementRef.nativeElement,
@@ -396,12 +424,31 @@ export class SwipeDownService {
         "opacity",
         "1"
       );
+      
+      // Force another reflow before applying the transition
+      if (typeof window !== 'undefined') {
+        void elementRef.nativeElement.offsetHeight;
+      }
 
       renderer.setStyle(
         elementRef.nativeElement,
         "transition",
         "transform 0.3s ease, opacity 0.3s ease"
       );
+    }
+    
+    // Add a final safety - after transition completes, make sure styles are reset
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        if (elementRef && elementRef.nativeElement) {
+          if (animationType === 'translate-only') {
+            renderer.setStyle(elementRef.nativeElement, "transform", "translateY(0)");
+          } else {
+            renderer.setStyle(elementRef.nativeElement, "transform", "translateY(0) scale(1)");
+            renderer.setStyle(elementRef.nativeElement, "opacity", "1");
+          }
+        }
+      }, 350); // Just after transition should be complete
     }
   }
 }

@@ -266,13 +266,13 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       return;
     }
     
-    // Add class for background animation
+    // Only process if we're swiping
+    if (!this.isSwiping.value) {
+      return;
+    }
+    
+    // Add class for background animation - the service will handle cancel detection
     if (typeof document !== "undefined") {
-      const safetyTimer = setTimeout(() => {
-        document.body.classList.remove("image-viewer-closing");
-      }, 1000);
-      
-      (this as any).__safetyTimer = safetyTimer;
       document.body.classList.add("image-viewer-closing");
     }
     
@@ -287,11 +287,6 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       this.elementRef,
       this.renderer,
       () => {
-        if ((this as any).__safetyTimer) {
-          clearTimeout((this as any).__safetyTimer);
-          (this as any).__safetyTimer = null;
-        }
-        
         if (typeof document !== "undefined") {
           document.body.classList.remove("image-viewer-closing");
         }
@@ -306,7 +301,19 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       return;
     }
     
-    // Reset host element animation
+    // First clear the transition to ensure we don't get stuck
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transition',
+      'none'
+    );
+    
+    // Force a reflow to ensure the transition removal is processed
+    if (typeof window !== 'undefined') {
+      void this.elementRef.nativeElement.offsetHeight;
+    }
+    
+    // Reset styles
     this.renderer.setStyle(
       this.elementRef.nativeElement,
       'transform',
@@ -319,6 +326,12 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
       '1'
     );
     
+    // Force another reflow
+    if (typeof window !== 'undefined') {
+      void this.elementRef.nativeElement.offsetHeight;
+    }
+    
+    // Now add the transition back
     this.renderer.setStyle(
       this.elementRef.nativeElement,
       'transition',

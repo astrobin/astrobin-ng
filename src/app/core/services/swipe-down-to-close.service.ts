@@ -141,41 +141,45 @@ export class SwipeDownToCloseService {
     const header = offcanvasElement.querySelector(".offcanvas-header");
     const body = offcanvasElement.querySelector(".offcanvas-body");
 
-    // Attach event listeners to the offcanvas panel and its child elements
-    // Use passive: false for touchstart to allow preventDefault() in case we need it
-    offcanvasElement.addEventListener("touchstart", handleTouchStart, { passive: false, capture: true });
-    offcanvasElement.addEventListener("touchmove", handleTouchMove, { passive: false, capture: true });
-    offcanvasElement.addEventListener("touchend", handleTouchEnd, { capture: true });
+    // We need to differentiate clicks from swipes, but keep it simple
+    const wrappedTouchStart = (event: TouchEvent) => {
+      handleTouchStart(event);
+    };
+    
+    const wrappedTouchMove = (event: TouchEvent) => {
+      handleTouchMove(event);
+    };
+    
+    const wrappedTouchEnd = (event: TouchEvent) => {
+      // Only process if we're swiping
+      if (!this.isSwiping.value) {
+        return;
+      }
+      
+      // We don't need to check for swipe direction or cancellation here
+      // as the swipeDownService.handleTouchEnd will do that for us
+      
+      // Handle as normal swipe
+      handleTouchEnd(event);
+    };
+    
+    // Attach event listeners to the offcanvas panel
+    // Don't use capture for regular click handling to work
+    offcanvasElement.addEventListener("touchstart", wrappedTouchStart, { passive: false });
+    offcanvasElement.addEventListener("touchmove", wrappedTouchMove, { passive: false });
+    offcanvasElement.addEventListener("touchend", wrappedTouchEnd);
 
-    // Also attach to the header and body to ensure they don't block events
-    if (header) {
-      header.addEventListener("touchstart", handleTouchStart, { passive: false });
-      header.addEventListener("touchmove", handleTouchMove, { passive: false });
-      header.addEventListener("touchend", handleTouchEnd);
-    }
-
-    if (body) {
-      body.addEventListener("touchstart", handleTouchStart, { passive: false });
-      body.addEventListener("touchmove", handleTouchMove, { passive: false });
-      body.addEventListener("touchend", handleTouchEnd);
-    }
+    // We don't need to attach to header and body anymore,
+    // as the parent will handle the events properly now
+    // This reduces chances of interference with normal click behavior
 
     // Keep reference to listeners for potential cleanup
     (offcanvasElement as any).__swipeListeners = {
-      start: handleTouchStart,
-      move: handleTouchMove,
-      end: handleTouchEnd,
+      start: wrappedTouchStart,
+      move: wrappedTouchMove,
+      end: wrappedTouchEnd,
       elements: [offcanvasElement]
     };
-
-    // Add child elements to the elements array for cleanup
-    if (header) {
-      (offcanvasElement as any).__swipeListeners.elements.push(header);
-    }
-
-    if (body) {
-      (offcanvasElement as any).__swipeListeners.elements.push(body);
-    }
 
   }
 
