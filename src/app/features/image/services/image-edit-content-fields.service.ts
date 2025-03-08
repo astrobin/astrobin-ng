@@ -177,50 +177,76 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
           {
             value: DataSource.BACKYARD,
             label: this.imageService.humanizeDataSource(DataSource.BACKYARD),
-            group: this.translateService.instant("Self acquired")
+            description: this.translateService.instant(
+              "Images captured with your own equipment near home."
+            ),
+            group: this.translateService.instant("Self-acquired")
           },
           {
             value: DataSource.TRAVELLER,
             label: this.imageService.humanizeDataSource(DataSource.TRAVELLER),
-            group: this.translateService.instant("Self acquired")
+            description: this.translateService.instant(
+              "Images captured with portable gear at distant locations."
+            ),
+            group: this.translateService.instant("Self-acquired")
           },
           {
             value: DataSource.OWN_REMOTE,
             label: this.imageService.humanizeDataSource(DataSource.OWN_REMOTE),
-            group: this.translateService.instant("Self acquired")
+            description: this.translateService.instant(
+              "Images captured with your own equipment at a remote observatory you own or rent, at a distant location."
+            ),
+            group: this.translateService.instant("Self-acquired")
           },
           {
             value: DataSource.AMATEUR_HOSTING,
             label: this.imageService.humanizeDataSource(DataSource.AMATEUR_HOSTING),
-            group: this.translateService.instant("Downloaded")
+            description: this.translateService.instant(
+              "Images captured by renting time or purchasing data from an amateur hosting facility."
+            ),
+            group: this.translateService.instant("External sources")
           },
           {
             value: DataSource.PUBLIC_AMATEUR_DATA,
             label: this.imageService.humanizeDataSource(DataSource.PUBLIC_AMATEUR_DATA),
-            group: this.translateService.instant("Downloaded")
+            description: this.translateService.instant(
+              "Images processed from publicly shared data by amateur astrophotographers."
+            ),
+            group: this.translateService.instant("External sources")
           },
           {
             value: DataSource.PRO_DATA,
             label: this.imageService.humanizeDataSource(DataSource.PRO_DATA),
-            group: this.translateService.instant("Downloaded")
+            description: this.translateService.instant(
+              "Images processed from professional data repositories, e.g. Hubble, JWST, ESO, etc."
+            ),
+            group: this.translateService.instant("External sources")
           },
           {
             value: DataSource.MIX,
             label: this.imageService.humanizeDataSource(DataSource.MIX),
-            group: this.translateService.instant("Other")
+            description: this.translateService.instant(
+              "Images processed from a mix of the above sources."
+            ),
+            group: this.translateService.instant("External sources")
           },
           {
             value: DataSource.OTHER,
             label: this.imageService.humanizeDataSource(DataSource.OTHER),
-            group: this.translateService.instant("Other")
+            description: this.translateService.instant(
+              "Images acquired or processed from a source not listed above."
+            ),
+            group: this.translateService.instant("External sources")
           },
           {
             value: DataSource.UNKNOWN,
             label: this.imageService.humanizeDataSource(DataSource.UNKNOWN),
-            group: this.translateService.instant("Other")
+            description: this.translateService.instant(
+              "You're not sure where the data comes from."
+            ),
+            group: this.translateService.instant("External sources")
           }
         ]
-
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -263,16 +289,16 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
         labelTemplate: this.imageEditService.remoteSourceLabelTemplate,
         optionTemplate: this.imageEditService.remoteSourceOptionTemplate,
         options: [
+          {
+            value: "OWN",
+            label: this.translateService.instant("Private remote observatory"),
+            group: this.translateService.instant("Non-commercial independent facility")
+          },
           ...Array.from(Object.keys(RemoteSource)).map(key => ({
             value: key,
             label: RemoteSource[key],
             group: this.translateService.instant("Commercial facilities")
           })),
-          {
-            value: "OWN",
-            label: this.translateService.instant("Non-commercial independent facility"),
-            group: this.translateService.instant("Other")
-          },
           {
             value: "OTHER",
             label: this.translateService.instant("None of the above"),

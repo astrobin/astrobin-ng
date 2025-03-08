@@ -1,9 +1,5 @@
 @import "../../../../styles/breakpoints";
 
-@mixin optionTitle {
-  font-weight: bold;
-}
-
 @mixin optionDescription {
   margin-top: .5rem;
   font-size: .9rem;
@@ -59,11 +55,6 @@ label {
 }
 
 ::ng-deep {
-  .option-template__title,
-  .ng-option .title {
-    @include optionTitle;
-  }
-
   .option-template__description,
   .ng-option .description {
     @include optionDescription;
