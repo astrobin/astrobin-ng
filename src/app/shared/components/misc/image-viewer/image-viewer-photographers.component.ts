@@ -211,7 +211,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
         <h4 class="offcanvas-title">{{ "Collaborators" | translate }}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
       </div>
-      <div class="offcanvas-body offcanvas-users">
+      <div class="offcanvas-body">
         <div *ngIf="currentUserWrapper$ | async as currentUserWrapper" class="users">
           <div
             *ngFor="let user of photographers"
@@ -241,7 +241,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
                 !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience
               )"
               astrobinEventPreventDefault
-              class="d-block flex-grow-1 text-start no-wrap"
+              class="d-block flex-grow-1 text-start"
             >
               {{ user.displayName }}
             </a>

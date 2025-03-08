@@ -123,7 +123,7 @@ import { ConstellationsService } from "@features/explore/services/constellations
         <h4 class="offcanvas-title">{{ "Astrometry details" | translate }}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
       </div>
-      <div class="offcanvas-body offcanvas-users">
+      <div class="offcanvas-body">
         <table class="table table-striped">
           <tbody>
           <tr *ngIf="celestialHemisphere">

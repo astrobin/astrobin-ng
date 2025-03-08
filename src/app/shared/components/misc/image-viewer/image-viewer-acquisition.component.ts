@@ -377,7 +377,7 @@ interface DetailedFilterSummary {
         <h4 class="offcanvas-title">{{ "Acquisition sessions" | translate }}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
       </div>
-      <div class="offcanvas-body offcanvas-users">
+      <div class="offcanvas-body">
         <table class="table mt-0 table-mobile-support-md">
           <ng-container *ngFor="let filterType of filterTypes; let i = index">
             <thead>
