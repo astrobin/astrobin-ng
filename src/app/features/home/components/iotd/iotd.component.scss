@@ -9,10 +9,16 @@
     height: calc(50vh - 64px); // Half the page minus the header.
   }
 
+  .iotd-container {
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
   .iotd-image {
     display: block;
     object-fit: cover;
-    cursor: pointer;
   }
 
   .iotd-footer {
@@ -25,9 +31,8 @@
         180deg,
         transparent 0,
         rgba(0, 0, 0, .2) 20%,
-        rgba(0, 0, 0, .4)
+        rgba(0, 0, 0, .7)
     );
-    backdrop-filter: blur(1.5px);
     width: 100%;
     padding: 1rem 2rem;
 

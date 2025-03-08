@@ -19,55 +19,59 @@ import { fadeInOut } from "@shared/animations";
     ></astrobin-image-loading-indicator>
 
     <ng-container *ngIf="!!iotd">
-      <a
+      <div 
         @fadeInOut
         (click)="openImage($event, iotd.image)"
-        [href]="'/i/' + iotd.image"
-        [ngStyle]="{
-          'background-image': 'url(' + iotd.thumbnail + ')',
-          'background-position': objectPosition || '50% 50%',
-          'background-repeat': 'no-repeat',
-          'background-size': objectScale || 'cover'
-        }"
-        role="img"
-        class="iotd-image"
-      ></a>
+        class="iotd-container">
+        <a
+          [href]="'/i/' + iotd.image"
+          [ngStyle]="{
+            'background-image': 'url(' + iotd.thumbnail + ')',
+            'background-position': objectPosition || '50% 50%',
+            'background-repeat': 'no-repeat',
+            'background-size': objectScale || 'cover'
+          }"
+          role="img"
+          class="iotd-image"
+        ></a>
 
-      <div class="iotd-footer">
-        <div class="
-          d-flex
-          gap-2 gap-sm-3
-          align-items-center
-          justify-content-center justify-content-sm-start
-          flex-column flex-sm-row
-        ">
-          <fa-icon icon="trophy"></fa-icon>
+        <div class="iotd-footer">
+          <div class="
+            d-flex
+            gap-2 gap-sm-3
+            align-items-center
+            justify-content-center justify-content-sm-start
+            flex-column flex-sm-row
+          ">
+            <fa-icon icon="trophy"></fa-icon>
 
-          <div class="text-center text-sm-start">
-            <div class="iotd-label">
-              <span class="text">{{ "Image of the day" | translate }}</span>
-              <a
-                href="https://welcome.astrobin.com/iotd"
-                target="_blank"
-                rel="noopener"
-                class="info-link"
-              >
-                <fa-icon icon="info-circle" class="info-icon"></fa-icon>
-              </a>
-              <a
-                (click)="openStats()"
-                href="#"
-                class="stats-link ms-2"
-                astrobinEventStopPropagation
-                astrobinEventPreventDefault
-              >
-                <fa-icon icon="table-cells" class="stats-icon"></fa-icon>
-              </a>
-            </div>
+            <div class="text-center text-sm-start">
+              <div class="iotd-label">
+                <span class="text">{{ "Image of the day" | translate }}</span>
+                <a
+                  href="https://welcome.astrobin.com/iotd"
+                  target="_blank"
+                  rel="noopener"
+                  class="info-link"
+                  astrobinEventStopPropagation
+                >
+                  <fa-icon icon="info-circle" class="info-icon"></fa-icon>
+                </a>
+                <a
+                  (click)="openStats()"
+                  href="#"
+                  class="stats-link ms-2"
+                  astrobinEventStopPropagation
+                  astrobinEventPreventDefault
+                >
+                  <fa-icon icon="table-cells" class="stats-icon"></fa-icon>
+                </a>
+              </div>
 
-            <div class="d-flex flex-column align-items-center align-items-sm-start gap-1">
-              <span class="iotd-title">{{ iotd.title }}</span>
-              <span class="iotd-users">{{ iotd.userDisplayNames }}</span>
+              <div class="d-flex flex-column align-items-center align-items-sm-start gap-1">
+                <span class="iotd-title">{{ iotd.title }}</span>
+                <span class="iotd-users">{{ iotd.userDisplayNames }}</span>
+              </div>
             </div>
           </div>
         </div>
