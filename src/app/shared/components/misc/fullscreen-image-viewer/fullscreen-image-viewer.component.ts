@@ -247,7 +247,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   ngOnInit() {
     this._setZoomLensSize();
   }
-  
+
   // Handle wheel events on the component and proxy them to ngx-image-zoom
   /**
    * Handle wheel events and apply appropriate zoom behavior
@@ -258,7 +258,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (event.ctrlKey) {
       event.preventDefault();
       event.stopPropagation();
-      
+
       // Handle Firefox pinch gestures directly here
       // This ensures the component's wheel events get proxied to ngx-image-zoom
       if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage && !this.zoomFrozen) {
@@ -266,12 +266,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       }
       return;
     }
-    
+
     // Don't handle zoom events if frozen
     if (this.zoomFrozen) {
       return;
     }
-    
+
     // Only proxy the event if we have the zoom component and we're not in touch mode
     if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage) {
       // First check if we need to activate zoom
@@ -282,7 +282,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.changeDetectorRef.markForCheck();
         return;
       }
-      
+
       // If already zoomed, modify the zoom level based on wheel delta
       if (this.zoomingEnabled) {
         // Get current values
@@ -290,10 +290,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
         const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
         const stepSize = 0.05; // Default step size
-        
+
         // For normal wheel events, use deltaY with opposite sign (up = zoom in, down = zoom out)
         const delta = -event.deltaY / 100; // Normalize regular wheel delta
-        
+
         // Calculate new magnification
         let newMag = currentMag;
         if (delta > 0) { // Scroll up - zoom in
@@ -301,15 +301,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         } else if (delta < 0) { // Scroll down - zoom out
           newMag = Math.max(currentMag - stepSize, minRatio);
         }
-        
+
         // Update magnification if changed
         if (newMag !== currentMag) {
           this.ngxImageZoom.zoomService.magnification = newMag;
-          
+
           // Update calculations
           this.ngxImageZoom.zoomService.calculateRatio();
           this.ngxImageZoom.zoomService.calculateZoomPosition(event);
-          
+
           // Update zoom indicator
           this.setZoomScroll(newMag);
           this.changeDetectorRef.markForCheck();
@@ -317,14 +317,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       }
     }
   }
-  
+
   // Handle mouse move events on the component and proxy them to ngx-image-zoom
   protected onGlobalMouseMove(event: MouseEvent): void {
     // Don't update position if frozen
     if (this.zoomFrozen) {
       return;
     }
-    
+
     // Only proxy if we have the zoom component, are in mouse mode, and are currently zooming
     if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage) {
       // We need to convert global coordinates to coordinates relative to the image
@@ -333,15 +333,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       if (!zoomContainer) {
         return;
       }
-      
+
       // Get container's position
       const rect = zoomContainer.getBoundingClientRect();
-      
+
       // Check if mouse is within the bounds of the zoom container
       if (
-        event.clientX >= rect.left && 
-        event.clientX <= rect.right && 
-        event.clientY >= rect.top && 
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
         event.clientY <= rect.bottom
       ) {
         // Convert global coordinates to relative coordinates
@@ -350,7 +350,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           offsetX: event.clientX - rect.left,
           offsetY: event.clientY - rect.top
         };
-        
+
         // Update the zoom position
         this.ngxImageZoom.zoomService.calculateZoomPosition(relativeEvent);
         this.changeDetectorRef.markForCheck();
@@ -555,19 +555,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (this.zoomFrozen) {
       // Directly remove the mouse events from the ngx-image-zoom component
       this._deregisterZoomEvents();
-      
-      // Show notification
-      this.popNotificationsService.success(
-        this.translateService.instant("Zoom frozen. Move mouse to explore image. Press F again to unfreeze.")
-      );
     } else {
       // Re-register the events to enable normal behavior
       this._registerZoomEvents();
-      
-      // Show notification
-      this.popNotificationsService.success(
-        this.translateService.instant("Zoom unfrozen. Click to return to image card.")
-      );
     }
 
     this.changeDetectorRef.markForCheck();
@@ -899,11 +889,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Get the actual deltas which will now work directly with pinch gestures
     const deltaY = event.deltaY;
-    
+
     // Calculate zoom step - normalize Firefox touchpad pinch deltas
     // Firefox produces larger deltaY values with trackpad pinch gestures
     const step = 0.05 * (Math.abs(deltaY) / 20);
-    
+
     // Calculate new magnification with correct direction
     // In Firefox, positive deltaY = pinch in (should zoom out)
     // negative deltaY = pinch out (should zoom in)
@@ -913,20 +903,20 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     } else if (deltaY < 0) { // Pinch out - zoom in
       newMag = Math.min(mag + step, maxRatio);
     }
-    
+
     // Only update if magnification changed
     if (newMag !== mag) {
       this.ngxImageZoom.zoomService.magnification = newMag;
-      
+
       // If not already zooming, activate zoom
       if (!this.ngxImageZoom.zoomService.zoomingEnabled) {
         this.ngxImageZoom.zoomService.zoomOn(syntheticEvent || event);
       }
-      
+
       // Update calculations
       this.ngxImageZoom.zoomService.calculateRatio();
       this.ngxImageZoom.zoomService.calculateZoomPosition(syntheticEvent || event);
-      
+
       // Update zoom indicator
       this.setZoomScroll(newMag);
       this.changeDetectorRef.markForCheck();
@@ -949,11 +939,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       screenX: originalEvent.screenX,
       screenY: originalEvent.screenY
     });
-    
+
     // Add offsetX/Y properties to make it compatible with ngx-image-zoom
     (syntheticEvent as any).offsetX = originalEvent.clientX - containerRect.left;
     (syntheticEvent as any).offsetY = originalEvent.clientY - containerRect.top;
-    
+
     return syntheticEvent;
   }
 
@@ -984,7 +974,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             this._handleFirefoxPinchZoom(event);
           }
         }, { passive: false });
-        
+
         // Handle Firefox touchpad pinch gesture globally
         // This is needed because the Firefox pinch gesture doesn't always bubble up
         // to the container element properly
@@ -993,7 +983,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             // Always prevent browser zoom
             event.preventDefault();
             event.stopPropagation();
-            
+
             // Only handle if zoom component exists
             if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
               // Convert global coordinates to container-relative coordinates
@@ -1002,19 +992,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
               if (!zoomContainer) {
                 return;
               }
-              
+
               const rect = zoomContainer.getBoundingClientRect();
-              
+
               // Check if event is within container bounds
               if (
-                event.clientX >= rect.left && 
-                event.clientX <= rect.right && 
-                event.clientY >= rect.top && 
+                event.clientX >= rect.left &&
+                event.clientX <= rect.right &&
+                event.clientY >= rect.top &&
                 event.clientY <= rect.bottom
               ) {
                 // Create a synthetic event with coordinates relative to the container
                 const syntheticEvent = this._createSyntheticWheelEvent(event, rect);
-                
+
                 // Handle the pinch zoom using the synthetic event
                 this._handleFirefoxPinchZoom(event, syntheticEvent);
               }
