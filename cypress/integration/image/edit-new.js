@@ -147,8 +147,8 @@ context("Image edit (new)", () => {
 
   it("should display remote source if data source is remote", () => {
     cy.get("#image-data-source-field").click();
-    cy.get("#image-data-source-field .ng-option").contains("remote").click();
-    cy.get("#image-data-source-field .ng-value").should("contain.text", "remote");
+    cy.get("#image-data-source-field .ng-option").contains("Remote").click();
+    cy.get("#image-data-source-field .ng-value").should("contain.text", "Remote");
     cy.get("#image-remote-source-field").should("be.visible");
   });
 

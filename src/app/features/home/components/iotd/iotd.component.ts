@@ -218,7 +218,7 @@ import { fadeInOut } from "@shared/animations";
                 <td class="numeric-cell">{{ iotdStats.total_traveller_images | number:'1.2-2' }}%</td>
               </tr>
               <tr>
-                <td class="category-cell">{{ 'Own remote observatory' | translate }}</td>
+                <td class="category-cell">{{ 'Private remote observatory' | translate }}</td>
                 <td class="numeric-cell">{{ iotdStats.own_remote_iotds | number:'1.2-2' }}%</td>
                 <td class="numeric-cell">{{ iotdStats.own_remote_tps | number:'1.2-2' }}%</td>
                 <td class="numeric-cell">{{ iotdStats.own_remote_tpns | number:'1.2-2' }}%</td>

@@ -310,7 +310,7 @@ export class ImageService extends BaseService {
       case DataSource.TRAVELLER:
         return this.translateService.instant("Traveller");
       case DataSource.OWN_REMOTE:
-        return this.translateService.instant("Own remote observatory");
+        return this.translateService.instant("Remote observatory");
       case DataSource.AMATEUR_HOSTING:
         return this.translateService.instant("Amateur hosting facility");
       case DataSource.PUBLIC_AMATEUR_DATA:
