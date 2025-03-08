@@ -79,6 +79,16 @@
   ></ng-container>
 </ng-template>
 
+<ng-template #zoomFrozenInstructionTemplate>
+  <ng-container
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+        icon: 'lock',
+        message: 'Zoom is frozen. Press F to unfreeze.' | translate
+      }"
+  ></ng-container>
+</ng-template>
+
 <ng-template #touchDeviceTemplate let-hd="hd" let-real="real">
   <div class="touch-device">
     <div
@@ -91,13 +101,13 @@
     <ng-container *ngIf="!isVeryLargeImage">
       <!-- For GIFs, show a simple image without zooming capabilities -->
       <div *ngIf="isGif && real && allowReal" @fadeInOut class="gif-container">
-        <img 
-          [src]="realThumbnailUnsafeUrl" 
+        <img
+          [src]="realThumbnailUnsafeUrl"
           alt=""
           class="gif-image"
         />
       </div>
-      
+
       <!-- For regular images, use the canvas-based zoom -->
       <div
         *ngIf="!isGif && real && allowReal"
@@ -196,15 +206,23 @@
         class="image-zoom"
         [class.lens-enabled]="enableLens"
         [class.zooming-enabled]="zoomingEnabled"
+        [class.zoom-frozen]="zoomFrozen"
       >
       </lib-ngx-image-zoom>
 
       <div
         class="image-zoom-indicator"
         [class.beyond-one]="Math.round(zoomScroll * 100) >= 101"
+        [class.frozen]="zoomFrozen"
       >
         <a (click)="snapTo1x()" href="#" astrobinEventPreventDefault>
           {{ zoomScroll | number: "1.2-2" }}x
+          <fa-icon
+            *ngIf="zoomFrozen"
+            icon="lock"
+            class="ms-1"
+            ngbTooltip="{{ 'Zoom is frozen (F)' | translate }}"
+          ></fa-icon>
         </a>
       </div>
     </ng-container>
@@ -243,13 +261,17 @@
     ></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage && real && allowReal">
+      <ng-container *ngIf="zoomFrozen"
+        [ngTemplateOutlet]="zoomFrozenInstructionTemplate">
+      </ng-container>
+
       <ng-container
-        *ngIf="!zoomingEnabled && !showZoomIndicator"
+        *ngIf="!zoomFrozen && !zoomingEnabled && !showZoomIndicator"
         [ngTemplateOutlet]="clickAndScrollInstructionTemplate"
       ></ng-container>
 
       <ng-container
-        *ngIf="zoomingEnabled && !showZoomIndicator && enableLens"
+        *ngIf="!zoomFrozen && zoomingEnabled && !showZoomIndicator && enableLens"
         [ngTemplateOutlet]="clickAgainToCloseLensInstructionTemplate"
       ></ng-container>
     </ng-container>
@@ -307,6 +329,8 @@
   (touchstart)="onTouchStart($event)"
   (touchmove)="onTouchMove($event)"
   (touchend)="onTouchEnd($event)"
+  (wheel)="onGlobalWheel($event)"
+  (mousemove)="onGlobalMouseMove($event)"
 >
   <ng-container
     *ngIf="{

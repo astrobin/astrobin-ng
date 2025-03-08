@@ -110,9 +110,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected maxZoom = 8;
   protected canvasLoading = false;
   protected isGif = false;
+  protected zoomFrozen = false;
+  // Swipe-down properties
+  protected touchStartY: { value: number } = { value: 0 };
+  protected touchCurrentY: { value: number } = { value: 0 };
+  protected touchPreviousY: { value: number } = { value: 0 };
+  protected isSwiping: { value: boolean } = { value: false };
+  protected swipeProgress: { value: number } = { value: 0 };
+  protected swipeThreshold: number = 150;
+  protected swipeDirectionDown: { value: boolean } = { value: true };
 
   private _revision: ImageInterface | ImageRevisionInterface;
-
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
@@ -130,7 +138,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _panLastTime: number = 0;
   private _pinchLastTime: number = 0;
   private _animationFrame: number = null;
-
   private _imageSubscription: Subscription;
   private _hdThumbnailSubscription: Subscription;
   private _realThumbnailSubscription: Subscription;
@@ -142,6 +149,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _eagerLoadingSubscription: Subscription;
   private _firstRenderSubject = new BehaviorSubject<boolean>(false);
+
   readonly firstRender$ = this._firstRenderSubject.asObservable().pipe(
     filter(rendered => rendered)
   );
@@ -149,15 +157,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
-
-  // Swipe-down properties
-  protected touchStartY: { value: number } = { value: 0 };
-  protected touchCurrentY: { value: number } = { value: 0 };
-  protected touchPreviousY: { value: number } = { value: 0 };
-  protected isSwiping: { value: boolean } = { value: false };
-  protected swipeProgress: { value: number } = { value: 0 };
-  protected swipeThreshold: number = 150;
-  protected swipeDirectionDown: { value: boolean } = { value: true };
+  // Store original handlers and position for freezing/unfreezing
+  private _originalOnMouseMove: any = null;
+  private _originalOnMouseWheel: any = null;
+  private _frozenZoomPosition: { x: number, y: number } = null;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -243,6 +246,116 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   ngOnInit() {
     this._setZoomLensSize();
+  }
+
+  // Handle wheel events on the component and proxy them to ngx-image-zoom
+  /**
+   * Handle wheel events and apply appropriate zoom behavior
+   */
+  protected onGlobalWheel(event: WheelEvent): void {
+    // If the event has ctrlKey, it's a pinch gesture in Firefox or zoom in other browsers
+    // Always prevent browser zoom
+    if (event.ctrlKey) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Handle Firefox pinch gestures directly here
+      // This ensures the component's wheel events get proxied to ngx-image-zoom
+      if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage && !this.zoomFrozen) {
+        this._handleFirefoxPinchZoom(event);
+      }
+      return;
+    }
+
+    // Don't handle zoom events if frozen
+    if (this.zoomFrozen) {
+      return;
+    }
+
+    // Only proxy the event if we have the zoom component and we're not in touch mode
+    if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage) {
+      // First check if we need to activate zoom
+      if (!this.zoomingEnabled) {
+        // If we're not zoomed yet, activate zoom at event position
+        this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
+        this.ngxImageZoom.zoomService.zoomOn(event);
+        this.changeDetectorRef.markForCheck();
+        return;
+      }
+
+      // If already zoomed, modify the zoom level based on wheel delta
+      if (this.zoomingEnabled) {
+        // Get current values
+        const currentMag = this.ngxImageZoom.zoomService.magnification;
+        const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
+        const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
+        const stepSize = 0.05; // Default step size
+
+        // For normal wheel events, use deltaY with opposite sign (up = zoom in, down = zoom out)
+        const delta = -event.deltaY / 100; // Normalize regular wheel delta
+
+        // Calculate new magnification
+        let newMag = currentMag;
+        if (delta > 0) { // Scroll up - zoom in
+          newMag = Math.min(currentMag + stepSize, maxRatio);
+        } else if (delta < 0) { // Scroll down - zoom out
+          newMag = Math.max(currentMag - stepSize, minRatio);
+        }
+
+        // Update magnification if changed
+        if (newMag !== currentMag) {
+          this.ngxImageZoom.zoomService.magnification = newMag;
+
+          // Update calculations
+          this.ngxImageZoom.zoomService.calculateRatio();
+          this.ngxImageZoom.zoomService.calculateZoomPosition(event);
+
+          // Update zoom indicator
+          this.setZoomScroll(newMag);
+          this.changeDetectorRef.markForCheck();
+        }
+      }
+    }
+  }
+
+  // Handle mouse move events on the component and proxy them to ngx-image-zoom
+  protected onGlobalMouseMove(event: MouseEvent): void {
+    // Don't update position if frozen
+    if (this.zoomFrozen) {
+      return;
+    }
+
+    // Only proxy if we have the zoom component, are in mouse mode, and are currently zooming
+    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage) {
+      // We need to convert global coordinates to coordinates relative to the image
+      // Find the image and its position
+      const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector('.ngxImageZoomContainer');
+      if (!zoomContainer) {
+        return;
+      }
+
+      // Get container's position
+      const rect = zoomContainer.getBoundingClientRect();
+
+      // Check if mouse is within the bounds of the zoom container
+      if (
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom
+      ) {
+        // Convert global coordinates to relative coordinates
+        const relativeEvent = {
+          ...event,
+          offsetX: event.clientX - rect.left,
+          offsetY: event.clientY - rect.top
+        };
+
+        // Update the zoom position
+        this.ngxImageZoom.zoomService.calculateZoomPosition(relativeEvent);
+        this.changeDetectorRef.markForCheck();
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -332,6 +445,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   ngOnDestroy() {
     super.ngOnDestroy();
 
+    // Restore original event handlers if needed
+    this._restoreOriginalEventHandlers();
+
     if (this._imageBitmap) {
       this._imageBitmap.close();
     }
@@ -394,7 +510,57 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       event.stopPropagation();
     }
 
+    // Reset frozen state when hiding
+    if (this.zoomFrozen) {
+      this.zoomFrozen = false;
+      this._restoreOriginalEventHandlers();
+    }
+
     this.store$.dispatch(new HideFullscreenImage());
+  }
+
+  @HostListener("window:keyup.f", ["$event"])
+  toggleZoomFreeze(event: KeyboardEvent): void {
+    // Only work in non-touch mode with active zooming
+    if (!this.zoomingEnabled || this.touchMode || this.isVeryLargeImage) {
+      // Show feedback for why F key doesn't work
+      if (this.touchMode) {
+        this.popNotificationsService.info(
+          this.translateService.instant("Zoom freezing is only available in mouse mode.")
+        );
+      } else if (this.isVeryLargeImage) {
+        this.popNotificationsService.info(
+          this.translateService.instant("Zoom freezing is not available for very large images.")
+        );
+      } else if (!this.zoomingEnabled) {
+        this.popNotificationsService.info(
+          this.translateService.instant("Activate zoom first before freezing (click or scroll on image).")
+        );
+      }
+      return;
+    }
+
+    // Don't interfere with input fields
+    if (event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Toggle frozen state
+    this.zoomFrozen = !this.zoomFrozen;
+
+    if (this.zoomFrozen) {
+      // Directly remove the mouse events from the ngx-image-zoom component
+      this._deregisterZoomEvents();
+    } else {
+      // Re-register the events to enable normal behavior
+      this._registerZoomEvents();
+    }
+
+    this.changeDetectorRef.markForCheck();
   }
 
   protected toggleEnableLens(): void {
@@ -410,7 +576,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (this.isGif && touch) {
       return;
     }
-    
+
     this.touchMode = touch;
     this.cookieService.put(this.TOUCH_OR_MOUSE_MODE_COOKIE_NAME, this.touchMode ? "touch" : "mouse");
     if (this.touchMode) {
@@ -569,6 +735,218 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
+  /**
+   * Checks if we can swipe to close the viewer
+   * Only allow swipe-down when the image is not zoomed in beyond fit-to-screen
+   */
+  protected canSwipeToClose(): boolean {
+    // For GIFs we can always swipe to close (no zoom)
+    if (this.isGif) {
+      return true;
+    }
+
+    // For very large images we can always swipe to close (no interactive zoom)
+    if (this.isVeryLargeImage) {
+      return true;
+    }
+
+    if (this.touchMode) {
+      // In touch mode, we can only swipe when the touchScale is 1 (fully zoomed out)
+      return this.touchScale <= 1;
+    } else {
+      // In mouse mode, we can only swipe when the zoom is at 1x
+      return !this.zoomingEnabled || this.zoomScroll <= 1;
+    }
+  }
+
+  /**
+   * Handle touch start for swipe-down gesture
+   */
+  protected onTouchStart(event: TouchEvent): void {
+    this.swipeDownService.handleTouchStart(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown
+    );
+  }
+
+  /**
+   * Handle touch move for swipe-down gesture
+   */
+  protected onTouchMove(event: TouchEvent): void {
+    this.swipeDownService.handleTouchMove(
+      event,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.isSwiping,
+      this.swipeProgress,
+      this.swipeThreshold,
+      new ElementRef(event.currentTarget),
+      this.renderer,
+      () => this.canSwipeToClose()
+    );
+  }
+
+  /**
+   * Handle touch end for swipe-down gesture
+   */
+  protected onTouchEnd(event: TouchEvent): void {
+    this.swipeDownService.handleTouchEnd(
+      this.isSwiping,
+      this.touchStartY,
+      this.touchCurrentY,
+      this.touchPreviousY,
+      this.swipeDirectionDown,
+      this.swipeThreshold,
+      this.swipeProgress,
+      new ElementRef(event.currentTarget),
+      this.renderer,
+      () => {
+        this.hide(null);
+      }
+    );
+  }
+
+  // Replace both mousemove and wheel handlers to completely freeze the zoom
+  private _deregisterZoomEvents(): void {
+    if (!this.ngxImageZoom || !(this.ngxImageZoom as any).zoomInstance) {
+      return;
+    }
+
+    // Store current zoom position
+    this._frozenZoomPosition = {
+      x: this.ngxImageZoom.zoomService.lensLeft,
+      y: this.ngxImageZoom.zoomService.lensTop
+    };
+
+    // Store the original handlers
+    this._originalOnMouseMove = (this.ngxImageZoom as any).zoomInstance.onMouseMove;
+    this._originalOnMouseWheel = (this.ngxImageZoom as any).zoomInstance.onMouseWheel;
+
+    // Replace with empty handler - this freezes the zoom position
+    (this.ngxImageZoom as any).zoomInstance.onMouseMove = (event: MouseEvent) => {
+      // Do nothing - freezes the zoom position
+    };
+
+    // Block wheel events to prevent zooming while frozen
+    (this.ngxImageZoom as any).zoomInstance.onMouseWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
+    };
+  }
+
+  // Helper method to restore all original event handlers
+  private _restoreOriginalEventHandlers(): void {
+    if (!this.ngxImageZoom || !(this.ngxImageZoom as any).zoomInstance) {
+      return;
+    }
+
+    // Restore the original mouse move handler
+    if (this._originalOnMouseMove) {
+      (this.ngxImageZoom as any).zoomInstance.onMouseMove = this._originalOnMouseMove;
+      this._originalOnMouseMove = null;
+    }
+
+    // Restore the original wheel handler
+    if (this._originalOnMouseWheel) {
+      (this.ngxImageZoom as any).zoomInstance.onMouseWheel = this._originalOnMouseWheel;
+      this._originalOnMouseWheel = null;
+    }
+  }
+
+  // Restore original event handlers
+  private _registerZoomEvents(): void {
+    this._restoreOriginalEventHandlers();
+
+    // Clear saved zoom position
+    this._frozenZoomPosition = null;
+  }
+
+  /**
+   * Handle Firefox pinch-to-zoom gestures by updating magnification
+   * @param event WheelEvent with ctrlKey for Firefox pinch gestures
+   * @param syntheticEvent Optional synthetic event with proper coordinates
+   */
+  private _handleFirefoxPinchZoom(event: WheelEvent, syntheticEvent?: WheelEvent): void {
+    // Always prevent browser zoom when using ctrl+wheel (Firefox pinch gesture)
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Only handle zoom operations if not frozen and zoom component exists
+    if (this.zoomFrozen || !this.ngxImageZoom?.zoomService) {
+      return;
+    }
+
+    // Get current magnification settings
+    const mag = this.ngxImageZoom.zoomService.magnification;
+    const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
+    const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
+
+    // Get the actual deltas which will now work directly with pinch gestures
+    const deltaY = event.deltaY;
+
+    // Calculate zoom step - normalize Firefox touchpad pinch deltas
+    // Firefox produces larger deltaY values with trackpad pinch gestures
+    const step = 0.05 * (Math.abs(deltaY) / 20);
+
+    // Calculate new magnification with correct direction
+    // In Firefox, positive deltaY = pinch in (should zoom out)
+    // negative deltaY = pinch out (should zoom in)
+    let newMag = mag;
+    if (deltaY > 0) { // Pinch in - zoom out
+      newMag = Math.max(mag - step, minRatio);
+    } else if (deltaY < 0) { // Pinch out - zoom in
+      newMag = Math.min(mag + step, maxRatio);
+    }
+
+    // Only update if magnification changed
+    if (newMag !== mag) {
+      this.ngxImageZoom.zoomService.magnification = newMag;
+
+      // If not already zooming, activate zoom
+      if (!this.ngxImageZoom.zoomService.zoomingEnabled) {
+        this.ngxImageZoom.zoomService.zoomOn(syntheticEvent || event);
+      }
+
+      // Update calculations
+      this.ngxImageZoom.zoomService.calculateRatio();
+      this.ngxImageZoom.zoomService.calculateZoomPosition(syntheticEvent || event);
+
+      // Update zoom indicator
+      this.setZoomScroll(newMag);
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
+  /**
+   * Create a synthetic wheel event with coordinates converted to be relative to container
+   */
+  private _createSyntheticWheelEvent(originalEvent: WheelEvent, containerRect: DOMRect): WheelEvent {
+    // Create a new synthetic event with relevant properties
+    const syntheticEvent = new WheelEvent('wheel', {
+      deltaY: originalEvent.deltaY,
+      deltaX: originalEvent.deltaX,
+      deltaZ: originalEvent.deltaZ,
+      deltaMode: originalEvent.deltaMode,
+      ctrlKey: originalEvent.ctrlKey,
+      clientX: originalEvent.clientX,
+      clientY: originalEvent.clientY,
+      screenX: originalEvent.screenX,
+      screenY: originalEvent.screenY
+    });
+
+    // Add offsetX/Y properties to make it compatible with ngx-image-zoom
+    (syntheticEvent as any).offsetX = originalEvent.clientX - containerRect.left;
+    (syntheticEvent as any).offsetY = originalEvent.clientY - containerRect.top;
+
+    return syntheticEvent;
+  }
+
   private _initImageZoom() {
     if (this.ngxImageZoom) {
       const renderedThumbnailHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").height;
@@ -583,7 +961,66 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this.setZoomScroll(1);
 
+      // Handle touchpad pinch gestures in Firefox
+      // Convert them to zoom operations similar to Chrome
+      if (isPlatformBrowser(this.platformId)) {
+        // Add a direct wheel event listener that will handle pinch gestures
+        // This approach should work better for Firefox touchpad gestures
+        const container = this.ngxImageZoomEl.nativeElement;
+
+        // Using a more focused wheel handler specifically for Firefox
+        container.addEventListener('wheel', (event: WheelEvent) => {
+          if (event.ctrlKey) {
+            this._handleFirefoxPinchZoom(event);
+          }
+        }, { passive: false });
+
+        // Handle Firefox touchpad pinch gesture globally
+        // This is needed because the Firefox pinch gesture doesn't always bubble up
+        // to the container element properly
+        document.addEventListener('wheel', (event: WheelEvent) => {
+          if (event.ctrlKey && !this.touchMode && this.show && !this.isVeryLargeImage && !this.zoomFrozen) {
+            // Always prevent browser zoom
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Only handle if zoom component exists
+            if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
+              // Convert global coordinates to container-relative coordinates
+              // First, get the container's position
+              const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector('.ngxImageZoomContainer');
+              if (!zoomContainer) {
+                return;
+              }
+
+              const rect = zoomContainer.getBoundingClientRect();
+
+              // Check if event is within container bounds
+              if (
+                event.clientX >= rect.left &&
+                event.clientX <= rect.right &&
+                event.clientY >= rect.top &&
+                event.clientY <= rect.bottom
+              ) {
+                // Create a synthetic event with coordinates relative to the container
+                const syntheticEvent = this._createSyntheticWheelEvent(event, rect);
+
+                // Handle the pinch zoom using the synthetic event
+                this._handleFirefoxPinchZoom(event, syntheticEvent);
+              }
+            }
+          }
+        }, { passive: false });
+      }
+
       this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").addEventListener("wheel", (event: WheelEvent) => {
+        // Always prevent browser zoom with ctrl key
+        if (event.ctrlKey) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+
         if (this.ngxImageZoom.zoomService.zoomingEnabled) {
           return;
         }
@@ -824,8 +1261,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       })
     ).subscribe(() => {
       // Check if the image is a GIF
-      this.isGif = this._revision.imageFile && this._revision.imageFile.toLowerCase().endsWith('.gif');
-      
+      this.isGif = this._revision.imageFile && this._revision.imageFile.toLowerCase().endsWith(".gif");
+
       // For GIFs, always use non-touch mode
       if (this.isGif && this.touchMode) {
         this.setTouchMouseMode(false);
@@ -876,7 +1313,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
               switchMap(url =>
                 this._preloadImage(url).pipe(
                   map(() => this.domSanitizer.bypassSecurityTrustUrl(url)),
-                  tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false }))),
+                  tap(() => this.store$.dispatch(new LoadThumbnail({
+                    data: this._getRealOptions(),
+                    bustCache: false
+                  }))),
                   tap(() => {
                     this.hdThumbnailLoading = false;
                     this.changeDetectorRef.markForCheck();
@@ -1143,85 +1583,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Check for touch event properties instead of using instanceof
     return (
-      typeof event.touches !== 'undefined' ||
-      typeof event.changedTouches !== 'undefined' ||
-      (event.type && event.type.startsWith('touch'))
-    );
-  }
-  
-  /**
-   * Checks if we can swipe to close the viewer
-   * Only allow swipe-down when the image is not zoomed in beyond fit-to-screen
-   */
-  protected canSwipeToClose(): boolean {
-    // For GIFs we can always swipe to close (no zoom)
-    if (this.isGif) {
-      return true;
-    }
-    
-    // For very large images we can always swipe to close (no interactive zoom)
-    if (this.isVeryLargeImage) {
-      return true;
-    }
-    
-    if (this.touchMode) {
-      // In touch mode, we can only swipe when the touchScale is 1 (fully zoomed out)
-      return this.touchScale <= 1;
-    } else {
-      // In mouse mode, we can only swipe when the zoom is at 1x
-      return !this.zoomingEnabled || this.zoomScroll <= 1;
-    }
-  }
-  
-  /**
-   * Handle touch start for swipe-down gesture
-   */
-  protected onTouchStart(event: TouchEvent): void {
-    this.swipeDownService.handleTouchStart(
-      event,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown
-    );
-  }
-
-  /**
-   * Handle touch move for swipe-down gesture
-   */
-  protected onTouchMove(event: TouchEvent): void {
-    this.swipeDownService.handleTouchMove(
-      event,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown,
-      this.isSwiping,
-      this.swipeProgress,
-      this.swipeThreshold,
-      new ElementRef(event.currentTarget),
-      this.renderer,
-      () => this.canSwipeToClose()
-    );
-  }
-
-  /**
-   * Handle touch end for swipe-down gesture
-   */
-  protected onTouchEnd(event: TouchEvent): void {
-    this.swipeDownService.handleTouchEnd(
-      this.isSwiping,
-      this.touchStartY,
-      this.touchCurrentY,
-      this.touchPreviousY,
-      this.swipeDirectionDown,
-      this.swipeThreshold,
-      this.swipeProgress,
-      new ElementRef(event.currentTarget),
-      this.renderer,
-      () => {
-        this.hide(null);
-      }
+      typeof event.touches !== "undefined" ||
+      typeof event.changedTouches !== "undefined" ||
+      (event.type && event.type.startsWith("touch"))
     );
   }
 }
