@@ -249,12 +249,22 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
   
   // Handle wheel events on the component and proxy them to ngx-image-zoom
+  /**
+   * Handle wheel events and apply appropriate zoom behavior
+   */
   protected onGlobalWheel(event: WheelEvent): void {
     // If the event has ctrlKey, it's a pinch gesture in Firefox or zoom in other browsers
     // Always prevent browser zoom
     if (event.ctrlKey) {
       event.preventDefault();
       event.stopPropagation();
+      
+      // Handle Firefox pinch gestures directly here
+      // This ensures the component's wheel events get proxied to ngx-image-zoom
+      if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage && !this.zoomFrozen) {
+        this._handleFirefoxPinchZoom(event);
+      }
+      return;
     }
     
     // Don't handle zoom events if frozen
@@ -281,23 +291,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
         const stepSize = 0.05; // Default step size
         
-        // Handle ctrl+wheel (pinch) events differently than regular wheel events
-        let delta;
-        if (event.ctrlKey) {
-          // For pinch gestures (ctrl+wheel in Firefox), use deltaY with the reversed sign
-          // In Firefox, positive deltaY = pinch in (should zoom out)
-          // negative deltaY = pinch out (should zoom in)
-          delta = -event.deltaY / 20; // Reverse sign for Firefox pinch
-        } else {
-          // For normal wheel events, use deltaY with opposite sign
-          delta = -event.deltaY / 100; // Normalize regular wheel delta
-        }
+        // For normal wheel events, use deltaY with opposite sign (up = zoom in, down = zoom out)
+        const delta = -event.deltaY / 100; // Normalize regular wheel delta
         
         // Calculate new magnification
         let newMag = currentMag;
-        if (delta > 0) { // Zoom in
+        if (delta > 0) { // Scroll up - zoom in
           newMag = Math.min(currentMag + stepSize, maxRatio);
-        } else if (delta < 0) { // Zoom out
+        } else if (delta < 0) { // Scroll down - zoom out
           newMag = Math.max(currentMag - stepSize, minRatio);
         }
         
@@ -876,6 +877,86 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._frozenZoomPosition = null;
   }
 
+  /**
+   * Handle Firefox pinch-to-zoom gestures by updating magnification
+   * @param event WheelEvent with ctrlKey for Firefox pinch gestures
+   * @param syntheticEvent Optional synthetic event with proper coordinates
+   */
+  private _handleFirefoxPinchZoom(event: WheelEvent, syntheticEvent?: WheelEvent): void {
+    // Always prevent browser zoom when using ctrl+wheel (Firefox pinch gesture)
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Only handle zoom operations if not frozen and zoom component exists
+    if (this.zoomFrozen || !this.ngxImageZoom?.zoomService) {
+      return;
+    }
+
+    // Get current magnification settings
+    const mag = this.ngxImageZoom.zoomService.magnification;
+    const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
+    const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
+
+    // Get the actual deltas which will now work directly with pinch gestures
+    const deltaY = event.deltaY;
+    
+    // Calculate zoom step - normalize Firefox touchpad pinch deltas
+    // Firefox produces larger deltaY values with trackpad pinch gestures
+    const step = 0.05 * (Math.abs(deltaY) / 20);
+    
+    // Calculate new magnification with correct direction
+    // In Firefox, positive deltaY = pinch in (should zoom out)
+    // negative deltaY = pinch out (should zoom in)
+    let newMag = mag;
+    if (deltaY > 0) { // Pinch in - zoom out
+      newMag = Math.max(mag - step, minRatio);
+    } else if (deltaY < 0) { // Pinch out - zoom in
+      newMag = Math.min(mag + step, maxRatio);
+    }
+    
+    // Only update if magnification changed
+    if (newMag !== mag) {
+      this.ngxImageZoom.zoomService.magnification = newMag;
+      
+      // If not already zooming, activate zoom
+      if (!this.ngxImageZoom.zoomService.zoomingEnabled) {
+        this.ngxImageZoom.zoomService.zoomOn(syntheticEvent || event);
+      }
+      
+      // Update calculations
+      this.ngxImageZoom.zoomService.calculateRatio();
+      this.ngxImageZoom.zoomService.calculateZoomPosition(syntheticEvent || event);
+      
+      // Update zoom indicator
+      this.setZoomScroll(newMag);
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
+  /**
+   * Create a synthetic wheel event with coordinates converted to be relative to container
+   */
+  private _createSyntheticWheelEvent(originalEvent: WheelEvent, containerRect: DOMRect): WheelEvent {
+    // Create a new synthetic event with relevant properties
+    const syntheticEvent = new WheelEvent('wheel', {
+      deltaY: originalEvent.deltaY,
+      deltaX: originalEvent.deltaX,
+      deltaZ: originalEvent.deltaZ,
+      deltaMode: originalEvent.deltaMode,
+      ctrlKey: originalEvent.ctrlKey,
+      clientX: originalEvent.clientX,
+      clientY: originalEvent.clientY,
+      screenX: originalEvent.screenX,
+      screenY: originalEvent.screenY
+    });
+    
+    // Add offsetX/Y properties to make it compatible with ngx-image-zoom
+    (syntheticEvent as any).offsetX = originalEvent.clientX - containerRect.left;
+    (syntheticEvent as any).offsetY = originalEvent.clientY - containerRect.top;
+    
+    return syntheticEvent;
+  }
+
   private _initImageZoom() {
     if (this.ngxImageZoom) {
       const renderedThumbnailHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").height;
@@ -899,52 +980,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         // Using a more focused wheel handler specifically for Firefox
         container.addEventListener('wheel', (event: WheelEvent) => {
-          // Always prevent browser zoom when using ctrl+wheel (Firefox pinch gesture)
           if (event.ctrlKey) {
-            // Prevent browser zoom in all cases
-            event.preventDefault();
-            event.stopPropagation();
-
-            // Only handle zoom operations if not frozen
-            if (!this.zoomFrozen && this.ngxImageZoom && this.ngxImageZoom.zoomService) {
-              // Get current magnification
-              const mag = this.ngxImageZoom.zoomService.magnification;
-              const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
-              const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
-
-              // Get the actual deltas which will now work directly with pinch gestures
-              const deltaY = event.deltaY;
-
-              // Calculate zoom step - use a larger step for pinch gestures
-              // Note: Firefox produces larger deltaY values with trackpad pinch gestures
-              const step = 0.05 * (Math.abs(deltaY) / 20);
-
-              // Calculate new magnification
-              let newMag = mag;
-              if (deltaY > 0) { // Pinch in - zoom out
-                newMag = Math.max(mag - step, minRatio);
-              } else if (deltaY < 0) { // Pinch out - zoom in
-                newMag = Math.min(mag + step, maxRatio);
-              }
-
-              // If magnification changed, update zoom
-              if (newMag !== mag) {
-                this.ngxImageZoom.zoomService.magnification = newMag;
-
-                // If not already zooming, activate zoom
-                if (!this.ngxImageZoom.zoomService.zoomingEnabled) {
-                  this.ngxImageZoom.zoomService.zoomOn(event);
-                }
-
-                // Update calculations
-                this.ngxImageZoom.zoomService.calculateRatio();
-                this.ngxImageZoom.zoomService.calculateZoomPosition(event);
-
-                // Update zoom indicator
-                this.setZoomScroll(newMag);
-                this.changeDetectorRef.markForCheck();
-              }
-            }
+            this._handleFirefoxPinchZoom(event);
           }
         }, { passive: false });
         
@@ -975,57 +1012,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
                 event.clientY >= rect.top && 
                 event.clientY <= rect.bottom
               ) {
-                // Create synthetic event with converted coordinates
-                const syntheticEvent = new WheelEvent('wheel', {
-                  deltaY: event.deltaY,
-                  deltaX: event.deltaX,
-                  deltaZ: event.deltaZ,
-                  deltaMode: event.deltaMode,
-                  ctrlKey: event.ctrlKey,
-                  clientX: event.clientX,
-                  clientY: event.clientY,
-                  screenX: event.screenX,
-                  screenY: event.screenY
-                });
+                // Create a synthetic event with coordinates relative to the container
+                const syntheticEvent = this._createSyntheticWheelEvent(event, rect);
                 
-                // Calculate relative coordinates
-                (syntheticEvent as any).offsetX = event.clientX - rect.left;
-                (syntheticEvent as any).offsetY = event.clientY - rect.top;
-                
-                // Get current magnification
-                const mag = this.ngxImageZoom.zoomService.magnification;
-                const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
-                const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
-                
-                // Calculate zoom step
-                const deltaY = event.deltaY;
-                const step = 0.05 * (Math.abs(deltaY) / 20);
-                
-                // Calculate new magnification
-                let newMag = mag;
-                if (deltaY > 0) { // Pinch in - zoom out
-                  newMag = Math.max(mag - step, minRatio);
-                } else if (deltaY < 0) { // Pinch out - zoom in
-                  newMag = Math.min(mag + step, maxRatio);
-                }
-                
-                // Update magnification
-                if (newMag !== mag) {
-                  this.ngxImageZoom.zoomService.magnification = newMag;
-                  
-                  // If not already zooming, activate zoom
-                  if (!this.ngxImageZoom.zoomService.zoomingEnabled) {
-                    this.ngxImageZoom.zoomService.zoomOn(syntheticEvent);
-                  }
-                  
-                  // Update calculations
-                  this.ngxImageZoom.zoomService.calculateRatio();
-                  this.ngxImageZoom.zoomService.calculateZoomPosition(syntheticEvent);
-                  
-                  // Update zoom indicator
-                  this.setZoomScroll(newMag);
-                  this.changeDetectorRef.markForCheck();
-                }
+                // Handle the pinch zoom using the synthetic event
+                this._handleFirefoxPinchZoom(event, syntheticEvent);
               }
             }
           }
