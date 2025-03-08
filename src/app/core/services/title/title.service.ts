@@ -50,24 +50,57 @@ export class TitleService extends BaseService implements TitleServiceInterface {
   }
 
   public disablePageZoom() {
+    // Update viewport meta tag to prevent zooming
     this.updateMetaTag({
       name: "viewport",
       content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     });
 
     if (isPlatformBrowser(this.platformId)) {
+      // Prevent multi-touch gestures (pinch to zoom)
       document.addEventListener('touchmove', this._preventDefault, { passive: false });
+      
+      // Add CSS to html element to disable pinch zoom (Safari and mobile browsers)
+      const htmlElement = document.querySelector('html');
+      if (htmlElement) {
+        htmlElement.style.setProperty('touch-action', 'none');
+      }
+      
+      // Firefox touchpad pinch to zoom can also happen with ctrl+wheel events
+      this._wheelHandler = (e: WheelEvent) => {
+        if (e.ctrlKey) {
+          e.preventDefault();
+        }
+      };
+      document.addEventListener('wheel', this._wheelHandler, { passive: false });
     }
   }
 
+  // Store references to event handlers so we can properly remove them
+  private _wheelHandler: ((e: WheelEvent) => void) | null = null;
+  
   public enablePageZoom() {
+    // Reset viewport meta tag to default
     this.updateMetaTag({
       name: "viewport",
       content: "width=device-width, initial-scale=1"
     });
 
     if (isPlatformBrowser(this.platformId)) {
+      // Remove touch event listener
       document.removeEventListener('touchmove', this._preventDefault);
+      
+      // Remove wheel event listener if it exists
+      if (this._wheelHandler) {
+        document.removeEventListener('wheel', this._wheelHandler);
+        this._wheelHandler = null;
+      }
+      
+      // Reset touch-action on html element
+      const htmlElement = document.querySelector('html');
+      if (htmlElement) {
+        htmlElement.style.removeProperty('touch-action');
+      }
     }
   }
 

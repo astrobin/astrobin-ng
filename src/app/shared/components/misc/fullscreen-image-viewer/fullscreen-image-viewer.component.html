@@ -329,6 +329,8 @@
   (touchstart)="onTouchStart($event)"
   (touchmove)="onTouchMove($event)"
   (touchend)="onTouchEnd($event)"
+  (wheel)="onGlobalWheel($event)"
+  (mousemove)="onGlobalMouseMove($event)"
 >
   <ng-container
     *ngIf="{
