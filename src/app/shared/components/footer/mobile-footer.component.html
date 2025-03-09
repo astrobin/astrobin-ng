@@ -1,0 +1,46 @@
+<nav class="navbar navbar-dark d-block d-lg-none">
+  <div class="container">
+    <ul class="nav nav-justified w-100">
+      <!-- Home button -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-center" routerLink="/" routerLinkActive="active"
+           [routerLinkActiveOptions]="{exact: true}">
+          <fa-icon icon="home"></fa-icon>
+        </a>
+      </li>
+
+      <!-- Marketplace button -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-center" [routerLink]="['/equipment/marketplace']"
+           routerLinkActive="active">
+          <fa-icon icon="shopping-cart"></fa-icon>
+        </a>
+      </li>
+
+      <!-- User profile button (only when logged in) -->
+      <li class="nav-item" *ngIf="user">
+        <a class="nav-link d-flex align-items-center justify-content-center user-avatar-link"
+           (click)="openUserGallery()">
+          <div class="avatar-container">
+            <astrobin-avatar [user]="user" [link]="false"></astrobin-avatar>
+          </div>
+        </a>
+      </li>
+
+      <!-- Search button -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-center" routerLink="/search"
+           routerLinkActive="active">
+          <fa-icon icon="search"></fa-icon>
+        </a>
+      </li>
+
+      <!-- Upload button -->
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-center" routerLink="/uploader">
+          <fa-icon icon="upload"></fa-icon>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

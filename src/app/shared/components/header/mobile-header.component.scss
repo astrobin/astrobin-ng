@@ -1,0 +1,166 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  transition: transform 0.3s ease;
+
+  &.header-hidden {
+    transform: translateY(-100%);
+  }
+
+  // Add margin to the content area
+  & + .container {
+    @media (max-width: 991.98px) {
+      margin-top: 4rem;
+    }
+  }
+
+  nav.navbar {
+    @include darkest-background-texture;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+    height: calc(4rem - 2px);
+    padding-top: 1rem;
+
+    .navbar-brand {
+      padding: 0;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -4px);
+
+      img {
+        height: 2rem;
+      }
+    }
+
+    .nav-link {
+      color: $white;
+      padding: 0.5rem;
+      cursor: pointer;
+
+      &.position-relative {
+        .badge {
+          position: absolute;
+          top: 0;
+          right: 0;
+          transform: translate(25%, -25%);
+          font-size: 0.65rem;
+          padding: 0.25rem 0.4rem;
+        }
+      }
+    }
+
+    .navbar-toggler {
+      padding: 0.5rem;
+      border: none;
+    }
+
+    .right-controls {
+      gap: 0.5rem;
+    }
+  }
+}
+
+::ng-deep {
+  // When any offcanvas is open, prevent scrolling of the body
+  body.offcanvas-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+  }
+
+  .mobile-main-menu,
+  .mobile-login-menu {
+    min-width: 280px;
+
+    .offcanvas-header {
+      @include darkest-background-texture;
+      color: $white;
+
+      .btn-link {
+        color: $white;
+        font-size: 1.2rem;
+
+        &:hover {
+          color: darken($white, 10%);
+        }
+      }
+    }
+
+    .offcanvas-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      height: 100%; // Ensure full height for proper flex behavior
+
+      // Add animations for view transitions
+      .language-menu,
+      .help-menu,
+      .moderate-menu,
+      .main-nav,
+      .bottom-nav {
+        transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+        animation: fade-in 0.2s ease-in-out;
+      }
+
+      // Animation for entering views
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateX(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .main-nav {
+        flex: 1;
+      }
+
+      .bottom-nav {
+        padding-top: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .nav {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .section-header {
+        padding: 0 1.25rem; /* Match nav-link padding */
+
+        &:not(:first-child) {
+          margin-top: 2rem;
+        }
+
+        h6 {
+          color: var(--lightGrey);
+          font-weight: 600;
+          margin-bottom: 1rem;
+          font-size: 1.2rem;
+        }
+      }
+
+      .nav-link {
+        padding: .75rem;
+        font-size: 1.1rem;
+
+        fa-icon {
+          width: 30px;
+          text-align: center;
+          margin-right: .75rem;
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
