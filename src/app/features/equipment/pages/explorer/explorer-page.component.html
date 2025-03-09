@@ -1,10 +1,4 @@
-<astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
-  [descriptionTemplate]="descriptionTemplate"
-  [template]="navTemplate"
-></astrobin-mobile-menu>
+<!-- The mobile menu is now handled by the mobile-header component through the MobilePageMenuService -->
 
 <ng-template #titleTemplate>
   {{ title }}
@@ -29,7 +23,7 @@
 <div
   *ngIf="activeType"
   [class.compare-component-visible]="compareComponentVisible"
-  class="page has-breadcrumb has-mobile-menu"
+  class="page has-breadcrumb"
 >
   <ng-container *ngIf="breakpointMdMin">
     <h1><ng-container [ngTemplateOutlet]="titleTemplate"></ng-container></h1>

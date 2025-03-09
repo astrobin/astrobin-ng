@@ -100,7 +100,7 @@ import { FormlyFieldSliderComponent } from "@shared/components/misc/formly-field
 import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { ForumPostSearchComponent } from "@shared/components/search/forum-post-search/forum-post-search.component";
 import { NestedCommentSearchComponent } from "@shared/components/search/nestedcomment-search/nested-comment-search.component";
-import { MobileMenuComponent } from "@shared/components/mobile-menu/mobile-menu.component";
+// MobileMenuComponent removed - replaced by MobilePageMenuService
 import { ImageViewerComponent } from "@shared/components/misc/image-viewer/image-viewer.component";
 import { ImageViewerTitleComponent } from "@shared/components/misc/image-viewer/image-viewer-title.component";
 import { ImageViewerPhotographersComponent } from "@shared/components/misc/image-viewer/image-viewer-photographers.component";
@@ -151,6 +151,7 @@ import { NotificationsListComponent } from "@shared/components/misc/notification
 import { DragDropAreaComponent } from "@shared/components/misc/formly-field-chunked-file/drag-drop-area.component";
 import { MobileHeaderComponent } from "@shared/components/header/mobile-header.component";
 import { MobileFooterComponent } from "@shared/components/footer/mobile-footer.component";
+import { DescriptionModalWrapperComponent } from "@shared/components/misc/description-modal-wrapper/description-modal-wrapper.component";
 
 const modules = [
   CommonModule,
@@ -201,6 +202,7 @@ const components = [
   CountrySelectionModalComponent,
   CustomToastComponent,
   DataDoesNotUpdateInRealTimeComponent,
+  DescriptionModalWrapperComponent,
   DragDropAreaComponent,
   MobileHeaderComponent,
   MobileFooterComponent,
@@ -275,7 +277,7 @@ const components = [
   MasonryLayoutComponent,
   MarketplaceListingCardComponent,
   MarketplaceListingCardsComponent,
-  MobileMenuComponent,
+  // MobileMenuComponent removed,
   MostOftenUsedWithModalComponent,
   NestedCommentComponent,
   NestedCommentsComponent,

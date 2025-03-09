@@ -6,16 +6,30 @@
   *ngIf="!!image" [hidden]="!imageObjectLoaded"
   class="main-area-container overflow-hidden d-flex flex-column w-100 h-100"
 >
-  <astrobin-mobile-menu
-    (menuClose)="onMobileMenuClose()"
-    (menuOpen)="onMobileMenuOpen()"
-    [titleTemplate]="mobileMenuTitleTemplate"
-    [iconsTemplate]="mobileMenuIconsTemplate"
-    [template]="navTemplate"
-    [templateContext]="{ $implicit: image }"
-    [offcanvasClass]="'image-viewer-offcanvas'"
-    [offcanvasBackdropClass]="'image-viewer-offcanvas-backdrop'"
-  ></astrobin-mobile-menu>
+  <!-- Slideshow mobile header - only shown when in a slideshow and on mobile devices -->
+  <div class="slideshow-mobile-header d-md-none" *ngIf="deviceService.mdMax() && !standalone && active">
+    <div class="slideshow-mobile-header-container">
+      <div class="slideshow-mobile-header-left">
+        <button class="btn btn-icon" (click)="closeClick.emit()">
+          <fa-icon icon="arrow-left"></fa-icon>
+        </button>
+      </div>
+      <div class="slideshow-mobile-header-spacer"></div>
+      <div class="slideshow-mobile-header-right">
+        <!-- Share button -->
+        <astrobin-image-viewer-share-button
+          *ngIf="image"
+          [image]="image"
+          [revisionLabel]="revisionLabel"
+        ></astrobin-image-viewer-share-button>
+
+        <!-- Menu button -->
+        <button class="btn btn-icon" (click)="registerSlideshowMobileMenu()">
+          <fa-icon icon="ellipsis-v"></fa-icon>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <div
     #mainArea
@@ -51,13 +65,7 @@
 </ng-template>
 
 <ng-template #mobileMenuIconsTemplate>
-  <astrobin-image-viewer-share-button
-    [image]="image"
-    [revisionLabel]="revisionLabel"
-  ></astrobin-image-viewer-share-button>
-  <button *ngIf="showCloseButton" (click)="closeClick.emit()" class="btn btn-link btn-no-block text-white">
-    <fa-icon icon="times"></fa-icon>
-  </button>
+  <!-- No icons needed in the top right corner of the offcanvas - already has X button built in -->
 </ng-template>
 
 <ng-template #navTemplate let-image>

@@ -260,6 +260,73 @@ $largeViewPortBreakpoint: 2561px;
     // Real black as opposed to var(--black), for maximum contrast. Only visible on resolutions larger than
     // $largeViewPortBreakpoint.
     background: black;
+    
+    // Slideshow mobile header
+    .slideshow-mobile-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px; // Fixed height for header
+      background-color: var(--black);
+      border-bottom: 1px solid var(--darkgrey);
+      z-index: 1090;
+      display: flex;
+      align-items: center;
+      
+      &.header-hidden {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      
+      .slideshow-mobile-header-container {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        padding: 0 1rem;
+        
+        .slideshow-mobile-header-left,
+        .slideshow-mobile-header-right {
+          flex: 0 0 auto;
+          
+          .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 1.25rem;
+            padding: 0.5rem;
+            
+            &:hover, &:focus {
+              color: var(--primary);
+            }
+          }
+        }
+        
+        .slideshow-mobile-header-spacer {
+          flex: 1;
+        }
+        
+        .slideshow-mobile-header-right {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          
+          ::ng-deep astrobin-image-viewer-share-button {
+            .btn {
+              background: transparent;
+              border: none;
+              color: var(--white);
+              font-size: 1.25rem;
+              padding: 0.5rem;
+              
+              &:hover, &:focus {
+                color: var(--primary);
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   .main-area {
@@ -270,6 +337,13 @@ $largeViewPortBreakpoint: 2561px;
     overflow: hidden;
     max-width: 3660px;
     margin: 0 auto;
+    
+    // Add padding to account for the mobile header when in slideshow mode
+    @media (max-width: $md-max) {
+      .slideshow-mobile-header + & {
+        padding-top: 56px;
+      }
+    }
 
     .image-area {
       display: flex;

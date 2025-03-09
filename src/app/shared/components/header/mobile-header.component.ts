@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnInit, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { NgbActiveModal, NgbModal, NgbOffcanvas, NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AuthService } from "@core/services/auth.service";
@@ -12,11 +12,14 @@ import { DeviceService } from "@core/services/device.service";
 import { UserService } from "@core/services/user.service";
 import { SwipeToCloseService } from "@core/services/swipe-to-close.service";
 import { ScrollHideService } from "@core/services/scroll-hide.service";
+import { MobilePageMenuService, MobilePageMenuConfig } from "@core/services/mobile-page-menu.service";
 import { Observable } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { map, take, takeUntil } from "rxjs/operators";
 import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { environment } from "@env/environment";
+import { DescriptionModalWrapperComponent } from "@shared/components/misc/description-modal-wrapper/description-modal-wrapper.component";
 
 interface LanguageInterface {
   code: string;
@@ -32,17 +35,25 @@ interface LanguageInterface {
 export class MobileHeaderComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   user: UserInterface;
   userProfile: UserProfileInterface;
+  currentUserWrapper: { user: UserInterface | null; userProfile: UserProfileInterface | null };
   @ViewChild("menuOffcanvas") menuOffcanvasTemplate: TemplateRef<any>;
   @ViewChild("loginRegisterMenu") loginRegisterMenuTemplate: TemplateRef<any>;
   @ViewChild("notificationsOffcanvas") notificationsOffcanvas: TemplateRef<any>;
+  @ViewChild("pageMenuOffcanvas") pageMenuOffcanvasTemplate: TemplateRef<any>;
 
   @HostBinding('class.header-hidden') isHeaderHidden = false;
 
   // Reference to the current offcanvas instance
   private activeOffcanvas: any = null;
+  private pageMenuOffcanvasRef: NgbOffcanvasRef = null;
 
   // Menu state
   currentMenuView: 'main' | 'language' | 'help' | 'moderate' = 'main';
+  
+  // Page menu state
+  pageMenuConfig$: Observable<MobilePageMenuConfig>;
+  hasPageMenu$: Observable<boolean>;
+  pageMenuOpenState$: Observable<boolean>;
 
   protected unreadNotificationsCount$: Observable<number> = this.store$.select(selectUnreadNotificationsCount).pipe(
     takeUntil(this.destroyed$)
@@ -52,6 +63,10 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
   languages: LanguageInterface[] = [];
   currentLanguageCodeDisplay: string;
   helpWithTranslationsUrl = "https://translate.astrobin.com/projects/astrobin/astrobin";
+  
+  // Footer information
+  readonly currentYear: number = new Date().getFullYear();
+  readonly buildVersion: string = environment.buildVersion;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -62,10 +77,12 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     public readonly translateService: TranslateService,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly offcanvasService: NgbOffcanvas,
+    public readonly modalService: NgbModal,
     public readonly deviceService: DeviceService,
     public readonly userService: UserService,
     private swipeToCloseService: SwipeToCloseService,
-    private scrollHideService: ScrollHideService
+    private scrollHideService: ScrollHideService,
+    private mobilePageMenuService: MobilePageMenuService
   ) {
     super(store$);
   }
@@ -76,6 +93,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     this.currentUserWrapper$.pipe(takeUntil(this.destroyed$)).subscribe(wrapper => {
       this.user = wrapper.user;
       this.userProfile = wrapper.userProfile;
+      this.currentUserWrapper = wrapper;
       this.changeDetectorRef.markForCheck();
     });
 
@@ -89,6 +107,34 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
 
     // Initialize the language selector
     this.initializeLanguageSelector();
+    
+    // Initialize page menu observables
+    this.pageMenuConfig$ = this.mobilePageMenuService.getMenuConfig();
+    this.hasPageMenu$ = this.pageMenuConfig$.pipe(
+      map(config => !!config && !!config.template),
+      takeUntil(this.destroyed$)
+    );
+    this.pageMenuOpenState$ = this.mobilePageMenuService.getMenuOpenState();
+    
+    // Listen for page menu open state changes
+    this.pageMenuOpenState$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isOpen => {
+        if (isOpen) {
+          this.openPageMenuOffcanvas();
+        } else if (this.pageMenuOffcanvasRef) {
+          this.pageMenuOffcanvasRef.dismiss();
+          this.pageMenuOffcanvasRef = null;
+        }
+      });
+  }
+  
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    
+    if (this.pageMenuOffcanvasRef) {
+      this.pageMenuOffcanvasRef.dismiss();
+    }
   }
 
   initializeLanguageSelector(): void {
@@ -182,7 +228,6 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
 
       // Open login/register menu
       const ref = this.offcanvasService.open(this.loginRegisterMenuTemplate, {
-        position: "end",
         panelClass: "mobile-login-menu",
         backdrop: true
       });
@@ -208,7 +253,85 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
       this.removeScrollLock();
     });
   }
-
+  
+  /**
+   * Open the page-specific kebab menu (triggered by icon or service)
+   */
+  openPageMenu(): void {
+    this.mobilePageMenuService.openMenu();
+  }
+  
+  /**
+   * Open the page-specific menu offcanvas
+   */
+  private openPageMenuOffcanvas(): void {
+    if (!this.pageMenuOffcanvasTemplate) {
+      return;
+    }
+    
+    // Add class to prevent body scrolling
+    this.addScrollLock();
+    
+    this.pageMenuConfig$.pipe(take(1)).subscribe(config => {
+      if (!config) {
+        return;
+      }
+      
+      const panelClass = "offcanvas-menu mobile-menu" + (config.offcanvasClass ? ` ${config.offcanvasClass}` : "");
+      
+      this.pageMenuOffcanvasRef = this.offcanvasService.open(this.pageMenuOffcanvasTemplate, {
+        panelClass: panelClass,
+        backdropClass: config.offcanvasBackdropClass,
+        position: config.position || "end"
+      });
+      
+      // Handle offcanvas dismissal
+      this.pageMenuOffcanvasRef.dismissed.subscribe(() => {
+        this.removeScrollLock();
+        this.mobilePageMenuService.closeMenu();
+        this.pageMenuOffcanvasRef = null;
+        this.onMobileMenuClose();
+      });
+      
+      this.onMobileMenuOpen();
+    });
+  }
+  
+  /**
+   * Open the description panel as a modal for the page menu
+   * This wraps any component's description template with proper modal structure
+   */
+  openPageMenuDescription(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    this.pageMenuConfig$.pipe(take(1)).subscribe(config => {
+      if (!config || !config.descriptionTemplate) {
+        return;
+      }
+      
+      // Get the translated title for the modal
+      const title = this.translateService.instant('Information');
+      
+      // Use NgbModal with the DescriptionModalWrapperComponent to structure the template
+      const modalRef = this.modalService.open(DescriptionModalWrapperComponent, {
+        centered: true,
+        size: 'lg',
+        scrollable: true,
+        modalDialogClass: 'description-modal',
+        backdropClass: 'description-modal-backdrop'
+      });
+      
+      // Configure the wrapper with the actual template and context
+      modalRef.componentInstance.contentTemplate = config.descriptionTemplate;
+      modalRef.componentInstance.title = title;
+      modalRef.componentInstance.context = {
+        ...config.templateContext,
+        currentUser: this.currentUserWrapper?.user
+      };
+    });
+  }
+  
   /**
    * Helper method to safely add scroll lock on body
    * Checks for browser environment to avoid SSR issues
@@ -227,5 +350,13 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     if (typeof document !== 'undefined') {
       document.body.classList.remove('offcanvas-open');
     }
+  }
+
+  protected onMobileMenuOpen(): void {
+    // Any additional logic to handle menu opening
+  }
+
+  protected onMobileMenuClose(): void {
+    // Any additional logic to handle menu closing
   }
 }

@@ -25,6 +25,7 @@ import { NgbModal, NgbOffcanvas, NgbPaginationConfig } from "@ng-bootstrap/ng-bo
 import { RouterService } from "@core/services/router.service";
 import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { DeviceService } from "@core/services/device.service";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-marketplace-user-listings-base-page",
@@ -56,7 +57,8 @@ export abstract class MarketplaceUserListingsBasePageComponent
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly deviceService: DeviceService,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(
       store$,
@@ -77,7 +79,8 @@ export abstract class MarketplaceUserListingsBasePageComponent
       changeDetectorRef,
       equipmentMarketplaceService,
       deviceService,
-      offcanvasService
+      offcanvasService,
+      mobilePageMenuService
     );
   }
 

@@ -30,6 +30,13 @@
           <fa-icon icon="sign-in-alt"></fa-icon>
         </a>
       </div>
+
+      <!-- Page-specific menu kebab icon - only visible when a page menu is registered -->
+      <ng-container *ngIf="hasPageMenu$ | async">
+        <a class="nav-link" (click)="openPageMenu()">
+          <fa-icon icon="ellipsis-v" class="px-2"></fa-icon>
+        </a>
+      </ng-container>
     </div>
   </div>
 </nav>
@@ -72,7 +79,7 @@
             <a class="nav-link" (click)="showModerateMenu()">
               <fa-icon icon="gavel"></fa-icon>
               {{ "Moderate" | translate }}
-              <fa-icon icon="chevron-right" class="float-end"></fa-icon>
+              <fa-icon icon="chevron-right" class="float-end me-0"></fa-icon>
             </a>
           </li>
 
@@ -106,7 +113,7 @@
             <a class="nav-link" (click)="showLanguageMenu()">
               <fa-icon icon="globe"></fa-icon>
               {{ currentLanguageCodeDisplay }}
-              <fa-icon icon="chevron-right" class="float-end"></fa-icon>
+              <fa-icon icon="chevron-right" class="float-end me-0"></fa-icon>
             </a>
           </li>
 
@@ -114,10 +121,16 @@
             <a class="nav-link" (click)="showHelpMenu()">
               <fa-icon icon="question-circle"></fa-icon>
               {{ "Help" | translate }}
-              <fa-icon icon="chevron-right" class="float-end"></fa-icon>
+              <fa-icon icon="chevron-right" class="float-end me-0"></fa-icon>
             </a>
           </li>
         </ul>
+
+        <!-- Copyright and build information -->
+        <div class="copyright-info text-center mt-4 pt-3 text-muted small">
+          <div>AstroBin, &copy; 2010 - {{ currentYear }}</div>
+          <div>Build: {{ buildVersion }}</div>
+        </div>
       </div>
     </ng-container>
 
@@ -266,4 +279,43 @@
   <div class="offcanvas-body">
     <astrobin-notifications-list [standalone]="true"></astrobin-notifications-list>
   </div>
+</ng-template>
+
+<!-- Page Menu Offcanvas -->
+<ng-template #pageMenuOffcanvas let-offcanvas>
+  <ng-container *ngIf="pageMenuConfig$ | async as config">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">
+        <ng-container *ngIf="config.titleTemplate" [ngTemplateOutlet]="config.titleTemplate"></ng-container>
+      </h5>
+      <div class="header-actions">
+        <!-- Icons from the template if available -->
+        <ng-container *ngIf="config.iconsTemplate">
+          <ng-container [ngTemplateOutlet]="config.iconsTemplate"></ng-container>
+        </ng-container>
+
+        <!-- Info/description button if available -->
+        <ng-container *ngIf="config.descriptionTemplate">
+          <button 
+            type="button" 
+            class="btn btn-link btn-no-block text-white p-1 me-2" 
+            (click)="openPageMenuDescription($event)"
+          >
+            <fa-icon icon="info-circle"></fa-icon>
+          </button>
+        </ng-container>
+
+        <!-- Close button -->
+        <button type="button" class="btn-close text-reset" (click)="offcanvas.dismiss()"></button>
+      </div>
+    </div>
+    <div class="offcanvas-body">
+      <!-- Main content template -->
+      <ng-container
+        *ngIf="config.template"
+        [ngTemplateOutlet]="config.template"
+        [ngTemplateOutletContext]="config.templateContext"
+      ></ng-container>
+    </div>
+  </ng-container>
 </ng-template>
