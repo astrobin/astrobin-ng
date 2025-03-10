@@ -13,8 +13,9 @@ import { UserService } from "@core/services/user.service";
 import { SwipeToCloseService } from "@core/services/swipe-to-close.service";
 import { ScrollHideService } from "@core/services/scroll-hide.service";
 import { MobilePageMenuService, MobilePageMenuConfig } from "@core/services/mobile-page-menu.service";
+import { LocalStorageService } from "@core/services/localstorage.service";
 import { BehaviorSubject, Observable } from "rxjs";
-import { map, take, takeUntil } from "rxjs/operators";
+import { map, take, takeUntil, delay, filter } from "rxjs/operators";
 import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
@@ -58,6 +59,10 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
   // PWA mode state
   isPwaMode$: Observable<boolean>;
 
+  // Kebab menu tooltip state
+  showKebabMenuTooltip = false;
+  private readonly KEBAB_TOOLTIP_DISMISSED_KEY = 'astrobin-kebab-menu-tooltip-dismissed';
+
   protected unreadNotificationsCount$: Observable<number> = this.store$.select(selectUnreadNotificationsCount).pipe(
     takeUntil(this.destroyed$)
   );
@@ -85,7 +90,8 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     public readonly userService: UserService,
     private swipeToCloseService: SwipeToCloseService,
     private scrollHideService: ScrollHideService,
-    private mobilePageMenuService: MobilePageMenuService
+    private mobilePageMenuService: MobilePageMenuService,
+    private localStorageService: LocalStorageService
   ) {
     super(store$);
     this.isPwaMode$ = this.deviceService.isPwaMode$;
@@ -129,6 +135,21 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
         } else if (this.pageMenuOffcanvasRef) {
           this.pageMenuOffcanvasRef.dismiss();
           this.pageMenuOffcanvasRef = null;
+        }
+      });
+      
+    // Initialize kebab menu tooltip after checking if it was previously dismissed
+    this.hasPageMenu$
+      .pipe(
+        filter(hasMenu => hasMenu),
+        take(1),
+        delay(1000) // Delay showing the tooltip to avoid immediate display
+      )
+      .subscribe(() => {
+        const tooltipDismissed = this.localStorageService.getItem(this.KEBAB_TOOLTIP_DISMISSED_KEY);
+        if (!tooltipDismissed) {
+          this.showKebabMenuTooltip = true;
+          this.changeDetectorRef.markForCheck();
         }
       });
   }
@@ -376,5 +397,14 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
 
   protected onMobileMenuClose(): void {
     // Any additional logic to handle menu closing
+  }
+  
+  /**
+   * Dismisses the kebab menu tooltip and remembers this in localStorage
+   */
+  dismissKebabMenuTooltip(): void {
+    this.showKebabMenuTooltip = false;
+    this.localStorageService.setItem(this.KEBAB_TOOLTIP_DISMISSED_KEY, 'true');
+    this.changeDetectorRef.markForCheck();
   }
 }

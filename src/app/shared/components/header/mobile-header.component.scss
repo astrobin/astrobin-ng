@@ -86,10 +86,74 @@
         }
       }
 
-      .kebab-menu {
-        padding-left: .5rem;
-        padding-right: .5rem;
-        font-size: 1.2rem;
+      .kebab-menu-container {
+        .kebab-menu {
+          padding-left: .5rem;
+          padding-right: .5rem;
+          font-size: 1.2rem;
+        }
+
+        .kebab-menu-tooltip {
+          position: absolute;
+          bottom: -95px;
+          right: -10px;
+          width: 230px;
+          z-index: 1031;
+          animation: fade-in-tooltip .3s ease-in-out;
+          background-color: rgba(255, 255, 255, .95);
+          border-radius: 6px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, .25);
+
+          .tooltip-content {
+            color: #333;
+            padding: 10px;
+            text-align: center;
+
+            p {
+              margin-bottom: 8px;
+              font-size: .9rem;
+              font-weight: 500;
+            }
+
+            .btn {
+              font-size: .8rem;
+              padding: 3px 10px;
+              border-radius: 4px;
+              background-color: #2c3e50;
+              color: white;
+              border-color: #2c3e50;
+
+              &:hover {
+                background-color: #34495e;
+                border-color: #34495e;
+              }
+            }
+          }
+
+          // Tooltip arrow/tip
+          &::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid rgba(255, 255, 255, .95);
+          }
+        }
+      }
+
+      @keyframes fade-in-tooltip {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
     }
   }

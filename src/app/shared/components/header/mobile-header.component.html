@@ -52,9 +52,21 @@
 
     <!-- Page-specific menu kebab icon - only visible when a page menu is registered -->
     <ng-container *ngIf="hasPageMenu$ | async">
-      <a class="nav-link kebab-menu ms-2" (click)="openPageMenu()">
-        <fa-icon icon="ellipsis-v"></fa-icon>
-      </a>
+      <div class="kebab-menu-container position-relative">
+        <a class="nav-link kebab-menu ms-2" (click)="openPageMenu()">
+          <fa-icon icon="ellipsis-v"></fa-icon>
+        </a>
+
+        <!-- Tooltip for kebab menu -->
+        <div *ngIf="showKebabMenuTooltip" class="kebab-menu-tooltip">
+          <div class="tooltip-content">
+            <p>{{ "More options for this page" | translate }}</p>
+            <button type="button" class="btn btn-sm btn-outline-light" (click)="dismissKebabMenuTooltip()">
+              {{ "Got it" | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
     </ng-container>
   </div>
 </nav>
