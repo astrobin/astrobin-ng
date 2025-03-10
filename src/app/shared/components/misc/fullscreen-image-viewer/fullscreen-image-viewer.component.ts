@@ -149,6 +149,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _eagerLoadingSubscription: Subscription;
   private _firstRenderSubject = new BehaviorSubject<boolean>(false);
+  // Two levels of downsampled bitmaps for smoother zoom transitions
+  private _downsampledBitmapLow: ImageBitmap = null;  // Lower resolution for initial view
+  private _downsampledBitmapMedium: ImageBitmap = null;  // Medium resolution for intermediate zoom
 
   readonly firstRender$ = this._firstRenderSubject.asObservable().pipe(
     filter(rendered => rendered)
@@ -1400,12 +1403,74 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this._imageBitmap = null;
     }
 
+    if (this._downsampledBitmapLow) {
+      this._downsampledBitmapLow.close();
+      this._downsampledBitmapLow = null;
+    }
+
+    if (this._downsampledBitmapMedium) {
+      this._downsampledBitmapMedium.close();
+      this._downsampledBitmapMedium = null;
+    }
+
     this._canvasContext = null;
     this._canvasImage = null;
     this._firstRenderSubject.next(false);
     this.canvasLoading = false;
     this._canvasContainerDimensions = null;
     this._canvasImageDimensions = null;
+  }
+
+  /**
+   * Creates both low and medium resolution downsampled bitmaps
+   * Returns a promise that resolves when both bitmaps are created
+   */
+  private _createDownsampledBitmaps(): Promise<[ImageBitmap, ImageBitmap]> {
+    if (!this._canvasImage || !this._canvasContainerDimensions) {
+      return Promise.resolve([null, null]);
+    }
+
+    const originalWidth = this._canvasImage.width;
+    const originalHeight = this._canvasImage.height;
+
+    // Create a low-resolution bitmap (2x display size)
+    // This is used for the initial view with minimal memory usage
+    const lowResWidth = Math.min(this._canvasContainerDimensions.width * 2, originalWidth);
+    const lowResHeight = Math.round(originalHeight * (lowResWidth / originalWidth));
+
+    // Create a medium-resolution bitmap (6x display size or half original, whichever is smaller)
+    // This is used for intermediate zoom levels
+    const medResWidth = Math.min(this._canvasContainerDimensions.width * 6, originalWidth);
+    const medResHeight = Math.round(originalHeight * (medResWidth / originalWidth));
+
+    // Create both downsampled bitmaps
+    const lowBitmapPromise = this._createSingleDownsampledBitmap(lowResWidth, lowResHeight);
+    const medBitmapPromise = this._createSingleDownsampledBitmap(medResWidth, medResHeight);
+
+    // Return both promises together
+    return Promise.all([lowBitmapPromise, medBitmapPromise]);
+  }
+
+  /**
+   * Helper method to create a single downsampled bitmap at a specific resolution
+   */
+  private _createSingleDownsampledBitmap(width: number, height: number): Promise<ImageBitmap> {
+    // Create an offscreen canvas for downsampling
+    const offscreenCanvas = new OffscreenCanvas(width, height);
+    const offscreenCtx = offscreenCanvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
+
+    // Apply smoothing settings for better downsampling
+    offscreenCtx.imageSmoothingEnabled = true;
+    offscreenCtx.imageSmoothingQuality = 'high';
+
+    // Draw the image at the target size
+    offscreenCtx.drawImage(this._canvasImage, 0, 0, width, height);
+
+    // Return a bitmap from this intermediate canvas
+    return createImageBitmap(offscreenCanvas, {
+      resizeQuality: 'high',
+      premultiplyAlpha: 'premultiply'
+    });
   }
 
   private _initCanvas() {
@@ -1427,24 +1492,51 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this._canvasImage.onload = () => {
       try {
-        createImageBitmap(this._canvasImage).then(bitmap => {
-          this._imageBitmap = bitmap;
-          const canvas = this.touchRealCanvas.nativeElement;
-          this._canvasContext = canvas.getContext("2d", {
-            alpha: false,
-            willReadFrequently: false
-          });
+        // Create both full resolution and downsampled bitmaps
+        const fullResBitmapPromise = createImageBitmap(this._canvasImage, {
+          resizeQuality: 'high',
+          premultiplyAlpha: 'premultiply'
+        });
 
-          this._updateCanvasDimensions();
-          this._drawCanvas();
+        const canvas = this.touchRealCanvas.nativeElement;
+        this._canvasContext = canvas.getContext("2d", {
+          alpha: false,
+          willReadFrequently: false
+        });
 
-          this.firstRender$.pipe(take(1)).subscribe(() => {
-            this.canvasLoading = false;
-            this._realLoadingProgressSubject.next(100);
-            this.changeDetectorRef.markForCheck();
-          });
+        this._updateCanvasDimensions();
 
-          this.changeDetectorRef.markForCheck();
+        // First ensure we have the full resolution bitmap
+        fullResBitmapPromise.then(fullBitmap => {
+          this._imageBitmap = fullBitmap;
+          
+          // Now try to create the downsampled bitmaps, but handle failure gracefully
+          this._createDownsampledBitmaps()
+            .then(([lowResBitmap, medResBitmap]) => {
+              this._downsampledBitmapLow = lowResBitmap;
+              this._downsampledBitmapMedium = medResBitmap;
+            })
+            .catch(error => {
+              // Log the error but continue with only the full resolution bitmap
+              console.warn("Failed to create downsampled bitmaps, using full resolution only:", error);
+            })
+            .finally(() => {
+              // Draw the canvas regardless of whether downsampling succeeded
+              this._drawCanvas();
+              
+              this.firstRender$.pipe(take(1)).subscribe(() => {
+                this.canvasLoading = false;
+                this._realLoadingProgressSubject.next(100);
+                this.changeDetectorRef.markForCheck();
+              });
+              
+              this.changeDetectorRef.markForCheck();
+            });
+        })
+        .catch(error => {
+          console.error("Failed to create any bitmap:", error);
+          this.canvasLoading = false;
+          this._realLoadingProgressSubject.next(100);
         });
       } catch (error) {
         console.error("Failed to initialize canvas:", error);
@@ -1494,7 +1586,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _performDrawCanvas(): void {
-    if (!this._canvasContext || !this._imageBitmap) {
+    // Ensure we have a canvas context and at least one valid bitmap
+    if (!this._canvasContext) {
+      return;
+    }
+    
+    // If we don't have any bitmap available, there's nothing to draw
+    if (!this._imageBitmap && !this._downsampledBitmapLow && !this._downsampledBitmapMedium) {
       return;
     }
 
@@ -1510,6 +1608,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
     this._lastTransform = transform;
 
+    // Apply image smoothing settings for better quality
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    // When zoomed in beyond 1:1 pixel mapping, disable smoothing for crisp pixels
+    if (this.touchScale > 1 && this.touchScale > this.naturalWidth / this._canvasImageDimensions.width) {
+      ctx.imageSmoothingEnabled = false;
+    }
+
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
@@ -1523,7 +1630,36 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     );
 
     this._clampOffset();
-    ctx.drawImage(this._imageBitmap, -drawWidth * .5, -drawHeight * .5, drawWidth, drawHeight);
+
+    // Calculate the actual zoom ratio relative to original image size
+    // This represents how much of the original image resolution we're actually seeing
+    const originalImageScale = this.naturalWidth / this._canvasImageDimensions.width;
+    const actualZoomRatio = this.touchScale / originalImageScale;
+
+    // Select the appropriate bitmap based on zoom level with fallbacks
+    let bitmapToUse: ImageBitmap;
+
+    // Try to use the appropriate resolution for the current zoom level
+    if (actualZoomRatio < 0.1 && this._downsampledBitmapLow) {
+      // For minimal zoom (zoomed out view), use the low-resolution bitmap
+      bitmapToUse = this._downsampledBitmapLow;
+    } else if (actualZoomRatio < 0.5 && this._downsampledBitmapMedium) {
+      // For medium zoom levels, use the medium-resolution bitmap
+      bitmapToUse = this._downsampledBitmapMedium;
+    } else if (this._imageBitmap) {
+      // For high zoom levels or when downsampled versions aren't available, use full resolution
+      bitmapToUse = this._imageBitmap;
+    }
+    
+    // Fallback chain if the preferred bitmap is not available
+    if (!bitmapToUse) {
+      bitmapToUse = this._imageBitmap || this._downsampledBitmapMedium || this._downsampledBitmapLow;
+    }
+    
+    // Only draw if we have a valid bitmap to use
+    if (bitmapToUse) {
+      ctx.drawImage(bitmapToUse, -drawWidth * .5, -drawHeight * .5, drawWidth, drawHeight);
+    }
 
     if (!this._firstRenderSubject.value) {
       this._firstRenderSubject.next(true);
