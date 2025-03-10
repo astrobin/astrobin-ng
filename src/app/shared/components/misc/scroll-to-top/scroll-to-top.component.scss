@@ -28,11 +28,3 @@
     filter: drop-shadow(0 0 .5rem rgba(0, 0, 0, .5));
   }
 }
-
-:host-context(.page.has-mobile-buttons-bar) {
-  @media (max-width: $md-max) {
-    .btn {
-      bottom: 5.5rem;
-    }
-  }
-}
