@@ -13,7 +13,7 @@ export interface MobilePageMenuConfig {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class MobilePageMenuService {
   private menuConfigSubject = new BehaviorSubject<MobilePageMenuConfig | null>(null);
@@ -22,7 +22,8 @@ export class MobilePageMenuService {
   private menuOpenStateSubject = new BehaviorSubject<boolean>(false);
   public menuOpenState$ = this.menuOpenStateSubject.asObservable();
 
-  constructor() {}
+  constructor() {
+  }
 
   /**
    * Register a page-specific menu configuration
