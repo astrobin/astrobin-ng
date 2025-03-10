@@ -282,21 +282,42 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     // Any specific logic needed when menu closes
   }
 
-  shareOnFacebook() {
-    const url = encodeURIComponent(window.location.href);
-    this.windowRefService.nativeWindow.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
+  share(event: MouseEvent) {
+    event.preventDefault();
+    const url = window.location.href;
+    const title = this.title;
+
+    // For mobile devices that support the Web Share API
+    if (this.deviceService.isMobile() && typeof navigator !== "undefined" && !!navigator.share) {
+      try {
+        navigator.share({
+          title: title,
+          url: url
+        }).catch(error => {
+          // Only log error if it's not a user cancellation
+          if (error.name !== "AbortError") {
+            console.error("Sharing failed:", error);
+          }
+        });
+      } catch (error) {
+        // Fallback to copy URL if sharing fails
+        this.copyUrlToClipboard();
+      }
+    } else {
+      // For desktop or devices that don't support Web Share API
+      this.copyUrlToClipboard();
+    }
   }
 
-  shareOnX() {
-    const text = this.title;
-    const url = encodeURIComponent(window.location.href);
-    this.windowRefService.nativeWindow.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, "_blank");
-  }
-
-  shareOnWhatsApp() {
-    const text = `${this.title}: ` + encodeURIComponent(window.location.href);
-    const whatsappUrl = `https://wa.me/?text=${text}`;
-    this.windowRefService.nativeWindow.open(whatsappUrl, "_blank");
+  private copyUrlToClipboard() {
+    const url = window.location.href;
+    this.windowRefService.copyToClipboard(url).then(success => {
+      if (success) {
+        this.popNotificationsService.info(this.translateService.instant("URL copied to clipboard"));
+      } else {
+        this.popNotificationsService.error(this.translateService.instant("Failed to copy URL to clipboard"));
+      }
+    });
   }
 
   approve() {
@@ -627,6 +648,11 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
    * Register the mobile page menu with the service
    */
   private _registerMobilePageMenu(): void {
+    // Only register for sm breakpoint and below
+    if (!this.deviceService.smMax()) {
+      return;
+    }
+    
     // Only register if the templates are available
     if (!this.titleTemplate || !this.descriptionTemplate || !this.shareButtonsTemplate) {
       return;

@@ -313,6 +313,44 @@ export class EquipmentMarketplaceService extends BaseService {
   listingHasOffersByUser(listing: MarketplaceListingInterface, user: UserInterface): boolean {
     return listing.lineItems.some(lineItem => lineItem.offers.some(offer => offer.user === user.id));
   }
+  
+  getUserOfferCount(listing: MarketplaceListingInterface, user: UserInterface): number {
+    if (!user || !listing || !listing.lineItems) {
+      return 0;
+    }
+    
+    // Count unique masterOffers (grouped offers) by this user
+    const uniqueMasterOffers = new Set<number>();
+    
+    listing.lineItems.forEach(lineItem => {
+      (lineItem.offers || []).forEach(offer => {
+        if (offer.masterOffer && offer.user === user.id) {
+          uniqueMasterOffers.add(offer.masterOffer);
+        }
+      });
+    });
+    
+    return uniqueMasterOffers.size;
+  }
+  
+  getTotalOfferCount(listing: MarketplaceListingInterface): number {
+    if (!listing || !listing.lineItems) {
+      return 0;
+    }
+    
+    // Count unique masterOffers (grouped offers)
+    const uniqueMasterOffers = new Set<number>();
+    
+    listing.lineItems.forEach(lineItem => {
+      (lineItem.offers || []).forEach(offer => {
+        if (offer.masterOffer) {
+          uniqueMasterOffers.add(offer.masterOffer);
+        }
+      });
+    });
+    
+    return uniqueMasterOffers.size;
+  }
 
   makeOffer(
     listing: MarketplaceListingInterface,

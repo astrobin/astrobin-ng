@@ -56,6 +56,9 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
   hasPageMenu$: Observable<boolean>;
   pageMenuOpenState$: Observable<boolean>;
   
+  // Flag to prevent circular dismissal calls
+  private _isDismissingProgrammatically = false;
+  
   // PWA mode state
   isPwaMode$: Observable<boolean>;
 
@@ -133,8 +136,15 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
         if (isOpen) {
           this.openPageMenuOffcanvas();
         } else if (this.pageMenuOffcanvasRef) {
+          // Flag dismissal as programmatic to avoid circular references
+          this._isDismissingProgrammatically = true;
           this.pageMenuOffcanvasRef.dismiss();
           this.pageMenuOffcanvasRef = null;
+          
+          // Reset flag after a tick to ensure all callbacks have executed
+          setTimeout(() => {
+            this._isDismissingProgrammatically = false;
+          }, 0);
         }
       });
       
@@ -328,8 +338,22 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
       // Handle offcanvas dismissal
       this.pageMenuOffcanvasRef.dismissed.subscribe(() => {
         this.removeScrollLock();
-        this.mobilePageMenuService.closeMenu();
-        this.pageMenuOffcanvasRef = null;
+        // Prevent circular call by checking if it's already being closed programmatically
+        if (this.pageMenuOffcanvasRef) {
+          // Use a flag to prevent recursive calls
+          const wasDismissedByUser = !this._isDismissingProgrammatically;
+          this.pageMenuOffcanvasRef = null;
+          
+          if (wasDismissedByUser) {
+            // Only notify service if the dismissal wasn't triggered by the service
+            this._isDismissingProgrammatically = true;
+            this.mobilePageMenuService.closeMenu();
+            setTimeout(() => {
+              this._isDismissingProgrammatically = false;
+            }, 0);
+          }
+        }
+        
         this.onMobileMenuClose();
       });
       

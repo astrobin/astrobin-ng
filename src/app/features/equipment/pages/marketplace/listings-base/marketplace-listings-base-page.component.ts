@@ -437,7 +437,7 @@ export abstract class MarketplaceListingsBasePageComponent
    * Register the mobile page menu with the service
    */
   private _registerMobilePageMenu(): void {
-    if (!this.deviceService.mdMax()) {
+    if (!this.deviceService.smMax()) {
       return;
     }
     

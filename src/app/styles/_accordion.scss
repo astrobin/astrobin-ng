@@ -16,3 +16,50 @@
     @include darker-background-texture;
   }
 }
+
+// ngb-accordion styles to match the bootstrap accordion styles
+.offcanvas-body {
+  ngb-accordion {
+    .card {
+      background: transparent;
+      border: none;
+      margin-bottom: 0.5rem;
+      box-shadow: none;
+
+      .card-header {
+        @include darkest-background-texture;
+        border-color: var(--darkestGrey);
+
+        button.btn-link {
+          width: 100%;
+          text-align: left;
+          padding: .5rem 1rem;
+          color: var(--accentColor);
+          font-size: 0.875rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          &::after {
+            content: "";
+            width: 0.5rem;
+            height: 0.5rem;
+            border-right: 2px solid;
+            border-bottom: 2px solid;
+            transform: rotate(45deg);
+            margin-right: 0.5rem;
+            transition: transform 0.25s ease;
+          }
+
+          &.collapsed::after {
+            transform: rotate(-45deg);
+          }
+        }
+      }
+
+      .card-body {
+        @include darker-background-texture;
+      }
+    }
+  }
+}

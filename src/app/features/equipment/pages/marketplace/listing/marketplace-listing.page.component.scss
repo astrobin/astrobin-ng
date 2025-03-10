@@ -70,7 +70,7 @@
         }
 
         astrobin-avatar {
-          width: 80px;
+          width: 50px; // Reduced from 80px to 50px
 
           img {
             box-shadow: 0 0 2rem var(--black);
@@ -116,23 +116,6 @@ astrobin-marketplace-more-from-user {
     .listing-info-section-separator {
       padding: 0 .5rem;
     }
-  }
-}
-
-.share-buttons {
-  white-space: nowrap;
-
-  .btn {
-    vertical-align: middle;
-
-    &:hover fa-icon {
-      color: var(--lightestGrey);
-    }
-  }
-
-  fa-icon {
-    font-size: 1.25rem;
-    color: var(--lighterGrey);
   }
 }
 
