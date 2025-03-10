@@ -79,7 +79,7 @@
             <a class="nav-link" (click)="showModerateMenu()">
               <fa-icon icon="gavel"></fa-icon>
               {{ "Moderate" | translate }}
-              <fa-icon icon="chevron-right" class="float-end me-0"></fa-icon>
+              <fa-icon icon="chevron-right" class="flex-grow-1 text-end me-0"></fa-icon>
             </a>
           </li>
 
@@ -113,7 +113,7 @@
             <a class="nav-link" (click)="showLanguageMenu()">
               <fa-icon icon="globe"></fa-icon>
               {{ currentLanguageCodeDisplay }}
-              <fa-icon icon="chevron-right" class="float-end me-0"></fa-icon>
+              <fa-icon icon="chevron-right" class="flex-grow-1 text-end me-0"></fa-icon>
             </a>
           </li>
 
@@ -121,7 +121,7 @@
             <a class="nav-link" (click)="showHelpMenu()">
               <fa-icon icon="question-circle"></fa-icon>
               {{ "Help" | translate }}
-              <fa-icon icon="chevron-right" class="float-end me-0"></fa-icon>
+              <fa-icon icon="chevron-right" class="flex-grow-1 text-end me-0"></fa-icon>
             </a>
           </li>
         </ul>
@@ -142,7 +142,7 @@
             <a class="nav-link" [href]="getSetLanguageUrl(language.code)">
               {{ language.label }}
               <fa-icon *ngIf="language.code === translateService.currentLang"
-                icon="check" class="float-end text-white me-0"></fa-icon>
+                icon="check" class="flex-grow-1 text-end text-white me-0"></fa-icon>
             </a>
           </li>
         </ng-container>
