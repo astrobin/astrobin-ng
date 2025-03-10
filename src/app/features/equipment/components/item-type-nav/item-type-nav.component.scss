@@ -1,9 +1,5 @@
 @import "../../../../styles/breakpoints";
 
-:host {
-  height: 100%;
-}
-
 .nav-item {
   position: relative;
   min-height: 3rem;
@@ -19,7 +15,6 @@
     align-items: center;
     gap: .5rem;
     padding: .5rem 1rem;
-
 
     img {
       width: 2rem;

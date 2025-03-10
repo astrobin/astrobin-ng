@@ -88,7 +88,7 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
 
     this.getItems();
   }
-  
+
   ngAfterViewInit() {
     // Base implementation - can be overridden by child classes
   }
