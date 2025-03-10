@@ -584,8 +584,8 @@ $largeViewPortBreakpoint: 2561px;
           left: 0;
           height: 1px;
           width: 100%;
-          border-top: 1px solid rgba(255, 255, 255, 0.2);
-          border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+          border-top: 1px solid rgba(255, 255, 255, .2);
+          border-bottom: 1px solid rgba(0, 0, 0, .2);
           z-index: 1;
           pointer-events: none;
           opacity: 0;
@@ -596,8 +596,8 @@ $largeViewPortBreakpoint: 2561px;
           top: 0;
           height: 100%;
           width: 1px;
-          border-left: 1px solid rgba(255, 255, 255, 0.2);
-          border-right: 1px solid rgba(0, 0, 0, 0.2);
+          border-left: 1px solid rgba(255, 255, 255, .2);
+          border-right: 1px solid rgba(0, 0, 0, .2);
           z-index: 1;
           pointer-events: none;
           opacity: 0;
@@ -612,7 +612,7 @@ $largeViewPortBreakpoint: 2561px;
           max-height: 100%;
           object-fit: contain;
           opacity: 0;
-          transition: opacity 0.3s;
+          transition: opacity .3s;
           cursor: zoom-in;
           // Believe it or not, this is necessary to prevent the SVG to display with a white background.
           color-scheme: none;
@@ -628,7 +628,7 @@ $largeViewPortBreakpoint: 2561px;
           right: .5rem;
           background: rgba(0, 0, 0, .75);
           opacity: 0;
-          transition: opacity 0.3s;
+          transition: opacity .3s;
           padding: .5rem .75rem;
           font-size: .9rem;
           z-index: 1;
@@ -712,7 +712,7 @@ $largeViewPortBreakpoint: 2561px;
         astrobin-image-viewer-revisions {
           opacity: 0;
           pointer-events: none;
-          transition: opacity 0.3s;
+          transition: opacity .3s;
         }
 
         .close-button,

@@ -154,31 +154,6 @@ import { AuthService } from "@core/services/auth.service";
                 <span class="menu-text">{{ "Send private message" | translate }}</span>
               </a>
             </li>
-
-            <!-- Current user's subscriptions and logout -->
-            <div class="menu-divider"></div>
-
-            <li class="nav-item">
-              <a
-                routerLink="/subscriptions/options"
-                class="nav-link menu-item"
-              >
-                <fa-icon icon="asterisk"></fa-icon>
-                <span class="menu-text">{{ "Subscription plans" | translate }}</span>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a
-                href="#"
-                (click)="logout($event)"
-                class="nav-link menu-item"
-                astrobinEventPreventDefault
-              >
-                <fa-icon icon="sign-out-alt"></fa-icon>
-                <span class="menu-text">{{ "Logout" | translate }}</span>
-              </a>
-            </li>
           </ng-container>
         </ng-container>
       </ul>

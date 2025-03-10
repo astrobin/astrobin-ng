@@ -1,63 +1,61 @@
-<nav class="navbar navbar-dark d-block d-lg-none">
-  <div class="d-flex justify-content-between align-items-center w-100 px-2">
-    <!-- Menu toggle button on the left -->
-    <button class="navbar-toggler border-0" type="button" (click)="openMainMenu()">
-      <fa-icon icon="bars"></fa-icon>
-    </button>
+<nav class="navbar navbar-dark d-flex d-lg-none justify-content-between align-items-center w-100 px-2">
+  <!-- Menu toggle button on the left -->
+  <button class="navbar-toggler border-0" type="button" (click)="openMainMenu()">
+    <fa-icon icon="bars"></fa-icon>
+  </button>
 
-    <!-- Logo right after the hamburger menu with 50% opacity -->
-    <a routerLink="/" class="navbar-brand opacity-50">
-      <img alt="AstroBin" src="assets/images/nav-logo.png?v=3" />
-    </a>
-    
-    <!-- Spacer div to push the right controls to the edge -->
-    <div class="flex-grow-1"></div>
+  <!-- Logo right after the hamburger menu with 50% opacity -->
+  <a routerLink="/" class="navbar-brand opacity-50">
+    <img alt="AstroBin" src="assets/images/nav-logo.png?v=3" />
+  </a>
 
-    <!-- Right side controls -->
-    <div class="right-controls d-flex align-items-center">
-      <!-- For non-PWA mode, add search icon -->
-      <ng-container *ngIf="(isPwaMode$ | async) === false">
-        <!-- Search link -->
-        <a class="nav-link" routerLink="/search" routerLinkActive="active">
-          <fa-icon icon="search"></fa-icon>
-        </a>
-      </ng-container>
+  <!-- Spacer div to push the right controls to the edge -->
+  <div class="flex-grow-1"></div>
 
-      <!-- Notifications button - only visible when logged in (for both PWA and non-PWA) -->
-      <ng-container *ngIf="user">
-        <a class="nav-link position-relative" (click)="openNotificationsOffcanvas()">
-          <fa-icon icon="bell"></fa-icon>
-          <ng-container *ngIf="unreadNotificationsCount$ | async as unreadCount">
+  <!-- Right side controls -->
+  <div class="right-controls d-flex align-items-center">
+    <!-- For non-PWA mode, add search icon -->
+    <ng-container *ngIf="(isPwaMode$ | async) === false">
+      <!-- Search link -->
+      <a class="nav-link" routerLink="/search" routerLinkActive="active">
+        <fa-icon icon="search"></fa-icon>
+      </a>
+    </ng-container>
+
+    <!-- Notifications button - only visible when logged in (for both PWA and non-PWA) -->
+    <ng-container *ngIf="user">
+      <a class="nav-link position-relative" (click)="openNotificationsOffcanvas()">
+        <fa-icon icon="bell"></fa-icon>
+        <ng-container *ngIf="unreadNotificationsCount$ | async as unreadCount">
             <span *ngIf="!!unreadCount" class="badge bg-danger rounded-pill">
               {{ unreadCount }}
             </span>
-          </ng-container>
-        </a>
-      </ng-container>
-      
-      <!-- Page-specific menu kebab icon - only visible when a page menu is registered -->
-      <ng-container *ngIf="hasPageMenu$ | async">
-        <a class="nav-link" (click)="openPageMenu()">
-          <fa-icon icon="ellipsis-v"></fa-icon>
-        </a>
-      </ng-container>
-      
-      <!-- User avatar (both PWA and non-PWA) or login button -->
-      <ng-container *ngIf="user">
-        <a class="nav-link user-avatar-link" (click)="openUserMenu()">
-          <div class="avatar-container">
-            <astrobin-avatar [user]="user" [link]="false"></astrobin-avatar>
-          </div>
-        </a>
-      </ng-container>
-      
-      <!-- Login button for non-logged in users (in both PWA and non-PWA modes) -->
-      <ng-container *ngIf="!user">
-        <a class="nav-link" (click)="openUserMenu()">
-          <fa-icon icon="sign-in-alt"></fa-icon>
-        </a>
-      </ng-container>
-    </div>
+        </ng-container>
+      </a>
+    </ng-container>
+
+    <!-- User avatar (both PWA and non-PWA) or login button -->
+    <ng-container *ngIf="user">
+      <a class="nav-link user-avatar-link" (click)="openUserMenu()">
+        <div class="avatar-container">
+          <astrobin-avatar [user]="user" [link]="false"></astrobin-avatar>
+        </div>
+      </a>
+    </ng-container>
+
+    <!-- Login button for non-logged in users (in both PWA and non-PWA modes) -->
+    <ng-container *ngIf="!user">
+      <a class="nav-link" (click)="openUserMenu()">
+        <fa-icon icon="sign-in-alt"></fa-icon>
+      </a>
+    </ng-container>
+
+    <!-- Page-specific menu kebab icon - only visible when a page menu is registered -->
+    <ng-container *ngIf="hasPageMenu$ | async">
+      <a class="nav-link kebab-menu ms-2" (click)="openPageMenu()">
+        <fa-icon icon="ellipsis-v"></fa-icon>
+      </a>
+    </ng-container>
   </div>
 </nav>
 
@@ -133,7 +131,7 @@
               {{ "IOTD/TP Archive" | translate }}
             </a>
           </li>
-          
+
           <!-- Upload link (only in non-PWA mode) -->
           <ng-container *ngIf="(isPwaMode$ | async) === false">
             <li class="nav-item">
@@ -181,7 +179,7 @@
             <a class="nav-link" [href]="getSetLanguageUrl(language.code)">
               {{ language.label }}
               <fa-icon *ngIf="language.code === translateService.currentLang"
-                icon="check" class="flex-grow-1 text-end text-white me-0"></fa-icon>
+                       icon="check" class="flex-grow-1 text-end text-white me-0"></fa-icon>
             </a>
           </li>
         </ng-container>

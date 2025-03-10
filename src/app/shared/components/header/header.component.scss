@@ -30,7 +30,7 @@
 .sidebar {
   left: -100%;
   max-width: 300px;
-  transition: all ease 0.25s;
+  transition: all ease .25s;
   overflow-y: auto;
   z-index: 1032;
 }
@@ -39,7 +39,7 @@
   left: unset;
   max-width: 300px;
   right: -100%;
-  transition: all ease 0.25s;
+  transition: all ease .25s;
   overflow-y: auto;
   z-index: 1032;
 
@@ -86,14 +86,14 @@
 @media (max-width: $md-max) {
   .sidebar {
     @include darkest-background-texture;
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.75);
+    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .75);
   }
 }
 
 @media (max-width: $lg-max) {
   .user-sidebar {
     @include darkest-background-texture;
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.75);
+    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .75);
   }
 }
 
@@ -131,7 +131,7 @@
 
 .navbar {
   @include darkest-background-texture;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .5);
   top: .3rem;
   padding: 0;
 
@@ -141,7 +141,7 @@
   }
 
   @media (min-width: $lg-min) {
-    font-size: 0.9rem;
+    font-size: .9rem;
   }
 
   .navbar-brand {
@@ -166,7 +166,7 @@
   }
 
   .search-link {
-    @media screen and (min-width: 340.1px) {
+    @media screen and (min-width: 34.1px) {
       display: none;
     }
 
@@ -202,7 +202,7 @@
 
   .dropdown-toggle:not(#user-dropdown) {
     margin: 0;
-    padding: 1rem 0.5rem;
+    padding: 1rem .5rem;
 
     &:hover {
       text-decoration: none;
@@ -277,7 +277,7 @@
     color: var(--accentColor);
     display: inline-block;
     margin: 0;
-    padding: 1.25rem 0.5rem;
+    padding: 1.25rem .5rem;
   }
 
   .no-triangle::after {
@@ -302,7 +302,7 @@
 .dropdown-menu {
   opacity: 0;
   z-index: -1000;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity .1s ease-in-out;
 }
 
 .dropdown-toggle {

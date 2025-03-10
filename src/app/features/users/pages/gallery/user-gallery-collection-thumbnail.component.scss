@@ -3,7 +3,7 @@ $size: 150px;
 .collection-container {
   position: relative;
   cursor: pointer;
-  transition: filter 0.3s ease;
+  transition: filter .3s ease;
   width: $size;
 
   .collection-background {
@@ -33,8 +33,8 @@ $size: 150px;
     right: 0;
     margin: 0;
     padding: .5rem;
-    background: rgba(0, 0, 0, 0.9);
-    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, .9);
+    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .5);
     border: 1px solid var(--lightGrey);
     cursor: pointer;
     border-radius: 50%;
@@ -47,7 +47,7 @@ $size: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.3s ease, filter 0.3s ease;
+    transition: opacity .3s ease, filter .3s ease;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {

@@ -20,7 +20,7 @@
   }
 
   .modal-content {
-    border-radius: 0.4rem;
+    border-radius: .4rem;
     box-shadow: 0 0 100px rgba(0, 0, 0, .5);
     @include dark-background-texture;
   }
@@ -86,69 +86,69 @@
   .modal-content {
     @include darker-background-texture;
     color: var(--white);
-    
+
     .modal-header {
       @include darkest-background-texture;
       border-bottom-color: var(--darkgrey);
-      
+
       .modal-title {
         color: var(--white);
         font-weight: 600;
       }
-      
+
       .btn-close {
         color: var(--white);
       }
     }
-    
+
     .modal-body {
       padding: 1.5rem;
       max-height: 70vh;
       overflow-y: auto;
-      
+
       // Common elements that might be in description templates
       h1, h2, h3, h4, h5, h6 {
         color: var(--white);
         margin-bottom: 1rem;
       }
-      
+
       p {
         margin-bottom: 1rem;
       }
-      
+
       ul, ol {
         margin-bottom: 1rem;
         padding-left: 2rem;
       }
-      
+
       img {
         max-width: 100%;
         height: auto;
         margin-bottom: 1rem;
       }
-      
+
       a {
         color: var(--primary);
-        
+
         &:hover {
           color: var(--primary-dark);
           text-decoration: underline;
         }
       }
-      
+
       // Common classes for description content
       .metadata-header {
         @include darkest-background-texture;
-        margin: 0 0 0.25rem;
+        margin: 0 0 .25rem;
         padding: .5rem .75rem;
         color: var(--lightestGrey);
         border-radius: var(--bs-border-radius);
       }
-      
+
       .metadata-section {
-        padding: 0.75rem 0;
+        padding: .75rem 0;
       }
-      
+
       .description {
         word-break: break-word;
         overflow: hidden;

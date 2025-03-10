@@ -24,7 +24,7 @@
 }
 
 .dropdown-menu {
-  box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.9);
+  box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, .9);
   border: 0;
 
   @media (max-width: $xs-max) {
@@ -47,13 +47,13 @@
   }
 
   @media (min-width: $lg-min) {
-    font-size: 0.9rem;
+    font-size: .9rem;
   }
 
   .dropdown-item {
     fa-icon {
       font-size: 11px;
-      margin-right: 0.25rem;
+      margin-right: .25rem;
       width: 1rem;
       display: inline-block;
       text-align: center;

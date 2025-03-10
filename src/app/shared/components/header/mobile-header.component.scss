@@ -4,7 +4,7 @@
 :host {
   display: block;
   position: fixed;
-  top: 0;
+  top: 5px;
   left: 0;
   right: 0;
   z-index: 1030;
@@ -24,9 +24,8 @@
 
   nav.navbar {
     @include darkest-background-texture;
-    box-shadow: 0 0.25rem .5rem rgba(0, 0, 0, .5);
+    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .5);
     height: calc(4rem - 2px);
-    padding: 1rem .5rem;
 
     .navbar-brand {
       padding: 0;
@@ -40,7 +39,7 @@
 
     .nav-link {
       color: $white;
-      padding: 0.5rem;
+      padding: .5rem;
       cursor: pointer;
 
       &.position-relative {
@@ -56,12 +55,13 @@
     }
 
     .navbar-toggler {
-      padding: 0.5rem;
+      padding: .5rem;
       border: none;
+      color: $light;
     }
 
     .right-controls {
-      gap: 0.5rem;
+      gap: .5rem;
 
       .nav-link {
         position: relative;
@@ -84,6 +84,12 @@
             object-fit: cover;
           }
         }
+      }
+
+      .kebab-menu {
+        padding-left: .5rem;
+        padding-right: .5rem;
+        font-size: 1.2rem;
       }
     }
   }
@@ -109,7 +115,7 @@
     min-width: 280px;
 
     // Ensure offcanvas content appears only after the offcanvas is visible
-    animation: fade-offcanvas 0.15s ease-in-out forwards;
+    animation: fade-offcanvas .15s ease-in-out forwards;
   }
 
   @keyframes fade-offcanvas {
@@ -167,8 +173,8 @@
       transform: translateX(0);
       // Only animate when changing views within the offcanvas
       &.view-transition {
-        transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
-        animation: fade-in 0.2s ease-in-out;
+        transition: opacity .2s ease-in-out, transform .2s ease-in-out;
+        animation: fade-in .2s ease-in-out;
       }
     }
 
@@ -189,12 +195,12 @@
     }
 
     .bottom-nav {
-      padding-top: 0.5rem;
+      padding-top: .5rem;
       margin-top: 1rem;
 
       .copyright-info {
         opacity: .5;
-        font-size: 0.7rem;
+        font-size: .7rem;
       }
     }
 
