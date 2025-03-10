@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnDestroy, PLATFORM_ID } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, fromEvent } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, fromEvent, auditTime } from "rxjs";
 import { takeUntil, throttleTime, distinctUntilChanged } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -23,65 +23,65 @@ export class ScrollHideService implements OnDestroy {
   private isElasticScrollDetected = false;
   private destroyed$ = new Subject<void>();
   private isBrowser: boolean;
-  
+
   // Separate subjects for header and footer visibility
   private headerHidden$ = new BehaviorSubject<boolean>(false);
   private footerHidden$ = new BehaviorSubject<boolean>(false);
-  
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-    
+
     if (this.isBrowser) {
       this.initScrollListener();
     }
   }
-  
+
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
-    
+
     if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe();
     }
-    
+
     if (this.touchStartSubscription) {
       this.touchStartSubscription.unsubscribe();
     }
-    
+
     if (this.touchEndSubscription) {
       this.touchEndSubscription.unsubscribe();
     }
-    
+
     if (this.scrollInactivityTimeout) {
       clearTimeout(this.scrollInactivityTimeout);
     }
-    
+
     if (this.bounceBackTimeout) {
       clearTimeout(this.bounceBackTimeout);
     }
   }
-  
+
   /**
    * Get an observable that emits when the header visibility changes
    */
   getHeaderVisibility(): Observable<boolean> {
     return this.headerHidden$.asObservable();
   }
-  
+
   /**
    * Get an observable that emits when the footer visibility changes
    */
   getFooterVisibility(): Observable<boolean> {
     return this.footerHidden$.asObservable();
   }
-  
+
   /**
    * Set the scroll threshold (minimum distance scrolled to trigger the visibility change)
    */
   setScrollThreshold(threshold: number): void {
     this.scrollThreshold = threshold;
   }
-  
+
   /**
    * Set the timeout duration after which UI elements will be shown when
    * there's no scrolling activity
@@ -89,7 +89,7 @@ export class ScrollHideService implements OnDestroy {
   setInactivityDuration(duration: number): void {
     this.scrollInactivityDuration = duration;
   }
-  
+
   /**
    * Initialize the scroll event listener and touch events for elastic scroll detection
    */
@@ -99,26 +99,26 @@ export class ScrollHideService implements OnDestroy {
       // Main scroll handler
       this.scrollSubscription = fromEvent(window, 'scroll')
         .pipe(
-          throttleTime(100), // Limit scroll event frequency
+          auditTime(200), // Limit scroll event frequency
           distinctUntilChanged(),
           takeUntil(this.destroyed$)
         )
         .subscribe(() => this.handleScroll());
-      
+
       // Touch events to detect elastic scrolling on touch devices
       this.touchStartSubscription = fromEvent(document, 'touchstart')
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() => {
           // On touch start, note that we're in a potential elastic scroll situation
           this.isElasticScrollDetected = false;
-          
+
           // Clear any bounce back timeout that might be ongoing
           if (this.bounceBackTimeout) {
             clearTimeout(this.bounceBackTimeout);
             this.bounceBackTimeout = null;
           }
         });
-      
+
       this.touchEndSubscription = fromEvent(document, 'touchend')
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() => {
@@ -131,12 +131,12 @@ export class ScrollHideService implements OnDestroy {
               this.footerHidden$.next(false);
               this.isElasticScrollDetected = false;
             }
-            
+
             // Also check if we're at the top or bottom of the page
             const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
             const maxScrollPosition = document.documentElement.scrollHeight - window.innerHeight;
-            
-            if (currentScrollPosition <= 10 || 
+
+            if (currentScrollPosition <= 10 ||
                 currentScrollPosition >= maxScrollPosition - 10) {
               this.headerHidden$.next(false);
               this.footerHidden$.next(false);
@@ -145,7 +145,7 @@ export class ScrollHideService implements OnDestroy {
         });
     }
   }
-  
+
   /**
    * Handle scroll events and update visibility states
    */
@@ -153,23 +153,23 @@ export class ScrollHideService implements OnDestroy {
     if (!this.isBrowser) {
       return;
     }
-    
+
     const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     const maxScrollPosition = document.documentElement.scrollHeight - window.innerHeight;
-    
+
     // Force show elements in these special cases:
     // 1. At or beyond top of page (including elastic bounce)
     // 2. At or beyond bottom of page (including elastic bounce)
     // 3. Only a small amount of content (not enough to scroll)
-    if (currentScrollPosition <= 10 || 
-        currentScrollPosition >= maxScrollPosition - 10 || 
+    if (currentScrollPosition <= 10 ||
+        currentScrollPosition >= maxScrollPosition - 10 ||
         maxScrollPosition <= 50) {
       this.headerHidden$.next(false);
       this.footerHidden$.next(false);
       this.lastScrollPosition = currentScrollPosition;
       return;
     }
-    
+
     // Detect elastic scrolling - this catches both top and bottom bounces
     // Safari and some mobile browsers can have out-of-bounds scroll positions during elastic scrolling
     if (currentScrollPosition < 0 || currentScrollPosition > maxScrollPosition + 10) {
@@ -180,13 +180,13 @@ export class ScrollHideService implements OnDestroy {
       // Don't update lastScrollPosition here to avoid jumps when returning to normal scroll area
       return;
     }
-    
+
     // Normal scrolling behavior
-    
+
     // Calculate the scroll distance and direction
     const scrollDistance = Math.abs(currentScrollPosition - this.lastScrollPosition);
     const isScrollingDown = currentScrollPosition > this.lastScrollPosition;
-    
+
     // Only trigger changes when scroll distance exceeds threshold
     if (scrollDistance > this.scrollThreshold) {
       if (isScrollingDown) {
@@ -198,14 +198,14 @@ export class ScrollHideService implements OnDestroy {
         this.headerHidden$.next(false);
         this.footerHidden$.next(false);
       }
-      
+
       // Reset and start inactivity timeout
       this.resetInactivityTimeout();
     }
-    
+
     this.lastScrollPosition = currentScrollPosition;
   }
-  
+
   /**
    * Reset and start the inactivity timeout.
    * After the specified duration of no scroll events, UI elements will be shown again.
@@ -214,12 +214,12 @@ export class ScrollHideService implements OnDestroy {
     if (!this.isBrowser) {
       return;
     }
-    
+
     // Clear any existing timeout
     if (this.scrollInactivityTimeout) {
       clearTimeout(this.scrollInactivityTimeout);
     }
-    
+
     // Set a new timeout to show UI after inactivity
     this.scrollInactivityTimeout = setTimeout(() => {
       if (this.headerHidden$.getValue() || this.footerHidden$.getValue()) {
