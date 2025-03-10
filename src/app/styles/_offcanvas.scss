@@ -41,6 +41,15 @@
   height: calc(100% - .375rem);
 }
 
+.offcanvas-start,
+.offcanvas-end {
+  max-width: 90vw;
+
+  @supports (max-width: 90dvw) {
+    max-width: 90dvw;
+  }
+}
+
 .offcanvas-bottom {
   height: auto !important;
   box-shadow: 0 -.5rem 1rem rgba(0,0,0,.5);

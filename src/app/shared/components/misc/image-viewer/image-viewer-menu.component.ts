@@ -35,64 +35,65 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
       <ul class="nav flex-column h-100">
-      <ng-container *ngIf="currentUserWrapper.user?.id === image.user">
-        <li class="nav-item">
-          <a
-            (click)="imageService.navigateToEdit(image)"
-            astrobinEventPreventDefault
-            class="nav-link"
-          >
-            <fa-icon icon="edit"></fa-icon>
-            <span class="menu-text">{{ "Edit project" | translate }}</span>
-          </a>
-        </li>
+        <ng-container *ngIf="currentUserWrapper.user?.id === image.user">
+          <li class="nav-item">
+            <a
+              (click)="imageService.navigateToEdit(image)"
+              astrobinEventPreventDefault
+              class="nav-link"
+            >
+              <fa-icon icon="edit"></fa-icon>
+              <span class="menu-text">{{ "Edit project" | translate }}</span>
+            </a>
+          </li>
 
-        <li class="nav-item" *ngIf="revision.label">
-          <a
-            [routerLink]="['/i', image.hash || image.pk.toString(), revisionLabel, 'edit']"
-            class="nav-link"
-          >
-            <fa-icon icon="pencil-alt"></fa-icon>
-            <span class="menu-text">{{ "Edit revision" | translate }}</span>
-            <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark ms-2">
+          <li class="nav-item" *ngIf="revision.label">
+            <a
+              [routerLink]="['/i', image.hash || image.pk.toString(), revisionLabel, 'edit']"
+              class="nav-link"
+            >
+              <fa-icon icon="pencil-alt"></fa-icon>
+              <span class="menu-text">{{ "Edit revision" | translate }}</span>
+              <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark ms-2">
               {{ revision.label }}
             </span>
-          </a>
-        </li>
+            </a>
+          </li>
 
-        <li class="nav-item" *ngIf="image.solution">
-          <a
-            [routerLink]="['/i', image.hash || image.pk.toString(), 'plate-solving-settings']"
-            [queryParams]="{ r: revisionLabel }"
-            class="nav-link"
-          >
-            <fa-icon icon="map"></fa-icon>
-            <span class="menu-text">{{ "Edit plate-solving settings" | translate }}</span>
-            <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark ms-2" *ngIf="revision.label">
+          <li class="nav-item" *ngIf="image.solution">
+            <a
+              [routerLink]="['/i', image.hash || image.pk.toString(), 'plate-solving-settings']"
+              [queryParams]="{ r: revisionLabel }"
+              class="nav-link"
+            >
+              <fa-icon icon="map"></fa-icon>
+              <span class="menu-text">{{ "Edit plate-solving settings" | translate }}</span>
+              <span class="badge rounded-pill bg-light border border-dark fw-bold text-dark ms-2"
+                    *ngIf="revision.label">
               {{ "Revision" | translate }}: {{ revision.label }}
             </span>
-          </a>
-        </li>
+            </a>
+          </li>
 
-        <li class="nav-item">
-          <a
-            [routerLink]="['/uploader/revision', image.hash || image.pk.toString()]"
-            class="nav-link"
-          >
-            <fa-icon icon="upload"></fa-icon>
-            <span class="menu-text">{{ "Upload new revision" | translate }}</span>
-          </a>
-        </li>
+          <li class="nav-item">
+            <a
+              [routerLink]="['/uploader/revision', image.hash || image.pk.toString()]"
+              class="nav-link"
+            >
+              <fa-icon icon="upload"></fa-icon>
+              <span class="menu-text">{{ "Upload new revision" | translate }}</span>
+            </a>
+          </li>
 
-        <li class="nav-item">
-          <a
-            (click)="uploadCompressedSourceClicked()"
-            class="nav-link"
-            astrobinEventPreventDefault
-            href="#"
-          >
-            <fa-icon icon="file"></fa-icon>
-            <span class="menu-text">
+          <li class="nav-item">
+            <a
+              (click)="uploadCompressedSourceClicked()"
+              class="nav-link"
+              astrobinEventPreventDefault
+              href="#"
+            >
+              <fa-icon icon="file"></fa-icon>
+              <span class="menu-text">
               <ng-container *ngIf="image.uncompressedSourceFile">
                 {{ "Replace/delete uncompressed source file" | translate }}
               </ng-container>
@@ -100,106 +101,106 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
                 {{ "Upload uncompressed source (XISF/FITS/PSD/TIFF)" | translate }}
               </ng-container>
             </span>
-          </a>
-        </li>
+            </a>
+          </li>
 
-        <li class="nav-item" *ngIf="!image.isWip">
-          <a
-            astrobinEventPreventDefault
-            astrobinEventStopPropagation
-            (click)="unpublish()"
-            class="nav-link"
-            href="#"
-          >
-            <fa-icon icon="lock"></fa-icon>
-            <span class="menu-text">{{ "Move to staging area" | translate }}</span>
-          </a>
-        </li>
+          <li class="nav-item" *ngIf="!image.isWip">
+            <a
+              astrobinEventPreventDefault
+              astrobinEventStopPropagation
+              (click)="unpublish()"
+              class="nav-link"
+              href="#"
+            >
+              <fa-icon icon="lock"></fa-icon>
+              <span class="menu-text">{{ "Move to staging area" | translate }}</span>
+            </a>
+          </li>
 
-        <li class="nav-item" *ngIf="!image.submittedForIotdTpConsideration">
-          <a
-            (click)="openSubmitForIotdTpConsiderationOffcanvas()"
-            class="nav-link"
-            astrobinEventPreventDefault
-            astrobinEventStopPropagation
-            href="#"
-          >
-            <fa-icon icon="arrow-up"></fa-icon>
-            <span class="menu-text">
+          <li class="nav-item" *ngIf="!image.submittedForIotdTpConsideration">
+            <a
+              (click)="openSubmitForIotdTpConsiderationOffcanvas()"
+              class="nav-link"
+              astrobinEventPreventDefault
+              astrobinEventStopPropagation
+              href="#"
+            >
+              <fa-icon icon="arrow-up"></fa-icon>
+              <span class="menu-text">
               {{ "Submit for IOTD/TP consideration" | translate }}
-              <small *ngIf="image.published" class="d-block text-muted">
+                <small *ngIf="image.published" class="d-block text-muted">
                 {{ "Deadline" }}: {{ image.published | addDays: 30 | utcToLocal | date: "short" }}
               </small>
             </span>
-          </a>
-        </li>
+            </a>
+          </li>
 
-        <li class="nav-item" *ngIf="image.submittedForIotdTpConsideration">
-          <a
-            (click)="viewIotdTpStats()"
-            class="nav-link"
-            astrobinEventPreventDefault
-            astrobinEventStopPropagation
-            href="#"
-          >
-            <fa-icon icon="chart-bar"></fa-icon>
-            <span class="menu-text">
+          <li class="nav-item" *ngIf="image.submittedForIotdTpConsideration">
+            <a
+              (click)="viewIotdTpStats()"
+              class="nav-link"
+              astrobinEventPreventDefault
+              astrobinEventStopPropagation
+              href="#"
+            >
+              <fa-icon icon="chart-bar"></fa-icon>
+              <span class="menu-text">
               {{ "View IOTD/TP stats" | translate }}
-              <small class="d-block text-muted">
+                <small class="d-block text-muted">
                 {{ "Submitted" }}: {{ image.submittedForIotdTpConsideration | localDate | date: "short" }}
               </small>
             </span>
-          </a>
-        </li>
+            </a>
+          </li>
 
-        <li class="nav-item">
-          <a
-            astrobinEventPreventDefault
-            astrobinEventStopPropagation
-            (click)="delete()"
-            class="nav-link text-danger"
-            href="#"
-          >
-            <fa-icon icon="trash"></fa-icon>
-            <span class="menu-text">{{ "Delete" | translate }}</span>
-          </a>
-        </li>
-      </ng-container>
+          <li class="nav-item">
+            <a
+              astrobinEventPreventDefault
+              astrobinEventStopPropagation
+              (click)="delete()"
+              class="nav-link text-danger"
+              href="#"
+            >
+              <fa-icon icon="trash"></fa-icon>
+              <span class="menu-text">{{ "Delete" | translate }}</span>
+            </a>
+          </li>
 
-      <ng-container
-        *ngIf="
+          <li class="nav-item flex-grow-1">
+            <hr class="dropdown-divider">
+          </li>
+        </ng-container>
+
+        <ng-container
+          *ngIf="
           currentUserWrapper.user?.id === image.user ||
           image.downloadLimitation === DownloadLimitationOptions.EVERYBODY"
-      >
-        <li class="nav-item flex-grow-1">
-          <hr class="dropdown-divider">
-        </li>
+        >
+          <li class="nav-item">
+            <a
+              astrobinEventPreventDefault
+              astrobinEventStopPropagation
+              (click)="openDownloadOffcanvas()"
+              class="nav-link"
+              href="#"
+            >
+              <fa-icon icon="download"></fa-icon>
+              <span class="menu-text">{{ "Download" | translate }}</span>
+              <fa-icon icon="chevron-right"></fa-icon>
+            </a>
+          </li>
+        </ng-container>
 
         <li class="nav-item">
           <a
-            astrobinEventPreventDefault
-            astrobinEventStopPropagation
-            (click)="openDownloadOffcanvas()"
+            [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
             class="nav-link"
-            href="#"
           >
-            <fa-icon icon="download"></fa-icon>
-            <span class="menu-text">{{ "Download" | translate }}</span>
-            <fa-icon icon="chevron-right"></fa-icon>
+            <fa-icon icon="eye"></fa-icon>
+            <span class="menu-text">{{ "Classic view" | translate }}</span>
           </a>
         </li>
-      </ng-container>
-
-      <li class="nav-item">
-        <a
-          [href]="classicRoutesService.IMAGE(image.hash || image.pk.toString()) + '?force-classic-view'"
-          class="nav-link"
-        >
-          <fa-icon icon="eye"></fa-icon>
-          <span class="menu-text">{{ "Classic view" | translate }}</span>
-        </a>
-      </li>
-    </ul>
+      </ul>
     </ng-container>
 
     <ng-template #downloadOffcanvasTemplate let-offcanvas>

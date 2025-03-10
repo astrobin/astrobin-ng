@@ -226,7 +226,7 @@ export class ImageViewerShareButtonComponent extends BaseComponentDirective impl
       defaultValue: this.getSharingValue(SharingMode.LINK),
       props: {
         label: this.translateService.instant("Code"),
-        rows: 20,
+        rows: this.deviceService.isMobile() ? 8 : 20,
         readonly: true
       }
     }
