@@ -272,9 +272,13 @@
 
 <!-- Notifications offcanvas template -->
 <ng-template #notificationsOffcanvas let-offcanvas>
-  <div class="offcanvas-header">
+  <div class="offcanvas-header justify-content-start">
+    <button
+      class="btn btn-link btn-no-block text-white p-0 me-3"
+      (click)="offcanvas.close()">
+      <fa-icon icon="chevron-left"></fa-icon>
+    </button>
     <h5 class="offcanvas-title">{{ "Notifications" | translate }}</h5>
-    <button (click)="offcanvas.close()" class="btn-close text-reset"></button>
   </div>
   <div class="offcanvas-body">
     <astrobin-notifications-list [standalone]="true"></astrobin-notifications-list>
