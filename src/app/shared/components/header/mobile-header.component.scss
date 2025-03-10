@@ -96,7 +96,7 @@
     position: fixed;
     width: 100%;
   }
-  
+
   // Prevent offcanvas animation flash
   .offcanvas-backdrop.show {
     opacity: 1 !important;
@@ -107,11 +107,11 @@
   .image-viewer-offcanvas,
   .offcanvas-menu {
     min-width: 280px;
-    
+
     // Ensure offcanvas content appears only after the offcanvas is visible
     animation: fade-offcanvas 0.15s ease-in-out forwards;
   }
-  
+
   @keyframes fade-offcanvas {
     0% { opacity: 0; }
     90% { opacity: 0; }
@@ -137,6 +137,16 @@
     .header-actions {
       display: flex;
       align-items: center;
+    }
+
+    .title-home-link {
+      color: $white;
+      text-decoration: none;
+
+      &:hover, &:active {
+        color: $white;
+        opacity: .8;
+      }
     }
   }
 

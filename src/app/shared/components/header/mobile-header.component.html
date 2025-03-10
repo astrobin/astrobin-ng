@@ -76,7 +76,9 @@
     <!-- Title changes based on current view -->
     <h5 class="offcanvas-title">
       <ng-container [ngSwitch]="currentMenuView">
-        <ng-container *ngSwitchCase="'main'">AstroBin</ng-container>
+        <ng-container *ngSwitchCase="'main'">
+          <a routerLink="/" class="title-home-link" (click)="offcanvas.dismiss()">AstroBin</a>
+        </ng-container>
         <ng-container *ngSwitchCase="'language'">{{ "Language" | translate }}</ng-container>
         <ng-container *ngSwitchCase="'help'">{{ "Help" | translate }}</ng-container>
         <ng-container *ngSwitchCase="'moderate'">{{ "Moderate" | translate }}</ng-container>
