@@ -96,15 +96,15 @@
           border-color: var(--accentColor);
         }
       }
-      
+
       &.deleting {
         pointer-events: none;
-        
+
         img {
-          opacity: 0.5;
+          opacity: .5;
           filter: grayscale(50%);
         }
-        
+
         .loading-overlay {
           position: absolute;
           top: 0;

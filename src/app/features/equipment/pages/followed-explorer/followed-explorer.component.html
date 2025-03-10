@@ -1,11 +1,3 @@
-<astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
-  [descriptionTemplate]="descriptionTemplate"
-  [template]="navTemplate"
-></astrobin-mobile-menu>
-
 <ng-template #titleTemplate>
   {{ title }}
 </ng-template>
@@ -26,7 +18,7 @@
   </a>
 </ng-template>
 
-<div class="page has-mobile-menu">
+<div class="page">
   <ng-container *ngIf="breakpointMdMin">
     <h1><ng-container [ngTemplateOutlet]="titleTemplate"></ng-container></h1>
     <small><ng-container [ngTemplateOutlet]="descriptionTemplate"></ng-container></small>

@@ -5,10 +5,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, .95);
   height: 100%;
-  transition: filter 0.3s ease-in-out;
-  filter: brightness(0.25);
+  transition: filter .3s ease-in-out;
+  filter: brightness(.25);
 
   .scroll-left,
   .scroll-right {
@@ -19,7 +19,7 @@
     padding: 0 2rem;
     border: 0;
     border-radius: 50%;
-    transition: transform 0.3s ease-in-out;
+    transition: transform .3s ease-in-out;
 
     &:focus-visible {
       outline: none !important;
@@ -67,7 +67,7 @@
         height: 5rem;
         width: 5rem;
         object-fit: contain;
-        transition: filter 0.1s ease, transform 0.1s ease;
+        transition: filter .1s ease, transform .1s ease;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {

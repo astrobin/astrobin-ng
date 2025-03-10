@@ -41,7 +41,7 @@
 
   .preset-name,
   .button-overlay {
-    transition: opacity 0.3s ease;
+    transition: opacity .3s ease;
     position: absolute;
     width: 100%;
     text-align: center;
@@ -78,13 +78,13 @@
     border-radius: 50%;
     pointer-events: all;
     opacity: 1;
-    transition: opacity 0.3s ease, background 0.3s ease;
+    transition: opacity .3s ease, background .3s ease;
 
     .ng-fa-icon {
       margin-right: 0;
       font-size: .8rem;
       color: var(--darkerGrey);
-      transition: color 0.3s ease;
+      transition: color .3s ease;
     }
 
     @media (hover: hover) and (pointer: fine) {

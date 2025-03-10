@@ -13,9 +13,9 @@
       color: var(--accentColor);
       pointer-events: none;
     }
-    
+
     &.disabled {
-      opacity: 0.5;
+      opacity: .5;
       cursor: default;
       pointer-events: none;
     }
@@ -27,10 +27,10 @@
     &:not(.offcanvas-bottom) {
       width: 40vw;
     }
-    
+
     textarea {
       font-family: monospace;
-      font-size: 0.85rem;
+      font-size: .85rem;
       resize: none;
     }
   }

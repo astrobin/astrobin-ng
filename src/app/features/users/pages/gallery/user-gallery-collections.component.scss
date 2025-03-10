@@ -16,7 +16,7 @@
         color: var(--lighterGrey);
         transform: scale(-1, 1);
         display: block;
-        transition: color 0.3s ease;
+        transition: color .3s ease;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
@@ -29,7 +29,7 @@
   }
 
   astrobin-user-gallery-collection-menu {
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .5);
     font-size: 1rem;
     border: 1px solid var(--lightGrey);
     cursor: pointer;
@@ -40,7 +40,7 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    transition: filter 0.3s ease;
+    transition: filter .3s ease;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {

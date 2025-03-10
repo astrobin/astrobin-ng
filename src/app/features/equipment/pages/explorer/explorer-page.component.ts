@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -34,6 +34,7 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { DeviceService } from "@core/services/device.service";
 import { ImageViewerService } from "@core/services/image-viewer.service";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -52,6 +53,16 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   @ViewChild("itemTypeNavComponent")
   itemTypeNavComponent: ItemTypeNavComponent;
+  
+  // Reference templates for mobile menu
+  @ViewChild("titleTemplate", { static: true })
+  titleTemplate: TemplateRef<any>;
+  
+  @ViewChild("descriptionTemplate", { static: true })
+  descriptionTemplate: TemplateRef<any>;
+  
+  @ViewChild("navTemplate", { static: true })
+  navTemplate: TemplateRef<any>;
 
   title = this.translateService.instant("Equipment explorer");
   activeId: EquipmentItemBaseInterface["id"];
@@ -80,7 +91,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly deviceService: DeviceService,
     public readonly offcanvasService: NgbOffcanvas,
-    public readonly imageViewerService: ImageViewerService
+    public readonly imageViewerService: ImageViewerService,
+    private readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(
       store$,
@@ -104,6 +116,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     this._updateDescription(this.activatedRoute.snapshot.data?.item);
     this._setParams();
     this._setLocation();
+    this._registerMobilePageMenu();
 
     this.router.events
       .pipe(
@@ -116,9 +129,30 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         this._setBreadcrumb();
       });
   }
+  
+  ngOnDestroy(): void {
+    // Clear the mobile page menu when component is destroyed
+    this.mobilePageMenuService.clearMenu();
+    super.ngOnDestroy();
+  }
 
   ngAfterViewInit() {
     this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
+    
+    // Register mobile page menu after view is initialized so templates are available
+    this._registerMobilePageMenu();
+  }
+  
+  // Handle mobile menu events from BaseComponentDirective
+  onMobileMenuOpen(): void {
+    super.onMobileMenuOpen();
+    if (this.itemTypeNavComponent) {
+      this.itemTypeNavComponent.reinitialize();
+    }
+  }
+  
+  onMobileMenuClose(): void {
+    super.onMobileMenuClose();
   }
 
   onSelectedItemChanged(item: EquipmentItemBaseInterface) {
@@ -221,6 +255,29 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     this.activeId = parseInt(this.activatedRoute.snapshot?.paramMap.get("itemId"), 10);
   }
 
+  /**
+   * Register the mobile page menu with the service
+   * Must be called after the view is initialized to access the templates
+   */
+  private _registerMobilePageMenu(): void {
+    // Only register on mobile devices
+    if (!this.deviceService.mdMax()) {
+      return;
+    }
+    
+    // Only access after ViewInit
+    if (!this.titleTemplate || !this.descriptionTemplate || !this.navTemplate) {
+      return;
+    }
+    
+    // Register the menu configuration with the service
+    this.mobilePageMenuService.registerMenu({
+      titleTemplate: this.titleTemplate,
+      descriptionTemplate: this.descriptionTemplate,
+      template: this.navTemplate,
+    });
+  }
+  
   private _setLocation() {
     const _doSetLocation = (item: EquipmentItemBaseInterface) => {
       this.utilsService.delay(100).subscribe(() => {

@@ -14,16 +14,16 @@
       pointer-events: none;
 
       .ng-fa-icon {
-        animation: toggleAnimation 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        animation: toggleAnimation .6s cubic-bezier(.175, .885, .32, 1.275);
       }
     }
 
     .ng-fa-icon {
       display: inline-block;
       transform-origin: center;
-      transition: all 0.2s ease;
+      transition: all .2s ease;
       // Start slightly smaller when not toggled
-      transform: scale(0.9);
+      transform: scale(.9);
     }
 
     &:hover:not([disabled]) {
@@ -35,18 +35,18 @@
     // Loading state
     &.loading {
       .ng-fa-icon {
-        opacity: 0.5;
+        opacity: .5;
       }
     }
 
     // Count animation
     .count {
-      margin-left: 0.5rem;
-      transition: transform 0.2s ease;
+      margin-left: .5rem;
+      transition: transform .2s ease;
     }
 
     &.toggling .count {
-      animation: countBump 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: countBump .3s cubic-bezier(.175, .885, .32, 1.275);
     }
 
     &.toggled {
@@ -88,7 +88,7 @@
     transform: scale(1.2);
   }
   50% {
-    transform: scale(0.95);
+    transform: scale(.95);
   }
   100% {
     transform: scale(1);

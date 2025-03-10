@@ -1,0 +1,85 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+:host {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  transition: transform .3s ease, opacity .3s ease;
+
+  &.footer-hidden {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  // Add bottom margin to the content area when footer is visible
+  & ~ footer {
+    @media (max-width: 991.98px) {
+      margin-bottom: 3.75rem;
+    }
+  }
+
+  nav.navbar {
+    @include darkest-background-texture;
+    box-shadow: 0 -.25rem .5rem rgba(0, 0, 0, .25);
+    height: 3.75rem;
+    padding: 0;
+
+    .container {
+      padding: 0;
+    }
+
+    .nav {
+      height: 100%;
+
+      .nav-item {
+        flex: 1;
+        height: 100%;
+
+        .nav-link {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          color: $white;
+          opacity: .7;
+          transition: opacity .2s ease;
+
+          &.active {
+            opacity: 1;
+            font-weight: 500;
+          }
+
+          &:hover {
+            opacity: 1;
+          }
+
+          fa-icon {
+            font-size: 1.5rem;
+          }
+
+          .avatar-container {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, .3);
+          }
+
+          &.user-avatar-link {
+            .avatar-container {
+              transform: translateY(-15px);
+            }
+          }
+        }
+      }
+    }
+  }
+}

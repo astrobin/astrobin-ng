@@ -41,8 +41,8 @@ formly-field-checkbox {
   }
 
   &.is-invalid.ng-touched {
-    border-left: 0.5rem solid var(--dangerColor);
-    padding-left: calc(0.75rem - 0.5rem + 1px);
+    border-left: .5rem solid var(--dangerColor);
+    padding-left: calc(.75rem - .5rem + 1px);
   }
 
   &:disabled,
@@ -89,7 +89,7 @@ formly-field-checkbox {
 
 .form-actions {
   margin-top: 3rem;
-  padding-top: 0.75rem;
+  padding-top: .75rem;
   text-align: right;
 
   .btn:not(:last-child) {
@@ -133,7 +133,7 @@ formly-field-checkbox {
 }
 
 .input-group-text {
-  padding: 0.375rem 0.5rem;
+  padding: .375rem .5rem;
   background: var(--lighterGrey);
   color: var(--darkerGrey);
 }

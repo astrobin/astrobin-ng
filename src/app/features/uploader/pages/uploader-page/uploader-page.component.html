@@ -1,4 +1,4 @@
-<div class="page has-breadcrumb">
+<div class="page has-breadcrumb has-title">
   <ng-container *ngIf="store$ | async as state">
     <ng-container *ngIf="state && state.auth.initialized && state.app.backendConfig; else loading">
       <h1>{{ pageTitle }}</h1>

@@ -1,7 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { MainState } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";

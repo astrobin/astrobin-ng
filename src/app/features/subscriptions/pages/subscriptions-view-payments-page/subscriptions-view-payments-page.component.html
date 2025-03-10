@@ -7,7 +7,7 @@
     <th scope="col" translate>Date</th>
     <th scope="col" translate>Subscription</th>
     <th scope="col" translate>Amount</th>
-    <th scope="col" translate>Event</th>
+    <th scope="col" class="d-none d-lg-table-cell" translate>Event</th>
     <th scope="col" translate></th>
   </tr>
   </thead>
@@ -17,7 +17,7 @@
       <th scope="row">{{ payment.timestamp | localDate | timeago:true }}</th>
       <td>{{ payment.subscription_name }}</td>
       <td>{{ payment.amount }}</td>
-      <td>"{{ payment.event }}"</td>
+      <td class="d-none d-lg-table-cell">"{{ payment.event }}"</td>
       <td>
         <ng-container *ngIf="!!payment.comment && payment.comment.indexOf('http') === 0">
           <a [href]="payment.comment" target="_blank">

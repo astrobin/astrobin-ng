@@ -233,11 +233,11 @@ $header-height: 63px;
       position: absolute;
       top: 1.15rem;
       left: 3.5rem;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, .5);
       color: white;
-      padding: 0.25rem 0.75rem;
+      padding: .25rem .75rem;
       border-radius: 1rem;
-      font-size: 0.875rem;
+      font-size: .875rem;
       z-index: 1000;
 
       &.beyond-one {

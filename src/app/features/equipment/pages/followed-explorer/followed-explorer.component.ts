@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, ViewChild, TemplateRef, AfterViewInit, OnDestroy } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -20,15 +20,25 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
 import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { DeviceService } from "@core/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-equipment-pending-review-explorer",
   templateUrl: "followed-explorer.component.html"
 })
-export class FollowedExplorerComponent extends ExplorerBaseComponent implements OnInit {
+export class FollowedExplorerComponent extends ExplorerBaseComponent implements OnInit, AfterViewInit, OnDestroy {
   title = this.translateService.instant("Followed equipment");
 
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>>;
+  
+  @ViewChild("titleTemplate", { static: true })
+  titleTemplate: TemplateRef<any>;
+  
+  @ViewChild("descriptionTemplate", { static: true })
+  descriptionTemplate: TemplateRef<any>;
+  
+  @ViewChild("navTemplate", { static: true })
+  navTemplate: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -45,7 +55,8 @@ export class FollowedExplorerComponent extends ExplorerBaseComponent implements 
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly deviceService: DeviceService,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
+    private readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(
       store$,
@@ -79,6 +90,24 @@ export class FollowedExplorerComponent extends ExplorerBaseComponent implements 
       })
     );
   }
+  
+  ngAfterViewInit() {
+    super.ngAfterViewInit?.();
+    this._registerMobilePageMenu();
+  }
+  
+  ngOnDestroy(): void {
+    this.mobilePageMenuService.clearMenu();
+    super.ngOnDestroy();
+  }
+  
+  onMobileMenuOpen(): void {
+    // Any specific logic needed when menu opens
+  }
+  
+  onMobileMenuClose(): void {
+    // Any specific logic needed when menu closes
+  }
 
   getItems() {
     this.loadingService.setLoading(true);
@@ -98,5 +127,26 @@ export class FollowedExplorerComponent extends ExplorerBaseComponent implements 
           this.loadingService.setLoading(false);
         })
       );
+  }
+  
+  /**
+   * Register the mobile page menu with the service
+   */
+  private _registerMobilePageMenu(): void {
+    if (!this.deviceService.mdMax()) {
+      return;
+    }
+    
+    // Only register if the templates are available
+    if (!this.titleTemplate || !this.descriptionTemplate || !this.navTemplate) {
+      return;
+    }
+    
+    // Register the menu configuration with the service
+    this.mobilePageMenuService.registerMenu({
+      titleTemplate: this.titleTemplate,
+      descriptionTemplate: this.descriptionTemplate,
+      template: this.navTemplate,
+    });
   }
 }

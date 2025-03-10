@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page has-title">
   <ng-container *ngIf="user$ | async as user; else loading">
     <ng-container *ngIf="legacyItem && user; else loading">
       <h1>{{ title }}</h1>

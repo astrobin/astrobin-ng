@@ -11,7 +11,7 @@
       margin: 0;
       line-height: 1rem;
       z-index: 1;
-      transition: opacity 0.3s ease, filter 0.3s ease;
+      transition: opacity .3s ease, filter .3s ease;
 
       ::ng-deep {
         .dropdown {
@@ -60,7 +60,7 @@
       text-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
       pointer-events: none;
       opacity: 1;
-      transition: opacity 0.3s ease;
+      transition: opacity .3s ease;
     }
 
     @media (hover: hover) and (pointer: fine) {

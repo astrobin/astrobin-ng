@@ -16,28 +16,26 @@
 .page {
   @include dark-background-texture;
   position: relative;
-  border-radius: 0.25rem;
+  border-radius: .25rem;
   padding: 2rem;
   margin: 1rem 0;
-  box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 16px rgba(0, 0, 0, .5);
   transition: opacity .5s ease-in;
   color: var(--white);
 
-  @media screen and (max-width: $sm-max) {
-    &.has-mobile-menu {
-      padding-top: 4rem;
+  @media screen and (max-width: $md-max) {
+    padding: .75rem .375rem;
+    margin-top: 0;
+
+    &.mobile-flush-top {
+      padding-top: .25rem;
+    }
+
+    &.has-title {
+      padding-top: 1.5rem;
     }
   }
 
-  @media screen and (max-width: $md-max) {
-    padding: 2rem .5rem;
-    margin-top: 0;
-  }
-
-  @media screen and (max-width: $sm-max) {
-    padding: .5rem;
-    margin-top: 0;
-  }
 
   @media screen and (min-width: $lg-min) {
     &.has-breadcrumb {

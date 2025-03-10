@@ -73,7 +73,7 @@
 
       .ng-value-icon {
         color: var(--darkestGrey);
-        font-size: 0.8rem;
+        font-size: .8rem;
         background: var(--lighterGrey);
         border-radius: 50%;
         position: absolute;
@@ -87,7 +87,7 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        transition: background-color 0.2s, color 0.2s, transform 0.2s;
+        transition: background-color .2s, color .2s, transform .2s;
 
         &:hover {
           background-color: var(--lightestGrey);
@@ -167,7 +167,7 @@
 
   &.equipment-select {
     .ng-dropdown-panel {
-      box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.9) !important;
+      box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, .9) !important;
 
       .ng-dropdown-panel-items {
         .ng-option {

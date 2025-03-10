@@ -14,13 +14,14 @@ import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceService } from "@core/services/device.service";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-image-viewer-title",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
 
-      <div class="image-viewer-title d-flex flex-row justify-content-between align-items-start gap-2">
+      <div class="image-viewer-title d-flex flex-row justify-content-between align-items-center gap-2 px-2">
         <h2 class="flex-grow-1 mb-0 text-center text-sm-start">
           <span [innerHTML]="image.title | highlight: searchModel?.text?.value"></span>
 
@@ -125,33 +126,18 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
           </div>
         </h2>
 
-        <div
-          ngbDropdown
-          [placement]="'bottom-end'"
-          class="dropdown w-auto d-none d-md-block mt-1"
-        >
-          <fa-icon
-            ngbDropdownToggle
-            icon="ellipsis-v"
-            class="dropdown-toggle no-toggle"
-            aria-haspopup="true"
-            aria-expanded="false"
-          ></fa-icon>
-          <div ngbDropdownMenu class="dropdown-menu">
-            <astrobin-image-viewer-menu
-              [image]="image"
-              [revisionLabel]="revisionLabel"
-              itemClass="dropdown-item"
-              dividerClass="dropdown-divider"
-            ></astrobin-image-viewer-menu>
-          </div>
-        </div>
-
         <astrobin-image-viewer-share-button
           [image]="image"
           [revisionLabel]="revisionLabel"
-          class="d-none d-md-block p-1 pe-0"
+          class="d-none d-lg-block p-1"
         ></astrobin-image-viewer-share-button>
+
+        <button
+          (click)="openMenu()"
+          class="kebab-menu btn btn-link link-secondary d-none d-lg-block p-1"
+        >
+          <fa-icon icon="ellipsis-v" class="m-0"></fa-icon>
+        </button>
       </div>
     </ng-container>
 
@@ -205,7 +191,8 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
     public readonly deviceService: DeviceService,
     public readonly cookieService: CookieService,
     public readonly collapseSyncService: CollapseSyncService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(
       store$,
@@ -217,6 +204,13 @@ export class ImageViewerTitleComponent extends ImageViewerSectionBaseComponent i
       collapseSyncService,
       changeDetectorRef
     );
+  }
+
+  /**
+   * Open the image menu using the offcanvas
+   */
+  openMenu(): void {
+    this.mobilePageMenuService.openMenu();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

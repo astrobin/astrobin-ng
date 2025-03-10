@@ -11,7 +11,7 @@
   width: 100%;
   z-index: 1031;
   transform: translateY(-1000px); // Far enough so that the toggle properties don't autoload.
-  transition: transform 0.3s ease-in-out;
+  transition: transform .3s ease-in-out;
   box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .5);
 
   @media (max-width: $lg-max) {

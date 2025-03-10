@@ -3,6 +3,8 @@ import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { LoadingService } from "@core/services/loading.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { BehaviorSubject, Observable } from "rxjs";
 
 // Keep in sync with _breakpoints.scss
 export enum Breakpoint {
@@ -26,6 +28,8 @@ export enum Breakpoint {
 })
 export class DeviceService extends BaseService {
   private readonly _isBrowser: boolean;
+  private _pwaState = new BehaviorSubject<boolean>(false);
+  public isPwaMode$: Observable<boolean> = this._pwaState.asObservable();
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -34,6 +38,41 @@ export class DeviceService extends BaseService {
   ) {
     super(loadingService);
     this._isBrowser = isPlatformBrowser(this.platformId);
+    this._detectPwaMode();
+  }
+
+  /**
+   * Check if the application is running in PWA mode
+   * @returns boolean indicating if the app is in PWA mode
+   */
+  private _checkPwaMode(): boolean {
+    if (!this._isBrowser) {
+      return false;
+    }
+
+    const _window = this.windowRefService.nativeWindow;
+
+    return _window.matchMedia('(display-mode: standalone)').matches ||
+           _window.matchMedia('(display-mode: fullscreen)').matches ||
+           (_window.navigator as any).standalone === true;
+  }
+
+  /**
+   * Initialize PWA mode detection and set up listeners for changes
+   */
+  private _detectPwaMode(): void {
+    // Set initial value
+    this._pwaState.next(this._checkPwaMode());
+
+    if (!this._isBrowser) {
+      return;
+    }
+
+    // Listen for changes in display mode
+    const _window = this.windowRefService.nativeWindow;
+    _window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+      this._pwaState.next(e.matches || this._checkPwaMode());
+    });
   }
 
   xxsMin(): boolean {
@@ -197,6 +236,22 @@ export class DeviceService extends BaseService {
     }
 
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+  isAndroid(): boolean {
+    if (!this._isBrowser) {
+      return false;
+    }
+
+    if (typeof navigator === "undefined") {
+      return false;
+    }
+
+    return /Android/i.test(navigator.userAgent);
+  }
+
+  getShareIcon(): IconProp {
+    return this.isAndroid() ? "share-nodes" : "arrow-up-from-bracket";
   }
 
   offcanvasPosition(): "bottom" | "end" {

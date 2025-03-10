@@ -1,7 +1,7 @@
 .image-container {
   position: relative;
   cursor: pointer;
-  transition: filter 0.2s ease-in-out;
+  transition: filter .2s ease-in-out;
 
   .ng-fa-icon.check,
   .ng-fa-icon.loading-indicator {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, OnDestroy, PLATFORM_ID, ViewChild, TemplateRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -37,13 +37,28 @@ import { NestedCommentsAutoStartTopLevelStrategy } from "@shared/components/misc
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { DeviceService } from "@core/services/device.service";
 import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
   templateUrl: "./marketplace-listing.page.component.html",
   styleUrls: ["./marketplace-listing.page.component.scss"]
 })
-export class MarketplaceListingPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class MarketplaceListingPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild("titleTemplate", { static: true })
+  titleTemplate: TemplateRef<any>;
+  
+  @ViewChild("descriptionTemplate", { static: true })
+  descriptionTemplate: TemplateRef<any>;
+  
+  @ViewChild("shareButtonsTemplate", { static: true })
+  shareButtonsTemplate: TemplateRef<any>;
+  
+  @ViewChild("ownerButtonsTemplate", { static: true })
+  ownerButtonsTemplate: TemplateRef<any>;
+  
+  @ViewChild("nonOwnerButtonsTemplate", { static: true })
+  nonOwnerButtonsTemplate: TemplateRef<any>;
   readonly MarketplaceListingType = MarketplaceListingType;
 
   readonly breadcrumb = new SetBreadcrumb({
@@ -90,7 +105,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly location: Location,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly deviceService: DeviceService
+    public readonly deviceService: DeviceService,
+    private readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(store$);
   }
@@ -248,6 +264,22 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     if (isPlatformBrowser(this.platformId)) {
       this._recordHit();
     }
+    
+    // Register the mobile menu
+    this._registerMobilePageMenu();
+  }
+  
+  ngOnDestroy(): void {
+    this.mobilePageMenuService.clearMenu();
+    super.ngOnDestroy();
+  }
+  
+  onMobileMenuOpen(): void {
+    // Any specific logic needed when menu opens
+  }
+  
+  onMobileMenuClose(): void {
+    // Any specific logic needed when menu closes
   }
 
   shareOnFacebook() {
@@ -588,6 +620,55 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       takeUntil(this.destroyed$)
     ).subscribe(listing => {
       this.setListing(listing);
+    });
+  }
+  
+  /**
+   * Register the mobile page menu with the service
+   */
+  private _registerMobilePageMenu(): void {
+    // Only register if the templates are available
+    if (!this.titleTemplate || !this.descriptionTemplate || !this.shareButtonsTemplate) {
+      return;
+    }
+    
+    // Get the current user to determine owner vs non-owner buttons
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      // Generate the correct template context
+      const isOwner = user?.id === this.listing.user;
+      const templateContext = { 
+        currentUserWrapper: { user },
+        listingContentType: null 
+      };
+      
+      // Get the content type for non-owner buttons (needed for toggle-property)
+      if (!isOwner) {
+        this.listingContentType$.pipe(take(1)).subscribe(contentType => {
+          templateContext.listingContentType = contentType;
+          
+          // Register the menu configuration with the service
+          this.mobilePageMenuService.registerMenu({
+            titleTemplate: this.titleTemplate,
+            descriptionTemplate: this.descriptionTemplate,
+            iconsTemplate: this.shareButtonsTemplate,
+            template: this.nonOwnerButtonsTemplate,
+            templateContext: templateContext,
+            position: "end",
+            offcanvasClass: "offcanvas-menu"
+          });
+        });
+      } else {
+        // Register the menu configuration with the service for owner
+        this.mobilePageMenuService.registerMenu({
+          titleTemplate: this.titleTemplate,
+          descriptionTemplate: this.descriptionTemplate,
+          iconsTemplate: this.shareButtonsTemplate,
+          template: this.ownerButtonsTemplate,
+          templateContext: templateContext,
+          position: "end",
+          offcanvasClass: "offcanvas-menu"
+        });
+      }
     });
   }
 }

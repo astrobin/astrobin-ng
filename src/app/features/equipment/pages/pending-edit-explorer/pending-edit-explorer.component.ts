@@ -18,6 +18,7 @@ import { CookieService } from "ngx-cookie";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { DeviceService } from "@core/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-equipment-pending-edit-explorer",
@@ -41,7 +42,8 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
     public readonly changeDetectionRef: ChangeDetectorRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly deviceService: DeviceService,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(
       store$,
@@ -54,7 +56,8 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
       changeDetectionRef,
       platformId,
       deviceService,
-      offcanvasService
+      offcanvasService,
+      mobilePageMenuService
     );
     this.pendingType = PendingType.PENDING_EDIT;
   }

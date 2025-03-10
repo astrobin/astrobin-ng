@@ -55,7 +55,7 @@
       > div {
         position: fixed;
         bottom: 5rem;
-        right: 0.75rem;
+        right: .75rem;
         flex-direction: column;
         align-items: center;
         gap: 1rem;
@@ -143,6 +143,9 @@ astrobin-marketplace-more-from-user {
     color: var(--lighterGrey);
   }
 }
+
+// Add any component-specific styles here
+// Note: All mobile menu styling is now handled by the shared offcanvas-menu class in _offcanvas.scss
 
 astrobin-scroll-to-top {
   ::ng-deep {
