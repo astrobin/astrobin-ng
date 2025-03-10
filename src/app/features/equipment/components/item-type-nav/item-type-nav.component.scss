@@ -1,8 +1,14 @@
 @import "../../../../styles/breakpoints";
 
+:host {
+  height: 100%;
+}
+
 .nav-item {
   position: relative;
   min-height: 3rem;
+  display: initial;
+  padding: 0;
 
   &:not(:last-child) {
     margin-bottom: .25rem;
@@ -12,6 +18,8 @@
     display: flex;
     align-items: center;
     gap: .5rem;
+    padding: 0.5rem 1rem;
+
 
     img {
       width: 2rem;

@@ -145,13 +145,12 @@
         margin-top: 1rem;
 
         .copyright-info {
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          color: var(--grey);
-          font-size: 0.8rem;
+          opacity: .5;
+          font-size: 0.7rem;
         }
       }
 
-      .nav {
+      .nav.offcanvas-menu {
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -173,20 +172,22 @@
       }
 
       .nav-link {
-        padding: .75rem;
-        font-size: 1.1rem;
         color: var(--lightestGrey);
         display: flex;
         align-items: flex-start;
+        padding: 0;
 
-        fa-icon {
-          width: 30px;
+        .ng-fa-icon {
+          width: 1.5rem;
           text-align: center;
-          margin-right: .75rem;
           display: inline-block;
-          flex-shrink: 0;
+
+          &:not([icon="chevron-right"]) {
+            margin-right: .75rem;
+            flex-shrink: 0;
+          }
         }
-        
+
         .menu-text {
           flex: 1;
         }
@@ -206,7 +207,6 @@
     }
   }
 }
-
 
 
 ::ng-deep .offcanvas.notifications-offcanvas {

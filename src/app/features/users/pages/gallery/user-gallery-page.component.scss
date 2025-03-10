@@ -43,44 +43,6 @@ astrobin-user-gallery-header {
 }
 
 ::ng-deep .user-gallery-menu-offcanvas {
-  .mobile-user-menu {
-    // Styles specifically for mobile menus
-    display: flex;
-    flex-direction: column;
-    
-    .nav-item {
-      width: 100%;
-    }
-    
-    .nav-link {
-      padding: .75rem;
-      font-size: 1.1rem;
-      color: var(--lightestGrey);
-      display: flex;
-      align-items: flex-start;
-      width: 100%;
-      
-      fa-icon {
-        width: 30px;
-        text-align: center;
-        margin-right: .75rem;
-        display: inline-block;
-        flex-shrink: 0;
-      }
-      
-      .menu-text {
-        flex: 1;
-      }
-      
-      &:hover {
-        color: var(--white);
-      }
-    }
-    
-    button.nav-link, a.nav-link {
-      background: transparent;
-      border: none;
-      text-align: left;
-    }
-  }
+  // Custom styles specific to the user gallery menu can go here
+  // Most styles now come from the shared offcanvas-menu class
 }

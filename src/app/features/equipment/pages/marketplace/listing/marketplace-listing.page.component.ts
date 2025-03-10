@@ -53,6 +53,12 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   
   @ViewChild("shareButtonsTemplate", { static: true })
   shareButtonsTemplate: TemplateRef<any>;
+  
+  @ViewChild("ownerButtonsTemplate", { static: true })
+  ownerButtonsTemplate: TemplateRef<any>;
+  
+  @ViewChild("nonOwnerButtonsTemplate", { static: true })
+  nonOwnerButtonsTemplate: TemplateRef<any>;
   readonly MarketplaceListingType = MarketplaceListingType;
 
   readonly breadcrumb = new SetBreadcrumb({
@@ -621,20 +627,48 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
    * Register the mobile page menu with the service
    */
   private _registerMobilePageMenu(): void {
-    if (!this.deviceService.mdMax()) {
-      return;
-    }
-    
     // Only register if the templates are available
     if (!this.titleTemplate || !this.descriptionTemplate || !this.shareButtonsTemplate) {
       return;
     }
     
-    // Register the menu configuration with the service
-    this.mobilePageMenuService.registerMenu({
-      titleTemplate: this.titleTemplate,
-      descriptionTemplate: this.descriptionTemplate,
-      iconsTemplate: this.shareButtonsTemplate,
+    // Get the current user to determine owner vs non-owner buttons
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      // Generate the correct template context
+      const isOwner = user?.id === this.listing.user;
+      const templateContext = { 
+        currentUserWrapper: { user },
+        listingContentType: null 
+      };
+      
+      // Get the content type for non-owner buttons (needed for toggle-property)
+      if (!isOwner) {
+        this.listingContentType$.pipe(take(1)).subscribe(contentType => {
+          templateContext.listingContentType = contentType;
+          
+          // Register the menu configuration with the service
+          this.mobilePageMenuService.registerMenu({
+            titleTemplate: this.titleTemplate,
+            descriptionTemplate: this.descriptionTemplate,
+            iconsTemplate: this.shareButtonsTemplate,
+            template: this.nonOwnerButtonsTemplate,
+            templateContext: templateContext,
+            position: "end",
+            offcanvasClass: "offcanvas-menu"
+          });
+        });
+      } else {
+        // Register the menu configuration with the service for owner
+        this.mobilePageMenuService.registerMenu({
+          titleTemplate: this.titleTemplate,
+          descriptionTemplate: this.descriptionTemplate,
+          iconsTemplate: this.shareButtonsTemplate,
+          template: this.ownerButtonsTemplate,
+          templateContext: templateContext,
+          position: "end",
+          offcanvasClass: "offcanvas-menu"
+        });
+      }
     });
   }
 }

@@ -93,7 +93,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             icon="comments"
           ></fa-icon>
 
-          <span class="count">
+          <span class="count ms-2">
             <astrobin-nested-comments-count
               [contentType]="imageContentType"
               [objectId]="image?.pk"

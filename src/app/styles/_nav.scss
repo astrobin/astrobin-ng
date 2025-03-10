@@ -1,4 +1,5 @@
 @import "mixins";
+@import "breakpoints";
 
 .nav {
   &[orientation=vertical] {
@@ -12,7 +13,14 @@
       margin-top: .75rem;
       margin-bottom: .75rem;
       height: 0;
-      border-bottom: 1px solid rgba(255, 255, 255, .1);
+
+      @media (max-width: $md-max) {
+        flex-grow: 1;
+      }
+
+      @media (min-width: $lg-min) {
+        border-bottom: 1px solid rgba(255, 255, 255, .1);
+      }
     }
   }
 

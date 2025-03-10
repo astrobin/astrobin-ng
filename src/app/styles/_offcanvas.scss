@@ -65,24 +65,32 @@
     flex-direction: column;
   }
 
-  .menu-item {
+  .nav-item {
     padding: .75rem;
     width: 100%;
     display: flex;
     align-items: flex-start;
     text-align: left;
     color: var(--lightestGrey);
-    font-size: 1.1rem;
+    font-size: 1rem;
     cursor: pointer;
     border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.025);
     background: transparent;
 
     fa-icon {
-      width: 30px;
+      width: 1.5rem;
       text-align: center;
-      margin-right: .75rem;
       display: inline-block;
-      flex-shrink: 0;
+
+      &:not([icon="chevron-right"]) {
+        margin-right: .75rem;
+        flex-shrink: 0;
+      }
+
+      &[icon="chevron-right"] {
+        color: var(--lightGrey);
+      }
     }
 
     .menu-text {
@@ -92,11 +100,16 @@
     &:hover {
       color: var(--white);
     }
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   .menu-divider {
     height: .75rem;
     border: 0;
     background: none;
+    flex-grow: 1;
   }
 }

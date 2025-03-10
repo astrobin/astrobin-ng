@@ -34,7 +34,7 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
   selector: "astrobin-image-viewer-menu",
   template: `
     <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-      <ul class="nav flex-column">
+      <ul class="nav flex-column h-100">
       <ng-container *ngIf="currentUserWrapper.user?.id === image.user">
         <li class="nav-item">
           <a
@@ -171,7 +171,7 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
           currentUserWrapper.user?.id === image.user ||
           image.downloadLimitation === DownloadLimitationOptions.EVERYBODY"
       >
-        <li class="nav-item">
+        <li class="nav-item flex-grow-1">
           <hr class="dropdown-divider">
         </li>
 
@@ -185,6 +185,7 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
           >
             <fa-icon icon="download"></fa-icon>
             <span class="menu-text">{{ "Download" | translate }}</span>
+            <fa-icon icon="chevron-right"></fa-icon>
           </a>
         </li>
       </ng-container>
@@ -207,7 +208,7 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
         <button type="button" class="btn-close" (click)="offcanvas.dismiss()"></button>
       </div>
       <div class="offcanvas-body">
-        <ul class="nav flex-column">
+        <ul class="nav flex-column h-100">
           <li class="nav-item">
             <a
               (click)="downloadImage(ImageAlias.REGULAR)"
@@ -256,7 +257,7 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
             </a>
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item flex-grow-1">
             <hr class="dropdown-divider">
           </li>
 
@@ -544,7 +545,7 @@ export class ImageViewerMenuComponent extends BaseComponentDirective implements 
       this.downloadOffcanvasTemplate, {
         panelClass: "image-viewer-offcanvas offcanvas-menu",
         backdropClass: "image-viewer-offcanvas-backdrop",
-        position: this.deviceService.mdMax() ? "start" : "end"
+        position: "end"
       }
     );
   }

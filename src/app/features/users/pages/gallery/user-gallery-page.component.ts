@@ -26,6 +26,7 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/account/store/auth.actions";
 import { UserGalleryHeaderComponent } from "./user-gallery-header.component";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { AuthService } from "@core/services/auth.service";
 
 @Component({
   selector: "astrobin-user-gallery-page",
@@ -57,38 +58,66 @@ import { UtilsService } from "@core/services/utils/utils.service";
         [userProfile]="userProfile"
       ></astrobin-user-gallery-navigation>
     </div>
-    
+
     <!-- Templates for mobile page menu -->
     <ng-template #titleTemplate>
       <span>{{ user?.displayName }}</span>
     </ng-template>
-    
+
     <ng-template #navTemplate>
-      <ul class="mobile-user-menu nav flex-column">
+      <ul class="mobile-user-menu nav flex-column h-100">
         <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
           <!-- Dropdown items from the user-gallery-header dropdown -->
           <ng-container *ngIf="currentUserWrapper.user?.id === user?.id">
+            <!-- Common actions for owner -->
             <li class="nav-item">
-              <button 
-                (click)="openHeaderImageChange()" 
-                class="nav-link"
+              <a
+                routerLink="/subscriptions/options"
+                class="nav-link menu-item"
+              >
+                <fa-icon icon="asterisk"></fa-icon>
+                <span class="menu-text">{{ "Subscription plans" | translate }}</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                (click)="openHeaderImageChange()"
+                class="nav-link menu-item"
+                astrobinEventPreventDefault
               >
                 <fa-icon icon="image"></fa-icon>
-                {{ "Change header image" | translate }}
-              </button>
+                <span class="menu-text">{{ "Change header image" | translate }}</span>
+              </a>
             </li>
-            
+
             <li class="nav-item">
-              <a 
-                [href]="classicRoutesService.SETTINGS" 
-                class="nav-link"
+              <a
+                [href]="classicRoutesService.SETTINGS"
+                class="nav-link menu-item"
               >
                 <fa-icon icon="cog"></fa-icon>
-                {{ "Settings" | translate }}
+                <span class="menu-text">{{ "Settings" | translate }}</span>
+              </a>
+            </li>
+
+            <!-- Divider -->
+            <div class="menu-divider"></div>
+
+            <!-- Logout button -->
+            <li class="nav-item">
+              <a
+                href="#"
+                (click)="logout($event)"
+                class="nav-link menu-item"
+                astrobinEventPreventDefault
+              >
+                <fa-icon icon="sign-out-alt"></fa-icon>
+                <span class="menu-text">{{ "Logout" | translate }}</span>
               </a>
             </li>
           </ng-container>
-          
+
           <ng-container *ngIf="currentUserWrapper.user?.id !== user?.id">
             <li class="nav-item" *ngIf="!currentUserWrapper.userProfile?.shadowBans?.includes(userProfile?.id)">
               <a
@@ -96,33 +125,58 @@ import { UtilsService } from "@core/services/utils/utils.service";
                 href="#"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
-                class="nav-link"
+                class="nav-link menu-item"
               >
                 <fa-icon icon="ban"></fa-icon>
-                {{ "Shadow-ban" | translate }}
+                <span class="menu-text">{{ "Shadow-ban" | translate }}</span>
               </a>
             </li>
-            
+
             <li class="nav-item" *ngIf="currentUserWrapper.userProfile?.shadowBans?.includes(userProfile?.id)">
               <a
                 (click)="removeShadowBan(userProfile?.id)"
                 href="#"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
-                class="nav-link"
+                class="nav-link menu-item"
               >
                 <fa-icon icon="undo"></fa-icon>
-                {{ "Remove shadow-ban" | translate }}
+                <span class="menu-text">{{ "Remove shadow-ban" | translate }}</span>
               </a>
             </li>
-            
+
             <li class="nav-item">
               <a
                 [href]="classicRoutesService.SEND_MESSAGE(user?.username)"
-                class="nav-link"
+                class="nav-link menu-item"
               >
                 <fa-icon icon="envelope"></fa-icon>
-                {{ "Send private message" | translate }}
+                <span class="menu-text">{{ "Send private message" | translate }}</span>
+              </a>
+            </li>
+
+            <!-- Current user's subscriptions and logout -->
+            <div class="menu-divider"></div>
+
+            <li class="nav-item">
+              <a
+                routerLink="/subscriptions/options"
+                class="nav-link menu-item"
+              >
+                <fa-icon icon="asterisk"></fa-icon>
+                <span class="menu-text">{{ "Subscription plans" | translate }}</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                href="#"
+                (click)="logout($event)"
+                class="nav-link menu-item"
+                astrobinEventPreventDefault
+              >
+                <fa-icon icon="sign-out-alt"></fa-icon>
+                <span class="menu-text">{{ "Logout" | translate }}</span>
               </a>
             </li>
           </ng-container>
@@ -135,11 +189,11 @@ import { UtilsService } from "@core/services/utils/utils.service";
 })
 export class UserGalleryPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("ad", { static: false, read: AdManagerComponent }) adManagerComponent: AdManagerComponent;
-  
+
   // Templates for mobile page menu
   @ViewChild("titleTemplate", { static: true }) titleTemplate: TemplateRef<any>;
   @ViewChild("navTemplate", { static: true }) navTemplate: TemplateRef<any>;
-  
+
   // Reference to user-gallery-header component to access its methods
   @ViewChild(UserGalleryHeaderComponent) userGalleryHeader: any;
 
@@ -165,7 +219,8 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     public readonly deviceService: DeviceService,
     public readonly mobilePageMenuService: MobilePageMenuService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly authService: AuthService
   ) {
     super(store$);
     this._setUserContentType();
@@ -290,27 +345,27 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
 
   ngAfterViewInit() {
     this.imageViewerService.autoOpenSlideshow(this.componentId, this.activatedRoute);
-    
+
     // Register the mobile page menu
     this._registerMobilePageMenu();
   }
-  
+
   ngOnDestroy(): void {
     super.ngOnDestroy();
-    
+
     // Clear the mobile page menu when navigating away
     if (this.deviceService.mdMax()) {
       this.mobilePageMenuService.clearMenu();
     }
   }
-  
+
   /**
    * User profile menu methods
    */
   protected openHeaderImageChange(): void {
     // Close the menu first
     this.mobilePageMenuService.closeMenu();
-    
+
     // Then open the header image change offcanvas from the header component
     // Using utilsService.delay for SSR-friendliness
     this.utilsService.delay(100).subscribe(() => {
@@ -319,17 +374,30 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
       }
     });
   }
-  
+
   protected shadowBan(userProfileId: UserProfileInterface["id"]): void {
     this.store$.dispatch(new ShadowBanUserProfile({ id: userProfileId }));
     this.mobilePageMenuService.closeMenu();
   }
-  
+
   protected removeShadowBan(userProfileId: UserProfileInterface["id"]): void {
     this.store$.dispatch(new RemoveShadowBanUserProfile({ id: userProfileId }));
     this.mobilePageMenuService.closeMenu();
   }
-  
+
+  /**
+   * Logout the current user
+   */
+  protected logout(event: Event): void {
+    event.preventDefault();
+    this.mobilePageMenuService.closeMenu();
+
+    // Use the authService to logout
+    if (this.authService) {
+      this.authService.logout().subscribe();
+    }
+  }
+
   /**
    * Register the mobile page menu with the service
    */
@@ -338,20 +406,21 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     if (!this.deviceService.mdMax()) {
       return;
     }
-    
+
     // Only register if both templates are available
     if (!this.titleTemplate || !this.navTemplate) {
       return;
     }
-    
+
     // Register the menu configuration with the service
     this.mobilePageMenuService.registerMenu({
       titleTemplate: this.titleTemplate,
       template: this.navTemplate,
-      offcanvasClass: "user-gallery-menu-offcanvas",
+      offcanvasClass: "user-gallery-menu-offcanvas offcanvas-menu",
+      position: "end"
     });
   }
-  
+
   /**
    * Get the user content type for the toggle-property component
    */
@@ -365,7 +434,7 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
         this.userContentType = contentType;
         this.changeDetectorRef.markForCheck();
       });
-    
+
     this.store$.dispatch(new LoadContentType({ appLabel: "auth", model: "user" }));
   }
 

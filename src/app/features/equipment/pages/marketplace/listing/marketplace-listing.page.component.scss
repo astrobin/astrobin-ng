@@ -144,6 +144,9 @@ astrobin-marketplace-more-from-user {
   }
 }
 
+// Add any component-specific styles here
+// Note: All mobile menu styling is now handled by the shared offcanvas-menu class in _offcanvas.scss
+
 astrobin-scroll-to-top {
   ::ng-deep {
     .btn {

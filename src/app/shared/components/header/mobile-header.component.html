@@ -72,7 +72,7 @@
     <!-- Main Menu View -->
     <ng-container *ngIf="currentMenuView === 'main'">
       <!-- Main navigation options -->
-      <div class="main-nav">
+      <div class="main-nav offcanvas-menu">
         <ul class="nav flex-column">
           <!-- Add Moderate menu item for authorized users -->
           <li class="nav-item" *ngIf="user | isContentModerator">
@@ -107,7 +107,7 @@
       </div>
 
       <!-- Bottom section with language selector and help -->
-      <div class="bottom-nav mt-auto">
+      <div class="bottom-nav offcanvas-menu mt-auto">
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link" (click)="showLanguageMenu()">
@@ -128,15 +128,14 @@
 
         <!-- Copyright and build information -->
         <div class="copyright-info text-center mt-4 pt-3 text-muted small">
-          <div>AstroBin, &copy; 2010 - {{ currentYear }}</div>
-          <div>Build: {{ buildVersion }}</div>
+          <div>AstroBin, &copy; 2010 - {{ currentYear }} &middot; Build: {{ buildVersion | slice:0:8 }}</div>
         </div>
       </div>
     </ng-container>
 
     <!-- Language Menu View -->
     <ng-container *ngIf="currentMenuView === 'language'">
-      <ul class="nav flex-column language-menu">
+      <ul class="nav flex-column language-menu offcanvas-menu">
         <ng-container *ngFor="let language of languages">
           <li class="nav-item" *ngIf="language.code !== '-'">
             <a class="nav-link" [href]="getSetLanguageUrl(language.code)">
@@ -158,7 +157,7 @@
 
     <!-- Help Menu View -->
     <ng-container *ngIf="currentMenuView === 'help'">
-      <ul class="nav flex-column help-menu">
+      <ul class="nav flex-column help-menu offcanvas-menu">
         <li class="nav-item">
           <a [href]="classicRoutesService.ABOUT" class="nav-link">
             <fa-icon icon="info"></fa-icon>
@@ -188,7 +187,7 @@
 
     <!-- Moderate Menu View -->
     <ng-container *ngIf="currentMenuView === 'moderate'">
-      <ul class="nav flex-column moderate-menu">
+      <ul class="nav offcanvas-menu flex-column moderate-menu">
         <!-- Images section -->
         <li class="section-header">
           <h6>{{ "Images" | translate }}</h6>
@@ -215,7 +214,7 @@
 
         <li class="nav-item" *ngIf="user | isIotdSubmitter">
           <a routerLink="/iotd/submission-queue" class="nav-link" (click)="offcanvas.dismiss()">
-            <fa-icon icon="upload"></fa-icon>
+            <fa-icon icon="arrow-up"></fa-icon>
             {{ "Submission queue" | translate }}
           </a>
         </li>
