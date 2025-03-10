@@ -50,21 +50,23 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
 
   // Menu state
   currentMenuView: 'main' | 'language' | 'help' | 'moderate' = 'main';
-  
+
   // Page menu state
   pageMenuConfig$: Observable<MobilePageMenuConfig>;
   hasPageMenu$: Observable<boolean>;
   pageMenuOpenState$: Observable<boolean>;
-  
+
   // Flag to prevent circular dismissal calls
   private _isDismissingProgrammatically = false;
-  
+
   // PWA mode state
   isPwaMode$: Observable<boolean>;
 
   // Kebab menu tooltip state
   showKebabMenuTooltip = false;
   private readonly KEBAB_TOOLTIP_DISMISSED_KEY = 'astrobin-kebab-menu-tooltip-dismissed';
+  private readonly KEBAB_TOOLTIP_SHOWN_DATES_KEY = 'astrobin-kebab-menu-tooltip-shown-dates';
+  private readonly KEBAB_TOOLTIP_MAX_DAYS = 4;
 
   protected unreadNotificationsCount$: Observable<number> = this.store$.select(selectUnreadNotificationsCount).pipe(
     takeUntil(this.destroyed$)
@@ -74,7 +76,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
   languages: LanguageInterface[] = [];
   currentLanguageCodeDisplay: string;
   helpWithTranslationsUrl = "https://translate.astrobin.com/projects/astrobin/astrobin";
-  
+
   // Footer information
   readonly currentYear: number = new Date().getFullYear();
   readonly buildVersion: string = environment.buildVersion;
@@ -120,7 +122,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
 
     // Initialize the language selector
     this.initializeLanguageSelector();
-    
+
     // Initialize page menu observables
     this.pageMenuConfig$ = this.mobilePageMenuService.getMenuConfig();
     this.hasPageMenu$ = this.pageMenuConfig$.pipe(
@@ -128,7 +130,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
       takeUntil(this.destroyed$)
     );
     this.pageMenuOpenState$ = this.mobilePageMenuService.getMenuOpenState();
-    
+
     // Listen for page menu open state changes
     this.pageMenuOpenState$
       .pipe(takeUntil(this.destroyed$))
@@ -140,15 +142,15 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
           this._isDismissingProgrammatically = true;
           this.pageMenuOffcanvasRef.dismiss();
           this.pageMenuOffcanvasRef = null;
-          
+
           // Reset flag after a tick to ensure all callbacks have executed
           setTimeout(() => {
             this._isDismissingProgrammatically = false;
           }, 0);
         }
       });
-      
-    // Initialize kebab menu tooltip after checking if it was previously dismissed
+
+    // Initialize kebab menu tooltip - show once per day for up to KEBAB_TOOLTIP_MAX_DAYS days
     this.hasPageMenu$
       .pipe(
         filter(hasMenu => hasMenu),
@@ -157,16 +159,51 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
       )
       .subscribe(() => {
         const tooltipDismissed = this.localStorageService.getItem(this.KEBAB_TOOLTIP_DISMISSED_KEY);
-        if (!tooltipDismissed) {
+
+        if (tooltipDismissed === 'true') {
+          // User has explicitly dismissed the tooltip for good
+          return;
+        }
+
+        // Get stored dates when tooltip was shown
+        const shownDatesJson = this.localStorageService.getItem(this.KEBAB_TOOLTIP_SHOWN_DATES_KEY) || '[]';
+        let shownDates: string[] = [];
+
+        try {
+          shownDates = JSON.parse(shownDatesJson);
+        } catch (e) {
+          console.error('Error parsing stored dates', e);
+        }
+
+        // Get today's date as YYYY-MM-DD
+        const today = new Date().toISOString().split('T')[0];
+
+        // Check if we've already shown the tooltip today
+        if (shownDates.includes(today)) {
+          return;
+        }
+
+        // If we've shown it less than MAX_DAYS times, show it again
+        if (shownDates.length < this.KEBAB_TOOLTIP_MAX_DAYS) {
+          // Add today to the shown dates
+          shownDates.push(today);
+
+          // Store updated dates
+          this.localStorageService.setItem(
+            this.KEBAB_TOOLTIP_SHOWN_DATES_KEY,
+            JSON.stringify(shownDates)
+          );
+
+          // Show the tooltip
           this.showKebabMenuTooltip = true;
           this.changeDetectorRef.markForCheck();
         }
       });
   }
-  
+
   ngOnDestroy() {
     super.ngOnDestroy();
-    
+
     if (this.pageMenuOffcanvasRef) {
       this.pageMenuOffcanvasRef.dismiss();
     }
@@ -303,14 +340,14 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
       this.removeScrollLock();
     });
   }
-  
+
   /**
    * Open the page-specific kebab menu (triggered by icon or service)
    */
   openPageMenu(): void {
     this.mobilePageMenuService.openMenu();
   }
-  
+
   /**
    * Open the page-specific menu offcanvas
    */
@@ -318,23 +355,23 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     if (!this.pageMenuOffcanvasTemplate) {
       return;
     }
-    
+
     // Add class to prevent body scrolling
     this.addScrollLock();
-    
+
     this.pageMenuConfig$.pipe(take(1)).subscribe(config => {
       if (!config) {
         return;
       }
-      
+
       const panelClass = "offcanvas-menu mobile-menu" + (config.offcanvasClass ? ` ${config.offcanvasClass}` : "");
-      
+
       this.pageMenuOffcanvasRef = this.offcanvasService.open(this.pageMenuOffcanvasTemplate, {
         panelClass: panelClass,
         backdropClass: config.offcanvasBackdropClass,
         position: config.position || "end"
       });
-      
+
       // Handle offcanvas dismissal
       this.pageMenuOffcanvasRef.dismissed.subscribe(() => {
         this.removeScrollLock();
@@ -343,7 +380,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
           // Use a flag to prevent recursive calls
           const wasDismissedByUser = !this._isDismissingProgrammatically;
           this.pageMenuOffcanvasRef = null;
-          
+
           if (wasDismissedByUser) {
             // Only notify service if the dismissal wasn't triggered by the service
             this._isDismissingProgrammatically = true;
@@ -353,14 +390,14 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
             }, 0);
           }
         }
-        
+
         this.onMobileMenuClose();
       });
-      
+
       this.onMobileMenuOpen();
     });
   }
-  
+
   /**
    * Open the description panel as a modal for the page menu
    * This wraps any component's description template with proper modal structure
@@ -368,15 +405,15 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
   openPageMenuDescription(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    
+
     this.pageMenuConfig$.pipe(take(1)).subscribe(config => {
       if (!config || !config.descriptionTemplate) {
         return;
       }
-      
+
       // Get the translated title for the modal
       const title = this.translateService.instant('Information');
-      
+
       // Use NgbModal with the DescriptionModalWrapperComponent to structure the template
       const modalRef = this.modalService.open(DescriptionModalWrapperComponent, {
         centered: true,
@@ -385,7 +422,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
         modalDialogClass: 'description-modal',
         backdropClass: 'description-modal-backdrop'
       });
-      
+
       // Configure the wrapper with the actual template and context
       modalRef.componentInstance.contentTemplate = config.descriptionTemplate;
       modalRef.componentInstance.title = title;
@@ -395,7 +432,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
       };
     });
   }
-  
+
   /**
    * Helper method to safely add scroll lock on body
    * Checks for browser environment to avoid SSR issues
@@ -423,13 +460,12 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
   protected onMobileMenuClose(): void {
     // Any additional logic to handle menu closing
   }
-  
+
   /**
-   * Dismisses the kebab menu tooltip and remembers this in localStorage
+   * Dismisses the kebab menu tooltip and updates localStorage
    */
   dismissKebabMenuTooltip(): void {
     this.showKebabMenuTooltip = false;
-    this.localStorageService.setItem(this.KEBAB_TOOLTIP_DISMISSED_KEY, 'true');
     this.changeDetectorRef.markForCheck();
   }
 }
