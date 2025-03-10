@@ -40,13 +40,11 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
   @ViewChild("menuOffcanvas") menuOffcanvasTemplate: TemplateRef<any>;
   @ViewChild("loginRegisterMenu") loginRegisterMenuTemplate: TemplateRef<any>;
   @ViewChild("notificationsOffcanvas") notificationsOffcanvas: TemplateRef<any>;
-  @ViewChild("pageMenuOffcanvas") pageMenuOffcanvasTemplate: TemplateRef<any>;
 
   @HostBinding('class.header-hidden') isHeaderHidden = false;
 
   // Reference to the current offcanvas instance
   private activeOffcanvas: any = null;
-  private pageMenuOffcanvasRef: NgbOffcanvasRef = null;
 
   // Menu state
   currentMenuView: 'main' | 'language' | 'help' | 'moderate' = 'main';
@@ -55,9 +53,6 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
   pageMenuConfig$: Observable<MobilePageMenuConfig>;
   hasPageMenu$: Observable<boolean>;
   pageMenuOpenState$: Observable<boolean>;
-
-  // Flag to prevent circular dismissal calls
-  private _isDismissingProgrammatically = false;
 
   // PWA mode state
   isPwaMode$: Observable<boolean>;
@@ -131,25 +126,6 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     );
     this.pageMenuOpenState$ = this.mobilePageMenuService.getMenuOpenState();
 
-    // Listen for page menu open state changes
-    this.pageMenuOpenState$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(isOpen => {
-        if (isOpen) {
-          this.openPageMenuOffcanvas();
-        } else if (this.pageMenuOffcanvasRef) {
-          // Flag dismissal as programmatic to avoid circular references
-          this._isDismissingProgrammatically = true;
-          this.pageMenuOffcanvasRef.dismiss();
-          this.pageMenuOffcanvasRef = null;
-
-          // Reset flag after a tick to ensure all callbacks have executed
-          setTimeout(() => {
-            this._isDismissingProgrammatically = false;
-          }, 0);
-        }
-      });
-
     // Initialize kebab menu tooltip - show once per day for up to KEBAB_TOOLTIP_MAX_DAYS days
     this.hasPageMenu$
       .pipe(
@@ -203,10 +179,6 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
 
   ngOnDestroy() {
     super.ngOnDestroy();
-
-    if (this.pageMenuOffcanvasRef) {
-      this.pageMenuOffcanvasRef.dismiss();
-    }
   }
 
   initializeLanguageSelector(): void {
@@ -348,90 +320,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     this.mobilePageMenuService.openMenu();
   }
 
-  /**
-   * Open the page-specific menu offcanvas
-   */
-  private openPageMenuOffcanvas(): void {
-    if (!this.pageMenuOffcanvasTemplate) {
-      return;
-    }
 
-    // Add class to prevent body scrolling
-    this.addScrollLock();
-
-    this.pageMenuConfig$.pipe(take(1)).subscribe(config => {
-      if (!config) {
-        return;
-      }
-
-      const panelClass = "offcanvas-menu mobile-menu" + (config.offcanvasClass ? ` ${config.offcanvasClass}` : "");
-
-      this.pageMenuOffcanvasRef = this.offcanvasService.open(this.pageMenuOffcanvasTemplate, {
-        panelClass: panelClass,
-        backdropClass: config.offcanvasBackdropClass,
-        position: config.position || "end"
-      });
-
-      // Handle offcanvas dismissal
-      this.pageMenuOffcanvasRef.dismissed.subscribe(() => {
-        this.removeScrollLock();
-        // Prevent circular call by checking if it's already being closed programmatically
-        if (this.pageMenuOffcanvasRef) {
-          // Use a flag to prevent recursive calls
-          const wasDismissedByUser = !this._isDismissingProgrammatically;
-          this.pageMenuOffcanvasRef = null;
-
-          if (wasDismissedByUser) {
-            // Only notify service if the dismissal wasn't triggered by the service
-            this._isDismissingProgrammatically = true;
-            this.mobilePageMenuService.closeMenu();
-            setTimeout(() => {
-              this._isDismissingProgrammatically = false;
-            }, 0);
-          }
-        }
-
-        this.onMobileMenuClose();
-      });
-
-      this.onMobileMenuOpen();
-    });
-  }
-
-  /**
-   * Open the description panel as a modal for the page menu
-   * This wraps any component's description template with proper modal structure
-   */
-  openPageMenuDescription(event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-
-    this.pageMenuConfig$.pipe(take(1)).subscribe(config => {
-      if (!config || !config.descriptionTemplate) {
-        return;
-      }
-
-      // Get the translated title for the modal
-      const title = this.translateService.instant('Information');
-
-      // Use NgbModal with the DescriptionModalWrapperComponent to structure the template
-      const modalRef = this.modalService.open(DescriptionModalWrapperComponent, {
-        centered: true,
-        size: 'lg',
-        scrollable: true,
-        modalDialogClass: 'description-modal',
-        backdropClass: 'description-modal-backdrop'
-      });
-
-      // Configure the wrapper with the actual template and context
-      modalRef.componentInstance.contentTemplate = config.descriptionTemplate;
-      modalRef.componentInstance.title = title;
-      modalRef.componentInstance.context = {
-        ...config.templateContext,
-        currentUser: this.currentUserWrapper?.user
-      };
-    });
-  }
 
   /**
    * Helper method to safely add scroll lock on body

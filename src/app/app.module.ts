@@ -54,6 +54,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
+import { MobilePageMenuOffcanvasModule } from "@shared/components/misc/mobile-page-menu-offcanvas/mobile-page-menu-offcanvas.component";
 
 registerLocaleData(localeEnglish);
 registerLocaleData(localeBritishEnglish);
@@ -106,6 +107,7 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
 
     CoreModule,
     SharedModule.forRoot(),
+    MobilePageMenuOffcanvasModule,
 
     // This app.
     AppRoutingModule,
