@@ -267,6 +267,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
 
       // Open login/register menu
       const ref = this.offcanvasService.open(this.loginRegisterMenuTemplate, {
+        position: "end",
         panelClass: "mobile-login-menu",
         backdrop: true
       });
