@@ -521,6 +521,20 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("window:keyup.f", ["$event"])
   toggleZoomFreeze(event: KeyboardEvent): void {
+    // Don't interfere with input fields
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    // Do nothing if the component is not being shown.
+    if (!this.show) {
+      return;
+    }
+
     // Only work in non-touch mode with active zooming
     if (!this.zoomingEnabled || this.touchMode || this.isVeryLargeImage) {
       // Show feedback for why F key doesn't work
@@ -537,12 +551,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.translateService.instant("Activate zoom first before freezing (click or scroll on image).")
         );
       }
-      return;
-    }
-
-    // Don't interfere with input fields
-    if (event.target instanceof HTMLInputElement ||
-      event.target instanceof HTMLTextAreaElement) {
       return;
     }
 
