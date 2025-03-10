@@ -13,7 +13,7 @@ import { UserService } from "@core/services/user.service";
 import { SwipeToCloseService } from "@core/services/swipe-to-close.service";
 import { ScrollHideService } from "@core/services/scroll-hide.service";
 import { MobilePageMenuService, MobilePageMenuConfig } from "@core/services/mobile-page-menu.service";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { map, take, takeUntil } from "rxjs/operators";
 import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
 import { UserInterface } from "@core/interfaces/user.interface";
@@ -54,6 +54,9 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
   pageMenuConfig$: Observable<MobilePageMenuConfig>;
   hasPageMenu$: Observable<boolean>;
   pageMenuOpenState$: Observable<boolean>;
+  
+  // PWA mode state
+  isPwaMode$: Observable<boolean>;
 
   protected unreadNotificationsCount$: Observable<number> = this.store$.select(selectUnreadNotificationsCount).pipe(
     takeUntil(this.destroyed$)
@@ -85,6 +88,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     private mobilePageMenuService: MobilePageMenuService
   ) {
     super(store$);
+    this.isPwaMode$ = this.deviceService.isPwaMode$;
   }
 
   ngOnInit() {

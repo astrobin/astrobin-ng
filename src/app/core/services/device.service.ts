@@ -4,6 +4,7 @@ import { LoadingService } from "@core/services/loading.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { BehaviorSubject, Observable } from "rxjs";
 
 // Keep in sync with _breakpoints.scss
 export enum Breakpoint {
@@ -27,6 +28,8 @@ export enum Breakpoint {
 })
 export class DeviceService extends BaseService {
   private readonly _isBrowser: boolean;
+  private _isPwaMode = new BehaviorSubject<boolean>(false);
+  public isPwaMode$: Observable<boolean> = this._isPwaMode.asObservable();
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -35,6 +38,40 @@ export class DeviceService extends BaseService {
   ) {
     super(loadingService);
     this._isBrowser = isPlatformBrowser(this.platformId);
+    this._detectPwaMode();
+  }
+
+  private _detectPwaMode(): void {
+    if (!this._isBrowser) {
+      this._isPwaMode.next(false);
+      return;
+    }
+
+    const _window = this.windowRefService.nativeWindow;
+
+    // Check if display mode is standalone (PWA) or fullscreen
+    const isStandalone = _window.matchMedia('(display-mode: standalone)').matches ||
+                        _window.matchMedia('(display-mode: fullscreen)').matches ||
+                        (_window.navigator as any).standalone === true;
+
+    this._isPwaMode.next(isStandalone);
+
+    // Listen for changes in display mode
+    _window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+      this._isPwaMode.next(e.matches);
+    });
+  }
+
+  isPwa(): boolean {
+    if (!this._isBrowser) {
+      return false;
+    }
+
+    const _window = this.windowRefService.nativeWindow;
+    
+    return _window.matchMedia('(display-mode: standalone)').matches ||
+           _window.matchMedia('(display-mode: fullscreen)').matches ||
+           (_window.navigator as any).standalone === true;
   }
 
   xxsMin(): boolean {

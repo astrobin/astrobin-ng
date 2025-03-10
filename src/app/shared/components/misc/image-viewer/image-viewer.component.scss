@@ -29,7 +29,7 @@ $largeViewPortBreakpoint: 2561px;
 
   will-change: transform, opacity;
   transform: translateY(0) scale(1);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform .3s ease, opacity .3s ease;
 
   ::ng-deep .highlight {
     @include highlight;
@@ -92,7 +92,7 @@ $largeViewPortBreakpoint: 2561px;
 
     .metadata-header {
       @include darkest-background-texture;
-      margin: 0 0 0.25rem;
+      margin: 0 0 .25rem;
       padding: .5rem .75rem;
       color: var(--lightestGrey);
       border-radius: var(--bs-border-radius);
@@ -210,13 +210,13 @@ $largeViewPortBreakpoint: 2561px;
         right: 1rem;
         width: 0;
         height: 0;
-        border-top: 0.25rem solid var(--lighterGrey);
-        border-right: 0.25rem solid transparent;
-        border-bottom: 0.25rem solid transparent;
-        border-left: 0.25rem solid transparent;
+        border-top: .25rem solid var(--lighterGrey);
+        border-right: .25rem solid transparent;
+        border-bottom: .25rem solid transparent;
+        border-left: .25rem solid transparent;
         transform: translateY(-50%) rotate(180deg);
         transform-origin: 50% calc(50% - .25rem / 4);
-        transition: transform 0.3s ease-in-out;
+        transition: transform .3s ease-in-out;
       }
 
       &.collapsed {
@@ -243,7 +243,7 @@ $largeViewPortBreakpoint: 2561px;
     background: rgba(0, 0, 0, .75);
     z-index: 1040;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity .2s ease;
     pointer-events: none;
 
     &.loading {
@@ -290,7 +290,7 @@ $largeViewPortBreakpoint: 2561px;
             border: none;
             color: var(--white);
             font-size: 1.25rem;
-            padding: 0.5rem;
+            padding: .5rem;
 
             &:hover, &:focus {
               color: var(--primary);
@@ -305,7 +305,7 @@ $largeViewPortBreakpoint: 2561px;
         .slideshow-mobile-header-right {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: .5rem;
 
           ::ng-deep astrobin-image-viewer-share-button {
             .btn {
@@ -313,7 +313,7 @@ $largeViewPortBreakpoint: 2561px;
               border: none;
               color: var(--white);
               font-size: 1.25rem;
-              padding: 0.5rem;
+              padding: .5rem;
 
               &:hover, &:focus {
                 color: var(--primary);
@@ -350,7 +350,7 @@ $largeViewPortBreakpoint: 2561px;
       touch-action: manipulation;
       pointer-events: auto;
       background: black; // Real black as opposed to var(--black), for maximum contrast.
-      transition: height 0.3s ease;
+      transition: height .3s ease;
 
       @media (max-width: $lg-max) {
         width: 50%;
@@ -414,7 +414,7 @@ $largeViewPortBreakpoint: 2561px;
         opacity: 1;
         pointer-events: all;
         padding: .5rem;
-        transition: opacity 0.3s, transform 0.3s ease-in-out;
+        transition: opacity .3s, transform .3s ease-in-out;
 
         &:focus-visible {
           outline: none !important;
@@ -486,7 +486,7 @@ $largeViewPortBreakpoint: 2561px;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
-            transform: translateX(0.125rem) translateY(-50%);
+            transform: translateX(.125rem) translateY(-50%);
           }
         }
       }
@@ -496,7 +496,7 @@ $largeViewPortBreakpoint: 2561px;
 
         @media (hover: hover) and (pointer: fine) {
           &:hover {
-            transform: translateX(-0.125rem) translateY(-50%);
+            transform: translateX(-.125rem) translateY(-50%);
           }
         }
       }
@@ -568,7 +568,7 @@ $largeViewPortBreakpoint: 2561px;
           max-height: 100%;
           object-fit: contain;
           opacity: 0;
-          transition: opacity 0.3s;
+          transition: opacity .3s;
           cursor: zoom-in;
         }
       }

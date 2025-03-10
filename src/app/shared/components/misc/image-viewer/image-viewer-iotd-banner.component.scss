@@ -9,9 +9,9 @@
     background: -ms-linear-gradient(to bottom, var(--gold), var(--darkGold));
     background: -o-linear-gradient(to bottom, var(--gold), var(--darkGold));
     background: linear-gradient(to bottom, var(--gold), var(--darkGold));
-    -webkit-box-shadow: rgba(000, 000, 000, 0.3) 0 1px 1px;
-    -moz-box-shadow: rgba(000, 000, 000, 0.3) 0 1px 1px;
-    box-shadow: rgba(000, 000, 000, 0.3) 0 1px 1px;
+    -webkit-box-shadow: rgba(000, 000, 000, .3) 0 1px 1px;
+    -moz-box-shadow: rgba(000, 000, 000, .3) 0 1px 1px;
+    box-shadow: rgba(000, 000, 000, .3) 0 1px 1px;
 
     .iotd-banner-inner {
       display: flex;
@@ -22,11 +22,11 @@
 
       h3 {
         font-size: 1.25rem;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
         margin: 0;
 
         [icon='trophy'] {
-          filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.33));
+          filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .33));
           margin-right: .75rem;
         }
 
@@ -46,7 +46,7 @@
 
       [icon='info-circle'] {
         color: var(--white);
-        filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.33));
+        filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .33));
         font-size: 1rem;
       }
     }
@@ -64,27 +64,27 @@
         border-right-color: transparent;
         z-index: 1;
         right: -1.25rem;
-        filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.33));
+        filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, .33));
       }
     }
   }
 
   .stitches-top {
     margin-top: 1px;
-    border-top: 1px dashed rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+    border-top: 1px dashed rgba(0, 0, 0, .2);
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, .5);
+    box-shadow: 0 0 2px rgba(255, 255, 255, .5);
     margin-left: -1rem;
     margin-right: -1rem;
   }
 
   .stitches-bottom {
     margin-bottom: 1px;
-    border-top: 1px dashed rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+    border-top: 1px dashed rgba(0, 0, 0, .2);
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, .3);
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, .3);
+    box-shadow: 0 0 2px rgba(255, 255, 255, .3);
     margin-left: -1rem;
     margin-right: -1rem;
   }

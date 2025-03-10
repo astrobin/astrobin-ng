@@ -2,7 +2,7 @@
 @import "../../../../styles/mixins";
 
 $contextAreaHeight: 1.5rem;
-$background: rgba(0, 0, 0, 0.95);
+$background: rgba(0, 0, 0, .95);
 
 :host {
   position: fixed;
@@ -26,11 +26,11 @@ $background: rgba(0, 0, 0, 0.95);
 
   // Use animationend event to detect when animation completes
   &.swipe-to-close-return-to-normal {
-    animation: return-to-normal 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    animation: return-to-normal .3s cubic-bezier(.215, .61, .355, 1) forwards;
   }
 
   &.swipe-to-close-animate {
-    animation: swipe-to-close 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    animation: swipe-to-close .3s cubic-bezier(.215, .61, .355, 1) forwards;
   }
 
   @media (hover: none) and (pointer: coarse) {
@@ -108,7 +108,7 @@ $background: rgba(0, 0, 0, 0.95);
         .carousel-control-next-icon {
           width: 1.25rem;
           height: 1.25rem;
-          transition: transform 0.3s ease-in-out;
+          transition: transform .3s ease-in-out;
 
           &:hover {
             transform: scale(1.1);
@@ -137,7 +137,7 @@ $background: rgba(0, 0, 0, 0.95);
       }
 
       .carousel-item {
-        transition: transform 0.3s ease-in-out;
+        transition: transform .3s ease-in-out;
 
         &.active {
           z-index: 2;
@@ -149,7 +149,7 @@ $background: rgba(0, 0, 0, 0.95);
   .context-area {
     height: $contextAreaHeight;
     width: 100vw;
-    transition: height 0.3s ease-in-out;
+    transition: height .3s ease-in-out;
 
     @media (hover: none) and (pointer: coarse) {
       height: 0;

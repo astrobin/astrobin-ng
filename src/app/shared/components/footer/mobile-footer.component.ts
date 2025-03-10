@@ -2,11 +2,13 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnI
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { DeviceService } from "@core/services/device.service";
 import { ScrollHideService } from "@core/services/scroll-hide.service";
 import { UserService } from "@core/services/user.service";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { takeUntil } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-mobile-footer",
@@ -16,16 +18,21 @@ import { takeUntil } from "rxjs/operators";
 })
 export class MobileFooterComponent extends BaseComponentDirective implements OnInit {
   @HostBinding('class.footer-hidden') isFooterHidden = false;
+  @HostBinding('class.d-none') isFooterDisabled = false;
+  
   user: UserInterface;
   userProfile: UserProfileInterface;
+  isPwaMode$: Observable<boolean>;
 
   constructor(
     public readonly store$: Store<MainState>,
     private readonly scrollHideService: ScrollHideService,
     private readonly changeDetectorRef: ChangeDetectorRef,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    private deviceService: DeviceService
   ) {
     super(store$);
+    this.isPwaMode$ = this.deviceService.isPwaMode$;
   }
 
   ngOnInit() {
@@ -43,6 +50,12 @@ export class MobileFooterComponent extends BaseComponentDirective implements OnI
     this.currentUserWrapper$.pipe(takeUntil(this.destroyed$)).subscribe(wrapper => {
       this.user = wrapper.user;
       this.userProfile = wrapper.userProfile;
+      this.changeDetectorRef.markForCheck();
+    });
+    
+    // Show footer only in PWA mode
+    this.isPwaMode$.pipe(takeUntil(this.destroyed$)).subscribe(isPwa => {
+      this.isFooterDisabled = !isPwa;
       this.changeDetectorRef.markForCheck();
     });
   }

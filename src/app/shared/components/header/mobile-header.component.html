@@ -5,14 +5,25 @@
       <fa-icon icon="bars"></fa-icon>
     </button>
 
-    <!-- Logo in the center -->
-    <a routerLink="/" class="navbar-brand mx-auto">
+    <!-- Logo right after the hamburger menu with 50% opacity -->
+    <a routerLink="/" class="navbar-brand opacity-50">
       <img alt="AstroBin" src="assets/images/nav-logo.png?v=3" />
     </a>
+    
+    <!-- Spacer div to push the right controls to the edge -->
+    <div class="flex-grow-1"></div>
 
-    <!-- Right side controls: Notifications and Login -->
+    <!-- Right side controls -->
     <div class="right-controls d-flex align-items-center">
-      <!-- Notifications button - only visible when logged in -->
+      <!-- For non-PWA mode, add search icon -->
+      <ng-container *ngIf="(isPwaMode$ | async) === false">
+        <!-- Search link -->
+        <a class="nav-link" routerLink="/search" routerLinkActive="active">
+          <fa-icon icon="search"></fa-icon>
+        </a>
+      </ng-container>
+
+      <!-- Notifications button - only visible when logged in (for both PWA and non-PWA) -->
       <ng-container *ngIf="user">
         <a class="nav-link position-relative" (click)="openNotificationsOffcanvas()">
           <fa-icon icon="bell"></fa-icon>
@@ -23,18 +34,27 @@
           </ng-container>
         </a>
       </ng-container>
-
-      <!-- Login button for non-logged in users -->
-      <div class="login-area" *ngIf="!user">
-        <a class="nav-link" (click)="openUserMenu()">
-          <fa-icon icon="sign-in-alt"></fa-icon>
-        </a>
-      </div>
-
+      
       <!-- Page-specific menu kebab icon - only visible when a page menu is registered -->
       <ng-container *ngIf="hasPageMenu$ | async">
         <a class="nav-link" (click)="openPageMenu()">
           <fa-icon icon="ellipsis-v"></fa-icon>
+        </a>
+      </ng-container>
+      
+      <!-- User avatar (both PWA and non-PWA) or login button -->
+      <ng-container *ngIf="user">
+        <a class="nav-link user-avatar-link" (click)="openUserMenu()">
+          <div class="avatar-container">
+            <astrobin-avatar [user]="user" [link]="false"></astrobin-avatar>
+          </div>
+        </a>
+      </ng-container>
+      
+      <!-- Login button for non-logged in users (in both PWA and non-PWA modes) -->
+      <ng-container *ngIf="!user">
+        <a class="nav-link" (click)="openUserMenu()">
+          <fa-icon icon="sign-in-alt"></fa-icon>
         </a>
       </ng-container>
     </div>
@@ -86,7 +106,15 @@
           <li class="nav-item">
             <a class="nav-link" [routerLink]="['equipment', 'explorer']" (click)="offcanvas.dismiss()">
               <fa-icon icon="camera-retro"></fa-icon>
-              {{ "Equipment" | translate }}
+              {{ "Equipment database" | translate }}
+            </a>
+          </li>
+
+          <!-- Marketplace link (always visible but only in menu for non-PWA) -->
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/equipment/marketplace']" (click)="offcanvas.dismiss()">
+              <fa-icon icon="shopping-cart"></fa-icon>
+              {{ "Marketplace" | translate }}
             </a>
           </li>
 
@@ -103,6 +131,16 @@
               {{ "IOTD/TP Archive" | translate }}
             </a>
           </li>
+          
+          <!-- Upload link (only in non-PWA mode) -->
+          <ng-container *ngIf="(isPwaMode$ | async) === false">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/uploader" (click)="offcanvas.dismiss()">
+                <fa-icon icon="upload"></fa-icon>
+                {{ "Upload image or video" | translate }}
+              </a>
+            </li>
+          </ng-container>
         </ul>
       </div>
 

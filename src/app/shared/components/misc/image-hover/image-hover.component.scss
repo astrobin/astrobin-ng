@@ -74,7 +74,7 @@
   .published,
   .uploaded {
     color: var(--lighterGrey);
-    font-size: 0.85em;  // Slightly smaller than parent
+    font-size: .85em;  // Slightly smaller than parent
   }
 
   .counters {
@@ -83,7 +83,7 @@
     .counter {
       color: var(--lighterGrey);
       white-space: nowrap;
-      font-size: 0.8em;
+      font-size: .8em;
       line-height: 1rem;
 
       .ng-fa-icon {

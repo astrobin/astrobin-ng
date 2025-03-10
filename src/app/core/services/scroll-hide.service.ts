@@ -13,7 +13,7 @@ import { isPlatformBrowser } from "@angular/common";
 })
 export class ScrollHideService implements OnDestroy {
   private lastScrollPosition = 0;
-  private scrollThreshold = 50; // Minimum scroll distance before triggering hide/show
+  private scrollThreshold = 100; // Minimum scroll distance before triggering hide/show
   private scrollSubscription: any;
   private touchStartSubscription: any;
   private touchEndSubscription: any;
@@ -22,7 +22,7 @@ export class ScrollHideService implements OnDestroy {
   private scrollInactivityDuration = 3000; // Time in ms after which to show UI if no scroll activity
   private isElasticScrollDetected = false;
   private destroyed$ = new Subject<void>();
-  private isBrowser: boolean;
+  private readonly isBrowser: boolean;
 
   // Separate subjects for header and footer visibility
   private headerHidden$ = new BehaviorSubject<boolean>(false);
@@ -163,7 +163,7 @@ export class ScrollHideService implements OnDestroy {
     // 3. Only a small amount of content (not enough to scroll)
     if (currentScrollPosition <= 10 ||
       currentScrollPosition >= maxScrollPosition - 10 ||
-      maxScrollPosition <= 50) {
+      maxScrollPosition <= this.scrollThreshold) {
       this.headerHidden$.next(false);
       this.footerHidden$.next(false);
       this.lastScrollPosition = currentScrollPosition;
