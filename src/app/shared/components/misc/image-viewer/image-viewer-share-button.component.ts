@@ -47,7 +47,7 @@ enum ThumbnailSize {
         triggers="hover click"
         class="m-0"
         container="body"
-        icon="share"
+        [icon]="deviceService.getShareIcon()"
       ></fa-icon>
     </button>
 

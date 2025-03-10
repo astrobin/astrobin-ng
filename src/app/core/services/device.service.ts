@@ -198,6 +198,22 @@ export class DeviceService extends BaseService {
 
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
+  
+  isAndroid(): boolean {
+    if (!this._isBrowser) {
+      return false;
+    }
+
+    if (typeof navigator === "undefined") {
+      return false;
+    }
+
+    return /Android/i.test(navigator.userAgent);
+  }
+  
+  getShareIcon(): string {
+    return this.isAndroid() ? "share-nodes" : "arrow-up-from-bracket";
+  }
 
   offcanvasPosition(): "bottom" | "end" {
     return this.smMax() ? "bottom" : "end";

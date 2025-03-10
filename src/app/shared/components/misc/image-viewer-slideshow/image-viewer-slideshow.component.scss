@@ -15,20 +15,20 @@ $background: rgba(0, 0, 0, 0.95);
   // The initial state
   transform: translateY(0) scale(1);
   opacity: 1;
-  
+
   // Add a composite layer to improve performance
   will-change: transform, opacity;
-  
+
   // Disable pointer events during animation to reduce load
   &.swipe-to-close-animating {
     pointer-events: none;
   }
-  
+
   // Use animationend event to detect when animation completes
   &.swipe-to-close-return-to-normal {
     animation: return-to-normal 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
   }
-  
+
   &.swipe-to-close-animate {
     animation: swipe-to-close 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
   }
@@ -65,9 +65,8 @@ $background: rgba(0, 0, 0, 0.95);
       color: var(--white);
 
       @media (max-width: $sm-max) {
-        left: unset;
-        top: .5rem;
-        right: .5rem;
+        top: 0;
+        left: .75rem;
         padding: 1rem;
         font-size: 1rem;
       }

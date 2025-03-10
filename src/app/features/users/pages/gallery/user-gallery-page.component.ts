@@ -23,7 +23,7 @@ import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manage
   template: `
     <div
       *ngIf="currentUserWrapper$ | async as currentUserWrapper"
-      class="page has-infinite-scroll"
+      class="page has-infinite-scroll mobile-flush-top"
     >
       <astrobin-ad-manager
         #ad

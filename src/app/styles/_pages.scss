@@ -24,8 +24,16 @@
   color: var(--white);
 
   @media screen and (max-width: $md-max) {
-    padding: 2rem .5rem;
+    padding: .75rem .375rem;
     margin-top: 0;
+
+    &.mobile-flush-top {
+      padding-top: .25rem;
+    }
+
+    &.has-title {
+      padding-top: 1.5rem;
+    }
   }
 
 

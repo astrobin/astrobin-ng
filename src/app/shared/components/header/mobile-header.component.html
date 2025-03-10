@@ -34,7 +34,7 @@
       <!-- Page-specific menu kebab icon - only visible when a page menu is registered -->
       <ng-container *ngIf="hasPageMenu$ | async">
         <a class="nav-link" (click)="openPageMenu()">
-          <fa-icon icon="ellipsis-v" class="px-2"></fa-icon>
+          <fa-icon icon="ellipsis-v"></fa-icon>
         </a>
       </ng-container>
     </div>
@@ -296,9 +296,9 @@
 
         <!-- Info/description button if available -->
         <ng-container *ngIf="config.descriptionTemplate">
-          <button 
-            type="button" 
-            class="btn btn-link btn-no-block text-white p-1 me-2" 
+          <button
+            type="button"
+            class="btn btn-link btn-no-block text-white p-1 me-2"
             (click)="openPageMenuDescription($event)"
           >
             <fa-icon icon="info-circle"></fa-icon>
