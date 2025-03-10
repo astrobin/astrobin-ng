@@ -1,7 +1,7 @@
-import { Inject, Injectable, OnDestroy, PLATFORM_ID } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, fromEvent, auditTime } from "rxjs";
-import { takeUntil, throttleTime, distinctUntilChanged } from 'rxjs/operators';
-import { isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, OnDestroy, PLATFORM_ID } from "@angular/core";
+import { auditTime, BehaviorSubject, fromEvent, Observable, Subject } from "rxjs";
+import { distinctUntilChanged, takeUntil } from "rxjs/operators";
+import { isPlatformBrowser } from "@angular/common";
 
 /**
  * Service for handling show/hide behavior based on scroll direction.
@@ -9,7 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
  * hide when scrolling down and reappear when scrolling up.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ScrollHideService implements OnDestroy {
   private lastScrollPosition = 0;
@@ -97,7 +97,7 @@ export class ScrollHideService implements OnDestroy {
     // Extra safety check, though we should only call this if isBrowser is true
     if (this.isBrowser) {
       // Main scroll handler
-      this.scrollSubscription = fromEvent(window, 'scroll')
+      this.scrollSubscription = fromEvent(window, "scroll")
         .pipe(
           auditTime(200), // Limit scroll event frequency
           distinctUntilChanged(),
@@ -106,7 +106,7 @@ export class ScrollHideService implements OnDestroy {
         .subscribe(() => this.handleScroll());
 
       // Touch events to detect elastic scrolling on touch devices
-      this.touchStartSubscription = fromEvent(document, 'touchstart')
+      this.touchStartSubscription = fromEvent(document, "touchstart")
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() => {
           // On touch start, note that we're in a potential elastic scroll situation
@@ -119,7 +119,7 @@ export class ScrollHideService implements OnDestroy {
           }
         });
 
-      this.touchEndSubscription = fromEvent(document, 'touchend')
+      this.touchEndSubscription = fromEvent(document, "touchend")
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() => {
           // When touch ends, schedule a check to see if elements should be shown
@@ -137,7 +137,7 @@ export class ScrollHideService implements OnDestroy {
             const maxScrollPosition = document.documentElement.scrollHeight - window.innerHeight;
 
             if (currentScrollPosition <= 10 ||
-                currentScrollPosition >= maxScrollPosition - 10) {
+              currentScrollPosition >= maxScrollPosition - 10) {
               this.headerHidden$.next(false);
               this.footerHidden$.next(false);
             }
@@ -162,8 +162,8 @@ export class ScrollHideService implements OnDestroy {
     // 2. At or beyond bottom of page (including elastic bounce)
     // 3. Only a small amount of content (not enough to scroll)
     if (currentScrollPosition <= 10 ||
-        currentScrollPosition >= maxScrollPosition - 10 ||
-        maxScrollPosition <= 50) {
+      currentScrollPosition >= maxScrollPosition - 10 ||
+      maxScrollPosition <= 50) {
       this.headerHidden$.next(false);
       this.footerHidden$.next(false);
       this.lastScrollPosition = currentScrollPosition;
