@@ -6,8 +6,8 @@
   <div class="background"></div>
 </div>
 
-<astrobin-header class="d-none d-lg-block"></astrobin-header>
-<astrobin-mobile-header class="d-block d-lg-none"></astrobin-mobile-header>
+<astrobin-header *ngIf="deviceService.lgMin()"></astrobin-header>
+<astrobin-mobile-header *ngIf="!deviceService.lgMin()"></astrobin-mobile-header>
 
 <div class="container">
   <astrobin-beta-banner></astrobin-beta-banner>
@@ -15,5 +15,5 @@
   <router-outlet></router-outlet>
 </div>
 
-<astrobin-mobile-footer class="d-block d-lg-none"></astrobin-mobile-footer>
-<astrobin-footer></astrobin-footer>
+<astrobin-mobile-footer *ngIf="!deviceService.lgMin()"></astrobin-mobile-footer>
+<astrobin-footer *ngIf="!deviceService.lgMin()"></astrobin-footer>
