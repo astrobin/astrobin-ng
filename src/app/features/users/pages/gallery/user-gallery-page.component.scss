@@ -41,3 +41,18 @@ astrobin-user-gallery-header {
     margin-top: 0;
   }
 }
+
+::ng-deep .user-gallery-menu-offcanvas {
+  .mobile-user-menu {
+    // Styles specifically for mobile menus
+    fa-icon {
+      width: 20px; // Keep icons aligned
+    }
+    
+    button, .btn {
+      text-align: left;
+      display: flex;
+      align-items: center;
+    }
+  }
+}

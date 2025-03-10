@@ -61,7 +61,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                   ({{ user.username }})
                 </div>
 
-                <div ngbDropdown class="d-inline-block py-0">
+                <div ngbDropdown class="d-inline-block py-0 d-none d-md-block">
                   <button
                     class="btn btn-sm btn-link btn-no-block no-toggle text-secondary px-2"
                     id="user-gallery-dropdown"
