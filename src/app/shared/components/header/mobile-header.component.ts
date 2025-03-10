@@ -177,34 +177,47 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     return `?lang=${languageCode}`;
   }
 
+  // Add a flag to track if this is a view transition (not initial load)
+  private isViewTransition = false;
+
   // Show the language submenu
   showLanguageMenu(): void {
+    this.isViewTransition = true;
     this.currentMenuView = 'language';
     this.changeDetectorRef.markForCheck();
   }
 
   // Show the help submenu
   showHelpMenu(): void {
+    this.isViewTransition = true;
     this.currentMenuView = 'help';
     this.changeDetectorRef.markForCheck();
   }
 
   // Show the moderate submenu
   showModerateMenu(): void {
+    this.isViewTransition = true;
     this.currentMenuView = 'moderate';
     this.changeDetectorRef.markForCheck();
   }
 
   // Return to the main menu from a submenu
   showMainMenu(): void {
+    this.isViewTransition = true;
     this.currentMenuView = 'main';
     this.changeDetectorRef.markForCheck();
   }
 
+  // Expose the transition flag to the template
+  isInViewTransition(): boolean {
+    return this.isViewTransition;
+  }
+
   // Open the main menu offcanvas
   openMainMenu() {
-    // Reset to the main view first
+    // Reset to the main view first and disable transition animation
     this.currentMenuView = 'main';
+    this.isViewTransition = false;
 
     // Add class to prevent body scrolling
     this.addScrollLock();
@@ -219,6 +232,7 @@ export class MobileHeaderComponent extends BaseComponentDirective implements OnI
     // Remove the scroll lock when the offcanvas is dismissed
     this.activeOffcanvas.dismissed.subscribe(() => {
       this.removeScrollLock();
+      this.isViewTransition = false; // Reset on close
     });
   }
 

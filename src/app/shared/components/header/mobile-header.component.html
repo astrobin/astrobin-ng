@@ -92,7 +92,7 @@
     <!-- Main Menu View -->
     <ng-container *ngIf="currentMenuView === 'main'">
       <!-- Main navigation options -->
-      <div class="main-nav offcanvas-menu">
+      <div class="main-nav offcanvas-menu" [class.view-transition]="isInViewTransition()">
         <ul class="nav flex-column">
           <!-- Add Moderate menu item for authorized users -->
           <li class="nav-item" *ngIf="user | isContentModerator">
@@ -145,7 +145,7 @@
       </div>
 
       <!-- Bottom section with language selector and help -->
-      <div class="bottom-nav offcanvas-menu mt-auto">
+      <div class="bottom-nav offcanvas-menu mt-auto" [class.view-transition]="isInViewTransition()">
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link" (click)="showLanguageMenu()">
@@ -173,7 +173,7 @@
 
     <!-- Language Menu View -->
     <ng-container *ngIf="currentMenuView === 'language'">
-      <ul class="nav flex-column language-menu offcanvas-menu">
+      <ul class="nav flex-column language-menu offcanvas-menu" [class.view-transition]="isInViewTransition()">
         <ng-container *ngFor="let language of languages">
           <li class="nav-item" *ngIf="language.code !== '-'">
             <a class="nav-link" [href]="getSetLanguageUrl(language.code)">
@@ -195,7 +195,7 @@
 
     <!-- Help Menu View -->
     <ng-container *ngIf="currentMenuView === 'help'">
-      <ul class="nav flex-column help-menu offcanvas-menu">
+      <ul class="nav flex-column help-menu offcanvas-menu" [class.view-transition]="isInViewTransition()">
         <li class="nav-item">
           <a [href]="classicRoutesService.ABOUT" class="nav-link">
             <fa-icon icon="info"></fa-icon>
@@ -225,7 +225,7 @@
 
     <!-- Moderate Menu View -->
     <ng-container *ngIf="currentMenuView === 'moderate'">
-      <ul class="nav offcanvas-menu flex-column moderate-menu">
+      <ul class="nav offcanvas-menu flex-column moderate-menu" [class.view-transition]="isInViewTransition()">
         <!-- Images section -->
         <li class="section-header">
           <h6>{{ "Images" | translate }}</h6>

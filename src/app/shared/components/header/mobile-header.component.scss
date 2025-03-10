@@ -96,119 +96,138 @@
     position: fixed;
     width: 100%;
   }
+  
+  // Prevent offcanvas animation flash
+  .offcanvas-backdrop.show {
+    opacity: 1 !important;
+  }
 
   .mobile-main-menu,
   .mobile-login-menu,
   .image-viewer-offcanvas,
   .offcanvas-menu {
     min-width: 280px;
+    
+    // Ensure offcanvas content appears only after the offcanvas is visible
+    animation: fade-offcanvas 0.15s ease-in-out forwards;
+  }
+  
+  @keyframes fade-offcanvas {
+    0% { opacity: 0; }
+    90% { opacity: 0; }
+    100% { opacity: 1; }
+  }
 
-    .offcanvas-header {
-      @include darkest-background-texture;
+  .offcanvas-header {
+    @include darkest-background-texture;
+    color: $white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .btn-link {
       color: $white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      font-size: 1.2rem;
 
-      .btn-link {
-        color: $white;
-        font-size: 1.2rem;
-
-        &:hover {
-          color: darken($white, 10%);
-        }
-      }
-
-      .header-actions {
-        display: flex;
-        align-items: center;
+      &:hover {
+        color: darken($white, 10%);
       }
     }
 
-    .offcanvas-body {
-      padding: 1rem;
+    .header-actions {
       display: flex;
-      flex-direction: column;
-      height: 100%; // Ensure full height for proper flex behavior
+      align-items: center;
+    }
+  }
 
-      // Add animations for view transitions
-      .language-menu,
-      .help-menu,
-      .moderate-menu,
-      .main-nav,
-      .bottom-nav,
-      .page-menu {
+  .offcanvas-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%; // Ensure full height for proper flex behavior
+
+    // Content starts fully visible to prevent flashing
+    .language-menu,
+    .help-menu,
+    .moderate-menu,
+    .main-nav,
+    .bottom-nav,
+    .page-menu {
+      opacity: 1;
+      transform: translateX(0);
+      // Only animate when changing views within the offcanvas
+      &.view-transition {
         transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
         animation: fade-in 0.2s ease-in-out;
       }
+    }
 
-      // Animation for entering views
-      @keyframes fade-in {
-        from {
-          opacity: 0;
-          transform: translateX(15px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
+    // Animation for entering views (only applied after initial load)
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateX(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .main-nav {
+      flex: 1;
+    }
+
+    .bottom-nav {
+      padding-top: 0.5rem;
+      margin-top: 1rem;
+
+      .copyright-info {
+        opacity: .5;
+        font-size: 0.7rem;
+      }
+    }
+
+    .nav.offcanvas-menu {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-header {
+      padding: 0 1.25rem; /* Match nav-link padding */
+
+      &:not(:first-child) {
+        margin-top: 2rem;
+      }
+
+      h6 {
+        color: var(--lightGrey);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+    }
+
+    .nav-link {
+      color: var(--lightestGrey);
+      display: flex;
+      align-items: flex-start;
+      padding: 0;
+
+      .ng-fa-icon {
+        width: 1.5rem;
+        text-align: center;
+        display: inline-block;
+
+        &:not([icon="chevron-right"]) {
+          margin-right: .75rem;
+          flex-shrink: 0;
         }
       }
 
-      .main-nav {
+      .menu-text {
         flex: 1;
-      }
-
-      .bottom-nav {
-        padding-top: 0.5rem;
-        margin-top: 1rem;
-
-        .copyright-info {
-          opacity: .5;
-          font-size: 0.7rem;
-        }
-      }
-
-      .nav.offcanvas-menu {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .section-header {
-        padding: 0 1.25rem; /* Match nav-link padding */
-
-        &:not(:first-child) {
-          margin-top: 2rem;
-        }
-
-        h6 {
-          color: var(--lightGrey);
-          font-weight: 600;
-          margin-bottom: 1rem;
-          font-size: 1.2rem;
-        }
-      }
-
-      .nav-link {
-        color: var(--lightestGrey);
-        display: flex;
-        align-items: flex-start;
-        padding: 0;
-
-        .ng-fa-icon {
-          width: 1.5rem;
-          text-align: center;
-          display: inline-block;
-
-          &:not([icon="chevron-right"]) {
-            margin-right: .75rem;
-            flex-shrink: 0;
-          }
-        }
-
-        .menu-text {
-          flex: 1;
-        }
       }
     }
   }
