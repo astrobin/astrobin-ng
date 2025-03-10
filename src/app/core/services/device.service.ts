@@ -28,8 +28,8 @@ export enum Breakpoint {
 })
 export class DeviceService extends BaseService {
   private readonly _isBrowser: boolean;
-  private _isPwaMode = new BehaviorSubject<boolean>(false);
-  public isPwaMode$: Observable<boolean> = this._isPwaMode.asObservable();
+  private _pwaState = new BehaviorSubject<boolean>(false);
+  public isPwaMode$: Observable<boolean> = this._pwaState.asObservable();
 
   constructor(
     public readonly loadingService: LoadingService,
@@ -41,37 +41,38 @@ export class DeviceService extends BaseService {
     this._detectPwaMode();
   }
 
-  private _detectPwaMode(): void {
-    if (!this._isBrowser) {
-      this._isPwaMode.next(false);
-      return;
-    }
-
-    const _window = this.windowRefService.nativeWindow;
-
-    // Check if display mode is standalone (PWA) or fullscreen
-    const isStandalone = _window.matchMedia('(display-mode: standalone)').matches ||
-                        _window.matchMedia('(display-mode: fullscreen)').matches ||
-                        (_window.navigator as any).standalone === true;
-
-    this._isPwaMode.next(isStandalone);
-
-    // Listen for changes in display mode
-    _window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
-      this._isPwaMode.next(e.matches);
-    });
-  }
-
-  isPwa(): boolean {
+  /**
+   * Check if the application is running in PWA mode
+   * @returns boolean indicating if the app is in PWA mode
+   */
+  private _checkPwaMode(): boolean {
     if (!this._isBrowser) {
       return false;
     }
 
     const _window = this.windowRefService.nativeWindow;
-    
+
     return _window.matchMedia('(display-mode: standalone)').matches ||
            _window.matchMedia('(display-mode: fullscreen)').matches ||
            (_window.navigator as any).standalone === true;
+  }
+
+  /**
+   * Initialize PWA mode detection and set up listeners for changes
+   */
+  private _detectPwaMode(): void {
+    // Set initial value
+    this._pwaState.next(this._checkPwaMode());
+
+    if (!this._isBrowser) {
+      return;
+    }
+
+    // Listen for changes in display mode
+    const _window = this.windowRefService.nativeWindow;
+    _window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+      this._pwaState.next(e.matches || this._checkPwaMode());
+    });
   }
 
   xxsMin(): boolean {
