@@ -102,7 +102,7 @@
 
             <ng-container
               *ngIf="
-                listingUser.id === currentUserWrapper.user?.id || (currentUserWrapper.user | isMarketplaceModerator)
+                (listingUser.id === currentUserWrapper.user?.id || (currentUserWrapper.user | isMarketplaceModerator)) && deviceService.mdMin()
               "
             >
               <ng-container
@@ -111,7 +111,7 @@
               ></ng-container>
             </ng-container>
 
-            <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id">
+            <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id && deviceService.mdMin()">
               <ng-container
                 [ngTemplateOutletContext]="{ currentUserWrapper, listingContentType }"
                 [ngTemplateOutlet]="sidebarNonOwnerTemplate"
@@ -329,115 +329,108 @@
 </ng-template>
 
 <ng-template #ownerButtonsTemplate let-currentUserWrapper="currentUserWrapper">
-  <button
-    *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)"
-    [routerLink]="'edit'"
-    class="menu-item">
-    <fa-icon icon="pencil"></fa-icon>
-    <span class="menu-text">{{ "Edit" | translate }}</span>
-  </button>
+  <ul class="nav offcanvas-menu flex-column">
+    <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)">
+      <a [routerLink]="'edit'" class="nav-link menu-item">
+        <fa-icon icon="pencil"></fa-icon>
+        <span class="menu-text">{{ "Edit" | translate }}</span>
+      </a>
+    </li>
 
-  <button
-    (click)="markAsSold()"
-    *ngIf="!equipmentMarketplaceService.listingSold(listing) && listing.listingType === MarketplaceListingType.FOR_SALE"
-    class="menu-item">
-    <fa-icon icon="sack-dollar"></fa-icon>
-    <span class="menu-text">{{ "Mark as sold" | translate }}</span>
-  </button>
+    <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && listing.listingType === MarketplaceListingType.FOR_SALE">
+      <a (click)="markAsSold()" class="nav-link menu-item">
+        <fa-icon icon="sack-dollar"></fa-icon>
+        <span class="menu-text">{{ "Mark as sold" | translate }}</span>
+      </a>
+    </li>
 
-  <button
-    (click)="renew()"
-    *ngIf="!equipmentMarketplaceService.listingSold(listing) && equipmentMarketplaceService.listingExpired(listing)"
-    class="menu-item">
-    <fa-icon icon="redo"></fa-icon>
-    <span class="menu-text">{{ "Renew" | translate }}</span>
-  </button>
+    <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && equipmentMarketplaceService.listingExpired(listing)">
+      <a (click)="renew()" class="nav-link menu-item">
+        <fa-icon icon="redo"></fa-icon>
+        <span class="menu-text">{{ "Renew" | translate }}</span>
+      </a>
+    </li>
 
-  <button
-    (click)="delete()"
-    *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)"
-    class="menu-item text-danger"
-  >
-    <fa-icon icon="trash"></fa-icon>
-    <span class="menu-text">{{ "Delete" | translate }}</span>
-  </button>
+    <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)">
+      <a (click)="delete()" class="nav-link menu-item text-danger">
+        <fa-icon icon="trash"></fa-icon>
+        <span class="menu-text">{{ "Delete" | translate }}</span>
+      </a>
+    </li>
+  </ul>
 </ng-template>
 
 <ng-template #nonOwnerButtonsTemplate let-currentUserWrapper="currentUserWrapper" let-listingContentType="listingContentType">
-  <ng-container *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingHasOffers(listing)">
-    <astrobin-toggle-property
-      [contentType]="listingContentType.id"
-      [objectId]="listing.id"
-      [userId]="currentUserWrapper.user?.id"
-      btnClass="menu-item"
-      propertyType="follow"
-    ></astrobin-toggle-property>
-  </ng-container>
+  <ul class="nav offcanvas-menu flex-column">
+    <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingHasOffers(listing)">
+      <astrobin-toggle-property
+        [contentType]="listingContentType.id"
+        [objectId]="listing.id"
+        [userId]="currentUserWrapper.user?.id"
+        class="p-0"
+        btnClass="nav-link menu-item btn btn-link btn-no-block link-secondary"
+        propertyType="follow"
+      ></astrobin-toggle-property>
+    </li>
 
-  <button
-    *ngIf="listing.approved"
-    (click)="onMessageUserClicked($event)"
-    [class.loading]="loadingService.loading$ | async"
-    class="menu-item">
-    <fa-icon icon="envelope"></fa-icon>
+    <li class="nav-item" *ngIf="listing.approved">
+      <a (click)="onMessageUserClicked($event)" class="nav-link menu-item" [class.loading]="loadingService.loading$ | async">
+        <fa-icon icon="envelope"></fa-icon>
 
-    <ng-container
-      *ngIf="
-        currentUserWrapper.user &&
-        equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
-        !equipmentMarketplaceService.listingSold(listing);
-        else messageUserMobile
-      "
-    >
-      <span class="menu-text">{{ "Exchange payment/delivery info" | translate }}</span>
-    </ng-container>
+        <ng-container
+          *ngIf="
+            currentUserWrapper.user &&
+            equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
+            !equipmentMarketplaceService.listingSold(listing);
+            else messageUserMobile
+          "
+        >
+          <span class="menu-text">{{ "Exchange payment/delivery info" | translate }}</span>
+        </ng-container>
 
-    <ng-template #messageUserMobile>
-      <span class="menu-text">{{ "Message user privately" | translate }}</span>
-    </ng-template>
+        <ng-template #messageUserMobile>
+          <span class="menu-text">{{ "Message user privately" | translate }}</span>
+        </ng-template>
 
-    <ng-container *ngIf="privateConversations$ | async as privateConversations">
-      <ng-container
-        *ngIf="
-          privateConversations?.length === 1 &&
-          !equipmentMarketplaceService.listingReserved(listing) &&
-          !equipmentMarketplaceService.listingSold(listing)
-        "
-      >
-        <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
-          {{ privateConversations[0].unreadMessages }}
-        </span>
-        <span *ngIf="privateConversations[0].unreadMessages === 0" class="badge bg-info">
-          {{ privateConversations[0].totalMessages }}
-        </span>
-      </ng-container>
-    </ng-container>
-  </button>
+        <ng-container *ngIf="privateConversations$ | async as privateConversations">
+          <ng-container
+            *ngIf="
+              privateConversations?.length === 1 &&
+              !equipmentMarketplaceService.listingReserved(listing) &&
+              !equipmentMarketplaceService.listingSold(listing)
+            "
+          >
+            <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
+              {{ privateConversations[0].unreadMessages }}
+            </span>
+            <span *ngIf="privateConversations[0].unreadMessages === 0" class="badge bg-info">
+              {{ privateConversations[0].totalMessages }}
+            </span>
+          </ng-container>
+        </ng-container>
+      </a>
+    </li>
 
-  <button
-    *ngIf="
+    <li class="nav-item" *ngIf="
           listing.listingType === MarketplaceListingType.FOR_SALE &&
           equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing) &&
           !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
           !equipmentMarketplaceService.listingHasAcceptedOffers(listing) &&
           listing.approved
-        "
-    (click)="onMakeAnOfferClicked($event)"
-    [class.loading]="loadingService.loading$ | async"
-    class="menu-item">
-    <fa-icon icon="dollar"></fa-icon>
-    <span class="menu-text">{{ "Make an offer" | translate }}</span>
-  </button>
+        ">
+      <a (click)="onMakeAnOfferClicked($event)" class="nav-link menu-item" [class.loading]="loadingService.loading$ | async">
+        <fa-icon icon="dollar"></fa-icon>
+        <span class="menu-text">{{ "Make an offer" | translate }}</span>
+      </a>
+    </li>
 
-  <button
-    *ngIf="listing.approved"
-    (click)="onReportListingClicked($event)"
-    [class.loading]="loadingService.loading$ | async"
-    class="menu-item"
-    style="color: var(--lightGrey)">
-    <fa-icon icon="flag"></fa-icon>
-    <span class="menu-text">{{ "Report listing" | translate }}</span>
-  </button>
+    <li class="nav-item" *ngIf="listing.approved">
+      <a (click)="onReportListingClicked($event)" class="nav-link menu-item" [class.loading]="loadingService.loading$ | async" style="color: var(--lightGrey)">
+        <fa-icon icon="flag"></fa-icon>
+        <span class="menu-text">{{ "Report listing" | translate }}</span>
+      </a>
+    </li>
+  </ul>
 </ng-template>
 
 <ng-template #titleTemplate>
