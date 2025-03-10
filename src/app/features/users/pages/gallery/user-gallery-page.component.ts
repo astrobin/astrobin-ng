@@ -64,64 +64,70 @@ import { UtilsService } from "@core/services/utils/utils.service";
     </ng-template>
     
     <ng-template #navTemplate>
-      <div class="mobile-user-menu p-3">
+      <ul class="mobile-user-menu nav flex-column">
         <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-          <div class="d-flex flex-column gap-3">
-            <!-- Dropdown items from the user-gallery-header dropdown -->
-            <ng-container *ngIf="currentUserWrapper.user?.id === user?.id">
+          <!-- Dropdown items from the user-gallery-header dropdown -->
+          <ng-container *ngIf="currentUserWrapper.user?.id === user?.id">
+            <li class="nav-item">
               <button 
                 (click)="openHeaderImageChange()" 
-                class="btn btn-outline-secondary"
+                class="nav-link"
               >
-                <fa-icon icon="image" class="me-2"></fa-icon>
+                <fa-icon icon="image"></fa-icon>
                 {{ "Change header image" | translate }}
               </button>
-              
+            </li>
+            
+            <li class="nav-item">
               <a 
                 [href]="classicRoutesService.SETTINGS" 
-                class="btn btn-outline-secondary"
+                class="nav-link"
               >
-                <fa-icon icon="cog" class="me-2"></fa-icon>
+                <fa-icon icon="cog"></fa-icon>
                 {{ "Settings" | translate }}
               </a>
-            </ng-container>
-            
-            <ng-container *ngIf="currentUserWrapper.user?.id !== user?.id">
+            </li>
+          </ng-container>
+          
+          <ng-container *ngIf="currentUserWrapper.user?.id !== user?.id">
+            <li class="nav-item" *ngIf="!currentUserWrapper.userProfile?.shadowBans?.includes(userProfile?.id)">
               <a
-                *ngIf="!currentUserWrapper.userProfile?.shadowBans?.includes(userProfile?.id)"
                 (click)="shadowBan(userProfile?.id)"
                 href="#"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
-                class="btn btn-outline-secondary"
+                class="nav-link"
               >
-                <fa-icon icon="ban" class="me-2"></fa-icon>
+                <fa-icon icon="ban"></fa-icon>
                 {{ "Shadow-ban" | translate }}
               </a>
-              
+            </li>
+            
+            <li class="nav-item" *ngIf="currentUserWrapper.userProfile?.shadowBans?.includes(userProfile?.id)">
               <a
-                *ngIf="currentUserWrapper.userProfile?.shadowBans?.includes(userProfile?.id)"
                 (click)="removeShadowBan(userProfile?.id)"
                 href="#"
                 astrobinEventPreventDefault
                 astrobinEventStopPropagation
-                class="btn btn-outline-secondary"
+                class="nav-link"
               >
-                <fa-icon icon="undo" class="me-2"></fa-icon>
+                <fa-icon icon="undo"></fa-icon>
                 {{ "Remove shadow-ban" | translate }}
               </a>
-              
+            </li>
+            
+            <li class="nav-item">
               <a
                 [href]="classicRoutesService.SEND_MESSAGE(user?.username)"
-                class="btn btn-outline-secondary"
+                class="nav-link"
               >
-                <fa-icon icon="envelope" class="me-2"></fa-icon>
+                <fa-icon icon="envelope"></fa-icon>
                 {{ "Send private message" | translate }}
               </a>
-            </ng-container>
-          </div>
+            </li>
+          </ng-container>
         </ng-container>
-      </div>
+      </ul>
     </ng-template>
   `,
   styleUrls: ["./user-gallery-page.component.scss"],

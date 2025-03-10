@@ -8,8 +8,6 @@
 
   .nav-tabs {
     @include darkest-background-texture;
-    position: sticky;
-    top: 60px;
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .5);
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -44,6 +42,11 @@
           margin: 0;
         }
       }
+    }
+
+    @media (min-width: $lg-min) {
+      position: sticky;
+      top: 60px;
     }
   }
 

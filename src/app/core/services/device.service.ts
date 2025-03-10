@@ -3,6 +3,7 @@ import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { LoadingService } from "@core/services/loading.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 // Keep in sync with _breakpoints.scss
 export enum Breakpoint {
@@ -198,7 +199,7 @@ export class DeviceService extends BaseService {
 
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
-  
+
   isAndroid(): boolean {
     if (!this._isBrowser) {
       return false;
@@ -210,8 +211,8 @@ export class DeviceService extends BaseService {
 
     return /Android/i.test(navigator.userAgent);
   }
-  
-  getShareIcon(): string {
+
+  getShareIcon(): IconProp {
     return this.isAndroid() ? "share-nodes" : "arrow-up-from-bracket";
   }
 

@@ -254,9 +254,8 @@ export class ImageViewerComponent
    * Must be called after the view is initialized to access the templates
    */
   private _registerMobilePageMenu(): void {
-    if (!this.deviceService.mdMax()) {
-      return;
-    }
+    // Always register the menu, regardless of screen size
+    // We'll use the offcanvas on all screen sizes
     
     // Only register if the templates are available
     if (!this.mobileMenuTitleTemplate || !this.mobileMenuIconsTemplate || !this.navTemplate) {
@@ -270,7 +269,7 @@ export class ImageViewerComponent
       template: this.navTemplate,
       templateContext: { $implicit: this.image },
       // No description template for this component
-      offcanvasClass: 'image-viewer-offcanvas',
+      offcanvasClass: 'image-viewer-offcanvas offcanvas-menu',
       offcanvasBackdropClass: 'image-viewer-offcanvas-backdrop',
     });
   }

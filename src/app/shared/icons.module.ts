@@ -9,7 +9,7 @@ import { faBookmark as farBookmark, faCircle as farCircle, faClock as farClock, 
 
 // Solid (fas)
 import {
-  faAdjust, faAngleDown, faAngleUp, faArrowCircleUp, faArrowDown, faArrowLeft, faArrowPointer, faArrowRight, faArrowsLeftRightToLine, faArrowTurnUp, faArrowUp, faArrowUpFromBracket, faAsterisk, faAtom, faBalanceScale, faBan, faBarcode, faBars, faBarsStaggered, faBell, faBookmark, faCalendar, faCalendarAlt, faCalendarXmark, faCamera, faCameraRetro, faChartLine, faChartSimple, faCheck, faCheckCircle, faChevronCircleLeft, faChevronCircleRight, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircle, faCircleCheck, faCircleChevronDown, faCircleChevronUp, faCircleDot, faCircleHalfStroke, faCircleMinus, faCircleNotch, faCirclePlus, faCircleXmark, faClock, faCode, faCog, faComment, faCommentAlt, faCommentDollar, faComments, faComputerMouse, faCopy, faCopyright, faCrosshairs, faDatabase, faDollar, faDownLeftAndUpRightToCenter, faDroplet, faDumbbell, faEarthAfrica, faEarthAmericas, faEarthAsia, faEarthEurope, faEarthOceania, faEdit, faEllipsis, faEllipsisVertical, faEnvelope, faEquals, faEuroSign, faExclamationTriangle, faExpand, faExternalLinkAlt, faEye, faEyeDropper, faEyeSlash, faFile, faFileAlt, faFileCsv, faFileInvoice, faFilter, faFire, faFlag, faFlagUsa, faFolder, faFolderOpen, faFrown, faGavel, faGlobe, faGrip, faHammer, faHandPaper, faHandPointer, faHandshake, faHeart, faHome, faHourglass, faIcicles, faImage, faImages, faInbox, faInfo, faInfoCircle, faKey, faLanguage, faLaptop, faLayerGroup, faLink, faListAlt, faLock, faMagnifyingGlass, faMap, faMapMarkerAlt, faMicrochip, faMoneyBill, faMoon, faMousePointer, faPen, faPencil, faPersonWalkingArrowRight, faPlay, faPlus, faPlusCircle, faQuestion, faQuestionCircle, faRainbow, faReceipt, faRedo, faRepeat, faReply, faRotateLeft, faRuler, faSackDollar, faSave, faSearch, faShare, faShareNodes, faShop, faShoppingCart, faSignInAlt, faSignOutAlt, faSliders, faSnowflake, faSort, faSortAlphaDown, faSortAlphaUp, faSortAmountDown, faSortNumericDown, faSortNumericUp, faSpinner, faSquare, faStar, faStarHalfStroke, faStore, faSun, faSync, faTableCells, faTableCellsLarge, faTachometerAlt, faTag, faTasks, faTemperatureHigh, faTerminal, faThermometer, faThumbsDown, faThumbsUp, faTimes, faTimesCircle, faTrash, faTrashAlt, faTrophy, faUndo, faUpload, faUser, faUserGroup, faUsers, faVideo
+  faAdjust, faAngleDown, faAngleUp, faArrowCircleUp, faArrowDown, faArrowLeft, faArrowPointer, faArrowRight, faArrowsLeftRightToLine, faArrowTurnUp, faArrowUp, faArrowUpFromBracket, faAsterisk, faAtom, faAward, faBalanceScale, faBan, faBarcode, faBars, faBarsStaggered, faBell, faBookmark, faCalendar, faCalendarAlt, faCalendarXmark, faCamera, faCameraRetro, faChartBar, faChartLine, faChartSimple, faCheck, faCheckCircle, faChevronCircleLeft, faChevronCircleRight, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircle, faCircleCheck, faCircleChevronDown, faCircleChevronUp, faCircleDot, faCircleHalfStroke, faCircleMinus, faCircleNotch, faCirclePlus, faCircleXmark, faClock, faCode, faCog, faComment, faCommentAlt, faCommentDollar, faComments, faComputerMouse, faCopy, faCopyright, faCrosshairs, faDatabase, faDollar, faDownLeftAndUpRightToCenter, faDownload, faDroplet, faDumbbell, faEarthAfrica, faEarthAmericas, faEarthAsia, faEarthEurope, faEarthOceania, faEdit, faEllipsis, faEllipsisVertical, faEnvelope, faEquals, faEuroSign, faExclamationTriangle, faExpand, faExternalLinkAlt, faEye, faEyeDropper, faEyeSlash, faFile, faFileAlt, faFileCsv, faFileImage, faFileInvoice, faFileUpload, faFilter, faFire, faFlag, faFlagUsa, faFolder, faFolderOpen, faFrown, faGavel, faGlobe, faGrip, faHammer, faHandPaper, faHandPointer, faHandshake, faHeart, faHome, faHourglass, faIcicles, faImage, faImages, faInbox, faInfo, faInfoCircle, faKey, faLanguage, faLaptop, faLayerGroup, faLink, faListAlt, faLock, faMagnifyingGlass, faMap, faMapMarkedAlt, faMapMarkerAlt, faMicrochip, faMoneyBill, faMoon, faMousePointer, faPen, faPencil, faPencilAlt, faPersonWalkingArrowRight, faPlay, faPlus, faPlusCircle, faQuestion, faQuestionCircle, faRainbow, faReceipt, faRedo, faRepeat, faReply, faRotateLeft, faRuler, faSackDollar, faSave, faSearch, faShare, faShareNodes, faShop, faShoppingCart, faSignInAlt, faSignOutAlt, faSliders, faSnowflake, faSort, faSortAlphaDown, faSortAlphaUp, faSortAmountDown, faSortNumericDown, faSortNumericUp, faSpinner, faSquare, faStar, faStarHalfStroke, faStore, faSun, faSync, faTableCells, faTableCellsLarge, faTachometerAlt, faTag, faTasks, faTemperatureHigh, faTerminal, faThermometer, faThumbsDown, faThumbsUp, faTimes, faTimesCircle, faTrash, faTrashAlt, faTrophy, faUndo, faUpload, faUser, faUserGroup, faUsers, faVideo
 } from "@fortawesome/free-solid-svg-icons";
 
 @NgModule({
@@ -48,25 +48,25 @@ export class IconsModule {
     library.addIcons(
       faAdjust, faAngleDown, faAngleUp, faArrowCircleUp, faArrowDown,
       faArrowLeft, faArrowPointer, faArrowRight, faArrowUp, faArrowUpFromBracket,
-      faArrowsLeftRightToLine, faAsterisk, faBan, faBarcode, faBars,
+      faArrowsLeftRightToLine, faAsterisk, faAward, faBan, faBarcode, faBars,
       faBarsStaggered, faBell, faBookmark, faCalendar, faCalendarAlt, faCalendarXmark,
       faCamera, faCameraRetro, faChartLine, faChartSimple, faCheck, faCheckCircle,
-      faChevronCircleLeft, faChevronCircleRight,
+      faChartBar, faChevronCircleLeft, faChevronCircleRight,
       faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faCircle, faCircleCheck,
       faCircleChevronDown, faCircleChevronUp, faCircleDot, faCircleHalfStroke,
       faCircleMinus, faCircleNotch, faCirclePlus, faCircleXmark, faClock,
       faCode, faCog, faComment, faCommentAlt, faCommentDollar, faComments,
       faComputerMouse, faCopy, faCopyright, faCrosshairs, faDatabase,
-      faDollar, faDownLeftAndUpRightToCenter, faDroplet, faEarthAfrica,
+      faDollar, faDownLeftAndUpRightToCenter, faDownload, faDroplet, faEarthAfrica,
       faEarthAmericas, faEarthAsia, faEarthEurope, faEarthOceania, faEdit,
       faEllipsis, faEllipsisVertical, faEnvelope, faEquals, faEuroSign,
       faExclamationTriangle, faExpand, faEye, faEyeSlash, faFile,
-      faFileAlt, faFileCsv, faFileInvoice, faFilter, faFlag, faFlagUsa, faFolder,
+      faFileAlt, faFileCsv, faFileImage, faFileInvoice, faFileUpload, faFilter, faFlag, faFlagUsa, faFolder,
       faFolderOpen, faGavel, faGlobe, faGrip, faHammer, faHandshake,
       faHeart, faHome, faHourglass, faIcicles, faImage, faImages,
       faInbox, faInfo, faInfoCircle, faKey, faLaptop, faLayerGroup,
-      faLink, faListAlt, faLock, faMap, faMapMarkerAlt, faMicrochip,
-      faMoneyBill, faMoon, faPen, faPencil, faPlay, faPlus, faQuestion,
+      faLink, faListAlt, faLock, faMap, faMapMarkedAlt, faMapMarkerAlt, faMicrochip,
+      faMoneyBill, faMoon, faPen, faPencil, faPencilAlt, faPlay, faPlus, faQuestion,
       faQuestionCircle, faReceipt, faRedo, faReply, faRotateLeft,
       faSackDollar, faSave, faSearch, faShare, faShareNodes, faShop, faShoppingCart,
       faSignOutAlt, faSliders, faSnowflake, faSort, faSortAlphaDown,

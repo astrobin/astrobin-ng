@@ -45,14 +45,42 @@ astrobin-user-gallery-header {
 ::ng-deep .user-gallery-menu-offcanvas {
   .mobile-user-menu {
     // Styles specifically for mobile menus
-    fa-icon {
-      width: 20px; // Keep icons aligned
+    display: flex;
+    flex-direction: column;
+    
+    .nav-item {
+      width: 100%;
     }
     
-    button, .btn {
-      text-align: left;
+    .nav-link {
+      padding: .75rem;
+      font-size: 1.1rem;
+      color: var(--lightestGrey);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
+      width: 100%;
+      
+      fa-icon {
+        width: 30px;
+        text-align: center;
+        margin-right: .75rem;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      
+      .menu-text {
+        flex: 1;
+      }
+      
+      &:hover {
+        color: var(--white);
+      }
+    }
+    
+    button.nav-link, a.nav-link {
+      background: transparent;
+      border: none;
+      text-align: left;
     }
   }
 }

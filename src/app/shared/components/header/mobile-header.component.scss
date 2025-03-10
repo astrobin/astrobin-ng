@@ -176,12 +176,19 @@
         padding: .75rem;
         font-size: 1.1rem;
         color: var(--lightestGrey);
+        display: flex;
+        align-items: flex-start;
 
         fa-icon {
           width: 30px;
           text-align: center;
           margin-right: .75rem;
           display: inline-block;
+          flex-shrink: 0;
+        }
+        
+        .menu-text {
+          flex: 1;
         }
       }
     }
