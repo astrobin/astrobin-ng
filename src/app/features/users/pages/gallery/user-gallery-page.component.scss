@@ -45,4 +45,22 @@ astrobin-user-gallery-header {
 ::ng-deep .user-gallery-menu-offcanvas {
   // Custom styles specific to the user gallery menu can go here
   // Most styles now come from the shared offcanvas-menu class
+
+  .indexes {
+    display: inline-block;
+    margin-left: .75rem;
+    font-size: .75rem;
+    opacity: .5;
+
+    .index {
+      color: var(--white);
+    }
+  }
+
+  // Ensure the title indexes are properly styled in the offcanvas header
+  .offcanvas-header {
+    .indexes {
+      vertical-align: middle;
+    }
+  }
 }

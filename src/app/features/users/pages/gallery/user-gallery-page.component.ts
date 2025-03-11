@@ -27,6 +27,9 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
 import { UserGalleryHeaderComponent } from "./user-gallery-header.component";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { AuthService } from "@core/services/auth.service";
+import { JsonApiService } from "@core/services/api/classic/json/json-api.service";
+import { Theme, ThemeService } from "@core/services/theme.service";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
   selector: "astrobin-user-gallery-page",
@@ -62,6 +65,44 @@ import { AuthService } from "@core/services/auth.service";
     <!-- Templates for mobile page menu -->
     <ng-template #titleTemplate>
       <span>{{ user?.displayName }}</span>
+      <ng-container *ngIf="userProfile" [ngTemplateOutlet]="astrobinIndexTemplate"></ng-container>
+    </ng-template>
+    
+    <ng-template #highContrastThemeEnabled>
+      {{ "Disable high contrast theme" | translate }}
+    </ng-template>
+    
+    <ng-template #astrobinIndexTemplate>
+      <span
+        *ngIf="
+          !userProfile?.excludeFromCompetition &&
+          userProfile?.astroBinIndex !== null &&
+          userProfile?.contributionIndex !== null
+        "
+        [ngbPopover]="indexesPopoverContentTemplate"
+        class="indexes"
+        triggers="mouseenter:mouseleave click"
+      >
+        <span class="image-index index">
+          {{ userProfile?.astroBinIndex | number: "1.2-2" }}
+          &middot;
+        </span>
+        <span class="contribution-index index">
+          {{ userProfile?.contributionIndex | number: "1.2-2" }}
+        </span>
+      </span>
+    </ng-template>
+    
+    <ng-template #indexesPopoverContentTemplate>
+      <ng-container *ngIf="userProfile">
+        <h4>{{ "Image Index" | translate }}: {{ userProfile.astroBinIndex | number: "1.2-2" }}</h4>
+        <div [innerHTML]="imageIndexPopoverInfo"></div>
+
+        <hr />
+
+        <h4>{{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number: "1.2-2" }}</h4>
+        <div [innerHTML]="contributionIndexPopoverInfo"></div>
+      </ng-container>
     </ng-template>
 
     <ng-template #navTemplate>
@@ -70,16 +111,6 @@ import { AuthService } from "@core/services/auth.service";
           <!-- Dropdown items from the user-gallery-header dropdown -->
           <ng-container *ngIf="currentUserWrapper.user?.id === user?.id">
             <!-- Common actions for owner -->
-            <li class="nav-item">
-              <a
-                routerLink="/subscriptions/options"
-                class="nav-link menu-item"
-              >
-                <fa-icon icon="asterisk"></fa-icon>
-                <span class="menu-text">{{ "Subscription plans" | translate }}</span>
-              </a>
-            </li>
-
             <li class="nav-item">
               <a
                 (click)="openHeaderImageChange()"
@@ -93,11 +124,47 @@ import { AuthService } from "@core/services/auth.service";
 
             <li class="nav-item">
               <a
+                routerLink="/subscriptions/options"
+                class="nav-link menu-item"
+              >
+                <fa-icon icon="asterisk"></fa-icon>
+                <span class="menu-text">{{ "Subscription plans" | translate }}</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
                 [href]="classicRoutesService.SETTINGS"
                 class="nav-link menu-item"
               >
                 <fa-icon icon="cog"></fa-icon>
                 <span class="menu-text">{{ "Settings" | translate }}</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                [href]="classicRoutesService.INBOX"
+                class="nav-link menu-item"
+              >
+                <fa-icon icon="inbox"></fa-icon>
+                <span class="menu-text">{{ "Messages" | translate }}</span>
+              </a>
+            </li>
+            
+            <li class="nav-item">
+              <a
+                href="#"
+                (click)="toggleHighContrastTheme($event)"
+                class="nav-link menu-item"
+                astrobinEventPreventDefault
+              >
+                <fa-icon icon="adjust"></fa-icon>
+                <span class="menu-text">
+                  <ng-container *ngIf="!useHighContrastTheme(); else highContrastThemeEnabled">
+                    {{ "Enable high contrast theme" | translate }}
+                  </ng-container>
+                </span>
               </a>
             </li>
 
@@ -178,6 +245,9 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
   protected showAd: boolean;
   protected allowAds: boolean;
 
+  protected imageIndexPopoverInfo: SafeHtml;
+  protected contributionIndexPopoverInfo: SafeHtml;
+  
   constructor(
     public readonly store$: Store<MainState>,
     public readonly actions$: Actions,
@@ -195,10 +265,38 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     public readonly mobilePageMenuService: MobilePageMenuService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly utilsService: UtilsService,
-    public readonly authService: AuthService
+    public readonly authService: AuthService,
+    public readonly jsonApiService: JsonApiService,
+    public readonly themeService: ThemeService,
+    public readonly domSanitizer: DomSanitizer
   ) {
     super(store$);
     this._setUserContentType();
+    this._initializePopovers();
+  }
+  
+  private _initializePopovers(): void {
+    this.imageIndexPopoverInfo = this.domSanitizer.bypassSecurityTrustHtml(
+      this.translateService.instant(
+        "The <strong>Image Index</strong> is a system based on likes received on images, that incentivizes the " +
+        "most active and liked members of the community. {{_0}}Learn more.{{_1}}",
+        {
+          _0: `<a href="https://welcome.astrobin.com/features/image-index" target="_blank">`,
+          _1: "</a>"
+        }
+      )
+    );
+
+    this.contributionIndexPopoverInfo = this.domSanitizer.bypassSecurityTrustHtml(
+      this.translateService.instant(
+        "The <strong>Contribution Index (beta)</strong> is system to reward informative, constructive, and " +
+        "valuable commentary on AstroBin. {{_0}}Learn more.{{_1}}",
+        {
+          _0: `<a href="https://welcome.astrobin.com/features/contribution-index" target="_blank">`,
+          _1: "</a>"
+        }
+      )
+    );
   }
 
   ngOnInit(): void {
@@ -371,6 +469,29 @@ export class UserGalleryPageComponent extends BaseComponentDirective implements 
     if (this.authService) {
       this.authService.logout().subscribe();
     }
+  }
+
+  /**
+   * Checks if high contrast theme is enabled
+   */
+  protected useHighContrastTheme(): boolean {
+    return this.themeService.preferredTheme() === Theme.HIGH_CONTRAST;
+  }
+
+  /**
+   * Toggles the high contrast theme
+   */
+  protected toggleHighContrastTheme(event: Event): void {
+    event.preventDefault();
+    
+    this.jsonApiService
+      .toggleUseHighContrastThemeCookie()
+      .pipe(take(1))
+      .subscribe(() => {
+        this.themeService.setTheme();
+        this.mobilePageMenuService.closeMenu();
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   /**
