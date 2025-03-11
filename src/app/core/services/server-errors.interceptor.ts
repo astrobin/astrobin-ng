@@ -8,6 +8,7 @@ import { LoadingService } from "@core/services/loading.service";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { AuthService } from "@core/services/auth.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { HttpRetryService } from "@core/services/http-retry.service";
 
 export class ServerErrorsInterceptor implements HttpInterceptor {
   constructor(
@@ -16,7 +17,8 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
     public readonly popNotificationsService: PopNotificationsService,
     public readonly loadingService: LoadingService,
     public readonly authService: AuthService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    private httpRetryService: HttpRetryService
   ) {
   }
 
@@ -39,6 +41,11 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
   }
 
   public handleError(err: HttpErrorResponse) {
+    // For status 0 errors, check if it's being handled by TimeoutRetryInterceptor
+    if (err.status === 0 && err.url && this.httpRetryService.isRetryInProgress(err.url)) {
+      return false;
+    }
+
     let errorTitle: string;
     let errorMessage: string;
     let handled = false;
@@ -60,6 +67,12 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
 
     // The backend returned an unsuccessful response code.
     switch (err.status) {
+      case 0:
+        errorTitle = this.translateService.instant("Connection error");
+        errorMessage = this.translateService.instant(
+          "Could not connect to the server. Please check your internet connection and try again."
+        );
+        break;
       case 400:
         errorTitle = this.translateService.instant("Bad request");
 
