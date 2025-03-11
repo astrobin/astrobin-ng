@@ -149,13 +149,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
   private _eagerLoadingSubscription: Subscription;
   private _firstRenderSubject = new BehaviorSubject<boolean>(false);
-  // Two levels of downsampled bitmaps for smoother zoom transitions
-  private _downsampledBitmapLow: ImageBitmap = null;  // Lower resolution for initial view
-  private _downsampledBitmapMedium: ImageBitmap = null;  // Medium resolution for intermediate zoom
-
   readonly firstRender$ = this._firstRenderSubject.asObservable().pipe(
     filter(rendered => rendered)
   );
+  // Two levels of downsampled bitmaps for smoother zoom transitions
+  private _downsampledBitmapLow: ImageBitmap = null;  // Lower resolution for initial view
+  private _downsampledBitmapMedium: ImageBitmap = null;  // Medium resolution for intermediate zoom
   private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
@@ -249,116 +248,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   ngOnInit() {
     this._setZoomLensSize();
-  }
-
-  // Handle wheel events on the component and proxy them to ngx-image-zoom
-  /**
-   * Handle wheel events and apply appropriate zoom behavior
-   */
-  protected onGlobalWheel(event: WheelEvent): void {
-    // If the event has ctrlKey, it's a pinch gesture in Firefox or zoom in other browsers
-    // Always prevent browser zoom
-    if (event.ctrlKey) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      // Handle Firefox pinch gestures directly here
-      // This ensures the component's wheel events get proxied to ngx-image-zoom
-      if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage && !this.zoomFrozen) {
-        this._handleFirefoxPinchZoom(event);
-      }
-      return;
-    }
-
-    // Don't handle zoom events if frozen
-    if (this.zoomFrozen) {
-      return;
-    }
-
-    // Only proxy the event if we have the zoom component and we're not in touch mode
-    if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage) {
-      // First check if we need to activate zoom
-      if (!this.zoomingEnabled) {
-        // If we're not zoomed yet, activate zoom at event position
-        this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
-        this.ngxImageZoom.zoomService.zoomOn(event);
-        this.changeDetectorRef.markForCheck();
-        return;
-      }
-
-      // If already zoomed, modify the zoom level based on wheel delta
-      if (this.zoomingEnabled) {
-        // Get current values
-        const currentMag = this.ngxImageZoom.zoomService.magnification;
-        const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
-        const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
-        const stepSize = 0.05; // Default step size
-
-        // For normal wheel events, use deltaY with opposite sign (up = zoom in, down = zoom out)
-        const delta = -event.deltaY / 100; // Normalize regular wheel delta
-
-        // Calculate new magnification
-        let newMag = currentMag;
-        if (delta > 0) { // Scroll up - zoom in
-          newMag = Math.min(currentMag + stepSize, maxRatio);
-        } else if (delta < 0) { // Scroll down - zoom out
-          newMag = Math.max(currentMag - stepSize, minRatio);
-        }
-
-        // Update magnification if changed
-        if (newMag !== currentMag) {
-          this.ngxImageZoom.zoomService.magnification = newMag;
-
-          // Update calculations
-          this.ngxImageZoom.zoomService.calculateRatio();
-          this.ngxImageZoom.zoomService.calculateZoomPosition(event);
-
-          // Update zoom indicator
-          this.setZoomScroll(newMag);
-          this.changeDetectorRef.markForCheck();
-        }
-      }
-    }
-  }
-
-  // Handle mouse move events on the component and proxy them to ngx-image-zoom
-  protected onGlobalMouseMove(event: MouseEvent): void {
-    // Don't update position if frozen
-    if (this.zoomFrozen) {
-      return;
-    }
-
-    // Only proxy if we have the zoom component, are in mouse mode, and are currently zooming
-    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage) {
-      // We need to convert global coordinates to coordinates relative to the image
-      // Find the image and its position
-      const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector('.ngxImageZoomContainer');
-      if (!zoomContainer) {
-        return;
-      }
-
-      // Get container's position
-      const rect = zoomContainer.getBoundingClientRect();
-
-      // Check if mouse is within the bounds of the zoom container
-      if (
-        event.clientX >= rect.left &&
-        event.clientX <= rect.right &&
-        event.clientY >= rect.top &&
-        event.clientY <= rect.bottom
-      ) {
-        // Convert global coordinates to relative coordinates
-        const relativeEvent = {
-          ...event,
-          offsetX: event.clientX - rect.left,
-          offsetY: event.clientY - rect.top
-        };
-
-        // Update the zoom position
-        this.ngxImageZoom.zoomService.calculateZoomPosition(relativeEvent);
-        this.changeDetectorRef.markForCheck();
-      }
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -572,6 +461,116 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.changeDetectorRef.markForCheck();
+  }
+
+  // Handle wheel events on the component and proxy them to ngx-image-zoom
+  /**
+   * Handle wheel events and apply appropriate zoom behavior
+   */
+  protected onGlobalWheel(event: WheelEvent): void {
+    // If the event has ctrlKey, it's a pinch gesture in Firefox or zoom in other browsers
+    // Always prevent browser zoom
+    if (event.ctrlKey) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Handle Firefox pinch gestures directly here
+      // This ensures the component's wheel events get proxied to ngx-image-zoom
+      if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage && !this.zoomFrozen) {
+        this._handleFirefoxPinchZoom(event);
+      }
+      return;
+    }
+
+    // Don't handle zoom events if frozen
+    if (this.zoomFrozen) {
+      return;
+    }
+
+    // Only proxy the event if we have the zoom component and we're not in touch mode
+    if (!this.touchMode && this.ngxImageZoom && !this.isVeryLargeImage) {
+      // First check if we need to activate zoom
+      if (!this.zoomingEnabled) {
+        // If we're not zoomed yet, activate zoom at event position
+        this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
+        this.ngxImageZoom.zoomService.zoomOn(event);
+        this.changeDetectorRef.markForCheck();
+        return;
+      }
+
+      // If already zoomed, modify the zoom level based on wheel delta
+      if (this.zoomingEnabled) {
+        // Get current values
+        const currentMag = this.ngxImageZoom.zoomService.magnification;
+        const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
+        const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
+        const stepSize = 0.05; // Default step size
+
+        // For normal wheel events, use deltaY with opposite sign (up = zoom in, down = zoom out)
+        const delta = -event.deltaY / 100; // Normalize regular wheel delta
+
+        // Calculate new magnification
+        let newMag = currentMag;
+        if (delta > 0) { // Scroll up - zoom in
+          newMag = Math.min(currentMag + stepSize, maxRatio);
+        } else if (delta < 0) { // Scroll down - zoom out
+          newMag = Math.max(currentMag - stepSize, minRatio);
+        }
+
+        // Update magnification if changed
+        if (newMag !== currentMag) {
+          this.ngxImageZoom.zoomService.magnification = newMag;
+
+          // Update calculations
+          this.ngxImageZoom.zoomService.calculateRatio();
+          this.ngxImageZoom.zoomService.calculateZoomPosition(event);
+
+          // Update zoom indicator
+          this.setZoomScroll(newMag);
+          this.changeDetectorRef.markForCheck();
+        }
+      }
+    }
+  }
+
+  // Handle mouse move events on the component and proxy them to ngx-image-zoom
+  protected onGlobalMouseMove(event: MouseEvent): void {
+    // Don't update position if frozen
+    if (this.zoomFrozen) {
+      return;
+    }
+
+    // Only proxy if we have the zoom component, are in mouse mode, and are currently zooming
+    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage) {
+      // We need to convert global coordinates to coordinates relative to the image
+      // Find the image and its position
+      const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomContainer");
+      if (!zoomContainer) {
+        return;
+      }
+
+      // Get container's position
+      const rect = zoomContainer.getBoundingClientRect();
+
+      // Check if mouse is within the bounds of the zoom container
+      if (
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom
+      ) {
+        // Convert global coordinates to relative coordinates
+        const relativeEvent = {
+          ...event,
+          offsetX: event.clientX - rect.left,
+          offsetY: event.clientY - rect.top
+        };
+
+        // Update the zoom position
+        this.ngxImageZoom.zoomService.calculateZoomPosition(relativeEvent);
+        this.changeDetectorRef.markForCheck();
+      }
+    }
   }
 
   protected toggleEnableLens(): void {
@@ -939,7 +938,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    */
   private _createSyntheticWheelEvent(originalEvent: WheelEvent, containerRect: DOMRect): WheelEvent {
     // Create a new synthetic event with relevant properties
-    const syntheticEvent = new WheelEvent('wheel', {
+    const syntheticEvent = new WheelEvent("wheel", {
       deltaY: originalEvent.deltaY,
       deltaX: originalEvent.deltaX,
       deltaZ: originalEvent.deltaZ,
@@ -980,7 +979,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         const container = this.ngxImageZoomEl.nativeElement;
 
         // Using a more focused wheel handler specifically for Firefox
-        container.addEventListener('wheel', (event: WheelEvent) => {
+        container.addEventListener("wheel", (event: WheelEvent) => {
           if (event.ctrlKey) {
             this._handleFirefoxPinchZoom(event);
           }
@@ -989,7 +988,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // Handle Firefox touchpad pinch gesture globally
         // This is needed because the Firefox pinch gesture doesn't always bubble up
         // to the container element properly
-        document.addEventListener('wheel', (event: WheelEvent) => {
+        document.addEventListener("wheel", (event: WheelEvent) => {
           if (event.ctrlKey && !this.touchMode && this.show && !this.isVeryLargeImage && !this.zoomFrozen) {
             // Always prevent browser zoom
             event.preventDefault();
@@ -999,7 +998,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
               // Convert global coordinates to container-relative coordinates
               // First, get the container's position
-              const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector('.ngxImageZoomContainer');
+              const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomContainer");
               if (!zoomContainer) {
                 return;
               }
@@ -1457,19 +1456,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _createSingleDownsampledBitmap(width: number, height: number): Promise<ImageBitmap> {
     // Create an offscreen canvas for downsampling
     const offscreenCanvas = new OffscreenCanvas(width, height);
-    const offscreenCtx = offscreenCanvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
+    const offscreenCtx = offscreenCanvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
 
     // Apply smoothing settings for better downsampling
     offscreenCtx.imageSmoothingEnabled = true;
-    offscreenCtx.imageSmoothingQuality = 'high';
+    offscreenCtx.imageSmoothingQuality = "high";
 
     // Draw the image at the target size
     offscreenCtx.drawImage(this._canvasImage, 0, 0, width, height);
 
     // Return a bitmap from this intermediate canvas
     return createImageBitmap(offscreenCanvas, {
-      resizeQuality: 'high',
-      premultiplyAlpha: 'premultiply'
+      resizeQuality: "high",
+      premultiplyAlpha: "premultiply"
     });
   }
 
@@ -1494,8 +1493,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       try {
         // Create both full resolution and downsampled bitmaps
         const fullResBitmapPromise = createImageBitmap(this._canvasImage, {
-          resizeQuality: 'high',
-          premultiplyAlpha: 'premultiply'
+          resizeQuality: "high",
+          premultiplyAlpha: "premultiply"
         });
 
         const canvas = this.touchRealCanvas.nativeElement;
@@ -1509,7 +1508,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // First ensure we have the full resolution bitmap
         fullResBitmapPromise.then(fullBitmap => {
           this._imageBitmap = fullBitmap;
-          
+
           // Now try to create the downsampled bitmaps, but handle failure gracefully
           this._createDownsampledBitmaps()
             .then(([lowResBitmap, medResBitmap]) => {
@@ -1523,21 +1522,21 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             .finally(() => {
               // Draw the canvas regardless of whether downsampling succeeded
               this._drawCanvas();
-              
+
               this.firstRender$.pipe(take(1)).subscribe(() => {
                 this.canvasLoading = false;
                 this._realLoadingProgressSubject.next(100);
                 this.changeDetectorRef.markForCheck();
               });
-              
+
               this.changeDetectorRef.markForCheck();
             });
         })
-        .catch(error => {
-          console.error("Failed to create any bitmap:", error);
-          this.canvasLoading = false;
-          this._realLoadingProgressSubject.next(100);
-        });
+          .catch(error => {
+            console.error("Failed to create any bitmap:", error);
+            this.canvasLoading = false;
+            this._realLoadingProgressSubject.next(100);
+          });
       } catch (error) {
         console.error("Failed to initialize canvas:", error);
       }
@@ -1590,7 +1589,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this._canvasContext) {
       return;
     }
-    
+
     // If we don't have any bitmap available, there's nothing to draw
     if (!this._imageBitmap && !this._downsampledBitmapLow && !this._downsampledBitmapMedium) {
       return;
@@ -1610,7 +1609,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Apply image smoothing settings for better quality
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
+    ctx.imageSmoothingQuality = "high";
 
     // When zoomed in beyond 1:1 pixel mapping, disable smoothing for crisp pixels
     if (this.touchScale > 1 && this.touchScale > this.naturalWidth / this._canvasImageDimensions.width) {
@@ -1631,31 +1630,40 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this._clampOffset();
 
-    // Calculate the actual zoom ratio relative to original image size
-    // This represents how much of the original image resolution we're actually seeing
-    const originalImageScale = this.naturalWidth / this._canvasImageDimensions.width;
-    const actualZoomRatio = this.touchScale / originalImageScale;
+    // Calculate the current display pixels needed based on zoom
+    // This represents how many actual source pixels we need to display without quality loss
+    const displayWidth = drawWidth * this.touchScale;
 
-    // Select the appropriate bitmap based on zoom level with fallbacks
+    // Select the appropriate bitmap based on which resolution is most efficient for current zoom
     let bitmapToUse: ImageBitmap;
 
-    // Try to use the appropriate resolution for the current zoom level
-    if (actualZoomRatio < 0.1 && this._downsampledBitmapLow) {
-      // For minimal zoom (zoomed out view), use the low-resolution bitmap
+    // Helper function to avoid choosing a bitmap that would need to be stretched beyond 100%
+    const isBitmapSufficientForDisplay = (bitmap: ImageBitmap): boolean => {
+      if (!bitmap) {
+        return false;
+      }
+      // Return true if the bitmap has enough resolution for the current display size
+      return bitmap.width >= displayWidth * 1.1; // Buffer for quality
+    };
+
+    // First try low-res bitmap if it has enough resolution
+    if (this._downsampledBitmapLow && isBitmapSufficientForDisplay(this._downsampledBitmapLow)) {
       bitmapToUse = this._downsampledBitmapLow;
-    } else if (actualZoomRatio < 0.5 && this._downsampledBitmapMedium) {
-      // For medium zoom levels, use the medium-resolution bitmap
+    }
+    // Then try medium-res bitmap if it has enough resolution
+    else if (this._downsampledBitmapMedium && isBitmapSufficientForDisplay(this._downsampledBitmapMedium)) {
       bitmapToUse = this._downsampledBitmapMedium;
-    } else if (this._imageBitmap) {
-      // For high zoom levels or when downsampled versions aren't available, use full resolution
+    }
+    // Finally use full-res bitmap
+    else if (this._imageBitmap) {
       bitmapToUse = this._imageBitmap;
     }
-    
+
     // Fallback chain if the preferred bitmap is not available
     if (!bitmapToUse) {
       bitmapToUse = this._imageBitmap || this._downsampledBitmapMedium || this._downsampledBitmapLow;
     }
-    
+
     // Only draw if we have a valid bitmap to use
     if (bitmapToUse) {
       ctx.drawImage(bitmapToUse, -drawWidth * .5, -drawHeight * .5, drawWidth, drawHeight);
