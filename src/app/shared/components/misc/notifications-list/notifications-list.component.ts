@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { NotificationContext, NotificationInterface } from "@features/notifications/interfaces/notification.interface";
@@ -31,6 +31,9 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 export class NotificationsListComponent extends BaseComponentDirective implements OnInit {
   // If false, the component is part of the notifications page.
   @Input() standalone = false;
+  
+  // Event emitted when all notifications are marked as read
+  @Output() allNotificationsMarkedAsRead = new EventEmitter<void>();
 
 
   protected page: number = 1;
@@ -181,6 +184,7 @@ export class NotificationsListComponent extends BaseComponentDirective implement
       take(1)
     ).subscribe(() => {
       this.loadNotifications();
+      this.allNotificationsMarkedAsRead.emit();
       this.changeDetectorRef.markForCheck();
     });
 
