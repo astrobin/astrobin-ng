@@ -337,7 +337,10 @@
     <h5 class="offcanvas-title">{{ "Notifications" | translate }}</h5>
   </div>
   <div class="offcanvas-body">
-    <astrobin-notifications-list [standalone]="true"></astrobin-notifications-list>
+    <astrobin-notifications-list
+      [standalone]="true"
+      (allNotificationsMarkedAsRead)="offcanvas.close()">
+    </astrobin-notifications-list>
   </div>
 </ng-template>
 
