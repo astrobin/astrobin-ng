@@ -742,6 +742,9 @@
     <button (click)="offcanvas.close()" class="btn-close text-reset"></button>
   </div>
   <div class="offcanvas-body">
-    <astrobin-notifications-list [standalone]="true"></astrobin-notifications-list>
+    <astrobin-notifications-list 
+      [standalone]="true" 
+      (allNotificationsMarkedAsRead)="offcanvas.close()">
+    </astrobin-notifications-list>
   </div>
 </ng-template>
