@@ -1,6 +1,7 @@
 <ng-container *ngIf="{ unread: unreadCount$ | async, totalNotifications: totalNotifications$ | async } as counts">
 
   <div class="notifications-menu mb-4">
+    <!-- Desktop view -->
     <div class="d-none d-lg-flex gap-3 align-items-center justify-content-end">
       <form class="context-form">
         <formly-form
@@ -36,7 +37,9 @@
       ></astrobin-refresh-button>
     </div>
 
-    <div class="d-lg-none">
+    <!-- Mobile view - Top controls -->
+    <div class="d-flex d-lg-none align-items-center justify-content-between mb-3">
+      <!-- Kebab menu for options -->
       <div ngbDropdown>
         <fa-icon
           icon="ellipsis-v"
@@ -51,14 +54,6 @@
             (toggle)="toggleShowRead($event)"
             [label]="'Only unread' | translate"
           ></astrobin-toggle-button>
-
-          <button
-            ngbDropdownItem
-            (click)="markAllAsRead()"
-            [disabled]="!!contextModel.message || !!contextModel.context || (unreadCount$ | async) === 0"
-          >
-            {{ "Mark all as read" | translate }}
-          </button>
 
           <button
             ngbDropdownItem
@@ -79,6 +74,16 @@
 
   <ng-container *ngIf="notifications !== null; else loading">
     <ng-container *ngIf="notifications.length > 0; else noNotifications">
+      <!-- Mark all as read button at the top -->
+      <button
+        (click)="markAllAsRead()"
+        [class.loading]="loadingService.loading$ | async"
+        [disabled]="!!contextModel.message || !!contextModel.context || (unreadCount$ | async) === 0"
+        class="btn btn-primary d-lg-none mb-3"
+        id="mark-all-as-read-mobile">
+        {{ "Mark all as read" | translate }}
+      </button>
+
       <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="counts.totalNotifications">
       </ngb-pagination>
 

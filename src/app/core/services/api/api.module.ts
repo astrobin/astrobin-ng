@@ -16,6 +16,7 @@ import { DebugCountryInterceptor } from "@core/services/debug-country.intercepto
 import { ClientIpInterceptor } from "@core/services/client-ip.interceptor";
 import { TransferState } from "@angular/platform-browser";
 import { TimeoutRetryInterceptor } from "@core/services/timeout-retry.interceptor";
+import { HttpRetryService } from "@core/services/http-retry.service";
 
 @NgModule({
   imports: [HttpClientModule],
@@ -33,7 +34,15 @@ import { TimeoutRetryInterceptor } from "@core/services/timeout-retry.intercepto
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ServerErrorsInterceptor,
-      deps: [WindowRefService, TranslateService, PopNotificationsService, LoadingService, AuthService, UtilsService],
+      deps: [
+        WindowRefService,
+        TranslateService,
+        PopNotificationsService,
+        LoadingService,
+        AuthService,
+        UtilsService,
+        HttpRetryService
+      ],
       multi: true
     },
     {
