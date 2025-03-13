@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnInit, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { MainState } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { NgbActiveModal, NgbModal, NgbOffcanvas, NgbOffcanvasRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AuthService } from "@core/services/auth.service";
@@ -12,15 +12,14 @@ import { DeviceService } from "@core/services/device.service";
 import { UserService } from "@core/services/user.service";
 import { SwipeToCloseService } from "@core/services/swipe-to-close.service";
 import { ScrollHideService } from "@core/services/scroll-hide.service";
-import { MobilePageMenuService, MobilePageMenuConfig } from "@core/services/mobile-page-menu.service";
+import { MobilePageMenuConfig, MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 import { LocalStorageService } from "@core/services/localstorage.service";
-import { BehaviorSubject, Observable } from "rxjs";
-import { map, take, takeUntil, delay, filter } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { delay, filter, map, take, takeUntil } from "rxjs/operators";
 import { selectUnreadNotificationsCount } from "@features/notifications/store/notifications.selectors";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { environment } from "@env/environment";
-import { DescriptionModalWrapperComponent } from "@shared/components/misc/description-modal-wrapper/description-modal-wrapper.component";
 
 interface LanguageInterface {
   code: string;

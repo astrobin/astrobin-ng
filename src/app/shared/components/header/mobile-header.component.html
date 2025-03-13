@@ -150,6 +150,13 @@
               {{ "IOTD/TP Archive" | translate }}
             </a>
           </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['explore', 'astrophotographers-list']" (click)="offcanvas.dismiss()">
+              <fa-icon icon="chart-bar"></fa-icon>
+              {{ "Astrophotographers list" | translate }}
+            </a>
+          </li>
 
           <!-- Upload link (only in non-PWA mode) -->
           <ng-container *ngIf="(isPwaMode$ | async) === false">
