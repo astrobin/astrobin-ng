@@ -1,0 +1,245 @@
+<div class="page has-breadcrumb p-0">
+  <div class="tabs-container d-flex justify-content-between align-items-center m-0">
+    <!-- Top navigation for tabs and search -->
+    <div class="d-flex flex-column flex-md-row w-100 justify-content-between">
+      <!-- Tabs -->
+      <ul
+        ngbNav
+        #nav="ngbNav"
+        (navChange)="onTabChange($event)"
+        [(activeId)]="activeTab"
+        class="nav-tabs align-items-center"
+      >
+        <li [ngbNavItem]="StatType.IMAGE_DATA">
+          <button ngbNavLink>
+            <span>{{ "Image Data" | translate }}</span>
+          </button>
+          <ng-template ngbNavContent>
+            <ng-container *ngTemplateOutlet="imageDataTemplate"></ng-container>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="StatType.CONTRIBUTION_DATA">
+          <button ngbNavLink>{{ "Contribution Data" | translate }}</button>
+          <ng-template ngbNavContent>
+            <ng-container *ngTemplateOutlet="contributionDataTemplate"></ng-container>
+          </ng-template>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center ms-2">
+        <!-- Search input -->
+        <div class="d-flex align-items-center search-container my-2 my-md-0 me-2">
+          <div class="input-group align-items-center">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="{{ 'Search' | translate }}"
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="onSearch()"
+            >
+            <div class="input-group-append ms-2">
+              <button class="btn btn-link link-primary" type="button" (click)="onSearch()">
+                <fa-icon icon="search"></fa-icon>
+              </button>
+              <button *ngIf="searchQuery" class="btn btn-link link-secondary" type="button" (click)="onClearSearch()">
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info icon -->
+        <div class="d-flex flex-nowrap align-items-center me-2">
+          <a
+            [href]="activeTab === StatType.IMAGE_DATA ? 'https://welcome.astrobin.com/features/image-index' : 'https://welcome.astrobin.com/features/contribution-index'"
+            target="_blank"
+            rel="noopener"
+            class="px-2 py-3">
+            <fa-icon icon="info-circle"></fa-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div [ngbNavOutlet]="nav"></div>
+
+  <ng-template #imageDataTemplate>
+    <div class="table-responsive">
+      <table class="table table-images-data table-striped table-bordered m-0">
+        <thead>
+        <tr>
+          <th scope="col" class="text-center">#</th>
+          <th scope="col">
+            {{ "User" | translate }}
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('followers')">
+            {{ "Followers" | translate }}
+            <fa-icon [icon]="getSortIcon('followers')"></fa-icon>
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('images')">
+            {{ "Images" | translate }}
+            <fa-icon [icon]="getSortIcon('images')"></fa-icon>
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('totalLikesReceived')">
+            {{ "Likes" | translate }}
+            <fa-icon [icon]="getSortIcon('totalLikesReceived')"></fa-icon>
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('integration')">
+            {{ "Total integration" | translate }}
+            <fa-icon [icon]="getSortIcon('integration')"></fa-icon>
+          </th>
+          <th scope="col" class="sortable award-icon-column" (click)="onSort('topPickNominations')">
+            <fa-icon icon="arrow-up" ngbTooltip="{{ 'Top Pick Nominations' | translate }}" container="body"></fa-icon>
+            <fa-icon [icon]="getSortIcon('topPickNominations')" class="sort-icon"></fa-icon>
+          </th>
+          <th scope="col" class="sortable award-icon-column" (click)="onSort('topPicks')">
+            <fa-icon icon="star" ngbTooltip="{{ 'Top Picks' | translate }}" container="body"></fa-icon>
+            <fa-icon [icon]="getSortIcon('topPicks')" class="sort-icon"></fa-icon>
+          </th>
+          <th scope="col" class="sortable award-icon-column" (click)="onSort('iotds')">
+            <fa-icon icon="trophy" ngbTooltip="{{ 'IOTDs' | translate }}" container="body"></fa-icon>
+            <fa-icon [icon]="getSortIcon('iotds')" class="sort-icon"></fa-icon>
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('normalizedLikes')">
+            {{ "Image Index" | translate }}
+            <fa-icon [icon]="getSortIcon('normalizedLikes')"></fa-icon>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngIf="initialLoading || loading">
+          <td colspan="10" class="text-center py-4">
+            <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
+          </td>
+        </tr>
+        <ng-container *ngIf="!initialLoading">
+          <tr *ngFor="let user of results; let i = index" @fadeInOut>
+            <td class="text-center">{{ searchQuery ? '-' : i + 1 }}</td>
+            <td>
+              <div class="d-flex align-items-center">
+                <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)">
+                  <img [src]="getAvatarUrl(user.avatarUrl)" class="avatar" alt="Avatar" />
+                </a>
+                <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)" class="user-link ms-2">
+                  {{ user.displayName }}
+                  <span *ngIf="loadingUsernames.includes(user.username)" class="ms-1">
+                    <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
+                  </span>
+                </a>
+              </div>
+            </td>
+            <td>{{ (user.followers | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.followers | number) }}</td>
+            <td>{{ (user.images | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.images | number) }}</td>
+            <td>{{ (user.totalLikesReceived | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.totalLikesReceived | number) }}</td>
+            <td>{{ (user.integration | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.integration | number:'1.1-1') }}</td>
+            <td>{{ (user.topPickNominations | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.topPickNominations | number) }}</td>
+            <td>{{ (user.topPicks | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.topPicks | number) }}</td>
+            <td>{{ (user.iotds | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.iotds | number) }}</td>
+            <td>{{ (user.normalizedLikes | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.normalizedLikes | number:'1.2-2') }}</td>
+          </tr>
+          <tr *ngIf="results?.length === 0">
+            <td colspan="10" class="text-center py-4">
+              {{ "No data available" | translate }}
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </ng-template>
+
+  <ng-template #contributionDataTemplate>
+    <div class="table-responsive">
+      <table class="table table-contribution-data table-striped table-bordered m-0">
+        <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col" colspan="3" class="text-center">{{ "Comments" | translate }}</th>
+          <th scope="col" colspan="2" class="text-center">{{ "Forum posts" | translate }}</th>
+          <th scope="col" class="sortable" (click)="onSort('contributionIndex')">
+            {{ "Contribution index" | translate }}
+            <fa-icon [icon]="getSortIcon('contributionIndex')"></fa-icon>
+          </th>
+        </tr>
+        <tr>
+          <th scope="col" class="text-center">#</th>
+          <th scope="col">
+            {{ "User" | translate }}
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('commentsWritten')">
+            {{ "Written" | translate }}
+            <fa-icon [icon]="getSortIcon('commentsWritten')"></fa-icon>
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('commentsReceived')">
+            {{ "Received" | translate }}
+            <fa-icon [icon]="getSortIcon('commentsReceived')"></fa-icon>
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('commentLikesReceived')">
+            {{ "Likes" | translate }}
+            <fa-icon [icon]="getSortIcon('commentLikesReceived')"></fa-icon>
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('forumPosts')">
+            {{ "Written" | translate }}
+            <fa-icon [icon]="getSortIcon('forumPosts')"></fa-icon>
+          </th>
+          <th scope="col" class="sortable" (click)="onSort('forumPostLikesReceived')">
+            {{ "Likes" | translate }}
+            <fa-icon [icon]="getSortIcon('forumPostLikesReceived')"></fa-icon>
+          </th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngIf="initialLoading || loading">
+          <td colspan="8" class="text-center py-4">
+            <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
+          </td>
+        </tr>
+        <ng-container *ngIf="!initialLoading">
+          <tr *ngFor="let user of results; let i = index" @fadeInOut>
+            <td class="text-center">{{ searchQuery ? '-' : i + 1 }}</td>
+            <td>
+              <div class="d-flex align-items-center">
+                <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)">
+                  <img [src]="getAvatarUrl(user.avatarUrl)" class="avatar" alt="Avatar" />
+                </a>
+                <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)" class="user-link ms-2">
+                  {{ user.displayName }}
+                  <span *ngIf="loadingUsernames.includes(user.username)" class="ms-1">
+                      <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
+                  </span>
+                </a>
+              </div>
+            </td>
+            <td>{{ (user.commentsWritten | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.commentsWritten | number) }}</td>
+            <td>{{ (user.commentsReceived | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.commentsReceived | number) }}</td>
+            <td>{{ (user.commentLikesReceived | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.commentLikesReceived | number) }}</td>
+            <td>{{ (user.forumPosts | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.forumPosts | number) }}</td>
+            <td>{{ (user.forumPostLikesReceived | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.forumPostLikesReceived | number) }}</td>
+            <td>{{ (user.contributionIndex | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.contributionIndex | number:'1.2-2') }}</td>
+          </tr>
+          <tr *ngIf="results?.length === 0">
+            <td colspan="8" class="text-center py-4">
+              {{ "No data available" | translate }}
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </ng-template>
+
+  <!-- Loading indicator and Load more button -->
+  <div class="text-center py-3" *ngIf="(loading && !initialLoading) || (!loading && hasMore)">
+    <div *ngIf="loading && !initialLoading">
+      <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
+    </div>
+    <button *ngIf="!loading && hasMore" class="btn btn-secondary mt-3" (click)="loadMore()">
+      {{ "Load more" | translate }}
+    </button>
+  </div>
+
+  <astrobin-scroll-to-top></astrobin-scroll-to-top>
+</div>

@@ -511,14 +511,9 @@
 
             <div class="dropdown-divider"></div>
 
-            <a [href]="classicRoutesService.ASTROPHOTOGRAPHERS_LIST" class="dropdown-item">
-              <fa-icon icon="star"></fa-icon>
+            <a [routerLink]="['explore', 'astrophotographers-list']" class="dropdown-item">
+              <fa-icon icon="chart-bar"></fa-icon>
               {{ "Astrophotographers list" | translate }}
-            </a>
-
-            <a [href]="classicRoutesService.CONTRIBUTORS_LIST" class="dropdown-item">
-              <fa-icon icon="file-alt"></fa-icon>
-              {{ "Contributors list" | translate }} <em>(beta)</em>
             </a>
           </div>
         </div>
