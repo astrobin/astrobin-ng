@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AstrophotographersListPageComponent } from "./astrophotographers-list-page.component";
-import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { provideMockStore } from "@ngrx/store/testing";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
 import { NgbNavModule } from "@ng-bootstrap/ng-bootstrap";
