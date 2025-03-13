@@ -229,8 +229,6 @@ describe("AstrophotographersListPageComponent", () => {
         }
       ]
     }).compileComponents();
-
-    mockStore = TestBed.inject(MockStore);
   });
 
   beforeEach(() => {
