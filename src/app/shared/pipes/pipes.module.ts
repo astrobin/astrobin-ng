@@ -31,6 +31,7 @@ import { NumberSuffixPipe } from "@shared/pipes/number-suffix.pipe";
 import { TruncatePipe } from "@shared/pipes/truncate.pipe";
 import { NormalizeNotificationLinkPipe } from "@shared/pipes/normalize-notification-link.pipe";
 import { NotificationContextIconPipe } from "@shared/pipes/notification-context-icon.pipe";
+import { NullOrUndefinedPipe } from "@shared/pipes/null-or-undefined.pipe";
 
 const pipes = [
   BBCodeToHtmlPipe,
@@ -51,6 +52,7 @@ const pipes = [
   IsInGroupPipe,
   HasValidUserSubscriptionPipe,
   LocalDatePipe,
+  NullOrUndefinedPipe,
   YesNoPipe,
   SlugifyPipe,
   Nl2BrPipe,

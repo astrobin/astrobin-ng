@@ -3,47 +3,7 @@
 
 :host {
   .tabs-container {
-    @include darkest-background-texture;
-
-    .nav-tabs {
-      border-bottom: 0;
-      color: var(--lighterGrey);
-      padding: .5rem 1rem;
-      gap: .5rem;
-
-      .nav-link {
-        border-radius: .75rem;
-
-        &:not(.active) {
-          color: var(--lighterGrey);
-        }
-      }
-    }
-
-    [icon="filter"],
-    [icon="info-circle"] {
-      font-size: .85rem;
-    }
-
-    @media (max-width: $sm-max) {
-      margin: -.5rem;
-
-      .nav-tabs {
-        font-size: .8rem;
-        gap: 0;
-        padding: .5rem;
-
-        .nav-link {
-          padding: .5rem;
-        }
-      }
-    }
-
-    @media (min-width: $lg-min) {
-      margin-top: -2rem;
-      margin-left: -2rem;
-      margin-right: -2rem;
-    }
+    @include tabs-container;
   }
 
   astrobin-masonry-layout {

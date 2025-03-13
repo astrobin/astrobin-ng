@@ -7,4 +7,13 @@ export interface UserSearchInterface {
   followers: number;
   normalizedLikes: number;
   contributionIndex: number;
+  integration?: number;
+  topPickNominations?: number;
+  topPicks?: number;
+  iotds?: number;
+  commentsWritten?: number;
+  commentsReceived?: number;
+  commentLikesReceived?: number;
+  forumPosts?: number;
+  forumPostLikesReceived?: number;
 }
