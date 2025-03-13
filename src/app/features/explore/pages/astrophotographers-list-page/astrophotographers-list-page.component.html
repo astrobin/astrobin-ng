@@ -35,7 +35,7 @@
               class="form-control"
               placeholder="{{ 'Search' | translate }}"
               [(ngModel)]="searchQuery"
-              (keyup.enter)="onSearch()"
+              (keydown.enter)="onSearch(); $event.preventDefault()"
             >
             <div class="input-group-append ms-2">
               <button class="btn btn-link link-primary" type="button" (click)="onSearch()">
@@ -108,12 +108,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngIf="initialLoading || loading">
+        <tr *ngIf="initialLoading">
           <td colspan="10" class="text-center py-4">
             <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
           </td>
         </tr>
-        <ng-container *ngIf="!initialLoading">
+        <ng-container *ngIf="!initialLoading || results.length > 0">
           <tr *ngFor="let user of results; let i = index" @fadeInOut>
             <td class="text-center">{{ searchQuery ? '-' : i + 1 }}</td>
             <td>
@@ -138,7 +138,7 @@
             <td>{{ (user.iotds | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.iotds | number) }}</td>
             <td>{{ (user.normalizedLikes | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.normalizedLikes | number:'1.2-2') }}</td>
           </tr>
-          <tr *ngIf="results?.length === 0">
+          <tr *ngIf="!initialLoading && !loading && results.length === 0">
             <td colspan="10" class="text-center py-4">
               {{ "No data available" | translate }}
             </td>
@@ -192,12 +192,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngIf="initialLoading || loading">
+        <tr *ngIf="initialLoading">
           <td colspan="8" class="text-center py-4">
             <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
           </td>
         </tr>
-        <ng-container *ngIf="!initialLoading">
+        <ng-container *ngIf="!initialLoading || results.length > 0">
           <tr *ngFor="let user of results; let i = index" @fadeInOut>
             <td class="text-center">{{ searchQuery ? '-' : i + 1 }}</td>
             <td>
@@ -220,7 +220,7 @@
             <td>{{ (user.forumPostLikesReceived | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.forumPostLikesReceived | number) }}</td>
             <td>{{ (user.contributionIndex | nullOrUndefined) === "n/a" ? ("n/a" | translate) : (user.contributionIndex | number:'1.2-2') }}</td>
           </tr>
-          <tr *ngIf="results?.length === 0">
+          <tr *ngIf="!initialLoading && !loading && results.length === 0">
             <td colspan="8" class="text-center py-4">
               {{ "No data available" | translate }}
             </td>
@@ -232,11 +232,11 @@
   </ng-template>
 
   <!-- Loading indicator and Load more button -->
-  <div class="text-center py-3" *ngIf="(loading && !initialLoading) || (!loading && hasMore)">
+  <div class="text-center py-3" *ngIf="(loading && !initialLoading) || (!loading && hasMore && results.length > 0)">
     <div *ngIf="loading && !initialLoading">
       <astrobin-loading-indicator @fadeInOut></astrobin-loading-indicator>
     </div>
-    <button *ngIf="!loading && hasMore" class="btn btn-secondary mt-3" (click)="loadMore()">
+    <button *ngIf="!loading && hasMore && results.length > 0" class="btn btn-secondary mt-3" (click)="loadMore()">
       {{ "Load more" | translate }}
     </button>
   </div>

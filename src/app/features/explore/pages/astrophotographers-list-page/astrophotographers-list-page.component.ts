@@ -4,7 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { UserSearchInterface } from "@core/interfaces/user-search.interface";
-import { debounceTime, distinctUntilChanged, filter, map, skip, take, takeUntil } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, finalize, map, skip, take, takeUntil } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@core/services/loading.service";
 import { SearchService } from "@core/services/search.service";
@@ -20,6 +20,7 @@ import { UserService } from "@core/services/user.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { SearchType } from "@features/search/interfaces/search-model.interface";
 import { MatchType } from "@features/search/enums/match-type.enum";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 enum StatType {
   IMAGE_DATA = "image-data",
@@ -69,7 +70,8 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     public readonly titleService: TitleService,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly userService: UserService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -156,10 +158,24 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
           shouldReset = true;
         }
 
-        // Check if search query changed
-        if (this.searchQuery !== q) {
+        // Always handle search param changes
+        // We need to use the original query params to check if "q" exists
+        const rawParams = this.route.snapshot.queryParams;
+
+        // Update local query and reset if a search param exists or changed
+        const hasSearchParam = rawParams.hasOwnProperty("q");
+        const searchChanged = this.searchQuery !== q;
+
+        if (hasSearchParam || searchChanged) {
+          // Update the local value to match URL param
           this.searchQuery = q;
           shouldReset = true;
+
+          // Force immediate visual feedback for search changes
+          this.results = [];
+          this.loading = true;
+          this.initialLoading = true;
+          this.changeDetectorRef.markForCheck();
         }
 
         // Reset the list when parameters change from navigation
@@ -198,18 +214,38 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
     }
 
     this.userSearchApiService.search(searchOptions)
-      .pipe(take(1))
-      .subscribe((result: PaginatedApiResultInterface<UserSearchInterface>) => {
-        if (this.page === 1) {
-          this.results = result.results;
-        } else {
-          this.results = [...this.results, ...result.results];
-        }
+      .pipe(
+        take(1),
+        // Force Angular to run change detection in the next cycle
+        // to ensure loading states update properly
+        finalize(() => {
+          this.utilsService.delay(0).subscribe(() => {
+            this.changeDetectorRef.markForCheck();
+          });
+        })
+      )
+      .subscribe({
+        next: (result: PaginatedApiResultInterface<UserSearchInterface>) => {
+          if (this.page === 1) {
+            this.results = result.results;
+          } else {
+            this.results = [...this.results, ...result.results];
+          }
 
-        this.hasMore = result.results.length === this.pageSize;
-        this.loading = false;
-        this.initialLoading = false;
-        this.changeDetectorRef.markForCheck();
+          this.hasMore = result.results.length === this.pageSize;
+          this.loading = false;
+          this.initialLoading = false;
+
+          // Force change detection to update the view
+          this.changeDetectorRef.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error loading search results:', err);
+          this.loading = false;
+          this.initialLoading = false;
+          // Force change detection to update the view
+          this.changeDetectorRef.detectChanges();
+        }
       });
   }
 
@@ -337,6 +373,14 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
 
   // Search-related methods
   onSearch(): void {
+    // Clear existing results immediately
+    this.results = [];
+    this.page = 1;
+    this.hasMore = true;
+    this.initialLoading = true;
+    this.loading = true;
+    this.changeDetectorRef.markForCheck();
+
     // Update URL and trigger a reload
     this.router.navigate([], {
       relativeTo: this.route,
@@ -349,8 +393,29 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
   }
 
   onClearSearch(): void {
+    // Clear the search query
     this.searchQuery = "";
-    this.onSearch(); // Will update URL and trigger reload
+
+    // Clear existing results immediately
+    this.results = [];
+    this.page = 1;
+    this.hasMore = true;
+    this.initialLoading = true;
+    this.loading = true;
+    this.changeDetectorRef.markForCheck();
+
+    // Update URL to remove the search parameter
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        q: null // Explicitly set to null to remove from URL
+      },
+      queryParamsHandling: "merge", // Preserve other query params
+      preserveFragment: true // Keep the active tab
+    });
+
+    // Force a direct load without waiting for the URL change
+    this.resetList();
   }
 
   // Since we need to use the href attribute in the template, we can't use Observables directly
