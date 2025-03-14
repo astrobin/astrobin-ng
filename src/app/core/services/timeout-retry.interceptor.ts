@@ -31,10 +31,10 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    const maxAttempts = 6; // initial attempt + 5 retries
+    const maxAttempts = 4; // initial attempt + 3 retries (3500, 7000, 14000, 28000 ms)
 
     const attemptRequest = (attempt: number): Observable<HttpEvent<any>> => {
-      const timeoutMs = 2000 * Math.pow(2, attempt); // 2000, 4000, 8000, 16000, 32000 ms
+      const timeoutMs = 3500 * Math.pow(2, attempt); // 3500, 7000, 14000, 28000 ms
 
       if (attempt === 0 && req.url) {
         // Initialize retry tracking for this URL
@@ -54,7 +54,10 @@ export class TimeoutRetryInterceptor implements HttpInterceptor {
             if (attempt < maxAttempts - 1) {
               const retryDelay = 1000 * Math.pow(2, attempt); // Exponential backoff for retry
               const errorType = isTimeoutError ? 'Timeout' : 'Network error';
-              console.log(`${errorType}. Retrying in ${retryDelay}ms, attempt ${attempt + 1} of ${maxAttempts - 1}`);
+              console.log(
+                `${errorType}. Timeout was ${timeoutMs}ms. Retrying in ${retryDelay}ms, attempt ${attempt + 1} of ` +
+                `${maxAttempts - 1}`
+              );
 
               return timer(retryDelay).pipe(
                 mergeMap(() => attemptRequest(attempt + 1))
