@@ -34,6 +34,7 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
   protected selectedFile: File = null;
   protected previewUrl: string | ArrayBuffer = null;
   protected readonly isBrowser: boolean;
+  protected circleDiameter = 0;
   
   // Image transformation properties
   protected rotation = 0;
@@ -280,8 +281,62 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
   }
   
   /**
-   * Draw the transformed image on a canvas and update the preview
+   * Calculate the circle size based on the container and image dimensions
+   * This is called when the image loads
    */
+  onImageLoad(containerElement: HTMLElement): void {
+    if (!containerElement || !this.isBrowser) {
+      this.circleDiameter = 200; // Fallback size
+      return;
+    }
+    
+    // Wait a short time to ensure the element is fully rendered and has dimensions
+    setTimeout(() => {
+      // Get container dimensions
+      const containerWidth = containerElement.offsetWidth;
+      const containerHeight = containerElement.offsetHeight;
+      
+      // Get the image element within the container
+      const imageElement = containerElement.querySelector('.preview-image') as HTMLImageElement;
+      
+      if (!containerWidth || !containerHeight || !imageElement) {
+        this.circleDiameter = 200; // Fallback size
+      } else {
+        // Wait for image to be fully loaded
+        if (imageElement.complete) {
+          this.calculateCircleDiameter(containerElement, imageElement);
+        } else {
+          // If image is not loaded yet, wait for it
+          imageElement.onload = () => this.calculateCircleDiameter(containerElement, imageElement);
+        }
+      }
+    }, 100);
+  }
+  
+  /**
+   * Calculate the optimal circle diameter based on the container and image
+   */
+  private calculateCircleDiameter(containerElement: HTMLElement, imageElement: HTMLImageElement): void {
+    // Get actual dimensions
+    const containerWidth = containerElement.offsetWidth;
+    const containerHeight = containerElement.offsetHeight;
+    const imageWidth = imageElement.offsetWidth;
+    const imageHeight = imageElement.offsetHeight;
+    
+    // Use the shortest dimension of the container
+    // The circle should go all the way to the edge of the shorter side
+    let diameter = Math.min(containerWidth, containerHeight);
+    
+    // Ensure minimum size
+    if (diameter < 150) {
+      diameter = 150;
+    }
+    
+    // Update the circle diameter
+    this.circleDiameter = diameter;
+    this.changeDetectorRef.markForCheck();
+  }
+
   private drawTransformedImage(): void {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -340,8 +395,24 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
           lastModified: Date.now()
         });
       }
-      // Ensure UI updates after blob is created
-      this.changeDetectorRef.markForCheck();
+      
+      // Give the UI time to update with the new image
+      setTimeout(() => {
+        // Wait for the image to load before recalculating circle
+        const img = new Image();
+        img.onload = () => {
+          // Force circle size recalculation after image has loaded
+          setTimeout(() => {
+            const container = document.querySelector('.preview-image-container') as HTMLElement;
+            if (container) {
+              this.onImageLoad(container);
+            }
+            // Ensure UI updates
+            this.changeDetectorRef.markForCheck();
+          }, 50);
+        };
+        img.src = this.previewUrl as string;
+      }, 50);
     }, 'image/jpeg', 0.92); // JPEG with 92% quality is usually a good balance
   }
   

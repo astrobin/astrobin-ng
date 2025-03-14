@@ -37,7 +37,10 @@
 
           <ng-template #previewTemplate>
             <div class="preview-container">
-              <img [src]="previewUrl" class="preview-image" />
+              <div class="preview-image-container" #previewContainer>
+                <img [src]="previewUrl" class="preview-image" #previewImage (load)="onImageLoad(previewContainer)" />
+                <div class="avatar-preview-circle" [style.width.px]="circleDiameter" [style.height.px]="circleDiameter"></div>
+              </div>
               <div class="image-transform-controls">
                 <div class="transform-actions">
                   <button class="btn btn-outline-secondary btn-sm m-0" (click)="rotateImage()" [disabled]="loading" title="{{ 'Rotate' | translate }}">
