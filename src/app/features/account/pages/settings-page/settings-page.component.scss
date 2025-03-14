@@ -1,0 +1,9 @@
+@import "../../../../styles/mixins";
+
+.tabs-container {
+  @include tabs-container;
+
+  .nav-tabs {
+    width: 100%;
+  }
+}
