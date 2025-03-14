@@ -18,6 +18,7 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
 import { fadeInOut } from "@shared/animations";
+import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
 
 @Component({
   selector: "astrobin-avatar",
@@ -42,9 +43,13 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
   @Input()
   showFollowsYouBadge = false;
 
+  @Input()
+  showEditButton = false;
+
   protected avatarUrl: string = "/assets/images/default-avatar.jpeg?v=2";
   protected url: string;
   protected followsYou = false;
+  protected isCurrentUser = false;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -71,6 +76,7 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
           this._setAvatar();
           this._setUrl();
           this._setFollowsYou();
+          this._checkIsCurrentUser();
           this.changeDetectorRef.markForCheck();
         });
 
@@ -79,6 +85,7 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
         this._setAvatar();
         this._setUrl();
         this._setFollowsYou();
+        this._checkIsCurrentUser();
       }
     }
   }
@@ -155,6 +162,18 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
         appLabel: "auth",
         model: "user"
       }));
+    });
+  }
+  
+  private _checkIsCurrentUser(): void {
+    this.currentUser$.pipe(take(1)).subscribe(currentUser => {
+      if (currentUser && this.user) {
+        this.isCurrentUser = currentUser.id === this.user.id;
+        this.changeDetectorRef.markForCheck();
+      } else if (currentUser && this.userId) {
+        this.isCurrentUser = currentUser.id === this.userId;
+        this.changeDetectorRef.markForCheck();
+      }
     });
   }
 }

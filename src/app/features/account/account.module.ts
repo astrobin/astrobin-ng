@@ -6,10 +6,22 @@ import { SharedModule } from "@shared/shared.module";
 import { LoggingOutPageComponent } from "./pages/logging-out-page/logging-out-page.component";
 import { LoginPageComponent } from "./pages/login-page/login-page.component";
 import { LoggingInPageComponent } from "@features/account/pages/logging-in-page/logging-in-page.component";
+import { SettingsPageComponent } from "./pages/settings-page/settings-page.component";
+import { NgbNavModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
-  declarations: [LoginPageComponent, LoggedInPageComponent, LoggingInPageComponent, LoggingOutPageComponent],
-  imports: [RouterModule.forChild(routes), SharedModule]
+  declarations: [
+    LoginPageComponent, 
+    LoggedInPageComponent, 
+    LoggingInPageComponent, 
+    LoggingOutPageComponent,
+    SettingsPageComponent
+  ],
+  imports: [
+    RouterModule.forChild(routes), 
+    SharedModule,
+    NgbNavModule
+  ]
 })
 export class AccountModule {
 }

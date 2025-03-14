@@ -15,4 +15,17 @@ export interface CommonApiServiceInterface {
   getUserSubscriptions(user?: UserInterface): Observable<UserSubscriptionInterface[]>;
 
   getPayments(): Observable<PaymentInterface[]>;
+  
+  /**
+   * Upload a new avatar for the current user
+   * @param avatarFile The image file to upload as avatar
+   * @returns Observable with the response containing success status and new avatar URL
+   */
+  uploadAvatar(avatarFile: File): Observable<{ success: boolean; avatar_url: string; errors?: any }>;
+  
+  /**
+   * Delete all avatars for the current user
+   * @returns Observable with the response containing success status
+   */
+  deleteAvatar(): Observable<{ success: boolean; detail?: string }>;
 }

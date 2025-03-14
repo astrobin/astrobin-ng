@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpRequest, HttpEvent, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { PaymentInterface } from "@core/interfaces/payment.interface";
@@ -10,11 +10,12 @@ import { BackendTogglePropertyInterface, BackendUserInterface, BackendUserProfil
 import { CommonApiServiceInterface } from "@core/services/api/classic/common/common-api.service-interface";
 import { LoadingService } from "@core/services/loading.service";
 import { Observable, of } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { catchError, map, filter } from "rxjs/operators";
 import { BaseClassicApiService } from "../base-classic-api.service";
 import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
 import { ImageInterface } from "@core/interfaces/image.interface";
+import { environment } from "@env/environment";
 
 export interface FollowersInterface {
   followers: [
@@ -283,5 +284,39 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
 
   deleteToggleProperty(id: TogglePropertyInterface["id"]): Observable<void> {
     return this.http.delete<void>(`${this.configUrl}/toggleproperties/${id}/`);
+  }
+
+  /**
+   * Upload a new avatar for the current user
+   * @param avatarFile The image file to upload as avatar
+   * @returns Observable with the response containing success status and new avatar URL
+   */
+  uploadAvatar(avatarFile: File): Observable<{ success: boolean; avatar_url: string; errors?: any }> {
+    const formData = new FormData();
+    formData.append('file', avatarFile);
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        // Unsetting the Content-Type is necessary, so it gets set to multipart/form-data with the correct boundary.
+        "Content-Type": "__unset__",
+        "Content-Disposition": `form-data; name="file"; filename=${encodeURIComponent(avatarFile.name)}`
+      })
+    };
+
+    return this.http.post<{ success: boolean; avatar_url: string; errors?: any }>(
+      `${this.configUrl}/users/avatar/add/`,
+      formData,
+      httpOptions
+    );
+  }
+
+  /**
+   * Delete all avatars for the current user
+   * @returns Observable with the response containing success status
+   */
+  deleteAvatar(): Observable<{ success: boolean; detail?: string }> {
+    return this.http.delete<{ success: boolean; detail?: string }>(
+      `${environment.classicApiUrl}/api/v2/common/users/avatar/delete/`
+    );
   }
 }
