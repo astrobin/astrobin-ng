@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2025-03-05 15:56+0100\n"
+"PO-Revision-Date: 2025-03-14 11:03+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Dutch; Flemish\n"
 "Language: nl\n"
@@ -12174,18 +12174,245 @@ msgstr "door"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
 #: loco:67c83c4dc95f5b24ef03d122
-#, fuzzy
 msgid "See original"
 msgstr "Bekijk origineel"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
 #: loco:67c83c4dc95f5b24ef03d123
-#, fuzzy
 msgid "Translate"
 msgstr "Vertalen"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
 #: loco:67c83c4dc95f5b24ef03d124
-#, fuzzy
 msgid "Translated"
 msgstr "Vertaald"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302db92
+#, fuzzy
+msgid "Activate zoom first before freezing (click or scroll on image)."
+msgstr ""
+"Activeer eerst de zoom voordat je bevriest (klik of scroll op de afbeelding)."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.ts
+#: loco:67d3fdd64ffe2e5a5302db93
+#, fuzzy
+msgid "Astrophotographers List"
+msgstr "Lijst van Astrofotografen"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+#: loco:67d3fdd64ffe2e5a5302db94
+#, fuzzy
+msgid "Connection error"
+msgstr "Verbindingsfout"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db95
+#, fuzzy
+msgid "Contribution Data"
+msgstr "Bijdragegegevens"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db96
+#, fuzzy
+msgid "Contribution index"
+msgstr "Bijdrage-index"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+#: loco:67d3fdd64ffe2e5a5302db97
+#, fuzzy
+msgid ""
+"Could not connect to the server. Please check your internet connection and "
+"try again."
+msgstr ""
+"Kon geen verbinding maken met de server. Controleer je internetverbinding en "
+"probeer het opnieuw."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db98
+#, fuzzy
+msgid "External sources"
+msgstr "Externe bronnen"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db99
+#, fuzzy
+msgid "Forum posts"
+msgstr "Forumberichten"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db9a
+#, fuzzy
+msgid "IOTDs"
+msgstr "IOTDs"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db9b
+#, fuzzy
+msgid "Image Data"
+msgstr "Afbeeldingsgegevens"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9c
+#, fuzzy
+msgid "Images acquired or processed from a source not listed above."
+msgstr ""
+"Afbeeldingen verkregen of verwerkt vanuit een bron die hierboven niet "
+"vermeld staat."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9d
+#, fuzzy
+msgid ""
+"Images captured by renting time or purchasing data from an amateur hosting "
+"facility."
+msgstr ""
+"Afbeeldingen vastgelegd door tijd te huren of gegevens te kopen van een "
+"amateur hostingfaciliteit."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9e
+#, fuzzy
+msgid "Images captured with portable gear at distant locations."
+msgstr "Afbeeldingen vastgelegd met draagbare apparatuur op verre locaties."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9f
+#, fuzzy
+msgid ""
+"Images captured with your own equipment at a remote observatory you own or "
+"rent, at a distant location."
+msgstr ""
+"Afbeeldingen vastgelegd met je eigen apparatuur in een afgelegen "
+"observatorium dat je bezit of huurt, op een verre locatie."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba0
+#, fuzzy
+msgid "Images captured with your own equipment near home."
+msgstr "Afbeeldingen vastgelegd met je eigen apparatuur dicht bij huis."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba1
+#, fuzzy
+msgid "Images processed from a mix of the above sources."
+msgstr "Afbeeldingen verwerkt uit een mix van bovenstaande bronnen."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba2
+#, fuzzy
+msgid ""
+"Images processed from professional data repositories, e.g. Hubble, JWST, ESO,"
+" etc."
+msgstr ""
+"Afbeeldingen verwerkt uit professionele gegevensrepositories, bijv. Hubble, "
+"JWST, ESO, enz."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba3
+#, fuzzy
+msgid ""
+"Images processed from publicly shared data by amateur astrophotographers."
+msgstr ""
+"Afbeeldingen verwerkt uit openbaar gedeelde gegevens door amateur "
+"astrofotografen."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dba4
+#, fuzzy
+msgid "No data available"
+msgstr "Geen gegevens beschikbaar"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba5
+#, fuzzy
+msgid "Private remote observatory"
+msgstr "Privé afstandsobservatorium"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dba6
+#, fuzzy
+msgid "Received"
+msgstr "Ontvangen"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba7
+#, fuzzy
+msgid "Remote observatory"
+msgstr "Afstandsobservatorium"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba8
+msgid "Self-acquired"
+msgstr "Zelf verworven"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302dba9
+#, fuzzy
+msgid "Sorry, zooming on GIF animations is not available on touch devices."
+msgstr ""
+"Sorry, inzoomen op GIF-animaties is niet beschikbaar op touch-apparaten."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbaa
+#, fuzzy
+msgid "Top Pick Nominations"
+msgstr "Topkeuze Nominaties"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbab
+#, fuzzy
+msgid "Top Picks"
+msgstr "Topkeuzes"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbac
+#, fuzzy
+msgid "User"
+msgstr "Gebruiker"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbad
+#, fuzzy
+msgid "Written"
+msgstr "Geschreven"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dbae
+#, fuzzy
+msgid "You're not sure where the data comes from."
+msgstr "Je weet niet zeker waar de gegevens vandaan komen."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302dbaf
+#, fuzzy
+msgid "Zoom freezing is not available for very large images."
+msgstr "Inzoomen is niet beschikbaar voor zeer grote afbeeldingen."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302dbb0
+#, fuzzy
+msgid "Zoom freezing is only available in mouse mode."
+msgstr "Inzoomen is alleen beschikbaar in muismodus."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67d3fdd64ffe2e5a5302dbb1
+#, fuzzy
+msgid "Zoom is frozen (F)"
+msgstr "Zoom is bevroren (F)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67d3fdd64ffe2e5a5302dbb2
+#, fuzzy
+msgid "Zoom is frozen. Press F to unfreeze."
+msgstr "Zoom is bevroren. Druk op F om te ontdooien."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67d3fdd64ffe2e5a5302dbb3
+#, fuzzy
+msgid "Zooming is not available for GIF animations on touch devices."
+msgstr "Inzoomen is niet beschikbaar voor GIF-animaties op touch-apparaten."

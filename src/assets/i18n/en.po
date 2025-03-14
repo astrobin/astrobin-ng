@@ -246,6 +246,10 @@ msgstr ""
 msgid "Acquisition type"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+msgid "Activate zoom first before freezing (click or scroll on image)."
+msgstr ""
+
 msgid "Active"
 msgstr ""
 
@@ -752,6 +756,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
 msgid "Astrometry.net publicly visible"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.ts
+msgid "Astrophotographers List"
 msgstr ""
 
 msgid "Astrophotographers list"
@@ -1301,6 +1309,10 @@ msgstr ""
 msgid "Conjunction"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+msgid "Connection error"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
 msgid "Constellation"
@@ -1328,13 +1340,18 @@ msgstr ""
 msgid "Contrast"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "Contribution Data"
+msgstr ""
+
 msgid "Contribution Index"
 msgstr ""
 
-msgid "Contributors"
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "Contribution index"
 msgstr ""
 
-msgid "Contributors list"
+msgid "Contributors"
 msgstr ""
 
 msgid "Cooled"
@@ -1377,6 +1394,12 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-share-button.component.ts
 msgid "Copy this"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+msgid ""
+"Could not connect to the server. Please check your internet connection and "
+"try again."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/country-selection-modal/country-selection-modal.component.ts
@@ -1678,9 +1701,6 @@ msgstr ""
 msgid "Download original"
 msgstr ""
 
-msgid "Downloaded"
-msgstr ""
-
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
 msgid "Downsample factor"
 msgstr ""
@@ -1963,6 +1983,10 @@ msgid "Export to CSV"
 msgstr ""
 
 msgid "Exposure per frame"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid "External sources"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
@@ -2268,6 +2292,10 @@ msgstr ""
 msgid "Forum"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "Forum posts"
+msgstr ""
+
 msgid "Forums"
 msgstr ""
 
@@ -2559,6 +2587,10 @@ msgstr ""
 msgid "IOTD/TP stats (last 365 days)"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "IOTDs"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
 msgid ""
 "If checked, SExtractor will be used to extract the necessary information "
@@ -2701,6 +2733,10 @@ msgstr ""
 msgid "Image"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "Image Data"
+msgstr ""
+
 msgid "Image Index"
 msgstr ""
 
@@ -2756,9 +2792,33 @@ msgstr ""
 msgid "Images"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid "Images acquired or processed from a source not listed above."
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
 msgid "Images by the seller"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid ""
+"Images captured by renting time or purchasing data from an amateur hosting "
+"facility."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid "Images captured with portable gear at distant locations."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid ""
+"Images captured with your own equipment at a remote observatory you own or "
+"rent, at a distant location."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid "Images captured with your own equipment near home."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-line-item/marketplace-line-item.component.html
@@ -2771,6 +2831,20 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
 msgid "Images in the same area"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid "Images processed from a mix of the above sources."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid ""
+"Images processed from professional data repositories, e.g. Hubble, JWST, "
+"ESO, etc."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid "Images processed from publicly shared data by amateur astrophotographers."
 msgstr ""
 
 msgid "Imaging"
@@ -3637,6 +3711,11 @@ msgstr ""
 msgid "No changes to save."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "No data available"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing/marketplace-listing.component.html
 msgid "No description provided."
 msgstr ""
@@ -4049,9 +4128,6 @@ msgstr ""
 msgid "Override generated name above"
 msgstr ""
 
-msgid "Own remote observatory"
-msgstr ""
-
 msgid "Oxygen-III (OIII)"
 msgstr ""
 
@@ -4381,6 +4457,10 @@ msgstr ""
 msgid "Private messages"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid "Private remote observatory"
+msgstr ""
+
 msgid "Processed item {{0}}/{{1}}."
 msgstr ""
 
@@ -4483,6 +4563,10 @@ msgid "Read noise"
 msgstr ""
 
 msgid "Reason"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "Received"
 msgstr ""
 
 msgid "Recent forum posts"
@@ -4594,6 +4678,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-data-source.component.ts
 msgid "Remote hosting"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+msgid "Remote observatory"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-photographers.component.ts
@@ -4870,7 +4958,8 @@ msgstr ""
 msgid "Select variant"
 msgstr ""
 
-msgid "Self acquired"
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid "Self-acquired"
 msgstr ""
 
 msgid "Self-made / non-commercial (no brand)"
@@ -5150,15 +5239,13 @@ msgid ""
 "territory."
 msgstr ""
 
-#: /Users/siovene/Code/astrobin-ng/src/app/core/services/timeout-retry.interceptor.ts
-msgid ""
-"Sorry, we're having trouble performing a network operation. Please try "
-"again later."
-msgstr ""
-
 msgid ""
 "Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. "
 "Please try again in <strong>{{ time }}</strong>."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
+msgid "Sorry, zooming on GIF animations is not available on touch devices."
 msgstr ""
 
 msgid "Sort"
@@ -6072,6 +6159,14 @@ msgstr ""
 msgid "Top Pick Nomination"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "Top Pick Nominations"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "Top Picks"
+msgstr ""
+
 msgid "Top center"
 msgstr ""
 
@@ -6360,6 +6455,11 @@ msgstr ""
 msgid "Used"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "User"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
 msgid "User country"
 msgstr ""
@@ -6411,10 +6511,6 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image/image.component.ts
 msgid "Video player could not be loaded."
-msgstr ""
-
-#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component.ts
-msgid "Video support is experimental. Please report any issue you might encounter."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
@@ -6629,6 +6725,11 @@ msgid "Would you like to save this equipment configuration as a setup?"
 msgstr ""
 
 msgid "Would you like to upgrade?"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+msgid "Written"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
@@ -6875,6 +6976,10 @@ msgid ""
 "frame in milliseconds. Most commonly used for planetary imaging."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+msgid "You're not sure where the data comes from."
+msgstr ""
+
 msgid "You're trying to do this operation too many times in a short period of time."
 msgstr ""
 
@@ -6961,12 +7066,29 @@ msgstr ""
 msgid "Zoom disabled by the image owner."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+msgid "Zoom freezing is not available for very large images."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+msgid "Zoom freezing is only available in mouse mode."
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+msgid "Zoom is frozen (F)"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+msgid "Zoom is frozen. Press F to unfreeze."
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 msgid "Zoom mode"
 msgstr ""
 
-#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
-msgid "Zoom not available because the image is smaller than your viewport."
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+msgid "Zooming is not available for GIF animations on touch devices."
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-base-filter/search-base-filter.component.html

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2025-03-05 15:56+0100\n"
+"PO-Revision-Date: 2025-03-14 11:03+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Simplified Chinese\n"
 "Language: zh-Hans\n"
@@ -1532,32 +1532,32 @@ msgstr "跳转至"
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:6087167fe1b7bd31c9369682
 msgid "Attribution Creative Commons"
-msgstr "授权方式"
+msgstr "署名 知识共享"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:6087167fe1b7bd31c9369683
 msgid "Attribution-NoDerivs Creative Commons"
-msgstr "禁止演绎"
+msgstr "署名-禁止演绎 知识共享"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:6087167fe1b7bd31c9369684
 msgid "Attribution-NonCommercial Creative Commons"
-msgstr "署名-非商业性使用"
+msgstr "署名-非商业性 知识共享"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:6087167fe1b7bd31c9369685
 msgid "Attribution-NonCommercial-NoDerivs Creative Commons"
-msgstr "署名-非商业性使用-禁止修改"
+msgstr "署名-非商业性-禁止演绎 知识共享"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:6087167fe1b7bd31c9369686
 msgid "Attribution-NonCommercial-ShareAlike Creative Commons"
-msgstr "署名-非商业性使用-相同方式共享"
+msgstr "署名-非商业性-相同方式共享 知识共享"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:6087167fe1b7bd31c9369687
 msgid "Attribution-ShareAlike Creative Commons"
-msgstr "署名-相同方式共享"
+msgstr "署名-相同方式共享 知识共享"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/uploader/pages/uploader-page/uploader-page.component.ts
 #: loco:6087167fe1b7bd31c9369688
@@ -3594,7 +3594,7 @@ msgstr "还有{{0}}个额外衍生版本可用。"
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/formly-field-ng-select/formly-field-ng-select.component.html
 #: loco:629870a92acaf33959349906
 msgid "Can't find <strong>{{0}}</strong>?"
-msgstr "找不到<strong>{{0}}<\\/strong>？"
+msgstr "找不到<strong>{{0}}</strong>？"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/telescope.service.ts
 #: loco:629870a92acaf33959349907
@@ -7820,7 +7820,7 @@ msgstr "（已删除）"
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
 #: loco:679bfb73bbc95aa3e508ecc3
 msgid "(view mutual)"
-msgstr "（查看互相）"
+msgstr "（查看互粉）"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-header.component.ts
@@ -7944,7 +7944,7 @@ msgstr "高级设置"
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:679bfb73bbc95aa3e508ecda
 msgid "All rights reserved"
-msgstr "版权所有"
+msgstr "保留所有权利"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
 #: loco:679bfb73bbc95aa3e508ecdb
@@ -9046,7 +9046,7 @@ msgstr "镜头模式"
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
 #: loco:679bfb73bbc95aa3e508edaa
 msgid "Licenses"
-msgstr "许可证"
+msgstr "许可协议"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-images.component.ts
 #: /Users/siovene/Code/astrobin-ng/src/app/features/users/pages/gallery/user-gallery-images.component.ts
@@ -9435,7 +9435,7 @@ msgstr "仅显示来自特定来源的数据的图像。"
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-license-filter/search-license-filter.component.ts
 #: loco:679bfb73bbc95aa3e508edf5
 msgid "Only show images with the any of the selected licenses."
-msgstr "仅显示具有所选许可证的图像。"
+msgstr "仅显示具有所选许可协议的图像。"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/notifications/components/notifications-list/notifications-list.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/notifications/components/notifications-list/notifications-list.component.html
@@ -11168,3 +11168,219 @@ msgstr "翻译"
 #: loco:67c83c4dc95f5b24ef03d124
 msgid "Translated"
 msgstr "已翻译"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302db92
+#, fuzzy
+msgid "Activate zoom first before freezing (click or scroll on image)."
+msgstr "请先激活缩放功能再进行冻结（点击或滚动图像）。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.ts
+#: loco:67d3fdd64ffe2e5a5302db93
+#, fuzzy
+msgid "Astrophotographers List"
+msgstr "天文摄影师列表"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+#: loco:67d3fdd64ffe2e5a5302db94
+#, fuzzy
+msgid "Connection error"
+msgstr "连接错误"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db95
+#, fuzzy
+msgid "Contribution Data"
+msgstr "贡献数据"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db96
+#, fuzzy
+msgid "Contribution index"
+msgstr "贡献指数"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+#: loco:67d3fdd64ffe2e5a5302db97
+#, fuzzy
+msgid ""
+"Could not connect to the server. Please check your internet connection and "
+"try again."
+msgstr "无法连接到服务器。请检查您的互联网连接并重试。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db98
+#, fuzzy
+msgid "External sources"
+msgstr "外部来源"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db99
+#, fuzzy
+msgid "Forum posts"
+msgstr "论坛帖子"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db9a
+#, fuzzy
+msgid "IOTDs"
+msgstr "今日最佳图像（IOTDs）"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db9b
+#, fuzzy
+msgid "Image Data"
+msgstr "图像数据"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9c
+#, fuzzy
+msgid "Images acquired or processed from a source not listed above."
+msgstr "从上述未列出的来源获取或处理的图像。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9d
+#, fuzzy
+msgid ""
+"Images captured by renting time or purchasing data from an amateur hosting "
+"facility."
+msgstr "通过租用时间或购买业余天文台的数据捕获的图像。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9e
+#, fuzzy
+msgid "Images captured with portable gear at distant locations."
+msgstr "在远程地点使用便携设备捕获的图像。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9f
+#, fuzzy
+msgid ""
+"Images captured with your own equipment at a remote observatory you own or "
+"rent, at a distant location."
+msgstr "在您拥有或租用的远程天文台使用自己的设备捕获的图像。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba0
+#, fuzzy
+msgid "Images captured with your own equipment near home."
+msgstr "在家附近使用自己的设备捕获的图像。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba1
+#, fuzzy
+msgid "Images processed from a mix of the above sources."
+msgstr "从上述多种来源处理的图像。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba2
+#, fuzzy
+msgid ""
+"Images processed from professional data repositories, e.g. Hubble, JWST, ESO,"
+" etc."
+msgstr "从专业数据存储库处理的图像，例如哈勃、JWST、ESO等。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba3
+#, fuzzy
+msgid ""
+"Images processed from publicly shared data by amateur astrophotographers."
+msgstr "从业余天文摄影师公开分享的数据处理的图像。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dba4
+#, fuzzy
+msgid "No data available"
+msgstr "没有可用数据"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba5
+#, fuzzy
+msgid "Private remote observatory"
+msgstr "私人远程天文台"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dba6
+#, fuzzy
+msgid "Received"
+msgstr "已接收"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba7
+#, fuzzy
+msgid "Remote observatory"
+msgstr "远程天文台"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba8
+msgid "Self-acquired"
+msgstr "自有数据"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302dba9
+#, fuzzy
+msgid "Sorry, zooming on GIF animations is not available on touch devices."
+msgstr "抱歉，触摸设备上无法缩放GIF动画。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbaa
+#, fuzzy
+msgid "Top Pick Nominations"
+msgstr "最佳提名"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbab
+#, fuzzy
+msgid "Top Picks"
+msgstr "最佳选择"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbac
+#, fuzzy
+msgid "User"
+msgstr "用户"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbad
+#, fuzzy
+msgid "Written"
+msgstr "已写入"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dbae
+#, fuzzy
+msgid "You're not sure where the data comes from."
+msgstr "您不确定数据的来源。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302dbaf
+#, fuzzy
+msgid "Zoom freezing is not available for very large images."
+msgstr "对于非常大的图像，缩放冻结不可用。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302dbb0
+#, fuzzy
+msgid "Zoom freezing is only available in mouse mode."
+msgstr "缩放冻结仅在鼠标模式下可用。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67d3fdd64ffe2e5a5302dbb1
+#, fuzzy
+msgid "Zoom is frozen (F)"
+msgstr "缩放已冻结（F）"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67d3fdd64ffe2e5a5302dbb2
+#, fuzzy
+msgid "Zoom is frozen. Press F to unfreeze."
+msgstr "缩放已冻结。按F解除冻结。"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67d3fdd64ffe2e5a5302dbb3
+#, fuzzy
+msgid "Zooming is not available for GIF animations on touch devices."
+msgstr "在触摸设备上，GIF动画无法缩放。"

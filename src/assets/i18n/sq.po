@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2025-03-05 15:56+0100\n"
+"PO-Revision-Date: 2025-03-14 11:03+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Albanian\n"
 "Language: sq\n"
@@ -12158,18 +12158,247 @@ msgstr "nga"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
 #: loco:67c83c4dc95f5b24ef03d122
-#, fuzzy
 msgid "See original"
 msgstr "Shiko origjinalin"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
 #: loco:67c83c4dc95f5b24ef03d123
-#, fuzzy
 msgid "Translate"
 msgstr "Përkthe"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/home/components/feed-item-image/feed-item-image.component.ts
 #: loco:67c83c4dc95f5b24ef03d124
-#, fuzzy
 msgid "Translated"
 msgstr "Përkthyer"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302db92
+#, fuzzy
+msgid "Activate zoom first before freezing (click or scroll on image)."
+msgstr ""
+"Aktivizo zoom-in fillimisht para se të ngrish (kliko ose rrotullo mbi imazh)."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.ts
+#: loco:67d3fdd64ffe2e5a5302db93
+#, fuzzy
+msgid "Astrophotographers List"
+msgstr "Lista e Astrofotografëve"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+#: loco:67d3fdd64ffe2e5a5302db94
+#, fuzzy
+msgid "Connection error"
+msgstr "Gabim lidhjeje"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db95
+#, fuzzy
+msgid "Contribution Data"
+msgstr "Të dhënat e Kontributit"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db96
+#, fuzzy
+msgid "Contribution index"
+msgstr "Indeksi i Kontributit"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
+#: loco:67d3fdd64ffe2e5a5302db97
+#, fuzzy
+msgid ""
+"Could not connect to the server. Please check your internet connection and "
+"try again."
+msgstr ""
+"Nuk arriti të lidhet me serverin. Të lutem kontrollo lidhjen tënde të "
+"internetit dhe provo përsëri."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db98
+#, fuzzy
+msgid "External sources"
+msgstr "Burime të jashtme"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db99
+#, fuzzy
+msgid "Forum posts"
+msgstr "Postime në forum"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db9a
+#, fuzzy
+msgid "IOTDs"
+msgstr "IOTD-të"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302db9b
+#, fuzzy
+msgid "Image Data"
+msgstr "Të Dhënat e Imazhit"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9c
+#, fuzzy
+msgid "Images acquired or processed from a source not listed above."
+msgstr ""
+"Imazhet e marra ose të përpunuara nga një burim që nuk është listuar më "
+"sipër."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9d
+#, fuzzy
+msgid ""
+"Images captured by renting time or purchasing data from an amateur hosting "
+"facility."
+msgstr ""
+"Imazhet e kapura duke marrë kohë me qira ose duke blerë të dhëna nga një "
+"objekt amator."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9e
+#, fuzzy
+msgid "Images captured with portable gear at distant locations."
+msgstr "Imazhet e kapura me pajisje portative në vende të largëta."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302db9f
+#, fuzzy
+msgid ""
+"Images captured with your own equipment at a remote observatory you own or "
+"rent, at a distant location."
+msgstr ""
+"Imazhet e kapura me pajisjet e tua në një observator të largët që ke në "
+"pronësi ose me qira."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba0
+#, fuzzy
+msgid "Images captured with your own equipment near home."
+msgstr "Imazhet e kapura me pajisjet e tua afër shtëpisë."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba1
+#, fuzzy
+msgid "Images processed from a mix of the above sources."
+msgstr "Imazhet e përpunuara nga një miks i burimeve të mësipërme."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba2
+#, fuzzy
+msgid ""
+"Images processed from professional data repositories, e.g. Hubble, JWST, ESO,"
+" etc."
+msgstr ""
+"Imazhet e përpunuara nga depo profesioniste të të dhënave, p.sh. Hubble, "
+"JWST, ESO, etj."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba3
+#, fuzzy
+msgid ""
+"Images processed from publicly shared data by amateur astrophotographers."
+msgstr ""
+"Imazhet e përpunuara nga të dhëna të ndara publikisht nga astrofotografë "
+"amatorë."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dba4
+#, fuzzy
+msgid "No data available"
+msgstr "Nuk ka të dhëna të disponueshme"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba5
+#, fuzzy
+msgid "Private remote observatory"
+msgstr "Observatori privat i largët"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dba6
+#, fuzzy
+msgid "Received"
+msgstr "Marrë"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba7
+#, fuzzy
+msgid "Remote observatory"
+msgstr "Observatori i largët"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dba8
+msgid "Self-acquired"
+msgstr "E fituar vetë"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302dba9
+#, fuzzy
+msgid "Sorry, zooming on GIF animations is not available on touch devices."
+msgstr ""
+"Na vjen keq, zoom-i mbi animacionet GIF nuk është i disponueshëm në pajisjet "
+"me prekje."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbaa
+#, fuzzy
+msgid "Top Pick Nominations"
+msgstr "Nomimet për Zgjedhjet Kryesore"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbab
+#, fuzzy
+msgid "Top Picks"
+msgstr "Zgjedhjet Kryesore"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbac
+#, fuzzy
+msgid "User"
+msgstr "Përdoruesi"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
+#: loco:67d3fdd64ffe2e5a5302dbad
+#, fuzzy
+msgid "Written"
+msgstr "E shkruar"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
+#: loco:67d3fdd64ffe2e5a5302dbae
+#, fuzzy
+msgid "You're not sure where the data comes from."
+msgstr "Nuk je i sigurt se nga vijnë të dhënat."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302dbaf
+#, fuzzy
+msgid "Zoom freezing is not available for very large images."
+msgstr "Ngrirja e zoom-it nuk është e disponueshme për imazhe shumë të mëdha."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
+#: loco:67d3fdd64ffe2e5a5302dbb0
+#, fuzzy
+msgid "Zoom freezing is only available in mouse mode."
+msgstr "Ngrirja e zoom-it është e disponueshme vetëm në modin e mausit."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67d3fdd64ffe2e5a5302dbb1
+#, fuzzy
+msgid "Zoom is frozen (F)"
+msgstr "Zoom-i është ngrirë (F)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67d3fdd64ffe2e5a5302dbb2
+#, fuzzy
+msgid "Zoom is frozen. Press F to unfreeze."
+msgstr "Zoom-i është ngrirë. Shtyp F për ta çliruar."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
+#: loco:67d3fdd64ffe2e5a5302dbb3
+#, fuzzy
+msgid "Zooming is not available for GIF animations on touch devices."
+msgstr ""
+"Zoom-i nuk është i disponueshëm për animacionet GIF në pajisjet me prekje."
