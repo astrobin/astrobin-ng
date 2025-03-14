@@ -48,6 +48,50 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
           ? UtilsService.arrayUniqueObjects([...state.userProfiles, ...[action.payload.userProfile]], "id")
           : state.userProfiles
       };
+
+    case AuthActionTypes.UPLOAD_AVATAR_SUCCESS:
+      if (state.user) {
+        // Update the current user's avatar
+        const updatedUser = {
+          ...state.user,
+          avatar: action.payload.avatarUrl,
+          largeAvatar: action.payload.avatarUrl
+        };
+
+        // Update the user in the users array
+        const updatedUsers = state.users.map(user =>
+          user.id === updatedUser.id ? updatedUser : user
+        );
+
+        return {
+          ...state,
+          user: updatedUser,
+          users: updatedUsers
+        };
+      }
+      return state;
+
+    case AuthActionTypes.DELETE_AVATAR_SUCCESS:
+      if (state.user) {
+        // Update the current user's avatar to default
+        const updatedUser = {
+          ...state.user,
+          avatar: action.payload.avatarUrl,
+          largeAvatar: action.payload.avatarUrl
+        };
+
+        // Update the user in the users array
+        const updatedUsers = state.users.map(user =>
+          user.id === updatedUser.id ? updatedUser : user
+        );
+
+        return {
+          ...state,
+          user: updatedUser,
+          users: updatedUsers
+        };
+      }
+      return state;
     case AuthActionTypes.LOGOUT_SUCCESS:
       return {
         ...state,

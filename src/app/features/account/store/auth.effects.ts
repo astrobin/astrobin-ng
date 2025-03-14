@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { setTimeagoIntl } from "@app/translate-loader";
-import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage, ChangeUserProfileGalleryHeaderImageFailure, ChangeUserProfileGalleryHeaderImageSuccess, InitializeAuthSuccess, LoadUser, LoadUserFailure, LoadUserProfile, LoadUserProfileFailure, LoadUserProfileSuccess, LoadUserSuccess, Login, LoginFailure, LoginSuccess, LogoutSuccess, RemoveShadowBanUserProfile, RemoveShadowBanUserProfileFailure, RemoveShadowBanUserProfileSuccess, ShadowBanUserProfile, ShadowBanUserProfileFailure, ShadowBanUserProfileSuccess, UpdateUserProfile, UpdateUserProfileSuccess } from "@features/account/store/auth.actions";
+import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage, ChangeUserProfileGalleryHeaderImageFailure, ChangeUserProfileGalleryHeaderImageSuccess, DeleteAvatar, DeleteAvatarFailure, DeleteAvatarSuccess, InitializeAuthSuccess, LoadUser, LoadUserFailure, LoadUserProfile, LoadUserProfileFailure, LoadUserProfileSuccess, LoadUserSuccess, Login, LoginFailure, LoginSuccess, LogoutSuccess, RemoveShadowBanUserProfile, RemoveShadowBanUserProfileFailure, RemoveShadowBanUserProfileSuccess, ShadowBanUserProfile, ShadowBanUserProfileFailure, ShadowBanUserProfileSuccess, UpdateUserProfile, UpdateUserProfileSuccess, UploadAvatar, UploadAvatarFailure, UploadAvatarSuccess } from "@features/account/store/auth.actions";
 import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
@@ -369,18 +369,94 @@ export class AuthEffects {
     public readonly cookieService: CookieService,
     public readonly loadingService: LoadingService,
     public readonly commonApiService: CommonApiService,
-    public readonly translate: TranslateService,
+    public readonly translateService: TranslateService,
     public readonly timeagoIntl: TimeagoIntl,
     public readonly popNotificationsService: PopNotificationsService
   ) {
   }
 
   private _setLanguage(language: string): Observable<any> {
-    this.translate.setDefaultLang(language);
-    return this.translate.use(language).pipe(
+    this.translateService.setDefaultLang(language);
+    return this.translateService.use(language).pipe(
       map(() => {
         setTimeagoIntl(this.timeagoIntl, language);
       })
     );
   }
+
+  UploadAvatar: Observable<UploadAvatarSuccess | UploadAvatarFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.UPLOAD_AVATAR),
+      tap(() => {
+        this.loadingService.setLoading(true);
+      }),
+      switchMap((action: UploadAvatar) =>
+        this.commonApiService.uploadAvatar(action.payload.avatarFile).pipe(
+          map(response => {
+            if (response.success) {
+              return new UploadAvatarSuccess({ avatarUrl: response.avatar_url });
+            } else {
+              // Handle different error formats
+              let errorMessage = "Error uploading avatar";
+              if (response.errors?.file && response.errors.file.length) {
+                errorMessage = response.errors.file.join(", ");
+              } else if (response.errors?.avatar && response.errors.avatar.length) {
+                errorMessage = response.errors.avatar.join(", ");
+              }
+
+              this.popNotificationsService.error(
+                this.translateService.instant(errorMessage)
+              );
+              return new UploadAvatarFailure({ error: response.errors });
+            }
+          }),
+          catchError(error => {
+            this.popNotificationsService.error(
+              this.translateService.instant("Error uploading avatar")
+            );
+            this.loadingService.setLoading(false);
+            return of(new UploadAvatarFailure({ error }));
+          }),
+          tap(() => {
+            this.loadingService.setLoading(false);
+          })
+        )
+      )
+    )
+  );
+
+  DeleteAvatar: Observable<DeleteAvatarSuccess | DeleteAvatarFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.DELETE_AVATAR),
+      tap(() => {
+        this.loadingService.setLoading(true);
+      }),
+      switchMap(() =>
+        this.commonApiService.deleteAvatar().pipe(
+          map(response => {
+            if (response.success) {
+              return new DeleteAvatarSuccess({ avatarUrl: "/assets/images/default-avatar.jpeg?v=2" });
+            } else {
+              // Handle error message properly for translation
+              const errorMessage = response.detail ? response.detail : "Error deleting avatar";
+              this.popNotificationsService.error(
+                this.translateService.instant(errorMessage)
+              );
+              return new DeleteAvatarFailure({ error: response.detail });
+            }
+          }),
+          catchError(error => {
+            this.popNotificationsService.error(
+              this.translateService.instant("Error deleting avatar")
+            );
+            this.loadingService.setLoading(false);
+            return of(new DeleteAvatarFailure({ error }));
+          }),
+          tap(() => {
+            this.loadingService.setLoading(false);
+          })
+        )
+      )
+    )
+  );
 }

@@ -32,6 +32,12 @@ export enum AuthActionTypes {
   REMOVE_SHADOW_BAN_USER_PROFILE = "[Auth] Remove shadow ban user profile",
   REMOVE_SHADOW_BAN_USER_PROFILE_SUCCESS = "[Auth] Remove shadow ban user profile success",
   REMOVE_SHADOW_BAN_USER_PROFILE_FAILURE = "[Auth] Remove shadow ban user profile failure",
+  UPLOAD_AVATAR = "[Auth] Upload avatar",
+  UPLOAD_AVATAR_SUCCESS = "[Auth] Upload avatar success",
+  UPLOAD_AVATAR_FAILURE = "[Auth] Upload avatar failure",
+  DELETE_AVATAR = "[Auth] Delete avatar",
+  DELETE_AVATAR_SUCCESS = "[Auth] Delete avatar success",
+  DELETE_AVATAR_FAILURE = "[Auth] Delete avatar failure",
 }
 
 export class InitializeAuth implements Action {
@@ -209,6 +215,45 @@ export class RemoveShadowBanUserProfileFailure implements PayloadActionInterface
   }
 }
 
+export class UploadAvatar implements PayloadActionInterface {
+  readonly type = AuthActionTypes.UPLOAD_AVATAR;
+
+  constructor(public payload: { avatarFile: File }) {
+  }
+}
+
+export class UploadAvatarSuccess implements PayloadActionInterface {
+  readonly type = AuthActionTypes.UPLOAD_AVATAR_SUCCESS;
+
+  constructor(public payload: { avatarUrl: string }) {
+  }
+}
+
+export class UploadAvatarFailure implements PayloadActionInterface {
+  readonly type = AuthActionTypes.UPLOAD_AVATAR_FAILURE;
+
+  constructor(public payload: { error: any }) {
+  }
+}
+
+export class DeleteAvatar implements Action {
+  readonly type = AuthActionTypes.DELETE_AVATAR;
+}
+
+export class DeleteAvatarSuccess implements PayloadActionInterface {
+  readonly type = AuthActionTypes.DELETE_AVATAR_SUCCESS;
+
+  constructor(public payload: { avatarUrl: string }) {
+  }
+}
+
+export class DeleteAvatarFailure implements PayloadActionInterface {
+  readonly type = AuthActionTypes.DELETE_AVATAR_FAILURE;
+
+  constructor(public payload: { error: any }) {
+  }
+}
+
 export type All =
   | InitializeAuth
   | InitializeAuthSuccess
@@ -232,4 +277,10 @@ export type All =
   | ShadowBanUserProfileFailure
   | RemoveShadowBanUserProfile
   | RemoveShadowBanUserProfileSuccess
-  | RemoveShadowBanUserProfileFailure;
+  | RemoveShadowBanUserProfileFailure
+  | UploadAvatar
+  | UploadAvatarSuccess
+  | UploadAvatarFailure
+  | DeleteAvatar
+  | DeleteAvatarSuccess
+  | DeleteAvatarFailure;
