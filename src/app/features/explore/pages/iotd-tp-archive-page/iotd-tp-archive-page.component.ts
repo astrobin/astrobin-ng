@@ -8,13 +8,13 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { auditTime, fromEvent, Observable, of, Subscription, switchMap } from "rxjs";
+import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
 import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
 import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { catchError, filter, take, takeUntil } from "rxjs/operators";
+import { filter, take, takeUntil } from "rxjs/operators";
 import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
 import { fadeInOut } from "@shared/animations";
 import { DataSource, FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@core/interfaces/image.interface";
@@ -29,8 +29,6 @@ import { SearchFilterService } from "@features/search/services/search-filter.ser
 import { RouterService } from "@core/services/router.service";
 import { environment } from "@env/environment";
 import { LoadingService } from "@core/services/loading.service";
-import { Actions, ofType } from "@ngrx/effects";
-import { AuthActionTypes } from "@features/account/store/auth.actions";
 
 enum ArchiveType {
   IOTD = SearchAwardFilterValue.IOTD,
@@ -187,8 +185,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     public readonly searchFilterService: SearchFilterService,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
-    public readonly loadingService: LoadingService,
-    public readonly actions$: Actions
+    public readonly loadingService: LoadingService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
@@ -400,7 +397,7 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     if (
       this._isBrowser &&
       // If the element is not visible, don't load more.
-      this.elementRef.nativeElement.querySelector('.tab-pane.active').offsetHeight !== 0 &&
+      this.elementRef.nativeElement.querySelector(".tab-pane.active").offsetHeight !== 0 &&
       this.utilsService.isNearBottom(this.windowRefService, this.elementRef) &&
       !!this._next &&
       !this.loading &&
