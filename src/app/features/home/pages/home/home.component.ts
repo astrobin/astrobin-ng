@@ -9,7 +9,7 @@ import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { filter, pairwise, take, takeUntil } from "rxjs/operators";
+import { filter, pairwise, takeUntil } from "rxjs/operators";
 import { ImageService } from "@core/services/image/image.service";
 import { ImageViewerService } from "@core/services/image-viewer.service";
 

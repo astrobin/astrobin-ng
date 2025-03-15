@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
 import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
 import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";

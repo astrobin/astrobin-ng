@@ -12,6 +12,7 @@ import { ImageEditRevisionPageComponent } from "@features/image/pages/edit-revis
 import { ImagePlateSolvingSettingsPageComponent } from "@features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component";
 import { PlateSolvingSettingsResolver } from "@core/resolvers/plate-solving-settings.resolver";
 import { PlateSolvingAdvancedSettingsResolver } from "@core/resolvers/plate-solving-advanced-settings.resolver";
+import { GalleryExperienceGuard } from "@core/services/guards/gallery-experience-guard.service";
 
 export const imageRoutes: Routes = [
   {
@@ -58,6 +59,7 @@ export const imageRoutes: Routes = [
   {
     path: ":imageId",
     component: ImagePageComponent,
+    canActivate: [GalleryExperienceGuard],
     resolve: {
       image: ImageResolver,
     },

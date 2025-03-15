@@ -122,6 +122,7 @@ type GalleryNavigationComponent =
             <ng-template ngbNavContent>
               <astrobin-user-gallery-buttons
                 [(activeLayout)]="activeLayout"
+                (sortChange)="onSortChange($event)"
                 [subsection]="stagingAreaOptions.subsection"
                 [ordering]="stagingAreaOptions.ordering"
                 [images]="galleryImages"
