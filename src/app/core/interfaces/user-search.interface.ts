@@ -2,6 +2,7 @@ export interface UserSearchInterface {
   username: string;
   displayName: string;
   avatarUrl: string;
+  smallAvatarUrl?: string;
   images: number;
   totalLikesReceived: number;
   followers: number;

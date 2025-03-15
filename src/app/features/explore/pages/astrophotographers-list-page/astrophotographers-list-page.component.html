@@ -119,7 +119,12 @@
             <td>
               <div class="d-flex align-items-center">
                 <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)">
-                  <img [src]="getAvatarUrl(user.avatarUrl)" class="avatar" alt="Avatar" loading="lazy" />
+                  <img
+                    [src]="getAvatarUrl(user.smallAvatarUrl ? user.smallAvatarUrl : user.avatarUrl)"
+                    class="avatar"
+                    alt="Avatar"
+                    loading="lazy"
+                  />
                 </a>
                 <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)" class="user-link ms-2">
                   {{ user.displayName }}
@@ -203,7 +208,12 @@
             <td>
               <div class="d-flex align-items-center">
                 <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)">
-                  <img [src]="getAvatarUrl(user.avatarUrl)" class="avatar" alt="Avatar" loading="lazy" />
+                  <img
+                    [src]="getAvatarUrl(user.smallAvatarUrl ? user.smallAvatarUrl : user.avatarUrl)"
+                    class="avatar"
+                    alt="Avatar"
+                    loading="lazy"
+                  />
                 </a>
                 <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)" class="user-link ms-2">
                   {{ user.displayName }}
