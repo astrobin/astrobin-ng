@@ -8,13 +8,13 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { TopPickArchiveInterface } from "@features/iotd/types/top-pick-archive.interface";
 import { PaginatedApiResultInterface } from "@core/services/api/interfaces/paginated-api-result.interface";
-import { auditTime, fromEvent, Observable, Subscription } from "rxjs";
+import { auditTime, fromEvent, Observable, of, Subscription, switchMap } from "rxjs";
 import { IotdArchiveInterface } from "@features/iotd/types/iotd-archive.interface";
 import { TopPickNominationArchiveInterface } from "@features/iotd/types/top-pick-nomination-archive.interface";
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { UtilsService } from "@core/services/utils/utils.service";
-import { filter, takeUntil } from "rxjs/operators";
+import { catchError, filter, take, takeUntil } from "rxjs/operators";
 import { NgbNavChangeEvent } from "@ng-bootstrap/ng-bootstrap";
 import { fadeInOut } from "@shared/animations";
 import { DataSource, FINAL_REVISION_LABEL, ImageInterface, SubjectType } from "@core/interfaces/image.interface";
@@ -27,6 +27,10 @@ import { SearchAutoCompleteType } from "@features/search/enums/search-auto-compl
 import { SearchAwardFilterValue } from "@features/search/components/filters/search-award-filter/search-award-filter.value";
 import { SearchFilterService } from "@features/search/services/search-filter.service";
 import { RouterService } from "@core/services/router.service";
+import { environment } from "@env/environment";
+import { LoadingService } from "@core/services/loading.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { AuthActionTypes } from "@features/account/store/auth.actions";
 
 enum ArchiveType {
   IOTD = SearchAwardFilterValue.IOTD,
@@ -183,6 +187,8 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
     public readonly searchFilterService: SearchFilterService,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
+    public readonly loadingService: LoadingService,
+    public readonly actions$: Actions
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(this.platformId);
@@ -206,27 +212,36 @@ export class IotdTpArchivePageComponent extends BaseComponentDirective implement
   }
 
   openImageById(imageId: ImageInterface["hash"] | ImageInterface["pk"]): void {
-    this.imageViewerService.openSlideshow(
-      this.componentId,
-      imageId,
-      FINAL_REVISION_LABEL,
-      this.items.map(item => ({
-        imageId: item.image["hash"] || item.image["pk"],
-        thumbnailUrl: this.imageService.getGalleryThumbnail(item.image)
-      })),
-      true
-    ).subscribe(slideshow => {
-      this._setupSlideshowPagination(
-        slideshow,
-        (results) =>
-          results.map(result => {
-            return {
-              imageId: result.image["hash"] || result.image["pk"],
-              thumbnailUrl: this.imageService.getGalleryThumbnail(result.image)
-            };
-          })
-      );
-      this.changeDetectorRef.markForCheck();
+    this.currentUserProfile$.pipe(
+      take(1)
+    ).subscribe(userProfile => {
+      if (userProfile && userProfile.enableNewGalleryExperience === false) {
+        this.loadingService.setLoading(true);
+        this.windowRefService.nativeWindow.location.href = `${environment.classicBaseUrl}/${imageId}`;
+      } else {
+        this.imageViewerService.openSlideshow(
+          this.componentId,
+          imageId,
+          FINAL_REVISION_LABEL,
+          this.items.map(item => ({
+            imageId: item.image["hash"] || item.image["pk"],
+            thumbnailUrl: this.imageService.getGalleryThumbnail(item.image)
+          })),
+          true
+        ).subscribe(slideshow => {
+          this._setupSlideshowPagination(
+            slideshow,
+            (results) =>
+              results.map(result => {
+                return {
+                  imageId: result.image["hash"] || result.image["pk"],
+                  thumbnailUrl: this.imageService.getGalleryThumbnail(result.image)
+                };
+              })
+          );
+          this.changeDetectorRef.markForCheck();
+        });
+      }
     });
   }
 

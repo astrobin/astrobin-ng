@@ -2,11 +2,15 @@ import { Inject, Injectable, PLATFORM_ID, Renderer2, RendererFactory2 } from "@a
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { Observable, of } from "rxjs";
-import { switchMap, take } from "rxjs/operators";
+import { catchError, filter, map, switchMap, take, timeout } from "rxjs/operators";
 import { DOCUMENT, isPlatformBrowser } from "@angular/common";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { environment } from "@env/environment";
 import { MainState } from "@app/store/state";
+import { UtilsService } from "@core/services/utils/utils.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { AuthActionTypes } from "@features/account/store/auth.actions";
+import { AuthService } from "@core/services/auth.service";
 
 @Injectable({
   providedIn: "root"
@@ -19,7 +23,10 @@ export class GalleryExperienceGuard implements CanActivate {
     private readonly store$: Store<MainState>,
     @Inject(PLATFORM_ID) private readonly platformId: Object,
     private rendererFactory: RendererFactory2,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private readonly utilsService: UtilsService,
+    private readonly actions$: Actions,
+    private readonly authService: AuthService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.renderer = this.rendererFactory.createRenderer(null, null);
@@ -30,61 +37,95 @@ export class GalleryExperienceGuard implements CanActivate {
       return of(true); // Let server-side rendering proceed
     }
 
+    // First check if user is authenticated at all
+    const isAuthenticated = this.authService.getClassicApiToken() !== undefined;
+    
+    // If not authenticated, we can safely proceed with the new gallery experience
+    if (!isAuthenticated) {
+      return of(true);
+    }
+
+    // Check if user profile exists in store
     return this.store$.select(selectCurrentUserProfile).pipe(
       take(1),
       switchMap(userProfile => {
-        // If user is anonymous or doesn't have the flag enabled, redirect to classic site
-        if (!userProfile || userProfile.enableNewGalleryExperience === false) {
-          // Show overlay immediately before further processing
-          this.showLoadingOverlay();
-
-          // Create an appropriate redirect URL based on the route
-          let redirectUrl = environment.classicBaseUrl;
-
-          // Helper function to handle image and revision parameters
-          const appendImageAndRevisionToUrl = (imageId: string): string => {
-            let url = "/" + imageId + "/";
-
-            // Include revision if specified
-            if (route.queryParams.r) {
-              url += route.queryParams.r + "/";
-            }
-
-            return url;
-          };
-
-          // For image routes: /:imageId/
-          if (route.params.imageId) {
-            redirectUrl += appendImageAndRevisionToUrl(route.params.imageId);
-          }
-          // For user gallery routes with image param: redirect to image instead
-          else if (route.params.username && route.queryParams.i) {
-            // If gallery has image param, redirect to that image instead
-            redirectUrl += appendImageAndRevisionToUrl(route.queryParams.i);
-          }
-          // For user gallery routes: /users/:username/
-          else if (route.params.username) {
-            redirectUrl += "/users/" + route.params.username + "/";
-          }
-          // For home page with image param: redirect to image instead
-          else if (route.queryParams.i) {
-            // If home page has image param, redirect to that image
-            redirectUrl += appendImageAndRevisionToUrl(route.queryParams.i);
-          }
-
-          // Redirect with a tiny delay to ensure overlay is rendered
-          setTimeout(() => {
-            window.location.href = redirectUrl;
-          }, 10);
-
-          // Return false observable to prevent any further Angular routing
-          return of(false);
+        // If we already have the user profile, make the decision now
+        if (userProfile !== null && userProfile !== undefined) {
+          return this.handleUserProfile(userProfile, route);
         }
-
-        // User can access the new gallery experience, proceed with route
-        return of(true);
+        
+        // If we don't have the user profile but the user is authenticated,
+        // wait for the INITIALIZE_SUCCESS action which will populate the store
+        return this.actions$.pipe(
+          ofType(AuthActionTypes.INITIALIZE_SUCCESS),
+          take(1), 
+          // Once initialization is complete, get the profile again
+          switchMap(() => this.store$.select(selectCurrentUserProfile).pipe(
+            filter(profile => profile !== null && profile !== undefined),
+            take(1),
+            // Make the decision with the now-loaded profile
+            switchMap(profile => this.handleUserProfile(profile, route))
+          )),
+          // Add a timeout to avoid hanging indefinitely
+          timeout(5000),
+          // If timeout occurs, default to allowing access
+          catchError(() => of(true))
+        );
       })
     );
+  }
+
+  private handleUserProfile(userProfile: any, route: ActivatedRouteSnapshot): Observable<boolean> {
+    // If user doesn't have the flag enabled, redirect to classic site
+    if (userProfile && userProfile.enableNewGalleryExperience === false) {
+      // Show overlay immediately before further processing
+      this.showLoadingOverlay();
+
+      // Create an appropriate redirect URL based on the route
+      let redirectUrl = environment.classicBaseUrl;
+
+      // Helper function to handle image and revision parameters
+      const appendImageAndRevisionToUrl = (imageId: string): string => {
+        let url = "/" + imageId + "/";
+
+        // Include revision if specified
+        if (route.queryParams.r) {
+          url += route.queryParams.r + "/";
+        }
+
+        return url;
+      };
+
+      // For image routes: /:imageId/
+      if (route.params.imageId) {
+        redirectUrl += appendImageAndRevisionToUrl(route.params.imageId);
+      }
+      // For user gallery routes with image param: redirect to image instead
+      else if (route.params.username && route.queryParams.i) {
+        // If gallery has image param, redirect to that image instead
+        redirectUrl += appendImageAndRevisionToUrl(route.queryParams.i);
+      }
+      // For user gallery routes: /users/:username/
+      else if (route.params.username) {
+        redirectUrl += "/users/" + route.params.username + "/";
+      }
+      // For home page with image param: redirect to image instead
+      else if (route.queryParams.i) {
+        // If home page has image param, redirect to that image
+        redirectUrl += appendImageAndRevisionToUrl(route.queryParams.i);
+      }
+
+      // Redirect with a tiny delay to ensure overlay is rendered
+      this.utilsService.delay(10).subscribe(() => {
+        window.location.href = redirectUrl;
+      });
+
+      // Return false observable to prevent any further Angular routing
+      return of(false);
+    }
+
+    // User can access the new gallery experience, proceed with route
+    return of(true);
   }
 
   /**
