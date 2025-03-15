@@ -119,7 +119,7 @@
             <td>
               <div class="d-flex align-items-center">
                 <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)">
-                  <img [src]="getAvatarUrl(user.avatarUrl)" class="avatar" alt="Avatar" />
+                  <img [src]="getAvatarUrl(user.avatarUrl)" class="avatar" alt="Avatar" loading="lazy" />
                 </a>
                 <a [href]="getUserGalleryUrl(user.username)" (click)="onUserClick($event, user.username)" class="user-link ms-2">
                   {{ user.displayName }}
