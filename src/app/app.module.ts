@@ -38,7 +38,6 @@ import { TimeagoClock, TimeagoDefaultFormatter, TimeagoFormatter, TimeagoIntl, T
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { translateLoaderFactory } from "./translate-loader";
-import { SwipeDownToCloseService } from "@core/services/swipe-down-to-close.service";
 import * as Sentry from "@sentry/angular";
 import { Router, RouteReuseStrategy } from "@angular/router";
 import { CLIENT_IP } from "@app/client-ip.injector";
@@ -55,6 +54,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
+import { MobilePageMenuOffcanvasModule } from "@shared/components/misc/mobile-page-menu-offcanvas/mobile-page-menu-offcanvas.component";
 
 registerLocaleData(localeEnglish);
 registerLocaleData(localeBritishEnglish);
@@ -107,6 +107,7 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
 
     CoreModule,
     SharedModule.forRoot(),
+    MobilePageMenuOffcanvasModule,
 
     // This app.
     AppRoutingModule,
@@ -175,18 +176,6 @@ export class AstroBinTimeagoCustomFormatter extends TimeagoDefaultFormatter {
     CookieService,
     Title,
     WindowRefService,
-    SwipeDownToCloseService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (swipeDownToCloseService: SwipeDownToCloseService) => {
-        return () => {
-          // The service is initialized in its constructor
-          return Promise.resolve();
-        };
-      },
-      deps: [SwipeDownToCloseService],
-      multi: true
-    },
     {
       provide: Sentry.TraceService,
       deps: [Router]

@@ -6,7 +6,11 @@
   <div class="background"></div>
 </div>
 
-<astrobin-header></astrobin-header>
+<astrobin-header *ngIf="deviceService.lgMin()"></astrobin-header>
+<astrobin-mobile-header *ngIf="!deviceService.lgMin()"></astrobin-mobile-header>
+
+<!-- This component is always included to handle page menus regardless of viewport size -->
+<astrobin-mobile-page-menu-offcanvas></astrobin-mobile-page-menu-offcanvas>
 
 <div class="container">
   <astrobin-beta-banner></astrobin-beta-banner>
@@ -14,4 +18,5 @@
   <router-outlet></router-outlet>
 </div>
 
-<astrobin-footer></astrobin-footer>
+<astrobin-mobile-footer *ngIf="!deviceService.lgMin()"></astrobin-mobile-footer>
+<astrobin-footer *ngIf="!deviceService.lgMin()"></astrobin-footer>

@@ -21,7 +21,7 @@ body {
       pointer-events: none;
     }
   }
-  
+
   &.image-viewer-closing {
     astrobin-root {
       // Show the content with a fade-in animation
@@ -75,7 +75,7 @@ a {
     &:not([href*="astrobin.com"]):not([href*="localhost"]):not(.no-external-link-icon) {
       &:after {
         content: " \279a";
-        font-size: 0.8em;
+        font-size: .8em;
       }
     }
   }
@@ -84,7 +84,7 @@ a {
 hr {
   border: 0;
   height: 1px;
-  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(128, 128, 128, 0.75), rgba(0, 0, 0, 0));
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(128, 128, 128, .75), rgba(0, 0, 0, 0));
   margin: 1rem;
   width: calc(100% - 2rem);
 }
@@ -109,9 +109,9 @@ hr {
 
 /* Translation styles */
 .translated-content {
-  background-color: rgba(255, 255, 0, 0.025);
+  background-color: rgba(255, 255, 0, .025);
   padding: 10px;
-  border-left: 3px solid rgba(255, 255, 0, 0.5);
+  border-left: 3px solid rgba(255, 255, 0, .5);
   margin-bottom: 15px;
   display: block;
   position: relative;

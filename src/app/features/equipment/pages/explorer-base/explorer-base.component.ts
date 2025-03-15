@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, AfterViewInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -24,7 +24,7 @@ export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explor
   selector: "astrobin-equipment-explorer-base",
   template: ""
 })
-export class ExplorerBaseComponent extends BaseComponentDirective implements OnInit {
+export class ExplorerBaseComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   readonly EquipmentItemDisplayProperty = EquipmentItemDisplayProperty;
 
   public page = 1;
@@ -87,6 +87,10 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     });
 
     this.getItems();
+  }
+
+  ngAfterViewInit() {
+    // Base implementation - can be overridden by child classes
   }
 
   pageChange(page: number) {

@@ -81,10 +81,10 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
     </ng-template>
 
     <ng-template #commentsButtonTemplate>
-      <div *ngIf="image?.allowComments && showComments" class="comment">
+      <div *ngIf="image?.allowComments && showComments" class="comment me-2">
         <button
           (click)="scrollToComments($event)"
-          class="btn btn-no-block {{ btnExtraClasses }}"
+          class="btn btn-link link-primary btn-no-block {{ btnExtraClasses }}"
         >
           <fa-icon
             [ngbTooltip]="'Comments' | translate"
@@ -93,7 +93,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
             icon="comments"
           ></fa-icon>
 
-          <span class="count">
+          <span class="count ms-2">
             <astrobin-nested-comments-count
               [contentType]="imageContentType"
               [objectId]="image?.pk"
@@ -104,7 +104,7 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
     </ng-template>
 
     <ng-template #shareButtonTemplate>
-      <div *ngIf="showShare" class="share">
+      <div *ngIf="showShare" class="share px-2">
         <astrobin-image-viewer-share-button
           [image]="image"
           [revisionLabel]="revisionLabel"

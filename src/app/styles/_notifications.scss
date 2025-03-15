@@ -26,7 +26,7 @@
 
   @return "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='" + $viewbox +
     "' width='" + $width + "' height='" + $height + "'%3E%3Cpath fill='" +
-    rgba($fill-color, 0.999999) + "' d='" + $path + "'/%3E%3C/svg%3E";
+    rgba($fill-color, .999999) + "' d='" + $path + "'/%3E%3C/svg%3E";
 }
 
 @function svg-encode($svg) {

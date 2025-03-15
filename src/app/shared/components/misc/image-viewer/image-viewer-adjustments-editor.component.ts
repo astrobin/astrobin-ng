@@ -84,7 +84,7 @@ const DEFAULT_INVERT = 0;
           (click)="share()"
           astrobinEventPreventDefault
         >
-          <fa-icon icon="share"></fa-icon>
+          <fa-icon [icon]="deviceService.getShareIcon()"></fa-icon>
         </button>
 
         <button

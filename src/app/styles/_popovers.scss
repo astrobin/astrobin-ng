@@ -37,3 +37,42 @@
 .bs-popover-bottom > .arrow::after, .bs-popover-auto[x-placement^=bottom] > .arrow::after {
   border-bottom-color: var(--black);
 }
+
+.image-description-popover {
+  min-width: 300px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+
+  .popover-body {
+    @include darker-background-texture;
+    color: var(--white);
+    padding: 1rem;
+
+    .metadata-header {
+      @include darkest-background-texture;
+      margin: 0 0 .25rem;
+      padding: .5rem .75rem;
+      color: var(--lightestGrey);
+      border-radius: var(--bs-border-radius);
+    }
+
+    .metadata-section {
+      padding: .5rem 0;
+    }
+
+    .description {
+      word-break: break-word;
+      overflow: hidden;
+
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+
+    .btn-translate-description {
+      margin-top: .5rem;
+    }
+  }
+}

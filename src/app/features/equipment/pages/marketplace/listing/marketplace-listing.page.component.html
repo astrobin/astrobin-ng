@@ -1,12 +1,4 @@
-<astrobin-mobile-menu
-  (menuClose)="onMobileMenuClose()"
-  (menuOpen)="onMobileMenuOpen()"
-  [titleTemplate]="titleTemplate"
-  [descriptionTemplate]="descriptionTemplate"
-  [iconsTemplate]="shareButtonsTemplate"
-></astrobin-mobile-menu>
-
-<div class="page has-breadcrumb has-mobile-buttons-bar has-mobile-menu">
+<div class="page has-breadcrumb">
   <h1
     *ngIf="breakpointMdMin"
     class="d-flex justify-content-between align-items-center align-items-lg-end flex-column flex-lg-row gap-1"
@@ -24,8 +16,6 @@
         {{ "Back to marketplace" | translate }}
       </a>
     </span>
-
-    <ng-container [ngTemplateOutlet]="shareButtonsTemplate"></ng-container>
   </h1>
 
   <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
@@ -97,7 +87,7 @@
             ></astrobin-marketplace-more-from-user>
           </div>
 
-          <div class="col-md-4 col-lg-3 order-1 order-md-2">
+          <div class="col-md-4 col-lg-3 order-1 order-md-2 mb-4 mb-lg-0 mt-2 mt-lg-0">
             <astrobin-marketplace-user-card
               [listing]="listing"
               class="d-block"
@@ -110,7 +100,7 @@
 
             <ng-container
               *ngIf="
-                listingUser.id === currentUserWrapper.user?.id || (currentUserWrapper.user | isMarketplaceModerator)
+                (listingUser.id === currentUserWrapper.user?.id || (currentUserWrapper.user | isMarketplaceModerator)) && deviceService.mdMin()
               "
             >
               <ng-container
@@ -119,7 +109,7 @@
               ></ng-container>
             </ng-container>
 
-            <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id">
+            <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id && deviceService.mdMin()">
               <ng-container
                 [ngTemplateOutletContext]="{ currentUserWrapper, listingContentType }"
                 [ngTemplateOutlet]="sidebarNonOwnerTemplate"
@@ -154,8 +144,11 @@
   <!-- offers -->
 </ng-template>
 
+<!-- Note: We no longer use this template directly as the content is now embedded in the accordion -->
+<ng-template #privateConversationsTemplate></ng-template>
+
 <ng-template #sidebarOwnerTemplate let-currentUserWrapper="currentUserWrapper">
-  <div class="owner-buttons fixed-mobile-buttons no-text text-center mt-0 mt-md-4">
+  <div class="owner-buttons no-text text-center mt-0 mt-md-4">
     <a
       *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)"
       [routerLink]="'edit'"
@@ -244,7 +237,7 @@
 >
   <ng-container [ngTemplateOutlet]="offers"></ng-container>
 
-  <div class="fixed-mobile-buttons no-text text-center">
+  <div class="non-owner-buttons no-text text-center">
     <ng-container *ngIf="!equipmentMarketplaceService.listingSold(listing)">
       <astrobin-toggle-property
         *ngIf="!equipmentMarketplaceService.listingHasOffers(listing)"
@@ -336,6 +329,256 @@
   </div>
 </ng-template>
 
+<ng-template #ownerButtonsTemplate let-currentUserWrapper="currentUserWrapper">
+  <div>
+    <!-- Using NgbAccordion instead of Bootstrap accordion -->
+    <ngb-accordion #ownerAccordion [closeOthers]="true" activeIds="panel-management">
+      <!-- Management Section -->
+      <ngb-panel id="panel-management" title="{{ 'Management' | translate }}">
+        <ng-template ngbPanelContent>
+          <div class="p-0">
+            <ul class="nav offcanvas-menu flex-column">
+              <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)">
+                <a [routerLink]="'edit'" class="nav-link menu-item btn-sm">
+                  <fa-icon icon="pencil"></fa-icon>
+                  <span class="menu-text">{{ "Edit" | translate }}</span>
+                </a>
+              </li>
+
+              <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && listing.listingType === MarketplaceListingType.FOR_SALE">
+                <a (click)="markAsSold()" class="nav-link menu-item btn-sm">
+                  <fa-icon icon="sack-dollar"></fa-icon>
+                  <span class="menu-text">{{ "Mark as sold" | translate }}</span>
+                </a>
+              </li>
+
+              <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && equipmentMarketplaceService.listingExpired(listing)">
+                <a (click)="renew()" class="nav-link menu-item btn-sm">
+                  <fa-icon icon="redo"></fa-icon>
+                  <span class="menu-text">{{ "Renew" | translate }}</span>
+                </a>
+              </li>
+
+              <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingReserved(listing)">
+                <a (click)="delete()" class="nav-link menu-item text-danger btn-sm">
+                  <fa-icon icon="trash"></fa-icon>
+                  <span class="menu-text">{{ "Delete" | translate }}</span>
+                </a>
+              </li>
+
+              <!-- Message about sold items -->
+              <li class="nav-item" *ngIf="equipmentMarketplaceService.listingSold(listing)">
+                <div class="alert alert-info m-0 p-0 small">
+                  <fa-icon icon="info-circle" class="me-1"></fa-icon>
+                  {{ "Sold listings cannot be modified or deleted." | translate }}
+                </div>
+              </li>
+
+              <!-- Message about reserved items -->
+              <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && equipmentMarketplaceService.listingReserved(listing)">
+                <div class="alert alert-info m-0 p-0 small">
+                  <fa-icon icon="info-circle" class="me-1"></fa-icon>
+                  {{ "Reserved listings cannot be modified or deleted." | translate }}
+                </div>
+              </li>
+            </ul>
+          </div>
+        </ng-template>
+      </ngb-panel>
+
+      <!-- Offers Section -->
+      <ngb-panel id="panel-offers" *ngIf="equipmentMarketplaceService.listingHasOffers(listing)"
+                title="{{ 'Offers' | translate }} ({{ equipmentMarketplaceService.getTotalOfferCount(listing) }})">
+        <ng-template ngbPanelContent>
+          <div class="p-0">
+            <ng-container [ngTemplateOutlet]="offers"></ng-container>
+          </div>
+        </ng-template>
+      </ngb-panel>
+
+      <!-- Private Conversations Section -->
+      <ngb-panel id="panel-conversations" *ngIf="(privateConversations$ | async)?.length > 0"
+                title="{{ 'Private conversations' | translate }} ({{ (privateConversations$ | async)?.length || 0 }})">
+        <ng-template ngbPanelContent>
+          <div class="p-0">
+            <ul class="nav offcanvas-menu flex-column">
+              <ng-container *ngIf="privateConversations$ | async as privateConversations">
+                <li class="nav-item" *ngFor="let privateConversation of privateConversations">
+                  <a
+                    (click)="startPrivateConversation(privateConversation, $event)"
+                    class="nav-link d-flex align-items-center btn-sm"
+                  >
+                    <astrobin-avatar
+                      [link]="false"
+                      [userId]="privateConversation.user"
+                      class="me-2"
+                      style="width: 40px;"
+                    ></astrobin-avatar>
+
+                    <div class="d-flex flex-column align-items-start">
+                      <span class="d-flex align-items-center">
+                        <astrobin-username [link]="false" [userId]="privateConversation.user"></astrobin-username>
+                        <span *ngIf="equipmentMarketplaceService.userIsBuyer(privateConversation.user, listing)" class="ms-1 buyer">
+                          ({{ "Buyer" | translate }})
+                        </span>
+                      </span>
+
+                      <span class="d-flex mt-1">
+                        <span *ngIf="privateConversation.unreadMessages > 0" class="badge bg-danger">
+                          {{ privateConversation.unreadMessages }}
+                        </span>
+                        <span *ngIf="privateConversation.unreadMessages === 0" class="badge bg-info">
+                          {{ privateConversation.totalMessages }}
+                        </span>
+                      </span>
+                    </div>
+                  </a>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </div>
+</ng-template>
+
+<ng-template #nonOwnerButtonsTemplate let-currentUserWrapper="currentUserWrapper" let-listingContentType="listingContentType">
+  <div>
+    <!-- Using NgbAccordion instead of Bootstrap accordion -->
+    <ngb-accordion #buyerAccordion [closeOthers]="true" activeIds="panel-buyer-actions">
+      <!-- Actions Section -->
+      <ngb-panel id="panel-buyer-actions" title="{{ 'Actions' | translate }}">
+        <ng-template ngbPanelContent>
+          <div class="p-0">
+            <ul class="nav offcanvas-menu flex-column">
+              <li class="nav-item" *ngIf="!equipmentMarketplaceService.listingSold(listing) && !equipmentMarketplaceService.listingHasOffers(listing)">
+                <astrobin-toggle-property
+                  [contentType]="listingContentType.id"
+                  [objectId]="listing.id"
+                  [userId]="currentUserWrapper.user?.id"
+                  class="p-0"
+                  btnClass="nav-link menu-item btn btn-link btn-no-block link-secondary btn-sm"
+                  propertyType="follow"
+                ></astrobin-toggle-property>
+              </li>
+
+              <li class="nav-item" *ngIf="listing.approved">
+                <a (click)="onMessageUserClicked($event)" class="nav-link menu-item btn-sm" [class.loading]="loadingService.loading$ | async">
+                  <fa-icon icon="envelope"></fa-icon>
+
+                  <ng-container
+                    *ngIf="
+                      currentUserWrapper.user &&
+                      equipmentMarketplaceService.listingReservedTo(listing, currentUserWrapper.user?.id) &&
+                      !equipmentMarketplaceService.listingSold(listing);
+                      else messageUserMobile
+                    "
+                  >
+                    <span class="menu-text">{{ "Exchange payment/delivery info" | translate }}</span>
+                  </ng-container>
+
+                  <ng-template #messageUserMobile>
+                    <span class="menu-text">{{ "Message user privately" | translate }}</span>
+                  </ng-template>
+
+                  <ng-container *ngIf="privateConversations$ | async as privateConversations">
+                    <ng-container
+                      *ngIf="
+                        privateConversations?.length === 1 &&
+                        !equipmentMarketplaceService.listingReserved(listing) &&
+                        !equipmentMarketplaceService.listingSold(listing)
+                      "
+                    >
+                      <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
+                        {{ privateConversations[0].unreadMessages }}
+                      </span>
+                      <span *ngIf="privateConversations[0].unreadMessages === 0" class="badge bg-info">
+                        {{ privateConversations[0].totalMessages }}
+                      </span>
+                    </ng-container>
+                  </ng-container>
+                </a>
+              </li>
+
+              <li class="nav-item" *ngIf="
+                    listing.listingType === MarketplaceListingType.FOR_SALE &&
+                    equipmentMarketplaceService.listingHasNonSoldNonReservedItems(listing) &&
+                    !equipmentMarketplaceService.listingHasPendingOffers(listing) &&
+                    !equipmentMarketplaceService.listingHasAcceptedOffers(listing) &&
+                    listing.approved
+                  ">
+                <a (click)="onMakeAnOfferClicked($event)" class="nav-link menu-item btn-sm" [class.loading]="loadingService.loading$ | async">
+                  <fa-icon icon="dollar"></fa-icon>
+                  <span class="menu-text">{{ "Make an offer" | translate }}</span>
+                </a>
+              </li>
+
+              <li class="nav-item" *ngIf="listing.approved">
+                <a (click)="onReportListingClicked($event)" class="nav-link menu-item btn-sm" [class.loading]="loadingService.loading$ | async" style="color: var(--lightGrey)">
+                  <fa-icon icon="flag"></fa-icon>
+                  <span class="menu-text">{{ "Report listing" | translate }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </ng-template>
+      </ngb-panel>
+
+      <!-- Your Offers Section -->
+      <ngb-panel id="panel-my-offers" *ngIf="equipmentMarketplaceService.listingHasOffers(listing)"
+                title="{{ 'My Offers' | translate }} ({{ equipmentMarketplaceService.getUserOfferCount(listing, currentUserWrapper.user) }})">
+        <ng-template ngbPanelContent>
+          <div class="p-0">
+            <ng-container [ngTemplateOutlet]="offers"></ng-container>
+          </div>
+        </ng-template>
+      </ngb-panel>
+      
+      <!-- Private Conversations Section -->
+      <ngb-panel id="panel-buyer-conversations" *ngIf="(privateConversations$ | async)?.length > 0"
+                title="{{ 'Private conversations' | translate }} ({{ (privateConversations$ | async)?.length || 0 }})">
+        <ng-template ngbPanelContent>
+          <div class="p-0">
+            <ul class="nav offcanvas-menu flex-column">
+              <ng-container *ngIf="privateConversations$ | async as privateConversations">
+                <li class="nav-item" *ngFor="let privateConversation of privateConversations">
+                  <a 
+                    (click)="startPrivateConversation(privateConversation, $event)" 
+                    class="nav-link d-flex align-items-center btn-sm"
+                  >
+                    <astrobin-avatar 
+                      [link]="false" 
+                      [userId]="listing.user" 
+                      class="me-2"
+                      style="width: 40px;" 
+                    ></astrobin-avatar>
+                    
+                    <div class="d-flex flex-column align-items-start">
+                      <span class="d-flex align-items-center">
+                        <span class="menu-text">{{ listing.userDisplayName }}</span>
+                      </span>
+                      
+                      <span class="d-flex mt-1">
+                        <span *ngIf="privateConversation.unreadMessages > 0" class="badge bg-danger">
+                          {{ privateConversation.unreadMessages }}
+                        </span>
+                        <span *ngIf="privateConversation.unreadMessages === 0" class="badge bg-info">
+                          {{ privateConversation.totalMessages }}
+                        </span>
+                      </span>
+                    </div>
+                  </a>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </div>
+</ng-template>
+
 <ng-template #titleTemplate>
   {{ title }}
 </ng-template>
@@ -393,17 +636,7 @@
 </ng-template>
 
 <ng-template #shareButtonsTemplate>
-  <span class="share-buttons">
-    <button (click)="shareOnFacebook()" class="btn btn-link btn-no-block">
-      <fa-icon [icon]="['fab', 'facebook']"></fa-icon>
-    </button>
-
-    <button (click)="shareOnX()" class="btn btn-link btn-no-block">
-      <fa-icon [icon]="['fab', 'twitter']"></fa-icon>
-    </button>
-
-    <button (click)="shareOnWhatsApp()" class="btn btn-link btn-no-block">
-      <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
-    </button>
-  </span>
+  <button (click)="share($event)" class="btn btn-link btn-no-block btn-sm">
+    <fa-icon [icon]="deviceService.getShareIcon()"></fa-icon>
+  </button>
 </ng-template>

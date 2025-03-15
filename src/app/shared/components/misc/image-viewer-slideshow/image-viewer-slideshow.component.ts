@@ -136,6 +136,8 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
 
   @ViewChild("carouselContainer")
   protected carouselContainer: ElementRef;
+  
+  // No need for menu templates
 
   protected readonly FINAL_REVISION_LABEL = FINAL_REVISION_LABEL;
 
@@ -381,6 +383,7 @@ export class ImageViewerSlideshowComponent extends BaseComponentDirective implem
           this._updateVisibleContext(imageId);
           this._loadAdjacentImages(imageId);
           this._dropImagesTooFarFromIndex(imageId);
+          // No need to update mobile menu
 
           this.utilsService.delay(1).subscribe(() => {
             if (this.carousel) {

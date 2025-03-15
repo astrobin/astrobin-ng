@@ -202,6 +202,14 @@ export class ItemTypeNavComponent extends BaseComponentDirective
       this.uncollapsedTypes.push(type);
     }
   }
+  
+  /**
+   * Reinitialize the component by reloading counts
+   * This is used when the component is displayed in an offcanvas menu
+   */
+  reinitialize(): void {
+    this._loadCounts();
+  }
 
   _setActiveSubNav(url: string) {
     if (url.indexOf("a-z-explorer") > -1) {

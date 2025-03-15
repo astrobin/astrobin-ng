@@ -55,7 +55,7 @@
       > div {
         position: fixed;
         bottom: 5rem;
-        right: 0.75rem;
+        right: .75rem;
         flex-direction: column;
         align-items: center;
         gap: 1rem;
@@ -70,7 +70,7 @@
         }
 
         astrobin-avatar {
-          width: 80px;
+          width: 50px; // Reduced from 80px to 50px
 
           img {
             box-shadow: 0 0 2rem var(--black);
@@ -119,23 +119,6 @@ astrobin-marketplace-more-from-user {
   }
 }
 
-.share-buttons {
-  white-space: nowrap;
-
-  .btn {
-    vertical-align: middle;
-
-    &:hover fa-icon {
-      color: var(--lightestGrey);
-    }
-  }
-
-  fa-icon {
-    font-size: 1.25rem;
-    color: var(--lighterGrey);
-  }
-}
-
 .btn-report {
   fa-icon,
   .btn-text {
@@ -143,6 +126,9 @@ astrobin-marketplace-more-from-user {
     color: var(--lighterGrey);
   }
 }
+
+// Add any component-specific styles here
+// Note: All mobile menu styling is now handled by the shared offcanvas-menu class in _offcanvas.scss
 
 astrobin-scroll-to-top {
   ::ng-deep {

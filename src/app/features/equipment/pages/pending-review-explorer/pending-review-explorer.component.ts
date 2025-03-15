@@ -23,6 +23,7 @@ import { LoadingService } from "@core/services/loading.service";
 import { EquipmentItemService } from "@core/services/equipment-item.service";
 import { DeviceService } from "@core/services/device.service";
 import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-equipment-pending-review-explorer",
@@ -49,7 +50,8 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
     public readonly changeDetectionRef: ChangeDetectorRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly deviceService: DeviceService,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
+    public readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(
       store$,
@@ -62,7 +64,8 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
       changeDetectionRef,
       platformId,
       deviceService,
-      offcanvasService
+      offcanvasService,
+      mobilePageMenuService
     );
     this.pendingType = PendingType.PENDING_REVIEW;
   }

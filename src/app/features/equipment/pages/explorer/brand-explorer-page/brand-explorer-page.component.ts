@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, OnDestroy, PLATFORM_ID, TemplateRef, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import {
@@ -36,13 +36,14 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 import { DeviceService } from "@core/services/device.service";
 import { MatchType } from "@features/search/enums/match-type.enum";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-brand-explorer-page",
   templateUrl: "./brand-explorer-page.component.html",
   styleUrls: ["./brand-explorer-page.component.scss"]
 })
-export class BrandExplorerPageComponent extends ExplorerBaseComponent implements OnInit {
+export class BrandExplorerPageComponent extends ExplorerBaseComponent implements OnInit, OnDestroy {
   readonly ExplorerPageSortOrder = EquipmentItemsSortOrder;
   readonly UtilsService = UtilsService;
 
@@ -51,6 +52,16 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   activeBrand: BrandInterface;
   itemsInBrand: EquipmentItemBaseInterface[];
   listings: EquipmentListingsInterface = null;
+  
+  // Templates for mobile menu
+  @ViewChild("titleTemplate", { static: true })
+  titleTemplate: TemplateRef<any>;
+  
+  @ViewChild("descriptionTemplate", { static: true })
+  descriptionTemplate: TemplateRef<any>;
+  
+  @ViewChild("navTemplate", { static: true })
+  navTemplate: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -67,7 +78,8 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     public readonly changeDetectionRef: ChangeDetectorRef,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly deviceService: DeviceService,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
+    private readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(
       store$,
@@ -94,6 +106,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     this._setParams();
     this._loadAllPages();
     this._setupRouterEvents();
+    this._registerMobilePageMenu();
   }
 
   getItems() {
@@ -301,4 +314,40 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   }
 
   protected readonly MatchType = MatchType;
+  
+  /**
+   * Register the mobile page menu with the service
+   */
+  private _registerMobilePageMenu(): void {
+    if (!this.deviceService.mdMax()) {
+      return;
+    }
+    
+    // Only register if the templates are available
+    if (!this.titleTemplate || !this.descriptionTemplate || !this.navTemplate) {
+      return;
+    }
+    
+    // Register the menu configuration with the service
+    this.mobilePageMenuService.registerMenu({
+      titleTemplate: this.titleTemplate,
+      descriptionTemplate: this.descriptionTemplate,
+      template: this.navTemplate,
+    });
+  }
+  
+  ngOnDestroy(): void {
+    // Clear the mobile page menu when component is destroyed
+    this.mobilePageMenuService.clearMenu();
+    super.ngOnDestroy();
+  }
+  
+  // Handle mobile menu events
+  onMobileMenuOpen(): void {
+    super.onMobileMenuOpen();
+  }
+  
+  onMobileMenuClose(): void {
+    super.onMobileMenuClose();
+  }
 }

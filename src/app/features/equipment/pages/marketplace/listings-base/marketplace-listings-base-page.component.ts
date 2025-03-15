@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, OnDestroy, PLATFORM_ID, ViewChild, TemplateRef } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -26,6 +26,7 @@ import { RouterService } from "@core/services/router.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { EquipmentMarketplaceService } from "@core/services/equipment-marketplace.service";
 import { DeviceService } from "@core/services/device.service";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -33,7 +34,16 @@ import { DeviceService } from "@core/services/device.service";
 })
 export abstract class MarketplaceListingsBasePageComponent
   extends BaseComponentDirective
-  implements OnInit, AfterViewInit {
+  implements OnInit, AfterViewInit, OnDestroy {
+  
+  @ViewChild("titleTemplate", { static: true })
+  titleTemplate: TemplateRef<any>;
+  
+  @ViewChild("descriptionTemplate", { static: true })
+  descriptionTemplate: TemplateRef<any>;
+  
+  @ViewChild("navTemplate", { static: true })
+  navTemplate: TemplateRef<any>;
   readonly WORLDWIDE = "WORLDWIDE";
   readonly REGION_LOCAL_STORAGE_KEY = "marketplaceRegion";
   readonly UtilsService = UtilsService;
@@ -76,7 +86,8 @@ export abstract class MarketplaceListingsBasePageComponent
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly deviceService: DeviceService,
-    public readonly offcanvasService: NgbOffcanvas
+    public readonly offcanvasService: NgbOffcanvas,
+    protected readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(store$);
 
@@ -116,6 +127,20 @@ export abstract class MarketplaceListingsBasePageComponent
   ngAfterViewInit() {
     this.checkAndSetupScrollEvent();
     this._updateRequestCountry();
+    this._registerMobilePageMenu();
+  }
+  
+  ngOnDestroy(): void {
+    this.mobilePageMenuService.clearMenu();
+    super.ngOnDestroy();
+  }
+  
+  onMobileMenuOpen(): void {
+    // Any specific logic needed when menu opens
+  }
+  
+  onMobileMenuClose(): void {
+    // Any specific logic needed when menu closes
   }
 
   checkAndSetupScrollEvent() {
@@ -405,6 +430,27 @@ export abstract class MarketplaceListingsBasePageComponent
         this.selectRegionTooltip.open();
         this.equipmentMarketplaceService.selectRegionTooltipAlreadyShown = true;
       }
+    });
+  }
+  
+  /**
+   * Register the mobile page menu with the service
+   */
+  private _registerMobilePageMenu(): void {
+    if (!this.deviceService.smMax()) {
+      return;
+    }
+    
+    // Only register if the templates are available
+    if (!this.titleTemplate || !this.descriptionTemplate || !this.navTemplate) {
+      return;
+    }
+    
+    // Register the menu configuration with the service
+    this.mobilePageMenuService.registerMenu({
+      titleTemplate: this.titleTemplate,
+      descriptionTemplate: this.descriptionTemplate,
+      template: this.navTemplate,
     });
   }
 }

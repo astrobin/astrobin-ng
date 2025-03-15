@@ -1,0 +1,353 @@
+<nav class="navbar navbar-dark d-flex d-lg-none justify-content-between align-items-center w-100 px-2">
+  <!-- Menu toggle button on the left -->
+  <button class="navbar-toggler border-0" type="button" (click)="openMainMenu()">
+    <fa-icon icon="bars"></fa-icon>
+  </button>
+
+  <!-- Logo right after the hamburger menu with 50% opacity -->
+  <a routerLink="/" class="navbar-brand">
+    <img alt="AstroBin" src="assets/images/nav-logo.png?v=3" />
+  </a>
+
+  <!-- Spacer div to push the right controls to the edge -->
+  <div class="flex-grow-1"></div>
+
+  <!-- Right side controls -->
+  <div class="right-controls d-flex align-items-center">
+    <!-- For non-PWA mode, add search icon -->
+    <ng-container *ngIf="(isPwaMode$ | async) === false">
+      <!-- Search link -->
+      <a class="nav-link" routerLink="/search" routerLinkActive="active">
+        <fa-icon icon="search"></fa-icon>
+      </a>
+    </ng-container>
+
+    <!-- Notifications button - only visible when logged in (for both PWA and non-PWA) -->
+    <ng-container *ngIf="user">
+      <a class="nav-link position-relative" (click)="openNotificationsOffcanvas()">
+        <fa-icon icon="bell"></fa-icon>
+        <ng-container *ngIf="unreadNotificationsCount$ | async as unreadCount">
+            <span *ngIf="!!unreadCount" class="badge bg-danger rounded-pill">
+              {{ unreadCount }}
+            </span>
+        </ng-container>
+      </a>
+    </ng-container>
+
+    <!-- User avatar (both PWA and non-PWA) or login button -->
+    <ng-container *ngIf="user">
+      <a class="nav-link user-avatar-link" (click)="openUserMenu()">
+        <div class="avatar-container">
+          <astrobin-avatar [user]="user" [link]="false"></astrobin-avatar>
+        </div>
+      </a>
+    </ng-container>
+
+    <!-- Login button for non-logged in users (in both PWA and non-PWA modes) -->
+    <ng-container *ngIf="!user">
+      <a class="nav-link" (click)="openUserMenu()">
+        <fa-icon icon="sign-in-alt"></fa-icon>
+      </a>
+    </ng-container>
+
+    <!-- Page-specific menu kebab icon - only visible when a page menu is registered -->
+    <ng-container *ngIf="hasPageMenu$ | async">
+      <div class="kebab-menu-container position-relative">
+        <a class="nav-link kebab-menu ms-2" (click)="openPageMenu()">
+          <fa-icon icon="ellipsis-v"></fa-icon>
+        </a>
+
+        <!-- Tooltip for kebab menu -->
+        <div *ngIf="showKebabMenuTooltip" class="kebab-menu-tooltip">
+          <div class="tooltip-content">
+            <div class="d-flex align-items-center mb-2">
+              <fa-icon icon="info-circle" class="me-2 text-info"></fa-icon>
+              <p class="mb-0">
+                {{ "Tap here for page-specific options and actions" | translate }}
+              </p>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+              <button type="button" class="btn btn-sm btn-primary" (click)="dismissKebabMenuTooltip()">
+                {{ "Got it" | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</nav>
+
+<!-- Menu Offcanvas -->
+<ng-template #menuOffcanvas let-offcanvas>
+  <!-- Offcanvas Header -->
+  <div class="offcanvas-header">
+    <!-- Back button (only shown in submenus) -->
+    <button
+      *ngIf="currentMenuView !== 'main'"
+      class="btn btn-link btn-no-block text-white p-0 me-2"
+      (click)="showMainMenu()">
+      <fa-icon icon="chevron-left"></fa-icon>
+    </button>
+
+    <!-- Title changes based on current view -->
+    <h5 class="offcanvas-title">
+      <ng-container [ngSwitch]="currentMenuView">
+        <ng-container *ngSwitchCase="'main'">
+          <a routerLink="/" class="title-home-link" (click)="offcanvas.dismiss()">AstroBin</a>
+        </ng-container>
+        <ng-container *ngSwitchCase="'language'">{{ "Language" | translate }}</ng-container>
+        <ng-container *ngSwitchCase="'help'">{{ "Help" | translate }}</ng-container>
+        <ng-container *ngSwitchCase="'moderate'">{{ "Moderate" | translate }}</ng-container>
+      </ng-container>
+    </h5>
+
+    <!-- Close button -->
+    <button type="button" class="btn-close text-reset" (click)="offcanvas.dismiss()"></button>
+  </div>
+
+  <!-- Offcanvas Body with Dynamic Content -->
+  <div class="offcanvas-body d-flex flex-column">
+    <!-- Main Menu View -->
+    <ng-container *ngIf="currentMenuView === 'main'">
+      <!-- Main navigation options -->
+      <div class="main-nav offcanvas-menu" [class.view-transition]="isInViewTransition()">
+        <ul class="nav flex-column">
+          <!-- Add Moderate menu item for authorized users -->
+          <li class="nav-item" *ngIf="user | isContentModerator">
+            <a class="nav-link" (click)="showModerateMenu()">
+              <fa-icon icon="gavel"></fa-icon>
+              {{ "Moderate" | translate }}
+              <fa-icon icon="chevron-right" class="flex-grow-1 text-end me-0"></fa-icon>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['equipment', 'explorer']" (click)="offcanvas.dismiss()">
+              <fa-icon icon="camera-retro"></fa-icon>
+              {{ "Equipment database" | translate }}
+            </a>
+          </li>
+
+          <!-- Marketplace link (always visible but only in menu for non-PWA) -->
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/equipment/marketplace']" (click)="offcanvas.dismiss()">
+              <fa-icon icon="shopping-cart"></fa-icon>
+              {{ "Marketplace" | translate }}
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['explore', 'constellations']" (click)="offcanvas.dismiss()">
+              <fa-icon icon="star"></fa-icon>
+              {{ "Constellations" | translate }}
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['explore', 'iotd-tp-archive']" (click)="offcanvas.dismiss()">
+              <fa-icon icon="arrow-up"></fa-icon>
+              {{ "IOTD/TP Archive" | translate }}
+            </a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['explore', 'astrophotographers-list']" (click)="offcanvas.dismiss()">
+              <fa-icon icon="chart-bar"></fa-icon>
+              {{ "Astrophotographers list" | translate }}
+            </a>
+          </li>
+
+          <!-- Upload link (only in non-PWA mode) -->
+          <ng-container *ngIf="(isPwaMode$ | async) === false">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/uploader" (click)="offcanvas.dismiss()">
+                <fa-icon icon="upload"></fa-icon>
+                {{ "Upload image or video" | translate }}
+              </a>
+            </li>
+          </ng-container>
+        </ul>
+      </div>
+
+      <!-- Bottom section with language selector and help -->
+      <div class="bottom-nav offcanvas-menu mt-auto" [class.view-transition]="isInViewTransition()">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" (click)="showLanguageMenu()">
+              <fa-icon icon="globe"></fa-icon>
+              {{ currentLanguageCodeDisplay }}
+              <fa-icon icon="chevron-right" class="flex-grow-1 text-end me-0"></fa-icon>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" (click)="showHelpMenu()">
+              <fa-icon icon="question-circle"></fa-icon>
+              {{ "Help" | translate }}
+              <fa-icon icon="chevron-right" class="flex-grow-1 text-end me-0"></fa-icon>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Copyright and build information -->
+        <div class="copyright-info text-center mt-4 pt-3 text-muted small">
+          <div>AstroBin, &copy; 2010 - {{ currentYear }} &middot; Build: {{ buildVersion | slice:0:8 }}</div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Language Menu View -->
+    <ng-container *ngIf="currentMenuView === 'language'">
+      <ul class="nav flex-column language-menu offcanvas-menu" [class.view-transition]="isInViewTransition()">
+        <ng-container *ngFor="let language of languages">
+          <li class="nav-item" *ngIf="language.code !== '-'">
+            <a class="nav-link" [href]="getSetLanguageUrl(language.code)">
+              {{ language.label }}
+              <fa-icon *ngIf="language.code === translateService.currentLang"
+                       icon="check" class="flex-grow-1 text-end text-white me-0"></fa-icon>
+            </a>
+          </li>
+        </ng-container>
+
+        <li class="nav-item mt-3">
+          <a [attr.href]="helpWithTranslationsUrl" class="nav-link text-primary" target="_blank">
+            <fa-icon icon="tasks"></fa-icon>
+            {{ "Help with translations!" | translate }}
+          </a>
+        </li>
+      </ul>
+    </ng-container>
+
+    <!-- Help Menu View -->
+    <ng-container *ngIf="currentMenuView === 'help'">
+      <ul class="nav flex-column help-menu offcanvas-menu" [class.view-transition]="isInViewTransition()">
+        <li class="nav-item">
+          <a [href]="classicRoutesService.ABOUT" class="nav-link">
+            <fa-icon icon="info"></fa-icon>
+            {{ "What is this site?" | translate }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a [href]="classicRoutesService.FAQ" class="nav-link">
+            <fa-icon icon="question"></fa-icon>
+            {{ "FAQ" | translate }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a [href]="classicRoutesService.SPONSORS" class="nav-link">
+            <fa-icon icon="users"></fa-icon>
+            {{ "Sponsors & Partners" | translate }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a [href]="classicRoutesService.CONTACT" class="nav-link">
+            <fa-icon icon="envelope"></fa-icon>
+            {{ "Support" | translate }}
+          </a>
+        </li>
+      </ul>
+    </ng-container>
+
+    <!-- Moderate Menu View -->
+    <ng-container *ngIf="currentMenuView === 'moderate'">
+      <ul class="nav offcanvas-menu flex-column moderate-menu" [class.view-transition]="isInViewTransition()">
+        <!-- Images section -->
+        <li class="section-header">
+          <h6>{{ "Images" | translate }}</h6>
+        </li>
+
+        <li class="nav-item" *ngIf="user | isImageModerator">
+          <a [href]="classicRoutesService.MODERATE_IMAGE_QUEUE" class="nav-link">
+            <fa-icon icon="images"></fa-icon>
+            {{ "Image queue" | translate }}
+          </a>
+        </li>
+
+        <li class="nav-item" *ngIf="(user | isImageModerator) && (user | isSuperUser)">
+          <a [href]="classicRoutesService.MODERATE_SPAM_QUEUE" class="nav-link">
+            <fa-icon icon="flag"></fa-icon>
+            {{ "Spam list" | translate }}
+          </a>
+        </li>
+
+        <!-- IOTD section -->
+        <li class="section-header" *ngIf="user | isIotdStaff">
+          <h6>{{ "Image of the day" | translate }}</h6>
+        </li>
+
+        <li class="nav-item" *ngIf="user | isIotdSubmitter">
+          <a routerLink="/iotd/submission-queue" class="nav-link" (click)="offcanvas.dismiss()">
+            <fa-icon icon="arrow-up"></fa-icon>
+            {{ "Submission queue" | translate }}
+          </a>
+        </li>
+
+        <li class="nav-item" *ngIf="user | isIotdReviewer">
+          <a routerLink="/iotd/review-queue" class="nav-link" (click)="offcanvas.dismiss()">
+            <fa-icon icon="star"></fa-icon>
+            {{ "Review queue" | translate }}
+          </a>
+        </li>
+
+        <li class="nav-item" *ngIf="user | isIotdJudge">
+          <a routerLink="/iotd/judgement-queue" class="nav-link" (click)="offcanvas.dismiss()">
+            <fa-icon icon="hammer"></fa-icon>
+            {{ "Judgement queue" | translate }}
+          </a>
+        </li>
+
+        <!-- Equipment section -->
+        <li class="section-header" *ngIf="user | isEquipmentModerator">
+          <h6>{{ "Equipment" | translate }}</h6>
+        </li>
+
+        <li class="nav-item" *ngIf="user | isEquipmentModerator">
+          <a routerLink="/equipment/migration-tool" class="nav-link" (click)="offcanvas.dismiss()">
+            <fa-icon icon="arrow-right"></fa-icon>
+            {{ "Migration tool" | translate }}
+          </a>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- Login/Register offcanvas template -->
+<ng-template #loginRegisterMenu let-offcanvas>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">{{ "Account" | translate }}</h5>
+    <button type="button" class="btn-close text-reset" (click)="offcanvas.dismiss()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="d-grid gap-3">
+      <a [href]="authService.getLoginUrl()" class="btn btn-primary">
+        <fa-icon icon="sign-in-alt" class="me-2"></fa-icon>
+        {{ "Log in" | translate }}
+      </a>
+      <a [href]="classicRoutesService.REGISTER" class="btn btn-outline-primary">
+        <fa-icon icon="user-plus" class="me-2"></fa-icon>
+        {{ "Register" | translate }}
+      </a>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Notifications offcanvas template -->
+<ng-template #notificationsOffcanvas let-offcanvas>
+  <div class="offcanvas-header justify-content-start">
+    <button
+      class="btn btn-link btn-no-block text-white p-0 me-3"
+      (click)="offcanvas.close()">
+      <fa-icon icon="chevron-left"></fa-icon>
+    </button>
+    <h5 class="offcanvas-title">{{ "Notifications" | translate }}</h5>
+  </div>
+  <div class="offcanvas-body">
+    <astrobin-notifications-list
+      [standalone]="true"
+      (allNotificationsMarkedAsRead)="offcanvas.close()">
+    </astrobin-notifications-list>
+  </div>
+</ng-template>
+

@@ -9,6 +9,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
 import { DeviceService } from "@core/services/device.service";
 import { CookieService } from "ngx-cookie";
 import { CollapseSyncService } from "@core/services/collapse-sync.service";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 
 @Component({
   selector: "astrobin-image-viewer-floating-title",
@@ -23,10 +24,19 @@ import { CollapseSyncService } from "@core/services/collapse-sync.service";
       <div class="image-title">
         {{ image.title }}
       </div>
-      <astrobin-image-viewer-social-buttons
-        [image]="image"
-        [showShare]="deviceService.mdMin()"
-      ></astrobin-image-viewer-social-buttons>
+      <div class="d-flex align-items-center">
+        <astrobin-image-viewer-social-buttons
+          [image]="image"
+          [showShare]="deviceService.mdMin()"
+        ></astrobin-image-viewer-social-buttons>
+
+        <button
+          (click)="openMenu()"
+          class="kebab-menu btn btn-link text-light px-2 ms-2"
+        >
+          <fa-icon icon="ellipsis-v"></fa-icon>
+        </button>
+      </div>
     </div>
   `,
   styleUrls: ["./image-viewer-floating-title.component.scss"],
@@ -42,7 +52,8 @@ export class ImageViewerFloatingTitleComponent extends ImageViewerSectionBaseCom
     public readonly deviceService: DeviceService,
     public readonly cookieService: CookieService,
     public readonly collapseSyncService: CollapseSyncService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(
       store$,
@@ -54,5 +65,14 @@ export class ImageViewerFloatingTitleComponent extends ImageViewerSectionBaseCom
       collapseSyncService,
       changeDetectorRef
     );
+  }
+
+  /**
+   * Open the image menu (now using the offcanvas on all screen sizes)
+   */
+  openMenu(): void {
+    // Simply tell the mobile page menu service to open the menu
+    // The menu configuration was registered by the parent image viewer component
+    this.mobilePageMenuService.openMenu();
   }
 }

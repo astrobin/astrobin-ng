@@ -25,6 +25,7 @@ import { GetUnreadCount } from "@features/notifications/store/notifications.acti
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { IdleService } from "@core/services/idle.service";
+import { DeviceService } from "@core/services/device.service";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -59,7 +60,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
     public readonly jsonApiService: JsonApiService,
     public readonly modalService: NgbModal,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly idleService: IdleService
+    public readonly idleService: IdleService,
+    public readonly deviceService: DeviceService
   ) {
     super(store$);
 

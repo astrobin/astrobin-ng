@@ -28,6 +28,7 @@ import { Lightbox, LIGHTBOX_EVENT, LightboxEvent } from "ngx-lightbox";
 import { UserSubscriptionService } from "@core/services/user-subscription/user-subscription.service";
 import { AdManagerComponent } from "@shared/components/misc/ad-manager/ad-manager.component";
 import { ImageViewerService } from "@core/services/image-viewer.service";
+import { MobilePageMenuService } from "@core/services/mobile-page-menu.service";
 import { NgbModal, NgbModalRef, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
@@ -98,6 +99,16 @@ export class ImageViewerComponent
 
   @ViewChild("dataArea")
   dataArea: ElementRef;
+  
+  // Templates for mobile menu
+  @ViewChild("mobileMenuTitleTemplate", { static: true })
+  mobileMenuTitleTemplate: TemplateRef<any>;
+  
+  @ViewChild("mobileMenuIconsTemplate", { static: true })
+  mobileMenuIconsTemplate: TemplateRef<any>;
+  
+  @ViewChild("navTemplate", { static: true })
+  navTemplate: TemplateRef<any>;
 
   @ViewChild("ad", { static: false, read: AdManagerComponent })
   adManagerComponent: AdManagerComponent;
@@ -202,7 +213,8 @@ export class ImageViewerComponent
     public readonly cookieService: CookieService,
     public readonly searchService: SearchService,
     public readonly contentTranslateService: ContentTranslateService,
-    public readonly elementRef: ElementRef
+    public readonly elementRef: ElementRef,
+    private readonly mobilePageMenuService: MobilePageMenuService
   ) {
     super(store$);
     this.isBrowser = isPlatformBrowser(platformId);
@@ -221,6 +233,7 @@ export class ImageViewerComponent
   ngOnInit(): void {
     this._initImageAlias();
     this._initContentTypes();
+    this._registerMobilePageMenu();
 
     this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
       this._activeOffcanvas = activeOffcanvas;
@@ -234,6 +247,44 @@ export class ImageViewerComponent
 
   protected onMobileMenuClose(): void {
     // No special handling needed when menu closes
+  }
+  
+  /**
+   * Register the mobile page menu with the service
+   * Must be called after the view is initialized to access the templates
+   */
+  private _registerMobilePageMenu(): void {
+    // Always register the menu, regardless of screen size
+    // We'll use the offcanvas on all screen sizes
+    
+    // Only register if the templates are available
+    if (!this.mobileMenuTitleTemplate || !this.mobileMenuIconsTemplate || !this.navTemplate) {
+      return;
+    }
+    
+    // Register the menu configuration with the service
+    this.mobilePageMenuService.registerMenu({
+      titleTemplate: this.mobileMenuTitleTemplate,
+      iconsTemplate: this.mobileMenuIconsTemplate,
+      template: this.navTemplate,
+      templateContext: { $implicit: this.image },
+      // No description template for this component
+      offcanvasClass: 'image-viewer-offcanvas offcanvas-menu',
+      offcanvasBackdropClass: 'image-viewer-offcanvas-backdrop',
+    });
+  }
+  
+  /**
+   * This method is called when the image viewer is inside a slideshow
+   * and needs to register its menu for the mobile header to use
+   */
+  registerSlideshowMobileMenu(): void {
+    if (this.standalone) {
+      return;
+    }
+    
+    this._registerMobilePageMenu();
+    this.mobilePageMenuService.openMenu();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -284,6 +335,9 @@ export class ImageViewerComponent
 
         this.changeDetectorRef.markForCheck();
       });
+      
+      // Re-register the mobile page menu after view is initialized
+      this._registerMobilePageMenu();
     }
 
     this.changeDetectorRef.detectChanges();
@@ -296,6 +350,9 @@ export class ImageViewerComponent
   }
 
   ngOnDestroy() {
+    // Clear the mobile page menu when component is destroyed
+    this.mobilePageMenuService.clearMenu();
+    
     if (this._dataAreaScrollEventSubscription) {
       this._dataAreaScrollEventSubscription.unsubscribe();
     }

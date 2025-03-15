@@ -1,5 +1,6 @@
 @import "mixins";
 
+
 .image-viewer-offcanvas,
 .equipment-item-display-name-retailers-offcanvas {
   z-index: 1048;
@@ -11,7 +12,7 @@
 }
 
 .offcanvas-backdrop.show {
-  opacity: 0.85;
+  opacity: .85;
 }
 
 // Classes for offcanvas animations
@@ -20,24 +21,33 @@
   &.swipe-to-close-animating {
     pointer-events: none;
   }
-  
+
   &.swipe-to-close-return-to-normal {
-    animation: return-to-normal 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    animation: return-to-normal .3s cubic-bezier(.215, .61, .355, 1) forwards;
   }
-  
+
   &.swipe-to-close-offcanvas-animate {
-    animation: offcanvas-swipe-to-close 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    animation: offcanvas-swipe-to-close .3s cubic-bezier(.215, .61, .355, 1) forwards;
   }
 }
 
 // Class for when offcanvas is being closed via swipe down
 .offcanvas-closing {
-  animation: fadeOut 0.3s ease-out;
+  animation: fadeOut .3s ease-out;
 }
 
-.offcanvas:not(.offcanvas-bottom) {
-  top: 0.375rem !important;
+.offcanvas:not(.offcanvas-bottom):not(.image-viewer-offcanvas) {
+  top: .375rem !important;
   height: calc(100% - .375rem);
+}
+
+.offcanvas-start,
+.offcanvas-end {
+  max-width: 90vw;
+
+  @supports (max-width: 90dvw) {
+    max-width: 90dvw;
+  }
 }
 
 .offcanvas-bottom {
@@ -50,7 +60,7 @@
 
   .offcanvas-title {
     font-size: 1.25rem;
-    line-height: 1rem;
+    line-height: 1.25rem;
   }
 }
 
@@ -64,20 +74,44 @@
     flex-direction: column;
   }
 
-  .menu-item {
-    padding: 1rem;
-    width: calc(100% + -1rem);
-    display: block;
-    text-align: center;
-    background: var(--grey);
+  .nav-item {
+    padding: .75rem;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
     color: var(--lightestGrey);
-    margin: .25rem .5rem;
-    border-radius: var(--bs-border-radius);
-    box-shadow: 0 1px .2rem rgba(0, 0, 0, .05);
+    font-size: 1rem;
     cursor: pointer;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, .025);
+    background: transparent;
+
+    fa-icon {
+      width: 1.5rem;
+      text-align: center;
+      display: inline-block;
+
+      &:not([icon="chevron-right"]) {
+        margin-right: .75rem;
+        flex-shrink: 0;
+      }
+
+      &[icon="chevron-right"] {
+        color: var(--lightGrey);
+      }
+    }
+
+    .menu-text {
+      flex: 1;
+    }
 
     &:hover {
       color: var(--white);
+    }
+
+    &:last-child {
+      border-bottom: none;
     }
   }
 
@@ -85,5 +119,6 @@
     height: .75rem;
     border: 0;
     background: none;
+    flex-grow: 1;
   }
 }

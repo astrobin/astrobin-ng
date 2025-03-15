@@ -3,6 +3,8 @@
 .nav-item {
   position: relative;
   min-height: 3rem;
+  display: initial;
+  padding: 0;
 
   &:not(:last-child) {
     margin-bottom: .25rem;
@@ -12,6 +14,7 @@
     display: flex;
     align-items: center;
     gap: .5rem;
+    padding: .5rem 1rem;
 
     img {
       width: 2rem;
@@ -25,7 +28,7 @@
     .count {
       font-size: .8rem;
       line-height: 1rem;
-      opacity: 0.5;
+      opacity: .5;
     }
   }
 }
