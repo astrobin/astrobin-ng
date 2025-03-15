@@ -37,6 +37,16 @@ export class GalleryExperienceGuard implements CanActivate {
       return of(true); // Let server-side rendering proceed
     }
 
+    // Check if the route has data configuration for the guard
+    const guardData = route.data?.galleryExperienceGuard;
+    
+    // For views like IOTD/TP Archive that only redirect with image param
+    if (guardData?.redirectOnlyWithImageParam === true && !route.queryParams.i) {
+      // If there's no 'i' param, and the route is configured to only redirect with an image param,
+      // we can immediately allow access without checking the user profile
+      return of(true);
+    }
+
     // First check if user is authenticated at all
     const isAuthenticated = this.authService.getClassicApiToken() !== undefined;
     
@@ -75,8 +85,14 @@ export class GalleryExperienceGuard implements CanActivate {
     );
   }
 
+  /**
+   * Handles the user profile redirection logic
+   * @param userProfile The user profile
+   * @param route The activated route snapshot
+   * @returns Observable<boolean> - true to proceed with routing, false to prevent
+   */
   private handleUserProfile(userProfile: any, route: ActivatedRouteSnapshot): Observable<boolean> {
-    // If user doesn't have the flag enabled, redirect to classic site
+    // If the user doesn't have the flag enabled, redirect to classic site
     if (userProfile && userProfile.enableNewGalleryExperience === false) {
       // Show overlay immediately before further processing
       this.showLoadingOverlay();

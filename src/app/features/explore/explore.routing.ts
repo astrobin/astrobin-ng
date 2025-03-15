@@ -13,6 +13,11 @@ export const exploreRoutes: Routes = [
     path: "iotd-tp-archive",
     component: IotdTpArchivePageComponent,
     canActivate: [GalleryExperienceGuard],
+    data: {
+      galleryExperienceGuard: {
+        redirectOnlyWithImageParam: true
+      }
+    }
   },
   {
     path: "astrophotographers-list",
