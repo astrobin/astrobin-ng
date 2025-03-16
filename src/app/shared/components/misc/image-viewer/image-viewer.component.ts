@@ -927,13 +927,34 @@ export class ImageViewerComponent
       }
 
       // Get image dimensions
-      const imageRenderedWidth = imageElement.clientWidth;
-      const imageRenderedHeight = imageElement.clientHeight;
+      const containerWidth = this.imageArea.nativeElement.clientWidth;
+      const containerHeight = this.imageArea.nativeElement.clientHeight;
       const imagePlateWidth = this.revision.w || this.image.w;
       const imagePlateHeight = this.revision.h || this.image.h;
 
-      if (!imageRenderedWidth || !imageRenderedHeight || !imagePlateWidth || !imagePlateHeight) {
+      if (!containerWidth || !containerHeight || !imagePlateWidth || !imagePlateHeight) {
         return 0;
+      }
+
+      // Calculate image aspect ratio
+      const imageAspectRatio = imagePlateWidth / imagePlateHeight;
+
+      // Calculate actual displayed image dimensions accounting for letterboxing
+      let actualRenderedWidth, actualRenderedHeight;
+
+      // Handle case where the image is smaller than the container
+      if (imagePlateWidth <= containerWidth && imagePlateHeight <= containerHeight) {
+        // Small image - use native dimensions (no upscaling)
+        actualRenderedWidth = imagePlateWidth;
+        actualRenderedHeight = imagePlateHeight;
+      } else if (containerWidth / containerHeight > imageAspectRatio) {
+        // Image is letterboxed on sides (vertical letterboxing)
+        actualRenderedHeight = Math.min(containerHeight, imagePlateHeight);
+        actualRenderedWidth = actualRenderedHeight * imageAspectRatio;
+      } else {
+        // Image is letterboxed on top/bottom (horizontal letterboxing)
+        actualRenderedWidth = Math.min(containerWidth, imagePlateWidth);
+        actualRenderedHeight = actualRenderedWidth / imageAspectRatio;
       }
 
       // Get pixscale from the solution (arcseconds per pixel)
@@ -949,19 +970,8 @@ export class ImageViewerComponent
       // Calculate what percentage of the image FOV the moon takes up
       const moonPercentageOfWidth = moonDiameterInOriginalPixels / imagePlateWidth;
 
-      // Now apply that same percentage to the displayed image size
-      const moonSizeInDisplayPixels = imageRenderedWidth * moonPercentageOfWidth;
-
-      // Log the calculation for debugging
-      console.log("Moon scale calculation:", {
-        moonDiameterArcsec: MOON_DIAMETER_ARCSEC,
-        pixscale,
-        imageDimensions: { width: imagePlateWidth, height: imagePlateHeight },
-        displayDimensions: { width: imageRenderedWidth, height: imageRenderedHeight },
-        moonDiameterOriginalPixels: moonDiameterInOriginalPixels,
-        moonPercentageOfWidth,
-        moonSizeInDisplayPixels
-      });
+      // Now apply that same percentage to the displayed image size (accounting for letterboxing)
+      const moonSizeInDisplayPixels = actualRenderedWidth * moonPercentageOfWidth;
 
       // Return the final size, with reasonable bounds
       return moonSizeInDisplayPixels;
