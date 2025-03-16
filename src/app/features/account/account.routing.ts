@@ -4,13 +4,11 @@ import { LoggingOutPageComponent } from "@features/account/pages/logging-out-pag
 import { LoginPageComponent } from "@features/account/pages/login-page/login-page.component";
 import { AuthGuardService } from "@core/services/guards/auth-guard.service";
 import { LoggingInPageComponent } from "@features/account/pages/logging-in-page/logging-in-page.component";
-import { SettingsPageComponent } from "@features/account/pages/settings-page/settings-page.component";
 
 export let routes: Routes;
 routes = [
   { path: "login", component: LoginPageComponent },
   { path: "logged-in", component: LoggedInPageComponent, canActivate: [AuthGuardService] },
   { path: "logging-in", component: LoggingInPageComponent },
-  { path: "logging-out", component: LoggingOutPageComponent },
-  { path: "settings", component: SettingsPageComponent, canActivate: [AuthGuardService] }
+  { path: "logging-out", component: LoggingOutPageComponent }
 ];

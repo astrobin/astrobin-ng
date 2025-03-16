@@ -19,6 +19,8 @@ import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
 import { selectToggleProperty } from "@app/store/selectors/app/toggle-property.selectors";
 import { fadeInOut } from "@shared/animations";
 import { CommonApiService } from "@core/services/api/classic/common/common-api.service";
+import { NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
 
 @Component({
   selector: "astrobin-avatar",
@@ -58,7 +60,8 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
     public readonly userService: UserService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly offcanvasService: NgbOffcanvas
   ) {
     super(store$);
   }
@@ -96,6 +99,27 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
         this.user.username,
         !currentUserProfile || currentUserProfile.enableNewGalleryExperience
       );
+    });
+  }
+  
+  protected openAvatarEditor(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Open the offcanvas with the AvatarEditorComponent
+    const offcanvasRef = this.offcanvasService.open(AvatarEditorComponent, {
+      position: 'end',
+      panelClass: 'avatar-editor-offcanvas',
+      backdropClass: 'avatar-editor-backdrop'
+    });
+    
+    // Pass the user to the component
+    offcanvasRef.componentInstance.user = this.user;
+    
+    // When the avatar is updated, update this component as well
+    offcanvasRef.componentInstance.avatarUpdated.subscribe((newAvatarUrl: string) => {
+      this.avatarUrl = newAvatarUrl;
+      this.changeDetectorRef.markForCheck();
     });
   }
 

@@ -12,10 +12,15 @@
   <ng-template #imageTemplate>
     <div class="avatar-wrapper">
       <img [alt]="user.username" [src]="avatarUrl" />
-      
-      <div *ngIf="(showEditButton || isCurrentUser) && user" class="edit-button" [ngbTooltip]="'Edit avatar' | translate">
-        <button class="btn btn-sm" [routerLink]="['/account/settings']" [fragment]="'avatar'">
-          <fa-icon icon="pen-to-square"></fa-icon>
+
+      <div
+        *ngIf="(showEditButton || isCurrentUser) && user"
+        [ngbTooltip]="'Edit avatar' | translate"
+        class="edit-button"
+        container="body"
+      >
+        <button class="btn btn-sm" (click)="openAvatarEditor($event)">
+          <fa-icon icon="pencil"></fa-icon>
         </button>
       </div>
 

@@ -39,11 +39,6 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
               [showPremiumBadge]="true"
               [showFollowsYouBadge]="true"
             ></astrobin-avatar>
-            <div class="edit-avatar" *ngIf="currentUserWrapper.user?.id === user.id">
-              <a [routerLink]="['/account/settings']" [fragment]="'avatar'">
-                <fa-icon icon="pen-to-square"></fa-icon>
-              </a>
-            </div>
           </div>
 
           <div class="d-flex flex-column gap-3 gap-md-2">
@@ -78,7 +73,7 @@ import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/acco
                     ></button>
                     <a
                       *ngIf="currentUserWrapper.user?.id === user.id"
-                      [routerLink]="['/account/settings']"
+                      [href]="classicRoutesService.SETTINGS"
                       class="dropdown-item"
                       translate="Settings"
                     ></a>

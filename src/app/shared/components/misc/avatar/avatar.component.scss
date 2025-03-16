@@ -34,22 +34,29 @@ img {
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, .5);
   border-radius: 50%;
-  padding: 8px;
   z-index: 2;
 
-  button {
+  .btn {
     background: transparent;
     border: none;
-    color: var(--white);
-    padding: 0;
+    color: var(--lightestGrey);
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    font-size: .8rem;
+
+    .ng-fa-icon {
+      margin: 0;
+    }
 
     &:hover {
-      color: var(--accentColor);
+      .btn {
+        color: var(--white);
+      }
     }
   }
 
