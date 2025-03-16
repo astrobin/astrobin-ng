@@ -132,6 +132,8 @@ export class ImageViewerComponent
   protected forceViewMouseHover = false;
   protected forceViewAnnotationsMouseHover = false;
   protected inlineSvg: SafeHtml;
+  protected showMoonOverlay = false;
+  protected moonScaleDiameter: number = null;
   protected advancedSolutionMatrix: {
     matrixRect: string;
     matrixDelta: number;
@@ -273,6 +275,11 @@ export class ImageViewerComponent
         this._initImageAlias();
         this._adjustSvgOverlay();
 
+        // Update moon scale if it's visible
+        if (this.showMoonOverlay) {
+          this._updateMoonScale();
+        }
+
         if (this.adManagerComponent) {
           this._setAd();
         }
@@ -348,6 +355,9 @@ export class ImageViewerComponent
 
     this.popNotificationsService.clear();
 
+    // Reset moon overlay when closing with ESC
+    this.resetMoonOverlay();
+
     if (this.isLightBoxOpen) {
       return;
     }
@@ -374,8 +384,8 @@ export class ImageViewerComponent
   }
 
   @HostListener("document:keyup.arrowRight", ["$event"])
-  onArrowRight(event: KeyboardEvent): any {
-    if (this._ignoreNavigationEvent(event)) {
+  onArrowRight(event: KeyboardEvent | MouseEvent | null): any {
+    if (event && event instanceof KeyboardEvent && this._ignoreNavigationEvent(event)) {
       return true;
     }
 
@@ -383,13 +393,16 @@ export class ImageViewerComponent
       event.preventDefault();
       event.stopPropagation();
     }
+
+    // Reset moon overlay state before navigation
+    this.resetMoonOverlay();
 
     this.nextClick.emit();
   }
 
   @HostListener("document:keyup.arrowLeft", ["$event"])
-  onArrowLeft(event: KeyboardEvent): any {
-    if (this._ignoreNavigationEvent(event)) {
+  onArrowLeft(event: KeyboardEvent | MouseEvent | null): any {
+    if (event && event instanceof KeyboardEvent && this._ignoreNavigationEvent(event)) {
       return true;
     }
 
@@ -397,6 +410,9 @@ export class ImageViewerComponent
       event.preventDefault();
       event.stopPropagation();
     }
+
+    // Reset moon overlay state before navigation
+    this.resetMoonOverlay();
 
     this.previousClick.emit();
   }
@@ -438,6 +454,29 @@ export class ImageViewerComponent
     this.onToggleAnnotationsOnMouseHoverLeave();
   }
 
+  @HostListener("document:keydown.m", ["$event"])
+  onMKeyDown(event: KeyboardEvent): any {
+    // Don't interfere with input fields
+    if (
+      !this.active ||
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // Only toggle if the image has a solution with pixscale
+    if (this.revision?.solution?.pixscale) {
+      this.toggleMoonOverlay();
+    }
+  }
+
   setImage(
     image: ImageInterface,
     revisionLabel: ImageRevisionInterface["label"]
@@ -448,6 +487,9 @@ export class ImageViewerComponent
     this.imageObjectLoaded = true;
     this.imageFileLoaded = false;
     this.image = image;
+
+    // Reset moon overlay state when loading a new image
+    this.resetMoonOverlay();
     this.revisionLabel = this.imageService.validateRevisionLabel(this.image, revisionLabel);
 
 
@@ -623,6 +665,89 @@ export class ImageViewerComponent
     this.forceViewMouseHover = !this.forceViewMouseHover;
   }
 
+  protected resetMoonOverlay(): void {
+    this.showMoonOverlay = false;
+    this.moonScaleDiameter = 0;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected toggleMoonOverlay(): void {
+    this.showMoonOverlay = !this.showMoonOverlay;
+
+    if (this.showMoonOverlay) {
+      this._updateMoonScale();
+    } else {
+      // Make sure to reset the size when hiding
+      this.moonScaleDiameter = 0;
+    }
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private _updateMoonScale(): void {
+    this.moonScaleDiameter = this._calculateMoonScaleDiameter();
+  }
+
+  private _calculateMoonScaleDiameter(): number {
+    if (!this.revision?.solution?.pixscale || !this.imageArea || !this.isBrowser) {
+      return 0;
+    }
+
+    // Moon's angular diameter is 0.52 degrees.
+    const MOON_DIAMETER_ARCSEC = .52 * 3600;
+
+    try {
+      // Get the image element
+      const imageElement = this.imageArea.nativeElement.querySelector("astrobin-image img");
+      if (!imageElement) {
+        return 0;
+      }
+
+      // Get image dimensions
+      const imageRenderedWidth = imageElement.clientWidth;
+      const imageRenderedHeight = imageElement.clientHeight;
+      const imagePlateWidth = this.revision.w || this.image.w;
+      const imagePlateHeight = this.revision.h || this.image.h;
+
+      if (!imageRenderedWidth || !imageRenderedHeight || !imagePlateWidth || !imagePlateHeight) {
+        return 0;
+      }
+
+      // Get pixscale from the solution (arcseconds per pixel)
+      const pixscale = parseFloat(this.revision.solution.advancedPixscale || this.revision.solution.pixscale);
+      if (!pixscale || isNaN(pixscale) || pixscale <= 0) {
+        console.warn('Invalid pixscale:', pixscale);
+        return 0;
+      }
+
+      // Calculate moon diameter in native image pixels
+      const moonDiameterInOriginalPixels = MOON_DIAMETER_ARCSEC / pixscale;
+
+      // Calculate what percentage of the image FOV the moon takes up
+      const moonPercentageOfWidth = moonDiameterInOriginalPixels / imagePlateWidth;
+
+      // Now apply that same percentage to the displayed image size
+      const moonSizeInDisplayPixels = imageRenderedWidth * moonPercentageOfWidth;
+
+      // Log the calculation for debugging
+      console.log('Moon scale calculation:', {
+        moonDiameterArcsec: MOON_DIAMETER_ARCSEC,
+        pixscale,
+        imageDimensions: { width: imagePlateWidth, height: imagePlateHeight },
+        displayDimensions: { width: imageRenderedWidth, height: imageRenderedHeight },
+        moonDiameterOriginalPixels: moonDiameterInOriginalPixels,
+        moonPercentageOfWidth,
+        moonSizeInDisplayPixels
+      });
+
+      // Return the final size, with reasonable bounds
+      return moonSizeInDisplayPixels;
+    } catch (error) {
+      console.error('Error calculating moon scale:', error);
+      return 0;
+    }
+  }
+
   onToggleAnnotationsOnMouseHoverEnter(): void {
     this.forceViewAnnotationsMouseHover = true;
     this.forceViewMouseHover = true;
@@ -667,6 +792,10 @@ export class ImageViewerComponent
 
         this.store$.dispatch(new ShowFullscreenImage({ imageId: this.image.pk, event }));
         this.viewingFullscreenImage = true;
+
+        // Reset moon overlay state when entering fullscreen
+        this.resetMoonOverlay();
+
         this.changeDetectorRef.markForCheck();
         this.toggleFullscreen.emit(true);
 
@@ -829,9 +958,9 @@ export class ImageViewerComponent
       this.modalService.hasOpenModals() ||
       this.viewingFullscreenImage ||
       this.isLightBoxOpen ||
-      event.target instanceof HTMLInputElement ||
-      event.target instanceof HTMLTextAreaElement ||
-      (event.target as HTMLElement).classList.contains("cke_wysiwyg_div")
+      (event && event.target instanceof HTMLInputElement) ||
+      (event && event.target instanceof HTMLTextAreaElement) ||
+      (event && event.target instanceof HTMLElement && event.target.classList.contains("cke_wysiwyg_div"))
     );
   }
 

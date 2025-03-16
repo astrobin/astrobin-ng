@@ -306,6 +306,46 @@ $largeViewPortBreakpoint: 2561px;
         flex-grow: 1;
         height: 100%;
         max-height: inherit;
+
+        .moon-scale-overlay {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+
+          .moon-image {
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.7));
+            cursor: pointer;
+            pointer-events: auto;
+          }
+
+          .moon-label {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            pointer-events: auto;
+            transition: color 0.2s ease;
+
+            &:hover {
+              color: #FFD700;
+            }
+            color: white;
+            text-shadow: 0 0 5px black;
+            font-size: .85rem;
+            margin-top: .375rem;
+            white-space: nowrap;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: .125rem .5rem;
+            border-radius: .625rem;
+          }
+        }
       }
 
       &.has-top-banner .image-area-body {
