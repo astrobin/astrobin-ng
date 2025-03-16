@@ -6,7 +6,7 @@ import { select, Store } from "@ngrx/store";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { DeviceService } from "@core/services/device.service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { catchError, delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
+import { delay, filter, map, observeOn, switchMap, take, takeUntil } from "rxjs/operators";
 import { ImageService } from "@core/services/image/image.service";
 import { ActivatedRoute } from "@angular/router";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
@@ -134,6 +134,8 @@ export class ImageViewerComponent
   protected inlineSvg: SafeHtml;
   protected showMoonOverlay = false;
   protected moonScaleDiameter: number = null;
+  protected moonPosition = { x: 50, y: 50 }; // As percentage of container
+  protected isDraggingMoon = false;
   protected advancedSolutionMatrix: {
     matrixRect: string;
     matrixDelta: number;
@@ -167,12 +169,11 @@ export class ImageViewerComponent
   protected adConfig: "rectangular" | "wide";
   protected adDisplayed = false;
   protected searchModel: SearchModelInterface;
-
   protected translatingDescription = false;
   protected translatedDescription: SafeHtml;
-
   protected readonly isBrowser: boolean;
-
+  protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
+  private _moonStartDragPosition = { x: 0, y: 0 };
   private _dataAreaScrollEventSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
   private _activeOffcanvas: NgbOffcanvasRef;
@@ -227,15 +228,6 @@ export class ImageViewerComponent
     this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
       this._activeOffcanvas = activeOffcanvas;
     });
-  }
-
-  // Mobile menu event handlers
-  protected onMobileMenuOpen(): void {
-    // No special handling needed when menu opens
-  }
-
-  protected onMobileMenuClose(): void {
-    // No special handling needed when menu closes
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -520,6 +512,26 @@ export class ImageViewerComponent
     this.changeDetectorRef.detectChanges();
   }
 
+  onToggleAnnotationsOnMouseHoverEnter(): void {
+    this.forceViewAnnotationsMouseHover = true;
+    this.forceViewMouseHover = true;
+    this._onMouseHoverSvgLoad();
+  }
+
+  onToggleAnnotationsOnMouseHoverLeave(): void {
+    this.forceViewAnnotationsMouseHover = false;
+    this.forceViewMouseHover = false;
+  }
+
+  // Mobile menu event handlers
+  protected onMobileMenuOpen(): void {
+    // No special handling needed when menu opens
+  }
+
+  protected onMobileMenuClose(): void {
+    // No special handling needed when menu closes
+  }
+
   protected onImageLoaded(): void {
     this.imageFileLoaded = true;
   }
@@ -668,6 +680,57 @@ export class ImageViewerComponent
   protected resetMoonOverlay(): void {
     this.showMoonOverlay = false;
     this.moonScaleDiameter = 0;
+    this.moonPosition = { x: 50, y: 50 }; // Reset position to center
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected onMoonDragStart(event: MouseEvent | TouchEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.isDraggingMoon = true;
+
+    // Get starting coordinates
+    const pageX = event instanceof MouseEvent ? event.pageX : event.touches[0].pageX;
+    const pageY = event instanceof MouseEvent ? event.pageY : event.touches[0].pageY;
+
+    // Calculate offset between pointer position and moon center
+    this._moonStartDragPosition = {
+      x: pageX - (this.moonPosition.x / 100 * this.imageArea.nativeElement.clientWidth),
+      y: pageY - (this.moonPosition.y / 100 * this.imageArea.nativeElement.clientHeight)
+    };
+  }
+
+  protected onMoonDrag(event: MouseEvent | TouchEvent): void {
+    if (!this.isDraggingMoon) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Get current coordinates
+    const pageX = event instanceof MouseEvent ? event.pageX : event.touches[0].pageX;
+    const pageY = event instanceof MouseEvent ? event.pageY : event.touches[0].pageY;
+
+    // Calculate new position as percentage of container
+    const containerWidth = this.imageArea.nativeElement.clientWidth;
+    const containerHeight = this.imageArea.nativeElement.clientHeight;
+
+    const newX = ((pageX - this._moonStartDragPosition.x) / containerWidth) * 100;
+    const newY = ((pageY - this._moonStartDragPosition.y) / containerHeight) * 100;
+
+    // Clamp values between 0-100%
+    this.moonPosition = {
+      x: Math.min(Math.max(newX, 0), 100),
+      y: Math.min(Math.max(newY, 0), 100)
+    };
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected onMoonDragEnd(): void {
+    this.isDraggingMoon = false;
     this.changeDetectorRef.markForCheck();
   }
 
@@ -684,81 +747,6 @@ export class ImageViewerComponent
     this.changeDetectorRef.markForCheck();
   }
 
-  private _updateMoonScale(): void {
-    this.moonScaleDiameter = this._calculateMoonScaleDiameter();
-  }
-
-  private _calculateMoonScaleDiameter(): number {
-    if (!this.revision?.solution?.pixscale || !this.imageArea || !this.isBrowser) {
-      return 0;
-    }
-
-    // Moon's angular diameter is 0.52 degrees.
-    const MOON_DIAMETER_ARCSEC = .52 * 3600;
-
-    try {
-      // Get the image element
-      const imageElement = this.imageArea.nativeElement.querySelector("astrobin-image img");
-      if (!imageElement) {
-        return 0;
-      }
-
-      // Get image dimensions
-      const imageRenderedWidth = imageElement.clientWidth;
-      const imageRenderedHeight = imageElement.clientHeight;
-      const imagePlateWidth = this.revision.w || this.image.w;
-      const imagePlateHeight = this.revision.h || this.image.h;
-
-      if (!imageRenderedWidth || !imageRenderedHeight || !imagePlateWidth || !imagePlateHeight) {
-        return 0;
-      }
-
-      // Get pixscale from the solution (arcseconds per pixel)
-      const pixscale = parseFloat(this.revision.solution.advancedPixscale || this.revision.solution.pixscale);
-      if (!pixscale || isNaN(pixscale) || pixscale <= 0) {
-        console.warn('Invalid pixscale:', pixscale);
-        return 0;
-      }
-
-      // Calculate moon diameter in native image pixels
-      const moonDiameterInOriginalPixels = MOON_DIAMETER_ARCSEC / pixscale;
-
-      // Calculate what percentage of the image FOV the moon takes up
-      const moonPercentageOfWidth = moonDiameterInOriginalPixels / imagePlateWidth;
-
-      // Now apply that same percentage to the displayed image size
-      const moonSizeInDisplayPixels = imageRenderedWidth * moonPercentageOfWidth;
-
-      // Log the calculation for debugging
-      console.log('Moon scale calculation:', {
-        moonDiameterArcsec: MOON_DIAMETER_ARCSEC,
-        pixscale,
-        imageDimensions: { width: imagePlateWidth, height: imagePlateHeight },
-        displayDimensions: { width: imageRenderedWidth, height: imageRenderedHeight },
-        moonDiameterOriginalPixels: moonDiameterInOriginalPixels,
-        moonPercentageOfWidth,
-        moonSizeInDisplayPixels
-      });
-
-      // Return the final size, with reasonable bounds
-      return moonSizeInDisplayPixels;
-    } catch (error) {
-      console.error('Error calculating moon scale:', error);
-      return 0;
-    }
-  }
-
-  onToggleAnnotationsOnMouseHoverEnter(): void {
-    this.forceViewAnnotationsMouseHover = true;
-    this.forceViewMouseHover = true;
-    this._onMouseHoverSvgLoad();
-  }
-
-  onToggleAnnotationsOnMouseHoverLeave(): void {
-    this.forceViewAnnotationsMouseHover = false;
-    this.forceViewMouseHover = false;
-  }
-
   protected enterFullscreen(event: MouseEvent | TouchEvent | null): void {
     if (event) {
       event.preventDefault();
@@ -767,7 +755,7 @@ export class ImageViewerComponent
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (this.supportsFullscreen) {
         // Check if this is a GIF file and the device uses touch
-        const isGif = this.revision.imageFile && this.revision.imageFile.toLowerCase().endsWith('.gif');
+        const isGif = this.revision.imageFile && this.revision.imageFile.toLowerCase().endsWith(".gif");
         if (isGif && this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC()) {
           this.popNotificationsService.warning(
             this.translateService.instant("Sorry, zooming on GIF animations is not available on touch devices.")
@@ -860,7 +848,7 @@ export class ImageViewerComponent
   protected onTranslateDescriptionClicked(event: Event): void {
     event.preventDefault();
 
-    let scrollPosition : number;
+    let scrollPosition: number;
 
     if (this.isBrowser) {
       scrollPosition = this.dataArea.nativeElement.scrollTop;
@@ -917,6 +905,70 @@ export class ImageViewerComponent
     // Clear the cached translation
     const imageId = this.image.hash || this.image.pk.toString();
     this.contentTranslateService.clearTranslation("image-description", imageId);
+  }
+
+  private _updateMoonScale(): void {
+    this.moonScaleDiameter = this._calculateMoonScaleDiameter();
+  }
+
+  private _calculateMoonScaleDiameter(): number {
+    if (!this.revision?.solution?.pixscale || !this.imageArea || !this.isBrowser) {
+      return 0;
+    }
+
+    // Moon's angular diameter is 0.52 degrees.
+    const MOON_DIAMETER_ARCSEC = .52 * 3600;
+
+    try {
+      // Get the image element
+      const imageElement = this.imageArea.nativeElement.querySelector("astrobin-image img");
+      if (!imageElement) {
+        return 0;
+      }
+
+      // Get image dimensions
+      const imageRenderedWidth = imageElement.clientWidth;
+      const imageRenderedHeight = imageElement.clientHeight;
+      const imagePlateWidth = this.revision.w || this.image.w;
+      const imagePlateHeight = this.revision.h || this.image.h;
+
+      if (!imageRenderedWidth || !imageRenderedHeight || !imagePlateWidth || !imagePlateHeight) {
+        return 0;
+      }
+
+      // Get pixscale from the solution (arcseconds per pixel)
+      const pixscale = parseFloat(this.revision.solution.advancedPixscale || this.revision.solution.pixscale);
+      if (!pixscale || isNaN(pixscale) || pixscale <= 0) {
+        console.warn("Invalid pixscale:", pixscale);
+        return 0;
+      }
+
+      // Calculate moon diameter in native image pixels
+      const moonDiameterInOriginalPixels = MOON_DIAMETER_ARCSEC / pixscale;
+
+      // Calculate what percentage of the image FOV the moon takes up
+      const moonPercentageOfWidth = moonDiameterInOriginalPixels / imagePlateWidth;
+
+      // Now apply that same percentage to the displayed image size
+      const moonSizeInDisplayPixels = imageRenderedWidth * moonPercentageOfWidth;
+
+      // Log the calculation for debugging
+      console.log("Moon scale calculation:", {
+        moonDiameterArcsec: MOON_DIAMETER_ARCSEC,
+        pixscale,
+        imageDimensions: { width: imagePlateWidth, height: imagePlateHeight },
+        displayDimensions: { width: imageRenderedWidth, height: imageRenderedHeight },
+        moonDiameterOriginalPixels: moonDiameterInOriginalPixels,
+        moonPercentageOfWidth,
+        moonSizeInDisplayPixels
+      });
+
+      // Return the final size, with reasonable bounds
+      return moonSizeInDisplayPixels;
+    } catch (error) {
+      console.error("Error calculating moon scale:", error);
+      return 0;
+    }
   }
 
   private _loadTranslatedDescription(scrollPosition?: number): void {
@@ -1562,6 +1614,4 @@ export class ImageViewerComponent
         this.changeDetectorRef.markForCheck();
       });
   }
-
-  protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
 }

@@ -309,8 +309,6 @@ $largeViewPortBreakpoint: 2561px;
 
         .moon-scale-overlay {
           position: absolute;
-          top: 50%;
-          left: 50%;
           transform: translate(-50%, -50%);
           pointer-events: none;
           z-index: 10;
@@ -318,32 +316,70 @@ $largeViewPortBreakpoint: 2561px;
           flex-direction: column;
           align-items: center;
 
-          .moon-image {
-            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.7));
-            cursor: pointer;
-            pointer-events: auto;
+          &.dragging {
+            z-index: 20;
+            opacity: 0.5;
+
+            .moon-image {
+              cursor: grabbing;
+            }
           }
 
-          .moon-label {
+          .moon-image {
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.7));
+            cursor: grab;
+            pointer-events: auto;
+            transition: filter 0.2s ease;
+          }
+
+          .moon-label-container {
             position: absolute;
             top: 100%;
             left: 50%;
             transform: translateX(-50%);
-            cursor: pointer;
             pointer-events: auto;
-            transition: color 0.2s ease;
-
-            &:hover {
-              color: #FFD700;
-            }
-            color: white;
-            text-shadow: 0 0 5px black;
-            font-size: .85rem;
             margin-top: .375rem;
-            white-space: nowrap;
             background-color: rgba(0, 0, 0, 0.5);
             padding: .125rem .5rem;
             border-radius: .625rem;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            white-space: nowrap;
+
+            .moon-label {
+              color: white;
+              text-shadow: 0 0 5px black;
+              font-size: .85rem;
+              cursor: default;
+              margin-right: .5rem;
+            }
+
+            .close-moon-btn {
+              background-color: var(--lightestGrey);
+              border: none;
+              border-radius: 50%;
+              width: 16px;
+              height: 16px;
+              padding: 0;
+              margin-left: 4px;
+              color: black;
+              cursor: pointer;
+              font-size: .65rem;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              line-height: 1;
+              position: relative;
+              transform: translateY(-1px);
+              transition: transform 0.2s ease, background-color 0.2s ease;
+
+              &:hover {
+                transform: translateY(-1px) scale(1.15);
+                background-color: var(--brightWhite);
+                box-shadow: 0 0 3px rgba(255, 255, 255, .5);
+              }
+            }
           }
         }
       }
@@ -898,6 +934,17 @@ $largeViewPortBreakpoint: 2561px;
       justify-content: flex-start;
       overscroll-behavior: none;
       @include custom-scrollbar;
+    }
+
+    .global-drag-surface {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      cursor: grabbing;
+      touch-action: none; /* Prevent scrolling while dragging on touch devices */
     }
   }
 

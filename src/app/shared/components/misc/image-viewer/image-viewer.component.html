@@ -90,6 +90,9 @@
       <div 
         *ngIf="showMoonOverlay && moonScaleDiameter > 0"
         class="moon-scale-overlay"
+        [style.left]="moonPosition.x + '%'"
+        [style.top]="moonPosition.y + '%'"
+        [class.dragging]="isDraggingMoon"
         @fadeInOut
       >
         <img 
@@ -98,12 +101,30 @@
           [height]="moonScaleDiameter"
           src="/assets/images/full-moon-clipart.svg?v=1"
           alt="Moon scale"
-          (click)="resetMoonOverlay()"
-          style="cursor: pointer;"
+          (mousedown)="onMoonDragStart($event)"
+          (touchstart)="onMoonDragStart($event)"
+          (dblclick)="resetMoonOverlay()"
         />
         
-        <div class="moon-label" (click)="resetMoonOverlay()">{{ 'Moon scale' | translate }}</div>
+        <div class="moon-label-container">
+          <span class="moon-label">{{ 'Moon scale' | translate }}</span>
+          <button class="close-moon-btn" (click)="resetMoonOverlay()" title="{{ 'Close' | translate }}">
+            <fa-icon icon="times"></fa-icon>
+          </button>
+        </div>
       </div>
+      
+      <!-- Global mouse/touch event listeners for dragging -->
+      <div 
+        *ngIf="isDraggingMoon"
+        class="global-drag-surface"
+        (mousemove)="onMoonDrag($event)"
+        (mouseup)="onMoonDragEnd()"
+        (mouseleave)="onMoonDragEnd()"
+        (touchmove)="onMoonDrag($event)"
+        (touchend)="onMoonDragEnd()"
+        (touchcancel)="onMoonDragEnd()"
+      ></div>
       
       <ng-container *ngIf="adjustmentEditorVisible && isBrowser">
         <astrobin-image-viewer-adjustment-editor
