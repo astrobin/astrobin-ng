@@ -1,45 +1,15 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  TemplateRef,
-  ViewChild
-} from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EMPTY, Observable, of } from "rxjs";
-import {
-  CreateBrand,
-  CreateBrandSuccess,
-  EquipmentActionTypes,
-  FindAllBrands,
-  FindAllBrandsSuccess,
-  FindSimilarInBrand,
-  FindSimilarInBrandSuccess,
-  GetOthersInBrand,
-  GetOthersInBrandSuccess,
-  LoadBrand,
-  LoadEquipmentItem
-} from "@features/equipment/store/equipment.actions";
+import { CreateBrand, CreateBrandSuccess, EquipmentActionTypes, FindAllBrands, FindAllBrandsSuccess, FindSimilarInBrand, FindSimilarInBrandSuccess, GetOthersInBrand, GetOthersInBrandSuccess, LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-  tap
-} from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@core/services/window-ref.service";
@@ -47,10 +17,7 @@ import { LoadingService } from "@core/services/loading.service";
 import { MainState } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import {
-  EquipmentItemDisplayProperty,
-  EquipmentItemService
-} from "@core/services/equipment-item.service";
+import { EquipmentItemDisplayProperty, EquipmentItemService } from "@core/services/equipment-item.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@core/services/formly-field.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -213,7 +180,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     public readonly formlyFieldService: FormlyFieldService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly sanitizer: DomSanitizer
   ) {
     super(store$);
   }
@@ -439,7 +408,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               takeUntil(this.destroyed$),
               startWith(this.model.brand),
               tap(value => {
-                this.formlyFieldService.clearMessages(field);
+                this.formlyFieldService.clearMessages(field, "brandField");
 
                 if (!!value && this.form.get("name").value) {
                   this.form.get("name").markAsTouched();
@@ -462,7 +431,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                         ])
                       };
 
-                      this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name"));
+                      this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name"), "brandChange");
                       this._validateCanonAndCentralDS();
                       this._similarItemSuggestion();
                       this._othersInBrand(brand.name);
@@ -517,8 +486,47 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             return of(true);
           }
 
-          return this.equipmentApiService.getByBrandAndName(type, this.model.brand, control.value).pipe(
+          return this.equipmentApiService.getByBrandAndName(
+            type,
+            this.model.brand,
+            control.value,
+            {
+              allowUnapproved: true
+            }
+          ).pipe(
             map(item => {
+              const nameField = this.fields.find(field => field.key === "name");
+
+              // Clear any existing messages first
+              if (nameField) {
+                this.formlyFieldService.clearMessages(nameField, "uniqueForBrand");
+              }
+
+              // If we found an item, check if it's unapproved and add a special message
+              if (item && !item.reviewerDecision) {
+                const subject = encodeURIComponent(
+                  `Review request for unapproved ${item.klass}: ${item.brandName || ""} ${item.name}`
+                );
+
+                if (nameField) {
+                  // Create a mailto link
+                  const subject = encodeURIComponent(
+                    `Review request for unapproved ${item.klass}: ${item.brandName || ""} ${item.name}`
+                  );
+                  const emailLink = `<a href="mailto:support@astrobin.com?subject=${subject}">support@astrobin.com</a>`;
+                  const messageText = this.translateService.instant(
+                    "Unapproved duplicate exists. Please email {{0}} to request an expedited review.",
+                    { 0: emailLink }
+                  );
+
+                  this.formlyFieldService.addMessage(nameField, {
+                    scope: "uniqueForBrand",
+                    level: FormlyFieldMessageLevel.WARNING,
+                    text: this.sanitizer.bypassSecurityTrustHtml(messageText) as string
+                  });
+                }
+              }
+
               if (this.editorMode === EquipmentItemEditorMode.CREATION) {
                 return !item;
               }
@@ -620,9 +628,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               debounceTime(500),
               distinctUntilChanged(),
               tap((value: string) => {
-                this.formlyFieldService.clearMessages(field);
+                this.formlyFieldService.clearMessages(field, "nameChange");
                 if (this.fields.find(f => f.key === "brand")) {
-                  this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand"));
+                  this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand"), "nameChange");
                 }
                 this._validateCanonAndCentralDS();
                 this._similarItemSuggestion();
@@ -843,11 +851,14 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           data = similarItems;
         }
 
-        this.formlyFieldService.addMessage(nameFieldConfig, {
-          level: FormlyFieldMessageLevel.WARNING,
-          template,
-          data
-        });
+        if (template) {
+          this.formlyFieldService.addMessage(nameFieldConfig, {
+            scope: "similarItems",
+            level: FormlyFieldMessageLevel.WARNING,
+            template,
+            data
+          });
+        }
       });
   }
 
@@ -875,6 +886,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           template = this.othersInBrandTemplate;
           data = others;
           this.formlyFieldService.addMessage(brandFieldConfig, {
+            scope: "othersInBrand",
             level: FormlyFieldMessageLevel.INFO,
             template,
             data
@@ -911,6 +923,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             nameControl.value.toLowerCase().indexOf("central ds") > -1)
         ) {
           this.formlyFieldService.addMessage(nameFieldConfig, {
+            scope: "canonCentralDS",
             level: FormlyFieldMessageLevel.WARNING,
             text: message
           });
@@ -926,6 +939,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     const message = this.equipmentItemService.nameChangeWarningMessage();
 
     this.formlyFieldService.addMessage(field, {
+      scope: "editProposalWarning",
       level: FormlyFieldMessageLevel.WARNING,
       text: message
     });

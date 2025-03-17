@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
@@ -40,7 +42,9 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
     public readonly formlyFieldService: FormlyFieldService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly sanitizer: DomSanitizer
   ) {
     super(
       store$,
@@ -53,7 +57,9 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
       formlyFieldService,
       modalService,
       utilsService,
-      changeDetectorRef
+      changeDetectorRef,
+      classicRoutesService,
+      sanitizer
     );
   }
 

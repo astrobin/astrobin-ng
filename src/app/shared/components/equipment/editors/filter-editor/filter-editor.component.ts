@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angu
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
@@ -43,7 +45,9 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly sanitizer: DomSanitizer
   ) {
     super(
       store$,
@@ -56,7 +60,9 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       formlyFieldService,
       modalService,
       utilsService,
-      changeDetectorRef
+      changeDetectorRef,
+      classicRoutesService,
+      sanitizer
     );
   }
 
@@ -98,6 +104,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       value.indexOf(`${this.filterService.humanizeSizeShort(this.model.size)}`) > -1;
 
     const bandWidthMessage: FormlyFieldMessage = {
+      scope: "filterBandwidth",
       level: FormlyFieldMessageLevel.INFO,
       text: this.translateService.instant(
         "Please consider making the name contain the bandwidth, to prevent ambiguity."
@@ -105,6 +112,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     };
 
     const sizeMessage: FormlyFieldMessage = {
+      scope: "filterSize",
       level: FormlyFieldMessageLevel.INFO,
       text: this.translateService.instant("Please consider making the name contain the size, to prevent ambiguity.")
     };
@@ -220,7 +228,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
             const nameField = this.fields.find(f => f.key === "name");
-            this.formlyFieldService.clearMessages(nameField);
+            this.formlyFieldService.clearMessages(nameField, "filterTypeChange");
             this._updateGeneratedName();
             this._customNameChangesValidations(nameField, this.model.name);
           });
@@ -264,7 +272,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
             const nameField = this.fields.find(f => f.key === "name");
-            this.formlyFieldService.clearMessages(nameField);
+            this.formlyFieldService.clearMessages(nameField, "filterBandwidthChange");
             this._updateGeneratedName();
             this._customNameChangesValidations(nameField, this.model.name);
           });
@@ -294,7 +302,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
             const nameField = this.fields.find(f => f.key === "name");
-            this.formlyFieldService.clearMessages(nameField);
+            this.formlyFieldService.clearMessages(nameField, "filterSizeChange");
             this._updateGeneratedName();
             this._customNameChangesValidations(nameField, this.model.name);
           });

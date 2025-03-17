@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
@@ -60,7 +62,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     public readonly cameraService: CameraService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly sanitizer: DomSanitizer
   ) {
     super(
       store$,
@@ -73,7 +77,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       formlyFieldService,
       modalService,
       utilsService,
-      changeDetectorRef
+      changeDetectorRef,
+      classicRoutesService,
+      sanitizer
     );
   }
 
