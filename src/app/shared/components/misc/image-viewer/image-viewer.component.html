@@ -85,47 +85,56 @@
       ></astrobin-image-viewer-iotd-banner>
     </div>
 
-    <div class="image-area-body">
+    <div class="image-area-body" style="touch-action: none !important; -webkit-tap-highlight-color: transparent !important;">
       <!-- Moon scale overlay -->
-      <div 
+      <div
         *ngIf="showMoonOverlay && moonScaleDiameter > 0"
         class="moon-scale-overlay"
         [style.left]="moonPosition.x + '%'"
         [style.top]="moonPosition.y + '%'"
         [class.dragging]="isDraggingMoon"
         @fadeInOut
+        (pointerdown)="onMoonDragStart($event)"
+        data-ignore-swipe-down="true"
+        style="-webkit-tap-highlight-color: transparent !important; -webkit-touch-callout: none !important; touch-action: none !important;"
       >
-        <img 
+        <img
           class="moon-image"
           [width]="moonScaleDiameter"
           [height]="moonScaleDiameter"
           src="/assets/images/full-moon-clipart.svg?v=1"
           alt="Moon scale"
-          (mousedown)="onMoonDragStart($event)"
-          (touchstart)="onMoonDragStart($event)"
           (dblclick)="resetMoonOverlay()"
+          draggable="false"
         />
-        
+
         <div class="moon-label-container">
           <span class="moon-label">{{ 'Moon scale' | translate }}</span>
-          <button class="close-moon-btn" (click)="resetMoonOverlay()" title="{{ 'Close' | translate }}">
-            <fa-icon icon="times"></fa-icon>
-          </button>
+          <div class="divider"></div>
+          <div class="moon-controls">
+            <span
+              class="icon-btn info-icon"
+              [ngbPopover]="moonInfoPopover"
+              popoverClass="moon-info-popover"
+              container="body"
+              triggers="click hover"
+              placement="bottom"
+              title="{{ 'About moon scale' | translate }}">
+              <fa-icon icon="info-circle"></fa-icon>
+            </span>
+            <button class="icon-btn close-moon-btn" (click)="$event.stopPropagation(); resetMoonOverlay()" title="{{ 'Close' | translate }}">
+              <fa-icon icon="times"></fa-icon>
+            </button>
+          </div>
         </div>
+
+        <ng-template #moonInfoPopover>
+          <div class="moon-info-content">
+            {{ 'This scale represents the apparent size of the full moon (0.52° diameter) based on the plate-solved pixel scale of the image. The actual apparent size of the moon varies slightly throughout the year due to its elliptical orbit.' | translate }}
+          </div>
+        </ng-template>
       </div>
-      
-      <!-- Global mouse/touch event listeners for dragging -->
-      <div 
-        *ngIf="isDraggingMoon"
-        class="global-drag-surface"
-        (mousemove)="onMoonDrag($event)"
-        (mouseup)="onMoonDragEnd()"
-        (mouseleave)="onMoonDragEnd()"
-        (touchmove)="onMoonDrag($event)"
-        (touchend)="onMoonDragEnd()"
-        (touchcancel)="onMoonDragEnd()"
-      ></div>
-      
+
       <ng-container *ngIf="adjustmentEditorVisible && isBrowser">
         <astrobin-image-viewer-adjustment-editor
           [image]="image"

@@ -684,41 +684,125 @@ export class ImageViewerComponent
     this.changeDetectorRef.markForCheck();
   }
 
-  protected onMoonDragStart(event: MouseEvent | TouchEvent): void {
+  // Using arrow functions to preserve 'this' context when used as event handlers
+  private _handlePointerMove = (event: PointerEvent): void => {
+    if (!this.isDraggingMoon) {
+      return;
+    }
+    
     event.preventDefault();
     event.stopPropagation();
-
-    this.isDraggingMoon = true;
-
-    // Get starting coordinates
-    const pageX = event instanceof MouseEvent ? event.pageX : event.touches[0].pageX;
-    const pageY = event instanceof MouseEvent ? event.pageY : event.touches[0].pageY;
-
-    // Calculate offset between pointer position and moon center
-    this._moonStartDragPosition = {
-      x: pageX - (this.moonPosition.x / 100 * this.imageArea.nativeElement.clientWidth),
-      y: pageY - (this.moonPosition.y / 100 * this.imageArea.nativeElement.clientHeight)
-    };
+    
+    // Forward to the drag handler
+    this.onMoonDrag(event);
+  }
+  
+  private _handlePointerUp = (event: PointerEvent): void => {
+    // Clean up event listeners
+    document.removeEventListener('pointermove', this._handlePointerMove);
+    document.removeEventListener('pointerup', this._handlePointerUp);
+    document.removeEventListener('pointercancel', this._handlePointerUp);
+    
+    // Reset cursor
+    if (this.isBrowser) {
+      document.body.style.cursor = '';
+      
+      // Remove moon-dragging class with a slight delay
+      this.utilsService.delay(100).subscribe(() => {
+        if (document.body.classList.contains('moon-dragging')) {
+          document.body.classList.remove('moon-dragging');
+        }
+      });
+    }
+    
+    // End the drag operation
+    this.onMoonDragEnd();
   }
 
-  protected onMoonDrag(event: MouseEvent | TouchEvent): void {
+  protected onMoonDragStart(event: PointerEvent): void {
+    // First, make sure this is actually our drag event and not a click on a button
+    if (event.target instanceof HTMLButtonElement || 
+        (event.target instanceof HTMLElement && event.target.closest('button'))) {
+      return;
+    }
+    
+    // Prevent default and stop propagation
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Critical for pointer events: capture the pointer to receive all events
+    // even if the pointer moves outside the element
+    if (event.target instanceof HTMLElement) {
+      try {
+        event.target.setPointerCapture(event.pointerId);
+      } catch (e) {
+        console.warn('Failed to set pointer capture:', e);
+      }
+    }
+    
+    // Set swipe-down prevention immediately
+    if (this.isBrowser) {
+      // Add a class to the body that we can check for in the SwipeDownService
+      document.body.classList.add('moon-dragging');
+      // Also mark the event target
+      const targetEl = event.target as HTMLElement;
+      targetEl.setAttribute('data-ignore-swipe-down', 'true');
+      
+      // Add pointer event listeners directly to document
+      document.addEventListener('pointermove', this._handlePointerMove);
+      document.addEventListener('pointerup', this._handlePointerUp);
+      document.addEventListener('pointercancel', this._handlePointerUp);
+      
+      // Change cursor
+      document.body.style.cursor = 'grabbing';
+    }
+    
+    this.isDraggingMoon = true;
+    
+    // Store initial pointer position
+    const initialX = event.pageX;
+    const initialY = event.pageY;
+    
+    // Get the current moon center position in pixels
+    const containerWidth = this.imageArea.nativeElement.clientWidth;
+    const containerHeight = this.imageArea.nativeElement.clientHeight;
+    const moonCenterX = (this.moonPosition.x / 100) * containerWidth;
+    const moonCenterY = (this.moonPosition.y / 100) * containerHeight;
+    
+    // Calculate offset between pointer position and moon center
+    this._moonStartDragPosition = {
+      x: initialX - moonCenterX,
+      y: initialY - moonCenterY
+    };
+    
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected onMoonDrag(event: PointerEvent): void {
     if (!this.isDraggingMoon) {
       return;
     }
 
+    // For pointer events, always prevent default and stop propagation
     event.preventDefault();
     event.stopPropagation();
 
-    // Get current coordinates
-    const pageX = event instanceof MouseEvent ? event.pageX : event.touches[0].pageX;
-    const pageY = event instanceof MouseEvent ? event.pageY : event.touches[0].pageY;
+    // Get current pointer coordinates
+    const pageX = event.pageX;
+    const pageY = event.pageY;
 
     // Calculate new position as percentage of container
     const containerWidth = this.imageArea.nativeElement.clientWidth;
     const containerHeight = this.imageArea.nativeElement.clientHeight;
 
-    const newX = ((pageX - this._moonStartDragPosition.x) / containerWidth) * 100;
-    const newY = ((pageY - this._moonStartDragPosition.y) / containerHeight) * 100;
+    // Calculate the moon center position based on the current pointer position
+    // and the original offset between pointer and moon center
+    const moonCenterX = pageX - this._moonStartDragPosition.x;
+    const moonCenterY = pageY - this._moonStartDragPosition.y;
+
+    // Convert to percentage of container
+    const newX = (moonCenterX / containerWidth) * 100;
+    const newY = (moonCenterY / containerHeight) * 100;
 
     // Clamp values between 0-100%
     this.moonPosition = {
