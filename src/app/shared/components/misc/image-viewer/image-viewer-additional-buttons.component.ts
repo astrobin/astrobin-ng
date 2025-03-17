@@ -47,7 +47,7 @@ import { DeviceService } from "@core/services/device.service";
       [class.text-light]="!moonOverlayActive"
     >
       <fa-icon
-        [ngbTooltip]="'Show Moon scale (M)' | translate"
+        [ngbTooltip]="moonOverlayActive ? hideMoonScaleTooltip : showMoonScaleTooltip"
         container="body"
         icon="moon"
       ></fa-icon>
@@ -155,6 +155,8 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   protected loadingHistogram = false;
   protected histogram: string;
   protected toggleAnnotationsOnMouseHoverTooltip: string;
+  protected showMoonScaleTooltip: string;
+  protected hideMoonScaleTooltip: string;
 
   constructor(
     public readonly modalService: NgbModal,
@@ -165,6 +167,10 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
     public readonly deviceService: DeviceService,
   ) {
     this.isTouchOnly = this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC();
+    
+    // Initialize tooltip texts for i18n extraction
+    this.showMoonScaleTooltip = this.translateService.instant("Show Moon scale (M)");
+    this.hideMoonScaleTooltip = this.translateService.instant("Hide Moon scale (M)");
   }
 
   ngOnChanges(changes: SimpleChanges): void {
