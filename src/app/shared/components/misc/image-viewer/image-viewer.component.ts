@@ -680,10 +680,24 @@ export class ImageViewerComponent
       );
     }
 
+    // Turn off the moon scale overlay when changing revisions
+    if (this.showMoonOverlay) {
+      this.resetMoonOverlay();
+    }
+
+    // Clear any preloaded moon image
+    this._preloadedMoonImage = null;
+
     this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
     this._setNonSolutionMouseHoverImage();
     this._setSolutionMouseHoverImage();
     this._setShowPlateSolvingBanner();
+    
+    // Preload moon image for the new revision if it has a solution
+    if (this.revision?.solution?.pixscale) {
+      this._preloadMoonImage();
+    }
+    
     this.revisionSelected.emit(revisionLabel);
   }
 
