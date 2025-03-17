@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@core/services/loading.service";
 import { WindowRefService } from "@core/services/window-ref.service";
@@ -35,7 +37,9 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
     public readonly formlyFieldService: FormlyFieldService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly sanitizer: DomSanitizer
   ) {
     super(
       store$,
@@ -48,7 +52,9 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
       formlyFieldService,
       modalService,
       utilsService,
-      changeDetectorRef
+      changeDetectorRef,
+      classicRoutesService,
+      sanitizer
     );
   }
 
@@ -68,6 +74,7 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
 
     if (hasNumbers) {
       this.formlyFieldService.addMessage(field, {
+        scope: "versionNumberWarning",
         level: FormlyFieldMessageLevel.INFO,
         text: this.translateService.instant(
           "The AstroBin equipment database does not attempt to track version numbers of software. " +

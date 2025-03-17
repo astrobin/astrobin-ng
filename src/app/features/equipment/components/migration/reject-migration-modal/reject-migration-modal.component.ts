@@ -117,11 +117,13 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
 
               if (warning) {
                 this.formlyFieldService.addMessage(field, {
+                  scope: "migrationWarning",
                   level: FormlyFieldMessageLevel.WARNING,
                   text: warning
                 });
               } else {
                 this.formlyFieldService.removeMessage(field, {
+                  scope: "migrationWarning",
                   level: FormlyFieldMessageLevel.WARNING,
                   text: warning
                 });

@@ -134,6 +134,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         hooks: {
           onInit: (field: FormlyFieldConfig) => {
             const message = {
+              scope: "editProposalSuggestion",
               level: FormlyFieldMessageLevel.WARNING,
               text:
                 `${this.translateService.instant("Please note")}:` +
