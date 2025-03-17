@@ -136,6 +136,8 @@ export class ImageViewerComponent
   protected moonScaleDiameter: number = null;
   protected moonPosition = { x: 50, y: 50 }; // As percentage of container
   protected isDraggingMoon = false;
+  protected moonImageSrc: string = "/assets/images/moon-250.png?v=1"; // Default, will be updated
+  protected isMoonImageLoaded = false; // Track if the actual moon image has loaded
   protected advancedSolutionMatrix: {
     matrixRect: string;
     matrixDelta: number;
@@ -173,6 +175,8 @@ export class ImageViewerComponent
   protected translatedDescription: SafeHtml;
   protected readonly isBrowser: boolean;
   protected readonly MouseHoverImageOptions = MouseHoverImageOptions;
+  private _preloadMoonImageAttemptCount = 0; // Track number of preload attempts
+  private _preloadedMoonImage: HTMLImageElement = null; // Store the preloaded image element
   private _moonStartDragPosition = { x: 0, y: 0 };
   private _dataAreaScrollEventSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
@@ -496,6 +500,11 @@ export class ImageViewerComponent
     this._replaceIdWithHash();
     this._checkForCachedTranslation();
 
+    // Proactively preload the moon image if this is a plate-solved image
+    if (this.revision?.solution?.pixscale) {
+      this._preloadMoonImage();
+    }
+
     // Updates to the current image.
     this.store$.pipe(
       select(selectImage, image.pk),
@@ -561,6 +570,11 @@ export class ImageViewerComponent
     if (solution) {
       this.revision.solution = solution;
       this._setSolutionMouseHoverImage();
+
+      // Preload moon image if solution has pixscale (means it was successful)
+      if (solution.pixscale) {
+        this._preloadMoonImage();
+      }
     }
   }
 
@@ -681,100 +695,60 @@ export class ImageViewerComponent
     this.showMoonOverlay = false;
     this.moonScaleDiameter = 0;
     this.moonPosition = { x: 50, y: 50 }; // Reset position to center
+    this.isMoonImageLoaded = false; // Reset image loaded state
     this.changeDetectorRef.markForCheck();
-  }
-
-  // Using arrow functions to preserve 'this' context when used as event handlers
-  private _handlePointerMove = (event: PointerEvent): void => {
-    if (!this.isDraggingMoon) {
-      return;
-    }
-    
-    event.preventDefault();
-    event.stopPropagation();
-    
-    // Forward to the drag handler
-    this.onMoonDrag(event);
-  }
-  
-  private _handlePointerUp = (event: PointerEvent): void => {
-    // Clean up event listeners
-    document.removeEventListener('pointermove', this._handlePointerMove);
-    document.removeEventListener('pointerup', this._handlePointerUp);
-    document.removeEventListener('pointercancel', this._handlePointerUp);
-    
-    // Reset cursor
-    if (this.isBrowser) {
-      document.body.style.cursor = '';
-      
-      // Remove moon-dragging class with a slight delay
-      this.utilsService.delay(100).subscribe(() => {
-        if (document.body.classList.contains('moon-dragging')) {
-          document.body.classList.remove('moon-dragging');
-        }
-      });
-    }
-    
-    // End the drag operation
-    this.onMoonDragEnd();
   }
 
   protected onMoonDragStart(event: PointerEvent): void {
     // First, make sure this is actually our drag event and not a click on a button
-    if (event.target instanceof HTMLButtonElement || 
-        (event.target instanceof HTMLElement && event.target.closest('button'))) {
+    if (event.target instanceof HTMLButtonElement ||
+      (event.target instanceof HTMLElement && event.target.closest("button"))) {
       return;
     }
-    
+
     // Prevent default and stop propagation
     event.preventDefault();
     event.stopPropagation();
-    
+
     // Critical for pointer events: capture the pointer to receive all events
     // even if the pointer moves outside the element
     if (event.target instanceof HTMLElement) {
       try {
         event.target.setPointerCapture(event.pointerId);
       } catch (e) {
-        console.warn('Failed to set pointer capture:', e);
+        console.warn("Failed to set pointer capture:", e);
       }
     }
-    
+
     // Set swipe-down prevention immediately
     if (this.isBrowser) {
-      // Add a class to the body that we can check for in the SwipeDownService
-      document.body.classList.add('moon-dragging');
-      // Also mark the event target
-      const targetEl = event.target as HTMLElement;
-      targetEl.setAttribute('data-ignore-swipe-down', 'true');
-      
       // Add pointer event listeners directly to document
-      document.addEventListener('pointermove', this._handlePointerMove);
-      document.addEventListener('pointerup', this._handlePointerUp);
-      document.addEventListener('pointercancel', this._handlePointerUp);
-      
+      document.addEventListener("pointermove", this._handlePointerMove);
+      document.addEventListener("pointerup", this._handlePointerUp);
+      document.addEventListener("pointercancel", this._handlePointerUp);
+
       // Change cursor
-      document.body.style.cursor = 'grabbing';
+      document.body.style.cursor = "grabbing";
     }
-    
+
     this.isDraggingMoon = true;
-    
+
     // Store initial pointer position
     const initialX = event.pageX;
     const initialY = event.pageY;
-    
+
     // Get the current moon center position in pixels
     const containerWidth = this.imageArea.nativeElement.clientWidth;
     const containerHeight = this.imageArea.nativeElement.clientHeight;
     const moonCenterX = (this.moonPosition.x / 100) * containerWidth;
     const moonCenterY = (this.moonPosition.y / 100) * containerHeight;
-    
+
     // Calculate offset between pointer position and moon center
     this._moonStartDragPosition = {
       x: initialX - moonCenterX,
       y: initialY - moonCenterY
     };
-    
+
     this.changeDetectorRef.markForCheck();
   }
 
@@ -818,14 +792,35 @@ export class ImageViewerComponent
     this.changeDetectorRef.markForCheck();
   }
 
+  protected onMoonImageLoaded(): void {
+    this.isMoonImageLoaded = true;
+    this.changeDetectorRef.markForCheck();
+  }
+
   protected toggleMoonOverlay(): void {
     this.showMoonOverlay = !this.showMoonOverlay;
 
     if (this.showMoonOverlay) {
       this._updateMoonScale();
+
+      // Check if we have a preloaded image that matches our source
+      if (this._preloadedMoonImage && this._preloadedMoonImage.src === this.moonImageSrc && this._preloadedMoonImage.complete) {
+        // Use the preloaded image - immediately mark as loaded
+        console.log("Using preloaded moon image");
+        this.isMoonImageLoaded = true;
+      } else {
+        // Reset loading state when showing - the image will trigger onload when it's ready
+        this.isMoonImageLoaded = false;
+
+        // Try preloading again if needed
+        if (!this._preloadedMoonImage) {
+          this._preloadMoonImage();
+        }
+      }
     } else {
-      // Make sure to reset the size when hiding
+      // Make sure to reset the size and loading state when hiding
       this.moonScaleDiameter = 0;
+      this.isMoonImageLoaded = false;
     }
 
     this.changeDetectorRef.markForCheck();
@@ -991,8 +986,151 @@ export class ImageViewerComponent
     this.contentTranslateService.clearTranslation("image-description", imageId);
   }
 
+  // Preload moon image in memory
+  private _preloadMoonImage(): void {
+    // Limit the number of retry attempts to avoid infinite recursion
+    const MAX_ATTEMPTS = 5;
+    if (this._preloadMoonImageAttemptCount >= MAX_ATTEMPTS) {
+      this._preloadMoonImageAttemptCount = 0;
+      return;
+    }
+
+    this._preloadMoonImageAttemptCount++;
+
+    if (!this.isBrowser || !this.revision?.solution?.pixscale) {
+      this._preloadMoonImageAttemptCount = 0;
+      return;
+    }
+
+    // If imageArea is not available yet, wait for AfterViewInit
+    if (!this.imageArea) {
+      // Schedule preloading after view initialization
+      this.utilsService.delay(300).pipe(take(1)).subscribe(() => {
+        this._preloadMoonImage();
+      });
+      return;
+    }
+
+    // Get the image element to ensure it's loaded
+    const imageElement = this.imageArea.nativeElement.querySelector("astrobin-image img");
+    if (!imageElement || !imageElement.complete) {
+      // If image isn't fully loaded yet, wait a bit longer
+      this.utilsService.delay(500).pipe(take(1)).subscribe(() => {
+        this._preloadMoonImage();
+      });
+      return;
+    }
+
+    // Calculate the moon size even though we're not showing it yet
+    const moonDiameter = this._calculateMoonScaleDiameter();
+    if (moonDiameter <= 0) {
+      // If calculation fails, try again after a delay
+      this.utilsService.delay(500).pipe(take(1)).subscribe(() => {
+        this._preloadMoonImage();
+      });
+      return;
+    }
+
+    // Get the appropriate image source
+    const imageSrc = this._getMoonImageSrc(moonDiameter);
+
+    // Create and load the image in the background
+    this._preloadedMoonImage = new Image();
+
+    // Set up onload handler to mark as successfully loaded
+    this._preloadedMoonImage.onload = () => {
+      // Once loaded, signal that we have a preloaded image ready
+      console.log("Moon image preloaded successfully:", imageSrc);
+    };
+
+    // Set up error handler
+    this._preloadedMoonImage.onerror = () => {
+      console.error("Failed to preload moon image:", imageSrc);
+      this._preloadedMoonImage = null;
+    };
+
+    // Start loading the image
+    this._preloadedMoonImage.src = imageSrc;
+
+    // Save the source for immediate use later
+    this.moonImageSrc = imageSrc;
+
+    // Reset attempts counter on success
+    this._preloadMoonImageAttemptCount = 0;
+  }
+
+  // Using arrow functions to preserve 'this' context when used as event handlers
+  private _handlePointerMove = (event: PointerEvent): void => {
+    if (!this.isDraggingMoon) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Forward to the drag handler
+    this.onMoonDrag(event);
+  };
+
+  private _handlePointerUp = (event: PointerEvent): void => {
+    // Clean up event listeners
+    document.removeEventListener("pointermove", this._handlePointerMove);
+    document.removeEventListener("pointerup", this._handlePointerUp);
+    document.removeEventListener("pointercancel", this._handlePointerUp);
+
+    // Reset cursor
+    if (this.isBrowser) {
+      document.body.style.cursor = "";
+    }
+
+    // End the drag operation
+    this.onMoonDragEnd();
+  };
+
   private _updateMoonScale(): void {
     this.moonScaleDiameter = this._calculateMoonScaleDiameter();
+
+    // Only calculate the appropriate image if we don't already have a preloaded one
+    if (!this.moonImageSrc || this.moonImageSrc === "/assets/images/moon-250.png?v=1") {
+      this._selectAppropriateImage();
+    }
+  }
+
+  private _selectAppropriateImage(): void {
+    if (!this.isBrowser || !this.moonScaleDiameter) {
+      return;
+    }
+
+    // Set the image source based on calculated moon diameter
+    this.moonImageSrc = this._getMoonImageSrc(this.moonScaleDiameter);
+  }
+
+  private _getMoonImageSrc(diameter: number): string {
+    if (!this.isBrowser || !diameter || diameter <= 0) {
+      return "/assets/images/moon-250.png?v=1"; // Default fallback
+    }
+
+    // Get device pixel ratio to account for retina displays
+    const pixelRatio = window.devicePixelRatio || 1;
+
+    // Calculate the size we need based on the device pixel ratio
+    const requiredSize = Math.round(diameter * pixelRatio);
+
+    // Available moon image sizes
+    const availableSizes = [125, 250, 500, 1000, 1500];
+
+    // Find the smallest image that's at least as large as what we need
+    let selectedSize = availableSizes[availableSizes.length - 1]; // Default to largest
+
+    for (const size of availableSizes) {
+      if (size >= requiredSize) {
+        selectedSize = size;
+        break;
+      }
+    }
+
+    // Return the image source with cache-busting parameter
+    return `/assets/images/moon-${selectedSize}.png?v=1`;
   }
 
   private _calculateMoonScaleDiameter(): number {

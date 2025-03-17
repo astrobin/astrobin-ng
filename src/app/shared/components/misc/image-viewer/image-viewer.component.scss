@@ -315,25 +315,10 @@ $largeViewPortBreakpoint: 2561px;
         flex-grow: 1;
         height: 100%;
         max-height: inherit;
+        touch-action: none !important;
+        -webkit-tap-highlight-color: transparent !important;
 
         .moon-scale-overlay {
-          position: absolute;
-          transform: translate(-50%, -50%);
-          pointer-events: none;
-          z-index: 10;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-
-          &.dragging {
-            z-index: 20;
-            opacity: 0.5;
-
-            .moon-image {
-              cursor: grabbing;
-            }
-          }
-
           position: absolute;
           transform: translate(-50%, -50%);
           pointer-events: auto;
@@ -349,7 +334,7 @@ $largeViewPortBreakpoint: 2561px;
           -webkit-touch-callout: none !important; /* iOS Safari */
           -webkit-tap-highlight-color: transparent !important; /* Remove tap highlight on iOS */
           -ms-touch-action: none !important; /* For IE/Edge */
-          
+
           /* Enhancement for touch devices */
           @media (pointer: coarse) {
             &::before {
@@ -362,11 +347,69 @@ $largeViewPortBreakpoint: 2561px;
               z-index: -1;
             }
           }
-          
+
+          &.dragging {
+            z-index: 20;
+            opacity: 0.5;
+
+            .moon-image {
+              cursor: grabbing;
+            }
+          }
+
+          /* Enhancement for touch devices */
+          @media (pointer: coarse) {
+            &::before {
+              content: '';
+              position: absolute;
+              top: -20px;
+              left: -20px;
+              right: -20px;
+              bottom: -20px;
+              z-index: -1;
+            }
+          }
+
+          .moon-placeholder {
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.75);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+            pointer-events: none; /* Let the parent handle all events */
+            display: block;
+            position: relative;
+
+            /* Add subtle gradient to give a hint of moon details */
+            &::after {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              border-radius: 50%;
+              background: radial-gradient(
+                  circle at 40% 40%,
+                  rgba(255, 255, 255, 0.7) 0%,
+                  rgba(255, 255, 255, 0) 70%
+              );
+            }
+          }
+
           .moon-image {
             filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.7));
-            transition: filter 0.2s ease;
+            transition: filter 0.2s ease, opacity 0.2s ease;
             pointer-events: none; /* Let the parent handle all events */
+            border-radius: 50%; /* Ensure perfect circle */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+            display: block;
+
+            &.hidden {
+              opacity: 0;
+              visibility: hidden;
+              position: absolute;
+            }
           }
 
           .moon-label-container {
