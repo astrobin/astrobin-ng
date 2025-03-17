@@ -12,6 +12,10 @@
     &.active .ng-fa-icon {
       color: var(--accentColor);
     }
+    
+    &.active-moon .ng-fa-icon {
+      color: #FFD700; /* Gold/yellow color for the moon */
+    }
 
     &.disabled {
       cursor: not-allowed !important;
