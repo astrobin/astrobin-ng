@@ -15,6 +15,7 @@
 
   <span *ngIf="!!itemName; else loading" class="name">
     <ng-template #nameTemplate>
+      <ng-container *ngIf="showBrand && !!brandName">&nbsp;</ng-container> <!-- Add space for copy/pasting -->
       <span [innerHTML]="itemName | highlight: highlightTerms"></span>
       <a
         (click)="openItemUnapprovedInfoModal(item)"
