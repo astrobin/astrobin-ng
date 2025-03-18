@@ -316,6 +316,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     name: EquipmentItemBaseInterface["name"],
     options: {
       allowUnapproved?: boolean;
+    } = {
+      allowUnapproved: false
     }
   ): Observable<EquipmentItemBaseInterface | null> {
     return this.getByProperties(type, {

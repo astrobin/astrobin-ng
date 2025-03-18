@@ -504,10 +504,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
               // If we found an item, check if it's unapproved and add a special message
               if (item && !item.reviewerDecision) {
-                const subject = encodeURIComponent(
-                  `Review request for unapproved ${item.klass}: ${item.brandName || ""} ${item.name}`
-                );
-
                 if (nameField) {
                   // Create a mailto link
                   const subject = encodeURIComponent(
