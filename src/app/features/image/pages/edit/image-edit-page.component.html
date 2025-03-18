@@ -16,7 +16,7 @@
     <div
       *ngIf="imageEditEquipmentFieldsService.creationMode"
       class="equipment-item-creation-mode-overlay"
-      (click)="promptToExitEquipmentItemCreationMode()"
+      (click)="promptToExitEquipmentItemCreationMode($event)"
     ></div>
   </ng-container>
 </ng-template>

@@ -181,11 +181,18 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   ) {
     super(store$);
   }
-  
+
   @HostListener("window:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === "Escape" && this.enableFullscreen) {
-      this.store$.dispatch(new ItemBrowserExitFullscreen());
+      const fullscreenModal = isPlatformBrowser(this.platformId) &&
+        this.windowRefService.nativeWindow.document.querySelector('.equipment-item-browser-fullscreen-modal');
+
+      if (fullscreenModal) {
+        this.store$.dispatch(new ItemBrowserExitFullscreen());
+        event.stopPropagation();
+        event.preventDefault();
+      }
     }
   }
 
