@@ -30,6 +30,8 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
   private updateSearchSubject = new Subject<void>();
   private geocodeCache = new Map<string, string>();
 
+  private readonly _isBrowser: boolean;
+
   constructor(
     public readonly googleMapsService: GoogleMapsService,
     public readonly utilsService: UtilsService,
@@ -41,6 +43,8 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
   ) {
     super();
 
+    this._isBrowser = isPlatformBrowser(this.platformId);
+
     this.updateSearchSubject.pipe(
       debounceTime(1000)
     ).subscribe(() => {
@@ -49,6 +53,10 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements OnInit, 
   }
 
   async ngOnInit() {
+    if (!this._isBrowser) {
+      return;
+    }
+
     this.isCypress = isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") > -1;
     this.isLocalhost = isPlatformBrowser(this.platformId) && this.windowRefService.nativeWindow.location.hostname === "localhost";
 

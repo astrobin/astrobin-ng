@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { UserInterface } from "@core/interfaces/user.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
@@ -18,6 +18,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
 import { Subject } from "rxjs";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { RemoveShadowBanUserProfile, ShadowBanUserProfile } from "@features/account/store/auth.actions";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-user-gallery-header",
@@ -379,6 +380,8 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   protected mutualFollowersSearchSubject = new Subject<string>();
   protected searching = true;
 
+  private readonly _isBrowser: boolean;
+
   constructor(
     public readonly store$: Store<MainState>,
     public readonly imageApiService: ImageApiService,
@@ -390,9 +393,11 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
     public readonly windowRefService: WindowRefService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) platformId: Object
   ) {
     super(store$);
+    this._isBrowser = isPlatformBrowser(platformId);
     this._setUserContentType();
   }
 
@@ -466,6 +471,10 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   }
 
   protected openFollowersOffcanvas() {
+    if (!this._isBrowser) {
+      return;
+    }
+
     this.followersSearch = "";
     this._searchFollowers();
     this.offcanvasService.open(
@@ -476,6 +485,10 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   }
 
   protected openFollowingOffcanvas() {
+    if (!this._isBrowser) {
+      return;
+    }
+
     this.currentUser$.pipe(
       take(1),
       filter(currentUser => currentUser?.id === this.user.id)
@@ -492,6 +505,10 @@ export class UserGalleryHeaderComponent extends BaseComponentDirective implement
   }
 
   protected openMutualFollowersOffcanvas() {
+    if (!this._isBrowser) {
+      return;
+    }
+
     this.currentUser$.pipe(
       take(1),
       filter(currentUser => currentUser?.id === this.user.id)

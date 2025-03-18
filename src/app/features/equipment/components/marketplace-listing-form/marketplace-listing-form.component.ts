@@ -16,7 +16,7 @@ import {
   MarketplaceListingType
 } from "@features/equipment/types/marketplace-listing.interface";
 import { FormGroup } from "@angular/forms";
-import { FORMLY_CONFIG, FormlyFieldConfig } from "@ngx-formly/core";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { LoadingService } from "@core/services/loading.service";

@@ -1,8 +1,9 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { google } from "@google/maps";
+import { isPlatformBrowser } from "@angular/common";
 
 // @ts-ignore
 type maps = google.maps;
@@ -13,10 +14,15 @@ type maps = google.maps;
 export class GoogleMapsService extends BaseService {
   private _maps: maps;
   private _loaded = false;
+  private readonly _isBrowser: boolean;
 
-  public constructor(public readonly loadingService: LoadingService, public readonly windowRef: WindowRefService) {
+  public constructor(
+    public readonly loadingService: LoadingService,
+    public readonly windowRef: WindowRefService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
     super(loadingService);
-
+    this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
   get maps(): maps {
@@ -27,6 +33,11 @@ export class GoogleMapsService extends BaseService {
     return new Promise((resolve, reject) => {
       if (this._loaded) {
         resolve();
+        return;
+      }
+
+      if (!this._isBrowser) {
+        reject("Google Maps API not available in server-side rendering");
         return;
       }
 
