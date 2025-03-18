@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
+import { Component, EventEmitter, HostListener, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { Action, Store } from "@ngrx/store";
@@ -180,6 +180,13 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
+  }
+  
+  @HostListener("window:keydown", ["$event"])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === "Escape" && this.enableFullscreen) {
+      this.store$.dispatch(new ItemBrowserExitFullscreen());
+    }
   }
 
   ngOnInit() {

@@ -148,6 +148,13 @@ export class ImageEditPageComponent
   canDeactivate(): Observable<boolean> | boolean {
     return this.imageEditService.form.pristine;
   }
+  
+  @HostListener("window:keydown", ["$event"])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === "Escape" && this.imageEditEquipmentFieldsService.creationMode) {
+      this.promptToExitEquipmentItemCreationMode();
+    }
+  }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -523,6 +530,29 @@ export class ImageEditPageComponent
         });
       } else {
         clearModel();
+      }
+    });
+  }
+
+  promptToExitEquipmentItemCreationMode() {
+    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+    
+    componentInstance.title = this.translateService.instant("Exit equipment creation?");
+    componentInstance.message = this.translateService.instant(
+      "All unsaved changes will be lost."
+    );
+    
+    modalRef.closed.pipe(take(1)).subscribe(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        // Find the cancel button and click it programmatically
+        const cancelButton = this.windowRefService.nativeWindow.document.querySelector(
+          "#create-new-item .card-footer button.btn-secondary"
+        ) as HTMLButtonElement;
+        
+        if (cancelButton) {
+          cancelButton.click();
+        }
       }
     });
   }
