@@ -12,6 +12,9 @@ import { REQUEST, RESPONSE } from "@nguniversal/express-engine/tokens";
 const compression = require("compression");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
+// Maximum number of retries
+const MAX_RETRIES = 3;
+
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
@@ -45,15 +48,55 @@ export function app(): express.Express {
     res.send(`User-agent: *\nDisallow:\n\nSitemap: https://cdn.astrobin.com/sitemaps/app/sitemap_index.xml`);
   });
 
+  // Proxy with retry logic
+  async function retryProxy(req, res, attempt = 1) {
+    if (attempt > MAX_RETRIES) {
+      console.error(`[Proxy] Max retries reached for ${req.url}. Sending 502 error.`);
+      return res.status(502).json({ error: "Proxy error after retries" });
+    }
+
+    console.warn(`[Proxy] Retrying ${req.url}, attempt ${attempt}...`);
+
+    setTimeout(() => {
+      // Create a fresh proxy request on retry
+      const proxyReq = createProxyMiddleware({
+        target: target,
+        changeOrigin: true,
+        proxyTimeout: 60000,
+        timeout: 30000,
+        onError: (err, req, res) => {
+          if (err.code === "ECONNRESET") {
+            console.warn(`[Proxy] ECONNRESET error for ${req.url}, retrying...`);
+            retryProxy(req, res, attempt + 1);
+          } else {
+            console.error(`[Proxy] Error: ${err.message}`);
+            res.status(502).json({ error: "Proxy error", message: err.message });
+          }
+        }
+      });
+
+      proxyReq(req, res);
+    }, attempt * 200);  // Increase backoff time to allow backend to restart
+  }
+
   // Define the proxy middleware explicitly
   const apiProxy = createProxyMiddleware({
     target: target,
     changeOrigin: true,
     proxyTimeout: 60000,
-    timeout: 30000
+    timeout: 30000,
+    onError: (err, req, res) => {
+      if (err.code === "ECONNRESET") {
+        console.warn(`[Proxy] ECONNRESET error for ${req.url}, retrying...`);
+        retryProxy(req, res);
+      } else {
+        console.error(`[Proxy] Error: ${err.message}`);
+        res.status(502).json({ error: "Proxy error", message: err.message });
+      }
+    }
   });
 
-  // Apply the proxy middleware to the /api route
+  // Apply the proxy middleware to the /api and /json-api routes
   server.use("/api", apiProxy);
   server.use("/json-api", apiProxy);
 
