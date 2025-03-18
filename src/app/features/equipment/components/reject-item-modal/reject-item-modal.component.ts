@@ -149,7 +149,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
                   this.formlyFieldService.addMessage(field, message);
                   break;
                 default:
-                  this.formlyFieldService.removeMessage(field, message);
+                  this.formlyFieldService.clearMessages(field, "editProposalSuggestion");
               }
             });
           }

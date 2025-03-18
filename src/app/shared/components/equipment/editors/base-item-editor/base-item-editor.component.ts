@@ -515,11 +515,13 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                     { 0: emailLink }
                   );
 
-                  this.formlyFieldService.addMessage(nameField, {
+                  const message ={
                     scope: "uniqueForBrand",
                     level: FormlyFieldMessageLevel.WARNING,
                     text: this.sanitizer.bypassSecurityTrustHtml(messageText) as string
-                  });
+                  };
+
+                  this.formlyFieldService.addMessage(nameField, message);
                 }
               }
 
@@ -845,15 +847,15 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         if (similarItems.length > 0) {
           template = this.similarItemsTemplate;
           data = similarItems;
-        }
 
-        if (template) {
           this.formlyFieldService.addMessage(nameFieldConfig, {
             scope: "similarItems",
             level: FormlyFieldMessageLevel.WARNING,
             template,
             data
           });
+        } else {
+          this.formlyFieldService.clearMessages(nameFieldConfig, "similarItems");
         }
       });
   }
@@ -887,6 +889,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             template,
             data
           });
+        } else {
+          this.formlyFieldService.clearMessages(brandFieldConfig, "othersInBrand");
         }
       });
   }
@@ -923,6 +927,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             level: FormlyFieldMessageLevel.WARNING,
             text: message
           });
+        } else {
+          this.formlyFieldService.clearMessages(nameFieldConfig, "canonCentralDS");
         }
       });
   }

@@ -181,6 +181,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
                   "range, f-ratio range, additional properties. E.g. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
                 )
               });
+            } else {
+              this.formlyFieldService.clearMessages(nameField, "cameraLensInfo");
             }
           });
         }

@@ -71,16 +71,19 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
 
   protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
     const hasNumbers: boolean = /\d/.test(value);
+    const message = {
+      scope: "versionNumberWarning",
+      level: FormlyFieldMessageLevel.INFO,
+      text: this.translateService.instant(
+        "The AstroBin equipment database does not attempt to track version numbers of software. " +
+        "If that number is a version number, please remove it, thanks!"
+      )
+    }
 
     if (hasNumbers) {
-      this.formlyFieldService.addMessage(field, {
-        scope: "versionNumberWarning",
-        level: FormlyFieldMessageLevel.INFO,
-        text: this.translateService.instant(
-          "The AstroBin equipment database does not attempt to track version numbers of software. " +
-          "If that number is a version number, please remove it, thanks!"
-        )
-      });
+      this.formlyFieldService.addMessage(field, message);
+    } else {
+      this.formlyFieldService.removeMessage(field, message);
     }
   }
 

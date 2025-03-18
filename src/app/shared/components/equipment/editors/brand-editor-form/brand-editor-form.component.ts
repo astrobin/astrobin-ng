@@ -263,6 +263,8 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
         template,
         data
       });
+    } else {
+      this.formlyFieldService.clearMessages(fieldConfig, "similarBrands");
     }
   }
 }
