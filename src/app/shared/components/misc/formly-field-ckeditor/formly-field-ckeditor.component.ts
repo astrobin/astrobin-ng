@@ -6,7 +6,6 @@ import { UtilsService } from "@core/services/utils/utils.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { isPlatformServer } from "@angular/common";
 
-declare const CKEDITOR: any;
 
 @Component({
   selector: "astrobin-formly-field-ckeditor",
@@ -33,8 +32,9 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
   }
 
   ngOnDestroy() {
-    if (this.field?.id && typeof CKEDITOR.instances[this.field.id] !== "undefined") {
-      CKEDITOR.instances[this.field.id].destroy();
+    const win = this.windowRefService.nativeWindow as any;
+    if (this.field?.id && win.CKEDITOR && typeof win.CKEDITOR.instances?.[this.field.id] !== "undefined") {
+      win.CKEDITOR.instances[this.field.id].destroy();
     }
   }
 
@@ -50,6 +50,37 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
     });
   }
 
+  /**
+   * Retries the initialization with exponential backoff
+   * @param baseWaitMultiplier - Factor to adjust the base wait time (0 = normal, 1 = longer, 2 = longest)
+   *                             Higher values result in longer initial wait times for more serious errors
+   */
+  private _retryInitialization(baseWaitMultiplier: number = 0): void {
+    // Track retry attempts in a static counter to avoid infinite loops
+    if (!this._retryInitialization["attempts"]) {
+      this._retryInitialization["attempts"] = 0;
+    }
+
+    const currentAttempt = ++this._retryInitialization["attempts"];
+
+    if (currentAttempt >= 10) {
+      console.error("Maximum retries reached for CKEditor initialization");
+      return;
+    }
+
+    // Calculate exponential backoff delay with the multiplier
+    // Base delay is 100ms, and increases based on both the multiplier and current attempt number
+    const baseDelay = 100 * (baseWaitMultiplier + 1);
+    const delay = Math.min(baseDelay * Math.pow(1.5, currentAttempt), 3000);
+
+    console.log(`Retrying CKEditor initialization in ${delay}ms (attempt ${currentAttempt} of 10)`);
+
+    this.utilsService.delay(delay).subscribe(() => {
+      // Try initialization again
+      this._initialize();
+    });
+  }
+
   private _initialize(): void {
     if (isPlatformServer(this.platformId)) {
       return;
@@ -60,21 +91,100 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
       return;
     }
 
-    const document = this.windowRefService.nativeWindow.document;
-    const editorBase = document.getElementById(this.field.id);
+    this.ckeditorService.loadCKEditor()
+      .then(() => {
+        const document = this.windowRefService.nativeWindow.document;
+        const editorBase = document.getElementById(this.field.id);
+        const win = this.windowRefService.nativeWindow as any;
 
-    if (CKEDITOR && editorBase && !this.editor) {
-      // Bump this anytime a plugin or other CKEDITOR resource is updated.
-      CKEDITOR.timestamp = "25020701";
+        if (!editorBase) {
+          console.error("Editor base element not found");
+          return;
+        }
 
-      this.editor = CKEDITOR.replace(this.field.id, this.ckeditorService.options(this.formControl));
-      this.editor.setData(this.formControl.value);
+        // The CKEditor service should have already verified that CKEDITOR is initialized
+        // but we perform a final check to be safe
+        if (!win.CKEDITOR || typeof win.CKEDITOR.replace !== "function") {
+          console.warn("CKEDITOR.replace not available - this indicates the service verification failed");
 
-      this._showEditor();
-    } else {
-      this.utilsService.delay(20).subscribe(() => {
-        this._initialize();
+          // Instead of using a fixed delay, retry the initialization with exponential backoff
+          this._retryInitialization(0); // First attempt
+          return;
+        }
+
+        // Setup error handler for any CKEditor creation errors
+        if (typeof win.CKEDITOR.on === "function" && !win.CKEDITOR._errorHandlerAdded) {
+          win.CKEDITOR.on("instanceCreated", (event) => {
+            event.editor.on("error", (errorEvent) => {
+              console.warn("CKEditor instance error intercepted:", errorEvent.data);
+              errorEvent.cancel(); // Prevent errors from stopping editor functionality
+            });
+          });
+          win.CKEDITOR._errorHandlerAdded = true;
+        }
+
+        try {
+          // Get options first
+          const editorOptions = this.ckeditorService.options(this.formControl);
+
+          // Create the editor - we'll do this directly, not in a delay
+          try {
+            // Try to create the editor
+            this.editor = win.CKEDITOR.replace(this.field.id, editorOptions);
+
+            // Wait for editor to be created before setting data
+            if (this.editor) {
+              // Set initial content if available
+              if (this.formControl && this.formControl.value) {
+                this.editor.setData(this.formControl.value);
+              }
+
+              // Show the editor when it's ready
+              this._showEditor();
+            } else {
+              console.error("Failed to create editor instance");
+              // Retry using exponential backoff
+              this._retryInitialization(0); // Standard retry
+            }
+          } catch (e) {
+            console.error("Error creating CKEditor instance:", e);
+
+            // Special handling for BBCode plugin issues
+            if (e.toString().includes("fragment") || e.toString().includes("htmlParser")) {
+              console.warn("BBCode plugin error detected");
+              try {
+                // Try again with BBCode plugin disabled
+                const basicOptions = {
+                  ...editorOptions,
+                  extraPlugins: editorOptions.extraPlugins.replace("bbcode,", "")
+                };
+                this.editor = win.CKEDITOR.replace(this.field.id, basicOptions);
+                if (this.editor) {
+                  if (this.formControl && this.formControl.value) {
+                    this.editor.setData(this.formControl.value);
+                  }
+                  this._showEditor();
+                }
+              } catch (retryError) {
+                console.error("Failed to create editor with BBCode disabled:", retryError);
+                // Retry using exponential backoff
+                this._retryInitialization(1); // Longer wait, BBCode plugin issue
+              }
+            } else {
+              // For other errors, retry initialization using exponential backoff
+              this._retryInitialization(0); // Standard retry
+            }
+          }
+        } catch (e) {
+          console.error("Error preparing CKEditor options:", e);
+          // If there's an error, retry using exponential backoff
+          this._retryInitialization(0); // Standard retry
+        }
+      })
+      .catch(error => {
+        console.error("Failed to load CKEditor:", error);
+        // Retry loading using exponential backoff
+        this._retryInitialization(2); // Longer wait, service failed completely
       });
-    }
   }
 }
