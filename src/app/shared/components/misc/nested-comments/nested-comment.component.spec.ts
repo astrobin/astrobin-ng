@@ -15,18 +15,18 @@ import { ContentTranslateService } from "@core/services/content-translate.servic
 describe("NestedCommentComponent", () => {
   let component: NestedCommentComponent;
   let fixture: ComponentFixture<NestedCommentComponent>;
-  
+
   // Mock services
   const mockHighlightService = {
     needsHighlighting: jest.fn().mockReturnValue(false),
     loadHighlightJs: jest.fn().mockReturnValue(Promise.resolve()),
     highlightCodeBlocks: jest.fn()
   };
-  
+
   const mockUtilsService = {
     delay: jest.fn().mockReturnValue(of(null))
   };
-  
+
   const mockContentTranslateService = {
     hasTranslation: jest.fn().mockReturnValue(false),
     sanitizeContent: jest.fn().mockImplementation(html => html),
@@ -57,23 +57,23 @@ describe("NestedCommentComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  // Rather than testing specific implementations, we'll test that the 
+  // Rather than testing specific implementations, we'll test that the
   // appropriate services are being called when needed.
-  
+
   it("should check for code blocks in comment content", () => {
     // Reset mock counts
     mockHighlightService.needsHighlighting.mockClear();
-    
+
     // Set a comment with code blocks
     const htmlWithCode = "<pre><code>const example = 'test';</code></pre>";
     component.comment = {
       ...component.comment,
       html: htmlWithCode
     };
-    
+
     // Manually call the method we want to test
     component["_updateHtml"]();
-    
+
     // Verify the service was called
     expect(mockHighlightService.needsHighlighting).toHaveBeenCalled();
     expect(mockContentTranslateService.sanitizeContent).toHaveBeenCalled();
