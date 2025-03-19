@@ -186,7 +186,7 @@ export class HighlightService {
     if (!this._isBrowser) {
       return Promise.resolve();
     }
-    
+
     return new Promise<void>((resolve, reject) => {
       try {
         // Return immediately if CSS already loaded
@@ -238,7 +238,7 @@ export class HighlightService {
     if (!this._isBrowser) {
       return Promise.resolve();
     }
-    
+
     return new Promise<void>((resolve, reject) => {
       try {
         const document = this.windowRefService.nativeWindow.document;
