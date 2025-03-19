@@ -1,4 +1,4 @@
-import { Injectable, Renderer2 } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { environment } from "@env/environment";
 import { LoadingService } from "@core/services/loading.service";
@@ -8,6 +8,8 @@ import { WindowRefService } from "@core/services/window-ref.service";
 import { catchError, map } from "rxjs/operators";
 import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
+import { isPlatformBrowser } from "@angular/common";
+import { UtilsService } from "@core/services/utils/utils.service";
 
 declare const CKEDITOR: any;
 
@@ -15,16 +17,29 @@ declare const CKEDITOR: any;
   providedIn: "root"
 })
 export class CKEditorService extends BaseService {
+  private _loaded = false;
+  private readonly _isBrowser: boolean;
+  private _retryCount = 0;
+
   constructor(
     public readonly loadingService: LoadingService,
     public readonly authService: AuthService,
     public readonly windowRefService: WindowRefService,
-    public readonly http: HttpClient
+    public readonly http: HttpClient,
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     super(loadingService);
+    this._isBrowser = isPlatformBrowser(this.platformId);
   }
 
   setupBBCodeFilter(renderer: Renderer2) {
+    // Safety check for SSR
+    if (!this._isBrowser || typeof CKEDITOR === 'undefined' || !CKEDITOR.htmlParser) {
+      console.warn('CKEDITOR not available for setupBBCodeFilter');
+      return {}; // Return an empty object that won't break things
+    }
+    
     const bbcodeFilter = new CKEDITOR.htmlParser.filter();
 
     bbcodeFilter.addRules({
@@ -622,6 +637,214 @@ export class CKEditorService extends BaseService {
         }
       }
     };
+  }
+
+  loadCKEditor(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Reset retry counter at the start of a new load attempt
+      this._retryCount = 0;
+
+      if (this._loaded) {
+        resolve();
+        return;
+      }
+
+      if (!this._isBrowser) {
+        reject("CKEditor not available in server-side rendering");
+        return;
+      }
+
+      const document = this.windowRefService.nativeWindow.document;
+      const win = this.windowRefService.nativeWindow as any;
+      const timestamp = environment.ckeditorTimestamp;
+      const baseUrl = `${environment.cdnUrl}/static/astrobin/ckeditor`;
+
+      // Check if CKEditor is already fully initialized and available
+      if (this._isCKEditorReady(win)) {
+        win.CKEDITOR.timestamp = timestamp;
+        this._loaded = true;
+        resolve();
+        return;
+      }
+
+      // Set base path for CKEditor
+      win.CKEDITOR_BASEPATH = `${baseUrl}/`;
+
+      // Load main CKEditor script first
+      const mainScript = document.createElement("script");
+      mainScript.src = `${baseUrl}/ckeditor.js?t=${timestamp}`;
+
+      mainScript.onload = () => {
+        // Start checking if CKEditor is initialized - the _waitForCKEditorCore method
+        // will retry with backoff until it's ready or max retries are reached
+        this._waitForCKEditorCore(win, baseUrl, timestamp, resolve, reject);
+      };
+
+      mainScript.onerror = (error) => {
+        console.error("Error loading CKEditor main script:", error);
+        reject("Failed to load CKEditor main script");
+      };
+
+      document.body.appendChild(mainScript);
+    });
+  }
+
+  private _isCKEditorReady(win: any): boolean {
+    // Basic availability of core CKEditor functionality
+    const coreAvailable = win.CKEDITOR &&
+           typeof win.CKEDITOR.replace === 'function' &&
+           typeof win.CKEDITOR.getUrl === 'function';
+
+    // Check if dom elements are available
+    const domAvailable = coreAvailable &&
+           win.CKEDITOR.dom &&
+           win.CKEDITOR.dom.element;
+
+    return coreAvailable && domAvailable;
+  }
+
+  private _waitForCKEditorCore(
+    win: any,
+    baseUrl: string,
+    timestamp: string,
+    resolve: (value: void | PromiseLike<void>) => void,
+    reject: (reason?: any) => void,
+    retryCount: number = 0
+  ): void {
+    // Check if CKEDITOR is fully ready with all necessary functionality
+    const isCoreReady = this._isCKEditorReady(win);
+
+    if (isCoreReady) {
+      console.log("CKEditor core fully initialized");
+      // Now that core is ready, we can safely load the BBCode plugin
+      this._loadBBCodePlugin(baseUrl, timestamp, resolve, reject);
+      return;
+    }
+
+    // If we've already retried many times, log more detailed info
+    if (retryCount > 5) {
+      console.warn(`Waiting for CKEditor initialization (attempt ${retryCount})`, {
+        exists: !!win.CKEDITOR,
+        hasReplace: win.CKEDITOR && typeof win.CKEDITOR.replace === 'function',
+        hasGetUrl: win.CKEDITOR && typeof win.CKEDITOR.getUrl === 'function',
+        hasDom: win.CKEDITOR && !!win.CKEDITOR.dom,
+        hasDomElement: win.CKEDITOR && win.CKEDITOR.dom && !!win.CKEDITOR.dom.element
+      });
+    }
+
+    // Give up after too many retries
+    if (retryCount >= 20) {
+      console.warn("CKEditor not fully initialized after maximum retries");
+      reject("CKEditor failed to initialize completely after multiple retries");
+      return;
+    }
+
+    // Use our standardized retry policy
+    this._retryWithBackoff(() => {
+      this._waitForCKEditorCore(win, baseUrl, timestamp, resolve, reject, retryCount + 1);
+    }, retryCount);
+  }
+
+  private _loadBBCodePlugin(
+    baseUrl: string,
+    timestamp: string,
+    resolve: (value: void | PromiseLike<void>) => void,
+    reject: (reason?: any) => void
+  ): void {
+    try {
+      const document = this.windowRefService.nativeWindow.document;
+      const bbcodeScript = document.createElement("script");
+      bbcodeScript.src = `${baseUrl}/plugins/bbcode/plugin.js?t=${timestamp}`;
+
+      bbcodeScript.onload = () => {
+        // After plugin loads, verify the editor is fully ready
+        this._finalizeCKEditorInitialization(resolve, reject);
+      };
+
+      bbcodeScript.onerror = () => {
+        // Even if BBCode plugin fails, we can still try to use the editor
+        console.warn("BBCode plugin failed to load, but continuing with CKEditor initialization");
+        this._finalizeCKEditorInitialization(resolve, reject);
+      };
+
+      document.body.appendChild(bbcodeScript);
+    } catch (e) {
+      console.error("Error while loading BBCode plugin:", e);
+      // Still try to verify if editor is usable
+      this._finalizeCKEditorInitialization(resolve, reject);
+    }
+  }
+
+  private _finalizeCKEditorInitialization(resolve: (value: void | PromiseLike<void>) => void, reject: (reason?: any) => void): void {
+    const win = this.windowRefService.nativeWindow as any;
+    const timestamp = environment.ckeditorTimestamp;
+
+    // Check for required functionality using our helper function
+    if (this._isCKEditorReady(win)) {
+      // Set the timestamp to ensure version consistency
+      win.CKEDITOR.timestamp = timestamp;
+
+      console.log("CKEditor is ready with required functionality");
+      this._loaded = true;
+      resolve();
+      return;
+    }
+
+    // If not ready yet, use the verification method with retry policy
+    this._verifyCKEditorReady(resolve, reject);
+  }
+
+  /**
+   * Helper function to implement consistent retry with exponential backoff
+   */
+  private _retryWithBackoff(callback: () => void, retryCount: number): void {
+    // Calculate delay with exponential backoff - start with 200ms
+    const delay = Math.min(200 * Math.pow(1.5, retryCount), 2000);
+    this.utilsService.delay(delay).subscribe(callback);
+  }
+
+  private _verifyCKEditorReady(
+    resolve: (value: void | PromiseLike<void>) => void,
+    reject: (reason?: any) => void
+  ): void {
+    const win = this.windowRefService.nativeWindow as any;
+    const timestamp = environment.ckeditorTimestamp;
+
+    // Check for required functionality using our helper function
+    if (this._isCKEditorReady(win)) {
+      // Set the timestamp to ensure version consistency
+      win.CKEDITOR.timestamp = timestamp;
+
+      console.log("CKEditor is ready with required functionality");
+      this._loaded = true;
+      resolve();
+      return;
+    }
+
+    // Create an object of CKEDITOR properties for debugging
+    const ckeditorState = {
+      exists: !!win.CKEDITOR,
+      hasReplace: win.CKEDITOR && typeof win.CKEDITOR.replace === 'function',
+      hasGetUrl: win.CKEDITOR && typeof win.CKEDITOR.getUrl === 'function',
+      hasDom: win.CKEDITOR && !!win.CKEDITOR.dom,
+      hasDomElement: win.CKEDITOR && win.CKEDITOR.dom && !!win.CKEDITOR.dom.element
+    };
+
+    // If we're not making progress (nothing is changing), log more details
+    if (this._retryCount > 5) {
+      console.warn(`CKEditor not fully initialized on attempt ${this._retryCount}:`, ckeditorState);
+    }
+
+    // Maximum number of retries (20 with exponential backoff)
+    if (this._retryCount < 20) {
+      this._retryCount++;
+      this._retryWithBackoff(() => {
+        this._verifyCKEditorReady(resolve, reject);
+      }, this._retryCount);
+    } else {
+      console.error("CKEditor initialization timed out after multiple retries");
+      reject("CKEditor failed to initialize completely after multiple retries");
+    }
   }
 
   private _fetchThumbnail(src: string, callback: (thumbnailSrc: string) => void) {

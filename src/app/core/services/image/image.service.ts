@@ -1,4 +1,4 @@
-import { ElementRef, Inject, Injectable, NgZone, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { Inject, Injectable, NgZone, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
 import { WindowRefService } from "@core/services/window-ref.service";
@@ -993,11 +993,17 @@ export class ImageService extends BaseService {
     let thumbnail: string;
 
     if (image.descriptionBbcode && image.descriptionBbcode.length > 0) {
-      description = this.bbcodeService.transformBBCodeToHtml(
-        image.descriptionBbcode
-      ).slice(0, maxDescriptionLength) + "...";
+      // Strip BBCode tags and use plain text for meta tags
+      const strippedText = this.bbcodeService.stripBBCode(image.descriptionBbcode);
+      description = strippedText.slice(0, maxDescriptionLength);
+      if (strippedText.length > maxDescriptionLength) {
+        description += "...";
+      }
     } else if (image.description && image.description.length > 0) {
-      description = image.description.slice(0, maxDescriptionLength) + "...";
+      description = image.description.slice(0, maxDescriptionLength);
+      if (image.description.length > maxDescriptionLength) {
+        description += "...";
+      }
     } else {
       description = this.translateService.instant("An image on AstroBin.");
     }
