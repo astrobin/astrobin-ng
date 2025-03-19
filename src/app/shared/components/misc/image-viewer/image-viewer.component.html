@@ -365,11 +365,16 @@
     </div>
 
     <div *ngIf="!translatedDescription && image?.descriptionBbcode" class="metadata-section">
-      <div
+      <div *ngIf="(image.descriptionBbcode | BBCodeToHtml) | async as html; else descriptionLoading"
         (click)="onDescriptionClicked($event)"
-        [innerHTML]="image.descriptionBbcode | BBCodeToHtml | highlight: searchModel?.text?.value"
+        [innerHTML]="html | highlight: searchModel?.text?.value"
         class="metadata-item description"
       ></div>
+      <ng-template #descriptionLoading>
+        <div class="metadata-item description">
+          <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ 'Loading content...' | translate }}</small>
+        </div>
+      </ng-template>
     </div>
 
     <div *ngIf="!translatedDescription && !image.descriptionBbcode && image?.description" class="metadata-section">

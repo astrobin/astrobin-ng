@@ -186,7 +186,13 @@
         <h5>
           {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES) }}
         </h5>
-        <div [innerHTML]="item.communityNotes | BBCodeToHtml" class="community-notes-content"></div>
+        <div *ngIf="(item.communityNotes | BBCodeToHtml) | async as html; else communityNotesLoading" 
+             [innerHTML]="html" class="community-notes-content"></div>
+        <ng-template #communityNotesLoading>
+          <div class="community-notes-content">
+            <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ 'Loading content...' | translate }}</small>
+          </div>
+        </ng-template>
       </div>
 
       <div *ngIf="showSubItem && !!subItem && !subItemCollapsed" class="sub-item">

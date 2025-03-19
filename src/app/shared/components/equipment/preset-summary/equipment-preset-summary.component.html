@@ -6,12 +6,17 @@
     alt=""
   >
 
-  <div
-    *ngIf="preset.description"
-    [innerHTML]="preset.description | BBCodeToHtml"
-    class="preset-description mb-5"
-  >
-  </div>
+  <ng-container *ngIf="preset.description">
+    <div *ngIf="(preset.description | BBCodeToHtml) | async as html; else presetDescriptionLoading"
+      [innerHTML]="html"
+      class="preset-description mb-5"
+    ></div>
+    <ng-template #presetDescriptionLoading>
+      <div class="preset-description mb-5">
+        <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ 'Loading content...' | translate }}</small>
+      </div>
+    </ng-template>
+  </ng-container>
 
   <div
     *ngFor="let section of equipmentConfigs; let lastSection = last"
