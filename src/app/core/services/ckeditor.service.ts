@@ -34,6 +34,12 @@ export class CKEditorService extends BaseService {
   }
 
   setupBBCodeFilter(renderer: Renderer2) {
+    // Safety check for SSR
+    if (!this._isBrowser || typeof CKEDITOR === 'undefined' || !CKEDITOR.htmlParser) {
+      console.warn('CKEDITOR not available for setupBBCodeFilter');
+      return {}; // Return an empty object that won't break things
+    }
+    
     const bbcodeFilter = new CKEDITOR.htmlParser.filter();
 
     bbcodeFilter.addRules({
