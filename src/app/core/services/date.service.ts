@@ -116,7 +116,10 @@ export class DateService extends BaseService {
       // If dates are in the same year but not current year, format differently
       if (date1.getFullYear() === date2.getFullYear() && date1.getFullYear() !== currentYear) {
         const dateFormat = this.getDateFormat();
-        return `${this.datePipeTransform(date1, dateFormat)}, ${this.datePipeTransform(date2, dateFormat)} ${date1.getFullYear()}`;
+        const currentLang = this.translateService.currentLang;
+        const formattedDate1 = this.datePipeTransform(date1, dateFormat, "UTC", currentLang);
+        const formattedDate2 = this.datePipeTransform(date2, dateFormat, "UTC", currentLang);
+        return `${formattedDate1}, ${formattedDate2} ${date1.getFullYear()}`;
       }
 
       return `${this.formatSingleDate(parsedDates[0])}, ${this.formatSingleDate(parsedDates[1])}`;
@@ -180,6 +183,7 @@ export class DateService extends BaseService {
     const endDate = new Date(range[range.length - 1]);
     const currentYear = this.getCurrentYear();
     const dateFormat = this.getDateFormat();
+    const currentLang = this.translateService.currentLang;
 
     const startYear = startDate.getFullYear();
     const endYear = endDate.getFullYear();
@@ -192,45 +196,63 @@ export class DateService extends BaseService {
     if (startYear === currentYear) {
       // If the range is within the current year, omit the year
       if (startDate.getMonth() !== endDate.getMonth()) {
-        return `${this.datePipeTransform(startDate, dateFormat)} - ${this.datePipeTransform(endDate, dateFormat)}`;
+        const formattedStartDate = this.datePipeTransform(startDate, dateFormat, "UTC", currentLang);
+        const formattedEndDate = this.datePipeTransform(endDate, dateFormat, "UTC", currentLang);
+        return `${formattedStartDate} - ${formattedEndDate}`;
       }
 
       if (dateFormat === "MMM d") {
-        return `${this.datePipeTransform(endDate, "MMM")} ${this.datePipeTransform(startDate, "d")}-${this.datePipeTransform(endDate, "d")}`;
+        const month = this.datePipeTransform(endDate, "MMM", "UTC", currentLang);
+        const startDay = this.datePipeTransform(startDate, "d", "UTC", currentLang);
+        const endDay = this.datePipeTransform(endDate, "d", "UTC", currentLang);
+        return `${month} ${startDay}-${endDay}`;
       }
 
-      return `${this.datePipeTransform(startDate, "d")}-${this.datePipeTransform(endDate, dateFormat)}`;
+      const startDay = this.datePipeTransform(startDate, "d", "UTC", currentLang);
+      const formattedEndDate = this.datePipeTransform(endDate, dateFormat, "UTC", currentLang);
+      return `${startDay}-${formattedEndDate}`;
     }
 
     // If the range is within the same year (but not the current year), include the year once at the end
     if (startDate.getMonth() !== endDate.getMonth()) {
       if (dateFormat === "MMM d") {
-        return `${this.datePipeTransform(startDate, "MMM d")} - ${this.datePipeTransform(endDate, "MMM d, yyyy")}`;
+        const formattedStartDate = this.datePipeTransform(startDate, "MMM d", "UTC", currentLang);
+        const formattedEndDate = this.datePipeTransform(endDate, "MMM d, yyyy", "UTC", currentLang);
+        return `${formattedStartDate} - ${formattedEndDate}`;
       }
-      return `${this.datePipeTransform(startDate, dateFormat)} - ${this.datePipeTransform(endDate, dateFormat + " yyyy")}`;
+
+      const formattedStartDate = this.datePipeTransform(startDate, dateFormat, "UTC", currentLang);
+      const formattedEndDate = this.datePipeTransform(endDate, dateFormat + " yyyy", "UTC", currentLang);
+      return `${formattedStartDate} - ${formattedEndDate}`;
     }
 
     if (dateFormat === "MMM d") {
-      return `${this.datePipeTransform(startDate, "MMM d")}-${this.datePipeTransform(endDate, "d, yyyy")}`;
+      const formattedStartDate = this.datePipeTransform(startDate, "MMM d", "UTC", currentLang);
+      const formattedEndDay = this.datePipeTransform(endDate, "d, yyyy", "UTC", currentLang);
+      return `${formattedStartDate}-${formattedEndDay}`;
     }
 
-    return `${this.datePipeTransform(startDate, "d")}-${this.datePipeTransform(endDate, dateFormat + " yyyy")}`;
+    const startDay = this.datePipeTransform(startDate, "d", "UTC", currentLang);
+    const formattedEndDate = this.datePipeTransform(endDate, dateFormat + " yyyy", "UTC", currentLang);
+    return `${startDay}-${formattedEndDate}`;
   }
 
   private formatNonContiguous(dates: number[]): string {
     const firstDate = new Date(dates[0]);
     const lastDate = new Date(dates[dates.length - 1]);
-    const dateFormat = this.getDateFormat();
+    const currentLang = this.translateService.currentLang;
 
     const allInSameYear = firstDate.getFullYear() === lastDate.getFullYear();
     const allInSameMonth = allInSameYear && firstDate.getMonth() === lastDate.getMonth();
 
     if (allInSameMonth) {
-      return `${dates.length} days in ${this.datePipeTransform(firstDate, "MMM yyyy")}`;
+      const formattedMonth = this.datePipeTransform(firstDate, "MMM yyyy", "UTC", currentLang);
+      return `${dates.length} days in ${formattedMonth}`;
     }
 
     if (allInSameYear) {
-      return `${dates.length} days in ${this.datePipeTransform(firstDate, "yyyy")}`;
+      const formattedYear = this.datePipeTransform(firstDate, "yyyy", "UTC", currentLang);
+      return `${dates.length} days in ${formattedYear}`;
     }
 
     return `${dates.length} days`;
