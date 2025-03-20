@@ -77,6 +77,8 @@
     [class.force-view-annotations-mousehover]="forceViewAnnotationsMouseHover"
     [class.adjustment-editor-visible]="adjustmentEditorVisible"
     [class.has-top-banner]="image && image.isIotd"
+    (mouseenter)="revision?.solution && !adjustmentEditorVisible && (showNorthArrow = true)"
+    (mouseleave)="showNorthArrow = false"
   >
     <div class="image-area-header">
       <astrobin-image-viewer-iotd-banner
@@ -156,6 +158,28 @@
       </ng-container>
 
       <ng-container *ngIf="!adjustmentEditorVisible">
+        <!-- North arrow -->
+        <div
+          *ngIf="showNorthArrow && revision?.solution?.orientation !== null"
+          class="north-arrow-container"
+          [ngStyle]="{
+            'transform': 'translateX(-50%) rotate(' + (northArrowRotation * -1) + 'deg)'
+          }"
+          @fadeInOut
+        >
+          <div class="north-arrow-wrapper">
+            <img class="north-arrow" src="assets/images/compass.svg?v=1" alt="Compass" />
+            <div
+              class="north-arrow-label"
+              [ngbTooltip]="'Celestial North' | translate"
+              [ngStyle]="{
+                'transform': 'rotate(' + northArrowRotation + 'deg)'
+              }"
+              container="body"
+            >N</div>
+          </div>
+        </div>
+
         <astrobin-image-viewer-close-button
           *ngIf="showCloseButton"
           (closeClick)="closeClick.emit()"

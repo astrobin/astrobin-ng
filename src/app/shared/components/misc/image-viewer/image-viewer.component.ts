@@ -57,6 +57,9 @@ export class ImageViewerComponent
   @Input()
   revisionLabel = FINAL_REVISION_LABEL;
 
+  showNorthArrow = false;
+  northArrowRotation: number = 0;
+
   @Input()
   showCloseButton = false;
 
@@ -692,17 +695,19 @@ export class ImageViewerComponent
     this._setNonSolutionMouseHoverImage();
     this._setSolutionMouseHoverImage();
     this._setShowPlateSolvingBanner();
-    
+    this._updateNorthArrowRotation();
+
     // Preload moon image for the new revision if it has a solution
     if (this.revision?.solution?.pixscale) {
       this._preloadMoonImage();
     }
-    
+
     this.revisionSelected.emit(revisionLabel);
   }
 
   protected toggleViewMouseHover(): void {
     this.forceViewMouseHover = !this.forceViewMouseHover;
+    this.showNorthArrow = this.forceViewMouseHover;
   }
 
   protected resetMoonOverlay(): void {
@@ -1637,6 +1642,16 @@ export class ImageViewerComponent
     } else {
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
       this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
+    }
+    
+    this._updateNorthArrowRotation();
+  }
+  
+  private _updateNorthArrowRotation(): void {
+    if (this.revision?.solution) {
+      this.northArrowRotation = this.imageService.calculateCorrectOrientation(this.revision.solution);
+    } else {
+      this.northArrowRotation = 0;
     }
   }
 
