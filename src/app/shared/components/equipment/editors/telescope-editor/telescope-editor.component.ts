@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
@@ -40,7 +42,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
     public readonly telescopeService: TelescopeService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly sanitizer: DomSanitizer
   ) {
     super(
       store$,
@@ -53,7 +57,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       formlyFieldService,
       modalService,
       utilsService,
-      changeDetectorRef
+      changeDetectorRef,
+      classicRoutesService,
+      sanitizer
     );
   }
 
@@ -165,15 +171,18 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
             const nameField = this.fields.find(f => f.key === "name");
-            this.formlyFieldService.clearMessages(nameField);
+            this.formlyFieldService.clearMessages(nameField, "lensNamingConvention");
             if (value === TelescopeType.CAMERA_LENS) {
               this.formlyFieldService.addMessage(nameField, {
+                scope: "cameraLensInfo",
                 level: FormlyFieldMessageLevel.INFO,
                 text: this.translateService.instant(
                   "The recommended naming convention for camera lenses is: optional model name, focal length " +
                   "range, f-ratio range, additional properties. E.g. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
                 )
               });
+            } else {
+              this.formlyFieldService.clearMessages(nameField, "cameraLensInfo");
             }
           });
         }

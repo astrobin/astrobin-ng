@@ -3,6 +3,7 @@ import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
 import { Observable, Subject } from "rxjs";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { SafeHtml } from "@angular/platform-browser";
 
 export enum FormlyFieldMessageLevel {
   INFO = "INFO",
@@ -11,7 +12,8 @@ export enum FormlyFieldMessageLevel {
 
 export interface FormlyFieldMessage {
   level: FormlyFieldMessageLevel;
-  text?: string;
+  scope: string;  // Identifier for the source of the message (validator name, component, etc.)
+  text?: string | SafeHtml;
   template?: TemplateRef<any>;
   data?: any;
   dismissible?: boolean;
@@ -32,11 +34,28 @@ export class FormlyFieldService extends BaseService {
     super(loadingService);
   }
 
-  clearMessages(config: FormlyFieldConfig) {
-    config["messages"] = [];
+  /**
+   * Clears messages from a specific scope.
+   * @param config The FormlyFieldConfig to clear messages from
+   * @param scope The scope identifier. Only messages with this scope will be cleared.
+   */
+  clearMessages(config: FormlyFieldConfig, scope: string) {
+    if (config["messages"] === undefined) {
+      config["messages"] = [];
+      return;
+    }
+
+    // Only clear messages with the matching scope
+    config["messages"] = config["messages"].filter(m => m.scope !== scope);
+
     this.messagesChangesSubject.next(config["messages"]);
   }
 
+  /**
+   * Adds a message to a field
+   * @param config The FormlyFieldConfig to add a message to
+   * @param message The message to add. Scope is required for new code.
+   */
   addMessage(config: FormlyFieldConfig, message: FormlyFieldMessage) {
     if (config["messages"] === undefined) {
       config["messages"] = [];
@@ -46,7 +65,12 @@ export class FormlyFieldService extends BaseService {
       return;
     }
 
-    // Clear duplicates by text or template/data.
+    // Default scope for backward compatibility
+    if (!message.scope) {
+      message.scope = "default";
+    }
+
+    // Clear duplicates by text or template/data within the same scope.
     this.removeMessage(config, message, false);
 
     config["messages"] = [...config["messages"], message];
@@ -54,9 +78,23 @@ export class FormlyFieldService extends BaseService {
     this.messagesChangesSubject.next(config["messages"]);
   }
 
+  /**
+   * Removes a message from a field
+   * @param config The FormlyFieldConfig to remove a message from
+   * @param message The message to remove
+   * @param emitEvent Whether to emit a change event
+   */
   removeMessage(config: FormlyFieldConfig, message: FormlyFieldMessage, emitEvent = true) {
     if (config["messages"] !== undefined) {
-      config["messages"] = config["messages"].filter(m => !this._equals(m, message));
+      // Default scope for backward compatibility
+      if (!message.scope) {
+        message.scope = "default";
+      }
+
+      // Only remove messages that match both the scope and content
+      config["messages"] = config["messages"].filter(m =>
+        m.scope !== message.scope || !this._equals(m, message)
+      );
 
       if (emitEvent) {
         this.messagesChangesSubject.next(config["messages"]);
@@ -65,6 +103,6 @@ export class FormlyFieldService extends BaseService {
   }
 
   private _equals(a: FormlyFieldMessage, b: FormlyFieldMessage): boolean {
-    return a.text === b.text && a.template === b.template && JSON.stringify(a.data) === JSON.stringify(b.data);
+    return a.scope === b.scope && a.text === b.text && a.template === b.template && JSON.stringify(a.data) === JSON.stringify(b.data);
   }
 }

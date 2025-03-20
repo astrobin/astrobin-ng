@@ -174,7 +174,10 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
 
     if (this.props.enableFullscreen && !this.fullscreen) {
       this.fullscreen = true;
-      this._ngSelectModalRef = this.modalService.open(this._ngSelectModal, { size: "xxl" });
+      this._ngSelectModalRef = this.modalService.open(this._ngSelectModal, { 
+        size: "xxl",
+        windowClass: "equipment-item-browser-fullscreen-modal" 
+      });
       this._ngSelectModalRef.shown.pipe(take(1)).subscribe(() => {
         const elementSelector = ".modal .ng-select input";
 
