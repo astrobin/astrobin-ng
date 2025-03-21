@@ -1,5 +1,6 @@
 import { UserInterface } from "@core/interfaces/user.interface";
 import { ImageInterface } from "@core/interfaces/image.interface";
+import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 
 export interface CollectionInterface {
   id: number;
@@ -7,6 +8,9 @@ export interface CollectionInterface {
   dateUpdated: string;
   parent: number | null;
   user: UserInterface["id"];
+  username: UserInterface["username"];
+  userDisplayName: UserProfileInterface["realName"];
+  displayCollectionsOnPublicGallery: boolean;
   name: string;
   description: string | null;
   images?: ImageInterface["pk"][];

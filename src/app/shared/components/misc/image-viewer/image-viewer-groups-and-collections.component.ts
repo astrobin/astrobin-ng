@@ -93,24 +93,50 @@ import { selectUser, selectUserProfile } from "@features/account/store/auth.sele
       <div class="offcanvas-body">
         <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
           <div *ngIf="collections; else loadingTemplate" class="d-flex flex-column gap-2">
-            <div *ngFor="let collection of collections" class="w-100">
-              <a
-                (click)="userService.openCollection(
-                  image.username,
-                  collection.id,
-                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
-                  userProfile?.displayCollectionsOnPublicGallery
-                )"
-                [href]="userService.getCollectionUrl(
-                  image.username,
-                  collection.id,
-                  !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
-                  userProfile?.displayCollectionsOnPublicGallery
-                )"
-                astrobinEventPreventDefault
-              >
-                {{ collection.name }}
-              </a>
+            <div *ngFor="let collection of collections" class="d-flex justify-content-between align-items-center w-100">
+              <div class="d-flex flex-column gap-1">
+                <a
+                  (click)="userService.openCollection(
+                    collection.username,
+                    collection.id,
+                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
+                    collection.displayCollectionsOnPublicGallery
+                  )"
+                  [href]="userService.getCollectionUrl(
+                    collection.username,
+                    collection.id,
+                    !currentUserWrapper.userProfile || currentUserWrapper.userProfile.enableNewGalleryExperience,
+                    collection.displayCollectionsOnPublicGallery
+                  )"
+                  astrobinEventPreventDefault
+                >
+                  {{ collection.name }}
+                </a>
+
+                <span class="text-muted collection-user" *ngIf="collection.user !== image.user">
+                  {{ collection.userDisplayName }}
+                </span>
+              </div>
+
+              <span class="image-count">
+                <ng-container *ngIf="currentUserWrapper.user?.id === collection.user">
+                  <ng-container *ngIf="collection.imageCountIncludingWip === 1">
+                    {{ "1 image" | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="collection.imageCountIncludingWip > 1">
+                    {{ "{{0}} images" | translate: { "0": collection.imageCountIncludingWip } }}
+                  </ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="currentUserWrapper.user?.id !== collection.user">
+                  <ng-container *ngIf="collection.imageCount === 1">
+                    {{ "1 image" | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="collection.imageCount > 1">
+                    {{ "{{0}} images" | translate: { "0": collection.imageCount } }}
+                  </ng-container>
+                </ng-container>
+              </span>
             </div>
           </div>
         </ng-container>
@@ -121,6 +147,13 @@ import { selectUser, selectUserProfile } from "@features/account/store/auth.sele
       <astrobin-loading-indicator></astrobin-loading-indicator>
     </ng-template>
   `,
+  styles: [
+    `
+      .collection-user {
+        font-size: .85rem;
+      }
+    `
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageViewerGroupsAndCollectionsComponent extends BaseComponentDirective implements OnChanges {
