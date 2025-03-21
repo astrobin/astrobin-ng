@@ -162,6 +162,10 @@ msgstr ""
 msgid "About"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+msgid "About moon scale"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
 msgid "Accept"
 msgstr ""
@@ -362,6 +366,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 msgid "All rights reserved"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+msgid "All unsaved changes will be lost."
 msgstr ""
 
 msgid "All your recent items of this equipment class are already used above."
@@ -1093,6 +1101,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/plate-solving-settings/image-plate-solving-settings-page.component.ts
 msgid "Catalogs"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+msgid "Celestial North"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
@@ -1947,6 +1959,10 @@ msgstr ""
 msgid "Exchange payment/delivery info"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+msgid "Exit equipment creation?"
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-listing-form/marketplace-listing-form.component.ts
 msgid "Expiration"
 msgstr ""
@@ -2079,6 +2095,11 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/search-bar/search-bar.component.html
 msgid "Field radius (small first)"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+msgid "Field size"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/search.service.ts
@@ -2487,6 +2508,10 @@ msgid "Hexapod"
 msgstr ""
 
 msgid "Hide"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+msgid "Hide Moon scale (M)"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/components/marketplace-offer-summary/marketplace-offer-summary.component.html
@@ -3224,6 +3249,10 @@ msgstr ""
 msgid "Loading GIF animation..."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/nestedcomment-search/nested-comment-search.component.html
+msgid "Loading content..."
+msgstr ""
+
 msgid "Loading edit proposals"
 msgstr ""
 
@@ -3549,6 +3578,10 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/services/search-filter.service.ts
 msgid "Moon illumination"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+msgid "Moon scale"
 msgstr ""
 
 msgid "More"
@@ -5094,6 +5127,10 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+msgid "Show Moon scale (M)"
+msgstr ""
+
 msgid "Show guiding equipment"
 msgstr ""
 
@@ -6010,6 +6047,14 @@ msgid ""
 "and the full amount on the following billing dates."
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+msgid ""
+"This scale represents the apparent size of the full moon (0.52° diameter) "
+"based on the plate-solved pixel scale of the image. The actual apparent "
+"size of the moon varies slightly throughout the year due to its elliptical "
+"orbit."
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/features/search/components/filters/search-text-filter/search-text-filter.component.ts
 msgid ""
 "This searches the title, description, and most image attributes, even if "
@@ -6292,6 +6337,12 @@ msgstr ""
 msgid "Unapprove"
 msgstr ""
 
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/editors/base-item-editor/base-item-editor.component.ts
+msgid ""
+"Unapproved duplicate exists. Please email {{0}} to request an expedited "
+"review."
+msgstr ""
+
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-menu.component.ts
 msgid "Uncompressed source file"
 msgstr ""
@@ -6353,6 +6404,11 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/services/equipment-item.service.ts
 msgid "Unspecified condition"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+msgid "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North"
 msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/version-check.service.ts
@@ -7241,6 +7297,11 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/equipment/pages/marketplace/listing/marketplace-listing.page.component.html
 msgid "{{0}} followers"
+msgstr ""
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+msgid "{{0}} images"
 msgstr ""
 
 msgid "{{0}} images in common"
