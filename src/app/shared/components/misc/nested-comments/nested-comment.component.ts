@@ -360,11 +360,12 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
 
   onSeeOriginalClicked(event: Event) {
     event.preventDefault();
-    this._updateHtml();
-    this.translated = false;
 
     // Clear translation preference in localStorage
     this.contentTranslateService.clearTranslation("comment", this.comment.id.toString());
+
+    this._updateHtml();
+    this.translated = false;
   }
 
   private _loadTranslatedContent(): void {
