@@ -110,7 +110,9 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
     const offcanvasRef = this.offcanvasService.open(AvatarEditorComponent, {
       position: 'end',
       panelClass: 'avatar-editor-offcanvas',
-      backdropClass: 'avatar-editor-backdrop'
+      backdropClass: 'avatar-editor-backdrop',
+      backdrop: 'static', // Prevent closing by clicking outside
+      beforeDismiss: () => offcanvasRef.componentInstance.beforeDismiss()
     });
     
     // Pass the user to the component

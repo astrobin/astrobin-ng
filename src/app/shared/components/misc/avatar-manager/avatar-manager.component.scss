@@ -1,7 +1,6 @@
 @import "src/app/styles/breakpoints";
 
 .avatar-manager-container {
-  padding: 1rem 0;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -12,13 +11,21 @@
     gap: 2rem;
     flex: 1;
 
+    &.has-preview {
+      .current-avatar-panel {
+        display: none;
+      }
+
+      .upload-panel {
+        flex: 1 1 100%; /* Take full available space when preview is active */
+      }
+    }
+
     .avatar-panel {
       flex: 1;
       display: flex;
       flex-direction: column;
-      border-radius: 1rem;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 
       @media (max-width: $sm-max) {
         width: 100%;
@@ -30,6 +37,7 @@
         text-align: center;
         width: 100%;
         max-width: 100%;
+        flex: 0 0 auto; /* Don't grow, don't shrink, size based on content */
 
         .avatar-container {
           width: 120px;
@@ -73,7 +81,7 @@
 
       &.upload-panel {
         padding: 0;
-        flex: 2;
+        flex: 1 1 auto; /* Grow and shrink as needed, filling available space */
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -91,11 +99,11 @@
             justify-content: center;
             background-color: var(--lightBg);
             border: 2px dashed var(--borderColor);
-            border-radius: 8px 8px 0 0;
             padding: 2rem;
             text-align: center;
             min-height: 200px;
             transition: all 0.2s ease;
+            height: 100%;
 
             @media (max-width: $sm-max) {
               width: 100%;
@@ -155,14 +163,14 @@
                 justify-content: center;
                 align-items: center;
                 overflow: hidden;
-                
+
                 .preview-image {
                   width: 100%;
                   height: 100%;
-                  object-fit: cover;
+                  object-fit: contain;
                   display: block;
                 }
-                
+
                 .avatar-preview-circle {
                   position: absolute;
                   top: 50%;
@@ -176,7 +184,7 @@
                   z-index: 1;
                 }
               }
-              
+
               .image-transform-controls {
                 position: absolute;
                 top: 10px;
@@ -187,11 +195,11 @@
                 background-color: rgba(0, 0, 0, 0.5);
                 border-radius: 4px;
                 padding: 5px;
-                
+
                 .transform-actions {
                   display: flex;
                   gap: .5rem;
-                  
+
                   button {
                     width: 32px;
                     height: 32px;
@@ -201,11 +209,11 @@
                     padding: 0;
                     background-color: rgba(255, 255, 255, 0.2);
                     border: none;
-                    
+
                     &:hover {
                       background-color: rgba(255, 255, 255, 0.3);
                     }
-                    
+
                     fa-icon {
                       font-size: .85rem;
                       color: white;
@@ -215,22 +223,25 @@
               }
 
               .preview-footer {
-                padding: 1.5rem .75rem;
+                padding: 1.5rem 1rem;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 background-color: var(--cardBg);
                 border-top: 1px solid var(--borderColor);
+                width: 100%;
 
                 @media (max-width: $sm-max) {
                   flex-direction: column;
-                  gap: .75rem;
+                  gap: 1rem;
                   align-items: center;
+                  padding: 1.5rem;
                 }
 
                 .preview-actions {
                   display: flex;
-                  gap: .5rem;
+                  gap: .75rem;
+                  flex-shrink: 0;
 
                   @media (max-width: $sm-max) {
                     width: 100%;
@@ -246,9 +257,12 @@
                   font-size: .85rem;
                   padding: 0;
                   background-color: transparent;
+                  margin-left: 1rem;
+                  overflow: hidden;
 
                   @media (max-width: $sm-max) {
                     width: 100%;
+                    margin-left: 0;
                     justify-content: center;
                     text-align: center;
                   }
@@ -257,12 +271,12 @@
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    max-width: 180px;
                   }
 
                   .file-size {
                     color: var(--textSecondaryColor);
-                    margin-left: .25rem;
+                    margin-left: .5rem;
+                    white-space: nowrap;
                   }
                 }
               }

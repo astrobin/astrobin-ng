@@ -1,5 +1,5 @@
 <div class="avatar-manager-container">
-  <div class="avatar-manager">
+  <div class="avatar-manager" [class.has-preview]="previewUrl">
     <div class="avatar-panel current-avatar-panel">
       <div class="avatar-container">
         <img [src]="avatarUrl" [alt]="user?.username" class="current-avatar-image" *ngIf="!loading && avatarUrl" />
@@ -61,7 +61,7 @@
                     <fa-icon icon="spinner" [spin]="true" *ngIf="loading"></fa-icon>
                     {{ loading ? ("Uploading" | translate) : ("Upload" | translate) }}
                   </button>
-                  <button class="btn btn-outline-secondary btn-sm m-0" (click)="previewUrl = null; selectedFile = null; rotation = 0; flipHorizontal = false; flipVertical = false" [disabled]="loading">
+                  <button class="btn btn-outline-secondary btn-sm m-0" (click)="cancelSelection()" [disabled]="loading">
                     <fa-icon icon="times"></fa-icon>
                     {{ "Cancel" | translate }}
                   </button>

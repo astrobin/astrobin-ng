@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -16,22 +16,35 @@ export class AvatarEditorComponent extends BaseComponentDirective {
   @Input()
   user: UserInterface;
 
-  @Output() 
+  @Output()
   avatarUpdated = new EventEmitter<string>();
+
+  isUploading = false;
 
   constructor(
     public readonly store$: Store<MainState>,
     public readonly activeOffcanvas: NgbActiveOffcanvas,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    private readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
 
   onAvatarUpdated(newAvatarUrl: string): void {
     this.avatarUpdated.emit(newAvatarUrl);
+    // Close the offcanvas when avatar is updated
+    this.close();
+  }
+
+  onLoadingChanged(loading: boolean): void {
+    this.isUploading = loading;
+    this.changeDetectorRef.markForCheck();
   }
 
   close(): void {
-    this.activeOffcanvas.dismiss();
+    // Only allow closing if not currently uploading
+    if (!this.isUploading) {
+      this.activeOffcanvas.dismiss();
+    }
   }
 }
