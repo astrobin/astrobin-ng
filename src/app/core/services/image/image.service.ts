@@ -1,4 +1,4 @@
-import { ElementRef, Inject, Injectable, NgZone, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { Inject, Injectable, NgZone, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
 import { WindowRefService } from "@core/services/window-ref.service";
@@ -661,9 +661,38 @@ export class ImageService extends BaseService {
     }
 
     const symbol = "<span class='symbol'>&deg;N</span>";
-    const value = parseFloat((revision.solution.advancedOrientation || revision.solution.orientation)).toFixed(2);
+    const value = this.calculateCorrectOrientation(revision.solution).toFixed(2);
 
     return `${value}${symbol}`;
+  }
+
+  /**
+   * Calculate the correct orientation value considering differences between astrometry.net and PixInsight
+   *
+   * PixInsight's advancedOrientation is the negative/mirror of astrometry.net's orientation,
+   * except when advancedFlipped is true.
+   */
+  calculateCorrectOrientation(solution: any): number {
+    // If we don't have advanced data, use the regular orientation
+    if (solution.advancedOrientation === undefined || solution.advancedOrientation === null) {
+      return parseFloat(solution.orientation);
+    }
+
+    // Get the advanced orientation as a number
+    let orientation = parseFloat(solution.advancedOrientation);
+
+    // If advancedFlipped is NOT true, we need to mirror the orientation
+    // by adding 180 degrees to it
+    if (solution.advancedFlipped !== true) {
+      orientation = (360 - orientation) % 360;
+    }
+
+    // Ensure orientation is between 0 and 360 degrees
+    if (orientation < 0) {
+      orientation = (orientation + 360) % 360;
+    }
+
+    return orientation;
   }
 
   getFieldRadius(image: ImageInterface, revisionLabel: string): string {
@@ -677,6 +706,25 @@ export class ImageService extends BaseService {
     const value = parseFloat(revision.solution.radius).toFixed(2);
 
     return `${value}${symbol}`;
+  }
+
+  getFieldSize(image: ImageInterface, revisionLabel: string): string {
+    const revision = this.getRevision(image, revisionLabel);
+
+    // Ensure we have the necessary data: pixel scale, image width, and image height.
+    if (!revision.solution || !revision.solution.pixscale || !revision.w || !revision.h) {
+      return null;
+    }
+
+    const symbol = "<span class='symbol'>&deg;</span>";
+    const times = "<span class='symbol'>&times;</span>";
+    const pixelScale = parseFloat(revision.solution.advancedPixscale || revision.solution.pixscale);
+
+    // Calculate field width and height in degrees (pixel scale is in arcseconds per pixel, so divide by 3600)
+    const widthInDegrees = (revision.w * pixelScale / 3600).toFixed(2);
+    const heightInDegrees = (revision.h * pixelScale / 3600).toFixed(2);
+
+    return `${widthInDegrees}${symbol} ${times} ${heightInDegrees}${symbol}`;
   }
 
   validateRevisionLabel(image: ImageInterface, revisionLabel: string): string {
@@ -993,11 +1041,17 @@ export class ImageService extends BaseService {
     let thumbnail: string;
 
     if (image.descriptionBbcode && image.descriptionBbcode.length > 0) {
-      description = this.bbcodeService.transformBBCodeToHtml(
-        image.descriptionBbcode
-      ).slice(0, maxDescriptionLength) + "...";
+      // Strip BBCode tags and use plain text for meta tags
+      const strippedText = this.bbcodeService.stripBBCode(image.descriptionBbcode);
+      description = strippedText.slice(0, maxDescriptionLength);
+      if (strippedText.length > maxDescriptionLength) {
+        description += "...";
+      }
     } else if (image.description && image.description.length > 0) {
-      description = image.description.slice(0, maxDescriptionLength) + "...";
+      description = image.description.slice(0, maxDescriptionLength);
+      if (image.description.length > maxDescriptionLength) {
+        description += "...";
+      }
     } else {
       description = this.translateService.instant("An image on AstroBin.");
     }

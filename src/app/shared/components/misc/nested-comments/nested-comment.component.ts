@@ -25,6 +25,7 @@ import { PopNotificationsService } from "@core/services/pop-notifications.servic
 import { DeviceService } from "@core/services/device.service";
 import { SafeHtml } from "@angular/platform-browser";
 import { ContentTranslateService } from "@core/services/content-translate.service";
+import { HighlightService } from "@core/services/highlight.service";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -93,11 +94,13 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly elementRef: ElementRef,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly userService: UserService,
+    public readonly utilsService: UtilsService,
     @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly deviceService: DeviceService,
-    public readonly contentTranslateService: ContentTranslateService
+    public readonly contentTranslateService: ContentTranslateService,
+    public readonly highlightService: HighlightService
   ) {
     super(store$);
     this._isBrowser = isPlatformBrowser(platformId);
@@ -118,7 +121,6 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       return;
     }
 
-    this._initHighlightJs();
     this._elementWidth = this.elementRef.nativeElement.getBoundingClientRect().width;
     this._initMarginLeft();
     this.changeDetectorRef.markForCheck();
@@ -130,6 +132,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       this._initMarginLeft();
       this._initUserGalleryUrl();
       this._initAvatarUrl();
+      this._updateHtml(); // Re-run _updateHtml which conditionally calls _initHighlightJs
     }
   }
 
@@ -357,11 +360,12 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
 
   onSeeOriginalClicked(event: Event) {
     event.preventDefault();
-    this._updateHtml();
-    this.translated = false;
 
     // Clear translation preference in localStorage
     this.contentTranslateService.clearTranslation("comment", this.comment.id.toString());
+
+    this._updateHtml();
+    this.translated = false;
   }
 
   private _loadTranslatedContent(): void {
@@ -378,6 +382,12 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
           this.html = translatedHtml;
           this.translating = false;
           this.changeDetectorRef.markForCheck();
+
+          // Check for code blocks in translated content and apply highlighting if needed
+          if (this._isBrowser && this.highlightService.needsHighlighting(translatedHtml as string)) {
+            // Use utilsService.delay to wait for the DOM to update with the translated HTML
+            this.utilsService.delay(0).subscribe(() => this._initHighlightJs());
+          }
         },
         error => {
           this._updateHtml();
@@ -397,25 +407,25 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       return;
     }
 
-    const _win = this.windowRefService.nativeWindow as any;
+    // Check if the comment content has code blocks that need highlighting
+    const commentHtml = this.comment.html || "";
 
-    if (typeof _win.hljs !== undefined) {
-      const $elements = this.elementRef.nativeElement.querySelectorAll("pre code");
-      for (const $element of $elements) {
-        const brPlugin = {
-          "before:highlightBlock": ({ block }) => {
-            block.innerHTML = block.innerHTML.replace(/<br[ /]*>/g, "\n");
-          },
-          "after:highlightBlock": ({ result }) => {
-            result.value = result.value.replace(/\n/g, "<br>");
-          }
-        };
-
-        _win.hljs.addPlugin(brPlugin);
-        _win.hljs.highlightElement($element);
-        _win.hljs.initLineNumbersOnLoad();
-      }
+    if (!this.highlightService.needsHighlighting(commentHtml)) {
+      // No code blocks found, skip loading highlight.js
+      return;
     }
+
+    // Load highlight.js dynamically
+    this.highlightService.loadHighlightJs()
+      .then(() => {
+        // After successful loading, apply highlighting to code blocks
+        const element = this.elementRef.nativeElement;
+        this.highlightService.highlightCodeBlocks(element);
+        this.changeDetectorRef.markForCheck();
+      })
+      .catch(error => {
+        console.warn("Failed to load highlight.js:", error);
+      });
   }
 
   private _listenToLikes() {
@@ -530,6 +540,12 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     } else {
       // Otherwise use the original HTML
       this.html = this.contentTranslateService.sanitizeContent(this.comment.html, "html");
+    }
+
+    // If we're in the browser and the component has been rendered, check for code blocks
+    if (this._isBrowser && this.elementRef?.nativeElement) {
+      // Use utilsService.delay to wait for the DOM to update with the new HTML
+      this.utilsService.delay(0).subscribe(() => this._initHighlightJs());
     }
   }
 }

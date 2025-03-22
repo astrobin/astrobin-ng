@@ -78,16 +78,22 @@ import { ConstellationsService } from "@features/explore/services/constellations
         </div>
       </div>
 
-      <div *ngIf="fieldRadius" class="metadata-item">
+      <div *ngIf="fieldSize" class="metadata-item">
         <div class="metadata-icon">
           <fa-icon
-            [ngbTooltip]="'Field radius' | translate"
+            [ngbTooltip]="'Field size' | translate"
             triggers="hover click"
             container="body"
             icon="arrows-left-right-to-line"
           ></fa-icon>
         </div>
-        <div [innerHTML]="fieldRadius" class="metadata-label">
+        <div
+          [innerHTML]="fieldSize"
+          [ngbTooltip]="fieldRadiusTooltip"
+          triggers="hover click"
+          container="body"
+          class="metadata-label"
+        >
         </div>
       </div>
 
@@ -107,13 +113,19 @@ import { ConstellationsService } from "@features/explore/services/constellations
       <div *ngIf="orientation" class="metadata-item">
         <div class="metadata-icon">
           <fa-icon
-            [ngbTooltip]="'Orientation' | translate"
+            [ngbTooltip]="'Celestial North' | translate"
             triggers="hover click"
             container="body"
-            icon="rotate-left"
+            icon="location-arrow"
+            [ngStyle]="{ 'transform': 'rotate(calc(' + (orientationCalculated * -1) + 'deg - 45deg))' }"
           ></fa-icon>
         </div>
-        <div [innerHTML]="orientation" class="metadata-label">
+        <div
+          [innerHTML]="orientation"
+          [ngbTooltip]="orientationTooltip"
+          triggers="hover click"
+          container="body"
+          class="metadata-label">
         </div>
       </div>
     </div>
@@ -138,6 +150,10 @@ import { ConstellationsService } from "@features/explore/services/constellations
             <th>{{ "Coordinates" | translate }}</th>
             <td [innerHTML]="coordinates"></td>
           </tr>
+          <tr *ngIf="fieldSize">
+            <th>{{ "Field size" | translate }}</th>
+            <td [innerHTML]="fieldSize"></td>
+          </tr>
           <tr *ngIf="fieldRadius">
             <th>{{ "Field radius" | translate }}</th>
             <td [innerHTML]="fieldRadius"></td>
@@ -148,7 +164,15 @@ import { ConstellationsService } from "@features/explore/services/constellations
           </tr>
           <tr *ngIf="orientation">
             <th>{{ "Orientation" | translate }}</th>
-            <td [innerHTML]="orientation"></td>
+            <td>
+              <span [innerHTML]="orientation"></span>
+              <span *ngIf="orientationCalculated !== undefined" class="ms-2 text-muted">
+                ({{ "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North" | translate: {
+                   '0': orientationCalculated.toFixed(2),
+                   '1': (360 - orientationCalculated).toFixed(2)
+                 } }})
+              </span>
+            </td>
           </tr>
           <tr *ngIf="astrometryNetJobId">
             <th>Astrometry.net ID</th>
@@ -199,6 +223,17 @@ import { ConstellationsService } from "@features/explore/services/constellations
         </div>
       </div>
     </ng-template>
+
+    <ng-template #fieldRadiusTooltip>
+      {{ "Field radius" | translate }}: <span [innerHTML]="fieldRadius"></span>
+    </ng-template>
+
+    <ng-template #orientationTooltip>
+      {{ "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North" | translate: {
+         '0': orientationCalculated.toFixed(2),
+         '1': (360 - orientationCalculated).toFixed(2)
+       } }}
+    </ng-template>
   `,
   styleUrls: ["./image-viewer-astrometry.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -213,13 +248,23 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
   protected constellationIsSearchTerm = false;
   protected coordinates: string;
   protected coordinatesTextArea: string;
+  protected fieldSize: string;
   protected fieldRadius: string;
   protected pixelScale: string;
   protected orientation: string;
+  protected orientationValue: number;
+  protected orientationAbsValue: string;
+  protected orientationCalculated: number;
   protected astrometryNetJobId: string;
 
   @ViewChild("moreInfoTemplate")
   moreInfoTemplate: TemplateRef<any>;
+
+  @ViewChild("fieldRadiusTooltip")
+  fieldRadiusTooltip: TemplateRef<any>;
+
+  @ViewChild("orientationTooltip")
+  orientationTooltip: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -266,9 +311,27 @@ export class ImageViewerAstrometryComponent extends ImageViewerSectionBaseCompon
         this.imageService.getCoordinatesInDecimalFormat(image, this.revisionLabel) + "\n\n" +
         this.translateService.instant("Sexagesimal") + ": \n" +
         this.imageService.getCoordinates(image, this.revisionLabel, false, false, true, 2);
+      this.fieldSize = this.imageService.getFieldSize(image, this.revisionLabel);
       this.fieldRadius = this.imageService.getFieldRadius(image, this.revisionLabel);
       this.pixelScale = this.imageService.getPixelScale(image, this.revisionLabel);
+      // Get the raw orientation string with formatting
       this.orientation = this.imageService.getOrientation(image, this.revisionLabel);
+
+      // Extract the orientation value as a number
+      if (this.orientation) {
+        const match = this.orientation.match(/(-?\d+(\.\d+)?)/);
+        if (match) {
+          this.orientationValue = parseFloat(match[0]);
+          this.orientationAbsValue = Math.abs(this.orientationValue).toString() + "°";
+
+          // Get the correctly calculated orientation for the arrow rotation
+          if (this.revision?.solution) {
+            // Use the calculated orientation for the compass arrow
+            this.orientationCalculated = this.imageService.calculateCorrectOrientation(this.revision.solution);
+          }
+        }
+      }
+
       this.astrometryNetJobId = this.revision?.solution?.submissionId?.toString();
     }
   }

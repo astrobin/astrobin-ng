@@ -18,11 +18,10 @@ import { ImageViewerService } from "@core/services/image-viewer.service";
   template: `
     <div class="page">
 
-      <ng-container *ngIf="isBrowser; else loadingTemplate">
-        <astrobin-iotd></astrobin-iotd>
+      <astrobin-iotd></astrobin-iotd>
 
-        <div class="latest-from-the-forums">
-          <div class="
+      <div class="latest-from-the-forums">
+        <div class="
           header
           d-flex
           justify-content-center justify-content-md-between
@@ -31,33 +30,32 @@ import { ImageViewerService } from "@core/services/image-viewer.service";
           gap-3 gap-sm-2
           mb-3
         ">
-            <h4>{{ "Latest from the forums" | translate }}</h4>
-            <div class="d-flex gap-2 align-items-center">
-              <a
-                [href]="classicRoutesService.FORUM_LATEST"
-                class="no-wrap btn btn-link link-primary btn-xs m-0"
-              >
-                {{ "View all" | translate }}
-              </a>
+          <h4>{{ "Latest from the forums" | translate }}</h4>
+          <div class="d-flex gap-2 align-items-center">
+            <a
+              [href]="classicRoutesService.FORUM_LATEST"
+              class="no-wrap btn btn-link link-primary btn-xs m-0"
+            >
+              {{ "View all" | translate }}
+            </a>
 
-              <a
-                [href]="classicRoutesService.FORUM_HOME + '#new-topic'"
-                class="no-wrap btn btn-primary btn-xs"
-              >
-                {{ "New topic" | translate }}
-              </a>
-            </div>
+            <a
+              [href]="classicRoutesService.FORUM_HOME + '#new-topic'"
+              class="no-wrap btn btn-primary btn-xs"
+            >
+              {{ "New topic" | translate }}
+            </a>
           </div>
-
-          <astrobin-forum-preview
-            [showHeader]="false"
-            [showFooter]="false"
-            [useCard]="false"
-          ></astrobin-forum-preview>
         </div>
 
-        <astrobin-feed></astrobin-feed>
-      </ng-container>
+        <astrobin-forum-preview
+          [showHeader]="false"
+          [showFooter]="false"
+          [useCard]="false"
+        ></astrobin-forum-preview>
+      </div>
+
+      <astrobin-feed></astrobin-feed>
     </div>
 
     <ng-template #loadingTemplate>

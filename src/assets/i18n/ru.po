@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2025-03-14 11:03+0100\n"
+"PO-Revision-Date: 2025-03-21 18:07+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -12165,7 +12165,6 @@ msgstr "Переведено"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302db92
-#, fuzzy
 msgid "Activate zoom first before freezing (click or scroll on image)."
 msgstr ""
 "Сначала активируйте зум, прежде чем замораживать (кликните или прокрутите по "
@@ -12173,31 +12172,26 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.ts
 #: loco:67d3fdd64ffe2e5a5302db93
-#, fuzzy
 msgid "Astrophotographers List"
 msgstr "Список астрофотографов"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
 #: loco:67d3fdd64ffe2e5a5302db94
-#, fuzzy
 msgid "Connection error"
 msgstr "Ошибка подключения"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db95
-#, fuzzy
 msgid "Contribution Data"
 msgstr "Данные о вкладе"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db96
-#, fuzzy
 msgid "Contribution index"
 msgstr "Индекс вклада"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
 #: loco:67d3fdd64ffe2e5a5302db97
-#, fuzzy
 msgid ""
 "Could not connect to the server. Please check your internet connection and "
 "try again."
@@ -12207,38 +12201,32 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db98
-#, fuzzy
 msgid "External sources"
 msgstr "Внешние источники"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db99
-#, fuzzy
 msgid "Forum posts"
 msgstr "Сообщения на форуме"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db9a
-#, fuzzy
 msgid "IOTDs"
 msgstr "IOTD (Изображение дня)"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db9b
-#, fuzzy
 msgid "Image Data"
 msgstr "Данные изображения"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9c
-#, fuzzy
 msgid "Images acquired or processed from a source not listed above."
 msgstr ""
 "Изображения, полученные или обработанные из источника, не указанного выше."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9d
-#, fuzzy
 msgid ""
 "Images captured by renting time or purchasing data from an amateur hosting "
 "facility."
@@ -12248,14 +12236,12 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9e
-#, fuzzy
 msgid "Images captured with portable gear at distant locations."
 msgstr ""
 "Изображения, захваченные с портативным оборудованием в удаленных местах."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9f
-#, fuzzy
 msgid ""
 "Images captured with your own equipment at a remote observatory you own or "
 "rent, at a distant location."
@@ -12265,20 +12251,17 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba0
-#, fuzzy
 msgid "Images captured with your own equipment near home."
 msgstr ""
 "Изображения, захваченные с вашим собственным оборудованием рядом с домом."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba1
-#, fuzzy
 msgid "Images processed from a mix of the above sources."
 msgstr "Изображения, обработанные из смеси вышеуказанных источников."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba2
-#, fuzzy
 msgid ""
 "Images processed from professional data repositories, e.g. Hubble, JWST, ESO,"
 " etc."
@@ -12288,7 +12271,6 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba3
-#, fuzzy
 msgid ""
 "Images processed from publicly shared data by amateur astrophotographers."
 msgstr ""
@@ -12298,100 +12280,176 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dba4
-#, fuzzy
 msgid "No data available"
 msgstr "Нет доступных данных"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba5
-#, fuzzy
 msgid "Private remote observatory"
 msgstr "Частная удаленная обсерватория"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dba6
-#, fuzzy
 msgid "Received"
 msgstr "Получено"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba7
-#, fuzzy
 msgid "Remote observatory"
 msgstr "Удаленная обсерватория"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba8
-#, fuzzy
 msgid "Self-acquired"
 msgstr "Самостоятельно полученные"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302dba9
-#, fuzzy
 msgid "Sorry, zooming on GIF animations is not available on touch devices."
 msgstr ""
 "Извините, зумирование на GIF-анимациях недоступно на сенсорных устройствах."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbaa
-#, fuzzy
 msgid "Top Pick Nominations"
 msgstr "Номинации на лучший выбор"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbab
-#, fuzzy
 msgid "Top Picks"
 msgstr "Лучшие выборы"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbac
-#, fuzzy
 msgid "User"
 msgstr "Пользователь"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbad
-#, fuzzy
 msgid "Written"
 msgstr "Написано"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dbae
-#, fuzzy
 msgid "You're not sure where the data comes from."
 msgstr "Вы не уверены, откуда данные."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302dbaf
-#, fuzzy
 msgid "Zoom freezing is not available for very large images."
 msgstr "Замораживание зума недоступно для очень больших изображений."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302dbb0
-#, fuzzy
 msgid "Zoom freezing is only available in mouse mode."
 msgstr "Замораживание зума доступно только в режиме мыши."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: loco:67d3fdd64ffe2e5a5302dbb1
-#, fuzzy
 msgid "Zoom is frozen (F)"
 msgstr "Зум заморожен (F)"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: loco:67d3fdd64ffe2e5a5302dbb2
-#, fuzzy
 msgid "Zoom is frozen. Press F to unfreeze."
 msgstr "Зум заморожен. Нажмите F, чтобы разморозить."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: loco:67d3fdd64ffe2e5a5302dbb3
-#, fuzzy
 msgid "Zooming is not available for GIF animations on touch devices."
 msgstr "Зумирование недоступно для GIF-анимаций на сенсорных устройствах."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:67dd9af631d471241a09d832
+#, fuzzy
+msgid "About moon scale"
+msgstr "О масштабе Луны"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:67dd9af631d471241a09d833
+#, fuzzy
+msgid "All unsaved changes will be lost."
+msgstr "Все несохраненные изменения будут потеряны."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:67dd9af631d471241a09d834
+#, fuzzy
+msgid "Celestial North"
+msgstr "Целестиальный Север"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:67dd9af631d471241a09d835
+#, fuzzy
+msgid "Exit equipment creation?"
+msgstr "Выйти из создания оборудования?"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:67dd9af631d471241a09d836
+#, fuzzy
+msgid "Field size"
+msgstr "Размер поля"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:67dd9af631d471241a09d837
+#, fuzzy
+msgid "Hide Moon scale (M)"
+msgstr "Скрыть масштаб Луны (M)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/nestedcomment-search/nested-comment-search.component.html
+#: loco:67dd9af631d471241a09d838
+#, fuzzy
+msgid "Loading content..."
+msgstr "Загрузка контента..."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:67dd9af631d471241a09d839
+#, fuzzy
+msgid "Moon scale"
+msgstr "Масштаб Луны"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:67dd9af631d471241a09d83a
+#, fuzzy
+msgid "Show Moon scale (M)"
+msgstr "Показать масштаб Луны (M)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:67dd9af631d471241a09d83b
+#, fuzzy
+msgid ""
+"This scale represents the apparent size of the full moon (0.52° diameter) "
+"based on the plate-solved pixel scale of the image. The actual apparent size "
+"of the moon varies slightly throughout the year due to its elliptical orbit."
+msgstr ""
+"Этот масштаб представляет собой видимый размер полной Луны (0.52° в диаметре)"
+" на основе пиксельного масштаба изображения, определенного по плате. "
+"Фактический видимый размер Луны немного варьируется в течение года из-за ее "
+"эллиптической орбиты."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/editors/base-item-editor/base-item-editor.component.ts
+#: loco:67dd9af631d471241a09d83c
+#, fuzzy
+msgid ""
+"Unapproved duplicate exists. Please email {{0}} to request an expedited "
+"review."
+msgstr ""
+"Существует неподтвержденный дубликат. Пожалуйста, напишите на {{0}}, чтобы "
+"запросить ускоренный обзор."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:67dd9af631d471241a09d83d
+#, fuzzy
+msgid "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North"
+msgstr "Вверх — {{ 0 }}° к востоку от севера, или {{ 1 }}° к западу от севера"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: loco:67dd9af631d471241a09d83e
+#, fuzzy
+msgid "{{0}} images"
+msgstr "{{0}} изображений"

@@ -39,6 +39,21 @@ import { DeviceService } from "@core/services/device.service";
     </button>
 
     <button
+      *ngIf="revision?.solution?.pixscale"
+      (click)="toggleMoonOverlay.emit()"
+      astrobinEventPreventDefault
+      class="moon-scale-button btn btn-link"
+      [class.active-moon]="moonOverlayActive"
+      [class.text-light]="!moonOverlayActive"
+    >
+      <fa-icon
+        [ngbTooltip]="moonOverlayActive ? hideMoonScaleTooltip : showMoonScaleTooltip"
+        container="body"
+        icon="moon"
+      ></fa-icon>
+    </button>
+
+    <button
       *ngIf="revision?.solution && (revision?.solution.skyplotZoom1 || revision?.solution.pixinsightFindingChart)"
       (click)="openSkyplot()"
       astrobinEventPreventDefault
@@ -114,6 +129,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   @Input() hasMouseHover: boolean;
   @Input() inlineSvg: SafeHtml;
   @Input() forceViewMouseHover: boolean;
+  @Input() moonOverlayActive = false;
 
   // Only for desktops.
   @Output() toggleAnnotationsOnMouseHover = new EventEmitter<void>();
@@ -124,6 +140,7 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   @Output() toggleViewMouseHover = new EventEmitter<void>();
 
   @Output() showAdjustmentsEditor = new EventEmitter<void>();
+  @Output() toggleMoonOverlay = new EventEmitter<void>();
 
   @ViewChild("skyplotModalTemplate")
   skyplotModalTemplate: TemplateRef<any>;
@@ -138,6 +155,8 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
   protected loadingHistogram = false;
   protected histogram: string;
   protected toggleAnnotationsOnMouseHoverTooltip: string;
+  protected showMoonScaleTooltip: string;
+  protected hideMoonScaleTooltip: string;
 
   constructor(
     public readonly modalService: NgbModal,
@@ -148,11 +167,20 @@ export class ImageViewerAdditionalButtonComponent implements OnChanges {
     public readonly deviceService: DeviceService,
   ) {
     this.isTouchOnly = this.deviceService.isTouchEnabled() && !this.deviceService.isHybridPC();
+    
+    // Initialize tooltip texts for i18n extraction
+    this.showMoonScaleTooltip = this.translateService.instant("Show Moon scale (M)");
+    this.hideMoonScaleTooltip = this.translateService.instant("Hide Moon scale (M)");
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.image || changes.revisionLabel) {
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
+      
+      // Reset moon overlay active state when image changes
+      if (changes.image && changes.image.previousValue !== changes.image.currentValue) {
+        this.moonOverlayActive = false;
+      }
     }
 
     if (changes.allowTogglingAnnotationsOnMouseHover || changes.showAnnotationsOnMouseHover || changes.hasMouseHover) {

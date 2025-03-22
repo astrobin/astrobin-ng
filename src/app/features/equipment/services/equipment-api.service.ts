@@ -298,6 +298,11 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     type: EquipmentItemType,
     properties: { [key: string]: any }
   ): Observable<EquipmentItemBaseInterface> | null {
+    if (properties.allowUnapproved) {
+      properties["allow-unapproved"] = properties.allowUnapproved;
+      delete properties.allowUnapproved
+    }
+
     const path = EquipmentItemType[type].toLowerCase();
     const queryString = new URLSearchParams(properties);
     return this.http
@@ -308,9 +313,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   getByBrandAndName(
     type: EquipmentItemType,
     brand: EquipmentItemBaseInterface["brand"],
-    name: EquipmentItemBaseInterface["name"]
+    name: EquipmentItemBaseInterface["name"],
+    options: {
+      allowUnapproved?: boolean;
+    } = {}
   ): Observable<EquipmentItemBaseInterface | null> {
-    return this.getByProperties(type, { brand, name });
+    return this.getByProperties(type, {
+      brand,
+      name,
+      allowUnapproved: options?.allowUnapproved || false
+    });
   }
 
   approveEquipmentItem(item: EquipmentItemBaseInterface, comment: string): Observable<EquipmentItemBaseInterface> {

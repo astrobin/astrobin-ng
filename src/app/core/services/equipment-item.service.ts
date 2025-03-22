@@ -5,7 +5,7 @@ import { UtilsService } from "@core/services/utils/utils.service";
 import { EquipmentItemBaseInterface, EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { EditProposalChange, EditProposalInterface, EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
-import { Observable, of } from "rxjs";
+import { Observable, of, from } from "rxjs";
 import { getEquipmentItemType, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -222,7 +222,8 @@ export class EquipmentItemService extends BaseService {
             : null
         );
       case EquipmentItemDisplayProperty.COMMUNITY_NOTES:
-        return of(
+        // Use the async version since community notes can contain extensive BBCode
+        return from(
           this.bbcodeService.transformBBCodeToHtml(
             propertyValue.toString()
           )

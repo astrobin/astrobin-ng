@@ -8,7 +8,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Observable, of } from "rxjs";
 import { ComponentCanDeactivate } from "@core/services/guards/pending-changes-guard.service";
 import { isPlatformBrowser } from "@angular/common";
-import { ImageInterface, ImageRevisionInterface, MouseHoverImageOptions } from "@core/interfaces/image.interface";
+import { FINAL_REVISION_LABEL, ImageInterface, ImageRevisionInterface, MouseHoverImageOptions } from "@core/interfaces/image.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TitleService } from "@core/services/title/title.service";
@@ -88,15 +88,23 @@ export class ImageEditRevisionPageComponent
       title: this.revision.title,
       description: this.revision.description,
       mouseHoverImage: this.revision.mouseHoverImage,
-      squareCropping: this.revision.squareCropping
+      squareCropping: this.revision.squareCropping,
+      loopVideo: this.revision.loopVideo,
     };
 
     this.imageThumbnail = this.image.thumbnails.find(thumbnail => thumbnail.alias === ImageAlias.GALLERY).url;
-    this.thumbnail = this.image.revisions.find(
-      revision => revision.label === this.revisionLabel
-    ).thumbnails.find(
-      thumbnail => thumbnail.alias === ImageAlias.HD
-    ).url;
+
+    if (this.image?.revisions) {
+      const revision = this.image.revisions.find(
+        revision => revision.label === this.revisionLabel
+      );
+
+      if (revision?.thumbnails) {
+        this.thumbnail = revision.thumbnails.find(
+          thumbnail => thumbnail.alias === ImageAlias.HD
+        )?.url;
+      }
+    }
 
     this._setTitle();
     this._initBreadcrumb();
@@ -112,14 +120,23 @@ export class ImageEditRevisionPageComponent
   onSave(event: Event) {
     event.preventDefault();
 
+    if (this.saving) {
+      return;
+    }
+
     this.saving = true;
+
+    const filterFn = (action: SaveImageRevisionSuccess): boolean =>
+      (
+        action.payload.revision.label === this.revisionLabel ||
+        (action.payload.revision.isFinal && this.revisionLabel === FINAL_REVISION_LABEL)
+      ) &&
+      action.payload.revision.image === this.image.pk;
+
 
     this.actions$.pipe(
       ofType(AppActionTypes.SAVE_IMAGE_REVISION_SUCCESS),
-      filter((action: SaveImageRevisionSuccess) =>
-        action.payload.revision.label === this.revisionLabel &&
-        action.payload.revision.image === this.image.pk
-      ),
+      filter((action: SaveImageRevisionSuccess) => filterFn(action)),
       take(1)
     ).subscribe(() => {
       this.form.markAsPristine();
@@ -128,10 +145,7 @@ export class ImageEditRevisionPageComponent
 
     this.actions$.pipe(
       ofType(AppActionTypes.SAVE_IMAGE_REVISION_FAILURE),
-      filter((action: SaveImageRevisionSuccess) =>
-        action.payload.revision.label === this.revisionLabel &&
-        action.payload.revision.image === this.image.pk
-      ),
+      filter((action: SaveImageRevisionSuccess) => filterFn(action)),
       take(1)
     ).subscribe(() => {
       this.saving = false;
@@ -190,6 +204,18 @@ export class ImageEditRevisionPageComponent
           ),
           image: this.revision,
           thumbnailURL$: of(this.thumbnail)
+        }
+      },
+      {
+        key: "loopVideo",
+        type: "checkbox",
+        id: "image-loop-video-field",
+        hide: !this.revision.videoFile,
+        props: {
+          label: this.translateService.instant("Loop video"),
+          description: this.translateService.instant(
+            "If checked, the video will loop."
+          )
         }
       }
     ];

@@ -13,7 +13,11 @@
       ></formly-form>
     </form>
 
-    <div *ngIf="imageEditEquipmentFieldsService.creationMode" class="equipment-item-creation-mode-overlay"></div>
+    <div
+      *ngIf="imageEditEquipmentFieldsService.creationMode"
+      class="equipment-item-creation-mode-overlay"
+      (click)="promptToExitEquipmentItemCreationMode($event)"
+    ></div>
   </ng-container>
 </ng-template>
 

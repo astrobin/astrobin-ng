@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2025-03-14 11:03+0100\n"
+"PO-Revision-Date: 2025-03-21 18:07+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Greek\n"
 "Language: el\n"
@@ -12266,7 +12266,6 @@ msgstr "Μεταφρασμένο"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302db92
-#, fuzzy
 msgid "Activate zoom first before freezing (click or scroll on image)."
 msgstr ""
 "Ενεργοποίησε πρώτα το zoom πριν παγώσεις (κάνε κλικ ή κύλησε πάνω στην "
@@ -12274,31 +12273,26 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.ts
 #: loco:67d3fdd64ffe2e5a5302db93
-#, fuzzy
 msgid "Astrophotographers List"
 msgstr "Λίστα Αστροφωτογράφων"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
 #: loco:67d3fdd64ffe2e5a5302db94
-#, fuzzy
 msgid "Connection error"
 msgstr "Σφάλμα σύνδεσης"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db95
-#, fuzzy
 msgid "Contribution Data"
 msgstr "Δεδομένα Συμμετοχής"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db96
-#, fuzzy
 msgid "Contribution index"
 msgstr "Δείκτης Συμμετοχής"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
 #: loco:67d3fdd64ffe2e5a5302db97
-#, fuzzy
 msgid ""
 "Could not connect to the server. Please check your internet connection and "
 "try again."
@@ -12308,31 +12302,26 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db98
-#, fuzzy
 msgid "External sources"
 msgstr "Εξωτερικές πηγές"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db99
-#, fuzzy
 msgid "Forum posts"
 msgstr "Δημοσιεύσεις φόρουμ"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db9a
-#, fuzzy
 msgid "IOTDs"
 msgstr "IOTDs"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db9b
-#, fuzzy
 msgid "Image Data"
 msgstr "Δεδομένα Εικόνας"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9c
-#, fuzzy
 msgid "Images acquired or processed from a source not listed above."
 msgstr ""
 "Εικόνες που αποκτήθηκαν ή επεξεργάστηκαν από πηγή που δεν αναφέρεται "
@@ -12340,7 +12329,6 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9d
-#, fuzzy
 msgid ""
 "Images captured by renting time or purchasing data from an amateur hosting "
 "facility."
@@ -12350,14 +12338,12 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9e
-#, fuzzy
 msgid "Images captured with portable gear at distant locations."
 msgstr ""
 "Εικόνες που καταγράφηκαν με φορητό εξοπλισμό σε απομακρυσμένες τοποθεσίες."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9f
-#, fuzzy
 msgid ""
 "Images captured with your own equipment at a remote observatory you own or "
 "rent, at a distant location."
@@ -12367,19 +12353,16 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba0
-#, fuzzy
 msgid "Images captured with your own equipment near home."
 msgstr "Εικόνες που καταγράφηκαν με τον δικό σου εξοπλισμό κοντά στο σπίτι."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba1
-#, fuzzy
 msgid "Images processed from a mix of the above sources."
 msgstr "Εικόνες που επεξεργάστηκαν από ένα μείγμα των παραπάνω πηγών."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba2
-#, fuzzy
 msgid ""
 "Images processed from professional data repositories, e.g. Hubble, JWST, ESO,"
 " etc."
@@ -12389,7 +12372,6 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba3
-#, fuzzy
 msgid ""
 "Images processed from publicly shared data by amateur astrophotographers."
 msgstr ""
@@ -12399,37 +12381,31 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dba4
-#, fuzzy
 msgid "No data available"
 msgstr "Δεν είναι διαθέσιμα δεδομένα"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba5
-#, fuzzy
 msgid "Private remote observatory"
 msgstr "Ιδιωτικό απομακρυσμένο παρατηρητήριο"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dba6
-#, fuzzy
 msgid "Received"
 msgstr "Λήφθηκε"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba7
-#, fuzzy
 msgid "Remote observatory"
 msgstr "Απομακρυσμένο παρατηρητήριο"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba8
-#, fuzzy
 msgid "Self-acquired"
 msgstr "Αυτο-αποκτηθέν"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302dba9
-#, fuzzy
 msgid "Sorry, zooming on GIF animations is not available on touch devices."
 msgstr ""
 "Λυπάμαι, η δυνατότητα zoom σε GIF animations δεν είναι διαθέσιμη σε συσκευές "
@@ -12437,46 +12413,39 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbaa
-#, fuzzy
 msgid "Top Pick Nominations"
 msgstr "Υποψηφιότητες Κορυφαίων Επιλογών"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbab
-#, fuzzy
 msgid "Top Picks"
 msgstr "Κορυφαίες Επιλογές"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbac
-#, fuzzy
 msgid "User"
 msgstr "Χρήστης"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbad
-#, fuzzy
 msgid "Written"
 msgstr "Γραπτό"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dbae
-#, fuzzy
 msgid "You're not sure where the data comes from."
 msgstr "Δεν είσαι σίγουρος από πού προέρχονται τα δεδομένα."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302dbaf
-#, fuzzy
 msgid "Zoom freezing is not available for very large images."
 msgstr ""
 "Η δυνατότητα zoom freezing δεν είναι διαθέσιμη για πολύ μεγάλες εικόνες."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302dbb0
-#, fuzzy
 msgid "Zoom freezing is only available in mouse mode."
 msgstr ""
 "Η δυνατότητα zoom freezing είναι διαθέσιμη μόνο σε λειτουργία ποντικιού."
@@ -12484,19 +12453,108 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: loco:67d3fdd64ffe2e5a5302dbb1
-#, fuzzy
 msgid "Zoom is frozen (F)"
 msgstr "Το zoom είναι παγωμένο (F)"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: loco:67d3fdd64ffe2e5a5302dbb2
-#, fuzzy
 msgid "Zoom is frozen. Press F to unfreeze."
 msgstr "Το zoom είναι παγωμένο. Πάτησε F για να ξεπαγώσεις."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: loco:67d3fdd64ffe2e5a5302dbb3
-#, fuzzy
 msgid "Zooming is not available for GIF animations on touch devices."
 msgstr ""
 "Η δυνατότητα zoom δεν είναι διαθέσιμη για GIF animations σε συσκευές αφής."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:67dd9af631d471241a09d832
+#, fuzzy
+msgid "About moon scale"
+msgstr "Σχετικά με την κλίμακα της σελήνης"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:67dd9af631d471241a09d833
+#, fuzzy
+msgid "All unsaved changes will be lost."
+msgstr "Όλες οι μη αποθηκευμένες αλλαγές θα χαθούν."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:67dd9af631d471241a09d834
+#, fuzzy
+msgid "Celestial North"
+msgstr "Ουράνιος Βορράς"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:67dd9af631d471241a09d835
+#, fuzzy
+msgid "Exit equipment creation?"
+msgstr "Θέλεις να βγεις από τη δημιουργία εξοπλισμού;"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:67dd9af631d471241a09d836
+#, fuzzy
+msgid "Field size"
+msgstr "Μέγεθος πεδίου"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:67dd9af631d471241a09d837
+#, fuzzy
+msgid "Hide Moon scale (M)"
+msgstr "Απόκρυψη κλίμακας σελήνης (M)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/nestedcomment-search/nested-comment-search.component.html
+#: loco:67dd9af631d471241a09d838
+#, fuzzy
+msgid "Loading content..."
+msgstr "Φόρτωση περιεχομένου..."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:67dd9af631d471241a09d839
+#, fuzzy
+msgid "Moon scale"
+msgstr "Κλίμακα σελήνης"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:67dd9af631d471241a09d83a
+#, fuzzy
+msgid "Show Moon scale (M)"
+msgstr "Εμφάνιση κλίμακας σελήνης (M)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:67dd9af631d471241a09d83b
+#, fuzzy
+msgid ""
+"This scale represents the apparent size of the full moon (0.52° diameter) "
+"based on the plate-solved pixel scale of the image. The actual apparent size "
+"of the moon varies slightly throughout the year due to its elliptical orbit."
+msgstr ""
+"Αυτή η κλίμακα αντιπροσωπεύει το φαινόμενο μέγεθος της πλήρους σελήνης (0."
+"52° διάμετρος) με βάση την κλίμακα των pixel που έχει λυθεί από την πλάκα "
+"της εικόνας. Το πραγματικό φαινόμενο μέγεθος της σελήνης ποικίλλει ελαφρώς "
+"καθ' όλη τη διάρκεια του έτους λόγω της ελλειπτικής τροχιάς της."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/editors/base-item-editor/base-item-editor.component.ts
+#: loco:67dd9af631d471241a09d83c
+#, fuzzy
+msgid ""
+"Unapproved duplicate exists. Please email {{0}} to request an expedited "
+"review."
+msgstr ""
+"Υπάρχει μη εγκεκριμένο αντίγραφο. Παρακαλώ στείλτε email στο {{0}} για να "
+"ζητήσετε επείγουσα ανασκόπηση."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:67dd9af631d471241a09d83d
+#, fuzzy
+msgid "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North"
+msgstr "Πάνω είναι {{ 0 }}° Ανατολικά του Βορρά, ή {{ 1 }}° Δυτικά του Βορρά"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: loco:67dd9af631d471241a09d83e
+#, fuzzy
+msgid "{{0}} images"
+msgstr "{{0}} εικόνες"

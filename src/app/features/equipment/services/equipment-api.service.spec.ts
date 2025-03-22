@@ -212,7 +212,7 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/sensor/?${new URLSearchParams({ brand: item.brand.toString(), name: item.name })}`
+        `${service.configUrl}/sensor/?${new URLSearchParams({ brand: item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -226,7 +226,7 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/camera/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+        `${service.configUrl}/camera/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -240,7 +240,7 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/telescope/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+        `${service.configUrl}/telescope/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -254,7 +254,7 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/mount/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+        `${service.configUrl}/mount/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -268,7 +268,7 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/filter/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+        `${service.configUrl}/filter/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -282,7 +282,7 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/accessory/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+        `${service.configUrl}/accessory/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);
@@ -296,7 +296,7 @@ describe("EquipmentApiService", () => {
       });
 
       const req = httpMock.expectOne(
-        `${service.configUrl}/software/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+        `${service.configUrl}/software/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name, allowUnapproved: "false" })}`
       );
       expect(req.request.method).toBe("GET");
       req.flush(item);

@@ -115,16 +115,16 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
                 description
               };
 
+              const message = {
+                scope: "migrationWarning",
+                level: FormlyFieldMessageLevel.WARNING,
+                text: warning
+              };
+
               if (warning) {
-                this.formlyFieldService.addMessage(field, {
-                  level: FormlyFieldMessageLevel.WARNING,
-                  text: warning
-                });
+                this.formlyFieldService.addMessage(field, message);
               } else {
-                this.formlyFieldService.removeMessage(field, {
-                  level: FormlyFieldMessageLevel.WARNING,
-                  text: warning
-                });
+                this.formlyFieldService.removeMessage(field, message);
               }
             });
           }

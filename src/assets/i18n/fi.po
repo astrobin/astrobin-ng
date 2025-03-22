@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2025-03-14 11:03+0100\n"
+"PO-Revision-Date: 2025-03-21 18:07+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -12024,37 +12024,31 @@ msgstr "Käännetty"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302db92
-#, fuzzy
 msgid "Activate zoom first before freezing (click or scroll on image)."
 msgstr "Aktivoi zoomaus ensin ennen kuin jäädytät (klikkaa tai vieritä kuvaa)."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.ts
 #: loco:67d3fdd64ffe2e5a5302db93
-#, fuzzy
 msgid "Astrophotographers List"
 msgstr "Astrofotografit Lista"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
 #: loco:67d3fdd64ffe2e5a5302db94
-#, fuzzy
 msgid "Connection error"
 msgstr "Yhteysvirhe"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db95
-#, fuzzy
 msgid "Contribution Data"
 msgstr "Panostustiedot"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db96
-#, fuzzy
 msgid "Contribution index"
 msgstr "Panostusindeksi"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/server-errors.interceptor.ts
 #: loco:67d3fdd64ffe2e5a5302db97
-#, fuzzy
 msgid ""
 "Could not connect to the server. Please check your internet connection and "
 "try again."
@@ -12064,38 +12058,32 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db98
-#, fuzzy
 msgid "External sources"
 msgstr "Ulkoiset lähteet"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db99
-#, fuzzy
 msgid "Forum posts"
 msgstr "Foorumiviestit"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db9a
-#, fuzzy
 msgid "IOTDs"
 msgstr "IOTD:t"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302db9b
-#, fuzzy
 msgid "Image Data"
 msgstr "Kuvadata"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9c
-#, fuzzy
 msgid "Images acquired or processed from a source not listed above."
 msgstr ""
 "Kuvat, jotka on hankittu tai käsitelty lähteestä, jota ei ole lueteltu yllä."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9d
-#, fuzzy
 msgid ""
 "Images captured by renting time or purchasing data from an amateur hosting "
 "facility."
@@ -12105,13 +12093,11 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9e
-#, fuzzy
 msgid "Images captured with portable gear at distant locations."
 msgstr "Kuvat, jotka on otettu kannettavalla kalustolla kaukaisista paikoista."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302db9f
-#, fuzzy
 msgid ""
 "Images captured with your own equipment at a remote observatory you own or "
 "rent, at a distant location."
@@ -12121,19 +12107,16 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba0
-#, fuzzy
 msgid "Images captured with your own equipment near home."
 msgstr "Kuvat, jotka on otettu omalla kalustolla lähellä kotia."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba1
-#, fuzzy
 msgid "Images processed from a mix of the above sources."
 msgstr "Kuvat, jotka on käsitelty sekoituksesta yllä olevia lähteitä."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba2
-#, fuzzy
 msgid ""
 "Images processed from professional data repositories, e.g. Hubble, JWST, ESO,"
 " etc."
@@ -12143,7 +12126,6 @@ msgstr ""
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba3
-#, fuzzy
 msgid ""
 "Images processed from publicly shared data by amateur astrophotographers."
 msgstr ""
@@ -12153,25 +12135,21 @@ msgstr ""
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dba4
-#, fuzzy
 msgid "No data available"
 msgstr "Ei saatavilla olevia tietoja"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba5
-#, fuzzy
 msgid "Private remote observatory"
 msgstr "Yksityinen etäobservatorio"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dba6
-#, fuzzy
 msgid "Received"
 msgstr "Vastaanotettu"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/core/services/image/image.service.ts
 #: loco:67d3fdd64ffe2e5a5302dba7
-#, fuzzy
 msgid "Remote observatory"
 msgstr "Etäobservatorio"
 
@@ -12182,70 +12160,150 @@ msgstr "Itse hankittu"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302dba9
-#, fuzzy
 msgid "Sorry, zooming on GIF animations is not available on touch devices."
 msgstr ""
 "Anteeksi, zoomaaminen GIF-animaatioissa ei ole saatavilla kosketuslaitteilla."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbaa
-#, fuzzy
 msgid "Top Pick Nominations"
 msgstr "Parhaat valinnat Nominoinnit"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbab
-#, fuzzy
 msgid "Top Picks"
 msgstr "Parhaat valinnat"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbac
-#, fuzzy
 msgid "User"
 msgstr "Käyttäjä"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/features/explore/pages/astrophotographers-list-page/astrophotographers-list-page.component.html
 #: loco:67d3fdd64ffe2e5a5302dbad
-#, fuzzy
 msgid "Written"
 msgstr "Kirjoitettu"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/features/image/services/image-edit-content-fields.service.ts
 #: loco:67d3fdd64ffe2e5a5302dbae
-#, fuzzy
 msgid "You're not sure where the data comes from."
 msgstr "Et ole varma, mistä data tulee."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302dbaf
-#, fuzzy
 msgid "Zoom freezing is not available for very large images."
 msgstr "Zoomaaminen ei ole saatavilla erittäin suurille kuville."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.ts
 #: loco:67d3fdd64ffe2e5a5302dbb0
-#, fuzzy
 msgid "Zoom freezing is only available in mouse mode."
 msgstr "Zoomaaminen on saatavilla vain hiirimoodissa."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: loco:67d3fdd64ffe2e5a5302dbb1
-#, fuzzy
 msgid "Zoom is frozen (F)"
 msgstr "Zoomaus on jäädytetty (F)"
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: loco:67d3fdd64ffe2e5a5302dbb2
-#, fuzzy
 msgid "Zoom is frozen. Press F to unfreeze."
 msgstr "Zoomaus on jäädytetty. Paina F vapauttaaksesi."
 
 #: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component.html
 #: loco:67d3fdd64ffe2e5a5302dbb3
-#, fuzzy
 msgid "Zooming is not available for GIF animations on touch devices."
 msgstr "Zoomaaminen ei ole saatavilla GIF-animaatioissa kosketuslaitteilla."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:67dd9af631d471241a09d832
+#, fuzzy
+msgid "About moon scale"
+msgstr "Tietoa kuun mittakaavasta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:67dd9af631d471241a09d833
+#, fuzzy
+msgid "All unsaved changes will be lost."
+msgstr "Kaikki tallentamattomat muutokset menetetään."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:67dd9af631d471241a09d834
+#, fuzzy
+msgid "Celestial North"
+msgstr "Taivaallinen pohjoinen"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/features/image/pages/edit/image-edit-page.component.ts
+#: loco:67dd9af631d471241a09d835
+#, fuzzy
+msgid "Exit equipment creation?"
+msgstr "Poistutaanko laitteiston luomisesta?"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:67dd9af631d471241a09d836
+#, fuzzy
+msgid "Field size"
+msgstr "Kentän koko"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:67dd9af631d471241a09d837
+#, fuzzy
+msgid "Hide Moon scale (M)"
+msgstr "Piilota kuun mittakaava (M)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/search/nestedcomment-search/nested-comment-search.component.html
+#: loco:67dd9af631d471241a09d838
+#, fuzzy
+msgid "Loading content..."
+msgstr "Ladataan sisältöä..."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:67dd9af631d471241a09d839
+#, fuzzy
+msgid "Moon scale"
+msgstr "Kuun mittakaava"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-additional-buttons.component.ts
+#: loco:67dd9af631d471241a09d83a
+#, fuzzy
+msgid "Show Moon scale (M)"
+msgstr "Näytä kuun mittakaava (M)"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer.component.html
+#: loco:67dd9af631d471241a09d83b
+#, fuzzy
+msgid ""
+"This scale represents the apparent size of the full moon (0.52° diameter) "
+"based on the plate-solved pixel scale of the image. The actual apparent size "
+"of the moon varies slightly throughout the year due to its elliptical orbit."
+msgstr ""
+"Tämä mittakaava edustaa täysikuun näennäistä kokoa (0.52° halkaisija) "
+"perustuen kuvatun kuvan plate-solved pikselimittakaavaan. Kuun todellinen "
+"näennäinen koko vaihtelee hieman vuoden aikana sen elliptisen radan vuoksi."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/equipment/editors/base-item-editor/base-item-editor.component.ts
+#: loco:67dd9af631d471241a09d83c
+#, fuzzy
+msgid ""
+"Unapproved duplicate exists. Please email {{0}} to request an expedited "
+"review."
+msgstr ""
+"Hyväksymätön kaksoiskappale on olemassa. Ole hyvä ja lähetä sähköpostia {{0}}"
+" pyytääksesi nopeutettua tarkistusta."
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-astrometry.component.ts
+#: loco:67dd9af631d471241a09d83d
+#, fuzzy
+msgid "Up is {{ 0 }}° East of North, or {{ 1 }}° West of North"
+msgstr "Ylös on {{ 0 }}° itään pohjoisesta, tai {{ 1 }}° länteen pohjoisesta"
+
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: /Users/siovene/Code/astrobin-ng/src/app/shared/components/misc/image-viewer/image-viewer-groups-and-collections.component.ts
+#: loco:67dd9af631d471241a09d83e
+#, fuzzy
+msgid "{{0}} images"
+msgstr "{{0}} kuvaa"

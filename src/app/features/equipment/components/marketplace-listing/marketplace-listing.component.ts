@@ -51,7 +51,11 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
   }
 
   async ngOnInit() {
-    await this.googleMapsService.loadGoogleMaps();
+    try {
+      await this.googleMapsService.loadGoogleMaps();
+    } catch (error) {
+      console.error(error);
+    }
     this.googleMapsAvailable = !!this.googleMapsService.maps;
   }
 

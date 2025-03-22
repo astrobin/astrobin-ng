@@ -19,8 +19,7 @@ import { fadeInOut } from "@shared/animations";
     ></astrobin-image-loading-indicator>
 
     <ng-container *ngIf="!!iotd">
-      <div 
-        @fadeInOut
+      <div
         (click)="openImage($event, iotd.image)"
         class="iotd-container">
         <a
@@ -281,7 +280,6 @@ import { fadeInOut } from "@shared/animations";
     </ng-template>
   `,
   styleUrls: ["./iotd.component.scss"],
-  animations: [fadeInOut],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IotdComponent extends BaseComponentDirective implements OnInit {

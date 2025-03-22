@@ -131,7 +131,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
                   }
                 }),
                 tap(similarBrands => {
-                  this.formlyFieldService.clearMessages(field);
+                  this.formlyFieldService.clearMessages(field, "similarBrands");
                   this._showSimilarBrandsWarning(similarBrands);
                 })
               )
@@ -258,10 +258,13 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
       data = similarBrands;
 
       this.formlyFieldService.addMessage(fieldConfig, {
+        scope: "similarBrands",
         level: FormlyFieldMessageLevel.WARNING,
         template,
         data
       });
+    } else {
+      this.formlyFieldService.clearMessages(fieldConfig, "similarBrands");
     }
   }
 }

@@ -38,11 +38,16 @@
             />
           </div>
 
-          <div
-            [innerHTML]="comment.text | BBCodeToHtml | removeBr | highlight:model.text?.value"
+          <div *ngIf="(comment.text | BBCodeToHtml) | async as html; else commentTextLoading"
+            [innerHTML]="html | removeBr | highlight:model.text?.value"
             class="card-body"
           >
           </div>
+          <ng-template #commentTextLoading>
+            <div class="card-body">
+              <small><fa-icon icon="spinner" animation="spin"></fa-icon> {{ 'Loading content...' | translate }}</small>
+            </div>
+          </ng-template>
         </div>
       </ng-container>
     </ng-container>
