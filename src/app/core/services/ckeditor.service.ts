@@ -35,11 +35,11 @@ export class CKEditorService extends BaseService {
 
   setupBBCodeFilter(renderer: Renderer2) {
     // Safety check for SSR
-    if (!this._isBrowser || typeof CKEDITOR === 'undefined' || !CKEDITOR.htmlParser) {
-      console.warn('CKEDITOR not available for setupBBCodeFilter');
+    if (!this._isBrowser || typeof CKEDITOR === "undefined" || !CKEDITOR.htmlParser) {
+      console.warn("CKEDITOR not available for setupBBCodeFilter");
       return {}; // Return an empty object that won't break things
     }
-    
+
     const bbcodeFilter = new CKEDITOR.htmlParser.filter();
 
     bbcodeFilter.addRules({
@@ -670,35 +670,45 @@ export class CKEditorService extends BaseService {
       // Set base path for CKEditor
       win.CKEDITOR_BASEPATH = `${baseUrl}/`;
 
-      // Load main CKEditor script first
-      const mainScript = document.createElement("script");
-      mainScript.src = `${baseUrl}/ckeditor.js?t=${timestamp}`;
+      // Function to load CKEditor once document is ready
+      const loadCKEditorScript = () => {
+        // Load main CKEditor script first
+        const mainScript = document.createElement("script");
+        mainScript.src = `${baseUrl}/ckeditor.js?t=${timestamp}`;
 
-      mainScript.onload = () => {
-        // Start checking if CKEditor is initialized - the _waitForCKEditorCore method
-        // will retry with backoff until it's ready or max retries are reached
-        this._waitForCKEditorCore(win, baseUrl, timestamp, resolve, reject);
+        mainScript.onload = () => {
+          // Start checking if CKEditor is initialized - the _waitForCKEditorCore method
+          // will retry with backoff until it's ready or max retries are reached
+          this._waitForCKEditorCore(win, baseUrl, timestamp, resolve, reject);
+        };
+
+        mainScript.onerror = (error) => {
+          console.error("Error loading CKEditor main script:", error);
+          reject("Failed to load CKEditor main script");
+        };
+
+        document.body.appendChild(mainScript);
       };
 
-      mainScript.onerror = (error) => {
-        console.error("Error loading CKEditor main script:", error);
-        reject("Failed to load CKEditor main script");
-      };
-
-      document.body.appendChild(mainScript);
+      // Wait for document to be in 'complete' state before loading CKEditor
+      if (document.readyState === "complete") {
+        loadCKEditorScript();
+      } else {
+        win.addEventListener("load", loadCKEditorScript);
+      }
     });
   }
 
   private _isCKEditorReady(win: any): boolean {
     // Basic availability of core CKEditor functionality
     const coreAvailable = win.CKEDITOR &&
-           typeof win.CKEDITOR.replace === 'function' &&
-           typeof win.CKEDITOR.getUrl === 'function';
+      typeof win.CKEDITOR.replace === "function" &&
+      typeof win.CKEDITOR.getUrl === "function";
 
     // Check if dom elements are available
     const domAvailable = coreAvailable &&
-           win.CKEDITOR.dom &&
-           win.CKEDITOR.dom.element;
+      win.CKEDITOR.dom &&
+      win.CKEDITOR.dom.element;
 
     return coreAvailable && domAvailable;
   }
@@ -725,10 +735,9 @@ export class CKEditorService extends BaseService {
     if (retryCount > 5) {
       console.warn(`Waiting for CKEditor initialization (attempt ${retryCount})`, {
         exists: !!win.CKEDITOR,
-        hasReplace: win.CKEDITOR && typeof win.CKEDITOR.replace === 'function',
-        hasGetUrl: win.CKEDITOR && typeof win.CKEDITOR.getUrl === 'function',
-        hasDom: win.CKEDITOR && !!win.CKEDITOR.dom,
-        hasDomElement: win.CKEDITOR && win.CKEDITOR.dom && !!win.CKEDITOR.dom.element
+        hasReplace: win.CKEDITOR && typeof win.CKEDITOR.replace === "function",
+        hasGetUrl: win.CKEDITOR && typeof win.CKEDITOR.getUrl === "function",
+        hasDom: win.CKEDITOR && !!win.CKEDITOR.dom
       });
     }
 
@@ -824,8 +833,8 @@ export class CKEditorService extends BaseService {
     // Create an object of CKEDITOR properties for debugging
     const ckeditorState = {
       exists: !!win.CKEDITOR,
-      hasReplace: win.CKEDITOR && typeof win.CKEDITOR.replace === 'function',
-      hasGetUrl: win.CKEDITOR && typeof win.CKEDITOR.getUrl === 'function',
+      hasReplace: win.CKEDITOR && typeof win.CKEDITOR.replace === "function",
+      hasGetUrl: win.CKEDITOR && typeof win.CKEDITOR.getUrl === "function",
       hasDom: win.CKEDITOR && !!win.CKEDITOR.dom,
       hasDomElement: win.CKEDITOR && win.CKEDITOR.dom && !!win.CKEDITOR.dom.element
     };
