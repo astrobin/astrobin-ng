@@ -16,6 +16,7 @@ import { selectEquipment, selectEquipmentContributors } from "@features/equipmen
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { ActiveToast } from "ngx-toastr";
 import { isPlatformBrowser } from "@angular/common";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-equipment-item-type-nav",
@@ -107,6 +108,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   reviewPendingEditNotification: ActiveToast<any>;
   isSmallDevice: boolean;
   uncollapsedTypes: string[] = [];
+  defaultAvatarUrl = Constants.DEFAULT_AVATAR;
 
   constructor(
     public readonly store$: Store<MainState>,

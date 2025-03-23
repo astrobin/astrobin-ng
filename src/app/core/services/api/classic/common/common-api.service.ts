@@ -291,7 +291,12 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
    * @param avatarFile The image file to upload as avatar
    * @returns Observable with the response containing success status and new avatar URL
    */
-  uploadAvatar(avatarFile: File): Observable<{ success: boolean; avatar_url: string; errors?: any }> {
+  uploadAvatar(avatarFile: File): Observable<{
+    success: boolean;
+    avatar_id: UserInterface["avatarId"];
+    avatar_url: string;
+    errors?: any
+  }> {
     const formData = new FormData();
     formData.append('file', avatarFile);
 
@@ -303,7 +308,12 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
       })
     };
 
-    return this.http.post<{ success: boolean; avatar_url: string; errors?: any }>(
+    return this.http.post<{
+      success: boolean;
+      avatar_id: UserInterface["avatarId"];
+      avatar_url: string;
+      errors?: any
+    }>(
       `${this.configUrl}/users/avatar/add/`,
       formData,
       httpOptions
@@ -314,9 +324,17 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
    * Delete all avatars for the current user
    * @returns Observable with the response containing success status
    */
-  deleteAvatar(): Observable<{ success: boolean; detail?: string }> {
-    return this.http.delete<{ success: boolean; detail?: string }>(
-      `${environment.classicApiUrl}/api/v2/common/users/avatar/delete/`
+  deleteAvatar(avatarId: UserInterface["avatarId"]): Observable<{
+    success: boolean;
+    message?: string,
+    avatar_url?: string
+  }> {
+    return this.http.delete<{
+      success: boolean;
+      message?: string,
+      avatar_url?: string
+    }>(
+      `${environment.classicApiUrl}/api/v2/common/users/avatar/${avatarId}/delete/`
     );
   }
 }

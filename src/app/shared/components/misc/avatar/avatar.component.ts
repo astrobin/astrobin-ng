@@ -13,6 +13,7 @@ import { WindowRefService } from "@core/services/window-ref.service";
 import { UserService } from "@core/services/user.service";
 import { LoadToggleProperty } from "@app/store/actions/toggle-property.actions";
 import { TogglePropertyInterface } from "@core/interfaces/toggle-property.interface";
+import { Constants } from "@shared/constants";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { ContentTypeInterface } from "@core/interfaces/content-type.interface";
@@ -48,7 +49,7 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
   @Input()
   showEditButton = false;
 
-  protected avatarUrl: string = "/assets/images/default-avatar.jpeg?v=2";
+  protected avatarUrl: string = Constants.DEFAULT_AVATAR;
   protected url: string;
   protected followsYou = false;
   protected isCurrentUser = false;
@@ -106,14 +107,16 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
     event.preventDefault();
     event.stopPropagation();
     
-    // Open the offcanvas with the AvatarEditorComponent
-    const offcanvasRef = this.offcanvasService.open(AvatarEditorComponent, {
-      position: 'end',
+    // Create options without the circular reference
+    const options = {
+      position: 'end' as 'end', // Type as a literal 'end'
       panelClass: 'avatar-editor-offcanvas',
       backdropClass: 'avatar-editor-backdrop',
-      backdrop: 'static', // Prevent closing by clicking outside
-      beforeDismiss: () => offcanvasRef.componentInstance.beforeDismiss()
-    });
+      backdrop: 'static' as 'static' // Prevent closing by clicking outside
+    };
+    
+    // Open the offcanvas with the AvatarEditorComponent
+    const offcanvasRef = this.offcanvasService.open(AvatarEditorComponent, options);
     
     // Pass the user to the component
     offcanvasRef.componentInstance.user = this.user;
@@ -131,7 +134,7 @@ export class AvatarComponent extends BaseComponentDirective implements OnChanges
       typeof this.user.largeAvatar === "string"
       && this.user.largeAvatar.indexOf("default-avatar") > -1
     ) {
-      this.avatarUrl = "/assets/images/default-avatar.jpeg?v=2";
+      this.avatarUrl = Constants.DEFAULT_AVATAR;
     } else {
       this.avatarUrl = this.user.largeAvatar;
     }

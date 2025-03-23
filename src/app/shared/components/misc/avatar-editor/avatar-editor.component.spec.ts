@@ -47,7 +47,7 @@ describe("AvatarEditorComponent", () => {
   });
 
   describe("Avatar editor interactions", () => {
-    it("should emit avatarUpdated when avatar is updated", () => {
+    it("should emit avatarUpdated when avatar is updated", done => {
       // Arrange
       const newAvatarUrl = "https://example.com/new-avatar.jpg";
       jest.spyOn(component.avatarUpdated, "emit");
@@ -56,9 +56,14 @@ describe("AvatarEditorComponent", () => {
       // Act
       component.onAvatarUpdated(newAvatarUrl);
 
-      // Assert
+      // Assert avatarUpdated.emit was called immediately
       expect(component.avatarUpdated.emit).toHaveBeenCalledWith(newAvatarUrl);
-      expect(component.close).toHaveBeenCalled();
+      
+      // Now we need to wait for the setTimeout to complete before checking close()
+      setTimeout(() => {
+        expect(component.close).toHaveBeenCalled();
+        done();
+      }, 150); // Wait a bit longer than the component's setTimeout
     });
 
     it("should update loading state when loading changes", () => {
@@ -96,6 +101,28 @@ describe("AvatarEditorComponent", () => {
 
       // Assert
       expect(dismissSpy).not.toHaveBeenCalled();
+    });
+
+    it("should return true from beforeDismiss when not uploading", () => {
+      // Arrange
+      component.isUploading = false;
+
+      // Act
+      const result = component.beforeDismiss();
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    it("should return false from beforeDismiss when uploading", () => {
+      // Arrange
+      component.isUploading = true;
+
+      // Act
+      const result = component.beforeDismiss();
+
+      // Assert
+      expect(result).toBe(false);
     });
   });
 

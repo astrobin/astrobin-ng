@@ -9,6 +9,7 @@ import { ChangeDetectorRef } from "@angular/core";
 import { UserService } from "@core/services/user.service";
 import { Store } from "@ngrx/store";
 import { setupAvatarTestingModule, setupComponentObservables } from "./avatar-testing.utils";
+import { Constants } from "@shared/constants";
 
 describe("AvatarComponent", () => {
   let component: AvatarComponent;
@@ -87,7 +88,7 @@ describe("AvatarComponent", () => {
       });
 
       // Assert
-      expect(component["avatarUrl"]).toBe("/assets/images/default-avatar.jpeg?v=2");
+      expect(component["avatarUrl"]).toBe(Constants.DEFAULT_AVATAR);
     });
 
     it("should load user by ID when userId is provided without user", () => {
@@ -137,8 +138,7 @@ describe("AvatarComponent", () => {
           user: null,
           avatarUpdated: {
             subscribe: jest.fn()
-          },
-          beforeDismiss: jest.fn().mockReturnValue(true)
+          }
         }
       };
 
@@ -172,8 +172,7 @@ describe("AvatarComponent", () => {
             subscribe: (fn: (url: string) => void) => {
               subscribeFn = fn;
             }
-          },
-          beforeDismiss: jest.fn().mockReturnValue(true)
+          }
         }
       };
 

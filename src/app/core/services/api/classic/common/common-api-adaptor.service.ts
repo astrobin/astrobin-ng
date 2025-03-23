@@ -24,6 +24,7 @@ export interface BackendGroupInterface {
 
 export interface BackendUserInterface {
   id: number;
+  avatar_id: number;
   avatar: string;
   large_avatar: string;
   userprofile: number;
@@ -160,6 +161,7 @@ export class CommonApiAdaptorService extends BaseService {
       username: user.username,
       firstName: user.first_name,
       displayName: user.display_name,
+      avatarId: user.avatar_id,
       avatar: user.avatar,
       largeAvatar: user.large_avatar,
       lastLogin: user.last_login,

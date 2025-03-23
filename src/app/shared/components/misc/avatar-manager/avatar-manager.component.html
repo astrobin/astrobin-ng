@@ -1,80 +1,107 @@
 <div class="avatar-manager-container">
   <div class="avatar-manager" [class.has-preview]="previewUrl">
-    <div class="avatar-panel current-avatar-panel">
-      <div class="avatar-container">
-        <img [src]="avatarUrl" [alt]="user?.username" class="current-avatar-image" *ngIf="!loading && avatarUrl" />
-        <astrobin-loading-indicator *ngIf="loading"></astrobin-loading-indicator>
-      </div>
-      <div class="avatar-info">
-        <h5>{{ "Current avatar" | translate }}</h5>
-        <button class="btn btn-outline-danger btn-sm delete-btn" (click)="deleteAvatar()" [disabled]="loading" 
-                *ngIf="avatarUrl !== '/assets/images/default-avatar.jpeg?v=2'">
-          <fa-icon icon="trash"></fa-icon>
-          {{ "Delete" | translate }}
-        </button>
-        <p class="delete-note" *ngIf="avatarUrl !== '/assets/images/default-avatar.jpeg?v=2'">
-          {{ "Will reset to default" | translate }}
-        </p>
-      </div>
-    </div>
+    <!-- Hidden file input accessible from both panels -->
+    <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/jpeg,image/png"
+           [disabled]="loading" class="file-input">
 
-    <div class="avatar-panel upload-panel">
-      <div class="upload-container">
-        <div class="upload-dropzone" [class.has-preview]="previewUrl">
-          <ng-container *ngIf="!previewUrl; else previewTemplate">
-            <fa-icon icon="cloud-upload-alt" class="upload-icon"></fa-icon>
-            <h5>{{ "New avatar" | translate }}</h5>
-            <p class="upload-note">{{ "Accepted formats: JPEG, PNG, GIF" | translate }}</p>
-            <div class="upload-actions">
-              <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/jpeg,image/png,image/gif"
-                     [disabled]="loading" class="file-input">
-              <button class="btn btn-primary btn-sm browse-btn" (click)="fileInput.click()" [disabled]="loading">
-                <fa-icon icon="folder-open"></fa-icon>
-                {{ "Select file" | translate }}
-              </button>
-            </div>
-          </ng-container>
+    <div class="avatar-panel-container">
+      <!-- Current avatar panel -->
+      <div class="avatar-panel current-avatar-panel"
+           *ngIf="avatarUrl !== defaultAvatarUrl && !isDeletingAvatar && !previewUrl">
+        <div class="avatar-container">
+          <img [src]="avatarUrl" [alt]="user?.username" class="current-avatar-image" *ngIf="!loading && avatarUrl" />
+          <astrobin-loading-indicator *ngIf="loading" size="medium"></astrobin-loading-indicator>
+        </div>
+        <div class="avatar-info">
+          <h5>{{ "Current avatar" | translate }}</h5>
+          <button class="btn btn-outline-danger btn-sm delete-btn" (click)="deleteAvatar()" [disabled]="loading">
+            <fa-icon icon="trash"></fa-icon>
+            {{ "Delete" | translate }}
+          </button>
+          <p class="delete-note">
+            {{ "Will reset to default" | translate }}
+          </p>
+          <div class="mt-3">
+            <button class="btn btn-primary btn-sm" (click)="fileInput.click()" [disabled]="loading">
+              <fa-icon icon="cloud-upload-alt"></fa-icon>
+              {{ "Upload new" | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
 
-          <ng-template #previewTemplate>
-            <div class="preview-container">
-              <div class="preview-image-container" #previewContainer>
-                <img [src]="previewUrl" class="preview-image" #previewImage (load)="onImageLoad(previewContainer)" />
-                <div class="avatar-preview-circle" [style.width.px]="circleDiameter" [style.height.px]="circleDiameter"></div>
+      <!-- Upload panel -->
+      <div class="avatar-panel upload-panel"
+           *ngIf="(!avatarUrl || avatarUrl === defaultAvatarUrl || previewUrl) && !isDeletingAvatar">
+        <div class="upload-container">
+          <div class="upload-dropzone" [class.has-preview]="previewUrl">
+            <ng-container *ngIf="!previewUrl; else previewTemplate">
+              <fa-icon icon="cloud-upload-alt" class="upload-icon"></fa-icon>
+              <h5>{{ "Upload avatar" | translate }}</h5>
+              <p class="upload-note">{{ "Accepted formats: JPEG, PNG" | translate }}</p>
+              <div class="upload-actions">
+                <button class="btn btn-primary btn-sm browse-btn" (click)="fileInput.click()" [disabled]="loading">
+                  <fa-icon icon="folder-open"></fa-icon>
+                  {{ "Select file" | translate }}
+                </button>
               </div>
-              <div class="image-transform-controls">
-                <div class="transform-actions">
-                  <button class="btn btn-outline-secondary btn-sm m-0" (click)="rotateImage()" [disabled]="loading" title="{{ 'Rotate' | translate }}">
-                    <fa-icon icon="rotate-left"></fa-icon>
-                  </button>
-                  <button class="btn btn-outline-secondary btn-sm m-0" (click)="flipImageHorizontal()" [disabled]="loading" title="{{ 'Flip horizontally' | translate }}">
-                    <fa-icon icon="arrows-left-right"></fa-icon>
-                  </button>
-                  <button class="btn btn-outline-secondary btn-sm m-0" (click)="flipImageVertical()" [disabled]="loading" title="{{ 'Flip vertically' | translate }}">
-                    <fa-icon icon="arrows-up-down"></fa-icon>
-                  </button>
+            </ng-container>
+
+            <ng-template #previewTemplate>
+              <div class="preview-container">
+                <div class="preview-image-container" #previewContainer>
+                  <img [src]="previewUrl" class="preview-image" #previewImage (load)="onImageLoad(previewContainer)" />
+                  <div class="avatar-preview-circle" [style.width.px]="circleDiameter"
+                       [style.height.px]="circleDiameter"></div>
+                </div>
+                <div class="image-transform-controls">
+                  <div class="transform-actions">
+                    <button class="btn btn-outline-secondary btn-sm m-0" (click)="rotateImage()" [disabled]="loading"
+                            title="{{ 'Rotate' | translate }}">
+                      <fa-icon icon="rotate-left"></fa-icon>
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm m-0" (click)="flipImageHorizontal()"
+                            [disabled]="loading" title="{{ 'Flip horizontally' | translate }}">
+                      <fa-icon icon="arrows-left-right"></fa-icon>
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm m-0" (click)="flipImageVertical()"
+                            [disabled]="loading" title="{{ 'Flip vertically' | translate }}">
+                      <fa-icon icon="arrows-up-down"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="preview-footer">
+                  <div class="preview-actions">
+                    <button class="btn btn-success btn-sm m-0" (click)="uploadAvatar()" [disabled]="loading"
+                            [class.loading]="loading">
+                      <fa-icon icon="check" *ngIf="!loading"></fa-icon>
+                      <fa-icon icon="spinner" [spin]="true" *ngIf="loading"></fa-icon>
+                      {{ loading ? ("Uploading" | translate) : ("Upload" | translate) }}
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm m-0" (click)="cancelSelection()"
+                            [disabled]="loading">
+                      <fa-icon icon="times"></fa-icon>
+                      {{ "Cancel" | translate }}
+                    </button>
+                  </div>
+                  <div class="file-info" *ngIf="selectedFile">
+                    <span class="file-name">{{ selectedFile.name }}</span>
+                    <span class="file-size">{{ getFileSize(selectedFile.size) }}</span>
+                  </div>
                 </div>
               </div>
-              <div class="preview-footer">
-                <div class="preview-actions">
-                  <button class="btn btn-success btn-sm m-0" (click)="uploadAvatar()" [disabled]="loading" [class.loading]="loading">
-                    <fa-icon icon="check" *ngIf="!loading"></fa-icon>
-                    <fa-icon icon="spinner" [spin]="true" *ngIf="loading"></fa-icon>
-                    {{ loading ? ("Uploading" | translate) : ("Upload" | translate) }}
-                  </button>
-                  <button class="btn btn-outline-secondary btn-sm m-0" (click)="cancelSelection()" [disabled]="loading">
-                    <fa-icon icon="times"></fa-icon>
-                    {{ "Cancel" | translate }}
-                  </button>
-                </div>
-                <div class="file-info" *ngIf="selectedFile">
-                  <span class="file-name">{{ selectedFile.name }}</span>
-                  <span class="file-size">{{ getFileSize(selectedFile.size) }}</span>
-                </div>
-              </div>
-            </div>
-          </ng-template>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Deleting indicator -->
+      <div class="avatar-panel deleting-panel" *ngIf="isDeletingAvatar">
+        <div class="deleting-container">
+          <astrobin-loading-indicator size="large"></astrobin-loading-indicator>
+          <p class="mt-3">{{ "Deleting avatar..." | translate }}</p>
         </div>
       </div>
     </div>
   </div>
-</div>

@@ -33,7 +33,10 @@ export class AvatarEditorComponent extends BaseComponentDirective {
   onAvatarUpdated(newAvatarUrl: string): void {
     this.avatarUpdated.emit(newAvatarUrl);
     // Close the offcanvas when avatar is updated
-    this.close();
+    // Allow a small delay to ensure the loading state is properly updated
+    setTimeout(() => {
+      this.close();
+    }, 100);
   }
 
   onLoadingChanged(loading: boolean): void {
@@ -45,6 +48,16 @@ export class AvatarEditorComponent extends BaseComponentDirective {
     // Only allow closing if not currently uploading
     if (!this.isUploading) {
       this.activeOffcanvas.dismiss();
+      this.changeDetectorRef.markForCheck();
     }
+  }
+
+  /**
+   * Used by the offcanvas service to determine if dismissal is allowed
+   * @returns boolean True if dismissal is allowed, false otherwise
+   */
+  beforeDismiss(): boolean {
+    // Same logic as close() - only allow dismissal if not uploading
+    return !this.isUploading;
   }
 }

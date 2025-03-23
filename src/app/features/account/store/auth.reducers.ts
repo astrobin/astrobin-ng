@@ -54,6 +54,7 @@ export function authReducer(state = initialAuthState, action: PayloadActionInter
         // Update the current user's avatar
         const updatedUser = {
           ...state.user,
+          avatarId: action.payload.avatarId,
           avatar: action.payload.avatarUrl,
           largeAvatar: action.payload.avatarUrl
         };

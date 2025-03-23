@@ -37,15 +37,23 @@ export function createMockStore(options?: MockStoreOptions): Partial<Store<any>>
 }
 
 export function createMockOffcanvasService(): Partial<NgbOffcanvas> {
-  return {
-    open: jest.fn().mockReturnValue({
-      componentInstance: {
-        user: null,
-        avatarUpdated: {
-          subscribe: jest.fn()
-        },
-        beforeDismiss: jest.fn().mockReturnValue(true)
+  // Create a mock offcanvas reference
+  const mockOffcanvasRef = {
+    componentInstance: {
+      user: null,
+      avatarUpdated: {
+        subscribe: jest.fn()
       }
+    }
+  };
+
+  return {
+    open: jest.fn().mockImplementation((component, options) => {
+      // Process beforeDismiss option if provided
+      if (options && typeof options.beforeDismiss === 'function') {
+        options.beforeDismiss();
+      }
+      return mockOffcanvasRef;
     })
   };
 }

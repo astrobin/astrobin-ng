@@ -12,6 +12,9 @@ import { DeleteAvatar, LoadUser, UploadAvatar } from "@features/account/store/au
 import { isPlatformBrowser } from "@angular/common";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { UtilsService } from "@core/services/utils/utils.service";
+import { Constants } from "@shared/constants";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: "astrobin-avatar-manager",
@@ -28,7 +31,7 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
 
   @Output()
   avatarUpdated = new EventEmitter<string>();
-  
+
   @Output()
   loadingChanged = new EventEmitter<boolean>();
 
@@ -38,12 +41,14 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
   protected previewUrl: string | ArrayBuffer = null;
   protected readonly isBrowser: boolean;
   protected circleDiameter = 0;
+  protected defaultAvatarUrl = Constants.DEFAULT_AVATAR;
+  protected isDeletingAvatar = false;
   private previewContainer: HTMLElement = null;
-  
+
   get loading(): boolean {
     return this._loading;
   }
-  
+
   set loading(value: boolean) {
     if (this._loading !== value) {
       this._loading = value;
@@ -76,6 +81,7 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
     public readonly windowRefService: WindowRefService,
     public readonly utilsService: UtilsService,
     private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly modalService: NgbModal,
     @Inject(PLATFORM_ID) private readonly platformId: Object
   ) {
     super(store$);
@@ -112,7 +118,7 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
       typeof this.user.largeAvatar === "string" &&
       this.user.largeAvatar.indexOf("default-avatar") > -1
     ) {
-      this.avatarUrl = "/assets/images/default-avatar.jpeg?v=2";
+      this.avatarUrl = Constants.DEFAULT_AVATAR;
     } else {
       this.avatarUrl = this.user.largeAvatar;
     }
@@ -128,11 +134,11 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
       this.selectedFile = input.files[0];
 
       // Validate file type
-      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      const validImageTypes = ['image/jpeg', 'image/png'];
       if (validImageTypes.indexOf(this.selectedFile.type) === -1) {
         console.warn('Invalid file type selected:', this.selectedFile.type);
         this.popNotificationsService.error(
-          this.translateService.instant("Please select a valid image file (JPEG, PNG, or GIF)")
+          this.translateService.instant("Please select a valid image file (JPEG or PNG)")
         );
         this.selectedFile = null;
         input.value = '';
@@ -203,13 +209,13 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
       .subscribe(user => {
         if (user) {
           // Use the updated avatar from the user in the store
-          this.avatarUrl = user.largeAvatar || '/assets/images/default-avatar.jpeg?v=2';
+          this.avatarUrl = user.largeAvatar || Constants.DEFAULT_AVATAR;
 
           // Reset UI state to return to upload button view
           this.selectedFile = null;
           this.previewUrl = null;  // This will trigger the template to show the upload button view
           this.loading = false;
-          
+
           // Emit the avatar updated event after loading is set to false
           this.avatarUpdated.emit(this.avatarUrl);
 
@@ -224,14 +230,39 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
       return;
     }
 
+    // Open confirmation dialog
+    const modalRef = this.modalService.open(ConfirmationDialogComponent, {
+      centered: true,
+      backdrop: 'static'
+    });
+
+    // Configure dialog
+    modalRef.componentInstance.title = this.translateService.instant("Delete avatar");
+    modalRef.componentInstance.message = this.translateService.instant("Your avatar will be reset to the default avatar.");
+    modalRef.componentInstance.confirmLabel = this.translateService.instant("Delete");
+
+    // Subscribe to dialog result
+    modalRef.result.then(
+      () => {
+        // Modal closed with confirm button
+        this.isDeletingAvatar = true;
+        this.changeDetectorRef.markForCheck();
+
+        this._performAvatarDeletion();
+      },
+      () => {
+        // Modal dismissed, do nothing
+      }
+    );
+  }
+
+  private _performAvatarDeletion() {
     this.loading = true;
 
-    // Store the current avatar URL to detect changes
-    const currentAvatarUrl = this.avatarUrl;
-    const defaultAvatarUrl = "/assets/images/default-avatar.jpeg?v=2";
+    const defaultAvatarUrl = Constants.DEFAULT_AVATAR;
 
     // Dispatch the delete avatar action to NGRX
-    this.store$.dispatch(new DeleteAvatar());
+    this.store$.dispatch(new DeleteAvatar({ avatarId: this.user.avatarId }));
 
     // Create a one-time subscription to the user profile state after dispatch
     // This ensures we capture the updated avatar state once the effects complete
@@ -332,7 +363,7 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
 
     // Store container element reference for resize handling
     this.previewContainer = containerElement;
-    
+
     // Wait a short time to ensure the element is fully rendered and has dimensions
     this.utilsService.delay(100).subscribe(() => {
       // Get container dimensions
@@ -364,17 +395,17 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
     // Get container dimensions
     const containerWidth = imageElement.parentElement.offsetWidth;
     const containerHeight = imageElement.parentElement.offsetHeight;
-    
+
     // Get natural image dimensions
     const naturalWidth = imageElement.naturalWidth;
     const naturalHeight = imageElement.naturalHeight;
-    
+
     // Calculate aspect ratios
     const containerRatio = containerWidth / containerHeight;
     const imageRatio = naturalWidth / naturalHeight;
-    
+
     let actualWidth, actualHeight;
-    
+
     // Calculate the actual display dimensions based on aspect ratios
     if (imageRatio > containerRatio) {
       // Image is wider than container (horizontal letterboxing)
@@ -385,13 +416,13 @@ export class AvatarManagerComponent extends BaseComponentDirective implements On
       actualHeight = containerHeight;
       actualWidth = containerHeight * imageRatio;
     }
-    
+
     // Use the smallest dimension for the circle diameter
     this.circleDiameter = Math.min(actualWidth, actualHeight);
-    
+
     // Make sure the circle isn't too large for the container
     this.circleDiameter = Math.min(this.circleDiameter, containerWidth, containerHeight);
-    
+
     this.changeDetectorRef.markForCheck();
   }
 

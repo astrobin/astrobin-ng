@@ -225,7 +225,10 @@ export class UploadAvatar implements PayloadActionInterface {
 export class UploadAvatarSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.UPLOAD_AVATAR_SUCCESS;
 
-  constructor(public payload: { avatarUrl: string }) {
+  constructor(public payload: {
+    avatarId: UserInterface["avatarId"],
+    avatarUrl: string
+  }) {
   }
 }
 
@@ -238,19 +241,25 @@ export class UploadAvatarFailure implements PayloadActionInterface {
 
 export class DeleteAvatar implements Action {
   readonly type = AuthActionTypes.DELETE_AVATAR;
+
+  constructor(public payload: { avatarId: UserInterface["avatarId"] }) {
+  }
 }
 
 export class DeleteAvatarSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.DELETE_AVATAR_SUCCESS;
 
-  constructor(public payload: { avatarUrl: string }) {
+  constructor(public payload: {
+    avatarId: UserInterface["avatarId"],
+    avatarUrl: string
+  }) {
   }
 }
 
 export class DeleteAvatarFailure implements PayloadActionInterface {
   readonly type = AuthActionTypes.DELETE_AVATAR_FAILURE;
 
-  constructor(public payload: { error: any }) {
+  constructor(public payload: { avatarId: UserInterface["avatarId"], error: any }) {
   }
 }
 

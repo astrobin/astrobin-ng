@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { setTimeagoIntl } from "@app/translate-loader";
 import { AuthActionTypes, ChangeUserProfileGalleryHeaderImage, ChangeUserProfileGalleryHeaderImageFailure, ChangeUserProfileGalleryHeaderImageSuccess, DeleteAvatar, DeleteAvatarFailure, DeleteAvatarSuccess, InitializeAuthSuccess, LoadUser, LoadUserFailure, LoadUserProfile, LoadUserProfileFailure, LoadUserProfileSuccess, LoadUserSuccess, Login, LoginFailure, LoginSuccess, LogoutSuccess, RemoveShadowBanUserProfile, RemoveShadowBanUserProfileFailure, RemoveShadowBanUserProfileSuccess, ShadowBanUserProfile, ShadowBanUserProfileFailure, ShadowBanUserProfileSuccess, UpdateUserProfile, UpdateUserProfileSuccess, UploadAvatar, UploadAvatarFailure, UploadAvatarSuccess } from "@features/account/store/auth.actions";
 import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { act, Actions, createEffect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
 import { UserProfileInterface } from "@core/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@core/interfaces/user-subscription.interface";
@@ -18,6 +18,7 @@ import { catchError, concatMap, map, mergeMap, switchMap, tap } from "rxjs/opera
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
 import { selectUser, selectUserByUsername, selectUserProfile } from "@features/account/store/auth.selectors";
+import { Constants } from "@shared/constants";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 
 @Injectable()
@@ -394,7 +395,10 @@ export class AuthEffects {
         this.commonApiService.uploadAvatar(action.payload.avatarFile).pipe(
           map(response => {
             if (response.success) {
-              return new UploadAvatarSuccess({ avatarUrl: response.avatar_url });
+              return new UploadAvatarSuccess({
+                avatarId: response.avatar_id,
+                avatarUrl: response.avatar_url
+              });
             } else {
               // Handle different error formats
               let errorMessage = "Error uploading avatar";
@@ -431,18 +435,23 @@ export class AuthEffects {
       tap(() => {
         this.loadingService.setLoading(true);
       }),
-      switchMap(() =>
-        this.commonApiService.deleteAvatar().pipe(
+      switchMap((action: DeleteAvatar) =>
+        this.commonApiService.deleteAvatar(action.payload.avatarId).pipe(
           map(response => {
             if (response.success) {
-              return new DeleteAvatarSuccess({ avatarUrl: "/assets/images/default-avatar.jpeg?v=2" });
+              return new DeleteAvatarSuccess({
+                avatarId: action.payload.avatarId,
+                avatarUrl: response.avatar_url || Constants.DEFAULT_AVATAR
+              });
             } else {
               // Handle error message properly for translation
-              const errorMessage = response.detail ? response.detail : "Error deleting avatar";
+              const errorMessage = response.message
+                ? response.message
+                : this.translateService.instant("Error deleting avatar");
               this.popNotificationsService.error(
                 this.translateService.instant(errorMessage)
               );
-              return new DeleteAvatarFailure({ error: response.detail });
+              return new DeleteAvatarFailure({ avatarId: action.payload.avatarId, error: response.message });
             }
           }),
           catchError(error => {
@@ -450,7 +459,7 @@ export class AuthEffects {
               this.translateService.instant("Error deleting avatar")
             );
             this.loadingService.setLoading(false);
-            return of(new DeleteAvatarFailure({ error }));
+            return of(new DeleteAvatarFailure({ avatarId: action.payload.avatarId, error }));
           }),
           tap(() => {
             this.loadingService.setLoading(false);

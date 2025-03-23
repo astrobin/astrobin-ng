@@ -13,6 +13,7 @@ import { Buffer } from "buffer";
 import msgpack from "msgpack-lite";
 import pako from "pako";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { Constants } from "@shared/constants";
 
 interface CachedRect {
   rect: DOMRect;
@@ -972,7 +973,7 @@ export class UtilsService {
 
   static convertDefaultAvatar(avatar: string): string {
     if (!avatar || avatar === "" || avatar.indexOf("default-avatar") > -1) {
-      return "/assets/images/default-avatar.jpeg?v=2";
+      return Constants.DEFAULT_AVATAR;
     }
 
     return avatar;

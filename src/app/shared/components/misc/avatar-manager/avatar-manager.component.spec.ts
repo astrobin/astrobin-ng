@@ -8,6 +8,7 @@ import { UtilsService } from "@core/services/utils/utils.service";
 import { By } from "@angular/platform-browser";
 import { Store } from "@ngrx/store";
 import { setupAvatarTestingModule, setupComponentObservables } from "../avatar/avatar-testing.utils";
+import { Constants } from "@shared/constants";
 
 describe("AvatarManagerComponent", () => {
   let component: AvatarManagerComponent;
@@ -93,7 +94,7 @@ describe("AvatarManagerComponent", () => {
       component.setAvatar();
 
       // Assert
-      expect(component["avatarUrl"]).toBe("/assets/images/default-avatar.jpeg?v=2");
+      expect(component["avatarUrl"]).toBe(Constants.DEFAULT_AVATAR);
     });
   });
 
@@ -214,19 +215,100 @@ describe("AvatarManagerComponent", () => {
       expect(mockStore.dispatch).not.toHaveBeenCalled();
     });
 
-    it("should delete avatar", fakeAsync(() => {
+    it("should open confirmation dialog when deleting avatar", () => {
+      // Arrange
+      const modalRefMock = {
+        componentInstance: {
+          title: '',
+          message: '',
+          confirmLabel: ''
+        },
+        result: Promise.resolve(true)
+      };
+      jest.spyOn(component["modalService"], "open").mockReturnValue(modalRefMock as any);
+      jest.spyOn(component as any, "_performAvatarDeletion").mockImplementation(() => {});
+
+      // Act
+      component.deleteAvatar();
+
+      // Assert
+      expect(component["modalService"].open).toHaveBeenCalledWith(
+        expect.any(Function),
+        expect.objectContaining({
+          centered: true,
+          backdrop: "static"
+        })
+      );
+      
+      // Verify we're setting the correct properties
+      expect(modalRefMock.componentInstance.title).toBeDefined();
+      expect(modalRefMock.componentInstance.message).toBeDefined();
+      expect(modalRefMock.componentInstance.confirmLabel).toBeDefined();
+    });
+
+    it("should call _performAvatarDeletion when confirmation dialog is confirmed", async () => {
+      // Arrange
+      const modalRefMock = {
+        componentInstance: {
+          title: '',
+          message: '',
+          confirmLabel: ''
+        },
+        result: Promise.resolve(true) // User confirms the dialog
+      };
+      jest.spyOn(component["modalService"], "open").mockReturnValue(modalRefMock as any);
+      jest.spyOn(component as any, "_performAvatarDeletion").mockImplementation(() => {});
+
+      // Act
+      component.deleteAvatar();
+      await modalRefMock.result; // Wait for the Promise to resolve
+
+      // Assert
+      expect(component["_performAvatarDeletion"]).toHaveBeenCalled();
+    });
+
+    it("should not call _performAvatarDeletion when confirmation dialog is dismissed", async () => {
+      // Arrange
+      const modalRefMock = {
+        componentInstance: {
+          title: '',
+          message: '',
+          confirmLabel: ''
+        },
+        result: Promise.reject() // User dismisses the dialog
+      };
+      jest.spyOn(component["modalService"], "open").mockReturnValue(modalRefMock as any);
+      jest.spyOn(component as any, "_performAvatarDeletion").mockImplementation(() => {});
+
+      // Act
+      component.deleteAvatar();
+      try {
+        await modalRefMock.result; // This will throw since we're using Promise.reject()
+      } catch (e) {
+        // Expected - we're just waiting for the Promise to resolve/reject
+      }
+
+      // Assert
+      expect(component["_performAvatarDeletion"]).not.toHaveBeenCalled();
+    });
+
+    it("should dispatch DeleteAvatar action when _performAvatarDeletion is called", fakeAsync(() => {
       // Arrange
       jest.spyOn(mockStore, "dispatch");
       jest.spyOn(component.avatarUpdated, "emit");
 
       // Act
-      component.deleteAvatar();
+      component["_performAvatarDeletion"]();
 
       // Simulate the passage of time
       tick(100);
 
       // Assert
-      expect(mockStore.dispatch).toHaveBeenCalled();
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "[Auth] Delete avatar"
+        })
+      );
     }));
   });
 
@@ -347,6 +429,92 @@ describe("AvatarManagerComponent", () => {
       // Simple tests for the presence of key UI elements
       const container = fixture.debugElement.query(By.css(".avatar-manager-container"));
       expect(container).toBeTruthy();
+    });
+
+    it("should show current avatar panel when user has a custom avatar", () => {
+      // By default, our mock user has a custom avatar URL
+      fixture.detectChanges();
+      
+      // Check that the current avatar panel is visible
+      const currentAvatarPanel = fixture.debugElement.query(By.css(".current-avatar-panel"));
+      expect(currentAvatarPanel).toBeTruthy();
+    });
+
+    it("should hide current avatar panel when user has the default avatar", () => {
+      // Create a fresh fixture for this test
+      TestBed.resetTestingModule();
+      setupAvatarTestingModule(AvatarManagerComponent);
+      
+      // Create the component with a user that has the default avatar
+      const newFixture = TestBed.createComponent(AvatarManagerComponent);
+      const newComponent = newFixture.componentInstance;
+      
+      // Mock user with default avatar
+      const userWithDefaultAvatar = UserGenerator.user({
+        id: 1,
+        username: "testuser",
+        largeAvatar: "/assets/images/default-avatar.jpeg?v=2"  // Exactly matches Constants.DEFAULT_AVATAR
+      });
+      
+      // Set up the component
+      newComponent.user = userWithDefaultAvatar;
+      setupComponentObservables(newComponent, userWithDefaultAvatar);
+      
+      // Initialize the component
+      newComponent.ngOnInit();
+      newFixture.detectChanges();
+      
+      // Check that the current avatar panel is not in the DOM
+      const currentAvatarPanel = newFixture.debugElement.query(By.css(".current-avatar-panel"));
+      expect(currentAvatarPanel).toBeFalsy();
+    });
+
+    it("should show 'Upload avatar' text when using default avatar", () => {
+      // Create a fresh fixture for this test
+      TestBed.resetTestingModule();
+      setupAvatarTestingModule(AvatarManagerComponent);
+      
+      // Create the component with a user that has the default avatar
+      const newFixture = TestBed.createComponent(AvatarManagerComponent);
+      const newComponent = newFixture.componentInstance;
+      
+      // Mock user with default avatar
+      const userWithDefaultAvatar = UserGenerator.user({
+        id: 1,
+        username: "testuser",
+        largeAvatar: "/assets/images/default-avatar.jpeg?v=2"  // Exactly matches Constants.DEFAULT_AVATAR
+      });
+      
+      // Set up the component
+      newComponent.user = userWithDefaultAvatar;
+      setupComponentObservables(newComponent, userWithDefaultAvatar);
+      
+      // Initialize the component
+      newComponent.ngOnInit();
+      newFixture.detectChanges();
+      
+      // Check the heading text
+      const heading = newFixture.debugElement.query(By.css('.upload-dropzone h5'));
+      expect(heading.nativeElement.textContent).toContain('Upload avatar');
+    });
+
+    it("should show 'New avatar' text when user has a custom avatar", () => {
+      // Our mock user already has a custom avatar
+      fixture.detectChanges();
+      
+      // Check the heading text
+      const heading = fixture.debugElement.query(By.css('.upload-dropzone h5'));
+      expect(heading.nativeElement.textContent).toContain('New avatar');
+    });
+
+    it("should hide upload panel when deleting avatar", () => {
+      // Set the isDeletingAvatar flag
+      component["isDeletingAvatar"] = true;
+      fixture.detectChanges();
+      
+      // Check that the upload panel is not in the DOM
+      const uploadPanel = fixture.debugElement.query(By.css('.upload-panel'));
+      expect(uploadPanel).toBeFalsy();
     });
   });
 });

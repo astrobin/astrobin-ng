@@ -8,8 +8,17 @@
   .avatar-manager {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
     flex: 1;
+
+    .file-input {
+      display: none;
+    }
+
+    /* When deleting, make sure the container still fills the space */
+    &:only-child {
+      justify-content: center;
+      align-items: center;
+    }
 
     &.has-preview {
       .current-avatar-panel {
@@ -17,8 +26,15 @@
       }
 
       .upload-panel {
-        flex: 1 1 100%; /* Take full available space when preview is active */
+        display: flex;
       }
+    }
+
+    .avatar-panel-container {
+      flex: 1;
+      display: flex;
+      position: relative;
+      width: 100%;
     }
 
     .avatar-panel {
@@ -26,6 +42,8 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      width: 100%;
+      height: 100%;
 
       @media (max-width: $sm-max) {
         width: 100%;
@@ -35,9 +53,8 @@
         align-items: center;
         padding: 1.5rem;
         text-align: center;
-        width: 100%;
-        max-width: 100%;
-        flex: 0 0 auto; /* Don't grow, don't shrink, size based on content */
+        display: flex;
+        justify-content: center;
 
         .avatar-container {
           width: 120px;
@@ -81,10 +98,10 @@
 
       &.upload-panel {
         padding: 0;
-        flex: 1 1 auto; /* Grow and shrink as needed, filling available space */
         display: flex;
         flex-direction: column;
         width: 100%;
+        min-height: 350px;
 
         .upload-container {
           display: flex;
@@ -129,10 +146,6 @@
               margin-bottom: 1rem;
               color: var(--lightGrey);
               font-size: .9rem;
-            }
-
-            .file-input {
-              display: none;
             }
 
             .upload-actions {
@@ -309,6 +322,33 @@
             &:last-child {
               margin-bottom: 0;
             }
+          }
+        }
+      }
+
+      &.deleting-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .deleting-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 2rem;
+
+          p {
+            font-weight: 500;
+            color: var(--textPrimaryColor);
+            margin-top: 1.5rem;
+            font-size: 1rem;
+          }
+
+          astrobin-loading-indicator {
+            display: block;
+            margin: 0 auto;
           }
         }
       }
