@@ -39,6 +39,7 @@ import { isPlatformBrowser } from "@angular/common";
               [link]="false"
               [showPremiumBadge]="true"
               [showFollowsYouBadge]="true"
+              [showEditButton]="currentUserWrapper.user?.id === user.id"
             ></astrobin-avatar>
           </div>
 
