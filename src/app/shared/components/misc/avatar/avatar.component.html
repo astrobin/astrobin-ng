@@ -14,7 +14,7 @@
       <img [alt]="user.username" [src]="avatarUrl" />
 
       <div
-        *ngIf="(showEditButton || isCurrentUser) && user"
+        *ngIf="showEditButton && isCurrentUser"
         [ngbTooltip]="'Edit avatar' | translate"
         class="edit-button"
         container="body"
