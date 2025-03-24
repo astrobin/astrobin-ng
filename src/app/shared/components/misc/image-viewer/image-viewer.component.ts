@@ -593,6 +593,12 @@ export class ImageViewerComponent
   @Throttle(20)
   protected onSvgMouseMove(event: MouseEvent): void {
     if (!this.advancedSolutionMatrix || !this.advancedSolutionMatrix.raMatrix) {
+      // Matrix not loaded yet, can't calculate coordinates
+      return;
+    }
+
+    if (this.loadingAdvancedSolutionMatrix) {
+      // Still loading, don't attempt to calculate coordinates
       return;
     }
 
@@ -834,10 +840,13 @@ export class ImageViewerComponent
           return;
         }
 
+        // Pass the loaded matrix to the fullscreen component to avoid race conditions
+        const solutionMatrixToPass = this.loadingAdvancedSolutionMatrix ? null : this.advancedSolutionMatrix;
+        
         this.store$.dispatch(new ShowFullscreenImage({ 
           imageId: this.image.pk, 
           event,
-          externalSolutionMatrix: this.advancedSolutionMatrix
+          externalSolutionMatrix: solutionMatrixToPass
         }));
         this.viewingFullscreenImage = true;
 
@@ -1287,59 +1296,101 @@ export class ImageViewerComponent
   }
 
   private _setSolutionMouseHoverImage() {
-    console.log(`[ImageViewer] _setSolutionMouseHoverImage called, caller:`, new Error().stack);
     if (!this.revision) {
-      console.log(`[ImageViewer] No revision, returning`);
       return;
     }
 
+    // Reset appropriate properties first
+    this.mouseHoverRa = null;
+    this.mouseHoverDec = null;
+    this.mouseHoverGalacticRa = null;
+    this.mouseHoverGalacticDec = null;
+    
     if (this.revision?.solution?.pixinsightSvgAnnotationRegular) {
-      console.log(`[ImageViewer] Has pixinsightSvgAnnotationRegular, solution ID: ${this.revision.solution.id}`);
+      // Load the SVG first
       this._loadInlineSvg$(
         environment.classicBaseUrl + `/platesolving/solution/${this.revision.solution.id}/svg/regular/`
       ).subscribe(inlineSvg => {
-        console.log(`[ImageViewer] SVG loaded for solution ${this.revision.solution.id}`);
         this.solutionMouseHoverImage = null;
         this.inlineSvg = inlineSvg;
         this.changeDetectorRef.markForCheck();
       });
       
-      // Check if matrix is already loaded or loading
-      if (this.advancedSolutionMatrix) {
-        console.log(`[ImageViewer] Matrix already loaded in component, skipping load for ${this.revision.solution.id}`);
-      } else if (this.loadingAdvancedSolutionMatrix) {
-        console.log(`[ImageViewer] Matrix already loading in component, skipping load for ${this.revision.solution.id}`);
-      } else {
-        // Check the store first
-        console.log(`[ImageViewer] Will check store for matrix ${this.revision.solution.id}`);
-        this.store$.pipe(
-          select(selectSolutionMatrix, this.revision.solution.id),
-          take(1)
-        ).subscribe(matrixFromStore => {
-          if (matrixFromStore) {
-            console.log(`[ImageViewer] Matrix found in store for ${this.revision.solution.id}, using it`);
-            this.advancedSolutionMatrix = matrixFromStore;
-            this.changeDetectorRef.markForCheck();
-          } else {
-            console.log(`[ImageViewer] Will load matrix for solution ${this.revision.solution.id}`);
-            this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
-              console.log(`[ImageViewer] Matrix loaded for solution ${this.revision.solution.id}:`, !!matrix);
-              this.advancedSolutionMatrix = matrix;
-              this.loadingAdvancedSolutionMatrix = false;
-              this.changeDetectorRef.markForCheck();
-            });
-          }
-        });
-      }
+      // Then ensure we have the solution matrix - we need coordinated loading with a clear state
+      this._ensureSolutionMatrixLoaded(this.revision.solution.id);
     } else if (this.revision?.solution?.imageFile) {
-      console.log(`[ImageViewer] Using imageFile instead of SVG, solution ID: ${this.revision.solution?.id}`);
       this.solutionMouseHoverImage = this.revision.solution.imageFile;
       this.inlineSvg = null;
+      
+      // Even with image file, we need the matrix for coordinates
+      if (this.revision.solution.id) {
+        this._ensureSolutionMatrixLoaded(this.revision.solution.id);
+      }
     } else {
-      console.log(`[ImageViewer] No solution image or SVG available`);
       this.solutionMouseHoverImage = null;
       this.inlineSvg = null;
+      this.advancedSolutionMatrix = null;
+      this.loadingAdvancedSolutionMatrix = false;
     }
+  }
+  
+  /**
+   * Ensures that a solution matrix is loaded, with proper state tracking
+   * This prevents race conditions between multiple components trying to load the same matrix
+   */
+  private _ensureSolutionMatrixLoaded(solutionId: number): void {
+    // If matrix is already loaded in component, we're done
+    if (this.advancedSolutionMatrix) {
+      return;
+    }
+    
+    // Mark as loading to prevent duplicate requests
+    this.loadingAdvancedSolutionMatrix = true;
+    
+    // First check if matrix is in the store
+    this.store$.pipe(
+      select(selectSolutionMatrix, solutionId),
+      take(1),
+      switchMap(matrixFromStore => {
+        if (matrixFromStore) {
+          // If matrix is already in store, use it
+          this.advancedSolutionMatrix = matrixFromStore;
+          this.loadingAdvancedSolutionMatrix = false;
+          return of(matrixFromStore);
+        } else {
+          // Otherwise, check if it's currently being loaded by another component
+          return this.store$.pipe(
+            select(selectIsSolutionMatrixLoading, solutionId),
+            take(1),
+            switchMap(isLoading => {
+              if (isLoading) {
+                // If already loading, wait for it to complete
+                return this.store$.pipe(
+                  select(selectSolutionMatrix, solutionId),
+                  filter(matrix => !!matrix), // Wait until matrix is available
+                  take(1)
+                );
+              } else {
+                // If not loading, dispatch action to load it
+                this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
+                
+                // Then wait for it to complete
+                return this.store$.pipe(
+                  select(selectSolutionMatrix, solutionId),
+                  filter(matrix => !!matrix), // Wait until matrix is available
+                  take(1)
+                );
+              }
+            })
+          );
+        }
+      })
+    ).subscribe(matrix => {
+      // Update component state with the matrix
+      this.advancedSolutionMatrix = matrix;
+      this.loadingAdvancedSolutionMatrix = false;
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   private _setShowPlateSolvingBanner() {
@@ -1387,47 +1438,7 @@ export class ImageViewerComponent
     );
   }
 
-  private _loadAdvancedSolutionMatrix$(solutionId: number): Observable<{
-    matrixRect: string;
-    matrixDelta: number;
-    raMatrix: string;
-    decMatrix: string;
-  }> {
-    console.log(`[ImageViewer] _loadAdvancedSolutionMatrix called for ${solutionId}`);
-    
-    // Return existing matrix if already loaded
-    if (this.advancedSolutionMatrix) {
-      console.log(`[ImageViewer] Already have matrix for ${solutionId} in component, returning cached`);
-      return of(this.advancedSolutionMatrix);
-    }
-
-    // Mark as loading in the component
-    console.log(`[ImageViewer] Setting loadingAdvancedSolutionMatrix=true for ${solutionId}`);
-    this.loadingAdvancedSolutionMatrix = true;
-    
-    // Dispatch action to load matrix from API via NgRx
-    console.log(`[ImageViewer] Dispatching LoadSolutionMatrix action for ${solutionId}`);
-    this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
-    
-    // First check if there's a loading flag in the store
-    return combineLatest([
-      this.store$.pipe(select(selectSolutionMatrix, solutionId)),
-      this.store$.pipe(select(selectIsSolutionMatrixLoading, solutionId))
-    ]).pipe(
-      filter(([matrix, isLoading]) => {
-        console.log(`[ImageViewer] Matrix filter check - matrix: ${!!matrix}, isLoading: ${isLoading}`);
-        // Either we have a matrix, or it's not loading anymore (which means it failed)
-        return !!matrix || !isLoading;
-      }),
-      take(1),
-      map(([matrix, isLoading]) => {
-        console.log(`[ImageViewer] Matrix received from store for ${solutionId}: ${!!matrix}, isLoading: ${isLoading}`);
-        // Matrix could still be null if the API call failed
-        this.loadingAdvancedSolutionMatrix = false;
-        return matrix;
-      })
-    );
-  }
+  // Removed _loadAdvancedSolutionMatrix$ in favor of _ensureSolutionMatrixLoaded
 
   private _onMouseHoverSvgLoad(): void {
     if (this.isBrowser) {

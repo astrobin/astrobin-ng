@@ -317,20 +317,16 @@
             *ngIf="!advancedSolutionMatrix && loadingAdvancedSolutionMatrix"
           ></astrobin-loading-indicator>
 
-          <div *ngIf="!!advancedSolutionMatrix" class="mouse-hover-svg-overlay-coordinates">
-            <astrobin-coordinates-display
-              [raHtml]="mouseHoverRa"
-              [decHtml]="mouseHoverDec"
-              [galacticRaHtml]="mouseHoverGalacticRa"
-              [galacticDecHtml]="mouseHoverGalacticDec"
-              [showGalactic]="true"
-              ngbTooltip="RA/Dec"
-            ></astrobin-coordinates-display>
-          </div>
-
-          <span>
-            Powered by <a href="https://pixinsight.com/" target="_blank" astrobinEventStopPropagation>PixInsight</a>
-          </span>
+          <astrobin-coordinates-display
+            *ngIf="!!advancedSolutionMatrix"
+            [raHtml]="mouseHoverRa"
+            [decHtml]="mouseHoverDec"
+            [galacticRaHtml]="mouseHoverGalacticRa"
+            [galacticDecHtml]="mouseHoverGalacticDec"
+            [showGalactic]="true"
+            [showAttribution]="true"
+            ngbTooltip="RA/Dec"
+          ></astrobin-coordinates-display>
         </div>
 
         <div

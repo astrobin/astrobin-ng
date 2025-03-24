@@ -1,11 +1,16 @@
 <div class="coordinates-display">
-  <div class="ra-dec d-flex gap-2">
-    <span [innerHTML]="ra"></span>
-    <span [innerHTML]="dec"></span>
-  </div>
+  <table class="coordinates-table">
+    <tr class="ra-dec">
+      <td class="ra" [innerHTML]="ra"></td>
+      <td class="dec" [innerHTML]="dec"></td>
+    </tr>
+    <tr *ngIf="showGalactic" class="galactic">
+      <td class="gal-ra" [innerHTML]="galacticRa"></td>
+      <td class="gal-dec" [innerHTML]="galacticDec"></td>
+    </tr>
+  </table>
 
-  <div *ngIf="showGalactic" class="galactic d-flex gap-2">
-    <span [innerHTML]="galacticRa"></span>
-    <span [innerHTML]="galacticDec"></span>
+  <div *ngIf="showAttribution" class="pixinsight-attribution">
+    {{ "Powered by" | translate }} <a href="https://pixinsight.com/" class="no-external-link" target="_blank" astrobinEventStopPropagation>PixInsight</a>
   </div>
 </div>

@@ -262,7 +262,11 @@ export class CoordinatesFormatterService {
     if (includeGalactic && galacticLValues && galacticBValues) {
       // Galactic coordinates are already calculated by CoordinateInterpolation
       const bIsPositive = !galacticBValues[0].startsWith('-');
-      const bDeg = bIsPositive ? galacticBValues[0] : galacticBValues[0].substring(1);
+      // Remove any existing sign character from the degree value
+      let bDeg = galacticBValues[0];
+      if (bDeg.startsWith('+') || bDeg.startsWith('-')) {
+        bDeg = bDeg.substring(1);
+      }
 
       const galacticCoords = this.formatGalacticCoordinates(
         galacticLValues[0],

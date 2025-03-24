@@ -64,7 +64,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @Input()
   eagerLoading = false;
-  
+
   @Input()
   externalSolutionMatrix: {
     matrixRect: string;
@@ -707,6 +707,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
+    // Don't attempt calculation if matrix is still loading
+    if (this.loadingAdvancedSolutionMatrix) {
+      return;
+    }
+
     // If we have the advanced solution matrix, use it for accurate coordinate calculation
     if (this.advancedSolutionMatrix && this.advancedSolutionMatrix.raMatrix) {
       try {
@@ -1061,46 +1066,63 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * @param event WheelEvent with ctrlKey for Firefox pinch gestures
    * @param syntheticEvent Optional synthetic event with proper coordinates
    */
-  private _loadAdvancedSolutionMatrix$(solutionId: number): Observable<{
-    matrixRect: string;
-    matrixDelta: number;
-    raMatrix: string;
-    decMatrix: string;
-  }> {
-    console.log(`[FullscreenViewer] _loadAdvancedSolutionMatrix called for ${solutionId}`);
-    
-    // Return existing matrix if already loaded
+  /**
+   * Ensures that a solution matrix is loaded, with proper state tracking
+   * This prevents race conditions between multiple components trying to load the same matrix
+   */
+  private _ensureSolutionMatrixLoaded(solutionId: number): void {
+    // If matrix is already loaded in component, we're done
     if (this.advancedSolutionMatrix) {
-      console.log(`[FullscreenViewer] Already have matrix for ${solutionId} in component, returning cached`);
-      return of(this.advancedSolutionMatrix);
+      return;
     }
 
-    // Mark as loading in the component
-    console.log(`[FullscreenViewer] Setting loadingAdvancedSolutionMatrix=true for ${solutionId}`);
+    // Mark as loading to prevent duplicate requests
     this.loadingAdvancedSolutionMatrix = true;
-    
-    // Dispatch action to load matrix from API via NgRx
-    console.log(`[FullscreenViewer] Dispatching LoadSolutionMatrix action for ${solutionId}`);
-    this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
-    
-    // First check if there's a loading flag in the store
-    return combineLatest([
-      this.store$.pipe(select(selectSolutionMatrix, solutionId)),
-      this.store$.pipe(select(selectIsSolutionMatrixLoading, solutionId))
-    ]).pipe(
-      filter(([matrix, isLoading]) => {
-        console.log(`[FullscreenViewer] Matrix filter check - matrix: ${!!matrix}, isLoading: ${isLoading}`);
-        // Either we have a matrix, or it's not loading anymore (which means it failed)
-        return !!matrix || !isLoading;
-      }),
+
+    // First check if matrix is in the store
+    this.store$.pipe(
+      select(selectSolutionMatrix, solutionId),
       take(1),
-      map(([matrix, isLoading]) => {
-        console.log(`[FullscreenViewer] Matrix received from store for ${solutionId}: ${!!matrix}, isLoading: ${isLoading}`);
-        // Matrix could still be null if the API call failed
-        this.loadingAdvancedSolutionMatrix = false;
-        return matrix;
+      switchMap(matrixFromStore => {
+        if (matrixFromStore) {
+          // If matrix is already in store, use it
+          this.advancedSolutionMatrix = matrixFromStore;
+          this.loadingAdvancedSolutionMatrix = false;
+          return of(matrixFromStore);
+        } else {
+          // Otherwise, check if it's currently being loaded by another component
+          return this.store$.pipe(
+            select(selectIsSolutionMatrixLoading, solutionId),
+            take(1),
+            switchMap(isLoading => {
+              if (isLoading) {
+                // If already loading, wait for it to complete
+                return this.store$.pipe(
+                  select(selectSolutionMatrix, solutionId),
+                  filter(matrix => !!matrix), // Wait until matrix is available
+                  take(1)
+                );
+              } else {
+                // If not loading, dispatch action to load it
+                this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
+
+                // Then wait for it to complete
+                return this.store$.pipe(
+                  select(selectSolutionMatrix, solutionId),
+                  filter(matrix => !!matrix), // Wait until matrix is available
+                  take(1)
+                );
+              }
+            })
+          );
+        }
       })
-    );
+    ).subscribe(matrix => {
+      // Update component state with the matrix
+      this.advancedSolutionMatrix = matrix;
+      this.loadingAdvancedSolutionMatrix = false;
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   private _handleFirefoxPinchZoom(event: WheelEvent, syntheticEvent?: WheelEvent): void {
@@ -1476,40 +1498,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         // Load solution matrix for coordinate calculation
         if (this.revision?.solution?.id) {
-          console.log(`[FullscreenViewer] Need matrix for solution ${this.revision.solution.id}`);
-          
           // If matrix was passed from parent component, use it directly
           if (this.externalSolutionMatrix) {
-            console.log(`[FullscreenViewer] Using external matrix for ${this.revision.solution.id}`);
             this.advancedSolutionMatrix = this.externalSolutionMatrix;
             this.loadingAdvancedSolutionMatrix = false;
             this.changeDetectorRef.markForCheck();
-          } else if (this.advancedSolutionMatrix) {
-            console.log(`[FullscreenViewer] Matrix already loaded in component for ${this.revision.solution.id}`);
-          } else if (this.loadingAdvancedSolutionMatrix) {
-            console.log(`[FullscreenViewer] Matrix already loading in component for ${this.revision.solution.id}`);
           } else {
-            // Check the store first
-            console.log(`[FullscreenViewer] Checking store for matrix ${this.revision.solution.id}`);
-            this.store$.pipe(
-              select(selectSolutionMatrix, this.revision.solution.id),
-              take(1)
-            ).subscribe(matrixFromStore => {
-              if (matrixFromStore) {
-                console.log(`[FullscreenViewer] Matrix found in store for ${this.revision.solution.id}, using it`);
-                this.advancedSolutionMatrix = matrixFromStore;
-                this.changeDetectorRef.markForCheck();
-              } else {
-                console.log(`[FullscreenViewer] Loading matrix for ${this.revision.solution.id}`);
-                // Otherwise, load it from the API via NgRx
-                this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
-                  console.log(`[FullscreenViewer] Matrix loaded for ${this.revision.solution.id}:`, !!matrix);
-                  this.advancedSolutionMatrix = matrix;
-                  this.loadingAdvancedSolutionMatrix = false;
-                  this.changeDetectorRef.markForCheck();
-                });
-              }
-            });
+            // Use same pattern as in ImageViewerComponent
+            this._ensureSolutionMatrixLoaded(this.revision.solution.id);
           }
         }
 

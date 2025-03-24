@@ -13,6 +13,7 @@ export class CoordinatesDisplayComponent implements OnChanges {
   @Input() galacticRaHtml: string;
   @Input() galacticDecHtml: string;
   @Input() showGalactic = false;
+  @Input() showAttribution = false;
   
   protected ra: SafeHtml;
   protected dec: SafeHtml;
