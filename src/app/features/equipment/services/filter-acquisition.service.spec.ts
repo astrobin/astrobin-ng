@@ -16,13 +16,27 @@ describe("FilterAcquisitionService", () => {
 
     filterService = {
       humanizeTypeShort: jest.fn().mockImplementation((type: any) => {
-        if (type === FilterType.H_ALPHA) return "Hα";
-        if (type === FilterType.OIII) return "OIII";
-        if (type === FilterType.L) return "Lum/Clear";
-        if (type === FilterType.R) return "R";
-        if (type === FilterType.G) return "G";
-        if (type === FilterType.B) return "B";
-        if (type === LegacyFilterType.CLEAR_OR_COLOR) return "Clear or color";
+        if (type === FilterType.H_ALPHA) {
+          return "Hα";
+        }
+        if (type === FilterType.OIII) {
+          return "OIII";
+        }
+        if (type === FilterType.L) {
+          return "Lum/Clear";
+        }
+        if (type === FilterType.R) {
+          return "R";
+        }
+        if (type === FilterType.G) {
+          return "G";
+        }
+        if (type === FilterType.B) {
+          return "B";
+        }
+        if (type === LegacyFilterType.CLEAR_OR_COLOR) {
+          return "Clear or color";
+        }
         // For any other values, just return them as strings
         return String(type);
       })
@@ -70,7 +84,7 @@ describe("FilterAcquisitionService", () => {
 
     it("should return filter brand and name if UNKNOWN and filter2 present", () => {
       // Mock the actual service implementation for this test
-      jest.spyOn(service, 'determineFilterType').mockImplementation((acq: any) => {
+      jest.spyOn(service, "determineFilterType").mockImplementation((acq: any) => {
         if (acq.filter2Type === "UNKNOWN" && acq.filter2Brand && acq.filter2Name) {
           return `${acq.filter2Brand} ${acq.filter2Name}`;
         }
@@ -91,7 +105,7 @@ describe("FilterAcquisitionService", () => {
 
     it("should return filter make and name if UNKNOWN and filter present (legacy)", () => {
       // Mock the actual service implementation for this test
-      jest.spyOn(service, 'determineFilterType').mockImplementation((acq: any) => {
+      jest.spyOn(service, "determineFilterType").mockImplementation((acq: any) => {
         if (acq.filterType === "UNKNOWN" && acq.filterMake && acq.filterName) {
           return `${acq.filterMake} ${acq.filterName}`;
         }
@@ -112,7 +126,7 @@ describe("FilterAcquisitionService", () => {
 
     it("should handle OTHER filter type", () => {
       // Mock the actual service implementation for this test
-      jest.spyOn(service, 'determineFilterType').mockImplementation((acq: any) => {
+      jest.spyOn(service, "determineFilterType").mockImplementation((acq: any) => {
         if (acq.filter2Type === "OTHER" && acq.filter2Brand && acq.filter2Name) {
           return `${acq.filter2Brand} ${acq.filter2Name}`;
         }
@@ -133,7 +147,7 @@ describe("FilterAcquisitionService", () => {
 
     it("should handle CLEAR_OR_COLOR filter type", () => {
       // Mock the actual service implementation for this test
-      jest.spyOn(service, 'determineFilterType').mockImplementation((acq: any) => {
+      jest.spyOn(service, "determineFilterType").mockImplementation((acq: any) => {
         if (acq.filterType === LegacyFilterType.CLEAR_OR_COLOR && acq.filterMake && acq.filterName) {
           return `${acq.filterMake} ${acq.filterName}`;
         }
@@ -436,6 +450,404 @@ describe("FilterAcquisitionService", () => {
       expect(summaries[FilterType.L].dates.length).toBe(2);
       expect(summaries[FilterType.L].dates).toContain("2023-01-01");
       expect(summaries[FilterType.L].dates).toContain("2023-01-02");
+    });
+
+    it("should correctly handle acquisitions where the same filter type has a mix of session durations", () => {
+      const mockImage: any = {
+        deepSkyAcquisitions: [
+          {
+            "id": 2516237,
+            "filter2Brand": "Optolong",
+            "filter2Name": "L-eNhance 2\"",
+            "filter2Type": "MULTIBAND",
+            "moonIllumination": 0.08073333478285477,
+            "date": "2024-10-29",
+            "isSynthetic": false,
+            "binning": 1,
+            "number": 24,
+            "duration": "300.0000",
+            "iso": null,
+            "gain": "100.00",
+            "fNumber": "2.80",
+            "sensorCooling": -10,
+            "darks": null,
+            "flats": null,
+            "flatDarks": null,
+            "bias": null,
+            "bortle": 7.0,
+            "meanSqm": null,
+            "meanFwhm": null,
+            "temperature": null,
+            "advanced": false,
+            "savedOn": "2025-03-24T18:59:42.254091",
+            "image": 1022575,
+            "filter": null,
+            "filter2": 2621
+          },
+          {
+            "id": 2516238,
+            "filter2Brand": "Optolong",
+            "filter2Name": "L-eNhance 2\"",
+            "filter2Type": "MULTIBAND",
+            "moonIllumination": 0.811051427195987,
+            "date": "2024-12-19",
+            "isSynthetic": false,
+            "binning": 1,
+            "number": 36,
+            "duration": "180.0000",
+            "iso": null,
+            "gain": "100.00",
+            "fNumber": "2.80",
+            "sensorCooling": -10,
+            "darks": null,
+            "flats": null,
+            "flatDarks": null,
+            "bias": null,
+            "bortle": 7.0,
+            "meanSqm": null,
+            "meanFwhm": null,
+            "temperature": null,
+            "advanced": false,
+            "savedOn": "2025-03-24T18:59:42.265553",
+            "image": 1022575,
+            "filter": null,
+            "filter2": 2621
+          },
+          {
+            "id": 2516239,
+            "filter2Brand": "Optolong",
+            "filter2Name": "L-eNhance 2\"",
+            "filter2Type": "MULTIBAND",
+            "moonIllumination": 0.2945653090227105,
+            "date": "2024-10-26",
+            "isSynthetic": false,
+            "binning": 1,
+            "number": 42,
+            "duration": "300.0000",
+            "iso": null,
+            "gain": "100.00",
+            "fNumber": "2.80",
+            "sensorCooling": -10,
+            "darks": null,
+            "flats": null,
+            "flatDarks": null,
+            "bias": null,
+            "bortle": 7.0,
+            "meanSqm": null,
+            "meanFwhm": null,
+            "temperature": null,
+            "advanced": false,
+            "savedOn": "2025-03-24T18:59:42.276825",
+            "image": 1022575,
+            "filter": null,
+            "filter2": 2621
+          },
+          {
+            "id": 2516240,
+            "filter2Brand": "Optolong",
+            "filter2Name": "L-eNhance 2\"",
+            "filter2Type": "MULTIBAND",
+            "moonIllumination": 0.748393486833909,
+            "date": "2024-11-20",
+            "isSynthetic": false,
+            "binning": 1,
+            "number": 45,
+            "duration": "300.0000",
+            "iso": null,
+            "gain": "100.00",
+            "fNumber": "2.80",
+            "sensorCooling": -10,
+            "darks": null,
+            "flats": null,
+            "flatDarks": null,
+            "bias": null,
+            "bortle": 7.0,
+            "meanSqm": null,
+            "meanFwhm": null,
+            "temperature": null,
+            "advanced": false,
+            "savedOn": "2025-03-24T18:59:42.287405",
+            "image": 1022575,
+            "filter": null,
+            "filter2": 2621
+          },
+          {
+            "id": 2516241,
+            "filter2Brand": "Optolong",
+            "filter2Name": "L-eNhance 2\"",
+            "filter2Type": "MULTIBAND",
+            "moonIllumination": 0.2775335599984967,
+            "date": "2024-11-25",
+            "isSynthetic": false,
+            "binning": 1,
+            "number": 55,
+            "duration": "300.0000",
+            "iso": null,
+            "gain": "100.00",
+            "fNumber": "2.80",
+            "sensorCooling": -10,
+            "darks": null,
+            "flats": null,
+            "flatDarks": null,
+            "bias": null,
+            "bortle": 7.0,
+            "meanSqm": null,
+            "meanFwhm": null,
+            "temperature": null,
+            "advanced": false,
+            "savedOn": "2025-03-24T18:59:42.297405",
+            "image": 1022575,
+            "filter": null,
+            "filter2": 2621
+          },
+          {
+            "id": 2516242,
+            "filter2Brand": "Optolong",
+            "filter2Name": "L-eNhance 2\"",
+            "filter2Type": "MULTIBAND",
+            "moonIllumination": 0.1975043072774696,
+            "date": "2024-11-26",
+            "isSynthetic": false,
+            "binning": 1,
+            "number": 66,
+            "duration": "180.0000",
+            "iso": null,
+            "gain": "100.00",
+            "fNumber": "2.80",
+            "sensorCooling": -10,
+            "darks": null,
+            "flats": null,
+            "flatDarks": null,
+            "bias": null,
+            "bortle": 7.0,
+            "meanSqm": null,
+            "meanFwhm": null,
+            "temperature": null,
+            "advanced": false,
+            "savedOn": "2025-03-24T18:59:42.308593",
+            "image": 1022575,
+            "filter": null,
+            "filter2": 2621
+          },
+          {
+            "id": 2516243,
+            "filter2Brand": "Optolong",
+            "filter2Name": "L-eNhance 2\"",
+            "filter2Type": "MULTIBAND",
+            "moonIllumination": 0.23697971702511106,
+            "date": "2024-09-27",
+            "isSynthetic": false,
+            "binning": 1,
+            "number": 73,
+            "duration": "180.0000",
+            "iso": null,
+            "gain": "100.00",
+            "fNumber": "2.80",
+            "sensorCooling": -10,
+            "darks": null,
+            "flats": null,
+            "flatDarks": null,
+            "bias": null,
+            "bortle": 7.0,
+            "meanSqm": null,
+            "meanFwhm": null,
+            "temperature": null,
+            "advanced": false,
+            "savedOn": "2025-03-24T18:59:42.319730",
+            "image": 1022575,
+            "filter": null,
+            "filter2": 2621
+          },
+          {
+            "id": 2516244,
+            "filter2Brand": "Optolong",
+            "filter2Name": "L-eNhance 2\"",
+            "filter2Type": "MULTIBAND",
+            "moonIllumination": 0.004598811307457984,
+            "date": "2024-10-03",
+            "isSynthetic": false,
+            "binning": 1,
+            "number": 80,
+            "duration": "180.0000",
+            "iso": null,
+            "gain": "100.00",
+            "fNumber": "2.80",
+            "sensorCooling": -10,
+            "darks": null,
+            "flats": null,
+            "flatDarks": null,
+            "bias": null,
+            "bortle": 7.0,
+            "meanSqm": null,
+            "meanFwhm": null,
+            "temperature": null,
+            "advanced": false,
+            "savedOn": "2025-03-24T18:59:42.331060",
+            "image": 1022575,
+            "filter": null,
+            "filter2": 2621
+          },
+          {
+            "id": 2516245,
+            "filter2Brand": "Optolong",
+            "filter2Name": "L-eNhance 2\"",
+            "filter2Type": "MULTIBAND",
+            "moonIllumination": 0.470051888627291,
+            "date": "2024-10-10",
+            "isSynthetic": false,
+            "binning": 1,
+            "number": 89,
+            "duration": "180.0000",
+            "iso": null,
+            "gain": "100.00",
+            "fNumber": "2.80",
+            "sensorCooling": -10,
+            "darks": null,
+            "flats": null,
+            "flatDarks": null,
+            "bias": null,
+            "bortle": 7.0,
+            "meanSqm": null,
+            "meanFwhm": null,
+            "temperature": null,
+            "advanced": false,
+            "savedOn": "2025-03-24T18:59:42.343000",
+            "image": 1022575,
+            "filter": null,
+            "filter2": 2621
+          }
+        ]
+      };
+
+      const summaries = service.buildFilterSummaries(mockImage, true);
+
+      // Check that the filter is properly identified as having mixed durations
+      expect(summaries[FilterType.MULTIBAND].number).toBe(null);
+      expect(summaries[FilterType.MULTIBAND].duration).toBe(null);
+      expect(summaries[FilterType.MULTIBAND]._mix).toBe(true);
+      
+      // Verify dates are collected correctly
+      expect(summaries[FilterType.MULTIBAND].dates.length).toBe(9);
+      expect(summaries[FilterType.MULTIBAND].dates).toEqual(
+        ["2024-10-29", "2024-12-19", "2024-10-26", "2024-11-20", "2024-11-25", "2024-11-26", "2024-09-27",
+          "2024-10-03", "2024-10-10"]
+      );
+      
+      // Calculate expected total integration time
+      // 24*300 + 36*180 + 42*300 + 45*300 + 55*300 + 66*180 + 73*180 + 80*180 + 89*180
+      const expectedIntegration = 
+        24*300 + 36*180 + 42*300 + 45*300 + 55*300 + 66*180 + 73*180 + 80*180 + 89*180;
+      expect(summaries[FilterType.MULTIBAND].totalIntegration).toBe(expectedIntegration);
+    });
+    
+    it("should correctly handle a sequence of three acquisitions with mixed durations", () => {
+      const mockImage: any = {
+        deepSkyAcquisitions: [
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 10,
+            "duration": "300.0000",
+            "date": "2024-10-29"
+          },
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 15,
+            "duration": "180.0000", // Different duration here
+            "date": "2024-12-19"
+          },
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 20,
+            "duration": "300.0000", // Same as first, but should remain as "mixed" since second was different
+            "date": "2024-10-26"
+          }
+        ]
+      };
+
+      const summaries = service.buildFilterSummaries(mockImage);
+
+      // Verify the _mix flag is set and maintained through all acquisitions
+      expect(summaries[FilterType.MULTIBAND]._mix).toBe(true);
+      expect(summaries[FilterType.MULTIBAND].number).toBe(null);
+      expect(summaries[FilterType.MULTIBAND].duration).toBe(null);
+      
+      // Total integration should still be calculated correctly
+      const expectedIntegration = 10*300 + 15*180 + 20*300;
+      expect(summaries[FilterType.MULTIBAND].totalIntegration).toBe(expectedIntegration);
+    });
+    
+    it("should maintain consistent duration across multiple acquisitions with the same duration", () => {
+      const mockImage: any = {
+        deepSkyAcquisitions: [
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 10,
+            "duration": "300.0000",
+            "date": "2024-10-29"
+          },
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 15,
+            "duration": "300.0000", // Same duration
+            "date": "2024-12-19"
+          },
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 20,
+            "duration": "300.0000", // Same duration
+            "date": "2024-10-26"
+          }
+        ]
+      };
+
+      const summaries = service.buildFilterSummaries(mockImage);
+
+      // Verify all counts are aggregated since durations are the same
+      expect(summaries[FilterType.MULTIBAND]._mix).toBe(false);
+      expect(summaries[FilterType.MULTIBAND].number).toBe(45); // 10 + 15 + 20
+      expect(summaries[FilterType.MULTIBAND].duration).toBe("300");
+      
+      // Total integration should be calculated correctly
+      const expectedIntegration = (10 + 15 + 20) * 300;
+      expect(summaries[FilterType.MULTIBAND].totalIntegration).toBe(expectedIntegration);
+    });
+    
+    it("should handle the mix flag correctly when alternating between same and different durations", () => {
+      const mockImage: any = {
+        deepSkyAcquisitions: [
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 10,
+            "duration": "300.0000",
+          },
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 15,
+            "duration": "180.0000", // Different duration from first
+          },
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 20,
+            "duration": "180.0000", // Same as second
+          },
+          {
+            "filter2Type": "MULTIBAND",
+            "number": 25,
+            "duration": "300.0000", // Same as first
+          }
+        ]
+      };
+
+      const summaries = service.buildFilterSummaries(mockImage);
+
+      // Once mix is set to true, it should stay true even if subsequent acquisitions match earlier ones
+      expect(summaries[FilterType.MULTIBAND]._mix).toBe(true);
+      expect(summaries[FilterType.MULTIBAND].number).toBe(null);
+      expect(summaries[FilterType.MULTIBAND].duration).toBe(null);
+      
+      // Total integration should still be calculated correctly
+      const expectedIntegration = 10*300 + 15*180 + 20*180 + 25*300;
+      expect(summaries[FilterType.MULTIBAND].totalIntegration).toBe(expectedIntegration);
     });
   });
 

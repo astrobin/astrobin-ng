@@ -12,6 +12,7 @@ export interface FilterSummary {
   averageMoonIllumination?: number;
   number: number;
   duration: string;
+  _mix?: boolean;
 }
 
 /**
@@ -85,7 +86,8 @@ export class FilterAcquisitionService {
           filterSummaries[filterType] = {
             totalIntegration: 0,
             number: 0,
-            duration
+            duration,
+            _mix: false
           };
 
           if (includeDates) {
@@ -101,8 +103,12 @@ export class FilterAcquisitionService {
           const fixedAcquisitionDuration = this.normalizeDuration(acquisition.duration);
           const filterExistingDuration = this.normalizeDuration(filterSummaries[filterType].duration);
 
+          // If we already marked this filter type as having mixed durations, don't try to set duration again
+          if (filterSummaries[filterType]._mix) {
+            // Do nothing - we've already determined this filter has mixed durations
+          }
           // Only aggregate frames if the durations match or if we haven't set a duration yet
-          if (filterSummaries[filterType].duration === null || filterExistingDuration === fixedAcquisitionDuration) {
+          else if (filterSummaries[filterType].duration === null || filterExistingDuration === fixedAcquisitionDuration) {
             // Set the duration if it's not set yet
             if (filterSummaries[filterType].duration === null) {
               filterSummaries[filterType].duration = fixedAcquisitionDuration;
@@ -112,6 +118,7 @@ export class FilterAcquisitionService {
             // If durations differ, we can't show a simple frames count
             filterSummaries[filterType].number = null;
             filterSummaries[filterType].duration = null;
+            filterSummaries[filterType]._mix = true;
           }
         }
 
