@@ -1,0 +1,11 @@
+<div class="coordinates-display">
+  <div class="ra-dec d-flex gap-2">
+    <span [innerHTML]="ra"></span>
+    <span [innerHTML]="dec"></span>
+  </div>
+
+  <div *ngIf="showGalactic" class="galactic d-flex gap-2">
+    <span [innerHTML]="galacticRa"></span>
+    <span [innerHTML]="galacticDec"></span>
+  </div>
+</div>

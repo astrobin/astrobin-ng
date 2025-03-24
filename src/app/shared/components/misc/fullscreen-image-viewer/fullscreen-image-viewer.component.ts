@@ -12,7 +12,7 @@ import { ImageAlias } from "@core/enums/image-alias.enum";
 import { ImageService } from "@core/services/image/image.service";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { Coord, NgxImageZoomComponent } from "ngx-image-zoom";
-import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, of, Subscription } from "rxjs";
 import { distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from "rxjs/operators";
 import { ImageThumbnailInterface } from "@core/interfaces/image-thumbnail.interface";
 import { UtilsService } from "@core/services/utils/utils.service";
@@ -28,6 +28,8 @@ import { TitleService } from "@core/services/title/title.service";
 import { fadeInOut } from "@shared/animations";
 import { SwipeDownService } from "@core/services/swipe-down.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
+import { SolutionInterface } from "@core/interfaces/solution.interface";
 
 declare type HammerInput = any;
 
@@ -39,6 +41,43 @@ declare type HammerInput = any;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
+
+  /**
+   * Convert equatorial coordinates (RA/Dec in degrees) to galactic coordinates (l/b in degrees)
+   * @param ra Right ascension in degrees (0-360)
+   * @param dec Declination in degrees (-90 to +90)
+   * @returns {l, b} Galactic longitude and latitude in degrees
+   */
+  private _equatorialToGalactic(ra: number, dec: number): { l: number, b: number } {
+    // Convert to radians
+    const raRad = ra * Math.PI / 180;
+    const decRad = dec * Math.PI / 180;
+
+    // Galactic coordinates of the North Celestial Pole (J2000.0)
+    const NGP_ra = 192.859508 * Math.PI / 180;  // RA of North Galactic Pole (radians)
+    const NGP_dec = 27.128336 * Math.PI / 180;  // Dec of North Galactic Pole (radians)
+    const l_NCP = 122.932 * Math.PI / 180;     // Galactic longitude of North Celestial Pole (radians)
+
+    // Calculate galactic longitude (l)
+    const sinb = Math.sin(decRad) * Math.sin(NGP_dec) +
+                Math.cos(decRad) * Math.cos(NGP_dec) * Math.cos(raRad - NGP_ra);
+    const b = Math.asin(sinb);
+
+    // Calculate galactic longitude (l)
+    const y = Math.cos(decRad) * Math.sin(raRad - NGP_ra);
+    const x = Math.sin(decRad) * Math.cos(NGP_dec) -
+              Math.cos(decRad) * Math.sin(NGP_dec) * Math.cos(raRad - NGP_ra);
+    let l = Math.atan2(y, x) + l_NCP;
+
+    // Convert longitude to 0-360 range
+    l = (l + 2 * Math.PI) % (2 * Math.PI);
+
+    // Convert back to degrees
+    return {
+      l: l * 180 / Math.PI,
+      b: b * 180 / Math.PI
+    };
+  }
   @Input()
   id: ImageInterface["pk"];
 
@@ -111,6 +150,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected canvasLoading = false;
   protected isGif = false;
   protected zoomFrozen = false;
+  protected mouseHoverRa: string;
+  protected mouseHoverDec: string;
+  protected mouseHoverGalacticRa: string;
+  protected mouseHoverGalacticDec: string;
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
   protected touchCurrentY: { value: number } = { value: 0 };
@@ -120,7 +163,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected swipeThreshold: number = 150;
   protected swipeDirectionDown: { value: boolean } = { value: true };
 
-  private _revision: ImageInterface | ImageRevisionInterface;
+  protected advancedSolutionMatrix: {
+    matrixRect: string;
+    matrixDelta: number;
+    raMatrix: string;
+    decMatrix: string;
+  };
+  protected loadingAdvancedSolutionMatrix = false;
+
+  // Mouse position for crosshair rulers
+  protected mouseX: number = null;
+  protected mouseY: number = null;
+  protected crosshairLeft: number = 0;
+  protected crosshairTop: number = 0;
+  protected crosshairWidth: number = 0;
+  protected crosshairHeight: number = 0;
+
+  protected revision: ImageInterface | ImageRevisionInterface;
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
@@ -181,7 +240,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly renderer: Renderer2,
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly swipeDownService: SwipeDownService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly solutionApiService: SolutionApiService
   ) {
     super(store$);
 
@@ -244,6 +304,34 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._setZoomLensSize();
     this._updateCanvasDimensions();
     this._drawCanvas();
+
+    // Clear coordinate display until next mouse move
+    this.mouseHoverRa = null;
+    this.mouseHoverDec = null;
+    this.mouseHoverGalacticRa = null;
+    this.mouseHoverGalacticDec = null;
+
+    // Reset crosshair position
+    this.mouseX = null;
+    this.mouseY = null;
+    this.crosshairLeft = 0;
+    this.crosshairTop = 0;
+    this.crosshairWidth = 0;
+    this.crosshairHeight = 0;
+
+    this.changeDetectorRef.markForCheck();
+
+    // Re-trigger coordinate calculation on next mouse movement
+    if (this.revision && this.windowRef.nativeWindow) {
+      // Use requestAnimationFrame to wait for the resize to finish
+      this.windowRef.nativeWindow.requestAnimationFrame(() => {
+        // If we have the current mouse position, simulate a mouse move event to update coordinates
+        const lastMouseEvent = this.windowRef.nativeWindow.event as MouseEvent;
+        if (lastMouseEvent && lastMouseEvent.type === 'mousemove') {
+          this.onGlobalMouseMove(lastMouseEvent);
+        }
+      });
+    }
   }
 
   ngOnInit() {
@@ -402,6 +490,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       event.stopPropagation();
     }
 
+    // Clear mouse position to hide rulers
+    this.mouseX = null;
+    this.mouseY = null;
+
     // Reset frozen state when hiding
     if (this.zoomFrozen) {
       this.zoomFrozen = false;
@@ -535,10 +627,63 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   // Handle mouse move events on the component and proxy them to ngx-image-zoom
   protected onGlobalMouseMove(event: MouseEvent): void {
+    // We need to ensure the revision is loaded before calculating coordinates
+    if (!this.revision) {
+      return;
+    }
+
     // Don't update position if frozen
     if (this.zoomFrozen) {
       return;
     }
+
+    // Don't update position if touch mode is active
+    if (this.touchMode) {
+      return;
+    }
+
+    // Update mouse position for crosshair rulers
+    const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+
+    if (imageElement) {
+      // Get fresh dimensions each time
+      const imageRect = imageElement.getBoundingClientRect();
+
+      // Save image rect for crosshair positioning
+      this.crosshairLeft = imageRect.left;
+      this.crosshairTop = imageRect.top;
+      this.crosshairWidth = imageRect.width;
+      this.crosshairHeight = imageRect.height;
+
+      // Check if mouse is within bounds of the actual image
+      if (
+        event.clientX >= imageRect.left &&
+        event.clientX <= imageRect.right &&
+        event.clientY >= imageRect.top &&
+        event.clientY <= imageRect.bottom
+      ) {
+        // Store absolute coordinates for the crosshair
+        this.mouseX = event.clientX;
+        this.mouseY = event.clientY;
+
+        // Recalculate coordinates immediately
+        if (this.revision?.solution?.ra || this.revision?.solution?.advancedRa) {
+          this._calculateMouseCoordinates(event);
+        }
+      } else {
+        // Hide rulers when mouse is outside the image
+        this.mouseX = null;
+        this.mouseY = null;
+        this.mouseHoverRa = null;
+        this.mouseHoverDec = null;
+        this.mouseHoverGalacticRa = null;
+        this.mouseHoverGalacticDec = null;
+      }
+
+      this.changeDetectorRef.markForCheck();
+    }
+
+    // We've already called _calculateMouseCoordinates above if needed
 
     // Only proxy if we have the zoom component, are in mouse mode, and are currently zooming
     if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage) {
@@ -569,6 +714,147 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // Update the zoom position
         this.ngxImageZoom.zoomService.calculateZoomPosition(relativeEvent);
         this.changeDetectorRef.markForCheck();
+      }
+    }
+  }
+
+  /**
+   * Calculate the coordinates at the current mouse position
+   */
+  private _calculateMouseCoordinates(event: MouseEvent): void {
+    // Don't calculate coordinates when using lens mode
+    if (this.enableLens && this.ngxImageZoom?.zoomService?.zoomingEnabled) {
+      this.mouseHoverRa = null;
+      this.mouseHoverDec = null;
+      this.mouseHoverGalacticRa = null;
+      this.mouseHoverGalacticDec = null;
+      return;
+    }
+
+    // If we have the advanced solution matrix, use it for accurate coordinate calculation
+    if (this.advancedSolutionMatrix && this.advancedSolutionMatrix.raMatrix) {
+      try {
+        // Get the image element or canvas that displays the image
+        const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+
+        if (!imageElement) {
+          return;
+        }
+
+        // Get container's position
+        const rect = imageElement.getBoundingClientRect();
+
+        // Check if mouse is within bounds
+        if (
+          event.clientX < rect.left ||
+          event.clientX > rect.right ||
+          event.clientY < rect.top ||
+          event.clientY > rect.bottom
+        ) {
+          return;
+        }
+
+        // Convert global coordinates to relative coordinates
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+
+        // Get rendered and natural width
+        const imageRenderedWidth = rect.width;
+        const imageNaturalWidth = this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w;
+
+        if (!imageRenderedWidth || !imageNaturalWidth) {
+          return;
+        }
+
+        // For coordinate calculation we need the relationship between
+        // the rendered image size and the fixed 1824px that the matrix is based on
+        const HD_WIDTH = 1824; // Fixed HD thumbnail width
+
+        let scaledX = offsetX / imageRenderedWidth * HD_WIDTH;
+        let scaledY = offsetY / imageRenderedWidth * HD_WIDTH;
+
+        // Parse matrix data
+        const raMatrix = this.advancedSolutionMatrix.raMatrix.split(",").map(Number);
+        const decMatrix = this.advancedSolutionMatrix.decMatrix.split(",").map(Number);
+        const rect2 = this.advancedSolutionMatrix.matrixRect.split(",").map(Number);
+        const delta = this.advancedSolutionMatrix.matrixDelta;
+
+        // Create the CoordinateInterpolation object with all necessary parameters
+        // @ts-ignore - CoordinateInterpolation is a global variable from the loaded JS file
+        const interpolation = new CoordinateInterpolation(
+          raMatrix,
+          decMatrix,
+          rect2[0],
+          rect2[1],
+          rect2[2],
+          rect2[3],
+          delta,
+          undefined,
+          undefined
+        );
+
+        // Get interpolated coordinates with adjustments for scale
+        // @ts-ignore - interpolateAsText is a method of CoordinateInterpolation
+        const interpolationText = interpolation.interpolateAsText(
+          scaledX,
+          scaledY,
+          false,
+          true,
+          true
+        );
+
+        // Format coordinates for display
+        const ra = interpolationText.alpha.trim().split(" ").map(x => x.padStart(2, "0"));
+        const dec = interpolationText.delta.trim().split(" ").map(x => x.padStart(2, "0"));
+
+        // Format equatorial coordinates
+        this.mouseHoverRa = `
+          <span class="symbol">α</span>:
+          <span class="value">${ra[0]}</span><span class="unit">h</span>
+          <span class="value">${ra[1]}</span><span class="unit">m</span>
+          <span class="value">${ra[2]}</span><span class="unit">s</span>
+        `;
+
+        this.mouseHoverDec = `
+          <span class="symbol">δ</span>:
+          <span class="value">${dec[0]}</span><span class="unit">°</span>
+          <span class="value">${dec[1]}</span><span class="unit">'</span>
+          <span class="value">${dec[2]}</span><span class="unit">"</span>
+        `;
+
+        // Add galactic coordinates
+        const radeg = parseFloat(ra[0]) * 15 + parseFloat(ra[1]) * 0.25 + parseFloat(ra[2]) * 0.00416667;
+        const decdeg = parseFloat(dec[0]) + parseFloat(dec[1])/60 + parseFloat(dec[2])/3600;
+        const { l, b } = this._equatorialToGalactic(radeg, decdeg);
+
+        const lDeg = Math.floor(l);
+        const lMin = Math.floor((l - lDeg) * 60);
+        const lSec = Math.floor(((l - lDeg) * 60 - lMin) * 60);
+
+        const bDeg = Math.floor(Math.abs(b));
+        const bMin = Math.floor((Math.abs(b) - bDeg) * 60);
+        const bSec = Math.floor(((Math.abs(b) - bDeg) * 60 - bMin) * 60);
+
+        this.mouseHoverGalacticRa = `
+          <span class="symbol">l</span>:
+          <span class="value">${lDeg.toString().padStart(3, '0')}</span><span class="unit">°</span>
+          <span class="value">${lMin.toString().padStart(2, '0')}</span><span class="unit">'</span>
+          <span class="value">${lSec.toString().padStart(2, '0')}</span><span class="unit">"</span>
+        `;
+
+        this.mouseHoverGalacticDec = `
+          <span class="symbol">b</span>:
+          <span class="value">${b >= 0 ? '+' : '-'}${bDeg.toString().padStart(2, '0')}</span><span class="unit">°</span>
+          <span class="value">${bMin.toString().padStart(2, '0')}</span><span class="unit">'</span>
+          <span class="value">${bSec.toString().padStart(2, '0')}</span><span class="unit">"</span>
+        `;
+
+        this.changeDetectorRef.markForCheck();
+      } catch (error) {
+        this.mouseHoverRa = null;
+        this.mouseHoverDec = null;
+        this.mouseHoverGalacticRa = null;
+        this.mouseHoverGalacticDec = null;
       }
     }
   }
@@ -882,6 +1168,21 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * @param event WheelEvent with ctrlKey for Firefox pinch gestures
    * @param syntheticEvent Optional synthetic event with proper coordinates
    */
+  private _loadAdvancedSolutionMatrix$(solutionId: number): Observable<{
+    matrixRect: string;
+    matrixDelta: number;
+    raMatrix: string;
+    decMatrix: string;
+  }> {
+    if (this.loadingAdvancedSolutionMatrix || this.advancedSolutionMatrix) {
+      return of(this.advancedSolutionMatrix);
+    }
+
+    this.loadingAdvancedSolutionMatrix = true;
+
+    return this.solutionApiService.getAdvancedMatrix(solutionId);
+  }
+
   private _handleFirefoxPinchZoom(event: WheelEvent, syntheticEvent?: WheelEvent): void {
     // Always prevent browser zoom when using ctrl+wheel (Firefox pinch gesture)
     event.preventDefault();
@@ -1248,10 +1549,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       filter(image => !!image),
       take(1),
       tap(image => {
-        this._revision = this.imageService.getRevision(image, this.revisionLabel);
-        this.naturalWidth = this._revision.w;
-        this.naturalHeight = this._revision.h;
+        this.revision = this.imageService.getRevision(image, this.revisionLabel);
+        this.naturalWidth = this.revision.w;
+        this.naturalHeight = this.revision.h;
         this.maxZoom = image.maxZoom || image.defaultMaxZoom || 8;
+
+        // Load solution matrix for coordinate calculation
+        if (this.revision?.solution?.id) {
+          this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
+            this.advancedSolutionMatrix = matrix;
+            this.loadingAdvancedSolutionMatrix = false;
+            this.changeDetectorRef.markForCheck();
+          });
+        }
 
         this.hdThumbnailLoading = true;
         this._hdLoadingProgressSubject.next(0);
@@ -1271,7 +1581,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       })
     ).subscribe(() => {
       // Check if the image is a GIF
-      this.isGif = this._revision.imageFile && this._revision.imageFile.toLowerCase().endsWith(".gif");
+      this.isGif = this.revision.imageFile && this.revision.imageFile.toLowerCase().endsWith(".gif");
 
       // For GIFs, always use non-touch mode
       if (this.isGif && this.touchMode) {
@@ -1286,7 +1596,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this._hdLoadingProgressSubject.next(0);
         this._realLoadingProgressSubject.next(0);
 
-        this.imageService.loadImageFile(this._revision.imageFile, (progress: number) => {
+        this.imageService.loadImageFile(this.revision.imageFile, (progress: number) => {
           this._hdLoadingProgressSubject.next(progress);
           this._realLoadingProgressSubject.next(progress);
         }).pipe(
@@ -1298,7 +1608,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         ).subscribe(url => {
           this.hdThumbnail = url;
           this.realThumbnail = url;
-          this.realThumbnailUnsafeUrl = this._revision.imageFile;
+          this.realThumbnailUnsafeUrl = this.revision.imageFile;
 
           this.hdThumbnailLoading = false;
           this.realThumbnailLoading = false;

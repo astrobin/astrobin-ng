@@ -317,21 +317,14 @@
           ></astrobin-loading-indicator>
 
           <div *ngIf="!!advancedSolutionMatrix" class="mouse-hover-svg-overlay-coordinates">
-            <div
-              class="ra-dec d-flex gap-2"
+            <astrobin-coordinates-display
+              [raHtml]="mouseHoverRa"
+              [decHtml]="mouseHoverDec"
+              [galacticRaHtml]="mouseHoverGalacticRa"
+              [galacticDecHtml]="mouseHoverGalacticDec"
+              [showGalactic]="true"
               ngbTooltip="RA/Dec"
-            >
-              <span [innerHTML]="mouseHoverRa"></span>
-              <span [innerHTML]="mouseHoverDec"></span>
-            </div>
-
-            <div
-              class="galactic d-flex gap-2"
-              [ngbTooltip]="'Galactic coordinates' | translate"
-            >
-              <span [innerHTML]="mouseHoverGalacticRa"></span>
-              <span [innerHTML]="mouseHoverGalacticDec"></span>
-            </div>
+            ></astrobin-coordinates-display>
           </div>
 
           <span>

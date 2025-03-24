@@ -331,7 +331,31 @@
   (touchend)="onTouchEnd($event)"
   (wheel)="onGlobalWheel($event)"
   (mousemove)="onGlobalMouseMove($event)"
+  (mouseleave)="mouseX = null; mouseY = null; mouseHoverRa = null; mouseHoverDec = null; mouseHoverGalacticRa = null; mouseHoverGalacticDec = null; changeDetectorRef.markForCheck()"
 >
+  <!-- Coordinate display -->
+  <div class="coordinates-wrapper" *ngIf="mouseHoverRa && mouseHoverDec && !isGif">
+    <astrobin-coordinates-display
+      [raHtml]="mouseHoverRa"
+      [decHtml]="mouseHoverDec"
+      [galacticRaHtml]="mouseHoverGalacticRa"
+      [galacticDecHtml]="mouseHoverGalacticDec"
+      [showGalactic]="true"
+      class="coordinates-overlay"
+    ></astrobin-coordinates-display>
+    <div class="pixinsight-attribution">Powered by PixInsight</div>
+  </div>
+
+  <!-- Crosshair rulers -->
+  <div *ngIf="mouseX !== null && mouseY !== null && !isGif && (!enableLens || !zoomingEnabled)" 
+       class="crosshair-container"
+       [style.left.px]="crosshairLeft"
+       [style.top.px]="crosshairTop"
+       [style.width.px]="crosshairWidth"
+       [style.height.px]="crosshairHeight">
+    <div class="crosshair-h" [style.top.px]="mouseY - crosshairTop"></div>
+    <div class="crosshair-v" [style.left.px]="mouseX - crosshairLeft"></div>
+  </div>
   <ng-container
     *ngIf="{
       hd: hdThumbnail,
