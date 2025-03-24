@@ -329,12 +329,21 @@ $header-height: 63px;
 
   .crosshair-container {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     pointer-events: none;
     z-index: 4;
     overflow: visible;
 
+    @supports (width: 100dvw) {
+      width: 100dvw;
+      height: 100dvh;
+    }
+
     .crosshair-h, .crosshair-v {
-      position: absolute;
+      position: fixed;
       background-color: transparent;
     }
 
@@ -342,6 +351,7 @@ $header-height: 63px;
       height: 0;
       width: 100%;
       left: 0;
+      right: 0;
       border-top: 1px solid rgba(255, 255, 255, 0.2);
       border-bottom: 1px solid rgba(0, 0, 0, 0.2);
       transform: translateY(-50%);
@@ -351,6 +361,7 @@ $header-height: 63px;
       width: 0;
       height: 100%;
       top: 0;
+      bottom: 0;
       border-left: 1px solid rgba(255, 255, 255, 0.2);
       border-right: 1px solid rgba(0, 0, 0, 0.2);
       transform: translateX(-50%);

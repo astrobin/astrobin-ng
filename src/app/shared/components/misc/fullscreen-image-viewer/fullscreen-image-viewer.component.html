@@ -347,13 +347,9 @@
 
   <!-- Crosshair rulers -->
   <div *ngIf="mouseX !== null && mouseY !== null && !isGif && (!enableLens || !zoomingEnabled)" 
-       class="crosshair-container"
-       [style.left.px]="crosshairLeft"
-       [style.top.px]="crosshairTop"
-       [style.width.px]="crosshairWidth"
-       [style.height.px]="crosshairHeight">
-    <div class="crosshair-h" [style.top.px]="mouseY - crosshairTop"></div>
-    <div class="crosshair-v" [style.left.px]="mouseX - crosshairLeft"></div>
+       class="crosshair-container">
+    <div class="crosshair-h" [style.top.px]="mouseY"></div>
+    <div class="crosshair-v" [style.left.px]="mouseX"></div>
   </div>
   <ng-container
     *ngIf="{

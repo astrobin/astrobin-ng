@@ -618,19 +618,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
-    // Update mouse position for crosshair rulers
+    // Update mouse position for crosshair rulers and coordinate display
     const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
 
     if (imageElement) {
       // Get fresh dimensions each time
       const imageRect = imageElement.getBoundingClientRect();
 
-      // Save image rect for crosshair positioning
-      this.crosshairLeft = imageRect.left;
-      this.crosshairTop = imageRect.top;
-      this.crosshairWidth = imageRect.width;
-      this.crosshairHeight = imageRect.height;
-
+      // Always store the mouse position for crosshairs, regardless of whether it's on the image
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
+      
       // Check if mouse is within bounds of the actual image
       if (
         event.clientX >= imageRect.left &&
@@ -638,18 +636,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         event.clientY >= imageRect.top &&
         event.clientY <= imageRect.bottom
       ) {
-        // Store absolute coordinates for the crosshair
-        this.mouseX = event.clientX;
-        this.mouseY = event.clientY;
-
         // Recalculate coordinates immediately
         if (this.revision?.solution?.ra || this.revision?.solution?.advancedRa) {
           this._calculateMouseCoordinates(event);
         }
       } else {
-        // Hide rulers when mouse is outside the image
-        this.mouseX = null;
-        this.mouseY = null;
+        // Hide coordinate display when mouse is outside the image
         this.mouseHoverRa = null;
         this.mouseHoverDec = null;
         this.mouseHoverGalacticRa = null;
