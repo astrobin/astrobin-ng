@@ -127,6 +127,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
           this.utilsService.delay(500).pipe(
             switchMap(() => this.currentUser$),
             filter(currentUser => !!currentUser),
+            take(1)
           ).subscribe(() => {
             this.store$.dispatch(new GetUnreadCount());
           });
