@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, SimpleChanges, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { LoadSolutionMatrix } from "@app/store/actions/solution.actions";
+import { selectIsSolutionMatrixLoading, selectSolutionMatrix } from "@app/store/selectors/app/solution.selectors";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectCurrentFullscreenImage, selectCurrentFullscreenImageEvent } from "@app/store/selectors/app/app.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
@@ -29,6 +31,7 @@ import { fadeInOut } from "@shared/animations";
 import { SwipeDownService } from "@core/services/swipe-down.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
+import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 import { SolutionInterface } from "@core/interfaces/solution.interface";
 
 declare type HammerInput = any;
@@ -42,42 +45,6 @@ declare type HammerInput = any;
 })
 export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
 
-  /**
-   * Convert equatorial coordinates (RA/Dec in degrees) to galactic coordinates (l/b in degrees)
-   * @param ra Right ascension in degrees (0-360)
-   * @param dec Declination in degrees (-90 to +90)
-   * @returns {l, b} Galactic longitude and latitude in degrees
-   */
-  private _equatorialToGalactic(ra: number, dec: number): { l: number, b: number } {
-    // Convert to radians
-    const raRad = ra * Math.PI / 180;
-    const decRad = dec * Math.PI / 180;
-
-    // Galactic coordinates of the North Celestial Pole (J2000.0)
-    const NGP_ra = 192.859508 * Math.PI / 180;  // RA of North Galactic Pole (radians)
-    const NGP_dec = 27.128336 * Math.PI / 180;  // Dec of North Galactic Pole (radians)
-    const l_NCP = 122.932 * Math.PI / 180;     // Galactic longitude of North Celestial Pole (radians)
-
-    // Calculate galactic longitude (l)
-    const sinb = Math.sin(decRad) * Math.sin(NGP_dec) +
-                Math.cos(decRad) * Math.cos(NGP_dec) * Math.cos(raRad - NGP_ra);
-    const b = Math.asin(sinb);
-
-    // Calculate galactic longitude (l)
-    const y = Math.cos(decRad) * Math.sin(raRad - NGP_ra);
-    const x = Math.sin(decRad) * Math.cos(NGP_dec) -
-              Math.cos(decRad) * Math.sin(NGP_dec) * Math.cos(raRad - NGP_ra);
-    let l = Math.atan2(y, x) + l_NCP;
-
-    // Convert longitude to 0-360 range
-    l = (l + 2 * Math.PI) % (2 * Math.PI);
-
-    // Convert back to degrees
-    return {
-      l: l * 180 / Math.PI,
-      b: b * 180 / Math.PI
-    };
-  }
   @Input()
   id: ImageInterface["pk"];
 
@@ -97,6 +64,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @Input()
   eagerLoading = false;
+  
+  @Input()
+  externalSolutionMatrix: {
+    matrixRect: string;
+    matrixDelta: number;
+    raMatrix: string;
+    decMatrix: string;
+  };
 
   @Output()
   enterFullscreen = new EventEmitter<void>();
@@ -241,7 +216,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly swipeDownService: SwipeDownService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly solutionApiService: SolutionApiService
+    public readonly solutionApiService: SolutionApiService,
+    public readonly coordinatesFormatter: CoordinatesFormatterService
   ) {
     super(store$);
 
@@ -741,113 +717,30 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           return;
         }
 
-        // Get container's position
-        const rect = imageElement.getBoundingClientRect();
+        // Use the shared service to calculate and format the coordinates
+        const result = this.coordinatesFormatter.calculateMouseCoordinates(
+          event,
+          imageElement,
+          this.advancedSolutionMatrix,
+          {
+            useClientCoords: true,
+            naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w
+          }
+        );
 
-        // Check if mouse is within bounds
-        if (
-          event.clientX < rect.left ||
-          event.clientX > rect.right ||
-          event.clientY < rect.top ||
-          event.clientY > rect.bottom
-        ) {
+        if (!result) {
+          this.mouseHoverRa = null;
+          this.mouseHoverDec = null;
+          this.mouseHoverGalacticRa = null;
+          this.mouseHoverGalacticDec = null;
           return;
         }
 
-        // Convert global coordinates to relative coordinates
-        const offsetX = event.clientX - rect.left;
-        const offsetY = event.clientY - rect.top;
-
-        // Get rendered and natural width
-        const imageRenderedWidth = rect.width;
-        const imageNaturalWidth = this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w;
-
-        if (!imageRenderedWidth || !imageNaturalWidth) {
-          return;
-        }
-
-        // For coordinate calculation we need the relationship between
-        // the rendered image size and the fixed 1824px that the matrix is based on
-        const HD_WIDTH = 1824; // Fixed HD thumbnail width
-
-        let scaledX = offsetX / imageRenderedWidth * HD_WIDTH;
-        let scaledY = offsetY / imageRenderedWidth * HD_WIDTH;
-
-        // Parse matrix data
-        const raMatrix = this.advancedSolutionMatrix.raMatrix.split(",").map(Number);
-        const decMatrix = this.advancedSolutionMatrix.decMatrix.split(",").map(Number);
-        const rect2 = this.advancedSolutionMatrix.matrixRect.split(",").map(Number);
-        const delta = this.advancedSolutionMatrix.matrixDelta;
-
-        // Create the CoordinateInterpolation object with all necessary parameters
-        // @ts-ignore - CoordinateInterpolation is a global variable from the loaded JS file
-        const interpolation = new CoordinateInterpolation(
-          raMatrix,
-          decMatrix,
-          rect2[0],
-          rect2[1],
-          rect2[2],
-          rect2[3],
-          delta,
-          undefined,
-          undefined
-        );
-
-        // Get interpolated coordinates with adjustments for scale
-        // @ts-ignore - interpolateAsText is a method of CoordinateInterpolation
-        const interpolationText = interpolation.interpolateAsText(
-          scaledX,
-          scaledY,
-          false,
-          true,
-          true
-        );
-
-        // Format coordinates for display
-        const ra = interpolationText.alpha.trim().split(" ").map(x => x.padStart(2, "0"));
-        const dec = interpolationText.delta.trim().split(" ").map(x => x.padStart(2, "0"));
-
-        // Format equatorial coordinates
-        this.mouseHoverRa = `
-          <span class="symbol">α</span>:
-          <span class="value">${ra[0]}</span><span class="unit">h</span>
-          <span class="value">${ra[1]}</span><span class="unit">m</span>
-          <span class="value">${ra[2]}</span><span class="unit">s</span>
-        `;
-
-        this.mouseHoverDec = `
-          <span class="symbol">δ</span>:
-          <span class="value">${dec[0]}</span><span class="unit">°</span>
-          <span class="value">${dec[1]}</span><span class="unit">'</span>
-          <span class="value">${dec[2]}</span><span class="unit">"</span>
-        `;
-
-        // Add galactic coordinates
-        const radeg = parseFloat(ra[0]) * 15 + parseFloat(ra[1]) * 0.25 + parseFloat(ra[2]) * 0.00416667;
-        const decdeg = parseFloat(dec[0]) + parseFloat(dec[1])/60 + parseFloat(dec[2])/3600;
-        const { l, b } = this._equatorialToGalactic(radeg, decdeg);
-
-        const lDeg = Math.floor(l);
-        const lMin = Math.floor((l - lDeg) * 60);
-        const lSec = Math.floor(((l - lDeg) * 60 - lMin) * 60);
-
-        const bDeg = Math.floor(Math.abs(b));
-        const bMin = Math.floor((Math.abs(b) - bDeg) * 60);
-        const bSec = Math.floor(((Math.abs(b) - bDeg) * 60 - bMin) * 60);
-
-        this.mouseHoverGalacticRa = `
-          <span class="symbol">l</span>:
-          <span class="value">${lDeg.toString().padStart(3, '0')}</span><span class="unit">°</span>
-          <span class="value">${lMin.toString().padStart(2, '0')}</span><span class="unit">'</span>
-          <span class="value">${lSec.toString().padStart(2, '0')}</span><span class="unit">"</span>
-        `;
-
-        this.mouseHoverGalacticDec = `
-          <span class="symbol">b</span>:
-          <span class="value">${b >= 0 ? '+' : '-'}${bDeg.toString().padStart(2, '0')}</span><span class="unit">°</span>
-          <span class="value">${bMin.toString().padStart(2, '0')}</span><span class="unit">'</span>
-          <span class="value">${bSec.toString().padStart(2, '0')}</span><span class="unit">"</span>
-        `;
+        // Set the formatted coordinates
+        this.mouseHoverRa = result.coordinates.raHtml;
+        this.mouseHoverDec = result.coordinates.decHtml;
+        this.mouseHoverGalacticRa = result.coordinates.galacticRaHtml;
+        this.mouseHoverGalacticDec = result.coordinates.galacticDecHtml;
 
         this.changeDetectorRef.markForCheck();
       } catch (error) {
@@ -1174,13 +1067,40 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     raMatrix: string;
     decMatrix: string;
   }> {
-    if (this.loadingAdvancedSolutionMatrix || this.advancedSolutionMatrix) {
+    console.log(`[FullscreenViewer] _loadAdvancedSolutionMatrix called for ${solutionId}`);
+    
+    // Return existing matrix if already loaded
+    if (this.advancedSolutionMatrix) {
+      console.log(`[FullscreenViewer] Already have matrix for ${solutionId} in component, returning cached`);
       return of(this.advancedSolutionMatrix);
     }
 
+    // Mark as loading in the component
+    console.log(`[FullscreenViewer] Setting loadingAdvancedSolutionMatrix=true for ${solutionId}`);
     this.loadingAdvancedSolutionMatrix = true;
-
-    return this.solutionApiService.getAdvancedMatrix(solutionId);
+    
+    // Dispatch action to load matrix from API via NgRx
+    console.log(`[FullscreenViewer] Dispatching LoadSolutionMatrix action for ${solutionId}`);
+    this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
+    
+    // First check if there's a loading flag in the store
+    return combineLatest([
+      this.store$.pipe(select(selectSolutionMatrix, solutionId)),
+      this.store$.pipe(select(selectIsSolutionMatrixLoading, solutionId))
+    ]).pipe(
+      filter(([matrix, isLoading]) => {
+        console.log(`[FullscreenViewer] Matrix filter check - matrix: ${!!matrix}, isLoading: ${isLoading}`);
+        // Either we have a matrix, or it's not loading anymore (which means it failed)
+        return !!matrix || !isLoading;
+      }),
+      take(1),
+      map(([matrix, isLoading]) => {
+        console.log(`[FullscreenViewer] Matrix received from store for ${solutionId}: ${!!matrix}, isLoading: ${isLoading}`);
+        // Matrix could still be null if the API call failed
+        this.loadingAdvancedSolutionMatrix = false;
+        return matrix;
+      })
+    );
   }
 
   private _handleFirefoxPinchZoom(event: WheelEvent, syntheticEvent?: WheelEvent): void {
@@ -1556,11 +1476,41 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         // Load solution matrix for coordinate calculation
         if (this.revision?.solution?.id) {
-          this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
-            this.advancedSolutionMatrix = matrix;
+          console.log(`[FullscreenViewer] Need matrix for solution ${this.revision.solution.id}`);
+          
+          // If matrix was passed from parent component, use it directly
+          if (this.externalSolutionMatrix) {
+            console.log(`[FullscreenViewer] Using external matrix for ${this.revision.solution.id}`);
+            this.advancedSolutionMatrix = this.externalSolutionMatrix;
             this.loadingAdvancedSolutionMatrix = false;
             this.changeDetectorRef.markForCheck();
-          });
+          } else if (this.advancedSolutionMatrix) {
+            console.log(`[FullscreenViewer] Matrix already loaded in component for ${this.revision.solution.id}`);
+          } else if (this.loadingAdvancedSolutionMatrix) {
+            console.log(`[FullscreenViewer] Matrix already loading in component for ${this.revision.solution.id}`);
+          } else {
+            // Check the store first
+            console.log(`[FullscreenViewer] Checking store for matrix ${this.revision.solution.id}`);
+            this.store$.pipe(
+              select(selectSolutionMatrix, this.revision.solution.id),
+              take(1)
+            ).subscribe(matrixFromStore => {
+              if (matrixFromStore) {
+                console.log(`[FullscreenViewer] Matrix found in store for ${this.revision.solution.id}, using it`);
+                this.advancedSolutionMatrix = matrixFromStore;
+                this.changeDetectorRef.markForCheck();
+              } else {
+                console.log(`[FullscreenViewer] Loading matrix for ${this.revision.solution.id}`);
+                // Otherwise, load it from the API via NgRx
+                this._loadAdvancedSolutionMatrix$(this.revision.solution.id).subscribe(matrix => {
+                  console.log(`[FullscreenViewer] Matrix loaded for ${this.revision.solution.id}:`, !!matrix);
+                  this.advancedSolutionMatrix = matrix;
+                  this.loadingAdvancedSolutionMatrix = false;
+                  this.changeDetectorRef.markForCheck();
+                });
+              }
+            });
+          }
         }
 
         this.hdThumbnailLoading = true;
