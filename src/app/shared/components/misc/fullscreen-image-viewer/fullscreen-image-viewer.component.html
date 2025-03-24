@@ -318,6 +318,17 @@
         <span>{{ "Lens mode" | translate }}</span>
       </ng-container>
     </div>
+    
+    <div
+      *ngIf="!isGif && revision?.solution"
+      (click)="toggleCoordinates()"
+      [ngbTooltip]="(enableLens && zoomingEnabled) ? ('Coordinates are not available in lens mode.' | translate) : ('Toggle coordinates display.' | translate)"
+      container="body"
+      [class.disabled]="enableLens && zoomingEnabled"
+    >
+      <fa-icon icon="crosshairs" class="me-2"></fa-icon>
+      <span>{{ (showCoordinates ? 'Hide coordinates' : 'Show coordinates') | translate }}</span>
+    </div>
   </div>
 </ng-template>
 
@@ -331,10 +342,10 @@
   (touchend)="onTouchEnd($event)"
   (wheel)="onGlobalWheel($event)"
   (mousemove)="onGlobalMouseMove($event)"
-  (mouseleave)="mouseX = null; mouseY = null; mouseHoverRa = null; mouseHoverDec = null; mouseHoverGalacticRa = null; mouseHoverGalacticDec = null; changeDetectorRef.markForCheck()"
+  (mouseleave)="clearCoordinates()"
 >
   <!-- Coordinate display -->
-  <div class="coordinates-wrapper" *ngIf="mouseHoverRa && mouseHoverDec && !isGif">
+  <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseHoverRa && mouseHoverDec && !isGif">
     <astrobin-coordinates-display
       [raHtml]="mouseHoverRa"
       [decHtml]="mouseHoverDec"
@@ -346,7 +357,7 @@
   </div>
 
   <!-- Crosshair rulers -->
-  <div *ngIf="mouseX !== null && mouseY !== null && !isGif && (!enableLens || !zoomingEnabled)" 
+  <div *ngIf="showCoordinates && mouseX !== null && mouseY !== null && !isGif" 
        class="crosshair-container">
     <div class="crosshair-h" [style.top.px]="mouseY"></div>
     <div class="crosshair-v" [style.left.px]="mouseX"></div>

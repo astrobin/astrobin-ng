@@ -129,6 +129,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected mouseHoverDec: string;
   protected mouseHoverGalacticRa: string;
   protected mouseHoverGalacticDec: string;
+  protected showCoordinates: boolean = false;
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
   protected touchCurrentY: { value: number } = { value: 0 };
@@ -446,6 +447,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   setZoomPosition(position: Coord) {
     this.showZoomIndicator = this.zoomingEnabled;
     this._setZoomIndicatorTimeout();
+    
+    // Only disable coordinates display in lens mode
+    if (this.enableLens && this.zoomingEnabled && this.showCoordinates) {
+      this.showCoordinates = false;
+      this.mouseHoverRa = null;
+      this.mouseHoverDec = null;
+      this.mouseHoverGalacticRa = null;
+      this.mouseHoverGalacticDec = null;
+      this.mouseX = null;
+      this.mouseY = null;
+      this.changeDetectorRef.markForCheck();
+    }
   }
 
   setZoomScroll(scroll: number) {
@@ -625,23 +638,33 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Get fresh dimensions each time
       const imageRect = imageElement.getBoundingClientRect();
 
-      // Always store the mouse position for crosshairs, regardless of whether it's on the image
-      this.mouseX = event.clientX;
-      this.mouseY = event.clientY;
-      
-      // Check if mouse is within bounds of the actual image
-      if (
-        event.clientX >= imageRect.left &&
-        event.clientX <= imageRect.right &&
-        event.clientY >= imageRect.top &&
-        event.clientY <= imageRect.bottom
-      ) {
-        // Recalculate coordinates immediately
-        if (this.revision?.solution?.ra || this.revision?.solution?.advancedRa) {
-          this._calculateMouseCoordinates(event);
+      // Always store the mouse position for crosshairs if coordinates are enabled
+      if (this.showCoordinates) {
+        this.mouseX = event.clientX;
+        this.mouseY = event.clientY;
+        
+        // Check if mouse is within bounds of the actual image
+        if (
+          event.clientX >= imageRect.left &&
+          event.clientX <= imageRect.right &&
+          event.clientY >= imageRect.top &&
+          event.clientY <= imageRect.bottom
+        ) {
+          // Recalculate coordinates immediately
+          if (this.revision?.solution?.ra || this.revision?.solution?.advancedRa) {
+            this._calculateMouseCoordinates(event);
+          }
+        } else {
+          // Hide coordinate display when mouse is outside the image
+          this.mouseHoverRa = null;
+          this.mouseHoverDec = null;
+          this.mouseHoverGalacticRa = null;
+          this.mouseHoverGalacticDec = null;
         }
       } else {
-        // Hide coordinate display when mouse is outside the image
+        // Coordinates are disabled, clear all values
+        this.mouseX = null;
+        this.mouseY = null;
         this.mouseHoverRa = null;
         this.mouseHoverDec = null;
         this.mouseHoverGalacticRa = null;
@@ -754,6 +777,58 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.cookieService.put(this.LENS_ENABLED_COOKIE_NAME, this.enableLens.toString());
     if (this.enableLens) {
       this._setZoomLensSize();
+      
+      // Turn off coordinates when lens mode is activated
+      if (this.showCoordinates) {
+        this.showCoordinates = false;
+        this.mouseHoverRa = null;
+        this.mouseHoverDec = null;
+        this.mouseHoverGalacticRa = null;
+        this.mouseHoverGalacticDec = null;
+        this.mouseX = null;
+        this.mouseY = null;
+        this.changeDetectorRef.markForCheck();
+      }
+    }
+  }
+
+  protected toggleCoordinates(): void {
+    // If in lens mode, show notification and don't toggle
+    if (this.enableLens && this.zoomingEnabled) {
+      this.popNotificationsService.warning(
+        this.translateService.instant("Coordinates are not available in lens mode.")
+      );
+      return;
+    }
+    
+    this.showCoordinates = !this.showCoordinates;
+    // If coordinates are turned off, hide any currently displayed values
+    if (!this.showCoordinates) {
+      this.mouseHoverRa = null;
+      this.mouseHoverDec = null;
+      this.mouseHoverGalacticRa = null;
+      this.mouseHoverGalacticDec = null;
+      this.mouseX = null;
+      this.mouseY = null;
+    } else if (this.mouseX !== null && this.mouseY !== null) {
+      // If coordinates are turned on and we have a current mouse position, recalculate
+      const lastMouseEvent = this.windowRef.nativeWindow.event as MouseEvent;
+      if (lastMouseEvent && lastMouseEvent.type === 'mousemove') {
+        this.onGlobalMouseMove(lastMouseEvent);
+      }
+    }
+    this.changeDetectorRef.markForCheck();
+  }
+  
+  protected clearCoordinates(): void {
+    if (this.showCoordinates) {
+      this.mouseX = null;
+      this.mouseY = null;
+      this.mouseHoverRa = null;
+      this.mouseHoverDec = null;
+      this.mouseHoverGalacticRa = null;
+      this.mouseHoverGalacticDec = null;
+      this.changeDetectorRef.markForCheck();
     }
   }
 
