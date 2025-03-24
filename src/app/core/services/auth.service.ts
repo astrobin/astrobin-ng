@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { AuthServiceInterface } from "@core/services/auth.service-interface";
 import { BaseService } from "@core/services/base.service";
 import { LoadingService } from "@core/services/loading.service";
@@ -10,12 +10,14 @@ import { Store } from "@ngrx/store";
 import { WindowRefService } from "@core/services/window-ref.service";
 import { ClassicRoutesService } from "@core/services/classic-routes.service";
 import { Router } from "@angular/router";
+import { isPlatformBrowser } from "@angular/common";
 
 @Injectable({
   providedIn: "root"
 })
 export class AuthService extends BaseService implements AuthServiceInterface {
-  static CLASSIC_AUTH_TOKEN_COOKIE = "classic-auth-token";
+  static readonly CLASSIC_AUTH_TOKEN_COOKIE = "classic-auth-token";
+  readonly isBrowser: boolean;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -24,9 +26,11 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     public readonly cookieService: CookieService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly windowRefService: WindowRefService,
-    public readonly router: Router
+    public readonly router: Router,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(loadingService);
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   getClassicApiToken(): string {
@@ -50,7 +54,20 @@ export class AuthService extends BaseService implements AuthServiceInterface {
   }
 
   removeAuthenticationToken() {
-    for (const domain of [".astrobin.com", "localhost"]) {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    let domain: string;
+    const url = this.windowRefService.getCurrentUrl().toString();
+
+    if (url?.includes("astrobin.com")) {
+      domain = ".astrobin.com";
+    } else if (url?.includes("localhost")) {
+      domain = "localhost";
+    }
+
+    if (domain) {
       this.cookieService.remove(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, {
         path: "/",
         domain

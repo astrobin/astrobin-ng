@@ -124,13 +124,12 @@ export class AppComponent extends BaseComponentDirective implements OnInit, OnDe
         this.setMetaTags(event.urlAfterRedirects);
 
         if (this._isBrowser) {
-          this.currentUser$.pipe(
+          this.utilsService.delay(500).pipe(
+            switchMap(() => this.currentUser$),
             filter(currentUser => !!currentUser),
             take(1)
           ).subscribe(() => {
-            this.utilsService.delay(500).subscribe(() => {
-              this.store$.dispatch(new GetUnreadCount());
-            });
+            this.store$.dispatch(new GetUnreadCount());
           });
         }
 
