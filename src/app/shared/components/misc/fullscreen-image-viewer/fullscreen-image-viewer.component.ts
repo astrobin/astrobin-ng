@@ -130,6 +130,25 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected mouseHoverGalacticRa: string;
   protected mouseHoverGalacticDec: string;
   protected showCoordinates: boolean = false;
+
+  // Measuring tool properties
+  protected isMeasuringMode: boolean = false;
+  protected measureStartPoint: { x: number; y: number; ra: number; dec: number } = null;
+  protected measureEndPoint: { x: number; y: number; ra: number; dec: number } = null;
+  protected measureDistance: string = null;
+  protected previousMeasurements: Array<{
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+    midX: number;
+    midY: number;
+    distance: string;
+    timestamp: number;
+  }> = [];
+  private _previousZoomState: { enableLens: boolean; zoomFrozen: boolean; zoomScroll: number } = null;
+  private _originalZoomEventHandlers: { [key: string]: EventListener } = {};
+  private _zoomEventDisabled: boolean = false;
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
   protected touchCurrentY: { value: number } = { value: 0 };
@@ -447,7 +466,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   setZoomPosition(position: Coord) {
     this.showZoomIndicator = this.zoomingEnabled;
     this._setZoomIndicatorTimeout();
-    
+
     // Only disable coordinates display in lens mode
     if (this.enableLens && this.zoomingEnabled && this.showCoordinates) {
       this.showCoordinates = false;
@@ -468,12 +487,100 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   snapTo1x() {
-    this.ngxImageZoom.setMagnification = 1;
-    this.ngxImageZoom.zoomService.zoomOn({ offsetX: 0, offsetY: 0 } as MouseEvent);
+    if (this.ngxImageZoom) {
+      try {
+        this.ngxImageZoom.setMagnification = 1;
+        this.ngxImageZoom.zoomService.zoomOn({ offsetX: 0, offsetY: 0 } as MouseEvent);
+      } catch (e) {
+        console.error('Error in snapTo1x:', e);
+      }
+    }
+  }
+
+  private _disableAllZooming(): void {
+    if (!this.ngxImageZoom || this._zoomEventDisabled) {
+      return;
+    }
+
+    // Store a flag to prevent doing this multiple times
+    this._zoomEventDisabled = true;
+
+    try {
+      // Get the image element
+      const zoomContainer = this.ngxImageZoomEl?.nativeElement;
+      if (!zoomContainer) return;
+
+      const imgElement = zoomContainer.querySelector('img');
+      if (!imgElement) return;
+
+      // Only disable wheel and regular zoom events, not click
+      const events = ['wheel', 'mousedown', 'mouseup', 'mouseover', 'mouseout'];
+
+      events.forEach(eventType => {
+        // Save the existing listener by checking its handlers
+        if (imgElement[`on${eventType}`]) {
+          this._originalZoomEventHandlers[eventType] = imgElement[`on${eventType}`];
+          imgElement[`on${eventType}`] = null;
+        }
+      });
+
+      // Stop the zoom service
+      if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
+        // Set magnification to 1 and disable zoom functionality
+        this.ngxImageZoom.setMagnification = 1;
+
+        // Update internal state
+        if (this.ngxImageZoom.zoomService.zoomingEnabled) {
+          // Simulate zoom end
+          this.ngxImageZoom.zoomService.zoomingEnabled = false;
+        }
+      }
+    } catch (e) {
+      console.error('Error disabling zoom:', e);
+    }
+  }
+
+  private _enableAllZooming(): void {
+    if (!this.ngxImageZoom || !this._zoomEventDisabled) {
+      return;
+    }
+
+    try {
+      // Reset the flag
+      this._zoomEventDisabled = false;
+
+      // Get the image element
+      const zoomContainer = this.ngxImageZoomEl?.nativeElement;
+      if (!zoomContainer) return;
+
+      const imgElement = zoomContainer.querySelector('img');
+      if (!imgElement) return;
+
+      // Remove capturing listeners and restore original ones
+      const events = ['wheel', 'mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout', 'click'];
+
+      events.forEach(eventType => {
+        // Remove all listeners first
+        const clonedImg = imgElement.cloneNode(true);
+        imgElement.parentNode.replaceChild(clonedImg, imgElement);
+      });
+
+      // Re-initialize zoom
+      setTimeout(() => {
+        this._initImageZoom();
+      }, 10);
+    } catch (e) {
+      console.error('Error enabling zoom:', e);
+    }
   }
 
   @HostListener("window:keyup.escape", ["$event"])
   hide(event: Event): void {
+    // If in measuring mode, exit measuring mode instead of closing fullscreen
+    if (this.isMeasuringMode) {
+      this.resetMeasurement();
+      return;
+    }
     if (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -493,14 +600,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   @HostListener("window:keyup.f", ["$event"])
-  toggleZoomFreeze(event: KeyboardEvent): void {
+  toggleZoomFreeze(event: KeyboardEvent | MouseEvent): void {
     // Don't interfere with input fields
-    if (
-      event.target instanceof HTMLInputElement ||
-      event.target instanceof HTMLTextAreaElement ||
-      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
-    ) {
-      return;
+    if (event instanceof KeyboardEvent) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+      ) {
+        return;
+      }
     }
 
     // Do nothing if the component is not being shown.
@@ -549,6 +658,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Handle wheel events and apply appropriate zoom behavior
    */
   protected onGlobalWheel(event: WheelEvent): void {
+    // Block wheel events during measuring mode
+    if (this.isMeasuringMode) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     // If the event has ctrlKey, it's a pinch gesture in Firefox or zoom in other browsers
     // Always prevent browser zoom
     if (event.ctrlKey) {
@@ -616,6 +731,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   // Handle mouse move events on the component and proxy them to ngx-image-zoom
   protected onGlobalMouseMove(event: MouseEvent): void {
+    // If in measuring mode and we've already placed the first point,
+    // only handle coordinate calculations for the line drawing
+    if (this.isMeasuringMode && this.measureStartPoint) {
+      // Update mouse position for line drawing
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
+      this.changeDetectorRef.markForCheck();
+
+      // Don't calculate other coordinates or trigger other zoom functionality
+      return;
+    }
     // We need to ensure the revision is loaded before calculating coordinates
     if (!this.revision) {
       return;
@@ -642,7 +768,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       if (this.showCoordinates) {
         this.mouseX = event.clientX;
         this.mouseY = event.clientY;
-        
+
         // Check if mouse is within bounds of the actual image
         if (
           event.clientX >= imageRect.left &&
@@ -772,12 +898,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
-  protected toggleEnableLens(): void {
+  protected toggleEnableLens(event: MouseEvent = null): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     this.enableLens = !this.enableLens;
     this.cookieService.put(this.LENS_ENABLED_COOKIE_NAME, this.enableLens.toString());
     if (this.enableLens) {
       this._setZoomLensSize();
-      
+
       // Turn off coordinates when lens mode is activated
       if (this.showCoordinates) {
         this.showCoordinates = false;
@@ -800,7 +930,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       );
       return;
     }
-    
+
     this.showCoordinates = !this.showCoordinates;
     // If coordinates are turned off, hide any currently displayed values
     if (!this.showCoordinates) {
@@ -819,7 +949,331 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
     this.changeDetectorRef.markForCheck();
   }
-  
+
+  protected toggleMeasuringMode(event: MouseEvent): void {
+    // Prevent the event from propagating and being handled by handleMeasurementClick
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Don't allow measuring in lens mode
+    if (this.enableLens && this.zoomingEnabled) {
+      this.popNotificationsService.warning(
+        this.translateService.instant("Measuring is not available in lens mode.")
+      );
+      return;
+    }
+
+    // Clear any existing measurements
+    this.resetMeasurement();
+
+    // Toggle measuring mode
+    this.isMeasuringMode = !this.isMeasuringMode;
+
+    // Disable zooming functions during measuring mode
+    if (this.isMeasuringMode) {
+      // Store current zoom state
+      this._previousZoomState = {
+        enableLens: this.enableLens,
+        zoomFrozen: this.zoomFrozen,
+        zoomScroll: this.zoomScroll
+      };
+
+      // Force zoom to stop
+      if (this.zoomingEnabled) {
+        try {
+          // If currently zooming, first reset to 1x
+          this.snapTo1x();
+        } catch (e) {
+          console.error('Error snapping to 1x', e);
+        }
+      }
+
+      // Disable lens mode
+      if (this.enableLens) {
+        this.enableLens = false;
+      }
+
+      // Disable zoom completely by removing event listeners
+      if (this.ngxImageZoom) {
+        this._disableAllZooming();
+      }
+    } else {
+      // Restore previous zoom state if we had one
+      if (this._previousZoomState) {
+        // Re-enable zoom event listeners
+        this._enableAllZooming();
+
+        // Restore lens mode if previously enabled
+        this.enableLens = this._previousZoomState.enableLens;
+
+        // Restore frozen state if previously frozen
+        if (this._previousZoomState.zoomFrozen) {
+          this.toggleZoomFreeze(null);
+        }
+
+        this._previousZoomState = null;
+      }
+    }
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected handleMeasurementClick(event: MouseEvent): void {
+    if (!this.isMeasuringMode) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Main click handler only used to stop propagation
+    // Actual measurement happens in handleMeasurementClickDirect
+  }
+
+  protected handleMeasurementClickDirect(event: MouseEvent): void {
+    if (!this.isMeasuringMode) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    // This method is called directly from the overlay that captures clicks
+    console.log("Direct measurement click");
+
+    // Check if the click is on UI elements that should be excluded from measurement
+    const target = event.target as HTMLElement;
+    if (target.closest('.zoom-modes') || target.closest('.close') ||
+        target.closest('.measuring-reset') || target.closest('.measure-distance')) {
+      // Clicked on UI element, ignore for measurement
+      return;
+    }
+
+    // Get the image element
+    const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    if (!imageElement) {
+      return;
+    }
+
+    // Get image coordinates
+    const imageRect = imageElement.getBoundingClientRect();
+
+    // Check if click is within image bounds
+    if (
+      event.clientX >= imageRect.left &&
+      event.clientX <= imageRect.right &&
+      event.clientY >= imageRect.top &&
+      event.clientY <= imageRect.bottom
+    ) {
+      // First point
+      if (!this.measureStartPoint) {
+        // Extract current RA/Dec at mouse position if available
+        let ra = null, dec = null;
+
+        if (this.revision?.solution) {
+          // Try to calculate coordinates for the point
+          const coords = this._calculateCoordinatesAtPoint(event.clientX, event.clientY);
+          if (coords) {
+            ra = coords.ra;
+            dec = coords.dec;
+          }
+        }
+
+        this.measureStartPoint = {
+          x: event.clientX,
+          y: event.clientY,
+          ra,
+          dec
+        };
+      }
+      // Second point
+      else if (!this.measureEndPoint) {
+        // Extract current RA/Dec at mouse position if available
+        let ra = null, dec = null;
+
+        if (this.revision?.solution) {
+          // Try to calculate coordinates for the point
+          const coords = this._calculateCoordinatesAtPoint(event.clientX, event.clientY);
+          if (coords) {
+            ra = coords.ra;
+            dec = coords.dec;
+          }
+        }
+
+        this.measureEndPoint = {
+          x: event.clientX,
+          y: event.clientY,
+          ra,
+          dec
+        };
+
+        // Calculate angular distance if both points have RA/Dec
+        if (
+          this.measureStartPoint.ra !== null &&
+          this.measureStartPoint.dec !== null &&
+          this.measureEndPoint.ra !== null &&
+          this.measureEndPoint.dec !== null
+        ) {
+          this.measureDistance = this._calculateAngularDistance(
+            this.measureStartPoint.ra,
+            this.measureStartPoint.dec,
+            this.measureEndPoint.ra,
+            this.measureEndPoint.dec
+          );
+        } else {
+          // If we can't calculate angular distance, show a pixel distance instead
+          const pixelDistance = Math.sqrt(
+            Math.pow(this.measureEndPoint.x - this.measureStartPoint.x, 2) +
+            Math.pow(this.measureEndPoint.y - this.measureStartPoint.y, 2)
+          ).toFixed(1);
+          this.measureDistance = `${pixelDistance} pixels`;
+        }
+
+        // Save the completed measurement
+        this.previousMeasurements.push({
+          startX: this.measureStartPoint.x,
+          startY: this.measureStartPoint.y,
+          endX: this.measureEndPoint.x,
+          endY: this.measureEndPoint.y,
+          midX: (this.measureStartPoint.x + this.measureEndPoint.x) / 2,
+          midY: (this.measureStartPoint.y + this.measureEndPoint.y) / 2,
+          distance: this.measureDistance,
+          timestamp: Date.now()
+        });
+
+        // Reset points to start a new measurement (but stay in measuring mode)
+        this.measureDistance = null;
+        this.measureStartPoint = null;
+        this.measureEndPoint = null;
+      }
+
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
+  protected resetMeasurement(): void {
+    this.measureStartPoint = null;
+    this.measureEndPoint = null;
+    this.measureDistance = null;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected clearAllMeasurements(): void {
+    this.resetMeasurement();
+    this.previousMeasurements = [];
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected deleteMeasurement(index: number): void {
+    if (index >= 0 && index < this.previousMeasurements.length) {
+      this.previousMeasurements.splice(index, 1);
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
+  private _calculateCoordinatesAtPoint(x: number, y: number): { ra: number; dec: number } | null {
+    try {
+      // Similar coordinate calculation as in _calculateMouseCoordinates but returns raw values
+      const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      if (!imageElement || !this.advancedSolutionMatrix) {
+        return null;
+      }
+
+      // Create a synthetic mouse event with the coordinates
+      const syntheticEvent = {
+        clientX: x,
+        clientY: y,
+        offsetX: 0,  // Not used with useClientCoords: true
+        offsetY: 0   // Not used with useClientCoords: true
+      } as MouseEvent;
+
+      // Use the coordinatesFormatter to calculate coordinates
+      const result = this.coordinatesFormatter.calculateMouseCoordinates(
+        syntheticEvent,
+        imageElement,
+        this.advancedSolutionMatrix,
+        {
+          useClientCoords: true,
+          naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w
+        }
+      );
+
+      if (!result) {
+        return null;
+      }
+
+      // Calculate image pixel coordinates
+      const imageRect = imageElement.getBoundingClientRect();
+      const relativeX = (x - imageRect.left);
+      const relativeY = (y - imageRect.top);
+
+      // Scale to HD space (1824px width reference)
+      const HD_WIDTH = 1824;
+      const scaledX = relativeX / imageRect.width * HD_WIDTH;
+      const scaledY = relativeY / imageRect.width * HD_WIDTH;
+
+      // Parse matrix data
+      const raMatrix = this.advancedSolutionMatrix.raMatrix.split(",").map(Number);
+      const decMatrix = this.advancedSolutionMatrix.decMatrix.split(",").map(Number);
+      const rect = this.advancedSolutionMatrix.matrixRect.split(",").map(Number);
+      const delta = this.advancedSolutionMatrix.matrixDelta;
+
+      // @ts-ignore - CoordinateInterpolation is defined globally in assets/js/CoordinateInterpolation.js
+      const interpolation = new CoordinateInterpolation(
+        raMatrix,
+        decMatrix,
+        rect[0],
+        rect[1],
+        rect[2],
+        rect[3],
+        delta
+      );
+
+      // Get raw coordinates using interpolation
+      const rawCoords = interpolation.interpolate(scaledX, scaledY);
+      if (rawCoords && rawCoords.alpha !== undefined && rawCoords.delta !== undefined) {
+        return {
+          ra: rawCoords.alpha,
+          dec: rawCoords.delta
+        };
+      }
+    } catch (error) {
+      console.error('Error calculating coordinates for measurement:', error);
+    }
+
+    return null;
+  }
+
+  private _calculateAngularDistance(ra1: number, dec1: number, ra2: number, dec2: number): string {
+    // Convert degrees to radians
+    const toRadians = (deg) => deg * Math.PI / 180;
+
+    // RA/Dec are in degrees
+    const ra1Rad = toRadians(ra1);
+    const dec1Rad = toRadians(dec1);
+    const ra2Rad = toRadians(ra2);
+    const dec2Rad = toRadians(dec2);
+
+    // Calculate angular distance using Haversine formula
+    // cos(angular_distance) = sin(dec1) * sin(dec2) + cos(dec1) * cos(dec2) * cos(ra1 - ra2)
+    const cosAngDist = Math.sin(dec1Rad) * Math.sin(dec2Rad) +
+                      Math.cos(dec1Rad) * Math.cos(dec2Rad) * Math.cos(ra1Rad - ra2Rad);
+
+    // Clamp value to handle floating point errors
+    const clampedCosAngDist = Math.max(-1, Math.min(1, cosAngDist));
+
+    // Calculate angular distance in radians and convert to degrees
+    const angDistDeg = Math.acos(clampedCosAngDist) * 180 / Math.PI;
+
+    // Format result in degrees, arcminutes, and arcseconds
+    const degrees = Math.floor(angDistDeg);
+    const arcminutes = Math.floor((angDistDeg - degrees) * 60);
+    const arcseconds = ((angDistDeg - degrees) * 60 - arcminutes) * 60;
+
+    // Format the string
+    return `${degrees}° ${arcminutes}′ ${arcseconds.toFixed(1)}″`;
+  }
+
   protected clearCoordinates(): void {
     if (this.showCoordinates) {
       this.mouseX = null;

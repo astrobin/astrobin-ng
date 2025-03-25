@@ -211,6 +211,7 @@
       </lib-ngx-image-zoom>
 
       <div
+        *ngIf="!isMeasuringMode"
         class="image-zoom-indicator"
         [class.beyond-one]="Math.round(zoomScroll * 100) >= 101"
         [class.frozen]="zoomFrozen"
@@ -305,7 +306,7 @@
 
     <div
       *ngIf="!touchMode"
-      (click)="toggleEnableLens()"
+      (click)="toggleEnableLens($event)"
       [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
       container="body"
     >
@@ -318,7 +319,7 @@
         <span>{{ "Lens mode" | translate }}</span>
       </ng-container>
     </div>
-    
+
     <div
       *ngIf="!isGif && revision?.solution"
       (click)="toggleCoordinates()"
@@ -328,6 +329,18 @@
     >
       <fa-icon icon="crosshairs" class="me-2"></fa-icon>
       <span>{{ (showCoordinates ? 'Hide coordinates' : 'Show coordinates') | translate }}</span>
+    </div>
+
+    <div
+      *ngIf="!isGif && revision?.solution"
+      (click)="toggleMeasuringMode($event)"
+      [ngbTooltip]="(enableLens && zoomingEnabled) ? ('Measuring is not available in lens mode.' | translate) : ('Measure angular distance between two points.' | translate)"
+      container="body"
+      [class.disabled]="enableLens && zoomingEnabled"
+      [class.active]="isMeasuringMode"
+    >
+      <fa-icon icon="ruler" class="me-2"></fa-icon>
+      <span>{{ (isMeasuringMode ? 'Cancel measurement' : 'Measure distance') | translate }}</span>
     </div>
   </div>
 </ng-template>
@@ -343,7 +356,103 @@
   (wheel)="onGlobalWheel($event)"
   (mousemove)="onGlobalMouseMove($event)"
   (mouseleave)="clearCoordinates()"
+  (click)="handleMeasurementClick($event)"
 >
+  <!-- Measuring tool -->
+  <div class="measuring-tool-container" *ngIf="isMeasuringMode || measureDistance">
+    <!-- Start and end markers -->
+    <div *ngIf="measureStartPoint" class="measure-marker start-marker"
+         [style.left.px]="measureStartPoint.x" [style.top.px]="measureStartPoint.y">
+      <div class="marker-dot"></div>
+    </div>
+
+    <div *ngIf="measureEndPoint" class="measure-marker end-marker"
+         [style.left.px]="measureEndPoint.x" [style.top.px]="measureEndPoint.y">
+      <div class="marker-dot"></div>
+    </div>
+
+    <!-- Previous lines -->
+    <svg class="measure-line-container"
+         [attr.width]="windowRef.nativeWindow.innerWidth" [attr.height]="windowRef.nativeWindow.innerHeight">
+      <!-- Previous measurements -->
+      <g *ngFor="let measurement of previousMeasurements; let i = index">
+        <line
+          [attr.x1]="measurement.startX" [attr.y1]="measurement.startY"
+          [attr.x2]="measurement.endX" [attr.y2]="measurement.endY"
+          class="measure-line previous-line">
+        </line>
+
+        <!-- Start point marker -->
+        <circle
+          [attr.cx]="measurement.startX"
+          [attr.cy]="measurement.startY"
+          r="4"
+          class="measure-point previous-point">
+        </circle>
+
+        <!-- End point marker -->
+        <circle
+          [attr.cx]="measurement.endX"
+          [attr.cy]="measurement.endY"
+          r="4"
+          class="measure-point previous-point">
+        </circle>
+      </g>
+
+      <!-- Current measurement line -->
+      <line *ngIf="!measureEndPoint && measureStartPoint && mouseX !== null && mouseY !== null"
+            [attr.x1]="measureStartPoint.x" [attr.y1]="measureStartPoint.y"
+            [attr.x2]="mouseX" [attr.y2]="mouseY"
+            class="measure-line measuring"></line>
+      <line *ngIf="measureEndPoint"
+            [attr.x1]="measureStartPoint.x" [attr.y1]="measureStartPoint.y"
+            [attr.x2]="measureEndPoint.x" [attr.y2]="measureEndPoint.y"
+            class="measure-line current-line"></line>
+    </svg>
+
+    <!-- Distance labels - show previous measurements -->
+    <div *ngFor="let measurement of previousMeasurements; let i = index"
+         class="measure-distance previous-measurement"
+         [style.left.px]="measurement.midX"
+         [style.top.px]="measurement.midY">
+      <span class="measurement-text">{{ measurement.distance }}</span>
+      <button class="btn-delete-measurement" (click)="deleteMeasurement($event, i)">
+        <fa-icon icon="times"></fa-icon>
+      </button>
+    </div>
+
+    <!-- Current measurement -->
+    <div *ngIf="measureDistance" class="measure-distance current-measurement"
+         [style.left.px]="(measureStartPoint.x + measureEndPoint.x) / 2"
+         [style.top.px]="(measureStartPoint.y + measureEndPoint.y) / 2">
+      {{ measureDistance }}
+    </div>
+
+    <!-- Measuring mode instructions -->
+    <div *ngIf="isMeasuringMode && !measureStartPoint" class="measuring-instructions">
+      {{ 'Click on first point to begin measurement' | translate }}
+    </div>
+    <div *ngIf="isMeasuringMode && measureStartPoint && !measureEndPoint" class="measuring-instructions">
+      {{ 'Click on second point to complete measurement' | translate }}
+    </div>
+    <div *ngIf="isMeasuringMode" class="measuring-controls">
+      <button class="btn btn-sm btn-outline-light me-2" (click)="clearAllMeasurements()" *ngIf="previousMeasurements.length > 0">
+        <fa-icon icon="trash" class="me-1"></fa-icon>
+        {{ 'Clear all' | translate }}
+      </button>
+      <button class="btn btn-sm btn-outline-light" (click)="toggleMeasuringMode($event)">
+        <fa-icon icon="times" class="me-1"></fa-icon>
+        {{ 'Exit measuring tool' | translate }}
+      </button>
+    </div>
+
+    <!-- Overlay for capturing clicks during measuring mode -->
+    <div *ngIf="isMeasuringMode"
+         class="measure-click-overlay"
+         (click)="handleMeasurementClickDirect($event)">
+    </div>
+  </div>
+
   <!-- Coordinate display -->
   <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseHoverRa && mouseHoverDec && !isGif">
     <astrobin-coordinates-display
@@ -357,7 +466,7 @@
   </div>
 
   <!-- Crosshair rulers -->
-  <div *ngIf="showCoordinates && mouseX !== null && mouseY !== null && !isGif" 
+  <div *ngIf="showCoordinates && mouseX !== null && mouseY !== null && !isGif"
        class="crosshair-container">
     <div class="crosshair-h" [style.top.px]="mouseY"></div>
     <div class="crosshair-v" [style.left.px]="mouseX"></div>
@@ -384,7 +493,7 @@
     </ng-container>
   </ng-container>
 
-  <div (click)="hide($event)" class="close">
+  <div (click)="hide($event)" class="close" *ngIf="!isMeasuringMode">
     <fa-icon icon="down-left-and-up-right-to-center"></fa-icon>
   </div>
 
