@@ -32,7 +32,7 @@ import { SwipeDownService } from "@core/services/swipe-down.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
 import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
-import { SolutionInterface } from "@core/interfaces/solution.interface";
+import { SolutionStatus } from "@core/interfaces/solution.interface";
 
 declare type HammerInput = any;
 
@@ -177,6 +177,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected crosshairHeight: number = 0;
   protected isMouseOverUIElement: boolean = false;
 
+  protected image: ImageInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
@@ -299,10 +300,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected get isVeryLargeImage(): boolean {
     return this.naturalWidth * (this.naturalHeight || this.naturalWidth) > this.PIXEL_THRESHOLD;
   }
-  
+
   protected get hasAdvancedSolution(): boolean {
     // Check if the image has an advanced plate-solving solution with matrices
-    return !!(this.revision?.solution?.advancedRaMatrix && this.revision?.solution?.advancedDecMatrix);
+    return !!(
+      this.revision?.solution?.status === SolutionStatus.ADVANCED_SUCCESS &&
+      this.revision?.solution?.advancedRa &&
+      this.revision?.solution?.advancedDec
+    );
   }
 
   @HostListener("document:click", ["$event"])
@@ -604,7 +609,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       event.preventDefault();
       event.stopPropagation();
     }
-    
+
     // Close the kebab menu if it's open
     if (this.showKebabMenu) {
       this.showKebabMenu = false;
@@ -1005,7 +1010,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const wasInLensMode = this.enableLens;
     this.enableLens = !this.enableLens;
     this.cookieService.put(this.LENS_ENABLED_COOKIE_NAME, this.enableLens.toString());
-    
+
     if (this.enableLens) {
       // Entering lens mode
       this._setZoomLensSize();
@@ -1044,13 +1049,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Close the kebab menu
     this.showKebabMenu = false;
-    
+
     // Toggle the shortcuts overlay
     this.showKeyboardShortcutsOverlay = true;
-    
+
     this.changeDetectorRef.markForCheck();
   }
-  
+
   protected hideShortcutsOverlay(): void {
     this.showKeyboardShortcutsOverlay = false;
     this.changeDetectorRef.markForCheck();
@@ -1148,7 +1153,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Toggle measuring mode
     this.isMeasuringMode = !this.isMeasuringMode;
-    
+
     // If exiting measuring mode, clear all previous measurements
     if (!this.isMeasuringMode) {
       this.previousMeasurements = [];
@@ -1185,9 +1190,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         // Restore lens mode if previously enabled
         this.enableLens = this._previousZoomState.enableLens;
-        
+
         // Restore the previous zoom level
-        if (this._previousZoomState && this._previousZoomState.zoomScroll !== undefined && 
+        if (this._previousZoomState && this._previousZoomState.zoomScroll !== undefined &&
             this._previousZoomState.zoomScroll !== this.zoomScroll) {
           // Use our component's setZoomScroll method instead of directly accessing the service
           this.setZoomScroll(this._previousZoomState.zoomScroll);
@@ -1359,7 +1364,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       event.preventDefault();
       event.stopPropagation();
     }
-    
+
     if (index >= 0 && index < this.previousMeasurements.length) {
       this.previousMeasurements.splice(index, 1);
       this.changeDetectorRef.markForCheck();
@@ -2212,6 +2217,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       filter(image => !!image),
       take(1),
       tap(image => {
+        this.image = image;
         this.revision = this.imageService.getRevision(image, this.revisionLabel);
         this.naturalWidth = this.revision.w;
         this.naturalHeight = this.revision.h;

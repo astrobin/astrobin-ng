@@ -121,7 +121,7 @@ export class ImageViewerComponent
 
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
-  
+
   @ViewChild("fullscreenViewer", { static: false })
   fullscreenViewer: any;
 
@@ -310,7 +310,7 @@ export class ImageViewerComponent
 
         this.changeDetectorRef.markForCheck();
       });
-      
+
       // Check for the fullscreen viewer and subscribe to its events
       this.utilsService.delay(100).subscribe(() => {
         if (this.fullscreenViewer) {
@@ -366,7 +366,7 @@ export class ImageViewerComponent
     }
 
     if (this.viewingFullscreenImage) {
-      // We don't need to do anything here - the FullscreenImageViewerComponent 
+      // We don't need to do anything here - the FullscreenImageViewerComponent
       // will handle ESC key and emit exitFullscreen event back to us
       return;
     }
@@ -496,6 +496,10 @@ export class ImageViewerComponent
       event.target instanceof HTMLTextAreaElement ||
       (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
     ) {
+      return;
+    }
+
+    if (this.viewingFullscreenImage) {
       return;
     }
 
