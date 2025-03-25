@@ -147,6 +147,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     midY: number;
     distance: string;
     timestamp: number;
+    startRa: number | null;
+    startDec: number | null;
+    endRa: number | null;
+    endDec: number | null;
   }> = [];
   private _previousZoomState: { enableLens: boolean; zoomFrozen: boolean; zoomScroll: number } = null;
   private _originalZoomEventHandlers: { [key: string]: EventListener } = {};
@@ -303,11 +307,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected get hasAdvancedSolution(): boolean {
     // Check if the image has an advanced plate-solving solution with matrices
-    return !!(
+    const result = !!(
       this.revision?.solution?.status === SolutionStatus.ADVANCED_SUCCESS &&
       this.revision?.solution?.advancedRa &&
       this.revision?.solution?.advancedDec
     );
+    console.log('hasAdvancedSolution check:', result, 
+      'solution exists:', !!this.revision?.solution,
+      'status ADVANCED_SUCCESS:', this.revision?.solution?.status === SolutionStatus.ADVANCED_SUCCESS,
+      'advancedRa:', !!this.revision?.solution?.advancedRa, 
+      'advancedDec:', !!this.revision?.solution?.advancedDec);
+    return result;
   }
 
   @HostListener("document:click", ["$event"])
@@ -1270,7 +1280,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           if (coords) {
             ra = coords.ra;
             dec = coords.dec;
+            console.log('Calculated START coordinates:', ra, dec);
+          } else {
+            console.log('Failed to calculate START coordinates');
           }
+        } else {
+          console.log('No solution available for START point');
         }
 
         this.measureStartPoint = {
@@ -1291,7 +1306,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           if (coords) {
             ra = coords.ra;
             dec = coords.dec;
+            console.log('Calculated END coordinates:', ra, dec);
+          } else {
+            console.log('Failed to calculate END coordinates');
           }
+        } else {
+          console.log('No solution available for END point');
         }
 
         this.measureEndPoint = {
@@ -1323,7 +1343,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.measureDistance = `${pixelDistance} pixels`;
         }
 
-        // Save the completed measurement
+        // Save the completed measurement with coordinate information
         this.previousMeasurements.push({
           startX: this.measureStartPoint.x,
           startY: this.measureStartPoint.y,
@@ -1332,7 +1352,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           midX: (this.measureStartPoint.x + this.measureEndPoint.x) / 2,
           midY: (this.measureStartPoint.y + this.measureEndPoint.y) / 2,
           distance: this.measureDistance,
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          // Save coordinate information for display
+          startRa: this.measureStartPoint.ra,
+          startDec: this.measureStartPoint.dec,
+          endRa: this.measureEndPoint.ra,
+          endDec: this.measureEndPoint.dec
         });
 
         // Reset points to start a new measurement (but stay in measuring mode)
@@ -1369,6 +1394,25 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.previousMeasurements.splice(index, 1);
       this.changeDetectorRef.markForCheck();
     }
+  }
+
+  protected formatCoordinatesCompact(ra: number, dec: number): string {
+    // Format RA and Dec in a compact format for display
+    // RA is in degrees, convert to hours (24h = 360°)
+    const raHours = ra / 15;
+    const raH = Math.floor(raHours);
+    const raM = Math.floor((raHours - raH) * 60);
+    const raS = Math.floor(((raHours - raH) * 60 - raM) * 60);
+    
+    // Dec is in degrees
+    const decSign = dec < 0 ? '-' : '+';
+    const decDeg = Math.abs(dec);
+    const decD = Math.floor(decDeg);
+    const decM = Math.floor((decDeg - decD) * 60);
+    const decS = Math.floor(((decDeg - decD) * 60 - decM) * 60);
+    
+    // Return in very compact format
+    return `${raH}h${raM}m${raS}s, ${decSign}${decD}°${decM}'${decS}"`;
   }
 
   private _calculateCoordinatesAtPoint(x: number, y: number): { ra: number; dec: number } | null {

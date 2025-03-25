@@ -518,6 +518,33 @@ $header-height: 63px;
         left: 50%;
         transform: translate(-50%, -50%);
       }
+      
+      .marker-coordinates {
+        position: absolute;
+        left: 10px;
+        top: -5px;
+        white-space: nowrap;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-size: 0.7rem;
+        pointer-events: none;
+        max-width: 170px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        z-index: 9999;
+        opacity: 0; // Hide by default
+        transition: opacity 0.2s ease;
+        
+        &.visible {
+          opacity: 1; // Show when has coordinates
+        }
+        
+        &.marker-debug {
+          background-color: rgba(255, 0, 0, 0.7);
+        }
+      }
 
       &.start-marker .marker-dot {
         background-color: #4a90e2; // Blue for start point
@@ -782,4 +809,20 @@ $header-height: 63px;
       display: none;
     }
   }
+}
+
+/* Coordinate labels for measurements */
+.measure-coord-label {
+  position: absolute;
+  white-space: nowrap;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  pointer-events: none;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 9;
 }

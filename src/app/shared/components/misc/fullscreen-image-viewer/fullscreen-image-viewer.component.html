@@ -406,11 +406,19 @@
     <div *ngIf="measureStartPoint" class="measure-marker start-marker"
          [style.left.px]="measureStartPoint.x" [style.top.px]="measureStartPoint.y">
       <div class="marker-dot"></div>
+      <!-- Try a different approach for showing coordinates -->
+      <div class="marker-coordinates" [class.visible]="measureStartPoint.ra !== null">
+        <small>{{ measureStartPoint.ra !== null ? formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) : '' }}</small>
+      </div>
     </div>
 
     <div *ngIf="measureEndPoint" class="measure-marker end-marker"
          [style.left.px]="measureEndPoint.x" [style.top.px]="measureEndPoint.y">
       <div class="marker-dot"></div>
+      <!-- Try a different approach for showing coordinates -->
+      <div class="marker-coordinates" [class.visible]="measureEndPoint.ra !== null">
+        <small>{{ measureEndPoint.ra !== null ? formatCoordinatesCompact(measureEndPoint.ra, measureEndPoint.dec) : '' }}</small>
+      </div>
     </div>
 
     <!-- Previous lines -->
@@ -481,6 +489,23 @@
              class="measurement-note">
         {{ 'Celestial measurements require advanced solving' | translate }}
       </small>
+    </div>
+    
+    <!-- Coordinate labels for previous measurements -->
+    <div *ngFor="let measurement of previousMeasurements; let i = index">
+      <!-- Start point coordinates -->
+      <div *ngIf="measurement.startRa !== null" class="measure-coord-label"
+           [style.left.px]="measurement.startX + 12"
+           [style.top.px]="measurement.startY - 5">
+        <small>{{ formatCoordinatesCompact(measurement.startRa, measurement.startDec) }}</small>
+      </div>
+      
+      <!-- End point coordinates -->
+      <div *ngIf="measurement.endRa !== null" class="measure-coord-label"
+           [style.left.px]="measurement.endX + 12"
+           [style.top.px]="measurement.endY - 5">
+        <small>{{ formatCoordinatesCompact(measurement.endRa, measurement.endDec) }}</small>
+      </div>
     </div>
 
     <!-- Measuring mode instructions -->
