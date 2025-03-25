@@ -710,6 +710,10 @@ $header-height: 63px;
   &.disable-zoom {
     touch-action: none;
   }
+  
+  &.measuring-mode {
+    cursor: crosshair !important;
+  }
 
   /* Add styling for measuring mode */
   ::ng-deep img.measuring-mode {

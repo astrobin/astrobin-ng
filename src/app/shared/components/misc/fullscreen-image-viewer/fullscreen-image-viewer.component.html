@@ -390,6 +390,7 @@
   *ngIf="show"
   @fadeInOut
   [class.touch]="touchMode"
+  [class.measuring-mode]="isMeasuringMode"
   class="fullscreen-image-viewer h-100"
   (touchstart)="onTouchStart($event)"
   (touchmove)="onTouchMove($event)"
