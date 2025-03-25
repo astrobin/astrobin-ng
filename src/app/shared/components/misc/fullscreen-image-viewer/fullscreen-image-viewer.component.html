@@ -128,6 +128,8 @@
           *ngIf="actualTouchZoom !== null && !canvasLoading"
           class="touch-zoom-indicator"
           [class.beyond-one]="Math.round(actualTouchZoom * 100) >= 101"
+          (mouseenter)="setMouseOverUIElement(true)" 
+          (mouseleave)="setMouseOverUIElement(false)"
         >
           {{ actualTouchZoom | number:'1.2-2' }}x
         </div>
@@ -215,6 +217,8 @@
         class="image-zoom-indicator"
         [class.beyond-one]="Math.round(zoomScroll * 100) >= 101"
         [class.frozen]="zoomFrozen"
+        (mouseenter)="setMouseOverUIElement(true)" 
+        (mouseleave)="setMouseOverUIElement(false)"
       >
         <a (click)="snapTo1x()" href="#" astrobinEventPreventDefault>
           {{ zoomScroll | number: "1.2-2" }}x
@@ -287,60 +291,97 @@
            (isHybridPC || !isTouchDevice || (isHybridPC && !touchMode))"
     class="zoom-modes"
   >
-    <div
-      *ngIf="isHybridPC && !isGif"
-      (click)="setTouchMouseMode(!touchMode)"
-      [ngbTooltip]="isTouchDevice ? null : 'Toggle touch/mouse mode.' | translate"
-      triggers="hover"
-      container="body"
-    >
-      <ng-container *ngIf="touchMode">
-        <fa-icon icon="hand-pointer" class="me-2"></fa-icon>
-        <span>{{ "Touch mode" | translate }}</span>
-      </ng-container>
-      <ng-container *ngIf="!touchMode">
-        <fa-icon icon="mouse-pointer" class="me-2"></fa-icon>
-        <span>{{ "Mouse mode" | translate }}</span>
-      </ng-container>
+    <!-- Measuring tool controls (moved to the right side) -->
+    <div *ngIf="isMeasuringMode" class="measuring-controls-right"
+         (mouseenter)="setMouseOverUIElement(true)" 
+         (mouseleave)="setMouseOverUIElement(false)">
+      <button class="btn btn-sm btn-outline-light me-2" (click)="clearAllMeasurements()" *ngIf="previousMeasurements.length > 0">
+        <fa-icon icon="trash" class="me-1"></fa-icon>
+        {{ 'Clear all' | translate }}
+      </button>
+      <button class="btn btn-sm btn-outline-light" (click)="toggleMeasuringMode($event)">
+        <fa-icon icon="times" class="me-1"></fa-icon>
+        {{ 'Exit measuring tool' | translate }}
+      </button>
     </div>
-
-    <div
-      *ngIf="!touchMode"
-      (click)="toggleEnableLens($event)"
-      [ngbTooltip]="'Toggle magnification mode, then click on the image.' | translate"
-      container="body"
-    >
-      <ng-container *ngIf="!enableLens">
-        <fa-icon icon="expand" class="me-2"></fa-icon>
-        <span>{{ "Zoom mode" | translate }}</span>
-      </ng-container>
-      <ng-container *ngIf="enableLens">
-        <fa-icon icon="magnifying-glass" class="me-2"></fa-icon>
-        <span>{{ "Lens mode" | translate }}</span>
-      </ng-container>
-    </div>
-
-    <div
-      *ngIf="!isGif && revision?.solution"
-      (click)="toggleCoordinates()"
-      [ngbTooltip]="(enableLens && zoomingEnabled) ? ('Coordinates are not available in lens mode.' | translate) : ('Toggle coordinates display.' | translate)"
-      container="body"
-      [class.disabled]="enableLens && zoomingEnabled"
-    >
-      <fa-icon icon="crosshairs" class="me-2"></fa-icon>
-      <span>{{ (showCoordinates ? 'Hide coordinates' : 'Show coordinates') | translate }}</span>
-    </div>
-
-    <div
-      *ngIf="!isGif && revision?.solution"
-      (click)="toggleMeasuringMode($event)"
-      [ngbTooltip]="(enableLens && zoomingEnabled) ? ('Measuring is not available in lens mode.' | translate) : ('Measure angular distance between two points.' | translate)"
-      container="body"
-      [class.disabled]="enableLens && zoomingEnabled"
-      [class.active]="isMeasuringMode"
-    >
-      <fa-icon icon="ruler" class="me-2"></fa-icon>
-      <span>{{ (isMeasuringMode ? 'Cancel measurement' : 'Measure distance') | translate }}</span>
+    
+    <!-- Kebab menu button - hidden during measuring mode -->
+    <div class="kebab-menu-container" *ngIf="!isMeasuringMode" 
+         (mouseenter)="setMouseOverUIElement(true)" 
+         (mouseleave)="setMouseOverUIElement(false)">
+      <button class="kebab-button" (click)="toggleKebabMenu($event)" [attr.aria-expanded]="showKebabMenu">
+        <fa-icon icon="ellipsis-vertical"></fa-icon>
+      </button>
+      
+      <!-- Dropdown menu -->
+      <div class="kebab-dropdown" [class.show]="showKebabMenu">
+        <!-- Keyboard shortcuts button - hide on touch devices -->
+        <div
+          *ngIf="!isTouchDevice"
+          class="kebab-menu-item"
+          (click)="showShortcutsDialog($event)"
+        >
+          <fa-icon icon="info-circle"></fa-icon>
+          <span>{{ "Keyboard shortcuts" | translate }}</span>
+        </div>
+        
+        <div *ngIf="!isTouchDevice" class="dropdown-divider"></div>
+        
+        <!-- Touch/Mouse mode toggle -->
+        <div
+          *ngIf="isHybridPC && !isGif"
+          class="kebab-menu-item"
+          (click)="setTouchMouseMode(!touchMode); toggleKebabMenu($event)"
+        >
+          <ng-container *ngIf="touchMode">
+            <fa-icon icon="hand-pointer"></fa-icon>
+            <span>{{ "Touch mode" | translate }}</span>
+          </ng-container>
+          <ng-container *ngIf="!touchMode">
+            <fa-icon icon="mouse-pointer"></fa-icon>
+            <span>{{ "Mouse mode" | translate }}</span>
+          </ng-container>
+        </div>
+        
+        <!-- Lens/Zoom mode toggle -->
+        <div
+          *ngIf="!touchMode"
+          class="kebab-menu-item"
+          (click)="toggleEnableLens($event); toggleKebabMenu($event)"
+        >
+          <ng-container *ngIf="enableLens">
+            <fa-icon icon="expand"></fa-icon>
+            <span>{{ "Zoom mode" | translate }}</span>
+          </ng-container>
+          <ng-container *ngIf="!enableLens">
+            <fa-icon icon="magnifying-glass"></fa-icon>
+            <span>{{ "Lens mode" | translate }}</span>
+          </ng-container>
+        </div>
+        
+        <!-- Coordinates toggle -->
+        <div
+          *ngIf="!isGif && revision?.solution"
+          class="kebab-menu-item"
+          (click)="toggleCoordinates(); toggleKebabMenu($event)"
+          [class.disabled]="enableLens && zoomingEnabled"
+        >
+          <fa-icon icon="crosshairs"></fa-icon>
+          <span>{{ (showCoordinates ? 'Hide coordinates' : 'Show coordinates') | translate }}</span>
+        </div>
+        
+        <!-- Measuring tool toggle -->
+        <div
+          *ngIf="!isGif && revision?.solution"
+          class="kebab-menu-item"
+          (click)="toggleMeasuringMode($event); toggleKebabMenu($event)"
+          [class.disabled]="enableLens && zoomingEnabled"
+          [class.active]="isMeasuringMode"
+        >
+          <fa-icon icon="ruler"></fa-icon>
+          <span>{{ (isMeasuringMode ? 'Cancel measurement' : 'Measure distance') | translate }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </ng-template>
@@ -414,7 +455,9 @@
     <div *ngFor="let measurement of previousMeasurements; let i = index"
          class="measure-distance previous-measurement"
          [style.left.px]="measurement.midX"
-         [style.top.px]="measurement.midY">
+         [style.top.px]="measurement.midY"
+         (mouseenter)="setMouseOverUIElement(true)" 
+         (mouseleave)="setMouseOverUIElement(false)">
       <span class="measurement-text">{{ measurement.distance }}</span>
       <button class="btn-delete-measurement" (click)="deleteMeasurement($event, i)">
         <fa-icon icon="times"></fa-icon>
@@ -424,26 +467,22 @@
     <!-- Current measurement -->
     <div *ngIf="measureDistance" class="measure-distance current-measurement"
          [style.left.px]="(measureStartPoint.x + measureEndPoint.x) / 2"
-         [style.top.px]="(measureStartPoint.y + measureEndPoint.y) / 2">
+         [style.top.px]="(measureStartPoint.y + measureEndPoint.y) / 2"
+         (mouseenter)="setMouseOverUIElement(true)" 
+         (mouseleave)="setMouseOverUIElement(false)">
       {{ measureDistance }}
     </div>
 
     <!-- Measuring mode instructions -->
-    <div *ngIf="isMeasuringMode && !measureStartPoint" class="measuring-instructions">
+    <div *ngIf="isMeasuringMode && !measureStartPoint" class="measuring-instructions"
+         (mouseenter)="setMouseOverUIElement(true)" 
+         (mouseleave)="setMouseOverUIElement(false)">
       {{ 'Click on first point to begin measurement' | translate }}
     </div>
-    <div *ngIf="isMeasuringMode && measureStartPoint && !measureEndPoint" class="measuring-instructions">
+    <div *ngIf="isMeasuringMode && measureStartPoint && !measureEndPoint" class="measuring-instructions"
+         (mouseenter)="setMouseOverUIElement(true)" 
+         (mouseleave)="setMouseOverUIElement(false)">
       {{ 'Click on second point to complete measurement' | translate }}
-    </div>
-    <div *ngIf="isMeasuringMode" class="measuring-controls">
-      <button class="btn btn-sm btn-outline-light me-2" (click)="clearAllMeasurements()" *ngIf="previousMeasurements.length > 0">
-        <fa-icon icon="trash" class="me-1"></fa-icon>
-        {{ 'Clear all' | translate }}
-      </button>
-      <button class="btn btn-sm btn-outline-light" (click)="toggleMeasuringMode($event)">
-        <fa-icon icon="times" class="me-1"></fa-icon>
-        {{ 'Exit measuring tool' | translate }}
-      </button>
     </div>
 
     <!-- Overlay for capturing clicks during measuring mode -->
@@ -454,7 +493,9 @@
   </div>
 
   <!-- Coordinate display -->
-  <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseHoverRa && mouseHoverDec && !isGif">
+  <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseHoverRa && mouseHoverDec && !isGif"
+       (mouseenter)="setMouseOverUIElement(true)" 
+       (mouseleave)="setMouseOverUIElement(false)">
     <astrobin-coordinates-display
       [raHtml]="mouseHoverRa"
       [decHtml]="mouseHoverDec"
@@ -466,7 +507,7 @@
   </div>
 
   <!-- Crosshair rulers -->
-  <div *ngIf="showCoordinates && mouseX !== null && mouseY !== null && !isGif"
+  <div *ngIf="showCoordinates && mouseX !== null && mouseY !== null && !isGif && !isMouseOverUIElement"
        class="crosshair-container">
     <div class="crosshair-h" [style.top.px]="mouseY"></div>
     <div class="crosshair-v" [style.left.px]="mouseX"></div>
@@ -493,13 +534,36 @@
     </ng-container>
   </ng-container>
 
-  <div (click)="hide($event)" class="close" *ngIf="!isMeasuringMode">
+  <div (click)="hide($event)" class="close" *ngIf="!isMeasuringMode"
+       (mouseenter)="setMouseOverUIElement(true)" 
+       (mouseleave)="setMouseOverUIElement(false)">
     <fa-icon icon="down-left-and-up-right-to-center"></fa-icon>
   </div>
 
-  <div class="astrobin-logo">
+  <div class="astrobin-logo"
+       (mouseenter)="setMouseOverUIElement(true)" 
+       (mouseleave)="setMouseOverUIElement(false)">
     <a routerLink="/">
       <img src="/assets/images/nav-logo.png?v=3" alt="AstroBin" />
     </a>
+  </div>
+  
+  <!-- Custom Keyboard Shortcuts Overlay -->
+  <div class="keyboard-shortcuts-overlay" *ngIf="showKeyboardShortcutsOverlay"
+       (mouseenter)="setMouseOverUIElement(true)" 
+       (mouseleave)="setMouseOverUIElement(false)">
+    <div class="shortcuts-header">
+      <strong>{{ 'Keyboard Shortcuts' | translate }}</strong>
+      <button class="btn-close-shortcuts" (click)="hideShortcutsOverlay()">
+        <fa-icon icon="times"></fa-icon>
+      </button>
+    </div>
+    <ul class="shortcuts-list">
+      <li><kbd>Z</kbd> <span>{{ 'Toggle Lens/Zoom mode' | translate }}</span></li>
+      <li><kbd>C</kbd> <span>{{ 'Toggle coordinates display' | translate }}</span></li>
+      <li><kbd>M</kbd> <span>{{ 'Toggle measuring tool' | translate }}</span></li>
+      <li><kbd>F</kbd> <span>{{ 'Freeze/unfreeze zoom position' | translate }}</span></li>
+      <li><kbd>ESC</kbd> <span>{{ 'Exit current mode or close image' | translate }}</span></li>
+    </ul>
   </div>
 </div>

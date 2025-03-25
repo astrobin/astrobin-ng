@@ -130,6 +130,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected mouseHoverGalacticRa: string;
   protected mouseHoverGalacticDec: string;
   protected showCoordinates: boolean = false;
+  protected showKebabMenu: boolean = false;
+  protected showKeyboardShortcutsOverlay: boolean = false;
 
   // Measuring tool properties
   protected isMeasuringMode: boolean = false;
@@ -173,6 +175,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected crosshairTop: number = 0;
   protected crosshairWidth: number = 0;
   protected crosshairHeight: number = 0;
+  protected isMouseOverUIElement: boolean = false;
 
   protected revision: ImageInterface | ImageRevisionInterface;
   private _lastTransform: string = null;
@@ -211,6 +214,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _downsampledBitmapMedium: ImageBitmap = null;  // Medium resolution for intermediate zoom
   private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
+  private readonly COORDINATES_ENABLED_COOKIE_NAME = "astrobin-fullscreen-show-coordinates";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
   // Store original handlers and position for freezing/unfreezing
@@ -254,6 +258,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.enableLens = this.cookieService.get(this.LENS_ENABLED_COOKIE_NAME) === "true";
+    this.showCoordinates = this.cookieService.get(this.COORDINATES_ENABLED_COOKIE_NAME) === "true";
     this.hdImageLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
     this.realImageLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
     this.loadingProgress$ = combineLatest([
@@ -293,6 +298,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected get isVeryLargeImage(): boolean {
     return this.naturalWidth * (this.naturalHeight || this.naturalWidth) > this.PIXEL_THRESHOLD;
+  }
+
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: MouseEvent): void {
+    // If the kebab menu is open and the click is outside the menu, close it
+    if (this.showKebabMenu) {
+      const kebabContainer = (event.target as HTMLElement).closest('.kebab-menu-container');
+      if (!kebabContainer) {
+        this.showKebabMenu = false;
+        this.changeDetectorRef.markForCheck();
+      }
+    }
   }
 
   @HostListener("window:resize", ["$event"])
@@ -576,6 +593,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("window:keyup.escape", ["$event"])
   hide(event: Event): void {
+    // Close the kebab menu if it's open
+    if (this.showKebabMenu) {
+      this.showKebabMenu = false;
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
     // If in measuring mode, exit measuring mode instead of closing fullscreen
     if (this.isMeasuringMode) {
       this.resetMeasurement();
@@ -597,6 +621,66 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.store$.dispatch(new HideFullscreenImage());
+  }
+
+  @HostListener("window:keyup.z", ["$event"])
+  toggleZoomLensMode(event: KeyboardEvent): void {
+    // Don't interfere with input fields
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    // Do nothing if the component is not being shown or in touch mode
+    if (!this.show || this.touchMode) {
+      return;
+    }
+
+    // Toggle lens mode using existing method
+    this.toggleEnableLens(null);
+  }
+
+  @HostListener("window:keyup.c", ["$event"])
+  toggleCoordinatesShortcut(event: KeyboardEvent): void {
+    // Don't interfere with input fields
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    // Do nothing if the component is not being shown or if the image doesn't have a solution
+    if (!this.show || !this.revision?.solution) {
+      return;
+    }
+
+    // Toggle coordinates using existing method
+    this.toggleCoordinates();
+  }
+
+  @HostListener("window:keyup.m", ["$event"])
+  toggleMeasuringModeShortcut(event: KeyboardEvent): void {
+    // Don't interfere with input fields
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      (event.target instanceof HTMLDivElement && event.target.hasAttribute("contenteditable"))
+    ) {
+      return;
+    }
+
+    // Do nothing if the component is not being shown or if the image doesn't have a solution
+    if (!this.show || !this.revision?.solution) {
+      return;
+    }
+
+    // Toggle measuring mode using existing method
+    this.toggleMeasuringMode(event as unknown as MouseEvent);
   }
 
   @HostListener("window:keyup.f", ["$event"])
@@ -902,7 +986,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (event) {
       event.preventDefault();
       event.stopPropagation();
+
+      // Hide any tooltips by removing them from DOM before toggling
+      document.querySelectorAll('.tooltip').forEach(tooltip => {
+        tooltip.remove();
+      });
     }
+
     this.enableLens = !this.enableLens;
     this.cookieService.put(this.LENS_ENABLED_COOKIE_NAME, this.enableLens.toString());
     if (this.enableLens) {
@@ -922,7 +1012,75 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
+  protected setMouseOverUIElement(isOver: boolean): void {
+    this.isMouseOverUIElement = isOver;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected showShortcutsDialog(event: MouseEvent): void {
+    // Prevent the event from propagating
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Hide any tooltips
+    document.querySelectorAll('.tooltip').forEach(tooltip => {
+      tooltip.remove();
+    });
+
+    // Close the kebab menu
+    this.showKebabMenu = false;
+    
+    // Toggle the shortcuts overlay
+    this.showKeyboardShortcutsOverlay = true;
+    
+    this.changeDetectorRef.markForCheck();
+  }
+  
+  protected hideShortcutsOverlay(): void {
+    this.showKeyboardShortcutsOverlay = false;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  protected toggleKebabMenu(event: MouseEvent): void {
+    // Prevent the event from propagating to avoid triggering other click handlers
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Hide any tooltips by removing them from DOM before toggling
+    document.querySelectorAll('.tooltip').forEach(tooltip => {
+      tooltip.remove();
+    });
+
+    this.showKebabMenu = !this.showKebabMenu;
+
+    // If opening the menu, add a click event listener to close it when clicking outside
+    if (this.showKebabMenu) {
+      setTimeout(() => {
+        const closeMenuHandler = (e: MouseEvent) => {
+          // Check if the click was outside the menu
+          const kebabContainer = (event.target as HTMLElement).closest('.kebab-menu-container');
+          const clickedInsideMenu = kebabContainer && kebabContainer.contains(e.target as Node);
+
+          if (!clickedInsideMenu) {
+            this.showKebabMenu = false;
+            this.changeDetectorRef.markForCheck();
+            document.removeEventListener('click', closeMenuHandler);
+          }
+        };
+
+        document.addEventListener('click', closeMenuHandler);
+      });
+    }
+
+    this.changeDetectorRef.markForCheck();
+  }
+
   protected toggleCoordinates(): void {
+    // Hide any tooltips by removing them from DOM before toggling
+    document.querySelectorAll('.tooltip').forEach(tooltip => {
+      tooltip.remove();
+    });
+
     // If in lens mode, show notification and don't toggle
     if (this.enableLens && this.zoomingEnabled) {
       this.popNotificationsService.warning(
@@ -932,6 +1090,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.showCoordinates = !this.showCoordinates;
+    this.cookieService.put(this.COORDINATES_ENABLED_COOKIE_NAME, this.showCoordinates.toString());
+
     // If coordinates are turned off, hide any currently displayed values
     if (!this.showCoordinates) {
       this.mouseHoverRa = null;
@@ -954,6 +1114,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Prevent the event from propagating and being handled by handleMeasurementClick
     event.preventDefault();
     event.stopPropagation();
+
+    // Hide any tooltips by removing them from DOM before toggling
+    document.querySelectorAll('.tooltip').forEach(tooltip => {
+      tooltip.remove();
+    });
 
     // Don't allow measuring in lens mode
     if (this.enableLens && this.zoomingEnabled) {
@@ -1287,6 +1452,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected setTouchMouseMode(touch: boolean): void {
+    // Hide any tooltips by removing them from DOM before toggling
+    document.querySelectorAll('.tooltip').forEach(tooltip => {
+      tooltip.remove();
+    });
+
     // Never allow touch mode for GIFs
     if (this.isGif && touch) {
       return;
