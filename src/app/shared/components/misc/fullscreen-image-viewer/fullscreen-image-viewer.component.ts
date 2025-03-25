@@ -151,10 +151,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     startDec: number | null;
     endRa: number | null;
     endDec: number | null;
+    // Positions for perpendicular label placement
+    startLabelX: number;
+    startLabelY: number;
+    endLabelX: number;
+    endLabelY: number;
   }> = [];
-  private _previousZoomState: { enableLens: boolean; zoomFrozen: boolean; zoomScroll: number } = null;
-  private _originalZoomEventHandlers: { [key: string]: EventListener } = {};
-  private _zoomEventDisabled: boolean = false;
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
   protected touchCurrentY: { value: number } = { value: 0 };
@@ -163,7 +165,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected swipeProgress: { value: number } = { value: 0 };
   protected swipeThreshold: number = 150;
   protected swipeDirectionDown: { value: boolean } = { value: true };
-
   protected advancedSolutionMatrix: {
     matrixRect: string;
     matrixDelta: number;
@@ -171,7 +172,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     decMatrix: string;
   };
   protected loadingAdvancedSolutionMatrix = false;
-
   // Mouse position for crosshair rulers
   protected mouseX: number = null;
   protected mouseY: number = null;
@@ -180,9 +180,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected crosshairWidth: number = 0;
   protected crosshairHeight: number = 0;
   protected isMouseOverUIElement: boolean = false;
-
   protected image: ImageInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
+  private _previousZoomState: { enableLens: boolean; zoomFrozen: boolean; zoomScroll: number } = null;
+  private _originalZoomEventHandlers: { [key: string]: EventListener } = {};
+  private _zoomEventDisabled: boolean = false;
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
@@ -312,11 +314,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.revision?.solution?.advancedRa &&
       this.revision?.solution?.advancedDec
     );
-    console.log('hasAdvancedSolution check:', result, 
-      'solution exists:', !!this.revision?.solution,
-      'status ADVANCED_SUCCESS:', this.revision?.solution?.status === SolutionStatus.ADVANCED_SUCCESS,
-      'advancedRa:', !!this.revision?.solution?.advancedRa, 
-      'advancedDec:', !!this.revision?.solution?.advancedDec);
+    console.log("hasAdvancedSolution check:", result,
+      "solution exists:", !!this.revision?.solution,
+      "status ADVANCED_SUCCESS:", this.revision?.solution?.status === SolutionStatus.ADVANCED_SUCCESS,
+      "advancedRa:", !!this.revision?.solution?.advancedRa,
+      "advancedDec:", !!this.revision?.solution?.advancedDec);
     return result;
   }
 
@@ -324,7 +326,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   onDocumentClick(event: MouseEvent): void {
     // If the kebab menu is open and the click is outside the menu, close it
     if (this.showKebabMenu) {
-      const kebabContainer = (event.target as HTMLElement).closest('.kebab-menu-container');
+      const kebabContainer = (event.target as HTMLElement).closest(".kebab-menu-container");
       if (!kebabContainer) {
         this.showKebabMenu = false;
         this.changeDetectorRef.markForCheck();
@@ -360,7 +362,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.windowRef.nativeWindow.requestAnimationFrame(() => {
         // If we have the current mouse position, simulate a mouse move event to update coordinates
         const lastMouseEvent = this.windowRef.nativeWindow.event as MouseEvent;
-        if (lastMouseEvent && lastMouseEvent.type === 'mousemove') {
+        if (lastMouseEvent && lastMouseEvent.type === "mousemove") {
           this.onGlobalMouseMove(lastMouseEvent);
         }
       });
@@ -529,86 +531,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.ngxImageZoom.setMagnification = 1;
         this.ngxImageZoom.zoomService.zoomOn({ offsetX: 0, offsetY: 0 } as MouseEvent);
       } catch (e) {
-        console.error('Error in snapTo1x:', e);
+        console.error("Error in snapTo1x:", e);
       }
-    }
-  }
-
-  private _disableAllZooming(): void {
-    if (!this.ngxImageZoom || this._zoomEventDisabled) {
-      return;
-    }
-
-    // Store a flag to prevent doing this multiple times
-    this._zoomEventDisabled = true;
-
-    try {
-      // Get the image element
-      const zoomContainer = this.ngxImageZoomEl?.nativeElement;
-      if (!zoomContainer) return;
-
-      const imgElement = zoomContainer.querySelector('img');
-      if (!imgElement) return;
-
-      // Only disable wheel and regular zoom events, not click
-      const events = ['wheel', 'mousedown', 'mouseup', 'mouseover', 'mouseout'];
-
-      events.forEach(eventType => {
-        // Save the existing listener by checking its handlers
-        if (imgElement[`on${eventType}`]) {
-          this._originalZoomEventHandlers[eventType] = imgElement[`on${eventType}`];
-          imgElement[`on${eventType}`] = null;
-        }
-      });
-
-      // Stop the zoom service
-      if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
-        // Set magnification to 1 and disable zoom functionality
-        this.ngxImageZoom.setMagnification = 1;
-
-        // Update internal state
-        if (this.ngxImageZoom.zoomService.zoomingEnabled) {
-          // Simulate zoom end
-          this.ngxImageZoom.zoomService.zoomingEnabled = false;
-        }
-      }
-    } catch (e) {
-      console.error('Error disabling zoom:', e);
-    }
-  }
-
-  private _enableAllZooming(): void {
-    if (!this.ngxImageZoom || !this._zoomEventDisabled) {
-      return;
-    }
-
-    try {
-      // Reset the flag
-      this._zoomEventDisabled = false;
-
-      // Get the image element
-      const zoomContainer = this.ngxImageZoomEl?.nativeElement;
-      if (!zoomContainer) return;
-
-      const imgElement = zoomContainer.querySelector('img');
-      if (!imgElement) return;
-
-      // Remove capturing listeners and restore original ones
-      const events = ['wheel', 'mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout', 'click'];
-
-      // Clone the image once outside the loop
-      const clonedImg = imgElement.cloneNode(true);
-      if (imgElement.parentNode) {
-        // Replace the element once to remove all event listeners
-        imgElement.parentNode.replaceChild(clonedImg, imgElement);
-      }
-
-      // Re-initialize zoom
-      setTimeout(() => {
-        this._initImageZoom();
-      }, 10);
-    } catch (e) {
-      console.error('Error enabling zoom:', e);
     }
   }
 
@@ -644,7 +568,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this._restoreOriginalEventHandlers();
     }
 
-  this.store$.dispatch(new HideFullscreenImage());
+    this.store$.dispatch(new HideFullscreenImage());
   }
 
   @HostListener("window:keyup.z", ["$event"])
@@ -840,15 +764,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   // Handle mouse move events on the component and proxy them to ngx-image-zoom
   protected onGlobalMouseMove(event: MouseEvent): void {
     // If in measuring mode and we've already placed the first point,
-    // only handle coordinate calculations for the line drawing
+    // update line drawing position but allow coordinate calculation to continue
     if (this.isMeasuringMode && this.measureStartPoint) {
       // Update mouse position for line drawing
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;
-      this.changeDetectorRef.markForCheck();
 
-      // Don't calculate other coordinates or trigger other zoom functionality
-      return;
+      // Don't trigger zoom functionality, but continue to next section to update coordinates
+      // This allows coordinates to be updated in the display box while placing the second point
     }
     // We need to ensure the revision is loaded before calculating coordinates
     if (!this.revision) {
@@ -910,8 +833,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // We've already called _calculateMouseCoordinates above if needed
 
-    // Only proxy if we have the zoom component, are in mouse mode, and are currently zooming
-    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage) {
+    // Only proxy if we have the zoom component, are in mouse mode, not in measuring mode, and are currently zooming
+    if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage && !this.isMeasuringMode) {
       // We need to convert global coordinates to coordinates relative to the image
       // Find the image and its position
       const zoomContainer = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomContainer");
@@ -943,76 +866,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
-  /**
-   * Calculate the coordinates at the current mouse position
-   */
-  private _calculateMouseCoordinates(event: MouseEvent): void {
-    // Don't calculate coordinates when using lens mode
-    if (this.enableLens && this.ngxImageZoom?.zoomService?.zoomingEnabled) {
-      this.mouseHoverRa = null;
-      this.mouseHoverDec = null;
-      this.mouseHoverGalacticRa = null;
-      this.mouseHoverGalacticDec = null;
-      return;
-    }
-
-    // Don't attempt calculation if matrix is still loading
-    if (this.loadingAdvancedSolutionMatrix) {
-      return;
-    }
-
-    // If we have the advanced solution matrix, use it for accurate coordinate calculation
-    if (this.advancedSolutionMatrix && this.advancedSolutionMatrix.raMatrix) {
-      try {
-        // Get the image element or canvas that displays the image
-        const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-
-        if (!imageElement) {
-          return;
-        }
-
-        // Use the shared service to calculate and format the coordinates
-        const result = this.coordinatesFormatter.calculateMouseCoordinates(
-          event,
-          imageElement,
-          this.advancedSolutionMatrix,
-          {
-            useClientCoords: true,
-            naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w
-          }
-        );
-
-        if (!result) {
-          this.mouseHoverRa = null;
-          this.mouseHoverDec = null;
-          this.mouseHoverGalacticRa = null;
-          this.mouseHoverGalacticDec = null;
-          return;
-        }
-
-        // Set the formatted coordinates
-        this.mouseHoverRa = result.coordinates.raHtml;
-        this.mouseHoverDec = result.coordinates.decHtml;
-        this.mouseHoverGalacticRa = result.coordinates.galacticRaHtml;
-        this.mouseHoverGalacticDec = result.coordinates.galacticDecHtml;
-
-        this.changeDetectorRef.markForCheck();
-      } catch (error) {
-        this.mouseHoverRa = null;
-        this.mouseHoverDec = null;
-        this.mouseHoverGalacticRa = null;
-        this.mouseHoverGalacticDec = null;
-      }
-    }
-  }
-
   protected toggleEnableLens(event: MouseEvent = null): void {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
 
       // Hide any tooltips by removing them from DOM before toggling
-      document.querySelectorAll('.tooltip').forEach(tooltip => {
+      document.querySelectorAll(".tooltip").forEach(tooltip => {
         tooltip.remove();
       });
     }
@@ -1053,7 +913,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     event.stopPropagation();
 
     // Hide any tooltips
-    document.querySelectorAll('.tooltip').forEach(tooltip => {
+    document.querySelectorAll(".tooltip").forEach(tooltip => {
       tooltip.remove();
     });
 
@@ -1077,7 +937,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     event.stopPropagation();
 
     // Hide any tooltips by removing them from DOM before toggling
-    document.querySelectorAll('.tooltip').forEach(tooltip => {
+    document.querySelectorAll(".tooltip").forEach(tooltip => {
       tooltip.remove();
     });
 
@@ -1088,17 +948,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       setTimeout(() => {
         const closeMenuHandler = (e: MouseEvent) => {
           // Check if the click was outside the menu
-          const kebabContainer = (event.target as HTMLElement).closest('.kebab-menu-container');
+          const kebabContainer = (event.target as HTMLElement).closest(".kebab-menu-container");
           const clickedInsideMenu = kebabContainer && kebabContainer.contains(e.target as Node);
 
           if (!clickedInsideMenu) {
             this.showKebabMenu = false;
             this.changeDetectorRef.markForCheck();
-            document.removeEventListener('click', closeMenuHandler);
+            document.removeEventListener("click", closeMenuHandler);
           }
         };
 
-        document.addEventListener('click', closeMenuHandler);
+        document.addEventListener("click", closeMenuHandler);
       });
     }
 
@@ -1107,7 +967,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected toggleCoordinates(): void {
     // Hide any tooltips by removing them from DOM before toggling
-    document.querySelectorAll('.tooltip').forEach(tooltip => {
+    document.querySelectorAll(".tooltip").forEach(tooltip => {
       tooltip.remove();
     });
 
@@ -1133,7 +993,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     } else if (this.mouseX !== null && this.mouseY !== null) {
       // If coordinates are turned on and we have a current mouse position, recalculate
       const lastMouseEvent = this.windowRef.nativeWindow.event as MouseEvent;
-      if (lastMouseEvent && lastMouseEvent.type === 'mousemove') {
+      if (lastMouseEvent && lastMouseEvent.type === "mousemove") {
         this.onGlobalMouseMove(lastMouseEvent);
       }
     }
@@ -1146,7 +1006,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     event.stopPropagation();
 
     // Hide any tooltips by removing them from DOM before toggling
-    document.querySelectorAll('.tooltip').forEach(tooltip => {
+    document.querySelectorAll(".tooltip").forEach(tooltip => {
       tooltip.remove();
     });
 
@@ -1203,7 +1063,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         // Restore the previous zoom level
         if (this._previousZoomState && this._previousZoomState.zoomScroll !== undefined &&
-            this._previousZoomState.zoomScroll !== this.zoomScroll) {
+          this._previousZoomState.zoomScroll !== this.zoomScroll) {
           // Use our component's setZoomScroll method instead of directly accessing the service
           this.setZoomScroll(this._previousZoomState.zoomScroll);
           // Make sure change detection runs to update the view
@@ -1230,25 +1090,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     event.preventDefault();
     event.stopPropagation();
 
-    // Main click handler only used to stop propagation
-    // Actual measurement happens in handleMeasurementClickDirect
-  }
-
-  protected handleMeasurementClickDirect(event: MouseEvent): void {
-    if (!this.isMeasuringMode) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    // This method is called directly from the overlay that captures clicks
-    console.log("Direct measurement click");
+    // Main measurement click handler
 
     // Check if the click is on UI elements that should be excluded from measurement
     const target = event.target as HTMLElement;
-    if (target.closest('.zoom-modes') || target.closest('.close') ||
-        target.closest('.measuring-reset') || target.closest('.measure-distance')) {
+    if (target.closest(".zoom-modes") || target.closest(".close") ||
+      target.closest(".measuring-reset") || target.closest(".measure-distance")) {
       // Clicked on UI element, ignore for measurement
       return;
     }
@@ -1280,12 +1127,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           if (coords) {
             ra = coords.ra;
             dec = coords.dec;
-            console.log('Calculated START coordinates:', ra, dec);
+            console.log("Calculated START coordinates:", ra, dec);
           } else {
-            console.log('Failed to calculate START coordinates');
+            console.log("Failed to calculate START coordinates");
           }
         } else {
-          console.log('No solution available for START point');
+          console.log("No solution available for START point");
         }
 
         this.measureStartPoint = {
@@ -1306,12 +1153,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           if (coords) {
             ra = coords.ra;
             dec = coords.dec;
-            console.log('Calculated END coordinates:', ra, dec);
+            console.log("Calculated END coordinates:", ra, dec);
           } else {
-            console.log('Failed to calculate END coordinates');
+            console.log("Failed to calculate END coordinates");
           }
         } else {
-          console.log('No solution available for END point');
+          console.log("No solution available for END point");
         }
 
         this.measureEndPoint = {
@@ -1340,10 +1187,31 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             Math.pow(this.measureEndPoint.x - this.measureStartPoint.x, 2) +
             Math.pow(this.measureEndPoint.y - this.measureStartPoint.y, 2)
           ).toFixed(1);
-          this.measureDistance = `${pixelDistance} pixels`;
+          this.measureDistance = this.translateService.instant("{{0}} pixels", { 0: pixelDistance });
         }
 
-        // Save the completed measurement with coordinate information
+        // Suppose we know the label’s approximate size:
+        const labelWidth = 120;
+        const labelHeight = 25;
+
+        // The vector from start to end:
+        const dx = this.measureEndPoint.x - this.measureStartPoint.x;
+        const dy = this.measureEndPoint.y - this.measureStartPoint.y;
+        const length = Math.sqrt(dx * dx + dy * dy) || 1;
+
+        // A perpendicular is (-dy, dx).
+        // We'll choose +perp for the start, -perp for the end:
+        const offset = 50;
+        const perpX = (-dy / length) * offset;
+        const perpY = (dx / length) * offset;
+
+        // If you want the label’s CENTER to end up off to one side:
+        const startLabelX = this.measureStartPoint.x + perpX - (labelWidth / 2);
+        const startLabelY = this.measureStartPoint.y + perpY - (labelHeight / 2);
+        const endLabelX = this.measureEndPoint.x - perpX - (labelWidth / 2);
+        const endLabelY = this.measureEndPoint.y - perpY - (labelHeight / 2);
+
+          // Push to your measurements array:
         this.previousMeasurements.push({
           startX: this.measureStartPoint.x,
           startY: this.measureStartPoint.y,
@@ -1353,11 +1221,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           midY: (this.measureStartPoint.y + this.measureEndPoint.y) / 2,
           distance: this.measureDistance,
           timestamp: Date.now(),
-          // Save coordinate information for display
           startRa: this.measureStartPoint.ra,
           startDec: this.measureStartPoint.dec,
           endRa: this.measureEndPoint.ra,
-          endDec: this.measureEndPoint.dec
+          endDec: this.measureEndPoint.dec,
+
+          // Positions for the label’s *center*:
+          startLabelX,
+          startLabelY,
+          endLabelX,
+          endLabelY
         });
 
         // Reset points to start a new measurement (but stay in measuring mode)
@@ -1396,6 +1269,86 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
+  protected calculateStartLabelX(): number {
+    if (!this.measureStartPoint || !this.measureEndPoint) {
+      return this.measureStartPoint?.x || 0;
+    }
+    const labelWidth = 120;
+    const labelOffset = 15; // Distance between point and label
+
+    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
+    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
+    const length = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    // Normalize direction vector
+    const normDx = dx / length;
+    const normDy = dy / length;
+
+    // Label should be positioned at the start of the line, offset in the opposite direction
+    // This places the label before the start point, away from the line
+    return this.measureStartPoint.x - (labelWidth / 2) - (normDx * labelOffset);
+  }
+
+  protected calculateStartLabelY(): number {
+    if (!this.measureStartPoint || !this.measureEndPoint) {
+      return this.measureStartPoint?.y || 0;
+    }
+    const labelHeight = 25;
+    const labelOffset = 15; // Distance between point and label
+
+    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
+    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
+    const length = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    // Normalize direction vector
+    const normDx = dx / length;
+    const normDy = dy / length;
+
+    // Label should be positioned at the start of the line, offset in the opposite direction
+    // This places the label before the start point, away from the line
+    return this.measureStartPoint.y - (labelHeight / 2) - (normDy * labelOffset);
+  }
+
+  protected calculateEndLabelX(): number {
+    if (!this.measureStartPoint || !this.measureEndPoint) {
+      return this.measureEndPoint?.x || 0;
+    }
+    const labelWidth = 120;
+    const labelOffset = 15; // Distance between point and label
+
+    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
+    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
+    const length = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    // Normalize direction vector
+    const normDx = dx / length;
+    const normDy = dy / length;
+
+    // Label should be positioned at the end of the line, offset in the same direction
+    // This places the label after the end point, away from the line
+    return this.measureEndPoint.x - (labelWidth / 2) + (normDx * labelOffset);
+  }
+
+  protected calculateEndLabelY(): number {
+    if (!this.measureStartPoint || !this.measureEndPoint) {
+      return this.measureEndPoint?.y || 0;
+    }
+    const labelHeight = 25;
+    const labelOffset = 15; // Distance between point and label
+
+    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
+    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
+    const length = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    // Normalize direction vector
+    const normDx = dx / length;
+    const normDy = dy / length;
+
+    // Label should be positioned at the end of the line, offset in the same direction
+    // This places the label after the end point, away from the line
+    return this.measureEndPoint.y - (labelHeight / 2) + (normDy * labelOffset);
+  }
+
   protected formatCoordinatesCompact(ra: number, dec: number): string {
     // Format RA and Dec in a compact format for display
     // RA is in degrees, convert to hours (24h = 360°)
@@ -1403,119 +1356,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const raH = Math.floor(raHours);
     const raM = Math.floor((raHours - raH) * 60);
     const raS = Math.floor(((raHours - raH) * 60 - raM) * 60);
-    
+
     // Dec is in degrees
-    const decSign = dec < 0 ? '-' : '+';
+    const decSign = dec < 0 ? "-" : "+";
     const decDeg = Math.abs(dec);
     const decD = Math.floor(decDeg);
     const decM = Math.floor((decDeg - decD) * 60);
     const decS = Math.floor(((decDeg - decD) * 60 - decM) * 60);
-    
+
     // Return in very compact format
     return `${raH}h${raM}m${raS}s, ${decSign}${decD}°${decM}'${decS}"`;
-  }
-
-  private _calculateCoordinatesAtPoint(x: number, y: number): { ra: number; dec: number } | null {
-    try {
-      // Similar coordinate calculation as in _calculateMouseCoordinates but returns raw values
-      const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-      if (!imageElement || !this.advancedSolutionMatrix) {
-        return null;
-      }
-
-      // Create a synthetic mouse event with the coordinates
-      const syntheticEvent = {
-        clientX: x,
-        clientY: y,
-        offsetX: 0,  // Not used with useClientCoords: true
-        offsetY: 0   // Not used with useClientCoords: true
-      } as MouseEvent;
-
-      // Use the coordinatesFormatter to calculate coordinates
-      const result = this.coordinatesFormatter.calculateMouseCoordinates(
-        syntheticEvent,
-        imageElement,
-        this.advancedSolutionMatrix,
-        {
-          useClientCoords: true,
-          naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w
-        }
-      );
-
-      if (!result) {
-        return null;
-      }
-
-      // Calculate image pixel coordinates
-      const imageRect = imageElement.getBoundingClientRect();
-      const relativeX = (x - imageRect.left);
-      const relativeY = (y - imageRect.top);
-
-      // Scale to HD space (1824px width reference)
-      const HD_WIDTH = 1824;
-      const scaledX = relativeX / imageRect.width * HD_WIDTH;
-      const scaledY = relativeY / imageRect.width * HD_WIDTH;
-
-      // Parse matrix data
-      const raMatrix = this.advancedSolutionMatrix.raMatrix.split(",").map(Number);
-      const decMatrix = this.advancedSolutionMatrix.decMatrix.split(",").map(Number);
-      const rect = this.advancedSolutionMatrix.matrixRect.split(",").map(Number);
-      const delta = this.advancedSolutionMatrix.matrixDelta;
-
-      // @ts-ignore - CoordinateInterpolation is defined globally in assets/js/CoordinateInterpolation.js
-      const interpolation = new CoordinateInterpolation(
-        raMatrix,
-        decMatrix,
-        rect[0],
-        rect[1],
-        rect[2],
-        rect[3],
-        delta
-      );
-
-      // Get raw coordinates using interpolation
-      const rawCoords = interpolation.interpolate(scaledX, scaledY);
-      if (rawCoords && rawCoords.alpha !== undefined && rawCoords.delta !== undefined) {
-        return {
-          ra: rawCoords.alpha,
-          dec: rawCoords.delta
-        };
-      }
-    } catch (error) {
-      console.error('Error calculating coordinates for measurement:', error);
-    }
-
-    return null;
-  }
-
-  private _calculateAngularDistance(ra1: number, dec1: number, ra2: number, dec2: number): string {
-    // Convert degrees to radians
-    const toRadians = (deg) => deg * Math.PI / 180;
-
-    // RA/Dec are in degrees
-    const ra1Rad = toRadians(ra1);
-    const dec1Rad = toRadians(dec1);
-    const ra2Rad = toRadians(ra2);
-    const dec2Rad = toRadians(dec2);
-
-    // Calculate angular distance using Haversine formula
-    // cos(angular_distance) = sin(dec1) * sin(dec2) + cos(dec1) * cos(dec2) * cos(ra1 - ra2)
-    const cosAngDist = Math.sin(dec1Rad) * Math.sin(dec2Rad) +
-                      Math.cos(dec1Rad) * Math.cos(dec2Rad) * Math.cos(ra1Rad - ra2Rad);
-
-    // Clamp value to handle floating point errors
-    const clampedCosAngDist = Math.max(-1, Math.min(1, cosAngDist));
-
-    // Calculate angular distance in radians and convert to degrees
-    const angDistDeg = Math.acos(clampedCosAngDist) * 180 / Math.PI;
-
-    // Format result in degrees, arcminutes, and arcseconds
-    const degrees = Math.floor(angDistDeg);
-    const arcminutes = Math.floor((angDistDeg - degrees) * 60);
-    const arcseconds = ((angDistDeg - degrees) * 60 - arcminutes) * 60;
-
-    // Format the string
-    return `${degrees}° ${arcminutes}′ ${arcseconds.toFixed(1)}″`;
   }
 
   protected clearCoordinates(): void {
@@ -1532,7 +1382,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected setTouchMouseMode(touch: boolean): void {
     // Hide any tooltips by removing them from DOM before toggling
-    document.querySelectorAll('.tooltip').forEach(tooltip => {
+    document.querySelectorAll(".tooltip").forEach(tooltip => {
       tooltip.remove();
     });
 
@@ -1773,6 +1623,258 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.hide(null);
       }
     );
+  }
+
+  private _disableAllZooming(): void {
+    if (!this.ngxImageZoom || this._zoomEventDisabled) {
+      return;
+    }
+
+    // Store a flag to prevent doing this multiple times
+    this._zoomEventDisabled = true;
+
+    try {
+      // Get the image element
+      const zoomContainer = this.ngxImageZoomEl?.nativeElement;
+      if (!zoomContainer) {
+        return;
+      }
+
+      const imgElement = zoomContainer.querySelector("img");
+      if (!imgElement) {
+        return;
+      }
+
+      // Only disable wheel and regular zoom events, not click
+      const events = ["wheel", "mousedown", "mouseup", "mouseover", "mouseout"];
+
+      events.forEach(eventType => {
+        // Save the existing listener by checking its handlers
+        if (imgElement[`on${eventType}`]) {
+          this._originalZoomEventHandlers[eventType] = imgElement[`on${eventType}`];
+          imgElement[`on${eventType}`] = null;
+        }
+      });
+
+      // Stop the zoom service
+      if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
+        // Set magnification to 1 and disable zoom functionality
+        this.ngxImageZoom.setMagnification = 1;
+
+        // Update internal state
+        if (this.ngxImageZoom.zoomService.zoomingEnabled) {
+          // Simulate zoom end
+          this.ngxImageZoom.zoomService.zoomingEnabled = false;
+        }
+      }
+    } catch (e) {
+      console.error("Error disabling zoom:", e);
+    }
+  }
+
+  private _enableAllZooming(): void {
+    if (!this.ngxImageZoom || !this._zoomEventDisabled) {
+      return;
+    }
+
+    try {
+      // Reset the flag
+      this._zoomEventDisabled = false;
+
+      // Get the image element
+      const zoomContainer = this.ngxImageZoomEl?.nativeElement;
+      if (!zoomContainer) {
+        return;
+      }
+
+      const imgElement = zoomContainer.querySelector("img");
+      if (!imgElement) {
+        return;
+      }
+
+      // Remove capturing listeners and restore original ones
+      const events = ["wheel", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "click"];
+
+      // Clone the image once outside the loop
+      const clonedImg = imgElement.cloneNode(true);
+      if (imgElement.parentNode) {
+        // Replace the element once to remove all event listeners
+        imgElement.parentNode.replaceChild(clonedImg, imgElement);
+      }
+
+      // Re-initialize zoom
+      setTimeout(() => {
+        this._initImageZoom();
+      }, 10);
+    } catch (e) {
+      console.error("Error enabling zoom:", e);
+    }
+  }
+
+  /**
+   * Calculate the coordinates at the current mouse position
+   */
+  private _calculateMouseCoordinates(event: MouseEvent): void {
+    // Don't calculate coordinates when using lens mode
+    if (this.enableLens && this.ngxImageZoom?.zoomService?.zoomingEnabled) {
+      this.mouseHoverRa = null;
+      this.mouseHoverDec = null;
+      this.mouseHoverGalacticRa = null;
+      this.mouseHoverGalacticDec = null;
+      return;
+    }
+
+    // Don't attempt calculation if matrix is still loading
+    if (this.loadingAdvancedSolutionMatrix) {
+      return;
+    }
+
+    // If we have the advanced solution matrix, use it for accurate coordinate calculation
+    if (this.advancedSolutionMatrix && this.advancedSolutionMatrix.raMatrix) {
+      try {
+        // Get the image element or canvas that displays the image
+        const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+
+        if (!imageElement) {
+          return;
+        }
+
+        // Use the shared service to calculate and format the coordinates
+        const result = this.coordinatesFormatter.calculateMouseCoordinates(
+          event,
+          imageElement,
+          this.advancedSolutionMatrix,
+          {
+            useClientCoords: true,
+            naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w
+          }
+        );
+
+        if (!result) {
+          this.mouseHoverRa = null;
+          this.mouseHoverDec = null;
+          this.mouseHoverGalacticRa = null;
+          this.mouseHoverGalacticDec = null;
+          return;
+        }
+
+        // Set the formatted coordinates
+        this.mouseHoverRa = result.coordinates.raHtml;
+        this.mouseHoverDec = result.coordinates.decHtml;
+        this.mouseHoverGalacticRa = result.coordinates.galacticRaHtml;
+        this.mouseHoverGalacticDec = result.coordinates.galacticDecHtml;
+
+        this.changeDetectorRef.markForCheck();
+      } catch (error) {
+        this.mouseHoverRa = null;
+        this.mouseHoverDec = null;
+        this.mouseHoverGalacticRa = null;
+        this.mouseHoverGalacticDec = null;
+      }
+    }
+  }
+
+  private _calculateCoordinatesAtPoint(x: number, y: number): { ra: number; dec: number } | null {
+    try {
+      // Similar coordinate calculation as in _calculateMouseCoordinates but returns raw values
+      const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      if (!imageElement || !this.advancedSolutionMatrix) {
+        return null;
+      }
+
+      // Create a synthetic mouse event with the coordinates
+      const syntheticEvent = {
+        clientX: x,
+        clientY: y,
+        offsetX: 0,  // Not used with useClientCoords: true
+        offsetY: 0   // Not used with useClientCoords: true
+      } as MouseEvent;
+
+      // Use the coordinatesFormatter to calculate coordinates
+      const result = this.coordinatesFormatter.calculateMouseCoordinates(
+        syntheticEvent,
+        imageElement,
+        this.advancedSolutionMatrix,
+        {
+          useClientCoords: true,
+          naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w
+        }
+      );
+
+      if (!result) {
+        return null;
+      }
+
+      // Calculate image pixel coordinates
+      const imageRect = imageElement.getBoundingClientRect();
+      const relativeX = (x - imageRect.left);
+      const relativeY = (y - imageRect.top);
+
+      // Scale to HD space (1824px width reference)
+      const HD_WIDTH = 1824;
+      const scaledX = relativeX / imageRect.width * HD_WIDTH;
+      const scaledY = relativeY / imageRect.width * HD_WIDTH;
+
+      // Parse matrix data
+      const raMatrix = this.advancedSolutionMatrix.raMatrix.split(",").map(Number);
+      const decMatrix = this.advancedSolutionMatrix.decMatrix.split(",").map(Number);
+      const rect = this.advancedSolutionMatrix.matrixRect.split(",").map(Number);
+      const delta = this.advancedSolutionMatrix.matrixDelta;
+
+      // @ts-ignore - CoordinateInterpolation is defined globally in assets/js/CoordinateInterpolation.js
+      const interpolation = new CoordinateInterpolation(
+        raMatrix,
+        decMatrix,
+        rect[0],
+        rect[1],
+        rect[2],
+        rect[3],
+        delta
+      );
+
+      // Get raw coordinates using interpolation
+      const rawCoords = interpolation.interpolate(scaledX, scaledY);
+      if (rawCoords && rawCoords.alpha !== undefined && rawCoords.delta !== undefined) {
+        return {
+          ra: rawCoords.alpha,
+          dec: rawCoords.delta
+        };
+      }
+    } catch (error) {
+      console.error("Error calculating coordinates for measurement:", error);
+    }
+
+    return null;
+  }
+
+  private _calculateAngularDistance(ra1: number, dec1: number, ra2: number, dec2: number): string {
+    // Convert degrees to radians
+    const toRadians = (deg) => deg * Math.PI / 180;
+
+    // RA/Dec are in degrees
+    const ra1Rad = toRadians(ra1);
+    const dec1Rad = toRadians(dec1);
+    const ra2Rad = toRadians(ra2);
+    const dec2Rad = toRadians(dec2);
+
+    // Calculate angular distance using Haversine formula
+    // cos(angular_distance) = sin(dec1) * sin(dec2) + cos(dec1) * cos(dec2) * cos(ra1 - ra2)
+    const cosAngDist = Math.sin(dec1Rad) * Math.sin(dec2Rad) +
+      Math.cos(dec1Rad) * Math.cos(dec2Rad) * Math.cos(ra1Rad - ra2Rad);
+
+    // Clamp value to handle floating point errors
+    const clampedCosAngDist = Math.max(-1, Math.min(1, cosAngDist));
+
+    // Calculate angular distance in radians and convert to degrees
+    const angDistDeg = Math.acos(clampedCosAngDist) * 180 / Math.PI;
+
+    // Format result in degrees, arcminutes, and arcseconds
+    const degrees = Math.floor(angDistDeg);
+    const arcminutes = Math.floor((angDistDeg - degrees) * 60);
+    const arcseconds = ((angDistDeg - degrees) * 60 - arcminutes) * 60;
+
+    // Format the string
+    return `${degrees}° ${arcminutes}′ ${arcseconds.toFixed(1)}″`;
   }
 
   // Replace both mousemove and wheel handlers to completely freeze the zoom

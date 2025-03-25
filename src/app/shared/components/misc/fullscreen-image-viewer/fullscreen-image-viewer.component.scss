@@ -521,12 +521,11 @@ $header-height: 63px;
       
       .marker-coordinates {
         position: absolute;
-        left: 10px;
-        top: -5px;
+        transform: translate(-50%, -50%); // Center the label on its position point
         white-space: nowrap;
         background-color: rgba(0, 0, 0, 0.7);
         color: white;
-        padding: 2px 4px;
+        padding: 3px 6px; // Slightly larger padding for better readability
         border-radius: 3px;
         font-size: 0.7rem;
         pointer-events: none;
@@ -536,6 +535,20 @@ $header-height: 63px;
         z-index: 9999;
         opacity: 0; // Hide by default
         transition: opacity 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2); // Subtle border for better visibility
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); // Add shadow for better separation from background
+        
+        // Top position - for start point
+        &.top-position {
+          top: -24px; // Place above the marker
+          left: 10px;
+        }
+        
+        // Bottom position - for end point
+        &.bottom-position {
+          top: 15px; // Place below the marker
+          left: 10px;
+        }
         
         &.visible {
           opacity: 1; // Show when has coordinates
@@ -825,4 +838,12 @@ $header-height: 63px;
   overflow: hidden;
   text-overflow: ellipsis;
   z-index: 9;
+  
+  &.top-position {
+    /* Already positioned with inline styles */
+  }
+  
+  &.bottom-position {
+    /* Already positioned with inline styles */
+  }
 }

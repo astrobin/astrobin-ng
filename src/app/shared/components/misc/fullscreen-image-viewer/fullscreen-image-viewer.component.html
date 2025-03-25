@@ -398,7 +398,6 @@
   (wheel)="onGlobalWheel($event)"
   (mousemove)="onGlobalMouseMove($event)"
   (mouseleave)="clearCoordinates()"
-  (click)="handleMeasurementClick($event)"
 >
   <!-- Measuring tool -->
   <div class="measuring-tool-container" *ngIf="isMeasuringMode || measureDistance">
@@ -406,8 +405,16 @@
     <div *ngIf="measureStartPoint" class="measure-marker start-marker"
          [style.left.px]="measureStartPoint.x" [style.top.px]="measureStartPoint.y">
       <div class="marker-dot"></div>
-      <!-- Try a different approach for showing coordinates -->
-      <div class="marker-coordinates" [class.visible]="measureStartPoint.ra !== null">
+      <!-- Start point coordinates that will be visible while selecting end point -->
+      <div *ngIf="!measureEndPoint" class="marker-coordinates top-position" [class.visible]="measureStartPoint.ra !== null">
+        <small>{{ measureStartPoint.ra !== null ? formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) : '' }}</small>
+      </div>
+
+      <!-- Once both points are selected, calculate perpendicular position for labels -->
+      <div *ngIf="measureEndPoint" class="marker-coordinates"
+           [class.visible]="measureStartPoint.ra !== null"
+           [style.left.px]="calculateStartLabelX()"
+           [style.top.px]="calculateStartLabelY()">
         <small>{{ measureStartPoint.ra !== null ? formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) : '' }}</small>
       </div>
     </div>
@@ -415,8 +422,11 @@
     <div *ngIf="measureEndPoint" class="measure-marker end-marker"
          [style.left.px]="measureEndPoint.x" [style.top.px]="measureEndPoint.y">
       <div class="marker-dot"></div>
-      <!-- Try a different approach for showing coordinates -->
-      <div class="marker-coordinates" [class.visible]="measureEndPoint.ra !== null">
+      <!-- End point coordinates perpendicular to line -->
+      <div class="marker-coordinates"
+           [class.visible]="measureEndPoint.ra !== null"
+           [style.left.px]="calculateEndLabelX()"
+           [style.top.px]="calculateEndLabelY()">
         <small>{{ measureEndPoint.ra !== null ? formatCoordinatesCompact(measureEndPoint.ra, measureEndPoint.dec) : '' }}</small>
       </div>
     </div>
@@ -490,20 +500,20 @@
         {{ 'Celestial measurements require advanced solving' | translate }}
       </small>
     </div>
-    
+
     <!-- Coordinate labels for previous measurements -->
     <div *ngFor="let measurement of previousMeasurements; let i = index">
-      <!-- Start point coordinates -->
+      <!-- Start point coordinates with perpendicular positioning -->
       <div *ngIf="measurement.startRa !== null" class="measure-coord-label"
-           [style.left.px]="measurement.startX + 12"
-           [style.top.px]="measurement.startY - 5">
+           [style.left.px]="measurement.startLabelX"
+           [style.top.px]="measurement.startLabelY">
         <small>{{ formatCoordinatesCompact(measurement.startRa, measurement.startDec) }}</small>
       </div>
-      
-      <!-- End point coordinates -->
+
+      <!-- End point coordinates with perpendicular positioning -->
       <div *ngIf="measurement.endRa !== null" class="measure-coord-label"
-           [style.left.px]="measurement.endX + 12"
-           [style.top.px]="measurement.endY - 5">
+           [style.left.px]="measurement.endLabelX"
+           [style.top.px]="measurement.endLabelY">
         <small>{{ formatCoordinatesCompact(measurement.endRa, measurement.endDec) }}</small>
       </div>
     </div>
@@ -523,7 +533,7 @@
     <!-- Overlay for capturing clicks during measuring mode -->
     <div *ngIf="isMeasuringMode"
          class="measure-click-overlay"
-         (click)="handleMeasurementClickDirect($event)">
+         (click)="handleMeasurementClick($event)">
     </div>
   </div>
 
