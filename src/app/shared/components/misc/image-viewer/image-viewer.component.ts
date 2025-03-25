@@ -3,6 +3,8 @@ import { FINAL_REVISION_LABEL, FullSizeLimitationDisplayOptions, ImageInterface,
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MainState } from "@app/store/state";
 import { select, Store } from "@ngrx/store";
+import { Actions, ofType } from "@ngrx/effects";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 import { ImageAlias } from "@core/enums/image-alias.enum";
 import { DeviceService } from "@core/services/device.service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
@@ -119,6 +121,9 @@ export class ImageViewerComponent
 
   @ViewChild("mouseHoverSvgObject", { static: false })
   mouseHoverSvgObject: ElementRef;
+  
+  @ViewChild("fullscreenViewer", { static: false })
+  fullscreenViewer: any;
 
   protected readonly ImageAlias = ImageAlias;
   protected readonly isPlatformBrowser = isPlatformBrowser;
@@ -185,11 +190,13 @@ export class ImageViewerComponent
   private _preloadedMoonImage: HTMLImageElement = null; // Store the preloaded image element
   private _moonStartDragPosition = { x: 0, y: 0 };
   private _dataAreaScrollEventSubscription: Subscription;
+  private _hideFullscreenImageSubscription: Subscription;
   private _retryAdjustSvgOverlay: Subject<void> = new Subject();
   private _activeOffcanvas: NgbOffcanvasRef;
 
   constructor(
     public readonly store$: Store<MainState>,
+    private readonly actions$: Actions,
     public readonly deviceService: DeviceService,
     public readonly imageService: ImageService,
     public readonly jsonApiService: JsonApiService,
@@ -238,6 +245,15 @@ export class ImageViewerComponent
 
     this.offcanvasService.activeInstance.pipe(takeUntil(this.destroyed$)).subscribe(activeOffcanvas => {
       this._activeOffcanvas = activeOffcanvas;
+    });
+
+    // Subscribe to the HIDE_FULLSCREEN_IMAGE action to update our local state
+    this._hideFullscreenImageSubscription = this.actions$.pipe(
+      ofType(AppActionTypes.HIDE_FULLSCREEN_IMAGE),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.viewingFullscreenImage = false;
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -294,6 +310,15 @@ export class ImageViewerComponent
 
         this.changeDetectorRef.markForCheck();
       });
+      
+      // Check for the fullscreen viewer and subscribe to its events
+      this.utilsService.delay(100).subscribe(() => {
+        if (this.fullscreenViewer) {
+          this.fullscreenViewer.exitFullscreen.subscribe(() => {
+            this.exitFullscreen();
+          });
+        }
+      });
     }
 
     this.changeDetectorRef.detectChanges();
@@ -308,6 +333,10 @@ export class ImageViewerComponent
   ngOnDestroy() {
     if (this._dataAreaScrollEventSubscription) {
       this._dataAreaScrollEventSubscription.unsubscribe();
+    }
+
+    if (this._hideFullscreenImageSubscription) {
+      this._hideFullscreenImageSubscription.unsubscribe();
     }
 
     if (this.adManagerComponent) {
@@ -337,7 +366,8 @@ export class ImageViewerComponent
     }
 
     if (this.viewingFullscreenImage) {
-      this.exitFullscreen();
+      // We don't need to do anything here - the FullscreenImageViewerComponent 
+      // will handle ESC key and emit exitFullscreen event back to us
       return;
     }
 
@@ -614,11 +644,11 @@ export class ImageViewerComponent
       imageElement,
       this.advancedSolutionMatrix
     );
-    
+
     if (!result) {
       return;
     }
-    
+
     // Set the formatted coordinates and positions
     this.mouseHoverRa = result.coordinates.raHtml;
     this.mouseHoverDec = result.coordinates.decHtml;
@@ -842,9 +872,9 @@ export class ImageViewerComponent
 
         // Pass the loaded matrix to the fullscreen component to avoid race conditions
         const solutionMatrixToPass = this.loadingAdvancedSolutionMatrix ? null : this.advancedSolutionMatrix;
-        
-        this.store$.dispatch(new ShowFullscreenImage({ 
-          imageId: this.image.pk, 
+
+        this.store$.dispatch(new ShowFullscreenImage({
+          imageId: this.image.pk,
           event,
           externalSolutionMatrix: solutionMatrixToPass
         }));
@@ -871,7 +901,9 @@ export class ImageViewerComponent
     });
   }
 
-  protected exitFullscreen(): void {
+  // Removed unnecessary wrapper method
+
+  public exitFullscreen(): void {
     this.store$.dispatch(new HideFullscreenImage());
     this.viewingFullscreenImage = false;
     this.toggleFullscreen.emit(false);
@@ -1305,7 +1337,7 @@ export class ImageViewerComponent
     this.mouseHoverDec = null;
     this.mouseHoverGalacticRa = null;
     this.mouseHoverGalacticDec = null;
-    
+
     if (this.revision?.solution?.pixinsightSvgAnnotationRegular) {
       // Load the SVG first
       this._loadInlineSvg$(
@@ -1315,13 +1347,13 @@ export class ImageViewerComponent
         this.inlineSvg = inlineSvg;
         this.changeDetectorRef.markForCheck();
       });
-      
+
       // Then ensure we have the solution matrix - we need coordinated loading with a clear state
       this._ensureSolutionMatrixLoaded(this.revision.solution.id);
     } else if (this.revision?.solution?.imageFile) {
       this.solutionMouseHoverImage = this.revision.solution.imageFile;
       this.inlineSvg = null;
-      
+
       // Even with image file, we need the matrix for coordinates
       if (this.revision.solution.id) {
         this._ensureSolutionMatrixLoaded(this.revision.solution.id);
@@ -1333,7 +1365,7 @@ export class ImageViewerComponent
       this.loadingAdvancedSolutionMatrix = false;
     }
   }
-  
+
   /**
    * Ensures that a solution matrix is loaded, with proper state tracking
    * This prevents race conditions between multiple components trying to load the same matrix
@@ -1343,10 +1375,10 @@ export class ImageViewerComponent
     if (this.advancedSolutionMatrix) {
       return;
     }
-    
+
     // Mark as loading to prevent duplicate requests
     this.loadingAdvancedSolutionMatrix = true;
-    
+
     // First check if matrix is in the store
     this.store$.pipe(
       select(selectSolutionMatrix, solutionId),
@@ -1373,7 +1405,7 @@ export class ImageViewerComponent
               } else {
                 // If not loading, dispatch action to load it
                 this.store$.dispatch(new LoadSolutionMatrix({ solutionId }));
-                
+
                 // Then wait for it to complete
                 return this.store$.pipe(
                   select(selectSolutionMatrix, solutionId),
@@ -1672,10 +1704,10 @@ export class ImageViewerComponent
       this.revision = this.imageService.getRevision(this.image, this.revisionLabel);
       this.onRevisionSelected((this.revision as ImageRevisionInterface).label, false);
     }
-    
+
     this._updateNorthArrowRotation();
   }
-  
+
   private _updateNorthArrowRotation(): void {
     if (this.revision?.solution) {
       this.northArrowRotation = this.imageService.calculateCorrectOrientation(this.revision.solution);

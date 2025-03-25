@@ -299,6 +299,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected get isVeryLargeImage(): boolean {
     return this.naturalWidth * (this.naturalHeight || this.naturalWidth) > this.PIXEL_THRESHOLD;
   }
+  
+  protected get hasAdvancedSolution(): boolean {
+    // Check if the image has an advanced plate-solving solution with matrices
+    return !!(this.revision?.solution?.advancedRaMatrix && this.revision?.solution?.advancedDecMatrix);
+  }
 
   @HostListener("document:click", ["$event"])
   onDocumentClick(event: MouseEvent): void {
@@ -576,11 +581,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Remove capturing listeners and restore original ones
       const events = ['wheel', 'mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout', 'click'];
 
-      events.forEach(eventType => {
-        // Remove all listeners first
-        const clonedImg = imgElement.cloneNode(true);
+      // Clone the image once outside the loop
+      const clonedImg = imgElement.cloneNode(true);
+      if (imgElement.parentNode) {
+        // Replace the element once to remove all event listeners
         imgElement.parentNode.replaceChild(clonedImg, imgElement);
-      });
+      }
 
       // Re-initialize zoom
       setTimeout(() => {
@@ -593,6 +599,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("window:keyup.escape", ["$event"])
   hide(event: Event): void {
+    // Always prevent default and stop propagation to avoid browser's ESC behavior
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
     // Close the kebab menu if it's open
     if (this.showKebabMenu) {
       this.showKebabMenu = false;
@@ -602,12 +614,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // If in measuring mode, exit measuring mode instead of closing fullscreen
     if (this.isMeasuringMode) {
-      this.resetMeasurement();
+      // Use toggleMeasuringMode to fully exit the measuring mode
+      this.toggleMeasuringMode(event as MouseEvent);
       return;
-    }
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
     }
 
     // Clear mouse position to hide rulers
@@ -620,7 +629,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this._restoreOriginalEventHandlers();
     }
 
-    this.store$.dispatch(new HideFullscreenImage());
+  this.store$.dispatch(new HideFullscreenImage());
   }
 
   @HostListener("window:keyup.z", ["$event"])
@@ -634,8 +643,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
-    // Do nothing if the component is not being shown or in touch mode
-    if (!this.show || this.touchMode) {
+    // Do nothing if the component is not being shown, in touch mode, or in measuring mode
+    if (!this.show || this.touchMode || this.isMeasuringMode) {
       return;
     }
 
@@ -654,8 +663,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
-    // Do nothing if the component is not being shown or if the image doesn't have a solution
-    if (!this.show || !this.revision?.solution) {
+    // Do nothing if the component is not being shown, in measuring mode, or if the image doesn't have an advanced solution
+    if (!this.show || this.isMeasuringMode || !this.hasAdvancedSolution) {
       return;
     }
 
@@ -674,8 +683,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
-    // Do nothing if the component is not being shown or if the image doesn't have a solution
-    if (!this.show || !this.revision?.solution) {
+    // Do nothing if the component is not being shown or if it's a GIF
+    if (!this.show || this.isGif) {
       return;
     }
 
@@ -696,8 +705,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       }
     }
 
-    // Do nothing if the component is not being shown.
-    if (!this.show) {
+    // Do nothing if the component is not being shown or in measuring mode
+    if (!this.show || this.isMeasuringMode) {
       return;
     }
 
@@ -993,9 +1002,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       });
     }
 
+    const wasInLensMode = this.enableLens;
     this.enableLens = !this.enableLens;
     this.cookieService.put(this.LENS_ENABLED_COOKIE_NAME, this.enableLens.toString());
+    
     if (this.enableLens) {
+      // Entering lens mode
       this._setZoomLensSize();
 
       // Turn off coordinates when lens mode is activated
@@ -1009,6 +1021,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.mouseY = null;
         this.changeDetectorRef.markForCheck();
       }
+    } else if (wasInLensMode) {
+      // Exiting lens mode - clear any notifications that might be related to lens mode
+      this.popNotificationsService.clear();
     }
   }
 
@@ -1133,6 +1148,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Toggle measuring mode
     this.isMeasuringMode = !this.isMeasuringMode;
+    
+    // If exiting measuring mode, clear all previous measurements
+    if (!this.isMeasuringMode) {
+      this.previousMeasurements = [];
+    }
 
     // Disable zooming functions during measuring mode
     if (this.isMeasuringMode) {
@@ -1143,14 +1163,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         zoomScroll: this.zoomScroll
       };
 
-      // Force zoom to stop
+      // Disable active zooming but keep the current zoom level
       if (this.zoomingEnabled) {
-        try {
-          // If currently zooming, first reset to 1x
-          this.snapTo1x();
-        } catch (e) {
-          console.error('Error snapping to 1x', e);
-        }
+        // Don't call snapTo1x() as we want to preserve the current zoom level
       }
 
       // Disable lens mode
@@ -1170,9 +1185,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         // Restore lens mode if previously enabled
         this.enableLens = this._previousZoomState.enableLens;
+        
+        // Restore the previous zoom level
+        if (this._previousZoomState && this._previousZoomState.zoomScroll !== undefined && 
+            this._previousZoomState.zoomScroll !== this.zoomScroll) {
+          // Use our component's setZoomScroll method instead of directly accessing the service
+          this.setZoomScroll(this._previousZoomState.zoomScroll);
+          // Make sure change detection runs to update the view
+          setTimeout(() => this.changeDetectorRef.detectChanges(), 0);
+        }
 
         // Restore frozen state if previously frozen
-        if (this._previousZoomState.zoomFrozen) {
+        if (this._previousZoomState && this._previousZoomState.zoomFrozen) {
           this.toggleZoomFreeze(null);
         }
 
@@ -1329,7 +1353,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.changeDetectorRef.markForCheck();
   }
 
-  protected deleteMeasurement(index: number): void {
+  protected deleteMeasurement(event: MouseEvent, index: number): void {
+    // Prevent event propagation to avoid triggering other click handlers
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
     if (index >= 0 && index < this.previousMeasurements.length) {
       this.previousMeasurements.splice(index, 1);
       this.changeDetectorRef.markForCheck();

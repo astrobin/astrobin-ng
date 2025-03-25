@@ -359,9 +359,9 @@
           </ng-container>
         </div>
         
-        <!-- Coordinates toggle -->
+        <!-- Coordinates toggle - only visible for images with advanced solution -->
         <div
-          *ngIf="!isGif && revision?.solution"
+          *ngIf="!isGif && hasAdvancedSolution"
           class="kebab-menu-item"
           (click)="toggleCoordinates(); toggleKebabMenu($event)"
           [class.disabled]="enableLens && zoomingEnabled"
@@ -370,9 +370,9 @@
           <span>{{ (showCoordinates ? 'Hide coordinates' : 'Show coordinates') | translate }}</span>
         </div>
         
-        <!-- Measuring tool toggle -->
+        <!-- Measuring tool toggle - available for all images -->
         <div
-          *ngIf="!isGif && revision?.solution"
+          *ngIf="!isGif"
           class="kebab-menu-item"
           (click)="toggleMeasuringMode($event); toggleKebabMenu($event)"
           [class.disabled]="enableLens && zoomingEnabled"
@@ -560,7 +560,7 @@
     </div>
     <ul class="shortcuts-list">
       <li><kbd>Z</kbd> <span>{{ 'Toggle Lens/Zoom mode' | translate }}</span></li>
-      <li><kbd>C</kbd> <span>{{ 'Toggle coordinates display' | translate }}</span></li>
+      <li *ngIf="hasAdvancedSolution"><kbd>C</kbd> <span>{{ 'Toggle coordinates display' | translate }}</span></li>
       <li><kbd>M</kbd> <span>{{ 'Toggle measuring tool' | translate }}</span></li>
       <li><kbd>F</kbd> <span>{{ 'Freeze/unfreeze zoom position' | translate }}</span></li>
       <li><kbd>ESC</kbd> <span>{{ 'Exit current mode or close image' | translate }}</span></li>

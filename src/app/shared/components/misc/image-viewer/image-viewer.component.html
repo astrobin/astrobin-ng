@@ -218,6 +218,7 @@
       </button>
 
       <astrobin-fullscreen-image-viewer
+        #fullscreenViewer
         *ngIf="standalone && supportsFullscreen"
         [id]="image.pk"
         [eagerLoading]="true"
