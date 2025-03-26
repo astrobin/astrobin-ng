@@ -521,7 +521,7 @@ $header-height: 63px;
       
       .marker-coordinates {
         position: absolute;
-        transform: translate(-50%, -50%); // Center the label on its position point
+        // No longer using transform-based centering since we're positioning based on angle
         white-space: nowrap;
         background-color: rgba(0, 0, 0, 0.7);
         color: white;
@@ -672,19 +672,8 @@ $header-height: 63px;
       }
     }
 
-    .measuring-instructions {
-      position: absolute;
-      top: 5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(0, 0, 0, 0.7);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      z-index: 3;
-      text-align: center;
-    }
+    // Measuring instructions now use the common instructions style in .instruction-container
+    // which is at the bottom of the screen like other instruction types
 
     .measuring-controls {
       position: absolute;
@@ -839,11 +828,5 @@ $header-height: 63px;
   text-overflow: ellipsis;
   z-index: 9;
   
-  &.top-position {
-    /* Already positioned with inline styles */
-  }
-  
-  &.bottom-position {
-    /* Already positioned with inline styles */
-  }
+  /* Position is managed by our label positioning functions in the component */
 }

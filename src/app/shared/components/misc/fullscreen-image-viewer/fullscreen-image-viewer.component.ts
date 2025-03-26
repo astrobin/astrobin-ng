@@ -1100,8 +1100,21 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
-    // Get the image element
-    const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    // Try the full container image first, but fallback to container image if full container is not visible
+    let imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+    
+    // If the full container image has display:none or no dimensions, fallback to the container image
+    if (imageElement) {
+      const rect = imageElement.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) {
+        // Fallback to using container image
+        imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      }
+    } else {
+      // Full container image not found, try container image
+      imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    }
+    
     if (!imageElement) {
       return;
     }
@@ -1190,27 +1203,57 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.measureDistance = this.translateService.instant("{{0}} pixels", { 0: pixelDistance });
         }
 
-        // Suppose we know the label’s approximate size:
+        // Calculate label positions using the same approach as in the label position functions
         const labelWidth = 120;
         const labelHeight = 25;
+        const pointRadius = 6;
+        const labelDistance = 24;
 
-        // The vector from start to end:
+        // Calculate angle of the line
         const dx = this.measureEndPoint.x - this.measureStartPoint.x;
         const dy = this.measureEndPoint.y - this.measureStartPoint.y;
         const length = Math.sqrt(dx * dx + dy * dy) || 1;
+        const angleRad = Math.atan2(dy, dx);
 
-        // A perpendicular is (-dy, dx).
-        // We'll choose +perp for the start, -perp for the end:
-        const offset = 50;
-        const perpX = (-dy / length) * offset;
-        const perpY = (dx / length) * offset;
-
-        // If you want the label’s CENTER to end up off to one side:
-        const startLabelX = this.measureStartPoint.x + perpX - (labelWidth / 2);
-        const startLabelY = this.measureStartPoint.y + perpY - (labelHeight / 2);
-        const endLabelX = this.measureEndPoint.x - perpX - (labelWidth / 2);
-        const endLabelY = this.measureEndPoint.y - perpY - (labelHeight / 2);
-
+        // Check if the line is nearly horizontal or vertical
+        const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
+        const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI/2) < Math.PI/12;
+        
+        // Calculate extended positions for labels with extra distance for near-horizontal lines
+        const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
+        
+        // Start label - opposite direction of the line
+        const startExtX = this.measureStartPoint.x - (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
+        const startExtY = this.measureStartPoint.y - (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
+        
+        // End label - along the direction of the line
+        const endExtX = this.measureEndPoint.x + (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
+        const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
+        
+        // Calculate final label positions
+        let startLabelX, endLabelX;
+        
+        if (isNearVertical) {
+          // For near-vertical lines, center align both labels
+          startLabelX = startExtX;
+          endLabelX = endExtX;
+        } else if (isNearHorizontal) {
+          // For near-horizontal lines, increase the vertical offset to avoid overlap
+          startLabelX = startExtX - (labelWidth / 2);
+          endLabelX = endExtX - (labelWidth / 2);
+        } else if (angleRad > -Math.PI/2 && angleRad < Math.PI/2) {
+          // Line points rightward
+          startLabelX = startExtX - (labelWidth / 2);
+          endLabelX = endExtX - (labelWidth / 2);
+        } else {
+          // Line points leftward
+          startLabelX = startExtX - (labelWidth / 2);
+          endLabelX = endExtX - (labelWidth / 2);
+        }
+        
+        // Vertical position (centered)
+        const startLabelY = startExtY - (labelHeight / 2);
+        const endLabelY = endExtY - (labelHeight / 2);
           // Push to your measurements array:
         this.previousMeasurements.push({
           startX: this.measureStartPoint.x,
@@ -1274,19 +1317,39 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return this.measureStartPoint?.x || 0;
     }
     const labelWidth = 120;
-    const labelOffset = 15; // Distance between point and label
+    const pointRadius = 6;
+    const labelDistance = 24; // Distance beyond the point
 
+    // Calculate angle of the line
     const dx = this.measureEndPoint.x - this.measureStartPoint.x;
     const dy = this.measureEndPoint.y - this.measureStartPoint.y;
     const length = Math.sqrt(dx * dx + dy * dy) || 1;
+    const angleRad = Math.atan2(dy, dx);
 
-    // Normalize direction vector
-    const normDx = dx / length;
-    const normDy = dy / length;
-
-    // Label should be positioned at the start of the line, offset in the opposite direction
-    // This places the label before the start point, away from the line
-    return this.measureStartPoint.x - (labelWidth / 2) - (normDx * labelOffset);
+    // Check if the line is nearly horizontal or vertical
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
+    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI/2) < Math.PI/12;
+    
+    // Start label - opposite direction of the line with extra distance for near-horizontal lines
+    const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
+    // For vertical lines, add horizontal offset to center labels
+    const verticalOffset = isNearVertical ? labelWidth / 2 : 0;
+    const startExtX = this.measureStartPoint.x - (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad) - verticalOffset;
+    
+    // Add the necessary offset based on text anchor positioning
+    if (isNearVertical) {
+      // For near-vertical lines, use middle alignment with increased distance
+      return startExtX;
+    } else if (isNearHorizontal) {
+      // For near-horizontal lines, increase the vertical offset to avoid overlap
+      return startExtX - (labelWidth / 2);
+    } else if (angleRad > -Math.PI/2 && angleRad < Math.PI/2) {
+      // Line points rightward - align text end to point
+      return startExtX - (labelWidth / 2);
+    } else {
+      // Line points leftward - align text start to point
+      return startExtX - (labelWidth / 2);
+    }
   }
 
   protected calculateStartLabelY(): number {
@@ -1294,19 +1357,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return this.measureStartPoint?.y || 0;
     }
     const labelHeight = 25;
-    const labelOffset = 15; // Distance between point and label
+    const pointRadius = 6;
+    const labelDistance = 24; // Distance beyond the point
 
+    // Calculate angle of the line
     const dx = this.measureEndPoint.x - this.measureStartPoint.x;
     const dy = this.measureEndPoint.y - this.measureStartPoint.y;
     const length = Math.sqrt(dx * dx + dy * dy) || 1;
+    const angleRad = Math.atan2(dy, dx);
 
-    // Normalize direction vector
-    const normDx = dx / length;
-    const normDy = dy / length;
+    // Check if the line is nearly horizontal
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
 
-    // Label should be positioned at the start of the line, offset in the opposite direction
-    // This places the label before the start point, away from the line
-    return this.measureStartPoint.y - (labelHeight / 2) - (normDy * labelOffset);
+    // Start label - opposite direction of the line
+    const startExtY = this.measureStartPoint.y - (labelDistance + pointRadius) * Math.sin(angleRad);
+
+    // Center vertically
+    return startExtY - (labelHeight / 2);
   }
 
   protected calculateEndLabelX(): number {
@@ -1314,19 +1381,39 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return this.measureEndPoint?.x || 0;
     }
     const labelWidth = 120;
-    const labelOffset = 15; // Distance between point and label
+    const pointRadius = 6;
+    const labelDistance = 24; // Distance beyond the point
 
+    // Calculate angle of the line
     const dx = this.measureEndPoint.x - this.measureStartPoint.x;
     const dy = this.measureEndPoint.y - this.measureStartPoint.y;
     const length = Math.sqrt(dx * dx + dy * dy) || 1;
+    const angleRad = Math.atan2(dy, dx);
 
-    // Normalize direction vector
-    const normDx = dx / length;
-    const normDy = dy / length;
-
-    // Label should be positioned at the end of the line, offset in the same direction
-    // This places the label after the end point, away from the line
-    return this.measureEndPoint.x - (labelWidth / 2) + (normDx * labelOffset);
+    // Check if the line is nearly horizontal or vertical
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
+    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI/2) < Math.PI/12;
+    
+    // End label - along the direction of the line with extra distance for near-horizontal lines
+    const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
+    // For vertical lines, add horizontal offset to center labels
+    const verticalOffset = isNearVertical ? labelWidth / 2 : 0;
+    const endExtX = this.measureEndPoint.x + (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad) - verticalOffset;
+    
+    // Add the necessary offset based on text anchor positioning
+    if (isNearVertical) {
+      // For near-vertical lines, use middle alignment
+      return endExtX;
+    } else if (isNearHorizontal) {
+      // For near-horizontal lines, increase the vertical offset to avoid overlap
+      return endExtX - (labelWidth / 2);
+    } else if (angleRad > -Math.PI/2 && angleRad < Math.PI/2) {
+      // Line points rightward - align text start to point
+      return endExtX - (labelWidth / 2);
+    } else {
+      // Line points leftward - align text end to point
+      return endExtX - (labelWidth / 2);
+    }
   }
 
   protected calculateEndLabelY(): number {
@@ -1334,19 +1421,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return this.measureEndPoint?.y || 0;
     }
     const labelHeight = 25;
-    const labelOffset = 15; // Distance between point and label
+    const pointRadius = 6;
+    const labelDistance = 24; // Distance beyond the point
 
+    // Calculate angle of the line
     const dx = this.measureEndPoint.x - this.measureStartPoint.x;
     const dy = this.measureEndPoint.y - this.measureStartPoint.y;
     const length = Math.sqrt(dx * dx + dy * dy) || 1;
+    const angleRad = Math.atan2(dy, dx);
 
-    // Normalize direction vector
-    const normDx = dx / length;
-    const normDy = dy / length;
+    // Check if the line is nearly horizontal
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
 
-    // Label should be positioned at the end of the line, offset in the same direction
-    // This places the label after the end point, away from the line
-    return this.measureEndPoint.y - (labelHeight / 2) + (normDy * labelOffset);
+    // End label - along the direction of the line
+    const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius) * Math.sin(angleRad);
+
+    // Center vertically
+    return endExtY - (labelHeight / 2);
   }
 
   protected formatCoordinatesCompact(ra: number, dec: number): string {
@@ -1732,8 +1823,20 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // If we have the advanced solution matrix, use it for accurate coordinate calculation
     if (this.advancedSolutionMatrix && this.advancedSolutionMatrix.raMatrix) {
       try {
-        // Get the image element or canvas that displays the image
-        const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+        // Try the full container image first, but fallback to container image if full container is not visible
+        let imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+
+        // If the full container image has display:none or no dimensions, fallback to the container image
+        if (imageElement) {
+          const rect = imageElement.getBoundingClientRect();
+          if (rect.width === 0 || rect.height === 0) {
+            // Fallback to using container image
+            imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+          }
+        } else {
+          // Full container image not found, try container image
+          imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+        }
 
         if (!imageElement) {
           return;
@@ -1777,7 +1880,21 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _calculateCoordinatesAtPoint(x: number, y: number): { ra: number; dec: number } | null {
     try {
       // Similar coordinate calculation as in _calculateMouseCoordinates but returns raw values
-      const imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      // Try the full container image first, but fallback to container image if full container is not visible
+      let imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+      
+      // If the full container image has display:none or no dimensions, fallback to the container image
+      if (imageElement) {
+        const rect = imageElement.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) {
+          // Fallback to using container image
+          imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+        }
+      } else {
+        // Full container image not found, try container image
+        imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      }
+      
       if (!imageElement || !this.advancedSolutionMatrix) {
         return null;
       }

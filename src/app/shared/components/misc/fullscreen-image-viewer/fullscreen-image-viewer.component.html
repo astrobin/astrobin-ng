@@ -89,6 +89,26 @@
   ></ng-container>
 </ng-template>
 
+<ng-template #measureFirstPointInstructionTemplate>
+  <ng-container
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+        icon: 'mouse-pointer',
+        message: 'Click on first point to begin measurement.' | translate
+      }"
+  ></ng-container>
+</ng-template>
+
+<ng-template #measureSecondPointInstructionTemplate>
+  <ng-container
+    [ngTemplateOutlet]="instructionTemplate"
+    [ngTemplateOutletContext]="{
+        icon: 'mouse-pointer',
+        message: 'Click on second point to complete measurement.' | translate
+      }"
+  ></ng-container>
+</ng-template>
+
 <ng-template #touchDeviceTemplate let-hd="hd" let-real="real">
   <div class="touch-device">
     <div
@@ -266,19 +286,36 @@
     ></ng-container>
 
     <ng-container *ngIf="!isVeryLargeImage && real && allowReal">
-      <ng-container *ngIf="zoomFrozen"
-        [ngTemplateOutlet]="zoomFrozenInstructionTemplate">
+      <!-- Zoom-related instructions -->
+      <ng-container *ngIf="!isMeasuringMode">
+        <ng-container
+          *ngIf="zoomFrozen"
+          [ngTemplateOutlet]="zoomFrozenInstructionTemplate"
+        ></ng-container>
+
+        <ng-container
+          *ngIf="!zoomFrozen && !zoomingEnabled && !showZoomIndicator && !isMeasuringMode"
+          [ngTemplateOutlet]="clickAndScrollInstructionTemplate"
+        ></ng-container>
+
+        <ng-container
+          *ngIf="!zoomFrozen && zoomingEnabled && !showZoomIndicator && enableLens && !isMeasuringMode"
+          [ngTemplateOutlet]="clickAgainToCloseLensInstructionTemplate"
+        ></ng-container>
       </ng-container>
 
-      <ng-container
-        *ngIf="!zoomFrozen && !zoomingEnabled && !showZoomIndicator"
-        [ngTemplateOutlet]="clickAndScrollInstructionTemplate"
-      ></ng-container>
+      <!-- Measurement instructions -->
+      <ng-container *ngIf="isMeasuringMode">
+        <ng-container
+          *ngIf="!measureStartPoint"
+          [ngTemplateOutlet]="measureFirstPointInstructionTemplate"
+        ></ng-container>
 
-      <ng-container
-        *ngIf="!zoomFrozen && zoomingEnabled && !showZoomIndicator && enableLens"
-        [ngTemplateOutlet]="clickAgainToCloseLensInstructionTemplate"
-      ></ng-container>
+        <ng-container
+          *ngIf="measureStartPoint && !measureEndPoint"
+          [ngTemplateOutlet]="measureSecondPointInstructionTemplate"
+        ></ng-container>
+      </ng-container>
     </ng-container>
   </div>
 
@@ -295,7 +332,8 @@
     <div *ngIf="isMeasuringMode" class="measuring-controls-right"
          (mouseenter)="setMouseOverUIElement(true)"
          (mouseleave)="setMouseOverUIElement(false)">
-      <button class="btn btn-sm btn-outline-light me-2" (click)="clearAllMeasurements()" *ngIf="previousMeasurements.length > 0">
+      <button class="btn btn-sm btn-outline-light me-2" (click)="clearAllMeasurements()"
+              *ngIf="previousMeasurements.length > 0">
         <fa-icon icon="trash" class="me-1"></fa-icon>
         {{ 'Clear all' | translate }}
       </button>
@@ -406,7 +444,8 @@
          [style.left.px]="measureStartPoint.x" [style.top.px]="measureStartPoint.y">
       <div class="marker-dot"></div>
       <!-- Start point coordinates that will be visible while selecting end point -->
-      <div *ngIf="!measureEndPoint" class="marker-coordinates top-position" [class.visible]="measureStartPoint.ra !== null">
+      <div *ngIf="!measureEndPoint" class="marker-coordinates top-position"
+           [class.visible]="measureStartPoint.ra !== null">
         <small>{{ measureStartPoint.ra !== null ? formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) : '' }}</small>
       </div>
 
@@ -518,23 +557,12 @@
       </div>
     </div>
 
-    <!-- Measuring mode instructions -->
-    <div *ngIf="isMeasuringMode && !measureStartPoint" class="measuring-instructions"
-         (mouseenter)="setMouseOverUIElement(true)"
-         (mouseleave)="setMouseOverUIElement(false)">
-      {{ 'Click on first point to begin measurement' | translate }}
-    </div>
-    <div *ngIf="isMeasuringMode && measureStartPoint && !measureEndPoint" class="measuring-instructions"
-         (mouseenter)="setMouseOverUIElement(true)"
-         (mouseleave)="setMouseOverUIElement(false)">
-      {{ 'Click on second point to complete measurement' | translate }}
-    </div>
-
     <!-- Overlay for capturing clicks during measuring mode -->
-    <div *ngIf="isMeasuringMode"
-         class="measure-click-overlay"
-         (click)="handleMeasurementClick($event)">
-    </div>
+    <div
+      *ngIf="isMeasuringMode"
+      class="measure-click-overlay"
+      (click)="handleMeasurementClick($event)"
+    ></div>
   </div>
 
   <!-- Coordinate display -->
@@ -552,11 +580,20 @@
   </div>
 
   <!-- Crosshair rulers -->
-  <div *ngIf="showCoordinates && mouseX !== null && mouseY !== null && !isGif && !isMouseOverUIElement"
-       class="crosshair-container">
+  <div
+    *ngIf="
+    showCoordinates &&
+    mouseX !== null &&
+    mouseY !== null &&
+    !isGif &&
+    !isMouseOverUIElement
+  "
+    class="crosshair-container"
+  >
     <div class="crosshair-h" [style.top.px]="mouseY"></div>
     <div class="crosshair-v" [style.left.px]="mouseX"></div>
   </div>
+
   <ng-container
     *ngIf="{
       hd: hdThumbnail,
