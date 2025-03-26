@@ -472,7 +472,7 @@
 
     <!-- Previous lines -->
     <svg class="measure-line-container"
-         [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0" 
+         [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
          [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
       <!-- Previous measurements -->
       <g *ngFor="let measurement of previousMeasurements; let i = index">
@@ -567,14 +567,14 @@
   </div>
 
   <!-- Coordinate display -->
-  <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseHoverRa && mouseHoverDec && !isGif"
+  <div class="coordinates-wrapper" *ngIf="showCoordinates && mouseRa && mouseDec && !isGif"
        (mouseenter)="setMouseOverUIElement(true)"
        (mouseleave)="setMouseOverUIElement(false)">
     <astrobin-coordinates-display
-      [raHtml]="mouseHoverRa"
-      [decHtml]="mouseHoverDec"
-      [galacticRaHtml]="mouseHoverGalacticRa"
-      [galacticDecHtml]="mouseHoverGalacticDec"
+      [raHtml]="mouseRa"
+      [decHtml]="mouseDec"
+      [galacticRaHtml]="mouseGalacticRa"
+      [galacticDecHtml]="mouseGalacticDec"
       [showGalactic]="true"
       [showAttribution]="true"
     ></astrobin-coordinates-display>

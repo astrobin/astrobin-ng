@@ -31,7 +31,6 @@ import { fadeInOut } from "@shared/animations";
 import { SwipeDownService } from "@core/services/swipe-down.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
 import { ActiveToast } from "ngx-toastr";
-import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
 import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 import { SolutionStatus } from "@core/interfaces/solution.interface";
 
@@ -130,16 +129,22 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected canvasLoading = false;
   protected isGif = false;
   protected zoomFrozen = false;
-  // Notification references are managed by the _zoomActivationNotification property
-  protected mouseHoverRa: string;
-  protected mouseHoverDec: string;
-  protected mouseHoverGalacticRa: string;
-  protected mouseHoverGalacticDec: string;
+  protected mouseRa: string;
+  protected mouseDec: string;
+  protected mouseGalacticRa: string;
+  protected mouseGalacticDec: string;
   protected showCoordinates: boolean = false;
   protected showKebabMenu: boolean = false;
   protected showKeyboardShortcutsOverlay: boolean = false;
 
   // Measuring tool properties
+  protected advancedSolutionMatrix: {
+    matrixRect: string;
+    matrixDelta: number;
+    raMatrix: string;
+    decMatrix: string;
+  };
+  protected loadingAdvancedSolutionMatrix = false;
   protected isMeasuringMode: boolean = false;
   protected measureStartPoint: { x: number; y: number; ra: number; dec: number } = null;
   protected measureEndPoint: { x: number; y: number; ra: number; dec: number } = null;
@@ -163,6 +168,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     endLabelX: number;
     endLabelY: number;
   }> = [];
+
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
   protected touchCurrentY: { value: number } = { value: 0 };
@@ -171,13 +177,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected swipeProgress: { value: number } = { value: 0 };
   protected swipeThreshold: number = 150;
   protected swipeDirectionDown: { value: boolean } = { value: true };
-  protected advancedSolutionMatrix: {
-    matrixRect: string;
-    matrixDelta: number;
-    raMatrix: string;
-    decMatrix: string;
-  };
-  protected loadingAdvancedSolutionMatrix = false;
+
   // Mouse position for crosshair rulers
   protected mouseX: number = null;
   protected mouseY: number = null;
@@ -188,6 +188,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected isMouseOverUIElement: boolean = false;
   protected image: ImageInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
+
   private _previousZoomState: {
     enableLens: boolean;
     zoomFrozen: boolean;
@@ -241,6 +242,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   readonly firstRender$ = this._firstRenderSubject.asObservable().pipe(
     filter(rendered => rendered)
   );
+
   // Two levels of downsampled bitmaps for smoother zoom transitions
   private _downsampledBitmapLow: ImageBitmap = null;  // Lower resolution for initial view
   private _downsampledBitmapMedium: ImageBitmap = null;  // Medium resolution for intermediate zoom
@@ -249,10 +251,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private readonly COORDINATES_ENABLED_COOKIE_NAME = "astrobin-fullscreen-show-coordinates";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
+
   // Store original handlers and position for freezing/unfreezing
   private _originalOnMouseMove: any = null;
   private _originalOnMouseWheel: any = null;
-  private _frozenZoomPosition: { x: number, y: number } = null;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -272,7 +274,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly swipeDownService: SwipeDownService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly solutionApiService: SolutionApiService,
     public readonly coordinatesFormatter: CoordinatesFormatterService
   ) {
     super(store$);
@@ -377,10 +378,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._drawCanvas();
 
     // Clear coordinate display until next mouse move
-    this.mouseHoverRa = null;
-    this.mouseHoverDec = null;
-    this.mouseHoverGalacticRa = null;
-    this.mouseHoverGalacticDec = null;
+    this.mouseRa = null;
+    this.mouseDec = null;
+    this.mouseGalacticRa = null;
+    this.mouseGalacticDec = null;
 
     // Reset crosshair position
     this.mouseX = null;
@@ -556,10 +557,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Only disable coordinates display in lens mode
     if (this.enableLens && this.zoomingEnabled && this.showCoordinates) {
       this.showCoordinates = false;
-      this.mouseHoverRa = null;
-      this.mouseHoverDec = null;
-      this.mouseHoverGalacticRa = null;
-      this.mouseHoverGalacticDec = null;
+      this.mouseRa = null;
+      this.mouseDec = null;
+      this.mouseGalacticRa = null;
+      this.mouseGalacticDec = null;
       this.mouseX = null;
       this.mouseY = null;
       this.changeDetectorRef.markForCheck();
@@ -862,7 +863,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         const currentMag = this.ngxImageZoom.zoomService.magnification;
         const minRatio = this.ngxImageZoom.zoomService.minZoomRatio || 1;
         const maxRatio = this.ngxImageZoom.zoomService.maxZoomRatio || 2;
-        const stepSize = 0.05; // Default step size
+        const stepSize = .05; // Default step size
 
         // For normal wheel events, use deltaY with opposite sign (up = zoom in, down = zoom out)
         const delta = -event.deltaY / 100; // Normalize regular wheel delta
@@ -893,7 +894,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   // Handle mouse move events on the component and proxy them to ngx-image-zoom
   protected onGlobalMouseMove(event: MouseEvent): void {
-    // If in measuring mode and we've already placed the first point,
+    // If in measuring mode, and we've already placed the first point,
     // update line drawing position but allow coordinate calculation to continue
     if (this.isMeasuringMode && this.measureStartPoint) {
       // Update mouse position for line drawing
@@ -943,19 +944,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           }
         } else {
           // Hide coordinate display when mouse is outside the image
-          this.mouseHoverRa = null;
-          this.mouseHoverDec = null;
-          this.mouseHoverGalacticRa = null;
-          this.mouseHoverGalacticDec = null;
+          this.mouseRa = null;
+          this.mouseDec = null;
+          this.mouseGalacticRa = null;
+          this.mouseGalacticDec = null;
         }
       } else {
         // Coordinates are disabled, clear all values
         this.mouseX = null;
         this.mouseY = null;
-        this.mouseHoverRa = null;
-        this.mouseHoverDec = null;
-        this.mouseHoverGalacticRa = null;
-        this.mouseHoverGalacticDec = null;
+        this.mouseRa = null;
+        this.mouseDec = null;
+        this.mouseGalacticRa = null;
+        this.mouseGalacticDec = null;
       }
 
       this.changeDetectorRef.markForCheck();
@@ -1016,10 +1017,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Turn off coordinates when lens mode is activated
       if (this.showCoordinates) {
         this.showCoordinates = false;
-        this.mouseHoverRa = null;
-        this.mouseHoverDec = null;
-        this.mouseHoverGalacticRa = null;
-        this.mouseHoverGalacticDec = null;
+        this.mouseRa = null;
+        this.mouseDec = null;
+        this.mouseGalacticRa = null;
+        this.mouseGalacticDec = null;
         this.mouseX = null;
         this.mouseY = null;
         this.changeDetectorRef.markForCheck();
@@ -1108,10 +1109,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // If coordinates are turned off, hide any currently displayed values
     if (!this.showCoordinates) {
-      this.mouseHoverRa = null;
-      this.mouseHoverDec = null;
-      this.mouseHoverGalacticRa = null;
-      this.mouseHoverGalacticDec = null;
+      this.mouseRa = null;
+      this.mouseDec = null;
+      this.mouseGalacticRa = null;
+      this.mouseGalacticDec = null;
       this.mouseX = null;
       this.mouseY = null;
     } else if (this.mouseX !== null && this.mouseY !== null) {
@@ -1307,7 +1308,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // Calculate angle of the line
         const dx = this.measureEndPoint.x - this.measureStartPoint.x;
         const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-        const length = Math.sqrt(dx * dx + dy * dy) || 1;
         const angleRad = Math.atan2(dy, dx);
 
         // Check if the line is nearly horizontal or vertical
@@ -1326,7 +1326,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
 
         // Calculate final label positions
-        let startLabelX, endLabelX;
+        let startLabelX: number, endLabelX: number;
 
         if (isNearVertical) {
           // For near-vertical lines, center align both labels
@@ -1458,7 +1458,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Calculate angle of the line
     const dx = this.measureEndPoint.x - this.measureStartPoint.x;
     const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-    const length = Math.sqrt(dx * dx + dy * dy) || 1;
     const angleRad = Math.atan2(dy, dx);
 
     // Check if the line is nearly horizontal
@@ -1482,7 +1481,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Calculate angle of the line
     const dx = this.measureEndPoint.x - this.measureStartPoint.x;
     const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-    const length = Math.sqrt(dx * dx + dy * dy) || 1;
     const angleRad = Math.atan2(dy, dx);
 
     // Check if the line is nearly horizontal or vertical
@@ -1522,11 +1520,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Calculate angle of the line
     const dx = this.measureEndPoint.x - this.measureStartPoint.x;
     const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-    const length = Math.sqrt(dx * dx + dy * dy) || 1;
     const angleRad = Math.atan2(dy, dx);
-
-    // Check if the line is nearly horizontal
-    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
 
     // End label - along the direction of the line
     const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius) * Math.sin(angleRad);
@@ -1558,10 +1552,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (this.showCoordinates) {
       this.mouseX = null;
       this.mouseY = null;
-      this.mouseHoverRa = null;
-      this.mouseHoverDec = null;
-      this.mouseHoverGalacticRa = null;
-      this.mouseHoverGalacticDec = null;
+      this.mouseRa = null;
+      this.mouseDec = null;
+      this.mouseGalacticRa = null;
+      this.mouseGalacticDec = null;
       this.changeDetectorRef.markForCheck();
     }
   }
@@ -1850,175 +1844,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
-  private _disableAllZooming(): void {
-    if (!this.ngxImageZoom || this._zoomEventDisabled) {
-      return;
-    }
-
-    // Store a flag to prevent doing this multiple times
-    this._zoomEventDisabled = true;
-
-    try {
-      // Get the image element
-      const zoomContainer = this.ngxImageZoomEl?.nativeElement;
-      if (!zoomContainer) {
-        return;
-      }
-
-      const imgElement = zoomContainer.querySelector("img");
-      if (!imgElement) {
-        return;
-      }
-
-      // Only disable wheel and regular zoom events, not click
-      const events = ["wheel", "mousedown", "mouseup", "mouseover", "mouseout"];
-
-      events.forEach(eventType => {
-        // Save the existing listener by checking its handlers
-        if (imgElement[`on${eventType}`]) {
-          this._originalZoomEventHandlers[eventType] = imgElement[`on${eventType}`];
-          imgElement[`on${eventType}`] = null;
-        }
-      });
-
-      // Stop the zoom service
-      if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
-        // Set magnification to 1 and disable zoom functionality
-        this.ngxImageZoom.setMagnification = 1;
-
-        // Update internal state
-        if (this.ngxImageZoom.zoomService.zoomingEnabled) {
-          // Simulate zoom end
-          this.ngxImageZoom.zoomService.zoomingEnabled = false;
-        }
-      }
-    } catch (e) {
-      console.error("Error disabling zoom:", e);
-    }
-  }
-
-  private _enableAllZooming(): void {
-    if (!this.ngxImageZoom || !this._zoomEventDisabled) {
-      return;
-    }
-
-    try {
-      // Reset the flag
-      this._zoomEventDisabled = false;
-
-      // Get the image element
-      const zoomContainer = this.ngxImageZoomEl?.nativeElement;
-      if (!zoomContainer) {
-        return;
-      }
-
-      const imgElement = zoomContainer.querySelector("img");
-      if (!imgElement) {
-        return;
-      }
-
-      // Remove capturing listeners and restore original ones
-      const events = ["wheel", "mousedown", "mouseup", "mousemove", "mouseover", "mouseout", "click"];
-
-      // Clone the image once outside the loop
-      const clonedImg = imgElement.cloneNode(true);
-      if (imgElement.parentNode) {
-        // Replace the element once to remove all event listeners
-        imgElement.parentNode.replaceChild(clonedImg, imgElement);
-      }
-
-      // Save the current zoom scroll value
-      const savedZoomScroll = this._previousZoomState?.zoomScroll;
-
-      // Re-initialize zoom
-      setTimeout(() => {
-        // Initialize zoom but skip resetting the zoom level, since we want to preserve it
-        this._initImageZoom(true);
-
-        // After initialization, restore the zoom indicator and actual zoom level to the previous value
-        if (savedZoomScroll !== undefined && savedZoomScroll !== 1) {
-          // Use a completely different approach: simulate mouse wheel events to set the zoom level
-
-          // First ensure zoomingEnabled is true so the wheel events will work
-          if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
-            // Activate zooming mode
-            this.ngxImageZoom.zoomService.zoomingEnabled = true;
-
-            // Find the center of the image for zooming
-            const zoomContainer = this.ngxImageZoomEl?.nativeElement;
-            if (zoomContainer) {
-              const imgElement = zoomContainer.querySelector(".ngxImageZoomThumbnail");
-              if (imgElement) {
-                const rect = imgElement.getBoundingClientRect();
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                // Simulate a zoomOn to ensure zooming is enabled
-                const fakeMouseEvent = new MouseEvent("mousemove", {
-                  clientX: rect.left + centerX,
-                  clientY: rect.top + centerY
-                });
-
-                // Activate zooming
-                this.ngxImageZoom.zoomService.zoomOn(fakeMouseEvent);
-
-                // The zoomOn method automatically sets zoomingEnabled to true in the service
-
-                // Number of steps needed to reach desired zoom level
-                const steps = 20;
-                const stepSize = (savedZoomScroll - 1) / steps;
-
-                // Simulate multiple small zoom steps to reach the desired level
-                for (let i = 0; i < steps; i++) {
-                  this.ngxImageZoom.zoomService.magnification = 1 + (stepSize * (i + 1));
-                  this.ngxImageZoom.zoomService.calculateRatio();
-                }
-
-                // Restore the saved position if available
-                if (this._previousZoomState.zoomPosition) {
-                  const pos = this._previousZoomState.zoomPosition;
-
-                  // Restore the internal mouse position to what it was before
-                  this.ngxImageZoom.zoomService["latestMouseLeft"] = pos.latestMouseLeft;
-                  this.ngxImageZoom.zoomService["latestMouseTop"] = pos.latestMouseTop;
-
-                  // Restore the actual image position
-                  this.ngxImageZoom.zoomService.fullImageLeft = pos.fullImageLeft;
-                  this.ngxImageZoom.zoomService.fullImageTop = pos.fullImageTop;
-
-                  // Notify the service that it should update the view
-                  this.ngxImageZoom.zoomService.markForCheck();
-                } else {
-                  // If no saved position, use the center
-                  this.ngxImageZoom.zoomService.calculateZoomPosition(fakeMouseEvent);
-                }
-
-                // Final update to ensure everything is in sync
-                this.setZoomScroll(savedZoomScroll);
-                this.showZoomIndicator = true;
-              }
-            }
-          }
-
-          // Force change detection to update the view immediately
-          this.changeDetectorRef.detectChanges();
-        }
-      }, 10);
-    } catch (e) {
-      console.error("Error enabling zoom:", e);
-    }
-  }
-
   /**
    * Calculate the coordinates at the current mouse position
    */
   private _calculateMouseCoordinates(event: MouseEvent): void {
     // Don't calculate coordinates when using lens mode
     if (this.enableLens && this.ngxImageZoom?.zoomService?.zoomingEnabled) {
-      this.mouseHoverRa = null;
-      this.mouseHoverDec = null;
-      this.mouseHoverGalacticRa = null;
-      this.mouseHoverGalacticDec = null;
+      this.mouseRa = null;
+      this.mouseDec = null;
+      this.mouseGalacticRa = null;
+      this.mouseGalacticDec = null;
       return;
     }
 
@@ -2061,25 +1896,25 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         );
 
         if (!result) {
-          this.mouseHoverRa = null;
-          this.mouseHoverDec = null;
-          this.mouseHoverGalacticRa = null;
-          this.mouseHoverGalacticDec = null;
+          this.mouseRa = null;
+          this.mouseDec = null;
+          this.mouseGalacticRa = null;
+          this.mouseGalacticDec = null;
           return;
         }
 
         // Set the formatted coordinates
-        this.mouseHoverRa = result.coordinates.raHtml;
-        this.mouseHoverDec = result.coordinates.decHtml;
-        this.mouseHoverGalacticRa = result.coordinates.galacticRaHtml;
-        this.mouseHoverGalacticDec = result.coordinates.galacticDecHtml;
+        this.mouseRa = result.coordinates.raHtml;
+        this.mouseDec = result.coordinates.decHtml;
+        this.mouseGalacticRa = result.coordinates.galacticRaHtml;
+        this.mouseGalacticDec = result.coordinates.galacticDecHtml;
 
         this.changeDetectorRef.markForCheck();
       } catch (error) {
-        this.mouseHoverRa = null;
-        this.mouseHoverDec = null;
-        this.mouseHoverGalacticRa = null;
-        this.mouseHoverGalacticDec = null;
+        this.mouseRa = null;
+        this.mouseDec = null;
+        this.mouseGalacticRa = null;
+        this.mouseGalacticDec = null;
       }
     }
   }
@@ -2207,12 +2042,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
-    // Store current zoom position
-    this._frozenZoomPosition = {
-      x: this.ngxImageZoom.zoomService.lensLeft,
-      y: this.ngxImageZoom.zoomService.lensTop
-    };
-
     // Store the original handlers
     this._originalOnMouseMove = (this.ngxImageZoom as any).zoomInstance.onMouseMove;
     this._originalOnMouseWheel = (this.ngxImageZoom as any).zoomInstance.onMouseWheel;
@@ -2252,9 +2081,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   // Restore original event handlers
   private _registerZoomEvents(): void {
     this._restoreOriginalEventHandlers();
-
-    // Clear saved zoom position
-    this._frozenZoomPosition = null;
   }
 
   /**
