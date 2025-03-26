@@ -472,7 +472,8 @@
 
     <!-- Previous lines -->
     <svg class="measure-line-container"
-         [attr.width]="windowRef.nativeWindow.innerWidth" [attr.height]="windowRef.nativeWindow.innerHeight">
+         [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0" 
+         [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
       <!-- Previous measurements -->
       <g *ngFor="let measurement of previousMeasurements; let i = index">
         <line

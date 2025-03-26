@@ -99,6 +99,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   show: boolean = false;
 
   protected readonly Math = Math;
+  
+  // Flag to easily check if we're running in a browser environment
+  protected readonly isBrowser: boolean;
 
   // We initialize this to a default value, but it will be updated with minZoomRatio in _initImageZoom
   protected zoomScroll = 0;
@@ -226,6 +229,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Use a small threshold for floating point comparison with the minimum ratio
     return Math.abs(this.zoomScroll - minRatio) <= 0.01;
   }
+  
+  /**
+   * Safely remove tooltips when we need to clear UI elements
+   * This handles SSR by checking if we're in a browser environment
+   */
+  private _clearTooltips(): void {
+    if (this.isBrowser) {
+      document.querySelectorAll(".tooltip").forEach(tooltip => {
+        tooltip.remove();
+      });
+    }
+  }
   private _canvasContext: CanvasRenderingContext2D;
   private _canvasContainerDimensions: { width: number; height: number; centerX: number; centerY: number };
   private _canvasImageDimensions: { width: number; height: number };
@@ -289,6 +304,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly coordinatesFormatter: CoordinatesFormatterService
   ) {
     super(store$);
+    
+    // Initialize the browser flag
+    this.isBrowser = isPlatformBrowser(platformId);
 
     this.isHybridPC = this.deviceService.isHybridPC();
     this.isTouchDevice = this.deviceService.isTouchEnabled();
@@ -362,6 +380,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("document:click", ["$event"])
   onDocumentClick(event: MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     // If the kebab menu is open and the click is outside the menu, close it
     if (this.showKebabMenu) {
       const kebabContainer = (event.target as HTMLElement).closest(".kebab-menu-container");
@@ -374,6 +396,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("window:resize", ["$event"])
   onResize(event) {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     this._setZoomLensSize();
     this._updateCanvasDimensions();
     this._drawCanvas();
@@ -499,7 +525,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     super.ngOnDestroy();
 
     // Remove any measuring mousemove listener if it exists
-    if (isPlatformBrowser(this.platformId) && this.isMeasuringMode) {
+    if (this.isBrowser && this.isMeasuringMode) {
       document.removeEventListener('mousemove', this._onMeasuringMouseMove);
     }
     
@@ -597,6 +623,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("window:keyup.escape", ["$event"])
   hide(event: Event): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     // Always prevent default and stop propagation to avoid browser's ESC behavior
     if (event) {
       event.preventDefault();
@@ -632,6 +662,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("window:keyup.z", ["$event"])
   toggleZoomLensMode(event: KeyboardEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     // Don't interfere with input fields
     if (
       event.target instanceof HTMLInputElement ||
@@ -652,6 +686,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("window:keyup.c", ["$event"])
   toggleCoordinatesShortcut(event: KeyboardEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     // Don't interfere with input fields
     if (
       event.target instanceof HTMLInputElement ||
@@ -672,6 +710,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("window:keyup.d", ["$event"])
   toggleMeasuringModeShortcut(event: KeyboardEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     // Don't interfere with input fields
     if (
       event.target instanceof HTMLInputElement ||
@@ -734,6 +776,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   @HostListener("window:keyup.f", ["$event"])
   toggleZoomFreeze(event: KeyboardEvent | MouseEvent): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     // Don't interfere with input fields
     if (event instanceof KeyboardEvent) {
       if (
@@ -996,10 +1042,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       event.preventDefault();
       event.stopPropagation();
 
-      // Hide any tooltips by removing them from DOM before toggling
-      document.querySelectorAll(".tooltip").forEach(tooltip => {
-        tooltip.remove();
-      });
+      // Hide any tooltips before toggling
+      this._clearTooltips();
     }
 
     const wasInLensMode = this.enableLens;
@@ -1061,15 +1105,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     event.preventDefault();
     event.stopPropagation();
 
-    // Hide any tooltips by removing them from DOM before toggling
-    document.querySelectorAll(".tooltip").forEach(tooltip => {
-      tooltip.remove();
-    });
+    // Hide any tooltips before toggling
+    this._clearTooltips();
 
     this.showKebabMenu = !this.showKebabMenu;
 
     // If opening the menu, add a click event listener to close it when clicking outside
-    if (this.showKebabMenu) {
+    if (this.showKebabMenu && this.isBrowser) {
       setTimeout(() => {
         const closeMenuHandler = (e: MouseEvent) => {
           // Check if the click was outside the menu
@@ -1091,10 +1133,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected toggleCoordinates(): void {
-    // Hide any tooltips by removing them from DOM before toggling
-    document.querySelectorAll(".tooltip").forEach(tooltip => {
-      tooltip.remove();
-    });
+    // Hide any tooltips before toggling
+    this._clearTooltips();
 
     // If in lens mode, show notification and don't toggle
     if (this.enableLens && this.zoomingEnabled) {
@@ -1130,10 +1170,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     event.preventDefault();
     event.stopPropagation();
 
-    // Hide any tooltips by removing them from DOM before toggling
-    document.querySelectorAll(".tooltip").forEach(tooltip => {
-      tooltip.remove();
-    });
+    // Hide any tooltips before toggling
+    this._clearTooltips();
 
     // Don't allow measuring in lens mode
     if (this.enableLens && this.zoomingEnabled) {
@@ -1167,12 +1205,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.mouseY = null;
       
       // If we added a global mousemove listener, remove it
-      if (isPlatformBrowser(this.platformId)) {
+      if (this.isBrowser) {
         document.removeEventListener('mousemove', this._onMeasuringMouseMove);
       }
     } else {
       // When entering measuring mode, add a global mousemove listener to track mouse position for the measurement line
-      if (isPlatformBrowser(this.platformId)) {
+      if (this.isBrowser) {
         document.addEventListener('mousemove', this._onMeasuringMouseMove);
       }
     }
@@ -1570,10 +1608,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected setTouchMouseMode(touch: boolean): void {
-    // Hide any tooltips by removing them from DOM before toggling
-    document.querySelectorAll(".tooltip").forEach(tooltip => {
-      tooltip.remove();
-    });
+    // Hide any tooltips before toggling
+    this._clearTooltips();
 
     // Never allow touch mode for GIFs
     if (this.isGif && touch) {
