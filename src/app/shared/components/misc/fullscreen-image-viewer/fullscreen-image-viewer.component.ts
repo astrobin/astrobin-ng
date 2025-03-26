@@ -189,25 +189,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected image: ImageInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
 
-  private _previousZoomState: {
-    enableLens: boolean;
-    zoomFrozen: boolean;
-    zoomScroll: number;
-    zoomPosition?: {
-      latestMouseLeft: number;
-      latestMouseTop: number;
-      fullImageLeft: number;
-      fullImageTop: number;
-    }
-  } = null;
-
   // Track the "Activate zoom first" notification
   private _zoomActivationNotification: ActiveToast<any> | null = null;
 
   // Track the "Measuring tool only available at default zoom" notification
   private _measureZoomNotification: ActiveToast<any> | null = null;
-  private _originalZoomEventHandlers: { [key: string]: EventListener } = {};
-  private _zoomEventDisabled: boolean = false;
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
