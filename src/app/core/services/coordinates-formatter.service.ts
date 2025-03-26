@@ -11,7 +11,8 @@ interface FormattedCoordinates {
   providedIn: "root"
 })
 export class CoordinatesFormatterService {
-  constructor() {}
+  constructor() {
+  }
 
   /**
    * Calculate mouse coordinates from a mouse event and interpolation matrix
@@ -50,7 +51,7 @@ export class CoordinatesFormatterService {
     if (options?.useClientCoords) {
       // Get image position in the document
       const rect = imageElement.getBoundingClientRect();
-      
+
       // Check if mouse is within bounds
       if (
         event.clientX < rect.left ||
@@ -60,7 +61,7 @@ export class CoordinatesFormatterService {
       ) {
         return null;
       }
-      
+
       // Use client coordinates relative to element bounds
       relativeX = event.clientX - rect.left;
       relativeY = event.clientY - rect.top;
@@ -71,19 +72,19 @@ export class CoordinatesFormatterService {
     }
 
     // Get image dimensions
-    const imageRenderedWidth = options?.useClientCoords 
-      ? imageElement.getBoundingClientRect().width 
+    const imageRenderedWidth = options?.useClientCoords
+      ? imageElement.getBoundingClientRect().width
       : imageElement.clientWidth;
-      
-    const imageNaturalWidth = options?.naturalWidth || 
+
+    const imageNaturalWidth = options?.naturalWidth ||
       ((imageElement as HTMLImageElement).naturalWidth) || 1824;
-    
+
     // HD_WIDTH is a fixed reference width that the plate-solving matrix is based on
     const HD_WIDTH = 1824;
-    
+
     // Calculate x/y in HD space for coordinate interpolation
     let scaledX, scaledY;
-    
+
     if (options?.useClientCoords) {
       // For fullscreen view: scaled coordinates based on rendered/HD ratio
       scaledX = relativeX / imageRenderedWidth * HD_WIDTH;
@@ -94,7 +95,7 @@ export class CoordinatesFormatterService {
       scaledX = relativeX / scale;
       scaledY = relativeY / scale;
     }
-    
+
     // Parse matrix data
     const raMatrix = interpolationMatrix.raMatrix.split(",").map(Number);
     const decMatrix = interpolationMatrix.decMatrix.split(",").map(Number);
@@ -102,10 +103,10 @@ export class CoordinatesFormatterService {
     const delta = interpolationMatrix.matrixDelta;
 
     // Set appropriate scale for the interpolation
-    const interpolationScale = options?.useClientCoords 
+    const interpolationScale = options?.useClientCoords
       ? undefined   // Not needed for fullscreen, handled by scaledX/Y
       : imageRenderedWidth / Math.min(imageNaturalWidth, HD_WIDTH);
-    
+
     // @ts-ignore - CoordinateInterpolation is defined globally in assets/js/CoordinateInterpolation.js
     const interpolation = new CoordinateInterpolation(
       raMatrix,
@@ -157,13 +158,13 @@ export class CoordinatesFormatterService {
     decSign: string = ""
   ): { raHtml: string, decHtml: string } {
     // Ensure proper padding
-    const paddedRaHours = raHours.toString().padStart(2, '0');
-    const paddedRaMinutes = raMinutes.toString().padStart(2, '0');
-    const paddedRaSeconds = raSeconds.toString().padStart(2, '0');
+    const paddedRaHours = raHours.toString().padStart(2, "0");
+    const paddedRaMinutes = raMinutes.toString().padStart(2, "0");
+    const paddedRaSeconds = raSeconds.toString().padStart(2, "0");
 
-    const paddedDecDegrees = decDegrees.toString().padStart(2, '0');
-    const paddedDecMinutes = decMinutes.toString().padStart(2, '0');
-    const paddedDecSeconds = decSeconds.toString().padStart(2, '0');
+    const paddedDecDegrees = decDegrees.toString().padStart(2, "0");
+    const paddedDecMinutes = decMinutes.toString().padStart(2, "0");
+    const paddedDecSeconds = decSeconds.toString().padStart(2, "0");
 
     const raHtml = `
       <span class="symbol">α</span>:
@@ -202,13 +203,13 @@ export class CoordinatesFormatterService {
     bSign: string = ""
   ): { galacticRaHtml: string, galacticDecHtml: string } {
     // Ensure proper padding
-    const paddedLDegrees = lDegrees.toString().padStart(3, '0');
-    const paddedLMinutes = lMinutes.toString().padStart(2, '0');
-    const paddedLSeconds = lSeconds.toString().padStart(2, '0');
+    const paddedLDegrees = lDegrees.toString().padStart(3, "0");
+    const paddedLMinutes = lMinutes.toString().padStart(2, "0");
+    const paddedLSeconds = lSeconds.toString().padStart(2, "0");
 
-    const paddedBDegrees = bDegrees.toString().padStart(2, '0');
-    const paddedBMinutes = bMinutes.toString().padStart(2, '0');
-    const paddedBSeconds = bSeconds.toString().padStart(2, '0');
+    const paddedBDegrees = bDegrees.toString().padStart(2, "0");
+    const paddedBMinutes = bMinutes.toString().padStart(2, "0");
+    const paddedBSeconds = bSeconds.toString().padStart(2, "0");
 
     const galacticRaHtml = `
       <span class="symbol">l</span>:
@@ -252,19 +253,19 @@ export class CoordinatesFormatterService {
       decValues[0],
       decValues[1],
       decValues[2],
-      decIsPositive ? '' : '-'
+      decIsPositive ? "" : "-"
     );
 
     // Format galactic coordinates if requested
-    let galacticRaHtml = '';
-    let galacticDecHtml = '';
+    let galacticRaHtml = "";
+    let galacticDecHtml = "";
 
     if (includeGalactic && galacticLValues && galacticBValues) {
       // Galactic coordinates are already calculated by CoordinateInterpolation
-      const bIsPositive = !galacticBValues[0].startsWith('-');
+      const bIsPositive = !galacticBValues[0].startsWith("-");
       // Remove any existing sign character from the degree value
       let bDeg = galacticBValues[0];
-      if (bDeg.startsWith('+') || bDeg.startsWith('-')) {
+      if (bDeg.startsWith("+") || bDeg.startsWith("-")) {
         bDeg = bDeg.substring(1);
       }
 
@@ -275,7 +276,7 @@ export class CoordinatesFormatterService {
         bDeg,
         galacticBValues[1],
         galacticBValues[2],
-        bIsPositive ? '+' : '-'
+        bIsPositive ? "+" : "-"
       );
 
       galacticRaHtml = galacticCoords.galacticRaHtml;
@@ -300,11 +301,11 @@ export class CoordinatesFormatterService {
     const dec = interpolationText.delta.trim().split(" ").map(x => x.padStart(2, "0"));
     const galacticL = interpolationText.l.trim().split(" ").map(x => x.padStart(2, "0"));
     const galacticB = interpolationText.b.trim().split(" ").map(x => x.padStart(2, "0"));
-    
+
     return this.formatFromInterpolationText(
-      ra, 
-      dec, 
-      true, 
+      ra,
+      dec,
+      true,
       true,
       galacticL,
       galacticB
