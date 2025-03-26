@@ -30,6 +30,7 @@ import { TitleService } from "@core/services/title/title.service";
 import { fadeInOut } from "@shared/animations";
 import { SwipeDownService } from "@core/services/swipe-down.service";
 import { PopNotificationsService } from "@core/services/pop-notifications.service";
+import { ActiveToast } from "ngx-toastr";
 import { SolutionApiService } from "@core/services/api/classic/platesolving/solution/solution-api.service";
 import { CoordinatesFormatterService } from "@core/services/coordinates-formatter.service";
 import { SolutionStatus } from "@core/interfaces/solution.interface";
@@ -125,6 +126,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected canvasLoading = false;
   protected isGif = false;
   protected zoomFrozen = false;
+  // Store notification toast reference to clear specific notification
+  private _zoomActivationToast: ActiveToast<any> = null;
   protected mouseHoverRa: string;
   protected mouseHoverDec: string;
   protected mouseHoverGalacticRa: string;
@@ -611,7 +614,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.toggleCoordinates();
   }
 
-  @HostListener("window:keyup.m", ["$event"])
+  @HostListener("window:keyup.d", ["$event"])
   toggleMeasuringModeShortcut(event: KeyboardEvent): void {
     // Don't interfere with input fields
     if (
@@ -661,7 +664,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.translateService.instant("Zoom freezing is not available for very large images.")
         );
       } else if (!this.zoomingEnabled) {
-        this.popNotificationsService.info(
+        // Store the toast reference so we can clear this specific notification when zoom is activated
+        this._zoomActivationToast = this.popNotificationsService.info(
           this.translateService.instant("Activate zoom first before freezing (click or scroll on image).")
         );
       }
@@ -722,6 +726,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // If we're not zoomed yet, activate zoom at event position
         this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
         this.ngxImageZoom.zoomService.zoomOn(event);
+
+        // Clear specific "Activate zoom first" notification if it exists
+        if (this._zoomActivationToast) {
+          this.popNotificationsService.clear(this._zoomActivationToast.toastId);
+          this._zoomActivationToast = null;
+        }
+
         this.changeDetectorRef.markForCheck();
         return;
       }
@@ -1038,11 +1049,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         zoomScroll: this.zoomScroll
       };
 
-      // Disable active zooming but keep the current zoom level
-      if (this.zoomingEnabled) {
-        // Don't call snapTo1x() as we want to preserve the current zoom level
-      }
-
       // Disable lens mode
       if (this.enableLens) {
         this.enableLens = false;
@@ -1102,7 +1108,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Try the full container image first, but fallback to container image if full container is not visible
     let imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
-    
+
     // If the full container image has display:none or no dimensions, fallback to the container image
     if (imageElement) {
       const rect = imageElement.getBoundingClientRect();
@@ -1114,7 +1120,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Full container image not found, try container image
       imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
     }
-    
+
     if (!imageElement) {
       return;
     }
@@ -1218,21 +1224,21 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // Check if the line is nearly horizontal or vertical
         const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
         const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI/2) < Math.PI/12;
-        
+
         // Calculate extended positions for labels with extra distance for near-horizontal lines
         const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
-        
+
         // Start label - opposite direction of the line
         const startExtX = this.measureStartPoint.x - (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
         const startExtY = this.measureStartPoint.y - (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
-        
+
         // End label - along the direction of the line
         const endExtX = this.measureEndPoint.x + (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
         const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
-        
+
         // Calculate final label positions
         let startLabelX, endLabelX;
-        
+
         if (isNearVertical) {
           // For near-vertical lines, center align both labels
           startLabelX = startExtX;
@@ -1250,7 +1256,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           startLabelX = startExtX - (labelWidth / 2);
           endLabelX = endExtX - (labelWidth / 2);
         }
-        
+
         // Vertical position (centered)
         const startLabelY = startExtY - (labelHeight / 2);
         const endLabelY = endExtY - (labelHeight / 2);
@@ -1329,13 +1335,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Check if the line is nearly horizontal or vertical
     const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
     const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI/2) < Math.PI/12;
-    
+
     // Start label - opposite direction of the line with extra distance for near-horizontal lines
     const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
     // For vertical lines, add horizontal offset to center labels
     const verticalOffset = isNearVertical ? labelWidth / 2 : 0;
     const startExtX = this.measureStartPoint.x - (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad) - verticalOffset;
-    
+
     // Add the necessary offset based on text anchor positioning
     if (isNearVertical) {
       // For near-vertical lines, use middle alignment with increased distance
@@ -1393,13 +1399,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Check if the line is nearly horizontal or vertical
     const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
     const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI/2) < Math.PI/12;
-    
+
     // End label - along the direction of the line with extra distance for near-horizontal lines
     const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
     // For vertical lines, add horizontal offset to center labels
     const verticalOffset = isNearVertical ? labelWidth / 2 : 0;
     const endExtX = this.measureEndPoint.x + (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad) - verticalOffset;
-    
+
     // Add the necessary offset based on text anchor positioning
     if (isNearVertical) {
       // For near-vertical lines, use middle alignment
@@ -1882,7 +1888,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Similar coordinate calculation as in _calculateMouseCoordinates but returns raw values
       // Try the full container image first, but fallback to container image if full container is not visible
       let imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
-      
+
       // If the full container image has display:none or no dimensions, fallback to the container image
       if (imageElement) {
         const rect = imageElement.getBoundingClientRect();
@@ -1894,7 +1900,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // Full container image not found, try container image
         imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
       }
-      
+
       if (!imageElement || !this.advancedSolutionMatrix) {
         return null;
       }
@@ -2271,6 +2277,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
         this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
         this.ngxImageZoom.zoomService.zoomOn(event);
+        // Clear specific "Activate zoom first" notification if it exists
+        if (this._zoomActivationToast) {
+          this.popNotificationsService.clear(this._zoomActivationToast.toastId);
+          this._zoomActivationToast = null;
+        }
         this.changeDetectorRef.markForCheck();
       }, { once: true });
 
@@ -2284,12 +2295,22 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             this.ngxImageZoom.zoomService.zoomOff();
           } else {
             this.ngxImageZoom.zoomService.zoomOn(event);
+            // Clear specific "Activate zoom first" notification if it exists
+            if (this._zoomActivationToast) {
+              this.popNotificationsService.clear(this._zoomActivationToast.toastId);
+              this._zoomActivationToast = null;
+            }
           }
         } else {
           if (this.zoomingEnabled) {
             this.hide(null);
           } else {
             this.ngxImageZoom.zoomService.zoomOn(event);
+            // Clear specific "Activate zoom first" notification if it exists
+            if (this._zoomActivationToast) {
+              this.popNotificationsService.clear(this._zoomActivationToast.toastId);
+              this._zoomActivationToast = null;
+            }
           }
         }
       };

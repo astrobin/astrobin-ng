@@ -359,7 +359,7 @@
           class="kebab-menu-item"
           (click)="showShortcutsDialog($event)"
         >
-          <fa-icon icon="info-circle"></fa-icon>
+          <fa-icon icon="keyboard"></fa-icon>
           <span>{{ "Keyboard shortcuts" | translate }}</span>
         </div>
 
@@ -643,7 +643,7 @@
     <ul class="shortcuts-list">
       <li><kbd>Z</kbd> <span>{{ 'Toggle Lens/Zoom mode' | translate }}</span></li>
       <li *ngIf="hasAdvancedSolution"><kbd>C</kbd> <span>{{ 'Toggle coordinates display' | translate }}</span></li>
-      <li><kbd>M</kbd> <span>{{ 'Toggle measuring tool' | translate }}</span></li>
+      <li><kbd>D</kbd> <span>{{ 'Toggle distance measuring tool' | translate }}</span></li>
       <li><kbd>F</kbd> <span>{{ 'Freeze/unfreeze zoom position' | translate }}</span></li>
       <li><kbd>ESC</kbd> <span>{{ 'Exit current mode or close image' | translate }}</span></li>
     </ul>
