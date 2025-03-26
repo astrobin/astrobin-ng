@@ -415,7 +415,7 @@ $header-height: 63px;
     z-index: 1050;
     pointer-events: all;
     min-width: 240px;
-    max-width: 300px;
+    max-width: 400px;
 
     .shortcuts-header {
       display: flex;
@@ -518,7 +518,7 @@ $header-height: 63px;
         left: 50%;
         transform: translate(-50%, -50%);
       }
-      
+
       .marker-coordinates {
         position: absolute;
         // No longer using transform-based centering since we're positioning based on angle
@@ -537,23 +537,23 @@ $header-height: 63px;
         transition: opacity 0.2s ease;
         border: 1px solid rgba(255, 255, 255, 0.2); // Subtle border for better visibility
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); // Add shadow for better separation from background
-        
+
         // Top position - for start point
         &.top-position {
           top: -24px; // Place above the marker
           left: 10px;
         }
-        
+
         // Bottom position - for end point
         &.bottom-position {
           top: 15px; // Place below the marker
           left: 10px;
         }
-        
+
         &.visible {
           opacity: 1; // Show when has coordinates
         }
-        
+
         &.marker-debug {
           background-color: rgba(255, 0, 0, 0.7);
         }
@@ -739,7 +739,7 @@ $header-height: 63px;
   &.disable-zoom {
     touch-action: none;
   }
-  
+
   &.measuring-mode {
     cursor: crosshair !important;
   }
@@ -827,6 +827,6 @@ $header-height: 63px;
   overflow: hidden;
   text-overflow: ellipsis;
   z-index: 9;
-  
+
   /* Position is managed by our label positioning functions in the component */
 }

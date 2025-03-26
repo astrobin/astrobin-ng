@@ -100,7 +100,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   protected readonly Math = Math;
 
-  protected zoomScroll = 1;
+  // We initialize this to a default value, but it will be updated with minZoomRatio in _initImageZoom
+  protected zoomScroll = 0;
   protected touchMode?: boolean = undefined;
   protected enableLens = true;
   protected zoomLensSize: number;
@@ -184,10 +185,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected isMouseOverUIElement: boolean = false;
   protected image: ImageInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
-  private _previousZoomState: { enableLens: boolean; zoomFrozen: boolean; zoomScroll: number } = null;
+  private _previousZoomState: { 
+    enableLens: boolean; 
+    zoomFrozen: boolean; 
+    zoomScroll: number;
+    zoomPosition?: { 
+      latestMouseLeft: number; 
+      latestMouseTop: number;
+      fullImageLeft: number;
+      fullImageTop: number;
+    }
+  } = null;
   
   // Track the "Activate zoom first" notification
   private _zoomActivationNotification: ActiveToast<any> | null = null;
+  
+  // Track the "Measuring tool only available at default zoom" notification
+  private _measureZoomNotification: ActiveToast<any> | null = null;
   private _originalZoomEventHandlers: { [key: string]: EventListener } = {};
   private _zoomEventDisabled: boolean = false;
   private _lastTransform: string = null;
@@ -196,6 +210,22 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   
   // Bound handler for the measuring mousemove event
   private _onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
+  
+  /**
+   * Check if the current zoom level is at the default (fit to window) level
+   */
+  private _isAtDefaultZoom(): boolean {
+    if (!this.ngxImageZoom || !this.ngxImageZoom.zoomService) {
+      // If zoom service is not available, we can't determine the default zoom
+      return false;
+    }
+    
+    // Get the minimum zoom ratio (fit to window)
+    const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
+    
+    // Use a small threshold for floating point comparison with the minimum ratio
+    return Math.abs(this.zoomScroll - minRatio) <= 0.01;
+  }
   private _canvasContext: CanvasRenderingContext2D;
   private _canvasContainerDimensions: { width: number; height: number; centerX: number; centerY: number };
   private _canvasImageDimensions: { width: number; height: number };
@@ -472,6 +502,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (isPlatformBrowser(this.platformId) && this.isMeasuringMode) {
       document.removeEventListener('mousemove', this._onMeasuringMouseMove);
     }
+    
+    // Clear any measuring zoom notification
+    if (this._measureZoomNotification) {
+      this.popNotificationsService.clear(this._measureZoomNotification.toastId);
+      this._measureZoomNotification = null;
+    }
 
     // Restore original event handlers if needed
     this._restoreOriginalEventHandlers();
@@ -533,8 +569,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   setZoomScroll(scroll: number) {
+    // If the zoom is changing, clear any "measuring tool only available at default zoom" notifications
+    if (Math.abs(this.zoomScroll - scroll) > 0.001 && this._measureZoomNotification) {
+      this.popNotificationsService.clear(this._measureZoomNotification.toastId);
+      this._measureZoomNotification = null;
+    }
+    
     this.zoomScroll = scroll;
-    this.showZoomIndicator = this.zoomingEnabled;
+    
+    // Show zoom indicator when zooming is enabled or when we're not at the default zoom level
+    const isAtDefaultZoom = this._isAtDefaultZoom();
+    this.showZoomIndicator = this.zoomingEnabled || !isAtDefaultZoom;
+    
     this._setZoomIndicatorTimeout();
   }
 
@@ -639,9 +685,51 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.show || this.isGif) {
       return;
     }
+    
+    // Don't allow measuring when zoomed in - only at default zoom level (fit to window)
+    if (!this.isMeasuringMode && !this._isAtDefaultZoom()) {
+      // Store the notification reference so we can clear it when zoom changes
+      this._measureZoomNotification = this.popNotificationsService.warning(
+        this.translateService.instant("Measuring is only available at the default zoom level (fit to window).")
+      );
+      return;
+    }
 
     // Toggle measuring mode using existing method
     this.toggleMeasuringMode(event as unknown as MouseEvent);
+  }
+
+  // Reset to default zoom level (fit to window)
+  resetToDefaultZoom(): void {
+    // Reset zoom to default level (fit to window)
+    if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
+      // Set magnification to the minimum ratio (fit to window)
+      const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
+      this.ngxImageZoom.zoomService.magnification = minRatio;
+      
+      // Clear any measuring zoom notifications immediately
+      if (this._measureZoomNotification) {
+        this.popNotificationsService.clear(this._measureZoomNotification.toastId);
+        this._measureZoomNotification = null;
+      }
+      
+      // Update the UI to show the current zoom level
+      this.setZoomScroll(minRatio);
+      
+      // Trigger a zoom update if needed
+      if (this.ngxImageZoom.zoomService.zoomingEnabled) {
+        // Create a center-based mouse event to update zoom position
+        const container = this.ngxImageZoomEl.nativeElement;
+        if (container) {
+          const rect = container.getBoundingClientRect();
+          const fakeEvent = {
+            offsetX: rect.width / 2,
+            offsetY: rect.height / 2
+          } as MouseEvent;
+          this.ngxImageZoom.zoomService.calculateZoomPosition(fakeEvent);
+        }
+      }
+    }
   }
 
   @HostListener("window:keyup.f", ["$event"])
@@ -1054,6 +1142,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       );
       return;
     }
+    
+    // Don't allow measuring when zoomed in - only at default zoom level (fit to window)
+    if (!this._isAtDefaultZoom()) {
+      // Store the notification reference so we can clear it when zoom changes
+      this._measureZoomNotification = this.popNotificationsService.warning(
+        this.translateService.instant("Measuring is only available at the default zoom level (fit to window).")
+      );
+      return;
+    }
 
     // Clear any existing measurements
     this.resetMeasurement();
@@ -1068,63 +1165,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Ensure we reset the mouse position tracking for the measuring line
       this.mouseX = null;
       this.mouseY = null;
-    }
-
-    // Disable zooming functions during measuring mode
-    if (this.isMeasuringMode) {
-      // Store current zoom state
-      this._previousZoomState = {
-        enableLens: this.enableLens,
-        zoomFrozen: this.zoomFrozen,
-        zoomScroll: this.zoomScroll
-      };
-
-      // Disable lens mode
-      if (this.enableLens) {
-        this.enableLens = false;
-      }
-
-      // Disable zoom completely by removing event listeners
-      if (this.ngxImageZoom) {
-        this._disableAllZooming();
-      }
       
-      // Add a global mousemove listener to track mouse position for the measurement line
-      if (isPlatformBrowser(this.platformId)) {
-        document.addEventListener('mousemove', this._onMeasuringMouseMove);
-      }
-    } else {
-      // Remove the global mousemove listener when exiting measuring mode
+      // If we added a global mousemove listener, remove it
       if (isPlatformBrowser(this.platformId)) {
         document.removeEventListener('mousemove', this._onMeasuringMouseMove);
       }
-      
-      // Restore previous zoom state if we had one
-      if (this._previousZoomState) {
-        // First store the values we need to restore
-        const storedZoomScroll = this._previousZoomState.zoomScroll;
-        const wasLensEnabled = this._previousZoomState.enableLens;
-        const wasZoomFrozen = this._previousZoomState.zoomFrozen;
-        
-        // Re-enable zoom event listeners - this will reinitialize the zoom component
-        this._enableAllZooming();
-        
-        // The _enableAllZooming method already handles restoring the zoom level,
-        // but we should also restore these other states
-        
-        // Restore lens mode if previously enabled
-        this.enableLens = wasLensEnabled;
-        
-        // Restore frozen state if previously frozen
-        if (wasZoomFrozen) {
-          this.toggleZoomFreeze(null);
-        }
-        
-        // Clear the previous zoom state after it's been fully applied
-        this._previousZoomState = null;
-        
-        // Force change detection to reflect all changes at once
-        this.changeDetectorRef.detectChanges();
+    } else {
+      // When entering measuring mode, add a global mousemove listener to track mouse position for the measurement line
+      if (isPlatformBrowser(this.platformId)) {
+        document.addEventListener('mousemove', this._onMeasuringMouseMove);
       }
     }
 
@@ -1847,15 +1896,73 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       // Re-initialize zoom
       setTimeout(() => {
-        this._initImageZoom();
+        // Initialize zoom but skip resetting the zoom level, since we want to preserve it
+        this._initImageZoom(true);
         
-        // After initialization, restore the zoom indicator to the previous value
-        if (savedZoomScroll !== undefined) {
-          // Ensure we're using the component's setZoomScroll method to properly update all UI
-          this.setZoomScroll(savedZoomScroll);
+        // After initialization, restore the zoom indicator and actual zoom level to the previous value
+        if (savedZoomScroll !== undefined && savedZoomScroll !== 1) {
+          // Use a completely different approach: simulate mouse wheel events to set the zoom level
           
-          // Make sure the zoom indicator is visible
-          this.showZoomIndicator = true;
+          // First ensure zoomingEnabled is true so the wheel events will work
+          if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
+            // Activate zooming mode
+            this.ngxImageZoom.zoomService.zoomingEnabled = true;
+            
+            // Find the center of the image for zooming
+            const zoomContainer = this.ngxImageZoomEl?.nativeElement;
+            if (zoomContainer) {
+              const imgElement = zoomContainer.querySelector(".ngxImageZoomThumbnail");
+              if (imgElement) {
+                const rect = imgElement.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Simulate a zoomOn to ensure zooming is enabled
+                const fakeMouseEvent = new MouseEvent('mousemove', {
+                  clientX: rect.left + centerX,
+                  clientY: rect.top + centerY
+                });
+                
+                // Activate zooming
+                this.ngxImageZoom.zoomService.zoomOn(fakeMouseEvent);
+                
+                // The zoomOn method automatically sets zoomingEnabled to true in the service
+                
+                // Number of steps needed to reach desired zoom level
+                const steps = 20;
+                const stepSize = (savedZoomScroll - 1) / steps;
+                
+                // Simulate multiple small zoom steps to reach the desired level
+                for (let i = 0; i < steps; i++) {
+                  this.ngxImageZoom.zoomService.magnification = 1 + (stepSize * (i + 1));
+                  this.ngxImageZoom.zoomService.calculateRatio();
+                }
+                
+                // Restore the saved position if available
+                if (this._previousZoomState.zoomPosition) {
+                  const pos = this._previousZoomState.zoomPosition;
+                  
+                  // Restore the internal mouse position to what it was before
+                  this.ngxImageZoom.zoomService['latestMouseLeft'] = pos.latestMouseLeft;
+                  this.ngxImageZoom.zoomService['latestMouseTop'] = pos.latestMouseTop;
+                  
+                  // Restore the actual image position
+                  this.ngxImageZoom.zoomService.fullImageLeft = pos.fullImageLeft;
+                  this.ngxImageZoom.zoomService.fullImageTop = pos.fullImageTop;
+                  
+                  // Notify the service that it should update the view
+                  this.ngxImageZoom.zoomService.markForCheck();
+                } else {
+                  // If no saved position, use the center
+                  this.ngxImageZoom.zoomService.calculateZoomPosition(fakeMouseEvent);
+                }
+                
+                // Final update to ensure everything is in sync
+                this.setZoomScroll(savedZoomScroll);
+                this.showZoomIndicator = true;
+              }
+            }
+          }
           
           // Force change detection to update the view immediately
           this.changeDetectorRef.detectChanges();
@@ -2124,8 +2231,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * This prevents race conditions between multiple components trying to load the same matrix
    */
   private _ensureSolutionMatrixLoaded(solutionId: number): void {
-    // If matrix is already loaded in component, we're done
-    if (this.advancedSolutionMatrix) {
+    // Check if matrix is already loaded in component with valid properties
+    if (this.advancedSolutionMatrix && 
+        this.advancedSolutionMatrix.raMatrix && 
+        this.advancedSolutionMatrix.decMatrix && 
+        this.advancedSolutionMatrix.matrixRect && 
+        this.advancedSolutionMatrix.matrixDelta !== undefined) {
       return;
     }
 
@@ -2253,7 +2364,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return syntheticEvent;
   }
 
-  private _initImageZoom() {
+  private _initImageZoom(skipZoomReset: boolean = false) {
     if (this.ngxImageZoom) {
       const renderedThumbnailHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").height;
       const thumbnailNaturalHeight = this.ngxImageZoomEl.nativeElement.querySelector(".ngxImageZoomThumbnail").naturalHeight;
@@ -2263,9 +2374,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.ngxImageZoom.zoomService.thumbWidth = renderedThumbnailWidth;
       this.ngxImageZoom.zoomService.thumbHeight = renderedThumbnailHeight;
       this.ngxImageZoom.zoomService.minZoomRatio = renderedThumbnailWidth / this.naturalWidth;
-      this.ngxImageZoom.zoomService.magnification = 1;
-
-      this.setZoomScroll(1);
+      
+      // Only reset the magnification and zoom scroll if not explicitly skipping this step
+      // This helps when restoring from measuring mode where we want to maintain the previous zoom level
+      if (!skipZoomReset) {
+        // Get the minimum zoom ratio (fit to window)
+        const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
+        
+        // Set magnification to the minimum ratio (fit to window) instead of 1
+        this.ngxImageZoom.zoomService.magnification = minRatio;
+        this.setZoomScroll(minRatio);
+      }
 
       // Handle touchpad pinch gestures in Firefox
       // Convert them to zoom operations similar to Chrome
