@@ -99,7 +99,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   show: boolean = false;
 
   protected readonly Math = Math;
-  
+
   // Flag to easily check if we're running in a browser environment
   protected readonly isBrowser: boolean;
 
@@ -188,21 +188,21 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected isMouseOverUIElement: boolean = false;
   protected image: ImageInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
-  private _previousZoomState: { 
-    enableLens: boolean; 
-    zoomFrozen: boolean; 
+  private _previousZoomState: {
+    enableLens: boolean;
+    zoomFrozen: boolean;
     zoomScroll: number;
-    zoomPosition?: { 
-      latestMouseLeft: number; 
+    zoomPosition?: {
+      latestMouseLeft: number;
       latestMouseTop: number;
       fullImageLeft: number;
       fullImageTop: number;
     }
   } = null;
-  
+
   // Track the "Activate zoom first" notification
   private _zoomActivationNotification: ActiveToast<any> | null = null;
-  
+
   // Track the "Measuring tool only available at default zoom" notification
   private _measureZoomNotification: ActiveToast<any> | null = null;
   private _originalZoomEventHandlers: { [key: string]: EventListener } = {};
@@ -210,37 +210,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
-  
+
   // Bound handler for the measuring mousemove event
   private _onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
-  
-  /**
-   * Check if the current zoom level is at the default (fit to window) level
-   */
-  private _isAtDefaultZoom(): boolean {
-    if (!this.ngxImageZoom || !this.ngxImageZoom.zoomService) {
-      // If zoom service is not available, we can't determine the default zoom
-      return false;
-    }
-    
-    // Get the minimum zoom ratio (fit to window)
-    const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
-    
-    // Use a small threshold for floating point comparison with the minimum ratio
-    return Math.abs(this.zoomScroll - minRatio) <= 0.01;
-  }
-  
-  /**
-   * Safely remove tooltips when we need to clear UI elements
-   * This handles SSR by checking if we're in a browser environment
-   */
-  private _clearTooltips(): void {
-    if (this.isBrowser) {
-      document.querySelectorAll(".tooltip").forEach(tooltip => {
-        tooltip.remove();
-      });
-    }
-  }
   private _canvasContext: CanvasRenderingContext2D;
   private _canvasContainerDimensions: { width: number; height: number; centerX: number; centerY: number };
   private _canvasImageDimensions: { width: number; height: number };
@@ -304,7 +276,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly coordinatesFormatter: CoordinatesFormatterService
   ) {
     super(store$);
-    
+
     // Initialize the browser flag
     this.isBrowser = isPlatformBrowser(platformId);
 
@@ -383,7 +355,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.isBrowser) {
       return;
     }
-    
+
     // If the kebab menu is open and the click is outside the menu, close it
     if (this.showKebabMenu) {
       const kebabContainer = (event.target as HTMLElement).closest(".kebab-menu-container");
@@ -399,7 +371,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.isBrowser) {
       return;
     }
-    
+
     this._setZoomLensSize();
     this._updateCanvasDimensions();
     this._drawCanvas();
@@ -526,9 +498,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     // Remove any measuring mousemove listener if it exists
     if (this.isBrowser && this.isMeasuringMode) {
-      document.removeEventListener('mousemove', this._onMeasuringMouseMove);
+      document.removeEventListener("mousemove", this._onMeasuringMouseMove);
     }
-    
+
     // Clear any measuring zoom notification
     if (this._measureZoomNotification) {
       this.popNotificationsService.clear(this._measureZoomNotification.toastId);
@@ -600,13 +572,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.popNotificationsService.clear(this._measureZoomNotification.toastId);
       this._measureZoomNotification = null;
     }
-    
+
     this.zoomScroll = scroll;
-    
+
     // Show zoom indicator when zooming is enabled or when we're not at the default zoom level
     const isAtDefaultZoom = this._isAtDefaultZoom();
     this.showZoomIndicator = this.zoomingEnabled || !isAtDefaultZoom;
-    
+
     this._setZoomIndicatorTimeout();
   }
 
@@ -626,7 +598,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.isBrowser) {
       return;
     }
-    
+
     // Always prevent default and stop propagation to avoid browser's ESC behavior
     if (event) {
       event.preventDefault();
@@ -665,7 +637,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.isBrowser) {
       return;
     }
-    
+
     // Don't interfere with input fields
     if (
       event.target instanceof HTMLInputElement ||
@@ -689,7 +661,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.isBrowser) {
       return;
     }
-    
+
     // Don't interfere with input fields
     if (
       event.target instanceof HTMLInputElement ||
@@ -713,7 +685,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.isBrowser) {
       return;
     }
-    
+
     // Don't interfere with input fields
     if (
       event.target instanceof HTMLInputElement ||
@@ -727,7 +699,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.show || this.isGif) {
       return;
     }
-    
+
     // Don't allow measuring when zoomed in - only at default zoom level (fit to window)
     if (!this.isMeasuringMode && !this._isAtDefaultZoom()) {
       // Store the notification reference so we can clear it when zoom changes
@@ -748,16 +720,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Set magnification to the minimum ratio (fit to window)
       const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
       this.ngxImageZoom.zoomService.magnification = minRatio;
-      
+
       // Clear any measuring zoom notifications immediately
       if (this._measureZoomNotification) {
         this.popNotificationsService.clear(this._measureZoomNotification.toastId);
         this._measureZoomNotification = null;
       }
-      
+
       // Update the UI to show the current zoom level
       this.setZoomScroll(minRatio);
-      
+
       // Trigger a zoom update if needed
       if (this.ngxImageZoom.zoomService.zoomingEnabled) {
         // Create a center-based mouse event to update zoom position
@@ -779,7 +751,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.isBrowser) {
       return;
     }
-    
+
     // Don't interfere with input fields
     if (event instanceof KeyboardEvent) {
       if (
@@ -874,7 +846,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // Clear specific "Activate zoom first" notification if it exists
         if (this._zoomActivationNotification) {
           // Extract toast ID - ActiveToast has a toastId property of type number
-          if (typeof this._zoomActivationNotification !== 'string' && this._zoomActivationNotification.toastId) {
+          if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
             this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
           }
           this._zoomActivationNotification = null;
@@ -919,19 +891,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
-  /**
-   * Handler for the measuring mode-specific mousemove event
-   * This updates the mouseX/mouseY positions for drawing the dashed line
-   */
-  private handleMeasuringMouseMove(event: MouseEvent): void {
-    // Only update if in measuring mode and we've started a measurement
-    if (this.isMeasuringMode && this.measureStartPoint && !this.measureEndPoint) {
-      this.mouseX = event.clientX;
-      this.mouseY = event.clientY;
-      this.changeDetectorRef.markForCheck();
-    }
-  }
-  
   // Handle mouse move events on the component and proxy them to ngx-image-zoom
   protected onGlobalMouseMove(event: MouseEvent): void {
     // If in measuring mode and we've already placed the first point,
@@ -1180,7 +1139,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       );
       return;
     }
-    
+
     // Don't allow measuring when zoomed in - only at default zoom level (fit to window)
     if (!this._isAtDefaultZoom()) {
       // Store the notification reference so we can clear it when zoom changes
@@ -1199,19 +1158,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // If exiting measuring mode, clear all previous measurements
     if (!this.isMeasuringMode) {
       this.previousMeasurements = [];
-      
+
       // Ensure we reset the mouse position tracking for the measuring line
       this.mouseX = null;
       this.mouseY = null;
-      
+
       // If we added a global mousemove listener, remove it
       if (this.isBrowser) {
-        document.removeEventListener('mousemove', this._onMeasuringMouseMove);
+        document.removeEventListener("mousemove", this._onMeasuringMouseMove);
       }
     } else {
       // When entering measuring mode, add a global mousemove listener to track mouse position for the measurement line
       if (this.isBrowser) {
-        document.addEventListener('mousemove', this._onMeasuringMouseMove);
+        document.addEventListener("mousemove", this._onMeasuringMouseMove);
       }
     }
 
@@ -1352,8 +1311,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         const angleRad = Math.atan2(dy, dx);
 
         // Check if the line is nearly horizontal or vertical
-        const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
-        const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI/2) < Math.PI/12;
+        const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
+        const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI / 2) < Math.PI / 12;
 
         // Calculate extended positions for labels with extra distance for near-horizontal lines
         const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
@@ -1377,7 +1336,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           // For near-horizontal lines, increase the vertical offset to avoid overlap
           startLabelX = startExtX - (labelWidth / 2);
           endLabelX = endExtX - (labelWidth / 2);
-        } else if (angleRad > -Math.PI/2 && angleRad < Math.PI/2) {
+        } else if (angleRad > -Math.PI / 2 && angleRad < Math.PI / 2) {
           // Line points rightward
           startLabelX = startExtX - (labelWidth / 2);
           endLabelX = endExtX - (labelWidth / 2);
@@ -1390,7 +1349,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // Vertical position (centered)
         const startLabelY = startExtY - (labelHeight / 2);
         const endLabelY = endExtY - (labelHeight / 2);
-          // Push to your measurements array:
+        // Push to your measurements array:
         this.previousMeasurements.push({
           startX: this.measureStartPoint.x,
           startY: this.measureStartPoint.y,
@@ -1463,8 +1422,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const angleRad = Math.atan2(dy, dx);
 
     // Check if the line is nearly horizontal or vertical
-    const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
-    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI/2) < Math.PI/12;
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
+    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI / 2) < Math.PI / 12;
 
     // Start label - opposite direction of the line with extra distance for near-horizontal lines
     const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
@@ -1479,7 +1438,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     } else if (isNearHorizontal) {
       // For near-horizontal lines, increase the vertical offset to avoid overlap
       return startExtX - (labelWidth / 2);
-    } else if (angleRad > -Math.PI/2 && angleRad < Math.PI/2) {
+    } else if (angleRad > -Math.PI / 2 && angleRad < Math.PI / 2) {
       // Line points rightward - align text end to point
       return startExtX - (labelWidth / 2);
     } else {
@@ -1503,7 +1462,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const angleRad = Math.atan2(dy, dx);
 
     // Check if the line is nearly horizontal
-    const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
 
     // Start label - opposite direction of the line
     const startExtY = this.measureStartPoint.y - (labelDistance + pointRadius) * Math.sin(angleRad);
@@ -1527,8 +1486,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const angleRad = Math.atan2(dy, dx);
 
     // Check if the line is nearly horizontal or vertical
-    const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
-    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI/2) < Math.PI/12;
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
+    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI / 2) < Math.PI / 12;
 
     // End label - along the direction of the line with extra distance for near-horizontal lines
     const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
@@ -1543,7 +1502,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     } else if (isNearHorizontal) {
       // For near-horizontal lines, increase the vertical offset to avoid overlap
       return endExtX - (labelWidth / 2);
-    } else if (angleRad > -Math.PI/2 && angleRad < Math.PI/2) {
+    } else if (angleRad > -Math.PI / 2 && angleRad < Math.PI / 2) {
       // Line points rightward - align text start to point
       return endExtX - (labelWidth / 2);
     } else {
@@ -1567,7 +1526,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const angleRad = Math.atan2(dy, dx);
 
     // Check if the line is nearly horizontal
-    const isNearHorizontal = Math.abs(angleRad) < Math.PI/12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI/12;
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
 
     // End label - along the direction of the line
     const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius) * Math.sin(angleRad);
@@ -1850,6 +1809,47 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     );
   }
 
+  /**
+   * Check if the current zoom level is at the default (fit to window) level
+   */
+  private _isAtDefaultZoom(): boolean {
+    if (!this.ngxImageZoom || !this.ngxImageZoom.zoomService) {
+      // If zoom service is not available, we can't determine the default zoom
+      return false;
+    }
+
+    // Get the minimum zoom ratio (fit to window)
+    const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
+
+    // Use a small threshold for floating point comparison with the minimum ratio
+    return Math.abs(this.zoomScroll - minRatio) <= 0.01;
+  }
+
+  /**
+   * Safely remove tooltips when we need to clear UI elements
+   * This handles SSR by checking if we're in a browser environment
+   */
+  private _clearTooltips(): void {
+    if (this.isBrowser) {
+      document.querySelectorAll(".tooltip").forEach(tooltip => {
+        tooltip.remove();
+      });
+    }
+  }
+
+  /**
+   * Handler for the measuring mode-specific mousemove event
+   * This updates the mouseX/mouseY positions for drawing the dashed line
+   */
+  private handleMeasuringMouseMove(event: MouseEvent): void {
+    // Only update if in measuring mode and we've started a measurement
+    if (this.isMeasuringMode && this.measureStartPoint && !this.measureEndPoint) {
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
   private _disableAllZooming(): void {
     if (!this.ngxImageZoom || this._zoomEventDisabled) {
       return;
@@ -1934,16 +1934,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       setTimeout(() => {
         // Initialize zoom but skip resetting the zoom level, since we want to preserve it
         this._initImageZoom(true);
-        
+
         // After initialization, restore the zoom indicator and actual zoom level to the previous value
         if (savedZoomScroll !== undefined && savedZoomScroll !== 1) {
           // Use a completely different approach: simulate mouse wheel events to set the zoom level
-          
+
           // First ensure zoomingEnabled is true so the wheel events will work
           if (this.ngxImageZoom && this.ngxImageZoom.zoomService) {
             // Activate zooming mode
             this.ngxImageZoom.zoomService.zoomingEnabled = true;
-            
+
             // Find the center of the image for zooming
             const zoomContainer = this.ngxImageZoomEl?.nativeElement;
             if (zoomContainer) {
@@ -1952,54 +1952,54 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
                 const rect = imgElement.getBoundingClientRect();
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                
+
                 // Simulate a zoomOn to ensure zooming is enabled
-                const fakeMouseEvent = new MouseEvent('mousemove', {
+                const fakeMouseEvent = new MouseEvent("mousemove", {
                   clientX: rect.left + centerX,
                   clientY: rect.top + centerY
                 });
-                
+
                 // Activate zooming
                 this.ngxImageZoom.zoomService.zoomOn(fakeMouseEvent);
-                
+
                 // The zoomOn method automatically sets zoomingEnabled to true in the service
-                
+
                 // Number of steps needed to reach desired zoom level
                 const steps = 20;
                 const stepSize = (savedZoomScroll - 1) / steps;
-                
+
                 // Simulate multiple small zoom steps to reach the desired level
                 for (let i = 0; i < steps; i++) {
                   this.ngxImageZoom.zoomService.magnification = 1 + (stepSize * (i + 1));
                   this.ngxImageZoom.zoomService.calculateRatio();
                 }
-                
+
                 // Restore the saved position if available
                 if (this._previousZoomState.zoomPosition) {
                   const pos = this._previousZoomState.zoomPosition;
-                  
+
                   // Restore the internal mouse position to what it was before
-                  this.ngxImageZoom.zoomService['latestMouseLeft'] = pos.latestMouseLeft;
-                  this.ngxImageZoom.zoomService['latestMouseTop'] = pos.latestMouseTop;
-                  
+                  this.ngxImageZoom.zoomService["latestMouseLeft"] = pos.latestMouseLeft;
+                  this.ngxImageZoom.zoomService["latestMouseTop"] = pos.latestMouseTop;
+
                   // Restore the actual image position
                   this.ngxImageZoom.zoomService.fullImageLeft = pos.fullImageLeft;
                   this.ngxImageZoom.zoomService.fullImageTop = pos.fullImageTop;
-                  
+
                   // Notify the service that it should update the view
                   this.ngxImageZoom.zoomService.markForCheck();
                 } else {
                   // If no saved position, use the center
                   this.ngxImageZoom.zoomService.calculateZoomPosition(fakeMouseEvent);
                 }
-                
+
                 // Final update to ensure everything is in sync
                 this.setZoomScroll(savedZoomScroll);
                 this.showZoomIndicator = true;
               }
             }
           }
-          
+
           // Force change detection to update the view immediately
           this.changeDetectorRef.detectChanges();
         }
@@ -2268,11 +2268,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    */
   private _ensureSolutionMatrixLoaded(solutionId: number): void {
     // Check if matrix is already loaded in component with valid properties
-    if (this.advancedSolutionMatrix && 
-        this.advancedSolutionMatrix.raMatrix && 
-        this.advancedSolutionMatrix.decMatrix && 
-        this.advancedSolutionMatrix.matrixRect && 
-        this.advancedSolutionMatrix.matrixDelta !== undefined) {
+    if (this.advancedSolutionMatrix &&
+      this.advancedSolutionMatrix.raMatrix &&
+      this.advancedSolutionMatrix.decMatrix &&
+      this.advancedSolutionMatrix.matrixRect &&
+      this.advancedSolutionMatrix.matrixDelta !== undefined) {
       return;
     }
 
@@ -2410,13 +2410,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.ngxImageZoom.zoomService.thumbWidth = renderedThumbnailWidth;
       this.ngxImageZoom.zoomService.thumbHeight = renderedThumbnailHeight;
       this.ngxImageZoom.zoomService.minZoomRatio = renderedThumbnailWidth / this.naturalWidth;
-      
+
       // Only reset the magnification and zoom scroll if not explicitly skipping this step
       // This helps when restoring from measuring mode where we want to maintain the previous zoom level
       if (!skipZoomReset) {
         // Get the minimum zoom ratio (fit to window)
         const minRatio = this.ngxImageZoom.zoomService.minZoomRatio;
-        
+
         // Set magnification to the minimum ratio (fit to window) instead of 1
         this.ngxImageZoom.zoomService.magnification = minRatio;
         this.setZoomScroll(minRatio);
@@ -2493,7 +2493,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         // Clear specific "Activate zoom first" notification if it exists
         if (this._zoomActivationNotification) {
           // Extract toast ID - ActiveToast has a toastId property of type number
-          if (typeof this._zoomActivationNotification !== 'string' && this._zoomActivationNotification.toastId) {
+          if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
             this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
           }
           this._zoomActivationNotification = null;
@@ -2514,7 +2514,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             // Clear specific "Activate zoom first" notification if it exists
             if (this._zoomActivationNotification) {
               // Extract toast ID - ActiveToast has a toastId property of type number
-              if (typeof this._zoomActivationNotification !== 'string' && this._zoomActivationNotification.toastId) {
+              if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
                 this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
               }
               this._zoomActivationNotification = null;
@@ -2528,7 +2528,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
             // Clear specific "Activate zoom first" notification if it exists
             if (this._zoomActivationNotification) {
               // Extract toast ID - ActiveToast has a toastId property of type number
-              if (typeof this._zoomActivationNotification !== 'string' && this._zoomActivationNotification.toastId) {
+              if (typeof this._zoomActivationNotification !== "string" && this._zoomActivationNotification.toastId) {
                 this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
               }
               this._zoomActivationNotification = null;
