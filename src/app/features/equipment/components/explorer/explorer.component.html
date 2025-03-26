@@ -17,7 +17,10 @@
 <!-- browser row -->
 
 <div class="row g-0 g-md-4">
-  <div class="col-12 order-last order-lg-first">
+  <div
+    [class.col-lg-9]="showListings()"
+    class="col-12 order-last order-lg-first"
+  >
     <div *ngIf="!!selectedItem" [class.disabled-with-backdrop]="subCreationMode" class="card">
       <div class="backdrop"></div>
 
@@ -521,12 +524,7 @@
   <!-- main pane -->
 
   <div
-    *ngIf="
-      !!selectedItem &&
-      !!selectedItem.listings &&
-      (selectedItem.listings.brandListings?.length > 0 || selectedItem.listings.itemListings?.length > 0) &&
-      selectedItem.listings.allowFullRetailerIntegration
-    "
+    *ngIf="showListings() "
     class="col-12 col-lg-3 sidebar"
   >
     <astrobin-equipment-listings

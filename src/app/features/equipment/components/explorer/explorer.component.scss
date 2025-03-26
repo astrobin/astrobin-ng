@@ -101,7 +101,7 @@ astrobin-equipment-item-summary {
 .sidebar {
   @media screen and (min-width: $lg-min) {
     position: sticky;
-    top: 1rem;
+    top: 75px;
     align-self: flex-start;
   }
 }
