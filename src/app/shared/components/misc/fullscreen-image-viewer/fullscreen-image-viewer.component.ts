@@ -126,8 +126,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected canvasLoading = false;
   protected isGif = false;
   protected zoomFrozen = false;
-  // Store notification toast reference to clear specific notification
-  private _zoomActivationToast: ActiveToast<any> = null;
+  // Notification references are managed by the _zoomActivationNotification property
   protected mouseHoverRa: string;
   protected mouseHoverDec: string;
   protected mouseHoverGalacticRa: string;
@@ -186,11 +185,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected image: ImageInterface;
   protected revision: ImageInterface | ImageRevisionInterface;
   private _previousZoomState: { enableLens: boolean; zoomFrozen: boolean; zoomScroll: number } = null;
+  
+  // Track the "Activate zoom first" notification
+  private _zoomActivationNotification: ActiveToast<any> | null = null;
   private _originalZoomEventHandlers: { [key: string]: EventListener } = {};
   private _zoomEventDisabled: boolean = false;
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
+  
+  // Bound handler for the measuring mousemove event
+  private _onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
   private _canvasContext: CanvasRenderingContext2D;
   private _canvasContainerDimensions: { width: number; height: number; centerX: number; centerY: number };
   private _canvasImageDimensions: { width: number; height: number };
@@ -463,6 +468,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   ngOnDestroy() {
     super.ngOnDestroy();
 
+    // Remove any measuring mousemove listener if it exists
+    if (isPlatformBrowser(this.platformId) && this.isMeasuringMode) {
+      document.removeEventListener('mousemove', this._onMeasuringMouseMove);
+    }
+
     // Restore original event handlers if needed
     this._restoreOriginalEventHandlers();
 
@@ -665,7 +675,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         );
       } else if (!this.zoomingEnabled) {
         // Store the toast reference so we can clear this specific notification when zoom is activated
-        this._zoomActivationToast = this.popNotificationsService.info(
+        this._zoomActivationNotification = this.popNotificationsService.info(
           this.translateService.instant("Activate zoom first before freezing (click or scroll on image).")
         );
       }
@@ -728,9 +738,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.ngxImageZoom.zoomService.zoomOn(event);
 
         // Clear specific "Activate zoom first" notification if it exists
-        if (this._zoomActivationToast) {
-          this.popNotificationsService.clear(this._zoomActivationToast.toastId);
-          this._zoomActivationToast = null;
+        if (this._zoomActivationNotification) {
+          // Extract toast ID - ActiveToast has a toastId property of type number
+          if (typeof this._zoomActivationNotification !== 'string' && this._zoomActivationNotification.toastId) {
+            this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+          }
+          this._zoomActivationNotification = null;
         }
 
         this.changeDetectorRef.markForCheck();
@@ -772,6 +785,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
   }
 
+  /**
+   * Handler for the measuring mode-specific mousemove event
+   * This updates the mouseX/mouseY positions for drawing the dashed line
+   */
+  private handleMeasuringMouseMove(event: MouseEvent): void {
+    // Only update if in measuring mode and we've started a measurement
+    if (this.isMeasuringMode && this.measureStartPoint && !this.measureEndPoint) {
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+  
   // Handle mouse move events on the component and proxy them to ngx-image-zoom
   protected onGlobalMouseMove(event: MouseEvent): void {
     // If in measuring mode and we've already placed the first point,
@@ -1038,6 +1064,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // If exiting measuring mode, clear all previous measurements
     if (!this.isMeasuringMode) {
       this.previousMeasurements = [];
+      
+      // Ensure we reset the mouse position tracking for the measuring line
+      this.mouseX = null;
+      this.mouseY = null;
     }
 
     // Disable zooming functions during measuring mode
@@ -1058,30 +1088,43 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       if (this.ngxImageZoom) {
         this._disableAllZooming();
       }
+      
+      // Add a global mousemove listener to track mouse position for the measurement line
+      if (isPlatformBrowser(this.platformId)) {
+        document.addEventListener('mousemove', this._onMeasuringMouseMove);
+      }
     } else {
+      // Remove the global mousemove listener when exiting measuring mode
+      if (isPlatformBrowser(this.platformId)) {
+        document.removeEventListener('mousemove', this._onMeasuringMouseMove);
+      }
+      
       // Restore previous zoom state if we had one
       if (this._previousZoomState) {
-        // Re-enable zoom event listeners
+        // First store the values we need to restore
+        const storedZoomScroll = this._previousZoomState.zoomScroll;
+        const wasLensEnabled = this._previousZoomState.enableLens;
+        const wasZoomFrozen = this._previousZoomState.zoomFrozen;
+        
+        // Re-enable zoom event listeners - this will reinitialize the zoom component
         this._enableAllZooming();
-
+        
+        // The _enableAllZooming method already handles restoring the zoom level,
+        // but we should also restore these other states
+        
         // Restore lens mode if previously enabled
-        this.enableLens = this._previousZoomState.enableLens;
-
-        // Restore the previous zoom level
-        if (this._previousZoomState && this._previousZoomState.zoomScroll !== undefined &&
-          this._previousZoomState.zoomScroll !== this.zoomScroll) {
-          // Use our component's setZoomScroll method instead of directly accessing the service
-          this.setZoomScroll(this._previousZoomState.zoomScroll);
-          // Make sure change detection runs to update the view
-          setTimeout(() => this.changeDetectorRef.detectChanges(), 0);
-        }
-
+        this.enableLens = wasLensEnabled;
+        
         // Restore frozen state if previously frozen
-        if (this._previousZoomState && this._previousZoomState.zoomFrozen) {
+        if (wasZoomFrozen) {
           this.toggleZoomFreeze(null);
         }
-
+        
+        // Clear the previous zoom state after it's been fully applied
         this._previousZoomState = null;
+        
+        // Force change detection to reflect all changes at once
+        this.changeDetectorRef.detectChanges();
       }
     }
 
@@ -1799,9 +1842,24 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         imgElement.parentNode.replaceChild(clonedImg, imgElement);
       }
 
+      // Save the current zoom scroll value
+      const savedZoomScroll = this._previousZoomState?.zoomScroll;
+
       // Re-initialize zoom
       setTimeout(() => {
         this._initImageZoom();
+        
+        // After initialization, restore the zoom indicator to the previous value
+        if (savedZoomScroll !== undefined) {
+          // Ensure we're using the component's setZoomScroll method to properly update all UI
+          this.setZoomScroll(savedZoomScroll);
+          
+          // Make sure the zoom indicator is visible
+          this.showZoomIndicator = true;
+          
+          // Force change detection to update the view immediately
+          this.changeDetectorRef.detectChanges();
+        }
       }, 10);
     } catch (e) {
       console.error("Error enabling zoom:", e);
@@ -2278,9 +2336,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.ngxImageZoom.zoomService.magnification = this.ngxImageZoom.zoomService.minZoomRatio;
         this.ngxImageZoom.zoomService.zoomOn(event);
         // Clear specific "Activate zoom first" notification if it exists
-        if (this._zoomActivationToast) {
-          this.popNotificationsService.clear(this._zoomActivationToast.toastId);
-          this._zoomActivationToast = null;
+        if (this._zoomActivationNotification) {
+          // Extract toast ID - ActiveToast has a toastId property of type number
+          if (typeof this._zoomActivationNotification !== 'string' && this._zoomActivationNotification.toastId) {
+            this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+          }
+          this._zoomActivationNotification = null;
         }
         this.changeDetectorRef.markForCheck();
       }, { once: true });
@@ -2296,9 +2357,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           } else {
             this.ngxImageZoom.zoomService.zoomOn(event);
             // Clear specific "Activate zoom first" notification if it exists
-            if (this._zoomActivationToast) {
-              this.popNotificationsService.clear(this._zoomActivationToast.toastId);
-              this._zoomActivationToast = null;
+            if (this._zoomActivationNotification) {
+              // Extract toast ID - ActiveToast has a toastId property of type number
+              if (typeof this._zoomActivationNotification !== 'string' && this._zoomActivationNotification.toastId) {
+                this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+              }
+              this._zoomActivationNotification = null;
             }
           }
         } else {
@@ -2307,9 +2371,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           } else {
             this.ngxImageZoom.zoomService.zoomOn(event);
             // Clear specific "Activate zoom first" notification if it exists
-            if (this._zoomActivationToast) {
-              this.popNotificationsService.clear(this._zoomActivationToast.toastId);
-              this._zoomActivationToast = null;
+            if (this._zoomActivationNotification) {
+              // Extract toast ID - ActiveToast has a toastId property of type number
+              if (typeof this._zoomActivationNotification !== 'string' && this._zoomActivationNotification.toastId) {
+                this.popNotificationsService.clear(this._zoomActivationNotification.toastId);
+              }
+              this._zoomActivationNotification = null;
             }
           }
         }
