@@ -161,6 +161,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   protected readonly ImageAlias = ImageAlias;
   protected readonly MatchType = MatchType;
+
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
 
@@ -785,6 +786,18 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   showEditProposals(): boolean {
     return this.editProposalsByStatus(this.editProposals, null)?.length > 0 || !this.editProposalsCollapsed;
+  }
+
+  showListings(): boolean {
+    return (
+      !!this.selectedItem &&
+      !!this.selectedItem.listings &&
+      (
+        this.selectedItem.listings.brandListings?.length > 0 ||
+        this.selectedItem.listings.itemListings?.length > 0
+      ) &&
+      this.selectedItem.listings.allowFullRetailerIntegration
+    );
   }
 
   typeSupportsMigrateInto() {
