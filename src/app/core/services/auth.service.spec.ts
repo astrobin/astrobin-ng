@@ -52,6 +52,7 @@ describe("AuthService", () => {
         expect(service.getClassicApiToken()).toBe("123");
 
         jest.spyOn(service.router, "navigate").mockReturnValue(Promise.resolve(true));
+        jest.spyOn(service.windowRefService, "getCurrentUrl").mockReturnValue(new URL("http://localhost:4200"));
         jest.spyOn(service.windowRefService, "locationAssign").mockImplementation(() => {
         });
 
