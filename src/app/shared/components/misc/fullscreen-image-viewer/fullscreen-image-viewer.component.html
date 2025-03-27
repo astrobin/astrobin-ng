@@ -441,7 +441,9 @@
   <div class="measuring-tool-container" *ngIf="isMeasuringMode || measureDistance">
     <!-- Start and end markers -->
     <div *ngIf="measureStartPoint" class="measure-marker start-marker"
-         [style.left.px]="measureStartPoint.x" [style.top.px]="measureStartPoint.y">
+         [class.dragging]="isDraggingPoint === 'start'"
+         [style.left.px]="measureStartPoint.x" [style.top.px]="measureStartPoint.y"
+         (mousedown)="handlePointDragStart($event, 'start')">
       <div class="marker-dot"></div>
       <!-- Start point coordinates that will be visible while selecting end point -->
       <div *ngIf="!measureEndPoint" class="marker-coordinates top-position"
@@ -459,7 +461,9 @@
     </div>
 
     <div *ngIf="measureEndPoint" class="measure-marker end-marker"
-         [style.left.px]="measureEndPoint.x" [style.top.px]="measureEndPoint.y">
+         [class.dragging]="isDraggingPoint === 'end'"
+         [style.left.px]="measureEndPoint.x" [style.top.px]="measureEndPoint.y"
+         (mousedown)="handlePointDragStart($event, 'end')">
       <div class="marker-dot"></div>
       <!-- End point coordinates perpendicular to line -->
       <div class="marker-coordinates"
@@ -481,22 +485,6 @@
           [attr.x2]="measurement.endX" [attr.y2]="measurement.endY"
           class="measure-line previous-line">
         </line>
-
-        <!-- Start point marker -->
-        <circle
-          [attr.cx]="measurement.startX"
-          [attr.cy]="measurement.startY"
-          r="4"
-          class="measure-point previous-point">
-        </circle>
-
-        <!-- End point marker -->
-        <circle
-          [attr.cx]="measurement.endX"
-          [attr.cy]="measurement.endY"
-          r="4"
-          class="measure-point previous-point">
-        </circle>
       </g>
 
       <!-- Current measurement line -->
@@ -508,7 +496,98 @@
             [attr.x1]="measureStartPoint.x" [attr.y1]="measureStartPoint.y"
             [attr.x2]="measureEndPoint.x" [attr.y2]="measureEndPoint.y"
             class="measure-line current-line"></line>
+            
+      <!-- Visual indicator for original position when dragging current measurement points -->
+      <g *ngIf="isDraggingPoint === 'start' && measureStartPoint">
+        <circle
+          [attr.cx]="dragStartX || measureStartPoint.x"
+          [attr.cy]="dragStartY || measureStartPoint.y"
+          r="5"
+          class="measure-point original-position">
+        </circle>
+        <line
+          [attr.x1]="dragStartX || measureStartPoint.x"
+          [attr.y1]="dragStartY || measureStartPoint.y"
+          [attr.x2]="measureStartPoint.x"
+          [attr.y2]="measureStartPoint.y"
+          class="measure-line drag-indicator">
+        </line>
+      </g>
+      
+      <g *ngIf="isDraggingPoint === 'end' && measureEndPoint">
+        <circle
+          [attr.cx]="dragStartX || measureEndPoint.x"
+          [attr.cy]="dragStartY || measureEndPoint.y"
+          r="5"
+          class="measure-point original-position">
+        </circle>
+        <line
+          [attr.x1]="dragStartX || measureEndPoint.x"
+          [attr.y1]="dragStartY || measureEndPoint.y"
+          [attr.x2]="measureEndPoint.x"
+          [attr.y2]="measureEndPoint.y"
+          class="measure-line drag-indicator">
+        </line>
+      </g>
+      
+      <!-- Visual indicators for dragging previous measurement points -->
+      <g *ngFor="let measurement of previousMeasurements; let i = index">
+        <!-- Start point drag indicator -->
+        <g *ngIf="isDraggingPoint === 'prevStart-' + i">
+          <circle
+            [attr.cx]="dragStartX || measurement.startX"
+            [attr.cy]="dragStartY || measurement.startY"
+            r="5"
+            class="measure-point original-position">
+          </circle>
+          <line
+            [attr.x1]="dragStartX || measurement.startX"
+            [attr.y1]="dragStartY || measurement.startY"
+            [attr.x2]="measurement.startX"
+            [attr.y2]="measurement.startY"
+            class="measure-line drag-indicator">
+          </line>
+        </g>
+        
+        <!-- End point drag indicator -->
+        <g *ngIf="isDraggingPoint === 'prevEnd-' + i">
+          <circle
+            [attr.cx]="dragStartX || measurement.endX"
+            [attr.cy]="dragStartY || measurement.endY"
+            r="5"
+            class="measure-point original-position">
+          </circle>
+          <line
+            [attr.x1]="dragStartX || measurement.endX"
+            [attr.y1]="dragStartY || measurement.endY"
+            [attr.x2]="measurement.endX"
+            [attr.y2]="measurement.endY"
+            class="measure-line drag-indicator">
+          </line>
+        </g>
+      </g>
     </svg>
+
+    <!-- Previous measurement points - DIV-based draggable markers -->
+    <div *ngFor="let measurement of previousMeasurements; let i = index">
+      <!-- Start point marker -->
+      <div class="measure-marker previous-start-marker"
+           [class.dragging]="isDraggingPoint === 'prevStart-' + i"
+           [style.left.px]="measurement.startX" 
+           [style.top.px]="measurement.startY"
+           (mousedown)="handlePreviousMeasurementDrag ? handlePreviousMeasurementDrag($event, i, 'start') : null">
+        <div class="marker-dot"></div>
+      </div>
+      
+      <!-- End point marker -->
+      <div class="measure-marker previous-end-marker"
+           [class.dragging]="isDraggingPoint === 'prevEnd-' + i"
+           [style.left.px]="measurement.endX" 
+           [style.top.px]="measurement.endY"
+           (mousedown)="handlePreviousMeasurementDrag ? handlePreviousMeasurementDrag($event, i, 'end') : null">
+        <div class="marker-dot"></div>
+      </div>
+    </div>
 
     <!-- Distance labels - show previous measurements -->
     <div *ngFor="let measurement of previousMeasurements; let i = index"
@@ -518,7 +597,9 @@
          (mouseenter)="setMouseOverUIElement(true)"
          (mouseleave)="setMouseOverUIElement(false)">
       <span class="measurement-text">{{ measurement.distance }}</span>
-      <button class="btn-delete-measurement" (click)="deleteMeasurement($event, i)">
+      <button *ngIf="!isDraggingPoint || !isDraggingPoint.startsWith('prev')" 
+              class="btn-delete-measurement" 
+              (click)="deleteMeasurement($event, i)">
         <fa-icon icon="times"></fa-icon>
       </button>
 
@@ -526,6 +607,7 @@
              class="measurement-note">
         {{ 'Celestial measurements require advanced solving' | translate }}
       </small>
+      <!-- No drag update note needed -->
     </div>
 
     <!-- Current measurement -->
@@ -534,11 +616,12 @@
          [style.top.px]="(measureStartPoint.y + measureEndPoint.y) / 2"
          (mouseenter)="setMouseOverUIElement(true)"
          (mouseleave)="setMouseOverUIElement(false)">
-      {{ measureDistance }}
+      <span class="measurement-text">{{ measureDistance }}</span>
       <small *ngIf="image && imageService.isPlateSolvable(image) && !hasAdvancedSolution"
              class="measurement-note">
         {{ 'Celestial measurements require advanced solving' | translate }}
       </small>
+      <!-- No drag update note needed -->
     </div>
 
     <!-- Coordinate labels for previous measurements -->

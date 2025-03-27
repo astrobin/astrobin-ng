@@ -149,6 +149,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   protected measureStartPoint: { x: number; y: number; ra: number; dec: number } = null;
   protected measureEndPoint: { x: number; y: number; ra: number; dec: number } = null;
   protected measureDistance: string = null;
+
+  // Variables for dragging measurement points
+  dragStartX: number = null;
+  dragStartY: number = null;
+  protected isDraggingPoint: 'start' | 'end' | string | null = null;
+  protected pointDragRadius = 10; // Pixel radius around points that's draggable
   protected previousMeasurements: Array<{
     startX: number;
     startY: number;
@@ -198,8 +204,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
 
-  // Bound handler for the measuring mousemove event
+  // Bound handlers for various event types
   private _onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
+  private _onPreviousMeasurementDragMove: any = null;
+  private _onPreviousMeasurementDragEnd: any = null;
   private _canvasContext: CanvasRenderingContext2D;
   private _canvasContainerDimensions: { width: number; height: number; centerX: number; centerY: number };
   private _canvasImageDimensions: { width: number; height: number };
@@ -326,18 +334,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   protected get hasAdvancedSolution(): boolean {
-    // Check if the image has an advanced plate-solving solution with matrices
-    const result = !!(
+    return !!(
       this.revision?.solution?.status === SolutionStatus.ADVANCED_SUCCESS &&
       this.revision?.solution?.advancedRa &&
       this.revision?.solution?.advancedDec
     );
-    console.log("hasAdvancedSolution check:", result,
-      "solution exists:", !!this.revision?.solution,
-      "status ADVANCED_SUCCESS:", this.revision?.solution?.status === SolutionStatus.ADVANCED_SUCCESS,
-      "advancedRa:", !!this.revision?.solution?.advancedRa,
-      "advancedDec:", !!this.revision?.solution?.advancedDec);
-    return result;
   }
 
   @HostListener("document:click", ["$event"])
@@ -493,6 +494,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Also clean up drag event listeners if needed
       document.removeEventListener("mousemove", this._onDragMove);
       document.removeEventListener("mouseup", this._onDragEnd);
+      document.removeEventListener("mousemove", this._onPointDragMove);
+      document.removeEventListener("mouseup", this._onPointDragEnd);
+
+      // Clean up any previous measurement drag listeners
+      if (this._onPreviousMeasurementDragMove) {
+        document.removeEventListener("mousemove", this._onPreviousMeasurementDragMove);
+      }
+      if (this._onPreviousMeasurementDragEnd) {
+        document.removeEventListener("mouseup", this._onPreviousMeasurementDragEnd);
+      }
     }
 
     // Clear any measuring zoom notification
@@ -570,8 +581,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.zoomScroll = scroll;
 
     // Show zoom indicator when zooming is enabled or when we're not at the default zoom level
-    const isAtDefaultZoom = this._isAtDefaultZoom();
-    this.showZoomIndicator = this.zoomingEnabled || !isAtDefaultZoom;
+    this.showZoomIndicator = this.zoomingEnabled || !this._isAtDefaultZoom();
 
     this._setZoomIndicatorTimeout();
   }
@@ -897,6 +907,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       // Don't trigger zoom functionality, but continue to next section to update coordinates
       // This allows coordinates to be updated in the display box while placing the second point
     }
+
     // We need to ensure the revision is loaded before calculating coordinates
     if (!this.revision) {
       return;
@@ -954,8 +965,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
       this.changeDetectorRef.markForCheck();
     }
-
-    // We've already called _calculateMouseCoordinates above if needed
 
     // Only proxy if we have the zoom component, are in mouse mode, not in measuring mode, and are currently zooming
     if (!this.touchMode && this.ngxImageZoom && this.zoomingEnabled && !this.isVeryLargeImage && !this.isMeasuringMode) {
@@ -1204,6 +1213,47 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
+    // Check if we're clicking near an existing point to drag it
+    if (this.measureStartPoint && this.measureEndPoint) {
+      // Calculate distances to start and end points
+      const distToStart = Math.sqrt(
+        Math.pow(event.clientX - this.measureStartPoint.x, 2) +
+        Math.pow(event.clientY - this.measureStartPoint.y, 2)
+      );
+
+      const distToEnd = Math.sqrt(
+        Math.pow(event.clientX - this.measureEndPoint.x, 2) +
+        Math.pow(event.clientY - this.measureEndPoint.y, 2)
+      );
+
+      // If we're close enough to either point, start dragging it
+      if (distToStart <= this.pointDragRadius) {
+        this.isDraggingPoint = 'start';
+        this._dragInProgress = true;
+        document.addEventListener('mousemove', this._onPointDragMove);
+        document.addEventListener('mouseup', this._onPointDragEnd);
+
+        // Set the flag to prevent the upcoming click event from being processed
+        this._preventNextClick = true;
+        setTimeout(() => {
+          this._preventNextClick = false;
+        }, 100);
+        return;
+      } else if (distToEnd <= this.pointDragRadius) {
+        this.isDraggingPoint = 'end';
+        this._dragInProgress = true;
+        document.addEventListener('mousemove', this._onPointDragMove);
+        document.addEventListener('mouseup', this._onPointDragEnd);
+
+        // Set the flag to prevent the upcoming click event from being processed
+        this._preventNextClick = true;
+        setTimeout(() => {
+          this._preventNextClick = false;
+        }, 100);
+        return;
+      }
+    }
+
     // If we don't have a start point, set it now
     if (!this.measureStartPoint) {
       // Extract current RA/Dec at mouse position if available
@@ -1292,12 +1342,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           if (coords) {
             ra = coords.ra;
             dec = coords.dec;
-            console.log("Calculated START coordinates:", ra, dec);
-          } else {
-            console.log("Failed to calculate START coordinates");
           }
-        } else {
-          console.log("No solution available for START point");
         }
 
         this.measureStartPoint = {
@@ -1318,12 +1363,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           if (coords) {
             ra = coords.ra;
             dec = coords.dec;
-            console.log("Calculated END coordinates:", ra, dec);
-          } else {
-            console.log("Failed to calculate END coordinates");
           }
-        } else {
-          console.log("No solution available for END point");
         }
 
         this.measureEndPoint = {
@@ -1880,12 +1920,20 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.measureEndPoint.ra !== null &&
       this.measureEndPoint.dec !== null
     ) {
-      this.measureDistance = this._calculateAngularDistance(
+      const angularDistance = this._calculateAngularDistance(
         this.measureStartPoint.ra,
         this.measureStartPoint.dec,
         this.measureEndPoint.ra,
         this.measureEndPoint.dec
       );
+      
+      // Format result in degrees, arcminutes, and arcseconds
+      const degrees = Math.floor(angularDistance);
+      const arcminutes = Math.floor((angularDistance - degrees) * 60);
+      const arcseconds = Math.round(((angularDistance - degrees) * 60 - arcminutes) * 60);
+      
+      // Show only the celestial measurement
+      this.measureDistance = `${degrees}° ${arcminutes}′ ${arcseconds}″`;
     } else {
       // If we can't calculate angular distance, show a pixel distance instead
       const pixelDistance = Math.sqrt(
@@ -2015,6 +2063,306 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.changeDetectorRef.markForCheck();
     }
   }
+
+  /**
+   * Direct handler for starting a point drag operation
+   */
+  protected handlePointDragStart(event: MouseEvent, pointType: 'start' | 'end'): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Set the point being dragged
+    this.isDraggingPoint = pointType;
+    this._dragInProgress = true;
+
+    // Store the original position for visual feedback
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+
+    // Set up document-level handlers for the drag operation
+    document.addEventListener('mousemove', this._onPointDragMove);
+    document.addEventListener('mouseup', this._onPointDragEnd);
+
+    // Prevent the click handler from firing
+    this._preventNextClick = true;
+  }
+
+  /**
+   * Handler for starting a drag operation on a previous measurement point
+   * @param event Mouse event that triggered the drag
+   * @param index Index of the measurement in the previousMeasurements array
+   * @param pointType Which point to drag ('start' or 'end')
+   */
+  protected handlePreviousMeasurementDrag(event: MouseEvent, index: number, pointType: 'start' | 'end'): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Set drag flag for proper UI update
+    this.isDraggingPoint = 'prev' + pointType.charAt(0).toUpperCase() + pointType.slice(1) + '-' + index;
+    this._dragInProgress = true;
+
+    // Store starting coordinates for visual indicator
+    this.dragStartX = pointType === 'start' ? this.previousMeasurements[index].startX : this.previousMeasurements[index].endX;
+    this.dragStartY = pointType === 'start' ? this.previousMeasurements[index].startY : this.previousMeasurements[index].endY;
+
+    // We don't need to store any parsed data - we'll calculate from ra/dec
+
+    // Define and store the move handler for this specific drag operation
+    this._onPreviousMeasurementDragMove = (moveEvent: MouseEvent) => {
+      this._onPreviousMeasurementDragMove_impl(moveEvent, index, pointType);
+    };
+
+    // Define and store the end handler for this specific drag operation
+    this._onPreviousMeasurementDragEnd = (upEvent: MouseEvent) => {
+      this._onPreviousMeasurementDragEnd_impl(upEvent, index, pointType);
+    };
+
+    // Add the event handlers to the document
+    document.addEventListener('mousemove', this._onPreviousMeasurementDragMove);
+    document.addEventListener('mouseup', this._onPreviousMeasurementDragEnd);
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  /**
+   * Handler for when a previous measurement point is being dragged
+   * @param event Mouse move event
+   * @param index Index of the measurement
+   * @param pointType Which point is being dragged ('start' or 'end')
+   */
+  private _onPreviousMeasurementDragMove_impl(event: MouseEvent, index: number, pointType: 'start' | 'end'): void {
+    if (!this.isBrowser || index >= this.previousMeasurements.length) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const imageElement = this._getMeasurementImageElement();
+    if (!imageElement) return;
+
+    const imageRect = imageElement.getBoundingClientRect();
+
+    // Only update if the mouse is over the image
+    if (
+      event.clientX >= imageRect.left &&
+      event.clientX <= imageRect.right &&
+      event.clientY >= imageRect.top &&
+      event.clientY <= imageRect.bottom
+    ) {
+      // Update the point position based on mouse movement
+      if (pointType === 'start') {
+        this.previousMeasurements[index].startX = event.clientX;
+        this.previousMeasurements[index].startY = event.clientY;
+
+        // Update RA/Dec if we have the solution
+        if (this.hasAdvancedSolution) {
+          const coords = this._calculateCoordinatesAtPoint(event.clientX, event.clientY);
+          if (coords) {
+            this.previousMeasurements[index].startRa = coords.ra;
+            this.previousMeasurements[index].startDec = coords.dec;
+          }
+        }
+      } else {
+        this.previousMeasurements[index].endX = event.clientX;
+        this.previousMeasurements[index].endY = event.clientY;
+
+        // Update RA/Dec if we have the solution
+        if (this.hasAdvancedSolution) {
+          const coords = this._calculateCoordinatesAtPoint(event.clientX, event.clientY);
+          if (coords) {
+            this.previousMeasurements[index].endRa = coords.ra;
+            this.previousMeasurements[index].endDec = coords.dec;
+          }
+        }
+      }
+
+      // Recalculate the midpoint
+      this.previousMeasurements[index].midX = (this.previousMeasurements[index].startX + this.previousMeasurements[index].endX) / 2;
+      this.previousMeasurements[index].midY = (this.previousMeasurements[index].startY + this.previousMeasurements[index].endY) / 2;
+
+      // Recalculate the measurement
+      this._recalculatePreviousMeasurement(index);
+
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
+  /**
+   * Handler for when a previous measurement point drag operation ends
+   * @param event Mouse up event
+   * @param index Index of the measurement
+   * @param pointType Which point was being dragged ('start' or 'end')
+   */
+  private _onPreviousMeasurementDragEnd_impl(event: MouseEvent, index: number, pointType: 'start' | 'end'): void {
+    if (!this.isBrowser || index >= this.previousMeasurements.length) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Perform final position update
+    if (pointType === 'start') {
+      this.previousMeasurements[index].startX = event.clientX;
+      this.previousMeasurements[index].startY = event.clientY;
+
+      // Final update to RA/Dec if we have the solution
+      if (this.hasAdvancedSolution) {
+        const coords = this._calculateCoordinatesAtPoint(event.clientX, event.clientY);
+        if (coords) {
+          this.previousMeasurements[index].startRa = coords.ra;
+          this.previousMeasurements[index].startDec = coords.dec;
+        }
+      }
+    } else {
+      this.previousMeasurements[index].endX = event.clientX;
+      this.previousMeasurements[index].endY = event.clientY;
+
+      // Final update to RA/Dec if we have the solution
+      if (this.hasAdvancedSolution) {
+        const coords = this._calculateCoordinatesAtPoint(event.clientX, event.clientY);
+        if (coords) {
+          this.previousMeasurements[index].endRa = coords.ra;
+          this.previousMeasurements[index].endDec = coords.dec;
+        }
+      }
+    }
+
+    // Final recalculation of midpoint
+    this.previousMeasurements[index].midX = (this.previousMeasurements[index].startX + this.previousMeasurements[index].endX) / 2;
+    this.previousMeasurements[index].midY = (this.previousMeasurements[index].startY + this.previousMeasurements[index].endY) / 2;
+
+    // Final recalculation of the measurement
+    this._recalculatePreviousMeasurement(index);
+
+    // Reset dragging state
+    this.isDraggingPoint = null;
+    this._dragInProgress = false;
+    this.dragStartX = null;
+    this.dragStartY = null;
+
+    // Clean up the event listeners
+    document.removeEventListener('mousemove', this._onPreviousMeasurementDragMove);
+    document.removeEventListener('mouseup', this._onPreviousMeasurementDragEnd);
+    this._onPreviousMeasurementDragMove = null;
+    this._onPreviousMeasurementDragEnd = null;
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  // Event handlers for dragging existing measurement points
+  private _onPointDragMove = (event: MouseEvent) => {
+    if (!this._dragInProgress || !this.isDraggingPoint) return;
+
+    const imageElement = this._getMeasurementImageElement();
+    if (!imageElement) return;
+
+    const imageRect = imageElement.getBoundingClientRect();
+
+    // Only update if the mouse is over the image
+    if (
+      event.clientX >= imageRect.left &&
+      event.clientX <= imageRect.right &&
+      event.clientY >= imageRect.top &&
+      event.clientY <= imageRect.bottom
+    ) {
+      // Update the position of the point being dragged
+      const newPosition = {
+        x: event.clientX,
+        y: event.clientY
+      };
+
+      // Get new RA/Dec coordinates if available
+      let ra = null, dec = null;
+
+      if (this.revision?.solution) {
+        const coords = this._calculateCoordinatesAtPoint(event.clientX, event.clientY);
+        if (coords) {
+          ra = coords.ra;
+          dec = coords.dec;
+        }
+      }
+
+      // Update the appropriate point
+      if (this.isDraggingPoint === 'start') {
+        this.measureStartPoint = {
+          ...this.measureStartPoint,
+          x: newPosition.x,
+          y: newPosition.y,
+          ra,
+          dec
+        };
+      } else if (this.isDraggingPoint === 'end') {
+        this.measureEndPoint = {
+          ...this.measureEndPoint,
+          x: newPosition.x,
+          y: newPosition.y,
+          ra,
+          dec
+        };
+      }
+
+      // Update the measurement distance display
+      if (this.measureStartPoint && this.measureEndPoint) {
+        // Calculate angular distance if both points have RA/Dec
+        if (
+          this.measureStartPoint.ra !== null &&
+          this.measureStartPoint.dec !== null &&
+          this.measureEndPoint.ra !== null &&
+          this.measureEndPoint.dec !== null
+        ) {
+          const angularDistance = this._calculateAngularDistance(
+            this.measureStartPoint.ra,
+            this.measureStartPoint.dec,
+            this.measureEndPoint.ra,
+            this.measureEndPoint.dec
+          );
+          
+          // Format result in degrees, arcminutes, and arcseconds
+          const degrees = Math.floor(angularDistance);
+          const arcminutes = Math.floor((angularDistance - degrees) * 60);
+          const arcseconds = Math.round(((angularDistance - degrees) * 60 - arcminutes) * 60);
+          
+          // Show only the celestial measurement
+          this.measureDistance = `${degrees}° ${arcminutes}′ ${arcseconds}″`;
+        } else {
+          // If we can't calculate angular distance, show a pixel distance instead
+          const pixelDistance = Math.sqrt(
+            Math.pow(this.measureEndPoint.x - this.measureStartPoint.x, 2) +
+            Math.pow(this.measureEndPoint.y - this.measureStartPoint.y, 2)
+          ).toFixed(1);
+          this.measureDistance = this.translateService.instant("{{0}} pixels", { 0: pixelDistance });
+        }
+      }
+
+      this.changeDetectorRef.markForCheck();
+    }
+  };
+
+  private _onPointDragEnd = (event: MouseEvent) => {
+    if (!this._dragInProgress || !this.isDraggingPoint) return;
+
+    // Clean up event listeners
+    document.removeEventListener('mousemove', this._onPointDragMove);
+    document.removeEventListener('mouseup', this._onPointDragEnd);
+
+    // Reset drag state
+    this._dragInProgress = false;
+    this.isDraggingPoint = null;
+
+    // Prevent any click events following this mouseup from being processed
+    this._preventNextClick = true;
+    setTimeout(() => {
+      this._preventNextClick = false;
+    }, 100);
+
+    this.changeDetectorRef.markForCheck();
+  };
 
   /**
    * Calculate the coordinates at the current mouse position
@@ -2178,7 +2526,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return null;
   }
 
-  private _calculateAngularDistance(ra1: number, dec1: number, ra2: number, dec2: number): string {
+  private _calculateAngularDistance(ra1: number, dec1: number, ra2: number, dec2: number): number {
     // Convert degrees to radians
     const toRadians = (deg) => deg * Math.PI / 180;
 
@@ -2199,13 +2547,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Calculate angular distance in radians and convert to degrees
     const angDistDeg = Math.acos(clampedCosAngDist) * 180 / Math.PI;
 
-    // Format result in degrees, arcminutes, and arcseconds
-    const degrees = Math.floor(angDistDeg);
-    const arcminutes = Math.floor((angDistDeg - degrees) * 60);
-    const arcseconds = ((angDistDeg - degrees) * 60 - arcminutes) * 60;
-
-    // Format the string
-    return `${degrees}° ${arcminutes}′ ${arcseconds.toFixed(1)}″`;
+    // Return the angular distance in degrees
+    return angDistDeg;
   }
 
   // Replace both mousemove and wheel handlers to completely freeze the zoom
@@ -3226,5 +3569,96 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       typeof event.changedTouches !== "undefined" ||
       (event.type && event.type.startsWith("touch"))
     );
+  }
+
+  // Removed duplicate implementation. Use the one defined at line ~2111
+
+  // Helper method to update label positions without recalculating distance
+  private _updateMeasurementLabelPositions(measurement): void {
+    if (!measurement) return;
+
+    // Calculate label positions for coordinates (perpendicular to line)
+    const dx = measurement.endX - measurement.startX;
+    const dy = measurement.endY - measurement.startY;
+    const lineAngle = Math.atan2(dy, dx);
+    const perpendicular = lineAngle + Math.PI / 2;
+    const offset = 20; // pixels
+
+    // Update midpoint
+    measurement.midX = (measurement.startX + measurement.endX) / 2;
+    measurement.midY = (measurement.startY + measurement.endY) / 2;
+
+    // Update label positions
+    measurement.startLabelX = measurement.startX + offset * Math.cos(perpendicular);
+    measurement.startLabelY = measurement.startY + offset * Math.sin(perpendicular);
+    measurement.endLabelX = measurement.endX + offset * Math.cos(perpendicular);
+    measurement.endLabelY = measurement.endY + offset * Math.sin(perpendicular);
+  }
+
+  // Removed duplicate implementation
+
+  /**
+   * Recalculates the distance and position for a previous measurement
+   * Uses same logic as our drag handlers for consistency
+   */
+  private _recalculatePreviousMeasurement(index: number): void {
+    const measurement = this.previousMeasurements[index];
+    if (!measurement) return;
+    
+    // No need to store or parse old distance - we'll calculate directly from coordinates
+
+    // Calculate pixel distance
+    const dx = measurement.endX - measurement.startX;
+    const dy = measurement.endY - measurement.startY;
+    const pixelDistance = Math.sqrt(dx * dx + dy * dy);
+    const pixelText = `${Math.round(pixelDistance)} px`;
+
+    // Update midpoint and label positions
+    measurement.midX = (measurement.startX + measurement.endX) / 2;
+    measurement.midY = (measurement.startY + measurement.endY) / 2;
+
+    const lineAngle = Math.atan2(dy, dx);
+    const perpendicular = lineAngle + Math.PI / 2;
+    const offset = 20; // pixels
+
+    measurement.startLabelX = measurement.startX + offset * Math.cos(perpendicular);
+    measurement.startLabelY = measurement.startY + offset * Math.sin(perpendicular);
+    measurement.endLabelX = measurement.endX + offset * Math.cos(perpendicular);
+    measurement.endLabelY = measurement.endY + offset * Math.sin(perpendicular);
+
+    // If both points have celestial coordinates, calculate angular distance
+    if (this.hasAdvancedSolution &&
+        measurement.startRa !== null && measurement.startDec !== null &&
+        measurement.endRa !== null && measurement.endDec !== null) {
+      try {
+        // Calculate angular distance using the original method
+        const angularDistance = this._calculateAngularDistance(
+          measurement.startRa, measurement.startDec,
+          measurement.endRa, measurement.endDec
+        );
+
+        if (typeof angularDistance === 'number' && !isNaN(angularDistance)) {
+          // Format in degrees/minutes/seconds
+          const degrees = Math.floor(angularDistance);
+          const minutes = Math.floor((angularDistance - degrees) * 60);
+          const seconds = Math.round(((angularDistance - degrees) * 60 - minutes) * 60);
+
+          // Set only the celestial measurement when available
+          measurement.distance = `${degrees}° ${minutes}′ ${seconds}″`;
+        } else {
+          // If calculation fails, just show pixel distance
+          measurement.distance = pixelText;
+        }
+      } catch (e) {
+        // If calculation throws an error, just show pixel distance
+        measurement.distance = pixelText;
+      }
+    } else {
+      // If we don't have coordinates, just show pixel distance
+      measurement.distance = pixelText;
+    }
+
+    // Apply changes
+    this.changeDetectorRef.detectChanges();
   }
 }
