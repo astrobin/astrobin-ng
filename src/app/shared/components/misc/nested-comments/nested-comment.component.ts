@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { MainState } from "@app/store/state";
@@ -33,7 +33,7 @@ import { HighlightService } from "@core/services/highlight.service";
   styleUrls: ["./nested-comment.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NestedCommentComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnChanges {
+export class NestedCommentComponent extends BaseComponentDirective implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input()
   comment: NestedCommentInterface;
 
@@ -59,6 +59,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   // of an object to reply to a comment.
   @Input()
   restrictReplyToUserId: UserInterface["id"];
+  
+  @Output()
+  formDirtyChange = new EventEmitter<boolean>();
 
   replyModel: { topLevelComment: string };
   replyForm = new FormGroup({});
@@ -114,6 +117,20 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     this._initEditFields();
     this._initHighlighted();
     this._listenToLikes();
+    this._setupFormListeners();
+  }
+  
+  isDirty(): boolean {
+    const replyValue = this.replyForm.get('commentReply')?.value;
+    const editValue = this.editForm.get('comment')?.value;
+    
+    const hasReplyContent = this.showReplyForm && this.replyForm.dirty && 
+      !!replyValue && typeof replyValue === 'string' && !!(replyValue as string).trim();
+      
+    const hasEditContent = this.showEditForm && this.editForm.dirty && 
+      !!editValue && typeof editValue === 'string' && !!(editValue as string).trim();
+    
+    return hasReplyContent || hasEditContent;
   }
 
   ngAfterViewInit() {
@@ -547,5 +564,21 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
       // Use utilsService.delay to wait for the DOM to update with the new HTML
       this.utilsService.delay(0).subscribe(() => this._initHighlightJs());
     }
+  }
+  
+  private _setupFormListeners(): void {
+    // Monitor reply form
+    this.replyForm.valueChanges.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.formDirtyChange.emit(this.isDirty());
+    });
+    
+    // Monitor edit form
+    this.editForm.valueChanges.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.formDirtyChange.emit(this.isDirty());
+    });
   }
 }
