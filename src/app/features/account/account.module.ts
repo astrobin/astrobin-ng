@@ -8,8 +8,16 @@ import { LoginPageComponent } from "./pages/login-page/login-page.component";
 import { LoggingInPageComponent } from "@features/account/pages/logging-in-page/logging-in-page.component";
 
 @NgModule({
-  declarations: [LoginPageComponent, LoggedInPageComponent, LoggingInPageComponent, LoggingOutPageComponent],
-  imports: [RouterModule.forChild(routes), SharedModule]
+  declarations: [
+    LoginPageComponent, 
+    LoggedInPageComponent, 
+    LoggingInPageComponent, 
+    LoggingOutPageComponent
+  ],
+  imports: [
+    RouterModule.forChild(routes), 
+    SharedModule
+  ]
 })
 export class AccountModule {
 }

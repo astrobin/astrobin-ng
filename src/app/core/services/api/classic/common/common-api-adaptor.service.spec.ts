@@ -84,6 +84,7 @@ describe("CommonApiAdaptorService", () => {
     it("should convert correctly", () => {
       const backendUser: BackendUserInterface = {
         id: 1,
+        avatar_id: 1,
         avatar: "/foo/avatar.jpg",
         large_avatar: "/foo/large-avatar.jpg",
         userprofile: 1,
@@ -137,6 +138,7 @@ describe("CommonApiAdaptorService", () => {
 
       expect(service.userFromBackend(backendUser)).toEqual({
         id: 1,
+        avatarId: 1,
         avatar: "/foo/avatar.jpg",
         largeAvatar: "/foo/large-avatar.jpg",
         userProfile: 1,

@@ -87,3 +87,21 @@
     background: none;
   }
 }
+
+.avatar-editor-offcanvas {
+  @media (min-width: $md-min) {
+    width: 50vw !important;
+    max-width: 600px !important;
+  }
+
+  @media (max-width: $sm-max) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  .offcanvas-body {
+    padding: 1rem;
+    height: calc(100% - 55px); /* Subtract the header height */
+    overflow-y: auto;
+  }
+}

@@ -25,6 +25,7 @@ export class UserGenerator {
       username: source.username || "Test",
       firstName: source.firstName || "Test",
       displayName: source.displayName || "Test",
+      avatarId: source.avatarId || null,
       avatar: source.avatar || null,
       largeAvatar: source.largeAvatar || null,
       lastLogin: source.lastLogin || "2010-01-01",

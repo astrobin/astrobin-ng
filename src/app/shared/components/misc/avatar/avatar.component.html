@@ -10,27 +10,40 @@
   </ng-template>
 
   <ng-template #imageTemplate>
-    <img [alt]="user.username" [src]="avatarUrl" />
+    <div class="avatar-wrapper">
+      <img [alt]="user.username" [src]="avatarUrl" />
 
-    <div class="badges">
       <div
-        *ngIf="showPremiumBadge && user?.validSubscription"
-        @fadeInOut
-        [ngbTooltip]="'Supporting member' | translate"
-        class="badge badge-premium"
+        *ngIf="showEditButton && isCurrentUser"
+        [ngbTooltip]="'Edit avatar' | translate"
+        class="edit-button"
         container="body"
       >
-        <fa-icon icon="asterisk"></fa-icon>
+        <button class="btn btn-sm" (click)="openAvatarEditor($event)">
+          <fa-icon icon="pencil"></fa-icon>
+        </button>
       </div>
 
-      <div
-        *ngIf="showFollowsYouBadge && followsYou"
-        @fadeInOut
-        [ngbTooltip]="'Follows you' | translate"
-        class="badge badge-follows-you"
-        container="body"
-      >
-        <fa-icon icon="person-walking-arrow-right"></fa-icon>
+      <div class="badges">
+        <div
+          *ngIf="showPremiumBadge && user?.validSubscription"
+          @fadeInOut
+          [ngbTooltip]="'Supporting member' | translate"
+          class="badge badge-premium"
+          container="body"
+        >
+          <fa-icon icon="asterisk"></fa-icon>
+        </div>
+
+        <div
+          *ngIf="showFollowsYouBadge && followsYou"
+          @fadeInOut
+          [ngbTooltip]="'Follows you' | translate"
+          class="badge badge-follows-you"
+          container="body"
+        >
+          <fa-icon icon="person-walking-arrow-right"></fa-icon>
+        </div>
       </div>
     </div>
   </ng-template>
