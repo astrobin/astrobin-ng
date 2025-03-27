@@ -1544,8 +1544,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const decM = Math.floor((decDeg - decD) * 60);
     const decS = Math.floor(((decDeg - decD) * 60 - decM) * 60);
 
-    // Return in very compact format
-    return `${raH}h${raM}m${raS}s, ${decSign}${decD}°${decM}'${decS}"`;
+    // Pad with zeros for consistent display in fixed-width font
+    const paddedRaM = raM.toString().padStart(2, '0');
+    const paddedRaS = raS.toString().padStart(2, '0');
+    const paddedDecM = decM.toString().padStart(2, '0');
+    const paddedDecS = decS.toString().padStart(2, '0');
+
+    // Return in very compact format with zero-padded minutes and seconds
+    return `${raH}h${paddedRaM}m${paddedRaS}s, ${decSign}${decD}°${paddedDecM}'${paddedDecS}"`;
   }
 
   protected clearCoordinates(): void {
