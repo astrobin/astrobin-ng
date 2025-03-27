@@ -149,6 +149,8 @@ import { ImageViewerGuidingEquipmentComponent } from "@shared/components/misc/im
 import { ImageViewerEquipmentItemsComponent } from "@shared/components/misc/image-viewer/image-viewer-equipment-items.component";
 import { NotificationsListComponent } from "@shared/components/misc/notifications-list/notifications-list.component";
 import { DragDropAreaComponent } from "@shared/components/misc/formly-field-chunked-file/drag-drop-area.component";
+import { AvatarManagerComponent } from "@shared/components/misc/avatar-manager/avatar-manager.component";
+import { AvatarEditorComponent } from "@shared/components/misc/avatar-editor/avatar-editor.component";
 import { CoordinatesDisplayComponent } from "@shared/components/misc/coordinates-display/coordinates-display.component";
 
 const modules = [
@@ -194,6 +196,8 @@ const modules = [
 const components = [
   AdManagerComponent,
   AvatarComponent,
+  AvatarEditorComponent,
+  AvatarManagerComponent,
   CameraComponent,
   ConfirmationDialogComponent,
   CountDownComponent,

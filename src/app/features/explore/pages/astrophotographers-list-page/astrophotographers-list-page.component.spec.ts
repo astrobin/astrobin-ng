@@ -18,6 +18,7 @@ import { TitleService } from "@core/services/title/title.service";
 import { LoadingService } from "@core/services/loading.service";
 import { UserService } from "@core/services/user.service";
 import { WindowRefService } from "@core/services/window-ref.service";
+import { Constants } from "@shared/constants";
 import { UtilsService } from "@core/services/utils/utils.service";
 import { CookieService } from "ngx-cookie";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
@@ -45,7 +46,7 @@ describe("AstrophotographersListPageComponent", () => {
     {
       username: "testuser1",
       displayName: "Test User 1",
-      avatarUrl: "/assets/images/default-avatar.jpeg",
+      avatarUrl: Constants.DEFAULT_AVATAR,
       images: 10,
       totalLikesReceived: 20,
       followers: 5,
@@ -64,7 +65,7 @@ describe("AstrophotographersListPageComponent", () => {
     {
       username: "testuser2",
       displayName: "Test User 2",
-      avatarUrl: "/assets/images/default-avatar.jpeg",
+      avatarUrl: Constants.DEFAULT_AVATAR,
       images: 15,
       totalLikesReceived: 30,
       followers: 10,
@@ -394,7 +395,7 @@ describe("AstrophotographersListPageComponent", () => {
 
     // Test with default avatar in URL
     const withDefaultAvatarInUrl = "https://example.com/images/default-avatar/123.png";
-    expect(component.getAvatarUrl(withDefaultAvatarInUrl)).toBe("/assets/images/default-avatar.jpeg?v=2");
+    expect(component.getAvatarUrl(withDefaultAvatarInUrl)).toBe(Constants.DEFAULT_AVATAR);
   });
 
   it("should load more data when requested", () => {

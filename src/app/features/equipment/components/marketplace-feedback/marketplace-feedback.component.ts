@@ -117,23 +117,19 @@ export class MarketplaceFeedbackComponent extends BaseComponentDirective impleme
     }
 
     this.currentUser$.pipe(take(1)).subscribe(user => {
-      const modalRef: NgbModalRef = this.modalService.open(NestedCommentsModalComponent, {
-        size: "lg",
-        centered: true
+      NestedCommentsModalComponent.open(this.modalService, {
+        contentType: this.contentType,
+        objectId: this.feedback.id,
+        allowSelfReply: false,
+        showReplyButton: false,
+        showTopLevelButton: false,
+        topLevelFormHeight: 150,
+        topLevelFormPlacement: "BOTTOM",
+        autoStartTopLevelStrategy:
+          user.id === this.feedback.recipient || user.id === this.feedback.user
+            ? NestedCommentsAutoStartTopLevelStrategy.ALWAYS
+            : null
       });
-      const modalComponent: NestedCommentsModalComponent = modalRef.componentInstance;
-
-      modalComponent.contentType = this.contentType;
-      modalComponent.objectId = this.feedback.id;
-      modalComponent.allowSelfReply = false;
-      modalComponent.showReplyButton = false;
-      modalComponent.showTopLevelButton = false;
-      modalComponent.topLevelFormHeight = 150;
-      modalComponent.topLevelFormPlacement = "BOTTOM";
-      modalComponent.autoStartTopLevelStrategy =
-        user.id === this.feedback.recipient || user.id === this.feedback.user
-          ? NestedCommentsAutoStartTopLevelStrategy.ALWAYS
-          : null;
     });
   }
 }

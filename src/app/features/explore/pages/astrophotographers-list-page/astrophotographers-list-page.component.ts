@@ -18,6 +18,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { RouterService } from "@core/services/router.service";
 import { UserService } from "@core/services/user.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Constants } from "@shared/constants";
 import { SearchType } from "@features/search/interfaces/search-model.interface";
 import { MatchType } from "@features/search/enums/match-type.enum";
 import { UtilsService } from "@core/services/utils/utils.service";
@@ -445,7 +446,7 @@ export class AstrophotographersListPageComponent extends BaseComponentDirective 
 
   getAvatarUrl(originalUrl: string): string {
     if (originalUrl && originalUrl.includes("default-avatar")) {
-      return "/assets/images/default-avatar.jpeg?v=2";
+      return Constants.DEFAULT_AVATAR;
     }
     return originalUrl;
   }

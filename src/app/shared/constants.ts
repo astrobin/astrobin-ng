@@ -229,4 +229,5 @@ export class Constants {
   static readonly COOKIE_CONSENT_DECLINE = "-1";
   static readonly GOOGLE_ANALYTICS_ID = "UA-844985-10";
   static readonly GOOGLE_TAG_MANAGER_ID = "GTM-KFP9R82";
+  static readonly DEFAULT_AVATAR = "/assets/images/default-avatar.jpeg?v=2";
 }

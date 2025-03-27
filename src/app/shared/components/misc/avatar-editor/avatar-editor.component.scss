@@ -1,0 +1,33 @@
+@import "src/app/styles/variables";
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.avatar-editor-offcanvas {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .offcanvas-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--lightGrey);
+
+    .offcanvas-title {
+      margin: 0;
+    }
+  }
+
+  .offcanvas-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+
+    astrobin-avatar-manager {
+      height: 100%;
+      display: block;
+    }
+  }
+}

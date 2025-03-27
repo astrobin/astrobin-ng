@@ -9,6 +9,7 @@ export interface UserInterface {
   username: string;
   firstName: string;
   displayName: string;
+  avatarId: number;
   avatar: string;
   largeAvatar: string;
   lastLogin: string;

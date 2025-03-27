@@ -1,5 +1,6 @@
 <astrobin-nested-comments
-  (close)="modal.dismiss()"
+  (close)="handleClose()"
+  (formDirtyChange)="isFormDirty = $event"
   [addCommentLabel]="addCommentLabel"
   [allowModeration]="allowModeration"
   [allowSelfReply]="allowSelfReply"

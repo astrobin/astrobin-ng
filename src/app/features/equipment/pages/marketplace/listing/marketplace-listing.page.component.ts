@@ -407,16 +407,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       .subscribe(([contentType, currentUser]) => {
         this.loadingService.setLoading(false);
 
-        const modalRef: NgbModalRef = this.modalService.open(NestedCommentsModalComponent, {
-          size: "lg",
-          centered: true
-        });
-        const componentInstance: NestedCommentsModalComponent = modalRef.componentInstance;
-
-        componentInstance.contentType = contentType;
-        componentInstance.objectId = privateConversation.id;
-
-        componentInstance.title =
+        const title =
           currentUser.id === this.listing.user
             ? this.translateService.instant("Private conversation with {{0}}", {
               0: privateConversation.userDisplayName
@@ -424,24 +415,31 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
             : this.translateService.instant("Private conversation with {{0}}", {
               0: this.listing.userDisplayName
             });
-
+            
+        let info = null;
         if (currentUser.id === this.listing.user || currentUser.id === privateConversation.user) {
-          componentInstance.info = this.translateService.instant(
+          info = this.translateService.instant(
               "For your safety, keep all communications on AstroBin. Off-platform conversations pose risks. " +
               "Messages here are permanent and can be used as evidence if needed."
             ) + ` <a href="https://welcome.astrobin.com/features/marketplace#faq-safety-tips" target="_blank">` +
             this.translateService.instant("Learn more") + `</a>`;
         }
 
-        componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
-        componentInstance.showReplyButton = false;
-        componentInstance.showTopLevelButton = false;
-        componentInstance.autoStartTopLevelStrategy =
-          currentUser.id === this.listing.user || currentUser.id === privateConversation.user
-            ? NestedCommentsAutoStartTopLevelStrategy.ALWAYS
-            : null;
-        componentInstance.topLevelFormPlacement = "BOTTOM";
-        componentInstance.topLevelFormHeight = 150;
+        const modalRef = NestedCommentsModalComponent.open(this.modalService, {
+          contentType: contentType,
+          objectId: privateConversation.id,
+          title: title,
+          info: info,
+          noCommentsLabel: this.translateService.instant("No messages yet."),
+          showReplyButton: false,
+          showTopLevelButton: false,
+          autoStartTopLevelStrategy:
+            currentUser.id === this.listing.user || currentUser.id === privateConversation.user
+              ? NestedCommentsAutoStartTopLevelStrategy.ALWAYS
+              : null,
+          topLevelFormPlacement: "BOTTOM",
+          topLevelFormHeight: 150
+        });
 
         modalRef.shown
           .pipe(
