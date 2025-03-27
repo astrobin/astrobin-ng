@@ -239,7 +239,7 @@ describe("AvatarManagerComponent", () => {
           backdrop: "static"
         })
       );
-      
+
       // Verify we're setting the correct properties
       expect(modalRefMock.componentInstance.title).toBeDefined();
       expect(modalRefMock.componentInstance.message).toBeDefined();
@@ -434,7 +434,7 @@ describe("AvatarManagerComponent", () => {
     it("should show current avatar panel when user has a custom avatar", () => {
       // By default, our mock user has a custom avatar URL
       fixture.detectChanges();
-      
+
       // Check that the current avatar panel is visible
       const currentAvatarPanel = fixture.debugElement.query(By.css(".current-avatar-panel"));
       expect(currentAvatarPanel).toBeTruthy();
@@ -444,26 +444,26 @@ describe("AvatarManagerComponent", () => {
       // Create a fresh fixture for this test
       TestBed.resetTestingModule();
       setupAvatarTestingModule(AvatarManagerComponent);
-      
+
       // Create the component with a user that has the default avatar
       const newFixture = TestBed.createComponent(AvatarManagerComponent);
       const newComponent = newFixture.componentInstance;
-      
+
       // Mock user with default avatar
       const userWithDefaultAvatar = UserGenerator.user({
         id: 1,
         username: "testuser",
         largeAvatar: "/assets/images/default-avatar.jpeg?v=2"  // Exactly matches Constants.DEFAULT_AVATAR
       });
-      
+
       // Set up the component
       newComponent.user = userWithDefaultAvatar;
       setupComponentObservables(newComponent, userWithDefaultAvatar);
-      
+
       // Initialize the component
       newComponent.ngOnInit();
       newFixture.detectChanges();
-      
+
       // Check that the current avatar panel is not in the DOM
       const currentAvatarPanel = newFixture.debugElement.query(By.css(".current-avatar-panel"));
       expect(currentAvatarPanel).toBeFalsy();
@@ -473,26 +473,26 @@ describe("AvatarManagerComponent", () => {
       // Create a fresh fixture for this test
       TestBed.resetTestingModule();
       setupAvatarTestingModule(AvatarManagerComponent);
-      
+
       // Create the component with a user that has the default avatar
       const newFixture = TestBed.createComponent(AvatarManagerComponent);
       const newComponent = newFixture.componentInstance;
-      
+
       // Mock user with default avatar
       const userWithDefaultAvatar = UserGenerator.user({
         id: 1,
         username: "testuser",
         largeAvatar: "/assets/images/default-avatar.jpeg?v=2"  // Exactly matches Constants.DEFAULT_AVATAR
       });
-      
+
       // Set up the component
       newComponent.user = userWithDefaultAvatar;
       setupComponentObservables(newComponent, userWithDefaultAvatar);
-      
+
       // Initialize the component
       newComponent.ngOnInit();
       newFixture.detectChanges();
-      
+
       // Check the heading text
       const heading = newFixture.debugElement.query(By.css('.upload-dropzone h5'));
       expect(heading.nativeElement.textContent).toContain('Upload avatar');
@@ -501,17 +501,17 @@ describe("AvatarManagerComponent", () => {
     it("should show 'New avatar' text when user has a custom avatar", () => {
       // Our mock user already has a custom avatar
       fixture.detectChanges();
-      
+
       // Check the heading text
-      const heading = fixture.debugElement.query(By.css('.upload-dropzone h5'));
-      expect(heading.nativeElement.textContent).toContain('New avatar');
+      const heading = fixture.debugElement.query(By.css('.avatar-info .btn-primary'));
+      expect(heading.nativeElement.textContent).toContain('Upload new');
     });
 
     it("should hide upload panel when deleting avatar", () => {
       // Set the isDeletingAvatar flag
       component["isDeletingAvatar"] = true;
       fixture.detectChanges();
-      
+
       // Check that the upload panel is not in the DOM
       const uploadPanel = fixture.debugElement.query(By.css('.upload-panel'));
       expect(uploadPanel).toBeFalsy();

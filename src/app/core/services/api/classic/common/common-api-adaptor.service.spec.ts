@@ -84,6 +84,7 @@ describe("CommonApiAdaptorService", () => {
     it("should convert correctly", () => {
       const backendUser: BackendUserInterface = {
         id: 1,
+        avatar_id: 1,
         avatar: "/foo/avatar.jpg",
         large_avatar: "/foo/large-avatar.jpg",
         userprofile: 1,
