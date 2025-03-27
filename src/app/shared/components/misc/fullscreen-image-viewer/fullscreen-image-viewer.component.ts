@@ -241,6 +241,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   // Store original handlers and position for freezing/unfreezing
   private _originalOnMouseMove: any = null;
   private _originalOnMouseWheel: any = null;
+  // Flags for drag operations
+  private _dragInProgress = false;
+  private _preventNextClick = false;
 
   constructor(
     public readonly store$: Store<MainState>,
@@ -486,6 +489,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Remove any measuring mousemove listener if it exists
     if (this.isBrowser && this.isMeasuringMode) {
       document.removeEventListener("mousemove", this._onMeasuringMouseMove);
+
+      // Also clean up drag event listeners if needed
+      document.removeEventListener("mousemove", this._onDragMove);
+      document.removeEventListener("mouseup", this._onDragEnd);
     }
 
     // Clear any measuring zoom notification
@@ -1164,6 +1171,78 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.changeDetectorRef.markForCheck();
   }
 
+  /**
+   * Handle the mousedown event to either:
+   * 1. Set a start point if one doesn't exist
+   * 2. Start a drag operation if start point exists but no end point
+   */
+  protected handleStartPointOrDrag(event: MouseEvent): void {
+    if (!this.isMeasuringMode) {
+      return;
+    }
+
+    // Check if the click is on UI elements that should be excluded from measurement
+    const target = event.target as HTMLElement;
+    if (target.closest(".zoom-modes") || target.closest(".close") ||
+      target.closest(".measuring-reset") || target.closest(".measure-distance")) {
+      return;
+    }
+
+    // Get the image element and check if mousedown is over the image
+    const imageElement = this._getMeasurementImageElement();
+    if (!imageElement) {
+      return;
+    }
+
+    const imageRect = imageElement.getBoundingClientRect();
+    if (
+      event.clientX < imageRect.left ||
+      event.clientX > imageRect.right ||
+      event.clientY < imageRect.top ||
+      event.clientY > imageRect.bottom
+    ) {
+      return;
+    }
+
+    // If we don't have a start point, set it now
+    if (!this.measureStartPoint) {
+      // Extract current RA/Dec at mouse position if available
+      let ra = null, dec = null;
+
+      if (this.revision?.solution) {
+        const coords = this._calculateCoordinatesAtPoint(event.clientX, event.clientY);
+        if (coords) {
+          ra = coords.ra;
+          dec = coords.dec;
+        }
+      }
+
+      this.measureStartPoint = {
+        x: event.clientX,
+        y: event.clientY,
+        ra,
+        dec
+      };
+
+      // Set the flag to prevent the upcoming click event from being processed
+      this._preventNextClick = true;
+      setTimeout(() => {
+        this._preventNextClick = false;
+      }, 100);
+
+      this.changeDetectorRef.markForCheck();
+    }
+    // If we have a start point but no end point, start a drag operation
+    else if (!this.measureEndPoint) {
+      // Start the drag operation
+      this._dragInProgress = true;
+
+      // Add document-level handlers for drag operations
+      document.addEventListener("mousemove", this._onDragMove);
+      document.addEventListener("mouseup", this._onDragEnd);
+    }
+  }
+
   protected handleMeasurementClick(event: MouseEvent): void {
     if (!this.isMeasuringMode) {
       return;
@@ -1171,6 +1250,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     event.preventDefault();
     event.stopPropagation();
+
+    // Skip this click if it was triggered as part of a drag operation
+    if (this._preventNextClick) {
+      return;
+    }
 
     // Main measurement click handler
 
@@ -1182,21 +1266,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       return;
     }
 
-    // Try the full container image first, but fallback to container image if full container is not visible
-    let imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
-
-    // If the full container image has display:none or no dimensions, fallback to the container image
-    if (imageElement) {
-      const rect = imageElement.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) {
-        // Fallback to using container image
-        imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-      }
-    } else {
-      // Full container image not found, try container image
-      imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-    }
-
+    const imageElement = this._getMeasurementImageElement();
     if (!imageElement) {
       return;
     }
@@ -1263,104 +1333,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           dec
         };
 
-        // Calculate angular distance if both points have RA/Dec
-        if (
-          this.measureStartPoint.ra !== null &&
-          this.measureStartPoint.dec !== null &&
-          this.measureEndPoint.ra !== null &&
-          this.measureEndPoint.dec !== null
-        ) {
-          this.measureDistance = this._calculateAngularDistance(
-            this.measureStartPoint.ra,
-            this.measureStartPoint.dec,
-            this.measureEndPoint.ra,
-            this.measureEndPoint.dec
-          );
-        } else {
-          // If we can't calculate angular distance, show a pixel distance instead
-          const pixelDistance = Math.sqrt(
-            Math.pow(this.measureEndPoint.x - this.measureStartPoint.x, 2) +
-            Math.pow(this.measureEndPoint.y - this.measureStartPoint.y, 2)
-          ).toFixed(1);
-          this.measureDistance = this.translateService.instant("{{0}} pixels", { 0: pixelDistance });
-        }
-
-        // Calculate label positions using the same approach as in the label position functions
-        const labelWidth = 120;
-        const labelHeight = 25;
-        const pointRadius = 6;
-        const labelDistance = 24;
-
-        // Calculate angle of the line
-        const dx = this.measureEndPoint.x - this.measureStartPoint.x;
-        const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-        const angleRad = Math.atan2(dy, dx);
-
-        // Check if the line is nearly horizontal or vertical
-        const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
-        const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI / 2) < Math.PI / 12;
-
-        // Calculate extended positions for labels with extra distance for near-horizontal lines
-        const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
-
-        // Start label - opposite direction of the line
-        const startExtX = this.measureStartPoint.x - (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
-        const startExtY = this.measureStartPoint.y - (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
-
-        // End label - along the direction of the line
-        const endExtX = this.measureEndPoint.x + (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
-        const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
-
-        // Calculate final label positions
-        let startLabelX: number, endLabelX: number;
-
-        if (isNearVertical) {
-          // For near-vertical lines, center align both labels
-          startLabelX = startExtX;
-          endLabelX = endExtX;
-        } else if (isNearHorizontal) {
-          // For near-horizontal lines, increase the vertical offset to avoid overlap
-          startLabelX = startExtX - (labelWidth / 2);
-          endLabelX = endExtX - (labelWidth / 2);
-        } else if (angleRad > -Math.PI / 2 && angleRad < Math.PI / 2) {
-          // Line points rightward
-          startLabelX = startExtX - (labelWidth / 2);
-          endLabelX = endExtX - (labelWidth / 2);
-        } else {
-          // Line points leftward
-          startLabelX = startExtX - (labelWidth / 2);
-          endLabelX = endExtX - (labelWidth / 2);
-        }
-
-        // Vertical position (centered)
-        const startLabelY = startExtY - (labelHeight / 2);
-        const endLabelY = endExtY - (labelHeight / 2);
-        // Push to your measurements array:
-        this.previousMeasurements.push({
-          startX: this.measureStartPoint.x,
-          startY: this.measureStartPoint.y,
-          endX: this.measureEndPoint.x,
-          endY: this.measureEndPoint.y,
-          midX: (this.measureStartPoint.x + this.measureEndPoint.x) / 2,
-          midY: (this.measureStartPoint.y + this.measureEndPoint.y) / 2,
-          distance: this.measureDistance,
-          timestamp: Date.now(),
-          startRa: this.measureStartPoint.ra,
-          startDec: this.measureStartPoint.dec,
-          endRa: this.measureEndPoint.ra,
-          endDec: this.measureEndPoint.dec,
-
-          // Positions for the label’s *center*:
-          startLabelX,
-          startLabelY,
-          endLabelX,
-          endLabelY
-        });
-
-        // Reset points to start a new measurement (but stay in measuring mode)
-        this.measureDistance = null;
-        this.measureStartPoint = null;
-        this.measureEndPoint = null;
+        // Use the shared measurement calculation and storage method
+        this._calculateAndStoreMeasurement();
       }
 
       this.changeDetectorRef.markForCheck();
@@ -1789,6 +1763,217 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     );
   }
 
+  // Bound handlers for document-level drag events
+  private _onDragMove = (event: MouseEvent) => {
+    if (!this._dragInProgress) {
+      return;
+    }
+
+    // Update the mouse position for drawing the preview line
+    this.mouseX = event.clientX;
+    this.mouseY = event.clientY;
+    this.changeDetectorRef.markForCheck();
+  };
+
+  private _onDragEnd = (event: MouseEvent) => {
+    if (!this._dragInProgress) {
+      return;
+    }
+
+    // Clean up document-level handlers
+    document.removeEventListener("mousemove", this._onDragMove);
+    document.removeEventListener("mouseup", this._onDragEnd);
+
+    // Set the end point at the current mouse position
+    const imageElement = this._getMeasurementImageElement();
+    if (imageElement) {
+      const imageRect = imageElement.getBoundingClientRect();
+
+      // Only complete the measurement if the mouseup is over the image
+      if (
+        event.clientX >= imageRect.left &&
+        event.clientX <= imageRect.right &&
+        event.clientY >= imageRect.top &&
+        event.clientY <= imageRect.bottom
+      ) {
+        // Check if we've moved enough from the start point to consider it a drag
+        const dx = event.clientX - this.measureStartPoint.x;
+        const dy = event.clientY - this.measureStartPoint.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Only set end point if distance is significant (to avoid accidental clicks)
+        if (distance > 5) {
+          // Extract current RA/Dec at mouse position
+          let ra = null, dec = null;
+
+          if (this.revision?.solution) {
+            const coords = this._calculateCoordinatesAtPoint(event.clientX, event.clientY);
+            if (coords) {
+              ra = coords.ra;
+              dec = coords.dec;
+            }
+          }
+
+          this.measureEndPoint = {
+            x: event.clientX,
+            y: event.clientY,
+            ra,
+            dec
+          };
+
+          // Calculate and store measurement
+          this._calculateAndStoreMeasurement();
+
+          // The _calculateAndStoreMeasurement method already resets the points
+          // so we don't need to call resetMeasurement() again
+        }
+      }
+    }
+
+    // End the drag operation
+    this._dragInProgress = false;
+
+    // Prevent any click events following this mouseup from being processed
+    // by setting a flag that will be checked in the handleMeasurementClick method
+    this._preventNextClick = true;
+    setTimeout(() => {
+      this._preventNextClick = false;
+    }, 100);
+
+    this.changeDetectorRef.markForCheck();
+  };
+
+  /**
+   * Helper to get the appropriate image element for measurement
+   */
+  private _getMeasurementImageElement(): HTMLElement {
+    // Try the full container image first, but fallback to container image if full container is not visible
+    let imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
+
+    // If the full container image has display:none or no dimensions, fallback to the container image
+    if (imageElement) {
+      const rect = imageElement.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) {
+        // Fallback to using container image
+        imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+      }
+    } else {
+      // Full container image not found, try container image
+      imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
+    }
+
+    return imageElement;
+  }
+
+  /**
+   * Calculate the measurement distance and store it
+   */
+  private _calculateAndStoreMeasurement(): void {
+    if (!this.measureStartPoint || !this.measureEndPoint) {
+      return;
+    }
+
+    // Calculate angular distance if both points have RA/Dec
+    if (
+      this.measureStartPoint.ra !== null &&
+      this.measureStartPoint.dec !== null &&
+      this.measureEndPoint.ra !== null &&
+      this.measureEndPoint.dec !== null
+    ) {
+      this.measureDistance = this._calculateAngularDistance(
+        this.measureStartPoint.ra,
+        this.measureStartPoint.dec,
+        this.measureEndPoint.ra,
+        this.measureEndPoint.dec
+      );
+    } else {
+      // If we can't calculate angular distance, show a pixel distance instead
+      const pixelDistance = Math.sqrt(
+        Math.pow(this.measureEndPoint.x - this.measureStartPoint.x, 2) +
+        Math.pow(this.measureEndPoint.y - this.measureStartPoint.y, 2)
+      ).toFixed(1);
+      this.measureDistance = this.translateService.instant("{{0}} pixels", { 0: pixelDistance });
+    }
+
+    // Calculate label positions
+    const labelWidth = 120;
+    const labelHeight = 25;
+    const pointRadius = 6;
+    const labelDistance = 24;
+
+    // Calculate angle of the line
+    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
+    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
+    const angleRad = Math.atan2(dy, dx);
+
+    // Check if the line is nearly horizontal or vertical
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
+    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI / 2) < Math.PI / 12;
+
+    // Calculate extended positions for labels with extra distance for near-horizontal lines
+    const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
+
+    // Start label - opposite direction of the line
+    const startExtX = this.measureStartPoint.x - (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
+    const startExtY = this.measureStartPoint.y - (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
+
+    // End label - along the direction of the line
+    const endExtX = this.measureEndPoint.x + (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
+    const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
+
+    // Calculate final label positions
+    let startLabelX: number, endLabelX: number;
+
+    if (isNearVertical) {
+      // For near-vertical lines, center align both labels
+      startLabelX = startExtX;
+      endLabelX = endExtX;
+    } else if (isNearHorizontal) {
+      // For near-horizontal lines, increase the vertical offset to avoid overlap
+      startLabelX = startExtX - (labelWidth / 2);
+      endLabelX = endExtX - (labelWidth / 2);
+    } else if (angleRad > -Math.PI / 2 && angleRad < Math.PI / 2) {
+      // Line points rightward
+      startLabelX = startExtX - (labelWidth / 2);
+      endLabelX = endExtX - (labelWidth / 2);
+    } else {
+      // Line points leftward
+      startLabelX = startExtX - (labelWidth / 2);
+      endLabelX = endExtX - (labelWidth / 2);
+    }
+
+    // Vertical position (centered)
+    const startLabelY = startExtY - (labelHeight / 2);
+    const endLabelY = endExtY - (labelHeight / 2);
+
+    // Push to measurements array
+    this.previousMeasurements.push({
+      startX: this.measureStartPoint.x,
+      startY: this.measureStartPoint.y,
+      endX: this.measureEndPoint.x,
+      endY: this.measureEndPoint.y,
+      midX: (this.measureStartPoint.x + this.measureEndPoint.x) / 2,
+      midY: (this.measureStartPoint.y + this.measureEndPoint.y) / 2,
+      distance: this.measureDistance,
+      timestamp: Date.now(),
+      startRa: this.measureStartPoint.ra,
+      startDec: this.measureStartPoint.dec,
+      endRa: this.measureEndPoint.ra,
+      endDec: this.measureEndPoint.dec,
+      startLabelX,
+      startLabelY,
+      endLabelX,
+      endLabelY
+    });
+
+    // Reset points to start a new measurement
+    this.measureDistance = null;
+    this.measureStartPoint = null;
+    this.measureEndPoint = null;
+
+    this.changeDetectorRef.markForCheck();
+  }
+
   /**
    * Check if the current zoom level is at the default (fit to window) level
    */
@@ -1822,8 +2007,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * This updates the mouseX/mouseY positions for drawing the dashed line
    */
   private handleMeasuringMouseMove(event: MouseEvent): void {
-    // Only update if in measuring mode and we've started a measurement
-    if (this.isMeasuringMode && this.measureStartPoint && !this.measureEndPoint) {
+    // Only update if in measuring mode
+    if (this.isMeasuringMode) {
+      // Always update the mouse position for visual feedback
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;
       this.changeDetectorRef.markForCheck();

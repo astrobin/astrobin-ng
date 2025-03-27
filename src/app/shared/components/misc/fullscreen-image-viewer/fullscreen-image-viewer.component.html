@@ -558,11 +558,12 @@
       </div>
     </div>
 
-    <!-- Overlay for capturing clicks during measuring mode -->
+    <!-- Overlay for capturing clicks and drags during measuring mode -->
     <div
       *ngIf="isMeasuringMode"
       class="measure-click-overlay"
       (click)="handleMeasurementClick($event)"
+      (mousedown)="handleStartPointOrDrag($event)"
     ></div>
   </div>
 
