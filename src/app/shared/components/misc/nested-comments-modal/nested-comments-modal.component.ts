@@ -80,14 +80,11 @@ export class NestedCommentsModalComponent extends BaseComponentDirective {
   }
 
   /**
-   * Handles the close button click with confirmation if needed
+   * Handles the close button click
+   * The beforeDismiss handler will take care of the confirmation if needed
    */
   handleClose(): void {
-    this.confirmDismissIfDirty().then(confirmed => {
-      if (confirmed) {
-        this.modal.dismiss();
-      }
-    });
+    this.modal.dismiss();
   }
 
   /**
