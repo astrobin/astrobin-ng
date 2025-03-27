@@ -1411,122 +1411,64 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     if (!this.measureStartPoint || !this.measureEndPoint) {
       return this.measureStartPoint?.x || 0;
     }
-    const labelWidth = 120;
-    const pointRadius = 6;
-    const labelDistance = 24; // Distance beyond the point
-
-    // Calculate angle of the line
-    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
-    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-    const length = Math.sqrt(dx * dx + dy * dy) || 1;
-    const angleRad = Math.atan2(dy, dx);
-
-    // Check if the line is nearly horizontal or vertical
-    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
-    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI / 2) < Math.PI / 12;
-
-    // Start label - opposite direction of the line with extra distance for near-horizontal lines
-    const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
-    // For vertical lines, add horizontal offset to center labels
-    const verticalOffset = isNearVertical ? labelWidth / 2 : 0;
-    const startExtX = this.measureStartPoint.x - (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad) - verticalOffset;
-
-    // Add the necessary offset based on text anchor positioning
-    if (isNearVertical) {
-      // For near-vertical lines, use middle alignment with increased distance
-      return startExtX;
-    } else if (isNearHorizontal) {
-      // For near-horizontal lines, increase the vertical offset to avoid overlap
-      return startExtX - (labelWidth / 2);
-    } else if (angleRad > -Math.PI / 2 && angleRad < Math.PI / 2) {
-      // Line points rightward - align text end to point
-      return startExtX - (labelWidth / 2);
-    } else {
-      // Line points leftward - align text start to point
-      return startExtX - (labelWidth / 2);
-    }
+    
+    // Use the shared function to calculate optimal label positions
+    const labelPositions = this._calculateLabelPositions(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+    
+    return labelPositions.startLabelX;
   }
 
   protected calculateStartLabelY(): number {
     if (!this.measureStartPoint || !this.measureEndPoint) {
       return this.measureStartPoint?.y || 0;
     }
-    const labelHeight = 25;
-    const pointRadius = 6;
-    const labelDistance = 24; // Distance beyond the point
-
-    // Calculate angle of the line
-    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
-    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-    const angleRad = Math.atan2(dy, dx);
-
-    // Check if the line is nearly horizontal
-    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
-
-    // Start label - opposite direction of the line
-    const startExtY = this.measureStartPoint.y - (labelDistance + pointRadius) * Math.sin(angleRad);
-
-    // Center vertically
-    return startExtY - (labelHeight / 2);
+    
+    // Use the shared function to calculate optimal label positions
+    const labelPositions = this._calculateLabelPositions(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+    
+    return labelPositions.startLabelY;
   }
 
   protected calculateEndLabelX(): number {
     if (!this.measureStartPoint || !this.measureEndPoint) {
       return this.measureEndPoint?.x || 0;
     }
-    const labelWidth = 120;
-    const pointRadius = 6;
-    const labelDistance = 24; // Distance beyond the point
-
-    // Calculate angle of the line
-    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
-    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-    const angleRad = Math.atan2(dy, dx);
-
-    // Check if the line is nearly horizontal or vertical
-    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
-    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI / 2) < Math.PI / 12;
-
-    // End label - along the direction of the line with extra distance for near-horizontal lines
-    const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
-    // For vertical lines, add horizontal offset to center labels
-    const verticalOffset = isNearVertical ? labelWidth / 2 : 0;
-    const endExtX = this.measureEndPoint.x + (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad) - verticalOffset;
-
-    // Add the necessary offset based on text anchor positioning
-    if (isNearVertical) {
-      // For near-vertical lines, use middle alignment
-      return endExtX;
-    } else if (isNearHorizontal) {
-      // For near-horizontal lines, increase the vertical offset to avoid overlap
-      return endExtX - (labelWidth / 2);
-    } else if (angleRad > -Math.PI / 2 && angleRad < Math.PI / 2) {
-      // Line points rightward - align text start to point
-      return endExtX - (labelWidth / 2);
-    } else {
-      // Line points leftward - align text end to point
-      return endExtX - (labelWidth / 2);
-    }
+    
+    // Use the shared function to calculate optimal label positions
+    const labelPositions = this._calculateLabelPositions(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+    
+    return labelPositions.endLabelX;
   }
 
   protected calculateEndLabelY(): number {
     if (!this.measureStartPoint || !this.measureEndPoint) {
       return this.measureEndPoint?.y || 0;
     }
-    const labelHeight = 25;
-    const pointRadius = 6;
-    const labelDistance = 24; // Distance beyond the point
-
-    // Calculate angle of the line
-    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
-    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-    const angleRad = Math.atan2(dy, dx);
-
-    // End label - along the direction of the line
-    const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius) * Math.sin(angleRad);
-
-    // Center vertically
-    return endExtY - (labelHeight / 2);
+    
+    // Use the shared function to calculate optimal label positions
+    const labelPositions = this._calculateLabelPositions(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+    
+    return labelPositions.endLabelY;
   }
 
   protected formatCoordinatesCompact(ra: number, dec: number): string {
@@ -1949,56 +1891,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.measureDistance = this.translateService.instant("{{0}} pixels", { 0: pixelDistance });
     }
 
-    // Calculate label positions
-    const labelWidth = 120;
-    const labelHeight = 25;
-    const pointRadius = 6;
-    const labelDistance = 24;
-
-    // Calculate angle of the line
-    const dx = this.measureEndPoint.x - this.measureStartPoint.x;
-    const dy = this.measureEndPoint.y - this.measureStartPoint.y;
-    const angleRad = Math.atan2(dy, dx);
-
-    // Check if the line is nearly horizontal or vertical
-    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
-    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI / 2) < Math.PI / 12;
-
-    // Calculate extended positions for labels with extra distance for near-horizontal lines
-    const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
-
-    // Start label - opposite direction of the line
-    const startExtX = this.measureStartPoint.x - (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
-    const startExtY = this.measureStartPoint.y - (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
-
-    // End label - along the direction of the line
-    const endExtX = this.measureEndPoint.x + (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
-    const endExtY = this.measureEndPoint.y + (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
-
-    // Calculate final label positions
-    let startLabelX: number, endLabelX: number;
-
-    if (isNearVertical) {
-      // For near-vertical lines, center align both labels
-      startLabelX = startExtX;
-      endLabelX = endExtX;
-    } else if (isNearHorizontal) {
-      // For near-horizontal lines, increase the vertical offset to avoid overlap
-      startLabelX = startExtX - (labelWidth / 2);
-      endLabelX = endExtX - (labelWidth / 2);
-    } else if (angleRad > -Math.PI / 2 && angleRad < Math.PI / 2) {
-      // Line points rightward
-      startLabelX = startExtX - (labelWidth / 2);
-      endLabelX = endExtX - (labelWidth / 2);
-    } else {
-      // Line points leftward
-      startLabelX = startExtX - (labelWidth / 2);
-      endLabelX = endExtX - (labelWidth / 2);
-    }
-
-    // Vertical position (centered)
-    const startLabelY = startExtY - (labelHeight / 2);
-    const endLabelY = endExtY - (labelHeight / 2);
+    // Calculate optimal label positions using our shared function
+    const labelPositions = this._calculateLabelPositions(
+      this.measureStartPoint.x,
+      this.measureStartPoint.y,
+      this.measureEndPoint.x,
+      this.measureEndPoint.y
+    );
+    
+    // Extract the calculated positions
+    const startLabelX = labelPositions.startLabelX;
+    const startLabelY = labelPositions.startLabelY;
+    const endLabelX = labelPositions.endLabelX;
+    const endLabelY = labelPositions.endLabelY;
 
     // Push to measurements array
     this.previousMeasurements.push({
@@ -3583,22 +3488,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _updateMeasurementLabelPositions(measurement): void {
     if (!measurement) return;
 
-    // Calculate label positions for coordinates (perpendicular to line)
-    const dx = measurement.endX - measurement.startX;
-    const dy = measurement.endY - measurement.startY;
-    const lineAngle = Math.atan2(dy, dx);
-    const perpendicular = lineAngle + Math.PI / 2;
-    const offset = 20; // pixels
-
     // Update midpoint
     measurement.midX = (measurement.startX + measurement.endX) / 2;
     measurement.midY = (measurement.startY + measurement.endY) / 2;
 
-    // Update label positions
-    measurement.startLabelX = measurement.startX + offset * Math.cos(perpendicular);
-    measurement.startLabelY = measurement.startY + offset * Math.sin(perpendicular);
-    measurement.endLabelX = measurement.endX + offset * Math.cos(perpendicular);
-    measurement.endLabelY = measurement.endY + offset * Math.sin(perpendicular);
+    // Use the shared function to calculate optimal label positions
+    const labelPositions = this._calculateLabelPositions(
+      measurement.startX,
+      measurement.startY,
+      measurement.endX,
+      measurement.endY
+    );
+    
+    // Update the label positions
+    measurement.startLabelX = labelPositions.startLabelX;
+    measurement.startLabelY = labelPositions.startLabelY;
+    measurement.endLabelX = labelPositions.endLabelX;
+    measurement.endLabelY = labelPositions.endLabelY;
   }
 
   // Removed duplicate implementation
@@ -3607,6 +3513,62 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Recalculates the distance and position for a previous measurement
    * Uses same logic as our drag handlers for consistency
    */
+  // Calculate the optimal label positions for measurement points
+  private _calculateLabelPositions(
+    startX: number, 
+    startY: number, 
+    endX: number, 
+    endY: number
+  ): { startLabelX: number, startLabelY: number, endLabelX: number, endLabelY: number } {
+    const labelWidth = 120;
+    const labelHeight = 25;
+    const pointRadius = 6;
+    const labelDistance = 24;
+    
+    // Calculate angle of the line
+    const dx = endX - startX;
+    const dy = endY - startY;
+    const angleRad = Math.atan2(dy, dx);
+    
+    // Check if the line is nearly horizontal or vertical
+    const isNearHorizontal = Math.abs(angleRad) < Math.PI / 12 || Math.abs(Math.abs(angleRad) - Math.PI) < Math.PI / 12;
+    const isNearVertical = Math.abs(Math.abs(angleRad) - Math.PI / 2) < Math.PI / 12;
+    
+    // Calculate extended positions for labels with extra distance for near-horizontal lines
+    const extraDistance = isNearHorizontal ? labelDistance * 2 : 0;
+    
+    // Start label - opposite direction of the line
+    const startExtX = startX - (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
+    const startExtY = startY - (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
+    
+    // End label - along the direction of the line
+    const endExtX = endX + (labelDistance + pointRadius + extraDistance) * Math.cos(angleRad);
+    const endExtY = endY + (labelDistance + pointRadius + extraDistance) * Math.sin(angleRad);
+    
+    // Calculate final label positions
+    let startLabelX, endLabelX;
+    
+    if (isNearVertical) {
+      // For near-vertical lines, center align both labels
+      startLabelX = startExtX;
+      endLabelX = endExtX;
+    } else if (isNearHorizontal) {
+      // For near-horizontal lines, increase the vertical offset to avoid overlap
+      startLabelX = startExtX - (labelWidth / 2);
+      endLabelX = endExtX - (labelWidth / 2);
+    } else {
+      // For other angles
+      startLabelX = startExtX - (labelWidth / 2);
+      endLabelX = endExtX - (labelWidth / 2);
+    }
+    
+    // Vertical position (centered)
+    const startLabelY = startExtY - (labelHeight / 2);
+    const endLabelY = endExtY - (labelHeight / 2);
+    
+    return { startLabelX, startLabelY, endLabelX, endLabelY };
+  }
+  
   private _recalculatePreviousMeasurement(index: number): void {
     const measurement = this.previousMeasurements[index];
     if (!measurement) return;
@@ -3619,18 +3581,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     const pixelDistance = Math.sqrt(dx * dx + dy * dy);
     const pixelText = `${Math.round(pixelDistance)} px`;
 
-    // Update midpoint and label positions
+    // Update midpoint
     measurement.midX = (measurement.startX + measurement.endX) / 2;
     measurement.midY = (measurement.startY + measurement.endY) / 2;
 
-    const lineAngle = Math.atan2(dy, dx);
-    const perpendicular = lineAngle + Math.PI / 2;
-    const offset = 20; // pixels
-
-    measurement.startLabelX = measurement.startX + offset * Math.cos(perpendicular);
-    measurement.startLabelY = measurement.startY + offset * Math.sin(perpendicular);
-    measurement.endLabelX = measurement.endX + offset * Math.cos(perpendicular);
-    measurement.endLabelY = measurement.endY + offset * Math.sin(perpendicular);
+    // Calculate optimal label positions using the shared function
+    const labelPositions = this._calculateLabelPositions(
+      measurement.startX, 
+      measurement.startY, 
+      measurement.endX, 
+      measurement.endY
+    );
+    
+    // Update the label positions
+    measurement.startLabelX = labelPositions.startLabelX;
+    measurement.startLabelY = labelPositions.startLabelY;
+    measurement.endLabelX = labelPositions.endLabelX;
+    measurement.endLabelY = labelPositions.endLabelY;
 
     // If both points have celestial coordinates, calculate angular distance
     if (this.hasAdvancedSolution &&
