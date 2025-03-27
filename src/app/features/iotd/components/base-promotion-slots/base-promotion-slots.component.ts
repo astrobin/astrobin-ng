@@ -164,7 +164,8 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
         highlightId: highlightId,
         info: this.translateService.instant(
           "The judge who selected this image will be notified of top-level comments."
-        )
+        ),
+        size: "xxl" // Use xxl size as this component previously did
       });
     });
   }

@@ -138,11 +138,12 @@ export class NestedCommentsModalComponent extends BaseComponentDirective {
       topLevelFormHeight?: number;
       allowSelfReply?: boolean;
       allowModeration?: boolean;
+      size?: 'sm' | 'lg' | 'xl' | 'xxl'; // Modal size
     }
   ): NgbModalRef {
     // Use a beforeDismiss handler to check for unsaved changes
     const modalRef = modalService.open(NestedCommentsModalComponent, {
-      size: "lg",
+      size: options.size || "lg", // Default to lg if not specified
       centered: true,
       beforeDismiss: function() {
         // 'this' refers to the NgbModalRef instance
