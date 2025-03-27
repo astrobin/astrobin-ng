@@ -120,7 +120,7 @@
     "@types/googlemaps": "3.43.3",
     "@types/hammerjs": "2.0.46",
     "@types/jest": "29.5.14",
-    "@types/node": "18.19.80",
+    "@types/node": "18.19.84",
     "@types/supertest": "2.0.16",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
