@@ -87,6 +87,9 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   @Output()
   // eslint-disable-next-line @angular-eslint/no-output-native
   close = new EventEmitter<void>();
+  
+  @Output()
+  formDirtyChange = new EventEmitter<boolean>();
 
   comments$: Observable<NestedCommentInterface[]>;
   loadingComments = true;
@@ -96,6 +99,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   showTopLevelForm = false;
   _lastFetchedComments: NestedCommentInterface[] = null;
   _autoStartTopLevelRetries = 0;
+  hasNestedDirtyForm = false;
 
   // This the comment type of NestedComment, used to like comments.
   protected commentContentType: ContentTypeInterface;
@@ -122,6 +126,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     this.forceVisible = !!fragment && !!fragment.match(/^c\d+$/);
 
     this._initCommentContentType();
+    this._setupFormListeners();
   }
 
   ngOnChanges() {
@@ -134,6 +139,30 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
       this.isInViewport = true;
       this.refresh();
     }
+  }
+  
+  isDirty(): boolean {
+    // Check if top-level form is dirty and has content
+    const topLevelValue = this.form.get('topLevelComment')?.value;
+    
+    const hasTopLevelContent = this.showTopLevelForm && this.form.dirty && 
+      !!topLevelValue && typeof topLevelValue === 'string' && !!(topLevelValue as string).trim();
+      
+    if (hasTopLevelContent) {
+      return true;
+    }
+    
+    // Check if any nested comment form is dirty
+    if (this.hasNestedDirtyForm) {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  onNestedCommentFormDirtyChange(isDirty: boolean): void {
+    this.hasNestedDirtyForm = isDirty;
+    this.formDirtyChange.emit(this.isDirty());
   }
 
   refresh() {
@@ -287,5 +316,14 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
       this.changeDetectorRef.markForCheck();
     });
     this.store$.dispatch(new LoadContentType(payload));
+  }
+  
+  private _setupFormListeners(): void {
+    // Listen to changes in the top-level form
+    this.form.valueChanges.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.formDirtyChange.emit(this.isDirty());
+    });
   }
 }

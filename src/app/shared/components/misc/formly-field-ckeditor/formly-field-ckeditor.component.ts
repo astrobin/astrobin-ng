@@ -39,7 +39,7 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
     if (isPlatformServer(this.platformId)) {
       return;
     }
-    
+
     const win = this.windowRefService.nativeWindow as any;
     if (this.field?.id && win.CKEDITOR && typeof win.CKEDITOR.instances?.[this.field.id] !== "undefined") {
       win.CKEDITOR.instances[this.field.id].destroy();
@@ -51,28 +51,38 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
     if (isPlatformServer(this.platformId)) {
       return;
     }
-    
+
     this.utilsService.delay(20).subscribe(() => {
       // Additional safety check in case the component is destroyed during the delay
       if (isPlatformServer(this.platformId)) {
         return;
       }
-      
+
       if (this.editor?.instanceReady) {
-        this.editor.resize(null, this.props.height || 300);
         this.showEditor = true;
         this.changeDetectorRef.detectChanges();
+        this.utilsService.delay(20).subscribe(() => {
+          // Find the .cke_wysiwyg_div element.
+          const wysiwygDiv = this.windowRefService.nativeWindow.document.querySelector(
+            `#cke_${this.field.id} .cke_wysiwyg_div`
+          );
+
+          // Set its min-height to prop.height or 300.
+          if (wysiwygDiv) {
+            wysiwygDiv["style"].minHeight = `${this.field?.props?.height || 300}px`;
+          }
+        });
       } else {
         // Limit recursion depth for safety
-        if (!this._showEditor['recursionCount']) {
-          this._showEditor['recursionCount'] = 0;
+        if (!this._showEditor["recursionCount"]) {
+          this._showEditor["recursionCount"] = 0;
         }
-        
-        if (this._showEditor['recursionCount'] < 30) {
-          this._showEditor['recursionCount']++;
+
+        if (this._showEditor["recursionCount"] < 30) {
+          this._showEditor["recursionCount"]++;
           this._showEditor();
         } else {
-          console.warn('Maximum editor initialization attempts reached');
+          console.warn("Maximum editor initialization attempts reached");
           // At least show something to the user rather than infinite loading
           this.showEditor = true;
           this.changeDetectorRef.detectChanges();

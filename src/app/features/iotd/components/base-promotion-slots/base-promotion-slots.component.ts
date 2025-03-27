@@ -158,18 +158,15 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
 
   openComments(iotd: IotdInterface, highlightId: NestedCommentInterface["id"] = null) {
     this.iotdContentType$.pipe(take(1)).subscribe(contentType => {
-      const modalRef = this.modalService.open(NestedCommentsModalComponent, {
-        size: "xxl",
-        centered: true,
-        scrollable: false
+      NestedCommentsModalComponent.open(this.modalService, {
+        contentType: contentType,
+        objectId: iotd.id,
+        highlightId: highlightId,
+        info: this.translateService.instant(
+          "The judge who selected this image will be notified of top-level comments."
+        ),
+        size: "xxl" // Use xxl size as this component previously did
       });
-      const componentInstance: NestedCommentsModalComponent = modalRef.componentInstance;
-      componentInstance.contentType = contentType;
-      componentInstance.objectId = iotd.id;
-      componentInstance.highlightId = highlightId;
-      componentInstance.info = this.translateService.instant(
-        "The judge who selected this image will be notified of top-level comments."
-      );
     });
   }
 

@@ -122,6 +122,7 @@
     [restrictReplyToUserId]="restrictReplyToUserId"
     [showReplyButton]="showReplyButton"
     [commentContentType]="commentContentType"
+    (formDirtyChange)="onNestedCommentFormDirtyChange($event)"
   ></astrobin-nested-comment>
 </ng-template>
 

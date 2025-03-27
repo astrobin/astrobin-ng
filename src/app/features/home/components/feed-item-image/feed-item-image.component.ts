@@ -86,7 +86,7 @@ import { ContentTranslateService } from "@core/services/content-translate.servic
             >
               <small class="text-muted fst-italic d-block mb-2">{{ "Translated" | translate }}</small>
               <div [innerHTML]="translatedHtml"></div>
-            
+
             </div>
 
             <div
@@ -212,13 +212,12 @@ export class FeedItemImageComponent extends BaseComponentDirective implements On
       filter(contentType => !!contentType),
       take(1)
     ).subscribe(contentType => {
-      const modalRef = this.modalService.open(NestedCommentsModalComponent);
-      const componentInstance = modalRef.componentInstance as NestedCommentsModalComponent;
-
-      componentInstance.contentType = contentType;
-      componentInstance.objectId = +(this._getObjectId());
-      componentInstance.title = this._getDisplayName();
-      componentInstance.autoStartTopLevelStrategy = NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS;
+      NestedCommentsModalComponent.open(this.modalService, {
+        contentType: contentType,
+        objectId: +(this._getObjectId()),
+        title: this._getDisplayName(),
+        autoStartTopLevelStrategy: NestedCommentsAutoStartTopLevelStrategy.IF_NO_COMMENTS
+      });
     });
 
     this.store$.dispatch(new LoadContentTypeById({
