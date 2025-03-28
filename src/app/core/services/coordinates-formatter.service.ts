@@ -66,6 +66,7 @@ export class CoordinatesFormatterService {
       useClientCoords?: boolean; // Whether to use client coordinates instead of offset
       naturalWidth?: number;    // Optional natural width if not available from image element
       imageScale?: number;      // Optional scale to apply (for zoom)
+      rotationDegrees?: number; // Optional rotation angle in degrees
     }
   ): {
     coordinates: CoordinateData;
@@ -106,12 +107,35 @@ export class CoordinatesFormatterService {
     const imageRenderedWidth = options?.useClientCoords
       ? imageElement.getBoundingClientRect().width
       : imageElement.clientWidth;
+      
+    const imageRenderedHeight = options?.useClientCoords
+      ? imageElement.getBoundingClientRect().height
+      : imageElement.clientHeight;
 
     const imageNaturalWidth = options?.naturalWidth ||
       ((imageElement as HTMLImageElement).naturalWidth) || 1824;
 
     // HD_WIDTH is a fixed reference width that the plate-solving matrix is based on
     const HD_WIDTH = 1824;
+
+    // Apply rotation if specified
+    if (options?.rotationDegrees && options.rotationDegrees !== 0) {
+      // Calculate image center for rotation
+      const centerX = imageRenderedWidth / 2;
+      const centerY = imageRenderedHeight / 2;
+      
+      // Rotate the point around the center
+      const rotatedPoint = this._rotatePointAroundCenter(
+        relativeX, 
+        relativeY, 
+        centerX, 
+        centerY, 
+        -options.rotationDegrees // Use negative angle to counter the applied rotation
+      );
+      
+      relativeX = rotatedPoint.x;
+      relativeY = rotatedPoint.y;
+    }
 
     // Calculate x/y in HD space for coordinate interpolation
     let scaledX, scaledY;
@@ -322,6 +346,7 @@ export class CoordinatesFormatterService {
       useClientCoords?: boolean; // Whether to use client coordinates instead of offset
       naturalWidth?: number;    // Optional natural width if not available from image element
       imageScale?: number;      // Optional scale to apply (for zoom)
+      rotationDegrees?: number; // Optional rotation angle in degrees
     }
   ): {
     coordinates: FormattedCoordinates;
@@ -570,5 +595,39 @@ export class CoordinatesFormatterService {
       galacticL,
       galacticB
     );
+  }
+
+  /**
+   * Rotates a point around a center point by a given angle in degrees
+   * @param x X coordinate of the point to rotate
+   * @param y Y coordinate of the point to rotate
+   * @param centerX X coordinate of the center point
+   * @param centerY Y coordinate of the center point
+   * @param angleDegrees Angle in degrees to rotate by
+   * @returns The rotated point coordinates
+   */
+  private _rotatePointAroundCenter(
+    x: number,
+    y: number,
+    centerX: number,
+    centerY: number,
+    angleDegrees: number
+  ): { x: number; y: number } {
+    // Convert degrees to radians
+    const angleRadians = (angleDegrees * Math.PI) / 180;
+
+    // Translate point to origin
+    const translatedX = x - centerX;
+    const translatedY = y - centerY;
+
+    // Apply rotation
+    const rotatedX = translatedX * Math.cos(angleRadians) - translatedY * Math.sin(angleRadians);
+    const rotatedY = translatedX * Math.sin(angleRadians) + translatedY * Math.cos(angleRadians);
+
+    // Translate back from origin
+    return {
+      x: rotatedX + centerX,
+      y: rotatedY + centerY
+    };
   }
 }

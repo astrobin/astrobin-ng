@@ -1006,6 +1006,12 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
   // For debouncing coordinate updates during drag
   private _lastCoordUpdateTime = 0;
   private _coordUpdateDebounceMs = 100; // Update at most every 100ms
+  
+  // Current rotation in degrees, negative value to match the visual rotation direction
+  private _currentRotationDegrees = 0;
+  
+  // Output event when rotation changes
+  @Output() rotationChanged = new EventEmitter<number>();
 
   /**
    * Handle shape drag movement
@@ -2129,6 +2135,14 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
 
     // Convert to degrees
     return c * 180 / Math.PI;
+  }
+  
+  /**
+   * Get the current rotation angle in degrees
+   * @returns The current rotation angle in degrees (negative value)
+   */
+  getCurrentRotation(): number {
+    return this._currentRotationDegrees;
   }
 
   /**

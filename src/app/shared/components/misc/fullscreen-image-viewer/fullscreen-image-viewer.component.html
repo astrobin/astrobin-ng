@@ -435,6 +435,7 @@
     [windowHeight]="isBrowser ? windowRef.nativeWindow.innerHeight : 0"
     [setMouseOverUIElement]="setMouseOverUIElement.bind(this)"
     (exitMeasuringMode)="toggleMeasuringMode($event)"
+    (rotationChanged)="updateRotation($event)"
   ></astrobin-measuring-tool>
 
   <!-- Coordinate display -->

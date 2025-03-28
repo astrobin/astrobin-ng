@@ -1458,8 +1458,33 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   /**
    * Calculate the coordinates at the current mouse position
    */
+  // Track the current rotation angle in degrees
+  private _currentRotationDegrees = 0;
+
+  /**
+   * Updates the current rotation angle
+   * @param rotationDegrees Rotation angle in degrees
+   */
+  updateRotation(rotationDegrees: number): void {
+    this._currentRotationDegrees = rotationDegrees;
+    // Force recalculation if coordinates are being displayed
+    if (this.showCoordinates && this.mouseRa && this.mouseDec) {
+      const fakeEvent = {
+        clientX: this._lastMouseEvent?.clientX || 0,
+        clientY: this._lastMouseEvent?.clientY || 0
+      } as MouseEvent;
+      this._calculateMouseCoordinates(fakeEvent);
+    }
+  }
+
+  // Store last mouse event for recalculation
+  private _lastMouseEvent: MouseEvent;
+
   private _calculateMouseCoordinates(event: MouseEvent): void {
-    console.log("Fullscree image viewer: Calculating mouse coordinates: ", event.clientX, event.clientY);
+    // Store the last mouse event
+    this._lastMouseEvent = event;
+    
+    console.log("Fullscreen image viewer: Calculating mouse coordinates: ", event.clientX, event.clientY);
     // Don't calculate coordinates when using lens mode
     if (this.enableLens && this.ngxImageZoom?.zoomService?.zoomingEnabled) {
       this.mouseRa = null;
@@ -1503,7 +1528,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           this.advancedSolutionMatrix,
           {
             useClientCoords: true,
-            naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w
+            naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w,
+            rotationDegrees: this._currentRotationDegrees
           }
         );
 
