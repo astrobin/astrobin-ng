@@ -619,7 +619,9 @@
           [attr.cx]="(measurement.startX + measurement.endX) / 2" 
           [attr.cy]="(measurement.startY + measurement.endY) / 2"
           [attr.r]="calculateDistance(measurement.startX, measurement.startY, measurement.endX, measurement.endY) / 2"
-          class="measure-shape circle">
+          class="measure-shape circle"
+          (mousedown)="handleShapeDragStart($event, i, 'circle')"
+          [style.cursor]="'move'">
         </circle>
       </svg>
       
@@ -655,7 +657,9 @@
           [attr.y]="Math.min(measurement.startY, measurement.endY)"
           [attr.width]="Math.abs(measurement.endX - measurement.startX)"
           [attr.height]="Math.abs(measurement.endY - measurement.startY)"
-          class="measure-shape rectangle">
+          class="measure-shape rectangle"
+          (mousedown)="handleShapeDragStart($event, i, 'rectangle')"
+          [style.cursor]="'move'">
         </rect>
         
         <!-- Width dimension label -->

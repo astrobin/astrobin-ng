@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  buildVersion: "20250316-11",
+  buildVersion: "20250327-5",
   classicBaseUrl: "https://www.astrobin.com",
   classicApiUrl: "https://www.astrobin.com",
   cdnUrl: "https://cdn.astrobin.com",
