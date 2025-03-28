@@ -173,7 +173,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     startLabelY: number;
     endLabelX: number;
     endLabelY: number;
+    // Flags for showing shape visualizations
+    showCircle?: boolean;
+    showRectangle?: boolean;
   }> = [];
+  
+  // Flags for current measurement shapes
+  protected showCurrentCircle: boolean = false;
+  protected showCurrentRectangle: boolean = false;
 
   // Swipe-down properties
   protected touchStartY: { value: number } = { value: 0 };
@@ -203,7 +210,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private _lastTransform: string = null;
   private _imageBitmap: ImageBitmap = null;
   private _canvasImage: HTMLImageElement;
-
   // Bound handlers for various event types
   private _onMeasuringMouseMove = this.handleMeasuringMouseMove.bind(this);
   private _onPreviousMeasurementDragMove: any = null;
@@ -1394,6 +1400,160 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.changeDetectorRef.markForCheck();
   }
 
+  protected calculateDistance(x1: number, y1: number, x2: number, y2: number): number {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  }
+  
+  /**
+   * Formats angular distance in degrees to a DMS string
+   * @param angularDistance - Angular distance in degrees
+   * @returns Formatted string with degrees, arcminutes, and arcseconds
+   */
+  protected formatAngularDistance(angularDistance: number): string {
+    if (typeof angularDistance !== 'number' || isNaN(angularDistance)) {
+      return null;
+    }
+    
+    const degrees = Math.floor(angularDistance);
+    const arcminutes = Math.floor((angularDistance - degrees) * 60);
+    const arcseconds = Math.round(((angularDistance - degrees) * 60 - arcminutes) * 60);
+    
+    return `${degrees.toString().padStart(2, '0')}° ${arcminutes.toString().padStart(2, '0')}′ ${arcseconds.toString().padStart(2, '0')}″`;
+  }
+  
+  /**
+   * Get celestial coordinates for a horizontal line along a rectangle
+   * @param startX - First point X coordinate
+   * @param startY - First point Y coordinate
+   * @param endX - Second point X coordinate
+   * @param endY - First point Y coordinate (same as startY for horizontal line)
+   * @returns Angular distance as formatted string or null if not available
+   */
+  protected getHorizontalCelestialDistance(startX: number, startY: number, endX: number): string {
+    // Only calculate if advanced solution is available
+    if (!this.hasAdvancedSolution) {
+      return null;
+    }
+    
+    // Calculate celestial coordinates at both points
+    const startCoords = this._calculateCoordinatesAtPoint(startX, startY);
+    const endCoords = this._calculateCoordinatesAtPoint(endX, startY);
+    
+    if (!startCoords || !endCoords) {
+      return null;
+    }
+    
+    // Calculate angular distance
+    const angularDistance = this._calculateAngularDistance(
+      startCoords.ra,
+      startCoords.dec,
+      endCoords.ra,
+      endCoords.dec
+    );
+    
+    return this.formatAngularDistance(angularDistance);
+  }
+  
+  /**
+   * Get celestial coordinates for a vertical line along a rectangle
+   * @param startX - First point X coordinate (same as endX for vertical line)
+   * @param startY - First point Y coordinate
+   * @param endY - Second point Y coordinate
+   * @returns Angular distance as formatted string or null if not available
+   */
+  protected getVerticalCelestialDistance(startX: number, startY: number, endY: number): string {
+    // Only calculate if advanced solution is available
+    if (!this.hasAdvancedSolution) {
+      return null;
+    }
+    
+    // Calculate celestial coordinates at both points
+    const startCoords = this._calculateCoordinatesAtPoint(startX, startY);
+    const endCoords = this._calculateCoordinatesAtPoint(startX, endY);
+    
+    if (!startCoords || !endCoords) {
+      return null;
+    }
+    
+    // Calculate angular distance
+    const angularDistance = this._calculateAngularDistance(
+      startCoords.ra,
+      startCoords.dec,
+      endCoords.ra,
+      endCoords.dec
+    );
+    
+    return this.formatAngularDistance(angularDistance);
+  }
+
+  protected toggleCurrentCircle(event: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Toggle current measurement circle visibility
+    this.showCurrentCircle = !this.showCurrentCircle;
+    
+    // If turning on circle, turn off rectangle to avoid visual clutter
+    if (this.showCurrentCircle) {
+      this.showCurrentRectangle = false;
+    }
+    
+    this.changeDetectorRef.markForCheck();
+  }
+  
+  protected toggleCurrentRectangle(event: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Toggle current measurement rectangle visibility
+    this.showCurrentRectangle = !this.showCurrentRectangle;
+    
+    // If turning on rectangle, turn off circle to avoid visual clutter
+    if (this.showCurrentRectangle) {
+      this.showCurrentCircle = false;
+    }
+    
+    this.changeDetectorRef.markForCheck();
+  }
+  
+  protected toggleCircle(event: MouseEvent, index: number): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Toggle the circle for the specified measurement
+    this.previousMeasurements[index].showCircle = !this.previousMeasurements[index].showCircle;
+    
+    // If turning on circle, turn off rectangle to avoid visual clutter
+    if (this.previousMeasurements[index].showCircle) {
+      this.previousMeasurements[index].showRectangle = false;
+    }
+    
+    this.changeDetectorRef.markForCheck();
+  }
+  
+  protected toggleRectangle(event: MouseEvent, index: number): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Toggle the rectangle for the specified measurement
+    this.previousMeasurements[index].showRectangle = !this.previousMeasurements[index].showRectangle;
+    
+    // If turning on rectangle, turn off circle to avoid visual clutter
+    if (this.previousMeasurements[index].showRectangle) {
+      this.previousMeasurements[index].showCircle = false;
+    }
+    
+    this.changeDetectorRef.markForCheck();
+  }
+
   protected deleteMeasurement(event: MouseEvent, index: number): void {
     // Prevent event propagation to avoid triggering other click handlers
     if (event) {
@@ -1922,13 +2082,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       startLabelX,
       startLabelY,
       endLabelX,
-      endLabelY
+      endLabelY,
+      // Transfer the current shape options to the saved measurement
+      showCircle: this.showCurrentCircle,
+      showRectangle: this.showCurrentRectangle
     });
 
     // Reset points to start a new measurement
     this.measureDistance = null;
     this.measureStartPoint = null;
     this.measureEndPoint = null;
+    this.showCurrentCircle = false;
+    this.showCurrentRectangle = false;
 
     this.changeDetectorRef.markForCheck();
   }

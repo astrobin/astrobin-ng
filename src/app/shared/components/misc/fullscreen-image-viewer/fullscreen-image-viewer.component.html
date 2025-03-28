@@ -587,6 +587,136 @@
            (mousedown)="handlePreviousMeasurementDrag ? handlePreviousMeasurementDrag($event, i, 'end') : null">
         <div class="marker-dot"></div>
       </div>
+      
+      <!-- Circle drawing for previous measurement, if available -->
+      <svg *ngIf="measurement.showCircle" class="measure-shape-container"
+           [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
+           [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
+        <circle 
+          [attr.cx]="(measurement.startX + measurement.endX) / 2" 
+          [attr.cy]="(measurement.startY + measurement.endY) / 2"
+          [attr.r]="calculateDistance(measurement.startX, measurement.startY, measurement.endX, measurement.endY) / 2"
+          class="measure-shape circle">
+        </circle>
+      </svg>
+      
+      <!-- Rectangle drawing for previous measurement, if available -->
+      <svg *ngIf="measurement.showRectangle" class="measure-shape-container"
+           [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
+           [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
+        <!-- Rectangle -->
+        <rect 
+          [attr.x]="Math.min(measurement.startX, measurement.endX)" 
+          [attr.y]="Math.min(measurement.startY, measurement.endY)"
+          [attr.width]="Math.abs(measurement.endX - measurement.startX)"
+          [attr.height]="Math.abs(measurement.endY - measurement.startY)"
+          class="measure-shape rectangle">
+        </rect>
+        
+        <!-- Width dimension label -->
+        <g class="dimension-label width-label">
+          <!-- Width line -->
+          <line 
+            [attr.x1]="Math.min(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX)"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 15"
+            class="dimension-line">
+          </line>
+          
+          <!-- Dimension arrows -->
+          <line 
+            [attr.x1]="Math.min(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
+            class="dimension-arrow">
+          </line>
+          <line 
+            [attr.x1]="Math.min(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.min(measurement.startX, measurement.endX) + 5"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
+            class="dimension-arrow">
+          </line>
+          
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 10"
+            class="dimension-arrow">
+          </line>
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX)"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY) + 15"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) - 5"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) + 20"
+            class="dimension-arrow">
+          </line>
+          
+          <!-- Width text -->
+          <text 
+            [attr.x]="(Math.min(measurement.startX, measurement.endX) + Math.max(measurement.startX, measurement.endX)) / 2"
+            [attr.y]="Math.max(measurement.startY, measurement.endY) + 30"
+            text-anchor="middle"
+            class="dimension-text">
+            {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX)) || Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px' }}
+          </text>
+        </g>
+        
+        <!-- Height dimension label -->
+        <g class="dimension-label height-label">
+          <!-- Height line -->
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.y1]="Math.min(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY)"
+            class="dimension-line">
+          </line>
+          
+          <!-- Dimension arrows -->
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.y1]="Math.min(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
+            [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
+            class="dimension-arrow">
+          </line>
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.y1]="Math.min(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 35"
+            [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
+            class="dimension-arrow">
+          </line>
+          
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
+            class="dimension-arrow">
+          </line>
+          <line 
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.y1]="Math.max(measurement.startY, measurement.endY)"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 35"
+            [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
+            class="dimension-arrow">
+          </line>
+          
+          <!-- Height text -->
+          <text 
+            [attr.x]="Math.max(measurement.startX, measurement.endX) + 50"
+            [attr.y]="(Math.min(measurement.startY, measurement.endY) + Math.max(measurement.startY, measurement.endY)) / 2"
+            text-anchor="start"
+            class="dimension-text">
+            {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY)) || Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px' }}
+          </text>
+        </g>
+      </svg>
     </div>
 
     <!-- Distance labels - show previous measurements -->
@@ -597,31 +727,200 @@
          (mouseenter)="setMouseOverUIElement(true)"
          (mouseleave)="setMouseOverUIElement(false)">
       <span class="measurement-text">{{ measurement.distance }}</span>
-      <button *ngIf="!isDraggingPoint || !isDraggingPoint.startsWith('prev')" 
-              class="btn-delete-measurement" 
-              (click)="deleteMeasurement($event, i)">
-        <fa-icon icon="times"></fa-icon>
-      </button>
+      
+      <div class="measurement-actions">
+        <button class="btn-shape-action" 
+                [class.active]="measurement.showCircle"
+                (click)="toggleCircle($event, i)" 
+                title="{{ 'Draw circle' | translate }}">
+          <fa-icon icon="circle"></fa-icon>
+        </button>
+        
+        <button class="btn-shape-action" 
+                [class.active]="measurement.showRectangle"
+                (click)="toggleRectangle($event, i)" 
+                title="{{ 'Draw rectangle' | translate }}">
+          <fa-icon icon="square"></fa-icon>
+        </button>
+        
+        <button *ngIf="!isDraggingPoint || !isDraggingPoint.startsWith('prev')" 
+                class="btn-delete-measurement" 
+                (click)="deleteMeasurement($event, i)"
+                title="{{ 'Delete measurement' | translate }}">
+          <fa-icon icon="times"></fa-icon>
+        </button>
+      </div>
 
-      <small *ngIf="i === 0 && image && imageService.isPlateSolvable(image) && !hasAdvancedSolution"
-             class="measurement-note">
-        {{ 'Celestial measurements require advanced solving' | translate }}
-      </small>
-      <!-- No drag update note needed -->
+      <!-- Move the measurement note below, outside the main container to avoid wrapping -->
+      <div *ngIf="i === 0 && image && imageService.isPlateSolvable(image) && !hasAdvancedSolution"
+           class="measurement-note-container">
+        <small class="measurement-note">
+          {{ 'Celestial measurements require advanced solving' | translate }}
+        </small>
+      </div>
     </div>
 
-    <!-- Current measurement -->
+    <!-- Current measurement circle -->
+    <svg *ngIf="showCurrentCircle && measureStartPoint && measureEndPoint" class="measure-shape-container"
+         [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
+         [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
+      <circle 
+        [attr.cx]="(measureStartPoint.x + measureEndPoint.x) / 2" 
+        [attr.cy]="(measureStartPoint.y + measureEndPoint.y) / 2"
+        [attr.r]="calculateDistance(measureStartPoint.x, measureStartPoint.y, measureEndPoint.x, measureEndPoint.y) / 2"
+        class="measure-shape circle current">
+      </circle>
+    </svg>
+    
+    <!-- Current measurement rectangle -->
+    <svg *ngIf="showCurrentRectangle && measureStartPoint && measureEndPoint" class="measure-shape-container"
+         [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
+         [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
+      <!-- Rectangle -->
+      <rect 
+        [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
+        [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+        [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
+        [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
+        class="measure-shape rectangle current">
+      </rect>
+      
+      <!-- Width dimension label -->
+      <g class="dimension-label width-label">
+        <!-- Width line -->
+        <line 
+          [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          class="dimension-line current">
+        </line>
+        
+        <!-- Dimension arrows -->
+        <line 
+          [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
+          class="dimension-arrow current">
+        </line>
+        <line 
+          [attr.x1]="Math.min(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.min(measureStartPoint.x, measureEndPoint.x) + 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
+          class="dimension-arrow current">
+        </line>
+        
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 10"
+          class="dimension-arrow current">
+        </line>
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x)"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y) + 15"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) - 5"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) + 20"
+          class="dimension-arrow current">
+        </line>
+        
+        <!-- Width text -->
+        <text 
+          [attr.x]="(Math.min(measureStartPoint.x, measureEndPoint.x) + Math.max(measureStartPoint.x, measureEndPoint.x)) / 2"
+          [attr.y]="Math.max(measureStartPoint.y, measureEndPoint.y) + 30"
+          text-anchor="middle"
+          class="dimension-text current">
+          {{ getHorizontalCelestialDistance(Math.min(measureStartPoint.x, measureEndPoint.x), Math.max(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.x, measureEndPoint.x)) || Math.round(Math.abs(measureEndPoint.x - measureStartPoint.x)) + ' px' }}
+        </text>
+      </g>
+      
+      <!-- Height dimension label -->
+      <g class="dimension-label height-label">
+        <!-- Height line -->
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y)"
+          class="dimension-line current">
+        </line>
+        
+        <!-- Dimension arrows -->
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
+          [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
+          class="dimension-arrow current">
+        </line>
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
+          [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
+          class="dimension-arrow current">
+        </line>
+        
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
+          class="dimension-arrow current">
+        </line>
+        <line 
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
+          [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
+          class="dimension-arrow current">
+        </line>
+        
+        <!-- Height text -->
+        <text 
+          [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) + 50"
+          [attr.y]="(Math.min(measureStartPoint.y, measureEndPoint.y) + Math.max(measureStartPoint.y, measureEndPoint.y)) / 2"
+          text-anchor="start"
+          class="dimension-text current">
+          {{ getVerticalCelestialDistance(Math.max(measureStartPoint.x, measureEndPoint.x), Math.min(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.y, measureEndPoint.y)) || Math.round(Math.abs(measureEndPoint.y - measureStartPoint.y)) + ' px' }}
+        </text>
+      </g>
+    </svg>
+    
+    <!-- Current measurement display -->
     <div *ngIf="measureDistance" class="measure-distance current-measurement"
          [style.left.px]="(measureStartPoint.x + measureEndPoint.x) / 2"
          [style.top.px]="(measureStartPoint.y + measureEndPoint.y) / 2"
          (mouseenter)="setMouseOverUIElement(true)"
          (mouseleave)="setMouseOverUIElement(false)">
       <span class="measurement-text">{{ measureDistance }}</span>
-      <small *ngIf="image && imageService.isPlateSolvable(image) && !hasAdvancedSolution"
-             class="measurement-note">
-        {{ 'Celestial measurements require advanced solving' | translate }}
-      </small>
-      <!-- No drag update note needed -->
+      
+      <div class="measurement-actions">
+        <button class="btn-shape-action" 
+                [class.active]="showCurrentCircle"
+                (click)="toggleCurrentCircle($event)" 
+                title="{{ 'Draw circle' | translate }}">
+          <fa-icon icon="circle"></fa-icon>
+        </button>
+        
+        <button class="btn-shape-action" 
+                [class.active]="showCurrentRectangle"
+                (click)="toggleCurrentRectangle($event)" 
+                title="{{ 'Draw rectangle' | translate }}">
+          <fa-icon icon="square"></fa-icon>
+        </button>
+      </div>
+      
+      <!-- Move the measurement note below, outside the main container to avoid wrapping -->
+      <div *ngIf="image && imageService.isPlateSolvable(image) && !hasAdvancedSolution"
+           class="measurement-note-container">
+        <small class="measurement-note">
+          {{ 'Celestial measurements require advanced solving' | translate }}
+        </small>
+      </div>
     </div>
 
     <!-- Coordinate labels for previous measurements -->
