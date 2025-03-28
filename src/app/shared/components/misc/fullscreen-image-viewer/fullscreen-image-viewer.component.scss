@@ -292,6 +292,28 @@ $header-height: 63px;
     right: .75rem;
     transform: scale(.9);
 
+    .measuring-controls-right {
+      display: flex;
+      pointer-events: all;
+      z-index: 10; /* Higher z-index to ensure buttons are clickable */
+
+      .btn-outline-light {
+        background-color: rgba(0, 0, 0, 0.4);
+        border-color: rgba(255, 255, 255, 0.6);
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.7);
+          border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        &:focus, &:active {
+          box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+        }
+      }
+    }
+
     .kebab-menu-container {
       position: relative;
 
@@ -516,21 +538,21 @@ $header-height: 63px;
         transform: translate(-50%, -50%) scale(1.2);
         box-shadow: 0 0 8px rgba(255, 204, 0, 0.7);
       }
-      
+
       &:active {
         cursor: grabbing;
-        
+
         .marker-dot {
           background-color: #ff9900;
           transform: translate(-50%, -50%) scale(1.3);
           box-shadow: 0 0 12px rgba(255, 153, 0, 0.8);
         }
       }
-      
+
       &.dragging {
         cursor: grabbing;
         z-index: 10; /* Ensure dragged point stays on top */
-        
+
         .marker-dot {
           background-color: #ff9900;
           transform: translate(-50%, -50%) scale(1.3);
@@ -595,7 +617,7 @@ $header-height: 63px;
 
       &.start-marker .marker-dot {
         background-color: #4a90e2; // Blue for start point
-        
+
         &::after {
           content: "";
           position: absolute;
@@ -611,7 +633,7 @@ $header-height: 63px;
 
       &.end-marker .marker-dot {
         background-color: #e24a4a; // Red for end point
-        
+
         &::after {
           content: "";
           position: absolute;
@@ -625,16 +647,16 @@ $header-height: 63px;
           animation-delay: 1s;
         }
       }
-      
+
       &.previous-start-marker {
         z-index: 3; // Higher z-index than SVG lines
-        
+
         .marker-dot {
           background-color: #4a90e2; // Blue for start point
           width: 8px;
           height: 8px;
           opacity: 0.8;
-          
+
           &::after {
             content: "";
             position: absolute;
@@ -648,24 +670,24 @@ $header-height: 63px;
             animation-delay: 0.5s;
           }
         }
-        
+
         &:hover .marker-dot {
           opacity: 1;
           transform: translate(-50%, -50%) scale(1.3);
         }
-        
+
         /* Marker label removed */
       }
-      
+
       &.previous-end-marker {
         z-index: 3; // Higher z-index than SVG lines
-        
+
         .marker-dot {
           background-color: #e24a4a; // Red for end point
           width: 8px;
           height: 8px;
           opacity: 0.8;
-          
+
           &::after {
             content: "";
             position: absolute;
@@ -679,19 +701,19 @@ $header-height: 63px;
             animation-delay: 1.5s;
           }
         }
-        
+
         &:hover .marker-dot {
           opacity: 1;
           transform: translate(-50%, -50%) scale(1.3);
         }
-        
+
         /* Marker label removed */
       }
-      
+
       &.dragging {
         z-index: 10 !important;
       }
-      
+
       @keyframes pulse {
         0% {
           transform: scale(1);
@@ -739,7 +761,7 @@ $header-height: 63px;
           stroke: rgba(0, 0, 0, 0.5);
           stroke-width: 1px;
         }
-        
+
         &.original-position {
           fill: rgba(255, 255, 255, 0.3);
           stroke: rgba(255, 255, 255, 0.6);
@@ -747,7 +769,7 @@ $header-height: 63px;
           stroke-dasharray: 2 2;
         }
       }
-      
+
       .measure-line {
         &.drag-indicator {
           stroke: rgba(255, 255, 255, 0.5);
@@ -788,7 +810,7 @@ $header-height: 63px;
           color: #ffffcc;
           display: block;
         }
-        
+
         /* Drag update note removed as requested */
       }
 
@@ -817,7 +839,7 @@ $header-height: 63px;
           color: #ffcc00;
           text-wrap: auto;
         }
-        
+
         /* Drag update note removed as requested */
 
         .btn-delete-measurement {
@@ -848,12 +870,6 @@ $header-height: 63px;
       z-index: 10; /* Higher z-index to ensure buttons are clickable */
       pointer-events: all;
       display: flex;
-    }
-
-    .measuring-controls-right {
-      display: flex;
-      pointer-events: all;
-      z-index: 10; /* Higher z-index to ensure buttons are clickable */
     }
   }
 
