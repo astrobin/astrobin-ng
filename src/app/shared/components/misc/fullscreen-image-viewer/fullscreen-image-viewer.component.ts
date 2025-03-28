@@ -240,7 +240,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
   private readonly COORDINATES_ENABLED_COOKIE_NAME = "astrobin-fullscreen-show-coordinates";
-  private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
 
@@ -1173,39 +1172,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return `${degrees.toString().padStart(2, '0')}° ${arcminutes.toString().padStart(2, '0')}′ ${arcseconds.toString().padStart(2, '0')}″`;
   }
 
-  /**
-   * Get celestial coordinates for a horizontal line along a rectangle
-   * @param startX - First point X coordinate
-   * @param startY - First point Y coordinate
-   * @param endX - Second point X coordinate
-   * @param endY - First point Y coordinate (same as startY for horizontal line)
-   * @returns Angular distance as formatted string or null if not available
-   */
-  protected getHorizontalCelestialDistance(startX: number, startY: number, endX: number): string {
-    // Only calculate if advanced solution is available
-    if (!this.hasAdvancedSolution) {
-      return null;
-    }
-
-    // Calculate celestial coordinates at both points
-    const startCoords = this._calculateCoordinatesAtPoint(startX, startY);
-    const endCoords = this._calculateCoordinatesAtPoint(endX, startY);
-
-    if (!startCoords || !endCoords) {
-      return null;
-    }
-
-    // Calculate angular distance
-    const angularDistance = this._calculateAngularDistance(
-      startCoords.ra,
-      startCoords.dec,
-      endCoords.ra,
-      endCoords.dec
-    );
-
-    return this.formatAngularDistance(angularDistance);
-  }
-
   protected clearCoordinates(): void {
     if (this.showCoordinates) {
       this.mouseX = null;
@@ -1493,6 +1459,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
    * Calculate the coordinates at the current mouse position
    */
   private _calculateMouseCoordinates(event: MouseEvent): void {
+    console.log("Fullscree image viewer: Calculating mouse coordinates: ", event.clientX, event.clientY);
     // Don't calculate coordinates when using lens mode
     if (this.enableLens && this.ngxImageZoom?.zoomService?.zoomingEnabled) {
       this.mouseRa = null;
@@ -1562,118 +1529,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         this.mouseGalacticDec = null;
       }
     }
-  }
-
-  private _calculateCoordinatesAtPoint(x: number, y: number): { ra: number; dec: number } | null {
-    try {
-      // Similar coordinate calculation as in _calculateMouseCoordinates but returns raw values
-      // Try the full container image first, but fallback to container image if full container is not visible
-      let imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomFullContainer img");
-
-      // If the full container image has display:none or no dimensions, fallback to the container image
-      if (imageElement) {
-        const rect = imageElement.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) {
-          // Fallback to using container image
-          imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-        }
-      } else {
-        // Full container image not found, try container image
-        imageElement = this.ngxImageZoomEl?.nativeElement?.querySelector(".ngxImageZoomContainer img");
-      }
-
-      if (!imageElement || !this.advancedSolutionMatrix) {
-        return null;
-      }
-
-      // Create a synthetic mouse event with the coordinates
-      const syntheticEvent = {
-        clientX: x,
-        clientY: y,
-        offsetX: 0,  // Not used with useClientCoords: true
-        offsetY: 0   // Not used with useClientCoords: true
-      } as MouseEvent;
-
-      // Use the coordinatesFormatter to calculate coordinates
-      const result = this.coordinatesFormatter.calculateMouseCoordinates(
-        syntheticEvent,
-        imageElement,
-        this.advancedSolutionMatrix,
-        {
-          useClientCoords: true,
-          naturalWidth: this._canvasImage?.naturalWidth || this.naturalWidth || this.revision.w
-        }
-      );
-
-      if (!result) {
-        return null;
-      }
-
-      // Calculate image pixel coordinates
-      const imageRect = imageElement.getBoundingClientRect();
-      const relativeX = (x - imageRect.left);
-      const relativeY = (y - imageRect.top);
-
-      // Scale to HD space (1824px width reference)
-      const HD_WIDTH = 1824;
-      const scaledX = relativeX / imageRect.width * HD_WIDTH;
-      const scaledY = relativeY / imageRect.width * HD_WIDTH;
-
-      // Parse matrix data
-      const raMatrix = this.advancedSolutionMatrix.raMatrix.split(",").map(Number);
-      const decMatrix = this.advancedSolutionMatrix.decMatrix.split(",").map(Number);
-      const rect = this.advancedSolutionMatrix.matrixRect.split(",").map(Number);
-      const delta = this.advancedSolutionMatrix.matrixDelta;
-
-      // @ts-ignore - CoordinateInterpolation is defined globally in assets/js/CoordinateInterpolation.js
-      const interpolation = new CoordinateInterpolation(
-        raMatrix,
-        decMatrix,
-        rect[0],
-        rect[1],
-        rect[2],
-        rect[3],
-        delta
-      );
-
-      // Get raw coordinates using interpolation
-      const rawCoords = interpolation.interpolate(scaledX, scaledY);
-      if (rawCoords && rawCoords.alpha !== undefined && rawCoords.delta !== undefined) {
-        return {
-          ra: rawCoords.alpha,
-          dec: rawCoords.delta
-        };
-      }
-    } catch (error) {
-      console.error("Error calculating coordinates for measurement:", error);
-    }
-
-    return null;
-  }
-
-  private _calculateAngularDistance(ra1: number, dec1: number, ra2: number, dec2: number): number {
-    // Convert degrees to radians
-    const toRadians = (deg) => deg * Math.PI / 180;
-
-    // RA/Dec are in degrees
-    const ra1Rad = toRadians(ra1);
-    const dec1Rad = toRadians(dec1);
-    const ra2Rad = toRadians(ra2);
-    const dec2Rad = toRadians(dec2);
-
-    // Calculate angular distance using Haversine formula
-    // cos(angular_distance) = sin(dec1) * sin(dec2) + cos(dec1) * cos(dec2) * cos(ra1 - ra2)
-    const cosAngDist = Math.sin(dec1Rad) * Math.sin(dec2Rad) +
-      Math.cos(dec1Rad) * Math.cos(dec2Rad) * Math.cos(ra1Rad - ra2Rad);
-
-    // Clamp value to handle floating point errors
-    const clampedCosAngDist = Math.max(-1, Math.min(1, cosAngDist));
-
-    // Calculate angular distance in radians and convert to degrees
-    const angDistDeg = Math.acos(clampedCosAngDist) * 180 / Math.PI;
-
-    // Return the angular distance in degrees
-    return angDistDeg;
   }
 
   // Replace both mousemove and wheel handlers to completely freeze the zoom

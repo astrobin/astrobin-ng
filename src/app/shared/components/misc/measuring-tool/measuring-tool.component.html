@@ -14,14 +14,14 @@
     <!-- Start point coordinates with extended directional positioning -->
     <div *ngIf="!measureEndPoint" class="marker-coordinates initial-position visible"
          style="position: absolute; top: -24px; left: -24px; transform: translateX(-50%);">
-      <small>{{ measureStartPoint.ra !== null ? formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) : '' }}</small>
+      <small>{{ formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) }}</small>
     </div>
 
     <!-- Once both points are selected, calculate perpendicular position for labels -->
     <div *ngIf="measureEndPoint" class="marker-coordinates visible"
          [style.left.px]="calculateStartLabelX()"
          [style.top.px]="calculateStartLabelY()">
-      <small>{{ measureStartPoint.ra !== null ? formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) : '' }}</small>
+      <small>{{ formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) }}</small>
     </div>
   </div>
 
@@ -34,7 +34,7 @@
     <div class="marker-coordinates visible"
          [style.left.px]="calculateEndLabelX()"
          [style.top.px]="calculateEndLabelY()">
-      <small>{{ measureEndPoint.ra !== null ? formatCoordinatesCompact(measureEndPoint.ra, measureEndPoint.dec) : '' }}</small>
+      <small>{{ formatCoordinatesCompact(measureEndPoint.ra, measureEndPoint.dec) }}</small>
     </div>
   </div>
 
@@ -196,9 +196,7 @@
       <defs>
         <mask id="rectangle-mask-{{i}}">
           <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
-          <g [attr.transform]="'rotate(' + (measurement.rectangleRotation || 0) + ' ' + 
-                         ((measurement.startX + measurement.endX) / 2) + ' ' + 
-                         ((measurement.startY + measurement.endY) / 2) + ')'">
+          <g>
             <rect 
               [attr.x]="Math.min(measurement.startX, measurement.endX)" 
               [attr.y]="Math.min(measurement.startY, measurement.endY)"
@@ -218,10 +216,8 @@
             [attr.mask]="'url(#rectangle-mask-' + i + ')'">
       </rect>
       
-      <!-- Rectangle group with rotation transform -->
-      <g [attr.transform]="'rotate(' + (measurement.rectangleRotation || 0) + ' ' + 
-                         ((measurement.startX + measurement.endX) / 2) + ' ' + 
-                         ((measurement.startY + measurement.endY) / 2) + ')'">
+      <!-- Rectangle group without rotation transform - image rotates instead -->
+      <g>
         <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
         <rect 
           [attr.x]="Math.min(measurement.startX, measurement.endX)" 
@@ -348,7 +344,8 @@
             fill="rgba(255, 255, 0, 0.3)"
             stroke="rgba(255, 255, 0, 0.5)"
             style="pointer-events: all !important; cursor: grab;"
-            (mousedown)="handleRectangleRotateStart($event, i)">
+            (mousedown)="handleRectangleRotateStart($event, i)"
+            (wheel)="handleRotationWheel($event, i)">
           </circle>
           <!-- Visible rotation handle circle -->
           <circle 
@@ -357,7 +354,8 @@
             r="16"
             class="rotate-handle-bg"
             [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle"
-            (mousedown)="handleRectangleRotateStart($event, i)">
+            (mousedown)="handleRectangleRotateStart($event, i)"
+            (wheel)="handleRotationWheel($event, i)">
           </circle>
           <svg
             [attr.x]="Math.max(measurement.startX, measurement.endX) - 8"
@@ -365,7 +363,8 @@
             width="16" height="16" viewBox="0 0 24 24"
             class="rotate-handle-icon"
             [class.rotating]="isDraggingPoint === 'rotateRect-' + i && isRotatingRectangle"
-            (mousedown)="handleRectangleRotateStart($event, i)">
+            (mousedown)="handleRectangleRotateStart($event, i)"
+            (wheel)="handleRotationWheel($event, i)">
             <!-- SVG path for a rotation icon -->
             <path d="M4,12 A8,8 0 1,1 6,20 L6,16 L2,16 L2,20 Q2,20 6,20 M20,4 L20,8 L16,8 L16,4" fill="none" stroke="black" stroke-width="2" />
           </svg>
@@ -458,9 +457,7 @@
     <defs>
       <mask id="current-rectangle-mask">
         <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
-        <g [attr.transform]="'rotate(' + currentRectangleRotation + ' ' + 
-                         ((measureStartPoint.x + measureEndPoint.x) / 2) + ' ' + 
-                         ((measureStartPoint.y + measureEndPoint.y) / 2) + ')'">
+        <g>
           <rect 
             [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
             [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
@@ -480,10 +477,8 @@
           mask="url(#current-rectangle-mask)">
     </rect>
     
-    <!-- Rectangle group with rotation transform -->
-    <g [attr.transform]="'rotate(' + currentRectangleRotation + ' ' + 
-                       ((measureStartPoint.x + measureEndPoint.x) / 2) + ' ' + 
-                       ((measureStartPoint.y + measureEndPoint.y) / 2) + ')'">
+    <!-- Rectangle group without rotation transform - image rotates instead -->
+    <g>
       <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
       <rect 
         [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
@@ -610,7 +605,8 @@
           fill="rgba(255, 255, 0, 0.3)"
           stroke="rgba(255, 255, 0, 0.5)"
           style="pointer-events: all !important; cursor: grab;"
-          (mousedown)="handleRectangleRotateStart($event)">
+          (mousedown)="handleRectangleRotateStart($event)"
+          (wheel)="handleRotationWheel($event)">
         </circle>
         <!-- Visible rotation handle circle -->
         <circle 
@@ -619,7 +615,8 @@
           r="16"
           class="rotate-handle-bg current"
           [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle"
-          (mousedown)="handleRectangleRotateStart($event)">
+          (mousedown)="handleRectangleRotateStart($event)"
+          (wheel)="handleRotationWheel($event)">
         </circle>
         <svg
           [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) - 8"
@@ -627,7 +624,8 @@
           width="16" height="16" viewBox="0 0 24 24"
           class="rotate-handle-icon current"
           [class.rotating]="isDraggingPoint === 'rotateCurrentRect' && isRotatingRectangle"
-          (mousedown)="handleRectangleRotateStart($event)">
+          (mousedown)="handleRectangleRotateStart($event)"
+          (wheel)="handleRotationWheel($event)">
           <!-- SVG path for a rotation icon -->
           <path d="M4,12 A8,8 0 1,1 6,20 L6,16 L2,16 L2,20 Q2,20 6,20 M20,4 L20,8 L16,8 L16,4" fill="none" stroke="black" stroke-width="2" />
         </svg>
@@ -668,14 +666,14 @@
   <!-- Coordinate labels for previous measurements -->
   <div *ngFor="let measurement of previousMeasurements; let i = index">
     <!-- Start point coordinates with perpendicular positioning -->
-    <div *ngIf="measurement.startRa !== null" class="measure-coord-label visible"
+    <div class="measure-coord-label visible"
          [style.left.px]="measurement.startLabelX"
          [style.top.px]="measurement.startLabelY">
       <small>{{ formatCoordinatesCompact(measurement.startRa, measurement.startDec) }}</small>
     </div>
 
     <!-- End point coordinates with perpendicular positioning -->
-    <div *ngIf="measurement.endRa !== null" class="measure-coord-label visible"
+    <div class="measure-coord-label visible"
          [style.left.px]="measurement.endLabelX"
          [style.top.px]="measurement.endLabelY">
       <small>{{ formatCoordinatesCompact(measurement.endRa, measurement.endDec) }}</small>

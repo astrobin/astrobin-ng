@@ -1,6 +1,37 @@
 import { Injectable } from "@angular/core";
 
-interface FormattedCoordinates {
+// Interface for raw coordinate data
+export interface CoordinateData {
+  // Celestial coordinates
+  ra: {
+    hours: number;
+    minutes: number;
+    seconds: number;
+  };
+  dec: {
+    sign: number; // 1 or -1
+    degrees: number;
+    minutes: number;
+    seconds: number;
+  };
+  // Galactic coordinates (optional)
+  galactic?: {
+    l: {
+      degrees: number;
+      minutes: number;
+      seconds: number;
+    };
+    b: {
+      sign: number; // 1 or -1
+      degrees: number;
+      minutes: number;
+      seconds: number;
+    };
+  };
+}
+
+// Interface for HTML-formatted coordinates
+export interface FormattedCoordinates {
   raHtml: string;
   decHtml: string;
   galacticRaHtml: string;
@@ -15,14 +46,14 @@ export class CoordinatesFormatterService {
   }
 
   /**
-   * Calculate mouse coordinates from a mouse event and interpolation matrix
+   * Calculate raw coordinate data from a mouse event and interpolation matrix
    * @param event Mouse event containing clientX and clientY or offsetX and offsetY
    * @param imageElement The image DOM element to get dimensions from
    * @param interpolationMatrix The matrix information for coordinate calculation
    * @param options Additional options for calculation
-   * @returns Formatted coordinate strings and raw x/y positions
+   * @returns Raw coordinate data and mouse positions
    */
-  calculateMouseCoordinates(
+  calculateRawCoordinates(
     event: MouseEvent,
     imageElement: HTMLElement,
     interpolationMatrix: {
@@ -37,7 +68,7 @@ export class CoordinatesFormatterService {
       imageScale?: number;      // Optional scale to apply (for zoom)
     }
   ): {
-    coordinates: FormattedCoordinates;
+    coordinates: CoordinateData;
     x: number;
     y: number;
   } {
@@ -120,21 +151,197 @@ export class CoordinatesFormatterService {
       interpolationScale
     );
 
-    const interpolationText = interpolation.interpolateAsText(
-      scaledX,
-      scaledY,
-      false,
-      true,
-      true
-    );
-
-    // Format the coordinates
-    const coordinates = this.formatFromInterpolationObject(interpolationText);
+    // Get raw values from the interpolation
+    const interpolationResult = interpolation.interpolate(scaledX, scaledY, true, true);
+    
+    if (!interpolationResult || typeof interpolationResult.alpha !== 'number') {
+      return null;
+    }
+    
+    // Convert RA from degrees (0-360) to hours (0-24)
+    const raDegrees = interpolationResult.alpha;
+    const raHours = raDegrees / 15;
+    
+    // Helper function to avoid rounding errors
+    const fixFloatingPointIssues = (value: number): number => {
+      // Convert to fixed precision (4 decimal places) then back to number to avoid precision issues
+      return parseFloat(value.toFixed(4));
+    };
+    
+    // Calculate HMS components with stable precision
+    const raHoursInt = Math.floor(raHours);
+    const raMinutesFull = (raHours - raHoursInt) * 60;
+    const raMinutesInt = Math.floor(raMinutesFull);
+    const raSeconds = fixFloatingPointIssues((raMinutesFull - raMinutesInt) * 60);
+    
+    // Calculate DMS components with stable precision
+    const decDegrees = Math.abs(interpolationResult.delta);
+    const decSign = interpolationResult.delta >= 0 ? 1 : -1;
+    const decDegreesInt = Math.floor(decDegrees);
+    const decMinutesFull = (decDegrees - decDegreesInt) * 60;
+    const decMinutesInt = Math.floor(decMinutesFull);
+    const decSeconds = fixFloatingPointIssues((decMinutesFull - decMinutesInt) * 60);
+    
+    // Handle carryover when seconds are very close to 60
+    let finalRaHours = raHoursInt;
+    let finalRaMinutes = raMinutesInt;
+    let finalRaSeconds = raSeconds;
+    
+    if (finalRaSeconds >= 59.995) {
+      finalRaSeconds = 0;
+      finalRaMinutes += 1;
+      
+      if (finalRaMinutes >= 60) {
+        finalRaMinutes = 0;
+        finalRaHours += 1;
+        
+        if (finalRaHours >= 24) {
+          finalRaHours = 0;
+        }
+      }
+    }
+    
+    let finalDecDegrees = decDegreesInt;
+    let finalDecMinutes = decMinutesInt;
+    let finalDecSeconds = decSeconds;
+    
+    if (finalDecSeconds >= 59.995) {
+      finalDecSeconds = 0;
+      finalDecMinutes += 1;
+      
+      if (finalDecMinutes >= 60) {
+        finalDecMinutes = 0;
+        finalDecDegrees += 1;
+      }
+    }
+    
+    // Create the coordinate data object with stabilized values
+    const coordinates: CoordinateData = {
+      ra: {
+        hours: finalRaHours,
+        minutes: finalRaMinutes,
+        seconds: Math.round(finalRaSeconds)
+      },
+      dec: {
+        sign: decSign,
+        degrees: finalDecDegrees,
+        minutes: finalDecMinutes,
+        seconds: Math.round(finalDecSeconds)
+      }
+    };
+    
+    // Add galactic coordinates if available
+    if (interpolationResult.l !== undefined && interpolationResult.b !== undefined) {
+      const lDegrees = Math.abs(interpolationResult.l);
+      const lDegreesInt = Math.floor(lDegrees);
+      const lMinutesFull = (lDegrees - lDegreesInt) * 60;
+      const lMinutesInt = Math.floor(lMinutesFull);
+      const lSeconds = fixFloatingPointIssues((lMinutesFull - lMinutesInt) * 60);
+      
+      const bDegrees = Math.abs(interpolationResult.b);
+      const bSign = interpolationResult.b >= 0 ? 1 : -1;
+      const bDegreesInt = Math.floor(bDegrees);
+      const bMinutesFull = (bDegrees - bDegreesInt) * 60;
+      const bMinutesInt = Math.floor(bMinutesFull);
+      const bSeconds = fixFloatingPointIssues((bMinutesFull - bMinutesInt) * 60);
+      
+      // Handle carryover for galactic longitude (l)
+      let finalLDegrees = lDegreesInt;
+      let finalLMinutes = lMinutesInt;
+      let finalLSeconds = lSeconds;
+      
+      if (finalLSeconds >= 59.995) {
+        finalLSeconds = 0;
+        finalLMinutes += 1;
+        
+        if (finalLMinutes >= 60) {
+          finalLMinutes = 0;
+          finalLDegrees += 1;
+          
+          if (finalLDegrees >= 360) {
+            finalLDegrees = 0;
+          }
+        }
+      }
+      
+      // Handle carryover for galactic latitude (b)
+      let finalBDegrees = bDegreesInt;
+      let finalBMinutes = bMinutesInt;
+      let finalBSeconds = bSeconds;
+      
+      if (finalBSeconds >= 59.995) {
+        finalBSeconds = 0;
+        finalBMinutes += 1;
+        
+        if (finalBMinutes >= 60) {
+          finalBMinutes = 0;
+          finalBDegrees += 1;
+        }
+      }
+      
+      coordinates.galactic = {
+        l: {
+          degrees: finalLDegrees,
+          minutes: finalLMinutes,
+          seconds: Math.round(finalLSeconds)
+        },
+        b: {
+          sign: bSign,
+          degrees: finalBDegrees,
+          minutes: finalBMinutes,
+          seconds: Math.round(finalBSeconds)
+        }
+      };
+    }
 
     return {
       coordinates,
       x: event.offsetX,
       y: event.offsetY
+    };
+  }
+
+  /**
+   * Calculate mouse coordinates from a mouse event and interpolation matrix and format as HTML
+   * @param event Mouse event containing clientX and clientY or offsetX and offsetY
+   * @param imageElement The image DOM element to get dimensions from
+   * @param interpolationMatrix The matrix information for coordinate calculation
+   * @param options Additional options for calculation
+   * @returns Formatted coordinate strings and raw x/y positions
+   */
+  calculateMouseCoordinates(
+    event: MouseEvent,
+    imageElement: HTMLElement,
+    interpolationMatrix: {
+      raMatrix: string;
+      decMatrix: string;
+      matrixRect: string;
+      matrixDelta: number;
+    },
+    options?: {
+      useClientCoords?: boolean; // Whether to use client coordinates instead of offset
+      naturalWidth?: number;    // Optional natural width if not available from image element
+      imageScale?: number;      // Optional scale to apply (for zoom)
+    }
+  ): {
+    coordinates: FormattedCoordinates;
+    x: number;
+    y: number;
+  } {
+    // Get the raw coordinate data
+    const result = this.calculateRawCoordinates(event, imageElement, interpolationMatrix, options);
+    
+    if (!result) {
+      return null;
+    }
+    
+    // Format the coordinates as HTML
+    const formattedCoordinates = this.formatCoordinateData(result.coordinates);
+    
+    return {
+      coordinates: formattedCoordinates,
+      x: result.x,
+      y: result.y
     };
   }
 
@@ -283,6 +490,59 @@ export class CoordinatesFormatterService {
       galacticDecHtml = galacticCoords.galacticDecHtml;
     }
 
+    return {
+      raHtml,
+      decHtml,
+      galacticRaHtml,
+      galacticDecHtml
+    };
+  }
+  
+  /**
+   * Format raw coordinate data into HTML representation
+   * @param coordinateData Raw coordinate data to format
+   * @returns Formatted HTML coordinates
+   */
+  formatCoordinateData(coordinateData: CoordinateData): FormattedCoordinates {
+    if (!coordinateData) {
+      return {
+        raHtml: "",
+        decHtml: "",
+        galacticRaHtml: "",
+        galacticDecHtml: ""
+      };
+    }
+    
+    // Format equatorial coordinates
+    const { raHtml, decHtml } = this.formatEquatorialCoordinates(
+      coordinateData.ra.hours.toString(),
+      coordinateData.ra.minutes.toString(),
+      coordinateData.ra.seconds.toString(),
+      coordinateData.dec.degrees.toString(),
+      coordinateData.dec.minutes.toString(),
+      coordinateData.dec.seconds.toString(),
+      coordinateData.dec.sign > 0 ? "" : "-"
+    );
+    
+    // Format galactic coordinates if available
+    let galacticRaHtml = "";
+    let galacticDecHtml = "";
+    
+    if (coordinateData.galactic) {
+      const galacticCoords = this.formatGalacticCoordinates(
+        coordinateData.galactic.l.degrees.toString(),
+        coordinateData.galactic.l.minutes.toString(),
+        coordinateData.galactic.l.seconds.toString(),
+        coordinateData.galactic.b.degrees.toString(),
+        coordinateData.galactic.b.minutes.toString(),
+        coordinateData.galactic.b.seconds.toString(),
+        coordinateData.galactic.b.sign > 0 ? "+" : "-"
+      );
+      
+      galacticRaHtml = galacticCoords.galacticRaHtml;
+      galacticDecHtml = galacticCoords.galacticDecHtml;
+    }
+    
     return {
       raHtml,
       decHtml,
