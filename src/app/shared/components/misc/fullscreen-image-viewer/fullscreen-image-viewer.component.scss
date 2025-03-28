@@ -590,6 +590,7 @@ $header-height: 63px;
         text-overflow: ellipsis;
         z-index: 9999;
         opacity: 0; // Hide by default
+        margin: -30px; // Add margin to increase distance from the marker point
         transition: opacity 0.2s ease;
         border: 1px solid rgba(255, 255, 255, 0.2); // Subtle border for better visibility
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); // Add shadow for better separation from background
@@ -778,53 +779,68 @@ $header-height: 63px;
           stroke-dasharray: 3 3;
         }
       }
-      
+
       .measure-shape {
         &.circle, &.rectangle {
           fill: none;
           stroke-width: 1.5px;
           stroke-dasharray: 5 3;
-          
+
           &.current {
             stroke: rgba(50, 150, 50, 0.8);
           }
         }
-        
+
         &.circle {
           stroke: rgba(100, 150, 255, 0.7);
         }
-        
+
         &.rectangle {
           stroke: rgba(255, 180, 50, 0.7);
         }
       }
-      
+
+      .shape-overlay {
+        fill: rgba(0, 0, 0, 0.2);
+        pointer-events: none;
+      }
+
       /* Dimension labels for rectangles */
       .dimension-line {
-        stroke: rgba(255, 255, 255, 0.6);
-        stroke-width: 1px;
+        stroke: rgba(255, 255, 255, 0.8);
+        stroke-width: 1.5px;
         stroke-dasharray: 3 2;
-        
+
         &.current {
-          stroke: rgba(255, 255, 255, 0.7);
+          stroke: rgba(255, 255, 255, 1);
         }
       }
-      
+
       .dimension-arrow {
-        stroke: rgba(255, 255, 255, 0.6);
-        stroke-width: 1px;
-        
+        stroke: rgba(255, 255, 255, 0.8);
+        stroke-width: 1.5px;
+
         &.current {
-          stroke: rgba(255, 255, 255, 0.7);
+          stroke: rgba(255, 255, 255, 1);
         }
       }
-      
+
       .dimension-text {
-        fill: rgba(255, 255, 255, 0.9);
-        font-size: 11px;
+        fill: rgba(255, 255, 255, 1);
+        font-size: 12px;
         font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
-        
+        text-shadow: 0 0 4px rgba(0, 0, 0, 1);
+        paint-order: stroke;
+        stroke: rgba(0, 0, 0, 0.5);
+        stroke-width: 1px;
+
+        .unit-symbol {
+          font-size: 0.85em;
+          position: relative;
+          top: -0.4em;
+          font-weight: normal;
+        }
+
         &.current {
           fill: rgba(255, 255, 255, 1);
           font-weight: bold;
@@ -843,6 +859,13 @@ $header-height: 63px;
       z-index: 10; /* Higher z-index to ensure labels and their delete buttons are clickable */
       pointer-events: all;
 
+      .unit-symbol {
+        font-size: 0.85em;
+        position: relative;
+        top: -0.4em;
+        font-weight: normal;
+      }
+
       &.current-measurement {
         background-color: rgba(50, 150, 50, 0.8);
         color: white;
@@ -857,7 +880,7 @@ $header-height: 63px;
 
         /* No updating style, as requested */
       }
-      
+
       /* External measurement note container */
       & + .measurement-note-container {
         position: absolute;
@@ -867,7 +890,7 @@ $header-height: 63px;
         margin-top: 4px;
         text-align: center;
         pointer-events: none;
-        
+
         .measurement-note {
           font-size: 0.65rem;
           font-weight: normal;
@@ -898,13 +921,13 @@ $header-height: 63px;
         .measurement-text {
           margin-right: 6px;
         }
-        
+
         .measurement-actions {
           display: flex;
           align-items: center;
           margin-left: 4px;
-          
-          .btn-shape-action, 
+
+          .btn-shape-action,
           .btn-delete-measurement {
             background: none;
             border: none;
@@ -920,46 +943,46 @@ $header-height: 63px;
             display: flex;
             align-items: center;
             justify-content: center;
-            
+
             &:hover {
               opacity: 1;
               background-color: rgba(255, 255, 255, 0.1);
             }
-            
+
             &.active {
               background-color: rgba(255, 255, 255, 0.2);
               opacity: 1;
             }
           }
-          
+
           .btn-shape-action {
             color: rgba(255, 255, 255, 0.8);
             margin-right: 3px;
-            
+
             &:hover {
               color: rgba(255, 255, 255, 1);
             }
-            
+
             &:first-child {
               color: rgba(100, 150, 255, 0.8);
-              
+
               &:hover, &.active {
                 color: rgba(100, 150, 255, 1);
               }
             }
-            
+
             &:nth-child(2) {
               color: rgba(255, 180, 50, 0.8);
-              
+
               &:hover, &.active {
                 color: rgba(255, 180, 50, 1);
               }
             }
           }
-          
+
           .btn-delete-measurement {
             color: rgba(255, 100, 100, 0.7);
-            
+
             &:hover {
               color: rgba(255, 100, 100, 1);
             }

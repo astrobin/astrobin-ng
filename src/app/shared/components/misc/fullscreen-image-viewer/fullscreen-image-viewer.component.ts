@@ -249,6 +249,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   private readonly LENS_ENABLED_COOKIE_NAME = "astrobin-fullscreen-lens-enabled";
   private readonly TOUCH_OR_MOUSE_MODE_COOKIE_NAME = "astrobin-fullscreen-touch-or-mouse";
   private readonly COORDINATES_ENABLED_COOKIE_NAME = "astrobin-fullscreen-show-coordinates";
+  private readonly MEASUREMENT_SHAPE_COOKIE_NAME = "astrobin-fullscreen-measurement-shape";
   private readonly PIXEL_THRESHOLD = 8192 * 8192;
   private readonly FRAME_INTERVAL = 1000 / 120; // 120 FPS
 
@@ -1164,6 +1165,13 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // Toggle measuring mode
     this.isMeasuringMode = !this.isMeasuringMode;
 
+    // If entering measuring mode, load shape preference from cookie
+    if (this.isMeasuringMode) {
+      const shapePreference = this.cookieService.get(this.MEASUREMENT_SHAPE_COOKIE_NAME);
+      this.showCurrentCircle = shapePreference === 'circle';
+      this.showCurrentRectangle = shapePreference === 'rectangle';
+    }
+    
     // If exiting measuring mode, clear all previous measurements
     if (!this.isMeasuringMode) {
       this.previousMeasurements = [];
@@ -1498,6 +1506,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // If turning on circle, turn off rectangle to avoid visual clutter
     if (this.showCurrentCircle) {
       this.showCurrentRectangle = false;
+      // Save preference to cookie
+      this.cookieService.put(this.MEASUREMENT_SHAPE_COOKIE_NAME, "circle", {
+        expires: new Date(new Date().getTime() + 365 * 24 * 60 * 60 * 1000), // 1 year
+        sameSite: "lax"
+      });
+    } else if (!this.showCurrentRectangle) {
+      // If no shape is selected, clear the cookie
+      this.cookieService.remove(this.MEASUREMENT_SHAPE_COOKIE_NAME);
     }
     
     this.changeDetectorRef.markForCheck();
@@ -1515,6 +1531,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // If turning on rectangle, turn off circle to avoid visual clutter
     if (this.showCurrentRectangle) {
       this.showCurrentCircle = false;
+      // Save preference to cookie
+      this.cookieService.put(this.MEASUREMENT_SHAPE_COOKIE_NAME, "rectangle", {
+        expires: new Date(new Date().getTime() + 365 * 24 * 60 * 60 * 1000), // 1 year
+        sameSite: "lax"
+      });
+    } else if (!this.showCurrentCircle) {
+      // If no shape is selected, clear the cookie
+      this.cookieService.remove(this.MEASUREMENT_SHAPE_COOKIE_NAME);
     }
     
     this.changeDetectorRef.markForCheck();
@@ -1532,6 +1556,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // If turning on circle, turn off rectangle to avoid visual clutter
     if (this.previousMeasurements[index].showCircle) {
       this.previousMeasurements[index].showRectangle = false;
+      // Save preference to cookie
+      this.cookieService.put(this.MEASUREMENT_SHAPE_COOKIE_NAME, "circle", {
+        expires: new Date(new Date().getTime() + 365 * 24 * 60 * 60 * 1000), // 1 year
+        sameSite: "lax"
+      });
+    } else if (!this.previousMeasurements[index].showRectangle) {
+      // If no shape is selected, clear the cookie
+      this.cookieService.remove(this.MEASUREMENT_SHAPE_COOKIE_NAME);
     }
     
     this.changeDetectorRef.markForCheck();
@@ -1549,6 +1581,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     // If turning on rectangle, turn off circle to avoid visual clutter
     if (this.previousMeasurements[index].showRectangle) {
       this.previousMeasurements[index].showCircle = false;
+      // Save preference to cookie
+      this.cookieService.put(this.MEASUREMENT_SHAPE_COOKIE_NAME, "rectangle", {
+        expires: new Date(new Date().getTime() + 365 * 24 * 60 * 60 * 1000), // 1 year
+        sameSite: "lax"
+      });
+    } else if (!this.previousMeasurements[index].showCircle) {
+      // If no shape is selected, clear the cookie
+      this.cookieService.remove(this.MEASUREMENT_SHAPE_COOKIE_NAME);
     }
     
     this.changeDetectorRef.markForCheck();
@@ -1580,7 +1620,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.measureEndPoint.y
     );
     
-    return labelPositions.startLabelX;
+    // Increase the distance by scaling the offset from the point
+    const offsetX = labelPositions.startLabelX - this.measureStartPoint.x;
+    return this.measureStartPoint.x + (offsetX * 1.15); // 15% more distance
   }
 
   protected calculateStartLabelY(): number {
@@ -1596,7 +1638,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.measureEndPoint.y
     );
     
-    return labelPositions.startLabelY;
+    // Increase the distance by scaling the offset from the point
+    const offsetY = labelPositions.startLabelY - this.measureStartPoint.y;
+    return this.measureStartPoint.y + (offsetY * 1.15); // 15% more distance
   }
 
   protected calculateEndLabelX(): number {
@@ -1612,7 +1656,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.measureEndPoint.y
     );
     
-    return labelPositions.endLabelX;
+    // Increase the distance by scaling the offset from the point
+    const offsetX = labelPositions.endLabelX - this.measureEndPoint.x;
+    return this.measureEndPoint.x + (offsetX * 1.15); // 15% more distance
   }
 
   protected calculateEndLabelY(): number {
@@ -1628,7 +1674,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.measureEndPoint.y
     );
     
-    return labelPositions.endLabelY;
+    // Increase the distance by scaling the offset from the point
+    const offsetY = labelPositions.endLabelY - this.measureEndPoint.y;
+    return this.measureEndPoint.y + (offsetY * 1.15); // 15% more distance
   }
 
   protected formatCoordinatesCompact(ra: number, dec: number): string {
@@ -2092,8 +2140,11 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.measureDistance = null;
     this.measureStartPoint = null;
     this.measureEndPoint = null;
-    this.showCurrentCircle = false;
-    this.showCurrentRectangle = false;
+    
+    // Apply shape preference from cookie for the next measurement
+    const shapePreference = this.cookieService.get(this.MEASUREMENT_SHAPE_COOKIE_NAME);
+    this.showCurrentCircle = shapePreference === 'circle';
+    this.showCurrentRectangle = shapePreference === 'rectangle';
 
     this.changeDetectorRef.markForCheck();
   }

@@ -447,7 +447,8 @@
       <div class="marker-dot"></div>
       <!-- Start point coordinates that will be visible while selecting end point -->
       <div *ngIf="!measureEndPoint" class="marker-coordinates top-position"
-           [class.visible]="measureStartPoint.ra !== null">
+           [class.visible]="measureStartPoint.ra !== null"
+           style="margin-top: -35px;">
         <small>{{ measureStartPoint.ra !== null ? formatCoordinatesCompact(measureStartPoint.ra, measureStartPoint.dec) : '' }}</small>
       </div>
 
@@ -592,6 +593,28 @@
       <svg *ngIf="measurement.showCircle" class="measure-shape-container"
            [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
            [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
+        <!-- Semi-transparent overlay for the area outside the circle -->
+        <defs>
+          <mask id="circle-mask-{{i}}">
+            <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+            <circle 
+              [attr.cx]="(measurement.startX + measurement.endX) / 2" 
+              [attr.cy]="(measurement.startY + measurement.endY) / 2"
+              [attr.r]="calculateDistance(measurement.startX, measurement.startY, measurement.endX, measurement.endY) / 2"
+              fill="black">
+            </circle>
+          </mask>
+        </defs>
+        
+        <!-- This rect will darken everything except the masked circle area -->
+        <rect x="0" y="0" 
+              width="100%" 
+              height="100%" 
+              class="shape-overlay"
+              [attr.mask]="'url(#circle-mask-' + i + ')'">
+        </rect>
+        
+        <!-- The circle outline -->
         <circle 
           [attr.cx]="(measurement.startX + measurement.endX) / 2" 
           [attr.cy]="(measurement.startY + measurement.endY) / 2"
@@ -604,7 +627,29 @@
       <svg *ngIf="measurement.showRectangle" class="measure-shape-container"
            [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
            [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
-        <!-- Rectangle -->
+        <!-- Semi-transparent overlay for the area outside the rectangle -->
+        <defs>
+          <mask id="rectangle-mask-{{i}}">
+            <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+            <rect 
+              [attr.x]="Math.min(measurement.startX, measurement.endX)" 
+              [attr.y]="Math.min(measurement.startY, measurement.endY)"
+              [attr.width]="Math.abs(measurement.endX - measurement.startX)"
+              [attr.height]="Math.abs(measurement.endY - measurement.startY)"
+              fill="black">
+            </rect>
+          </mask>
+        </defs>
+        
+        <!-- This rect will darken everything except the masked rectangle area -->
+        <rect x="0" y="0" 
+              width="100%" 
+              height="100%" 
+              class="shape-overlay"
+              [attr.mask]="'url(#rectangle-mask-' + i + ')'">
+        </rect>
+        
+        <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
         <rect 
           [attr.x]="Math.min(measurement.startX, measurement.endX)" 
           [attr.y]="Math.min(measurement.startY, measurement.endY)"
@@ -660,8 +705,9 @@
             [attr.x]="(Math.min(measurement.startX, measurement.endX) + Math.max(measurement.startX, measurement.endX)) / 2"
             [attr.y]="Math.max(measurement.startY, measurement.endY) + 30"
             text-anchor="middle"
-            class="dimension-text">
-            {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX)) || Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px' }}
+            class="dimension-text"
+            [attr.dominant-baseline]="'central'">
+            {{ getHorizontalCelestialDistance(Math.min(measurement.startX, measurement.endX), Math.max(measurement.startY, measurement.endY), Math.max(measurement.startX, measurement.endX)) || (Math.round(Math.abs(measurement.endX - measurement.startX)) + ' px') }}
           </text>
         </g>
         
@@ -669,51 +715,52 @@
         <g class="dimension-label height-label">
           <!-- Height line -->
           <line 
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.min(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y2]="Math.max(measurement.startY, measurement.endY)"
             class="dimension-line">
           </line>
           
           <!-- Dimension arrows -->
           <line 
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.min(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
             [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
             class="dimension-arrow">
           </line>
           <line 
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.min(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 35"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
             [attr.y2]="Math.min(measurement.startY, measurement.endY) + 5"
             class="dimension-arrow">
           </line>
           
           <line 
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.max(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 15"
             [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
             class="dimension-arrow">
           </line>
           <line 
-            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 30"
+            [attr.x1]="Math.max(measurement.startX, measurement.endX) + 20"
             [attr.y1]="Math.max(measurement.startY, measurement.endY)"
-            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 35"
+            [attr.x2]="Math.max(measurement.startX, measurement.endX) + 25"
             [attr.y2]="Math.max(measurement.startY, measurement.endY) - 5"
             class="dimension-arrow">
           </line>
           
           <!-- Height text -->
           <text 
-            [attr.x]="Math.max(measurement.startX, measurement.endX) + 50"
+            [attr.x]="Math.max(measurement.startX, measurement.endX) + 35"
             [attr.y]="(Math.min(measurement.startY, measurement.endY) + Math.max(measurement.startY, measurement.endY)) / 2"
             text-anchor="start"
-            class="dimension-text">
-            {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY)) || Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px' }}
+            class="dimension-text"
+            [attr.dominant-baseline]="'central'">
+            {{ getVerticalCelestialDistance(Math.max(measurement.startX, measurement.endX), Math.min(measurement.startY, measurement.endY), Math.max(measurement.startY, measurement.endY)) || (Math.round(Math.abs(measurement.endY - measurement.startY)) + ' px') }}
           </text>
         </g>
       </svg>
@@ -764,6 +811,28 @@
     <svg *ngIf="showCurrentCircle && measureStartPoint && measureEndPoint" class="measure-shape-container"
          [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
          [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
+      <!-- Semi-transparent overlay for the area outside the circle -->
+      <defs>
+        <mask id="current-circle-mask">
+          <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+          <circle 
+            [attr.cx]="(measureStartPoint.x + measureEndPoint.x) / 2" 
+            [attr.cy]="(measureStartPoint.y + measureEndPoint.y) / 2"
+            [attr.r]="calculateDistance(measureStartPoint.x, measureStartPoint.y, measureEndPoint.x, measureEndPoint.y) / 2"
+            fill="black">
+          </circle>
+        </mask>
+      </defs>
+      
+      <!-- This rect will darken everything except the masked circle area -->
+      <rect x="0" y="0" 
+            width="100%" 
+            height="100%" 
+            class="shape-overlay"
+            mask="url(#current-circle-mask)">
+      </rect>
+      
+      <!-- The circle outline -->
       <circle 
         [attr.cx]="(measureStartPoint.x + measureEndPoint.x) / 2" 
         [attr.cy]="(measureStartPoint.y + measureEndPoint.y) / 2"
@@ -776,7 +845,29 @@
     <svg *ngIf="showCurrentRectangle && measureStartPoint && measureEndPoint" class="measure-shape-container"
          [attr.width]="isBrowser ? windowRef.nativeWindow.innerWidth : 0"
          [attr.height]="isBrowser ? windowRef.nativeWindow.innerHeight : 0">
-      <!-- Rectangle -->
+      <!-- Semi-transparent overlay for the area outside the rectangle -->
+      <defs>
+        <mask id="current-rectangle-mask">
+          <rect x="0" y="0" width="100%" height="100%" fill="white"></rect>
+          <rect 
+            [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
+            [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
+            [attr.width]="Math.abs(measureEndPoint.x - measureStartPoint.x)"
+            [attr.height]="Math.abs(measureEndPoint.y - measureStartPoint.y)"
+            fill="black">
+          </rect>
+        </mask>
+      </defs>
+      
+      <!-- This rect will darken everything except the masked rectangle area -->
+      <rect x="0" y="0" 
+            width="100%" 
+            height="100%" 
+            class="shape-overlay"
+            mask="url(#current-rectangle-mask)">
+      </rect>
+      
+      <!-- Rectangle outline (this must come before the dimension lines so it doesn't cover them) -->
       <rect 
         [attr.x]="Math.min(measureStartPoint.x, measureEndPoint.x)" 
         [attr.y]="Math.min(measureStartPoint.y, measureEndPoint.y)"
@@ -832,8 +923,9 @@
           [attr.x]="(Math.min(measureStartPoint.x, measureEndPoint.x) + Math.max(measureStartPoint.x, measureEndPoint.x)) / 2"
           [attr.y]="Math.max(measureStartPoint.y, measureEndPoint.y) + 30"
           text-anchor="middle"
-          class="dimension-text current">
-          {{ getHorizontalCelestialDistance(Math.min(measureStartPoint.x, measureEndPoint.x), Math.max(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.x, measureEndPoint.x)) || Math.round(Math.abs(measureEndPoint.x - measureStartPoint.x)) + ' px' }}
+          class="dimension-text current"
+          [attr.dominant-baseline]="'central'">
+          {{ getHorizontalCelestialDistance(Math.min(measureStartPoint.x, measureEndPoint.x), Math.max(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.x, measureEndPoint.x)) || (Math.round(Math.abs(measureEndPoint.x - measureStartPoint.x)) + ' px') }}
         </text>
       </g>
       
@@ -841,51 +933,52 @@
       <g class="dimension-label height-label">
         <!-- Height line -->
         <line 
-          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y)"
           class="dimension-line current">
         </line>
         
         <!-- Dimension arrows -->
         <line 
-          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
           [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
           class="dimension-arrow current">
         </line>
         <line 
-          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.min(measureStartPoint.y, measureEndPoint.y)"
-          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
           [attr.y2]="Math.min(measureStartPoint.y, measureEndPoint.y) + 5"
           class="dimension-arrow current">
         </line>
         
         <line 
-          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
-          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 15"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
           class="dimension-arrow current">
         </line>
         <line 
-          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 30"
+          [attr.x1]="Math.max(measureStartPoint.x, measureEndPoint.x) + 20"
           [attr.y1]="Math.max(measureStartPoint.y, measureEndPoint.y)"
-          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
+          [attr.x2]="Math.max(measureStartPoint.x, measureEndPoint.x) + 25"
           [attr.y2]="Math.max(measureStartPoint.y, measureEndPoint.y) - 5"
           class="dimension-arrow current">
         </line>
         
         <!-- Height text -->
         <text 
-          [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) + 50"
+          [attr.x]="Math.max(measureStartPoint.x, measureEndPoint.x) + 35"
           [attr.y]="(Math.min(measureStartPoint.y, measureEndPoint.y) + Math.max(measureStartPoint.y, measureEndPoint.y)) / 2"
           text-anchor="start"
-          class="dimension-text current">
-          {{ getVerticalCelestialDistance(Math.max(measureStartPoint.x, measureEndPoint.x), Math.min(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.y, measureEndPoint.y)) || Math.round(Math.abs(measureEndPoint.y - measureStartPoint.y)) + ' px' }}
+          class="dimension-text current"
+          [attr.dominant-baseline]="'central'">
+          {{ getVerticalCelestialDistance(Math.max(measureStartPoint.x, measureEndPoint.x), Math.min(measureStartPoint.y, measureEndPoint.y), Math.max(measureStartPoint.y, measureEndPoint.y)) || (Math.round(Math.abs(measureEndPoint.y - measureStartPoint.y)) + ' px') }}
         </text>
       </g>
     </svg>
