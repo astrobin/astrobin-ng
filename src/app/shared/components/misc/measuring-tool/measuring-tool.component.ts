@@ -1771,6 +1771,10 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     }
 
     // Mouse move handler - rotate the image container instead of the markers
+    // Keep track of the last time coordinates were updated (for debouncing)
+    let lastUpdateTime = 0;
+    const debounceInterval = 50; // Update at most every 50ms during rotation for smoother performance
+
     const handleMouseMove = (moveEvent: MouseEvent) => {
       // Stop event propagation
       moveEvent.preventDefault();
@@ -1795,8 +1799,11 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
       // Calculate the new rotation angle
       const newRotation = originalRotation + angleDelta;
 
-      // Store the rectangle's conceptual rotation angle in our model
-      // and update celestial coordinates based on the rotation
+      // Check if we should update coordinates (debounce)
+      const now = Date.now();
+      const shouldUpdateCoordinates = now - lastUpdateTime > debounceInterval;
+      
+      // Always update the rotation angle, but only update coordinates based on debounce
       if (index !== undefined && measurement) {
         // Calculate the delta from previous position to update coordinates
         const previousRotation = measurement.rectangleRotation;
@@ -1805,106 +1812,103 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
         // Update the rotation
         measurement.rectangleRotation = newRotation;
 
-        // Update celestial coordinates based on rotation
-        this.updateCoordinatesForRotation(measurement, centerX, centerY, rotationDelta);
+        // Only update coordinates and distance with debouncing
+        if (shouldUpdateCoordinates) {
+          lastUpdateTime = now;
+          
+          // Run in ngZone to ensure Angular change detection updates the UI
+          this.ngZone.run(() => {
+            // Update celestial coordinates based on rotation
+            this.updateCoordinatesForRotation(measurement, centerX, centerY, rotationDelta);
 
-        // Update distance calculation based on new coordinates
-        if (measurement.startRa !== null && measurement.endRa !== null) {
-          const angularDistance = this.calculateAngularDistance(
-            measurement.startRa,
-            measurement.startDec,
-            measurement.endRa,
-            measurement.endDec
-          );
+            // Update distance calculation based on new coordinates
+            if (measurement.startRa !== null && measurement.endRa !== null) {
+              const angularDistance = this.calculateAngularDistance(
+                measurement.startRa,
+                measurement.startDec,
+                measurement.endRa,
+                measurement.endDec
+              );
 
-          // Format based on size
-          if (angularDistance < 1/60) {
-            // Less than 1 arcminute, show in arcseconds
-            measurement.distance = `${(angularDistance * 3600).toFixed(1)}″`;
-          } else if (angularDistance < 1) {
-            // Less than 1 degree, show in arcminutes
-            measurement.distance = `${(angularDistance * 60).toFixed(1)}′`;
-          } else {
-            // Show in degrees
-            measurement.distance = `${angularDistance.toFixed(2)}°`;
-          }
+              // Use stable formatting for distances
+              measurement.distance = this._formatStableAngularDistance(angularDistance);
+            }
+
+            // Force update of coordinate labels by recalculating their positions
+            this.updateCoordinateLabelPositions(measurement);
+            
+            // Force change detection to update the UI
+            this.cdRef.detectChanges();
+          });
         }
-
-        // Force update of coordinate labels by recalculating their positions
-        this.updateCoordinateLabelPositions(measurement);
       } else if (this.measureStartPoint && this.measureEndPoint) {
         // Calculate the delta from previous position to update coordinates
         const previousRotation = this.currentRectangleRotation;
         const rotationDelta = newRotation - previousRotation;
 
-        // Update the rotation
+        // Always update the rotation angle
         this.currentRectangleRotation = newRotation;
 
-        // Create a measurement data object to update coordinates
-        const currentMeasurement: MeasurementData = {
-          startX: this.measureStartPoint.x,
-          startY: this.measureStartPoint.y,
-          endX: this.measureEndPoint.x,
-          endY: this.measureEndPoint.y,
-          midX: centerX,
-          midY: centerY,
-          distance: this.measureDistance || '',
-          timestamp: Date.now(),
-          startRa: this.measureStartPoint.ra,
-          startDec: this.measureStartPoint.dec,
-          endRa: this.measureEndPoint.ra,
-          endDec: this.measureEndPoint.dec,
-          startLabelX: 0,
-          startLabelY: 0,
-          endLabelX: 0,
-          endLabelY: 0,
-          rectangleRotation: newRotation
-        };
+        // Only update coordinates with debouncing (reuse the same debounce from above)
+        if (shouldUpdateCoordinates) {
+          lastUpdateTime = now;
+          
+          // Run in ngZone to ensure Angular change detection updates the UI
+          this.ngZone.run(() => {
+            // Create a measurement data object to update coordinates
+            const currentMeasurement: MeasurementData = {
+              startX: this.measureStartPoint.x,
+              startY: this.measureStartPoint.y,
+              endX: this.measureEndPoint.x,
+              endY: this.measureEndPoint.y,
+              midX: centerX,
+              midY: centerY,
+              distance: this.measureDistance || '',
+              timestamp: Date.now(),
+              startRa: this.measureStartPoint.ra,
+              startDec: this.measureStartPoint.dec,
+              endRa: this.measureEndPoint.ra,
+              endDec: this.measureEndPoint.dec,
+              startLabelX: 0,
+              startLabelY: 0,
+              endLabelX: 0,
+              endLabelY: 0,
+              rectangleRotation: newRotation
+            };
 
-        // Update the coordinates
-        this.updateCoordinatesForRotation(currentMeasurement, centerX, centerY, rotationDelta);
+            // Update the coordinates
+            this.updateCoordinatesForRotation(currentMeasurement, centerX, centerY, rotationDelta);
 
-        // Update the current measurement points with new coordinates
-        if (currentMeasurement.startRa !== null) {
-          this.measureStartPoint.ra = currentMeasurement.startRa;
-        }
-        if (currentMeasurement.startDec !== null) {
-          this.measureStartPoint.dec = currentMeasurement.startDec;
-        }
-        if (currentMeasurement.endRa !== null) {
-          this.measureEndPoint.ra = currentMeasurement.endRa;
-        }
-        if (currentMeasurement.endDec !== null) {
-          this.measureEndPoint.dec = currentMeasurement.endDec;
-        }
+            // Update the current measurement points with new coordinates
+            if (currentMeasurement.startRa !== null) {
+              this.measureStartPoint.ra = currentMeasurement.startRa;
+            }
+            if (currentMeasurement.startDec !== null) {
+              this.measureStartPoint.dec = currentMeasurement.startDec;
+            }
+            if (currentMeasurement.endRa !== null) {
+              this.measureEndPoint.ra = currentMeasurement.endRa;
+            }
+            if (currentMeasurement.endDec !== null) {
+              this.measureEndPoint.dec = currentMeasurement.endDec;
+            }
 
-        // Update the distance calculation for the current measurement
-        if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-          const pixelDistance = this.calculateDistance(
-            this.measureStartPoint.x,
-            this.measureStartPoint.y,
-            this.measureEndPoint.x,
-            this.measureEndPoint.y
-          );
+            // Update the distance calculation for the current measurement
+            if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
+              const angularDistance = this.calculateAngularDistance(
+                this.measureStartPoint.ra,
+                this.measureStartPoint.dec,
+                this.measureEndPoint.ra,
+                this.measureEndPoint.dec
+              );
 
-          const angularDistance = this.calculateAngularDistance(
-            this.measureStartPoint.ra,
-            this.measureStartPoint.dec,
-            this.measureEndPoint.ra,
-            this.measureEndPoint.dec
-          );
-
-          // Format based on size
-          if (angularDistance < 1/60) {
-            // Less than 1 arcminute, show in arcseconds
-            this.measureDistance = `${(angularDistance * 3600).toFixed(1)}″`;
-          } else if (angularDistance < 1) {
-            // Less than 1 degree, show in arcminutes
-            this.measureDistance = `${(angularDistance * 60).toFixed(1)}′`;
-          } else {
-            // Show in degrees
-            this.measureDistance = `${angularDistance.toFixed(2)}°`;
-          }
+              // Use consistent stable formatting for angular distances
+              this.measureDistance = this._formatStableAngularDistance(angularDistance);
+            }
+            
+            // Force change detection to update the UI
+            this.cdRef.detectChanges();
+          });
         }
       }
 
@@ -2640,85 +2644,88 @@ export class MeasuringToolComponent implements OnInit, OnDestroy {
     if (index !== undefined && measurement) {
       measurement.rectangleRotation = newRotation;
 
-      // Update the RA/Dec coordinates based on rotation
-      this.updateCoordinatesForRotation(measurement, centerX, centerY, rotationChange);
+      // Use ngZone to ensure UI updates
+      this.ngZone.run(() => {
+        // Update the RA/Dec coordinates based on rotation
+        this.updateCoordinatesForRotation(measurement, centerX, centerY, rotationChange);
 
-      // Update distance calculation based on new coordinates
-      if (measurement.startRa !== null && measurement.endRa !== null) {
-        const angularDistance = this.calculateAngularDistance(
-          measurement.startRa,
-          measurement.startDec,
-          measurement.endRa,
-          measurement.endDec
-        );
+        // Update distance calculation based on new coordinates
+        if (measurement.startRa !== null && measurement.endRa !== null) {
+          const angularDistance = this.calculateAngularDistance(
+            measurement.startRa,
+            measurement.startDec,
+            measurement.endRa,
+            measurement.endDec
+          );
 
-        // Use consistent stable formatting for angular distances
-        measurement.distance = this._formatStableAngularDistance(angularDistance);
-      }
+          // Use consistent stable formatting for angular distances
+          measurement.distance = this._formatStableAngularDistance(angularDistance);
+        }
 
-      // Force update of coordinate labels by recalculating their positions
-      this.updateCoordinateLabelPositions(measurement);
+        // Force update of coordinate labels by recalculating their positions
+        this.updateCoordinateLabelPositions(measurement);
+        
+        // Force change detection to update the UI
+        this.cdRef.detectChanges();
+      });
     } else if (this.measureStartPoint && this.measureEndPoint) {
       this.currentRectangleRotation = newRotation;
 
-      // Update current measurement RA/Dec based on rotation
-      const currentMeasurement: MeasurementData = {
-        startX: this.measureStartPoint.x,
-        startY: this.measureStartPoint.y,
-        endX: this.measureEndPoint.x,
-        endY: this.measureEndPoint.y,
-        midX: centerX,
-        midY: centerY,
-        distance: this.measureDistance || '',
-        timestamp: Date.now(),
-        startRa: this.measureStartPoint.ra,
-        startDec: this.measureStartPoint.dec,
-        endRa: this.measureEndPoint.ra,
-        endDec: this.measureEndPoint.dec,
-        startLabelX: 0,
-        startLabelY: 0,
-        endLabelX: 0,
-        endLabelY: 0,
-        rectangleRotation: newRotation
-      };
+      // Use ngZone to ensure UI updates
+      this.ngZone.run(() => {
+        // Update current measurement RA/Dec based on rotation
+        const currentMeasurement: MeasurementData = {
+          startX: this.measureStartPoint.x,
+          startY: this.measureStartPoint.y,
+          endX: this.measureEndPoint.x,
+          endY: this.measureEndPoint.y,
+          midX: centerX,
+          midY: centerY,
+          distance: this.measureDistance || '',
+          timestamp: Date.now(),
+          startRa: this.measureStartPoint.ra,
+          startDec: this.measureStartPoint.dec,
+          endRa: this.measureEndPoint.ra,
+          endDec: this.measureEndPoint.dec,
+          startLabelX: 0,
+          startLabelY: 0,
+          endLabelX: 0,
+          endLabelY: 0,
+          rectangleRotation: newRotation
+        };
 
-      this.updateCoordinatesForRotation(currentMeasurement, centerX, centerY, rotationChange);
+        this.updateCoordinatesForRotation(currentMeasurement, centerX, centerY, rotationChange);
 
-      // Update the current measurement points with new coordinates
-      if (currentMeasurement.startRa !== null) {
-        this.measureStartPoint.ra = currentMeasurement.startRa;
-      }
-      if (currentMeasurement.startDec !== null) {
-        this.measureStartPoint.dec = currentMeasurement.startDec;
-      }
-      if (currentMeasurement.endRa !== null) {
-        this.measureEndPoint.ra = currentMeasurement.endRa;
-      }
-      if (currentMeasurement.endDec !== null) {
-        this.measureEndPoint.dec = currentMeasurement.endDec;
-      }
-
-      // Update the distance calculation for the current measurement
-      if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
-        const angularDistance = this.calculateAngularDistance(
-          this.measureStartPoint.ra,
-          this.measureStartPoint.dec,
-          this.measureEndPoint.ra,
-          this.measureEndPoint.dec
-        );
-
-        // Format based on size
-        if (angularDistance < 1/60) {
-          // Less than 1 arcminute, show in arcseconds
-          this.measureDistance = `${(angularDistance * 3600).toFixed(1)}″`;
-        } else if (angularDistance < 1) {
-          // Less than 1 degree, show in arcminutes
-          this.measureDistance = `${(angularDistance * 60).toFixed(1)}′`;
-        } else {
-          // Show in degrees
-          this.measureDistance = `${angularDistance.toFixed(2)}°`;
+        // Update the current measurement points with new coordinates
+        if (currentMeasurement.startRa !== null) {
+          this.measureStartPoint.ra = currentMeasurement.startRa;
         }
-      }
+        if (currentMeasurement.startDec !== null) {
+          this.measureStartPoint.dec = currentMeasurement.startDec;
+        }
+        if (currentMeasurement.endRa !== null) {
+          this.measureEndPoint.ra = currentMeasurement.endRa;
+        }
+        if (currentMeasurement.endDec !== null) {
+          this.measureEndPoint.dec = currentMeasurement.endDec;
+        }
+
+        // Update the distance calculation for the current measurement
+        if (this.measureStartPoint.ra !== null && this.measureEndPoint.ra !== null) {
+          const angularDistance = this.calculateAngularDistance(
+            this.measureStartPoint.ra,
+            this.measureStartPoint.dec,
+            this.measureEndPoint.ra,
+            this.measureEndPoint.dec
+          );
+
+          // Use consistent stable formatting
+          this.measureDistance = this._formatStableAngularDistance(angularDistance);
+        }
+        
+        // Force change detection to update the UI
+        this.cdRef.detectChanges();
+      });
 
       // Force update for coordinate label positions
       // This is what makes the coordinate labels reposition properly
